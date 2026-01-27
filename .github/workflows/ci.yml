@@ -81,7 +81,7 @@ jobs:
           go build -v -o bin/jellyfin-go ./cmd/jellyfin
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: jellyfin-go
           path: bin/jellyfin-go
