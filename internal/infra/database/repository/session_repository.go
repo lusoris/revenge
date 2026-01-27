@@ -13,8 +13,8 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
 // SessionRepository implements domain.SessionRepository using PostgreSQL.

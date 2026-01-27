@@ -19,10 +19,10 @@ Is your feature request related to a problem? Please describe.
 ## Alternatives Considered
 <!-- What other solutions or features have you considered? -->
 
-## Jellyfin Compatibility
-<!-- Does this feature exist in Jellyfin (C#)? If so, how does it work there? -->
-- [ ] This feature exists in Jellyfin
-- [ ] This is a new feature unique to Jellyfin Go
+## Revenge Compatibility
+<!-- Does this feature exist in Revenge (C#)? If so, how does it work there? -->
+- [ ] This feature exists in Revenge
+- [ ] This is a new feature unique to revenge
 
 ## Use Cases
 <!-- Who would benefit from this feature and how? -->

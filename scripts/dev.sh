@@ -62,7 +62,7 @@ function setup_db() {
     info "Checking PostgreSQL connection..."
 
     # Check if PostgreSQL is reachable
-    if PGPASSWORD=password psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1" &>/dev/null; then
+    if PGPASSWORD=password psql -h localhost -U revenge -d revenge -c "SELECT 1" &>/dev/null; then
         info "PostgreSQL connection successful"
     else
         warn "PostgreSQL not reachable. Please ensure PostgreSQL is running."
@@ -89,8 +89,8 @@ function dev_server() {
 
 function build_binary() {
     info "Building binary..."
-    go build -o bin/jellyfin-go ./cmd/jellyfin
-    info "Binary built: bin/jellyfin-go"
+    go build -o bin/revenge ./cmd/revenge
+    info "Binary built: bin/revenge"
 }
 
 # Main menu

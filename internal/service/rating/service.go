@@ -10,8 +10,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
 // Service handles content rating operations.

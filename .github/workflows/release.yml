@@ -45,8 +45,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            jellyfin/jellyfin-go
-            ghcr.io/jellyfin/jellyfin-go
+            revenge/revenge
+            ghcr.io/revenge/revenge
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}

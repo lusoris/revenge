@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 func TestItemToResponse(t *testing.T) {
@@ -174,7 +174,7 @@ func TestItemToResponse_Container(t *testing.T) {
 	}
 }
 
-func TestJellyfinItemType(t *testing.T) {
+func TestRevengeItemType(t *testing.T) {
 	tests := []struct {
 		input    domain.MediaType
 		expected string
@@ -210,7 +210,7 @@ func TestJellyfinItemType(t *testing.T) {
 	}
 }
 
-func TestJellyfinMediaType(t *testing.T) {
+func TestRevengeMediaType(t *testing.T) {
 	tests := []struct {
 		input    domain.MediaType
 		expected string
@@ -231,15 +231,15 @@ func TestJellyfinMediaType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(string(tt.input), func(t *testing.T) {
-			got := jellyfinMediaType(tt.input)
+			got := revengeMediaType(tt.input)
 			if got != tt.expected {
-				t.Errorf("jellyfinMediaType(%s) = %s, want %s", tt.input, got, tt.expected)
+				t.Errorf("revengeMediaType(%s) = %s, want %s", tt.input, got, tt.expected)
 			}
 		})
 	}
 }
 
-func TestJellyfinTypeToMediaType(t *testing.T) {
+func TestRevengeTypeToMediaType(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected domain.MediaType
@@ -270,9 +270,9 @@ func TestJellyfinTypeToMediaType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			got := jellyfinTypeToMediaType(tt.input)
+			got := revengeTypeToMediaType(tt.input)
 			if got != tt.expected {
-				t.Errorf("jellyfinTypeToMediaType(%s) = %s, want %s", tt.input, got, tt.expected)
+				t.Errorf("revengeTypeToMediaType(%s) = %s, want %s", tt.input, got, tt.expected)
 			}
 		})
 	}
@@ -300,7 +300,7 @@ func TestItemResponse_JSONFormat(t *testing.T) {
 		t.Fatalf("Failed to unmarshal: %v", err)
 	}
 
-	// Check required fields match Jellyfin API format
+	// Check required fields match Revenge API format
 	requiredFields := []string{"Id", "Name", "Type", "IsFolder"}
 	for _, field := range requiredFields {
 		if _, ok := raw[field]; !ok {
@@ -308,7 +308,7 @@ func TestItemResponse_JSONFormat(t *testing.T) {
 		}
 	}
 
-	// Verify ProviderIds is correct (Jellyfin uses "ProviderIds" not "ProviderIDs")
+	// Verify ProviderIds is correct (Revenge uses "ProviderIds" not "ProviderIDs")
 	if _, ok := raw["ProviderIds"]; !ok {
 		t.Error("Missing ProviderIds field")
 	}
@@ -358,7 +358,7 @@ func TestSearchHintResponse_JSONFormat(t *testing.T) {
 		t.Fatalf("Failed to unmarshal: %v", err)
 	}
 
-	// Jellyfin search hints have both ItemId and Id
+	// Revenge search hints have both ItemId and Id
 	if _, ok := raw["ItemId"]; !ok {
 		t.Error("Missing ItemId field")
 	}

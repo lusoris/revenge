@@ -8,9 +8,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/service/genre"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/service/genre"
 )
 
 // GenreHandler handles genre-related HTTP requests.

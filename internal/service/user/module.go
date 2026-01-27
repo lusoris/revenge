@@ -1,10 +1,10 @@
-// Package user provides user management services for Jellyfin Go.
+// Package user provides user management services for Revenge Go.
 package user
 
 import (
 	"go.uber.org/fx"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // Module provides all user-related services for dependency injection.

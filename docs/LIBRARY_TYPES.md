@@ -1,10 +1,10 @@
 # Library Types
 
-> Extended library types for Jellyfin Go, including support for books, audiobooks, podcasts, and adult content.
+> Extended library types for revenge, including support for books, audiobooks, podcasts, and adult content.
 
 ## Overview
 
-Jellyfin Go extends the original Jellyfin library types to support additional content categories:
+revenge extends the original Revenge library types to support additional content categories:
 
 - **Books & Audiobooks** - For Calibre/Audiobookshelf-like functionality
 - **Podcasts** - RSS-based podcast management
@@ -14,7 +14,7 @@ Jellyfin Go extends the original Jellyfin library types to support additional co
 
 ```sql
 CREATE TYPE library_type AS ENUM (
-    -- Original Jellyfin types
+    -- Original Revenge types
     'movies',           -- Movie library
     'tvshows',          -- TV series library
     'music',            -- Music library
@@ -260,9 +260,9 @@ CREATE INDEX idx_libraries_type_adult ON libraries(type)
 CREATE INDEX idx_media_items_library_type ON media_items(library_id, media_type);
 ```
 
-## Migration from Original Jellyfin
+## Migration from Original Revenge
 
-When migrating an existing Jellyfin installation:
+When migrating an existing Revenge installation:
 
 1. Standard library types map directly
 2. Collections → `boxsets`

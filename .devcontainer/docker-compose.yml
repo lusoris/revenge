@@ -11,24 +11,24 @@ services:
       - go-build-cache:/root/.cache/go-build
     command: sleep infinity
     environment:
-      - JELLYFIN_LOG_LEVEL=debug
-      - JELLYFIN_DB_TYPE=sqlite
-      - JELLYFIN_DB_PATH=/workspace/data/jellyfin.db
+      - REVENGE_LOG_LEVEL=debug
+      - REVENGE_DB_TYPE=sqlite
+      - REVENGE_DB_PATH=/workspace/data/revenge.db
 
   # Optional: PostgreSQL for development
   postgres:
     image: postgres:18-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: jellyfin
-      POSTGRES_PASSWORD: jellyfin
-      POSTGRES_DB: jellyfin
+      POSTGRES_USER: revenge
+      POSTGRES_PASSWORD: revenge
+      POSTGRES_DB: revenge
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jellyfin"]
+      test: ["CMD-SHELL", "pg_isready -U revenge"]
       interval: 10s
       timeout: 5s
       retries: 5

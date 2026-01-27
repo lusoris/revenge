@@ -11,7 +11,7 @@ assignees: ''
 
 ## Environment
 - **OS**: [e.g. Ubuntu 22.04, Windows 11, macOS 14]
-- **Jellyfin Go Version**: [e.g. v0.1.0 or commit hash]
+- **revenge Version**: [e.g. v0.1.0 or commit hash]
 - **Hardware**:
   - CPU: [e.g. Intel i7-10700K, AMD Ryzen 5600X]
   - RAM: [e.g. 16GB]

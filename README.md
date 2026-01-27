@@ -1,22 +1,22 @@
-# Jellyfin Go
+# revenge
 
-[![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
-[![Security](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/jellyfin-go)](https://goreportcard.com/report/github.com/lusoris/jellyfin-go)
-[![codecov](https://codecov.io/gh/lusoris/jellyfin-go/branch/develop/graph/badge.svg)](https://codecov.io/gh/lusoris/jellyfin-go)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/jellyfin-go)](go.mod)
+[![CI](https://github.com/lusoris/revenge/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/ci.yml)
+[![Security](https://github.com/lusoris/revenge/actions/workflows/security.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/security.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/revenge)](https://goreportcard.com/report/github.com/lusoris/revenge)
+[![codecov](https://codecov.io/gh/lusoris/revenge/branch/develop/graph/badge.svg)](https://codecov.io/gh/lusoris/revenge)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/revenge)](go.mod)
 [![License](https://img.shields.io/badge/license-GPL--2.0-blue)](LICENSE)
 
-A high-performance, production-grade media server reimplementation of Jellyfin in Go.
+A high-performance, production-grade media server reimplementation of Revenge in Go.
 
 ## 🎯 Project Goals
 
 ### Phase 1: Single-Server Excellence
 
-- **Full Feature Parity**: Complete reimplementation of Jellyfin with all 60+ API controllers
+- **Full Feature Parity**: Complete reimplementation of Revenge with all 60+ API controllers
 - **Easy Setup**: Docker one-liner or native binary with PostgreSQL
 - **Hardware Acceleration**: Full support for VAAPI, NVENC, QuickSync, AMF, VideoToolbox
-- **API Compatibility**: Maintain v1 compatibility for existing Jellyfin clients
+- **API Compatibility**: Maintain v1 compatibility for existing Revenge clients
 - **Performance**: Optimized for single server, 1-100 concurrent users
 
 ### Phase 2: Optional Clustering (Future)
@@ -62,9 +62,9 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 ### Option 1: Docker Compose (Recommended)
 
 ```bash
-# Clone and start all services (PostgreSQL, Dragonfly, Typesense, Jellyfin)
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+# Clone and start all services (PostgreSQL, Dragonfly, Typesense, Revenge)
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 docker compose up -d
 
 # Opens at http://localhost:8096
@@ -74,14 +74,14 @@ docker compose up -d
 
 ```bash
 # Prerequisites: Go 1.24+, FFmpeg, PostgreSQL, Dragonfly
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 
 # Start dependencies
 docker compose -f docker-compose.dev.yml up -d
 
 # Run application
-go run ./cmd/jellyfin
+go run ./cmd/revenge
 ```
 
 ### Requirements
@@ -125,7 +125,7 @@ go run ./cmd/jellyfin
 
 ### Media Processing
 
-- **FFmpeg**: jellyfin-ffmpeg (hardware acceleration)
+- **FFmpeg**: revenge-ffmpeg (hardware acceleration)
 - **Streaming**: HLS/DASH with adaptive bitrate
 - **Thumbnails**: FFmpeg tile generation
 
@@ -150,17 +150,17 @@ go run ./cmd/jellyfin
 - **CI/CD**: GitHub Actions
 - **Load Balancer**: NGINX / HAProxy
 
-## 🔄 Migration from Jellyfin
+## 🔄 Migration from Revenge
 
-Jellyfin Go includes a migration tool to import existing Jellyfin databases:
+revenge includes a migration tool to import existing Revenge databases:
 
 ```bash
 # Automatic detection during first launch
-./jellyfin-go --import-jellyfin /path/to/jellyfin/data
+./revenge --import-revenge /path/to/revenge/data
 
 # Or via web UI setup wizard
 # Navigate to http://localhost:8096/setup
-# Select "Import from existing Jellyfin"
+# Select "Import from existing Revenge"
 ```
 
 **Note**: Database schema is redesigned for optimal PostgreSQL performance. Migration is one-way.
@@ -184,7 +184,7 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 - ⬜ HLS transcoding pipeline
 - ⬜ Session management
 - ⬜ Playback progress tracking
-- ⬜ Jellyfin migration tool
+- ⬜ Revenge migration tool
 
 ### Phase 3: Feature Complete (2 months)
 
@@ -231,23 +231,23 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 This project is licensed under the GNU General Public License v2.0 - see [LICENSE](LICENSE) for details.
 
-Jellyfin is a registered trademark of Jellyfin contributors. This project is an independent reimplementation and is not officially affiliated with the Jellyfin project.
+Revenge is a registered trademark of Revenge contributors. This project is an independent reimplementation and is not officially affiliated with the Revenge project.
 
 ## 🙏 Acknowledgments
 
-- **Jellyfin Team**: For creating an amazing open-source media server
+- **Revenge Team**: For creating an amazing open-source media server
 - **Go Community**: For excellent libraries and tools
 - **Contributors**: Everyone who contributes to this project
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/lusoris/jellyfin-go/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/lusoris/jellyfin-go/discussions)
+- **Issues**: [GitHub Issues](https://github.com/lusoris/revenge/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/lusoris/revenge/discussions)
 - **Security**: See [SECURITY.md](SECURITY.md)
 
 ## 🔗 Links
 
-- [Jellyfin (Original)](https://jellyfin.org/)
+- [Revenge (Original)](https://revenge.org/)
 - [Documentation](https://docs.example.com)
 - [API Reference](https://api-docs.example.com)
 - [Community](https://community.example.com)

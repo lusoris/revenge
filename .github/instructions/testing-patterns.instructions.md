@@ -4,7 +4,7 @@ applyTo: "**/*_test.go,**/tests/**/*.go"
 
 # Go Testing Patterns
 
-> Idiomatic Go testing for Jellyfin Go
+> Idiomatic Go testing for revenge
 
 ## Table-Driven Tests
 

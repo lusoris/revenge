@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Renovate configuration for Jellyfin Go",
+  "description": "Renovate configuration for Revenge Go",
   "extends": [
     "config:recommended",
     ":dependencyDashboard",

@@ -1,4 +1,4 @@
-// Package middleware provides HTTP middleware for the Jellyfin Go API.
+// Package middleware provides HTTP middleware for the Revenge Go API.
 package middleware
 
 import (
@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // contextKey is a custom type for context keys to avoid collisions.
@@ -136,7 +136,7 @@ func (a *Auth) AdminRequired(next http.Handler) http.Handler {
 
 // extractToken extracts the JWT token from the Authorization header.
 // Supports both "Bearer <token>" and "MediaBrowser Token=<token>" formats
-// for Jellyfin client compatibility.
+// for Revenge client compatibility.
 func extractToken(r *http.Request) string {
 	// Check Authorization header
 	auth := r.Header.Get("Authorization")
@@ -146,7 +146,7 @@ func extractToken(r *http.Request) string {
 			return strings.TrimPrefix(auth, "Bearer ")
 		}
 
-		// Jellyfin MediaBrowser format: MediaBrowser Token="<token>", ...
+		// Revenge MediaBrowser format: MediaBrowser Token="<token>", ...
 		if strings.HasPrefix(auth, "MediaBrowser ") {
 			params := parseMediaBrowserAuth(auth)
 			if token, ok := params["Token"]; ok {
@@ -155,7 +155,7 @@ func extractToken(r *http.Request) string {
 		}
 	}
 
-	// Check X-Emby-Authorization header (alternative Jellyfin header)
+	// Check X-Emby-Authorization header (alternative Revenge header)
 	embyAuth := r.Header.Get("X-Emby-Authorization")
 	if embyAuth != "" {
 		params := parseMediaBrowserAuth(embyAuth)

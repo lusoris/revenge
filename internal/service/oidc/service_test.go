@@ -1,4 +1,4 @@
-// Package oidc provides OIDC/SSO authentication services for Jellyfin Go.
+// Package oidc provides OIDC/SSO authentication services for Revenge Go.
 package oidc
 
 import (
@@ -12,7 +12,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // mockOIDCProviderRepository is a mock implementation for testing.
@@ -127,8 +127,8 @@ func TestService_GetProviders(t *testing.T) {
 		ID:          uuid.New(),
 		Name:        "keycloak",
 		DisplayName: "Keycloak SSO",
-		IssuerURL:   "https://keycloak.example.com/realms/jellyfin",
-		ClientID:    "jellyfin",
+		IssuerURL:   "https://keycloak.example.com/realms/revenge",
+		ClientID:    "revenge",
 		Enabled:     true,
 	}
 	provider2 := &domain.OIDCProvider{

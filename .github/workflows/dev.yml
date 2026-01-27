@@ -145,13 +145,13 @@ jobs:
 
           go build \
             -ldflags "-s -w -X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GITHUB_SHA}" \
-            -o "dist/jellyfin-go-${{ matrix.os }}-${{ matrix.arch }}${EXT}" \
-            ./cmd/jellyfin
+            -o "dist/revenge-${{ matrix.os }}-${{ matrix.arch }}${EXT}" \
+            ./cmd/revenge
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v6
         with:
-          name: jellyfin-go-${{ matrix.os }}-${{ matrix.arch }}
+          name: revenge-${{ matrix.os }}-${{ matrix.arch }}
           path: dist/*
           retention-days: 7
 
@@ -229,8 +229,8 @@ jobs:
       postgres:
         image: postgres:18-alpine
         env:
-          POSTGRES_DB: jellyfin_test
-          POSTGRES_USER: jellyfin
+          POSTGRES_DB: revenge_test
+          POSTGRES_USER: revenge
           POSTGRES_PASSWORD: test_password
         ports:
           - 5432:5432
@@ -262,14 +262,14 @@ jobs:
 
       - name: Run integration tests
         env:
-          JELLYFIN_DB_TYPE: postgres
-          JELLYFIN_DB_HOST: localhost
-          JELLYFIN_DB_PORT: 5432
-          JELLYFIN_DB_USER: jellyfin
-          JELLYFIN_DB_PASSWORD: test_password
-          JELLYFIN_DB_NAME: jellyfin_test
-          JELLYFIN_CACHE_TYPE: redis
-          JELLYFIN_REDIS_ADDR: localhost:6379
+          REVENGE_DB_TYPE: postgres
+          REVENGE_DB_HOST: localhost
+          REVENGE_DB_PORT: 5432
+          REVENGE_DB_USER: revenge
+          REVENGE_DB_PASSWORD: test_password
+          REVENGE_DB_NAME: revenge_test
+          REVENGE_CACHE_TYPE: redis
+          REVENGE_REDIS_ADDR: localhost:6379
         run: |
           go test -v -tags=integration ./tests/integration/...
 

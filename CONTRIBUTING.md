@@ -1,6 +1,6 @@
-# Contributing to Jellyfin Go
+# Contributing to revenge
 
-First off, thank you for considering contributing to Jellyfin Go! 🎉
+First off, thank you for considering contributing to revenge! 🎉
 
 ## Code of Conduct
 
@@ -22,7 +22,7 @@ Before creating bug reports, please check existing issues. When creating a bug r
 
 Feature suggestions are welcome! Please:
 
-- Check if the feature already exists in Jellyfin (C#)
+- Check if the feature already exists in Revenge (C#)
 - Explain the use case
 - Consider if it fits the single-server focus (Phase 1-4)
 
@@ -46,8 +46,8 @@ Feature suggestions are welcome! Please:
 - Git
 
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/YOUR_USERNAME/revenge.git
+cd revenge
 
 # Install dependencies
 go mod download
@@ -59,15 +59,15 @@ docker-compose up -d postgres
 go test ./...
 
 # Run application
-go run ./cmd/jellyfin
+go run ./cmd/revenge
 ```
 
 ## Project Structure
 
 ```
-jellyfin-go/
+revenge/
 ├── cmd/
-│   └── jellyfin/          # Main application entry point
+│   └── revenge/          # Main application entry point
 ├── internal/              # Private application code
 │   ├── domain/           # Domain entities and business rules
 │   ├── service/          # Business logic
@@ -212,7 +212,7 @@ We follow semantic versioning (SemVer):
 **Current Focus: Phase 1 (Single-Server MVP)**
 
 Priority areas for contributions:
-1. Core API endpoints (Jellyfin compatibility)
+1. Core API endpoints (Revenge compatibility)
 2. Library scanning and metadata
 3. SQLite/PostgreSQL support
 4. Authentication and authorization

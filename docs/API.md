@@ -1,10 +1,10 @@
 # API Reference
 
-This document describes the HTTP API endpoints implemented in Jellyfin Go.
+This document describes the HTTP API endpoints implemented in revenge.
 
 ## Overview
 
-Jellyfin Go provides a REST API that is fully compatible with the original Jellyfin API. All responses use JSON format.
+revenge provides a REST API that is fully compatible with the original Revenge API. All responses use JSON format.
 
 ### Base URL
 
@@ -627,7 +627,7 @@ Get next episodes to watch.
 
 ## Content Rating System
 
-Jellyfin Go uses a normalized rating system that maps various international rating systems to a 0-100 scale:
+revenge uses a normalized rating system that maps various international rating systems to a 0-100 scale:
 
 | Level | Age | Description | Examples |
 |-------|-----|-------------|----------|

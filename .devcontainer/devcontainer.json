@@ -1,5 +1,5 @@
 {
-  "name": "Jellyfin Go Development",
+  "name": "Revenge Go Development",
   "dockerComposeFile": "docker-compose.yml",
   "service": "devcontainer",
   "workspaceFolder": "/workspace",
@@ -42,7 +42,7 @@
   "forwardPorts": [8096],
   "portsAttributes": {
     "8096": {
-      "label": "Jellyfin Go",
+      "label": "Revenge Go",
       "onAutoForward": "notify"
     }
   }

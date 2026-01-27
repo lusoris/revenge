@@ -1,5 +1,5 @@
 # Development Configuration
-# Used when JELLYFIN_ENV=dev
+# Used when REVENGE_ENV=dev
 
 server:
   host: 0.0.0.0
@@ -9,9 +9,9 @@ server:
 database:
   host: localhost
   port: 5432
-  user: jellyfin
-  password: jellyfin_dev_pass
-  name: jellyfin
+  user: revenge
+  password: revenge_dev_pass
+  name: revenge
   ssl_mode: disable
   max_conns: 10
 

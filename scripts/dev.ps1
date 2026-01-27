@@ -65,7 +65,7 @@ function Initialize-Database {
 
     # Check if PostgreSQL is reachable
     try {
-        $null = & psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1" 2>&1
+        $null = & psql -h localhost -U revenge -d revenge -c "SELECT 1" 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Info "PostgreSQL connection successful"
         }
@@ -99,8 +99,8 @@ function Start-DevServer {
 function Build-Binary {
     Write-Info "Building binary..."
     New-Item -ItemType Directory -Force -Path "bin" | Out-Null
-    go build -o bin\jellyfin-go.exe .\cmd\jellyfin
-    Write-Info "Binary built: bin\jellyfin-go.exe"
+    go build -o bin\revenge.exe .\cmd\revenge
+    Write-Info "Binary built: bin\revenge.exe"
 }
 
 # Execute command

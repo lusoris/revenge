@@ -1,4 +1,4 @@
-// Package oidc provides OIDC/SSO authentication services for Jellyfin Go.
+// Package oidc provides OIDC/SSO authentication services for Revenge Go.
 package oidc
 
 import (
@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 	"go.uber.org/fx"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/pkg/config"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/pkg/config"
 )
 
 // Module provides OIDC-related services for dependency injection.

@@ -1,4 +1,4 @@
-// Package auth provides authentication services for Jellyfin Go.
+// Package auth provides authentication services for Revenge Go.
 package auth
 
 import (
@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // mockUserRepository implements domain.UserRepository for testing.

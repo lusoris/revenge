@@ -136,7 +136,7 @@ const getUserByID = `-- name: GetUserByID :one
 SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE id = $1 LIMIT 1
 `
 
-// User queries for Jellyfin Go
+// User queries for Revenge Go
 // sqlc generates type-safe Go code from these queries
 // =============================================================================
 // BASIC CRUD

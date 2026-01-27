@@ -4,7 +4,7 @@ applyTo: "**/migrations/**/*.sql"
 
 # SQL Migration Guidelines
 
-> Standards for PostgreSQL migrations in Jellyfin Go
+> Standards for PostgreSQL migrations in revenge
 
 ## Naming Convention
 

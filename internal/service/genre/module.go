@@ -4,7 +4,7 @@ package genre
 import (
 	"go.uber.org/fx"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // Module provides the genre service dependencies.

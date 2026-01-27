@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Universal setup script for Jellyfin Go
+# Universal setup script for Revenge
 # Supports: Linux (apt, yum, pacman), macOS (brew), Windows (via WSL)
 
 set -euo pipefail
@@ -196,7 +196,7 @@ setup_project() {
     fi
 
     step "Building project..."
-    go build -o bin/jellyfin-go ./cmd/jellyfin
+    go build -o bin/revenge ./cmd/revenge
 
     info "Project setup complete!"
 }
@@ -205,7 +205,7 @@ setup_project() {
 main() {
     echo ""
     echo "╔════════════════════════════════════════╗"
-    echo "║   Jellyfin Go - Setup Assistant       ║"
+    echo "║   Revenge - Setup Assistant       ║"
     echo "╚════════════════════════════════════════╝"
     echo ""
 
@@ -224,7 +224,7 @@ main() {
     echo "╚════════════════════════════════════════╝"
     echo ""
     info "Next steps:"
-    echo "  1. Run the application: ./bin/jellyfin-go"
+    echo "  1. Run the application: ./bin/revenge"
     echo "  2. Or use development mode: make dev"
     echo "  3. Read the docs: cat README.md"
     echo ""

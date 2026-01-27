@@ -2,13 +2,13 @@
 # Sync script for Jellyfin upstream tracking
 #
 # This script maintains the following sync chain:
-#   jellyfin/jellyfin (official) → lusoris/jellyfin (your fork) → lusoris/jellyfin-go (Go rewrite)
+#   jellyfin/jellyfin (official) → lusoris/jellyfin (your fork) → lusoris/revenge (Go rewrite)
 #
 # Usage: ./scripts/sync-upstream.sh
 
 set -euo pipefail
 
-echo "🔄 Jellyfin Upstream Sync"
+echo "🔄 Revenge Upstream Sync"
 echo "========================="
 echo ""
 

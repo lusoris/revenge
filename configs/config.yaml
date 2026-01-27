@@ -1,6 +1,6 @@
-# Jellyfin Go Configuration
+# Revenge Go Configuration
 # Copy this file and adjust values for your environment
-# Environment variables override these settings (JELLYFIN_*)
+# Environment variables override these settings (REVENGE_*)
 
 server:
   host: 0.0.0.0
@@ -10,9 +10,9 @@ server:
 database:
   host: localhost
   port: 5432
-  user: jellyfin
-  password: changeme  # Override with JELLYFIN_DATABASE_PASSWORD
-  name: jellyfin
+  user: revenge
+  password: changeme  # Override with REVENGE_DATABASE_PASSWORD
+  name: revenge
   ssl_mode: disable
   max_conns: 25
 
@@ -26,7 +26,7 @@ cache:
 search:
   host: localhost
   port: 8108
-  api_key: changeme  # Override with JELLYFIN_SEARCH_API_KEY
+  api_key: changeme  # Override with REVENGE_SEARCH_API_KEY
   protocol: http
 
 log:

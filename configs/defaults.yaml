@@ -1,4 +1,4 @@
-# Default Configuration for Jellyfin Go
+# Default Configuration for Revenge Go
 # All services are REQUIRED - no optional backends
 
 server:
@@ -9,9 +9,9 @@ server:
 database:
   host: localhost
   port: 5432
-  user: jellyfin
+  user: revenge
   password: ""
-  name: jellyfin
+  name: revenge
   ssl_mode: disable
   max_conns: 25
 
@@ -41,11 +41,11 @@ auth:
 oidc:
   enabled: false
   # Example provider configuration via env:
-  # JELLYFIN_OIDC_PROVIDERS_0_NAME=keycloak
-  # JELLYFIN_OIDC_PROVIDERS_0_DISPLAY_NAME=Keycloak SSO
-  # JELLYFIN_OIDC_PROVIDERS_0_ISSUER_URL=https://keycloak.example.com/realms/jellyfin
-  # JELLYFIN_OIDC_PROVIDERS_0_CLIENT_ID=jellyfin
-  # JELLYFIN_OIDC_PROVIDERS_0_CLIENT_SECRET=secret
+  # REVENGE_OIDC_PROVIDERS_0_NAME=keycloak
+  # REVENGE_OIDC_PROVIDERS_0_DISPLAY_NAME=Keycloak SSO
+  # REVENGE_OIDC_PROVIDERS_0_ISSUER_URL=https://keycloak.example.com/realms/revenge
+  # REVENGE_OIDC_PROVIDERS_0_CLIENT_ID=revenge
+  # REVENGE_OIDC_PROVIDERS_0_CLIENT_SECRET=secret
 
 log:
   level: info

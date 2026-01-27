@@ -1,4 +1,4 @@
-// Package database provides PostgreSQL database connectivity for Jellyfin Go.
+// Package database provides PostgreSQL database connectivity for Revenge Go.
 // It uses pgxpool for connection pooling and integrates with fx for lifecycle management.
 package database
 
@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/fx"
 
-	"github.com/jellyfin/jellyfin-go/pkg/config"
+	"github.com/lusoris/revenge/pkg/config"
 )
 
 // Module provides database dependencies for fx.

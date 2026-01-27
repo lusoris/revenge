@@ -96,7 +96,7 @@ package repository
 import (
     "context"
     "github.com/jackc/pgx/v5/pgxpool"
-    "jellyfin-go/internal/infra/database/db"
+    "revenge/internal/infra/database/db"
 )
 
 type UserRepository struct {

@@ -78,13 +78,13 @@ jobs:
       - name: Build binary
         run: |
           mkdir -p bin
-          go build -v -o bin/jellyfin-go ./cmd/jellyfin
+          go build -v -o bin/revenge ./cmd/revenge
 
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
-          name: jellyfin-go
-          path: bin/jellyfin-go
+          name: revenge
+          path: bin/revenge
           retention-days: 7
 
   docker:
@@ -104,6 +104,6 @@ jobs:
         with:
           context: .
           push: false
-          tags: jellyfin/jellyfin-go:${{ github.sha }}
+          tags: revenge/revenge:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

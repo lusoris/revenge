@@ -10,8 +10,8 @@
 
 ```powershell
 # Clone repository
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 
 # Run setup script
 .\scripts\dev.ps1 setup
@@ -24,8 +24,8 @@ cd jellyfin-go
 
 ```bash
 # Clone repository
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 
 # Make scripts executable
 chmod +x scripts/*.sh
@@ -81,7 +81,7 @@ make docker-compose-up # Start with Docker Compose
 go mod download
 
 # Build and run
-go run ./cmd/jellyfin
+go run ./cmd/revenge
 ```
 
 The server will start at http://localhost:8096
@@ -106,7 +106,7 @@ docker-compose up
 See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for detailed information.
 
 ```
-jellyfin-go/
+revenge/
 ├── cmd/           # Application entry points
 ├── internal/      # Private application code
 ├── pkg/           # Public libraries
@@ -122,14 +122,14 @@ jellyfin-go/
 Configuration can be set via:
 
 1. **Config file** (`configs/config.yaml`)
-2. **Environment variables** (prefixed with `JELLYFIN_`)
+2. **Environment variables** (prefixed with `REVENGE_`)
 3. **Command-line flags** (coming soon)
 
 Example environment variables:
 ```bash
-export JELLYFIN_LOG_LEVEL=debug
-export JELLYFIN_DB_TYPE=postgres
-export JELLYFIN_DB_HOST=localhost
+export REVENGE_LOG_LEVEL=debug
+export REVENGE_DB_TYPE=postgres
+export REVENGE_DB_HOST=localhost
 ```
 
 ### Testing
@@ -159,7 +159,7 @@ VS Code launch configurations are included:
 
 Or use Delve directly:
 ```bash
-dlv debug ./cmd/jellyfin
+dlv debug ./cmd/revenge
 ```
 
 ### Code Quality
@@ -222,7 +222,7 @@ lsof -ti:8096 | xargs kill -9
 docker-compose -f docker-compose.dev.yml ps
 
 # Check connection
-PGPASSWORD=password psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1"
+PGPASSWORD=password psql -h localhost -U revenge -d revenge -c "SELECT 1"
 
 # Restart PostgreSQL
 docker-compose -f docker-compose.dev.yml restart postgres

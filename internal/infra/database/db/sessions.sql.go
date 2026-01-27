@@ -123,7 +123,7 @@ const getSessionByID = `-- name: GetSessionByID :one
 SELECT id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at FROM sessions WHERE id = $1 LIMIT 1
 `
 
-// Session queries for Jellyfin Go
+// Session queries for Revenge Go
 // =============================================================================
 // BASIC CRUD
 // =============================================================================

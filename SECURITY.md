@@ -13,14 +13,14 @@
 
 Instead, please report them via GitHub's Security Advisory feature:
 
-1. Go to https://github.com/jellyfin/jellyfin-go/security/advisories/new
+1. Go to https://github.com/revenge/revenge/security/advisories/new
 2. Fill out the advisory form with:
    - Description of the vulnerability
    - Steps to reproduce
    - Potential impact
    - Suggested fix (if any)
 
-Alternatively, send an email to: security@jellyfin.org
+Alternatively, send an email to: security@revenge.org
 
 ### What to include in your report:
 
@@ -126,7 +126,7 @@ Subscribe to security updates:
 
 - Watch this repository
 - Enable security advisories
-- Follow @JellyfinProject on Twitter
+- Follow @RevengeProject on Twitter
 
 ## Hall of Fame
 

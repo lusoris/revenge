@@ -1,4 +1,4 @@
-# sqlc Configuration for Jellyfin Go
+# sqlc Configuration for Revenge Go
 # Generates type-safe Go code from SQL queries
 
 version: "2"

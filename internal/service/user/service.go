@@ -1,4 +1,4 @@
-// Package user provides user management services for Jellyfin Go.
+// Package user provides user management services for Revenge Go.
 package user
 
 import (
@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // Service implements user management operations.

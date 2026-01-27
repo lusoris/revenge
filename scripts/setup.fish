@@ -1,5 +1,5 @@
 #!/usr/bin/env fish
-# Universal setup script for Jellyfin Go (Fish shell)
+# Universal setup script for Revenge (Fish shell)
 
 set SCRIPT_DIR (dirname (status --current-filename))
 set PROJECT_ROOT (dirname $SCRIPT_DIR)
@@ -145,7 +145,7 @@ function setup_project
     end
 
     step "Building project..."
-    go build -o bin/jellyfin-go ./cmd/jellyfin
+    go build -o bin/revenge ./cmd/revenge
 
     info "Project setup complete!"
 end
@@ -153,7 +153,7 @@ end
 # Main
 echo ""
 echo "╔════════════════════════════════════════╗"
-echo "║   Jellyfin Go - Setup Assistant       ║"
+echo "║   Revenge - Setup Assistant       ║"
 echo "╚════════════════════════════════════════╝"
 echo ""
 
@@ -171,7 +171,7 @@ echo "║   ✅ Setup Complete!                   ║"
 echo "╚════════════════════════════════════════╝"
 echo ""
 info "Next steps:"
-echo "  1. Run the application: ./bin/jellyfin-go"
+echo "  1. Run the application: ./bin/revenge"
 echo "  2. Or use development mode: make dev"
 echo "  3. Read the docs: cat README.md"
 echo ""

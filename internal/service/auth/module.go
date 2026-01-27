@@ -1,4 +1,4 @@
-// Package auth provides authentication services for the Jellyfin Go server.
+// Package auth provides authentication services for the Revenge Go server.
 package auth
 
 import (
@@ -6,8 +6,8 @@ import (
 
 	"go.uber.org/fx"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/pkg/config"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/pkg/config"
 )
 
 // Module provides all auth-related services for dependency injection.

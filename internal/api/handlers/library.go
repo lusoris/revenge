@@ -7,9 +7,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/service/library"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/service/library"
 )
 
 // LibraryHandler handles library-related HTTP requests.
@@ -36,7 +36,7 @@ func (h *LibraryHandler) RegisterRoutes(mux *http.ServeMux, auth *middleware.Aut
 }
 
 // LibraryResponse represents a library in API responses.
-// Matches Jellyfin API VirtualFolderInfo format.
+// Matches Revenge API VirtualFolderInfo format.
 type LibraryResponse struct {
 	ID                 string             `json:"ItemId"`
 	Name               string             `json:"Name"`

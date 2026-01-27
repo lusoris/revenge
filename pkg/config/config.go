@@ -1,4 +1,4 @@
-// Package config provides configuration management for Jellyfin Go.
+// Package config provides configuration management for Revenge Go.
 // It uses koanf v2 for hierarchical configuration from files and environment variables.
 package config
 
@@ -108,17 +108,17 @@ func New() (*Config, error) {
 	_ = k.Load(file.Provider("configs/config.yaml"), yaml.Parser()) //nolint:errcheck // config file is optional
 
 	// Load environment-specific config (optional)
-	envConfig := os.Getenv("JELLYFIN_ENV")
+	envConfig := os.Getenv("REVENGE_ENV")
 	if envConfig != "" {
 		configPath := fmt.Sprintf("configs/config.%s.yaml", envConfig)
 		_ = k.Load(file.Provider(configPath), yaml.Parser()) //nolint:errcheck // env-specific config is optional
 	}
 
 	// Load environment variables (highest priority)
-	// JELLYFIN_SERVER_PORT=8080 becomes server.port=8080
-	if err := k.Load(env.Provider("JELLYFIN_", ".", func(s string) string {
+	// REVENGE_SERVER_PORT=8080 becomes server.port=8080
+	if err := k.Load(env.Provider("REVENGE_", ".", func(s string) string {
 		return strings.ReplaceAll(strings.ToLower(
-			strings.TrimPrefix(s, "JELLYFIN_")), "_", ".")
+			strings.TrimPrefix(s, "REVENGE_")), "_", ".")
 	}), nil); err != nil {
 		return nil, fmt.Errorf("failed to load env vars: %w", err)
 	}
@@ -150,8 +150,8 @@ func Defaults() *Config {
 		Database: DatabaseConfig{
 			Host:     "localhost",
 			Port:     5432,
-			User:     "jellyfin",
-			Name:     "jellyfin",
+			User:     "revenge",
+			Name:     "revenge",
 			SSLMode:  "disable",
 			MaxConns: 25,
 		},

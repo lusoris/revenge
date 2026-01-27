@@ -1,4 +1,4 @@
-// Package database provides database infrastructure for Jellyfin Go.
+// Package database provides database infrastructure for Revenge Go.
 package database
 
 import (
@@ -15,7 +15,7 @@ import (
 	"github.com/jackc/pgx/v5/stdlib"
 )
 
-//go:embed migrations/*.sql
+//go:embed migrations/shared/*.sql
 var migrationsFS embed.FS
 
 // Migrator handles database migrations.
@@ -145,7 +145,7 @@ func (m *Migrator) Force(ctx context.Context, version int) error {
 
 func (m *Migrator) getMigrate() (*migrate.Migrate, error) {
 	// Create source from embedded filesystem
-	sourceDriver, err := iofs.New(migrationsFS, "migrations")
+	sourceDriver, err := iofs.New(migrationsFS, "migrations/shared")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create source driver: %w", err)
 	}

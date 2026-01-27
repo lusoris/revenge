@@ -1,8 +1,8 @@
 .PHONY: help build run test lint clean docker-build docker-run migrate
 
 # Variables
-BINARY_NAME=jellyfin-go
-DOCKER_IMAGE=jellyfin/jellyfin-go
+BINARY_NAME=revenge
+DOCKER_IMAGE=revenge/revenge
 VERSION?=dev
 BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
@@ -11,9 +11,9 @@ LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X 
 # Database configuration (override with environment variables)
 DB_HOST?=localhost
 DB_PORT?=5432
-DB_USER?=jellyfin
-DB_PASSWORD?=jellyfin_dev_pass
-DB_NAME?=jellyfin
+DB_USER?=revenge
+DB_PASSWORD?=revenge_dev_pass
+DB_NAME?=revenge
 DB_SSLMODE?=disable
 DATABASE_URL?=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
 
@@ -34,19 +34,19 @@ tidy: ## Tidy go.mod
 
 build: ## Build the binary
 	@echo "Building ${BINARY_NAME}..."
-	go build ${LDFLAGS} -o bin/${BINARY_NAME} ./cmd/jellyfin
+	go build ${LDFLAGS} -o bin/${BINARY_NAME} ./cmd/revenge
 
 build-all: ## Build for all platforms
 	@echo "Building for multiple platforms..."
-	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-amd64 ./cmd/jellyfin
-	GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-arm64 ./cmd/jellyfin
-	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-darwin-amd64 ./cmd/jellyfin
-	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-darwin-arm64 ./cmd/jellyfin
-	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-windows-amd64.exe ./cmd/jellyfin
+	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-amd64 ./cmd/revenge
+	GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-linux-arm64 ./cmd/revenge
+	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-darwin-amd64 ./cmd/revenge
+	GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-darwin-arm64 ./cmd/revenge
+	GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o bin/${BINARY_NAME}-windows-amd64.exe ./cmd/revenge
 
 run: ## Run the application
 	@echo "Running ${BINARY_NAME}..."
-	go run ./cmd/jellyfin
+	go run ./cmd/revenge
 
 dev: ## Run with hot reload (requires air)
 	@echo "Starting development server with hot reload..."
@@ -91,7 +91,7 @@ docker-build: ## Build Docker image
 
 docker-run: ## Run Docker container
 	@echo "Running Docker container..."
-	docker run -p 8096:8096 -v jellyfin-data:/data ${DOCKER_IMAGE}:latest
+	docker run -p 8096:8096 -v revenge-data:/data ${DOCKER_IMAGE}:latest
 
 docker-compose-up: ## Start services with docker-compose
 	@echo "Starting services..."

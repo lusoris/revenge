@@ -37,7 +37,7 @@ ORDER BY g.name ASC;
 SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
 FROM genres
 WHERE domain = $1 AND name ILIKE '%' || $2 || '%'
-ORDER BY 
+ORDER BY
     CASE WHEN name ILIKE $2 THEN 0 ELSE 1 END,  -- Exact matches first
     name ASC
 LIMIT $3;
@@ -46,7 +46,7 @@ LIMIT $3;
 SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
 FROM genres
 WHERE name ILIKE '%' || $1 || '%'
-ORDER BY 
+ORDER BY
     CASE WHEN name ILIKE $1 THEN 0 ELSE 1 END,
     domain ASC,
     name ASC
@@ -59,7 +59,7 @@ RETURNING id, domain, name, slug, description, parent_id, external_ids, created_
 
 -- name: UpdateGenre :one
 UPDATE genres
-SET 
+SET
     name = COALESCE(sqlc.narg('name'), name),
     slug = COALESCE(sqlc.narg('slug'), slug),
     description = COALESCE(sqlc.narg('description'), description),
@@ -108,7 +108,7 @@ FROM media_item_genres
 WHERE genre_id = $1;
 
 -- name: ListGenresWithCounts :many
-SELECT 
+SELECT
     g.id, g.domain, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at,
     COUNT(mig.media_item_id) as item_count
 FROM genres g

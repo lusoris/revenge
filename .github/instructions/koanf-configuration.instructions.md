@@ -36,10 +36,10 @@ func LoadConfig() error {
 
     // Merge environment variables (overrides file)
     return k.Load(env.Provider(".", env.Opt{
-        Prefix: "JELLYFIN_",
+        Prefix: "REVENGE_",
         TransformFunc: func(key, val string) (string, any) {
-            // JELLYFIN_DATABASE_HOST → database.host
-            key = strings.ToLower(strings.TrimPrefix(key, "JELLYFIN_"))
+            // REVENGE_DATABASE_HOST → database.host
+            key = strings.ToLower(strings.TrimPrefix(key, "REVENGE_"))
             key = strings.ReplaceAll(key, "_", ".")
             return key, val
         },
@@ -98,8 +98,8 @@ server:
 database:
   host: localhost
   port: 5432
-  name: jellyfin
-  user: jellyfin
+  name: revenge
+  user: revenge
   password: "" # Override with env
   ssl_mode: disable
   max_conns: 25
@@ -120,9 +120,9 @@ logging:
 
 ```bash
 # Override database password via environment
-export JELLYFIN_DATABASE_PASSWORD=secretpassword
-export JELLYFIN_SERVER_PORT=9000
-export JELLYFIN_LOGGING_LEVEL=debug
+export REVENGE_DATABASE_PASSWORD=secretpassword
+export REVENGE_SERVER_PORT=9000
+export REVENGE_LOGGING_LEVEL=debug
 ```
 
 ## Multiple Config Sources
@@ -143,7 +143,7 @@ func LoadConfig() error {
     }
 
     // 3. Load environment-specific config
-    env := os.Getenv("JELLYFIN_ENV")
+    env := os.Getenv("REVENGE_ENV")
     if env != "" {
         envFile := fmt.Sprintf("config.%s.yaml", env)
         _ = k.Load(file.Provider(envFile), yaml.Parser())
@@ -151,7 +151,7 @@ func LoadConfig() error {
 
     // 4. Environment variables override everything
     return k.Load(env.Provider(".", env.Opt{
-        Prefix: "JELLYFIN_",
+        Prefix: "REVENGE_",
         TransformFunc: envKeyTransform,
     }), nil)
 }
@@ -300,7 +300,7 @@ func NewConfig() (*Config, error) {
 fx.Provide(NewConfig)
 ```
 
-## Jellyfin Go Pattern
+## revenge Pattern
 
 ```go
 // pkg/config/config.go
@@ -331,7 +331,7 @@ func Load(paths ...string) (*Config, error) {
 
     // Environment
     k.Load(env.Provider(".", env.Opt{
-        Prefix: "JELLYFIN_",
+        Prefix: "REVENGE_",
         TransformFunc: transformEnvKey,
     }), nil)
 

@@ -2,7 +2,7 @@
 
 ## Getting Help
 
-If you need help with Jellyfin Go, there are several ways to get support:
+If you need help with revenge, there are several ways to get support:
 
 ### 📖 Documentation
 
@@ -18,7 +18,7 @@ Before asking for help, please check our documentation:
 
 For general questions, ideas, and community discussions:
 
-- [Start a Discussion](https://github.com/lusoris/jellyfin-go/discussions)
+- [Start a Discussion](https://github.com/lusoris/revenge/discussions)
 - Browse existing discussions for answers
 - Share your ideas and feedback
 
@@ -26,8 +26,8 @@ For general questions, ideas, and community discussions:
 
 If you found a bug:
 
-1. Search [existing issues](https://github.com/lusoris/jellyfin-go/issues) first
-2. If not found, [create a new issue](https://github.com/lusoris/jellyfin-go/issues/new?template=bug_report.md)
+1. Search [existing issues](https://github.com/lusoris/revenge/issues) first
+2. If not found, [create a new issue](https://github.com/lusoris/revenge/issues/new?template=bug_report.md)
 3. Include as much detail as possible
 
 ### ✨ Feature Requests
@@ -35,15 +35,15 @@ If you found a bug:
 Have an idea for a new feature?
 
 1. Check the [roadmap](docs/PHASE1_CHECKLIST.md) first
-2. Search [existing requests](https://github.com/lusoris/jellyfin-go/issues?q=is%3Aissue+label%3Aenhancement)
-3. [Submit a feature request](https://github.com/lusoris/jellyfin-go/issues/new?template=feature_request.md)
+2. Search [existing requests](https://github.com/lusoris/revenge/issues?q=is%3Aissue+label%3Aenhancement)
+3. [Submit a feature request](https://github.com/lusoris/revenge/issues/new?template=feature_request.md)
 
 ### 🔒 Security Issues
 
 **Do not report security vulnerabilities publicly!**
 
 Please report security issues through:
-- [GitHub Security Advisories](https://github.com/lusoris/jellyfin-go/security/advisories/new)
+- [GitHub Security Advisories](https://github.com/lusoris/revenge/security/advisories/new)
 - See [SECURITY.md](SECURITY.md) for more details
 
 ## Response Times
@@ -66,4 +66,4 @@ Note: These are targets, not guarantees. This is an open-source project maintain
 - Search before asking
 - Help others when you can
 
-Thank you for using Jellyfin Go! 🎉
+Thank you for using revenge! 🎉

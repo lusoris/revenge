@@ -1,6 +1,6 @@
 # GitFlow Workflow Guide
 
-This document describes the Git branching strategy for Jellyfin Go.
+This document describes the Git branching strategy for revenge.
 
 ## Branch Structure
 
@@ -310,8 +310,8 @@ git push origin <branch>
 
 ```bash
 # Clone repository
-git clone https://github.com/jellyfin/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/revenge/revenge.git
+cd revenge
 
 # Install Git hooks
 ./scripts/install-hooks.sh  # Linux/macOS
@@ -329,8 +329,8 @@ git push origin develop
 
 ```bash
 # Clone and setup
-git clone https://github.com/jellyfin/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/revenge/revenge.git
+cd revenge
 ./scripts/install-hooks.sh
 
 # Checkout develop
@@ -385,7 +385,7 @@ git reset --hard HEAD~1
 
 ```bash
 # Add upstream remote
-git remote add upstream https://github.com/jellyfin/jellyfin-go.git
+git remote add upstream https://github.com/revenge/revenge.git
 
 # Fetch and merge
 git fetch upstream

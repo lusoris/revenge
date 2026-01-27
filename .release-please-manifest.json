@@ -2,13 +2,13 @@
 # https://github.com/googleapis/release-please
 
 release-type: go
-package-name: jellyfin-go
+package-name: revenge
 bump-minor-pre-major: true
 bump-patch-for-minor-pre-major: true
 
 # Include extra files in version bumps
 extra-files:
-  - cmd/jellyfin/main.go
+  - cmd/revenge/main.go
   - internal/version/version.go
 
 # Changelog sections

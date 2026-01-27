@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // MediaService defines the interface for media item operations.
@@ -34,7 +34,7 @@ func NewMediaHandler(mediaService MediaService) *MediaHandler {
 
 // RegisterRoutes registers media item routes on the given mux.
 func (h *MediaHandler) RegisterRoutes(mux *http.ServeMux, auth *middleware.Auth) {
-	// Item endpoints (Jellyfin API compatible)
+	// Item endpoints (Revenge API compatible)
 	mux.Handle("GET /Items", auth.Required(http.HandlerFunc(h.ListItems)))
 	mux.Handle("GET /Items/{itemId}", auth.Required(http.HandlerFunc(h.GetItem)))
 	mux.Handle("GET /Items/{itemId}/Similar", auth.Required(http.HandlerFunc(h.GetSimilarItems)))
@@ -56,7 +56,7 @@ func (h *MediaHandler) RegisterRoutes(mux *http.ServeMux, auth *middleware.Auth)
 }
 
 // ItemResponse represents a media item in API responses.
-// Matches Jellyfin API BaseItemDto format.
+// Matches Revenge API BaseItemDto format.
 type ItemResponse struct {
 	ID                    string            `json:"Id"`
 	Name                  string            `json:"Name"`
@@ -178,7 +178,7 @@ func itemToResponse(item *domain.MediaItem) ItemResponse {
 		ID:              item.ID.String(),
 		Name:            item.Name,
 		Type:            jellfinItemType(item.Type),
-		MediaType:       jellyfinMediaType(item.Type),
+		MediaType:       revengeMediaType(item.Type),
 		Overview:        item.Overview,
 		Tagline:         item.Tagline,
 		ProductionYear:  item.Year,
@@ -252,7 +252,7 @@ func itemToResponse(item *domain.MediaItem) ItemResponse {
 	return resp
 }
 
-// jellfinItemType converts our MediaType to Jellyfin's Type field.
+// jellfinItemType converts our MediaType to Revenge's Type field.
 func jellfinItemType(t domain.MediaType) string {
 	switch t {
 	case domain.MediaTypeMovie:
@@ -302,8 +302,8 @@ func jellfinItemType(t domain.MediaType) string {
 	}
 }
 
-// jellyfinMediaType converts our MediaType to Jellyfin's MediaType field.
-func jellyfinMediaType(t domain.MediaType) string {
+// revengeMediaType converts our MediaType to Revenge's MediaType field.
+func revengeMediaType(t domain.MediaType) string {
 	switch t {
 	case domain.MediaTypeMovie, domain.MediaTypeEpisode, domain.MediaTypeMusicVideo,
 		domain.MediaTypeTrailer, domain.MediaTypeHomeVideo, domain.MediaTypeRecording:
@@ -545,7 +545,7 @@ func (h *MediaHandler) SearchHints(w http.ResponseWriter, r *http.Request) {
 			ID:             item.ID.String(),
 			Name:           item.Name,
 			Type:           jellfinItemType(item.Type),
-			MediaType:      jellyfinMediaType(item.Type),
+			MediaType:      revengeMediaType(item.Type),
 			RunTimeTicks:   item.RuntimeTicks,
 			ProductionYear: item.Year,
 		}
@@ -596,7 +596,7 @@ func parseItemQueryParams(r *http.Request) domain.ListMediaItemsParams {
 	if types := r.URL.Query().Get("includeItemTypes"); types != "" {
 		typeList := strings.Split(types, ",")
 		if len(typeList) == 1 {
-			mt := jellyfinTypeToMediaType(typeList[0])
+			mt := revengeTypeToMediaType(typeList[0])
 			params.MediaType = &mt
 		}
 	}
@@ -644,8 +644,8 @@ func parseItemQueryParams(r *http.Request) domain.ListMediaItemsParams {
 	return params
 }
 
-// jellyfinTypeToMediaType converts Jellyfin type to our MediaType.
-func jellyfinTypeToMediaType(jType string) domain.MediaType {
+// revengeTypeToMediaType converts Revenge type to our MediaType.
+func revengeTypeToMediaType(jType string) domain.MediaType {
 	switch strings.ToLower(jType) {
 	case "movie":
 		return domain.MediaTypeMovie

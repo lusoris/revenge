@@ -1,10 +1,10 @@
 # Content Rating System
 
-> Universal age restriction and content rating system for Jellyfin Go.
+> Universal age restriction and content rating system for revenge.
 
 ## Overview
 
-Jellyfin Go implements a comprehensive content rating system that:
+revenge implements a comprehensive content rating system that:
 - Supports **international rating systems** (MPAA, FSK, BBFC, PEGI, etc.)
 - Filters content based on **user age/permissions**
 - Handles **person visibility** based on their content appearances
@@ -14,7 +14,7 @@ Jellyfin Go implements a comprehensive content rating system that:
 
 ### Private Server Model
 
-Jellyfin is a **private, invite-only** server. There is no public registration, so:
+Revenge is a **private, invite-only** server. There is no public registration, so:
 - ❌ No legal FSK18/age verification required
 - ✅ Admin creates accounts, manages child profiles
 - ✅ Child accounts get age-based filtering

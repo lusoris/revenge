@@ -4,11 +4,11 @@ applyTo: "**/internal/service/oidc/**/*.go,**/internal/api/handlers/auth*.go"
 
 # OIDC/SSO Integration Guide
 
-> OpenID Connect authentication for Jellyfin Go
+> OpenID Connect authentication for revenge
 
 ## Overview
 
-Jellyfin Go supports OIDC (OpenID Connect) for Single Sign-On with identity providers like:
+revenge supports OIDC (OpenID Connect) for Single Sign-On with identity providers like:
 
 - Keycloak
 - Authentik
@@ -349,8 +349,8 @@ oidc:
   providers:
     - name: keycloak
       display_name: "Login with Keycloak"
-      issuer_url: "https://keycloak.example.com/realms/jellyfin"
-      client_id: "jellyfin-go"
+      issuer_url: "https://keycloak.example.com/realms/revenge"
+      client_id: "revenge"
       client_secret: "${OIDC_KEYCLOAK_SECRET}"
       scopes: ["openid", "profile", "email", "groups"]
       auto_create_users: true
@@ -359,7 +359,7 @@ oidc:
         email: "email"
         name: "preferred_username"
         groups: "groups"
-        admin_group: "jellyfin-admins"
+        admin_group: "revenge-admins"
 ```
 
 ### Authentik
@@ -369,8 +369,8 @@ oidc:
   providers:
     - name: authentik
       display_name: "Login with Authentik"
-      issuer_url: "https://auth.example.com/application/o/jellyfin/"
-      client_id: "jellyfin-go"
+      issuer_url: "https://auth.example.com/application/o/revenge/"
+      client_id: "revenge"
       client_secret: "${OIDC_AUTHENTIK_SECRET}"
       scopes: ["openid", "profile", "email", "groups"]
 ```

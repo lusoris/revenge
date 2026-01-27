@@ -72,7 +72,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/lusoris/jellyfin-go
+            ghcr.io/lusoris/revenge
           tags: |
             type=semver,pattern={{version}},value=${{ needs.release-please.outputs.version }}
             type=semver,pattern={{major}}.{{minor}},value=${{ needs.release-please.outputs.version }}
@@ -111,4 +111,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Downloads" >> $GITHUB_STEP_SUMMARY
           echo "- [GitHub Release](https://github.com/${{ github.repository }}/releases/tag/${{ needs.release-please.outputs.tag_name }})" >> $GITHUB_STEP_SUMMARY
-          echo "- Docker: \`ghcr.io/lusoris/jellyfin-go:${{ needs.release-please.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker: \`ghcr.io/lusoris/revenge:${{ needs.release-please.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY

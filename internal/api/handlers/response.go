@@ -1,4 +1,4 @@
-// Package handlers provides HTTP handlers for the Jellyfin Go API.
+// Package handlers provides HTTP handlers for the Revenge Go API.
 package handlers
 
 import (

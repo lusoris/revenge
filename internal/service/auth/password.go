@@ -1,4 +1,4 @@
-// Package auth provides authentication services for Jellyfin Go.
+// Package auth provides authentication services for Revenge Go.
 package auth
 
 import (

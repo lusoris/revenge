@@ -5,7 +5,7 @@ version: "2.0.0"
 tasks:
   - label: "Build"
     type: "shell"
-    command: "go build -o bin/jellyfin-go ./cmd/jellyfin"
+    command: "go build -o bin/revenge ./cmd/revenge"
     group:
       kind: "build"
       isDefault: true
@@ -22,7 +22,7 @@ tasks:
 
   - label: "Run"
     type: "shell"
-    command: "go run ./cmd/jellyfin"
+    command: "go run ./cmd/revenge"
     group: "test"
     problemMatcher: ["$go"]
     presentation:
@@ -101,7 +101,7 @@ tasks:
 
   - label: "Docker Build"
     type: "shell"
-    command: "docker build -t jellyfin-go:dev ."
+    command: "docker build -t revenge:dev ."
     group: "build"
     problemMatcher: []
 

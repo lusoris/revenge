@@ -1,10 +1,13 @@
-# Jellyfin Go - Agent Instructions
+# Revenge - Agent Instructions
 
 > Instructions for automated coding agents (Copilot coding agent, Claude, etc.)
 
 ## Project Context
 
-This is a **ground-up rewrite** of Jellyfin Media Server from C# to Go. The original C# code is in this repo under `Jellyfin.*`, `MediaBrowser.*`, `Emby.*` directories - use these as reference for API compatibility.
+**Revenge** is a modular media server with 11 isolated content modules. Each module has its own tables, services, and handlers - no shared content tables.
+
+See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for architecture.
+See [docs/MODULE_IMPLEMENTATION_TODO.md](docs/MODULE_IMPLEMENTATION_TODO.md) for implementation phases.
 
 ## Build & Test Commands
 
@@ -16,6 +19,7 @@ golangci-lint run           # Must pass
 
 # Generate code after schema/query changes
 sqlc generate               # Regenerates internal/infra/database/db/
+go generate ./api/...       # Regenerates ogen API handlers
 
 # Integration tests (requires Docker)
 go test -tags=integration ./tests/integration/...
@@ -25,71 +29,91 @@ go test -tags=integration ./tests/integration/...
 
 | Purpose | Path |
 |---------|------|
-| Entry point | `cmd/jellyfin/main.go` |
-| HTTP handlers | `internal/api/handlers/` |
+| Entry point | `cmd/revenge/main.go` |
+| OpenAPI specs | `api/openapi/` |
+| Generated handlers | `api/generated/` |
 | Middleware | `internal/api/middleware/` |
-| Business logic | `internal/service/` |
+| Content modules | `internal/content/<module>/` |
+| Shared services | `internal/service/<module>/` |
 | Domain entities | `internal/domain/` |
 | Database (sqlc) | `internal/infra/database/` |
 | SQL queries | `internal/infra/database/queries/` |
-| SQL migrations | `migrations/` |
+| SQL migrations | `internal/infra/database/migrations/` |
+| Cache client | `internal/infra/cache/` |
+| Search client | `internal/infra/search/` |
+| Job queue | `internal/infra/jobs/` |
 | Configuration | `pkg/config/` |
 | Config files | `configs/*.yaml` |
 
-## Code Patterns to Follow
+## Module Structure
+
+Each content module follows this pattern:
+
+```
+internal/content/<module>/
+  entity.go      # Domain entities
+  repository.go  # Repository interface
+  service.go     # Business logic
+  handler.go     # HTTP handlers (ogen interface)
+  jobs.go        # River job definitions
+  module.go      # fx module registration
+
+internal/infra/database/
+  migrations/<module>/
+    000001_<module>.up.sql
+    000001_<module>.down.sql
+  queries/<module>/
+    <module>.sql
+```
+
+## Code Patterns
 
 ### 1. Dependency Injection (fx)
 
 ```go
-// All constructors must be registered with fx
-func NewUserService(db *pgxpool.Pool, logger *slog.Logger) *UserService {
-    return &UserService{db: db, logger: logger}
+func NewMovieService(db *pgxpool.Pool, logger *slog.Logger) *MovieService {
+    return &MovieService{db: db, logger: logger}
 }
 
-// In module registration
-fx.Provide(NewUserService)
+// In module.go
+fx.Provide(NewMovieService)
 ```
 
 ### 2. HTTP Handlers (Go 1.22+)
 
 ```go
-// Use stdlib routing patterns
-mux.HandleFunc("GET /api/users/{id}", h.GetUser)
-mux.HandleFunc("POST /api/users", h.CreateUser)
+mux.HandleFunc("GET /api/movies/{id}", h.GetMovie)
+mux.HandleFunc("POST /api/movies", h.CreateMovie)
 
-// Get path values
 id := r.PathValue("id")
 ```
 
 ### 3. Database Queries (sqlc)
 
 ```sql
--- Add queries to internal/infra/database/queries/*.sql
--- name: GetUser :one
-SELECT * FROM users WHERE id = $1;
+-- queries/movie/movies.sql
+-- name: GetMovie :one
+SELECT * FROM movies WHERE id = $1;
 ```
 
-Then run `sqlc generate`.
-
-### 4. Error Handling
+### 4. River Jobs
 
 ```go
-// Always wrap errors with context
-if err != nil {
-    return fmt.Errorf("failed to get user %s: %w", id, err)
+type ScanLibraryArgs struct {
+    LibraryID uuid.UUID `json:"library_id"`
 }
 
-// Use sentinel errors
-var ErrUserNotFound = errors.New("user not found")
+func (ScanLibraryArgs) Kind() string { return "movie.scan_library" }
 ```
 
-### 5. Logging (slog)
+### 5. Error Handling
 
 ```go
-slog.Info("user created",
-    slog.String("user_id", id),
-    slog.String("email", email),
-)
+if err != nil {
+    return fmt.Errorf("failed to get movie %s: %w", id, err)
+}
+
+var ErrMovieNotFound = errors.New("movie not found")
 ```
 
 ## CI/CD Checks
@@ -100,29 +124,41 @@ Pull requests must pass:
 3. `golangci-lint run` - Linting
 4. `go vet ./...` - Static analysis
 
-## What NOT to Do
+## Critical Rules
 
-- ❌ Don't use `init()` functions - use fx
-- ❌ Don't use global variables - inject via fx
-- ❌ Don't use `panic()` for errors
-- ❌ Don't use gorilla/mux - use stdlib
-- ❌ Don't use Viper - use koanf
-- ❌ Don't use zap/logrus - use slog
-- ❌ Don't use lib/pq - use pgx/v5
+### DO
+- ✅ Keep modules isolated - no cross-module imports for content
+- ✅ Per-module tables (movies, movie_genres, movie_people, etc.)
+- ✅ Per-module user data (movie_user_ratings, movie_watch_history, etc.)
+- ✅ Use `context.Context` as first parameter
+- ✅ Use `slog` for logging
+- ✅ Use River for background jobs
+- ✅ Use ogen for API handlers
 
-## API Compatibility Requirement
+### DON'T
+- ❌ Share content tables between modules
+- ❌ Use polymorphic references (item_type + item_id)
+- ❌ Use `init()` functions
+- ❌ Use global variables
+- ❌ Use `panic()` for errors
+- ❌ Transcode internally (use Blackbeard service)
 
-When implementing API endpoints, match the original C# Jellyfin exactly:
-- Same route paths and HTTP methods
-- Same query parameters
-- Same JSON response structure
-- Same error codes
+## Adult Content
 
-Reference: `Jellyfin.Api/Controllers/` for original implementations.
+Adult modules (`adult_movie`, `adult_show`) use isolated PostgreSQL schema `c`:
 
-## Testing Requirements
+```sql
+CREATE SCHEMA IF NOT EXISTS c;
+-- All adult tables in c.* schema
+```
+
+API namespace: `/api/v1/c/movies`, `/api/v1/c/shows`
+
+See `.github/instructions/adult-modules.instructions.md` for details.
+
+## Testing
 
 - Write table-driven tests with `t.Run()`
 - Use `testing.B.Loop()` for benchmarks (Go 1.24+)
-- Test coverage targets: services 80%+, handlers 70%+
-- Integration tests require `//go:build integration` tag
+- Coverage targets: services 80%+, handlers 70%+
+- Integration tests: `//go:build integration` tag

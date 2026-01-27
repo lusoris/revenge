@@ -1,33 +1,33 @@
-# Jellyfin Go - Setup Guide
+# revenge - Setup Guide
 
 ## Quick Start Options
 
 ### Option 1: Docker Compose (Recommended)
 
-The recommended way to run Jellyfin Go with all required services:
+The recommended way to run revenge with all required services:
 
 ```yaml
 # docker-compose.yml
 version: '3.8'
 
 services:
-  jellyfin:
-    image: jellyfin/jellyfin-go:latest
-    container_name: jellyfin-go
+  revenge:
+    image: revenge/revenge:latest
+    container_name: revenge
     ports:
       - "8096:8096"
     environment:
-      - JELLYFIN_DB_HOST=postgres
-      - JELLYFIN_DB_PORT=5432
-      - JELLYFIN_DB_USER=jellyfin
-      - JELLYFIN_DB_PASSWORD=changeme
-      - JELLYFIN_DB_NAME=jellyfin
-      - JELLYFIN_CACHE_URL=redis://dragonfly:6379
-      - JELLYFIN_TYPESENSE_URL=http://typesense:8108
-      - JELLYFIN_TYPESENSE_API_KEY=xyz
+      - REVENGE_DB_HOST=postgres
+      - REVENGE_DB_PORT=5432
+      - REVENGE_DB_USER=revenge
+      - REVENGE_DB_PASSWORD=changeme
+      - REVENGE_DB_NAME=revenge
+      - REVENGE_CACHE_URL=redis://dragonfly:6379
+      - REVENGE_TYPESENSE_URL=http://typesense:8108
+      - REVENGE_TYPESENSE_API_KEY=xyz
     volumes:
       - /path/to/media:/media
-      - jellyfin-config:/config
+      - revenge-config:/config
     depends_on:
       - postgres
       - dragonfly
@@ -36,10 +36,10 @@ services:
 
   postgres:
     image: postgres:18-alpine
-    container_name: jellyfin-postgres
+    container_name: revenge-postgres
     environment:
-      - POSTGRES_DB=jellyfin
-      - POSTGRES_USER=jellyfin
+      - POSTGRES_DB=revenge
+      - POSTGRES_USER=revenge
       - POSTGRES_PASSWORD=changeme
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -47,12 +47,12 @@ services:
 
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly
-    container_name: jellyfin-dragonfly
+    container_name: revenge-dragonfly
     restart: unless-stopped
 
   typesense:
     image: typesense/typesense:27.1
-    container_name: jellyfin-typesense
+    container_name: revenge-typesense
     environment:
       - TYPESENSE_DATA_DIR=/data
       - TYPESENSE_API_KEY=xyz
@@ -61,7 +61,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  jellyfin-config:
+  revenge-config:
   postgres-data:
   typesense-data:
 ```
@@ -78,21 +78,21 @@ Requires PostgreSQL 18+, Dragonfly, and Typesense running locally or remotely.
 
 ```bash
 # Download binary
-wget https://github.com/lusoris/jellyfin-go/releases/latest/jellyfin-go
-chmod +x jellyfin-go
+wget https://github.com/lusoris/revenge/releases/latest/revenge
+chmod +x revenge
 
 # Set environment variables
-export JELLYFIN_DB_HOST=localhost
-export JELLYFIN_DB_PORT=5432
-export JELLYFIN_DB_USER=jellyfin
-export JELLYFIN_DB_PASSWORD=changeme
-export JELLYFIN_DB_NAME=jellyfin
-export JELLYFIN_CACHE_URL=localhost:6379
-export JELLYFIN_TYPESENSE_URL=http://localhost:8108
-export JELLYFIN_TYPESENSE_API_KEY=xyz
+export REVENGE_DB_HOST=localhost
+export REVENGE_DB_PORT=5432
+export REVENGE_DB_USER=revenge
+export REVENGE_DB_PASSWORD=changeme
+export REVENGE_DB_NAME=revenge
+export REVENGE_CACHE_URL=localhost:6379
+export REVENGE_TYPESENSE_URL=http://localhost:8108
+export REVENGE_TYPESENSE_API_KEY=xyz
 
 # Run
-./jellyfin-go
+./revenge
 
 # Opens at http://localhost:8096
 ```
@@ -101,33 +101,33 @@ export JELLYFIN_TYPESENSE_API_KEY=xyz
 
 ```bash
 # Database (PostgreSQL - Required)
-JELLYFIN_DB_HOST=localhost
-JELLYFIN_DB_PORT=5432
-JELLYFIN_DB_USER=jellyfin
-JELLYFIN_DB_PASSWORD=
-JELLYFIN_DB_NAME=jellyfin
-JELLYFIN_DB_SSLMODE=disable      # disable, require, verify-ca, verify-full
+REVENGE_DB_HOST=localhost
+REVENGE_DB_PORT=5432
+REVENGE_DB_USER=revenge
+REVENGE_DB_PASSWORD=
+REVENGE_DB_NAME=revenge
+REVENGE_DB_SSLMODE=disable      # disable, require, verify-ca, verify-full
 
 # Cache (Dragonfly/Redis - Required)
-JELLYFIN_CACHE_URL=localhost:6379
-JELLYFIN_CACHE_PASSWORD=
+REVENGE_CACHE_URL=localhost:6379
+REVENGE_CACHE_PASSWORD=
 
 # Search (Typesense - Required)
-JELLYFIN_TYPESENSE_URL=http://localhost:8108
-JELLYFIN_TYPESENSE_API_KEY=
+REVENGE_TYPESENSE_URL=http://localhost:8108
+REVENGE_TYPESENSE_API_KEY=
 
 # Server
-JELLYFIN_HOST=0.0.0.0
-JELLYFIN_PORT=8096
-JELLYFIN_BASE_URL=/              # For reverse proxy
+REVENGE_HOST=0.0.0.0
+REVENGE_PORT=8096
+REVENGE_BASE_URL=/              # For reverse proxy
 
 # FFmpeg
-JELLYFIN_FFMPEG_PATH=ffmpeg      # Auto-detected if not set
-JELLYFIN_FFMPEG_HWACCEL=auto     # auto, vaapi, nvenc, qsv, amf, videotoolbox, none
+REVENGE_FFMPEG_PATH=ffmpeg      # Auto-detected if not set
+REVENGE_FFMPEG_HWACCEL=auto     # auto, vaapi, nvenc, qsv, amf, videotoolbox, none
 
 # Logging
-JELLYFIN_LOG_LEVEL=info          # debug, info, warn, error
-JELLYFIN_LOG_FORMAT=json         # json or text
+REVENGE_LOG_LEVEL=info          # debug, info, warn, error
+REVENGE_LOG_FORMAT=json         # json or text
 ```
 
 ## Building from Source
@@ -135,24 +135,24 @@ JELLYFIN_LOG_FORMAT=json         # json or text
 ### Prerequisites
 
 - Go 1.24 or higher
-- FFmpeg (preferably jellyfin-ffmpeg)
+- FFmpeg (preferably revenge-ffmpeg)
 - Git
 
 ### Clone and Build
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/your-org/revenge.git
+cd revenge
 
 # Download dependencies
 go mod download
 
 # Build
-go build -o jellyfin-go ./cmd/jellyfin
+go build -o revenge ./cmd/revenge
 
 # Run
-./jellyfin-go
+./revenge
 ```
 
 ### Development Mode
@@ -163,7 +163,7 @@ go install github.com/cosmtrek/air@latest
 air
 
 # Or directly
-go run ./cmd/jellyfin
+go run ./cmd/revenge
 ```
 
 ## Configuration File
@@ -181,9 +181,9 @@ server:
 database:
   host: localhost
   port: 5432
-  user: jellyfin
+  user: revenge
   password: changeme
-  name: jellyfin
+  name: revenge
   sslmode: disable
   max_connections: 25
   min_connections: 5
@@ -214,7 +214,7 @@ logging:
 ```nginx
 server {
     listen 80;
-    server_name jellyfin.example.com;
+    server_name revenge.example.com;
 
     # For Let's Encrypt
     location /.well-known/acme-challenge/ {
@@ -228,10 +228,10 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name jellyfin.example.com;
+    server_name revenge.example.com;
 
-    ssl_certificate /etc/letsencrypt/live/jellyfin.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/jellyfin.example.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/revenge.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/revenge.example.com/privkey.pem;
 
     # Security headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
@@ -269,7 +269,7 @@ server {
 ### Caddy (Easier)
 
 ```caddyfile
-jellyfin.example.com {
+revenge.example.com {
     reverse_proxy localhost:8096
 }
 ```
@@ -283,13 +283,13 @@ jellyfin.example.com {
 5. Configure metadata providers (optional)
 6. Done!
 
-### Import from Existing Jellyfin
+### Import from Existing Revenge
 
-If you have an existing Jellyfin installation:
+If you have an existing Revenge installation:
 
-1. First-time setup wizard will detect existing Jellyfin data
-2. Select "Import from Jellyfin"
-3. Choose your Jellyfin data directory
+1. First-time setup wizard will detect existing Revenge data
+2. Select "Import from Revenge"
+3. Choose your Revenge data directory
 4. Migration wizard will backup and convert your data
 5. Progress shown in real-time
 
@@ -312,12 +312,12 @@ sudo apt install mesa-va-drivers         # AMD
 
 # Run Docker with GPU access
 docker run -d \
-  --name jellyfin-go \
+  --name revenge \
   --device /dev/dri/renderD128 \
   --device /dev/dri/card0 \
   -p 8096:8096 \
   -v /path/to/media:/media \
-  jellyfin/jellyfin-go:latest
+  revenge/revenge:latest
 ```
 
 ### NVIDIA (NVENC)
@@ -328,11 +328,11 @@ sudo apt install nvidia-docker2
 
 # Run with NVIDIA runtime
 docker run -d \
-  --name jellyfin-go \
+  --name revenge \
   --gpus all \
   -p 8096:8096 \
   -v /path/to/media:/media \
-  jellyfin/jellyfin-go:latest
+  revenge/revenge:latest
 ```
 
 ### macOS (VideoToolbox)
@@ -342,16 +342,16 @@ Works automatically on macOS, no special configuration needed.
 ## Systemd Service (Linux)
 
 ```ini
-# /etc/systemd/system/jellyfin-go.service
+# /etc/systemd/system/revenge.service
 [Unit]
-Description=Jellyfin Go Media Server
+Description=revenge Media Server
 After=network.target
 
 [Service]
 Type=simple
-User=jellyfin
-Group=jellyfin
-ExecStart=/usr/local/bin/jellyfin-go --config /etc/jellyfin-go/config.yaml
+User=revenge
+Group=revenge
+ExecStart=/usr/local/bin/revenge --config /etc/revenge/config.yaml
 Restart=on-failure
 RestartSec=5s
 
@@ -360,7 +360,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/lib/jellyfin-go
+ReadWritePaths=/var/lib/revenge
 
 [Install]
 WantedBy=multi-user.target
@@ -368,26 +368,26 @@ WantedBy=multi-user.target
 
 ```bash
 # Create user
-sudo useradd -r -s /bin/false jellyfin
+sudo useradd -r -s /bin/false revenge
 
 # Create directories
-sudo mkdir -p /var/lib/jellyfin-go
-sudo mkdir -p /etc/jellyfin-go
-sudo chown jellyfin:jellyfin /var/lib/jellyfin-go
+sudo mkdir -p /var/lib/revenge
+sudo mkdir -p /etc/revenge
+sudo chown revenge:revenge /var/lib/revenge
 
 # Copy binary
-sudo cp jellyfin-go /usr/local/bin/
-sudo chmod +x /usr/local/bin/jellyfin-go
+sudo cp revenge /usr/local/bin/
+sudo chmod +x /usr/local/bin/revenge
 
 # Copy config
-sudo cp config.yaml /etc/jellyfin-go/
+sudo cp config.yaml /etc/revenge/
 
 # Enable and start
-sudo systemctl enable jellyfin-go
-sudo systemctl start jellyfin-go
+sudo systemctl enable revenge
+sudo systemctl start revenge
 
 # Check status
-sudo systemctl status jellyfin-go
+sudo systemctl status revenge
 ```
 
 ## Troubleshooting
@@ -396,16 +396,16 @@ sudo systemctl status jellyfin-go
 
 ```bash
 # Docker
-docker logs jellyfin-go
+docker logs revenge
 
 # Docker Compose
-docker-compose logs -f jellyfin
+docker-compose logs -f revenge
 
 # Native/Systemd
-journalctl -u jellyfin-go -f
+journalctl -u revenge -f
 
 # Or check log file
-tail -f ~/.jellyfin-go/logs/jellyfin.log
+tail -f ~/.revenge/logs/revenge.log
 ```
 
 ### Common Issues
@@ -416,13 +416,13 @@ tail -f ~/.jellyfin-go/logs/jellyfin.log
 sudo lsof -i :8096
 
 # Change port
-JELLYFIN_PORT=8097 ./jellyfin-go
+REVENGE_PORT=8097 ./revenge
 ```
 
 **Permission denied (media files):**
 ```bash
 # Fix permissions
-sudo chown -R jellyfin:jellyfin /path/to/media
+sudo chown -R revenge:revenge /path/to/media
 sudo chmod -R 755 /path/to/media
 ```
 
@@ -441,7 +441,7 @@ ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -i input.mp4 output.mp
 docker-compose ps postgres
 
 # Check credentials
-docker-compose exec postgres psql -U jellyfin -d jellyfin -c "SELECT 1"
+docker-compose exec postgres psql -U revenge -d revenge -c "SELECT 1"
 ```
 
 ## Performance Tuning
@@ -474,11 +474,11 @@ dragonfly:
 
 ```bash
 # Pull latest image
-docker pull jellyfin/jellyfin-go:latest
+docker pull revenge/revenge:latest
 
 # Stop and remove old container
-docker stop jellyfin-go
-docker rm jellyfin-go
+docker stop revenge
+docker rm revenge
 
 # Start new container (data preserved in volume)
 docker run -d ...
@@ -495,17 +495,17 @@ docker-compose up -d
 
 ```bash
 # Backup data first
-cp -r ~/.jellyfin-go ~/.jellyfin-go.backup
+cp -r ~/.revenge ~/.revenge.backup
 
 # Download new version
-wget https://github.com/your-org/jellyfin-go/releases/latest/jellyfin-go
-chmod +x jellyfin-go
+wget https://github.com/your-org/revenge/releases/latest/revenge
+chmod +x revenge
 
 # Replace old binary
-sudo cp jellyfin-go /usr/local/bin/
+sudo cp revenge /usr/local/bin/
 
 # Restart service
-sudo systemctl restart jellyfin-go
+sudo systemctl restart revenge
 ```
 
 ## Backup & Restore
@@ -514,10 +514,10 @@ sudo systemctl restart jellyfin-go
 
 ```bash
 # Backup
-docker-compose exec postgres pg_dump -U jellyfin jellyfin > backup.sql
+docker-compose exec postgres pg_dump -U revenge revenge > backup.sql
 
 # Restore
-docker-compose exec -T postgres psql -U jellyfin jellyfin < backup.sql
+docker-compose exec -T postgres psql -U revenge revenge < backup.sql
 ```
 
 ### Full Backup (Docker Volumes)
@@ -525,23 +525,23 @@ docker-compose exec -T postgres psql -U jellyfin jellyfin < backup.sql
 ```bash
 # Backup all volumes
 docker run --rm \
-  -v jellyfin-config:/config \
+  -v revenge-config:/config \
   -v postgres-data:/postgres \
   -v typesense-data:/typesense \
   -v $(pwd):/backup \
-  alpine tar czf /backup/jellyfin-backup.tar.gz /config /postgres /typesense
+  alpine tar czf /backup/revenge-backup.tar.gz /config /postgres /typesense
 
 # Restore
 docker run --rm \
-  -v jellyfin-config:/config \
+  -v revenge-config:/config \
   -v postgres-data:/postgres \
   -v typesense-data:/typesense \
   -v $(pwd):/backup \
-  alpine tar xzf /backup/jellyfin-backup.tar.gz -C /
+  alpine tar xzf /backup/revenge-backup.tar.gz -C /
 ```
 
 ## Support
 
 - Documentation: [docs/](../docs/)
-- GitHub Issues: <https://github.com/lusoris/jellyfin-go/issues>
-- Discussions: <https://github.com/lusoris/jellyfin-go/discussions>
+- GitHub Issues: <https://github.com/lusoris/revenge/issues>
+- Discussions: <https://github.com/lusoris/revenge/discussions>

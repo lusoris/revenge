@@ -1,10 +1,10 @@
 # Versioning Strategy
 
-This document describes the versioning strategy for Jellyfin Go.
+This document describes the versioning strategy for revenge.
 
 ## Semantic Versioning (SemVer)
 
-Jellyfin Go follows [Semantic Versioning 2.0.0](https://semver.org/):
+revenge follows [Semantic Versioning 2.0.0](https://semver.org/):
 
 ```
 MAJOR.MINOR.PATCH
@@ -40,7 +40,7 @@ v0.6.x  Phase 2: Advanced Features
 v0.7.x  Phase 3: Plugins & Extensions
 v0.8.x  Phase 3: Performance & Polish
 v0.9.x  Phase 3: Release Candidates
-v1.0.0  Stable: Feature Parity with Jellyfin
+v1.0.0  Stable: Feature Parity with Revenge
 ```
 
 ### Post-1.0 (Future)
@@ -100,7 +100,7 @@ var (
 
 Build with version:
 ```bash
-go build -ldflags "-X main.Version=v0.1.0 -X main.GitCommit=$(git rev-parse --short HEAD)" ./cmd/jellyfin
+go build -ldflags "-X main.Version=v0.1.0 -X main.GitCommit=$(git rev-parse --short HEAD)" ./cmd/revenge
 ```
 
 ## Pre-release Versions
@@ -115,14 +115,14 @@ For testing before stable releases:
 
 ## API Versioning
 
-The Jellyfin API maintains compatibility with the original Jellyfin:
+The Revenge API maintains compatibility with the original Revenge:
 
-- **Current**: API v1 (Jellyfin compatible)
+- **Current**: API v1 (Revenge compatible)
 - **Future**: API v2 (Go-optimized, optional)
 
 API version is indicated in:
 - URL: `/api/v1/...`
-- Header: `X-Jellyfin-API-Version: 1`
+- Header: `X-Revenge-API-Version: 1`
 
 ## Deprecation Policy
 
@@ -132,7 +132,7 @@ API version is indicated in:
 
 ## Version Compatibility Matrix
 
-| Jellyfin Go | Jellyfin API | Go Version | Database |
+| revenge | Revenge API | Go Version | Database |
 |-------------|--------------|------------|----------|
 | v0.1.x | v1 | 1.23+ | PostgreSQL 18+ |
 | v0.2.x | v1 | 1.24+ | PostgreSQL 18+ |
@@ -142,7 +142,7 @@ API version is indicated in:
 
 ```bash
 # Binary
-./jellyfin-go --version
+./revenge --version
 
 # API
 curl http://localhost:8096/System/Info

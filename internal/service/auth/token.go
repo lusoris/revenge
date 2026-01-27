@@ -1,4 +1,4 @@
-// Package auth provides authentication services for Jellyfin Go.
+// Package auth provides authentication services for Revenge Go.
 package auth
 
 import (
@@ -13,7 +13,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // TokenService implements domain.TokenService using JWT.
@@ -50,7 +50,7 @@ func (s *TokenService) GenerateAccessToken(claims domain.TokenClaims) (string, e
 
 	jwtc := jwtClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "jellyfin-go",
+			Issuer:    "revenge",
 			Subject:   claims.UserID.String(),
 			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(claims.ExpiresAt),

@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// User represents a Jellyfin user entity.
+// User represents a Revenge user entity.
 // This is the domain model, separate from database or API representations.
 type User struct {
 	ID             uuid.UUID

@@ -4,7 +4,7 @@ package repository
 import (
 	"go.uber.org/fx"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // Module provides all repository implementations for dependency injection.

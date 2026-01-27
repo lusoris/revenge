@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // mockAuthService is a mock implementation of domain.AuthService for testing.
@@ -344,9 +344,9 @@ func TestParseMediaBrowserAuth(t *testing.T) {
 		},
 		{
 			name:   "full header",
-			header: `MediaBrowser Client="Jellyfin Web", Device="Chrome", DeviceId="abc123", Version="10.8.0", Token="xyz789"`,
+			header: `MediaBrowser Client="Revenge Web", Device="Chrome", DeviceId="abc123", Version="10.8.0", Token="xyz789"`,
 			want: map[string]string{
-				"Client":   "Jellyfin Web",
+				"Client":   "Revenge Web",
 				"Device":   "Chrome",
 				"DeviceId": "abc123",
 				"Version":  "10.8.0",

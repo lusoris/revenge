@@ -34,7 +34,7 @@ repos:
     hooks:
       - id: go-fmt
       - id: go-imports
-        args: [-local, 'github.com/lusoris/jellyfin-go']
+        args: [-local, 'github.com/lusoris/revenge']
       - id: go-vet
       - id: go-build
       - id: go-mod-tidy

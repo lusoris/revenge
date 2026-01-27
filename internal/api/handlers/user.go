@@ -9,9 +9,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/service/user"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/service/user"
 )
 
 // UserHandler handles user-related HTTP requests.
@@ -41,7 +41,7 @@ func (h *UserHandler) RegisterRoutes(mux *http.ServeMux, auth *middleware.Auth) 
 }
 
 // UserResponse represents a user in API responses.
-// Matches Jellyfin API UserDto format.
+// Matches Revenge API UserDto format.
 type UserResponse struct {
 	ID                        string     `json:"Id"`
 	Name                      string     `json:"Name"`

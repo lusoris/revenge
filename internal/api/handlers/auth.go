@@ -1,4 +1,4 @@
-// Package handlers provides HTTP handlers for the Jellyfin Go API.
+// Package handlers provides HTTP handlers for the Revenge Go API.
 package handlers
 
 import (
@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // AuthHandler handles authentication-related HTTP requests.
@@ -46,7 +46,7 @@ type LoginRequest struct {
 }
 
 // LoginResponse represents the login response body.
-// Matches Jellyfin API AuthenticationResult.
+// Matches Revenge API AuthenticationResult.
 type LoginResponse struct {
 	User        UserDTO    `json:"User"`
 	AccessToken string     `json:"AccessToken"`
@@ -55,7 +55,7 @@ type LoginResponse struct {
 }
 
 // UserDTO represents a user in API responses.
-// Matches Jellyfin API UserDto.
+// Matches Revenge API UserDto.
 type UserDTO struct {
 	ID                        string `json:"Id"`
 	Name                      string `json:"Name"`
@@ -115,7 +115,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Build response matching Jellyfin API format
+	// Build response matching Revenge API format
 	resp := LoginResponse{
 		User: UserDTO{
 			ID:                    result.User.ID.String(),

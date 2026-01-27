@@ -17,8 +17,8 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/infra/database/repository"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/infra/database/repository"
 )
 
 // testDB holds the test database connection and cleanup function.
@@ -35,7 +35,7 @@ func setupTestDB(t *testing.T) *testDB {
 	// Start PostgreSQL container
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:16-alpine",
-		postgres.WithDatabase("jellyfin_test"),
+		postgres.WithDatabase("revenge_test"),
 		postgres.WithUsername("test"),
 		postgres.WithPassword("test"),
 		testcontainers.WithWaitStrategy(

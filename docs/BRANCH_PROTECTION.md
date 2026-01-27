@@ -1,6 +1,6 @@
 # Branch Protection Rules
 
-This document outlines the branch protection rules for the Jellyfin Go repository.
+This document outlines the branch protection rules for the revenge repository.
 
 > **Status**: ✅ Branch protection is **ACTIVE** on `main` and `develop`
 
@@ -157,7 +157,7 @@ gh repo view --web
 
 ```hcl
 resource "github_branch_protection" "main" {
-  repository_id = github_repository.jellyfin_go.node_id
+  repository_id = github_repository.revenge_go.node_id
   pattern       = "main"
 
   required_pull_request_reviews {

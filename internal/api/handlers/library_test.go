@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
 )
 
 // mockLibraryService implements a mock for testing.
@@ -198,7 +198,7 @@ func TestLibraryResponse_JSONFormat(t *testing.T) {
 		t.Fatalf("Failed to marshal: %v", err)
 	}
 
-	// Verify JSON field names match Jellyfin API format
+	// Verify JSON field names match Revenge API format
 	var raw map[string]any
 	if err := json.Unmarshal(data, &raw); err != nil {
 		t.Fatalf("Failed to unmarshal: %v", err)

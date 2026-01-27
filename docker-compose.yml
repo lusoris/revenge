@@ -2,7 +2,7 @@
 # All services are REQUIRED: PostgreSQL 18+, Dragonfly, Typesense
 
 services:
-  jellyfin:
+  revenge:
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,27 +10,27 @@ services:
         VERSION: ${VERSION:-dev}
         BUILD_TIME: ${BUILD_TIME:-unknown}
         GIT_COMMIT: ${GIT_COMMIT:-unknown}
-    image: jellyfin/jellyfin-go:${VERSION:-latest}
-    container_name: jellyfin-go
+    image: revenge/revenge:${VERSION:-latest}
+    container_name: revenge
     ports:
       - "8096:8096"
     environment:
-      - JELLYFIN_LOG_LEVEL=info
-      - JELLYFIN_LOG_FORMAT=json
-      - JELLYFIN_SERVER_PORT=8096
-      - JELLYFIN_DATABASE_HOST=postgres
-      - JELLYFIN_DATABASE_PORT=5432
-      - JELLYFIN_DATABASE_USER=jellyfin
-      - JELLYFIN_DATABASE_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
-      - JELLYFIN_DATABASE_NAME=jellyfin
-      - JELLYFIN_DATABASE_SSL_MODE=disable
-      - JELLYFIN_CACHE_ADDR=dragonfly:6379
-      - JELLYFIN_SEARCH_HOST=typesense
-      - JELLYFIN_SEARCH_PORT=8108
-      - JELLYFIN_SEARCH_API_KEY=${TYPESENSE_API_KEY:?TYPESENSE_API_KEY is required}
+      - REVENGE_LOG_LEVEL=info
+      - REVENGE_LOG_FORMAT=json
+      - REVENGE_SERVER_PORT=8096
+      - REVENGE_DATABASE_HOST=postgres
+      - REVENGE_DATABASE_PORT=5432
+      - REVENGE_DATABASE_USER=revenge
+      - REVENGE_DATABASE_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+      - REVENGE_DATABASE_NAME=revenge
+      - REVENGE_DATABASE_SSL_MODE=disable
+      - REVENGE_CACHE_ADDR=dragonfly:6379
+      - REVENGE_SEARCH_HOST=typesense
+      - REVENGE_SEARCH_PORT=8108
+      - REVENGE_SEARCH_API_KEY=${TYPESENSE_API_KEY:?TYPESENSE_API_KEY is required}
     volumes:
-      - jellyfin-data:/data
-      - jellyfin-config:/config
+      - revenge-data:/data
+      - revenge-config:/config
       - ./media:/media:ro
     depends_on:
       postgres:
@@ -50,16 +50,16 @@ services:
   # PostgreSQL 18+ (REQUIRED)
   postgres:
     image: postgres:18-alpine
-    container_name: jellyfin-postgres
+    container_name: revenge-postgres
     environment:
-      - POSTGRES_DB=jellyfin
-      - POSTGRES_USER=jellyfin
+      - POSTGRES_DB=revenge
+      - POSTGRES_USER=revenge
       - POSTGRES_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jellyfin"]
+      test: ["CMD-SHELL", "pg_isready -U revenge"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -67,7 +67,7 @@ services:
   # Dragonfly (REQUIRED)
   dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
-    container_name: jellyfin-dragonfly
+    container_name: revenge-dragonfly
     command: ["--maxmemory=2gb", "--maxmemory-policy=allkeys-lru"]
     volumes:
       - dragonfly-data:/data
@@ -81,7 +81,7 @@ services:
   # Typesense 0.25+ (REQUIRED)
   typesense:
     image: typesense/typesense:0.25.2
-    container_name: jellyfin-typesense
+    container_name: revenge-typesense
     environment:
       - TYPESENSE_DATA_DIR=/data
       - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:?TYPESENSE_API_KEY is required}
@@ -95,8 +95,8 @@ services:
       retries: 5
 
 volumes:
-  jellyfin-data:
-  jellyfin-config:
+  revenge-data:
+  revenge-config:
   postgres-data:
   dragonfly-data:
   typesense-data:

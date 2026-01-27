@@ -1,4 +1,4 @@
-// Package version provides version information for Jellyfin Go.
+// Package version provides version information for Revenge Go.
 package version
 
 import (
@@ -46,7 +46,7 @@ func GetInfo() Info {
 // String returns a formatted version string
 func (i Info) String() string {
 	return fmt.Sprintf(
-		"Jellyfin Go %s (commit: %s, built: %s, %s, %s/%s)",
+		"Revenge Go %s (commit: %s, built: %s, %s, %s/%s)",
 		i.Version,
 		i.GitCommit,
 		i.BuildTime,

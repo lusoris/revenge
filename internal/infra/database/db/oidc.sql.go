@@ -145,7 +145,7 @@ const getOIDCProviderByID = `-- name: GetOIDCProviderByID :one
 SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers WHERE id = $1 LIMIT 1
 `
 
-// OIDC provider queries for Jellyfin Go
+// OIDC provider queries for Revenge Go
 // =============================================================================
 // PROVIDERS
 // =============================================================================

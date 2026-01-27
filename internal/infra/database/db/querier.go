@@ -54,7 +54,7 @@ type Querier interface {
 	GetLibraryByID(ctx context.Context, id uuid.UUID) (GetLibraryByIDRow, error)
 	GetLibraryByName(ctx context.Context, name string) (GetLibraryByNameRow, error)
 	GetMediaItemGenres(ctx context.Context, mediaItemID uuid.UUID) ([]MediaItemGenre, error)
-	// OIDC provider queries for Jellyfin Go
+	// OIDC provider queries for Revenge Go
 	// =============================================================================
 	// PROVIDERS
 	// =============================================================================
@@ -70,7 +70,7 @@ type Querier interface {
 	GetRatingEquivalents(ctx context.Context, ratingID uuid.UUID) ([]GetRatingEquivalentsRow, error)
 	GetRatingSystemByCode(ctx context.Context, code string) (RatingSystem, error)
 	GetRatingSystemByID(ctx context.Context, id uuid.UUID) (RatingSystem, error)
-	// Session queries for Jellyfin Go
+	// Session queries for Revenge Go
 	// =============================================================================
 	// BASIC CRUD
 	// =============================================================================
@@ -82,7 +82,7 @@ type Querier interface {
 	// =============================================================================
 	GetSessionWithUser(ctx context.Context, tokenHash string) (GetSessionWithUserRow, error)
 	GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error)
-	// User queries for Jellyfin Go
+	// User queries for Revenge Go
 	// sqlc generates type-safe Go code from these queries
 	// =============================================================================
 	// BASIC CRUD

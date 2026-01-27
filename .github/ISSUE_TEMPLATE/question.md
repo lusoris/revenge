@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Ask a question about Jellyfin Go
+about: Ask a question about revenge
 title: '[QUESTION] '
 labels: 'question'
 assignees: ''
@@ -25,7 +25,7 @@ assignees: ''
 
 ## Environment (if relevant)
 - **OS**: 
-- **Jellyfin Go Version**: 
+- **revenge Version**: 
 - **Go Version**: 
 
 ## Additional Information
@@ -33,4 +33,4 @@ assignees: ''
 
 ---
 
-> 💡 **Tip**: For general questions and discussions, consider using [GitHub Discussions](https://github.com/lusoris/jellyfin-go/discussions) instead of issues.
+> 💡 **Tip**: For general questions and discussions, consider using [GitHub Discussions](https://github.com/lusoris/revenge/discussions) instead of issues.

@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# Universal setup script for Jellyfin Go on Windows
+# Universal setup script for Revenge on Windows
 # Supports: winget, choco, scoop
 
 param(
@@ -169,7 +169,7 @@ function Initialize-Project {
     }
 
     Write-Step "Building project..."
-    go build -o bin/jellyfin-go.exe ./cmd/jellyfin
+    go build -o bin/revenge.exe ./cmd/revenge
 
     Pop-Location
 
@@ -179,7 +179,7 @@ function Initialize-Project {
 # Main
 Write-Host ""
 Write-Host "╔════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║   Jellyfin Go - Setup Assistant       ║" -ForegroundColor Cyan
+Write-Host "║   Revenge - Setup Assistant       ║" -ForegroundColor Cyan
 Write-Host "╚════════════════════════════════════════╝" -ForegroundColor Cyan
 Write-Host ""
 
@@ -199,7 +199,7 @@ Write-Host "║   ✅ Setup Complete!                   ║" -ForegroundColor Gr
 Write-Host "╚════════════════════════════════════════╝" -ForegroundColor Green
 Write-Host ""
 Write-Info "Next steps:"
-Write-Host "  1. Run the application: .\bin\jellyfin-go.exe"
+Write-Host "  1. Run the application: .\bin\revenge.exe"
 Write-Host "  2. Or use development mode: make dev"
 Write-Host "  3. Read the docs: cat README.md"
 Write-Host ""

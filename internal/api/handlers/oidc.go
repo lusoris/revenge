@@ -1,4 +1,4 @@
-// Package handlers provides HTTP handlers for the Jellyfin Go API.
+// Package handlers provides HTTP handlers for the Revenge Go API.
 package handlers
 
 import (
@@ -9,9 +9,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
-	"github.com/jellyfin/jellyfin-go/internal/domain"
-	"github.com/jellyfin/jellyfin-go/internal/service/oidc"
+	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/service/oidc"
 )
 
 // OIDCHandler handles OIDC-related HTTP requests.
