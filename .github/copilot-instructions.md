@@ -61,6 +61,7 @@ f, _ := root.Open("file.txt") // Can't escape /data
 | `go.uber.org/fx`            | v1.24+  | Dependency injection             |
 | `github.com/knadh/koanf/v2` | v2.3+   | Configuration management         |
 | `github.com/jackc/pgx/v5`   | v5.x    | PostgreSQL driver                |
+| `golang-migrate/migrate/v4` | v4.19+  | Database migrations (embedded)   |
 | `log/slog`                  | stdlib  | Structured logging               |
 | `net/http`                  | stdlib  | HTTP routing (Go 1.22+ patterns) |
 
@@ -147,7 +148,7 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "internal/infra/database/queries/"
-    schema: "migrations/"
+    schema: "internal/infra/database/migrations/"
     gen:
       go:
         package: "db"
@@ -177,6 +178,40 @@ UPDATE users SET name = $2 WHERE id = $1;
 DELETE FROM users WHERE id = $1;
 ```
 
+### Database Migrations with golang-migrate
+
+```go
+import (
+    "embed"
+    "github.com/golang-migrate/migrate/v4"
+    "github.com/golang-migrate/migrate/v4/database/pgx/v5"
+    "github.com/golang-migrate/migrate/v4/source/iofs"
+)
+
+//go:embed migrations/*.sql
+var migrationsFS embed.FS
+
+func NewMigrator(pool *pgxpool.Pool) (*Migrator, error) {
+    // Use iofs for embedded migrations
+    source, _ := iofs.New(migrationsFS, "migrations")
+    driver, _ := pgx.WithInstance(pool, &pgx.Config{})
+    m, _ := migrate.NewWithInstance("iofs", source, "postgres", driver)
+    return &Migrator{m: m}, nil
+}
+
+// Run migrations on app start via fx.Invoke
+func RunMigrations(m *Migrator, logger *slog.Logger) error {
+    if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+        return err
+    }
+    return nil
+}
+```
+
+**Migration naming:** `NNNNNN_description.up.sql` / `NNNNNN_description.down.sql`
+
+**Keep migrations modular:** One concern per migration file (extensions, users, sessions, etc.)
+
 ---
 
 ## Project Structure
@@ -197,13 +232,13 @@ jellyfin-go/
 │   ├── service/              # Business logic layer
 │   └── infra/
 │       ├── database/         # PostgreSQL + sqlc generated
+│       │   ├── migrations/   # SQL migrations (go:embed)
 │       │   ├── queries/      # SQL files for sqlc
 │       │   └── db/           # Generated code
 │       └── cache/            # Redis/Dragonfly
 ├── pkg/
 │   ├── config/               # Configuration types
 │   └── logger/               # slog setup
-├── migrations/               # Database migrations
 ├── configs/
 │   ├── config.yaml
 │   └── defaults.yaml
@@ -445,6 +480,45 @@ const JellyfinDateFormat = "2006-01-02T15:04:05.0000000Z"
 - ❌ Use zap/logrus - use slog
 - ❌ Use lib/pq - use pgx/v5
 - ❌ Use `b.N` in benchmarks - use `b.Loop()` (Go 1.24)
+
+---
+
+## Testing Guidelines
+
+### Unit Tests
+
+- Use table-driven tests with `t.Run()`
+- Mock interfaces, not implementations
+- Test coverage targets: services 80%+, handlers 70%+
+
+### Integration Tests
+
+```go
+//go:build integration
+
+package integration
+
+// Integration tests require Docker (testcontainers-go)
+// Run with: go test -tags=integration ./tests/integration/...
+```
+
+**Build tags:** Use `//go:build integration` for tests requiring external services (Docker, databases). This prevents CI failures on environments without Docker.
+
+### Test Commands
+
+```bash
+# Unit tests only (default)
+go test ./...
+
+# With coverage
+go test ./... -cover
+
+# Integration tests (requires Docker)
+go test -tags=integration ./tests/integration/...
+
+# Specific package
+go test ./internal/service/... -v
+```
 
 ---
 
