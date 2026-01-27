@@ -1,3 +1,5 @@
+// Package config provides configuration management for Jellyfin Go.
+// It uses koanf v2 for hierarchical configuration from files and environment variables.
 package config
 
 import (
@@ -59,17 +61,13 @@ func New() (*Config, error) {
 	k.Load(nil, nil) // Initialize
 
 	// Load main config file (optional)
-	if err := k.Load(file.Provider("configs/config.yaml"), yaml.Parser()); err != nil {
-		// Config file is optional, use defaults
-	}
+	_ = k.Load(file.Provider("configs/config.yaml"), yaml.Parser()) // ignore error, config file is optional
 
 	// Load environment-specific config (optional)
 	envConfig := os.Getenv("JELLYFIN_ENV")
 	if envConfig != "" {
 		configPath := fmt.Sprintf("configs/config.%s.yaml", envConfig)
-		if err := k.Load(file.Provider(configPath), yaml.Parser()); err != nil {
-			// Environment-specific config is optional
-		}
+		_ = k.Load(file.Provider(configPath), yaml.Parser()) // ignore error, env-specific config is optional
 	}
 
 	// Load environment variables (highest priority)

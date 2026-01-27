@@ -27,7 +27,7 @@ function Write-Error {
     Write-Host "[ERROR] $Message" -ForegroundColor Red
 }
 
-function Check-Requirements {
+function Test-Requirements {
     Write-Info "Checking requirements..."
 
     if (-not (Get-Command go -ErrorAction SilentlyContinue)) {
@@ -57,7 +57,7 @@ function Install-Tools {
     Write-Info "Development tools installed"
 }
 
-function Setup-Database {
+function Initialize-Database {
     Write-Info "Setting up database..."
 
     Write-Info "Checking PostgreSQL connection..."
@@ -65,7 +65,7 @@ function Setup-Database {
 
     # Check if PostgreSQL is reachable
     try {
-        $result = & psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1" 2>&1
+        $null = & psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1" 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Info "PostgreSQL connection successful"
         }
@@ -81,12 +81,12 @@ function Setup-Database {
     Write-Info "Database ready"
 }
 
-function Run-Tests {
+function Invoke-Tests {
     Write-Info "Running tests..."
     go test -v -race -coverprofile=coverage.out ./...
 }
 
-function Run-Lint {
+function Invoke-Lint {
     Write-Info "Running linter..."
     golangci-lint run --timeout=5m
 }
@@ -106,22 +106,22 @@ function Build-Binary {
 # Execute command
 switch ($Command) {
     'check' {
-        Check-Requirements
+        Test-Requirements
     }
     'install-tools' {
         Install-Tools
     }
     'setup' {
-        Check-Requirements
+        Test-Requirements
         Install-Tools
-        Setup-Database
+        Initialize-Database
         Write-Info "Setup complete! Run '.\scripts\dev.ps1 dev' to start development server"
     }
     'test' {
-        Run-Tests
+        Invoke-Tests
     }
     'lint' {
-        Run-Lint
+        Invoke-Lint
     }
     'dev' {
         Start-DevServer

@@ -155,7 +155,7 @@ function Install-GoTools {
 }
 
 # Setup project
-function Setup-Project {
+function Initialize-Project {
     Push-Location $ProjectRoot
 
     Write-Step "Downloading Go dependencies..."
@@ -191,7 +191,7 @@ Install-Go
 Install-FFmpeg
 Install-Docker
 Install-GoTools
-Setup-Project
+Initialize-Project
 
 Write-Host ""
 Write-Host "╔════════════════════════════════════════╗" -ForegroundColor Green
