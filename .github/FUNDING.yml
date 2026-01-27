@@ -1,0 +1,10 @@
+# Funding options for Jellyfin Go
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# Supported platforms:
+github: [lusoris]
+# patreon: jellyfin
+# open_collective: jellyfin
+# ko_fi: jellyfin
+# tidelift: npm/jellyfin-go
+# custom: ['https://jellyfin.org/donate']

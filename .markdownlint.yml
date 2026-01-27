@@ -1,0 +1,82 @@
+# Markdownlint configuration
+# https://github.com/DavidAnson/markdownlint
+
+# Default state for all rules
+default: true
+
+# MD003/heading-style
+MD003:
+  style: atx
+
+# MD004/ul-style
+MD004:
+  style: dash
+
+# MD007/ul-indent
+MD007:
+  indent: 2
+
+# MD009/no-trailing-spaces
+MD009:
+  br_spaces: 2
+
+# MD010/no-hard-tabs
+MD010:
+  code_blocks: false
+
+# MD012/no-multiple-blanks
+MD012:
+  maximum: 2
+
+# MD013/line-length - Disabled (too strict for docs)
+MD013: false
+
+# MD024/no-duplicate-heading
+MD024:
+  siblings_only: true
+
+# MD026/no-trailing-punctuation
+MD026:
+  punctuation: ".,;:!"
+
+# MD029/ol-prefix
+MD029:
+  style: ordered
+
+# MD033/no-inline-html - Allow some HTML
+MD033:
+  allowed_elements:
+    - br
+    - details
+    - summary
+    - sup
+    - sub
+    - kbd
+    - img
+    - a
+
+# MD035/hr-style
+MD035:
+  style: "---"
+
+# MD036/no-emphasis-as-heading
+MD036: false
+
+# MD041/first-line-heading - Disabled for files that start with badges
+MD041: false
+
+# MD046/code-block-style
+MD046:
+  style: fenced
+
+# MD048/code-fence-style
+MD048:
+  style: backtick
+
+# MD049/emphasis-style
+MD049:
+  style: asterisk
+
+# MD050/strong-style
+MD050:
+  style: asterisk

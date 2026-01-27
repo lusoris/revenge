@@ -82,7 +82,6 @@ jellyfin-go
 docker-compose.override.yml
 
 # Development
-.air.toml
 __debug_bin*
 
 # Terraform
@@ -97,3 +96,14 @@ __debug_bin*
 
 # Documentation build
 /site/
+
+# Pre-commit
+.pre-commit-config.yaml.bak
+
+# Secrets baseline
+.secrets.baseline.bak
+
+# Local development overrides
+*.local.yaml
+*.local.yml
+config.local.*

@@ -1,0 +1,248 @@
+# Label definitions for the repository
+# Run the labels workflow to sync these labels
+
+# Type labels
+- name: "type/bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "type/feature"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "type/documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "type/refactor"
+  color: "cfd3d7"
+  description: "Code refactoring without functional changes"
+
+- name: "type/performance"
+  color: "fbca04"
+  description: "Performance improvement"
+
+- name: "type/test"
+  color: "bfd4f2"
+  description: "Test related changes"
+
+- name: "type/build"
+  color: "e99695"
+  description: "Build system or external dependencies"
+
+- name: "type/ci"
+  color: "e99695"
+  description: "CI/CD related changes"
+
+- name: "type/chore"
+  color: "fef2c0"
+  description: "Maintenance tasks"
+
+- name: "type/style"
+  color: "c5def5"
+  description: "Code style/formatting changes"
+
+- name: "type/revert"
+  color: "d93f0b"
+  description: "Reverts a previous change"
+
+# Priority labels
+- name: "priority/critical"
+  color: "b60205"
+  description: "Critical priority - needs immediate attention"
+
+- name: "priority/high"
+  color: "d93f0b"
+  description: "High priority"
+
+- name: "priority/medium"
+  color: "fbca04"
+  description: "Medium priority"
+
+- name: "priority/low"
+  color: "0e8a16"
+  description: "Low priority"
+
+# Status labels
+- name: "status/needs-triage"
+  color: "ededed"
+  description: "Needs triage by maintainers"
+
+- name: "status/needs-info"
+  color: "d876e3"
+  description: "Needs more information"
+
+- name: "status/confirmed"
+  color: "0e8a16"
+  description: "Confirmed and ready for work"
+
+- name: "status/in-progress"
+  color: "1d76db"
+  description: "Work in progress"
+
+- name: "status/blocked"
+  color: "b60205"
+  description: "Blocked by something"
+
+- name: "status/ready-for-review"
+  color: "0e8a16"
+  description: "Ready for code review"
+
+- name: "status/on-hold"
+  color: "c2e0c6"
+  description: "On hold - waiting for something"
+
+# Size labels
+- name: "size/XS"
+  color: "3CBF00"
+  description: "Extra small change (< 10 lines)"
+
+- name: "size/S"
+  color: "5D9801"
+  description: "Small change (10-100 lines)"
+
+- name: "size/M"
+  color: "7F7203"
+  description: "Medium change (100-500 lines)"
+
+- name: "size/L"
+  color: "A14C05"
+  description: "Large change (500-1000 lines)"
+
+- name: "size/XL"
+  color: "C32607"
+  description: "Extra large change (> 1000 lines)"
+
+# Area labels
+- name: "area/api"
+  color: "c5def5"
+  description: "API layer changes"
+
+- name: "area/database"
+  color: "c5def5"
+  description: "Database related changes"
+
+- name: "area/cache"
+  color: "c5def5"
+  description: "Caching related changes"
+
+- name: "area/config"
+  color: "c5def5"
+  description: "Configuration related changes"
+
+- name: "area/domain"
+  color: "c5def5"
+  description: "Domain/business logic changes"
+
+- name: "area/service"
+  color: "c5def5"
+  description: "Service layer changes"
+
+- name: "area/transcoding"
+  color: "c5def5"
+  description: "Transcoding/FFmpeg related"
+
+- name: "area/auth"
+  color: "c5def5"
+  description: "Authentication/Authorization"
+
+- name: "area/media"
+  color: "c5def5"
+  description: "Media handling related"
+
+# Infrastructure labels
+- name: "infra/docker"
+  color: "0db7ed"
+  description: "Docker related"
+
+- name: "infra/ci"
+  color: "0db7ed"
+  description: "CI/CD related"
+
+- name: "infra/build"
+  color: "0db7ed"
+  description: "Build system related"
+
+# Special labels
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "security"
+  color: "d73a4a"
+  description: "Security related"
+
+- name: "breaking-change"
+  color: "b60205"
+  description: "Introduces breaking changes"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Dependency updates"
+
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or PR already exists"
+
+- name: "invalid"
+  color: "cfd3d7"
+  description: "This doesn't seem right"
+
+- name: "wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+- name: "pinned"
+  color: "006b75"
+  description: "Pinned - will not be auto-closed"
+
+- name: "stale"
+  color: "ededed"
+  description: "No recent activity"
+
+- name: "automated"
+  color: "e99695"
+  description: "Automated PR/Issue"
+
+# Phase labels
+- name: "phase/1-mvp"
+  color: "bfdadc"
+  description: "Phase 1: Single-Server MVP"
+
+- name: "phase/2-clustering"
+  color: "bfdadc"
+  description: "Phase 2: Optional Clustering"
+
+- name: "phase/future"
+  color: "bfdadc"
+  description: "Future consideration"
+
+# Platform labels
+- name: "platform/linux"
+  color: "fcc624"
+  description: "Linux specific"
+
+- name: "platform/windows"
+  color: "00a4ef"
+  description: "Windows specific"
+
+- name: "platform/macos"
+  color: "555555"
+  description: "macOS specific"
+
+- name: "platform/docker"
+  color: "0db7ed"
+  description: "Docker specific"
+
+# Go version labels
+- name: "go/1.23"
+  color: "00add8"
+  description: "Go 1.23 related"
+
+- name: "go/1.24"
+  color: "00add8"
+  description: "Go 1.24 related"

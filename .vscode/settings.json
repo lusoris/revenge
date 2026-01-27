@@ -1,4 +1,85 @@
 {
+    // Go settings
+    "go.useLanguageServer": true,
+    "go.lintTool": "golangci-lint",
+    "go.lintFlags": ["--fast"],
+    "go.formatTool": "goimports",
+    "go.testFlags": ["-v", "-race"],
+    "go.coverOnSave": false,
+    "go.coverOnSingleTest": true,
+    "go.coverOnTestPackage": true,
+    "gopls": {
+        "ui.semanticTokens": true,
+        "ui.completion.usePlaceholders": true,
+        "analyses": {
+            "unusedparams": true,
+            "shadow": true
+        },
+        "staticcheck": true
+    },
+
+    // Editor settings
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    "editor.rulers": [100, 120],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+
+    // File settings
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.exclude": {
+        "**/bin": true,
+        "**/tmp": true,
+        "**/coverage.out": true,
+        "**/coverage.html": true
+    },
+
+    // Search settings
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/vendor": true,
+        "**/bin": true,
+        "**/tmp": true,
+        "**/*.sum": true
+    },
+
+    // Snyk settings
     "snyk.advanced.organization": "b7a5966a-d279-49cd-b387-57ad89f062a4",
-    "snyk.advanced.autoSelectOrganization": true
+    "snyk.advanced.autoSelectOrganization": true,
+
+    // Terminal settings
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.cwd": "${workspaceFolder}",
+
+    // Git settings
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+
+    // File associations
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "[markdown]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": true,
+            "strings": true
+        }
+    },
+    "[yaml]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    "[json]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    }
 }

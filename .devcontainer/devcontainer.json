@@ -1,0 +1,49 @@
+{
+  "name": "Jellyfin Go Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.24"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "davidanson.vscode-markdownlint",
+        "editorconfig.editorconfig",
+        "usernamehw.errorlens",
+        "streetsidesoftware.code-spell-checker",
+        "redhat.vscode-yaml",
+        "humao.rest-client",
+        "gruntfuggly.todo-tree"
+      ],
+      "settings": {
+        "go.useLanguageServer": true,
+        "go.lintTool": "golangci-lint",
+        "go.lintFlags": ["--fast"],
+        "go.formatTool": "goimports",
+        "go.testFlags": ["-v", "-race"],
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "go mod download && go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && go install github.com/cosmtrek/air@latest",
+  "remoteUser": "vscode",
+  "forwardPorts": [8096],
+  "portsAttributes": {
+    "8096": {
+      "label": "Jellyfin Go",
+      "onAutoForward": "notify"
+    }
+  }
+}

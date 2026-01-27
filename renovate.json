@@ -1,0 +1,86 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Renovate configuration for Jellyfin Go",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":automergeMinor",
+    "group:recommended",
+    "schedule:weekly"
+  ],
+  "timezone": "Europe/Berlin",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies", "automated"],
+  "reviewers": ["lusoris"],
+  "baseBranches": ["develop"],
+  "enabledManagers": ["gomod", "dockerfile", "docker-compose", "github-actions"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "minimumReleaseAge": "3 days",
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "dependencies"]
+  },
+  "packageRules": [
+    {
+      "description": "Group all Go dependencies",
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Go dependencies (minor/patch)",
+      "automerge": true
+    },
+    {
+      "description": "Go major updates - require manual review",
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "Go dependencies (major)",
+      "automerge": false,
+      "labels": ["dependencies", "breaking-change"]
+    },
+    {
+      "description": "Group GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "automerge": true
+    },
+    {
+      "description": "Docker base images",
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "groupName": "Docker images"
+    },
+    {
+      "description": "Go version updates",
+      "matchPackageNames": ["go"],
+      "matchManagers": ["gomod"],
+      "automerge": false,
+      "labels": ["dependencies", "go"]
+    },
+    {
+      "description": "uber-go/fx",
+      "matchPackagePatterns": ["^go.uber.org/fx"],
+      "groupName": "uber-go/fx"
+    },
+    {
+      "description": "Testing libraries",
+      "matchPackagePatterns": ["stretchr/testify", "gomock", "ginkgo", "gomega"],
+      "groupName": "Testing libraries"
+    },
+    {
+      "description": "Database drivers",
+      "matchPackagePatterns": ["pgx", "sqlite", "sqlc", "migrate"],
+      "groupName": "Database libraries"
+    }
+  ],
+  "postUpdateOptions": ["gomodTidy"],
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isMajor}}v{{{newMajor}}}{{else}}{{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}{{/if}}{{/if}}",
+  "prTitle": "chore(deps): update {{depName}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}v{{{newVersion}}}{{/if}}",
+  "prBodyNotes": [
+    "This PR was automatically created by [Renovate](https://github.com/renovatebot/renovate).",
+    "Please review the changes and merge if CI passes."
+  ],
+  "ignoreDeps": [],
+  "ignorePresets": []
+}

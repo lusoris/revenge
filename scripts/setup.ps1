@@ -50,11 +50,11 @@ function Install-Go {
         Write-Info "Go $goVersion is already installed"
         return
     }
-    
+
     Write-Step "Installing Go 1.24..."
-    
+
     $pkgManager = Get-PackageManager
-    
+
     switch ($pkgManager) {
         "winget" {
             winget install GoLang.Go.1.24
@@ -71,7 +71,7 @@ function Install-Go {
             exit 1
         }
     }
-    
+
     Write-Info "Go installed successfully. You may need to restart your terminal."
 }
 
@@ -81,11 +81,11 @@ function Install-FFmpeg {
         Write-Info "FFmpeg is already installed"
         return
     }
-    
+
     Write-Step "Installing FFmpeg..."
-    
+
     $pkgManager = Get-PackageManager
-    
+
     switch ($pkgManager) {
         "winget" {
             winget install Gyan.FFmpeg
@@ -108,22 +108,22 @@ function Install-Docker {
         Write-Info "Docker is already installed"
         return
     }
-    
+
     if ($SkipDocker) {
         Write-Info "Skipping Docker installation (--SkipDocker flag)"
         return
     }
-    
+
     $install = Read-Host "Install Docker Desktop? (recommended but optional) [y/N]"
     if ($install -notmatch '^[Yy]') {
         Write-Warn "Skipping Docker installation"
         return
     }
-    
+
     Write-Step "Installing Docker Desktop..."
-    
+
     $pkgManager = Get-PackageManager
-    
+
     switch ($pkgManager) {
         "winget" {
             winget install Docker.DockerDesktop
@@ -135,41 +135,41 @@ function Install-Docker {
             Write-Warn "Cannot auto-install Docker. Please install manually from https://docker.com"
         }
     }
-    
+
     Write-Info "Docker installed. You may need to restart your computer."
 }
 
 # Install Go tools
 function Install-GoTools {
     Write-Step "Installing Go development tools..."
-    
+
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
     go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-    
+
     Write-Info "Go tools installed successfully"
 }
 
 # Setup project
 function Setup-Project {
     Push-Location $ProjectRoot
-    
+
     Write-Step "Downloading Go dependencies..."
     go mod download
     go mod verify
-    
+
     Write-Step "Installing Git hooks..."
     $hooksScript = Join-Path $PSScriptRoot "install-hooks.ps1"
     if (Test-Path $hooksScript) {
         & $hooksScript
     }
-    
+
     Write-Step "Building project..."
     go build -o bin/jellyfin-go.exe ./cmd/jellyfin
-    
+
     Pop-Location
-    
+
     Write-Info "Project setup complete!"
 }
 

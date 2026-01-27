@@ -3,33 +3,33 @@
 # More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Default owners for everything in the repo
-* @jellyfin/jellyfin-go-maintainers
+* @lusoris
 
 # Documentation
-/docs/ @jellyfin/jellyfin-go-docs
-*.md @jellyfin/jellyfin-go-docs
+/docs/ @lusoris
+*.md @lusoris
 
 # CI/CD and Infrastructure
-/.github/ @jellyfin/jellyfin-go-infra
-/Dockerfile @jellyfin/jellyfin-go-infra
-/docker-compose*.yml @jellyfin/jellyfin-go-infra
-/Makefile @jellyfin/jellyfin-go-infra
-/.goreleaser.yml @jellyfin/jellyfin-go-infra
+/.github/ @lusoris
+/Dockerfile @lusoris
+/docker-compose*.yml @lusoris
+/Makefile @lusoris
+/.goreleaser.yml @lusoris
 
 # Configuration
-/configs/ @jellyfin/jellyfin-go-maintainers
-/pkg/config/ @jellyfin/jellyfin-go-maintainers
+/configs/ @lusoris
+/pkg/config/ @lusoris
 
 # Database and migrations
-/migrations/ @jellyfin/jellyfin-go-database
-/internal/infra/database/ @jellyfin/jellyfin-go-database
+/migrations/ @lusoris
+/internal/infra/database/ @lusoris
 
 # API layer
-/internal/api/ @jellyfin/jellyfin-go-api
+/internal/api/ @lusoris
 
 # Core services
-/internal/service/ @jellyfin/jellyfin-go-core
+/internal/service/ @lusoris
 
 # Security sensitive files
-/SECURITY.md @jellyfin/jellyfin-go-security
-/internal/api/middleware/auth*.go @jellyfin/jellyfin-go-security
+/SECURITY.md @lusoris
+/internal/api/middleware/auth*.go @lusoris

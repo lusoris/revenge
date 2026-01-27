@@ -1,5 +1,12 @@
 # Jellyfin Go
 
+[![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
+[![Security](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml/badge.svg)](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/jellyfin-go)](https://goreportcard.com/report/github.com/lusoris/jellyfin-go)
+[![codecov](https://codecov.io/gh/lusoris/jellyfin-go/branch/main/graph/badge.svg)](https://codecov.io/gh/lusoris/jellyfin-go)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/jellyfin-go)](go.mod)
+[![License](https://img.shields.io/github/license/lusoris/jellyfin-go)](LICENSE)
+
 A high-performance, production-grade media server reimplementation of Jellyfin in Go.
 
 ## 🎯 Project Goals
@@ -51,7 +58,8 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 **Option 1: Native Binary (Simplest)**
 ```bash
 # Download latest release
-wget https://github.com/your-org/jellyfin-go/releases/latest/jellyfin-go
+wget https://github.com/lusoris/jellyfin-go/releases/latest/download/jellyfin-go_linux_amd64.tar.gz
+tar -xzf jellyfin-go_linux_amd64.tar.gz
 
 # Run with zero configuration
 ./jellyfin-go
@@ -66,7 +74,7 @@ docker run -d \
   -p 8096:8096 \
   -v /path/to/media:/media \
   -v jellyfin-data:/data \
-  jellyfin/jellyfin-go:latest
+  ghcr.io/lusoris/jellyfin-go:latest
 ```
 
 **Option 3: Development**

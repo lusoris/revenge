@@ -45,7 +45,7 @@ function detect_system
         set -g OS "linux"
         set -g PKG_MANAGER "unknown"
     end
-    
+
     info "Detected: $OS with $PKG_MANAGER"
 end
 
@@ -61,9 +61,9 @@ function install_go
         info "Go $GO_VERSION is already installed"
         return 0
     end
-    
+
     step "Installing Go 1.24..."
-    
+
     switch $PKG_MANAGER
         case brew
             brew install go@1.24; or brew install go
@@ -87,7 +87,7 @@ function install_go
             error "Cannot auto-install Go. Please install Go 1.24 manually from https://go.dev/dl/"
             exit 1
     end
-    
+
     info "Go installed successfully"
 end
 
@@ -97,9 +97,9 @@ function install_ffmpeg
         info "FFmpeg is already installed"
         return 0
     end
-    
+
     step "Installing FFmpeg..."
-    
+
     switch $PKG_MANAGER
         case brew
             brew install ffmpeg
@@ -115,38 +115,38 @@ function install_ffmpeg
             warn "Cannot auto-install FFmpeg. Please install manually."
             return 1
     end
-    
+
     info "FFmpeg installed successfully"
 end
 
 # Install Go tools
 function install_go_tools
     step "Installing Go development tools..."
-    
+
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
     go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-    
+
     info "Go tools installed successfully"
 end
 
 # Setup project
 function setup_project
     cd $PROJECT_ROOT
-    
+
     step "Downloading Go dependencies..."
     go mod download
     go mod verify
-    
+
     step "Installing Git hooks..."
     if test -f "$SCRIPT_DIR/install-hooks.sh"
         bash "$SCRIPT_DIR/install-hooks.sh"
     end
-    
+
     step "Building project..."
     go build -o bin/jellyfin-go ./cmd/jellyfin
-    
+
     info "Project setup complete!"
 end
 

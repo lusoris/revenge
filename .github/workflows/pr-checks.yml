@@ -1,0 +1,120 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  pr-title-check:
+    name: PR Title Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title follows Conventional Commits
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            should start with a lowercase letter.
+          ignoreLabels: |
+            bot
+            dependencies
+            automated
+
+  pr-description-check:
+    name: PR Description Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR has description
+        uses: jadrol/pr-description-checker@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          min-length: 50
+          exempt-labels: 'dependencies,automated,bot'
+
+  pr-branch-check:
+    name: PR Branch Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch naming
+        uses: deepakputhraya/action-branch-name@master
+        with:
+          regex: '^(feature|fix|docs|refactor|test|chore|release|hotfix)\/[a-z0-9._-]+$|^dependabot\/.+$|^renovate\/.+$'
+          allowed_prefixes: 'feature,fix,docs,refactor,test,chore,release,hotfix,dependabot,renovate'
+          ignore: main,master,develop
+          min_length: 5
+          max_length: 100
+
+  pr-conflict-check:
+    name: PR Conflict Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for merge conflicts
+        uses: eps1lon/actions-label-merge-conflict@releases/2.x
+        with:
+          dirtyLabel: 'merge-conflict'
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          commentOnDirty: |
+            ⚠️ This PR has merge conflicts. Please resolve them before this can be merged.
+
+            ```bash
+            git checkout <your-branch>
+            git fetch origin
+            git rebase origin/develop
+            # Resolve conflicts
+            git push --force-with-lease
+            ```
+
+  pr-linked-issues:
+    name: Check Linked Issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for linked issues
+        uses: hmarr/auto-approve-action@v3
+        if: false  # Disabled, just placeholder
+        # Consider using: https://github.com/nearform-actions/github-action-check-linked-issues
+
+  changed-files-summary:
+    name: Changed Files Summary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42
+        with:
+          separator: '\n'
+
+      - name: List changed files
+        run: |
+          echo "## Changed Files" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "| \`$file\` | Modified |" >> $GITHUB_STEP_SUMMARY
+          done

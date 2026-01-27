@@ -1,0 +1,83 @@
+name: Stale Issues and PRs
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: Mark Stale Issues and PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark stale issues and pull requests
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Issue configuration
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has not had recent activity.
+            It will be closed in 14 days if no further activity occurs.
+
+            If this issue is still relevant:
+            - Comment to keep it open
+            - Add the `pinned` label to prevent auto-closing
+            - Update with any new information
+
+            Thank you for your contributions! 🙏
+          close-issue-message: |
+            This issue has been automatically closed due to inactivity.
+
+            If you believe this issue is still relevant, please:
+            - Open a new issue with updated information
+            - Reference this issue for context
+
+            Thank you! 🙏
+          stale-issue-label: 'stale'
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          exempt-issue-labels: 'pinned,security,help wanted,good first issue,bug,in-progress'
+
+          # PR configuration
+          stale-pr-message: |
+            This pull request has been automatically marked as stale because it has not had recent activity.
+            It will be closed in 14 days if no further activity occurs.
+
+            If you're still working on this:
+            - Push new commits to update the PR
+            - Comment to keep it open
+            - Request a review if ready
+
+            Need help? Feel free to ask questions! 🙏
+          close-pr-message: |
+            This pull request has been automatically closed due to inactivity.
+
+            If you'd like to continue working on this:
+            - Reopen this PR if you have push access
+            - Open a new PR with your changes
+
+            Thank you for your contributions! 🙏
+          stale-pr-label: 'stale'
+          days-before-pr-stale: 30
+          days-before-pr-close: 14
+          exempt-pr-labels: 'pinned,security,work-in-progress,do-not-close'
+
+          # General configuration
+          remove-stale-when-updated: true
+          only-labels: ''
+          operations-per-run: 100
+          ascending: true
+          delete-branch: false
+
+          # Don't stale draft PRs
+          exempt-draft-pr: true
+
+          # Don't stale issues/PRs with these milestones
+          exempt-milestones: true
+          exempt-all-milestones: true

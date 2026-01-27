@@ -1,0 +1,136 @@
+# VS Code Tasks
+# These tasks can be run from VS Code's Command Palette (Ctrl+Shift+P > Tasks: Run Task)
+
+version: "2.0.0"
+tasks:
+  - label: "Build"
+    type: "shell"
+    command: "go build -o bin/jellyfin-go ./cmd/jellyfin"
+    group:
+      kind: "build"
+      isDefault: true
+    problemMatcher: ["$go"]
+    presentation:
+      reveal: "always"
+      panel: "dedicated"
+
+  - label: "Build (All Platforms)"
+    type: "shell"
+    command: "make build-all"
+    group: "build"
+    problemMatcher: ["$go"]
+
+  - label: "Run"
+    type: "shell"
+    command: "go run ./cmd/jellyfin"
+    group: "test"
+    problemMatcher: ["$go"]
+    presentation:
+      reveal: "always"
+      panel: "dedicated"
+
+  - label: "Run (Dev Mode)"
+    type: "shell"
+    command: "air"
+    group: "test"
+    isBackground: true
+    problemMatcher: {
+      "owner": "go",
+      "fileLocation": ["relative", "${workspaceFolder}"],
+      "pattern": {
+        "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "message": 4
+      },
+      "background": {
+        "activeOnStart": true,
+        "beginsPattern": "^.*building\\.\\.\\.$",
+        "endsPattern": "^.*running\\.\\.\\.$"
+      }
+    }
+
+  - label: "Test"
+    type: "shell"
+    command: "go test -v ./..."
+    group:
+      kind: "test"
+      isDefault: true
+    problemMatcher: ["$go"]
+
+  - label: "Test (Race Detection)"
+    type: "shell"
+    command: "go test -v -race ./..."
+    group: "test"
+    problemMatcher: ["$go"]
+
+  - label: "Test (Coverage)"
+    type: "shell"
+    command: "go test -v -coverprofile=coverage.out ./... && go tool cover -html=coverage.out -o coverage.html"
+    group: "test"
+    problemMatcher: ["$go"]
+
+  - label: "Lint"
+    type: "shell"
+    command: "golangci-lint run --timeout=5m"
+    group: "test"
+    problemMatcher: {
+      "owner": "golangci-lint",
+      "fileLocation": ["relative", "${workspaceFolder}"],
+      "pattern": {
+        "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "message": 4
+      }
+    }
+
+  - label: "Format"
+    type: "shell"
+    command: "go fmt ./... && gofmt -s -w ."
+    group: "build"
+    problemMatcher: []
+
+  - label: "Tidy Modules"
+    type: "shell"
+    command: "go mod tidy"
+    group: "build"
+    problemMatcher: []
+
+  - label: "Docker Build"
+    type: "shell"
+    command: "docker build -t jellyfin-go:dev ."
+    group: "build"
+    problemMatcher: []
+
+  - label: "Docker Compose Up"
+    type: "shell"
+    command: "docker-compose up -d"
+    group: "build"
+    problemMatcher: []
+
+  - label: "Docker Compose Down"
+    type: "shell"
+    command: "docker-compose down"
+    group: "build"
+    problemMatcher: []
+
+  - label: "Clean"
+    type: "shell"
+    command: "make clean"
+    group: "build"
+    problemMatcher: []
+
+  - label: "Pre-commit"
+    type: "shell"
+    command: "pre-commit run --all-files"
+    group: "test"
+    problemMatcher: []
+
+  - label: "Install Tools"
+    type: "shell"
+    command: "go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && go install github.com/cosmtrek/air@latest"
+    group: "build"
+    problemMatcher: []

@@ -1,12 +1,42 @@
 {
   "recommendations": [
+    // Go Development
     "golang.go",
+
+    // Docker
     "ms-azuretools.vscode-docker",
-    "davidanson.vscode-markdownlint",
-    "editorconfig.editorconfig",
+
+    // Git
     "eamodio.gitlens",
+    "mhutchie.git-graph",
     "github.vscode-pull-request-github",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+
+    // YAML/JSON
+    "redhat.vscode-yaml",
+
+    // Editor Enhancements
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
     "usernamehw.errorlens",
-    "streetsidesoftware.code-spell-checker"
+
+    // Testing
+    "premparihar.gotestexplorer",
+
+    // Code Quality
+    "sonarsource.sonarlint-vscode",
+
+    // Productivity
+    "alefragnani.bookmarks",
+    "gruntfuggly.todo-tree",
+
+    // REST Client
+    "humao.rest-client",
+
+    // Remote Development
+    "ms-vscode-remote.remote-containers"
   ]
 }

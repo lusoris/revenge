@@ -37,7 +37,7 @@ detect_system() {
         OS="linux"
         PKG_MANAGER="unknown"
     fi
-    
+
     info "Detected: $OS with $PKG_MANAGER"
 }
 
@@ -53,9 +53,9 @@ install_go() {
         info "Go $GO_VERSION is already installed"
         return 0
     fi
-    
+
     step "Installing Go 1.24..."
-    
+
     case "$PKG_MANAGER" in
         brew)
             brew install go@1.24 || brew install go
@@ -86,7 +86,7 @@ install_go() {
             exit 1
             ;;
     esac
-    
+
     info "Go installed successfully"
 }
 
@@ -96,9 +96,9 @@ install_ffmpeg() {
         info "FFmpeg is already installed"
         return 0
     fi
-    
+
     step "Installing FFmpeg..."
-    
+
     case "$PKG_MANAGER" in
         brew)
             brew install ffmpeg
@@ -119,7 +119,7 @@ install_ffmpeg() {
             return 1
             ;;
     esac
-    
+
     info "FFmpeg installed successfully"
 }
 
@@ -129,16 +129,16 @@ install_docker() {
         info "Docker is already installed"
         return 0
     fi
-    
+
     read -p "Install Docker? (recommended but optional) [y/N]: " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         warn "Skipping Docker installation"
         return 0
     fi
-    
+
     step "Installing Docker..."
-    
+
     case "$PKG_MANAGER" in
         brew)
             warn "Please install Docker Desktop for Mac manually from https://docker.com"
@@ -173,31 +173,31 @@ install_docker() {
 # Install Go development tools
 install_go_tools() {
     step "Installing Go development tools..."
-    
+
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
     go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-    
+
     info "Go tools installed successfully"
 }
 
 # Setup project
 setup_project() {
     cd "$PROJECT_ROOT"
-    
+
     step "Downloading Go dependencies..."
     go mod download
     go mod verify
-    
+
     step "Installing Git hooks..."
     if [[ -f "$SCRIPT_DIR/install-hooks.sh" ]]; then
         bash "$SCRIPT_DIR/install-hooks.sh"
     fi
-    
+
     step "Building project..."
     go build -o bin/jellyfin-go ./cmd/jellyfin
-    
+
     info "Project setup complete!"
 }
 
@@ -208,16 +208,16 @@ main() {
     echo "║   Jellyfin Go - Setup Assistant       ║"
     echo "╚════════════════════════════════════════╝"
     echo ""
-    
+
     detect_system
     echo ""
-    
+
     install_go
     install_ffmpeg
     install_docker
     install_go_tools
     setup_project
-    
+
     echo ""
     echo "╔════════════════════════════════════════╗"
     echo "║   ✅ Setup Complete!                   ║"

@@ -1,0 +1,107 @@
+# Labeler configuration for actions/labeler
+# https://github.com/actions/labeler
+
+# Area labels
+area/api:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'internal/api/**'
+          - 'pkg/middleware/**'
+
+area/database:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'internal/infra/database/**'
+          - 'migrations/**'
+          - '**/*sql*'
+
+area/cache:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'internal/infra/cache/**'
+
+area/config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'pkg/config/**'
+          - 'configs/**'
+
+area/domain:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'internal/domain/**'
+
+area/service:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'internal/service/**'
+
+area/transcoding:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/transcode**'
+          - '**/ffmpeg**'
+          - '**/encoding**'
+
+# Infrastructure labels
+infra/docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Dockerfile'
+          - 'docker-compose*.yml'
+          - '.dockerignore'
+
+infra/ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - '.github/actions/**'
+
+infra/build:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'Makefile'
+          - '.goreleaser.yml'
+          - 'scripts/**'
+
+# Documentation
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'
+
+# Dependencies
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'go.mod'
+          - 'go.sum'
+
+# Tests
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*_test.go'
+          - 'tests/**'
+          - 'testdata/**'
+
+# Configuration files
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.yml'
+          - '*.yaml'
+          - '*.json'
+          - '*.toml'
+          - '.editorconfig'
+          - '.golangci.yml'
+
+# Security related
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'SECURITY.md'
+          - '**/auth**'
+          - '**/security**'
+          - '**/crypto**'

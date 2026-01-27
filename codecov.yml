@@ -1,0 +1,54 @@
+# Codecov Configuration
+# https://docs.codecov.com/docs/codecovyml-reference
+
+coverage:
+  precision: 2
+  round: down
+  range: "60...90"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 2%
+        informational: false
+        only_pulls: false
+    patch:
+      default:
+        target: 80%
+        threshold: 5%
+        informational: false
+        only_pulls: false
+
+parsers:
+  go:
+    partials_as_hits: true
+
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: true
+  require_base: false
+  require_head: true
+
+flags:
+  unittests:
+    paths:
+      - "internal/"
+      - "pkg/"
+    carryforward: true
+  integration:
+    paths:
+      - "tests/integration/"
+    carryforward: false
+
+ignore:
+  - "**/*_test.go"
+  - "**/testdata/**"
+  - "**/mocks/**"
+  - "cmd/**"
+  - "scripts/**"
+  - "docs/**"
+  - "vendor/**"
+
+github_checks:
+  annotations: true
