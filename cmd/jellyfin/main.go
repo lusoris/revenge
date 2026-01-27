@@ -13,7 +13,11 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jellyfin/jellyfin-go/internal/api/handlers"
+	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
 	"github.com/jellyfin/jellyfin-go/internal/infra/database"
+	"github.com/jellyfin/jellyfin-go/internal/service/auth"
+	"github.com/jellyfin/jellyfin-go/internal/service/user"
 	"github.com/jellyfin/jellyfin-go/pkg/config"
 	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
@@ -39,6 +43,17 @@ func main() {
 
 		// Infrastructure modules
 		database.Module,
+
+		// Service modules
+		auth.Module,
+		user.Module,
+
+		// API modules
+		fx.Provide(
+			middleware.NewAuth,
+			handlers.NewAuthHandler,
+			handlers.NewUserHandler,
+		),
 
 		// HTTP modules
 		fx.Provide(
@@ -107,7 +122,14 @@ func NewMux(logger *slog.Logger) *http.ServeMux {
 }
 
 // RegisterRoutes registers all HTTP routes
-func RegisterRoutes(mux *http.ServeMux, logger *slog.Logger, pool *pgxpool.Pool) {
+func RegisterRoutes(
+	mux *http.ServeMux,
+	logger *slog.Logger,
+	pool *pgxpool.Pool,
+	authMiddleware *middleware.Auth,
+	authHandler *handlers.AuthHandler,
+	userHandler *handlers.UserHandler,
+) {
 	// Health check endpoints (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -144,7 +166,26 @@ func RegisterRoutes(mux *http.ServeMux, logger *slog.Logger, pool *pgxpool.Pool)
 		json.NewEncoder(w).Encode(version)
 	})
 
-	logger.Info("Routes registered")
+	// Auth endpoints
+	mux.HandleFunc("POST /Users/AuthenticateByName", authHandler.Login)
+	mux.Handle("POST /Sessions/Logout", authMiddleware.Required(http.HandlerFunc(authHandler.Logout)))
+	mux.Handle("POST /Auth/Refresh", authMiddleware.Required(http.HandlerFunc(authHandler.RefreshToken)))
+	mux.Handle("POST /Users/{userId}/Password", authMiddleware.Required(http.HandlerFunc(authHandler.ChangePassword)))
+
+	// User endpoints
+	mux.Handle("GET /Users/Me", authMiddleware.Required(http.HandlerFunc(userHandler.GetCurrentUser)))
+	mux.Handle("GET /Users", authMiddleware.Required(http.HandlerFunc(userHandler.ListUsers)))
+	mux.Handle("GET /Users/{userId}", authMiddleware.Required(http.HandlerFunc(userHandler.GetUser)))
+	mux.Handle("POST /Users/New", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.CreateUser)))
+	mux.Handle("POST /Users", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.CreateUser)))
+	mux.Handle("POST /Users/{userId}", authMiddleware.Required(http.HandlerFunc(userHandler.UpdateUser)))
+	mux.Handle("DELETE /Users/{userId}", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.DeleteUser)))
+
+	logger.Info("Routes registered",
+		slog.Int("auth_routes", 4),
+		slog.Int("user_routes", 7),
+		slog.Int("health_routes", 3),
+	)
 }
 
 // NewServer creates a new HTTP server with modern settings
