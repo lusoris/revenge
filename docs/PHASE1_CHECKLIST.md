@@ -72,10 +72,23 @@
 
 ## Week 5-6: Library Management
 
-### Libraries
-- [ ] Library entity (Movies, TV Shows, Music, Photos)
+### Extended Library Types (NEW)
+- [ ] Extend library_type enum (15 types: movies, tvshows, music, musicvideos, photos, homevideos, books, audiobooks, boxsets, podcasts, mixed, adult_movies, adult_shows, livetv, playlists)
+- [ ] Extend media_type enum (see docs/LIBRARY_TYPES.md)
+- [ ] Library entity with extended types support
 - [ ] Library repository
 - [ ] Path validation
+
+### Content Rating System (NEW)
+- [ ] Create rating_systems table (MPAA, FSK, BBFC, PEGI, etc.)
+- [ ] Create ratings table with normalized_level (0-100)
+- [ ] Create rating_equivalents table (cross-system mapping)
+- [ ] Create content_ratings table (many-to-many)
+- [ ] Seed international rating systems data
+- [ ] User extensions (birthdate, max_rating_level, adult_content_enabled)
+- [ ] Content filtering by user's effective rating level
+- [ ] Person visibility filter (visible if ANY visible content)
+- [ ] See docs/CONTENT_RATING.md for full design
 
 ### API Endpoints
 - [ ] GET /api/Libraries
@@ -83,13 +96,16 @@
 - [ ] POST /api/Libraries (create library)
 - [ ] DELETE /api/Libraries/{id}
 - [ ] POST /api/Libraries/{id}/Refresh (trigger scan)
+- [ ] GET /api/RatingSystems (list available rating systems)
+- [ ] GET /api/RatingSystems/{code}/Ratings (list ratings for system)
 
 ### File System Scanner
 - [ ] Basic directory walker
-- [ ] File type detection (video, audio, image)
+- [ ] File type detection (video, audio, image, book, audiobook)
 - [ ] Store file paths in database
+- [ ] Detect adult library content
 
-**Deliverable:** Library creation, basic file scanning
+**Deliverable:** Library creation with extended types, content rating system, basic file scanning
 
 ---
 
