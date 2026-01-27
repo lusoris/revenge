@@ -16,15 +16,15 @@ if (-not (Test-Path $GitHooksDir)) {
 Get-ChildItem $HooksDir | ForEach-Object {
     $hookName = $_.Name
     Write-Host "  📌 Installing $hookName hook..." -ForegroundColor Cyan
-    
+
     $source = $_.FullName
     $target = Join-Path $GitHooksDir $hookName
-    
+
     # Remove existing hook if it exists
     if (Test-Path $target) {
         Remove-Item $target -Force
     }
-    
+
     # Create symlink (requires admin) or copy file
     try {
         New-Item -ItemType SymbolicLink -Path $target -Target $source -Force | Out-Null

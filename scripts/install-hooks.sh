@@ -15,10 +15,10 @@ mkdir -p "$GIT_HOOKS_DIR"
 for hook in "$HOOKS_DIR"/*; do
     hook_name=$(basename "$hook")
     echo "  📌 Installing $hook_name hook..."
-    
+
     # Make hook executable
     chmod +x "$hook"
-    
+
     # Create symlink
     ln -sf "../../.githooks/$hook_name" "$GIT_HOOKS_DIR/$hook_name"
 done

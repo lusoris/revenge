@@ -24,4 +24,4 @@ cache:
   # db: 0
 
 log:
-  level: info  # debug, info, warn, error
+  level: info  # debug, info, warn, error  format: console  # console or json

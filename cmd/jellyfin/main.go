@@ -2,19 +2,19 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/gorilla/mux"
-	"github.com/spf13/viper"
+	"github.com/jellyfin/jellyfin-go/pkg/config"
+	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -27,16 +27,15 @@ var (
 )
 
 func main() {
-	// Initialize configuration
-	initConfig()
-
-	// Create Fx application
+	// Create Fx application with modern dependency injection
 	app := fx.New(
 		fx.Provide(
+			config.New,
 			NewLogger,
-			NewRouter,
+			NewMux,
 			NewServer,
 		),
+		fx.Invoke(RegisterRoutes),
 		fx.Invoke(RunServer),
 	)
 
@@ -44,122 +43,114 @@ func main() {
 	app.Run()
 }
 
-// initConfig initializes the application configuration
-func initConfig() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./configs")
-	viper.AddConfigPath(".")
+// NewLogger creates a new structured logger using slog (Go 1.21+)
+func NewLogger(cfg *config.Config) *slog.Logger {
+	var handler slog.Handler
 
-	// Set defaults
-	viper.SetDefault("server.port", 8096)
-	viper.SetDefault("server.host", "0.0.0.0")
-	viper.SetDefault("log.level", "info")
-	viper.SetDefault("db.type", "sqlite")
-	viper.SetDefault("db.path", "./data/jellyfin.db")
+	level := parseLogLevel(cfg.Log.Level)
 
-	// Environment variables
-	viper.SetEnvPrefix("JELLYFIN")
-	viper.AutomaticEnv()
-
-	// Read config file (optional)
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			log.Fatalf("Error reading config file: %v", err)
-		}
+	if cfg.Log.Format == "json" {
+		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: level,
+		})
+	} else {
+		// Use tint for beautiful colored console output
+		handler = tint.NewHandler(os.Stdout, &tint.Options{
+			Level:      level,
+			TimeFormat: time.DateTime,
+		})
 	}
-}
 
-// NewLogger creates a new zap logger
-func NewLogger() (*zap.Logger, error) {
-	logLevel := viper.GetString("log.level")
-
-	config := zap.NewProductionConfig()
-	config.Level = zap.NewAtomicLevelAt(parseLogLevel(logLevel))
-
-	logger, err := config.Build()
-	if err != nil {
-		return nil, fmt.Errorf("failed to create logger: %w", err)
-	}
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
 
 	logger.Info("Jellyfin Go starting",
-		zap.String("version", Version),
-		zap.String("build_time", BuildTime),
-		zap.String("git_commit", GitCommit),
+		slog.String("version", Version),
+		slog.String("build_time", BuildTime),
+		slog.String("git_commit", GitCommit),
 	)
 
-	return logger, nil
+	return logger
 }
 
-// parseLogLevel converts string log level to zap level
-func parseLogLevel(level string) zapcore.Level {
+// parseLogLevel converts string to slog.Level
+func parseLogLevel(level string) slog.Level {
 	switch level {
 	case "debug":
-		return zap.DebugLevel
+		return slog.LevelDebug
 	case "info":
-		return zap.InfoLevel
+		return slog.LevelInfo
 	case "warn":
-		return zap.WarnLevel
+		return slog.LevelWarn
 	case "error":
-		return zap.ErrorLevel
+		return slog.LevelError
 	default:
-		return zap.InfoLevel
+		return slog.LevelInfo
 	}
 }
 
-// NewRouter creates a new HTTP router
-func NewRouter(logger *zap.Logger) *mux.Router {
-	r := mux.NewRouter()
+// NewMux creates a new HTTP router using Go 1.22+ enhanced ServeMux
+func NewMux(logger *slog.Logger) *http.ServeMux {
+	mux := http.NewServeMux()
+	logger.Info("HTTP router initialized")
+	return mux
+}
 
-	// Health check endpoints
-	r.HandleFunc("/health/live", func(w http.ResponseWriter, r *http.Request) {
+// RegisterRoutes registers all HTTP routes
+func RegisterRoutes(mux *http.ServeMux, logger *slog.Logger) {
+	// Health check endpoints (Go 1.22+ pattern matching)
+	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
-	}).Methods("GET")
+	})
 
-	r.HandleFunc("/health/ready", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Ready"))
-	}).Methods("GET")
+	})
 
-	// Version endpoint
-	r.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
+	// Version endpoint with structured response
+	mux.HandleFunc("GET /version", func(w http.ResponseWriter, r *http.Request) {
+		version := map[string]string{
+			"version":    Version,
+			"build_time": BuildTime,
+			"git_commit": GitCommit,
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `{"version":"%s","build_time":"%s","git_commit":"%s"}`,
-			Version, BuildTime, GitCommit)
-	}).Methods("GET")
+		json.NewEncoder(w).Encode(version)
+	})
 
-	logger.Info("Router initialized")
-	return r
+	logger.Info("Routes registered")
 }
 
-// NewServer creates a new HTTP server
-func NewServer(router *mux.Router, logger *zap.Logger) *http.Server {
-	host := viper.GetString("server.host")
-	port := viper.GetInt("server.port")
-	addr := fmt.Sprintf("%s:%d", host, port)
+// NewServer creates a new HTTP server with modern settings
+func NewServer(mux *http.ServeMux, cfg *config.Config, logger *slog.Logger) *http.Server {
+	addr := fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port)
 
 	srv := &http.Server{
-		Addr:         addr,
-		Handler:      router,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		Addr:              addr,
+		Handler:           mux,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
+		ReadHeaderTimeout: 5 * time.Second,
+		MaxHeaderBytes:    1 << 20, // 1 MB
 	}
 
-	logger.Info("Server configured", zap.String("address", addr))
+	logger.Info("Server configured", slog.String("address", addr))
 	return srv
 }
 
-// RunServer starts the HTTP server
-func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *zap.Logger) {
+// RunServer starts the HTTP server with graceful shutdown
+func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *slog.Logger) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
-				logger.Info("Starting HTTP server", zap.String("address", srv.Addr))
-				if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-					logger.Fatal("Failed to start server", zap.Error(err))
+				logger.Info("Starting HTTP server", slog.String("address", srv.Addr))
+				if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+					logger.Error("Server error", slog.Any("error", err))
+					os.Exit(1)
 				}
 			}()
 			return nil
@@ -171,7 +162,7 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *zap.Logger) {
 			defer cancel()
 
 			if err := srv.Shutdown(shutdownCtx); err != nil {
-				logger.Error("Server shutdown error", zap.Error(err))
+				logger.Error("Server shutdown error", slog.Any("error", err))
 				return err
 			}
 
@@ -180,7 +171,7 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *zap.Logger) {
 		},
 	})
 
-	// Wait for interrupt signal
+	// Setup signal handling
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
