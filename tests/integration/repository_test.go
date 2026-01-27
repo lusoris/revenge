@@ -1,4 +1,8 @@
+//go:build integration
+
 // Package integration provides integration tests for the database layer.
+// These tests require Docker to be running and are skipped by default.
+// Run with: go test -tags=integration ./tests/integration/...
 package integration
 
 import (
