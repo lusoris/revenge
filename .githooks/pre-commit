@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# Pre-commit hook for Jellyfin Go
+# This hook runs before each commit to ensure code quality
+
+set -e
+
+echo "🔍 Running pre-commit checks..."
+
+# Check if Go is installed
+if ! command -v go &> /dev/null; then
+    echo "❌ Go is not installed. Please install Go 1.22+"
+    exit 1
+fi
+
+# Format check
+echo "📝 Checking code formatting..."
+UNFORMATTED=$(gofmt -l .)
+if [ -n "$UNFORMATTED" ]; then
+    echo "❌ The following files are not formatted:"
+    echo "$UNFORMATTED"
+    echo ""
+    echo "Run 'go fmt ./...' or 'make fmt' to fix formatting"
+    exit 1
+fi
+echo "✅ Code formatting OK"
+
+# Vet check
+echo "🔎 Running go vet..."
+if ! go vet ./... 2>&1; then
+    echo "❌ go vet found issues"
+    exit 1
+fi
+echo "✅ go vet OK"
+
+# Check for common issues
+echo "🔍 Checking for common issues..."
+
+# Check for TODO/FIXME without issue number
+if git diff --cached --name-only | grep '\.go$' | xargs grep -n 'TODO\|FIXME' | grep -v '#[0-9]' > /dev/null; then
+    echo "⚠️  Warning: Found TODO/FIXME without issue number"
+    echo "   Please reference an issue number (e.g., TODO(#123))"
+fi
+
+# Check for debugger statements
+if git diff --cached --name-only | grep '\.go$' | xargs grep -n 'fmt.Print\|log.Print' > /dev/null 2>&1; then
+    echo "⚠️  Warning: Found fmt.Print or log.Print statements"
+    echo "   Consider using the logger package instead"
+fi
+
+# Check for sensitive data
+echo "🔒 Checking for sensitive data..."
+if git diff --cached | grep -iE '(password|secret|token|api_key|private_key).*=.*["\x27][^"\x27]*["\x27]' > /dev/null; then
+    echo "❌ Potential sensitive data found in commit!"
+    echo "   Please remove passwords, secrets, tokens, or API keys"
+    exit 1
+fi
+echo "✅ No sensitive data found"
+
+# Run tests on staged files
+echo "🧪 Running tests..."
+STAGED_GO_FILES=$(git diff --cached --name-only | grep '\.go$' || true)
+if [ -n "$STAGED_GO_FILES" ]; then
+    # Get unique package directories
+    PACKAGES=$(echo "$STAGED_GO_FILES" | xargs -I{} dirname {} | sort -u | xargs -I{} echo "./{}")
+    if [ -n "$PACKAGES" ]; then
+        if ! go test $PACKAGES -short 2>&1; then
+            echo "❌ Tests failed"
+            exit 1
+        fi
+    fi
+fi
+echo "✅ Tests passed"
+
+# Check commit message format
+COMMIT_MSG_FILE=$1
+if [ -f "$COMMIT_MSG_FILE" ]; then
+    COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+    if ! echo "$COMMIT_MSG" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?: .{1,}'; then
+        echo "⚠️  Commit message doesn't follow Conventional Commits format"
+        echo "   Expected: <type>(<scope>): <subject>"
+        echo "   Example: feat(auth): add JWT authentication"
+        echo ""
+        echo "   Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert"
+    fi
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0

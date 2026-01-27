@@ -1,0 +1,35 @@
+# Code Owners
+# This file defines who is responsible for code in this repository
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @jellyfin/jellyfin-go-maintainers
+
+# Documentation
+/docs/ @jellyfin/jellyfin-go-docs
+*.md @jellyfin/jellyfin-go-docs
+
+# CI/CD and Infrastructure
+/.github/ @jellyfin/jellyfin-go-infra
+/Dockerfile @jellyfin/jellyfin-go-infra
+/docker-compose*.yml @jellyfin/jellyfin-go-infra
+/Makefile @jellyfin/jellyfin-go-infra
+/.goreleaser.yml @jellyfin/jellyfin-go-infra
+
+# Configuration
+/configs/ @jellyfin/jellyfin-go-maintainers
+/pkg/config/ @jellyfin/jellyfin-go-maintainers
+
+# Database and migrations
+/migrations/ @jellyfin/jellyfin-go-database
+/internal/infra/database/ @jellyfin/jellyfin-go-database
+
+# API layer
+/internal/api/ @jellyfin/jellyfin-go-api
+
+# Core services
+/internal/service/ @jellyfin/jellyfin-go-core
+
+# Security sensitive files
+/SECURITY.md @jellyfin/jellyfin-go-security
+/internal/api/middleware/auth*.go @jellyfin/jellyfin-go-security

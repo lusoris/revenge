@@ -7,7 +7,7 @@ server:
 database:
   type: sqlite  # sqlite or postgres
   path: ./data/jellyfin.db
-  
+
   # PostgreSQL settings (when type is postgres)
   # host: localhost
   # port: 5432
@@ -17,7 +17,7 @@ database:
 
 cache:
   type: memory  # memory or redis
-  
+
   # Redis settings (when type is redis)
   # addr: localhost:6379
   # password: ""

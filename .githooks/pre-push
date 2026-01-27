@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# Pre-push hook for Jellyfin Go
+# Runs comprehensive checks before pushing
+
+set -e
+
+echo "🚀 Running pre-push checks..."
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Don't allow direct push to main
+if [ "$BRANCH" = "main" ]; then
+    echo "❌ Direct pushes to main branch are not allowed!"
+    echo "   Please create a pull request instead"
+    exit 1
+fi
+
+# Run full test suite before pushing to develop
+if [ "$BRANCH" = "develop" ]; then
+    echo "🧪 Running full test suite for develop branch..."
+    if ! go test -race ./... 2>&1; then
+        echo "❌ Tests failed on develop branch"
+        exit 1
+    fi
+    echo "✅ All tests passed"
+fi
+
+# Run linter
+echo "🔍 Running linter..."
+if command -v golangci-lint &> /dev/null; then
+    if ! golangci-lint run --timeout=3m 2>&1; then
+        echo "❌ Linter found issues"
+        echo "   Run 'make lint' locally to see details"
+        exit 1
+    fi
+    echo "✅ Linter passed"
+else
+    echo "⚠️  golangci-lint not found, skipping linter check"
+    echo "   Install: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
+fi
+
+# Build check
+echo "🔨 Checking if code builds..."
+if ! go build ./cmd/jellyfin 2>&1; then
+    echo "❌ Build failed"
+    exit 1
+fi
+echo "✅ Build successful"
+
+echo "✅ All pre-push checks passed!"
+exit 0

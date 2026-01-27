@@ -33,10 +33,10 @@ type DatabaseConfig struct {
 
 // CacheConfig holds cache-related configuration
 type CacheConfig struct {
-	Type  string // memory or redis
-	Addr  string // for Redis
+	Type     string // memory or redis
+	Addr     string // for Redis
 	Password string // for Redis
-	DB    int    // for Redis
+	DB       int    // for Redis
 }
 
 // LogConfig holds logging configuration

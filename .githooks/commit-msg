@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# Commit message hook for Jellyfin Go
+# Validates commit message format
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check if commit message follows Conventional Commits
+if ! echo "$COMMIT_MSG" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?: .{1,}'; then
+    echo "${RED}❌ Invalid commit message format${NC}"
+    echo ""
+    echo "${YELLOW}Commit message must follow Conventional Commits:${NC}"
+    echo "  <type>(<scope>): <subject>"
+    echo ""
+    echo "${GREEN}Examples:${NC}"
+    echo "  feat(auth): add JWT authentication"
+    echo "  fix(database): resolve connection pool leak"
+    echo "  docs(readme): update installation instructions"
+    echo "  test(user): add unit tests for user service"
+    echo ""
+    echo "${YELLOW}Valid types:${NC}"
+    echo "  feat     - New feature"
+    echo "  fix      - Bug fix"
+    echo "  docs     - Documentation changes"
+    echo "  style    - Code style changes (formatting, etc.)"
+    echo "  refactor - Code refactoring"
+    echo "  perf     - Performance improvements"
+    echo "  test     - Adding or updating tests"
+    echo "  chore    - Maintenance tasks"
+    echo "  ci       - CI/CD changes"
+    echo "  build    - Build system changes"
+    echo "  revert   - Revert previous commit"
+    echo ""
+    echo "${RED}Your commit message:${NC}"
+    echo "$COMMIT_MSG"
+    exit 1
+fi
+
+# Check subject length (should be <= 72 characters for the first line)
+SUBJECT=$(echo "$COMMIT_MSG" | head -n1)
+if [ ${#SUBJECT} -gt 72 ]; then
+    echo "${YELLOW}⚠️  Warning: Commit subject is longer than 72 characters${NC}"
+    echo "   Current length: ${#SUBJECT}"
+    echo "   Consider making it more concise"
+fi
+
+# Check for WIP commits on main/develop branches
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if echo "$COMMIT_MSG" | grep -iqE '(wip|work in progress|fixup|squash)'; then
+    if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "develop" ]; then
+        echo "${RED}❌ WIP commits are not allowed on $BRANCH branch${NC}"
+        exit 1
+    fi
+fi
+
+echo "${GREEN}✅ Commit message format is valid${NC}"
+exit 0

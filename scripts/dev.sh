@@ -29,15 +29,15 @@ function error() {
 
 function check_requirements() {
     info "Checking requirements..."
-    
+
     if ! command -v go &> /dev/null; then
         error "Go is not installed. Please install Go 1.22 or later."
         exit 1
     fi
-    
+
     GO_VERSION=$(go version | awk '{print $3}' | sed 's/go//')
     info "Go version: $GO_VERSION"
-    
+
     if ! command -v docker &> /dev/null; then
         warn "Docker is not installed. Docker is optional but recommended."
     else
@@ -47,25 +47,25 @@ function check_requirements() {
 
 function install_tools() {
     info "Installing development tools..."
-    
+
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
     go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-    
+
     info "Development tools installed"
 }
 
 function setup_db() {
     info "Setting up database..."
-    
+
     mkdir -p data
-    
+
     if [ ! -f "data/jellyfin.db" ]; then
         info "Creating SQLite database..."
         touch data/jellyfin.db
     fi
-    
+
     info "Database ready"
 }
 

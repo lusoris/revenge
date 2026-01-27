@@ -17,11 +17,11 @@ services:
       # Server
       - JELLYFIN_LOG_LEVEL=info
       - JELLYFIN_PORT=8096
-      
+
       # Database - SQLite (default)
       - JELLYFIN_DB_TYPE=sqlite
       - JELLYFIN_DB_PATH=/data/jellyfin.db
-      
+
       # Uncomment to use PostgreSQL
       # - JELLYFIN_DB_TYPE=postgres
       # - JELLYFIN_DB_HOST=postgres
@@ -29,10 +29,10 @@ services:
       # - JELLYFIN_DB_USER=jellyfin
       # - JELLYFIN_DB_PASSWORD=changeme
       # - JELLYFIN_DB_NAME=jellyfin
-      
+
       # Cache - In-memory (default)
       - JELLYFIN_CACHE_TYPE=memory
-      
+
       # Uncomment to use Redis/Dragonfly
       # - JELLYFIN_CACHE_TYPE=redis
       # - JELLYFIN_REDIS_ADDR=redis:6379

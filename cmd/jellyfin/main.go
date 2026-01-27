@@ -73,10 +73,10 @@ func initConfig() {
 // NewLogger creates a new zap logger
 func NewLogger() (*zap.Logger, error) {
 	logLevel := viper.GetString("log.level")
-	
+
 	config := zap.NewProductionConfig()
 	config.Level = zap.NewAtomicLevelAt(parseLogLevel(logLevel))
-	
+
 	logger, err := config.Build()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create logger: %w", err)
@@ -126,7 +126,7 @@ func NewRouter(logger *zap.Logger) *mux.Router {
 	r.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `{"version":"%s","build_time":"%s","git_commit":"%s"}`, 
+		fmt.Fprintf(w, `{"version":"%s","build_time":"%s","git_commit":"%s"}`,
 			Version, BuildTime, GitCommit)
 	}).Methods("GET")
 
@@ -166,7 +166,7 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *zap.Logger) {
 		},
 		OnStop: func(ctx context.Context) error {
 			logger.Info("Shutting down HTTP server")
-			
+
 			shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
 
@@ -183,7 +183,7 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *zap.Logger) {
 	// Wait for interrupt signal
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	
+
 	go func() {
 		<-quit
 		logger.Info("Received shutdown signal")

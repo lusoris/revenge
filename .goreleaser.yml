@@ -90,18 +90,18 @@ release:
   mode: replace
   header: |
     ## Jellyfin Go {{ .Tag }}
-    
+
     ### Installation
-    
+
     Download the binary for your platform below, or use Docker:
-    
+
     ```bash
     docker pull jellyfin/jellyfin-go:{{ .Tag }}
     ```
 
   footer: |
     ### Full Changelog
-    
+
     See [CHANGELOG.md](https://github.com/jellyfin/jellyfin-go/blob/main/CHANGELOG.md) for more details.
 
 dockers:
