@@ -282,7 +282,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Comment PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const output = `#### 🎉 Build Successful!
