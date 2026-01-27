@@ -20,6 +20,7 @@ type Config struct {
 	Cache    CacheConfig    `koanf:"cache"`
 	Search   SearchConfig   `koanf:"search"`
 	Auth     AuthConfig     `koanf:"auth"`
+	OIDC     OIDCConfig     `koanf:"oidc"`
 	Log      LogConfig      `koanf:"log"`
 }
 
@@ -35,6 +36,24 @@ type AuthConfig struct {
 
 	// Session settings
 	MaxSessionsPerUser int `koanf:"max_sessions_per_user"` // 0 = unlimited
+}
+
+// OIDCConfig holds OIDC/SSO configuration
+type OIDCConfig struct {
+	Enabled   bool                 `koanf:"enabled"`   // Enable OIDC authentication
+	Providers []OIDCProviderConfig `koanf:"providers"` // Static provider configuration
+}
+
+// OIDCProviderConfig holds configuration for a single OIDC provider
+type OIDCProviderConfig struct {
+	Name            string   `koanf:"name"`              // Internal name (e.g., "keycloak")
+	DisplayName     string   `koanf:"display_name"`      // UI display name
+	IssuerURL       string   `koanf:"issuer_url"`        // OIDC issuer URL
+	ClientID        string   `koanf:"client_id"`         // OAuth2 client ID
+	ClientSecret    string   `koanf:"client_secret"`     // OAuth2 client secret
+	Scopes          []string `koanf:"scopes"`            // OAuth2 scopes (default: openid, profile, email)
+	AutoCreateUsers bool     `koanf:"auto_create_users"` // Create users on first login
+	DefaultAdmin    bool     `koanf:"default_admin"`     // New users are admins
 }
 
 // ServerConfig holds server-related configuration
@@ -151,6 +170,10 @@ func Defaults() *Config {
 			RefreshTokenDuration: "7d",
 			BcryptCost:           12,
 			MaxSessionsPerUser:   0, // Unlimited
+		},
+		OIDC: OIDCConfig{
+			Enabled:   false,
+			Providers: nil,
 		},
 		Log: LogConfig{
 			Level:  "info",

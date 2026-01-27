@@ -28,6 +28,25 @@ search:
   api_key: ""
   protocol: http
 
+# Authentication settings
+auth:
+  jwt_secret: ""  # Must be set in production (min 32 chars)
+  access_token_duration: "15m"
+  refresh_token_duration: "7d"
+  bcrypt_cost: 12
+  max_sessions_per_user: 0  # 0 = unlimited
+
+# OIDC/SSO Configuration (optional)
+# Configure providers via database or environment variables
+oidc:
+  enabled: false
+  # Example provider configuration via env:
+  # JELLYFIN_OIDC_PROVIDERS_0_NAME=keycloak
+  # JELLYFIN_OIDC_PROVIDERS_0_DISPLAY_NAME=Keycloak SSO
+  # JELLYFIN_OIDC_PROVIDERS_0_ISSUER_URL=https://keycloak.example.com/realms/jellyfin
+  # JELLYFIN_OIDC_PROVIDERS_0_CLIENT_ID=jellyfin
+  # JELLYFIN_OIDC_PROVIDERS_0_CLIENT_SECRET=secret
+
 log:
   level: info
   format: console

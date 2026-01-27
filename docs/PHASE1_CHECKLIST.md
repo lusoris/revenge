@@ -46,14 +46,14 @@
 - [x] Auth middleware
 
 ### OIDC/SSO Integration
-- [ ] OIDC discovery endpoint support
-- [ ] OIDC provider configuration (Keycloak, Auth0, Authentik, etc.)
-- [ ] Authorization code flow
-- [ ] Token validation (ID token, access token)
-- [ ] User provisioning from OIDC claims
+- [x] OIDC discovery endpoint support
+- [x] OIDC provider configuration (Keycloak, Auth0, Authentik, etc.)
+- [x] Authorization code flow
+- [x] Token validation (ID token, access token)
+- [x] User provisioning from OIDC claims
 - [ ] Role/group mapping from OIDC
-- [ ] Multiple provider support
-- [ ] Fallback to local auth when OIDC unavailable
+- [x] Multiple provider support
+- [x] Fallback to local auth when OIDC unavailable
 
 ### API Endpoints
 - [x] POST /api/Users/AuthenticateByName
@@ -62,9 +62,9 @@
 - [x] POST /api/Auth/Logout
 - [x] GET /api/Users (list users, admin only)
 - [x] DELETE /api/Users/{userId} (admin only)
-- [ ] GET /api/Auth/OIDC/Providers (list configured OIDC providers)
-- [ ] GET /api/Auth/OIDC/Authorize/{providerId} (initiate OIDC flow)
-- [ ] GET /api/Auth/OIDC/Callback (OIDC callback handler)
+- [x] GET /api/Auth/OIDC/Providers (list configured OIDC providers)
+- [x] GET /api/Auth/OIDC/Authorize/{providerId} (initiate OIDC flow)
+- [x] GET /api/Auth/OIDC/Callback (OIDC callback handler)
 
 **Deliverable:** User registration, login, JWT auth, OIDC SSO working
 
