@@ -1,16 +1,14 @@
-## Setup
+## Phase 0 - Foundation ✅ COMPLETE
 
-- [ ] Initialize Go module ✅
-- [ ] Create directory structure ✅
-- [ ] Setup CI/CD ✅
-- [ ] Docker Compose for development ✅
-- [ ] Configuration system ✅
-- [ ] Logging ✅
-- [ ] Basic HTTP server ✅
-- [ ] Health check endpoints ✅
+See [docs/PHASE0_FOUNDATION.md](docs/PHASE0_FOUNDATION.md)
 
-## Next Steps
+## Phase 1 - Core MVP (Current)
 
-Continue with Week 3-4: Authentication & Users
+See [docs/PHASE1_TODO.md](docs/PHASE1_TODO.md) for detailed tasks.
 
-See [PHASE1_CHECKLIST.md](PHASE1_CHECKLIST.md) for full roadmap.
+### Next Steps
+1. Database migrations (users, sessions, oidc_providers)
+2. User & Auth (JWT + OIDC)
+3. Libraries & Scanner
+4. Media Items & Playback
+
