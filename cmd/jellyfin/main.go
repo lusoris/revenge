@@ -20,6 +20,8 @@ import (
 	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
 	"github.com/jellyfin/jellyfin-go/internal/infra/database"
 	"github.com/jellyfin/jellyfin-go/internal/service/auth"
+	"github.com/jellyfin/jellyfin-go/internal/service/library"
+	"github.com/jellyfin/jellyfin-go/internal/service/rating"
 	"github.com/jellyfin/jellyfin-go/internal/service/user"
 	"github.com/jellyfin/jellyfin-go/pkg/config"
 )
@@ -48,12 +50,16 @@ func main() {
 		// Service modules
 		auth.Module,
 		user.Module,
+		library.Module,
+		rating.Module,
 
 		// API modules
 		fx.Provide(
 			middleware.NewAuth,
 			handlers.NewAuthHandler,
 			handlers.NewUserHandler,
+			handlers.NewLibraryHandler,
+			handlers.NewRatingHandler,
 		),
 
 		// HTTP modules
@@ -130,6 +136,8 @@ func RegisterRoutes(
 	authMiddleware *middleware.Auth,
 	authHandler *handlers.AuthHandler,
 	userHandler *handlers.UserHandler,
+	libraryHandler *handlers.LibraryHandler,
+	ratingHandler *handlers.RatingHandler,
 ) {
 	// Health check endpoints (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
@@ -182,9 +190,17 @@ func RegisterRoutes(
 	mux.Handle("POST /Users/{userId}", authMiddleware.Required(http.HandlerFunc(userHandler.UpdateUser)))
 	mux.Handle("DELETE /Users/{userId}", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.DeleteUser)))
 
+	// Library endpoints
+	libraryHandler.RegisterRoutes(mux, authMiddleware)
+
+	// Rating endpoints
+	ratingHandler.RegisterRoutes(mux, authMiddleware)
+
 	logger.Info("Routes registered",
 		slog.Int("auth_routes", 4),
 		slog.Int("user_routes", 7),
+		slog.Int("library_routes", 6),
+		slog.Int("rating_routes", 7),
 		slog.Int("health_routes", 3),
 	)
 }
