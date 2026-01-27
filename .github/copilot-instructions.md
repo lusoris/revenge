@@ -1,692 +1,120 @@
 # Jellyfin Go - Copilot Instructions
 
-> Complete rewrite of Jellyfin Media Server in Go.
-> This document provides modular instructions for AI-assisted development.
-
----
+> Complete rewrite of Jellyfin Media Server in Go
 
 ## Project Overview
 
-**Jellyfin Go** is a ground-up rewrite of the [Jellyfin](https://github.com/jellyfin/jellyfin) media server from C# to Go. The goal is 100% API compatibility with the original Jellyfin while leveraging Go's performance, simplicity, and deployment advantages.
-
-### Key Facts
-
-- **Source**: C# Jellyfin (upstream in this repo under Jellyfin._/MediaBrowser._)
-- **Target**: Go 1.25 with modern idioms
-- **Versioning**: SemVer 0.x until feature parity, then v1.0.0
-- **Architecture**: Clean Architecture (Hexagonal) with DI
-- **Database**: PostgreSQL 18+ (required)
-- **Cache**: Dragonfly (Redis-compatible, required)
-- **Search**: Typesense 0.25+ (required)
-
----
-
-## Technology Stack (Go 1.25 - August 2025)
-
-### Go 1.25 New Features (USE THESE!)
-
-```go
-// Generic type aliases - fully supported (Go 1.24+)
-type Set[T comparable] = map[T]struct{}
-
-// Tool directives in go.mod - no more tools.go (Go 1.24+)
-//go:tool golang.org/x/tools/cmd/stringer
-
-// Use testing.B.Loop for benchmarks (not b.N) (Go 1.24+)
-func BenchmarkFoo(b *testing.B) {
-    for b.Loop() {
-        // benchmark code
-    }
-}
-
-// runtime.AddCleanup instead of SetFinalizer (Go 1.24+)
-// Now runs concurrently and in parallel! (Go 1.25)
-runtime.AddCleanup(obj, func(ptr *MyType) {
-    ptr.Close()
-})
-
-// encoding/json omitzero tag (Go 1.24+)
-type Config struct {
-    Timeout time.Duration `json:"timeout,omitzero"`
-}
-
-// os.Root for directory-limited filesystem access (Go 1.24+)
-// New in 1.25: Chmod, Chown, Link, MkdirAll, ReadFile, Symlink, etc.
-root, _ := os.OpenRoot("/data")
-f, _ := root.Open("file.txt") // Can't escape /data
-
-// NEW: sync.WaitGroup.Go - convenient goroutine spawning (Go 1.25)
-var wg sync.WaitGroup
-wg.Go(func() {
-    doWork()
-})
-wg.Wait()
-
-// NEW: testing/synctest for concurrent testing (Go 1.25)
-import "testing/synctest"
-func TestConcurrent(t *testing.T) {
-    synctest.Test(t, func(t *testing.T) {
-        // time is virtualized, goroutines tracked
-    })
-}
-
-// NEW: net/http.CrossOriginProtection for CSRF (Go 1.25)
-mux := http.NewServeMux()
-protection := http.CrossOriginProtection{}
-mux.Handle("/api/", protection.Handler(apiHandler))
-
-// NEW: slog.GroupAttrs for convenient grouping (Go 1.25)
-slog.Info("request", slog.GroupAttrs("http",
-    slog.String("method", r.Method),
-    slog.String("path", r.URL.Path),
-)...)
-
-// NEW: runtime/trace.FlightRecorder for debugging (Go 1.25)
-fr := &trace.FlightRecorder{}
-fr.Start()
-// On error, snapshot the last few seconds:
-fr.WriteTo(file)
-```
-
-### Core Dependencies
-
-| Package                     | Version | Purpose                          |
-| --------------------------- | ------- | -------------------------------- |
-| `go.uber.org/fx`            | v1.24+  | Dependency injection             |
-| `github.com/knadh/koanf/v2` | v2.3+   | Configuration management         |
-| `github.com/jackc/pgx/v5`   | v5.x    | PostgreSQL driver                |
-| `golang-migrate/migrate/v4` | v4.19+  | Database migrations (embedded)   |
-| `log/slog`                  | stdlib  | Structured logging               |
-| `net/http`                  | stdlib  | HTTP routing (Go 1.22+ patterns) |
-
-### Configuration with koanf
-
-```go
-import (
-    "github.com/knadh/koanf/v2"
-    "github.com/knadh/koanf/providers/file"
-    "github.com/knadh/koanf/providers/env/v2"
-    "github.com/knadh/koanf/parsers/yaml"
-)
-
-var k = koanf.New(".")
-
-// Load with merge: file first, then env overrides
-k.Load(file.Provider("config.yaml"), yaml.Parser())
-k.Load(env.Provider(".", env.Opt{
-    Prefix: "JELLYFIN_",
-    TransformFunc: func(key, val string) (string, any) {
-        return strings.ToLower(strings.TrimPrefix(key, "JELLYFIN_")), val
-    },
-}), nil)
-
-// Unmarshal to struct
-var cfg Config
-k.Unmarshal("", &cfg)
-```
-
-### Dependency Injection with fx
-
-```go
-import "go.uber.org/fx"
-
-func main() {
-    fx.New(
-        fx.Provide(
-            NewConfig,
-            NewLogger,
-            NewDatabase,
-            NewHTTPServer,
-        ),
-        fx.Invoke(StartServer),
-    ).Run()
-}
-
-// Use fx.In for parameter structs
-type ServerParams struct {
-    fx.In
-    Config   *Config
-    Logger   *slog.Logger
-    DB       *pgxpool.Pool
-    Handlers []http.Handler `group:"handlers"`
-}
-
-// Use fx.Out for result structs
-type ServerResult struct {
-    fx.Out
-    Server   *http.Server
-    Handlers http.Handler `group:"handlers"`
-}
-
-// Lifecycle hooks
-func NewHTTPServer(lc fx.Lifecycle, p ServerParams) *http.Server {
-    srv := &http.Server{...}
-    lc.Append(fx.Hook{
-        OnStart: func(ctx context.Context) error {
-            go srv.ListenAndServe()
-            return nil
-        },
-        OnStop: func(ctx context.Context) error {
-            return srv.Shutdown(ctx)
-        },
-    })
-    return srv
-}
-```
-
-### SQL with sqlc
-
-```yaml
-# sqlc.yaml
-version: "2"
-sql:
-  - engine: "postgresql"
-    queries: "internal/infra/database/queries/"
-    schema: "internal/infra/database/migrations/"
-    gen:
-      go:
-        package: "db"
-        out: "internal/infra/database/db"
-        sql_package: "pgx/v5"
-        emit_json_tags: true
-        emit_interface: true
-        emit_empty_slices: true
-        json_tags_case_style: "camel"
-```
-
-```sql
--- queries/users.sql
--- name: GetUser :one
-SELECT * FROM users WHERE id = $1 LIMIT 1;
-
--- name: ListUsers :many
-SELECT * FROM users ORDER BY name;
-
--- name: CreateUser :one
-INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *;
-
--- name: UpdateUser :exec
-UPDATE users SET name = $2 WHERE id = $1;
-
--- name: DeleteUser :exec
-DELETE FROM users WHERE id = $1;
-```
-
-### Database Migrations with golang-migrate
-
-```go
-import (
-    "embed"
-    "github.com/golang-migrate/migrate/v4"
-    "github.com/golang-migrate/migrate/v4/database/pgx/v5"
-    "github.com/golang-migrate/migrate/v4/source/iofs"
-)
-
-//go:embed migrations/*.sql
-var migrationsFS embed.FS
-
-func NewMigrator(pool *pgxpool.Pool) (*Migrator, error) {
-    // Use iofs for embedded migrations
-    source, _ := iofs.New(migrationsFS, "migrations")
-    driver, _ := pgx.WithInstance(pool, &pgx.Config{})
-    m, _ := migrate.NewWithInstance("iofs", source, "postgres", driver)
-    return &Migrator{m: m}, nil
-}
-
-// Run migrations on app start via fx.Invoke
-func RunMigrations(m *Migrator, logger *slog.Logger) error {
-    if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-        return err
-    }
-    return nil
-}
-```
-
-**Migration naming:** `NNNNNN_description.up.sql` / `NNNNNN_description.down.sql`
-
-**Keep migrations modular:** One concern per migration file (extensions, users, sessions, etc.)
-
----
-
-## Project Structure
-
-```
-jellyfin-go/
-├── cmd/
-│   └── jellyfin/
-│       └── main.go           # Entry point with fx.New()
-├── internal/
-│   ├── api/
-│   │   ├── handlers/         # HTTP handlers by domain
-│   │   └── middleware/       # Auth, logging, rate limiting
-│   ├── domain/               # Core business entities
-│   │   ├── user.go
-│   │   ├── media.go
-│   │   └── library.go
-│   ├── service/              # Business logic layer
-│   └── infra/
-│       ├── database/         # PostgreSQL + sqlc generated
-│       │   ├── migrations/   # SQL migrations (go:embed)
-│       │   ├── queries/      # SQL files for sqlc
-│       │   └── db/           # Generated code
-│       └── cache/            # Redis/Dragonfly
-├── pkg/
-│   ├── config/               # Configuration types
-│   └── logger/               # slog setup
-├── configs/
-│   ├── config.yaml
-│   └── defaults.yaml
-└── tests/
-    └── integration/
-```
-
----
-
-## Code Style Guidelines
-
-### Error Handling
-
-```go
-// Always wrap errors with context
-if err != nil {
-    return fmt.Errorf("failed to fetch user %d: %w", id, err)
-}
-
-// Use errors.Is and errors.As for checking
-if errors.Is(err, sql.ErrNoRows) {
-    return ErrUserNotFound
-}
-
-// Define sentinel errors
-var (
-    ErrUserNotFound = errors.New("user not found")
-    ErrUnauthorized = errors.New("unauthorized")
-)
-```
-
-### Context Usage
-
-```go
-// All functions accept context as first parameter
-func (s *UserService) GetUser(ctx context.Context, id int64) (*User, error) {
-    // Check context cancellation early
-    select {
-    case <-ctx.Done():
-        return nil, ctx.Err()
-    default:
-    }
-
-    return s.repo.GetUser(ctx, id)
-}
-```
-
-### Logging with slog
-
-```go
-import "log/slog"
-
-// Use structured logging
-slog.Info("user created",
-    slog.Int64("user_id", user.ID),
-    slog.String("email", user.Email),
-)
-
-// Group related attributes
-slog.Info("request completed",
-    slog.Group("request",
-        slog.String("method", r.Method),
-        slog.String("path", r.URL.Path),
-    ),
-    slog.Group("response",
-        slog.Int("status", status),
-        slog.Duration("duration", duration),
-    ),
-)
-
-// Error logging with stack context
-slog.Error("operation failed",
-    slog.String("operation", "create_user"),
-    slog.Any("error", err),
-)
-```
-
-### HTTP Handlers (Go 1.22+ patterns)
-
-```go
-mux := http.NewServeMux()
-
-// Method + path pattern matching
-mux.HandleFunc("GET /api/users", s.ListUsers)
-mux.HandleFunc("GET /api/users/{id}", s.GetUser)
-mux.HandleFunc("POST /api/users", s.CreateUser)
-mux.HandleFunc("PUT /api/users/{id}", s.UpdateUser)
-mux.HandleFunc("DELETE /api/users/{id}", s.DeleteUser)
-
-// Handler implementation
-func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
-    id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
-    if err != nil {
-        http.Error(w, "invalid user id", http.StatusBadRequest)
-        return
-    }
-
-    user, err := s.users.GetUser(r.Context(), id)
-    if errors.Is(err, ErrUserNotFound) {
-        http.Error(w, "user not found", http.StatusNotFound)
-        return
-    }
-    if err != nil {
-        slog.Error("failed to get user", slog.Any("error", err))
-        http.Error(w, "internal error", http.StatusInternalServerError)
-        return
-    }
-
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(user)
-}
-```
-
-### Testing
-
-```go
-// Table-driven tests
-func TestGetUser(t *testing.T) {
-    tests := []struct {
-        name    string
-        id      int64
-        want    *User
-        wantErr error
-    }{
-        {
-            name: "existing user",
-            id:   1,
-            want: &User{ID: 1, Name: "Alice"},
-        },
-        {
-            name:    "non-existing user",
-            id:      999,
-            wantErr: ErrUserNotFound,
-        },
-    }
-
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            got, err := svc.GetUser(context.Background(), tt.id)
-            if !errors.Is(err, tt.wantErr) {
-                t.Errorf("GetUser() error = %v, wantErr %v", err, tt.wantErr)
-            }
-            if !reflect.DeepEqual(got, tt.want) {
-                t.Errorf("GetUser() = %v, want %v", got, tt.want)
-            }
-        })
-    }
-}
-
-// Use testing.B.Loop for benchmarks (Go 1.24)
-func BenchmarkGetUser(b *testing.B) {
-    svc := setupTestService(b)
-    ctx := context.Background()
-
-    for b.Loop() {
-        _, _ = svc.GetUser(ctx, 1)
-    }
-}
-```
-
----
-
-## Jellyfin API Compatibility
-
-### Goal: 100% API Compatibility
-
-When implementing API endpoints, always reference the original C# Jellyfin:
-
-1. **Route must match exactly** - Same path, method, query params
-2. **Response structure must match** - Same JSON field names, types
-3. **Behavior must match** - Same validation, defaults, errors
-
-### Key API Patterns from C# Jellyfin
-
-```csharp
-// Original C# endpoint
-[HttpGet("Users/{userId}")]
-[Authorize(Policy = Policies.DefaultAuthorization)]
-public ActionResult<UserDto> GetUserById([FromRoute] Guid userId)
-```
-
-```go
-// Equivalent Go implementation
-// Route: GET /Users/{userId}
-func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
-    userID, err := uuid.Parse(r.PathValue("userId"))
-    if err != nil {
-        writeError(w, http.StatusBadRequest, "Invalid user ID")
-        return
-    }
-
-    // Authorization check via middleware
-    user, err := h.service.GetUser(r.Context(), userID)
-    // ... response matches UserDto JSON structure
-}
-```
-
-### Common Jellyfin Types
-
-```go
-// Match Jellyfin's GUID usage
-type ItemID = uuid.UUID
-
-// Match Jellyfin's nullable patterns
-type NullableString struct {
-    Value string
-    Valid bool
-}
-
-// Match Jellyfin's date format
-const JellyfinDateFormat = "2006-01-02T15:04:05.0000000Z"
-```
-
----
-
-## Do's and Don'ts
-
-### DO
-
-- ✅ Use `context.Context` as first parameter
-- ✅ Use `slog` for all logging
-- ✅ Use `errors.Is`/`errors.As` for error checking
-- ✅ Use `%w` for error wrapping
-- ✅ Use Go 1.22+ HTTP routing patterns
-- ✅ Use `sqlc` for database queries
-- ✅ Use `fx` for dependency injection
-- ✅ Use `koanf` for configuration
-- ✅ Write table-driven tests
-- ✅ Use `testing.B.Loop` for benchmarks (Go 1.24+)
-- ✅ Use `sync.WaitGroup.Go` for goroutine spawning (Go 1.25)
-- ✅ Use `testing/synctest` for concurrent testing (Go 1.25)
-- ✅ Use `net/http.CrossOriginProtection` for CSRF (Go 1.25)
-
-### DON'T
-
-- ❌ Use `init()` functions - use fx instead
-- ❌ Use global variables - inject dependencies
-- ❌ Use `panic` for error handling
-- ❌ Use `interface{}` - use `any` (Go 1.18+)
-- ❌ Use gorilla/mux - use stdlib http.ServeMux
-- ❌ Use Viper - use koanf v2
-- ❌ Use zap/logrus - use slog
-- ❌ Use lib/pq - use pgx/v5
-- ❌ Use `b.N` in benchmarks - use `b.Loop()` (Go 1.24+)
-- ❌ Use `automaxprocs` - Go 1.25 has container-aware GOMAXPROCS built-in
-
----
-
-## Testing Guidelines
-
-### Unit Tests
-
-- Use table-driven tests with `t.Run()`
-- Mock interfaces, not implementations
-- Test coverage targets: services 80%+, handlers 70%+
-
-### Integration Tests
-
-```go
-//go:build integration
-
-package integration
-
-// Integration tests require Docker (testcontainers-go)
-// Run with: go test -tags=integration ./tests/integration/...
-```
-
-**Build tags:** Use `//go:build integration` for tests requiring external services (Docker, databases). This prevents CI failures on environments without Docker.
-
-### Test Commands
-
-```bash
-# Unit tests only (default)
-go test ./...
-
-# With coverage
-go test ./... -cover
-
-# Integration tests (requires Docker)
-go test -tags=integration ./tests/integration/...
-
-# Specific package
-go test ./internal/service/... -v
-```
-
----
-
-## Git Workflow
-
-### Branch Strategy
-
-- `main` - Production releases only
-- `develop` - Integration branch
-- `feature/*` - New features
-- `bugfix/*` - Bug fixes
-- `release/*` - Release preparation
-
-### Commit Convention
-
-```
-type(scope): description
-
-Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
-Scope: api, db, auth, media, config, etc.
-
-Examples:
-feat(api): add user authentication endpoints
-fix(db): handle null values in media queries
-docs(readme): update installation instructions
-perf(media): optimize thumbnail generation
-```
-
----
-
-## Build & Run
+**Jellyfin Go** rewrites [Jellyfin](https://github.com/jellyfin/jellyfin) from C# to Go with 100% API compatibility.
+
+| Aspect | Value |
+|--------|-------|
+| Source | C# Jellyfin (upstream: `Jellyfin.*`, `MediaBrowser.*`, `Emby.*`) |
+| Target | Go 1.25 |
+| Database | PostgreSQL 18+ |
+| Cache | Dragonfly (Redis-compatible) |
+| Search | Typesense 0.25+ |
+
+## Quick Commands
 
 ```bash
 # Development
 go run ./cmd/jellyfin
+make dev                    # Docker Compose + hot reload
 
-# Build
+# Build & Test
 go build -o bin/jellyfin ./cmd/jellyfin
-
-# With version info
-go build -ldflags "-X main.version=0.1.0 -X main.commit=$(git rev-parse HEAD)" ./cmd/jellyfin
-
-# Test
 go test ./...
+go test -tags=integration ./tests/integration/...
 
-# Generate sqlc
-sqlc generate
+# Generate
+sqlc generate               # Database queries
+go generate ./...           # Stringer, etc.
 
 # Lint
 golangci-lint run
 ```
 
----
+## Project Structure
 
-## Extended Library Types
-
-Jellyfin Go extends the original library types. See `docs/LIBRARY_TYPES.md` for full documentation.
-
-### Library Type Enum (15 types)
-
-```sql
-CREATE TYPE library_type AS ENUM (
-    'movies', 'tvshows', 'music', 'musicvideos', 'photos', 'homevideos',
-    'boxsets', 'livetv', 'playlists', 'mixed',
-    -- Extended types (NEW)
-    'books', 'audiobooks', 'podcasts', 'adult_movies', 'adult_shows'
-);
+```
+cmd/jellyfin/main.go       # Entry point with fx.New()
+internal/
+  api/handlers/            # HTTP handlers (Go 1.22+ routing)
+  api/middleware/          # Auth, logging, CORS
+  domain/                  # Core entities (User, Media, Library)
+  service/                 # Business logic
+  infra/database/          # PostgreSQL + sqlc
+  infra/cache/             # Dragonfly
+pkg/config/                # koanf configuration
+pkg/logger/                # slog setup
+migrations/                # golang-migrate SQL files
 ```
 
-### Adult Content Handling
+## Core Stack
 
-Adult libraries (`adult_movies`, `adult_shows`) require:
+- **DI**: `go.uber.org/fx` v1.24+ (see `fx-dependency-injection.instructions.md`)
+- **Config**: `github.com/knadh/koanf/v2` (see `koanf-configuration.instructions.md`)
+- **Database**: `pgx/v5` + `sqlc` (see `sqlc-database.instructions.md`)
+- **Routing**: `net/http` stdlib (Go 1.22+ patterns)
+- **Logging**: `log/slog` stdlib
 
-- User setting `adult_content_enabled = true`
-- Metadata from Stash-Box, TPDB (not TMDB)
-- Always `normalized_level: 100`
+## Do's and Don'ts
 
----
+### DO
+- ✅ Use `context.Context` as first parameter
+- ✅ Use `slog` for logging, `errors.Is/As` for error checking
+- ✅ Use Go 1.22+ HTTP routing: `mux.HandleFunc("GET /api/users/{id}", h.GetUser)`
+- ✅ Use `sync.WaitGroup.Go` (Go 1.25) instead of `wg.Add(1); go func()`
+- ✅ Use `testing.B.Loop()` for benchmarks (Go 1.24+)
+- ✅ Use `net/http.CrossOriginProtection` for CSRF (Go 1.25)
 
-## Content Rating System
+### DON'T
+- ❌ Use `init()` - use fx constructors
+- ❌ Use global variables - inject dependencies
+- ❌ Use `panic` for errors
+- ❌ Use gorilla/mux, viper, zap, logrus, lib/pq
+- ❌ Use `automaxprocs` - Go 1.25 has built-in container support
 
-Universal age restriction system. See `docs/CONTENT_RATING.md` for full documentation.
+## API Compatibility
 
-### Key Principles
+Match original C# Jellyfin exactly:
+1. Same routes, methods, query params
+2. Same JSON response structure
+3. Same validation and error codes
 
-1. **Content has ratings**, NOT persons
-2. **Person visible** if they have ANY visible content for user
-3. **FSK18 ≠ Adult**: age_18 = violence, adult = explicit
-4. **Images need own rating** (SFW fallback for adult actors)
-
-### Normalized Rating Scale
-
-| Level | Description | Examples      |
-| ----- | ----------- | ------------- |
-| 0     | All Ages    | G, FSK 0, U   |
-| 25    | 6+          | PG, FSK 6     |
-| 50    | 12+         | PG-13, FSK 12 |
-| 75    | 16+         | R, FSK 16     |
-| 90    | 18+         | NC-17, FSK 18 |
-| 100   | Adult XXX   | R18, X18+     |
-
-### User Settings
-
-```sql
-ALTER TABLE users ADD COLUMN birthdate DATE;
-ALTER TABLE users ADD COLUMN max_rating_level INT DEFAULT 100;
-ALTER TABLE users ADD COLUMN adult_content_enabled BOOLEAN DEFAULT false;
-ALTER TABLE users ADD COLUMN preferred_rating_system VARCHAR(20);  -- 'fsk', 'mpaa'
+```csharp
+// C# Original
+[HttpGet("Users/{userId}")]
+public ActionResult<UserDto> GetUserById([FromRoute] Guid userId)
 ```
-
-### Filtering Logic
 
 ```go
-// Content allowed if normalized_level <= user.EffectiveMaxLevel()
-func (u *User) EffectiveMaxLevel() int {
-    ageLevel := ageToNormalizedLevel(calculateAge(u.Birthdate))
-    if u.MaxRatingLevel < ageLevel {
-        return u.MaxRatingLevel  // Parental override
-    }
-    return ageLevel
+// Go Equivalent
+// Route: GET /Users/{userId}
+func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+    userID, _ := uuid.Parse(r.PathValue("userId"))
+    // ... return same JSON structure as UserDto
 }
 ```
 
----
+## Commit Convention
 
-## References
+```
+type(scope): description
 
-- [Go 1.24 Release Notes](https://go.dev/doc/go1.24)
-- [uber-go/fx Documentation](https://uber-go.github.io/fx/)
-- [koanf v2 Documentation](https://github.com/knadh/koanf)
-- [sqlc Documentation](https://docs.sqlc.dev/)
-- [Jellyfin API Documentation](https://api.jellyfin.org/)
-- [Original Jellyfin Source](https://github.com/jellyfin/jellyfin)
+Types: feat, fix, docs, refactor, perf, test, ci, chore
+Scope: api, db, auth, media, config, etc.
+
+Example: feat(api): add user authentication endpoints
+```
+
+## Detailed Instructions
+
+Path-specific instructions in `.github/instructions/`:
+- `go-features.instructions.md` - Go 1.25 features
+- `fx-dependency-injection.instructions.md` - DI patterns
+- `sqlc-database.instructions.md` - Database queries
+- `koanf-configuration.instructions.md` - Config management
+- `testing-patterns.instructions.md` - Test patterns
+- `jellyfin-api-compatibility.instructions.md` - C# to Go translation
+- `oidc-authentication.instructions.md` - OIDC/SSO

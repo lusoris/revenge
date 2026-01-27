@@ -1,3 +1,7 @@
+---
+applyTo: "**/internal/**/*.go,**/cmd/**/*.go"
+---
+
 # Dependency Injection with uber-go/fx
 
 > Quick reference for fx v1.24+ patterns

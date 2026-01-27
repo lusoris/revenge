@@ -1,3 +1,7 @@
+---
+applyTo: "**/internal/infra/database/**/*.go,**/internal/infra/database/**/*.sql,sqlc.yaml"
+---
+
 # sqlc Database Guide
 
 > Type-safe SQL for Go with PostgreSQL/pgx v5

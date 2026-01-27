@@ -1,3 +1,7 @@
+---
+applyTo: "**/internal/service/oidc/**/*.go,**/internal/api/handlers/auth*.go"
+---
+
 # OIDC/SSO Integration Guide
 
 > OpenID Connect authentication for Jellyfin Go

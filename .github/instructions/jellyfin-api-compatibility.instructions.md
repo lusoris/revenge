@@ -1,3 +1,7 @@
+---
+applyTo: "**/internal/api/**/*.go"
+---
+
 # Jellyfin API Compatibility Reference
 
 > Translating C# Jellyfin API patterns to Go

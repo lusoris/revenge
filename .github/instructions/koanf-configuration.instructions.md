@@ -1,3 +1,7 @@
+---
+applyTo: "**/pkg/config/**/*.go,**/configs/*.yaml"
+---
+
 # koanf v2 Configuration Guide
 
 > Modern configuration management for Go
