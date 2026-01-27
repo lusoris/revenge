@@ -70,6 +70,52 @@ func (ns NullActivityType) Value() (driver.Value, error) {
 	return string(ns.ActivityType), nil
 }
 
+type GenreDomain string
+
+const (
+	GenreDomainMovie   GenreDomain = "movie"
+	GenreDomainTv      GenreDomain = "tv"
+	GenreDomainMusic   GenreDomain = "music"
+	GenreDomainBook    GenreDomain = "book"
+	GenreDomainPodcast GenreDomain = "podcast"
+	GenreDomainGame    GenreDomain = "game"
+)
+
+func (e *GenreDomain) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = GenreDomain(s)
+	case string:
+		*e = GenreDomain(s)
+	default:
+		return fmt.Errorf("unsupported scan type for GenreDomain: %T", src)
+	}
+	return nil
+}
+
+type NullGenreDomain struct {
+	GenreDomain GenreDomain `json:"genreDomain"`
+	Valid       bool        `json:"valid"` // Valid is true if GenreDomain is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullGenreDomain) Scan(value interface{}) error {
+	if value == nil {
+		ns.GenreDomain, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.GenreDomain.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullGenreDomain) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.GenreDomain), nil
+}
+
 type ImageType string
 
 const (
@@ -313,6 +359,18 @@ type ContentRating struct {
 	CreatedAt   time.Time   `json:"createdAt"`
 }
 
+type Genre struct {
+	ID          uuid.UUID       `json:"id"`
+	Domain      GenreDomain     `json:"domain"`
+	Name        string          `json:"name"`
+	Slug        string          `json:"slug"`
+	Description pgtype.Text     `json:"description"`
+	ParentID    pgtype.UUID     `json:"parentId"`
+	ExternalIds json.RawMessage `json:"externalIds"`
+	CreatedAt   time.Time       `json:"createdAt"`
+	UpdatedAt   time.Time       `json:"updatedAt"`
+}
+
 type Image struct {
 	ID        uuid.UUID   `json:"id"`
 	ItemID    uuid.UUID   `json:"itemId"`
@@ -378,6 +436,14 @@ type MediaItem struct {
 	CreatedAt             time.Time          `json:"createdAt"`
 	UpdatedAt             time.Time          `json:"updatedAt"`
 	SearchVector          interface{}        `json:"searchVector"`
+}
+
+type MediaItemGenre struct {
+	MediaItemID uuid.UUID      `json:"mediaItemId"`
+	GenreID     uuid.UUID      `json:"genreId"`
+	Source      string         `json:"source"`
+	Confidence  pgtype.Numeric `json:"confidence"`
+	CreatedAt   time.Time      `json:"createdAt"`
 }
 
 type MediaPerson struct {

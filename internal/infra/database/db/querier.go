@@ -12,11 +12,16 @@ import (
 )
 
 type Querier interface {
+	// Media Item Genre Associations
+	AssignGenreToMediaItem(ctx context.Context, arg AssignGenreToMediaItemParams) error
 	CountAdminUsers(ctx context.Context) (int64, error)
+	CountGenresByDomain(ctx context.Context, domain GenreDomain) (int64, error)
 	CountLibraries(ctx context.Context) (int64, error)
+	CountMediaItemsWithGenre(ctx context.Context, genreID uuid.UUID) (int64, error)
 	CountUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateContentRating(ctx context.Context, arg CreateContentRatingParams) (ContentRating, error)
+	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
 	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (CreateLibraryRow, error)
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error)
 	CreateOIDCUserLink(ctx context.Context, arg CreateOIDCUserLinkParams) (OidcUserLink, error)
@@ -25,6 +30,7 @@ type Querier interface {
 	DeleteAllContentRatings(ctx context.Context, arg DeleteAllContentRatingsParams) error
 	DeleteContentRating(ctx context.Context, arg DeleteContentRatingParams) error
 	DeleteExpiredSessions(ctx context.Context) (int64, error)
+	DeleteGenre(ctx context.Context, id uuid.UUID) error
 	DeleteLibrary(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCUserLink(ctx context.Context, id uuid.UUID) error
@@ -37,12 +43,17 @@ type Querier interface {
 	EmailExists(ctx context.Context, email pgtype.Text) (bool, error)
 	// Filter a list of content IDs to only those allowed for a user
 	FilterAllowedContentIDs(ctx context.Context, arg FilterAllowedContentIDsParams) ([]uuid.UUID, error)
+	GenreExists(ctx context.Context, id uuid.UUID) (bool, error)
+	GenreSlugExists(ctx context.Context, arg GenreSlugExistsParams) (bool, error)
 	// Get the rating to display for content, preferring the specified system
 	GetContentDisplayRating(ctx context.Context, arg GetContentDisplayRatingParams) (GetContentDisplayRatingRow, error)
 	GetContentMinLevel(ctx context.Context, arg GetContentMinLevelParams) (ContentMinRatingLevel, error)
 	GetContentRatings(ctx context.Context, arg GetContentRatingsParams) ([]GetContentRatingsRow, error)
+	GetGenreByID(ctx context.Context, id uuid.UUID) (Genre, error)
+	GetGenreBySlug(ctx context.Context, arg GetGenreBySlugParams) (Genre, error)
 	GetLibraryByID(ctx context.Context, id uuid.UUID) (GetLibraryByIDRow, error)
 	GetLibraryByName(ctx context.Context, name string) (GetLibraryByNameRow, error)
+	GetMediaItemGenres(ctx context.Context, mediaItemID uuid.UUID) ([]MediaItemGenre, error)
 	// OIDC provider queries for Jellyfin Go
 	// =============================================================================
 	// PROVIDERS
@@ -88,7 +99,11 @@ type Querier interface {
 	LibraryNameExistsExcluding(ctx context.Context, arg LibraryNameExistsExcludingParams) (bool, error)
 	ListActiveSessions(ctx context.Context, arg ListActiveSessionsParams) ([]Session, error)
 	ListAdminUsers(ctx context.Context) ([]User, error)
+	ListChildGenres(ctx context.Context, parentID pgtype.UUID) ([]Genre, error)
 	ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error)
+	ListGenresByDomain(ctx context.Context, domain GenreDomain) ([]Genre, error)
+	ListGenresForMediaItem(ctx context.Context, mediaItemID uuid.UUID) ([]Genre, error)
+	ListGenresWithCounts(ctx context.Context, arg ListGenresWithCountsParams) ([]ListGenresWithCountsRow, error)
 	ListLibraries(ctx context.Context) ([]ListLibrariesRow, error)
 	ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]ListLibrariesByTypeRow, error)
 	// List libraries accessible to a user (considers adult content settings)
@@ -99,12 +114,18 @@ type Querier interface {
 	ListRatingSystemsByCountry(ctx context.Context, countryCodes []string) ([]RatingSystem, error)
 	ListRatingsByNormalizedLevel(ctx context.Context, normalizedLevel int32) ([]ListRatingsByNormalizedLevelRow, error)
 	ListRatingsBySystem(ctx context.Context, systemID uuid.UUID) ([]ListRatingsBySystemRow, error)
+	ListTopLevelGenresByDomain(ctx context.Context, domain GenreDomain) ([]Genre, error)
 	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	ListVisibleLibraries(ctx context.Context) ([]ListVisibleLibrariesRow, error)
 	OIDCUserLinkExists(ctx context.Context, arg OIDCUserLinkExistsParams) (bool, error)
 	RefreshContentMinRatingLevels(ctx context.Context) error
+	RemoveAllGenresFromMediaItem(ctx context.Context, mediaItemID uuid.UUID) error
+	RemoveGenreFromMediaItem(ctx context.Context, arg RemoveGenreFromMediaItemParams) error
+	SearchGenres(ctx context.Context, arg SearchGenresParams) ([]Genre, error)
+	SearchGenresAllDomains(ctx context.Context, arg SearchGenresAllDomainsParams) ([]Genre, error)
 	SessionExists(ctx context.Context, tokenHash string) (bool, error)
+	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
 	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) error
 	UpdateLibraryLastScan(ctx context.Context, id uuid.UUID) error
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error)

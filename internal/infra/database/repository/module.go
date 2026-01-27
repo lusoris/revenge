@@ -25,5 +25,9 @@ var Module = fx.Options(
 		// OIDC user link repository
 		func(r *OIDCUserLinkRepository) domain.OIDCUserLinkRepository { return r },
 		NewOIDCUserLinkRepository,
+
+		// Genre repository
+		func(r *GenreRepository) domain.GenreRepository { return r },
+		NewGenreRepository,
 	),
 )
