@@ -1,20 +1,32 @@
-# Default Configuration
+# Default Configuration for Jellyfin Go
+# All services are REQUIRED - no optional backends
+
 server:
   host: 0.0.0.0
   port: 8096
 
+# PostgreSQL 18+ (REQUIRED)
 database:
-  type: sqlite
-  path: ./data/jellyfin.db
   host: localhost
   port: 5432
   user: jellyfin
+  password: ""
   name: jellyfin
+  ssl_mode: disable
+  max_conns: 25
 
+# Dragonfly (Redis-compatible, REQUIRED)
 cache:
-  type: memory
   addr: localhost:6379
+  password: ""
   db: 0
+
+# Typesense 0.25+ (REQUIRED)
+search:
+  host: localhost
+  port: 8108
+  api_key: ""
+  protocol: http
 
 log:
   level: info

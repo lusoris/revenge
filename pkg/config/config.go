@@ -18,6 +18,7 @@ type Config struct {
 	Server   ServerConfig   `koanf:"server"`
 	Database DatabaseConfig `koanf:"database"`
 	Cache    CacheConfig    `koanf:"cache"`
+	Search   SearchConfig   `koanf:"search"`
 	Log      LogConfig      `koanf:"log"`
 }
 
@@ -27,21 +28,30 @@ type ServerConfig struct {
 	Port int    `koanf:"port"`
 }
 
-// DatabaseConfig holds database-related configuration
+// DatabaseConfig holds PostgreSQL configuration (REQUIRED)
 type DatabaseConfig struct {
-	Host     string `koanf:"host"`     // PostgreSQL host
-	Port     int    `koanf:"port"`     // PostgreSQL port
-	User     string `koanf:"user"`     // PostgreSQL user
-	Password string `koanf:"password"` // PostgreSQL password
-	Name     string `koanf:"name"`     // PostgreSQL database name
-	SSLMode  string `koanf:"sslmode"`  // PostgreSQL SSL mode (disable, require, verify-ca, verify-full)
+	Host     string `koanf:"host"`
+	Port     int    `koanf:"port"`
+	User     string `koanf:"user"`
+	Password string `koanf:"password"`
+	Name     string `koanf:"name"`
+	SSLMode  string `koanf:"ssl_mode"`
+	MaxConns int    `koanf:"max_conns"`
 }
 
-// CacheConfig holds cache-related configuration (Dragonfly/Redis)
+// CacheConfig holds Dragonfly configuration (REQUIRED)
 type CacheConfig struct {
-	Addr     string `koanf:"addr"`     // Dragonfly/Redis address (host:port)
-	Password string `koanf:"password"` // Dragonfly/Redis password
-	DB       int    `koanf:"db"`       // Dragonfly/Redis database number
+	Addr     string `koanf:"addr"`
+	Password string `koanf:"password"`
+	DB       int    `koanf:"db"`
+}
+
+// SearchConfig holds Typesense configuration (REQUIRED)
+type SearchConfig struct {
+	Host     string `koanf:"host"`
+	Port     int    `koanf:"port"`
+	APIKey   string `koanf:"api_key"`
+	Protocol string `koanf:"protocol"`
 }
 
 // LogConfig holds logging configuration
@@ -104,15 +114,21 @@ func Defaults() *Config {
 			Port: 8096,
 		},
 		Database: DatabaseConfig{
-			Host:    "localhost",
-			Port:    5432,
-			User:    "jellyfin",
-			Name:    "jellyfin",
-			SSLMode: "disable",
+			Host:     "localhost",
+			Port:     5432,
+			User:     "jellyfin",
+			Name:     "jellyfin",
+			SSLMode:  "disable",
+			MaxConns: 25,
 		},
 		Cache: CacheConfig{
 			Addr: "localhost:6379",
 			DB:   0,
+		},
+		Search: SearchConfig{
+			Host:     "localhost",
+			Port:     8108,
+			Protocol: "http",
 		},
 		Log: LogConfig{
 			Level:  "info",

@@ -1,5 +1,5 @@
-# Development docker-compose with all services enabled
-version: '3.8'
+# Development docker-compose with all required services
+# PostgreSQL 18+, Dragonfly, Typesense
 
 services:
   jellyfin:
@@ -13,15 +13,17 @@ services:
       - "2345:2345"  # Delve debugger port
     environment:
       - JELLYFIN_LOG_LEVEL=debug
-      - JELLYFIN_PORT=8096
-      - JELLYFIN_DB_TYPE=postgres
-      - JELLYFIN_DB_HOST=postgres
-      - JELLYFIN_DB_PORT=5432
-      - JELLYFIN_DB_USER=jellyfin
-      - JELLYFIN_DB_PASSWORD=jellyfin_dev_pass
-      - JELLYFIN_DB_NAME=jellyfin
-      - JELLYFIN_CACHE_TYPE=redis
-      - JELLYFIN_REDIS_ADDR=redis:6379
+      - JELLYFIN_LOG_FORMAT=console
+      - JELLYFIN_SERVER_PORT=8096
+      - JELLYFIN_DATABASE_HOST=postgres
+      - JELLYFIN_DATABASE_PORT=5432
+      - JELLYFIN_DATABASE_USER=jellyfin
+      - JELLYFIN_DATABASE_PASSWORD=jellyfin_dev_pass
+      - JELLYFIN_DATABASE_NAME=jellyfin
+      - JELLYFIN_CACHE_ADDR=dragonfly:6379
+      - JELLYFIN_SEARCH_HOST=typesense
+      - JELLYFIN_SEARCH_PORT=8108
+      - JELLYFIN_SEARCH_API_KEY=dev_api_key
     volumes:
       - ./:/app
       - jellyfin-data:/data
@@ -31,10 +33,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      dragonfly:
+        condition: service_healthy
+      typesense:
         condition: service_healthy
     restart: unless-stopped
 
+  # PostgreSQL 18+ (REQUIRED)
   postgres:
     image: postgres:18-alpine
     container_name: jellyfin-postgres-dev
@@ -52,16 +57,35 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
+  # Dragonfly (Redis-compatible, REQUIRED)
+  dragonfly:
     image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
-    container_name: jellyfin-redis-dev
+    container_name: jellyfin-dragonfly-dev
     command: ["--maxmemory=1gb", "--maxmemory-policy=allkeys-lru"]
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data
+      - dragonfly-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Typesense 0.25+ (REQUIRED)
+  typesense:
+    image: typesense/typesense:0.25.2
+    container_name: jellyfin-typesense-dev
+    ports:
+      - "8108:8108"
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=dev_api_key
+      - TYPESENSE_ENABLE_CORS=true
+    volumes:
+      - typesense-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8108/health"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -69,7 +93,7 @@ services:
   # pgAdmin (optional - for database management)
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: jellyfin-pgadmin
+    container_name: jellyfin-pgadmin-dev
     ports:
       - "5050:80"
     environment:
@@ -79,11 +103,14 @@ services:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
       - postgres
+    profiles:
+      - tools
 
 volumes:
   jellyfin-data:
   jellyfin-config:
   jellyfin-cache:
   postgres-data:
-  redis-data:
+  dragonfly-data:
+  typesense-data:
   pgadmin-data:

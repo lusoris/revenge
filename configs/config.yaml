@@ -1,27 +1,34 @@
 # Jellyfin Go Configuration
+# Copy this file and adjust values for your environment
+# Environment variables override these settings (JELLYFIN_*)
 
 server:
   host: 0.0.0.0
   port: 8096
 
+# PostgreSQL 18+ (REQUIRED)
 database:
-  type: sqlite  # sqlite or postgres
-  path: ./data/jellyfin.db
+  host: localhost
+  port: 5432
+  user: jellyfin
+  password: changeme  # Override with JELLYFIN_DATABASE_PASSWORD
+  name: jellyfin
+  ssl_mode: disable
+  max_conns: 25
 
-  # PostgreSQL settings (when type is postgres)
-  # host: localhost
-  # port: 5432
-  # user: jellyfin
-  # password: changeme
-  # name: jellyfin
-
+# Dragonfly (Redis-compatible cache, REQUIRED)
 cache:
-  type: memory  # memory or redis
+  addr: localhost:6379
+  password: ""
+  db: 0
 
-  # Redis settings (when type is redis)
-  # addr: localhost:6379
-  # password: ""
-  # db: 0
+# Typesense Search Engine (REQUIRED)
+search:
+  host: localhost
+  port: 8108
+  api_key: changeme  # Override with JELLYFIN_SEARCH_API_KEY
+  protocol: http
 
 log:
-  level: info  # debug, info, warn, error  format: console  # console or json
+  level: info   # debug, info, warn, error
+  format: console  # console or json

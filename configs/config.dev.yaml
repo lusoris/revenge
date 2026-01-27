@@ -1,21 +1,32 @@
-# Example development configuration
+# Development Configuration
+# Used when JELLYFIN_ENV=dev
+
 server:
   host: 0.0.0.0
   port: 8096
 
+# PostgreSQL (docker-compose.dev.yml)
 database:
-  type: postgres
   host: localhost
   port: 5432
   user: jellyfin
   password: jellyfin_dev_pass
   name: jellyfin
+  ssl_mode: disable
+  max_conns: 10
 
+# Dragonfly (docker-compose.dev.yml)
 cache:
-  type: redis
   addr: localhost:6379
   password: ""
   db: 0
+
+# Typesense (docker-compose.dev.yml)
+search:
+  host: localhost
+  port: 8108
+  api_key: dev_api_key
+  protocol: http
 
 log:
   level: debug

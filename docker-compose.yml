@@ -1,4 +1,5 @@
-version: '3.8'
+# Production docker-compose
+# All services are REQUIRED: PostgreSQL 18+, Dragonfly, Typesense
 
 services:
   jellyfin:
@@ -6,46 +7,38 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VERSION: dev
+        VERSION: ${VERSION:-dev}
         BUILD_TIME: ${BUILD_TIME:-unknown}
         GIT_COMMIT: ${GIT_COMMIT:-unknown}
-    image: jellyfin/jellyfin-go:dev
+    image: jellyfin/jellyfin-go:${VERSION:-latest}
     container_name: jellyfin-go
     ports:
       - "8096:8096"
     environment:
-      # Server
       - JELLYFIN_LOG_LEVEL=info
-      - JELLYFIN_PORT=8096
-
-      # Database - SQLite (default)
-      - JELLYFIN_DB_TYPE=sqlite
-      - JELLYFIN_DB_PATH=/data/jellyfin.db
-
-      # Uncomment to use PostgreSQL
-      # - JELLYFIN_DB_TYPE=postgres
-      # - JELLYFIN_DB_HOST=postgres
-      # - JELLYFIN_DB_PORT=5432
-      # - JELLYFIN_DB_USER=jellyfin
-      # - JELLYFIN_DB_PASSWORD=changeme
-      # - JELLYFIN_DB_NAME=jellyfin
-
-      # Cache - In-memory (default)
-      - JELLYFIN_CACHE_TYPE=memory
-
-      # Uncomment to use Redis/Dragonfly
-      # - JELLYFIN_CACHE_TYPE=redis
-      # - JELLYFIN_REDIS_ADDR=redis:6379
-      # - JELLYFIN_REDIS_PASSWORD=
-      # - JELLYFIN_REDIS_DB=0
+      - JELLYFIN_LOG_FORMAT=json
+      - JELLYFIN_SERVER_PORT=8096
+      - JELLYFIN_DATABASE_HOST=postgres
+      - JELLYFIN_DATABASE_PORT=5432
+      - JELLYFIN_DATABASE_USER=jellyfin
+      - JELLYFIN_DATABASE_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+      - JELLYFIN_DATABASE_NAME=jellyfin
+      - JELLYFIN_DATABASE_SSL_MODE=disable
+      - JELLYFIN_CACHE_ADDR=dragonfly:6379
+      - JELLYFIN_SEARCH_HOST=typesense
+      - JELLYFIN_SEARCH_PORT=8108
+      - JELLYFIN_SEARCH_API_KEY=${TYPESENSE_API_KEY:?TYPESENSE_API_KEY is required}
     volumes:
       - jellyfin-data:/data
       - jellyfin-config:/config
-      - jellyfin-cache:/cache
-      - ./media:/media:ro  # Mount your media directory
-    # depends_on:
-    #   - postgres
-    #   - redis
+      - ./media:/media:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dragonfly:
+        condition: service_healthy
+      typesense:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8096/health/live"]
@@ -54,42 +47,56 @@ services:
       retries: 3
       start_period: 10s
 
-  # PostgreSQL (optional - uncomment if needed)
-  # postgres:
-  #   image: postgres:18-alpine
-  #   container_name: jellyfin-postgres
-  #   environment:
-  #     - POSTGRES_DB=jellyfin
-  #     - POSTGRES_USER=jellyfin
-  #     - POSTGRES_PASSWORD=changeme
-  #   volumes:
-  #     - postgres-data:/var/lib/postgresql/data
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U jellyfin"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  # PostgreSQL 18+ (REQUIRED)
+  postgres:
+    image: postgres:18-alpine
+    container_name: jellyfin-postgres
+    environment:
+      - POSTGRES_DB=jellyfin
+      - POSTGRES_USER=jellyfin
+      - POSTGRES_PASSWORD=${DB_PASSWORD:?DB_PASSWORD is required}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jellyfin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Redis/Dragonfly (optional - uncomment if needed)
-  # redis:
-  #   image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
-  #   container_name: jellyfin-redis
-  #   command: ["--maxmemory=2gb", "--maxmemory-policy=allkeys-lru"]
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - redis-data:/data
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "ping"]
-  #     interval: 10s
-  #     timeout: 3s
-  #     retries: 3
+  # Dragonfly (REQUIRED)
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    container_name: jellyfin-dragonfly
+    command: ["--maxmemory=2gb", "--maxmemory-policy=allkeys-lru"]
+    volumes:
+      - dragonfly-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Typesense 0.25+ (REQUIRED)
+  typesense:
+    image: typesense/typesense:0.25.2
+    container_name: jellyfin-typesense
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY:?TYPESENSE_API_KEY is required}
+    volumes:
+      - typesense-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8108/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   jellyfin-data:
   jellyfin-config:
-  jellyfin-cache:
-  # postgres-data:  # Uncomment if using PostgreSQL
-  # redis-data:     # Uncomment if using Redis/Dragonfly
+  postgres-data:
+  dragonfly-data:
+  typesense-data:

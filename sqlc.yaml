@@ -1,0 +1,31 @@
+# sqlc Configuration for Jellyfin Go
+# Generates type-safe Go code from SQL queries
+
+version: "2"
+
+sql:
+  - engine: "postgresql"
+    queries: "internal/infra/database/queries/"
+    schema: "migrations/"
+    gen:
+      go:
+        package: "db"
+        out: "internal/infra/database/db"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_interface: true
+        emit_empty_slices: true
+        emit_result_struct_pointers: false
+        emit_params_struct_pointers: false
+        emit_methods_with_db_argument: false
+        json_tags_case_style: "camel"
+        output_db_file_name: "db.go"
+        output_models_file_name: "models.go"
+        output_querier_file_name: "querier.go"
+        overrides:
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.UUID"
+          - db_type: "timestamptz"
+            go_type: "time.Time"
+          - db_type: "jsonb"
+            go_type: "json.RawMessage"
