@@ -7,7 +7,7 @@
 
 | Verbesserung | Priorität | Aufwand | Status |
 |--------------|-----------|---------|--------|
-| [Genre-Domain-Trennung](#1-genre-domain-trennung) | P0 | Medium | 🔴 TODO |
+| [Genre-Domain-Trennung](#1-genre-domain-trennung) | P0 | Medium | ✅ DONE |
 | [RBAC Permission System](#2-rbac-permission-system) | P1 | High | 🔴 TODO |
 | [User Groups & Family Sharing](#3-user-groups--family-sharing) | P2 | Medium | 🔴 TODO |
 | [Music Module Enhancement](#4-music-module-enhancement) | P1 | High | 🔴 TODO |
@@ -18,64 +18,47 @@
 
 ## 1. Genre-Domain-Trennung
 
+### ✅ IMPLEMENTED (Commit 6befd37c5)
+
 ### Problem im Original-Jellyfin
 - Alle Genres in einem globalen Pool gespeichert (`TEXT[]` auf Items)
 - Film-Genres erscheinen im Musik-Player (und umgekehrt)
 - Hardcoded Workarounds im Code (`ExcludeItemTypes` in `Genre.GetTaggedItems()`)
 - Keine Genre-Hierarchie (z.B. "Rock" → "Alternative Rock" → "Grunge")
 
-### Lösung
+### Implementierte Lösung
 Domain-scoped Genres mit proper Relationen statt `TEXT[]`.
 
-### Tasks
+### Abgeschlossene Tasks
 
-#### Database Migration `000016_content_genres`
-- [ ] `genre_domain` ENUM erstellen: `movie`, `tv`, `music`, `book`, `podcast`, `game`
-- [ ] `genres` Tabelle:
-  - `id UUID PRIMARY KEY`
-  - `domain genre_domain NOT NULL`
-  - `name VARCHAR(100) NOT NULL`
-  - `slug VARCHAR(100) NOT NULL` (URL-safe)
-  - `description TEXT`
-  - `parent_id UUID` (Hierarchie)
-  - `external_ids JSONB` (TMDB, MusicBrainz, etc.)
-  - `UNIQUE(domain, slug)`
-- [ ] `media_item_genres` Junction-Table:
-  - `media_item_id UUID`
-  - `genre_id UUID`
-  - `source VARCHAR(50)` (tmdb, musicbrainz, manual)
-  - `confidence DECIMAL(3,2)` (für Auto-Tagging)
-- [ ] Seed-Daten für Standard-Genres pro Domain
-- [ ] Down-Migration
+#### Database Migration `000015_genres` ✅
+- [x] `genre_domain` ENUM: `movie`, `tv`, `music`, `book`, `podcast`, `game`
+- [x] `genres` Tabelle mit Hierarchie-Support und External IDs
+- [x] `media_item_genres` Junction-Table mit Source/Confidence
+- [x] ~80 Seed-Genres für Movie, TV, Music Domains
+- [x] Down-Migration
 
-#### Domain Layer
-- [ ] `internal/domain/genre.go`:
+#### Domain Layer ✅
+- [x] `internal/domain/genre.go`:
   - `GenreDomain` Type mit Konstanten
-  - `Genre` Entity
+  - `Genre` Entity mit Parent/Children
   - `GenreRepository` Interface
   - `GenreService` Interface
 
-#### Repository Layer
-- [ ] `internal/infra/database/queries/genres.sql`:
-  - `GetGenreByID`
-  - `GetGenreBySlug`
-  - `ListGenresByDomain`
-  - `ListGenresForMediaItem`
-  - `SearchGenres`
-  - `CreateGenre`
-  - `AssignGenreToMediaItem`
-  - `RemoveGenreFromMediaItem`
-- [ ] `internal/infra/database/repository/genre.go`
-- [ ] `sqlc generate`
+#### Repository Layer ✅
+- [x] `internal/infra/database/queries/genres.sql` (18+ Queries)
+- [x] `internal/infra/database/repository/genre_repository.go`
+- [x] `sqlc generate`
 
-#### Service Layer
-- [ ] `internal/service/genre/service.go`
-- [ ] `internal/service/genre/module.go` (fx)
+#### Service Layer ✅
+- [x] `internal/service/genre/service.go`
+- [x] `internal/service/genre/module.go` (fx)
 
-#### API Layer
-- [ ] `internal/api/handlers/genre.go`:
-  - `GET /Genres` (mit `domain` Query-Param)
+#### API Layer ✅
+- [x] `internal/api/handlers/genre.go`:
+  - `GET /Genres` (mit `domain` Query-Param, `hierarchy` Mode)
   - `GET /Genres/{id}`
+  - `GET /Genres/Search` (mit `domain`, `query`)
   - `POST /Genres` (Admin)
   - `PUT /Genres/{id}` (Admin)
   - `DELETE /Genres/{id}` (Admin)
@@ -83,12 +66,14 @@ Domain-scoped Genres mit proper Relationen statt `TEXT[]`.
   - `POST /Items/{itemId}/Genres/{genreId}` (Admin)
   - `DELETE /Items/{itemId}/Genres/{genreId}` (Admin)
 
+### Offene Tasks für spätere Phase
+
 #### Migration bestehender Daten
 - [ ] Script: `TEXT[]` genres → `genres` + `media_item_genres`
 - [ ] Domain-Erkennung basierend auf `media_items.type`
 - [ ] `genres` Spalte auf `media_items` entfernen (nach Migration)
 
-#### Tests
+#### Tests (TODO)
 - [ ] Repository Tests
 - [ ] Service Tests
 - [ ] Handler Tests
