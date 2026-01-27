@@ -14,6 +14,16 @@ See [docs/PHASE1_TODO.md](docs/PHASE1_TODO.md) for detailed tasks.
 
 ---
 
+## Immediate: Update to Go 1.25
+
+- [ ] **Update go.mod** - Change `go 1.24.0` to `go 1.25`
+- [ ] **Update Dockerfile** - Already done (golang:1.25-alpine)
+- [ ] **Update CI workflows** - Check all workflow files for Go version
+- [ ] **Run `go mod tidy`** - Clean up dependencies
+- [ ] **Run tests** - Ensure everything passes with Go 1.25
+
+---
+
 ## Go 1.25 Migration Tasks (August 2025)
 
 ### New Features to Adopt
