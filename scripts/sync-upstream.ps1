@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 # Sync script for Jellyfin upstream tracking
-# 
+#
 # This script maintains the following sync chain:
 #   jellyfin/jellyfin (official) → lusoris/jellyfin (your fork) → lusoris/jellyfin-go (Go rewrite)
 #

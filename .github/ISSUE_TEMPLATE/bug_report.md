@@ -26,6 +26,7 @@ assignees: ''
 ## Environment
 - **OS**: [e.g. Ubuntu 22.04, Windows 11, macOS 14]
 - **Jellyfin Go Version**: [e.g. v0.1.0 or commit hash]
+- **Go Version** (if building from source): [e.g. 1.24.0]
 - **Database**: [SQLite or PostgreSQL version]
 - **Deployment Method**: [Docker, Native Binary, Docker Compose]
 - **Go Version** (if building from source): [e.g. 1.22.0]

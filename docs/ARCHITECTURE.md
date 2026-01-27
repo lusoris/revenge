@@ -218,7 +218,7 @@ type SearchEngine interface {
 - `models/` - Request/response DTOs
 
 **Tech Stack:**
-- `gorilla/mux` for routing
+- `net/http.ServeMux` (stdlib, Go 1.22+) for routing
 - `go-playground/validator` for validation
 - `swaggo/swag` for OpenAPI docs
 

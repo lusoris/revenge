@@ -10,14 +10,14 @@
 ## Week 1-2: Project Foundation
 
 ### Setup
-- [ ] Initialize Go module
-- [ ] Create directory structure (cmd/, internal/, pkg/, docs/)
-- [ ] Setup CI/CD (GitHub Actions: lint, test, build)
-- [ ] Docker Compose for development (PostgreSQL optional)
-- [ ] Configuration system (viper, env variables)
-- [ ] Logging (slog with JSON output)
-- [ ] Basic HTTP server (gorilla/mux)
-- [ ] Health check endpoints (/health/live, /health/ready)
+- [x] Initialize Go module
+- [x] Create directory structure (cmd/, internal/, pkg/, docs/)
+- [x] Setup CI/CD (GitHub Actions: lint, test, build)
+- [x] Docker Compose for development (PostgreSQL optional)
+- [x] Configuration system (koanf v2, env variables)
+- [x] Logging (slog + tint with pretty console output)
+- [x] Basic HTTP server (net/http.ServeMux, Go 1.22+ patterns)
+- [x] Health check endpoints (/health/live, /health/ready)
 
 ### Database
 - [ ] Choose: SQLite (default) + PostgreSQL support

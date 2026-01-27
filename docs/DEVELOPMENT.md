@@ -2,7 +2,7 @@
 
 ### Prerequisites
 
-- Go 1.22+
+- Go 1.24+
 - Docker & Docker Compose (optional)
 - Git
 
@@ -10,7 +10,7 @@
 
 ```powershell
 # Clone repository
-git clone https://github.com/jellyfin/jellyfin-go.git
+git clone https://github.com/lusoris/jellyfin-go.git
 cd jellyfin-go
 
 # Run setup script
@@ -24,7 +24,7 @@ cd jellyfin-go
 
 ```bash
 # Clone repository
-git clone https://github.com/jellyfin/jellyfin-go.git
+git clone https://github.com/lusoris/jellyfin-go.git
 cd jellyfin-go
 
 # Make scripts executable

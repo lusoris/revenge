@@ -31,7 +31,7 @@ function check_requirements() {
     info "Checking requirements..."
 
     if ! command -v go &> /dev/null; then
-        error "Go is not installed. Please install Go 1.22 or later."
+        error "Go is not installed. Please install Go 1.24 or later."
         exit 1
     fi
 

@@ -24,8 +24,7 @@ jellyfin-go/
 │       └── cache/        # Cache implementations
 │
 ├── pkg/                   # Public libraries
-│   ├── config/           # Configuration management
-│   └── logger/           # Logging utilities
+│   └── config/           # Configuration management (koanf v2)
 │
 ├── migrations/            # Database migrations
 │
@@ -123,12 +122,13 @@ Example:
 import (
     "context"
     "fmt"
+    "log/slog"
     
-    "github.com/gorilla/mux"
-    "go.uber.org/zap"
+    "github.com/knadh/koanf/v2"
+    "go.uber.org/fx"
     
-    "github.com/jellyfin/jellyfin-go/internal/domain"
-    "github.com/jellyfin/jellyfin-go/pkg/logger"
+    "github.com/lusoris/jellyfin-go/internal/domain"
+    "github.com/lusoris/jellyfin-go/pkg/config"
 )
 ```
 

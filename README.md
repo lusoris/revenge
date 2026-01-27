@@ -71,8 +71,8 @@ docker run -d \
 
 **Option 3: Development**
 ```bash
-# Prerequisites: Go 1.22+, FFmpeg
-git clone https://github.com/your-org/jellyfin-go.git
+# Prerequisites: Go 1.24+, FFmpeg
+git clone https://github.com/lusoris/jellyfin-go.git
 cd jellyfin-go
 go mod download
 go run ./cmd/jellyfin
@@ -90,10 +90,11 @@ go run ./cmd/jellyfin
 ## 🛠️ Tech Stack
 
 ### Core
-- **Language**: Go 1.22+
-- **HTTP Router**: gorilla/mux
-- **Dependency Injection**: uber-go/fx
-- **Configuration**: viper
+- **Language**: Go 1.24 (bleeding-edge stable)
+- **HTTP Router**: net/http.ServeMux (stdlib, Go 1.22+ enhanced patterns)
+- **Dependency Injection**: uber-go/fx v1.23
+- **Configuration**: koanf v2 (modern, replaces Viper)
+- **Logging**: log/slog + tint (stdlib with pretty output)
 
 ### Data Layer (Single-Server)
 - **Database**: SQLite (default) or PostgreSQL (optional)

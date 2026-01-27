@@ -9,7 +9,7 @@ echo "🔍 Running pre-commit checks..."
 
 # Check if Go is installed
 if ! command -v go &> /dev/null; then
-    echo "❌ Go is not installed. Please install Go 1.22+"
+    echo "❌ Go is not installed. Please install Go 1.24+"
     exit 1
 fi
 

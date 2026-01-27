@@ -41,7 +41,7 @@ Feature suggestions are welcome! Please:
 
 ```bash
 # Prerequisites
-- Go 1.22+
+- Go 1.24+
 - Docker & Docker Compose
 - Git
 
