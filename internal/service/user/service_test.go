@@ -598,3 +598,434 @@ func containsAt(s, substr string, start int) bool {
 	}
 	return false
 }
+
+func TestService_GetByUsername(t *testing.T) {
+	repo := newMockUserRepository()
+	svc := newService(repo, newMockSessionRepository(), &mockPasswordService{})
+
+	// Create a test user
+	user := &domain.User{
+		ID:        uuid.New(),
+		Username:  "testuser",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	repo.users[user.ID] = user
+	repo.usernameIndex[user.Username] = user.ID
+
+	tests := []struct {
+		name     string
+		username string
+		wantErr  error
+	}{
+		{
+			name:     "existing user",
+			username: "testuser",
+			wantErr:  nil,
+		},
+		{
+			name:     "non-existing user",
+			username: "nonexistent",
+			wantErr:  domain.ErrUserNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := svc.GetByUsername(context.Background(), tt.username)
+			if !errors.Is(err, tt.wantErr) {
+				t.Errorf("GetByUsername() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if tt.wantErr == nil && result.Username != tt.username {
+				t.Errorf("GetByUsername() got Username = %v, want %v", result.Username, tt.username)
+			}
+		})
+	}
+}
+
+func TestService_Update(t *testing.T) {
+	tests := []struct {
+		name        string
+		setup       func(*mockUserRepository) uuid.UUID
+		params      func(uuid.UUID) UpdateParams
+		wantErr     bool
+		errContains string
+	}{
+		{
+			name: "update username",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "oldname",
+					IsAdmin:  false,
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				newName := "newname"
+				return UpdateParams{ID: id, Username: &newName}
+			},
+			wantErr: false,
+		},
+		{
+			name: "update to existing username",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				// Create existing user with target username
+				existing := &domain.User{
+					ID:       uuid.New(),
+					Username: "existingname",
+				}
+				m.users[existing.ID] = existing
+				m.usernameIndex[existing.Username] = existing.ID
+
+				// Create user to update
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "myname",
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				duplicate := "existingname"
+				return UpdateParams{ID: id, Username: &duplicate}
+			},
+			wantErr: true,
+		},
+		{
+			name: "update to empty username",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "validname",
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				empty := "   "
+				return UpdateParams{ID: id, Username: &empty}
+			},
+			wantErr:     true,
+			errContains: "cannot be empty",
+		},
+		{
+			name: "update username too short",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "validname",
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				short := "ab"
+				return UpdateParams{ID: id, Username: &short}
+			},
+			wantErr:     true,
+			errContains: "at least 3 characters",
+		},
+		{
+			name: "update email",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "testuser",
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				email := "newemail@test.com"
+				return UpdateParams{ID: id, Email: &email}
+			},
+			wantErr: false,
+		},
+		{
+			name: "update to duplicate email",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				// Create existing user with target email
+				existingEmail := "taken@test.com"
+				existing := &domain.User{
+					ID:       uuid.New(),
+					Username: "other",
+					Email:    &existingEmail,
+				}
+				m.users[existing.ID] = existing
+				m.usernameIndex[existing.Username] = existing.ID
+				m.emailIndex[existingEmail] = existing.ID
+
+				// Create user to update
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "testuser",
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				taken := "taken@test.com"
+				return UpdateParams{ID: id, Email: &taken}
+			},
+			wantErr: true,
+		},
+		{
+			name: "update same email allowed",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				email := "my@test.com"
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "testuser",
+					Email:    &email,
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				m.emailIndex[email] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				same := "my@test.com"
+				return UpdateParams{ID: id, Email: &same}
+			},
+			wantErr: false,
+		},
+		{
+			name: "remove admin from last admin",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "lastadmin",
+					IsAdmin:  true,
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				m.adminCount = 1
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				isAdmin := false
+				return UpdateParams{ID: id, IsAdmin: &isAdmin}
+			},
+			wantErr:     true,
+			errContains: "last administrator",
+		},
+		{
+			name: "remove admin when multiple admins",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "admin1",
+					IsAdmin:  true,
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				m.adminCount = 2
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				isAdmin := false
+				return UpdateParams{ID: id, IsAdmin: &isAdmin}
+			},
+			wantErr: false,
+		},
+		{
+			name: "disable user",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:         uuid.New(),
+					Username:   "activeuser",
+					IsDisabled: false,
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				disabled := true
+				return UpdateParams{ID: id, IsDisabled: &disabled}
+			},
+			wantErr: false,
+		},
+		{
+			name: "user not found",
+			setup: func(_ *mockUserRepository) uuid.UUID {
+				return uuid.New()
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				name := "newname"
+				return UpdateParams{ID: id, Username: &name}
+			},
+			wantErr: true,
+		},
+		{
+			name: "update same username allowed",
+			setup: func(m *mockUserRepository) uuid.UUID {
+				user := &domain.User{
+					ID:       uuid.New(),
+					Username: "sameuser",
+				}
+				m.users[user.ID] = user
+				m.usernameIndex[user.Username] = user.ID
+				return user.ID
+			},
+			params: func(id uuid.UUID) UpdateParams {
+				same := "sameuser"
+				return UpdateParams{ID: id, Username: &same}
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := newMockUserRepository()
+			userID := tt.setup(repo)
+			svc := newService(repo, newMockSessionRepository(), &mockPasswordService{})
+
+			err := svc.Update(context.Background(), tt.params(userID))
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if tt.errContains != "" && err != nil {
+				if !contains(err.Error(), tt.errContains) {
+					t.Errorf("Update() error = %v, should contain %v", err, tt.errContains)
+				}
+			}
+		})
+	}
+}
+
+func TestService_Count(t *testing.T) {
+	repo := newMockUserRepository()
+	svc := newService(repo, newMockSessionRepository(), &mockPasswordService{})
+
+	// Create test users
+	for i := 0; i < 3; i++ {
+		user := &domain.User{
+			ID:       uuid.New(),
+			Username: "user" + string(rune('0'+i)),
+		}
+		repo.users[user.ID] = user
+		repo.usernameIndex[user.Username] = user.ID
+	}
+
+	count, err := svc.Count(context.Background())
+	if err != nil {
+		t.Errorf("Count() error = %v", err)
+	}
+	if count != 3 {
+		t.Errorf("Count() = %d, want 3", count)
+	}
+}
+
+func TestService_Create_WithEmail(t *testing.T) {
+	tests := []struct {
+		name     string
+		params   CreateParams
+		setup    func(*mockUserRepository)
+		wantErr  bool
+		errMatch string
+	}{
+		{
+			name: "with valid email",
+			params: CreateParams{
+				Username: "newuser",
+				Password: "password123",
+				Email:    strPtr("test@example.com"),
+			},
+			wantErr: false,
+		},
+		{
+			name: "with duplicate email",
+			params: CreateParams{
+				Username: "newuser",
+				Password: "password123",
+				Email:    strPtr("taken@example.com"),
+			},
+			setup: func(m *mockUserRepository) {
+				m.emailIndex["taken@example.com"] = uuid.New()
+			},
+			wantErr: true,
+		},
+		{
+			name: "with empty email string",
+			params: CreateParams{
+				Username: "newuser",
+				Password: "password123",
+				Email:    strPtr(""),
+			},
+			wantErr: false, // Empty string is treated as no email
+		},
+		{
+			name: "without password",
+			params: CreateParams{
+				Username: "oidcuser",
+				Password: "", // No password
+			},
+			wantErr: false, // Allowed for OIDC users
+		},
+		{
+			name: "username too long",
+			params: CreateParams{
+				Username: "thisusernameiswaywaytoolongtobevalidandshouldfailvalidation1234567890",
+				Password: "password123",
+			},
+			wantErr:  true,
+			errMatch: "at most 64 characters",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := newMockUserRepository()
+			if tt.setup != nil {
+				tt.setup(repo)
+			}
+			svc := newService(repo, newMockSessionRepository(), &mockPasswordService{})
+
+			result, err := svc.Create(context.Background(), tt.params)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.errMatch != "" && err != nil {
+				if !contains(err.Error(), tt.errMatch) {
+					t.Errorf("Create() error = %v, should contain %v", err, tt.errMatch)
+				}
+			}
+			if !tt.wantErr && result == nil {
+				t.Error("Create() returned nil user")
+			}
+		})
+	}
+}
+
+func TestService_Create_HashError(t *testing.T) {
+	repo := newMockUserRepository()
+	svc := newService(repo, newMockSessionRepository(), &mockPasswordService{
+		hashErr: errors.New("hash failed"),
+	})
+
+	_, err := svc.Create(context.Background(), CreateParams{
+		Username: "newuser",
+		Password: "password123",
+	})
+	if err == nil {
+		t.Error("Create() expected error for hash failure")
+	}
+	if !contains(err.Error(), "hash password") {
+		t.Errorf("Create() error = %v, should mention hash password", err)
+	}
+}
+
+func strPtr(s string) *string {
+	return &s
+}

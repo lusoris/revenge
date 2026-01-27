@@ -671,6 +671,7 @@ func TestService_ChangePassword(t *testing.T) {
 		currentPassword string
 		newPassword     string
 		setupUser       func(*mockUserRepository)
+		hashErr         error
 		wantErr         bool
 	}{
 		{
@@ -706,13 +707,40 @@ func TestService_ChangePassword(t *testing.T) {
 			setupUser:       func(_ *mockUserRepository) {},
 			wantErr:         true,
 		},
+		{
+			name:            "user without password hash",
+			currentPassword: "anypassword",
+			newPassword:     "newpassword123",
+			setupUser: func(m *mockUserRepository) {
+				m.addUser(&domain.User{
+					ID:           userID,
+					Username:     "oidcuser",
+					PasswordHash: nil, // No password (OIDC-only user)
+				})
+			},
+			wantErr: true,
+		},
+		{
+			name:            "hash error",
+			currentPassword: "currentpass",
+			newPassword:     "newpassword123",
+			setupUser: func(m *mockUserRepository) {
+				m.addUser(&domain.User{
+					ID:           userID,
+					Username:     "testuser",
+					PasswordHash: &currentHash,
+				})
+			},
+			hashErr: errors.New("hash failed"),
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			userRepo := newMockUserRepository()
 			sessionRepo := newMockSessionRepository()
-			passwordSvc := &mockPasswordServiceForAuth{}
+			passwordSvc := &mockPasswordServiceForAuth{hashErr: tt.hashErr}
 			tokenSvc := &mockTokenServiceForAuth{}
 
 			if tt.setupUser != nil {
@@ -724,6 +752,373 @@ func TestService_ChangePassword(t *testing.T) {
 			err := svc.ChangePassword(context.Background(), userID, tt.currentPassword, tt.newPassword)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ChangePassword() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestService_RefreshToken(t *testing.T) {
+	userID := uuid.New()
+	sessionID := uuid.New()
+	refreshToken := "valid_refresh_token"
+	refreshHash := "hash_" + refreshToken
+	expiredTime := time.Now().Add(-time.Hour)
+	futureTime := time.Now().Add(time.Hour)
+
+	tests := []struct {
+		name         string
+		refreshToken string
+		setup        func(*mockUserRepository, *mockSessionRepository)
+		wantErr      error
+	}{
+		{
+			name:         "successful refresh",
+			refreshToken: refreshToken,
+			setup: func(ur *mockUserRepository, sr *mockSessionRepository) {
+				// Add user
+				ur.addUser(&domain.User{
+					ID:         userID,
+					Username:   "testuser",
+					IsAdmin:    false,
+					IsDisabled: false,
+				})
+				// Add session with valid refresh token
+				sr.sessions[sessionID] = &domain.Session{
+					ID:               sessionID,
+					UserID:           userID,
+					TokenHash:        "old_access_hash",
+					RefreshTokenHash: &refreshHash,
+					RefreshExpiresAt: &futureTime,
+					ExpiresAt:        futureTime,
+				}
+				sr.refreshHashIndex[refreshHash] = sessionID
+			},
+			wantErr: nil,
+		},
+		{
+			name:         "refresh token not found",
+			refreshToken: "nonexistent_token",
+			setup:        func(_ *mockUserRepository, _ *mockSessionRepository) {},
+			wantErr:      domain.ErrInvalidCredentials,
+		},
+		{
+			name:         "expired refresh token",
+			refreshToken: refreshToken,
+			setup: func(ur *mockUserRepository, sr *mockSessionRepository) {
+				ur.addUser(&domain.User{
+					ID:       userID,
+					Username: "testuser",
+				})
+				sr.sessions[sessionID] = &domain.Session{
+					ID:               sessionID,
+					UserID:           userID,
+					TokenHash:        "old_access_hash",
+					RefreshTokenHash: &refreshHash,
+					RefreshExpiresAt: &expiredTime, // Expired
+					ExpiresAt:        expiredTime,
+				}
+				sr.refreshHashIndex[refreshHash] = sessionID
+			},
+			wantErr: domain.ErrSessionExpired,
+		},
+		{
+			name:         "user disabled after login",
+			refreshToken: refreshToken,
+			setup: func(ur *mockUserRepository, sr *mockSessionRepository) {
+				ur.addUser(&domain.User{
+					ID:         userID,
+					Username:   "testuser",
+					IsDisabled: true, // User got disabled
+				})
+				sr.sessions[sessionID] = &domain.Session{
+					ID:               sessionID,
+					UserID:           userID,
+					TokenHash:        "old_access_hash",
+					RefreshTokenHash: &refreshHash,
+					RefreshExpiresAt: &futureTime,
+					ExpiresAt:        futureTime,
+				}
+				sr.refreshHashIndex[refreshHash] = sessionID
+			},
+			wantErr: domain.ErrUserDisabled,
+		},
+		{
+			name:         "user not found",
+			refreshToken: refreshToken,
+			setup: func(_ *mockUserRepository, sr *mockSessionRepository) {
+				// No user, but session exists (orphaned)
+				sr.sessions[sessionID] = &domain.Session{
+					ID:               sessionID,
+					UserID:           userID, // User doesn't exist
+					TokenHash:        "old_access_hash",
+					RefreshTokenHash: &refreshHash,
+					RefreshExpiresAt: &futureTime,
+					ExpiresAt:        futureTime,
+				}
+				sr.refreshHashIndex[refreshHash] = sessionID
+			},
+			wantErr: domain.ErrUserNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			userRepo := newMockUserRepository()
+			sessionRepo := newMockSessionRepository()
+			passwordSvc := &mockPasswordServiceForAuth{}
+			tokenSvc := &mockTokenServiceForAuth{}
+
+			if tt.setup != nil {
+				tt.setup(userRepo, sessionRepo)
+			}
+
+			svc := newService(userRepo, sessionRepo, passwordSvc, tokenSvc, 0, 15*time.Minute, 7*24*time.Hour)
+
+			result, err := svc.RefreshToken(context.Background(), domain.RefreshParams{
+				RefreshToken: tt.refreshToken,
+			})
+
+			if tt.wantErr != nil {
+				if !errors.Is(err, tt.wantErr) {
+					t.Errorf("RefreshToken() error = %v, wantErr %v", err, tt.wantErr)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("RefreshToken() unexpected error = %v", err)
+				return
+			}
+
+			if result == nil {
+				t.Error("RefreshToken() returned nil result")
+				return
+			}
+			if result.AccessToken == "" {
+				t.Error("RefreshToken() returned empty access token")
+			}
+			if result.RefreshToken == "" {
+				t.Error("RefreshToken() returned empty refresh token")
+			}
+			if result.User == nil {
+				t.Error("RefreshToken() returned nil user")
+			}
+		})
+	}
+}
+
+func TestService_GetSession(t *testing.T) {
+	sessionID := uuid.New()
+	userID := uuid.New()
+	accessToken := "test_access_token"
+	tokenHash := "hash_" + accessToken
+
+	tests := []struct {
+		name        string
+		accessToken string
+		setup       func(*mockSessionRepository)
+		wantErr     error
+	}{
+		{
+			name:        "existing session",
+			accessToken: accessToken,
+			setup: func(sr *mockSessionRepository) {
+				sr.sessions[sessionID] = &domain.Session{
+					ID:        sessionID,
+					UserID:    userID,
+					TokenHash: tokenHash,
+					ExpiresAt: time.Now().Add(time.Hour),
+				}
+				sr.tokenHashIndex[tokenHash] = sessionID
+			},
+			wantErr: nil,
+		},
+		{
+			name:        "non-existing session",
+			accessToken: "nonexistent_token",
+			setup:       func(_ *mockSessionRepository) {},
+			wantErr:     domain.ErrSessionNotFound,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			userRepo := newMockUserRepository()
+			sessionRepo := newMockSessionRepository()
+			passwordSvc := &mockPasswordServiceForAuth{}
+			tokenSvc := &mockTokenServiceForAuth{}
+
+			if tt.setup != nil {
+				tt.setup(sessionRepo)
+			}
+
+			svc := newService(userRepo, sessionRepo, passwordSvc, tokenSvc, 0, 15*time.Minute, 7*24*time.Hour)
+
+			session, err := svc.GetSession(context.Background(), tt.accessToken)
+
+			if tt.wantErr != nil {
+				if !errors.Is(err, tt.wantErr) {
+					t.Errorf("GetSession() error = %v, wantErr %v", err, tt.wantErr)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("GetSession() unexpected error = %v", err)
+				return
+			}
+
+			if session == nil {
+				t.Error("GetSession() returned nil session")
+			}
+		})
+	}
+}
+
+func TestService_ResetPassword(t *testing.T) {
+	userID := uuid.New()
+
+	tests := []struct {
+		name        string
+		newPassword string
+		setup       func(*mockUserRepository)
+		hashErr     error
+		wantErr     bool
+	}{
+		{
+			name:        "successful reset",
+			newPassword: "newpassword123",
+			setup: func(m *mockUserRepository) {
+				m.addUser(&domain.User{
+					ID:       userID,
+					Username: "testuser",
+				})
+			},
+			wantErr: false,
+		},
+		{
+			name:        "user not found",
+			newPassword: "newpassword123",
+			setup:       func(_ *mockUserRepository) {},
+			wantErr:     true,
+		},
+		{
+			name:        "hash error",
+			newPassword: "newpassword123",
+			setup: func(m *mockUserRepository) {
+				m.addUser(&domain.User{
+					ID:       userID,
+					Username: "testuser",
+				})
+			},
+			hashErr: errors.New("hash failed"),
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			userRepo := newMockUserRepository()
+			sessionRepo := newMockSessionRepository()
+			passwordSvc := &mockPasswordServiceForAuth{hashErr: tt.hashErr}
+			tokenSvc := &mockTokenServiceForAuth{}
+
+			if tt.setup != nil {
+				tt.setup(userRepo)
+			}
+
+			svc := newService(userRepo, sessionRepo, passwordSvc, tokenSvc, 0, 15*time.Minute, 7*24*time.Hour)
+
+			err := svc.ResetPassword(context.Background(), userID, tt.newPassword)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ResetPassword() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestService_Login_WithSessionLimit(t *testing.T) {
+	passwordHash := "hashed_password123"
+	userID := uuid.New()
+
+	tests := []struct {
+		name             string
+		maxSessions      int
+		existingSessions int
+		wantDeletedCount int
+	}{
+		{
+			name:             "under limit - no cleanup",
+			maxSessions:      5,
+			existingSessions: 2,
+			wantDeletedCount: 0,
+		},
+		{
+			name:             "at limit - delete oldest",
+			maxSessions:      3,
+			existingSessions: 3,
+			wantDeletedCount: 1,
+		},
+		{
+			name:             "over limit - delete multiple",
+			maxSessions:      2,
+			existingSessions: 4,
+			wantDeletedCount: 3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			userRepo := newMockUserRepository()
+			sessionRepo := newMockSessionRepository()
+			passwordSvc := &mockPasswordServiceForAuth{}
+			tokenSvc := &mockTokenServiceForAuth{}
+
+			// Add user
+			userRepo.addUser(&domain.User{
+				ID:           userID,
+				Username:     "testuser",
+				PasswordHash: &passwordHash,
+				IsDisabled:   false,
+			})
+
+			// Create existing sessions
+			for i := 0; i < tt.existingSessions; i++ {
+				sessionID := uuid.New()
+				tokenHash := "hash_" + uuid.New().String()
+				sessionRepo.sessions[sessionID] = &domain.Session{
+					ID:        sessionID,
+					UserID:    userID,
+					TokenHash: tokenHash,
+					ExpiresAt: time.Now().Add(time.Hour),
+					CreatedAt: time.Now().Add(-time.Duration(i) * time.Hour), // Older sessions have older timestamps
+				}
+				sessionRepo.tokenHashIndex[tokenHash] = sessionID
+			}
+
+			svc := newService(userRepo, sessionRepo, passwordSvc, tokenSvc, tt.maxSessions, 15*time.Minute, 7*24*time.Hour)
+
+			result, err := svc.Login(context.Background(), domain.LoginParams{
+				Username: "testuser",
+				Password: "password123",
+			})
+
+			if err != nil {
+				t.Errorf("Login() error = %v", err)
+				return
+			}
+
+			if result == nil {
+				t.Error("Login() returned nil result")
+				return
+			}
+
+			// Count remaining sessions (should be at or below maxSessions)
+			count, _ := sessionRepo.CountByUser(context.Background(), userID)
+			// After login, there will be existingSessions - deleted + 1 new = maxSessions (capped)
+			expectedMax := int64(tt.maxSessions)
+			if count > expectedMax {
+				t.Errorf("Login() left %d sessions, expected max %d", count, expectedMax)
 			}
 		})
 	}
