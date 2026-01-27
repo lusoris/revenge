@@ -19,7 +19,22 @@ type Config struct {
 	Database DatabaseConfig `koanf:"database"`
 	Cache    CacheConfig    `koanf:"cache"`
 	Search   SearchConfig   `koanf:"search"`
+	Auth     AuthConfig     `koanf:"auth"`
 	Log      LogConfig      `koanf:"log"`
+}
+
+// AuthConfig holds authentication configuration
+type AuthConfig struct {
+	// JWT settings
+	JWTSecret            string `koanf:"jwt_secret"`             // Secret key for signing JWTs (min 32 chars)
+	AccessTokenDuration  string `koanf:"access_token_duration"`  // Duration string, e.g., "15m"
+	RefreshTokenDuration string `koanf:"refresh_token_duration"` // Duration string, e.g., "7d"
+
+	// Password settings
+	BcryptCost int `koanf:"bcrypt_cost"` // bcrypt cost factor (10-14 recommended)
+
+	// Session settings
+	MaxSessionsPerUser int `koanf:"max_sessions_per_user"` // 0 = unlimited
 }
 
 // ServerConfig holds server-related configuration
@@ -129,6 +144,13 @@ func Defaults() *Config {
 			Host:     "localhost",
 			Port:     8108,
 			Protocol: "http",
+		},
+		Auth: AuthConfig{
+			JWTSecret:            "", // Must be set in production
+			AccessTokenDuration:  "15m",
+			RefreshTokenDuration: "7d",
+			BcryptCost:           12,
+			MaxSessionsPerUser:   0, // Unlimited
 		},
 		Log: LogConfig{
 			Level:  "info",
