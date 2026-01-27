@@ -11,14 +11,16 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 
 ## 🎯 Project Goals
 
-**Phase 1: Single-Server Excellence**
+### Phase 1: Single-Server Excellence
+
 - **Full Feature Parity**: Complete reimplementation of Jellyfin with all 60+ API controllers
 - **Easy Setup**: Docker one-liner or native binary with PostgreSQL
 - **Hardware Acceleration**: Full support for VAAPI, NVENC, QuickSync, AMF, VideoToolbox
 - **API Compatibility**: Maintain v1 compatibility for existing Jellyfin clients
 - **Performance**: Optimized for single server, 1-100 concurrent users
 
-**Phase 2: Optional Clustering** (Future)
+### Phase 2: Optional Clustering (Future)
+
 - Horizontal scalability with multi-instance support
 - Distributed coordination (Dragonfly/Redis cluster)
 - Advanced monitoring and observability
@@ -26,34 +28,39 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 
 ## 🏗️ Architecture Highlights
 
-**Single-Server Mode (Default):**
+### Single-Server Mode (Default)
+
 - **PostgreSQL Database**: Optimized for large libraries (100k+ items)
 - **Dragonfly Cache**: High-performance caching (Redis-compatible)
 - **Typesense Search**: Lightning-fast faceted search engine
 - **Hardware Transcoding**: FFmpeg with GPU acceleration
 - **Simple Setup**: Docker Compose with all dependencies
 
-**Optional Enhancements:**
+### Optional Enhancements
+
 - CDN integration for large deployments
 - Multi-instance clustering (Phase 2)
 
 ## 📊 Performance Targets
 
-**Single-Server Mode:**
+### Single-Server Mode
+
 - **API Latency**: P95 < 50ms (PostgreSQL + Dragonfly)
 - **Concurrent Users**: 10-100 users
 - **Concurrent Streams**: 10-50 streams (hardware dependent)
 - **Library Size**: 100k+ media items (tested with 100k+)
 - **Memory Usage**: 1-4GB (depending on cache size)
 
-**Multi-Instance Mode (Optional):**
+### Multi-Instance Mode (Optional)
+
 - API Latency: P95 < 200ms
 - Concurrent Streams: 1,000+ per cluster
 - Availability: 99.9% uptime
 
 ## 🚀 Quick Start
 
-**Option 1: Docker Compose (Recommended)**
+### Option 1: Docker Compose (Recommended)
+
 ```bash
 # Clone and start all services (PostgreSQL, Dragonfly, Typesense, Jellyfin)
 git clone https://github.com/lusoris/jellyfin-go.git
@@ -63,7 +70,8 @@ docker compose up -d
 # Opens at http://localhost:8096
 ```
 
-**Option 2: Development**
+### Option 2: Development
+
 ```bash
 # Prerequisites: Go 1.24+, FFmpeg, PostgreSQL, Dragonfly
 git clone https://github.com/lusoris/jellyfin-go.git
@@ -76,7 +84,8 @@ docker compose -f docker-compose.dev.yml up -d
 go run ./cmd/jellyfin
 ```
 
-**Requirements:**
+### Requirements
+
 - PostgreSQL 18+ (required)
 - Dragonfly or Redis 7+ (required for caching)
 - Typesense 0.25+ (required for search)
@@ -94,6 +103,7 @@ go run ./cmd/jellyfin
 ## 🛠️ Tech Stack
 
 ### Core
+
 - **Language**: Go 1.24 (bleeding-edge stable)
 - **HTTP Router**: net/http.ServeMux (stdlib, Go 1.22+ enhanced patterns)
 - **Dependency Injection**: uber-go/fx v1.23
@@ -101,6 +111,7 @@ go run ./cmd/jellyfin
 - **Logging**: log/slog + tint (stdlib with pretty output)
 
 ### Data Layer
+
 - **Database**: PostgreSQL 18+ (required)
 - **Query Builder**: sqlc (type-safe SQL)
 - **Migrations**: golang-migrate
@@ -108,27 +119,32 @@ go run ./cmd/jellyfin
 - **Search**: Typesense (required, faceted search)
 
 ### Optional Components
+
 - **Load Balancer**: NGINX/HAProxy (multi-instance)
 - **CDN**: Cloudflare/Bunny (large deployments)
 
 ### Media Processing
+
 - **FFmpeg**: jellyfin-ffmpeg (hardware acceleration)
 - **Streaming**: HLS/DASH with adaptive bitrate
 - **Thumbnails**: FFmpeg tile generation
 
 ### Observability
+
 - **Metrics**: Prometheus + Grafana
 - **Tracing**: OpenTelemetry
 - **Logging**: slog (structured JSON)
 - **Profiling**: Pyroscope (continuous profiling)
 
 ### Security
+
 - **Authentication**: JWT with refresh tokens
 - **Authorization**: Custom policy engine
 - **Secrets**: HashiCorp Vault / K8s External Secrets
 - **Rate Limiting**: Token bucket with Dragonfly
 
 ### Deployment
+
 - **Containers**: Docker + Docker Compose
 - **Orchestration**: Kubernetes with Helm
 - **CI/CD**: GitHub Actions
@@ -151,7 +167,8 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 
 ## 📈 Roadmap
 
-### Phase 1: Single-Server MVP (3 months) 🎯 **PRIMARY FOCUS**
+### Phase 1: Single-Server MVP (3 months) 🎯 PRIMARY FOCUS
+
 - ⬜ PostgreSQL database with sqlc
 - ⬜ Dragonfly caching layer
 - ⬜ Typesense search integration
@@ -162,6 +179,7 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 - ⬜ PostgreSQL full-text search
 
 ### Phase 2: Transcoding (2 months)
+
 - ⬜ FFmpeg integration and hardware acceleration
 - ⬜ HLS transcoding pipeline
 - ⬜ Session management
@@ -169,6 +187,7 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 - ⬜ Jellyfin migration tool
 
 ### Phase 3: Feature Complete (2 months)
+
 - ⬜ WebSocket realtime updates
 - ⬜ Collections and playlists
 - ⬜ Advanced metadata providers (TMDb, OMDb)
@@ -177,6 +196,7 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 - ⬜ Image processing and thumbnails
 
 ### Phase 4: Polish & Security (2 months)
+
 - ⬜ Security hardening (OWASP Top 10)
 - ⬜ Performance optimization
 - ⬜ User documentation
@@ -184,6 +204,7 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 - ⬜ Backup/restore functionality
 
 ### Phase 5: Optional Clustering (Future)
+
 - ⬜ PostgreSQL read replicas
 - ⬜ Redis/Dragonfly distributed cache
 - ⬜ Multi-instance coordination
@@ -220,9 +241,9 @@ Jellyfin is a registered trademark of Jellyfin contributors. This project is an 
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/your-org/jellyfin-go/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/jellyfin-go/discussions)
-- **Security**: security@example.com
+- **Issues**: [GitHub Issues](https://github.com/lusoris/jellyfin-go/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/lusoris/jellyfin-go/discussions)
+- **Security**: See [SECURITY.md](SECURITY.md)
 
 ## 🔗 Links
 

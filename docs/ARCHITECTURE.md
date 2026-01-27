@@ -34,6 +34,7 @@ Optional:
 ```
 
 **Features in Single-Server Mode:**
+
 - ✅ All core functionality
 - ✅ Hardware transcoding
 - ✅ Multiple users
@@ -44,9 +45,11 @@ Optional:
 ### Enterprise/Multi-Instance Mode (Optional)
 
 **Target Users:** Large deployments, high availability requirements
+
 **Requirements:** Kubernetes cluster, load balancer, shared storage
 
 **Additional Features:**
+
 - Horizontal scaling (10+ instances)
 - Distributed coordination
 - CDN integration
@@ -61,7 +64,7 @@ Jellyfin Go is a flexible media server built with Go, designed to run anywhere f
 
 ### High-Level Architecture
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────┐
 │                     Load Balancer / CDN                       │
 │              (NGINX / HAProxy / Cloudflare)                   │
@@ -104,11 +107,11 @@ Jellyfin Go is a flexible media server built with Go, designed to run anywhere f
 
 ### 1. Clean Architecture (Hexagonal)
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                    API Layer                             │
 │  (HTTP Handlers, WebSocket, gRPC)                       │
-│  - gorilla/mux routing                                   │
+│  - net/http.ServeMux routing                             │
 │  - OpenAPI/Swagger docs                                  │
 │  - Rate limiting middleware                              │
 └───────────────────┬─────────────────────────────────────┘
@@ -204,6 +207,7 @@ type SearchEngine interface {
 ### 1. API Layer
 
 **Responsibilities:**
+
 - HTTP request handling
 - Input validation
 - Authentication/authorization
@@ -211,11 +215,13 @@ type SearchEngine interface {
 - Response formatting
 
 **Components:**
+
 - `handlers/` - HTTP handlers for each API endpoint
 - `middleware/` - Authentication, logging, metrics, rate limiting
 - `models/` - Request/response DTOs
 
 **Tech Stack:**
+
 - `net/http.ServeMux` (stdlib, Go 1.22+) for routing
 - `go-playground/validator` for validation
 - `swaggo/swag` for OpenAPI docs
@@ -223,12 +229,14 @@ type SearchEngine interface {
 ### 2. Service Layer
 
 **Responsibilities:**
+
 - Business logic orchestration
 - Transaction management
 - Event publishing
 - Cross-cutting concerns
 
 **Components:**
+
 - `services/auth/` - Authentication and authorization
 - `services/media/` - Media library management
 - `services/transcoding/` - FFmpeg job orchestration
@@ -237,11 +245,13 @@ type SearchEngine interface {
 ### 3. Domain Layer
 
 **Responsibilities:**
+
 - Core business entities
 - Domain rules and validation
 - Domain events
 
 **Components:**
+
 - `domain/user/` - User entity and rules
 - `domain/media/` - Media entity and rules
 - `domain/session/` - Session entity and rules
@@ -250,12 +260,14 @@ type SearchEngine interface {
 ### 4. Infrastructure Layer
 
 **Responsibilities:**
+
 - External system integration
 - Data persistence
 - Caching
 - Message queuing
 
 **Components:**
+
 - `infra/postgres/` - PostgreSQL repository implementations
 - `infra/dragonfly/` - Dragonfly cache client
 - `infra/typesense/` - Typesense search client
@@ -268,7 +280,7 @@ type SearchEngine interface {
 
 ### 1. Media Upload Flow
 
-```
+```text
 Client → API Handler → Auth Middleware → Upload Service
                                              │
                                              ├─→ Virus Scan (optional)
@@ -282,7 +294,7 @@ Client → API Handler → Auth Middleware → Upload Service
 
 ### 2. Streaming Flow (HLS)
 
-```
+```text
 Client Request → LB → API Instance
                         │
                         ├─→ Auth Check (JWT validation)
@@ -302,7 +314,7 @@ Client Request → LB → API Instance
 
 ### 3. Search Flow
 
-```
+```text
 Client Search → API → Search Service
                         │
                         ├─→ Check Cache (Ristretto)
@@ -320,7 +332,7 @@ Client Search → API → Search Service
 
 ### 4. Multi-Instance Coordination
 
-```
+```text
 Instance 1: User updates media
     │
     ├─→ Write to PostgreSQL (primary)
