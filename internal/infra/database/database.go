@@ -18,8 +18,16 @@ import (
 var Module = fx.Module("database",
 	fx.Provide(
 		NewPool,
+		NewMigrator,
 	),
+	fx.Invoke(RunMigrations),
 )
+
+// RunMigrations runs database migrations on application start.
+// This is invoked automatically by fx after pool is ready.
+func RunMigrations(migrator *Migrator) error {
+	return migrator.Up(context.Background())
+}
 
 // PoolParams contains dependencies for creating a database pool.
 type PoolParams struct {

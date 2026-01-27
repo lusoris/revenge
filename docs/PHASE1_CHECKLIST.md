@@ -21,8 +21,8 @@
 
 ### Database
 - [x] PostgreSQL 18+ (required database)
-- [ ] Setup golang-migrate
-- [ ] Initial schema (users, sessions, libraries, media_items)
+- [x] Setup golang-migrate
+- [x] Initial schema (users, sessions, libraries, media_items)
 - [x] Setup sqlc for type-safe queries
 - [x] Repository interfaces
 
