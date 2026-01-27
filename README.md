@@ -1,11 +1,11 @@
 # Jellyfin Go
 
-[![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
-[![Security](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml/badge.svg)](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml)
+[![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
+[![Security](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/security.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/jellyfin-go)](https://goreportcard.com/report/github.com/lusoris/jellyfin-go)
-[![codecov](https://codecov.io/gh/lusoris/jellyfin-go/branch/main/graph/badge.svg)](https://codecov.io/gh/lusoris/jellyfin-go)
+[![codecov](https://codecov.io/gh/lusoris/jellyfin-go/branch/develop/graph/badge.svg)](https://codecov.io/gh/lusoris/jellyfin-go)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/jellyfin-go)](go.mod)
-[![License](https://img.shields.io/github/license/lusoris/jellyfin-go)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--2.0-blue)](LICENSE)
 
 A high-performance, production-grade media server reimplementation of Jellyfin in Go.
 
