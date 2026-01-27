@@ -1,0 +1,21 @@
+# Example development configuration
+server:
+  host: 0.0.0.0
+  port: 8096
+
+database:
+  type: postgres
+  host: localhost
+  port: 5432
+  user: jellyfin
+  password: jellyfin_dev_pass
+  name: jellyfin
+
+cache:
+  type: redis
+  addr: localhost:6379
+  password: ""
+  db: 0
+
+log:
+  level: debug

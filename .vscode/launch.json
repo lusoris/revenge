@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Jellyfin",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/jellyfin",
+      "env": {
+        "JELLYFIN_LOG_LEVEL": "debug",
+        "JELLYFIN_DB_TYPE": "sqlite",
+        "JELLYFIN_DB_PATH": "./data/jellyfin.db"
+      },
+      "args": [],
+      "showLog": true
+    },
+    {
+      "name": "Attach to Process",
+      "type": "go",
+      "request": "attach",
+      "mode": "local",
+      "processId": "${command:pickProcess}"
+    },
+    {
+      "name": "Test Current File",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${file}",
+      "args": ["-v"]
+    },
+    {
+      "name": "Test Current Package",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${fileDirname}",
+      "args": ["-v"]
+    }
+  ]
+}

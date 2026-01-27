@@ -1,0 +1,93 @@
+linters:
+  enable:
+    - errcheck       # Check for unchecked errors
+    - gosimple       # Simplify code
+    - govet          # Report suspicious constructs
+    - ineffassign    # Detect ineffectual assignments
+    - staticcheck    # Static analysis
+    - unused         # Check for unused constants, variables, functions and types
+    - gofmt          # Check formatting
+    - goimports      # Check import ordering
+    - misspell       # Check for misspelled English words
+    - revive         # Replacement for golint
+    - typecheck      # Type-check code
+    - bodyclose      # Check HTTP response body is closed
+    - gosec          # Security problems
+    - gocritic       # Opinionated checks
+    - unconvert      # Remove unnecessary type conversions
+    - unparam        # Unused function parameters
+    - prealloc       # Find slice declarations that could be preallocated
+    - nolintlint     # Ill-formed or insufficient nolint directives
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  govet:
+    enable-all: true
+    disable:
+      - shadow
+
+  goimports:
+    local-prefixes: github.com/jellyfin/jellyfin-go
+
+  revive:
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: increment-decrement
+      - name: var-naming
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: indent-error-flow
+      - name: superfluous-else
+      - name: unreachable-code
+
+  gosec:
+    excludes:
+      - G104 # Audit errors not checked
+      - G304 # File path provided as taint input
+      - G404 # Use of weak random number generator
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - whyNoLint
+      - unnamedResult
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files
+    - path: _test\.go
+      linters:
+        - gosec
+        - errcheck
+        - gocritic
+
+    # Exclude known issues
+    - text: "weak cryptographic primitive"
+      linters:
+        - gosec
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true

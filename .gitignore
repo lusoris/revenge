@@ -1,0 +1,99 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the go build/install/test commands
+/bin/
+/dist/
+/build/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.txt
+coverage.html
+*.coverprofile
+
+# Go workspace file
+go.work
+
+# Dependency directories
+/vendor/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IDE - IntelliJ/GoLand
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Vim
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Application
+jellyfin-go
+/data/
+/logs/
+/config/
+/cache/
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+/tmp/
+*.tmp
+
+# FFmpeg/Media
+/transcodes/
+/media-test/
+
+# Docker
+docker-compose.override.yml
+
+# Development
+.air.toml
+__debug_bin*
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Generated files
+/generated/
+*.pb.go
+*_gen.go
+
+# Documentation build
+/site/

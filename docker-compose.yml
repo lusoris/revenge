@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  jellyfin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: dev
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    image: jellyfin/jellyfin-go:dev
+    container_name: jellyfin-go
+    ports:
+      - "8096:8096"
+    environment:
+      # Server
+      - JELLYFIN_LOG_LEVEL=info
+      - JELLYFIN_PORT=8096
+      
+      # Database - SQLite (default)
+      - JELLYFIN_DB_TYPE=sqlite
+      - JELLYFIN_DB_PATH=/data/jellyfin.db
+      
+      # Uncomment to use PostgreSQL
+      # - JELLYFIN_DB_TYPE=postgres
+      # - JELLYFIN_DB_HOST=postgres
+      # - JELLYFIN_DB_PORT=5432
+      # - JELLYFIN_DB_USER=jellyfin
+      # - JELLYFIN_DB_PASSWORD=changeme
+      # - JELLYFIN_DB_NAME=jellyfin
+      
+      # Cache - In-memory (default)
+      - JELLYFIN_CACHE_TYPE=memory
+      
+      # Uncomment to use Redis/Dragonfly
+      # - JELLYFIN_CACHE_TYPE=redis
+      # - JELLYFIN_REDIS_ADDR=redis:6379
+      # - JELLYFIN_REDIS_PASSWORD=
+      # - JELLYFIN_REDIS_DB=0
+    volumes:
+      - jellyfin-data:/data
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
+      - ./media:/media:ro  # Mount your media directory
+    # depends_on:
+    #   - postgres
+    #   - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8096/health/live"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # PostgreSQL (optional - uncomment if needed)
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: jellyfin-postgres
+  #   environment:
+  #     - POSTGRES_DB=jellyfin
+  #     - POSTGRES_USER=jellyfin
+  #     - POSTGRES_PASSWORD=changeme
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U jellyfin"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Redis/Dragonfly (optional - uncomment if needed)
+  # redis:
+  #   image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+  #   container_name: jellyfin-redis
+  #   command: ["--maxmemory=2gb", "--maxmemory-policy=allkeys-lru"]
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 3s
+  #     retries: 3
+
+volumes:
+  jellyfin-data:
+  jellyfin-config:
+  jellyfin-cache:
+  # postgres-data:  # Uncomment if using PostgreSQL
+  # redis-data:     # Uncomment if using Redis/Dragonfly
