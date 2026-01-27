@@ -12,6 +12,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jellyfin/jellyfin-go/internal/infra/database"
 	"github.com/jellyfin/jellyfin-go/pkg/config"
 	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
@@ -29,9 +31,17 @@ var (
 func main() {
 	// Create Fx application with modern dependency injection
 	app := fx.New(
+		// Core modules
 		fx.Provide(
 			config.New,
 			NewLogger,
+		),
+
+		// Infrastructure modules
+		database.Module,
+
+		// HTTP modules
+		fx.Provide(
 			NewMux,
 			NewServer,
 		),
@@ -97,16 +107,29 @@ func NewMux(logger *slog.Logger) *http.ServeMux {
 }
 
 // RegisterRoutes registers all HTTP routes
-func RegisterRoutes(mux *http.ServeMux, logger *slog.Logger) {
+func RegisterRoutes(mux *http.ServeMux, logger *slog.Logger, pool *pgxpool.Pool) {
 	// Health check endpoints (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
 
+	// Readiness check - verifies database connectivity
 	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
+		if err := database.HealthCheck(r.Context(), pool); err != nil {
+			logger.Error("Readiness check failed", slog.Any("error", err))
+			http.Error(w, "Database not ready", http.StatusServiceUnavailable)
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Ready"))
+	})
+
+	// Database stats endpoint
+	mux.HandleFunc("GET /health/db", func(w http.ResponseWriter, r *http.Request) {
+		stats := database.Stats(pool)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(stats)
 	})
 
 	// Version endpoint with structured response

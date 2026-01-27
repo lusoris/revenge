@@ -8,6 +8,15 @@ BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GIT_COMMIT}"
 
+# Database configuration (override with environment variables)
+DB_HOST?=localhost
+DB_PORT?=5432
+DB_USER?=jellyfin
+DB_PASSWORD?=jellyfin_dev_pass
+DB_NAME?=jellyfin
+DB_SSLMODE?=disable
+DATABASE_URL?=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
+
 help: ## Show this help message
 	@echo 'Usage: make [target]'
 	@echo ''
@@ -92,13 +101,25 @@ docker-compose-down: ## Stop services with docker-compose
 	@echo "Stopping services..."
 	docker-compose down
 
-migrate-up: ## Run database migrations up (PostgreSQL)
+migrate-up: ## Run database migrations up
 	@echo "Running migrations up..."
-	migrate -path migrations -database "postgres://jellyfin:password@localhost:5432/jellyfin?sslmode=disable" up
+	migrate -path migrations -database "$(DATABASE_URL)" up
 
-migrate-down: ## Run database migrations down (PostgreSQL)
+migrate-down: ## Run database migrations down (one step)
 	@echo "Running migrations down..."
-	migrate -path migrations -database "postgres://jellyfin:password@localhost:5432/jellyfin?sslmode=disable" down
+	migrate -path migrations -database "$(DATABASE_URL)" down 1
+
+migrate-down-all: ## Run all database migrations down
+	@echo "Running all migrations down..."
+	migrate -path migrations -database "$(DATABASE_URL)" down -all
+
+migrate-force: ## Force migration version (usage: make migrate-force VERSION=1)
+	@echo "Forcing migration version: ${VERSION}..."
+	migrate -path migrations -database "$(DATABASE_URL)" force ${VERSION}
+
+migrate-version: ## Show current migration version
+	@echo "Current migration version:"
+	migrate -path migrations -database "$(DATABASE_URL)" version
 
 migrate-create: ## Create a new migration (usage: make migrate-create NAME=create_users_table)
 	@echo "Creating migration: ${NAME}..."
