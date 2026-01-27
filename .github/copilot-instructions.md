@@ -12,7 +12,7 @@
 ### Key Facts
 
 - **Source**: C# Jellyfin (upstream in this repo under Jellyfin._/MediaBrowser._)
-- **Target**: Go 1.24 with modern idioms
+- **Target**: Go 1.25 with modern idioms
 - **Versioning**: SemVer 0.x until feature parity, then v1.0.0
 - **Architecture**: Clean Architecture (Hexagonal) with DI
 - **Database**: PostgreSQL 18+ (required)
@@ -21,37 +21,71 @@
 
 ---
 
-## Technology Stack (Go 1.24 - February 2025)
+## Technology Stack (Go 1.25 - August 2025)
 
-### Go 1.24 New Features (USE THESE!)
+### Go 1.25 New Features (USE THESE!)
 
 ```go
-// Generic type aliases - fully supported
+// Generic type aliases - fully supported (Go 1.24+)
 type Set[T comparable] = map[T]struct{}
 
-// Tool directives in go.mod - no more tools.go
+// Tool directives in go.mod - no more tools.go (Go 1.24+)
 //go:tool golang.org/x/tools/cmd/stringer
 
-// Use testing.B.Loop for benchmarks (not b.N)
+// Use testing.B.Loop for benchmarks (not b.N) (Go 1.24+)
 func BenchmarkFoo(b *testing.B) {
     for b.Loop() {
         // benchmark code
     }
 }
 
-// runtime.AddCleanup instead of SetFinalizer
+// runtime.AddCleanup instead of SetFinalizer (Go 1.24+)
+// Now runs concurrently and in parallel! (Go 1.25)
 runtime.AddCleanup(obj, func(ptr *MyType) {
     ptr.Close()
 })
 
-// encoding/json omitzero tag
+// encoding/json omitzero tag (Go 1.24+)
 type Config struct {
     Timeout time.Duration `json:"timeout,omitzero"`
 }
 
-// os.Root for directory-limited filesystem access
+// os.Root for directory-limited filesystem access (Go 1.24+)
+// New in 1.25: Chmod, Chown, Link, MkdirAll, ReadFile, Symlink, etc.
 root, _ := os.OpenRoot("/data")
 f, _ := root.Open("file.txt") // Can't escape /data
+
+// NEW: sync.WaitGroup.Go - convenient goroutine spawning (Go 1.25)
+var wg sync.WaitGroup
+wg.Go(func() {
+    doWork()
+})
+wg.Wait()
+
+// NEW: testing/synctest for concurrent testing (Go 1.25)
+import "testing/synctest"
+func TestConcurrent(t *testing.T) {
+    synctest.Test(t, func(t *testing.T) {
+        // time is virtualized, goroutines tracked
+    })
+}
+
+// NEW: net/http.CrossOriginProtection for CSRF (Go 1.25)
+mux := http.NewServeMux()
+protection := http.CrossOriginProtection{}
+mux.Handle("/api/", protection.Handler(apiHandler))
+
+// NEW: slog.GroupAttrs for convenient grouping (Go 1.25)
+slog.Info("request", slog.GroupAttrs("http",
+    slog.String("method", r.Method),
+    slog.String("path", r.URL.Path),
+)...)
+
+// NEW: runtime/trace.FlightRecorder for debugging (Go 1.25)
+fr := &trace.FlightRecorder{}
+fr.Start()
+// On error, snapshot the last few seconds:
+fr.WriteTo(file)
 ```
 
 ### Core Dependencies
@@ -467,7 +501,10 @@ const JellyfinDateFormat = "2006-01-02T15:04:05.0000000Z"
 - ✅ Use `fx` for dependency injection
 - ✅ Use `koanf` for configuration
 - ✅ Write table-driven tests
-- ✅ Use `testing.B.Loop` for benchmarks (Go 1.24)
+- ✅ Use `testing.B.Loop` for benchmarks (Go 1.24+)
+- ✅ Use `sync.WaitGroup.Go` for goroutine spawning (Go 1.25)
+- ✅ Use `testing/synctest` for concurrent testing (Go 1.25)
+- ✅ Use `net/http.CrossOriginProtection` for CSRF (Go 1.25)
 
 ### DON'T
 
@@ -479,7 +516,8 @@ const JellyfinDateFormat = "2006-01-02T15:04:05.0000000Z"
 - ❌ Use Viper - use koanf v2
 - ❌ Use zap/logrus - use slog
 - ❌ Use lib/pq - use pgx/v5
-- ❌ Use `b.N` in benchmarks - use `b.Loop()` (Go 1.24)
+- ❌ Use `b.N` in benchmarks - use `b.Loop()` (Go 1.24+)
+- ❌ Use `automaxprocs` - Go 1.25 has container-aware GOMAXPROCS built-in
 
 ---
 
