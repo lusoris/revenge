@@ -1,38 +1,27 @@
 # Branch Protection Rules
 
-This document outlines the recommended branch protection rules for the Jellyfin Go repository.
+This document outlines the branch protection rules for the Jellyfin Go repository.
+
+> **Status**: ✅ Branch protection is **ACTIVE** on `main` and `develop`
 
 ## Main Branch (`main`)
 
 The `main` branch contains production-ready code.
 
-### Protection Rules:
+### Active Protection Rules:
 
 - ✅ **Require pull request reviews before merging**
-  - Required approving reviews: 2
+  - Required approving reviews: 1
   - Dismiss stale pull request approvals when new commits are pushed
-  - Require review from Code Owners
-  
+
 - ✅ **Require status checks to pass before merging**
   - Require branches to be up to date before merging
   - Required status checks:
-    - `Lint & Code Quality`
-    - `Test (Go 1.22 / ubuntu-latest)`
-    - `Test (Go 1.22 / windows-latest)`
-    - `Test (Go 1.22 / macos-latest)`
-    - `Build Artifacts`
-    - `Security Scan`
-
-- ✅ **Require conversation resolution before merging**
-
-- ✅ **Require signed commits**
+    - `test`
+    - `lint`
+    - `build`
 
 - ✅ **Require linear history** (no merge commits)
-
-- ✅ **Include administrators** (enforce rules for admins)
-
-- ✅ **Restrict who can push to matching branches**
-  - Only allow merge via pull requests
 
 - ✅ **Allow force pushes**: Disabled
 
@@ -42,22 +31,14 @@ The `main` branch contains production-ready code.
 
 The `develop` branch is the integration branch for ongoing development.
 
-### Protection Rules:
+### Active Protection Rules:
 
-- ✅ **Require pull request reviews before merging**
-  - Required approving reviews: 1
-  - Dismiss stale pull request approvals when new commits are pushed
-  
 - ✅ **Require status checks to pass before merging**
   - Require branches to be up to date before merging
   - Required status checks:
-    - `Lint & Code Quality`
-    - `Test (Go 1.22 / ubuntu-latest)`
-    - `Build Artifacts`
-
-- ✅ **Require conversation resolution before merging**
-
-- ✅ **Require linear history**
+    - `test`
+    - `lint`
+    - `build`
 
 - ✅ **Allow force pushes**: Disabled
 
@@ -91,7 +72,7 @@ Release branches are created from `develop` when preparing a new release.
 
 - ✅ **Require pull request reviews before merging to main**
   - Required approving reviews: 2
-  
+
 - ✅ **Only allow merges to `main` and `develop`**
 
 ### Release Process:

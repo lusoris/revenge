@@ -36,15 +36,19 @@
   - Better error messages
   - Lifecycle management
 
-#### Database (Future)
-- **modernc.org/sqlite** - Pure Go SQLite
-  - No CGO required
-  - Better portability
-  - Modern API
-- **pgx v5** - PostgreSQL driver
+#### Database
+- **pgx v5** - PostgreSQL driver (required)
   - Better performance than lib/pq
   - Native prepared statements
   - Connection pooling
+- **Dragonfly** - Redis-compatible cache (required)
+  - High performance (25x faster than Redis)
+  - Lower memory usage
+  - Drop-in Redis replacement
+- **Typesense** - Search engine (required)
+  - Lightning-fast typo-tolerant search
+  - Faceted filtering
+  - Lower latency than Elasticsearch
 
 ### Removed/Replaced
 

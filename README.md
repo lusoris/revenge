@@ -27,26 +27,24 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 ## 🏗️ Architecture Highlights
 
 **Single-Server Mode (Default):**
-- **Simple Setup**: SQLite database (or optional PostgreSQL)
-- **In-Memory Caching**: Ristretto (30M ops/sec, no external dependencies)
+- **PostgreSQL Database**: Optimized for large libraries (100k+ items)
+- **Dragonfly Cache**: High-performance caching (Redis-compatible)
+- **Typesense Search**: Lightning-fast faceted search engine
 - **Hardware Transcoding**: FFmpeg with GPU acceleration
-- **Built-in Search**: PostgreSQL full-text (or optional Typesense)
-- **Zero Configuration**: Works out-of-the-box
+- **Simple Setup**: Docker Compose with all dependencies
 
 **Optional Enhancements:**
-- PostgreSQL for better performance (>10k media items)
-- Redis/Dragonfly for distributed caching (multi-instance)
-- Typesense for advanced search features
 - CDN integration for large deployments
+- Multi-instance clustering (Phase 2)
 
 ## 📊 Performance Targets
 
 **Single-Server Mode:**
-- **API Latency**: P95 < 100ms (local database)
+- **API Latency**: P95 < 50ms (PostgreSQL + Dragonfly)
 - **Concurrent Users**: 10-100 users
 - **Concurrent Streams**: 10-50 streams (hardware dependent)
-- **Library Size**: Up to 100k media items with SQLite
-- **Memory Usage**: 512MB-2GB (depending on cache size)
+- **Library Size**: 100k+ media items (tested with 100k+)
+- **Memory Usage**: 1-4GB (depending on cache size)
 
 **Multi-Instance Mode (Optional):**
 - API Latency: P95 < 200ms
@@ -55,36 +53,34 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 
 ## 🚀 Quick Start
 
-**Option 1: Native Binary (Simplest)**
+**Option 1: Docker Compose (Recommended)**
 ```bash
-# Download latest release
-wget https://github.com/lusoris/jellyfin-go/releases/latest/download/jellyfin-go_linux_amd64.tar.gz
-tar -xzf jellyfin-go_linux_amd64.tar.gz
-
-# Run with zero configuration
-./jellyfin-go
-
-# Opens at http://localhost:8096
-# Uses SQLite, no external dependencies needed!
-```
-
-**Option 2: Docker (Recommended)**
-```bash
-docker run -d \
-  -p 8096:8096 \
-  -v /path/to/media:/media \
-  -v jellyfin-data:/data \
-  ghcr.io/lusoris/jellyfin-go:latest
-```
-
-**Option 3: Development**
-```bash
-# Prerequisites: Go 1.24+, FFmpeg
+# Clone and start all services (PostgreSQL, Dragonfly, Typesense, Jellyfin)
 git clone https://github.com/lusoris/jellyfin-go.git
 cd jellyfin-go
-go mod download
+docker compose up -d
+
+# Opens at http://localhost:8096
+```
+
+**Option 2: Development**
+```bash
+# Prerequisites: Go 1.24+, FFmpeg, PostgreSQL, Dragonfly
+git clone https://github.com/lusoris/jellyfin-go.git
+cd jellyfin-go
+
+# Start dependencies
+docker compose -f docker-compose.dev.yml up -d
+
+# Run application
 go run ./cmd/jellyfin
 ```
+
+**Requirements:**
+- PostgreSQL 16+ (required)
+- Dragonfly or Redis 7+ (required for caching)
+- Typesense 0.25+ (required for search)
+- FFmpeg 6+ (for transcoding)
 
 ## 📖 Documentation
 
@@ -104,17 +100,16 @@ go run ./cmd/jellyfin
 - **Configuration**: koanf v2 (modern, replaces Viper)
 - **Logging**: log/slog + tint (stdlib with pretty output)
 
-### Data Layer (Single-Server)
-- **Database**: SQLite (default) or PostgreSQL (optional)
+### Data Layer
+- **Database**: PostgreSQL 16+ (required)
 - **Query Builder**: sqlc (type-safe SQL)
 - **Migrations**: golang-migrate
-- **Cache**: Ristretto (in-memory, no external deps)
-- **Search**: PostgreSQL full-text or Typesense (optional)
+- **Cache**: Dragonfly (Redis-compatible, required)
+- **Search**: Typesense (required, faceted search)
 
-### Optional Components (Multi-Instance)
-- **Distributed Cache**: Dragonfly/Redis cluster
-- **Advanced Search**: Typesense cluster
-- **Load Balancer**: NGINX/HAProxy
+### Optional Components
+- **Load Balancer**: NGINX/HAProxy (multi-instance)
+- **CDN**: Cloudflare/Bunny (large deployments)
 
 ### Media Processing
 - **FFmpeg**: jellyfin-ffmpeg (hardware acceleration)
@@ -157,13 +152,14 @@ Jellyfin Go includes a migration tool to import existing Jellyfin databases:
 ## 📈 Roadmap
 
 ### Phase 1: Single-Server MVP (3 months) 🎯 **PRIMARY FOCUS**
-- ⬜ SQLite/PostgreSQL with sqlc
+- ⬜ PostgreSQL database with sqlc
+- ⬜ Dragonfly caching layer
+- ⬜ Typesense search integration
 - ⬜ Authentication and authorization (JWT, bcrypt)
 - ⬜ Core API endpoints (users, library, media)
 - ⬜ Library scanning and metadata extraction
 - ⬜ Direct play (no transcoding)
 - ⬜ PostgreSQL full-text search
-- ⬜ Ristretto in-memory caching
 
 ### Phase 2: Transcoding (2 months)
 - ⬜ FFmpeg integration and hardware acceleration

@@ -20,27 +20,25 @@
 **Target Users:** Home users, small teams, self-hosters
 **Requirements:** One server/PC with Docker or native binary
 
-Jellyfin Go works out-of-the-box on a single server with minimal dependencies:
+Jellyfin Go requires PostgreSQL and Dragonfly for optimal performance:
 
 ```yaml
-Minimum Setup:
-- SQLite (embedded, no separate database)
-- Local file storage
-- In-memory cache (optional Redis)
-- No clustering required
-
-Recommended Setup:
-- PostgreSQL (local instance)
-- Redis or Dragonfly (local, optional)
+Required Stack:
+- PostgreSQL 16+ (database)
+- Dragonfly (Redis-compatible cache)
+- Typesense 0.25+ (search engine)
 - Local file storage or NFS mount
+
+Optional:
+- NGINX (reverse proxy / SSL)
 ```
 
 **Features in Single-Server Mode:**
 - ✅ All core functionality
 - ✅ Hardware transcoding
 - ✅ Multiple users
-- ✅ Library management
-- ✅ Search (PostgreSQL full-text or Typesense optional)
+- ✅ Library management (100k+ items)
+- ✅ Faceted search (Typesense)
 - ✅ API compatibility
 
 ### Enterprise/Multi-Instance Mode (Optional)
@@ -154,22 +152,22 @@ fx.New(
     fx.Provide(NewDragonflyClient),
     fx.Provide(NewTypesenseClient),
     fx.Provide(NewFFmpegExecutor),
-    
+
     // Repositories
     fx.Provide(NewUserRepository),
     fx.Provide(NewMediaRepository),
     fx.Provide(NewSessionRepository),
-    
+
     // Services
     fx.Provide(NewAuthService),
     fx.Provide(NewMediaService),
     fx.Provide(NewTranscodingService),
-    
+
     // HTTP Handlers
     fx.Provide(NewUserHandler),
     fx.Provide(NewMediaHandler),
     fx.Provide(NewStreamHandler),
-    
+
     // Lifecycle
     fx.Invoke(StartHTTPServer),
 )
@@ -507,7 +505,7 @@ services:
       - /path/to/media:/media
       - jellyfin-config:/config
     depends_on: [postgres]
-  
+
   postgres:
     image: postgres:16-alpine
     environment:
@@ -535,14 +533,14 @@ services:
       - REDIS_URL=redis:6379
       - TYPESENSE_URL=http://typesense:8108
     depends_on: [postgres, redis, typesense]
-  
+
   postgres:
     image: postgres:16-alpine
     volumes: [postgres_data:/var/lib/postgresql/data]
-  
+
   redis:
     image: redis:7-alpine
-  
+
   typesense:
     image: typesense/typesense:26.0
 ```
