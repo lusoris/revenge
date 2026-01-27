@@ -96,7 +96,7 @@ slog.Info("user created",
 
 Pull requests must pass:
 1. `go build ./...` - Compilation
-2. `go test ./...` - Unit tests  
+2. `go test ./...` - Unit tests
 3. `golangci-lint run` - Linting
 4. `go vet ./...` - Static analysis
 

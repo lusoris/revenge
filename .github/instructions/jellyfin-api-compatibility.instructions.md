@@ -9,6 +9,7 @@ applyTo: "**/internal/api/**/*.go"
 ## Goal: 100% API Compatibility
 
 Every endpoint must match the original C# Jellyfin:
+
 - **Same route** (path, method, query params)
 - **Same response structure** (JSON field names, types, nesting)
 - **Same behavior** (validation, defaults, error codes)
@@ -121,22 +122,22 @@ func NewRouter(h *handlers.Handlers, mw *middleware.Middleware) http.Handler {
 
 ### Parameter Sources
 
-| C# Attribute | Go Equivalent |
-|--------------|---------------|
-| `[FromRoute]` | `r.PathValue("param")` |
-| `[FromQuery]` | `r.URL.Query().Get("param")` |
-| `[FromBody]` | `json.NewDecoder(r.Body).Decode(&req)` |
-| `[FromHeader]` | `r.Header.Get("X-Header")` |
+| C# Attribute   | Go Equivalent                          |
+| -------------- | -------------------------------------- |
+| `[FromRoute]`  | `r.PathValue("param")`                 |
+| `[FromQuery]`  | `r.URL.Query().Get("param")`           |
+| `[FromBody]`   | `json.NewDecoder(r.Body).Decode(&req)` |
+| `[FromHeader]` | `r.Header.Get("X-Header")`             |
 
 ### Response Types
 
-| C# Return | Go Equivalent |
-|-----------|---------------|
-| `Ok(result)` | `writeJSON(w, 200, result)` |
-| `NoContent()` | `w.WriteHeader(204)` |
-| `NotFound()` | `writeError(w, 404, "...")` |
-| `BadRequest()` | `writeError(w, 400, "...")` |
-| `Forbid()` | `writeError(w, 403, "...")` |
+| C# Return          | Go Equivalent                |
+| ------------------ | ---------------------------- |
+| `Ok(result)`       | `writeJSON(w, 200, result)`  |
+| `NoContent()`      | `w.WriteHeader(204)`         |
+| `NotFound()`       | `writeError(w, 404, "...")`  |
+| `BadRequest()`     | `writeError(w, 400, "...")`  |
+| `Forbid()`         | `writeError(w, 403, "...")`  |
 | `StatusCode(code)` | `writeError(w, code, "...")` |
 
 ### Authorization Policies
@@ -160,27 +161,32 @@ mw.FirstTimeOrAdmin(handler)
 ## Key Controllers to Implement
 
 ### Priority 1 - Authentication & Users
+
 - `UserController` - User CRUD, auth, passwords
 - `ApiKeyController` - API key management
 - `QuickConnectController` - Quick connect flow
 
 ### Priority 2 - Library & Media
+
 - `ItemsController` - Media items
 - `LibraryController` - Library management
 - `UserLibraryController` - User-specific library access
 - `UserViewsController` - User views/collections
 
 ### Priority 3 - Playback
+
 - `MediaInfoController` - Media information
 - `PlaystateController` - Play state tracking
 - `SessionController` - Session management
 
 ### Priority 4 - Metadata
+
 - `ArtistsController`, `GenresController`, `PersonsController`
 - `StudiosController`, `YearsController`
 - `RemoteImageController`, `ImageController`
 
 ### Priority 5 - Streaming
+
 - `AudioController`, `VideosController`
 - `DynamicHlsController`, `HlsSegmentController`
 - `SubtitleController`

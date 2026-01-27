@@ -100,7 +100,7 @@ database:
   port: 5432
   name: jellyfin
   user: jellyfin
-  password: ""  # Override with env
+  password: "" # Override with env
   ssl_mode: disable
   max_conns: 25
 

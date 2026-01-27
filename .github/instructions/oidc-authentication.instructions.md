@@ -9,6 +9,7 @@ applyTo: "**/internal/service/oidc/**/*.go,**/internal/api/handlers/auth*.go"
 ## Overview
 
 Jellyfin Go supports OIDC (OpenID Connect) for Single Sign-On with identity providers like:
+
 - Keycloak
 - Authentik
 - Auth0
