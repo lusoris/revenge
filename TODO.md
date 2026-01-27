@@ -14,13 +14,14 @@ See [docs/PHASE1_TODO.md](docs/PHASE1_TODO.md) for detailed tasks.
 
 ---
 
-## Immediate: Update to Go 1.25
+## Immediate: Update to Go 1.25 ✅ COMPLETE
 
-- [ ] **Update go.mod** - Change `go 1.24.0` to `go 1.25`
-- [ ] **Update Dockerfile** - Already done (golang:1.25-alpine)
-- [ ] **Update CI workflows** - Check all workflow files for Go version
-- [ ] **Run `go mod tidy`** - Clean up dependencies
-- [ ] **Run tests** - Ensure everything passes with Go 1.25
+- [x] **Update go.mod** - Changed `go 1.24.0` to `go 1.25.0`
+- [x] **Update Dockerfile** - Already done (golang:1.25-alpine)
+- [x] **Update CI workflows** - Updated ci.yml, coverage.yml, dev.yml, release.yml
+- [x] **Run `go mod tidy`** - Dependencies cleaned
+- [x] **Run tests** - All tests pass with Go 1.25
+- [x] **Run go vet** - No issues with new Go 1.25 analyzers
 
 ---
 
