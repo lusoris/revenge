@@ -61,7 +61,11 @@ func NewPool(p PoolParams) (PoolResult, error) {
 	}
 
 	// Configure pool settings
-	poolConfig.MaxConns = int32(cfg.MaxConns)
+	maxConns := cfg.MaxConns
+	if maxConns <= 0 || maxConns > 100 {
+		maxConns = 25 // safe default
+	}
+	poolConfig.MaxConns = int32(maxConns) //nolint:gosec // bounds checked above
 	poolConfig.MinConns = 2
 	poolConfig.MaxConnLifetime = 1 * time.Hour
 	poolConfig.MaxConnIdleTime = 30 * time.Minute
@@ -122,10 +126,10 @@ func HealthCheck(ctx context.Context, pool *pgxpool.Pool) error {
 func Stats(pool *pgxpool.Pool) map[string]any {
 	stat := pool.Stat()
 	return map[string]any{
-		"total_conns":       stat.TotalConns(),
-		"acquired_conns":    stat.AcquiredConns(),
-		"idle_conns":        stat.IdleConns(),
-		"max_conns":         stat.MaxConns(),
+		"total_conns":        stat.TotalConns(),
+		"acquired_conns":     stat.AcquiredConns(),
+		"idle_conns":         stat.IdleConns(),
+		"max_conns":          stat.MaxConns(),
 		"constructing_conns": stat.ConstructingConns(),
 	}
 }

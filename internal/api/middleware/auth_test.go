@@ -70,11 +70,11 @@ func TestAuth_Required(t *testing.T) {
 	}
 
 	tests := []struct {
-		name           string
-		authHeader     string
-		validateFn     func(ctx context.Context, token string) (*domain.TokenClaims, error)
-		wantStatus     int
-		wantClaimsSet  bool
+		name          string
+		authHeader    string
+		validateFn    func(ctx context.Context, token string) (*domain.TokenClaims, error)
+		wantStatus    int
+		wantClaimsSet bool
 	}{
 		{
 			name:       "no auth header",
@@ -277,9 +277,9 @@ func TestAuth_AdminRequired(t *testing.T) {
 
 func TestExtractToken(t *testing.T) {
 	tests := []struct {
-		name       string
-		setup      func(r *http.Request)
-		wantToken  string
+		name      string
+		setup     func(r *http.Request)
+		wantToken string
 	}{
 		{
 			name:      "no token",

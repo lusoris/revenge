@@ -28,6 +28,7 @@ linters-settings:
     enable-all: true
     disable:
       - shadow
+      - fieldalignment   # Struct alignment is not worth the readability tradeoff
 
   goimports:
     local-prefixes: github.com/jellyfin/jellyfin-go
@@ -64,6 +65,8 @@ linters-settings:
     disabled-checks:
       - whyNoLint
       - unnamedResult
+      - hugeParam        # Interface signatures can't always use pointers
+      - rangeValCopy     # Minor optimization, not worth interface changes
 
 issues:
   exclude-rules:
@@ -88,6 +91,7 @@ run:
   modules-download-mode: readonly
 
 output:
-  format: colored-line-number
+  formats:
+    - format: colored-line-number
   print-issued-lines: true
   print-linter-name: true

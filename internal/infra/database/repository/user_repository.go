@@ -76,8 +76,8 @@ func (r *UserRepository) List(ctx context.Context, limit, offset int32) ([]*doma
 	}
 
 	result := make([]*domain.User, len(users))
-	for i, u := range users {
-		result[i] = mapDBUserToDomain(&u)
+	for i := range users {
+		result[i] = mapDBUserToDomain(&users[i])
 	}
 	return result, nil
 }

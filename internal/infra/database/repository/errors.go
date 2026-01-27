@@ -33,8 +33,7 @@ func As(err error, target interface{}) bool {
 		return false
 	}
 
-	switch t := target.(type) {
-	case **pgconn.PgError:
+	if t, ok := target.(**pgconn.PgError); ok {
 		for err != nil {
 			if pgErr, ok := err.(*pgconn.PgError); ok {
 				*t = pgErr

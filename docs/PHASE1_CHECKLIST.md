@@ -23,8 +23,8 @@
 - [x] PostgreSQL 18+ (required database)
 - [ ] Setup golang-migrate
 - [ ] Initial schema (users, sessions, libraries, media_items)
-- [ ] Setup sqlc for type-safe queries
-- [ ] Repository interfaces
+- [x] Setup sqlc for type-safe queries
+- [x] Repository interfaces
 
 **Deliverable:** Running HTTP server with health checks, database migrations working
 
@@ -33,17 +33,17 @@
 ## Week 3-4: Authentication & Users
 
 ### User Management
-- [ ] User entity and repository
-- [ ] Password hashing (bcrypt)
-- [ ] User CRUD operations
-- [ ] Admin vs regular user roles
+- [x] User entity and repository
+- [x] Password hashing (bcrypt)
+- [x] User CRUD operations
+- [x] Admin vs regular user roles
 
 ### Authentication
-- [ ] JWT token generation
-- [ ] JWT validation
-- [ ] Refresh token mechanism
-- [ ] Session management (DB-backed)
-- [ ] Auth middleware
+- [x] JWT token generation
+- [x] JWT validation
+- [x] Refresh token mechanism
+- [x] Session management (DB-backed)
+- [x] Auth middleware
 
 ### OIDC/SSO Integration
 - [ ] OIDC discovery endpoint support
@@ -56,12 +56,12 @@
 - [ ] Fallback to local auth when OIDC unavailable
 
 ### API Endpoints
-- [ ] POST /api/Users/AuthenticateByName
-- [ ] GET /api/Users/{userId}
-- [ ] POST /api/Users/New
-- [ ] POST /api/Auth/Logout
-- [ ] GET /api/Users (list users, admin only)
-- [ ] DELETE /api/Users/{userId} (admin only)
+- [x] POST /api/Users/AuthenticateByName
+- [x] GET /api/Users/{userId}
+- [x] POST /api/Users/New
+- [x] POST /api/Auth/Logout
+- [x] GET /api/Users (list users, admin only)
+- [x] DELETE /api/Users/{userId} (admin only)
 - [ ] GET /api/Auth/OIDC/Providers (list configured OIDC providers)
 - [ ] GET /api/Auth/OIDC/Authorize/{providerId} (initiate OIDC flow)
 - [ ] GET /api/Auth/OIDC/Callback (OIDC callback handler)

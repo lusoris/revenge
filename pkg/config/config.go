@@ -83,23 +83,23 @@ func New() (*Config, error) {
 	defaults := Defaults()
 
 	// Set defaults programmatically
-	k.Load(nil, nil) // Initialize
+	_ = k.Load(nil, nil) //nolint:errcheck // Initialize - nil provider always succeeds
 
 	// Load main config file (optional)
-	_ = k.Load(file.Provider("configs/config.yaml"), yaml.Parser()) // ignore error, config file is optional
+	_ = k.Load(file.Provider("configs/config.yaml"), yaml.Parser()) //nolint:errcheck // config file is optional
 
 	// Load environment-specific config (optional)
 	envConfig := os.Getenv("JELLYFIN_ENV")
 	if envConfig != "" {
 		configPath := fmt.Sprintf("configs/config.%s.yaml", envConfig)
-		_ = k.Load(file.Provider(configPath), yaml.Parser()) // ignore error, env-specific config is optional
+		_ = k.Load(file.Provider(configPath), yaml.Parser()) //nolint:errcheck // env-specific config is optional
 	}
 
 	// Load environment variables (highest priority)
 	// JELLYFIN_SERVER_PORT=8080 becomes server.port=8080
 	if err := k.Load(env.Provider("JELLYFIN_", ".", func(s string) string {
-		return strings.Replace(strings.ToLower(
-			strings.TrimPrefix(s, "JELLYFIN_")), "_", ".", -1)
+		return strings.ReplaceAll(strings.ToLower(
+			strings.TrimPrefix(s, "JELLYFIN_")), "_", ".")
 	}), nil); err != nil {
 		return nil, fmt.Errorf("failed to load env vars: %w", err)
 	}

@@ -48,22 +48,22 @@ type LoginRequest struct {
 // LoginResponse represents the login response body.
 // Matches Jellyfin API AuthenticationResult.
 type LoginResponse struct {
-	User         UserDTO    `json:"User"`
-	AccessToken  string     `json:"AccessToken"`
-	ServerId     string     `json:"ServerId"`
-	SessionInfo  SessionDTO `json:"SessionInfo,omitempty"`
+	User        UserDTO    `json:"User"`
+	AccessToken string     `json:"AccessToken"`
+	ServerID    string     `json:"ServerId"`
+	SessionInfo SessionDTO `json:"SessionInfo,omitempty"`
 }
 
 // UserDTO represents a user in API responses.
 // Matches Jellyfin API UserDto.
 type UserDTO struct {
-	ID                      string `json:"Id"`
-	Name                    string `json:"Name"`
-	ServerId                string `json:"ServerId,omitempty"`
-	HasPassword             bool   `json:"HasPassword"`
-	HasConfiguredPassword   bool   `json:"HasConfiguredPassword"`
-	HasConfiguredEasyPassword bool `json:"HasConfiguredEasyPassword"`
-	EnableAutoLogin         bool   `json:"EnableAutoLogin"`
+	ID                        string `json:"Id"`
+	Name                      string `json:"Name"`
+	ServerID                  string `json:"ServerId,omitempty"`
+	HasPassword               bool   `json:"HasPassword"`
+	HasConfiguredPassword     bool   `json:"HasConfiguredPassword"`
+	HasConfiguredEasyPassword bool   `json:"HasConfiguredEasyPassword"`
+	EnableAutoLogin           bool   `json:"EnableAutoLogin"`
 }
 
 // SessionDTO represents a session in API responses.

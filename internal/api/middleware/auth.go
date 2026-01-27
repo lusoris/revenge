@@ -198,18 +198,18 @@ func parseMediaBrowserAuth(header string) map[string]string {
 
 // ClaimsFromContext extracts TokenClaims from the request context.
 func ClaimsFromContext(ctx context.Context) *domain.TokenClaims {
-	claims, _ := ctx.Value(ClaimsContextKey).(*domain.TokenClaims)
+	claims, _ := ctx.Value(ClaimsContextKey).(*domain.TokenClaims) //nolint:errcheck // type assertion ok flag intentionally ignored
 	return claims
 }
 
 // UserFromContext extracts the User from the request context.
 func UserFromContext(ctx context.Context) *domain.User {
-	user, _ := ctx.Value(UserContextKey).(*domain.User)
+	user, _ := ctx.Value(UserContextKey).(*domain.User) //nolint:errcheck // type assertion ok flag intentionally ignored
 	return user
 }
 
 // SessionFromContext extracts the SessionWithUser from the request context.
 func SessionFromContext(ctx context.Context) *domain.SessionWithUser {
-	session, _ := ctx.Value(SessionContextKey).(*domain.SessionWithUser)
+	session, _ := ctx.Value(SessionContextKey).(*domain.SessionWithUser) //nolint:errcheck // type assertion ok flag intentionally ignored
 	return session
 }

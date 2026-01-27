@@ -13,14 +13,15 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lmittmann/tint"
+	"go.uber.org/fx"
+
 	"github.com/jellyfin/jellyfin-go/internal/api/handlers"
 	"github.com/jellyfin/jellyfin-go/internal/api/middleware"
 	"github.com/jellyfin/jellyfin-go/internal/infra/database"
 	"github.com/jellyfin/jellyfin-go/internal/service/auth"
 	"github.com/jellyfin/jellyfin-go/internal/service/user"
 	"github.com/jellyfin/jellyfin-go/pkg/config"
-	"github.com/lmittmann/tint"
-	"go.uber.org/fx"
 )
 
 var (
@@ -133,7 +134,7 @@ func RegisterRoutes(
 	// Health check endpoints (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		_, _ = w.Write([]byte("OK")) //nolint:errcheck // best-effort write
 	})
 
 	// Readiness check - verifies database connectivity
@@ -144,14 +145,14 @@ func RegisterRoutes(
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Ready"))
+		_, _ = w.Write([]byte("Ready")) //nolint:errcheck // best-effort write
 	})
 
 	// Database stats endpoint
 	mux.HandleFunc("GET /health/db", func(w http.ResponseWriter, r *http.Request) {
 		stats := database.Stats(pool)
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(stats)
+		_ = json.NewEncoder(w).Encode(stats) //nolint:errcheck // best-effort encode
 	})
 
 	// Version endpoint with structured response
@@ -163,7 +164,7 @@ func RegisterRoutes(
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(version)
+		_ = json.NewEncoder(w).Encode(version) //nolint:errcheck // best-effort encode
 	})
 
 	// Auth endpoints

@@ -43,16 +43,16 @@ func (h *UserHandler) RegisterRoutes(mux *http.ServeMux, auth *middleware.Auth) 
 // UserResponse represents a user in API responses.
 // Matches Jellyfin API UserDto format.
 type UserResponse struct {
-	ID                      string  `json:"Id"`
-	Name                    string  `json:"Name"`
-	ServerId                string  `json:"ServerId,omitempty"`
-	HasPassword             bool    `json:"HasPassword"`
-	HasConfiguredPassword   bool    `json:"HasConfiguredPassword"`
-	HasConfiguredEasyPassword bool  `json:"HasConfiguredEasyPassword"`
-	EnableAutoLogin         bool    `json:"EnableAutoLogin"`
-	LastLoginDate           *string `json:"LastLoginDate,omitempty"`
-	LastActivityDate        *string `json:"LastActivityDate,omitempty"`
-	Policy                  UserPolicy `json:"Policy"`
+	ID                        string     `json:"Id"`
+	Name                      string     `json:"Name"`
+	ServerID                  string     `json:"ServerId,omitempty"`
+	HasPassword               bool       `json:"HasPassword"`
+	HasConfiguredPassword     bool       `json:"HasConfiguredPassword"`
+	HasConfiguredEasyPassword bool       `json:"HasConfiguredEasyPassword"`
+	EnableAutoLogin           bool       `json:"EnableAutoLogin"`
+	LastLoginDate             *string    `json:"LastLoginDate,omitempty"`
+	LastActivityDate          *string    `json:"LastActivityDate,omitempty"`
+	Policy                    UserPolicy `json:"Policy"`
 }
 
 // UserPolicy represents user permissions.

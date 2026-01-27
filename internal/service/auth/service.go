@@ -172,8 +172,8 @@ func (s *Service) RefreshToken(ctx context.Context, params domain.RefreshParams)
 
 	// Check refresh token expiry
 	if session.RefreshExpiresAt != nil && session.RefreshExpiresAt.Before(time.Now()) {
-		// Clean up expired session
-		_ = s.sessions.Delete(ctx, session.ID)
+		// Clean up expired session - error ignored as this is best-effort cleanup
+		_ = s.sessions.Delete(ctx, session.ID) //nolint:errcheck
 		return nil, domain.ErrSessionExpired
 	}
 
@@ -185,8 +185,8 @@ func (s *Service) RefreshToken(ctx context.Context, params domain.RefreshParams)
 
 	// Check if user is disabled
 	if user.IsDisabled {
-		// Clean up session for disabled user
-		_ = s.sessions.Delete(ctx, session.ID)
+		// Clean up session for disabled user - error ignored as this is best-effort cleanup
+		_ = s.sessions.Delete(ctx, session.ID) //nolint:errcheck
 		return nil, domain.ErrUserDisabled
 	}
 

@@ -11,9 +11,9 @@ import (
 // OIDCProvider represents an OpenID Connect provider configuration.
 type OIDCProvider struct {
 	ID                    uuid.UUID
-	Name                  string  // Internal name (keycloak, authentik, etc.)
-	DisplayName           string  // UI display name
-	IssuerURL             string  // OIDC issuer URL
+	Name                  string // Internal name (keycloak, authentik, etc.)
+	DisplayName           string // UI display name
+	IssuerURL             string // OIDC issuer URL
 	ClientID              string
 	ClientSecretEncrypted []byte   // Encrypted with server key
 	Scopes                []string // Default: openid, profile, email
@@ -30,8 +30,8 @@ type OIDCUserLink struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID
 	ProviderID  uuid.UUID
-	Subject     string     // OIDC subject claim (unique identifier from provider)
-	Email       *string    // Email from OIDC (may differ from user email)
+	Subject     string  // OIDC subject claim (unique identifier from provider)
+	Email       *string // Email from OIDC (may differ from user email)
 	CreatedAt   time.Time
 	LastLoginAt *time.Time
 }

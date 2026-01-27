@@ -90,15 +90,15 @@ func (r *OIDCProviderRepository) Create(ctx context.Context, params domain.Creat
 
 	dbParams := db.CreateOIDCProviderParams{
 		Name:                  params.Name,
-		DisplayName:          params.DisplayName,
-		IssuerUrl:            params.IssuerURL,
-		ClientID:             params.ClientID,
+		DisplayName:           params.DisplayName,
+		IssuerUrl:             params.IssuerURL,
+		ClientID:              params.ClientID,
 		ClientSecretEncrypted: params.ClientSecretEncrypted,
-		Scopes:               params.Scopes,
-		Enabled:              params.Enabled,
-		AutoCreateUsers:      params.AutoCreateUsers,
-		DefaultAdmin:         params.DefaultAdmin,
-		ClaimMappings:        claimMappings,
+		Scopes:                params.Scopes,
+		Enabled:               params.Enabled,
+		AutoCreateUsers:       params.AutoCreateUsers,
+		DefaultAdmin:          params.DefaultAdmin,
+		ClaimMappings:         claimMappings,
 	}
 
 	provider, err := r.queries.CreateOIDCProvider(ctx, dbParams)
@@ -212,17 +212,17 @@ func mapDBOIDCProviderToDomain(p *db.OidcProvider) *domain.OIDCProvider {
 	return &domain.OIDCProvider{
 		ID:                    p.ID,
 		Name:                  p.Name,
-		DisplayName:          p.DisplayName,
-		IssuerURL:            p.IssuerUrl,
-		ClientID:             p.ClientID,
+		DisplayName:           p.DisplayName,
+		IssuerURL:             p.IssuerUrl,
+		ClientID:              p.ClientID,
 		ClientSecretEncrypted: p.ClientSecretEncrypted,
-		Scopes:               p.Scopes,
-		Enabled:              p.Enabled,
-		AutoCreateUsers:      p.AutoCreateUsers,
-		DefaultAdmin:         p.DefaultAdmin,
-		ClaimMappings:        p.ClaimMappings,
-		CreatedAt:            p.CreatedAt,
-		UpdatedAt:            p.UpdatedAt,
+		Scopes:                p.Scopes,
+		Enabled:               p.Enabled,
+		AutoCreateUsers:       p.AutoCreateUsers,
+		DefaultAdmin:          p.DefaultAdmin,
+		ClaimMappings:         p.ClaimMappings,
+		CreatedAt:             p.CreatedAt,
+		UpdatedAt:             p.UpdatedAt,
 	}
 }
 
