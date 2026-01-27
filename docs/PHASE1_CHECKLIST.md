@@ -1,6 +1,6 @@
 # Jellyfin Go - Phase 1 Implementation Checklist
 
-## Goal: Single-Server MVP with SQLite
+## Goal: Single-Server MVP with PostgreSQL
 
 **Timeline:** 3 months
 **Focus:** Core functionality, Jellyfin API compatibility, easy setup
@@ -20,7 +20,7 @@
 - [x] Health check endpoints (/health/live, /health/ready)
 
 ### Database
-- [ ] Choose: SQLite (default) + PostgreSQL support
+- [x] PostgreSQL 18+ (required database)
 - [ ] Setup golang-migrate
 - [ ] Initial schema (users, sessions, libraries, media_items)
 - [ ] Setup sqlc for type-safe queries
@@ -220,7 +220,7 @@
 ## Week 16-17: Jellyfin Migration Tool
 
 ### Migration
-- [ ] SQLite parser for jellyfin.db
+- [ ] SQLite/PostgreSQL parser for original jellyfin database
 - [ ] Schema mapper (Jellyfin → Jellyfin Go)
 - [ ] User migration (preserve passwords)
 - [ ] Library migration

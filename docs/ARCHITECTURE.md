@@ -24,7 +24,7 @@ Jellyfin Go requires PostgreSQL and Dragonfly for optimal performance:
 
 ```yaml
 Required Stack:
-- PostgreSQL 16+ (database)
+- PostgreSQL 18+ (database)
 - Dragonfly (Redis-compatible cache)
 - Typesense 0.25+ (search engine)
 - Local file storage or NFS mount
@@ -339,19 +339,13 @@ Instance 1: User updates media
 
 ### Data Storage
 
-#### PostgreSQL 16+ OR SQLite (Database)
+#### PostgreSQL 18+ (Database - Required)
 
-**PostgreSQL (Recommended for production):**
+**PostgreSQL:**
 - Use Cases: User accounts, media metadata, library structure, sessions, activity logs
 - Configuration: Single instance (default) or with read replicas (enterprise)
 - Connection pooling: pgxpool (25-64 connections per instance)
-- Performance: Better for >10k media items
-
-**SQLite (Default for single-server):**
-- Use Cases: Same as PostgreSQL, embedded database
-- Configuration: Single file, no separate service needed
-- Performance: Excellent for <10k media items, <10 concurrent users
-- Advantages: Zero-configuration, portable, perfect for home users
+- Performance: Optimized for large libraries (100k+ media items)
 
 **Schema Design:**
 - Normalized for consistency
@@ -359,21 +353,20 @@ Instance 1: User updates media
 - Partitioned tables for logs (monthly)
 - Indexes on frequent queries
 
-#### Dragonfly/Redis (Optional Cache)
+#### Dragonfly (Redis-compatible Cache - Required)
 
 **Use Cases:**
 - Session cache (hot data, sub-ms access)
-- Transcoding job queue (multi-instance only)
-- Distributed locks (multi-instance only)
-- Pub/sub for cache invalidation (multi-instance only)
+- Transcoding job queue
+- Distributed locks (multi-instance)
+- Pub/sub for cache invalidation
 - Rate limiting counters
 
 **Configuration:**
-- Single-Server: Local Redis/Dragonfly instance OR in-memory cache
+- Single-Server: Local Dragonfly instance
 - Multi-Instance: 3-node cluster for HA
 - Redis protocol compatible
 - Memory: 1-2GB (single-server), 8-16GB per node (cluster)
-- **Not required:** Falls back to in-memory cache if not available
 
 **Namespaces:**
 - `sessions:` - User sessions
@@ -394,7 +387,7 @@ Instance 1: User updates media
 - TinyLFU admission policy
 - TTL: 5-15 minutes
 
-#### Typesense (Optional Search Engine)
+#### Typesense 0.25+ (Search Engine - Required)
 
 **Use Cases:**
 - Full-text media search
@@ -403,11 +396,10 @@ Instance 1: User updates media
 - Real-time indexing
 
 **Configuration:**
-- Single-Server: Local Typesense instance OR PostgreSQL full-text search
+- Single-Server: Local Typesense instance
 - Multi-Instance: 3-node Raft cluster
 - Collections: media_active, media_archive, users, collections
 - Memory: 2-4GB (single-server, <50k items), 10-15GB per node (cluster, 100k+ items)
-- **Fallback:** PostgreSQL `tsvector` full-text search if Typesense not available
 
 ### Media Processing
 
@@ -468,46 +460,24 @@ Instance 1: User updates media
 
 ### Single-Server (Home User)
 
-**Option 1: SQLite (Zero Dependencies)**
-```bash
-# Download binary
-wget https://github.com/your-org/jellyfin-go/releases/latest/jellyfin-go
-chmod +x jellyfin-go
-
-# Run with defaults (SQLite, in-memory cache)
-./jellyfin-go
-
-# Opens web UI at http://localhost:8096
-# Data stored in ~/.jellyfin-go/
-```
-
-**Option 2: Docker (Recommended)**
-```bash
-# Single container, all-in-one
-docker run -d \
-  -p 8096:8096 \
-  -v /path/to/media:/media \
-  -v jellyfin-data:/data \
-  --name jellyfin-go \
-  jellyfin/jellyfin-go:latest
-```
-
-**Option 3: Docker Compose with PostgreSQL**
+**Option 1: Docker Compose (Recommended)**
 ```yaml
-# docker-compose.yml (recommended for better performance)
+# docker-compose.yml
 services:
   jellyfin-go:
     image: jellyfin/jellyfin-go:latest
     ports: ["8096:8096"]
     environment:
       - DATABASE_URL=postgres://jellyfin:password@postgres:5432/jellyfin
+      - REDIS_URL=redis://dragonfly:6379
+      - TYPESENSE_URL=http://typesense:8108
     volumes:
       - /path/to/media:/media
       - jellyfin-config:/config
-    depends_on: [postgres]
+    depends_on: [postgres, dragonfly, typesense]
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       - POSTGRES_DB=jellyfin
       - POSTGRES_USER=jellyfin
@@ -515,9 +485,42 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+
+  typesense:
+    image: typesense/typesense:27.1
+    environment:
+      - TYPESENSE_DATA_DIR=/data
+      - TYPESENSE_API_KEY=xyz
+    volumes:
+      - typesense_data:/data
+
 volumes:
   jellyfin-config:
   postgres_data:
+  typesense_data:
+```
+
+```bash
+docker-compose up -d
+```
+
+**Option 2: Native Binary**
+```bash
+# Requires PostgreSQL, Dragonfly, and Typesense running
+
+# Download binary
+wget https://github.com/jellyfin/jellyfin-go/releases/latest/jellyfin-go
+chmod +x jellyfin-go
+
+# Set environment variables
+export DATABASE_URL=postgres://jellyfin:password@localhost:5432/jellyfin
+export REDIS_URL=localhost:6379
+export TYPESENSE_URL=http://localhost:8108
+
+# Run
+./jellyfin-go
 ```
 
 ### Development
@@ -532,17 +535,17 @@ services:
       - DATABASE_URL=postgres://postgres:password@postgres:5432/jellyfin
       - REDIS_URL=redis:6379
       - TYPESENSE_URL=http://typesense:8108
-    depends_on: [postgres, redis, typesense]
+    depends_on: [postgres, dragonfly, typesense]
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     volumes: [postgres_data:/var/lib/postgresql/data]
 
-  redis:
-    image: redis:7-alpine
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
 
   typesense:
-    image: typesense/typesense:26.0
+    image: typesense/typesense:27.1
 ```
 
 ### Production (Kubernetes)

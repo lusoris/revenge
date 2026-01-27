@@ -92,13 +92,13 @@ docker-compose-down: ## Stop services with docker-compose
 	@echo "Stopping services..."
 	docker-compose down
 
-migrate-up: ## Run database migrations up
+migrate-up: ## Run database migrations up (PostgreSQL)
 	@echo "Running migrations up..."
-	migrate -path migrations -database "sqlite3://data/jellyfin.db" up
+	migrate -path migrations -database "postgres://jellyfin:password@localhost:5432/jellyfin?sslmode=disable" up
 
-migrate-down: ## Run database migrations down
+migrate-down: ## Run database migrations down (PostgreSQL)
 	@echo "Running migrations down..."
-	migrate -path migrations -database "sqlite3://data/jellyfin.db" down
+	migrate -path migrations -database "postgres://jellyfin:password@localhost:5432/jellyfin?sslmode=disable" down
 
 migrate-create: ## Create a new migration (usage: make migrate-create NAME=create_users_table)
 	@echo "Creating migration: ${NAME}..."
@@ -108,7 +108,7 @@ install-tools: ## Install development tools
 	@echo "Installing development tools..."
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	go install github.com/cosmtrek/air@latest
-	go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 generate: ## Run go generate

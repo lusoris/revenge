@@ -50,7 +50,7 @@ function install_tools() {
 
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
-    go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+    go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
     info "Development tools installed"
@@ -59,11 +59,14 @@ function install_tools() {
 function setup_db() {
     info "Setting up database..."
 
-    mkdir -p data
+    info "Checking PostgreSQL connection..."
 
-    if [ ! -f "data/jellyfin.db" ]; then
-        info "Creating SQLite database..."
-        touch data/jellyfin.db
+    # Check if PostgreSQL is reachable
+    if PGPASSWORD=password psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1" &>/dev/null; then
+        info "PostgreSQL connection successful"
+    else
+        warn "PostgreSQL not reachable. Please ensure PostgreSQL is running."
+        warn "Start with: docker-compose -f docker-compose.dev.yml up -d postgres"
     fi
 
     info "Database ready"

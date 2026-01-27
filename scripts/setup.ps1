@@ -34,11 +34,14 @@ function Write-Error {
 function Get-PackageManager {
     if (Get-Command winget -ErrorAction SilentlyContinue) {
         return "winget"
-    } elseif (Get-Command choco -ErrorAction SilentlyContinue) {
+    }
+    elseif (Get-Command choco -ErrorAction SilentlyContinue) {
         return "choco"
-    } elseif (Get-Command scoop -ErrorAction SilentlyContinue) {
+    }
+    elseif (Get-Command scoop -ErrorAction SilentlyContinue) {
         return "scoop"
-    } else {
+    }
+    else {
         return "none"
     }
 }
@@ -145,7 +148,7 @@ function Install-GoTools {
 
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
-    go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+    go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
     Write-Info "Go tools installed successfully"

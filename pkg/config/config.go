@@ -27,21 +27,19 @@ type ServerConfig struct {
 
 // DatabaseConfig holds database-related configuration
 type DatabaseConfig struct {
-	Type     string `koanf:"type"` // sqlite or postgres
-	Path     string `koanf:"path"` // for SQLite
-	Host     string `koanf:"host"` // for PostgreSQL
-	Port     int    `koanf:"port"` // for PostgreSQL
-	User     string `koanf:"user"` // for PostgreSQL
-	Password string `koanf:"password"` // for PostgreSQL
-	Name     string `koanf:"name"` // for PostgreSQL
+	Host     string `koanf:"host"`     // PostgreSQL host
+	Port     int    `koanf:"port"`     // PostgreSQL port
+	User     string `koanf:"user"`     // PostgreSQL user
+	Password string `koanf:"password"` // PostgreSQL password
+	Name     string `koanf:"name"`     // PostgreSQL database name
+	SSLMode  string `koanf:"sslmode"`  // PostgreSQL SSL mode (disable, require, verify-ca, verify-full)
 }
 
-// CacheConfig holds cache-related configuration
+// CacheConfig holds cache-related configuration (Dragonfly/Redis)
 type CacheConfig struct {
-	Type     string `koanf:"type"` // memory or redis
-	Addr     string `koanf:"addr"` // for Redis
-	Password string `koanf:"password"` // for Redis
-	DB       int    `koanf:"db"` // for Redis
+	Addr     string `koanf:"addr"`     // Dragonfly/Redis address (host:port)
+	Password string `koanf:"password"` // Dragonfly/Redis password
+	DB       int    `koanf:"db"`       // Dragonfly/Redis database number
 }
 
 // LogConfig holds logging configuration
@@ -56,7 +54,7 @@ func New() (*Config, error) {
 
 	// Load defaults
 	defaults := Defaults()
-	
+
 	// Set defaults programmatically
 	k.Load(nil, nil) // Initialize
 
@@ -108,15 +106,13 @@ func Defaults() *Config {
 			Port: 8096,
 		},
 		Database: DatabaseConfig{
-			Type: "sqlite",
-			Path: "./data/jellyfin.db",
-			Host: "localhost",
-			Port: 5432,
-			User: "jellyfin",
-			Name: "jellyfin",
+			Host:    "localhost",
+			Port:    5432,
+			User:    "jellyfin",
+			Name:    "jellyfin",
+			SSLMode: "disable",
 		},
 		Cache: CacheConfig{
-			Type: "memory",
 			Addr: "localhost:6379",
 			DB:   0,
 		},

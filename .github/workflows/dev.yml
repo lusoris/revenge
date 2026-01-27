@@ -79,6 +79,7 @@ jobs:
         run: go mod download
 
       - name: Run tests
+        shell: bash
         run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Upload coverage to Codecov
@@ -226,7 +227,7 @@ jobs:
     needs: [build]
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:18-alpine
         env:
           POSTGRES_DB: jellyfin_test
           POSTGRES_USER: jellyfin

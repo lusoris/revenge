@@ -68,7 +68,7 @@
     },
     {
       "description": "Database drivers",
-      "matchPackagePatterns": ["pgx", "sqlite", "sqlc", "migrate"],
+      "matchPackagePatterns": ["pgx", "sqlc", "migrate"],
       "groupName": "Database libraries"
     }
   ],

@@ -11,11 +11,11 @@
 
 ### Key Facts
 
-- **Source**: C# Jellyfin (upstream in this repo under Jellyfin.*/MediaBrowser.*)
+- **Source**: C# Jellyfin (upstream in this repo under Jellyfin._/MediaBrowser._)
 - **Target**: Go 1.24 with modern idioms
 - **Versioning**: SemVer 0.x until feature parity, then v1.0.0
 - **Architecture**: Clean Architecture (Hexagonal) with DI
-- **Database**: PostgreSQL 16+ (required)
+- **Database**: PostgreSQL 18+ (required)
 - **Cache**: Dragonfly (Redis-compatible, required)
 - **Search**: Typesense 0.25+ (required)
 

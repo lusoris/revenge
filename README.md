@@ -13,7 +13,7 @@ A high-performance, production-grade media server reimplementation of Jellyfin i
 
 **Phase 1: Single-Server Excellence**
 - **Full Feature Parity**: Complete reimplementation of Jellyfin with all 60+ API controllers
-- **Easy Setup**: Zero-config SQLite mode, Docker one-liner, or native binary
+- **Easy Setup**: Docker one-liner or native binary with PostgreSQL
 - **Hardware Acceleration**: Full support for VAAPI, NVENC, QuickSync, AMF, VideoToolbox
 - **API Compatibility**: Maintain v1 compatibility for existing Jellyfin clients
 - **Performance**: Optimized for single server, 1-100 concurrent users
@@ -77,7 +77,7 @@ go run ./cmd/jellyfin
 ```
 
 **Requirements:**
-- PostgreSQL 16+ (required)
+- PostgreSQL 18+ (required)
 - Dragonfly or Redis 7+ (required for caching)
 - Typesense 0.25+ (required for search)
 - FFmpeg 6+ (for transcoding)
@@ -101,7 +101,7 @@ go run ./cmd/jellyfin
 - **Logging**: log/slog + tint (stdlib with pretty output)
 
 ### Data Layer
-- **Database**: PostgreSQL 16+ (required)
+- **Database**: PostgreSQL 18+ (required)
 - **Query Builder**: sqlc (type-safe SQL)
 - **Migrations**: golang-migrate
 - **Cache**: Dragonfly (Redis-compatible, required)

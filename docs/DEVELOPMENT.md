@@ -216,10 +216,16 @@ taskkill /PID <PID> /F
 lsof -ti:8096 | xargs kill -9
 ```
 
-**Database locked (SQLite):**
+**Database connection fails (PostgreSQL):**
 ```bash
-# Remove lock file
-rm data/jellyfin.db-shm data/jellyfin.db-wal
+# Check PostgreSQL is running
+docker-compose -f docker-compose.dev.yml ps
+
+# Check connection
+PGPASSWORD=password psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1"
+
+# Restart PostgreSQL
+docker-compose -f docker-compose.dev.yml restart postgres
 ```
 
 **Module download fails:**

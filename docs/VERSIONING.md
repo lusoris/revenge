@@ -134,9 +134,9 @@ API version is indicated in:
 
 | Jellyfin Go | Jellyfin API | Go Version | Database |
 |-------------|--------------|------------|----------|
-| v0.1.x | v1 | 1.23+ | SQLite, PostgreSQL 14+ |
-| v0.2.x | v1 | 1.24+ | SQLite, PostgreSQL 14+ |
-| v1.0.x | v1 | 1.24+ | SQLite, PostgreSQL 15+ |
+| v0.1.x | v1 | 1.23+ | PostgreSQL 18+ |
+| v0.2.x | v1 | 1.24+ | PostgreSQL 18+ |
+| v1.0.x | v1 | 1.24+ | PostgreSQL 18+ |
 
 ## Checking Version
 

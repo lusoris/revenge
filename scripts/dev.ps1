@@ -1,7 +1,7 @@
 # Development helper script for Windows
 
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [ValidateSet('check', 'install-tools', 'setup', 'test', 'lint', 'dev', 'build')]
     [string]$Command
 )
@@ -40,7 +40,8 @@ function Check-Requirements {
 
     if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
         Write-Warn "Docker is not installed. Docker is optional but recommended."
-    } else {
+    }
+    else {
         Write-Info "Docker is installed"
     }
 }
@@ -50,7 +51,7 @@ function Install-Tools {
 
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
     go install github.com/cosmtrek/air@latest
-    go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+    go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
     go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
     Write-Info "Development tools installed"
@@ -59,11 +60,22 @@ function Install-Tools {
 function Setup-Database {
     Write-Info "Setting up database..."
 
-    New-Item -ItemType Directory -Force -Path "data" | Out-Null
+    Write-Info "Checking PostgreSQL connection..."
+    $env:PGPASSWORD = "password"
 
-    if (-not (Test-Path "data\jellyfin.db")) {
-        Write-Info "Creating SQLite database..."
-        New-Item -ItemType File -Path "data\jellyfin.db" | Out-Null
+    # Check if PostgreSQL is reachable
+    try {
+        $result = & psql -h localhost -U jellyfin -d jellyfin -c "SELECT 1" 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Info "PostgreSQL connection successful"
+        }
+        else {
+            Write-Warning "PostgreSQL not reachable. Please ensure PostgreSQL is running."
+            Write-Warning "Start with: docker-compose -f docker-compose.dev.yml up -d postgres"
+        }
+    }
+    catch {
+        Write-Warning "PostgreSQL client not found. Install psql or use Docker."
     }
 
     Write-Info "Database ready"
