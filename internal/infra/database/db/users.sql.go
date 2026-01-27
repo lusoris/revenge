@@ -39,7 +39,7 @@ INSERT INTO users (
     username, email, password_hash, display_name, is_admin
 ) VALUES (
     $1, $2, $3, $4, $5
-) RETURNING id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at
+) RETURNING id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted
 `
 
 type CreateUserParams struct {
@@ -71,6 +71,12 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Birthdate,
+		&i.MaxRatingLevel,
+		&i.AdultContentEnabled,
+		&i.PreferredRatingSystem,
+		&i.ParentalPinHash,
+		&i.HideRestricted,
 	)
 	return i, err
 }
@@ -96,7 +102,7 @@ func (q *Queries) EmailExists(ctx context.Context, email pgtype.Text) (bool, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at FROM users WHERE email = $1 LIMIT 1
+SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE email = $1 LIMIT 1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error) {
@@ -114,6 +120,12 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, 
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Birthdate,
+		&i.MaxRatingLevel,
+		&i.AdultContentEnabled,
+		&i.PreferredRatingSystem,
+		&i.ParentalPinHash,
+		&i.HideRestricted,
 	)
 	return i, err
 }
@@ -121,7 +133,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, 
 const getUserByID = `-- name: GetUserByID :one
 
 
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at FROM users WHERE id = $1 LIMIT 1
+SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE id = $1 LIMIT 1
 `
 
 // User queries for Jellyfin Go
@@ -144,12 +156,18 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Birthdate,
+		&i.MaxRatingLevel,
+		&i.AdultContentEnabled,
+		&i.PreferredRatingSystem,
+		&i.ParentalPinHash,
+		&i.HideRestricted,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at FROM users WHERE username = $1 LIMIT 1
+SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE username = $1 LIMIT 1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -167,12 +185,18 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Birthdate,
+		&i.MaxRatingLevel,
+		&i.AdultContentEnabled,
+		&i.PreferredRatingSystem,
+		&i.ParentalPinHash,
+		&i.HideRestricted,
 	)
 	return i, err
 }
 
 const listAdminUsers = `-- name: ListAdminUsers :many
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at FROM users
+SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users
 WHERE is_admin = true
 ORDER BY username ASC
 `
@@ -198,6 +222,12 @@ func (q *Queries) ListAdminUsers(ctx context.Context) ([]User, error) {
 			&i.LastActivityAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Birthdate,
+			&i.MaxRatingLevel,
+			&i.AdultContentEnabled,
+			&i.PreferredRatingSystem,
+			&i.ParentalPinHash,
+			&i.HideRestricted,
 		); err != nil {
 			return nil, err
 		}
@@ -210,7 +240,7 @@ func (q *Queries) ListAdminUsers(ctx context.Context) ([]User, error) {
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at FROM users
+SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users
 ORDER BY username ASC
 LIMIT $1 OFFSET $2
 `
@@ -241,6 +271,12 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.LastActivityAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Birthdate,
+			&i.MaxRatingLevel,
+			&i.AdultContentEnabled,
+			&i.PreferredRatingSystem,
+			&i.ParentalPinHash,
+			&i.HideRestricted,
 		); err != nil {
 			return nil, err
 		}
@@ -259,7 +295,7 @@ SET
     display_name = COALESCE($3, display_name),
     updated_at = NOW()
 WHERE id = $1
-RETURNING id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at
+RETURNING id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted
 `
 
 type UpdateUserParams struct {
@@ -283,6 +319,12 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Birthdate,
+		&i.MaxRatingLevel,
+		&i.AdultContentEnabled,
+		&i.PreferredRatingSystem,
+		&i.ParentalPinHash,
+		&i.HideRestricted,
 	)
 	return i, err
 }

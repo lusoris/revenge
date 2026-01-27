@@ -226,7 +226,7 @@ func (q *Queries) GetOIDCUserLink(ctx context.Context, arg GetOIDCUserLinkParams
 }
 
 const getOIDCUserLinkByUserID = `-- name: GetOIDCUserLinkByUserID :many
-SELECT 
+SELECT
     l.id, l.user_id, l.provider_id, l.subject, l.email, l.created_at, l.last_login_at,
     p.name AS provider_name,
     p.display_name AS provider_display_name
@@ -279,7 +279,7 @@ func (q *Queries) GetOIDCUserLinkByUserID(ctx context.Context, userID uuid.UUID)
 
 const getUserByOIDCLink = `-- name: GetUserByOIDCLink :one
 
-SELECT u.id, u.username, u.email, u.password_hash, u.display_name, u.is_admin, u.is_disabled, u.last_login_at, u.last_activity_at, u.created_at, u.updated_at
+SELECT u.id, u.username, u.email, u.password_hash, u.display_name, u.is_admin, u.is_disabled, u.last_login_at, u.last_activity_at, u.created_at, u.updated_at, u.birthdate, u.max_rating_level, u.adult_content_enabled, u.preferred_rating_system, u.parental_pin_hash, u.hide_restricted
 FROM users u
 JOIN oidc_user_links l ON u.id = l.user_id
 WHERE l.provider_id = $1 AND l.subject = $2
@@ -309,13 +309,19 @@ func (q *Queries) GetUserByOIDCLink(ctx context.Context, arg GetUserByOIDCLinkPa
 		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Birthdate,
+		&i.MaxRatingLevel,
+		&i.AdultContentEnabled,
+		&i.PreferredRatingSystem,
+		&i.ParentalPinHash,
+		&i.HideRestricted,
 	)
 	return i, err
 }
 
 const listEnabledOIDCProviders = `-- name: ListEnabledOIDCProviders :many
-SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers 
-WHERE enabled = true 
+SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers
+WHERE enabled = true
 ORDER BY display_name ASC
 `
 
@@ -393,7 +399,7 @@ func (q *Queries) ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
 
 const oIDCUserLinkExists = `-- name: OIDCUserLinkExists :one
 SELECT EXISTS(
-    SELECT 1 FROM oidc_user_links 
+    SELECT 1 FROM oidc_user_links
     WHERE provider_id = $1 AND subject = $2
 )
 `

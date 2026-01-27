@@ -591,6 +591,7 @@ CREATE TYPE library_type AS ENUM (
 ### Adult Content Handling
 
 Adult libraries (`adult_movies`, `adult_shows`) require:
+
 - User setting `adult_content_enabled = true`
 - Metadata from Stash-Box, TPDB (not TMDB)
 - Always `normalized_level: 100`
@@ -610,14 +611,14 @@ Universal age restriction system. See `docs/CONTENT_RATING.md` for full document
 
 ### Normalized Rating Scale
 
-| Level | Description | Examples |
-|-------|-------------|----------|
-| 0 | All Ages | G, FSK 0, U |
-| 25 | 6+ | PG, FSK 6 |
-| 50 | 12+ | PG-13, FSK 12 |
-| 75 | 16+ | R, FSK 16 |
-| 90 | 18+ | NC-17, FSK 18 |
-| 100 | Adult XXX | R18, X18+ |
+| Level | Description | Examples      |
+| ----- | ----------- | ------------- |
+| 0     | All Ages    | G, FSK 0, U   |
+| 25    | 6+          | PG, FSK 6     |
+| 50    | 12+         | PG-13, FSK 12 |
+| 75    | 16+         | R, FSK 16     |
+| 90    | 18+         | NC-17, FSK 18 |
+| 100   | Adult XXX   | R18, X18+     |
 
 ### User Settings
 

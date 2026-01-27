@@ -197,7 +197,7 @@ func (q *Queries) GetSessionByTokenHash(ctx context.Context, tokenHash string) (
 
 const getSessionWithUser = `-- name: GetSessionWithUser :one
 
-SELECT 
+SELECT
     s.id, s.user_id, s.token_hash, s.refresh_token_hash, s.device_id, s.device_name, s.client_name, s.client_version, s.ip_address, s.expires_at, s.refresh_expires_at, s.created_at,
     u.id AS user_id,
     u.username,
@@ -358,7 +358,7 @@ func (q *Queries) SessionExists(ctx context.Context, tokenHash string) (bool, er
 
 const updateSessionRefreshToken = `-- name: UpdateSessionRefreshToken :exec
 UPDATE sessions
-SET 
+SET
     refresh_token_hash = $2,
     refresh_expires_at = $3
 WHERE id = $1

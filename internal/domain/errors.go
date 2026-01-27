@@ -9,6 +9,9 @@ var (
 	// ErrNotFound is returned when the requested entity does not exist.
 	ErrNotFound = errors.New("entity not found")
 
+	// ErrAlreadyExists is returned when attempting to create an entity that already exists.
+	ErrAlreadyExists = errors.New("entity already exists")
+
 	// ErrUserNotFound is returned when the requested user does not exist.
 	ErrUserNotFound = errors.New("user not found")
 

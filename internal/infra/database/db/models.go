@@ -123,11 +123,21 @@ func (ns NullImageType) Value() (driver.Value, error) {
 type LibraryType string
 
 const (
-	LibraryTypeMovies  LibraryType = "movies"
-	LibraryTypeTvshows LibraryType = "tvshows"
-	LibraryTypeMusic   LibraryType = "music"
-	LibraryTypePhotos  LibraryType = "photos"
-	LibraryTypeMixed   LibraryType = "mixed"
+	LibraryTypeMovies      LibraryType = "movies"
+	LibraryTypeTvshows     LibraryType = "tvshows"
+	LibraryTypeMusic       LibraryType = "music"
+	LibraryTypePhotos      LibraryType = "photos"
+	LibraryTypeMixed       LibraryType = "mixed"
+	LibraryTypeMusicvideos LibraryType = "musicvideos"
+	LibraryTypeHomevideos  LibraryType = "homevideos"
+	LibraryTypeBoxsets     LibraryType = "boxsets"
+	LibraryTypeLivetv      LibraryType = "livetv"
+	LibraryTypePlaylists   LibraryType = "playlists"
+	LibraryTypeBooks       LibraryType = "books"
+	LibraryTypeAudiobooks  LibraryType = "audiobooks"
+	LibraryTypePodcasts    LibraryType = "podcasts"
+	LibraryTypeAdultMovies LibraryType = "adult_movies"
+	LibraryTypeAdultShows  LibraryType = "adult_shows"
 )
 
 func (e *LibraryType) Scan(src interface{}) error {
@@ -168,16 +178,29 @@ func (ns NullLibraryType) Value() (driver.Value, error) {
 type MediaType string
 
 const (
-	MediaTypeMovie      MediaType = "movie"
-	MediaTypeSeries     MediaType = "series"
-	MediaTypeSeason     MediaType = "season"
-	MediaTypeEpisode    MediaType = "episode"
-	MediaTypeArtist     MediaType = "artist"
-	MediaTypeAlbum      MediaType = "album"
-	MediaTypeAudio      MediaType = "audio"
-	MediaTypePhoto      MediaType = "photo"
-	MediaTypePhotoAlbum MediaType = "photo_album"
-	MediaTypeFolder     MediaType = "folder"
+	MediaTypeMovie            MediaType = "movie"
+	MediaTypeSeries           MediaType = "series"
+	MediaTypeSeason           MediaType = "season"
+	MediaTypeEpisode          MediaType = "episode"
+	MediaTypeArtist           MediaType = "artist"
+	MediaTypeAlbum            MediaType = "album"
+	MediaTypeAudio            MediaType = "audio"
+	MediaTypePhoto            MediaType = "photo"
+	MediaTypePhotoAlbum       MediaType = "photo_album"
+	MediaTypeFolder           MediaType = "folder"
+	MediaTypeMusicvideo       MediaType = "musicvideo"
+	MediaTypeTrailer          MediaType = "trailer"
+	MediaTypeHomevideo        MediaType = "homevideo"
+	MediaTypeAudiobookChapter MediaType = "audiobook_chapter"
+	MediaTypePodcastEpisode   MediaType = "podcast_episode"
+	MediaTypeBook             MediaType = "book"
+	MediaTypeAudiobook        MediaType = "audiobook"
+	MediaTypePodcast          MediaType = "podcast"
+	MediaTypeBoxset           MediaType = "boxset"
+	MediaTypePlaylist         MediaType = "playlist"
+	MediaTypeChannel          MediaType = "channel"
+	MediaTypeProgram          MediaType = "program"
+	MediaTypeRecording        MediaType = "recording"
 )
 
 func (e *MediaType) Scan(src interface{}) error {
@@ -274,6 +297,22 @@ type ActivityLog struct {
 	CreatedAt     time.Time       `json:"createdAt"`
 }
 
+type ContentMinRatingLevel struct {
+	ContentID   uuid.UUID   `json:"contentId"`
+	ContentType string      `json:"contentType"`
+	MinLevel    interface{} `json:"minLevel"`
+	IsAdult     bool        `json:"isAdult"`
+}
+
+type ContentRating struct {
+	ID          uuid.UUID   `json:"id"`
+	ContentID   uuid.UUID   `json:"contentId"`
+	ContentType string      `json:"contentType"`
+	RatingID    uuid.UUID   `json:"ratingId"`
+	Source      pgtype.Text `json:"source"`
+	CreatedAt   time.Time   `json:"createdAt"`
+}
+
 type Image struct {
 	ID        uuid.UUID   `json:"id"`
 	ItemID    uuid.UUID   `json:"itemId"`
@@ -298,6 +337,8 @@ type Library struct {
 	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
 	CreatedAt         time.Time          `json:"createdAt"`
 	UpdatedAt         time.Time          `json:"updatedAt"`
+	// Whether this library contains adult (XXX) content. Auto-set for adult_movies/adult_shows types.
+	IsAdult bool `json:"isAdult"`
 }
 
 type MediaItem struct {
@@ -399,6 +440,35 @@ type PlaybackProgress struct {
 	UpdatedAt           time.Time          `json:"updatedAt"`
 }
 
+type Rating struct {
+	ID              uuid.UUID   `json:"id"`
+	SystemID        uuid.UUID   `json:"systemId"`
+	Code            string      `json:"code"`
+	Name            string      `json:"name"`
+	Description     pgtype.Text `json:"description"`
+	MinAge          pgtype.Int4 `json:"minAge"`
+	NormalizedLevel int32       `json:"normalizedLevel"`
+	SortOrder       int32       `json:"sortOrder"`
+	IsAdult         bool        `json:"isAdult"`
+	IconUrl         pgtype.Text `json:"iconUrl"`
+	CreatedAt       time.Time   `json:"createdAt"`
+}
+
+type RatingEquivalent struct {
+	RatingID           uuid.UUID `json:"ratingId"`
+	EquivalentRatingID uuid.UUID `json:"equivalentRatingId"`
+}
+
+type RatingSystem struct {
+	ID           uuid.UUID `json:"id"`
+	Code         string    `json:"code"`
+	Name         string    `json:"name"`
+	CountryCodes []string  `json:"countryCodes"`
+	IsActive     bool      `json:"isActive"`
+	SortOrder    int32     `json:"sortOrder"`
+	CreatedAt    time.Time `json:"createdAt"`
+}
+
 type Session struct {
 	ID               uuid.UUID          `json:"id"`
 	UserID           uuid.UUID          `json:"userId"`
@@ -426,4 +496,16 @@ type User struct {
 	LastActivityAt pgtype.Timestamptz `json:"lastActivityAt"`
 	CreatedAt      time.Time          `json:"createdAt"`
 	UpdatedAt      time.Time          `json:"updatedAt"`
+	// User birthdate for age-based content filtering
+	Birthdate pgtype.Date `json:"birthdate"`
+	// Maximum normalized rating level (0-100) user can view. Parental override.
+	MaxRatingLevel int32 `json:"maxRatingLevel"`
+	// Whether user can access adult (XXX) content libraries
+	AdultContentEnabled bool `json:"adultContentEnabled"`
+	// Preferred rating system code for display (fsk, mpaa, bbfc)
+	PreferredRatingSystem pgtype.Text `json:"preferredRatingSystem"`
+	// Hashed PIN for temporary unlock of restricted content
+	ParentalPinHash pgtype.Text `json:"parentalPinHash"`
+	// If true, hide restricted content entirely. If false, show as locked.
+	HideRestricted bool `json:"hideRestricted"`
 }

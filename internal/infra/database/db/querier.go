@@ -13,13 +13,19 @@ import (
 
 type Querier interface {
 	CountAdminUsers(ctx context.Context) (int64, error)
+	CountLibraries(ctx context.Context) (int64, error)
 	CountUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
+	CreateContentRating(ctx context.Context, arg CreateContentRatingParams) (ContentRating, error)
+	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (CreateLibraryRow, error)
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error)
 	CreateOIDCUserLink(ctx context.Context, arg CreateOIDCUserLinkParams) (OidcUserLink, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteAllContentRatings(ctx context.Context, arg DeleteAllContentRatingsParams) error
+	DeleteContentRating(ctx context.Context, arg DeleteContentRatingParams) error
 	DeleteExpiredSessions(ctx context.Context) (int64, error)
+	DeleteLibrary(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCUserLink(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCUserLinksByProvider(ctx context.Context, providerID uuid.UUID) error
@@ -29,6 +35,14 @@ type Querier interface {
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteUserSessions(ctx context.Context, userID uuid.UUID) error
 	EmailExists(ctx context.Context, email pgtype.Text) (bool, error)
+	// Filter a list of content IDs to only those allowed for a user
+	FilterAllowedContentIDs(ctx context.Context, arg FilterAllowedContentIDsParams) ([]uuid.UUID, error)
+	// Get the rating to display for content, preferring the specified system
+	GetContentDisplayRating(ctx context.Context, arg GetContentDisplayRatingParams) (GetContentDisplayRatingRow, error)
+	GetContentMinLevel(ctx context.Context, arg GetContentMinLevelParams) (ContentMinRatingLevel, error)
+	GetContentRatings(ctx context.Context, arg GetContentRatingsParams) ([]GetContentRatingsRow, error)
+	GetLibraryByID(ctx context.Context, id uuid.UUID) (GetLibraryByIDRow, error)
+	GetLibraryByName(ctx context.Context, name string) (GetLibraryByNameRow, error)
 	// OIDC provider queries for Jellyfin Go
 	// =============================================================================
 	// PROVIDERS
@@ -40,6 +54,11 @@ type Querier interface {
 	// =============================================================================
 	GetOIDCUserLink(ctx context.Context, arg GetOIDCUserLinkParams) (OidcUserLink, error)
 	GetOIDCUserLinkByUserID(ctx context.Context, userID uuid.UUID) ([]GetOIDCUserLinkByUserIDRow, error)
+	GetRatingByID(ctx context.Context, id uuid.UUID) (GetRatingByIDRow, error)
+	GetRatingBySystemAndCode(ctx context.Context, arg GetRatingBySystemAndCodeParams) (GetRatingBySystemAndCodeRow, error)
+	GetRatingEquivalents(ctx context.Context, ratingID uuid.UUID) ([]GetRatingEquivalentsRow, error)
+	GetRatingSystemByCode(ctx context.Context, code string) (RatingSystem, error)
+	GetRatingSystemByID(ctx context.Context, id uuid.UUID) (RatingSystem, error)
 	// Session queries for Jellyfin Go
 	// =============================================================================
 	// BASIC CRUD
@@ -63,14 +82,31 @@ type Querier interface {
 	// =============================================================================
 	GetUserByOIDCLink(ctx context.Context, arg GetUserByOIDCLinkParams) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	// Check if content is allowed for a user's rating level
+	IsContentAllowed(ctx context.Context, arg IsContentAllowedParams) (bool, error)
+	LibraryNameExists(ctx context.Context, name string) (bool, error)
+	LibraryNameExistsExcluding(ctx context.Context, arg LibraryNameExistsExcludingParams) (bool, error)
 	ListActiveSessions(ctx context.Context, arg ListActiveSessionsParams) ([]Session, error)
 	ListAdminUsers(ctx context.Context) ([]User, error)
 	ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error)
+	ListLibraries(ctx context.Context) ([]ListLibrariesRow, error)
+	ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]ListLibrariesByTypeRow, error)
+	// List libraries accessible to a user (considers adult content settings)
+	ListLibrariesForUser(ctx context.Context, id uuid.UUID) ([]ListLibrariesForUserRow, error)
+	ListNonAdultLibraries(ctx context.Context) ([]ListNonAdultLibrariesRow, error)
 	ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
+	ListRatingSystems(ctx context.Context) ([]RatingSystem, error)
+	ListRatingSystemsByCountry(ctx context.Context, countryCodes []string) ([]RatingSystem, error)
+	ListRatingsByNormalizedLevel(ctx context.Context, normalizedLevel int32) ([]ListRatingsByNormalizedLevelRow, error)
+	ListRatingsBySystem(ctx context.Context, systemID uuid.UUID) ([]ListRatingsBySystemRow, error)
 	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
+	ListVisibleLibraries(ctx context.Context) ([]ListVisibleLibrariesRow, error)
 	OIDCUserLinkExists(ctx context.Context, arg OIDCUserLinkExistsParams) (bool, error)
+	RefreshContentMinRatingLevels(ctx context.Context) error
 	SessionExists(ctx context.Context, tokenHash string) (bool, error)
+	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) error
+	UpdateLibraryLastScan(ctx context.Context, id uuid.UUID) error
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error)
 	UpdateOIDCProviderEnabled(ctx context.Context, arg UpdateOIDCProviderEnabledParams) error
 	UpdateOIDCUserLinkLastLogin(ctx context.Context, id uuid.UUID) error

@@ -25,7 +25,7 @@ CREATE TYPE library_type AS ENUM (
     'livetv',           -- Live TV & DVR
     'playlists',        -- Playlist container
     'mixed',            -- Mixed content library
-    
+
     -- Extended types (NEW)
     'books',            -- E-books (epub, pdf, mobi)
     'audiobooks',       -- Audiobooks (m4b, mp3)
@@ -45,18 +45,18 @@ CREATE TYPE media_type AS ENUM (
     'musicvideo',
     'trailer',
     'homevideo',
-    
-    -- Audio types  
+
+    -- Audio types
     'audio',            -- Music track
     'audiobook_chapter',-- Audiobook chapter
     'podcast_episode',  -- Podcast episode
-    
+
     -- Image types
     'photo',
-    
+
     -- Document types
     'book',             -- E-book (NEW)
-    
+
     -- Collection types
     'series',           -- TV series
     'season',           -- TV season
@@ -67,7 +67,7 @@ CREATE TYPE media_type AS ENUM (
     'boxset',           -- Collection
     'playlist',
     'folder',
-    
+
     -- Live TV
     'channel',
     'program',
@@ -206,9 +206,9 @@ library:
 ```go
 func (s *LibraryService) ListUserLibraries(ctx context.Context, userID uuid.UUID) ([]Library, error) {
     user := s.getUser(ctx, userID)
-    
+
     libraries := s.getAllLibraries(ctx)
-    
+
     // Filter based on user's adult_content_enabled flag
     var allowed []Library
     for _, lib := range libraries {
@@ -216,7 +216,7 @@ func (s *LibraryService) ListUserLibraries(ctx context.Context, userID uuid.UUID
             allowed = append(allowed, lib)
         }
     }
-    
+
     return allowed, nil
 }
 
@@ -253,7 +253,7 @@ func (s *MetadataService) GetProvidersForLibrary(libType LibraryType) []Metadata
 ```sql
 -- Efficient library type filtering
 CREATE INDEX idx_libraries_type ON libraries(type);
-CREATE INDEX idx_libraries_type_adult ON libraries(type) 
+CREATE INDEX idx_libraries_type_adult ON libraries(type)
     WHERE type IN ('adult_movies', 'adult_shows');
 
 -- Efficient content filtering for adult libraries
