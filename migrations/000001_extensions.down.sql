@@ -1,4 +1,0 @@
--- 000001_extensions.down.sql
--- Note: We don't drop extensions as they may be used by other schemas
--- DROP EXTENSION IF EXISTS "pgcrypto";
--- DROP EXTENSION IF EXISTS "uuid-ossp";
