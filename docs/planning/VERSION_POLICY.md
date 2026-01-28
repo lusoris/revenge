@@ -19,8 +19,8 @@
 | **Go version** | Latest stable (1.25+) | New features (WaitGroup.Go, Loop, container GOMAXPROCS), security patches |
 | **Stdlib** | Current Go version | HTTP routing (1.22+), slog (1.21+), testing improvements (1.24+) |
 
-**Current**: Go 1.25  
-**Update Cadence**: Every Go minor release (~6 months)  
+**Current**: Go 1.25
+**Update Cadence**: Every Go minor release (~6 months)
 **Automated**: Renovate bot creates PR on new Go version
 
 ---
@@ -67,7 +67,7 @@
 | **shadcn-svelte** | Latest stable | Latest | UI components (Tailwind + Svelte) |
 | **TanStack Query** | Latest stable | v5.x | Server state management |
 
-**Update Cadence**: 
+**Update Cadence**:
 - **SvelteKit**: Every minor release (monthly)
 - **Tailwind CSS**: Every major/minor (quarterly)
 - **shadcn-svelte**: Every release (weekly/monthly)
@@ -164,7 +164,7 @@
 | **golangci-lint** | Latest stable | Go linting (v1.62+) |
 | **prettier** | Latest stable | Code formatting |
 
-**Update Cadence**: 
+**Update Cadence**:
 - **GitHub Actions**: Update workflow syntax every 6 months
 - **Renovate**: Weekly dependency PRs (auto-merge minor/patch)
 - **golangci-lint**: Every release (monthly)

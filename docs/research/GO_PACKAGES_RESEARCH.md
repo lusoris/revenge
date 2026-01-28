@@ -50,7 +50,7 @@
 | **libvlc-go** | 400 | VLC 2.X/3.X/4.X bindings | Full VLC features, hardware decoding | CGo, VLC dependency | ⚠️ Consider for player fallback |
 | **mp4ff** | 500 | MP4 tools | MP4 parsing/manipulation, no CGo | Limited to MP4 only | ✅ **USE** (MP4 manipulation) |
 
-**Recommendation**: 
+**Recommendation**:
 - **go-astiav** for Blackbeard transcoding (cleaner than gmf)
 - **go-astisub** for subtitle parsing
 - **gortsplib** for Live TV
@@ -69,7 +69,7 @@
 | **Oto** | 400 | Low-level playback | Cross-platform, simple | Requires manual mixing | ❌ Too low-level |
 | **PortAudio** | 700 | Audio I/O | Professional, cross-platform | CGo dependency | ❌ Not needed (web client) |
 
-**Recommendation**: 
+**Recommendation**:
 - **flac** for FLAC support (music module)
 - Others not needed (Blackbeard transcodes, web client plays)
 
@@ -86,7 +86,7 @@
 | **imaging** | 5.2k | Simple processing | Pure Go, no dependencies, easy API | Slower than libvips | ⚠️ Fallback if CGo issues |
 | **imagor** | 3.5k | Fast+secure processing | libvips + Thumbor API, cache | Complex setup, separate service | ❌ Overkill |
 
-**Recommendation**: 
+**Recommendation**:
 - **bimg** OR **govips** for poster/fanart resizing (libvips fast)
 - **imaging** as pure Go fallback (no CGo)
 
@@ -101,7 +101,7 @@
 | **Kitex** | 7k | High-perf RPC | ByteDance production, Thrift/Protobuf | CloudWeGo ecosystem lock-in | ❌ Not needed (no RPC) |
 | **NATS** | 15k | Messaging | Lightweight, clustering, JetStream | Separate service, overhead | ⚠️ Consider if messaging needed |
 
-**Recommendation**: 
+**Recommendation**:
 - **NONE currently** (monolith design, River handles jobs)
 - **Temporal** if complex workflows emerge (e.g., multi-step metadata enrichment)
 
@@ -127,7 +127,7 @@
 | **jsoniter** | 13k | 100% compatible JSON | Drop-in replacement, 2x faster | Less dramatic speedup | ⚠️ Consider if JSON bottleneck |
 | **protobuf** | 1.4k | Protocol Buffers | Type-safe, compact, gRPC | Requires .proto files, complex | ❌ Not needed (REST API) |
 
-**Recommendation**: 
+**Recommendation**:
 - **stdlib encoding/json** (good enough for now)
 - **sonic** if JSON serialization becomes bottleneck (API responses)
 
@@ -152,7 +152,7 @@
 | **ory/kratos** | 11k | Identity management | User management, MFA, passwordless | Separate service, learning curve | ❌ Not needed (custom user service) |
 | **casbin** | 17k | RBAC/ABAC | Flexible, adapters, cloud-ready | Complex policies, overhead | ⚠️ Consider for advanced RBAC |
 
-**Recommendation**: 
+**Recommendation**:
 - **NONE currently** (custom JWT + OIDC client sufficient)
 - **casbin** if complex RBAC emerges (permissions, roles, policies)
 
@@ -166,7 +166,7 @@
 | **ristretto** | 5.5k | In-memory cache | High-perf, cost-based eviction | In-process only (no distributed) | ⚠️ Consider for local cache |
 | **freecache** | 7k | Zero GC overhead | No GC pauses, fast | Limited features, in-process | ⚠️ Consider for hot paths |
 
-**Recommendation**: 
+**Recommendation**:
 - **KEEP go-redis/v9** (Dragonfly cache)
 - **ristretto** for in-memory hot cache (e.g., session tokens)
 
