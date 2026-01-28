@@ -17,7 +17,7 @@ A ground-up media server built in Go with a fully modular architecture. Each con
 - **Bleeding Edge Stable** - Latest stable Go/PostgreSQL, no alpha deps
 - **Optional ML** - Ollama integration for recommendations, not required
 
-See [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) for full details.
+See [docs/dev/design/architecture/DESIGN_PRINCIPLES.md](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) for full details.
 
 ## ✨ Features
 
@@ -40,7 +40,7 @@ See [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) for full details.
 | DI | uber-go/fx |
 | Config | koanf v2 |
 
-See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for the complete design.
+See [docs/dev/design/architecture/ARCHITECTURE_V2.md](docs/dev/design/architecture/ARCHITECTURE_V2.md) for the complete design.
 
 ## 🚀 Quick Start
 
@@ -71,21 +71,21 @@ go run ./cmd/revenge
 ## 📖 Documentation
 
 ### Architecture & Design
-- [Architecture V2](docs/ARCHITECTURE_V2.md) - Complete modular architecture
-- [Tech Stack](docs/TECH_STACK.md) - Technology choices
-- [Project Structure](docs/PROJECT_STRUCTURE.md) - Directory layout
+- [Architecture V2](docs/dev/design/architecture/ARCHITECTURE_V2.md) - Complete modular architecture
+- [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices
+- [Design Principles](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) - Directory layout
 
 ### Features
-- [Metadata System](docs/METADATA_SYSTEM.md) - Servarr-first metadata with fallback
-- [Audio Streaming](docs/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
-- [Media Enhancements](docs/MEDIA_ENHANCEMENTS.md) - Trailers, themes, intros, trickplay, Live TV
-- [Client Support](docs/CLIENT_SUPPORT.md) - Chromecast, DLNA, device capabilities
-- [Scrobbling](docs/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
+- [Metadata System](docs/dev/design/architecture/METADATA_SYSTEM.md) - Servarr-first metadata with fallback
+- [Audio Streaming](docs/dev/design/technical/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
+- [Media Enhancements](docs/dev/design/features/MEDIA_ENHANCEMENTS.md) - Trailers, themes, intros, trickplay, Live TV
+- [Client Support](docs/dev/design/features/CLIENT_SUPPORT.md) - Chromecast, DLNA, device capabilities
+- [Scrobbling](docs/dev/design/features/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
 
 ### Operations
-- [Setup Guide](docs/SETUP.md) - Production deployment
-- [Development Guide](docs/DEVELOPMENT.md) - Development environment
-- [Best Practices](docs/BEST_PRACTICES.md) - Resilience, observability patterns
+- [Setup Guide](docs/dev/design/operations/SETUP.md) - Production deployment
+- [Development Guide](docs/dev/design/operations/DEVELOPMENT.md) - Development environment
+- [Best Practices](docs/dev/design/operations/BEST_PRACTICES.md) - Resilience, observability patterns
 
 ## 🛠️ Development
 

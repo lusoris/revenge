@@ -232,7 +232,7 @@ func (s *MusicService) EnrichAlbumWithDiscogs(albumID uuid.UUID) error {
 
 ## Related Documentation
 
-- **Music Module**: [docs/MODULE_IMPLEMENTATION_TODO.md](../../MODULE_IMPLEMENTATION_TODO.md) (Music section)
+- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
 - **Lidarr Integration**: [../servarr/LIDARR.md](../servarr/LIDARR.md)
 

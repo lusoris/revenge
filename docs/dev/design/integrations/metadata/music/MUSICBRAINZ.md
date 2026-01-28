@@ -219,7 +219,7 @@ func (s *MusicService) HandleLidarrAlbumAdded(albumID string) error {
 
 ## Related Documentation
 
-- **Music Module**: [docs/MODULE_IMPLEMENTATION_TODO.md](../../MODULE_IMPLEMENTATION_TODO.md) (Music section)
+- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **Lidarr Integration**: [../servarr/LIDARR.md](../servarr/LIDARR.md)
 - **Last.fm Integration**: [LASTFM.md](LASTFM.md) (scrobbling + artist bio)
 - **Spotify Integration**: [SPOTIFY.md](SPOTIFY.md) (cover art fallback)

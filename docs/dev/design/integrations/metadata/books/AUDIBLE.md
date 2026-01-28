@@ -231,7 +231,7 @@ func (s *AudiobookService) HandleReadarrAudiobookAdded(audiobookID string) error
 
 ## Related Documentation
 
-- **Audiobook Module**: [docs/MODULE_IMPLEMENTATION_TODO.md](../../MODULE_IMPLEMENTATION_TODO.md) (Audiobook section)
+- **Audiobook Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Audiobook section)
 - **Readarr Integration**: [../servarr/READARR.md](../servarr/READARR.md) (recommended approach)
 - **Audiobookshelf Integration**: [../audiobook/AUDIOBOOKSHELF.md](../audiobook/AUDIOBOOKSHELF.md) (audiobook server)
 

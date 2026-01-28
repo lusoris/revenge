@@ -259,7 +259,7 @@ func (s *MusicService) UpdatePopularityScores(ctx context.Context) error {
 
 ## Related Documentation
 
-- **Music Module**: [docs/MODULE_IMPLEMENTATION_TODO.md](../../MODULE_IMPLEMENTATION_TODO.md) (Music section)
+- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
 - **Cover Art Archive**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary cover art source)
 - **Last.fm Integration**: [LASTFM.md](LASTFM.md) (scrobbling + bio)

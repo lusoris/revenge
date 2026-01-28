@@ -199,10 +199,10 @@ chore: update dependencies
 
 ### Useful Resources
 
-- [Architecture Documentation](docs/ARCHITECTURE.md)
-- [Setup Guide](docs/SETUP.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
-- [Phase 1 Checklist](docs/PHASE1_CHECKLIST.md)
+- [Architecture Documentation](../architecture/ARCHITECTURE_V2.md)
+- [Setup Guide](SETUP.md)
+- [Contributing Guidelines](../../../../CONTRIBUTING.md)
+- [Module Implementation TODO](../planning/MODULE_IMPLEMENTATION_TODO.md)
 
 ### Troubleshooting
 
