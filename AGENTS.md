@@ -6,8 +6,8 @@
 
 **Revenge** is a modular media server with 11 isolated content modules. Each module has its own tables, services, and handlers - no shared content tables.
 
-See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for architecture.
-See [docs/MODULE_IMPLEMENTATION_TODO.md](docs/MODULE_IMPLEMENTATION_TODO.md) for implementation phases.
+See [docs/dev/design/architecture/ARCHITECTURE_V2.md](docs/dev/design/architecture/ARCHITECTURE_V2.md) for architecture.
+See [docs/dev/design/planning/MODULE_IMPLEMENTATION_TODO.md](docs/dev/design/planning/MODULE_IMPLEMENTATION_TODO.md) for implementation phases.
 
 ## Build & Test Commands
 

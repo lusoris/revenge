@@ -1,0 +1,88 @@
+name: Fetch External Documentation
+
+on:
+  schedule:
+    # Weekly on Sunday at 03:00 UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      category:
+        description: 'Category to fetch (leave empty for all)'
+        required: false
+        type: string
+      source_id:
+        description: 'Specific source ID to fetch (leave empty for all)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fetch-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements-fetch.txt
+
+      - name: Run fetcher
+        id: fetch
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.category }}" ]; then
+            ARGS="$ARGS --category ${{ inputs.category }}"
+          fi
+          if [ -n "${{ inputs.source_id }}" ]; then
+            ARGS="$ARGS --id ${{ inputs.source_id }}"
+          fi
+          
+          python scripts/fetch-sources.py $ARGS
+          
+          # Check if there are changes
+          if git diff --quiet docs/dev/sources/; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.fetch.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs: update external sources [automated]"
+          branch: docs/update-sources
+          delete-branch: true
+          title: "docs: Update external documentation sources"
+          body: |
+            ## Automated Documentation Update
+
+            This PR updates external documentation sources fetched from upstream.
+
+            ### Changes
+            - Updated documentation from external sources
+            - See `docs/dev/sources/INDEX.yaml` for fetch status
+
+            ### Review Checklist
+            - [ ] Verify no unexpected content changes
+            - [ ] Check for any failed fetches in INDEX.yaml
+            - [ ] Ensure no sensitive data was fetched
+
+            ---
+            *This PR was automatically created by the fetch-sources workflow.*
+          labels: |
+            documentation
+            automated
+          draft: false

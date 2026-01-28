@@ -1,108 +1,61 @@
-# Revenge Documentation Index
+# Revenge Documentation
 
-> Central navigation for all project documentation
+> Central router for all documentation
 
-**Last Updated**: 2026-01-28
+## Navigation
 
-## Quick Start
+| Section | Description | Path |
+|---------|-------------|------|
+| **Development** | Architecture, features, planning, research | [/docs/dev/](dev/INDEX.md) |
+| **API Reference** | OpenAPI specs | [/api/openapi/](../api/openapi/) |
+| **Agent Instructions** | Coding agent rules | [AGENTS.md](../AGENTS.md) |
+| **Contributing** | Contribution guidelines | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
-- **New to Revenge?** Start with [Setup Guide](operations/SETUP.md)
-- **Development?** See [Development Guide](operations/DEVELOPMENT.md)
-- **Architecture?** Read [Overall Architecture](architecture/ARCHITECTURE_V2.md)
-- **External APIs?** Check [External Integrations](EXTERNAL_INTEGRATIONS_TODO.md)
+## Quick Links
 
----
+- [Setup Guide](dev/design/operations/SETUP.md)
+- [Development Guide](dev/design/operations/DEVELOPMENT.md)
+- [Architecture Overview](dev/design/architecture/ARCHITECTURE_V2.md)
+- [Module Implementation Roadmap](dev/design/planning/MODULE_IMPLEMENTATION_TODO.md)
 
-## Architecture
+## Documentation Structure
 
-Core system design and architectural decisions.
+```
+/docs/
+├── INDEX.md                    # You are here
+└── dev/
+    ├── INDEX.md                # Developer documentation hub
+    ├── MIGRATION_MANIFEST.md   # Migration tracking
+    ├── design/                 # 🔒 Project design (protected)
+    │   ├── architecture/       # System architecture
+    │   ├── features/           # Feature specifications
+    │   ├── integrations/       # Integration designs
+    │   ├── operations/         # Operations guides
+    │   ├── planning/           # Roadmaps & planning
+    │   ├── research/           # Research & analysis
+    │   └── technical/          # Technical documentation
+    └── sources/                # 🔄 External sources (auto-fetched)
+        ├── SOURCES.yaml        # Source registry
+        └── {categories}/       # Fetched documentation
+```
 
-- [Overall Architecture V2](architecture/ARCHITECTURE_V2.md) - Complete system architecture
-- [Design Principles](architecture/DESIGN_PRINCIPLES.md) - Guiding principles
-- [Player Architecture](architecture/PLAYER_ARCHITECTURE.md) - Media player design
-- [Metadata System](architecture/METADATA_SYSTEM.md) - Metadata management
-- [Plugin Architecture Decision](architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
+## Source Categories
 
-## Operations
+External documentation auto-fetched from upstream sources:
 
-Setup, deployment, and operational guides.
-
-- [Setup Guide](operations/SETUP.md) - Initial setup instructions
-- [Development Guide](operations/DEVELOPMENT.md) - Development workflow
-- [Database Auto-Healing](operations/DATABASE_AUTO_HEALING.md) - PostgreSQL corruption detection/repair
-- [Reverse Proxy](operations/REVERSE_PROXY.md) - Nginx/Caddy configuration
-- [Git Workflow](operations/GITFLOW.md) - Branch strategy
-- [Branch Protection](operations/BRANCH_PROTECTION.md) - Repository protection rules
-- [Best Practices](operations/BEST_PRACTICES.md) - Coding standards
-- [Upstream Sync](operations/UPSTREAM_SYNC.md) - Syncing with upstream
-
-## Research
-
-Analysis, user research, and technology evaluations.
-
-- [User Pain Points Research](research/USER_PAIN_POINTS_RESEARCH.md) - Jellyfin/Plex/Emby issues
-- [Go Packages Research](research/GO_PACKAGES_RESEARCH.md) - Awesome-Go analysis (500+ packages)
-- [Documentation Gap Analysis](research/DOCUMENTATION_GAP_ANALYSIS.md) - Documentation coverage audit
-
-## Planning
-
-Roadmaps, versioning, and implementation phases.
-
-- [Module Implementation Roadmap](planning/MODULE_IMPLEMENTATION_TODO.md) - Module rollout plan
-- [Version Policy](planning/VERSION_POLICY.md) - Bleeding edge/latest stable policy
-- [Versioning Strategy](planning/VERSIONING.md) - Semantic versioning approach
-- [Preparation Master Plan](PREPARATION_MASTER_PLAN.md) - Pre-implementation checklist (2737 lines, SPLIT PENDING)
-
-## Integrations
-
-External service integrations and API documentation.
-
-- [External Integrations TODO](EXTERNAL_INTEGRATIONS_TODO.md) - 66 services (1103 lines, SPLIT PENDING)
-- **Servarr**: Radarr, Sonarr, Lidarr, Whisparr, Readarr
-- **Metadata**: TMDb, TheTVDB, MusicBrainz, StashDB, ComicVine
-- **Scrobbling**: Trakt, Last.fm, ListenBrainz, Letterboxd, Simkl
-- **Auth**: Authelia, Authentik, Keycloak, OIDC
-
-## Features
-
-Content modules and feature designs.
-
-- [Adult Content System](features/ADULT_CONTENT_SYSTEM.md) - Adult module isolation (`c` schema)
-- [Adult Metadata](features/ADULT_METADATA.md) - Whisparr/StashDB integration
-- [Comics Module](features/COMICS_MODULE.md) - Digital comics/manga support
-- [Scrobbling](features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
-- [User Experience Features](features/USER_EXPERIENCE_FEATURES.md) - UX enhancements
-- [Media Enhancements](features/MEDIA_ENHANCEMENTS.md) - Media-specific features
-- [Content Rating](features/CONTENT_RATING.md) - Rating systems (MPAA/PEGI/etc.)
-- [Client Support](features/CLIENT_SUPPORT.md) - Client compatibility
-- [Internationalization](features/I18N.md) - i18n/l10n support
-- [Library Types](features/LIBRARY_TYPES.md) - Library management
-
-## Technical
-
-API design, frontend architecture, and technical documentation.
-
-- [API Documentation](technical/API.md) - REST API design
-- [Frontend Architecture](technical/FRONTEND.md) - Svelte 5 + shadcn-svelte
-- [Tech Stack](technical/TECH_STACK.md) - Technologies used
-- [Audio Streaming](technical/AUDIO_STREAMING.md) - Audio streaming architecture
-- [Offloading](technical/OFFLOADING.md) - Task offloading patterns
-
----
-
-## Documentation Status
-
-| Category | Files | Status |
-|----------|-------|--------|
-| Architecture | 5 | ✅ Complete |
-| Operations | 8 | ✅ Complete |
-| Research | 3 | 🟡 Plex/Emby data pending |
-| Planning | 4 | 🟡 Split large files pending |
-| Integrations | 2 | 🔴 Split EXTERNAL_INTEGRATIONS_TODO.md |
-| Features | 10 | 🟡 4 more docs needed |
-| Technical | 5 | ✅ Complete |
-
-**Total**: 37 files | **Next**: Split PREPARATION_MASTER_PLAN.md, EXTERNAL_INTEGRATIONS_TODO.md
+| Category | Examples |
+|----------|----------|
+| `go` | Go stdlib, fx, koanf, sqlc |
+| `apis` | TMDb, MusicBrainz, Trakt |
+| `protocols` | HTTP Range, HLS, DASH |
+| `database` | PostgreSQL, sqlc patterns |
+| `frontend` | Svelte 5, TanStack Query |
+| `tooling` | ogen, river, slog |
+| `media` | FFmpeg, codecs, containers |
+| `security` | OIDC, OAuth 2.0, PKCE |
+| `testing` | Go testing, testify |
+| `observability` | Prometheus, OpenTelemetry |
+| `infrastructure` | Dragonfly, Typesense |
 
 ---
 

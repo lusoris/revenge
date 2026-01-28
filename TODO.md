@@ -3,19 +3,59 @@
 > Modular media server with complete content isolation
 
 **Last Updated**: 2026-01-28
-**Current Focus**: Phase 1.1 - Documentation restructuring (51% complete)
+**Current Focus**: Phase 1.2 - Documentation System v2 (complete) ✅
 
 ## Architecture
 
-See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for the complete modular design.
+See [docs/dev/design/architecture/ARCHITECTURE_V2.md](docs/dev/design/architecture/ARCHITECTURE_V2.md) for the complete modular design.
 
 ---
 
-## Documentation Restructuring (Phase 1.1 - IN PROGRESS)
+## Documentation System v2 (Phase 1.2 - COMPLETE ✅)
 
-**Progress**: 37 of 72 service files complete (51%)
+Restructured documentation with auto-fetch capability for external sources.
 
-### Completed (37 files):
+### New Structure
+```
+/docs/
+├── INDEX.md                    # Router
+└── dev/
+    ├── INDEX.md                # Dev docs hub
+    ├── MIGRATION_MANIFEST.md   # Migration tracking
+    ├── design/                 # 🔒 PROTECTED (our work, 121 files)
+    │   ├── architecture/
+    │   ├── features/
+    │   ├── integrations/
+    │   ├── operations/
+    │   ├── planning/
+    │   ├── research/
+    │   └── technical/
+    └── sources/                # 🔄 AUTO-FETCH (external docs)
+        ├── SOURCES.yaml        # 80+ source definitions
+        ├── INDEX.yaml          # Fetch status tracking
+        └── {11 categories}/    # Fetched content
+```
+
+### Created Files
+- `docs/INDEX.md` - Router to dev documentation
+- `docs/dev/INDEX.md` - Developer documentation hub
+- `docs/dev/MIGRATION_MANIFEST.md` - Migration reference
+- `docs/dev/sources/SOURCES.yaml` - 80+ external source definitions
+- `docs/dev/sources/INDEX.yaml` - Fetch status tracking
+- `scripts/fetch-sources.py` - Python fetcher (HTML + GraphQL)
+- `scripts/requirements-fetch.txt` - Python dependencies
+- `.github/workflows/fetch-sources.yml` - Weekly auto-fetch CI
+
+### Source Categories (11)
+go, apis, protocols, database, frontend, tooling, media, security, testing, observability, infrastructure
+
+---
+
+## Documentation Restructuring (Phase 1.1 - COMPLETE ✅)
+
+**Progress**: 72 of 72 service files complete (100%)
+
+### Completed (72 files):
 - ✅ REQUEST_SYSTEM.md (enhanced with adult isolation)
 - ✅ Servarr services (5): RADARR, SONARR, LIDARR, WHISPARR, READARR
 - ✅ Metadata/video services (4): TMDB, THETVDB, OMDB, THEPOSTERDB
@@ -26,24 +66,29 @@ See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for the complete modular 
 - ✅ Wiki/normal services (3): WIKIPEDIA, FANDOM, TVTROPES
 - ✅ Wiki/adult services (3): BABEPEDIA, IAFD, BOOBPEDIA
 - ✅ Scrobbling services (5): TRAKT, LASTFM_SCROBBLE, LISTENBRAINZ, LETTERBOXD, SIMKL
-- ✅ External/adult platforms (4): FREEONES, THENUDE, PORNHUB, ONLYFANS
+- ✅ External/adult platforms (6): FREEONES, THENUDE, PORNHUB, ONLYFANS, TWITTER_X, INSTAGRAM
+- ✅ Anime services (3): ANILIST, MYANIMELIST, KITSU
+- ✅ Auth services (4): AUTHELIA, AUTHENTIK, KEYCLOAK, GENERIC_OIDC
+- ✅ Audiobook service (1): AUDIOBOOKSHELF
+- ✅ Transcoding service (1): BLACKBEARD
+- ✅ LiveTV services (2): TVHEADEND, NEXTPVR
+- ✅ Casting services (2): CHROMECAST, DLNA
+- ✅ Infrastructure services (4): POSTGRESQL, DRAGONFLY, TYPESENSE, RIVER
 
-### Pending (35 files):
-- ⏳ External/adult platforms (2): Twitter/X, Instagram (performer social media)
-- ⏳ Anime services (3): ANILIST, MYANIMELIST, KITSU
-- ⏳ Auth services (4): AUTHELIA, AUTHENTIK, KEYCLOAK, GENERIC_OIDC
-- ⏳ Audiobook service (1): AUDIOBOOKSHELF
-- ⏳ Transcoding service (1): BLACKBEARD
-- ⏳ LiveTV services (2): TVHEADEND, NEXTPVR
-- ⏳ Casting services (2): CHROMECAST, DLNA
-- ⏳ Infrastructure services (4): POSTGRESQL, DRAGONFLY, TYPESENSE, RIVER
-- ⏳ Additional services (16): Home Assistant, notification systems, etc.
-
-### Pending INDEX files (17):
-- ⏳ 11 category INDEX.md files
-- ⏳ 5 subcategory INDEX.md files
-- ⏳ 1 wiki/adult INDEX.md
-- ⏳ 1 master integrations/INDEX.md
+### Completed INDEX files (20):
+- ✅ integrations/INDEX.md (master index)
+- ✅ metadata/INDEX.md + video/INDEX.md + music/INDEX.md + books/INDEX.md + comics/INDEX.md + adult/INDEX.md
+- ✅ wiki/INDEX.md + wiki/adult/INDEX.md
+- ✅ scrobbling/INDEX.md
+- ✅ external/INDEX.md + external/adult/INDEX.md
+- ✅ servarr/INDEX.md
+- ✅ anime/INDEX.md
+- ✅ auth/INDEX.md
+- ✅ audiobook/INDEX.md
+- ✅ transcoding/INDEX.md
+- ✅ livetv/INDEX.md
+- ✅ casting/INDEX.md
+- ✅ infrastructure/INDEX.md
 
 **Important Notes**:
 - **Ratings separation**: External ratings (IMDb, Rotten Tomatoes, etc.) display as-is in UI, user ratings sync with Trakt/Simkl separately (NO merge/bias)

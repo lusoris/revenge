@@ -18,7 +18,7 @@
 
 ## Architecture
 
-See [docs/ARCHITECTURE_V2.md](../docs/ARCHITECTURE_V2.md) for complete design.
+See [docs/dev/design/architecture/ARCHITECTURE_V2.md](../docs/dev/design/architecture/ARCHITECTURE_V2.md) for complete design.
 
 ### Content Modules (11)
 
