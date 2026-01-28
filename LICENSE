@@ -1,26 +1,48 @@
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
+GNU AFFERO GENERAL PUBLIC LICENSE
+Version 3, 19 November 2007
 
-Copyright (C) 2026 Jellyfin Go Contributors
+Copyright (C) 2026 Revenge Contributors
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ---
 
-Full license text: https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+Full license text: https://www.gnu.org/licenses/agpl-3.0.txt
 
-This project is an independent reimplementation of Jellyfin in Go.
-Jellyfin is a registered trademark of Jellyfin contributors.
-This project is not officially affiliated with the Jellyfin project.
+## Why AGPL-3.0?
+
+Revenge is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0)
+for the following reasons:
+
+1. **Network Protection**: Unlike GPL, AGPL requires that users who interact
+   with the software over a network (e.g., a web service) must be able to
+   receive the source code. This is critical for a media server that is
+   accessed via web interfaces and APIs.
+
+2. **Strong Copyleft**: Ensures that derivative works remain open source,
+   preventing proprietary forks that could fragment the community.
+
+3. **Patent Protection**: AGPL-3.0 includes explicit patent grants, protecting
+   contributors and users from patent claims.
+
+4. **Community Alignment**: Similar to other self-hosted media server projects
+   like Nextcloud (AGPL) and many privacy-focused applications.
+
+5. **Commercial Fairness**: Companies using Revenge in SaaS offerings must
+   contribute back their modifications, ensuring fair play.
+
+## Trademark Notice
+
+"Revenge" is a trademark of Revenge Contributors.
+This project is an independent media server implementation.
