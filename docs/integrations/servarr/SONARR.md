@@ -1,0 +1,241 @@
+# Sonarr Integration
+
+> TV show management automation
+
+**Status**: 🟡 PLANNED
+**Priority**: 🔴 CRITICAL (Phase 3 - TV Show Module)
+**Type**: Webhook listener + API client for metadata sync
+
+---
+
+## Overview
+
+Sonarr is the industry-standard TV show management automation tool. Revenge integrates with Sonarr to:
+- Receive webhook notifications when TV episodes are imported
+- Sync TV show & episode metadata
+- Monitor Sonarr download/import status
+- Map Sonarr quality profiles to Revenge quality tiers
+
+**Integration Points**:
+- **Webhook listener**: Process Sonarr events (On Import, On Episode Added, etc.)
+- **API client**: Query TV shows, episodes, series metadata
+- **Metadata sync**: Enrich Revenge metadata with Sonarr data
+- **Quality mapping**: Sonarr quality profiles → Revenge quality tiers
+
+---
+
+## Developer Resources
+
+- 📚 **API Docs**: https://sonarr.tv/docs/api/
+- 🔗 **OpenAPI Spec**: https://github.com/Sonarr/Sonarr/blob/develop/src/Sonarr.Api.V3/openapi.json
+- 🔗 **GitHub**: https://github.com/Sonarr/Sonarr
+- 🔗 **Wiki**: https://wiki.servarr.com/sonarr
+
+---
+
+## API Details
+
+**Base Path**: `/api/v3/`
+**Authentication**: `X-Api-Key` header (API key from Sonarr settings)
+**Rate Limits**: None (self-hosted)
+
+### Key Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/series` | GET | List all TV shows |
+| `/series/{id}` | GET | Get specific TV show details |
+| `/episode` | GET | List episodes (filterable by series) |
+| `/episode/{id}` | GET | Get specific episode details |
+| `/importlist` | GET | List configured import lists |
+| `/metadata` | GET | Get metadata settings |
+| `/qualityprofile` | GET | List quality profiles |
+| `/system/status` | GET | Get Sonarr version & status |
+| `/health` | GET | Check Sonarr health |
+
+---
+
+## Webhook Events
+
+Sonarr can send webhooks for the following events:
+
+### On Import (Episode Downloaded & Imported)
+```json
+{
+  "eventType": "Download",
+  "series": {
+    "id": 1,
+    "title": "Breaking Bad",
+    "year": 2008,
+    "tvdbId": 81189,
+    "imdbId": "tt0903747",
+    "path": "/media/TV Shows/Breaking Bad"
+  },
+  "episodes": [
+    {
+      "id": 123,
+      "episodeNumber": 1,
+      "seasonNumber": 1,
+      "title": "Pilot",
+      "airDate": "2008-01-20",
+      "overview": "High school chemistry teacher...",
+      "episodeFile": {
+        "id": 456,
+        "relativePath": "Season 01/Breaking Bad - S01E01 - Pilot.mkv",
+        "quality": "Bluray-1080p",
+        "size": 2147483648
+      }
+    }
+  ]
+}
+```
+
+### On Episode Added (New Episode Tracked)
+Triggered when Sonarr starts monitoring a new episode.
+
+### On Episode File Delete
+Triggered when episode file is deleted from Sonarr.
+
+### On Series Delete
+Triggered when TV show is removed from Sonarr.
+
+### On Rename
+Triggered when episode files are renamed.
+
+### On Health Issue
+Triggered when Sonarr detects health issues.
+
+---
+
+## Implementation Checklist
+
+- [ ] **API Client** (`internal/service/metadata/provider_sonarr.go`)
+  - [ ] Series listing & detail fetching
+  - [ ] Episode listing & detail fetching
+  - [ ] Quality profile mapping
+  - [ ] Health check integration
+
+- [ ] **Webhook Handler** (`internal/api/handlers/webhook_sonarr.go`)
+  - [ ] Parse webhook payload (On Download event)
+  - [ ] Extract series + episode metadata
+  - [ ] Trigger metadata enrichment (TheTVDB)
+  - [ ] Store in PostgreSQL (`tvshows`, `tvshow_episodes`)
+  - [ ] Update Typesense search index
+
+- [ ] **Metadata Sync**
+  - [ ] Map Sonarr series → Revenge `tvshows` table
+  - [ ] Map Sonarr episodes → Revenge `tvshow_episodes` table
+  - [ ] Map Sonarr quality profiles → Revenge quality tiers
+  - [ ] Handle season packs vs individual episodes
+
+- [ ] **Quality Profile Mapping**
+  - [ ] Ultra HD (4K) → `quality='4K'`, `max_bitrate=80000`
+  - [ ] HD-1080p → `quality='1080p'`, `max_bitrate=20000`
+  - [ ] HD-720p → `quality='720p'`, `max_bitrate=8000`
+  - [ ] SD → `quality='480p'`, `max_bitrate=3000`
+
+- [ ] **Error Handling**
+  - [ ] Retry failed API calls (circuit breaker)
+  - [ ] Log webhook failures
+  - [ ] Handle missing episodes (not yet aired)
+
+---
+
+## Revenge Integration Pattern
+
+```
+Sonarr imports episode (S01E01)
+           ↓
+Sends webhook to Revenge
+           ↓
+Revenge processes webhook
+           ↓
+Stores series/episode in PostgreSQL (tvshows, tvshow_episodes)
+           ↓
+Enriches metadata from TheTVDB (posters, fanart, ratings)
+           ↓
+Updates Typesense search index
+           ↓
+Episode available for playback
+```
+
+### Go Client Example
+
+```go
+type SonarrClient struct {
+    baseURL string
+    apiKey  string
+    client  *http.Client
+}
+
+func (c *SonarrClient) GetSeries(ctx context.Context, seriesID int) (*Series, error) {
+    url := fmt.Sprintf("%s/api/v3/series/%d", c.baseURL, seriesID)
+    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+    req.Header.Set("X-Api-Key", c.apiKey)
+    
+    resp, err := c.client.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf("failed to get series: %w", err)
+    }
+    defer resp.Body.Close()
+    
+    var series Series
+    json.NewDecoder(resp.Body).Decode(&series)
+    return &series, nil
+}
+
+func (c *SonarrClient) GetEpisodes(ctx context.Context, seriesID int) ([]Episode, error) {
+    url := fmt.Sprintf("%s/api/v3/episode?seriesId=%d", c.baseURL, seriesID)
+    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+    req.Header.Set("X-Api-Key", c.apiKey)
+    
+    resp, err := c.client.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf("failed to get episodes: %w", err)
+    }
+    defer resp.Body.Close()
+    
+    var episodes []Episode
+    json.NewDecoder(resp.Body).Decode(&episodes)
+    return episodes, nil
+}
+```
+
+---
+
+## Related Documentation
+
+- [Radarr Integration](RADARR.md) - Similar workflow for movies
+- [Lidarr Integration](LIDARR.md) - Similar workflow for music
+- [TV Show Module](../../architecture/modules/TVSHOW.md)
+- [Arr Integration Pattern](../../patterns/arr_integration.md)
+- [Webhook Handling](../../patterns/webhook_patterns.md)
+
+---
+
+## Quality Profile Mapping
+
+| Sonarr Quality | Revenge Quality | Max Bitrate | Resolution |
+|----------------|-----------------|-------------|------------|
+| WEB-2160p | `4K` | 80 Mbps | 3840x2160 |
+| Bluray-2160p | `4K` | 80 Mbps | 3840x2160 |
+| WEB-1080p | `1080p` | 20 Mbps | 1920x1080 |
+| Bluray-1080p | `1080p` | 20 Mbps | 1920x1080 |
+| HDTV-1080p | `1080p` | 15 Mbps | 1920x1080 |
+| WEB-720p | `720p` | 8 Mbps | 1280x720 |
+| Bluray-720p | `720p` | 8 Mbps | 1280x720 |
+| HDTV-720p | `720p` | 6 Mbps | 1280x720 |
+| SDTV | `480p` | 3 Mbps | 720x480 |
+| Any | `auto` | Varies | Varies |
+
+---
+
+## Notes
+
+- **TheTVDB is primary metadata source** (consistency with Sonarr)
+- Sonarr API v3 is stable (widely adopted)
+- Self-hosted = no rate limits (unlike cloud APIs)
+- Quality profiles are customizable in Sonarr (respect user settings)
+- Sonarr handles season packs automatically (individual episode tracking)
+- Episode air dates: Sonarr uses TheTVDB air dates (UTC timezone)
+- Missing episodes: Sonarr tracks "monitored" status (not yet aired = no file)
