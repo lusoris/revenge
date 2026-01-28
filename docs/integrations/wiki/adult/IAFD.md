@@ -80,14 +80,14 @@ URL: https://www.iafd.com/person.rme/perfid=performer_id/gender=f/performer_name
 HTML Structure (example):
 <div id="perfbio">
   <h1>Performer Name</h1>
-  
+
   <div class="biodata">
     <p><b>Born:</b> May 15, 1990</p>
     <p><b>Birthplace:</b> Los Angeles, CA, USA</p>
     <p><b>Years Active:</b> 2015-2023</p>
     <p><b>Aliases:</b> Alias1, Alias2</p>
   </div>
-  
+
   <div class="perffilm">
     <table id="personal">
       <thead>
@@ -118,14 +118,14 @@ URL: https://www.iafd.com/title.rme/title=movie_title/year=2023/movie-title-2023
 HTML Structure (example):
 <div id="title-page">
   <h1>Movie Title (2023)</h1>
-  
+
   <div class="movie-info">
     <p><b>Studio:</b> Studio Name</p>
     <p><b>Director:</b> Director Name</p>
     <p><b>Release Date:</b> January 15, 2023</p>
     <p><b>Runtime:</b> 45 minutes</p>
   </div>
-  
+
   <div class="cast">
     <h2>Cast</h2>
     <ul>
@@ -143,13 +143,13 @@ URL: https://www.iafd.com/studio.rme/studioid=studio_id/studio-name
 HTML Structure (example):
 <div id="studio-page">
   <h1>Studio Name</h1>
-  
+
   <div class="studio-info">
     <p><b>Parent Company:</b> Parent Studio Name</p>
     <p><b>Years Active:</b> 2010-Present</p>
     <p><b>Website:</b> https://studio-website.com</p>
   </div>
-  
+
   <div class="studio-films">
     <table>
       <tr>

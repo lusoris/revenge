@@ -172,13 +172,13 @@ func (c *SonarrClient) GetSeries(ctx context.Context, seriesID int) (*Series, er
     url := fmt.Sprintf("%s/api/v3/series/%d", c.baseURL, seriesID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get series: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var series Series
     json.NewDecoder(resp.Body).Decode(&series)
     return &series, nil
@@ -188,13 +188,13 @@ func (c *SonarrClient) GetEpisodes(ctx context.Context, seriesID int) ([]Episode
     url := fmt.Sprintf("%s/api/v3/episode?seriesId=%d", c.baseURL, seriesID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get episodes: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var episodes []Episode
     json.NewDecoder(resp.Body).Decode(&episodes)
     return episodes, nil

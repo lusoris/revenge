@@ -25,13 +25,13 @@
      * `ADULT_CONTENT_SYSTEM.md` (full schema)
      * `MODULE_IMPLEMENTATION_TODO.md` (example)
      * `ARCHITECTURE_V2.md` (migration reference)
-   
+
    - **Whisparr/StashDB info** scattered across:
      * `WHISPARR_STASHDB_SCHEMA.md` (primary, 375 lines)
      * `ADULT_METADATA.md` (partial, 1001 lines)
      * `PREPARATION_MASTER_PLAN.md` (TODO item)
      * `EXTERNAL_INTEGRATIONS_TODO.md` (integration stub)
-   
+
    - **Radarr/Sonarr/Lidarr integration** mentioned in:
      * `PREPARATION_MASTER_PLAN.md` (API status)
      * `EXTERNAL_INTEGRATIONS_TODO.md` (integration details)

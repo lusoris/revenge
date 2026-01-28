@@ -187,13 +187,13 @@ func (c *WhisparrClient) GetScene(ctx context.Context, sceneID int) (*Scene, err
     url := fmt.Sprintf("%s/api/v3/movie/%d", c.baseURL, sceneID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get scene: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var scene Scene
     json.NewDecoder(resp.Body).Decode(&scene)
     return &scene, nil

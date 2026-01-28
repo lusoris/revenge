@@ -224,13 +224,13 @@ func (c *ReadarrClient) GetAuthor(ctx context.Context, authorID int) (*Author, e
     url := fmt.Sprintf("%s/api/v1/author/%d", c.baseURL, authorID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get author: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var author Author
     json.NewDecoder(resp.Body).Decode(&author)
     return &author, nil
@@ -240,13 +240,13 @@ func (c *ReadarrClient) GetBooksByAuthor(ctx context.Context, authorID int) ([]B
     url := fmt.Sprintf("%s/api/v1/book?authorId=%d", c.baseURL, authorID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get books: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var books []Book
     json.NewDecoder(resp.Body).Decode(&books)
     return books, nil

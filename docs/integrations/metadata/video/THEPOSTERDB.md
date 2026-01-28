@@ -128,17 +128,17 @@ type PosterDBClient struct {
 
 func (c *PosterDBClient) SearchByIMDbID(ctx context.Context, imdbID string) ([]Poster, error) {
     c.limiter.Wait(ctx)  // Rate limiting
-    
+
     url := fmt.Sprintf("%s/posters?imdb=%s", c.baseURL, imdbID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("User-Agent", "Revenge Media Server/1.0 (admin@example.com)")
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("search failed: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var posters []Poster
     json.NewDecoder(resp.Body).Decode(&posters)
     return posters, nil
@@ -146,16 +146,16 @@ func (c *PosterDBClient) SearchByIMDbID(ctx context.Context, imdbID string) ([]P
 
 func (c *PosterDBClient) DownloadPoster(ctx context.Context, posterURL string) ([]byte, error) {
     c.limiter.Wait(ctx)
-    
+
     req, _ := http.NewRequestWithContext(ctx, "GET", posterURL, nil)
     req.Header.Set("User-Agent", "Revenge Media Server/1.0 (admin@example.com)")
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("download failed: %w", err)
     }
     defer resp.Body.Close()
-    
+
     return io.ReadAll(resp.Body)
 }
 ```

@@ -29,7 +29,7 @@
 - Book recommendations
 - User profiles (reading history, favorites)
 
-**Status**: 
+**Status**:
 - ✅ **Official GraphQL API** (active development)
 - ✅ **Free tier** (generous limits)
 - ✅ **Open source roadmap** (community-driven)
@@ -288,7 +288,7 @@ func (s *BookService) AddToHardcoverWantToRead(userID uuid.UUID, bookID uuid.UUI
 
     // 2. Get book
     book := s.db.GetBook(bookID)
-    
+
     // 3. Search Hardcover for book (by ISBN)
     hardcoverBook := s.hardcoverClient.GetBookByISBN(hardcoverKey, book.ISBN13)
     if hardcoverBook == nil {

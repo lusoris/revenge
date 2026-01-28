@@ -160,39 +160,39 @@ type OMDbClient struct {
 
 func (c *OMDbClient) GetByIMDbID(ctx context.Context, imdbID string) (*Movie, error) {
     c.limiter.Wait(ctx)  // Rate limiting
-    
+
     url := fmt.Sprintf("%s?i=%s&apikey=%s&plot=full", c.baseURL, imdbID, c.apiKey)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get movie: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var movie Movie
     json.NewDecoder(resp.Body).Decode(&movie)
-    
+
     if movie.Response == "False" {
         return nil, fmt.Errorf("movie not found: %s", movie.Error)
     }
-    
+
     return &movie, nil
 }
 
 func (c *OMDbClient) GetByTitle(ctx context.Context, title string, year int) (*Movie, error) {
     c.limiter.Wait(ctx)
-    
-    url := fmt.Sprintf("%s?t=%s&y=%d&apikey=%s&plot=full", 
+
+    url := fmt.Sprintf("%s?t=%s&y=%d&apikey=%s&plot=full",
         c.baseURL, url.QueryEscape(title), year, c.apiKey)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get movie: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var movie Movie
     json.NewDecoder(resp.Body).Decode(&movie)
     return &movie, nil

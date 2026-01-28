@@ -110,16 +110,16 @@ CREATE TABLE gcd_story (
 **Example Query** (after import):
 ```sql
 -- Find issue in GCD database
-SELECT 
-    i.id, 
-    i.number, 
-    i.publication_date, 
-    s.name AS series_name, 
+SELECT
+    i.id,
+    i.number,
+    i.publication_date,
+    s.name AS series_name,
     p.name AS publisher_name
 FROM gcd.gcd_issue i
 JOIN gcd.gcd_series s ON i.series_id = s.id
 JOIN gcd.gcd_publisher p ON s.publisher_id = p.id
-WHERE s.name ILIKE '%Action Comics%' 
+WHERE s.name ILIKE '%Action Comics%'
   AND i.number = '1';
 ```
 
@@ -212,7 +212,7 @@ Store GCD metadata in metadata_json.gcd_data
 -- Result: Partial data OR no results
 
 -- Step 2: Fallback to GCD database
-SELECT 
+SELECT
     i.id AS gcd_issue_id,
     i.number,
     i.publication_date,
@@ -227,7 +227,7 @@ WHERE s.name = 'Action Comics'
   AND i.publication_date LIKE '1938%';
 
 -- Step 3: Fetch story credits (Superman story)
-SELECT 
+SELECT
     st.title,
     st.script AS writer,
     st.pencils AS artist,

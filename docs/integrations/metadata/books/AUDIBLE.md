@@ -22,7 +22,7 @@
 - Series information
 - Publisher information
 
-**Current Status**: 
+**Current Status**:
 - ❌ **NO official public API**
 - ✅ **Web scraping** (fragile, not recommended)
 - ✅ **Readarr metadata** (uses Goodreads/custom sources)

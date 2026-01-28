@@ -2,9 +2,55 @@
 
 > Modular media server with complete content isolation
 
+**Last Updated**: 2026-01-28
+**Current Focus**: Phase 1.1 - Documentation restructuring (51% complete)
+
 ## Architecture
 
 See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for the complete modular design.
+
+---
+
+## Documentation Restructuring (Phase 1.1 - IN PROGRESS)
+
+**Progress**: 37 of 72 service files complete (51%)
+
+### Completed (37 files):
+- ✅ REQUEST_SYSTEM.md (enhanced with adult isolation)
+- ✅ Servarr services (5): RADARR, SONARR, LIDARR, WHISPARR, READARR
+- ✅ Metadata/video services (4): TMDB, THETVDB, OMDB, THEPOSTERDB
+- ✅ Metadata/music services (4): MUSICBRAINZ, LASTFM, SPOTIFY, DISCOGS
+- ✅ Metadata/books services (4): GOODREADS, OPENLIBRARY, AUDIBLE, HARDCOVER
+- ✅ Metadata/comics services (3): COMICVINE, MARVEL_API, GRAND_COMICS_DATABASE
+- ✅ Metadata/adult services (3): STASHDB, THEPORNDB, STASH
+- ✅ Wiki/normal services (3): WIKIPEDIA, FANDOM, TVTROPES
+- ✅ Wiki/adult services (3): BABEPEDIA, IAFD, BOOBPEDIA
+- ✅ Scrobbling services (5): TRAKT, LASTFM_SCROBBLE, LISTENBRAINZ, LETTERBOXD, SIMKL
+- ✅ External/adult platforms (4): FREEONES, THENUDE, PORNHUB, ONLYFANS
+
+### Pending (35 files):
+- ⏳ External/adult platforms (2): Twitter/X, Instagram (performer social media)
+- ⏳ Anime services (3): ANILIST, MYANIMELIST, KITSU
+- ⏳ Auth services (4): AUTHELIA, AUTHENTIK, KEYCLOAK, GENERIC_OIDC
+- ⏳ Audiobook service (1): AUDIOBOOKSHELF
+- ⏳ Transcoding service (1): BLACKBEARD
+- ⏳ LiveTV services (2): TVHEADEND, NEXTPVR
+- ⏳ Casting services (2): CHROMECAST, DLNA
+- ⏳ Infrastructure services (4): POSTGRESQL, DRAGONFLY, TYPESENSE, RIVER
+- ⏳ Additional services (16): Home Assistant, notification systems, etc.
+
+### Pending INDEX files (17):
+- ⏳ 11 category INDEX.md files
+- ⏳ 5 subcategory INDEX.md files
+- ⏳ 1 wiki/adult INDEX.md
+- ⏳ 1 master integrations/INDEX.md
+
+**Important Notes**:
+- **Ratings separation**: External ratings (IMDb, Rotten Tomatoes, etc.) display as-is in UI, user ratings sync with Trakt/Simkl separately (NO merge/bias)
+- **Adult content isolation**: All adult files use `c` schema + `/api/v1/c/` namespace + `internal/content/c/` module location
+- **Wiki platforms**: Normal (Wikipedia, FANDOM, TVTropes) + Adult (Babepedia, IAFD, Boobpedia)
+- **External adult platforms**: FreeOnes, TheNude, Pornhub, OnlyFans (performer enrichment, c schema isolated)
+- **Scrobbling**: Trakt/Simkl (movies/TV), Last.fm/ListenBrainz (music), Letterboxd (import only)
 
 ---
 

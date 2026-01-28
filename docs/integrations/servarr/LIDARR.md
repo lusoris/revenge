@@ -189,13 +189,13 @@ func (c *LidarrClient) GetArtist(ctx context.Context, artistID int) (*Artist, er
     url := fmt.Sprintf("%s/api/v1/artist/%d", c.baseURL, artistID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get artist: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var artist Artist
     json.NewDecoder(resp.Body).Decode(&artist)
     return &artist, nil
@@ -205,13 +205,13 @@ func (c *LidarrClient) GetAlbumsByArtist(ctx context.Context, artistID int) ([]A
     url := fmt.Sprintf("%s/api/v1/album?artistId=%d", c.baseURL, artistID)
     req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
     req.Header.Set("X-Api-Key", c.apiKey)
-    
+
     resp, err := c.client.Do(req)
     if err != nil {
         return nil, fmt.Errorf("failed to get albums: %w", err)
     }
     defer resp.Body.Close()
-    
+
     var albums []Album
     json.NewDecoder(resp.Body).Decode(&albums)
     return albums, nil

@@ -194,7 +194,7 @@ func (s *ScrobbleService) ScrobbleTrack(ctx context.Context, userID uuid.UUID, t
 
     // 2. Get track metadata
     track := s.db.GetTrack(trackID)
-    
+
     // 3. Update now playing
     s.lastfmClient.UpdateNowPlaying(sessionKey, track.Artist, track.Title)
 

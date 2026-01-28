@@ -105,12 +105,12 @@ public enum SeriesTypes
   <aired>2023-08-15</aired>
   <plot>Scene description...</plot>
   <studio>Studio Name</studio>
-  
+
   <!-- IDs -->
   <uniqueid type="tvdb" default="true">12345</uniqueid>
   <uniqueid type="whisparr">uuid</uniqueid>
   <uniqueid type="tpdb">scene-uuid</uniqueid>
-  
+
   <!-- Performers -->
   <actor>
     <name>Performer Name</name>
@@ -119,7 +119,7 @@ public enum SeriesTypes
     <thumb>https://path/to/image.jpg</thumb>
     <order>1</order>
   </actor>
-  
+
   <rating>8.5</rating>
   <watched>false</watched>
   <thumb>https://scene-cover.jpg</thumb>
@@ -208,31 +208,31 @@ mutation {
 ```sql
 CREATE TABLE c.adult_movies (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    
+
     -- External IDs
     tpdb_id INT,                          -- ThePornDB scene ID (Whisparr: TvdbId)
     tpdb_scene_id VARCHAR(200),           -- TPDb scene identifier (Whisparr: ExternalId, e.g., "SSIS-123")
     stashdb_id UUID,                      -- StashDB scene UUID
     tmdb_id INT,                          -- TMDb ID (if available)
-    
+
     -- Basic Info
     title VARCHAR(500) NOT NULL,
     release_date DATE,
     year INT,                             -- Whisparr: SeasonNumber
     duration INT,                         -- Runtime in seconds
     description TEXT,                     -- Whisparr: Overview
-    
+
     -- Studio/Site
     studio_id UUID REFERENCES c.studios(id),
     site_id UUID,                         -- TPDb site ID (Whisparr: Series.TvdbId)
-    
+
     -- Metadata
     metadata_json JSONB,                  -- Full metadata (tpdb_data, stashdb_data, stash_data)
-    
+
     -- Media Files
     file_path VARCHAR(1000),
     file_size BIGINT,
-    
+
     -- Indexing
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -244,21 +244,21 @@ CREATE TABLE c.adult_movies (
 ```sql
 CREATE TABLE c.performers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    
+
     -- External IDs
     tpdb_id INT UNIQUE,                   -- ThePornDB performer ID (Whisparr: Actor.TpdbId)
     stashdb_id UUID,                      -- StashDB performer UUID
-    
+
     -- Basic Info
     name VARCHAR(200) NOT NULL,
     gender VARCHAR(20) CHECK (gender IN ('Female', 'Male', 'Other')),
-    
+
     -- Metadata
     metadata_json JSONB,                  -- Full performer data (measurements, bio, etc.)
-    
+
     -- Images
     image_url VARCHAR(500),
-    
+
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -269,21 +269,21 @@ CREATE TABLE c.performers (
 ```sql
 CREATE TABLE c.studios (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    
+
     -- External IDs
     tpdb_id INT UNIQUE,                   -- ThePornDB site ID (Whisparr: Series.TvdbId)
     stashdb_id UUID,                      -- StashDB studio UUID
-    
+
     -- Basic Info
     name VARCHAR(200) NOT NULL,
     parent_studio_id UUID REFERENCES c.studios(id),  -- Whisparr: Network
-    
+
     -- Metadata
     metadata_json JSONB,
-    
+
     -- Images
     logo_url VARCHAR(500),
-    
+
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
