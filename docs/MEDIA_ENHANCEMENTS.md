@@ -268,9 +268,9 @@ class ThemeAudioManager {
 
     async playTheme(itemId: string, itemType: 'movie' | 'series') {
         if (this.currentItemId === itemId) return;
-        
+
         await this.stopTheme(); // Fade out current
-        
+
         const theme = await fetchTheme(itemId, itemType);
         if (!theme) return;
 
@@ -291,10 +291,10 @@ class ThemeAudioManager {
 
     async stopTheme() {
         if (!this.audio) return;
-        
+
         if (this.fadeTimeout) clearTimeout(this.fadeTimeout);
         await this.fadeVolume(this.audio.volume, 0, 500);
-        
+
         this.audio.pause();
         this.audio = null;
         this.currentItemId = null;
@@ -310,7 +310,7 @@ class ThemeAudioManager {
             const interval = setInterval(() => {
                 currentStep++;
                 this.audio!.volume = Math.max(0, Math.min(1, from + volumeStep * currentStep));
-                
+
                 if (currentStep >= steps) {
                     clearInterval(interval);
                     resolve();
@@ -420,18 +420,18 @@ func (c *ChromaprintClient) Fingerprint(ctx context.Context, path string, start,
         "-length", fmt.Sprintf("%.1f", duration),
         path,
     }
-    
+
     cmd := exec.CommandContext(ctx, c.binaryPath, args...)
     output, err := cmd.Output()
     if err != nil {
         return nil, fmt.Errorf("chromaprint: %w", err)
     }
-    
+
     var result struct {
         Fingerprint []int `json:"fingerprint"`
     }
     json.Unmarshal(output, &result)
-    
+
     // Convert to bytes for storage/comparison
     return encodeFingerprint(result.Fingerprint), nil
 }
@@ -451,12 +451,12 @@ type IntroSkipperImport struct {
 func (d *SegmentDetector) ImportIntroSkipperData(ctx context.Context, dataPath string) error {
     // Read intro-skipper JSON files
     files, _ := filepath.Glob(filepath.Join(dataPath, "*.json"))
-    
+
     for _, file := range files {
         data, _ := os.ReadFile(file)
         var intro IntroSkipperImport
         json.Unmarshal(data, &intro)
-        
+
         if intro.Valid {
             // Map EpisodeID to our episode
             episode, err := d.findEpisodeByPath(ctx, intro.EpisodeID)
@@ -504,20 +504,20 @@ interface SkipButtonProps {
 }
 
 function SkipButton({ segment, currentTime, onSkip }: SkipButtonProps) {
-    const isVisible = currentTime >= segment.startTime && 
+    const isVisible = currentTime >= segment.startTime &&
                       currentTime < segment.endTime - 5; // Hide 5s before end
 
     if (!isVisible) return null;
 
     const label = {
         'intro': 'Skip Intro',
-        'recap': 'Skip Recap', 
+        'recap': 'Skip Recap',
         'credits': 'Skip Credits',
         'outro': 'Next Episode'
     }[segment.type];
 
     return (
-        <button 
+        <button
             class="skip-button"
             onClick={() => {
                 if (segment.type === 'credits' && nextEpisode) {
@@ -565,7 +565,7 @@ CREATE TABLE trickplay_manifests (
     media_id        UUID NOT NULL,
     media_type      VARCHAR(50) NOT NULL,  -- 'movie', 'episode'
     width           INT NOT NULL,          -- Thumbnail width
-    height          INT NOT NULL,          -- Thumbnail height  
+    height          INT NOT NULL,          -- Thumbnail height
     tile_width      INT NOT NULL,          -- Images per row in sprite
     tile_height     INT NOT NULL,          -- Rows per sprite
     interval_ms     INT NOT NULL,          -- Milliseconds between thumbnails
@@ -618,9 +618,9 @@ func (g *TrickplayGenerator) Generate(ctx context.Context, mediaID uuid.UUID, me
         // Generate sprites via Blackbeard
         for i := 0; i < spriteCount; i++ {
             startTime := float64(i*thumbsPerSprite) * g.config.IntervalSec
-            spritePath := filepath.Join(g.config.BasePath, mediaID.String(), 
+            spritePath := filepath.Join(g.config.BasePath, mediaID.String(),
                 fmt.Sprintf("%d_%d.jpg", width, i))
-            
+
             err := g.generateSprite(ctx, mediaPath, spritePath, width, height, startTime)
             if err != nil {
                 return fmt.Errorf("generate sprite %d: %w", i, err)
@@ -641,7 +641,7 @@ func (g *TrickplayGenerator) Generate(ctx context.Context, mediaID uuid.UUID, me
         }
         g.saveManifest(ctx, manifest)
     }
-    
+
     return nil
 }
 
@@ -708,10 +708,10 @@ class TrickplayManager {
     getThumbnail(timeMs: number): ThumbnailPosition {
         const thumbIndex = Math.floor(timeMs / this.manifest.intervalMs);
         const thumbsPerSprite = this.manifest.tileWidth * this.manifest.tileHeight;
-        
+
         const spriteIndex = Math.floor(thumbIndex / thumbsPerSprite);
         const indexInSprite = thumbIndex % thumbsPerSprite;
-        
+
         const row = Math.floor(indexInSprite / this.manifest.tileWidth);
         const col = indexInSprite % this.manifest.tileWidth;
 
@@ -805,7 +805,7 @@ func (s *ChapterService) probeChapters(ctx context.Context, path string) ([]Chap
         "-print_format", "json",
         "-show_chapters",
         path)
-    
+
     output, err := cmd.Output()
     if err != nil {
         return nil, err
@@ -953,21 +953,21 @@ type PVRBackend interface {
     // Connection
     Connect(ctx context.Context) error
     Disconnect() error
-    
+
     // Channels
     GetChannels(ctx context.Context) ([]Channel, error)
     GetChannelStream(ctx context.Context, channelID string) (string, error)
-    
+
     // EPG
     GetEPG(ctx context.Context, channelID string, start, end time.Time) ([]Program, error)
     RefreshEPG(ctx context.Context) error
-    
+
     // DVR
     GetRecordings(ctx context.Context) ([]Recording, error)
     ScheduleRecording(ctx context.Context, req RecordingRequest) error
     CancelRecording(ctx context.Context, recordingID string) error
     DeleteRecording(ctx context.Context, recordingID string) error
-    
+
     // Timers
     GetTimers(ctx context.Context) ([]Timer, error)
     CreateSeriesTimer(ctx context.Context, req SeriesTimerRequest) error
@@ -1048,7 +1048,7 @@ func (s *LiveTVService) GetGuide(ctx context.Context, start, end time.Time, chan
     // Group by channel
     guide := s.groupByChannel(programs)
     s.cache.Set(ctx, cacheKey, guide, 5*time.Minute)
-    
+
     return guide, nil
 }
 
