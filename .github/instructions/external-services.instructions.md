@@ -56,18 +56,18 @@ func (c *LastFMClient) ValidateSession(ctx context.Context, sessionKey string) (
 
 ### When to Scrobble
 
-| Content Type | Trigger Point | Minimum Duration |
-|--------------|---------------|------------------|
-| Music track | 50% complete OR 4 minutes | 30 seconds |
-| Podcast | 80% complete | 5 minutes |
-| Video | 80% complete | 10 minutes |
+| Content Type | Trigger Point             | Minimum Duration |
+| ------------ | ------------------------- | ---------------- |
+| Music track  | 50% complete OR 4 minutes | 30 seconds       |
+| Podcast      | 80% complete              | 5 minutes        |
+| Video        | 80% complete              | 10 minutes       |
 
 ```go
 // Good: Check multiple thresholds
 func shouldScrobble(progress PlaybackProgress) bool {
     // Music: 50% OR 4 minutes
     if progress.Type == "track" {
-        return progress.Percentage >= 50 || 
+        return progress.Percentage >= 50 ||
                progress.WatchedMs >= 4*60*1000
     }
     // Video/Podcast: 80%
@@ -155,12 +155,12 @@ type ExportRatingArgs struct {
 
 ## Rate Limiting
 
-| Service | Rate Limit | Strategy |
-|---------|------------|----------|
-| Trakt | 1000/5 min | Token bucket |
-| Last.fm | 5/second | Token bucket |
-| ListenBrainz | 1/second | Delay between |
-| TMDb | 40/10 sec | Token bucket |
+| Service      | Rate Limit | Strategy      |
+| ------------ | ---------- | ------------- |
+| Trakt        | 1000/5 min | Token bucket  |
+| Last.fm      | 5/second   | Token bucket  |
+| ListenBrainz | 1/second   | Delay between |
+| TMDb         | 40/10 sec  | Token bucket  |
 
 ```go
 // Good: Per-service rate limiters
@@ -203,7 +203,7 @@ func TestTraktSync(t *testing.T) {
     // Record/playback HTTP interactions
     r := recorder.NewCassette("trakt_sync")
     defer r.Stop()
-    
+
     client := &http.Client{Transport: r}
     // ...
 }

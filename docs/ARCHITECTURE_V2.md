@@ -997,6 +997,7 @@ volumes:
 |----------|-------------|
 | [AUDIO_STREAMING.md](AUDIO_STREAMING.md) | Audio streaming, progress tracking, bandwidth adaptation |
 | [CLIENT_SUPPORT.md](CLIENT_SUPPORT.md) | Client capabilities, Chromecast, DLNA |
+| [MEDIA_ENHANCEMENTS.md](MEDIA_ENHANCEMENTS.md) | Trailers, themes, intros, trickplay, chapters, Live TV |
 | [OFFLOADING.md](OFFLOADING.md) | Blackbeard transcoding integration |
 | [SCROBBLING.md](SCROBBLING.md) | External sync (Trakt, Last.fm, ListenBrainz) |
 

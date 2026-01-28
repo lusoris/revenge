@@ -4,10 +4,11 @@
 
 ## Design Philosophy
 
-1. **Servarr as Primary Source** - Sonarr, Radarr, Lidarr, Readarr (collectively "Servarr") have curated, cached metadata
-2. **Fallback Chain** - Only fetch what Servarr doesn't provide
+1. **Local Sources First** - Servarr suite, Audiobookshelf, and Seerr have curated, cached metadata
+2. **Avoid External Calls** - Only fetch what local sources don't provide
 3. **Language Awareness** - UI shows available data immediately, fetches translations async
 4. **Progressive Enhancement** - Never block UI waiting for metadata
+5. **User Connection** - OIDC-capable sources (Audiobookshelf) can link user accounts
 
 ---
 
@@ -19,22 +20,29 @@
 └─────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────┐     ┌───────────────────┐     ┌─────────────────┐     ┌──────────┐
-│  Library │ ──→ │ Servarr Importer  │ ──→ │ Metadata Store  │ ←── │   UI     │
+│  Library │ ──→ │  Local Importers  │ ──→ │ Metadata Store  │ ←── │   UI     │
 │   Scan   │     │    (Primary)      │     │  (PostgreSQL)   │     │ Request  │
 └──────────┘     └───────────────────┘     └─────────────────┘     └──────────┘
                        │                          │
-                       │                          │
-                       ▼                          ▼
-                ┌──────────────┐         ┌─────────────────┐
-                │   Missing?   │         │  Translation    │
-                │   Fallback   │         │   Job Queue     │
-                └──────────────┘         └─────────────────┘
-                       │                          │
-                       ▼                          ▼
-                ┌──────────────┐         ┌─────────────────┐
-                │  TMDb/TVDB   │         │  Fetch Missing  │
-                │  MusicBrainz │         │   Languages     │
-                └──────────────┘         └─────────────────┘
+        ┌──────────────┼──────────────┐           │
+        ▼              ▼              ▼           ▼
+┌─────────────┐ ┌─────────────┐ ┌──────────┐ ┌─────────────────┐
+│   Servarr   │ │Audiobookshelf│ │  Seerr   │ │  Translation    │
+│ (Arr Suite) │ │(Pods/Books) │ │ (Cache)  │ │   Job Queue     │
+└─────────────┘ └─────────────┘ └──────────┘ └─────────────────┘
+        │              │              │           │
+        └──────────────┼──────────────┘           ▼
+                       ▼                  ┌─────────────────┐
+                ┌──────────────┐          │  Fetch Missing  │
+                │   Missing?   │          │   Languages     │
+                │   Fallback   │          └─────────────────┘
+                └──────────────┘
+                       │
+                       ▼
+                ┌──────────────┐
+                │  TMDb/TVDB   │
+                │  MusicBrainz │
+                └──────────────┘
 ```
 
 ---
@@ -74,18 +82,38 @@
 
 | Priority | Source | Data Provided |
 |----------|--------|---------------|
-| 1 | Readarr | Title, author, description, cover |
-| 2 | Audible API | Narrator, duration, chapters, ratings |
-| 3 | Goodreads | Reviews, ratings, series info |
-| 4 | OpenLibrary | ISBN, editions, subjects |
+| 1 | **Audiobookshelf** | Title, author, narrator, duration, chapters, cover, progress |
+| 2 | Chaptarr | Series info, Goodreads/Hardcover metadata (Readarr API spec) |
+| 3 | Audible API | Ratings, reviews, recommendations |
+| 4 | Goodreads | Reviews, ratings, series info |
+| 5 | OpenLibrary | ISBN, editions, subjects |
+
+### Books (E-Books)
+
+| Priority | Source | Data Provided |
+|----------|--------|---------------|
+| 1 | **Audiobookshelf** | Title, author, description, cover, reading progress |
+| 2 | Chaptarr | Series info, Goodreads/Hardcover metadata |
+| 3 | Goodreads | Reviews, ratings, lists |
+| 4 | Hardcover | Modern book database, lists |
+| 5 | OpenLibrary | ISBN, editions, subjects |
 
 ### Podcasts
 
 | Priority | Source | Data Provided |
 |----------|--------|---------------|
-| 1 | RSS Feed | Title, description, episodes, artwork |
-| 2 | iTunes API | Categories, ratings, reviews |
-| 3 | Podchaser | Guest info, ratings |
+| 1 | **Audiobookshelf** | Episodes (downloaded), artwork, progress, subscriptions |
+| 2 | RSS Feed | Latest episodes, metadata updates |
+| 3 | iTunes API | Categories, ratings, reviews |
+| 4 | Podchaser | Guest info, ratings |
+
+### Adult Content
+
+| Priority | Source | Data Provided |
+|----------|--------|---------------|
+| 1 | **Whisparr-v3** | Title, performers, studio, tags, cover |
+| 2 | TPDB (ThePornDB) | Extended metadata, performer info |
+| 3 | Stash-Box | Scene fingerprints, performer database |
 
 ---
 
@@ -173,6 +201,260 @@ interface MovieMetadata {
   availableLanguages: string[];  // Languages we have
 }
 ```
+
+---
+
+## Local Data Sources
+
+### Servarr Suite
+
+The complete Servarr suite provides curated, cached metadata for most content types:
+
+| Service | Content Type | API Version | Data Provided |
+|---------|--------------|-------------|---------------|
+| **Radarr** | Movies | v3 | Full metadata, ratings, artwork |
+| **Sonarr** | TV Shows | v3 | Series, seasons, episodes |
+| **Lidarr** | Music | v1 | Artists, albums, tracks |
+| **Whisparr-v3** | Adult | v3 | Scenes, performers, studios |
+| **Chaptarr** | Books | Readarr spec | Goodreads, Hardcover integration |
+| **Seerr** | Requests | v1 | Cached TMDb/TVDb data, request system |
+
+### Audiobookshelf Integration
+
+Audiobookshelf serves as primary source for podcasts, audiobooks, and e-books with OIDC user linking:
+
+```go
+type AudiobookshelfClient struct {
+    baseURL string
+    apiKey  string
+    client  *http.Client
+}
+
+// Audiobookshelf provides:
+// - Downloaded podcast episodes with progress
+// - Audiobook metadata, chapters, narrators
+// - E-book metadata and reading progress
+// - User libraries and progress (via OIDC linking)
+
+type AudiobookshelfLibrary struct {
+    ID            string `json:"id"`
+    Name          string `json:"name"`
+    Type          string `json:"mediaType"` // "podcast", "book"
+    Provider      string `json:"provider"`
+    Items         int    `json:"numItems"`
+}
+
+type AudiobookshelfBook struct {
+    ID            string           `json:"id"`
+    Title         string           `json:"title"`
+    Subtitle      string           `json:"subtitle"`
+    Authors       []Author         `json:"authors"`
+    Narrators     []string         `json:"narrators"`
+    Description   string           `json:"description"`
+    Cover         string           `json:"cover"`
+    Genres        []string         `json:"genres"`
+    PublishedYear string           `json:"publishedYear"`
+    Duration      float64          `json:"duration"`
+    Chapters      []Chapter        `json:"chapters"`
+    Progress      *UserProgress    `json:"userMediaProgress,omitempty"`
+}
+
+type AudiobookshelfPodcast struct {
+    ID            string           `json:"id"`
+    Title         string           `json:"title"`
+    Author        string           `json:"author"`
+    Description   string           `json:"description"`
+    Cover         string           `json:"cover"`
+    Episodes      []PodcastEpisode `json:"episodes"`
+    AutoDownload  bool             `json:"autoDownloadEpisodes"`
+}
+
+// OIDC User Linking - connect Revenge users to Audiobookshelf
+func (c *AudiobookshelfClient) LinkUser(ctx context.Context, revengeUserID, absUserID string) error {
+    // Store mapping for progress sync
+}
+
+// Sync progress from Audiobookshelf to Revenge
+func (c *AudiobookshelfClient) SyncUserProgress(ctx context.Context, userID string) error {
+    // Fetch and merge progress data
+}
+```
+
+### Seerr Integration (Overseerr/Jellyseerr)
+
+Seerr (the official Overseerr/Jellyseerr merge) provides:
+- Cached TMDb/TVDb metadata
+- Request management system
+- User request history
+
+```go
+type SeerrClient struct {
+    baseURL string
+    apiKey  string
+    client  *http.Client
+}
+
+// Seerr caches extensive metadata from TMDb/TVDb
+type SeerrMovie struct {
+    ID               int       `json:"id"`
+    TmdbID           int       `json:"tmdbId"`
+    Title            string    `json:"title"`
+    Overview         string    `json:"overview"`
+    PosterPath       string    `json:"posterPath"`
+    BackdropPath     string    `json:"backdropPath"`
+    Genres           []Genre   `json:"genres"`
+    RelatedVideos    []Video   `json:"relatedVideos"`
+    Credits          Credits   `json:"credits"`
+    ExternalIds      ExtIDs    `json:"externalIds"`
+    MediaInfo        *Media    `json:"mediaInfo"` // Availability status
+}
+
+// Use Seerr's cache before hitting TMDb directly
+func (c *SeerrClient) GetMovieMetadata(ctx context.Context, tmdbID int) (*SeerrMovie, error) {
+    // Returns cached data, avoids external API call
+}
+```
+
+---
+
+## Seerr Adapter (Jellyfin/Plex API Simulation)
+
+Seerr requires a Jellyfin or Plex connection to function - it needs library data to track what's available. We provide an adapter that simulates the Jellyfin API for Seerr.
+
+### Why This Is Needed
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│ Seerr Request Flow (Normal)                                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  User Request → Seerr → Check Jellyfin/Plex → Sonarr/Radarr → Download  │
+│                           ↑                                              │
+│                     Library data needed                                  │
+│                     (what do we have?)                                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Without library data, Seerr can't:
+- Show "Available" status on requests
+- Prevent duplicate requests
+- Display library statistics
+- Function as a request system
+```
+
+### Adapter Implementation
+
+```go
+// SeerrAdapter simulates Jellyfin API for Seerr compatibility
+type SeerrAdapter struct {
+    movieRepo   MovieRepository
+    tvshowRepo  TVShowRepository
+    libraryRepo LibraryRepository
+    logger      *slog.Logger
+}
+
+// Jellyfin API endpoints that Seerr uses:
+// - GET /Users/{userId}/Items (library items)
+// - GET /Library/MediaFolders (library list)
+// - GET /System/Info (server info)
+// - GET /Items/{itemId} (item details)
+
+func (a *SeerrAdapter) RegisterRoutes(mux *http.ServeMux) {
+    // Jellyfin-compatible endpoints for Seerr
+    mux.HandleFunc("GET /jellyfin/Users/{userId}/Items", a.GetUserItems)
+    mux.HandleFunc("GET /jellyfin/Library/MediaFolders", a.GetMediaFolders)
+    mux.HandleFunc("GET /jellyfin/System/Info", a.GetSystemInfo)
+    mux.HandleFunc("GET /jellyfin/Items/{itemId}", a.GetItem)
+}
+
+// GetUserItems returns library items in Jellyfin format
+func (a *SeerrAdapter) GetUserItems(w http.ResponseWriter, r *http.Request) {
+    // Parse Jellyfin-style query params
+    includeTypes := r.URL.Query().Get("IncludeItemTypes") // "Movie", "Series"
+    parentID := r.URL.Query().Get("ParentId")
+
+    var items []JellyfinItem
+
+    if includeTypes == "Movie" || includeTypes == "" {
+        movies, _ := a.movieRepo.GetAll(r.Context())
+        for _, m := range movies {
+            items = append(items, a.movieToJellyfin(m))
+        }
+    }
+
+    if includeTypes == "Series" || includeTypes == "" {
+        shows, _ := a.tvshowRepo.GetAll(r.Context())
+        for _, s := range shows {
+            items = append(items, a.seriesToJellyfin(s))
+        }
+    }
+
+    // Return Jellyfin-formatted response
+    json.NewEncoder(w).Encode(JellyfinItemsResponse{
+        Items:            items,
+        TotalRecordCount: len(items),
+    })
+}
+
+// JellyfinItem matches Jellyfin's item format for Seerr compatibility
+type JellyfinItem struct {
+    ID                  string   `json:"Id"`
+    Name                string   `json:"Name"`
+    Type                string   `json:"Type"` // "Movie", "Series"
+    ProviderIds         ProvIDs  `json:"ProviderIds"`
+    ProductionYear      int      `json:"ProductionYear"`
+    MediaType           string   `json:"MediaType"`
+    IsFolder            bool     `json:"IsFolder"`
+    RunTimeTicks        int64    `json:"RunTimeTicks"`
+    ImageTags           ImgTags  `json:"ImageTags"`
+}
+
+type ProvIDs struct {
+    Tmdb string `json:"Tmdb,omitempty"`
+    Tvdb string `json:"Tvdb,omitempty"`
+    Imdb string `json:"Imdb,omitempty"`
+}
+
+func (a *SeerrAdapter) movieToJellyfin(m *Movie) JellyfinItem {
+    return JellyfinItem{
+        ID:             m.ID.String(),
+        Name:           m.Title,
+        Type:           "Movie",
+        ProviderIds:    ProvIDs{Tmdb: strconv.Itoa(m.TmdbID), Imdb: m.ImdbID},
+        ProductionYear: m.Year,
+        MediaType:      "Video",
+        IsFolder:       false,
+        RunTimeTicks:   int64(m.Runtime) * 600000000, // minutes to ticks
+    }
+}
+```
+
+### Seerr Configuration
+
+```yaml
+# In Seerr settings, configure:
+jellyfin:
+  hostname: "revenge.local"
+  port: 8096
+  useSsl: false
+  # Use Revenge's Jellyfin-compatible API path
+  urlBase: "/jellyfin"
+
+# Seerr will then:
+# - Sync library from Revenge via simulated API
+# - Show availability status for requests
+# - Track what's already in your library
+```
+
+### Limitations
+
+Currently the adapter only supports **Movies** and **TV Shows** (Sonarr/Radarr libraries). This matches Seerr's current capabilities:
+
+| Content | Seerr Support | Adapter Support |
+|---------|--------------|-----------------|
+| Movies | ✅ Full | ✅ Full |
+| TV Shows | ✅ Full | ✅ Full |
+| Music | ❌ Not supported | ❌ N/A |
+| Anime | ✅ Via Sonarr | ✅ Via TV Shows |
 
 ---
 

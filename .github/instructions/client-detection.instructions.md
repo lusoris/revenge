@@ -16,17 +16,17 @@ type ClientCapabilities struct {
     DeviceID       string `json:"device_id"`
     DeviceName     string `json:"device_name"`
     DeviceType     string `json:"device_type"` // "browser", "mobile", "tv", "desktop"
-    
+
     // Video capabilities
     SupportedVideoCodecs []string `json:"supported_video_codecs"`
     MaxVideoWidth        int      `json:"max_video_width"`
     MaxVideoHeight       int      `json:"max_video_height"`
     SupportsHDR          bool     `json:"supports_hdr"`
-    
+
     // Audio capabilities
     SupportedAudioCodecs []string `json:"supported_audio_codecs"`
     MaxAudioChannels     int      `json:"max_audio_channels"`
-    
+
     // Network
     IsRemote         bool `json:"is_remote"`
     BandwidthLimit   int  `json:"bandwidth_limit"` // kbps, user setting
@@ -41,7 +41,7 @@ type ClientCapabilities struct {
 // Good: Hierarchical detection
 func DetectDevice(userAgent string) DeviceProfile {
     ua := strings.ToLower(userAgent)
-    
+
     // Check TV platforms first (most specific)
     switch {
     case strings.Contains(ua, "tizen"):
@@ -55,7 +55,7 @@ func DetectDevice(userAgent string) DeviceProfile {
     case strings.Contains(ua, "androidtv"):
         return profiles["android_tv"]
     }
-    
+
     // Check mobile
     switch {
     case strings.Contains(ua, "iphone"):
@@ -65,7 +65,7 @@ func DetectDevice(userAgent string) DeviceProfile {
     case strings.Contains(ua, "android"):
         return profiles["android"]
     }
-    
+
     // Check browsers
     switch {
     case strings.Contains(ua, "safari") && !strings.Contains(ua, "chrome"):
@@ -75,7 +75,7 @@ func DetectDevice(userAgent string) DeviceProfile {
     case strings.Contains(ua, "chrome"):
         return profiles["chrome"]
     }
-    
+
     return profiles["generic"]
 }
 ```
@@ -86,18 +86,18 @@ func DetectDevice(userAgent string) DeviceProfile {
 // Good: Trust client-reported capabilities over UA detection
 func MergeCapabilities(detected, reported *ClientCapabilities) *ClientCapabilities {
     result := *detected
-    
+
     if reported.MaxVideoWidth > 0 {
         result.MaxVideoWidth = min(detected.MaxVideoWidth, reported.MaxVideoWidth)
     }
     if len(reported.SupportedVideoCodecs) > 0 {
         result.SupportedVideoCodecs = intersect(
-            detected.SupportedVideoCodecs, 
+            detected.SupportedVideoCodecs,
             reported.SupportedVideoCodecs,
         )
     }
     // ... similar for other fields
-    
+
     return &result
 }
 ```
@@ -131,10 +131,10 @@ func (b *BandwidthTracker) SafeBandwidth() int {
     if len(b.samples) < 3 {
         return 0 // Not enough data
     }
-    
+
     avg := b.average()
     jitter := b.standardDeviation()
-    
+
     // Conservative: 70% of average minus jitter
     return int(float64(avg)*0.7) - jitter
 }
@@ -154,7 +154,7 @@ func SelectQualityTier(bandwidth int, isVideo bool) QualityTier {
         default:                 return QualityTier360p
         }
     }
-    
+
     // Audio
     switch {
     case bandwidth >= 1500: return QualityTierLossless
@@ -177,12 +177,12 @@ type PlaybackSession struct {
     UserID       uuid.UUID
     DeviceID     string
     Capabilities *ClientCapabilities
-    
+
     // Current playback
     MediaID      uuid.UUID
     PositionMs   int64
     State        PlaybackState
-    
+
     // Quality tracking
     CurrentProfile   string
     BandwidthTracker *BandwidthTracker
@@ -199,10 +199,10 @@ func (s *SessionService) TransferPlayback(ctx context.Context, userID uuid.UUID,
     if err != nil {
         return err
     }
-    
+
     // Pause source
     s.SendCommand(ctx, from, CommandPause)
-    
+
     // Create target session with same position
     toSession := &PlaybackSession{
         UserID:     userID,
@@ -210,7 +210,7 @@ func (s *SessionService) TransferPlayback(ctx context.Context, userID uuid.UUID,
         MediaID:    fromSession.MediaID,
         PositionMs: fromSession.PositionMs,
     }
-    
+
     // Start on target
     return s.StartPlayback(ctx, toSession)
 }
@@ -260,7 +260,7 @@ func TestDeviceDetection(t *testing.T) {
         {"Mozilla/5.0 (iPhone; CPU iPhone OS 15_0)", "iphone"},
         {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91", "chrome"},
     }
-    
+
     for _, tt := range tests {
         t.Run(tt.expected, func(t *testing.T) {
             profile := DetectDevice(tt.userAgent)

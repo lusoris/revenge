@@ -179,13 +179,13 @@ func (a *AudioBandwidthAdapter) RecordSample(bytesReceived int64, duration time.
     if duration == 0 {
         return
     }
-    
+
     kbps := int(float64(bytesReceived*8) / duration.Seconds() / 1000)
     a.samples = append(a.samples, BandwidthSample{
         Timestamp: time.Now(),
         Kbps:      kbps,
     })
-    
+
     // Keep rolling window
     if len(a.samples) > a.windowSize {
         a.samples = a.samples[len(a.samples)-a.windowSize:]
@@ -196,14 +196,14 @@ func (a *AudioBandwidthAdapter) RecommendedAudioBitrate() int {
     if len(a.samples) < a.minSamples {
         return 192 // Default to medium quality until we have data
     }
-    
+
     // Calculate average
     var sum int
     for _, s := range a.samples {
         sum += s.Kbps
     }
     avg := sum / len(a.samples)
-    
+
     // Calculate jitter (standard deviation)
     var variance float64
     for _, s := range a.samples {
@@ -211,10 +211,10 @@ func (a *AudioBandwidthAdapter) RecommendedAudioBitrate() int {
         variance += diff * diff
     }
     jitter := int(math.Sqrt(variance / float64(len(a.samples))))
-    
+
     // Conservative estimate: 70% of average minus jitter penalty
     safeBandwidth := int(float64(avg)*0.7) - int(float64(jitter)*a.jitterWeight)
-    
+
     return a.mapToAudioTier(safeBandwidth)
 }
 
@@ -251,24 +251,24 @@ func (h *SessionHandler) HandleBandwidthUpdate(w http.ResponseWriter, r *http.Re
         http.Error(w, "invalid request", http.StatusBadRequest)
         return
     }
-    
+
     session := getSessionFromContext(r.Context())
-    
+
     // Update bandwidth adapter
     session.BandwidthAdapter.RecordSample(
         int64(update.MeasuredKbps*1000/8), // Convert to bytes
         time.Second,
     )
-    
+
     // Check if quality should change
     newBitrate := session.BandwidthAdapter.RecommendedAudioBitrate()
     if newBitrate != session.CurrentAudioBitrate {
         session.CurrentAudioBitrate = newBitrate
-        
+
         // Notify client to switch quality
         h.notifyQualityChange(session, newBitrate)
     }
-    
+
     w.WriteHeader(http.StatusOK)
 }
 ```
@@ -281,28 +281,28 @@ class AudioBandwidthMonitor {
     private samples: number[] = [];
     private readonly windowSize = 10;
     private measurementInterval: number | null = null;
-    
+
     start() {
         // Measure every 30 seconds during playback
         this.measurementInterval = setInterval(() => {
             this.measureAndReport();
         }, 30000);
     }
-    
+
     stop() {
         if (this.measurementInterval) {
             clearInterval(this.measurementInterval);
         }
     }
-    
+
     async measureAndReport() {
         const bandwidth = await this.measureBandwidth();
         this.samples.push(bandwidth);
-        
+
         if (this.samples.length > this.windowSize) {
             this.samples.shift();
         }
-        
+
         // Report to server
         await fetch('/api/v1/session/bandwidth', {
             method: 'POST',
@@ -314,28 +314,28 @@ class AudioBandwidthMonitor {
             }),
         });
     }
-    
+
     private async measureBandwidth(): Promise<number> {
         const testUrl = '/api/v1/bandwidth-test?size=50000'; // 50KB test
         const start = performance.now();
-        
+
         try {
             const response = await fetch(testUrl, { cache: 'no-store' });
             const data = await response.arrayBuffer();
             const duration = performance.now() - start;
-            
+
             // Calculate kbps
             return (data.byteLength * 8) / duration; // kbps
         } catch {
             return this.getAverageKbps(); // Use cached average on error
         }
     }
-    
+
     private getNetworkType(): string {
         const conn = (navigator as any).connection;
         return conn?.effectiveType || 'unknown';
     }
-    
+
     getAverageKbps(): number {
         if (this.samples.length === 0) return 0;
         return this.samples.reduce((a, b) => a + b, 0) / this.samples.length;
@@ -351,18 +351,18 @@ export const bandwidthMonitor = new AudioBandwidthMonitor();
 // Listen for server-initiated quality changes
 websocket.on('quality_change', (data: { bitrate: number }) => {
     const player = getAudioPlayer();
-    
+
     // Store current position
     const position = player.currentTime;
-    
+
     // Get new stream URL with updated bitrate
     const newUrl = `/api/v1/audio/${currentTrackId}/stream?bitrate=${data.bitrate}`;
-    
+
     // Seamless switch
     player.src = newUrl;
     player.currentTime = position;
     player.play();
-    
+
     // Show notification
     showToast(`Quality adjusted to ${data.bitrate}kbps due to network conditions`);
 });
