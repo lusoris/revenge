@@ -1,6 +1,25 @@
 # External Documentation Sources Registry
 # Auto-fetched by scripts/fetch-sources.py
 # Last Updated: 2026-01-28
+#
+# BLEEDING EDGE STABLE VERSIONS (verified via live web 2026-01-28):
+# ┌────────────────────┬────────────┬─────────────────────────────────┐
+# │ Package            │ Version    │ Notes                           │
+# ├────────────────────┼────────────┼─────────────────────────────────┤
+# │ Go                 │ 1.25.6     │ Latest stable (2026-01-15)      │
+# │ PostgreSQL         │ 18.1       │ Latest stable                   │
+# │ Dragonfly          │ v1.36.0    │ 3 weeks ago                     │
+# │ Typesense          │ 30.0       │ Uses /latest/ in URL            │
+# │ typesense-go       │ v3.2.0     │ NO v4 exists!                   │
+# │ pgx                │ v5.8.0     │ Dec 26, 2025                    │
+# │ koanf              │ v2.3.2     │ 4 days ago (min Go 1.23)        │
+# │ fx                 │ v1.24.0    │ May 14, 2025                    │
+# │ River              │ v0.30.2    │ 2 days ago                      │
+# │ go-redis           │ v9.17.3    │ Stable (v9.18.0-beta is pre)    │
+# │ sqlc               │ v1.30.0    │ Sep 2, 2025                     │
+# │ ogen               │ v1.18.0    │ Dec 1, 2025                     │
+# │ golang-migrate     │ v4.19.1    │ Nov 29, 2025 (Go 1.25)          │
+# └────────────────────┴────────────┴─────────────────────────────────┘
 
 version: "1.0"
 fetch_config:
@@ -559,10 +578,11 @@ sources:
 
     - id: typesense-go
       name: "Typesense Go Client"
-      url: "https://pkg.go.dev/github.com/typesense/typesense-go/v4"
+      url: "https://pkg.go.dev/github.com/typesense/typesense-go/v3"
       type: html
       selectors: [".Documentation"]
       output: "infrastructure/typesense-go.md"
+      note: "Latest stable is v3.2.0 (March 2025) - there is no v4!"
 
 # ============================================================================
 # FETCH STATUS TRACKING
