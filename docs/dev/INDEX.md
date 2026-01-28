@@ -120,6 +120,45 @@ Auto-fetched external documentation. Updated weekly via CI.
 | [observability](sources/observability/) | Monitoring | Prometheus, OpenTelemetry |
 | [infrastructure](sources/infrastructure/) | Infrastructure | Dragonfly, Typesense |
 
+### Fetcher Usage
+
+```bash
+# Fetch all sources (runs weekly via CI)
+python scripts/fetch-sources.py
+
+# Fetch specific category
+python scripts/fetch-sources.py --category go
+
+# Fetch single source
+python scripts/fetch-sources.py --id tmdb
+
+# Dry run (show what would be fetched)
+python scripts/fetch-sources.py --dry-run
+```
+
+**Requirements**: `pip install -r scripts/requirements-fetch.txt`
+
+### How It Works
+
+1. **Weekly CI** runs `fetch-sources.py` on Sunday 03:00 UTC
+2. **Safety check** ensures only `sources/` is modified
+3. **PR created** with changes for review
+4. **CODEOWNERS** requires @lusoris approval
+5. **Protected files** in `design/` are never touched
+
+### Adding New Sources
+
+Edit `sources/SOURCES.yaml`:
+
+```yaml
+- id: new-source
+  name: "New Source Name"
+  url: "https://example.com/docs"
+  type: html  # or graphql_schema
+  selectors: [".content"]  # CSS selectors (optional)
+  output: "category/filename.md"
+```
+
 ---
 
 ## Migration Info

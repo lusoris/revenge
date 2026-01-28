@@ -57,6 +57,18 @@ jobs:
             echo "changes=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Safety check - no protected files modified
+        run: |
+          # Fail if any files outside docs/dev/sources/ were modified
+          PROTECTED_CHANGES=$(git diff --name-only | grep -v "^docs/dev/sources/" || true)
+          if [ -n "$PROTECTED_CHANGES" ]; then
+            echo "❌ ERROR: Fetcher modified protected files!"
+            echo "The following files should NOT be modified by the fetcher:"
+            echo "$PROTECTED_CHANGES"
+            exit 1
+          fi
+          echo "✅ Safety check passed - only sources/ modified"
+
       - name: Create Pull Request
         if: steps.fetch.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v6
