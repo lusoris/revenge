@@ -116,6 +116,26 @@ if err != nil {
 var ErrMovieNotFound = errors.New("movie not found")
 ```
 
+## Current TODO List
+
+**Last Updated**: 2026-01-28
+
+✅ **COMPLETED**:
+1. Database auto-healing research (docs/DATABASE_AUTO_HEALING.md)
+2. User pain points research (docs/USER_PAIN_POINTS_RESEARCH.md)
+3. Go packages research (docs/GO_PACKAGES_RESEARCH.md)
+
+🟡 **IN PROGRESS**:
+4. Whisparr/StashDB schema analysis (data in Whisparr cache, need custom UI/UX)
+
+❌ **PENDING**:
+5. Documentation restructuring (URGENT - split 2737+1103 line files)
+6. Plugin architecture decision (native vs go-plugin)
+7. Comics module planning (schema + metadata sources)
+8. Systems design docs (ticketing, auditing, news, calendar)
+9. UX features docs (theme, NSFW toggle, weather)
+10. Version policy documentation (bleeding edge/latest stable global)
+
 ## CI/CD Checks
 
 Pull requests must pass:
@@ -153,6 +173,8 @@ CREATE SCHEMA IF NOT EXISTS c;
 ```
 
 API namespace: `/api/v1/c/movies`, `/api/v1/c/shows`
+
+**Whisparr v3 Integration**: Uses Sonarr codebase for "scenes" (NOT series/episodes), data stored in Whisparr cache, custom UI/UX required (folder structure differs from TV shows).
 
 See `.github/instructions/adult-modules.instructions.md` for details.
 
