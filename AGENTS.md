@@ -121,20 +121,22 @@ var ErrMovieNotFound = errors.New("movie not found")
 **Last Updated**: 2026-01-28
 
 ✅ **COMPLETED**:
-1. Database auto-healing research (docs/DATABASE_AUTO_HEALING.md)
-2. User pain points research (docs/USER_PAIN_POINTS_RESEARCH.md)
-3. Go packages research (docs/GO_PACKAGES_RESEARCH.md)
+1. Database auto-healing research (docs/operations/DATABASE_AUTO_HEALING.md)
+2. User pain points research (docs/research/USER_PAIN_POINTS_RESEARCH.md)
+3. Go packages research (docs/research/GO_PACKAGES_RESEARCH.md)
+4. ✅ Plugin architecture decision (docs/architecture/PLUGIN_ARCHITECTURE_DECISION.md - native monolith)
+5. ✅ Comics module planning (docs/features/COMICS_MODULE.md - schema + ComicVine/Marvel/GCD)
+6. ✅ Version policy documentation (docs/planning/VERSION_POLICY.md - bleeding edge/latest stable)
+7. ✅ Documentation restructuring phase 1 (docs/INDEX.md + 31 files moved to subdirectories)
 
 🟡 **IN PROGRESS**:
-4. Whisparr/StashDB schema analysis (data in Whisparr cache, need custom UI/UX)
+8. Whisparr/StashDB schema analysis (Sonarr codebase, data in cache, custom UI/UX needed)
 
 ❌ **PENDING**:
-5. Documentation restructuring (URGENT - split 2737+1103 line files)
-6. Plugin architecture decision (native vs go-plugin)
-7. Comics module planning (schema + metadata sources)
-8. Systems design docs (ticketing, auditing, news, calendar)
-9. UX features docs (theme, NSFW toggle, weather)
-10. Version policy documentation (bleeding edge/latest stable global)
+9. Documentation restructuring phase 2 (split PREPARATION_MASTER_PLAN.md 2737 lines, EXTERNAL_INTEGRATIONS_TODO.md 1103 lines)
+10. Systems design docs (ticketing, auditing, news, calendar)
+11. UX features docs (theme, NSFW toggle, weather)
+12. Continue 41 external API documentation (27 remaining)
 
 ## CI/CD Checks
 
