@@ -9,16 +9,16 @@ alwaysApply: false
 
 ## Stack
 
-| Component | Technology | Version |
-|-----------|------------|---------|
-| Framework | SvelteKit | 2.x |
-| UI Library | shadcn-svelte | Latest |
-| Styling | Tailwind CSS | 4.x |
-| State | Svelte Stores + TanStack Query | - |
-| API Client | OpenAPI Generated | - |
-| Auth | JWT + OIDC | - |
-| i18n | Built-in | - |
-| PWA | Service Worker | - |
+| Component  | Technology                     | Version |
+| ---------- | ------------------------------ | ------- |
+| Framework  | SvelteKit                      | 2.x     |
+| UI Library | shadcn-svelte                  | Latest  |
+| Styling    | Tailwind CSS                   | 4.x     |
+| State      | Svelte Stores + TanStack Query | -       |
+| API Client | OpenAPI Generated              | -       |
+| Auth       | JWT + OIDC                     | -       |
+| i18n       | Built-in                       | -       |
+| PWA        | Service Worker                 | -       |
 
 ## Project Structure
 
@@ -56,6 +56,7 @@ web/
 ## Design Principles
 
 ### 1. Performance First
+
 - Code splitting per route
 - Lazy load heavy components (player, visualizer)
 - Prefetch data on hover (media cards)
@@ -63,6 +64,7 @@ web/
 - Image lazy loading with blurhash placeholders
 
 ### 2. Accessibility
+
 - Semantic HTML (`<nav>`, `<main>`, `<article>`)
 - ARIA labels on all interactive elements
 - Keyboard navigation (Tab, Arrow keys, Space, Enter)
@@ -70,12 +72,14 @@ web/
 - Screen reader friendly
 
 ### 3. Responsive Design
+
 - Mobile-first approach
 - Breakpoints: `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`, `2xl: 1536px`
 - Touch-friendly targets (min 44x44px)
 - Swipe gestures on mobile
 
 ### 4. Offline Support
+
 - Service Worker for static assets
 - IndexedDB for cached media metadata
 - Offline indicator in UI
@@ -84,6 +88,7 @@ web/
 ## Code Patterns
 
 ### DO
+
 - ✅ Use `$:` reactive statements for derived state
 - ✅ Use `onMount()` for side effects, cleanup in `onDestroy()`
 - ✅ Use `bind:this` for DOM references
@@ -94,6 +99,7 @@ web/
 - ✅ Use `progressive enhancement` (works without JS)
 
 ### DON'T
+
 - ❌ Use `window` or `document` outside `onMount()`
 - ❌ Mutate props directly (use events)
 - ❌ Use `any` type in TypeScript
@@ -105,6 +111,7 @@ web/
 ## Routing
 
 ### Route Groups
+
 ```
 (app)/        # Main layout with nav, sidebar
 (admin)/      # Admin layout with admin nav
@@ -113,21 +120,23 @@ web/
 ```
 
 ### Load Functions
+
 ```typescript
 // +page.ts - runs on both server and client
 export async function load({ fetch, params }) {
-    const movie = await fetch(`/api/movies/${params.id}`).then(r => r.json());
-    return { movie };
+  const movie = await fetch(`/api/movies/${params.id}`).then((r) => r.json());
+  return { movie };
 }
 
 // +page.server.ts - runs only on server
 export async function load({ locals, params }) {
-    const user = locals.user;  // From handle hook
-    // Sensitive data here
+  const user = locals.user; // From handle hook
+  // Sensitive data here
 }
 ```
 
 ### Preloading
+
 ```svelte
 <!-- Prefetch on hover -->
 <a href="/movies/123" data-sveltekit-preload-data="hover">
@@ -143,31 +152,33 @@ export async function load({ locals, params }) {
 ## State Management
 
 ### Client State (Svelte Stores)
+
 ```typescript
 // lib/stores/auth.ts
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 interface User {
-    id: string;
-    username: string;
-    role: 'admin' | 'user';
+  id: string;
+  username: string;
+  role: "admin" | "user";
 }
 
 export const user = writable<User | null>(null);
-export const isAuthenticated = derived(user, $user => $user !== null);
+export const isAuthenticated = derived(user, ($user) => $user !== null);
 ```
 
 ### Server State (TanStack Query)
+
 ```typescript
 // lib/api/movies.ts
-import { createQuery } from '@tanstack/svelte-query';
+import { createQuery } from "@tanstack/svelte-query";
 
 export function movieQuery(id: string) {
-    return createQuery({
-        queryKey: ['movie', id],
-        queryFn: () => fetch(`/api/movies/${id}`).then(r => r.json()),
-        staleTime: 5 * 60 * 1000,  // 5 minutes
-    });
+  return createQuery({
+    queryKey: ["movie", id],
+    queryFn: () => fetch(`/api/movies/${id}`).then((r) => r.json()),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 }
 
 // In component
@@ -177,47 +188,49 @@ $: loading = $movieQuery.isLoading;
 ```
 
 ### Playback State (Global Store)
+
 ```typescript
 // lib/stores/playback.ts
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 interface PlaybackState {
-    mediaId: string | null;
-    playing: boolean;
-    position: number;
-    duration: number;
-    volume: number;
-    muted: boolean;
-    quality: string;
-    subtitles: string | null;
+  mediaId: string | null;
+  playing: boolean;
+  position: number;
+  duration: number;
+  volume: number;
+  muted: boolean;
+  quality: string;
+  subtitles: string | null;
 }
 
 export const playback = writable<PlaybackState>({
-    mediaId: null,
-    playing: false,
-    position: 0,
-    duration: 0,
-    volume: 1.0,
-    muted: false,
-    quality: 'auto',
-    subtitles: null,
+  mediaId: null,
+  playing: false,
+  position: 0,
+  duration: 0,
+  volume: 1.0,
+  muted: false,
+  quality: "auto",
+  subtitles: null,
 });
 ```
 
 ## Component Patterns
 
 ### Media Card
+
 ```svelte
 <!-- lib/components/media/MediaCard.svelte -->
 <script lang="ts">
     import { fade } from 'svelte/transition';
     import { playback } from '$lib/stores/playback';
-    
+
     export let media: Media;
     export let showProgress = false;
-    
+
     let imageLoaded = false;
-    
+
     function handlePlay() {
         playback.set({ mediaId: media.id, playing: true, ... });
     }
@@ -229,7 +242,7 @@ export const playback = writable<PlaybackState>({
         {#if !imageLoaded}
             <div class="blurhash" style="background: {media.blurhash}" />
         {/if}
-        
+
         <!-- Image -->
         <img
             src={media.poster}
@@ -237,7 +250,7 @@ export const playback = writable<PlaybackState>({
             loading="lazy"
             on:load={() => imageLoaded = true}
         />
-        
+
         <!-- Progress bar (if watched) -->
         {#if showProgress && media.progress > 0}
             <div class="progress">
@@ -245,7 +258,7 @@ export const playback = writable<PlaybackState>({
             </div>
         {/if}
     </a>
-    
+
     <!-- Quick actions -->
     <button on:click={handlePlay} aria-label="Play {media.title}">
         <PlayIcon />
@@ -260,7 +273,7 @@ export const playback = writable<PlaybackState>({
         overflow: hidden;
         transition: transform 0.2s;
     }
-    
+
     .media-card:hover {
         transform: scale(1.05);
     }
@@ -268,36 +281,37 @@ export const playback = writable<PlaybackState>({
 ```
 
 ### Virtual Scroller (Large Lists)
+
 ```svelte
 <!-- lib/components/media/VirtualGrid.svelte -->
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
-    
+
     export let items: any[];
     export let itemHeight = 300;
     export let itemWidth = 200;
-    
+
     let container: HTMLElement;
     let visibleRange = { start: 0, end: 20 };
-    
+
     function updateVisibleRange() {
         const scrollTop = container.scrollTop;
         const containerHeight = container.clientHeight;
-        
+
         const start = Math.floor(scrollTop / itemHeight);
         const end = Math.ceil((scrollTop + containerHeight) / itemHeight);
-        
+
         visibleRange = { start, end };
     }
-    
+
     onMount(() => {
         container.addEventListener('scroll', updateVisibleRange);
     });
-    
+
     onDestroy(() => {
         container?.removeEventListener('scroll', updateVisibleRange);
     });
-    
+
     $: visibleItems = items.slice(visibleRange.start, visibleRange.end);
 </script>
 
@@ -315,47 +329,51 @@ export const playback = writable<PlaybackState>({
 ## Theming
 
 ### Theme Store
+
 ```typescript
 // lib/stores/theme.ts
-import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable } from "svelte/store";
+import { browser } from "$app/environment";
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = "light" | "dark" | "system";
 
 function createThemeStore() {
-    const { subscribe, set } = writable<Theme>('system');
-    
-    return {
-        subscribe,
-        set: (theme: Theme) => {
-            if (browser) {
-                localStorage.setItem('theme', theme);
-                applyTheme(theme);
-            }
-            set(theme);
-        },
-        init: () => {
-            if (browser) {
-                const saved = localStorage.getItem('theme') as Theme;
-                const theme = saved || 'system';
-                applyTheme(theme);
-                set(theme);
-            }
-        },
-    };
+  const { subscribe, set } = writable<Theme>("system");
+
+  return {
+    subscribe,
+    set: (theme: Theme) => {
+      if (browser) {
+        localStorage.setItem("theme", theme);
+        applyTheme(theme);
+      }
+      set(theme);
+    },
+    init: () => {
+      if (browser) {
+        const saved = localStorage.getItem("theme") as Theme;
+        const theme = saved || "system";
+        applyTheme(theme);
+        set(theme);
+      }
+    },
+  };
 }
 
 function applyTheme(theme: Theme) {
-    const isDark = theme === 'dark' || 
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
-    document.documentElement.classList.toggle('dark', isDark);
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  document.documentElement.classList.toggle("dark", isDark);
 }
 
 export const theme = createThemeStore();
 ```
 
 ### CSS Variables
+
 ```css
 /* app.css */
 @tailwind base;
@@ -363,134 +381,139 @@ export const theme = createThemeStore();
 @tailwind utilities;
 
 @layer base {
-    :root {
-        /* Light mode */
-        --background: 0 0% 100%;
-        --foreground: 222.2 84% 4.9%;
-        --primary: 221.2 83.2% 53.3%;
-        --accent: 210 40% 96.1%;
-    }
-    
-    .dark {
-        /* Dark mode */
-        --background: 222.2 84% 4.9%;
-        --foreground: 210 40% 98%;
-        --primary: 217.2 91.2% 59.8%;
-        --accent: 217.2 32.6% 17.5%;
-    }
+  :root {
+    /* Light mode */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --accent: 210 40% 96.1%;
+  }
+
+  .dark {
+    /* Dark mode */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --accent: 217.2 32.6% 17.5%;
+  }
 }
 ```
 
 ## API Integration
 
 ### Generated Client
+
 ```typescript
 // lib/api/client.ts
-import { Configuration, DefaultApi } from './generated';
+import { Configuration, DefaultApi } from "./generated";
 
 const config = new Configuration({
-    basePath: import.meta.env.VITE_API_URL || 'http://localhost:8096',
-    accessToken: () => localStorage.getItem('token') || '',
+  basePath: import.meta.env.VITE_API_URL || "http://localhost:8096",
+  accessToken: () => localStorage.getItem("token") || "",
 });
 
 export const api = new DefaultApi(config);
 ```
 
 ### TanStack Query Integration
+
 ```typescript
 // lib/api/movies.ts
-import { createQuery, createMutation } from '@tanstack/svelte-query';
-import { api } from './client';
+import { createQuery, createMutation } from "@tanstack/svelte-query";
+import { api } from "./client";
 
 export function moviesQuery(page = 1, limit = 20) {
-    return createQuery({
-        queryKey: ['movies', page, limit],
-        queryFn: () => api.getMovies({ page, limit }),
-    });
+  return createQuery({
+    queryKey: ["movies", page, limit],
+    queryFn: () => api.getMovies({ page, limit }),
+  });
 }
 
 export function rateMovieMutation() {
-    return createMutation({
-        mutationFn: ({ movieId, rating }: { movieId: string; rating: number }) =>
-            api.rateMovie({ movieId, rating }),
-        onSuccess: () => {
-            // Invalidate movies query to refetch
-            queryClient.invalidateQueries({ queryKey: ['movies'] });
-        },
-    });
+  return createMutation({
+    mutationFn: ({ movieId, rating }: { movieId: string; rating: number }) =>
+      api.rateMovie({ movieId, rating }),
+    onSuccess: () => {
+      // Invalidate movies query to refetch
+      queryClient.invalidateQueries({ queryKey: ["movies"] });
+    },
+  });
 }
 ```
 
 ## Authentication
 
 ### Auth Store
+
 ```typescript
 // lib/stores/auth.ts
-import { writable, derived } from 'svelte/store';
-import { goto } from '$app/navigation';
-import { api } from '$lib/api/client';
+import { writable, derived } from "svelte/store";
+import { goto } from "$app/navigation";
+import { api } from "$lib/api/client";
 
 function createAuthStore() {
-    const { subscribe, set } = writable<User | null>(null);
-    
-    return {
-        subscribe,
-        login: async (username: string, password: string) => {
-            const response = await api.login({ username, password });
-            localStorage.setItem('token', response.token);
-            set(response.user);
-            goto('/');
-        },
-        logout: () => {
-            localStorage.removeItem('token');
-            set(null);
-            goto('/login');
-        },
-        init: async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    const user = await api.getMe();
-                    set(user);
-                } catch (e) {
-                    localStorage.removeItem('token');
-                }
-            }
-        },
-    };
+  const { subscribe, set } = writable<User | null>(null);
+
+  return {
+    subscribe,
+    login: async (username: string, password: string) => {
+      const response = await api.login({ username, password });
+      localStorage.setItem("token", response.token);
+      set(response.user);
+      goto("/");
+    },
+    logout: () => {
+      localStorage.removeItem("token");
+      set(null);
+      goto("/login");
+    },
+    init: async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const user = await api.getMe();
+          set(user);
+        } catch (e) {
+          localStorage.removeItem("token");
+        }
+      }
+    },
+  };
 }
 
 export const auth = createAuthStore();
-export const isAdmin = derived(auth, $auth => $auth?.role === 'admin');
+export const isAdmin = derived(auth, ($auth) => $auth?.role === "admin");
 ```
 
 ### Protected Routes
+
 ```typescript
 // hooks.server.ts
 export async function handle({ event, resolve }) {
-    const token = event.cookies.get('token');
-    
-    if (token) {
-        try {
-            const user = await verifyToken(token);
-            event.locals.user = user;
-        } catch (e) {
-            // Invalid token
-        }
+  const token = event.cookies.get("token");
+
+  if (token) {
+    try {
+      const user = await verifyToken(token);
+      event.locals.user = user;
+    } catch (e) {
+      // Invalid token
     }
-    
-    // Protect admin routes
-    if (event.url.pathname.startsWith('/admin') && !event.locals.user?.isAdmin) {
-        return new Response('Unauthorized', { status: 401 });
-    }
-    
-    return resolve(event);
+  }
+
+  // Protect admin routes
+  if (event.url.pathname.startsWith("/admin") && !event.locals.user?.isAdmin) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  return resolve(event);
 }
 ```
 
 ## i18n
 
 ### Translation Files
+
 ```typescript
 // lib/i18n/translations/en.json
 {
@@ -518,16 +541,17 @@ export const locale = writable('en');
 export const t = derived(locale, $locale => (key: string) => {
     const keys = key.split('.');
     let value: any = translations[$locale];
-    
+
     for (const k of keys) {
         value = value[k];
     }
-    
+
     return value || key;
 });
 ```
 
 ### Usage
+
 ```svelte
 <script>
     import { t } from '$lib/i18n';
@@ -539,103 +563,108 @@ export const t = derived(locale, $locale => (key: string) => {
 ## PWA
 
 ### Service Worker
+
 ```typescript
 // service-worker.ts
-const CACHE_NAME = 'revenge-v1';
+const CACHE_NAME = "revenge-v1";
 const STATIC_ASSETS = [
-    '/',
-    '/app.css',
-    '/app.js',
-    // ... fonts, icons, etc.
+  "/",
+  "/app.css",
+  "/app.js",
+  // ... fonts, icons, etc.
 ];
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
-    );
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)),
+  );
 });
 
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request);
-        })
-    );
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    }),
+  );
 });
 ```
 
 ### Manifest
+
 ```json
 // static/manifest.json
 {
-    "name": "Revenge Media Server",
-    "short_name": "Revenge",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#000000",
-    "theme_color": "#3b82f6",
-    "icons": [
-        {
-            "src": "/icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "Revenge Media Server",
+  "short_name": "Revenge",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
 ```
 
 ## Testing
 
 ### Unit Tests (Vitest)
+
 ```typescript
 // lib/utils/format.test.ts
-import { describe, it, expect } from 'vitest';
-import { formatDuration } from './format';
+import { describe, it, expect } from "vitest";
+import { formatDuration } from "./format";
 
-describe('formatDuration', () => {
-    it('formats seconds correctly', () => {
-        expect(formatDuration(90)).toBe('1:30');
-        expect(formatDuration(3661)).toBe('1:01:01');
-    });
+describe("formatDuration", () => {
+  it("formats seconds correctly", () => {
+    expect(formatDuration(90)).toBe("1:30");
+    expect(formatDuration(3661)).toBe("1:01:01");
+  });
 });
 ```
 
 ### Component Tests (Testing Library)
+
 ```typescript
 // lib/components/media/MediaCard.test.ts
-import { render, fireEvent } from '@testing-library/svelte';
-import MediaCard from './MediaCard.svelte';
+import { render, fireEvent } from "@testing-library/svelte";
+import MediaCard from "./MediaCard.svelte";
 
-describe('MediaCard', () => {
-    it('renders media title', () => {
-        const { getByText } = render(MediaCard, {
-            props: { media: { id: '1', title: 'Test Movie' } }
-        });
-        
-        expect(getByText('Test Movie')).toBeInTheDocument();
+describe("MediaCard", () => {
+  it("renders media title", () => {
+    const { getByText } = render(MediaCard, {
+      props: { media: { id: "1", title: "Test Movie" } },
     });
-    
-    it('calls play on button click', async () => {
-        const { getByLabelText } = render(MediaCard, {
-            props: { media: { id: '1', title: 'Test' } }
-        });
-        
-        const playButton = getByLabelText('Play Test');
-        await fireEvent.click(playButton);
-        
-        // Assert playback store updated
+
+    expect(getByText("Test Movie")).toBeInTheDocument();
+  });
+
+  it("calls play on button click", async () => {
+    const { getByLabelText } = render(MediaCard, {
+      props: { media: { id: "1", title: "Test" } },
     });
+
+    const playButton = getByLabelText("Play Test");
+    await fireEvent.click(playButton);
+
+    // Assert playback store updated
+  });
 });
 ```
 
 ## Performance Optimization
 
 ### Code Splitting
+
 ```typescript
 // Lazy load heavy components
 const Player = () => import('$lib/components/Player.svelte');
@@ -648,6 +677,7 @@ const Visualizer = () => import('$lib/components/Visualizer.svelte');
 ```
 
 ### Image Optimization
+
 ```svelte
 <!-- Use blurhash placeholders -->
 <img
@@ -660,13 +690,14 @@ const Visualizer = () => import('$lib/components/Visualizer.svelte');
 ```
 
 ### Prefetching
+
 ```typescript
 // Prefetch on hover
 function handleMouseEnter(mediaId: string) {
-    queryClient.prefetchQuery({
-        queryKey: ['movie', mediaId],
-        queryFn: () => api.getMovie(mediaId),
-    });
+  queryClient.prefetchQuery({
+    queryKey: ["movie", mediaId],
+    queryFn: () => api.getMovie(mediaId),
+  });
 }
 ```
 
@@ -680,7 +711,7 @@ Frontend Stack:
   Auth: JWT + OIDC
   i18n: Built-in translation system
   PWA: Service Worker + Manifest
-  
+
   Key Features:
     - Code splitting per route
     - Virtual scrolling for large lists

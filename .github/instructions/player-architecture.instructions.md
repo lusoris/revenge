@@ -18,6 +18,7 @@ alwaysApply: false
 ## Player Stack
 
 ### Video Mode
+
 ```typescript
 // Libraries
 import shaka from 'shaka-player';  // DASH support
@@ -31,6 +32,7 @@ import Hls from 'hls.js';          // HLS for non-Safari
 ```
 
 ### Audio Mode
+
 ```typescript
 // Libraries
 import { Howl, Howler } from 'howler';  // High-level wrapper
@@ -52,14 +54,42 @@ Playback Request
     ▼
 Check Client Capabilities
     │
-    ├─ Codecs Match (H.264/AAC) → DIRECT PLAY (Progressive HTTP)
+    ├─ Codecs Match (H.264/VP9/AV1 + AAC/Opus) → DIRECT PLAY (Progressive HTTP)
+    │  └─ MKV Support: Chrome/Firefox ✅, Safari ❌
     ├─ Container Mismatch → DIRECT STREAM (Remux via Blackbeard)
     └─ Codec Mismatch → TRANSCODE (HLS/DASH via Blackbeard)
 ```
 
+## MKV Direct Play
+
+**Chrome/Firefox/Edge support MKV natively!**
+
+```typescript
+// Container detection
+const mkvSupported = video.canPlayType('video/x-matroska; codecs="vp9,opus"') !== '';
+
+// Browser capabilities
+Chrome:  MKV ✅ (VP9/AV1 + Opus)
+Firefox: MKV ✅ (VP9/AV1 + Opus/FLAC)
+Edge:    MKV ✅ (VP9/AV1 + Opus)
+Safari:  MKV ❌ (Only MP4)
+
+// Direct Play decision
+if (file.container === 'mkv' && caps.Containers.includes('mkv')) {
+    return PlaybackMethod.DirectPlay;  // No remux needed!
+}
+```
+
+**Benefits:**
+- Instant playback (no remuxing overhead)
+- Preserve original quality
+- Support modern codecs (VP9, AV1, Opus)
+- Multiple audio/subtitle tracks
+
 ## Code Patterns
 
 ### DO
+
 - ✅ Use capability detection before choosing protocol
 - ✅ Implement error handlers with protocol failover
 - ✅ Prefetch next track 30s before current ends
@@ -69,6 +99,7 @@ Check Client Capabilities
 - ✅ Use WebSocket for seamless quality switching
 
 ### DON'T
+
 - ❌ Hardcode protocol choice (always detect capabilities)
 - ❌ Use autoplay without user gesture (iOS restrictions)
 - ❌ Rely on browser default controls
@@ -79,27 +110,29 @@ Check Client Capabilities
 ## Gapless & Crossfade
 
 ### Gapless (No Overlap)
+
 ```typescript
 // Prefetch next track
 const checkInterval = 1000; // 1 second
 const prefetchThreshold = 30; // 30 seconds
 
 setInterval(() => {
-    const remaining = duration - currentTime;
-    if (remaining <= prefetchThreshold && !nextTrackLoaded) {
-        preloadNextTrack();
-    }
+  const remaining = duration - currentTime;
+  if (remaining <= prefetchThreshold && !nextTrackLoaded) {
+    preloadNextTrack();
+  }
 }, checkInterval);
 
 // Instant switch on track end
 onTrackEnd(() => {
-    currentTrack = nextTrack;
-    nextTrack = null;
-    currentTrack.play();
+  currentTrack = nextTrack;
+  nextTrack = null;
+  currentTrack.play();
 });
 ```
 
 ### Crossfade (True Overlap)
+
 ```typescript
 const crossfadeDuration = 5000; // 5 seconds
 const steps = 50;
@@ -111,22 +144,23 @@ nextTrack.play();
 
 // Fade both tracks simultaneously
 for (let i = 0; i <= steps; i++) {
-    const progress = i / steps;
-    
-    currentTrack.volume(1 - progress);  // Fade out
-    nextTrack.volume(progress);          // Fade in
-    
-    await sleep(stepTime);
+  const progress = i / steps;
+
+  currentTrack.volume(1 - progress); // Fade out
+  nextTrack.volume(progress); // Fade in
+
+  await sleep(stepTime);
 }
 ```
 
 ## Synced Lyrics
 
 ### Data Model
+
 ```typescript
 interface LyricLine {
-    timeMs: number;  // Milliseconds from start
-    text: string;    // Lyric text
+  timeMs: number; // Milliseconds from start
+  text: string; // Lyric text
 }
 
 // Parse LRC format
@@ -135,40 +169,43 @@ interface LyricLine {
 ```
 
 ### Display Strategy
+
 ```typescript
 // Find current line (binary search for performance)
 function findCurrentLine(lyrics: LyricLine[], timeMs: number): number {
-    let left = 0, right = lyrics.length - 1;
-    
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        const current = lyrics[mid];
-        const next = lyrics[mid + 1];
-        
-        if (current.timeMs <= timeMs && (!next || next.timeMs > timeMs)) {
-            return mid;
-        }
-        
-        if (current.timeMs > timeMs) {
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
+  let left = 0,
+    right = lyrics.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    const current = lyrics[mid];
+    const next = lyrics[mid + 1];
+
+    if (current.timeMs <= timeMs && (!next || next.timeMs > timeMs)) {
+      return mid;
     }
-    
-    return -1;
+
+    if (current.timeMs > timeMs) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+
+  return -1;
 }
 
 // Update every 100ms for smooth transitions
 setInterval(() => {
-    const currentLine = findCurrentLine(lyrics, currentTimeMs);
-    updateLyricsDisplay(currentLine);
+  const currentLine = findCurrentLine(lyrics, currentTimeMs);
+  updateLyricsDisplay(currentLine);
 }, 100);
 ```
 
 ## Audio Visualization
 
 ### Frequency Bars (Canvas API)
+
 ```typescript
 const analyser = audioContext.createAnalyser();
 analyser.fftSize = 2048;
@@ -176,23 +213,24 @@ const bufferLength = analyser.frequencyBinCount;
 const dataArray = new Uint8Array(bufferLength);
 
 function draw() {
-    requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
-    
-    // Draw bars
-    for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * canvasHeight;
-        ctx.fillRect(x, canvasHeight - barHeight, barWidth, barHeight);
-    }
+  requestAnimationFrame(draw);
+  analyser.getByteFrequencyData(dataArray);
+
+  // Draw bars
+  for (let i = 0; i < bufferLength; i++) {
+    const barHeight = (dataArray[i] / 255) * canvasHeight;
+    ctx.fillRect(x, canvasHeight - barHeight, barWidth, barHeight);
+  }
 }
 ```
 
 ### Fanart-based (Alternative)
+
 ```typescript
 // Pulse/rotate album art with beat
 const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-const scale = 1 + (average / 255) * 0.3;  // 1.0 to 1.3x
-const rotation = (average / 255) * 10;    // 0-10 degrees
+const scale = 1 + (average / 255) * 0.3; // 1.0 to 1.3x
+const rotation = (average / 255) * 10; // 0-10 degrees
 
 fanartElement.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
 ```
@@ -200,13 +238,14 @@ fanartElement.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
 ## Subtitle Support
 
 ### External Subtitles (WebVTT)
+
 ```typescript
 // Blackbeard endpoint
-GET /api/v1/playback/{mediaId}/subtitles/{trackIndex}.vtt
+GET / api / v1 / playback / { mediaId } / subtitles / { trackIndex }.vtt;
 
 // Add to video element
-const track = document.createElement('track');
-track.kind = 'subtitles';
+const track = document.createElement("track");
+track.kind = "subtitles";
 track.label = language;
 track.srclang = langCode;
 track.src = subtitleUrl;
@@ -214,6 +253,7 @@ videoElement.appendChild(track);
 ```
 
 ### Internal Subtitles (from Container)
+
 ```typescript
 // Blackbeard extracts without transcoding
 // Supports: SRT, ASS, SSA, PGS, VobSub
@@ -226,18 +266,21 @@ GET /api/v1/playback/{mediaId}/subtitles/{streamIndex}.vtt?extract=true
 ## Quality Switching (Seamless)
 
 ### Client → Revenge → Blackbeard Flow
+
 ```typescript
 // 1. Client detects bandwidth change or user selection
 function changeQuality(newQuality: string) {
-    const currentTime = videoElement.currentTime;
-    
-    // 2. Send to Revenge via WebSocket
-    ws.send(JSON.stringify({
-        type: 'quality_change',
-        sessionId: currentSessionId,
-        quality: newQuality,
-        position: currentTime,
-    }));
+  const currentTime = videoElement.currentTime;
+
+  // 2. Send to Revenge via WebSocket
+  ws.send(
+    JSON.stringify({
+      type: "quality_change",
+      sessionId: currentSessionId,
+      quality: newQuality,
+      position: currentTime,
+    }),
+  );
 }
 
 // 3. Revenge forwards to Blackbeard
@@ -246,24 +289,24 @@ function changeQuality(newQuality: string) {
 // 6. Client switches at segment boundary (no playback interruption)
 
 ws.onmessage = (event) => {
-    const msg = JSON.parse(event.data);
-    if (msg.type === 'quality_changed') {
-        // hls.js or Shaka handles seamless switch
-        player.updateManifest(msg.newManifestUrl);
-    }
+  const msg = JSON.parse(event.data);
+  if (msg.type === "quality_changed") {
+    // hls.js or Shaka handles seamless switch
+    player.updateManifest(msg.newManifestUrl);
+  }
 };
 ```
 
 ## iOS Safari Limitations
 
-| Feature | Desktop | iOS Safari | Implementation |
-|---------|---------|------------|----------------|
-| Gapless | ✅ Full | ⚠️ ~0.1s gap | Acceptable, use instant switch |
-| Crossfade | ✅ Full | ❌ Not supported | Disable on iOS, use gapless |
-| Web Audio API | ✅ Full | ⚠️ Requires user gesture | Delay init until play button |
-| Multiple <video> | ✅ Yes | ❌ One at a time | Block multiple videos, show warning |
-| Autoplay | ✅ Yes | ❌ No | Require explicit play button |
-| Background audio | ✅ Yes | ❌ Tab suspend | Use Media Session API |
+| Feature          | Desktop | iOS Safari               | Implementation                      |
+| ---------------- | ------- | ------------------------ | ----------------------------------- |
+| Gapless          | ✅ Full | ⚠️ ~0.1s gap             | Acceptable, use instant switch      |
+| Crossfade        | ✅ Full | ❌ Not supported         | Disable on iOS, use gapless         |
+| Web Audio API    | ✅ Full | ⚠️ Requires user gesture | Delay init until play button        |
+| Multiple <video> | ✅ Yes  | ❌ One at a time         | Block multiple videos, show warning |
+| Autoplay         | ✅ Yes  | ❌ No                    | Require explicit play button        |
+| Background audio | ✅ Yes  | ❌ Tab suspend           | Use Media Session API               |
 
 ```typescript
 // Feature detection
@@ -271,82 +314,86 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 const features = {
-    crossfade: !(isIOS && isSafari),
-    webAudio: !(isIOS && isSafari) || userGestureReceived,
-    gapless: true, // Works everywhere, just small gap on iOS
+  crossfade: !(isIOS && isSafari),
+  webAudio: !(isIOS && isSafari) || userGestureReceived,
+  gapless: true, // Works everywhere, just small gap on iOS
 };
 
 // Adjust player
 if (!features.crossfade) {
-    audioPlayer.disableCrossfade();
+  audioPlayer.disableCrossfade();
 }
 ```
 
 ## Performance
 
 ### 1. Request Prioritization
+
 ```typescript
 // High: Current track/video (play ASAP)
 // Medium: Next track (prefetch 30s before end)
 // Low: Adjacent tracks (prefetch 5s of data)
 
 class PriorityFetcher {
-    private queues = {
-        high: [] as Request[],
-        medium: [] as Request[],
-        low: [] as Request[],
-    };
-    
-    async fetch(url: string, priority: 'high' | 'medium' | 'low') {
-        this.queues[priority].push(fetch(url));
-        await this.processQueues();
+  private queues = {
+    high: [] as Request[],
+    medium: [] as Request[],
+    low: [] as Request[],
+  };
+
+  async fetch(url: string, priority: "high" | "medium" | "low") {
+    this.queues[priority].push(fetch(url));
+    await this.processQueues();
+  }
+
+  private async processQueues() {
+    // Process high first, then medium, then low
+    while (this.queues.high.length) {
+      await this.queues.high.shift();
     }
-    
-    private async processQueues() {
-        // Process high first, then medium, then low
-        while (this.queues.high.length) {
-            await this.queues.high.shift();
-        }
-        // ... etc
-    }
+    // ... etc
+  }
 }
 ```
 
 ### 2. Web Worker for Processing
+
 ```typescript
 // audio-worker.ts
-self.addEventListener('message', (e) => {
-    if (e.data.type === 'analyze') {
-        const analysis = analyzeAudio(e.data.buffer);
-        self.postMessage({ type: 'result', data: analysis });
-    }
+self.addEventListener("message", (e) => {
+  if (e.data.type === "analyze") {
+    const analysis = analyzeAudio(e.data.buffer);
+    self.postMessage({ type: "result", data: analysis });
+  }
 });
 
 // main.ts
-const worker = new Worker('audio-worker.ts');
-worker.postMessage({ type: 'analyze', buffer: audioBuffer });
+const worker = new Worker("audio-worker.ts");
+worker.postMessage({ type: "analyze", buffer: audioBuffer });
 ```
 
 ### 3. IndexedDB Caching
+
 ```typescript
 // Cache downloaded tracks
 async function cacheTrack(trackId: string, blob: Blob) {
-    const db = await openDB('revenge-audio', 1);
-    const tx = db.transaction('tracks', 'readwrite');
-    await tx.store.put({ id: trackId, data: blob, cached: Date.now() });
+  const db = await openDB("revenge-audio", 1);
+  const tx = db.transaction("tracks", "readwrite");
+  await tx.store.put({ id: trackId, data: blob, cached: Date.now() });
 }
 
 // Retrieve cached track
 async function getCachedTrack(trackId: string): Promise<Blob | null> {
-    const db = await openDB('revenge-audio', 1);
-    const track = await db.get('tracks', trackId);
-    return track?.data || null;
+  const db = await openDB("revenge-audio", 1);
+  const track = await db.get("tracks", trackId);
+  return track?.data || null;
 }
 ```
 
 ## Testing Requirements
 
 ### Browser Compatibility Matrix
+
 ```typescript
 // Must test:
 - Chrome/Edge (latest + 2 versions back)
@@ -371,6 +418,7 @@ async function getCachedTrack(trackId: string): Promise<Blob | null> {
 ## Integration with Blackbeard
 
 ### Stream Request
+
 ```typescript
 // Client → Revenge → Blackbeard
 POST /api/v1/playback/start
@@ -399,6 +447,7 @@ POST /api/v1/playback/start
 ```
 
 ### WebSocket Events
+
 ```typescript
 // Client → Server
 {
@@ -430,7 +479,7 @@ Player Architecture:
   Unified Manager: Video + Audio modes
   Video Stack: Shaka (DASH) + hls.js (HLS) + Native (Safari/Direct Play)
   Audio Stack: Web Audio API + Howler.js
-  
+
   Features:
     - Gapless: 30s prefetch + instant switch
     - Crossfade: True overlap (5s default)
@@ -438,13 +487,13 @@ Player Architecture:
     - Visualizer: Canvas frequency bars OR fanart pulse
     - Subtitles: WebVTT external + container extraction
     - Quality: Seamless via WebSocket
-    
+
   iOS Safari:
     - Gapless: ⚠️ Works (small gap)
     - Crossfade: ❌ Disable
     - Web Audio: ⚠️ Requires user gesture
     - Autoplay: ❌ Requires play button
-    
+
   Performance:
     - Priority fetch: High > Medium > Low
     - Web Workers: Audio processing
