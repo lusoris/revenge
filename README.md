@@ -3,11 +3,21 @@
 [![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/jellyfin-go)](https://goreportcard.com/report/github.com/lusoris/jellyfin-go)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/jellyfin-go)](go.mod)
-[![License](https://img.shields.io/badge/license-GPL--2.0-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 > Modular media server with complete content isolation
 
 A ground-up media server built in Go with a fully modular architecture. Each content type (movies, shows, music, etc.) is completely isolated with its own tables, services, and handlers.
+
+## 📋 Design Principles
+
+- **Performance First** - UX never blocked by backend tasks
+- **Client Agnostic** - Support Jellyfin/Subsonic/DLNA clients, no native apps
+- **Privacy by Default** - Encrypted local storage, opt-in tracking only
+- **Bleeding Edge Stable** - Latest stable Go/PostgreSQL, no alpha deps
+- **Optional ML** - Ollama integration for recommendations, not required
+
+See [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) for full details.
 
 ## ✨ Features
 

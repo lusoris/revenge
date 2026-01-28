@@ -1,6 +1,6 @@
 # Revenge - Media Enhancement Features
 
-> Advanced playback features: trailers, themes, intros, trickplay, and live TV.
+> Advanced playback features: trailers, themes, intros, trickplay, cinema mode, and live TV.
 
 ## Feature Overview
 
@@ -11,8 +11,103 @@
 | **Intro/Outro Detection** | Netflix-style skip buttons | 🔶 Planned |
 | **Trickplay** | Video scrubbing thumbnails | 🔶 Planned |
 | **Chapters** | Chapter markers with images | 🔶 Planned |
+| **Cinema Mode** | Prerolls, intermissions, postrolls | 🔶 Planned |
 | **Live TV** | EPG, DVR, timeshift | 🔶 Planned |
 | **PVR Integration** | External PVR server support | 🔶 Planned |
+
+---
+
+## Cinema Mode (Theatrical Experience)
+
+### Overview
+
+Cinema Mode transforms home viewing into a theatrical experience with customizable sequences.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    CINEMA SESSION FLOW                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [Preroll] → [Trailers] → [Feature] → [Intermission?] →        │
+│  [Credits] → [Post-Credits Alert] → [Up Next]                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Preroll System
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `studio_intro` | Studio/network fanfare | THX, Dolby Atmos |
+| `custom_clip` | User-uploaded video | Personal intro |
+| `seasonal` | Date-based content | Halloween, Christmas |
+| `library_specific` | Per-library intros | Different for Kids vs Horror |
+
+```sql
+CREATE TABLE prerolls (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    path VARCHAR(1024) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    weight INT DEFAULT 1,
+    duration_ms INT,
+    seasonal_start VARCHAR(5),  -- MM-DD
+    seasonal_end VARCHAR(5),
+    library_ids UUID[],
+    enabled BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### Intermission System
+
+Auto-suggest for long movies:
+
+| Duration | Intermission |
+|----------|--------------|
+| < 2h 30m | None |
+| 2h 30m - 3h | Optional |
+| > 3h | Suggested at midpoint |
+
+```sql
+CREATE TABLE intermission_markers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    movie_id UUID NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
+    position_ms BIGINT NOT NULL,
+    duration_ms INT DEFAULT 300000,  -- 5 min default
+    reason VARCHAR(255),
+    UNIQUE(movie_id, position_ms)
+);
+```
+
+### Postroll / Up Next
+
+| Type | Description |
+|------|-------------|
+| `credits` | Full credits with skip option |
+| `post_credits_alert` | Alert for post-credits scenes |
+| `up_next` | Next episode/similar movie countdown |
+| `collection` | Other movies in collection |
+
+### Cinema Mode Configuration
+
+```yaml
+cinema:
+  preroll:
+    enabled: true
+    max_prerolls: 2
+    mode: random  # random, sequential, weighted
+    
+  intermission:
+    enabled: true
+    auto_suggest_above_minutes: 150
+    duration_seconds: 300
+    
+  postroll:
+    up_next:
+      enabled: true
+      countdown_seconds: 15
+      auto_play: true
 
 ---
 

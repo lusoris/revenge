@@ -1,10 +1,12 @@
-# Revenge - Commercial Streaming Features
+# Revenge - User Experience Features
 
-> User-facing features inspired by Netflix, Spotify, Disney+, YouTube, and other streaming services.
+> User-facing features inspired by modern streaming services.
 
 ## Overview
 
-This document catalogs **user experience features** from commercial streaming services that Revenge can adapt. Focus is on UI/UX, not infrastructure (transcoding is handled by Blackbeard).
+This document catalogs **user experience features** for Revenge. Focus is on UI/UX - all transcoding is handled by Blackbeard.
+
+**Design Principle:** See [DESIGN_PRINCIPLES.md](DESIGN_PRINCIPLES.md) for architectural decisions.
 
 ---
 
