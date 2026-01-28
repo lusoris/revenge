@@ -172,12 +172,30 @@ User selects tags (VR, POV, etc.) → Submits request
 ```
 User searches ComicVine → Selects series/issue → Submits request
                                                       ↓
-                                           Admin approvestvshow_season, music_album, music_artist, audiobook, book, podcast, comic, adult_scene, adult_studio, adult_performer
-    request_subtype VARCHAR(50),              -- For adult: "scene", "studio", "performer", "tag_combination"
-    external_id VARCHAR(200),                 -- TMDb ID, TheTVDB ID, MusicBrainz ID, StashDB ID, etc. (NULL for tag combinations)
+                                           Admin approves
+                                                      ↓
+                          Revenge adds to Mylar3 (future integration)
+                                                      ↓
+                          Mylar3 downloads → Imports → Notify user
+```
+
+---
+
+## Database Schema
+
+### Public Schema (Non-Adult Content)
+
+```sql
+-- Main requests table (public content only - NO adult content)
+CREATE TABLE requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('movie', 'tvshow', 'tvshow_season', 'music_album', 'music_artist', 'audiobook', 'book', 'podcast', 'comic')),
+    content_subtype VARCHAR(50),              -- movie, tvshow, tvshow_season, music_album, music_artist, audiobook, book, podcast, comic
+    external_id VARCHAR(200),                 -- TMDb ID, TheTVDB ID, MusicBrainz ID, etc. (NOT StashDB)
     title VARCHAR(500) NOT NULL,
     release_year INT,
-    metadata_json JSONB,                      -- Content-specific metadata (adult tags, performer IDs, studio IDs, season selection, quality preference)
+    metadata_json JSONB,                      -- Content-specific metadata (season selection, quality preference - NO adult tags)
     status VARCHAR(50) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'processing', 'available', 'declined', 'on_hold')),
     auto_approved BOOLEAN DEFAULT FALSE,
     auto_rule_id UUID REFERENCES request_rules(id) ON DELETE SET NULL,  -- Which rule triggered auto-approval
@@ -326,6 +344,96 @@ CREATE INDEX idx_request_votes_request_id ON request_votes(request_id);
 CREATE INDEX idx_request_comments_request_id ON request_comments(request_id);
 ```
 
+### Adult Content Schema (Isolated in `c` schema)
+
+```sql
+-- Adult requests table (isolated in c schema)
+CREATE TABLE c.adult_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('adult_movie', 'adult_show')),
+    request_subtype VARCHAR(50),              -- "scene", "studio", "performer", "tag_combination"
+    external_id VARCHAR(200),                 -- StashDB ID (NULL for tag combinations)
+    title VARCHAR(500) NOT NULL,
+    release_year INT,
+    metadata_json JSONB,                      -- Adult-specific metadata (tags, performer IDs, studio IDs)
+    status VARCHAR(50) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'processing', 'available', 'declined', 'on_hold')),
+    auto_approved BOOLEAN DEFAULT FALSE,
+    auto_rule_id UUID REFERENCES c.adult_request_rules(id) ON DELETE SET NULL,
+    approved_by_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    approved_at TIMESTAMPTZ,
+    declined_reason TEXT,
+    priority INT DEFAULT 0,
+    votes_count INT DEFAULT 0,
+    integration_id VARCHAR(200),              -- Whisparr ID (after approval)
+    integration_status VARCHAR(100),          -- Whisparr status
+    estimated_size_gb DECIMAL(10,2),
+    actual_size_gb DECIMAL(10,2),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    available_at TIMESTAMPTZ,
+    triggered_by_automation BOOLEAN DEFAULT FALSE,
+    parent_request_id UUID REFERENCES c.adult_requests(id) ON DELETE SET NULL
+);
+
+-- Adult request votes
+CREATE TABLE c.adult_request_votes (
+    request_id UUID REFERENCES c.adult_requests(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    voted_at TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (request_id, user_id)
+);
+
+-- Adult request comments
+CREATE TABLE c.adult_request_comments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    request_id UUID REFERENCES c.adult_requests(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    comment TEXT NOT NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Adult request quotas (per user)
+CREATE TABLE c.adult_request_quotas (
+    user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    daily_limit INT DEFAULT 5,
+    weekly_limit INT DEFAULT 20,
+    monthly_limit INT DEFAULT 50,
+    daily_used INT DEFAULT 0,
+    weekly_used INT DEFAULT 0,
+    monthly_used INT DEFAULT 0,
+    storage_quota_adult_gb DECIMAL(10,2) DEFAULT 500,
+    storage_used_adult_gb DECIMAL(10,2) DEFAULT 0,
+    last_reset_daily DATE DEFAULT CURRENT_DATE,
+    last_reset_weekly DATE DEFAULT CURRENT_DATE,
+    last_reset_monthly DATE DEFAULT CURRENT_DATE
+);
+
+-- Adult request rules (auto-approval + automation)
+CREATE TABLE c.adult_request_rules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(200) NOT NULL,
+    content_type VARCHAR(50),                 -- 'adult_movie', 'adult_show', or NULL for all
+    condition_type VARCHAR(50) NOT NULL,
+    condition_value JSONB NOT NULL,
+    action VARCHAR(50) NOT NULL DEFAULT 'auto_approve',
+    enabled BOOLEAN DEFAULT TRUE,
+    priority INT DEFAULT 0,
+    automation_trigger VARCHAR(50),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes
+CREATE INDEX idx_adult_requests_user_id ON c.adult_requests(user_id);
+CREATE INDEX idx_adult_requests_status ON c.adult_requests(status);
+CREATE INDEX idx_adult_requests_content_type ON c.adult_requests(content_type);
+CREATE INDEX idx_adult_requests_created_at ON c.adult_requests(created_at DESC);
+CREATE INDEX idx_adult_requests_priority ON c.adult_requests(priority DESC);
+CREATE INDEX idx_adult_request_votes_request_id ON c.adult_request_votes(request_id);
+CREATE INDEX idx_adult_request_comments_request_id ON c.adult_request_comments(request_id);
+```
+
 ---
 
 ## API Endpoints
@@ -359,7 +467,66 @@ POST /api/v1/requests/{id}/vote
 POST /api/v1/requests/{id}/comments
 ```
 
-### Admin Endpoints
+### Adult Content Endpoints (Isolated - `/api/v1/c/` namespace)
+
+**⚠️ CRITICAL: Adult requests use separate API namespace `/api/v1/c/`**
+
+```bash
+# Search adult content (StashDB)
+GET  /api/v1/c/requests/search?type=scene&query=...
+GET  /api/v1/c/requests/search?type=studio&query=...
+GET  /api/v1/c/requests/search?type=performer&query=...
+
+# Submit adult request
+POST /api/v1/c/requests
+{
+  "content_type": "adult_movie",
+  "request_subtype": "scene",  // "scene", "studio", "performer", "tag_combination"
+  "external_id": "stashdb-uuid",
+  "title": "Scene Title",
+  "metadata_json": {
+    "tags": ["VR", "POV"],
+    "performer_ids": ["uuid1", "uuid2"],
+    "studio_id": "studio-uuid"
+  }
+}
+
+# List user's adult requests
+GET  /api/v1/c/requests?user_id=me&status=pending
+
+# Get adult request detail
+GET  /api/v1/c/requests/{id}
+
+# Vote on adult request
+POST /api/v1/c/requests/{id}/vote
+
+# Comment on adult request
+POST /api/v1/c/requests/{id}/comments
+```
+
+### Admin Endpoints (Adult: `/api/v1/c/admin/`)
+
+```bash
+# List all adult requests (isolated)
+GET  /api/v1/c/admin/requests?status=pending
+
+# Approve adult request
+PUT  /api/v1/c/admin/requests/{id}/approve
+
+# Decline adult request
+PUT  /api/v1/c/admin/requests/{id}/decline
+
+# Manage adult quotas
+PUT  /api/v1/c/admin/users/{user_id}/quota
+
+# Manage adult request rules
+GET  /api/v1/c/admin/request-rules
+POST /api/v1/c/admin/request-rules
+PUT  /api/v1/c/admin/request-rules/{id}
+DEL  /api/v1/c/admin/request-rules/{id}
+```
+
+### Admin Endpoints (Non-Adult)
 ```bash
 # List all requests (with filters)
 GET  /api/v1/admin/requests?status=pending&content_type=movie
@@ -472,7 +639,15 @@ DEL
 - `book.go`: Book request module (Goodreads search, Readarr integration)
 - `podcast.go`: Podcast request module (RSS feed lookup, Audiobookshelf API)
 - `comic.go`: Comic request module (ComicVine search, Mylar3 integration)
+
+### Adult Content Request Module (ISOLATED)
+**Location**: `internal/content/c/requests/` (NOT in `internal/service/requests/modules/`)
+**Database**: `c` schema only (`c.adult_requests`, `c.adult_request_votes`, etc.)
+**API**: `/api/v1/c/requests/*` namespace
+
 - `adult.go`: Adult content request module (StashDB search, Whisparr integration, studio/performer/tag requests)
+- Complete isolation from public request system
+- Separate quota management, rule engine, automation triggers
 
 ### Integration with Other Systems
 - **Ticketing System**: Link requests to support tickets (user feedback, issues, feature requests)
