@@ -1,0 +1,287 @@
+# Letterboxd Integration
+
+> Social network for movie lovers and film tracking
+
+**Service**: Letterboxd (https://letterboxd.com)
+**API**: No official public API (web scraping OR unofficial API)
+**Category**: Scrobbling / Social (Movies Only)
+**Priority**: 🟡 LOW (No official API, niche audience)
+**Status**: 🔴 DESIGN PHASE
+
+---
+
+## Overview
+
+**Letterboxd** is a social network for film lovers, allowing users to rate, review, and track movies they've watched. It's popular among film enthusiasts for its clean UI and focus on movies (no TV shows).
+
+**Key Features**:
+- **Movie tracking**: Track what you watch (diary entries)
+- **Ratings & reviews**: Rate movies (0.5-5 stars), write reviews
+- **Lists**: Create custom movie lists (e.g., "Best of 2023")
+- **Watchlist**: Track movies to watch
+- **Social features**: Follow users, likes, comments
+- **Statistics**: Watch count, top genres, decades
+- **Movie metadata**: IMDb/TMDb integration
+
+**Use Cases**:
+- Import Letterboxd watch history to Revenge
+- Export Revenge watch history to Letterboxd (if unofficial API available)
+- Sync ratings/reviews
+- Display Letterboxd profile in Revenge UI
+
+**⚠️ NO OFFICIAL PUBLIC API**:
+- Letterboxd has NO official public API (as of 2026)
+- **Options**: Web scraping (HTML parsing) OR unofficial API (community-made, may break)
+- **Priority**: LOW (high maintenance burden, niche audience)
+
+---
+
+## Developer Resources
+
+### API Status
+- **Official API**: NONE (Letterboxd has private API for iOS/Android apps only)
+- **Unofficial API**: Community-made wrappers exist (may break anytime)
+- **Web Scraping**: Alternative approach (parse HTML)
+
+### Unofficial API Options
+1. **letterboxd-api** (npm package): https://github.com/zaccolley/letterboxd
+   - JavaScript library (can reverse-engineer for Go)
+   - Scrapes Letterboxd website
+   - No authentication (public data only)
+
+2. **Custom web scraping**: Parse Letterboxd HTML directly
+   - Libraries: `github.com/PuerkitoBio/goquery` (Go)
+   - Rate limiting: Very conservative (1 req/sec)
+
+### Authentication
+- **No API authentication**: Letterboxd has no public API authentication
+- **Web scraping**: Public data only (no user-specific actions like adding to diary)
+
+---
+
+## Integration Approach
+
+### Web Scraping Strategy
+
+**⚠️ CRITICAL: No Official API - Web Scraping Required**
+
+#### User Profile Page
+```
+URL: https://letterboxd.com/{username}/
+
+HTML Structure (example):
+<section class="profile-stats">
+  <h2>Profile Stats</h2>
+  <p><strong>Films:</strong> 1,234</p>
+  <p><strong>This year:</strong> 45</p>
+  <p><strong>Lists:</strong> 12</p>
+  <p><strong>Following:</strong> 67</p>
+  <p><strong>Followers:</strong> 89</p>
+</section>
+```
+
+#### Diary (Watch History)
+```
+URL: https://letterboxd.com/{username}/films/diary/
+
+HTML Structure (example):
+<table class="diary-table">
+  <tbody>
+    <tr class="diary-entry-row">
+      <td class="td-day">
+        <a href="/.../">15 Jan 2023</a>
+      </td>
+      <td class="td-film-details">
+        <h3><a href="/film/inception-2010/">Inception</a></h3>
+        <span>2010</span>
+      </td>
+      <td class="td-rating">
+        <span class="rating">★★★★½</span>
+      </td>
+      <td class="td-review">
+        <a href="/.../">Review text...</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+```
+
+#### Ratings
+```
+URL: https://letterboxd.com/{username}/films/ratings/
+
+HTML Structure (example):
+<ul class="poster-list">
+  <li class="poster-container">
+    <div class="film-poster">
+      <img src="..." alt="Inception">
+      <p class="poster-viewingdata">
+        <span class="rating">★★★★½</span>
+      </p>
+    </div>
+  </li>
+</ul>
+```
+
+#### Watchlist
+```
+URL: https://letterboxd.com/{username}/watchlist/
+
+HTML Structure (example):
+<ul class="poster-list">
+  <li class="poster-container">
+    <div class="film-poster">
+      <img src="..." alt="Movie Title">
+      <h2>Movie Title</h2>
+      <p>2023</p>
+    </div>
+  </li>
+</ul>
+```
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Web Scraping (Read-Only)
+- [ ] HTML scraping setup (`goquery`)
+- [ ] User-Agent configuration (REQUIRED)
+- [ ] Profile parsing (username, stats)
+- [ ] Diary parsing (watch history with dates, ratings)
+- [ ] Ratings parsing (all rated movies)
+- [ ] Watchlist parsing (movies to watch)
+- [ ] Pagination (handle multiple pages)
+
+### Phase 2: Data Import
+- [ ] **Import watch history** (scrape diary → import to Revenge)
+- [ ] **Import ratings** (scrape ratings → import to Revenge)
+- [ ] **Import watchlist** (scrape watchlist → import to Revenge)
+- [ ] TMDb/IMDb ID matching (match Letterboxd movies to Revenge movies)
+- [ ] Deduplication (avoid duplicate entries)
+
+### Phase 3: UI Integration
+- [ ] Letterboxd profile link (display in Revenge user profile)
+- [ ] Letterboxd stats display (films watched, this year, etc.)
+- [ ] Import wizard (one-time import from Letterboxd)
+
+### Phase 4: Background Jobs (River)
+- [ ] **Job**: `scrobble.letterboxd.import_history` (one-time import)
+- [ ] Rate limiting (very conservative 1 req/sec)
+- [ ] Retry logic (exponential backoff)
+
+---
+
+## Integration Pattern
+
+### One-Time Import Flow
+```
+User enables Letterboxd import (Settings → Integrations → Letterboxd → Enter Username)
+        ↓
+Validate username (scrape profile page, check if exists)
+        ↓
+Store Letterboxd username in users.integrations.letterboxd.username
+        ↓
+Initial import (one-time):
+  1. Scrape diary (https://letterboxd.com/{username}/films/diary/)
+     - Parse watch dates, movie titles, years, ratings
+     - Paginate (fetch all pages)
+  2. Match movies to Revenge (by title + year → lookup TMDb/IMDb ID)
+  3. Import to Revenge:
+     - Create watch_history entries (movies.watch_history)
+     - Import ratings (movies.user_ratings)
+  4. Scrape watchlist (https://letterboxd.com/{username}/watchlist/)
+     - Parse movie titles, years
+     - Match to Revenge movies
+     - Add to Revenge watchlist
+        ↓
+Import complete (display stats: "Imported 234 movies, 189 ratings")
+```
+
+### Rating Normalization
+```
+Letterboxd ratings: 0.5 - 5 stars (0.5 increments)
+Revenge ratings: 0 - 5 stars (0.5 increments)
+
+Conversion: Direct 1:1 mapping (no conversion needed)
+  - Letterboxd 4.5 stars → Revenge 4.5 stars
+  - Letterboxd 3 stars → Revenge 3 stars
+```
+
+---
+
+## Related Documentation
+
+- [TRAKT.md](./TRAKT.md) - Trakt scrobbling (movies + TV shows, official API)
+- [SIMKL.md](./SIMKL.md) - Simkl tracking (alternative to Trakt)
+- [TMDB.md](../metadata/video/TMDB.md) - TMDb metadata (movie matching)
+
+---
+
+## Notes
+
+### No Official API (Web Scraping Only)
+- **Letterboxd has NO public API**: All data retrieval requires web scraping
+- **Scraping risks**: HTML structure changes can break scraper
+- **Maintenance**: Regular scraper updates required
+- **Priority**: LOW (high maintenance burden, niche audience)
+
+### User-Agent Requirement
+- **MUST set User-Agent**: Web scraping requires proper User-Agent
+- **Format**: `Revenge/1.0 (https://github.com/lusoris/revenge; contact@example.com)`
+
+### Rate Limits (Conservative)
+- **No official limit**: Letterboxd doesn't publish rate limits
+- **Very conservative approach**: 1 req/sec (respect server load)
+- **Caching**: Cache scraped data aggressively (avoid re-scraping)
+
+### Read-Only Integration
+- **Web scraping**: Public data only (no authentication)
+- **Import only**: Can import FROM Letterboxd (watch history, ratings, watchlist)
+- **No export**: Cannot export TO Letterboxd (no API for write operations)
+- **Use case**: One-time import for users migrating from Letterboxd to Revenge
+
+### Movie Matching Strategy
+- **Letterboxd data**: Movie title + year
+- **Revenge matching**: Lookup movie by title + year → get TMDb/IMDb ID
+- **Ambiguity**: Multiple matches → prefer exact title match
+- **Unmatched**: Log unmatched movies (manual review/import later)
+
+### Pagination
+- **Letterboxd pagination**: URL format `https://letterboxd.com/{username}/films/diary/page/{page_number}/`
+- **Scraping**: Iterate pages until no more entries
+- **Page size**: ~100 entries per page (Letterboxd default)
+
+### HTML Parsing Challenges
+- **Dynamic structure**: HTML structure can change without notice
+- **Inconsistent formatting**: Different pages have different formats
+- **JavaScript rendering**: Some content may require JavaScript (use headless browser if needed)
+- **Fallback**: If scraping fails, skip Letterboxd import (non-critical)
+
+### robots.txt Compliance
+- **Check**: https://letterboxd.com/robots.txt
+- **Respect directives**: Follow User-agent, Disallow, Crawl-delay rules
+- **Legal**: Not legally binding but ethical to respect
+
+### Maintenance Burden
+- **Web scraping**: Ongoing maintenance required
+- **HTML changes**: Letterboxd can change HTML structure anytime
+- **Breaking changes**: Scraper breaks without notice
+- **Monitoring**: Implement health checks to detect failures
+
+### Letterboxd vs Trakt
+- **Letterboxd**: Movies only, no TV shows, no official API, social features, clean UI
+- **Trakt**: Movies + TV shows, official API, scrobbling, bi-directional sync
+- **Use case**: Letterboxd for one-time import (migration), Trakt for ongoing scrobbling
+
+### Privacy Considerations
+- **Public data only**: Web scraping accesses public Letterboxd profiles
+- **User opt-in**: Users must explicitly provide Letterboxd username
+- **Data import**: Import data into Revenge (user controls)
+
+### Fallback Strategy (Movie Tracking)
+- **Order**: Trakt (primary, official API, bi-directional sync) → Simkl (alternative) → Letterboxd (one-time import, no API)
+- **Letterboxd use case**: One-time import for migration (not ongoing sync)
+
+### Future: Official API
+- **Letterboxd API**: If Letterboxd releases official public API in future, update integration
+- **Priority**: LOW (implement only if official API released)
