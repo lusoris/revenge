@@ -337,24 +337,27 @@ sources:
       type: html
       output: "apis/simkl.md"
 
-    # Servarr
+    # Servarr (OpenAPI specs from GitHub)
     - id: radarr
-      name: "Radarr API"
-      url: "https://radarr.video/docs/api/"
-      type: html
-      output: "apis/radarr.md"
+      name: "Radarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json"
+      type: json
+      output: "apis/radarr-openapi.json"
+      note: "Raw OpenAPI JSON - human docs at https://radarr.video/docs/api/"
 
     - id: sonarr
-      name: "Sonarr API"
-      url: "https://sonarr.tv/docs/api/"
-      type: html
-      output: "apis/sonarr.md"
+      name: "Sonarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json"
+      type: json
+      output: "apis/sonarr-openapi.json"
+      note: "Raw OpenAPI JSON - human docs at https://sonarr.tv/docs/api/"
 
     - id: lidarr
-      name: "Lidarr API"
-      url: "https://lidarr.audio/docs/api/"
-      type: html
-      output: "apis/lidarr.md"
+      name: "Lidarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json"
+      type: json
+      output: "apis/lidarr-openapi.json"
+      note: "Raw OpenAPI JSON - human docs at https://lidarr.audio/docs/api/"
 
   # ============================================================================
   # PROTOCOLS - Streaming & Media Protocols
@@ -369,9 +372,9 @@ sources:
     - id: dash
       name: "DASH Overview"
       url: "https://dashif.org/docs/DASH-IF-IOP-v4.3.pdf"
-      type: pdf
+      type: manual
       output: "protocols/dash-iop.md"
-      note: "PDF - manual extraction needed"
+      note: "PDF - MANUAL ONLY. Download and extract manually. Fetcher skips this."
 
     - id: http-range
       name: "HTTP Range Requests"
@@ -549,11 +552,10 @@ sources:
 
     - id: typesense
       name: "Typesense API"
-      url: "https://typesense.org/docs/27.0/api/"
+      url: "https://typesense.org/docs/latest/api/"
       type: html
       output: "infrastructure/typesense.md"
-      version_url: "https://typesense.org/docs/"
-      note: "Check for latest version, update URL path"
+      note: "Uses /latest/ for auto-versioning"
 
     - id: typesense-go
       name: "Typesense Go Client"

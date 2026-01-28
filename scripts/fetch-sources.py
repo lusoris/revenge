@@ -148,6 +148,33 @@ class HTMLFetcher(BaseFetcher):
         return header + "\n".join(cleaned_lines)
 
 
+class JSONFetcher(BaseFetcher):
+    """Fetches JSON files (e.g., OpenAPI specs) and saves them directly."""
+
+    def fetch(self, source: dict[str, Any]) -> tuple[str, str | None]:
+        url = source["url"]
+
+        for attempt in range(self.retry_count):
+            try:
+                response = requests.get(
+                    url,
+                    headers={"User-Agent": self.user_agent},
+                    timeout=self.timeout,
+                )
+                response.raise_for_status()
+
+                # Return raw JSON content
+                return response.text, None
+
+            except requests.RequestException as e:
+                if attempt < self.retry_count - 1:
+                    time.sleep(self.delay * (attempt + 1))
+                    continue
+                return "", f"Request failed after {self.retry_count} attempts: {e}"
+
+        return "", "Unknown error"
+
+
 class GraphQLSchemaFetcher(BaseFetcher):
     """Fetches GraphQL schemas via introspection."""
 
@@ -415,12 +442,15 @@ def save_index(index: dict[str, Any]) -> None:
         yaml.dump(index, f, default_flow_style=False, sort_keys=False)
 
 
-def get_fetcher(source_type: str, config: dict[str, Any]) -> BaseFetcher:
-    """Get appropriate fetcher for source type."""
+def get_fetcher(source_type: str, config: dict[str, Any]) -> BaseFetcher | None:
+    """Get appropriate fetcher for source type. Returns None for manual types."""
     fetchers = {
         "html": HTMLFetcher,
+        "json": JSONFetcher,
         "graphql_schema": GraphQLSchemaFetcher,
     }
+    if source_type == "manual":
+        return None  # Manual sources are skipped
     fetcher_class = fetchers.get(source_type, HTMLFetcher)
     return fetcher_class(config)
 
@@ -442,6 +472,16 @@ def fetch_source(
     source_type = source.get("type", "html")
     output_path = OUTPUT_DIR / source["output"]
 
+    # Skip manual sources
+    if source_type == "manual":
+        print(f"  ⏭️  Skipping {source['name']} (manual type)")
+        index["sources"][source_id] = {
+            "status": "skipped",
+            "reason": "manual type - requires manual download",
+            "note": source.get("note", ""),
+        }
+        return True
+
     # Validate output path
     if not validate_output_path(output_path):
         print(f"  ❌ SECURITY: Output path outside allowed directory: {output_path}")
@@ -454,6 +494,10 @@ def fetch_source(
     print(f"  Fetching {source['name']}...")
 
     fetcher = get_fetcher(source_type, config)
+    if fetcher is None:
+        print(f"  ⏭️  No fetcher for type: {source_type}")
+        return True
+
     content, error = fetcher.fetch(source)
 
     now = datetime.now(timezone.utc).isoformat()
