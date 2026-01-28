@@ -14,13 +14,13 @@
 | Search       | Typesense 0.25+              |
 | Job Queue    | River (PostgreSQL-native)    |
 | API Docs     | ogen (OpenAPI spec-first)    |
-| Architecture | Modular (11 content modules) |
+| Architecture | Modular (12 content modules) |
 
 ## Architecture
 
 See [docs/dev/design/architecture/ARCHITECTURE_V2.md](../docs/dev/design/architecture/ARCHITECTURE_V2.md) for complete design.
 
-### Content Modules (11)
+### Content Modules (12)
 
 - `movie`, `tvshow` - Video content (public schema)
 - `music` - Artists, albums, tracks
@@ -28,6 +28,7 @@ See [docs/dev/design/architecture/ARCHITECTURE_V2.md](../docs/dev/design/archite
 - `podcast` - Podcasts & episodes
 - `photo` - Photos & albums
 - `livetv` - Channels, programs, DVR
+- `comics` - Comics, manga, graphic novels
 - `collection` - Cross-module collections
 - `adult_movie`, `adult_show` - Adult content (isolated `c` schema, `/c/` API namespace)
 
@@ -100,10 +101,15 @@ pkg/config/                   # koanf configuration
 - **DI**: `go.uber.org/fx` v1.24+ (see `fx-dependency-injection.instructions.md`)
 - **Config**: `github.com/knadh/koanf/v2` (see `koanf-configuration.instructions.md`)
 - **Database**: `pgx/v5` + `sqlc` (see `sqlc-database.instructions.md`)
-- **Cache**: `github.com/redis/go-redis/v9` (Dragonfly)
-- **Search**: `github.com/typesense/typesense-go/v4`
+- **Cache (Dragonfly)**: `github.com/redis/rueidis` (14x faster than go-redis)
+- **Cache (Local)**: `github.com/maypok86/otter` (W-TinyLFU local cache)
+- **Cache (API)**: `github.com/viccon/sturdyc` (request coalescing)
+- **Search**: `github.com/typesense/typesense-go/v3`
 - **Job Queue**: `github.com/riverqueue/river`
 - **API**: `github.com/ogen-go/ogen` (OpenAPI spec-first)
+- **HTTP Client**: `resty.dev/v3` (metadata provider calls)
+- **WebSocket**: `github.com/coder/websocket` (Watch Party, live updates)
+- **File Watch**: `github.com/fsnotify/fsnotify` (library scanning)
 - **Routing**: `net/http` stdlib (Go 1.22+ patterns)
 - **Logging**: `log/slog` stdlib
 
@@ -126,7 +132,9 @@ pkg/config/                   # koanf configuration
 - ❌ Use `init()` - use fx constructors
 - ❌ Use global variables - inject dependencies
 - ❌ Use `panic` for errors
-- ❌ Use gorilla/mux, viper, zap, logrus, lib/pq
+- ❌ Use gorilla/mux, gorilla/websocket, viper, zap, logrus, lib/pq
+- ❌ Use go-redis/v9 - use rueidis instead
+- ❌ Use ristretto - use otter instead
 - ❌ Use `automaxprocs` - Go 1.25 has built-in container support
 - ❌ Share tables between content modules
 - ❌ Use polymorphic references
@@ -152,12 +160,59 @@ See `.github/instructions/adult-modules.instructions.md` for adult content isola
 
 Path-specific instructions in `.github/instructions/`:
 
+### Core Patterns
+
 - `go-features.instructions.md` - Go 1.25 features
 - `fx-dependency-injection.instructions.md` - DI patterns
-- `sqlc-database.instructions.md` - Database queries
-- `koanf-configuration.instructions.md` - Config management
 - `testing-patterns.instructions.md` - Test patterns
+
+### Data & Storage
+
+- `sqlc-database.instructions.md` - Database queries
+- `migrations.instructions.md` - Database migrations
+- `dragonfly-cache.instructions.md` - Remote caching (rueidis)
+- `otter-local-cache.instructions.md` - Local caching (W-TinyLFU)
+- `sturdyc-api-cache.instructions.md` - API response caching
+- `typesense-search.instructions.md` - Search indexing
+
+### API & HTTP
+
+- `ogen-api.instructions.md` - OpenAPI code generation
+- `koanf-configuration.instructions.md` - Config management
 - `revenge-api-compatibility.instructions.md` - API design
+- `resty-http-client.instructions.md` - External API calls
+- `websocket.instructions.md` - WebSocket (Watch Party, live updates)
+
+### Content Modules
+
 - `content-modules.instructions.md` - Module development
 - `adult-modules.instructions.md` - Adult content isolation (`/c/` namespace)
+- `metadata-providers.instructions.md` - TMDb, MusicBrainz, etc.
+- `fsnotify-file-watching.instructions.md` - Library file watching
+
+### Services & Jobs
+
+- `river-job-queue.instructions.md` - Background jobs
 - `oidc-authentication.instructions.md` - OIDC/SSO
+- `external-services.instructions.md` - Scrobbling, sync
+
+### Playback & Streaming
+
+- `streaming-best-practices.instructions.md` - Streaming patterns
+- `player-architecture.instructions.md` - Player components
+- `client-detection.instructions.md` - Client capabilities
+- `disk-cache.instructions.md` - Transcode caching
+- `offloading-patterns.instructions.md` - Blackbeard integration
+
+### Resilience & Operations
+
+- `resilience-patterns.instructions.md` - Circuit breakers, retries
+- `self-healing.instructions.md` - Supervision, graceful shutdown
+- `health-checks.instructions.md` - Health check patterns
+- `hotreload.instructions.md` - Runtime config reload
+- `lazy-initialization.instructions.md` - Lazy services
+- `observability.instructions.md` - Metrics, logging
+
+### Frontend
+
+- `frontend-architecture.instructions.md` - SvelteKit patterns

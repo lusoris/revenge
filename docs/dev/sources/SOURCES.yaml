@@ -15,10 +15,15 @@
 # │ koanf              │ v2.3.2     │ 4 days ago (min Go 1.23)        │
 # │ fx                 │ v1.24.0    │ May 14, 2025                    │
 # │ River              │ v0.30.2    │ 2 days ago                      │
-# │ go-redis           │ v9.17.3    │ Stable (v9.18.0-beta is pre)    │
+# │ rueidis            │ v1.0.71    │ 14x faster than go-redis        │
+# │ otter              │ v2.3.0     │ W-TinyLFU local cache           │
+# │ sturdyc            │ v1.1.5     │ API response caching            │
 # │ sqlc               │ v1.30.0    │ Sep 2, 2025                     │
 # │ ogen               │ v1.18.0    │ Dec 1, 2025                     │
 # │ golang-migrate     │ v4.19.1    │ Nov 29, 2025 (Go 1.25)          │
+# │ coder/websocket    │ v1.8.14    │ Gorilla replacement             │
+# │ resty              │ v3.0.0-b6  │ HTTP client with retry          │
+# │ fsnotify           │ v1.9.0     │ File watching                   │
 # └────────────────────┴────────────┴─────────────────────────────────┘
 
 version: "1.0"
@@ -40,7 +45,6 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "go/stdlib/context.md"
-      version_match: "go.mod"
 
     - id: go-slog
       name: "Go log/slog"
@@ -101,7 +105,6 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "tooling/fx.md"
-      version_match: "go.mod"
 
     - id: fx-docs
       name: "fx Documentation"
@@ -116,7 +119,6 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "tooling/koanf.md"
-      version_match: "go.mod"
 
     # API Generation
     - id: ogen
@@ -125,7 +127,6 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "tooling/ogen.md"
-      version_match: "go.mod"
 
     - id: ogen-docs
       name: "ogen Documentation"
@@ -140,7 +141,6 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "tooling/river.md"
-      version_match: "go.mod"
 
     - id: river-docs
       name: "River Documentation"
@@ -148,14 +148,98 @@ sources:
       type: html
       output: "tooling/river-guide.md"
 
-    # Redis Client
+    # Redis Client (DEPRECATED - use rueidis)
     - id: go-redis
-      name: "go-redis"
+      name: "go-redis (DEPRECATED)"
       url: "https://pkg.go.dev/github.com/redis/go-redis/v9"
       type: html
       selectors: [".Documentation"]
       output: "tooling/go-redis.md"
-      version_match: "go.mod"
+      note: "DEPRECATED - Use rueidis instead (14x faster)"
+
+    # Redis Client - rueidis (RECOMMENDED)
+    - id: rueidis
+      name: "rueidis"
+      url: "https://pkg.go.dev/github.com/redis/rueidis"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/rueidis.md"
+
+    - id: rueidis-docs
+      name: "rueidis GitHub README"
+      url: "https://github.com/redis/rueidis"
+      type: github_readme
+      output: "tooling/rueidis-guide.md"
+
+    # Local Cache - otter
+    - id: otter
+      name: "otter Cache"
+      url: "https://pkg.go.dev/github.com/maypok86/otter"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/otter.md"
+
+    - id: otter-docs
+      name: "otter GitHub README"
+      url: "https://github.com/maypok86/otter"
+      type: github_readme
+      output: "tooling/otter-guide.md"
+
+    # API Response Cache - sturdyc
+    - id: sturdyc
+      name: "sturdyc"
+      url: "https://pkg.go.dev/github.com/viccon/sturdyc"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/sturdyc.md"
+
+    - id: sturdyc-docs
+      name: "sturdyc GitHub README"
+      url: "https://github.com/viccon/sturdyc"
+      type: github_readme
+      output: "tooling/sturdyc-guide.md"
+
+    # WebSocket - coder/websocket
+    - id: coder-websocket
+      name: "coder/websocket"
+      url: "https://pkg.go.dev/github.com/coder/websocket"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/websocket.md"
+
+    - id: coder-websocket-docs
+      name: "coder/websocket GitHub README"
+      url: "https://github.com/coder/websocket"
+      type: github_readme
+      output: "tooling/websocket-guide.md"
+
+    # HTTP Client - resty
+    - id: resty
+      name: "resty HTTP Client"
+      url: "https://pkg.go.dev/resty.dev/v3"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/resty.md"
+
+    - id: resty-docs
+      name: "resty GitHub README"
+      url: "https://github.com/go-resty/resty"
+      type: github_readme
+      output: "tooling/resty-guide.md"
+
+    # File Watching - fsnotify
+    - id: fsnotify
+      name: "fsnotify"
+      url: "https://pkg.go.dev/github.com/fsnotify/fsnotify"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/fsnotify.md"
+
+    - id: fsnotify-docs
+      name: "fsnotify GitHub README"
+      url: "https://github.com/fsnotify/fsnotify"
+      type: github_readme
+      output: "tooling/fsnotify-guide.md"
 
     # UUID
     - id: google-uuid
@@ -190,6 +274,20 @@ sources:
       type: html
       output: "database/sqlc-config.md"
 
+    # golang-migrate
+    - id: golang-migrate
+      name: "golang-migrate"
+      url: "https://github.com/golang-migrate/migrate"
+      type: github_readme
+      output: "database/migrations.md"
+
+    - id: golang-migrate-postgres
+      name: "golang-migrate PostgreSQL"
+      url: "https://pkg.go.dev/github.com/golang-migrate/migrate/v4/database/postgres"
+      type: html
+      selectors: [".Documentation"]
+      output: "database/migrations-postgres.md"
+
     # pgx
     - id: pgx
       name: "pgx PostgreSQL Driver"
@@ -197,7 +295,6 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "database/pgx.md"
-      version_match: "go.mod"
 
     - id: pgxpool
       name: "pgxpool Connection Pool"
@@ -239,8 +336,9 @@ sources:
     - id: thetvdb
       name: "TheTVDB API"
       url: "https://thetvdb.github.io/v4-api/"
-      type: html
+      type: manual
       output: "apis/thetvdb.md"
+      note: "MANUAL - JavaScript-heavy docs, requires manual extraction. API docs at URL."
 
     - id: omdb
       name: "OMDb API"
@@ -320,9 +418,10 @@ sources:
 
     - id: kitsu
       name: "Kitsu API"
-      url: "https://kitsu.docs.apiary.io/"
-      type: html
+      url: "https://github.com/hummingbird-me/api-docs"
+      type: github_readme
       output: "apis/kitsu.md"
+      note: "JSON:API spec - Apiary version requires JS"
 
     # Metadata - Adult
     - id: stashdb
@@ -334,15 +433,17 @@ sources:
     - id: theporndb
       name: "ThePornDB API"
       url: "https://api.theporndb.net/docs"
-      type: html
+      type: manual
       output: "apis/theporndb.md"
+      note: "MANUAL - Swagger UI requires interaction. JSON spec not publicly available."
 
     # Scrobbling
     - id: trakt
       name: "Trakt API"
-      url: "https://trakt.docs.apiary.io/"
+      url: "https://trakt.tv/b/api-docs"
       type: html
       output: "apis/trakt.md"
+      note: "Main API docs - Apiary version requires JS"
 
     - id: listenbrainz
       name: "ListenBrainz API"
@@ -352,9 +453,10 @@ sources:
 
     - id: simkl
       name: "Simkl API"
-      url: "https://simkl.docs.apiary.io/"
+      url: "https://simkl.com/apps/"
       type: html
       output: "apis/simkl.md"
+      note: "Developer apps page - Apiary version requires JS"
 
     # Servarr (OpenAPI specs from GitHub)
     - id: radarr
@@ -485,6 +587,77 @@ sources:
       type: html
       output: "media/mediainfo.md"
 
+    # Go Media Libraries
+    - id: go-astiav
+      name: "go-astiav (FFmpeg bindings)"
+      url: "https://pkg.go.dev/github.com/asticode/go-astiav"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-astiav.md"
+
+    - id: go-astiav-docs
+      name: "go-astiav GitHub README"
+      url: "https://github.com/asticode/go-astiav"
+      type: github_readme
+      output: "media/go-astiav-guide.md"
+
+    - id: gortsplib
+      name: "gortsplib (RTSP)"
+      url: "https://pkg.go.dev/github.com/bluenviron/gortsplib/v4"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/gortsplib.md"
+
+    - id: gohlslib
+      name: "gohlslib (HLS)"
+      url: "https://pkg.go.dev/github.com/bluenviron/gohlslib/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/gohlslib.md"
+
+    - id: mp4ff
+      name: "mp4ff (MP4 parsing)"
+      url: "https://pkg.go.dev/github.com/Eyevinn/mp4ff"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/mp4ff.md"
+
+    - id: bimg
+      name: "bimg (libvips)"
+      url: "https://pkg.go.dev/github.com/h2non/bimg"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/bimg.md"
+
+    - id: go-astisub
+      name: "go-astisub (subtitles)"
+      url: "https://pkg.go.dev/github.com/asticode/go-astisub"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-astisub.md"
+
+    - id: go-blurhash
+      name: "go-blurhash"
+      url: "https://pkg.go.dev/github.com/bbrks/go-blurhash"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-blurhash.md"
+
+    # Audio Metadata
+    - id: dhowden-tag
+      name: "dhowden/tag (audio metadata)"
+      url: "https://pkg.go.dev/github.com/dhowden/tag"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/dhowden-tag.md"
+
+    - id: bogem-id3v2
+      name: "bogem/id3v2"
+      url: "https://pkg.go.dev/github.com/bogem/id3v2/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/bogem-id3v2.md"
+
   # ============================================================================
   # SECURITY - Security Standards
   # ============================================================================
@@ -578,9 +751,8 @@ sources:
 
     - id: typesense-go
       name: "Typesense Go Client"
-      url: "https://pkg.go.dev/github.com/typesense/typesense-go/v3"
-      type: html
-      selectors: [".Documentation"]
+      url: "https://github.com/typesense/typesense-go"
+      type: github_readme
       output: "infrastructure/typesense-go.md"
       note: "Latest stable is v3.2.0 (March 2025) - there is no v4!"
 

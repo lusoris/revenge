@@ -18,7 +18,7 @@ Revenge's core infrastructure stack:
 
 | Component | Technology | Purpose | Status |
 |-----------|------------|---------|--------|
-| [PostgreSQL](POSTGRESQL.md) | PostgreSQL 17+ | Primary database | 🟢 Required |
+| [PostgreSQL](POSTGRESQL.md) | PostgreSQL 18+ | Primary database | 🟢 Required |
 | [Dragonfly](DRAGONFLY.md) | Dragonfly | Cache & sessions | 🟢 Required |
 | [Typesense](TYPESENSE.md) | Typesense 27+ | Full-text search | 🟢 Required |
 | [River](RIVER.md) | River | Job queue | 🟢 Required |
@@ -104,7 +104,7 @@ services:
         condition: service_healthy
 
   postgres:
-    image: postgres:17
+    image: postgres:18
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U revenge"]
 

@@ -134,7 +134,7 @@ REVENGE_LOG_FORMAT=json         # json or text
 
 ### Prerequisites
 
-- Go 1.24 or higher
+- Go 1.25 or higher
 - FFmpeg (preferably revenge-ffmpeg)
 - Git
 

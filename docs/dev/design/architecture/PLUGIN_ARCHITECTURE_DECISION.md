@@ -230,7 +230,7 @@ if cfg.Modules.Comics.Enabled {
 **Trend**: Monoliths with strategic modularity (internal packages, feature flags, external services for heavy work).
 
 **Revenge Architecture**:
-- ✅ Internal modularity (11 content modules as packages)
+- ✅ Internal modularity (12 content modules as packages)
 - ✅ Feature flags (YAML config: enable/disable modules)
 - ✅ External services (Blackbeard transcoding, Typesense search)
 - ✅ Strategic isolation (adult content in separate schema `c`)

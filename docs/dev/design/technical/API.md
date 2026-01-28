@@ -17,13 +17,13 @@ http://localhost:8096
 Most endpoints require authentication via Bearer token in the Authorization header:
 
 ```
-Authorization: MediaBrowser Token="<access_token>"
+Authorization: Bearer <access_token>
 ```
 
-Or alternatively:
+Or via custom header:
 
 ```
-X-Emby-Token: <access_token>
+X-Revenge-Token: <access_token>
 ```
 
 ---

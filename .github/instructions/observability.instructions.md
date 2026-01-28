@@ -254,3 +254,10 @@ logger.Info("user logged in", slog.String("user_id", userID))
 logger.Warn("rate limit approaching", slog.Int("current", current))
 logger.Error("database connection failed", slog.Any("error", err))
 ```
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
+- [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

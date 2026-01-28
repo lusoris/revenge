@@ -32,7 +32,9 @@
 | **uber-go/fx** | Latest stable | v1.24+ | Every minor release |
 | **knadh/koanf/v2** | Latest stable | v2.x | Every minor release |
 | **jackc/pgx/v5** | Latest stable | v5.x | Every minor release |
-| **redis/go-redis/v9** | Latest stable | v9.x | Every minor release |
+| **redis/rueidis** | Latest stable | v1.x | Every minor release |
+| **maypok86/otter** | Latest stable | v2.x | Every minor release |
+| **viccon/sturdyc** | Latest stable | v1.x | Every minor release |
 | **ogen-go/ogen** | Latest stable | Latest | Every minor release |
 | **riverqueue/river** | Latest stable | Latest | Every minor release |
 
@@ -299,7 +301,6 @@ If ecosystem hasn't caught up to latest version:
 
 ## Backend
 - Go: 1.25.0
-- Echo: v4.12.0
 - PostgreSQL: 18.1
 - Dragonfly: v1.2.0
 - River: v0.14.0

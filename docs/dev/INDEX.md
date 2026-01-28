@@ -31,6 +31,7 @@ Content modules and feature specifications.
 - [Internationalization](design/features/I18N.md) - i18n/l10n support
 - [Library Types](design/features/LIBRARY_TYPES.md) - Library management
 - [Media Enhancements](design/features/MEDIA_ENHANCEMENTS.md) - Media-specific features
+- [NSFW Toggle](design/features/NSFW_TOGGLE.md) - Adult content visibility toggle
 - [Request System](design/features/REQUEST_SYSTEM.md) - Content request system
 - [Scrobbling](design/features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
 - [Ticketing System](design/features/TICKETING_SYSTEM.md) - Support tickets
@@ -101,7 +102,7 @@ API design, frontend architecture, and technical documentation.
 
 Auto-fetched external documentation. Updated weekly via CI.
 
-**Registry**: [sources/SOURCES.yaml](sources/SOURCES.yaml)  
+**Registry**: [sources/SOURCES.yaml](sources/SOURCES.yaml)
 **Status**: [sources/INDEX.yaml](sources/INDEX.yaml)
 
 ### Source Categories
@@ -163,5 +164,5 @@ Edit `sources/SOURCES.yaml`:
 
 ## Migration Info
 
-This documentation was restructured on 2026-01-28.  
+This documentation was restructured on 2026-01-28.
 See [MIGRATION_MANIFEST.md](MIGRATION_MANIFEST.md) for details.

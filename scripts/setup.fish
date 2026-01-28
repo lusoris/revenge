@@ -62,29 +62,29 @@ function install_go
         return 0
     end
 
-    step "Installing Go 1.24..."
+    step "Installing Go 1.25..."
 
     switch $PKG_MANAGER
         case brew
-            brew install go@1.24; or brew install go
+            brew install go@1.25; or brew install go
         case apt
             sudo apt update
             sudo apt install -y wget
-            wget https://go.dev/dl/go1.24.linux-amd64.tar.gz
+            wget https://go.dev/dl/go1.25.linux-amd64.tar.gz
             sudo rm -rf /usr/local/go
-            sudo tar -C /usr/local -xzf go1.24.linux-amd64.tar.gz
-            rm go1.24.linux-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.25.linux-amd64.tar.gz
+            rm go1.25.linux-amd64.tar.gz
             fish_add_path /usr/local/go/bin
         case yum
             sudo yum install -y wget
-            wget https://go.dev/dl/go1.24.linux-amd64.tar.gz
-            sudo tar -C /usr/local -xzf go1.24.linux-amd64.tar.gz
-            rm go1.24.linux-amd64.tar.gz
+            wget https://go.dev/dl/go1.25.linux-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.25.linux-amd64.tar.gz
+            rm go1.25.linux-amd64.tar.gz
             fish_add_path /usr/local/go/bin
         case pacman
             sudo pacman -Sy --noconfirm go
         case '*'
-            error "Cannot auto-install Go. Please install Go 1.24 manually from https://go.dev/dl/"
+            error "Cannot auto-install Go. Please install Go 1.25 manually from https://go.dev/dl/"
             exit 1
     end
 

@@ -19,7 +19,8 @@
 
 | Protocol | Clients | Support Level |
 |----------|---------|---------------|
-| Jellyfin API | Jellyfin apps, Infuse, Swiftfin | ✅ Compatible |
+| Revenge API | Native clients, custom integrations | ✅ Primary |
+| Subsonic API | DSub, Ultrasonic, music apps | ✅ Supported |
 | DLNA/UPnP | Smart TVs, receivers | ✅ Supported |
 | Chromecast | Google TV, Chromecast devices | ✅ Supported |
 | AirPlay | Apple TV, HomePod | 🔶 Planned |

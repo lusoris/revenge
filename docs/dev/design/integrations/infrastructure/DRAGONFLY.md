@@ -30,7 +30,7 @@ Dragonfly is a modern, Redis-compatible in-memory data store that serves as Reve
 
 - 📚 **Docs**: https://www.dragonflydb.io/docs
 - 🔗 **GitHub**: https://github.com/dragonflydb/dragonfly
-- 🔗 **Go Client**: `github.com/redis/go-redis/v9` (compatible)
+- 🔗 **Go Client**: `github.com/redis/rueidis` (14x faster, auto-pipelining, server-assisted client-side caching)
 - 🔗 **Commands**: https://www.dragonflydb.io/docs/command-reference
 
 ---

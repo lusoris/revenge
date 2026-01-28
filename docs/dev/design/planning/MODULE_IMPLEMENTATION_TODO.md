@@ -1,477 +1,423 @@
 # Module Implementation TODO
 
-> Detailed implementation checklist for the modular Revenge architecture.
-> Each module is fully self-contained and can be implemented independently.
+> Concrete coding tasks for implementing Revenge modules
 
-## Implementation Order
-
-1. **Phase 1: Core Infrastructure** (shared services, River, cache, search)
-2. **Phase 2: Movie Module** (reference implementation)
-3. **Phase 3: TV Show Module** (shares patterns with movie)
-4. **Phase 4: Music Module** (complex relations)
-5. **Phase 5: Remaining Modules** (audiobook, book, podcast, photo, livetv)
-6. **Phase 6: Adult Modules** (isolated `c` schema)
+**Last Updated**: 2026-01-28
+**Current Phase**: Phase 1 - Core Infrastructure Completion
 
 ---
 
-## Phase 1: Core Infrastructure
+## Phase 1: Core Infrastructure Completion
 
-### 1.1 New Dependencies
+### 1.1 Migrate Cache to rueidis
 
-- [ ] Add `github.com/redis/go-redis/v9` (Dragonfly/cache)
-- [ ] Add `github.com/typesense/typesense-go/v4` (search)
-- [ ] Add `github.com/riverqueue/river` (job queue)
-- [ ] Add `github.com/riverqueue/river/riverdriver/riverpgxv5`
-- [ ] Add `github.com/ogen-go/ogen` (OpenAPI codegen)
+**Files to modify:**
+- [ ] `internal/infra/cache/cache.go` - Replace go-redis with rueidis
+- [ ] `go.mod` - Add `github.com/redis/rueidis`
 
-### 1.2 Infrastructure Services
+**Implementation:**
+```go
+// Replace go-redis client with rueidis
+import "github.com/redis/rueidis"
 
-- [ ] `internal/infra/cache/cache.go` - Dragonfly client (go-redis)
-- [ ] `internal/infra/search/search.go` - Typesense client
-- [ ] `internal/infra/jobs/river.go` - River job queue setup
-- [ ] `internal/infra/jobs/workers.go` - Base worker registration
+client, err := rueidis.NewClient(rueidis.ClientOption{
+    InitAddress: []string{fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)},
+    Password:    cfg.Password,
+    SelectDB:    cfg.DB,
+})
+```
 
-### 1.3 Shared Tables Migration
+### 1.2 Register Missing Modules in main.go
 
-- [ ] `migrations/shared/000001_extensions.sql` - Already exists
-- [ ] `migrations/shared/000002_users.sql` - Already exists, verify
-- [ ] `migrations/shared/000003_sessions.sql` - Already exists, verify
-- [ ] `migrations/shared/000004_oidc.sql` - Already exists, verify
-- [ ] `migrations/shared/000005_libraries.sql` - Add module_type column
-- [ ] `migrations/shared/000006_api_keys.sql` - NEW
-- [ ] `migrations/shared/000007_server_settings.sql` - NEW
-- [ ] `migrations/shared/000008_activity_log.sql` - Add module column
-- [ ] River migrations - Handled by River CLI
+**File:** `cmd/revenge/main.go`
 
-### 1.4 Video Playlists (shared movie + tvshow)
+Add to fx.New():
+```go
+// Currently missing - add these:
+cache.Module,
+search.Module,
+jobs.Module,
+oidc.Module,
+genre.Module,
+playback.Module,
+```
 
-- [ ] `migrations/shared/000010_video_playlists.sql`
-  - `video_playlists` (id, user_id, name, description, is_public, created_at, updated_at)
-  - `video_playlist_items` (id, playlist_id, item_type, item_id, position, added_at)
+### 1.3 Add Local Cache (otter)
 
-### 1.5 Audio Playlists (shared music + audiobook + podcast)
+**New file:** `internal/infra/cache/local.go`
 
-- [ ] `migrations/shared/000011_audio_playlists.sql`
-  - `audio_playlists`
-  - `audio_playlist_items`
+```go
+import "github.com/maypok86/otter"
 
-### 1.6 Video Collections (shared movie + tvshow)
-
-- [ ] `migrations/shared/000012_video_collections.sql`
-  - `video_collections`
-  - `video_collection_movies`
-  - `video_collection_episodes`
-
-### 1.7 Audio Collections (shared music + audiobook)
-
-- [ ] `migrations/shared/000013_audio_collections.sql`
-  - `audio_collections`
-  - `audio_collection_tracks`
-  - `audio_collection_audiobooks`
-
-### 1.8 OpenAPI Setup (ogen)
-
-- [ ] `api/openapi/revenge.yaml` - Main OpenAPI spec
-- [ ] `api/openapi/movies.yaml` - Movie endpoints
-- [ ] `api/openapi/shows.yaml` - TV show endpoints
-- [ ] `api/generate.go` - `//go:generate ogen ...`
+type LocalCache struct {
+    cache otter.Cache[string, []byte]
+}
+```
 
 ---
 
-## Phase 2: Movie Module
+## Phase 2: Movie Module Implementation
 
-### 2.1 Database Migration `migrations/movie/`
+### 2.1 Database Migration
 
-#### Core Tables
-- [ ] `000001_movies.up.sql`
-  ```sql
-  movies (
-    id UUID PRIMARY KEY,
-    library_id UUID REFERENCES libraries(id),
-    title VARCHAR(500) NOT NULL,
-    sort_title VARCHAR(500),
-    original_title VARCHAR(500),
-    tagline TEXT,
+**New file:** `internal/infra/database/migrations/movie/000001_movies.up.sql`
+
+```sql
+-- Movies table
+CREATE TABLE movies (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    original_title TEXT,
+    sort_title TEXT NOT NULL,
     overview TEXT,
-    path TEXT NOT NULL,
-    runtime_ticks BIGINT,
+    tagline TEXT,
     release_date DATE,
-    year INT,
+    runtime_minutes INT,
+    status TEXT DEFAULT 'released',
+    -- External IDs
+    tmdb_id INT UNIQUE,
+    imdb_id TEXT UNIQUE,
+    radarr_id INT,
+    -- Metadata
+    certification TEXT,
+    original_language TEXT,
     budget BIGINT,
     revenue BIGINT,
-    status VARCHAR(50),
-    tmdb_id INT,
-    imdb_id VARCHAR(20),
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
-  )
-  ```
+    -- Timestamps
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
 
-#### People & Credits
-- [ ] `000002_movie_people.up.sql`
-  ```sql
-  movie_people (id, name, tmdb_id, imdb_id, image_path, biography, birth_date, death_date)
-  movie_cast (movie_id, person_id, character, "order")
-  movie_crew (movie_id, person_id, department, job)
-  ```
+CREATE INDEX idx_movies_tmdb_id ON movies(tmdb_id);
+CREATE INDEX idx_movies_release_date ON movies(release_date);
+CREATE INDEX idx_movies_sort_title ON movies(sort_title);
+```
 
-#### Studios
-- [ ] `000003_movie_studios.up.sql`
-  ```sql
-  movie_studios_list (id, name, tmdb_id, logo_path)
-  movie_studios (movie_id, studio_id)
-  ```
+### 2.2 sqlc Queries
 
-#### Media Files
-- [ ] `000004_movie_streams.up.sql`
-  ```sql
-  movie_streams (
-    id, movie_id, stream_index, stream_type,
-    codec, language, title, is_default, is_forced,
-    width, height, bitrate, channels, sample_rate
-  )
-  movie_subtitles (
-    id, movie_id, language, path, format,
-    is_external, is_forced, is_default
-  )
-  movie_chapters (id, movie_id, start_ticks, title)
-  ```
+**New file:** `internal/infra/database/queries/movie/movies.sql`
 
-#### Genres & Tags
-- [ ] `000005_movie_genres.up.sql`
-  ```sql
-  movie_genres (movie_id, genre_id)  -- FK to public.genres where domain='movie'
-  movie_tags (id, movie_id, user_id, tag)
-  ```
+```sql
+-- name: GetMovieByID :one
+SELECT * FROM movies WHERE id = $1;
 
-#### Images
-- [ ] `000006_movie_images.up.sql`
-  ```sql
-  movie_images (
-    id, movie_id, type, path,
-    width, height, blurhash, provider
-  )
-  ```
+-- name: GetMovieByTmdbID :one
+SELECT * FROM movies WHERE tmdb_id = $1;
 
-#### User Data
-- [ ] `000007_movie_user_data.up.sql`
-  ```sql
-  movie_user_ratings (id, user_id, movie_id, score, created_at, updated_at)
-  movie_external_ratings (id, movie_id, source, score, vote_count, url, fetched_at)
-  movie_favorites (user_id, movie_id, added_at)
-  movie_watchlist (user_id, movie_id, added_at)
-  movie_history (id, user_id, movie_id, position_ticks, completed, watched_at)
-  ```
+-- name: ListMovies :many
+SELECT * FROM movies
+ORDER BY sort_title
+LIMIT $1 OFFSET $2;
 
-### 2.2 SQLC Queries `queries/movie/`
+-- name: CreateMovie :one
+INSERT INTO movies (title, original_title, sort_title, overview, tmdb_id, imdb_id, release_date, runtime_minutes)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING *;
 
-- [ ] `movies.sql` - CRUD for movies
-- [ ] `movie_people.sql` - Cast and crew queries
-- [ ] `movie_streams.sql` - Stream/subtitle/chapter queries
-- [ ] `movie_ratings.sql` - User and external ratings
-- [ ] `movie_user_data.sql` - Favorites, watchlist, history
+-- name: UpdateMovie :one
+UPDATE movies SET
+    title = COALESCE($2, title),
+    overview = COALESCE($3, overview),
+    updated_at = NOW()
+WHERE id = $1
+RETURNING *;
 
-### 2.3 Domain Layer `internal/content/movie/`
+-- name: DeleteMovie :exec
+DELETE FROM movies WHERE id = $1;
+```
 
-- [ ] `entity.go` - Movie, MoviePerson, MovieStudio, etc.
-- [ ] `repository.go` - Interface definitions
-- [ ] `repository_pg.go` - PostgreSQL implementation
+### 2.3 Domain Entity
 
-### 2.4 Service Layer
+**New file:** `internal/content/movie/entity.go`
 
-- [ ] `service.go` - Business logic
-- [ ] `scanner.go` - File system scanner
-- [ ] `provider_tmdb.go` - TMDb metadata provider
-- [ ] `provider_omdb.go` - OMDb metadata provider
+```go
+package movie
 
-### 2.5 API Layer (ogen-generated)
+import (
+    "time"
+    "github.com/google/uuid"
+)
 
-- [ ] `api/openapi/movies.yaml` - OpenAPI spec
-- [ ] `api/generated/movies/` - ogen-generated handlers
-- [ ] `handler.go` - Implement ogen interfaces
-- [ ] Routes:
-  - `GET /api/v1/movies` - List movies
-  - `GET /api/v1/movies/{id}` - Get movie
-  - `GET /api/v1/movies/{id}/similar` - Similar movies
-  - `GET /api/v1/movies/{id}/cast` - Movie cast
-  - `GET /api/v1/movies/{id}/streams` - Stream info
-  - `POST /api/v1/movies/{id}/rate` - Rate movie
-  - `POST /api/v1/movies/{id}/favorite` - Add to favorites
-  - `DELETE /api/v1/movies/{id}/favorite` - Remove from favorites
-  - `POST /api/v1/movies/{id}/watchlist` - Add to watchlist
-  - `GET /api/v1/movies/{id}/play` - Get playback URL (returns Blackbeard URL)
-  - `POST /api/v1/movies/{id}/progress` - Update progress
+type Movie struct {
+    ID              uuid.UUID
+    Title           string
+    OriginalTitle   string
+    SortTitle       string
+    Overview        string
+    Tagline         string
+    ReleaseDate     *time.Time
+    RuntimeMinutes  int
+    Status          string
+    TmdbID          *int
+    ImdbID          *string
+    RadarrID        *int
+    Certification   string
+    OriginalLanguage string
+    CreatedAt       time.Time
+    UpdatedAt       time.Time
+}
 
-### 2.6 River Jobs
+type CreateMovieParams struct {
+    Title          string
+    OriginalTitle  string
+    Overview       string
+    TmdbID         *int
+    ImdbID         *string
+    ReleaseDate    *time.Time
+    RuntimeMinutes int
+}
+```
 
-- [ ] `jobs.go` - River job definitions:
-  ```go
-  type ScanMovieLibraryArgs struct { ... }
-  type FetchMovieMetadataArgs struct { ... }
-  type IndexMovieArgs struct { ... }  // Typesense
-  ```
+### 2.4 Repository
 
-### 2.7 Module Registration
+**New file:** `internal/content/movie/repository.go`
 
-- [ ] `module.go` - fx.Module with all providers
+```go
+package movie
+
+import (
+    "context"
+    "github.com/google/uuid"
+)
+
+type Repository interface {
+    GetByID(ctx context.Context, id uuid.UUID) (*Movie, error)
+    GetByTmdbID(ctx context.Context, tmdbID int) (*Movie, error)
+    List(ctx context.Context, limit, offset int) ([]*Movie, error)
+    Create(ctx context.Context, params CreateMovieParams) (*Movie, error)
+    Update(ctx context.Context, id uuid.UUID, params UpdateMovieParams) (*Movie, error)
+    Delete(ctx context.Context, id uuid.UUID) error
+}
+
+type repositoryImpl struct {
+    queries *db.Queries
+}
+
+func NewRepository(queries *db.Queries) Repository {
+    return &repositoryImpl{queries: queries}
+}
+```
+
+### 2.5 Service
+
+**New file:** `internal/content/movie/service.go`
+
+```go
+package movie
+
+import (
+    "context"
+    "log/slog"
+    "github.com/google/uuid"
+)
+
+type Service struct {
+    repo   Repository
+    logger *slog.Logger
+}
+
+func NewService(repo Repository, logger *slog.Logger) *Service {
+    return &Service{
+        repo:   repo,
+        logger: logger.With(slog.String("service", "movie")),
+    }
+}
+
+func (s *Service) GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {
+    return s.repo.GetByID(ctx, id)
+}
+
+func (s *Service) CreateMovie(ctx context.Context, params CreateMovieParams) (*Movie, error) {
+    // Generate sort title
+    params.SortTitle = generateSortTitle(params.Title)
+    return s.repo.Create(ctx, params)
+}
+```
+
+### 2.6 HTTP Handler (ogen)
+
+**New file:** `internal/content/movie/handler.go`
+
+```go
+package movie
+
+import (
+    "context"
+    "github.com/google/uuid"
+    api "revenge/api/generated"
+)
+
+type Handler struct {
+    svc *Service
+}
+
+func NewHandler(svc *Service) *Handler {
+    return &Handler{svc: svc}
+}
+
+// Implements ogen interface
+func (h *Handler) GetMovie(ctx context.Context, params api.GetMovieParams) (api.GetMovieRes, error) {
+    id, err := uuid.Parse(params.ID)
+    if err != nil {
+        return &api.GetMovieBadRequest{}, nil
+    }
+
+    movie, err := h.svc.GetMovie(ctx, id)
+    if err != nil {
+        return &api.GetMovieNotFound{}, nil
+    }
+
+    return &api.Movie{
+        ID:    movie.ID.String(),
+        Title: movie.Title,
+        // ... map fields
+    }, nil
+}
+```
+
+### 2.7 fx Module
+
+**New file:** `internal/content/movie/module.go`
+
+```go
+package movie
+
+import "go.uber.org/fx"
+
+var Module = fx.Module("movie",
+    fx.Provide(
+        NewRepository,
+        NewService,
+        NewHandler,
+    ),
+)
+```
+
+### 2.8 River Jobs
+
+**New file:** `internal/content/movie/jobs.go`
+
+```go
+package movie
+
+import (
+    "context"
+    "github.com/google/uuid"
+    "github.com/riverqueue/river"
+)
+
+// ScanLibraryArgs for library scanning job
+type ScanLibraryArgs struct {
+    LibraryID uuid.UUID `json:"library_id"`
+    FullScan  bool      `json:"full_scan"`
+}
+
+func (ScanLibraryArgs) Kind() string { return "movie.scan_library" }
+
+type ScanLibraryWorker struct {
+    river.WorkerDefaults[ScanLibraryArgs]
+    svc *Service
+}
+
+func (w *ScanLibraryWorker) Work(ctx context.Context, job *river.Job[ScanLibraryArgs]) error {
+    // Scan library for new movies
+    return nil
+}
+
+// FetchMetadataArgs for metadata fetching job
+type FetchMetadataArgs struct {
+    MovieID uuid.UUID `json:"movie_id"`
+}
+
+func (FetchMetadataArgs) Kind() string { return "movie.fetch_metadata" }
+```
 
 ---
 
 ## Phase 3: TV Show Module
 
-### 3.1 Database Migration `migrations/tvshow/`
-
-#### Core Tables
-- [ ] `000001_series.up.sql`
-  ```sql
-  series (id, library_id, title, sort_title, overview, status,
-          network, first_air_date, last_air_date, tvdb_id, tmdb_id, imdb_id, ...)
-  seasons (id, series_id, season_number, name, overview, air_date, ...)
-  episodes (id, season_id, series_id, episode_number, title, overview,
-            runtime_ticks, air_date, path, ...)
-  ```
-
-#### People & Credits
-- [ ] `000002_series_people.up.sql`
-  ```sql
-  series_people (id, name, tvdb_id, tmdb_id, imdb_id, ...)
-  series_cast (series_id, person_id, character, "order")
-  series_crew (series_id, person_id, department, job)
-  episode_cast (episode_id, person_id, character)  -- guest stars
-  ```
-
-#### Studios
-- [ ] `000003_series_studios.up.sql`
-
-#### Media Files
-- [ ] `000004_episode_streams.up.sql`
-  ```sql
-  episode_streams (id, episode_id, ...)
-  episode_subtitles (id, episode_id, ...)
-  episode_chapters (id, episode_id, ...)
-  ```
-
-#### User Data
-- [ ] `000005_tvshow_user_data.up.sql`
-  ```sql
-  series_user_ratings, episode_user_ratings
-  series_external_ratings, episode_external_ratings
-  series_favorites, series_watchlist
-  episode_history
-  ```
-
-### 3.2 - 3.6 (Same pattern as movie)
+Same pattern as Movie module with:
+- `series`, `seasons`, `episodes` tables
+- Sonarr integration
+- TheTVDB/TMDb metadata providers
 
 ---
 
 ## Phase 4: Music Module
 
-### 4.1 Database Migration `migrations/music/`
-
-#### Core Tables
-- [ ] `000001_music_core.up.sql`
-  ```sql
-  artists (id, library_id, name, sort_name, overview,
-           musicbrainz_id, spotify_id, ...)
-  albums (id, library_id, artist_id, title, sort_title,
-          release_date, album_type, musicbrainz_id, ...)
-  tracks (id, album_id, artist_id, title, disc_number, track_number,
-          duration_ticks, path, isrc, musicbrainz_id, ...)
-  artist_albums (artist_id, album_id, role)  -- for multi-artist albums
-  track_artists (track_id, artist_id, role)  -- for featuring artists
-  ```
-
-#### Music-specific
-- [ ] `000002_track_streams.up.sql`
-  ```sql
-  track_streams (id, track_id, codec, bitrate, channels, sample_rate, ...)
-  track_lyrics (id, track_id, content, is_synced, language, source)
-  ```
-
-#### User Data
-- [ ] `000003_music_user_data.up.sql`
-  ```sql
-  artist_user_ratings, album_user_ratings, track_user_ratings
-  artist_external_ratings, album_external_ratings, track_external_ratings
-  artist_favorites, album_favorites, track_favorites
-  track_history (id, user_id, track_id, played_at)  -- no position, tracks are short
-  ```
+Same pattern with:
+- `artists`, `albums`, `tracks`, `music_videos` tables
+- Lidarr integration
+- MusicBrainz/Last.fm metadata
 
 ---
 
-## Phase 5: Remaining Modules
+## Phase 5: Adult Modules (c schema)
 
-### 5.1 Audiobook Module
-- [ ] `audiobooks`, `audiobook_chapters`
-- [ ] `audiobook_authors`, `audiobook_narrators`
-- [ ] `audiobook_user_ratings`, `audiobook_favorites`
-- [ ] `chapter_progress`
+### 5.1 Create Isolated Schema
 
-### 5.2 Book Module
-- [ ] `books`, `book_authors`
-- [ ] `book_user_ratings`, `book_favorites`
-- [ ] `book_progress`
+**New file:** `internal/infra/database/migrations/c/000001_c_schema.up.sql`
 
-### 5.3 Podcast Module
-- [ ] `podcasts`, `podcast_episodes`
-- [ ] `podcast_favorites`, `episode_progress`
+```sql
+-- Create isolated adult content schema
+CREATE SCHEMA IF NOT EXISTS c;
 
-### 5.4 Photo Module
-- [ ] `photos`, `photo_albums`
-- [ ] `photo_exif` (camera, GPS, etc.)
+-- Adult movies
+CREATE TABLE c.movies (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    -- TPDb/StashDB IDs
+    tpdb_id TEXT UNIQUE,
+    stashdb_id TEXT UNIQUE,
+    -- ...
+);
 
-### 5.5 Live TV Module
-- [ ] `channels`, `programs`, `recordings`
-- [ ] `recording_streams`, `channel_favorites`
-
----
-
-## Phase 6: Adult Modules (Isolated `c` Schema)
-
-> **Note:** Adult modules use obscured schema `c` and API namespace `/c/`.
-> No content ratings (implicit 18+). Separate access scope required.
-
-### 6.1 Schema Setup
-- [ ] `migrations/c/000001_schema.up.sql`
-  ```sql
-  CREATE SCHEMA IF NOT EXISTS c;
-  ```
-
-### 6.2 Adult Movie Module
-- [ ] `000002_c_movies.up.sql`
-  ```sql
-  c.movies (id, library_id, title, path, release_date, ...)
-  c.scenes (id, movie_id, title, start_ticks, end_ticks, ...)
-  ```
-
-- [ ] `000003_c_performers.up.sql`
-  ```sql
-  c.performers (id, name, aliases, gender, birth_date,
-                ethnicity, measurements, image_path, ...)
-  c.movie_performers (movie_id, performer_id)
-  c.scene_performers (scene_id, performer_id)
-  ```
-
-- [ ] `000004_c_studios.up.sql`
-  ```sql
-  c.studios (id, name, logo_path, website)
-  c.movie_studios (movie_id, studio_id)
-  ```
-
-- [ ] `000005_c_tags.up.sql`
-  ```sql
-  c.tags (id, name, category)
-  c.movie_tags (movie_id, tag_id)
-  c.scene_tags (scene_id, tag_id)
-  ```
-
-- [ ] `000006_c_movie_media.up.sql`
-  ```sql
-  c.movie_streams, c.movie_subtitles, c.movie_chapters
-  c.movie_images, c.scene_images, c.performer_images
-  ```
-
-- [ ] `000007_c_movie_user_data.up.sql`
-  ```sql
-  c.movie_user_ratings, c.scene_user_ratings
-  c.performer_user_ratings, c.studio_user_ratings
-  c.movie_favorites, c.scene_favorites
-  c.performer_favorites, c.studio_favorites
-  c.movie_history
-  ```
-
-### 6.3 Adult Show Module
-- [ ] `000010_c_series.up.sql`
-  ```sql
-  c.series, c.seasons, c.episodes
-  c.episode_performers
-  c.series_studios
-  c.episode_streams, c.episode_subtitles
-  c.series_user_ratings, c.episode_user_ratings
-  c.series_favorites, c.episode_history
-  ```
-
-### 6.4 Adult Playlists & Collections
-- [ ] `000015_c_playlists.up.sql`
-  ```sql
-  c.playlists (id, user_id, name, ...)
-  c.playlist_items (id, playlist_id, item_type, item_id, position)
-  c.collections (id, name, ...)
-  c.collection_items (id, collection_id, item_type, item_id)
-  ```
-
-### 6.5 Adult API Endpoints
-
-- [ ] `api/openapi/c_movies.yaml` - NOT included in public docs
-- [ ] Routes under `/api/v1/c/`:
-  - `GET /c/movies` - List adult movies
-  - `GET /c/movies/{id}` - Get adult movie
-  - `GET /c/shows` - List adult shows
-  - Requires special auth scope `adult:read`
-
----
-
-## Cross-Cutting Concerns
-
-### Search Integration (Typesense)
-- [ ] One collection per module (including `c_movies`, `c_series`)
-- [ ] Unified search aggregation endpoint
-- [ ] Module-specific facets
-- [ ] Adult content NOT in unified search (separate endpoint)
-
-### Job Queue (River)
-- [ ] Queue definitions:
-  - `scanning` - Library scans (MaxWorkers: 2)
-  - `metadata` - Metadata fetching (MaxWorkers: 10)
-  - `indexing` - Typesense updates (MaxWorkers: 5)
-- [ ] Per-module job types
-- [ ] Job history in River tables
-
-### External Transcoding (Blackbeard)
-- [ ] `/play` endpoints return Blackbeard URLs
-- [ ] Profile negotiation (h264_720p, h265_1080p, etc.)
-- [ ] Direct stream option for compatible clients
-
-### Caching (Dragonfly)
-- [ ] Session caching
-- [ ] Metadata cache
-- [ ] Search result cache (30s TTL)
-
----
-
-## Migration Strategy
-
-### From Current Schema
-
-1. Keep existing shared tables (users, sessions, libraries, oidc)
-2. **DELETE** old migrations 000006-000015 (media_items, images, etc.)
-3. Create new per-module migration folders
-4. Run River migrations
-5. Implement modules one at a time
-
-### Folder Restructuring
-
-```
-Current:
-  internal/service/movie/    ❌ Move
-  internal/service/tvshow/   ❌ Move
-
-Target:
-  internal/content/movie/    ✅
-  internal/content/tvshow/   ✅
-  internal/content/c/movie/  ✅
-  internal/content/c/show/   ✅
-
-  internal/service/          ✅ Keep shared services only
-    auth/
-    user/
-    oidc/
-    library/
+-- Performers (shared between adult_movie and adult_show)
+CREATE TABLE c.performers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    gender TEXT, -- 'female', 'male', 'other'
+    tpdb_id TEXT UNIQUE,
+    stashdb_id TEXT UNIQUE
+);
 ```
 
-### Rollback Plan
+---
 
-- Each module has independent down migrations
-- Can disable modules without affecting others
-- Shared infrastructure remains stable
-- River jobs can be paused per queue
+## Checklist Summary
+
+### Phase 1: Core Completion
+- [ ] Migrate cache.go to rueidis
+- [ ] Add otter local cache
+- [ ] Register all modules in main.go
+- [ ] Add sturdyc for API response caching
+
+### Phase 2: Movie Module
+- [ ] Migration: 000001_movies.up.sql
+- [ ] Migration: 000002_movie_genres.up.sql
+- [ ] Migration: 000003_movie_people.up.sql
+- [ ] Migration: 000004_movie_images.up.sql
+- [ ] Migration: 000005_movie_streams.up.sql
+- [ ] Migration: 000006_movie_user_data.up.sql
+- [ ] sqlc queries
+- [ ] entity.go
+- [ ] repository.go
+- [ ] service.go
+- [ ] handler.go
+- [ ] jobs.go
+- [ ] module.go
+- [ ] Radarr client
+- [ ] TMDb client
+- [ ] Unit tests
+
+### Phase 3-9: Remaining Modules
+See [TODO.md](../../../TODO.md) for high-level phases.
+
+---
+
+## References
+
+- [Architecture](../architecture/ARCHITECTURE_V2.md)
+- [Content Modules Instructions](../../../.github/instructions/content-modules.instructions.md)
+- [sqlc Instructions](../../../.github/instructions/sqlc-database.instructions.md)
+- [fx Instructions](../../../.github/instructions/fx-dependency-injection.instructions.md)

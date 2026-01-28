@@ -167,3 +167,10 @@ addr := net.JoinHostPort(host, port)  // correct
 - 3x faster crypto/rsa key generation
 - 2x faster crypto/sha1 (amd64 with SHA-NI)
 - 2x faster crypto/sha3 (Apple Silicon)
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
+- [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

@@ -411,3 +411,10 @@ offloading:
     high_pressure_threshold: 0.8
     critical_pressure_threshold: 0.95
 ```
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
+- [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

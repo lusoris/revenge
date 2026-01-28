@@ -1,8 +1,8 @@
 # Revenge
 
-[![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/jellyfin-go)](https://goreportcard.com/report/github.com/lusoris/jellyfin-go)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/jellyfin-go)](go.mod)
+[![CI](https://github.com/lusoris/revenge/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/revenge)](https://goreportcard.com/report/github.com/lusoris/revenge)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/revenge)](go.mod)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 > Modular media server with complete content isolation
@@ -12,7 +12,7 @@ A ground-up media server built in Go with a fully modular architecture. Each con
 ## 📋 Design Principles
 
 - **Performance First** - UX never blocked by backend tasks
-- **Client Agnostic** - Support Jellyfin/Subsonic/DLNA clients, no native apps
+- **Client Agnostic** - Native mobile/TV apps with Revenge API, DLNA compatibility
 - **Privacy by Default** - Encrypted local storage, opt-in tracking only
 - **Bleeding Edge Stable** - Latest stable Go/PostgreSQL, no alpha deps
 - **Optional ML** - Ollama integration for recommendations, not required
@@ -21,7 +21,7 @@ See [docs/dev/design/architecture/DESIGN_PRINCIPLES.md](docs/dev/design/architec
 
 ## ✨ Features
 
-- **11 Content Modules**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Collections, and Adult content (isolated schema)
+- **12 Content Modules**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Comics, Collections, and Adult content (isolated schema)
 - **External Transcoding**: Delegates to "Blackbeard" service - Revenge stays lightweight
 - **Servarr Integration**: Radarr, Sonarr, Lidarr, Whisparr, Chaptarr as primary metadata sources
 - **Modern Stack**: Go 1.25, PostgreSQL 18, Dragonfly (Redis-compatible), Typesense, River job queue
@@ -47,8 +47,8 @@ See [docs/dev/design/architecture/ARCHITECTURE_V2.md](docs/dev/design/architectu
 ### Docker Compose (Recommended)
 
 ```bash
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 docker compose up -d
 
 # Opens at http://localhost:8096
@@ -58,8 +58,8 @@ docker compose up -d
 
 ```bash
 # Prerequisites: Go 1.25+, PostgreSQL, Dragonfly
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 
 # Start dependencies
 docker compose -f docker-compose.dev.yml up -d
@@ -126,5 +126,5 @@ GNU General Public License v2.0 - see [LICENSE](LICENSE).
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/lusoris/jellyfin-go/issues)
+- **Issues**: [GitHub Issues](https://github.com/lusoris/revenge/issues)
 - **Security**: See [SECURITY.md](SECURITY.md)

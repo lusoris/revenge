@@ -19,7 +19,7 @@ PostgreSQL is Revenge's primary database, storing all application data including
 
 **Version Requirements**:
 - **Minimum**: PostgreSQL 15+
-- **Recommended**: PostgreSQL 17+ (for improved performance)
+- **Recommended**: PostgreSQL 18+ (for improved performance)
 - **Extensions**: `pgcrypto`, `pg_trgm` (optional)
 
 ---
@@ -311,7 +311,7 @@ archive_command = 'cp %p /archive/%f'
 ```yaml
 services:
   postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     container_name: revenge-postgres
     environment:
       POSTGRES_USER: revenge

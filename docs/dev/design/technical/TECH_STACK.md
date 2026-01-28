@@ -48,11 +48,11 @@
   - Per-module migration folders
 
 #### Cache & Search
-- **Dragonfly** (via go-redis/v9) - Redis-compatible cache
-  - High performance (25x faster than Redis)
-  - Lower memory usage
-  - Drop-in Redis replacement
-- **Typesense** (via typesense-go/v4) - Search engine
+- **Dragonfly** (via rueidis) - Redis-compatible cache
+  - **rueidis** v1.0.71 (14x faster than go-redis, auto-pipelining)
+  - **otter** v2.3.0 (local W-TinyLFU cache, 50% less memory than ristretto)
+  - **sturdyc** v1.1.5 (90% API call reduction via request coalescing)
+- **Typesense** (via typesense-go/v3) - Search engine
   - Lightning-fast typo-tolerant search
   - Faceted filtering
   - Lower latency than Elasticsearch
@@ -122,7 +122,9 @@
 |-----------|------------|---------|
 | Language | Go 1.25+ | - |
 | Database | PostgreSQL 18+ | `pgx/v5` |
-| Cache | Dragonfly | `go-redis/v9` |
+| Cache (Dragonfly) | rueidis | `redis/rueidis` |
+| Cache (Local) | otter | `maypok86/otter` |
+| Cache (API) | sturdyc | `viccon/sturdyc` |
 | Search | Typesense | `typesense-go/v3` |
 | Job Queue | River | `riverqueue/river` |
 | API Docs | ogen | `ogen-go/ogen` |
@@ -132,6 +134,9 @@
 | SQL | sqlc | `sqlc-dev/sqlc` |
 | HTTP | net/http | stdlib |
 | Logging | slog | stdlib |
+| WebSocket | coder/websocket | `coder/websocket` |
+| HTTP Client | resty | `resty.dev/v3` |
+| File Watch | fsnotify | `fsnotify/fsnotify` |
 
 ---
 

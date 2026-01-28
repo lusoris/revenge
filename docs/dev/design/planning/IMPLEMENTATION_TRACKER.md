@@ -58,18 +58,14 @@
 | MusicBrainz | v2 | None (User-Agent required) | **1 req/sec CRITICAL** | ✅ DONE |
 | Audiobookshelf | REST | Bearer token | Self-hosted (none) | ✅ DONE |
 | Trakt | v2 | OAuth2 | Implemented | ✅ DONE |
-| Overseerr | v1 | X-Api-Key OR Cookie | Self-hosted (none) | ✅ DONE |
 | Fanart.tv | v3 | api-key header OR query | Not specified | ✅ DONE |
 | Last.fm | v2 | API key | Reasonable usage | ✅ DONE |
 
-#### ❌ To Fetch (30 services)
+#### ❌ To Fetch (28 services)
 
 **Servarr Ecosystem (2)**:
 - [ ] Whisparr (adult content management)
 - [ ] Readarr (book management)
-
-**Request Management (1)**:
-- [ ] Jellyseerr (Jellyfin-focused)
 
 **Metadata Providers (11)**:
 - [ ] OMDb (movie metadata, IMDb alternative)
@@ -106,10 +102,8 @@
 - [ ] Spotify API (detailed search/recommendations)
 - [ ] Last.fm recommendations (already have scrobbling)
 
-**Other (3)**:
+**Other (1)**:
 - [ ] OIDC Generic (OpenID Connect specification)
-- [ ] Plex API (for Overseerr/Jellyseerr Plex auth)
-- [ ] Jellyfin API (compatibility reference)
 
 ### 1.2 Create Integration Documentation
 
@@ -263,8 +257,7 @@
 - Testing WebSocket handlers
 
 **Research**:
-- gorilla/websocket documentation
-- nhooyr.io/websocket (modern alternative)
+- coder/websocket documentation (modern, zero deps, ISC license)
 - Centrifugo patterns
 - Phoenix Channels (Elixir) inspiration
 
@@ -308,7 +301,7 @@
 
 **Research**:
 - Redis patterns (applicable to Dragonfly)
-- go-redis/v9 documentation
+- rueidis documentation (14x faster than go-redis, auto-pipelining)
 
 **Time**: 1 day
 
@@ -625,7 +618,7 @@
 - [ ] `docs/EXTERNAL_API_INTEGRATION.md`
 
 **Content**:
-- Jellyfin data export
+- External source data migration
 - Import to Revenge
 - Watch history migration
 - Metadata preservation
@@ -708,17 +701,16 @@
 - [x] MusicBrainz
 - [x] Audiobookshelf
 - [x] Trakt
-- [x] Overseerr
 - [x] Fanart.tv
 - [x] Last.fm
 
-**Remaining (30/41)**:
-- [ ] Whisparr, Readarr, Jellyseerr
+**Remaining (28/39)**:
+- [ ] Whisparr, Readarr
 - [ ] OMDb, ThePosterDB, Spotify, Discogs, Goodreads, OpenLibrary, Audible, Hardcover, Stash/StashDB, ThePornDB
 - [ ] ListenBrainz, Letterboxd, Simkl
 - [ ] Authelia, Authentik, Keycloak
 - [ ] Blackbeard, TVHeadend, NextPVR, Chromecast, DLNA
-- [ ] OIDC Generic, Plex API, Jellyfin API
+- [ ] OIDC Generic
 
 ---
 
@@ -815,8 +807,8 @@
 
 ### Immediate (This Week)
 
-1. **Continue fetching external APIs** (30 remaining)
-   - Batch 1: Whisparr, Readarr, Jellyseerr
+1. **Continue fetching external APIs** (28 remaining)
+   - Batch 1: Whisparr, Readarr
    - Batch 2: Metadata providers (OMDb, ThePosterDB, Spotify, etc.)
    - Batch 3: Scrobbling (ListenBrainz, Letterboxd, Simkl)
    - Batch 4: Auth/SSO (Authelia, Authentik, Keycloak)
@@ -856,437 +848,20 @@ No shortcuts. No "we'll document it later". Complete preparation prevents catast
 
 ---
 
-## Appendix A: UX/UI Design & Frontend Resources
+## Appendix
 
-> **Status**: ✅ ALL 14 SOURCES FETCHED (2026-01-28)
->
-> These authoritative sources inform frontend instruction files, component design, and user experience patterns for Revenge.
+### A. UX/UI Design & Frontend Resources
 
-### A.1 Accessibility Standards
+**Extracted to**: [docs/research/UX_UI_RESOURCES.md](../research/UX_UI_RESOURCES.md)
 
-#### W3C WCAG 2.2 (Web Content Accessibility Guidelines)
-- **URL**: https://www.w3.org/WAI/standards-guidelines/wcag/
-- **Version**: WCAG 2.2 (published October 2023, updated December 2024)
-- **Status**: International Standard, ISO/IEC 40500:2025
-- **Scope**: 13 guidelines under 4 principles (Perceivable, Operable, Understandable, Robust)
-- **Conformance Levels**: A, AA, AAA (9 new success criteria in 2.2)
-- **Key Changes**:
-  - Added mobile accessibility
-  - Cognitive accessibility improvements
-  - 4.1.1 Parsing obsolete
-  - Focus indicators, dragging movements, target size
-- **Resources**:
-  - Quick Reference: https://www.w3.org/WAI/WCAG22/quickref/
-  - WCAG 2.2 Standard: https://www.w3.org/TR/WCAG22/
-  - Understanding WCAG 2: Detailed guidance
-  - Techniques for WCAG 2: Implementation patterns
-  - Supplemental Guidance: Beyond baseline
-- **Revenge Application**:
-  - Level AA compliance target
-  - Keyboard navigation for all controls
-  - Screen reader optimization
-  - Color contrast 4.5:1 (text), 3:1 (UI)
-  - Focus visible indicators
-  - Alt text for all images
-  - Skip links for navigation
-  - ARIA landmarks and roles
-
-#### ISO 9241-11:2018 (Ergonomics of Human-System Interaction)
-- **URL**: https://www.iso.org/standard/63500.html
-- **Edition**: 2 (March 2018, confirmed 2023)
-- **Scope**: Usability definitions and concepts
-- **Key Concepts**:
-  - Usability as outcome of use (not inherent property)
-  - Effectiveness, efficiency, satisfaction in context
-  - User needs drive design
-  - System, product, service applicability
-- **Revenge Application**:
-  - User research validation
-  - Usability testing metrics (task success, time, satisfaction)
-  - Context of use analysis (device types, environments)
+Contains 14 authoritative sources:
+- W3C WCAG 2.2, ISO 9241-11:2018
+- Nielsen's 10 Heuristics, Laws of UX
+- Material Design 3, Apple HIG, Fluent 2, Atlassian, Carbon
+- UK GDS Principles
+- IDF, Baymard, Smashing Magazine
+- web.dev Patterns
 
 ---
 
-### A.2 Usability Heuristics & Laws
-
-#### Nielsen Norman Group - 10 Usability Heuristics
-- **URL**: https://www.nngroup.com/articles/ten-usability-heuristics/
-- **Author**: Jakob Nielsen (1994, updated 2020)
-- **Status**: Industry standard for heuristic evaluation
-- **The 10 Heuristics**:
-  1. **Visibility of System Status** - Feedback within reasonable time
-  2. **Match System & Real World** - User language, natural mapping
-  3. **User Control & Freedom** - Undo/redo, emergency exits
-  4. **Consistency & Standards** - Platform conventions, Jakob's Law
-  5. **Error Prevention** - Eliminate error-prone conditions, confirm destructive actions
-  6. **Recognition > Recall** - Visible options, minimize memory load
-  7. **Flexibility & Efficiency** - Shortcuts for experts, personalization
-  8. **Aesthetic & Minimalist Design** - No irrelevant information
-  9. **Error Recognition & Recovery** - Plain language errors, solutions
-  10. **Help & Documentation** - Easy to search, contextual, concrete steps
-- **Resources**:
-  - Free posters (summary + 10 detailed): https://media.nngroup.com/media/articles/attachments/Jakob's10UsabilityHeuristics_AllPosters_5.zip
-  - Video explanations (2-3 min each)
-  - Application examples (complex apps, VR, video games)
-- **Revenge Application**:
-  - Heuristic evaluation of all UIs
-  - Progress indicators for transcoding
-  - Undo/cancel for destructive actions
-  - Consistent navigation across modules
-  - Error messages with solutions
-  - Contextual help tooltips
-
-#### Laws of UX
-- **URL**: https://lawsofux.com/
-- **Author**: Jon Yablonski (O'Reilly book)
-- **Scope**: 26 laws/principles for UI design
-- **Key Laws for Revenge**:
-  - **Aesthetic-Usability Effect**: Beautiful design perceived as more usable
-  - **Fitts's Law**: Target acquisition time = f(distance, size) → Larger touch targets
-  - **Hick's Law**: Decision time increases with choices → Limit navigation options
-  - **Jakob's Law**: Users expect site to work like others → Use conventions
-  - **Miller's Law**: Working memory 7±2 items → Chunk information
-  - **Serial Position Effect**: Remember first & last items → Key actions at ends
-  - **Von Restorff Effect**: Distinctive items remembered → Highlight primary CTA
-  - **Doherty Threshold**: <400ms response time boosts productivity
-  - **Goal-Gradient Effect**: Motivation increases near goal → Show progress
-  - **Peak-End Rule**: Experiences judged by peak & end → Optimize critical moments
-  - **Tesler's Law**: Complexity conservation → Simplify user-facing, accept backend complexity
-  - **Pareto Principle**: 80% effects from 20% causes → Focus on common tasks
-  - **Postel's Law**: Be liberal in inputs, conservative in outputs
-  - **Zeigarnik Effect**: Unfinished tasks remembered → Save drafts, show incomplete
-  - **Choice Overload**: Too many options → paralysis
-  - **Cognitive Load**: Mental resources to understand UI → Minimize
-  - **Flow**: Immersed energized focus → Remove friction
-- **Revenge Application**:
-  - Large tap targets (48×48px minimum) for mobile
-  - Limit main navigation to 5-7 items
-  - Chunk settings into logical groups
-  - Primary actions (Play, Add) visually prominent
-  - Progress bars for uploads/transcoding
-  - <400ms API response target
-  - Autosave for playlist editing
-  - Conservative validation (accept variations), strict output
-
----
-
-### A.3 Design Systems & Component Libraries
-
-#### Google Material Design 3 (M3 Expressive)
-- **URL**: https://m3.material.io/
-- **Status**: Latest evolution (I/O 2025 update)
-- **Philosophy**: Emotion-driven UX with vibrant colors, intuitive motion, adaptive components
-- **Key Features**:
-  - **M3 Expressive update** (2025):
-    - Vibrant color system (extended palettes)
-    - Motion physics (easier-to-implement, token-powered transitions)
-    - Shape library (35 shapes with built-in morph motion)
-    - Flexible typography
-  - **New Components**:
-    - Toolbars (flexible action containers, pairs with FAB)
-    - Split buttons (button + menu, expressive shape/motion)
-    - Progress indicators (waveform, customizable thickness)
-    - Button groups (shape-shifting, reactive buttons)
-  - **Updated Components**: 14 total (existing components refreshed)
-- **Libraries**:
-  - Web (Material Web Components)
-  - Android (Compose, MDC)
-  - Flutter
-  - Figma UI Kit (latest M3 Expressive)
-- **Resources**:
-  - Blog: Building with M3 Expressive
-  - Motion physics guide
-  - Figma plugin
-- **Revenge Application**:
-  - Inspiration for component animations (FAB transitions, button states)
-  - Motion design for quality switching
-  - Progress indicators for transcoding
-  - Color palette generation
-  - **NOT using Material directly** (using shadcn-svelte), but adopting motion principles
-
-#### Apple Human Interface Guidelines (HIG)
-- **URL**: https://developer.apple.com/design/human-interface-guidelines/
-- **Platforms**: iOS, iPadOS, macOS, watchOS, tvOS, visionOS
-- **Core Principles**:
-  - **Hierarchy**: Controls elevate content, clear visual hierarchy
-  - **Harmony**: Align with concentric hardware/software design
-  - **Consistency**: Platform conventions, adapt across displays
-- **Design Fundamentals**:
-  - App icons, color, materials, layout
-  - Typography, icons, accessibility
-  - Generative AI patterns (NEW)
-- **Topics**: Foundations, Patterns, Components, Inputs, Technologies
-- **Revenge Application**:
-  - iOS/macOS native app patterns (future)
-  - Touch gesture conventions
-  - System integration (PiP, AirPlay)
-  - SF Symbols icon style inspiration
-
-#### Microsoft Fluent Design System (Fluent 2)
-- **URL**: https://fluent2.microsoft.design/
-- **Platforms**: Web (React), iOS, Android, Windows
-- **Philosophy**: Let creativity flow, accessible & inclusive
-- **Components**: Web (React, extensive catalog), mobile (iOS/Android), Windows (WinUI 3)
-- **Resources**:
-  - Figma UI Kit (employee access)
-  - Component documentation per platform
-- **Revenge Application**:
-  - Cross-platform component patterns
-  - Windows native app (future)
-  - **NOT using Fluent directly**, but reference for Windows UX conventions
-
-#### Atlassian Design System
-- **URL**: https://atlassian.design/
-- **Philosophy**: Better teamwork by design, unified design language across all apps
-- **Key Features**:
-  - Rovo AI patterns (AI integration UX)
-  - Unified design language across Jira, Confluence, Trello
-  - Foundations: Color, Typography, Iconography, Grid, Accessibility, Tokens
-  - Release phases (alpha, beta, stable)
-  - Contact/feedback form
-- **Libraries**: Atlaskit (React), Forge UI Kit
-- **Revenge Application**:
-  - AI chat patterns (Rovo) for future AI features
-  - Token-based theming
-  - Component composition patterns
-
-#### IBM Carbon Design System
-- **URL**: https://www.carbondesignsystem.com/
-- **Philosophy**: Adaptable system, best practices of UI design, open-source
-- **Commitment**: Web Components (September 2024)
-- **Libraries**:
-  - Web Components
-  - React (primary)
-  - Angular, Vue, Svelte
-- **Key Features**:
-  - AI Chat v1 (October 2025)
-  - Comprehensive component catalog
-  - Accessibility-first design
-  - Design tokens
-- **Resources**:
-  - Figma kit
-  - Medium blog
-  - Community contribution guidelines
-- **Revenge Application**:
-  - Svelte component patterns
-  - AI chat interface (future)
-  - Design token structure
-
----
-
-### A.4 Government & Institutional Standards
-
-#### UK Government Design Principles (GDS)
-- **URL**: https://www.gov.uk/guidance/government-design-principles
-- **Published**: April 2012, updated April 2025
-- **The 11 Principles**:
-  1. **Start with user needs** - Research, don't assume
-  2. **Do less** - Reusable platforms, link to others
-  3. **Design with data** - Analytics built-in, always on
-  4. **Do hard work to make it simple** - Simplicity > "always been that way"
-  5. **Iterate. Then iterate again** - MVP, alpha→beta→live, learn from failures
-  6. **This is for everyone** - Accessible design = good design
-  7. **Understand context** - Not designing for screen, for people (library? phone? Facebook-only?)
-  8. **Build digital services, not websites** - Connect real world (beyond UI)
-  9. **Be consistent, not uniform** - Shared language/patterns, but improve when needed
-  10. **Make things open** - Share code, designs, ideas, failures
-  11. **Minimise environmental impact** - Reduce energy, water, materials (NEW 2025)
-- **Resources**:
-  - GOV.UK Design System
-  - Poster download (GitHub)
-- **Revenge Application**:
-  - User research-driven features
-  - Iterative development (alpha modules first)
-  - Accessibility priority
-  - Open-source ethos
-  - Reusable module patterns
-  - Energy-efficient transcoding (Blackbeard optimization)
-
----
-
-### A.5 UX Research & Best Practices
-
-#### Interaction Design Foundation (IDF)
-- **URL**: https://www.interaction-design.org/literature/topics/ux-design
-- **Scope**: World's largest UX education community (1.2M+ enrollments)
-- **Key Content**:
-  - User Experience definition (Don Norman)
-  - UX vs UI distinction
-  - ISO 9241-210 (human-centered design)
-  - Who/Why/What/How framework
-  - User-centered design process (iterative)
-  - Multidisciplinary field (psychology, interaction design, IA, research)
-  - Typical tasks: User research, personas, wireframes, prototypes, testing
-- **Courses**:
-  - User Experience: The Beginner's Guide
-  - User Research - Methods and Best Practices
-  - Get Your First Job as a UX Designer
-- **Revenge Application**:
-  - User research methodology
-  - Persona creation for target users (media enthusiasts, families, power users)
-  - Iterative design process
-  - Usability testing protocols
-
-#### Baymard Institute (E-commerce UX Research)
-- **URL**: https://baymard.com/blog
-- **Scope**: 200,000+ hours of UX research, 18,000+ design examples
-- **Focus**: E-commerce usability (applicable to media libraries)
-- **Research Topics**:
-  - Homepage & category navigation (11 best practices, 67% sites mediocre)
-  - Product list UX
-  - Product page optimization
-  - Checkout UX (10 pitfalls)
-  - Mobile UX trends 2025 (9 common pitfalls)
-  - Accessibility
-  - Search & filtering
-- **Resources**:
-  - UX Benchmark (326 top sites, 52,000+ scores)
-  - Design examples (annotated)
-  - Cart abandonment stats
-  - Credit card patterns
-- **Revenge Application**:
-  - Library navigation patterns
-  - Filtering & sorting best practices
-  - Mobile UX optimization
-  - Search interface design
-  - Checkout flow → "Add to Watchlist" flow
-
-#### Smashing Magazine (UX Design)
-- **URL**: https://www.smashingmagazine.com/category/ux-design/
-- **Scope**: Professional web design & UX articles (57+ UX design articles)
-- **Key Topics**:
-  - Design patterns for design systems
-  - AI in design (skills AI can't replicate)
-  - Infinite scroll best practices
-  - Rapid research programs
-  - Accessibility (global developments during COVID)
-  - B2B UX design
-  - Timing in design
-- **Revenge Application**:
-  - Infinite scroll for media libraries
-  - Design system collaboration patterns
-  - Research-driven feature development
-  - Accessibility best practices
-
----
-
-### A.6 Web Standards & Patterns
-
-#### web.dev Patterns (Google)
-- **URL**: https://web.dev/patterns/
-- **Scope**: Modern web API patterns with browser support (Baseline)
-- **Pattern Categories**:
-  - **Animation**: CSS/JS animations with accessibility, user preferences (prefers-reduced-motion)
-  - **Clipboard**: Copy/paste patterns
-  - **Components**: Cross-browser UI components, design system inspiration
-  - **Files & Directories**: File upload, drag-drop, directory access
-  - **Layout**: Modern CSS (Grid, Flexbox, Container Queries)
-    - Cards, dynamic grids, full-page layouts
-  - **Media**: Video, audio, images (lazy loading, responsive)
-  - **Theming**: Color management, dark mode, CSS custom properties
-  - **Web Apps**: PWA patterns (service workers, manifest, offline)
-- **Revenge Application**:
-  - Responsive layout patterns (media grids)
-  - Dark/light mode theming
-  - File upload for custom artwork
-  - Video player controls
-  - PWA offline support
-  - Animation performance (GPU-accelerated)
-  - Clipboard API for sharing
-
----
-
-### A.7 Summary: UX/UI Resources Application to Revenge
-
-| Resource | Primary Use in Revenge |
-|----------|------------------------|
-| **WCAG 2.2** | Accessibility compliance (AA level), keyboard navigation, screen readers |
-| **ISO 9241-11** | Usability testing framework, effectiveness/efficiency metrics |
-| **Nielsen's Heuristics** | Heuristic evaluation of all UIs, error handling, consistency |
-| **Laws of UX** | Touch target sizing, navigation chunking, progress visualization, cognitive load reduction |
-| **Material Design 3** | Motion design inspiration, progress indicators, animation principles |
-| **Apple HIG** | iOS/macOS app patterns (future), touch gestures, system integration |
-| **Fluent 2** | Cross-platform component patterns, Windows UX (future) |
-| **Atlassian** | AI chat patterns, token-based theming, component composition |
-| **Carbon** | Svelte component patterns, AI features, design tokens |
-| **GDS Principles** | User research-driven development, iterative design, accessibility priority, open-source |
-| **IDF** | User research methodology, persona creation, iterative design process |
-| **Baymard** | Library navigation, filtering/sorting, mobile UX, search interface |
-| **Smashing** | Infinite scroll, design patterns, accessibility, research-driven features |
-| **web.dev** | Responsive layouts, theming, PWA, file handling, animation performance |
-
-### A.8 Frontend Instruction Files Informed by These Sources
-
-The following instruction files will be created using patterns from these UX/UI resources:
-
-1. **`.github/instructions/frontend-ux-guidelines.instructions.md`**
-   - Nielsen's 10 Heuristics implementation
-   - Laws of UX checklist (Fitts, Hick, Miller, Jakob)
-   - GDS principles application
-
-2. **`.github/instructions/accessibility-standards.instructions.md`**
-   - WCAG 2.2 Level AA compliance checklist
-   - ARIA patterns
-   - Keyboard navigation requirements
-   - Screen reader optimization
-   - Color contrast tools
-
-3. **`.github/instructions/svelte-component-patterns.instructions.md`**
-   - shadcn-svelte customization
-   - Carbon/Atlassian component patterns
-   - Composition over inheritance
-   - Accessibility built-in
-
-4. **`.github/instructions/shadcn-svelte-customization.instructions.md`**
-   - Tailwind CSS 4 utilities
-   - Design token structure
-   - Theming system
-   - Component variants
-
-5. **`.github/instructions/video-player-patterns.instructions.md`**
-   - Shaka Player integration
-   - hls.js fallback
-   - Custom controls (Baymard patterns)
-   - Keyboard shortcuts (Apple HIG)
-   - Touch gestures
-
-6. **`.github/instructions/audio-player-patterns.instructions.md`**
-   - Web Audio API (gapless, crossfade)
-   - Material Design 3 progress indicators
-   - Playback visualization
-
-7. **`.github/instructions/wcag-compliance.instructions.md`**
-   - WCAG 2.2 audit checklist
-   - axe-core integration
-   - Testing workflow
-   - Remediation patterns
-
-8. **`.github/instructions/i18n-best-practices.instructions.md`**
-   - Translation workflow
-   - Date/time localization
-   - RTL support
-   - Content translation strategy
-
----
-
-### A.9 Quality Gates for Frontend Development
-
-Before ANY frontend component is merged:
-
-- [ ] ✅ WCAG 2.2 Level AA compliant (axe-core passes)
-- [ ] ✅ Keyboard navigable (tab order, focus visible)
-- [ ] ✅ Screen reader tested (NVDA/JAWS/VoiceOver)
-- [ ] ✅ Touch targets ≥48×48px (Fitts's Law)
-- [ ] ✅ Color contrast ≥4.5:1 text, ≥3:1 UI
-- [ ] ✅ Dark/light mode support
-- [ ] ✅ Mobile-first responsive
-- [ ] ✅ `prefers-reduced-motion` respected
-- [ ] ✅ Error messages with solutions (Nielsen #9)
-- [ ] ✅ Undo/cancel for destructive actions (Nielsen #3)
-- [ ] ✅ Consistent with design system
-- [ ] ✅ i18n keys used (no hardcoded strings)
-- [ ] ✅ Documented in Storybook (component catalog)
-
----
-
-**END OF APPENDIX A**
+**END OF IMPLEMENTATION TRACKER**

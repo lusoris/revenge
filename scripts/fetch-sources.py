@@ -65,6 +65,59 @@ class BaseFetcher:
         raise NotImplementedError
 
 
+class GitHubReadmeFetcher(BaseFetcher):
+    """Fetches GitHub README files via raw.githubusercontent.com."""
+
+    # Pattern: https://github.com/{owner}/{repo}
+    GITHUB_PATTERN = re.compile(r"^https?://github\.com/([^/]+)/([^/]+)/?$")
+
+    def fetch(self, source: dict[str, Any]) -> tuple[str, str | None]:
+        url = source["url"]
+        match = self.GITHUB_PATTERN.match(url)
+
+        if not match:
+            return "", f"Invalid GitHub URL format: {url}"
+
+        owner, repo = match.groups()
+        # Try common README filenames
+        readme_files = ["README.md", "readme.md", "Readme.md", "README.rst", "README"]
+
+        for readme in readme_files:
+            raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/HEAD/{readme}"
+            try:
+                response = requests.get(
+                    raw_url,
+                    headers={"User-Agent": self.user_agent},
+                    timeout=self.timeout,
+                )
+                if response.status_code == 200:
+                    content = response.text
+                    markdown = self._format_readme(source, content, url, raw_url)
+                    return markdown, None
+            except requests.RequestException:
+                continue
+
+        return "", f"Could not find README for {url}"
+
+    def _format_readme(
+        self, source: dict[str, Any], content: str, orig_url: str, raw_url: str
+    ) -> str:
+        """Format README with metadata header."""
+        name = source.get("name", source["id"])
+        now = datetime.now(timezone.utc).isoformat()
+
+        header = f"""# {name}
+
+> Auto-fetched from [{orig_url}]({orig_url})
+> Raw source: [{raw_url}]({raw_url})
+> Last Updated: {now}
+
+---
+
+"""
+        return header + content
+
+
 class HTMLFetcher(BaseFetcher):
     """Fetches HTML pages and extracts documentation content."""
 
@@ -89,7 +142,9 @@ class HTMLFetcher(BaseFetcher):
                     for selector in selectors:
                         elements = soup.select(selector)
                         for el in elements:
-                            content_parts.append(el.get_text(separator="\n", strip=True))
+                            content_parts.append(
+                                el.get_text(separator="\n", strip=True)
+                            )
                     content = "\n\n".join(content_parts)
                 else:
                     # Try common documentation selectors
@@ -433,7 +488,11 @@ def load_index() -> dict[str, Any]:
     if not INDEX_FILE.exists():
         return {"status": "pending", "last_run": None, "sources": {}}
     with open(INDEX_FILE) as f:
-        return yaml.safe_load(f) or {"status": "pending", "last_run": None, "sources": {}}
+        return yaml.safe_load(f) or {
+            "status": "pending",
+            "last_run": None,
+            "sources": {},
+        }
 
 
 def save_index(index: dict[str, Any]) -> None:
@@ -448,6 +507,7 @@ def get_fetcher(source_type: str, config: dict[str, Any]) -> BaseFetcher | None:
         "html": HTMLFetcher,
         "json": JSONFetcher,
         "graphql_schema": GraphQLSchemaFetcher,
+        "github_readme": GitHubReadmeFetcher,
     }
     if source_type == "manual":
         return None  # Manual sources are skipped
@@ -507,7 +567,9 @@ def fetch_source(
         # Keep old file if exists, just update status
         index["sources"][source_id] = {
             "status": "failed",
-            "last_fetched": index.get("sources", {}).get(source_id, {}).get("last_fetched"),
+            "last_fetched": index.get("sources", {})
+            .get(source_id, {})
+            .get("last_fetched"),
             "error": error,
             "attempted": now,
         }
@@ -540,8 +602,12 @@ def main():
     parser = argparse.ArgumentParser(description="Fetch external documentation sources")
     parser.add_argument("--category", help="Fetch only sources in this category")
     parser.add_argument("--id", help="Fetch only source with this ID")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be fetched")
-    parser.add_argument("--force", action="store_true", help="Force re-fetch even if recent")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be fetched"
+    )
+    parser.add_argument(
+        "--force", action="store_true", help="Force re-fetch even if recent"
+    )
     args = parser.parse_args()
 
     print("=" * 60)

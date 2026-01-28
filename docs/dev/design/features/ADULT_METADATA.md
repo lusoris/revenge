@@ -1,5 +1,11 @@
 # Revenge - Adult Content Metadata System
 
+> ⚠️ **DEPRECATED**: This document has been merged into [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md).
+> See that document for the complete adult content architecture including metadata, privacy, API endpoints, and database schema.
+> This file is kept for reference during migration only.
+
+---
+
 > Complete metadata integration for adult content modules using Whisparr, Stash, and StashDB.
 
 ## Design Philosophy

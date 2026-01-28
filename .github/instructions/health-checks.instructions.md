@@ -235,3 +235,10 @@ cacheDuration: 100 * time.Millisecond // Overload on /health spam
 // ❌ Expose sensitive info
 return fmt.Errorf("connection failed: %s", password)
 ```
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
+- [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

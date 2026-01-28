@@ -54,27 +54,27 @@ install_go() {
         return 0
     fi
 
-    step "Installing Go 1.24..."
+    step "Installing Go 1.25..."
 
     case "$PKG_MANAGER" in
         brew)
-            brew install go@1.24 || brew install go
+            brew install go@1.25 || brew install go
             ;;
         apt)
             sudo apt update
             sudo apt install -y wget
-            wget https://go.dev/dl/go1.24.linux-amd64.tar.gz
+            wget https://go.dev/dl/go1.25.linux-amd64.tar.gz
             sudo rm -rf /usr/local/go
-            sudo tar -C /usr/local -xzf go1.24.linux-amd64.tar.gz
-            rm go1.24.linux-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.25.linux-amd64.tar.gz
+            rm go1.25.linux-amd64.tar.gz
             echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
             export PATH=$PATH:/usr/local/go/bin
             ;;
         yum)
             sudo yum install -y wget
-            wget https://go.dev/dl/go1.24.linux-amd64.tar.gz
-            sudo tar -C /usr/local -xzf go1.24.linux-amd64.tar.gz
-            rm go1.24.linux-amd64.tar.gz
+            wget https://go.dev/dl/go1.25.linux-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.25.linux-amd64.tar.gz
+            rm go1.25.linux-amd64.tar.gz
             echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
             export PATH=$PATH:/usr/local/go/bin
             ;;
@@ -82,7 +82,7 @@ install_go() {
             sudo pacman -Sy --noconfirm go
             ;;
         *)
-            error "Cannot auto-install Go. Please install Go 1.24 manually from https://go.dev/dl/"
+            error "Cannot auto-install Go. Please install Go 1.25 manually from https://go.dev/dl/"
             exit 1
             ;;
     esac

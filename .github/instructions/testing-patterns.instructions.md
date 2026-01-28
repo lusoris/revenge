@@ -406,6 +406,177 @@ go test -race ./...
 go test -race -v ./...
 ```
 
+---
+
+## Testify (Assertions)
+
+> Live Docs: [testify.md](../../docs/dev/sources/testing/testify.md)
+
+Use `testify/assert` for readable assertions, `testify/require` for fatal assertions:
+
+```go
+import (
+    "testing"
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/require"
+)
+
+func TestUserService(t *testing.T) {
+    svc := NewUserService(mockRepo)
+
+    // assert continues on failure
+    user, err := svc.GetUser(ctx, 1)
+    assert.NoError(t, err)
+    assert.Equal(t, "alice", user.Name)
+    assert.NotEmpty(t, user.Email)
+
+    // require stops on failure (use for setup)
+    db, err := setupTestDB(t)
+    require.NoError(t, err, "database setup failed")
+    require.NotNil(t, db)
+}
+```
+
+### Common Assertions
+
+```go
+// Equality
+assert.Equal(t, expected, actual)
+assert.NotEqual(t, a, b)
+
+// Nil checks
+assert.Nil(t, err)
+assert.NotNil(t, result)
+assert.NoError(t, err)
+assert.Error(t, err)
+assert.ErrorIs(t, err, ErrNotFound)
+
+// Boolean
+assert.True(t, ok)
+assert.False(t, failed)
+
+// Collections
+assert.Len(t, slice, 3)
+assert.Contains(t, slice, item)
+assert.Empty(t, slice)
+
+// Strings
+assert.Contains(t, str, "substring")
+assert.Regexp(t, `^\d+$`, str)
+```
+
+---
+
+## Testcontainers (Integration Tests)
+
+> Live Docs: [testcontainers.md](../../docs/dev/sources/testing/testcontainers.md)
+
+Use testcontainers for real database/service tests:
+
+```go
+//go:build integration
+
+package integration_test
+
+import (
+    "context"
+    "testing"
+
+    "github.com/stretchr/testify/require"
+    "github.com/testcontainers/testcontainers-go"
+    "github.com/testcontainers/testcontainers-go/modules/postgres"
+    "github.com/testcontainers/testcontainers-go/wait"
+)
+
+func TestWithPostgres(t *testing.T) {
+    ctx := context.Background()
+
+    // Start PostgreSQL container
+    pgContainer, err := postgres.Run(ctx,
+        "postgres:18-alpine",
+        postgres.WithDatabase("test_db"),
+        postgres.WithUsername("test"),
+        postgres.WithPassword("test"),
+        testcontainers.WithWaitStrategy(
+            wait.ForLog("database system is ready to accept connections").
+                WithOccurrence(2),
+        ),
+    )
+    require.NoError(t, err)
+    t.Cleanup(func() { pgContainer.Terminate(ctx) })
+
+    // Get connection string
+    connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
+    require.NoError(t, err)
+
+    // Run migrations
+    // ... use golang-migrate
+
+    // Test your code
+    repo := NewUserRepository(connStr)
+    user, err := repo.Create(ctx, &User{Name: "test"})
+    require.NoError(t, err)
+    assert.NotEmpty(t, user.ID)
+}
+```
+
+### Dragonfly/Redis Container
+
+```go
+func TestWithDragonfly(t *testing.T) {
+    ctx := context.Background()
+
+    container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+        ContainerRequest: testcontainers.ContainerRequest{
+            Image:        "docker.dragonflydb.io/dragonflydb/dragonfly:latest",
+            ExposedPorts: []string{"6379/tcp"},
+            WaitingFor:   wait.ForListeningPort("6379/tcp"),
+        },
+        Started: true,
+    })
+    require.NoError(t, err)
+    t.Cleanup(func() { container.Terminate(ctx) })
+
+    host, _ := container.Host(ctx)
+    port, _ := container.MappedPort(ctx, "6379")
+
+    // Connect with rueidis
+    client, err := rueidis.NewClient(rueidis.ClientOption{
+        InitAddress: []string{host + ":" + port.Port()},
+    })
+    require.NoError(t, err)
+
+    // Test caching logic
+}
+```
+
+### Typesense Container
+
+```go
+func TestWithTypesense(t *testing.T) {
+    ctx := context.Background()
+
+    container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+        ContainerRequest: testcontainers.ContainerRequest{
+            Image:        "typesense/typesense:30.0",
+            ExposedPorts: []string{"8108/tcp"},
+            Env: map[string]string{
+                "TYPESENSE_API_KEY":  "test-key",
+                "TYPESENSE_DATA_DIR": "/data",
+            },
+            WaitingFor: wait.ForHTTP("/health").WithPort("8108"),
+        },
+        Started: true,
+    })
+    require.NoError(t, err)
+    t.Cleanup(func() { container.Terminate(ctx) })
+
+    // Test search indexing
+}
+```
+
+---
+
 ## Test Organization
 
 ```
@@ -420,7 +591,7 @@ internal/
             └── user_test.go
 tests/
 └── integration/
-    ├── user_test.go      # Integration tests
+    ├── user_test.go      # Integration tests (//go:build integration)
     └── testdata/
         └── fixtures.sql
 ```
@@ -428,7 +599,7 @@ tests/
 ## Test Commands
 
 ```bash
-# All tests
+# All unit tests
 go test ./...
 
 # Specific package
@@ -446,6 +617,17 @@ go test -run TestUserService_GetUser ./...
 # Run matching tests
 go test -run "TestUser.*" ./...
 
-# Integration tests only
-go test -tags integration ./tests/integration/...
+# Integration tests only (requires Docker)
+go test -tags=integration ./tests/integration/...
+
+# With race detector (CI required)
+go test -race ./...
 ```
+
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index
+- [testify.md](../../docs/dev/sources/testing/testify.md) - Testify live docs
+- [testcontainers.md](../../docs/dev/sources/testing/testcontainers.md) - Testcontainers live docs

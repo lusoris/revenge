@@ -47,9 +47,9 @@ jobs:
           if [ -n "${{ inputs.source_id }}" ]; then
             ARGS="$ARGS --id ${{ inputs.source_id }}"
           fi
-          
+
           python scripts/fetch-sources.py $ARGS
-          
+
           # Check if there are changes
           if git diff --quiet docs/dev/sources/; then
             echo "changes=false" >> $GITHUB_OUTPUT

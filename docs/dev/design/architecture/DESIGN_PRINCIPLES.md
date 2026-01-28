@@ -34,27 +34,27 @@ func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request) {
 
 ### 2. Client Agnostic
 
-**Keine eigenen Clients entwickeln. Fremdclients unterstützen.**
+**Native API first. Protocol bridges for specialized clients.**
 
 | Client Type | Support Strategy |
 |-------------|------------------|
-| Web | SvelteKit WebUI (einzige Eigenentwicklung) |
-| Mobile | Jellyfin/Infuse/VLC via kompatible API |
-| TV | Jellyfin TV Apps, Kodi, Plex-kompatibel |
+| Web | SvelteKit WebUI (primary) |
+| Mobile | Native iOS/Android apps (planned), VLC via Direct Play |
+| TV | Android TV/Apple TV apps (planned), DLNA |
 | Desktop | VLC, mpv, IINA via Direct Play |
 
-**API Compatibility Layers:**
-- Jellyfin-compatible endpoints für existierende Apps
-- Subsonic API für Music Apps (DSub, Ultrasonic)
-- DLNA/UPnP für Smart TVs
-- Chromecast/AirPlay Support
+**Protocol Support:**
+- Revenge native API (OpenAPI spec-first)
+- Subsonic API for music apps (DSub, Ultrasonic, etc.)
+- DLNA/UPnP for Smart TVs and receivers
+- Chromecast/AirPlay for casting
 
 ```yaml
 api:
-  compatibility:
-    jellyfin: true      # Jellyfin client support
+  protocols:
     subsonic: true      # Music app support
     dlna: true          # Smart TV support
+    chromecast: true    # Cast support
 ```
 
 ### 3. Privacy by Default, Features by Choice

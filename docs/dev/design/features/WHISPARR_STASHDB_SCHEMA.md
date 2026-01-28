@@ -139,6 +139,22 @@ CREATE TABLE c.scenes (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Scene Fingerprints (pHash, oshash, MD5 for identification)
+CREATE TABLE c.scene_fingerprints (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    scene_id UUID NOT NULL REFERENCES c.scenes(id) ON DELETE CASCADE,
+    algorithm VARCHAR(20) NOT NULL,          -- 'phash', 'oshash', 'md5'
+    hash VARCHAR(64) NOT NULL,               -- Hash value
+    duration_seconds INT,                    -- Duration at time of hash (for validation)
+    source VARCHAR(50),                      -- 'stashdb', 'stashapp', 'local'
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(scene_id, algorithm),
+    UNIQUE(algorithm, hash)                  -- Same hash = same scene
+);
+
+-- Index for fast fingerprint lookups
+CREATE INDEX idx_scene_fingerprints_hash ON c.scene_fingerprints(algorithm, hash);
+
 -- Performers (actors/actresses)
 CREATE TABLE c.performers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -306,6 +322,98 @@ See [NSFW Toggle](NSFW_TOGGLE.md) for component details.
 | Performer | `c.performers` | `stashdb_id` |
 | Studio | `c.studios` | `stashdb_id` |
 | Tag | `c.tags` | `stashdb_id` |
+
+---
+
+## Perceptual Hashing (Scene Identification)
+
+### Hash Types
+
+| Algorithm | Purpose | Source |
+|-----------|---------|--------|
+| **pHash** (Perceptual Hash) | Visual fingerprint, tolerant to re-encoding | StashDB, Stash-App, local generation |
+| **oshash** | OpenSubtitles hash - fast file-based hash | Stash-App, local generation |
+| **MD5** | File integrity check | Local generation |
+
+### Fingerprint Fetch Flow
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                  Scene Fingerprint Flow                       │
+└──────────────────────────────────────────────────────────────┘
+
+1. Library Scan
+       │
+       ▼
+2. Check Stash-App (if configured)
+   └─→ Fetch existing fingerprints via GraphQL
+       │
+       ▼
+3. If no Stash-App OR missing hashes
+   └─→ Query StashDB by title/studio/duration
+       │
+       ▼
+4. If still missing
+   └─→ Generate locally (pHash, oshash, MD5)
+       │
+       ▼
+5. Store in c.scene_fingerprints
+```
+
+### Fingerprint Matching
+
+```go
+// FingerprintService handles scene identification via hashes
+type FingerprintService struct {
+    db          *pgxpool.Pool
+    stashClient *StashAppClient
+    stashDB     *StashDBClient
+}
+
+// IdentifyScene tries to identify a scene by its fingerprints
+func (s *FingerprintService) IdentifyScene(ctx context.Context, filePath string) (*Scene, error) {
+    // 1. Generate local fingerprints
+    phash, _ := s.generatePHash(filePath)
+    oshash, _ := s.generateOsHash(filePath)
+
+    // 2. Check local database
+    if scene, err := s.findByFingerprint(ctx, "phash", phash); err == nil {
+        return scene, nil
+    }
+
+    // 3. Check Stash-App (if configured)
+    if s.stashClient != nil {
+        if match, err := s.stashClient.FindSceneByFingerprint(ctx, phash, oshash); err == nil {
+            return s.importFromStashApp(ctx, match)
+        }
+    }
+
+    // 4. Check StashDB
+    if match, err := s.stashDB.FindSceneByFingerprint(ctx, phash); err == nil {
+        return s.importFromStashDB(ctx, match)
+    }
+
+    return nil, ErrSceneNotIdentified
+}
+```
+
+### pHash Generation
+
+```go
+// GeneratePHash creates a perceptual hash from video frames
+func (s *FingerprintService) generatePHash(filePath string) (string, error) {
+    // Extract keyframes using ffmpeg
+    frames, err := extractKeyframes(filePath, 8) // 8 frames
+    if err != nil {
+        return "", err
+    }
+
+    // Generate pHash from combined frames
+    // Uses same algorithm as StashDB for compatibility
+    hash := goimagehash.PerceptionHash(frames)
+    return hash.ToString(), nil
+}
+```
 
 ---
 

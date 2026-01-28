@@ -54,13 +54,13 @@ function Install-Go {
         return
     }
 
-    Write-Step "Installing Go 1.24..."
+    Write-Step "Installing Go 1.25..."
 
     $pkgManager = Get-PackageManager
 
     switch ($pkgManager) {
         "winget" {
-            winget install GoLang.Go.1.24
+            winget install GoLang.Go.1.25
         }
         "choco" {
             choco install golang -y

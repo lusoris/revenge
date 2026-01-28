@@ -41,12 +41,21 @@ github.com/knadh/koanf/v2            // Configuration
 go.uber.org/fx                       // Dependency injection
 
 // Infrastructure
-github.com/redis/go-redis/v9         // Dragonfly/Redis client
-github.com/typesense/typesense-go/v4 // Search client
+github.com/redis/rueidis             // Dragonfly/Redis client (14x faster than go-redis)
+github.com/maypok86/otter            // W-TinyLFU local cache
+github.com/viccon/sturdyc            // API response caching with coalescing
+github.com/typesense/typesense-go/v3 // Search client
 github.com/riverqueue/river          // Job queue
 
 // API
 github.com/ogen-go/ogen              // OpenAPI code generation
+
+// HTTP & WebSocket
+resty.dev/v3                         // HTTP client (metadata providers)
+github.com/coder/websocket           // WebSocket (Watch Party, live updates)
+
+// Media Processing
+github.com/fsnotify/fsnotify         // File system watching
 
 // Database
 github.com/golang-migrate/migrate/v4 // Migrations
@@ -56,7 +65,7 @@ github.com/golang-migrate/migrate/v4 // Migrations
 
 ## Module Overview
 
-### Content Modules (11)
+### Content Modules (12)
 
 | Module | Schema | Description |
 |--------|--------|-------------|
@@ -68,6 +77,7 @@ github.com/golang-migrate/migrate/v4 // Migrations
 | `podcast` | public | Podcasts, episodes |
 | `photo` | public | Photos, albums |
 | `livetv` | public | Channels, programs, DVR recordings |
+| `comics` | public | Comics, manga, graphic novels |
 | `collection` | public | Cross-module collections (video/audio pools) |
 | `adult_movie` | c | Adult movies, scenes |
 | `adult_show` | c | Adult series, seasons, episodes |
@@ -694,7 +704,7 @@ Each content module typically has:
 | Job queue | River (PostgreSQL-native) |
 | API docs | ogen (OpenAPI spec-first) |
 | Migrations | Per-module folders |
-| Cache | Dragonfly (go-redis/v9) |
+| Cache | Dragonfly (rueidis) + otter (local) + sturdyc (API) |
 | Search | Typesense (per-module collections) |
 | Frontend | SvelteKit 2 + Tailwind CSS 4 |
 | Deployment | Docker Compose (primary) |
