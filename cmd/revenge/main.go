@@ -18,9 +18,15 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/handlers"
 	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
+	"github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/genre"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/oidc"
+	"github.com/lusoris/revenge/internal/service/playback"
 	"github.com/lusoris/revenge/internal/service/rating"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/pkg/config"
@@ -46,12 +52,18 @@ func main() {
 
 		// Infrastructure modules
 		database.Module,
+		cache.Module,
+		jobs.Module,
+		search.Module,
 
 		// Service modules
 		auth.Module,
 		user.Module,
 		library.Module,
 		rating.Module,
+		genre.Module,
+		oidc.Module,
+		playback.Module,
 
 		// API modules
 		fx.Provide(
@@ -60,6 +72,8 @@ func main() {
 			handlers.NewUserHandler,
 			handlers.NewLibraryHandler,
 			handlers.NewRatingHandler,
+			handlers.NewGenreHandler,
+			handlers.NewOIDCHandler,
 		),
 
 		// HTTP modules
@@ -96,7 +110,7 @@ func NewLogger(cfg *config.Config) *slog.Logger {
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	logger.Info("Revenge Go starting",
+	logger.Info("Revenge starting",
 		slog.String("version", Version),
 		slog.String("build_time", BuildTime),
 		slog.String("git_commit", GitCommit),
@@ -133,34 +147,89 @@ func RegisterRoutes(
 	mux *http.ServeMux,
 	logger *slog.Logger,
 	pool *pgxpool.Pool,
+	cacheClient *cache.Client,
+	searchClient *search.Client,
 	authMiddleware *middleware.Auth,
 	authHandler *handlers.AuthHandler,
 	userHandler *handlers.UserHandler,
 	libraryHandler *handlers.LibraryHandler,
 	ratingHandler *handlers.RatingHandler,
+	genreHandler *handlers.GenreHandler,
+	oidcHandler *handlers.OIDCHandler,
 ) {
 	// Health check endpoints (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("OK")) //nolint:errcheck // best-effort write
+		_, _ = w.Write([]byte("OK"))
 	})
 
-	// Readiness check - verifies database connectivity
+	// Readiness check - verifies database and cache connectivity
 	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
+		// Check database
 		if err := database.HealthCheck(r.Context(), pool); err != nil {
-			logger.Error("Readiness check failed", slog.Any("error", err))
+			logger.Error("Database readiness check failed", slog.Any("error", err))
 			http.Error(w, "Database not ready", http.StatusServiceUnavailable)
 			return
 		}
+
+		// Check cache
+		if err := cacheClient.Ping(r.Context()); err != nil {
+			logger.Warn("Cache readiness check failed", slog.Any("error", err))
+			// Cache failure is not critical, just log warning
+		}
+
+		// Check search
+		if err := searchClient.Health(r.Context()); err != nil {
+			logger.Warn("Search readiness check failed", slog.Any("error", err))
+			// Search failure is not critical, just log warning
+		}
+
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("Ready")) //nolint:errcheck // best-effort write
+		_, _ = w.Write([]byte("Ready"))
+	})
+
+	// Full health check with detailed status
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		status := map[string]any{
+			"status":  "healthy",
+			"version": Version,
+			"checks":  map[string]string{},
+		}
+		checks := status["checks"].(map[string]string)
+
+		// Database
+		if err := database.HealthCheck(r.Context(), pool); err != nil {
+			checks["database"] = "unhealthy: " + err.Error()
+			status["status"] = "degraded"
+		} else {
+			checks["database"] = "healthy"
+		}
+
+		// Cache
+		if err := cacheClient.Ping(r.Context()); err != nil {
+			checks["cache"] = "unhealthy: " + err.Error()
+			status["status"] = "degraded"
+		} else {
+			checks["cache"] = "healthy"
+		}
+
+		// Search
+		if err := searchClient.Health(r.Context()); err != nil {
+			checks["search"] = "unhealthy: " + err.Error()
+			status["status"] = "degraded"
+		} else {
+			checks["search"] = "healthy"
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(status)
 	})
 
 	// Database stats endpoint
 	mux.HandleFunc("GET /health/db", func(w http.ResponseWriter, r *http.Request) {
 		stats := database.Stats(pool)
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(stats) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(stats)
 	})
 
 	// Version endpoint with structured response
@@ -172,7 +241,7 @@ func RegisterRoutes(
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(version) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(version)
 	})
 
 	// Auth endpoints
@@ -196,12 +265,20 @@ func RegisterRoutes(
 	// Rating endpoints
 	ratingHandler.RegisterRoutes(mux, authMiddleware)
 
+	// Genre endpoints
+	genreHandler.RegisterRoutes(mux, authMiddleware)
+
+	// OIDC endpoints
+	oidcHandler.RegisterRoutes(mux, authMiddleware)
+
 	logger.Info("Routes registered",
 		slog.Int("auth_routes", 4),
 		slog.Int("user_routes", 7),
 		slog.Int("library_routes", 6),
 		slog.Int("rating_routes", 7),
-		slog.Int("health_routes", 3),
+		slog.Int("genre_routes", 4),
+		slog.Int("oidc_routes", 4),
+		slog.Int("health_routes", 4),
 	)
 }
 

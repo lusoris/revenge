@@ -1,4 +1,12 @@
 // Package domain contains core business entities and repository interfaces.
+//
+// DEPRECATED: MediaItem and related types in this file are deprecated.
+// Use module-specific entities in internal/content/{module}/entity.go instead.
+// Each content module (movie, tvshow, music, etc.) has its own isolated tables
+// and entities as per the architecture documentation.
+//
+// This file is kept for backwards compatibility during migration.
+// New code should use the module-specific types.
 package domain
 
 import (
