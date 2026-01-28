@@ -1,0 +1,1147 @@
+# Revenge - Player Architecture
+
+> Unified web player for video and audio with native streaming and transcode fallback.
+
+## Overview
+
+Revenge's WebUI uses a custom-built unified player that handles:
+- **Video**: Movies, TV episodes, Live TV
+- **Audio**: Music tracks, audiobooks, podcasts
+- **Direct Play**: Native browser playback when codecs match
+- **Adaptive Streaming**: HLS/DASH with quality switching
+- **Advanced Features**: Gapless, crossfade, synced lyrics, visualizations
+
+---
+
+## Design Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Player Architecture** | Unified player with mode switching | One codebase, consistent UI, optimal for each content type |
+| **Streaming Protocol** | HLS primary, DASH fallback | HLS = Safari native, DASH = modern codec support |
+| **Quality Switching** | Seamless on-the-fly via Blackbeard | Best UX, no playback interruption |
+| **Gapless Audio** | Intelligent prefetch + Web Audio API | Preload 30s before end, cache adjacent tracks |
+| **Crossfade** | True overlapping crossfade | Dual gain nodes, professional audio experience |
+| **Subtitles** | External WebVTT + internal container tracks | Blackbeard extracts, browser renders |
+| **Controls** | Custom UI (SvelteKit 2 components) | Full control, accessibility built-in |
+| **iOS Safari** | Graceful degradation | Core features work, advanced features degrade |
+
+---
+
+## Player Components
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      Revenge Player Stack                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │                   Player Manager                           │  │
+│  │  (Unified interface, mode switching)                      │  │
+│  └───────────────────────────────────────────────────────────┘  │
+│         │                                │                       │
+│         ▼                                ▼                       │
+│  ┌──────────────┐                ┌─────────────────┐           │
+│  │ Video Mode   │                │   Audio Mode    │           │
+│  │ - Shaka      │                │ - Web Audio API │           │
+│  │ - hls.js     │                │ - Howler.js     │           │
+│  └──────────────┘                └─────────────────┘           │
+│         │                                │                       │
+│         └────────────┬───────────────────┘                       │
+│                      ▼                                           │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              Stream Manager                              │   │
+│  │  - Protocol selection (HLS/DASH/Progressive)            │   │
+│  │  - Direct Play detection                                │   │
+│  │  - Blackbeard communication                             │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                      │                                           │
+│                      ▼                                           │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              UI Components                               │   │
+│  │  - Custom controls, seek bar, volume                    │   │
+│  │  - Lyrics overlay, visualizations                       │   │
+│  │  - Quality selector, subtitle selector                  │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Streaming Strategy
+
+### Decision Tree
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Playback Request                                    │
+└─────────────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+        ┌────────────────────────────────┐
+        │ Check Client Capabilities      │
+        │ (codecs, containers, features) │
+        └────────────────────────────────┘
+                         │
+        ┌────────────────┴────────────────┐
+        ▼                                 ▼
+┌──────────────────┐            ┌──────────────────┐
+│ Codecs Match?    │            │ Container Match? │
+│ H.264/AAC/Opus   │            │ MP4/WebM         │
+└──────────────────┘            └──────────────────┘
+        │                                 │
+   YES  │  NO                        YES  │  NO
+        ▼                                 ▼
+┌──────────────────┐            ┌──────────────────┐
+│ DIRECT PLAY      │            │ DIRECT STREAM    │
+│ - No Blackbeard  │            │ - Remux only     │
+│ - Progressive    │            │ - No transcode   │
+│ - Seek: Range    │            │ - Fast start     │
+└──────────────────┘            └──────────────────┘
+                         │
+                         │ (Codec/Container mismatch)
+                         ▼
+                ┌──────────────────┐
+                │ TRANSCODE        │
+                │ - via Blackbeard │
+                │ - HLS/DASH       │
+                │ - Quality ladder │
+                └──────────────────┘
+```
+
+### Capability Detection
+
+```typescript
+// internal/service/playback/capabilities.go
+type ClientCapabilities struct {
+    // Video codecs
+    VideoCodecs []string // ["h264", "hevc", "vp9", "av1"]
+    
+    // Audio codecs
+    AudioCodecs []string // ["aac", "mp3", "opus", "flac"]
+    
+    // Containers
+    Containers  []string // ["mp4", "webm", "mkv"]
+    
+    // Features
+    Features struct {
+        HLS         bool
+        DASH        bool
+        MSE         bool  // Media Source Extensions
+        WebAudio    bool
+        PiP         bool
+        Chromecast  bool
+    }
+    
+    // Quality preferences
+    MaxResolution  string  // "4k", "1080p", etc.
+    MaxBitrate     int     // kbps
+    PreferredCodec string  // User preference
+}
+
+// Detect from User-Agent + explicit probing
+func DetectCapabilities(ctx context.Context, userAgent string) ClientCapabilities {
+    caps := ClientCapabilities{}
+    
+    // Browser detection
+    browser := parseUserAgent(userAgent)
+    
+    switch {
+    case browser.IsSafari():
+        caps.VideoCodecs = []string{"h264"}  // No HEVC in Safari (yet)
+        caps.AudioCodecs = []string{"aac", "mp3"}
+        caps.Containers = []string{"mp4"}
+        caps.Features.HLS = true  // Safari native HLS
+        
+    case browser.IsChrome() || browser.IsEdge():
+        caps.VideoCodecs = []string{"h264", "vp9", "av1"}
+        caps.AudioCodecs = []string{"aac", "mp3", "opus"}
+        caps.Containers = []string{"mp4", "webm"}
+        caps.Features.HLS = false  // Use hls.js
+        caps.Features.DASH = true
+        caps.Features.MSE = true
+        
+    case browser.IsFirefox():
+        caps.VideoCodecs = []string{"h264", "vp9", "av1"}
+        caps.AudioCodecs = []string{"aac", "mp3", "opus", "flac"}
+        caps.Containers = []string{"mp4", "webm"}
+        caps.Features.DASH = true
+        caps.Features.MSE = true
+    }
+    
+    return caps
+}
+```
+
+---
+
+## HLS vs DASH
+
+### Comparison
+
+| Aspect | HLS | DASH |
+|--------|-----|------|
+| **Browser Support** | Safari native, others need hls.js | Chrome/Firefox native, Safari needs Shaka |
+| **Codec Support** | H.264/AAC primary | H.264/HEVC/VP9/AV1/Opus |
+| **Manifest** | .m3u8 (simple text) | .mpd (XML, complex) |
+| **Segment Format** | .ts or fMP4 | fMP4 (fragmented MP4) |
+| **Quality Switching** | Bandwidth-based | More flexible (bitrate/resolution/codec) |
+| **DRM** | FairPlay (Apple) | Widevine (Google), PlayReady (MS) |
+| **Maturity** | Older, battle-tested | Newer, more features |
+
+### Strategy: HLS Primary, DASH Fallback
+
+```typescript
+// Playback protocol selection
+function selectProtocol(capabilities: ClientCapabilities, media: MediaInfo): Protocol {
+    // Safari: Always HLS (native)
+    if (capabilities.Features.HLS && isSafari()) {
+        return Protocol.HLS;
+    }
+    
+    // Modern codecs (AV1, HEVC): Prefer DASH
+    if (media.codec === 'av1' || media.codec === 'hevc') {
+        if (capabilities.Features.DASH) {
+            return Protocol.DASH;
+        }
+    }
+    
+    // Default: HLS with hls.js
+    return Protocol.HLS;
+}
+```
+
+### Error Handling & Failover
+
+```typescript
+class StreamManager {
+    private protocols = [Protocol.HLS, Protocol.DASH, Protocol.Progressive];
+    private currentProtocolIndex = 0;
+    
+    async playMedia(mediaId: string): Promise<void> {
+        const protocol = this.protocols[this.currentProtocolIndex];
+        
+        try {
+            const streamUrl = await this.getStreamUrl(mediaId, protocol);
+            await this.player.load(streamUrl, protocol);
+        } catch (error) {
+            console.warn(`Failed to play with ${protocol}, trying fallback`, error);
+            
+            // Try next protocol
+            this.currentProtocolIndex++;
+            if (this.currentProtocolIndex < this.protocols.length) {
+                return this.playMedia(mediaId);  // Recursive retry
+            }
+            
+            throw new Error('All streaming protocols failed');
+        }
+    }
+}
+```
+
+---
+
+## Video Player Implementation
+
+### Library: Shaka Player + hls.js
+
+**Shaka Player** (v4.8+): DASH support, DRM, advanced features  
+**hls.js** (v1.5+): HLS support for non-Safari browsers
+
+```typescript
+// lib/player/VideoPlayer.ts
+import shaka from 'shaka-player';
+import Hls from 'hls.js';
+
+export class VideoPlayer {
+    private video: HTMLVideoElement;
+    private shakaPlayer: shaka.Player | null = null;
+    private hlsPlayer: Hls | null = null;
+    private currentProtocol: Protocol;
+    
+    constructor(videoElement: HTMLVideoElement) {
+        this.video = videoElement;
+    }
+    
+    async loadStream(url: string, protocol: Protocol): Promise<void> {
+        this.cleanup();
+        
+        switch (protocol) {
+            case Protocol.HLS:
+                if (this.video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Safari native HLS
+                    this.video.src = url;
+                    await this.video.play();
+                } else {
+                    // hls.js for other browsers
+                    await this.loadHLS(url);
+                }
+                break;
+                
+            case Protocol.DASH:
+                await this.loadDASH(url);
+                break;
+                
+            case Protocol.Progressive:
+                this.video.src = url;
+                await this.video.play();
+                break;
+        }
+    }
+    
+    private async loadHLS(url: string): Promise<void> {
+        if (!Hls.isSupported()) {
+            throw new Error('HLS not supported');
+        }
+        
+        this.hlsPlayer = new Hls({
+            maxBufferLength: 30,      // 30 second buffer
+            maxMaxBufferLength: 600,  // Max 10 min
+            startLevel: -1,           // Auto quality
+            enableWorker: true,       // Use Web Worker
+        });
+        
+        this.hlsPlayer.loadSource(url);
+        this.hlsPlayer.attachMedia(this.video);
+        
+        // Quality change handling
+        this.hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => {
+            this.video.play();
+        });
+        
+        // Error handling with retry
+        this.hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
+            if (data.fatal) {
+                this.handleHLSError(data);
+            }
+        });
+    }
+    
+    private async loadDASH(url: string): Promise<void> {
+        this.shakaPlayer = new shaka.Player(this.video);
+        
+        // Configure
+        this.shakaPlayer.configure({
+            streaming: {
+                bufferingGoal: 30,
+                rebufferingGoal: 2,
+                bufferBehind: 30,
+            },
+            abr: {
+                enabled: true,
+                defaultBandwidthEstimate: 5000000, // 5 Mbps
+            },
+        });
+        
+        await this.shakaPlayer.load(url);
+        await this.video.play();
+    }
+    
+    // Quality switching
+    async setQuality(qualityId: string): Promise<void> {
+        if (this.shakaPlayer) {
+            const tracks = this.shakaPlayer.getVariantTracks();
+            const track = tracks.find(t => t.id === qualityId);
+            if (track) {
+                this.shakaPlayer.selectVariantTrack(track, true);
+            }
+        } else if (this.hlsPlayer) {
+            const levelIndex = parseInt(qualityId);
+            this.hlsPlayer.currentLevel = levelIndex;
+        }
+    }
+    
+    private cleanup(): void {
+        if (this.shakaPlayer) {
+            this.shakaPlayer.destroy();
+            this.shakaPlayer = null;
+        }
+        if (this.hlsPlayer) {
+            this.hlsPlayer.destroy();
+            this.hlsPlayer = null;
+        }
+    }
+}
+```
+
+---
+
+## Audio Player Implementation
+
+### Library: Web Audio API + Howler.js
+
+**Web Audio API**: Low-level, gapless, crossfade, visualization  
+**Howler.js** (v2.2+): High-level wrapper, format support
+
+```typescript
+// lib/player/AudioPlayer.ts
+import { Howl, Howler } from 'howler';
+
+export class AudioPlayer {
+    private audioContext: AudioContext;
+    private currentTrack: Howl | null = null;
+    private nextTrack: Howl | null = null;
+    private queue: Track[] = [];
+    private currentIndex = 0;
+    
+    // Crossfade
+    private crossfadeDuration = 5000; // 5 seconds
+    
+    // Gapless prefetch
+    private prefetchThreshold = 30; // Prefetch 30s before end
+    
+    constructor() {
+        this.audioContext = new AudioContext();
+    }
+    
+    async playTrack(track: Track, startTime = 0): Promise<void> {
+        // Stop current if playing
+        if (this.currentTrack) {
+            this.currentTrack.stop();
+        }
+        
+        this.currentTrack = new Howl({
+            src: [track.url],
+            format: [track.format], // 'mp3', 'flac', 'opus'
+            html5: false,  // Use Web Audio API
+            volume: 1.0,
+            onload: () => this.onTrackLoaded(),
+            onplay: () => this.onTrackPlay(),
+            onend: () => this.onTrackEnd(),
+        });
+        
+        if (startTime > 0) {
+            this.currentTrack.seek(startTime);
+        }
+        
+        this.currentTrack.play();
+        
+        // Start prefetch timer
+        this.startPrefetchTimer();
+    }
+    
+    // Gapless: Prefetch next track
+    private startPrefetchTimer(): void {
+        const checkInterval = 1000; // Check every second
+        
+        const timer = setInterval(() => {
+            if (!this.currentTrack) {
+                clearInterval(timer);
+                return;
+            }
+            
+            const duration = this.currentTrack.duration();
+            const position = this.currentTrack.seek() as number;
+            const remaining = duration - position;
+            
+            if (remaining <= this.prefetchThreshold && !this.nextTrack) {
+                this.prefetchNextTrack();
+            }
+            
+            // Crossfade trigger
+            if (remaining <= (this.crossfadeDuration / 1000) && this.nextTrack) {
+                this.startCrossfade();
+            }
+        }, checkInterval);
+    }
+    
+    private async prefetchNextTrack(): Promise<void> {
+        const nextInQueue = this.queue[this.currentIndex + 1];
+        if (!nextInQueue) return;
+        
+        console.log('Prefetching next track:', nextInQueue.title);
+        
+        this.nextTrack = new Howl({
+            src: [nextInQueue.url],
+            format: [nextInQueue.format],
+            html5: false,
+            volume: 0, // Start silent
+            preload: true,
+        });
+        
+        // Also prefetch track after next (minimal)
+        this.prefetchAdjacentTracks();
+    }
+    
+    // Intelligent caching: Fetch minimal data for track+2 and track-1
+    private async prefetchAdjacentTracks(): Promise<void> {
+        const prevTrack = this.queue[this.currentIndex - 1];
+        const nextNext = this.queue[this.currentIndex + 2];
+        
+        // Prefetch just the first 5 seconds
+        if (prevTrack) {
+            await this.partialPrefetch(prevTrack.url, 0, 5);
+        }
+        if (nextNext) {
+            await this.partialPrefetch(nextNext.url, 0, 5);
+        }
+    }
+    
+    private async partialPrefetch(url: string, start: number, duration: number): Promise<void> {
+        // Use HTTP Range request to fetch only partial audio
+        const response = await fetch(url, {
+            headers: {
+                'Range': `bytes=0-${start + duration * 128000 / 8}`, // Rough estimate
+            },
+        });
+        const blob = await response.blob();
+        // Cache in memory/IndexedDB
+        await cacheAudioChunk(url, blob);
+    }
+    
+    // True overlapping crossfade
+    private startCrossfade(): void {
+        if (!this.currentTrack || !this.nextTrack) return;
+        
+        const steps = 50;
+        const stepTime = this.crossfadeDuration / steps;
+        let currentStep = 0;
+        
+        // Start next track at 0 volume
+        this.nextTrack.play();
+        
+        const interval = setInterval(() => {
+            currentStep++;
+            const progress = currentStep / steps;
+            
+            // Fade out current
+            this.currentTrack!.volume(1 - progress);
+            
+            // Fade in next
+            this.nextTrack!.volume(progress);
+            
+            if (currentStep >= steps) {
+                clearInterval(interval);
+                
+                // Swap references
+                this.currentTrack?.stop();
+                this.currentTrack = this.nextTrack;
+                this.nextTrack = null;
+                this.currentIndex++;
+                
+                // Start prefetch timer for new current
+                this.startPrefetchTimer();
+            }
+        }, stepTime);
+    }
+    
+    // No crossfade - instant gapless
+    private onTrackEnd(): void {
+        if (this.nextTrack) {
+            this.currentTrack = this.nextTrack;
+            this.nextTrack = null;
+            this.currentIndex++;
+            
+            this.currentTrack.volume(1.0);
+            this.currentTrack.play();
+            
+            this.startPrefetchTimer();
+        } else {
+            // Queue ended
+            this.onQueueEnd();
+        }
+    }
+}
+```
+
+---
+
+## Synced Lyrics
+
+### Data Model
+
+```sql
+CREATE TABLE track_lyrics (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    track_id UUID NOT NULL REFERENCES tracks(id),
+    language VARCHAR(10) DEFAULT 'en',
+    sync_type VARCHAR(20) NOT NULL,  -- 'line', 'word', 'unsynced'
+    lyrics_json JSONB NOT NULL,      -- [{time_ms: 1000, text: "Line"}, ...]
+    source VARCHAR(50),               -- 'lrclib', 'embedded', 'manual'
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### LRC Format Support
+
+```typescript
+// Parse LRC file format
+interface LyricLine {
+    timeMs: number;
+    text: string;
+}
+
+function parseLRC(lrcContent: string): LyricLine[] {
+    const lines = lrcContent.split('\n');
+    const lyrics: LyricLine[] = [];
+    
+    const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
+    
+    for (const line of lines) {
+        const matches = Array.from(line.matchAll(timeRegex));
+        if (matches.length === 0) continue;
+        
+        const text = line.replace(timeRegex, '').trim();
+        
+        for (const match of matches) {
+            const minutes = parseInt(match[1]);
+            const seconds = parseInt(match[2]);
+            const centiseconds = parseInt(match[3].padEnd(3, '0'));
+            
+            const timeMs = (minutes * 60 + seconds) * 1000 + centiseconds;
+            
+            lyrics.push({ timeMs, text });
+        }
+    }
+    
+    return lyrics.sort((a, b) => a.timeMs - b.timeMs);
+}
+```
+
+### Lyrics Display Component
+
+```svelte
+<!-- components/LyricsOverlay.svelte -->
+<script lang="ts">
+    import { onMount, onDestroy } from 'svelte';
+    import { fade } from 'svelte/transition';
+    
+    export let lyrics: LyricLine[];
+    export let currentTime: number; // In seconds
+    
+    let currentLineIndex = -1;
+    let previousLineIndex = -1;
+    
+    $: {
+        // Find current line based on time
+        const timeMs = currentTime * 1000;
+        const index = lyrics.findIndex((line, i) => {
+            const nextLine = lyrics[i + 1];
+            return line.timeMs <= timeMs && (!nextLine || nextLine.timeMs > timeMs);
+        });
+        
+        if (index !== currentLineIndex) {
+            previousLineIndex = currentLineIndex;
+            currentLineIndex = index;
+        }
+    }
+    
+    function getLineClass(index: number): string {
+        if (index === currentLineIndex) return 'current';
+        if (index === previousLineIndex) return 'previous';
+        if (index === currentLineIndex + 1) return 'next';
+        return 'future';
+    }
+</script>
+
+<div class="lyrics-container">
+    {#each lyrics as line, i}
+        <div
+            class="lyric-line {getLineClass(i)}"
+            class:active={i === currentLineIndex}
+            in:fade={{ duration: 300 }}
+        >
+            {line.text}
+        </div>
+    {/each}
+</div>
+
+<style>
+    .lyrics-container {
+        position: absolute;
+        bottom: 80px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        pointer-events: none;
+    }
+    
+    .lyric-line {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+        opacity: 0.4;
+        transition: all 0.3s ease;
+    }
+    
+    .lyric-line.current {
+        font-size: 1.5rem;
+        opacity: 1;
+        font-weight: 600;
+        color: var(--accent-color);
+    }
+    
+    .lyric-line.previous {
+        opacity: 0.6;
+    }
+    
+    .lyric-line.next {
+        opacity: 0.5;
+    }
+</style>
+```
+
+---
+
+## Audio Visualization
+
+### Canvas-based Visualizer
+
+```typescript
+// lib/player/AudioVisualizer.ts
+export class AudioVisualizer {
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private analyser: AnalyserNode;
+    private dataArray: Uint8Array;
+    private animationId: number | null = null;
+    
+    constructor(canvas: HTMLCanvasElement, audioContext: AudioContext, source: MediaElementAudioSourceNode) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d')!;
+        
+        // Create analyser
+        this.analyser = audioContext.createAnalyser();
+        this.analyser.fftSize = 2048;
+        const bufferLength = this.analyser.frequencyBinCount;
+        this.dataArray = new Uint8Array(bufferLength);
+        
+        // Connect audio
+        source.connect(this.analyser);
+        this.analyser.connect(audioContext.destination);
+    }
+    
+    start(): void {
+        this.draw();
+    }
+    
+    stop(): void {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+    }
+    
+    private draw = (): void => {
+        this.animationId = requestAnimationFrame(this.draw);
+        
+        this.analyser.getByteFrequencyData(this.dataArray);
+        
+        const { width, height } = this.canvas;
+        this.ctx.clearRect(0, 0, width, height);
+        
+        // Draw bars
+        const barWidth = (width / this.dataArray.length) * 2.5;
+        let x = 0;
+        
+        for (let i = 0; i < this.dataArray.length; i++) {
+            const barHeight = (this.dataArray[i] / 255) * height;
+            
+            // Gradient color based on frequency
+            const hue = (i / this.dataArray.length) * 360;
+            this.ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+            
+            this.ctx.fillRect(x, height - barHeight, barWidth, barHeight);
+            x += barWidth + 1;
+        }
+    };
+}
+```
+
+### Fanart-based Visualization (Alternative)
+
+```svelte
+<!-- components/FanartVisualizer.svelte -->
+<script lang="ts">
+    export let fanartUrl: string;
+    export let audioData: Uint8Array; // From analyser
+    
+    let scale = 1;
+    let rotation = 0;
+    
+    $: if (audioData) {
+        // Calculate average volume
+        const average = audioData.reduce((a, b) => a + b, 0) / audioData.length;
+        scale = 1 + (average / 255) * 0.3; // Pulse with beat
+        rotation += average / 1000; // Slow rotate
+    }
+</script>
+
+<div class="fanart-visualizer">
+    <img
+        src={fanartUrl}
+        alt="Album art"
+        style="
+            transform: scale({scale}) rotate({rotation}deg);
+            filter: blur({Math.max(0, scale - 1) * 20}px);
+        "
+    />
+    <div class="overlay" />
+</div>
+
+<style>
+    .fanart-visualizer {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+    }
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.1s ease-out, filter 0.1s ease-out;
+    }
+    
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    }
+</style>
+```
+
+---
+
+## Subtitle Support
+
+### External WebVTT
+
+```typescript
+// Blackbeard extracts subtitles from container
+GET /api/v1/playback/{mediaId}/subtitles/{trackIndex}.vtt
+
+// Add to video element
+const track = document.createElement('track');
+track.kind = 'subtitles';
+track.label = 'English';
+track.srclang = 'en';
+track.src = subtitleUrl;
+videoElement.appendChild(track);
+```
+
+### Internal Subtitle Tracks (from Container)
+
+```go
+// Blackbeard extracts subtitle streams without transcoding
+type SubtitleTrack struct {
+    Index    int    `json:"index"`
+    Codec    string `json:"codec"`    // "srt", "ass", "pgs"
+    Language string `json:"language"`
+    Title    string `json:"title"`
+    Default  bool   `json:"default"`
+    Forced   bool   `json:"forced"`
+}
+
+// Extract with FFmpeg
+ffmpeg -i input.mkv -map 0:s:0 -c copy subtitle.srt
+```
+
+### Styling
+
+```css
+/* Custom subtitle styling */
+::cue {
+    font-family: var(--font-sans);
+    font-size: 1.2rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0.2em 0.5em;
+}
+
+::cue(.large) {
+    font-size: 1.5rem;
+}
+```
+
+---
+
+## Quality Switching
+
+### User Settings
+
+```typescript
+interface QualitySettings {
+    // Video
+    maxVideoQuality: '4k' | '1080p' | '720p' | '480p' | '360p';
+    preferredCodec: 'h264' | 'hevc' | 'av1' | 'auto';
+    
+    // Audio
+    maxAudioQuality: 'lossless' | 'high' | 'normal' | 'low';
+    
+    // Bandwidth
+    maxBitrate: number; // kbps, 0 = unlimited
+    adaptiveBitrate: boolean;
+    
+    // Network
+    wifiQuality: 'high' | 'auto';
+    cellularQuality: 'low' | 'off';
+}
+```
+
+### Seamless Quality Switch
+
+```typescript
+// Client sends quality change request
+async function changeQuality(newQuality: string): Promise<void> {
+    const currentTime = videoPlayer.getCurrentTime();
+    
+    // Send request to Blackbeard via WebSocket
+    ws.send(JSON.stringify({
+        type: 'quality_change',
+        mediaId: currentMediaId,
+        quality: newQuality,
+        position: currentTime,
+    }));
+    
+    // Blackbeard responds with new stream URL
+    // Switch happens without stopping playback
+}
+
+// WebSocket handler in Blackbeard
+func (s *StreamService) HandleQualityChange(req QualityChangeRequest) {
+    // Get current stream session
+    session := s.sessions[req.SessionID]
+    
+    // Start new transcode with new quality
+    newStream := s.StartTranscode(req.MediaID, req.Quality, req.Position)
+    
+    // Seamless handoff: Buffer overlap
+    session.AddStream(newStream, req.Position)
+    
+    // Response with new segment URLs
+    s.SendResponse(session.ClientID, &QualityChangeResponse{
+        NewManifestURL: newStream.ManifestURL,
+        SwitchAtSegment: calculateSwitchPoint(req.Position),
+    })
+}
+```
+
+---
+
+## iOS Safari Limitations & Graceful Degradation
+
+| Feature | Desktop | iOS Safari | Degradation |
+|---------|---------|------------|-------------|
+| **Gapless Playback** | ✅ Full | ⚠️ Limited | Small gap acceptable |
+| **Crossfade** | ✅ Full | ❌ Not supported | Disable, use instant switch |
+| **Picture-in-Picture** | ✅ Full | ✅ Native | Works |
+| **Background Playback** | ✅ Full | ❌ Requires app | Pause when tab inactive |
+| **Multiple Streams** | ✅ Full | ❌ One at a time | Block multiple videos |
+| **Autoplay** | ✅ With user gesture | ⚠️ Restricted | Require explicit play button |
+| **Custom Controls** | ✅ Full | ✅ Full | Works |
+
+```typescript
+// Feature detection
+const features = {
+    gapless: !isSafari() || !isIOS(),
+    crossfade: !isSafari() || !isIOS(),
+    backgroundPlay: !isIOS(),
+    autoplay: checkAutoplaySupport(),
+};
+
+// Adjust player behavior
+if (!features.crossfade) {
+    audioPlayer.setCrossfade(false);
+}
+```
+
+---
+
+## Performance Optimizations
+
+### 1. Web Workers for Audio Processing
+
+```typescript
+// audio-worker.ts
+self.addEventListener('message', (e) => {
+    const { type, data } = e.data;
+    
+    switch (type) {
+        case 'analyze':
+            const analysis = analyzeAudioBuffer(data);
+            self.postMessage({ type: 'analysis', data: analysis });
+            break;
+    }
+});
+```
+
+### 2. IndexedDB for Offline Caching
+
+```typescript
+class AudioCache {
+    private db: IDBDatabase;
+    
+    async cacheTrack(trackId: string, blob: Blob): Promise<void> {
+        const tx = this.db.transaction('tracks', 'readwrite');
+        const store = tx.objectStore('tracks');
+        
+        await store.put({ id: trackId, data: blob, cached: Date.now() });
+    }
+    
+    async getTrack(trackId: string): Promise<Blob | null> {
+        const tx = this.db.transaction('tracks', 'readonly');
+        const store = tx.objectStore('tracks');
+        
+        const result = await store.get(trackId);
+        return result?.data || null;
+    }
+}
+```
+
+### 3. Request Prioritization
+
+```typescript
+// High priority: Current track
+// Medium: Next track
+// Low: Adjacent tracks (prefetch)
+
+class RequestQueue {
+    private highPriorityQueue: Request[] = [];
+    private mediumPriorityQueue: Request[] = [];
+    private lowPriorityQueue: Request[] = [];
+    
+    async fetch(priority: 'high' | 'medium' | 'low'): Promise<void> {
+        const queue = this[`${priority}PriorityQueue`];
+        // Process queues in order
+    }
+}
+```
+
+---
+
+## Custom UI Controls
+
+### Control Bar Components
+
+```svelte
+<!-- components/PlayerControls.svelte -->
+<script lang="ts">
+    export let isPlaying: boolean;
+    export let currentTime: number;
+    export let duration: number;
+    export let volume: number;
+    export let showLyrics: boolean;
+    export let showVisualizer: boolean;
+    
+    export let onPlayPause: () => void;
+    export let onSeek: (time: number) => void;
+    export let onVolumeChange: (vol: number) => void;
+    export let onToggleLyrics: () => void;
+    export let onToggleVisualizer: () => void;
+</script>
+
+<div class="player-controls">
+    <!-- Play/Pause -->
+    <button on:click={onPlayPause} aria-label={isPlaying ? 'Pause' : 'Play'}>
+        {#if isPlaying}
+            <PauseIcon />
+        {:else}
+            <PlayIcon />
+        {/if}
+    </button>
+    
+    <!-- Seek Bar -->
+    <div class="seek-bar">
+        <span class="time">{formatTime(currentTime)}</span>
+        <input
+            type="range"
+            min="0"
+            max={duration}
+            value={currentTime}
+            on:input={(e) => onSeek(e.target.value)}
+            aria-label="Seek"
+        />
+        <span class="time">{formatTime(duration)}</span>
+    </div>
+    
+    <!-- Volume -->
+    <div class="volume-control">
+        <button aria-label="Mute">
+            <VolumeIcon />
+        </button>
+        <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            on:input={(e) => onVolumeChange(e.target.value)}
+            aria-label="Volume"
+        />
+    </div>
+    
+    <!-- Audio-specific controls -->
+    {#if audioMode}
+        <button on:click={onToggleLyrics} class:active={showLyrics}>
+            <LyricsIcon />
+        </button>
+        <button on:click={onToggleVisualizer} class:active={showVisualizer}>
+            <VisualizerIcon />
+        </button>
+    {/if}
+    
+    <!-- Video-specific controls -->
+    {#if videoMode}
+        <button on:click={onToggleSubtitles}>
+            <SubtitlesIcon />
+        </button>
+        <button on:click={onToggleFullscreen}>
+            <FullscreenIcon />
+        </button>
+    {/if}
+    
+    <!-- Quality Selector -->
+    <QualityMenu bind:currentQuality />
+</div>
+```
+
+---
+
+## Architecture Summary
+
+```yaml
+Player Architecture:
+  Core:
+    - Unified player manager (video + audio modes)
+    - Custom UI controls (full accessibility)
+    - Seamless protocol failover (HLS → DASH → Progressive)
+    
+  Video:
+    - Shaka Player (DASH)
+    - hls.js (HLS for non-Safari)
+    - Native <video> (Safari HLS, Direct Play)
+    
+  Audio:
+    - Web Audio API (gapless, crossfade)
+    - Howler.js (high-level wrapper)
+    - Intelligent prefetch (30s before end + adjacent tracks)
+    
+  Streaming:
+    - Direct Play: Native browser (H.264/AAC in MP4)
+    - Direct Stream: Remux only (via Blackbeard)
+    - Transcode: HLS/DASH multi-quality (via Blackbeard)
+    
+  Features:
+    - Synced lyrics (LRC format)
+    - Audio visualization (Canvas API + fanart effects)
+    - Subtitle support (WebVTT external + container extraction)
+    - Quality switching (seamless via WebSocket)
+    - iOS graceful degradation
+    
+  Performance:
+    - Web Workers for processing
+    - IndexedDB for caching
+    - Request prioritization (current > next > adjacent)
+```
+
+---
+
+## Next Steps
+
+1. **Implement Core Player** - Video + Audio managers
+2. **Stream Protocol Handler** - HLS/DASH with failover
+3. **UI Components** - Controls, lyrics, visualizer
+4. **Blackbeard Integration** - WebSocket quality switching
+5. **Testing** - Browser compatibility matrix
+6. **Documentation** - Client integration guide for Jellyfin/etc.

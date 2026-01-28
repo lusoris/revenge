@@ -95,8 +95,9 @@ CREATE TABLE user_activity (
 | Component | Version Policy | Current |
 |-----------|---------------|---------|
 | Go | Latest stable | 1.25 |
-| PostgreSQL | Latest stable | 18 |
-| Dependencies | Latest stable, actively maintained | See go.mod |
+| PostgreSQL | Latest stable | 18+ || Frontend | SvelteKit (latest stable) | 2 |
+| UI Library | Tailwind CSS (latest stable) | 4 |
+| Search | Typesense (latest stable) | 0.25+ || Dependencies | Latest stable, actively maintained | See go.mod |
 
 **Forbidden:**
 - Alpha/Beta releases in production
@@ -128,7 +129,7 @@ ml:
   enabled: false
   provider: ollama  # ollama, localai, etc.
   endpoint: http://localhost:11434
-  
+
   features:
     recommendations: true
     semantic_search: true
@@ -207,11 +208,11 @@ CREATE TABLE profiles (
     pin_hash VARCHAR(255),  -- Optional PIN for profile
     max_maturity VARCHAR(20),  -- G, PG, PG-13, R, NC-17
     language VARCHAR(10) DEFAULT 'en',
-    
+
     -- Preferences
     autoplay_next BOOLEAN DEFAULT true,
     autoplay_previews BOOLEAN DEFAULT false,
-    
+
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(user_id, name)
 );
@@ -242,18 +243,67 @@ class GaplessPlayer {
   private audioContext: AudioContext;
   private currentSource: AudioBufferSourceNode | null = null;
   private nextBuffer: AudioBuffer | null = null;
-  
+
   async preloadNext(url: string): Promise<void> {
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
     this.nextBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
   }
-  
+
   crossfadeTo(nextTrack: AudioBuffer, duration: number): void {
     // Fade out current, fade in next using gain nodes
   }
 }
 ```
+
+**Frontend Stack:**
+- Framework: **SvelteKit 2**
+- UI Library: **Tailwind CSS 4** + shadcn-svelte
+- Player: Unified (Shaka/hls.js for video, Web Audio API for audio)
+- State Management: Svelte Stores (client) + TanStack Query (server)
+
+---
+
+### 9. External Transcoding
+
+**Revenge NEVER transcodes internally. All transcoding via Blackbeard.**
+
+| Rule | Implementation |
+|------|----------------|
+| No FFmpeg in Revenge | Blackbeard handles all transcoding |
+| Stream proxy only | Revenge proxies for access control & tracking |
+| Scalable | Multiple Blackbeard instances possible |
+| Replaceable | Swap transcoder without touching Revenge |
+
+**Why:**
+- **Revenge stays lean** - No heavy codec dependencies (FFmpeg ~200MB)
+- **Scalable transcoding** - Spin up Blackbeard instances as needed
+- **Regional deployment** - Blackbeard near storage, Revenge near users
+- **GPU optimization** - Blackbeard uses hardware acceleration without affecting Revenge
+
+**Architecture:**
+```
+Client → Revenge (Auth, Session, Proxy) → Blackbeard (Transcode) → Storage
+         ↑                                                            ↓
+         └────────────── Stream flows through Revenge ───────────────┘
+```
+
+**Blackbeard APIs (internal):**
+- `POST /transcode/start` - Request transcoded stream
+- `GET /transcode/{id}/master.m3u8` - HLS manifest
+- `GET /transcode/{id}/{segment}.ts` - Video segment
+- `DELETE /transcode/{id}` - Stop transcoding, cleanup
+
+**Revenge APIs (client-facing):**
+- `GET /stream/{sessionId}/master.m3u8` - Proxied HLS manifest
+- `GET /stream/{sessionId}/{segment}.ts` - Proxied video segment
+- `WebSocket /playback/{sessionId}` - Quality switching, position tracking
+
+**Benefits:**
+- Centralized access control (all streams via Revenge)
+- Progress tracking (Revenge knows what client watches)
+- Bandwidth monitoring (measure actual throughput)
+- Session management (pause, seek, stop)
 
 ---
 
@@ -283,6 +333,8 @@ class GaplessPlayer {
 | 2026-01-28 | Encrypted activity tracking | Privacy + features (Wrapped) |
 | 2026-01-28 | Resource-aware background jobs | Don't overload home servers |
 | 2026-01-28 | WebUI with full player features | Primary interface |
+| 2026-01-28 | External transcoding (Blackbeard) | Keep Revenge lean, scalable |
+| 2026-01-28 | SvelteKit 2 + Tailwind CSS 4 | Modern, fast, accessible WebUI |
 
 ---
 
@@ -301,6 +353,7 @@ class GaplessPlayer {
 │  6. Resource Aware        - Background tasks respect load      │
 │  7. Profile Multi-User    - Netflix model (User → Profiles)    │
 │  8. Full WebUI Player     - Gapless, crossfade, PiP, Cast      │
+│  9. External Transcoding  - Delegate to Blackbeard service     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

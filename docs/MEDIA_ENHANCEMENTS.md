@@ -97,12 +97,12 @@ cinema:
     enabled: true
     max_prerolls: 2
     mode: random  # random, sequential, weighted
-    
+
   intermission:
     enabled: true
     auto_suggest_above_minutes: 150
     duration_seconds: 300
-    
+
   postroll:
     up_next:
       enabled: true

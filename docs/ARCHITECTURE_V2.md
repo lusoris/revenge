@@ -79,6 +79,7 @@ github.com/golang-migrate/migrate/v4 // Migrations
 | Component | Description |
 |-----------|-------------|
 | `users` | User accounts, authentication |
+| `profiles` | User profiles under accounts (Netflix-style) |
 | `sessions` | Active sessions, devices |
 | `libraries` | Library definitions (links to modules) |
 | `api_keys` | External API authentication |
@@ -723,9 +724,9 @@ web/
         ui/              # shadcn-svelte components
         media/           # Media cards, players
         admin/           # Admin-specific components
-      stores/            # Svelte stores
-      api/               # Generated API client
-      utils/             # Helpers
+      stores/            # Svelte stores (auth, theme, playback)
+      api/               # Generated API client from OpenAPI
+      utils/             # Helpers, formatters
     routes/
       (app)/
         (admin)/         # Admin panel (/admin/...)
@@ -737,15 +738,32 @@ web/
           movies/
           shows/
           music/
-        (player)/        # Video/audio player
+        (player)/        # Video/audio player (gapless, crossfade)
       (auth)/            # Login, register, OIDC
-      api/               # API routes (BFF)
+      api/               # API routes (BFF pattern)
     app.css
     app.html
   static/
   tailwind.config.ts
   svelte.config.js
 ```
+
+### Player Features (WebUI)
+
+| Feature | Implementation |
+|---------|----------------|
+| Gapless audio | Web Audio API, 30s prefetch + instant switch |
+| Crossfade | Dual gain nodes, 5s overlapping crossfade |
+| Synced lyrics | LRC format, binary search lookup |
+| Visualizations | Canvas frequency bars OR fanart pulse effects |
+| Quality switching | Seamless via WebSocket to Blackbeard |
+| Subtitles | WebVTT external + container extraction |
+| WebSocket sync | Watch Party, position tracking, quality changes |
+
+**Technology:**
+- Video: Shaka Player (DASH) + hls.js (HLS for non-Safari)
+- Audio: Web Audio API + Howler.js wrapper
+- Streaming: HLS primary, DASH fallback, Progressive last resort
 
 ### Role-Based Access Control (RBAC)
 

@@ -81,12 +81,12 @@ type ContinueWatching struct {
     Duration      time.Duration
     Progress      float64        // 0.0 - 1.0
     LastWatched   time.Time
-    
+
     // Context
     NextEpisode   *MediaItem     // For TV shows
     SeasonNumber  int
     EpisodeNumber int
-    
+
     // Display
     ThumbnailURL  string         // Frame at position
     TimeRemaining time.Duration
@@ -114,7 +114,7 @@ playback:
     trigger_after_episodes: 3      # Ask after X consecutive episodes
     trigger_after_hours: 4         # Or after X hours
     inactivity_minutes: 90         # No input for 90 min
-    
+
     # Exceptions
     skip_for_music: true
     skip_for_audiobooks: true
@@ -245,7 +245,7 @@ audio:
     enabled: true
     duration_ms: 5000        # 5 second crossfade
     curve: equal_power       # linear, equal_power, logarithmic
-    
+
     # Smart crossfade
     disable_for_gapless: true
     disable_for_same_album: true
@@ -290,16 +290,16 @@ CREATE TABLE track_lyrics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     track_id UUID NOT NULL REFERENCES tracks(id),
     language VARCHAR(10) DEFAULT 'en',
-    
+
     -- Sync types
     sync_type VARCHAR(20) NOT NULL,  -- line, word, unsynced
-    
+
     -- Content
     lyrics_json JSONB NOT NULL,  -- [{time_ms, text}, ...]
-    
+
     -- Source
     source VARCHAR(50),  -- lrclib, musixmatch, genius, manual
-    
+
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```
@@ -421,7 +421,7 @@ Multiple profiles per account with separate preferences.
 | Recommendations | Personalized per profile |
 
 ```sql
-CREATE TABLE user_profiles (
+CREATE TABLE profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id),
     name VARCHAR(100) NOT NULL,
@@ -465,16 +465,16 @@ type WatchParty struct {
     ID           uuid.UUID
     HostUserID   uuid.UUID
     MediaItemID  uuid.UUID
-    
+
     // Sync state
     PlaybackState  string        // playing, paused
     Position       time.Duration
     LastSyncAt     time.Time
-    
+
     // Participants
     Participants   []PartyMember
     MaxParticipants int          // Default 8
-    
+
     // Features
     ChatEnabled    bool
     ReactionsEnabled bool
@@ -510,20 +510,24 @@ See what friends are watching/listening to.
 ```sql
 CREATE TABLE activity_feed (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id),
+    profile_id UUID NOT NULL REFERENCES profiles(id),
     activity_type VARCHAR(50) NOT NULL,  -- watching, finished, rated, added_to_list
     media_item_id UUID NOT NULL,
-    metadata JSONB,  -- rating value, list name, etc.
-    is_public BOOLEAN DEFAULT true,
+    -- ENCRYPTED activity metadata (AES-256-GCM)
+    activity_data BYTEA NOT NULL,  -- Encrypted JSON: {rating, list_name, etc.}
+    is_public BOOLEAN DEFAULT false,  -- Privacy by default
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Encryption key derived from user's master key
+-- Master key encrypted with user password (see DESIGN_PRINCIPLES.md)
 ```
 
 **Privacy controls:**
-- Share nothing
+- Share nothing (default)
 - Share with friends only
 - Share publicly
-- Exclude specific content types
+- Exclude specific content types (adult, specific genres)
 
 ---
 
@@ -568,12 +572,12 @@ downloads:
   wifi_only: true
   storage_limit_gb: 10
   quality: high
-  
+
   smart_downloads:
     enabled: true
     max_episodes: 3      # Keep 3 episodes ahead
     auto_delete_watched: true
-    
+
   expiry:
     enabled: true
     days: 30             # Downloads expire after 30 days
