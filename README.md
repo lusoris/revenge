@@ -9,6 +9,25 @@
 
 A ground-up media server built in Go with a fully modular architecture. Each content type (movies, shows, music, etc.) is completely isolated with its own tables, services, and handlers.
 
+**⚠️ EARLY DEVELOPMENT**: Core infrastructure ready, content modules in development. See [TODO.md](TODO.md) for roadmap.
+
+## 📊 Current Status (2026-01-29)
+
+**Implementation**: ~15% complete (infrastructure layer solid, business logic in progress)
+
+- ✅ **Core Infrastructure** (60%): Database, cache, search, job queue clients
+- ✅ **Advanced Utilities** (100%): Resilience, supervision, graceful shutdown, health checks
+- 🚧 **Content Modules** (0%): Movie, TV, music modules in development
+- 🚧 **Background Workers** (0%): River workers infrastructure ready
+- 🚧 **Frontend** (0%): SvelteKit WebUI planned
+- 📋 **API Layer** (0%): OpenAPI specs + ogen in progress
+
+**Reports**:
+- [Architecture Compliance](ARCHITECTURE_COMPLIANCE_ANALYSIS.md) - 65% conformance
+- [Core Functionality](CORE_FUNCTIONALITY_ANALYSIS.md) - Missing workers/services analysis
+- [Design Extraction](DESIGN_TODOS_EXTRACTION.md) - 100+ components to implement
+- [Comprehensive Analysis](COMPREHENSIVE_ANALYSIS_FINAL.md) - Complete status report
+
 ## 📋 Design Principles
 
 - **Performance First** - UX never blocked by backend tasks

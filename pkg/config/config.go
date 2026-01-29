@@ -58,8 +58,9 @@ type OIDCProviderConfig struct {
 
 // ServerConfig holds server-related configuration
 type ServerConfig struct {
-	Host string `koanf:"host"`
-	Port int    `koanf:"port"`
+	Host            string `koanf:"host"`
+	Port            int    `koanf:"port"`
+	ShutdownTimeout int    `koanf:"shutdown_timeout"` // Shutdown timeout in seconds (default: 30)
 }
 
 // DatabaseConfig holds PostgreSQL configuration (REQUIRED)

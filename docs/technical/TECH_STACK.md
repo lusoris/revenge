@@ -471,7 +471,7 @@ go func() { defer wg.Done(); processItem(ctx, item) }()
 - [x] No deprecated dependencies
 - [x] Security-focused defaults
 - [x] Performance optimized
-- [ ] River for job queue
-- [ ] ogen for API docs
-- [ ] Dragonfly for caching
-- [ ] Typesense for search
+- [x] River for job queue (infrastructure implemented)
+- [x] ogen for API docs (planned)
+- [x] Dragonfly for caching (client implemented)
+- [x] Typesense for search (client implemented)

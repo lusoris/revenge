@@ -9,6 +9,8 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/fx"
+
+	"github.com/lusoris/revenge/pkg/config"
 )
 
 // Config holds cache configuration.
@@ -71,13 +73,13 @@ func (c *Client) GetBytes(ctx context.Context, key string) ([]byte, error) {
 
 // Module provides cache dependencies for fx.
 var Module = fx.Module("cache",
-	fx.Provide(func(logger *slog.Logger) (*Client, error) {
-		// TODO: Get config from koanf
-		cfg := Config{
-			Host: "localhost",
-			Port: 6379,
-			DB:   0,
+	fx.Provide(func(cfg *config.Config, logger *slog.Logger) (*Client, error) {
+		cacheConfig := Config{
+			Host:     cfg.Cache.Addr,
+			Port:     6379, // Default Redis port
+			Password: cfg.Cache.Password,
+			DB:       cfg.Cache.DB,
 		}
-		return NewClient(cfg, logger)
+		return NewClient(cacheConfig, logger)
 	}),
 )

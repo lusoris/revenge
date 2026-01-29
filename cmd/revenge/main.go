@@ -8,8 +8,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -18,12 +16,20 @@ import (
 
 	"github.com/lusoris/revenge/internal/api/handlers"
 	"github.com/lusoris/revenge/internal/api/middleware"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
+	"github.com/lusoris/revenge/internal/infra/jobs"
+	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/auth"
+	"github.com/lusoris/revenge/internal/service/genre"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/oidc"
+	"github.com/lusoris/revenge/internal/service/playback"
 	"github.com/lusoris/revenge/internal/service/rating"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/pkg/config"
+	"github.com/lusoris/revenge/pkg/graceful"
+	"github.com/lusoris/revenge/pkg/health"
 )
 
 var (
@@ -42,16 +48,24 @@ func main() {
 		fx.Provide(
 			config.New,
 			NewLogger,
+			NewHealthChecker,
+			NewShutdowner,
 		),
 
 		// Infrastructure modules
 		database.Module,
+		cache.Module,
+		search.Module,
+		jobs.Module,
 
 		// Service modules
 		auth.Module,
 		user.Module,
 		library.Module,
 		rating.Module,
+		oidc.Module,
+		genre.Module,
+		playback.Module,
 
 		// API modules
 		fx.Provide(
@@ -68,6 +82,8 @@ func main() {
 			NewServer,
 		),
 		fx.Invoke(RegisterRoutes),
+		fx.Invoke(RegisterHealthChecks),
+		fx.Invoke(StartShutdowner),
 		fx.Invoke(RunServer),
 	)
 
@@ -105,6 +121,20 @@ func NewLogger(cfg *config.Config) *slog.Logger {
 	return logger
 }
 
+// NewHealthChecker creates a health checker with proper configuration
+func NewHealthChecker(logger *slog.Logger) *health.Checker {
+	return health.NewChecker(logger)
+}
+
+// NewShutdowner creates a graceful shutdown handler
+func NewShutdowner(cfg *config.Config, logger *slog.Logger) *graceful.Shutdowner {
+	shutdownCfg := graceful.DefaultShutdownConfig()
+	if cfg.Server.ShutdownTimeout > 0 {
+		shutdownCfg.Timeout = time.Duration(cfg.Server.ShutdownTimeout) * time.Second
+	}
+	return graceful.NewShutdowner(shutdownCfg, logger)
+}
+
 // parseLogLevel converts string to slog.Level
 func parseLogLevel(level string) slog.Level {
 	switch level {
@@ -133,27 +163,41 @@ func RegisterRoutes(
 	mux *http.ServeMux,
 	logger *slog.Logger,
 	pool *pgxpool.Pool,
+	checker *health.Checker,
 	authMiddleware *middleware.Auth,
 	authHandler *handlers.AuthHandler,
 	userHandler *handlers.UserHandler,
 	libraryHandler *handlers.LibraryHandler,
 	ratingHandler *handlers.RatingHandler,
 ) {
-	// Health check endpoints (Go 1.22+ pattern matching)
+	// Health check endpoints using pkg/health (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("OK")) //nolint:errcheck // best-effort write
 	})
 
-	// Readiness check - verifies database connectivity
+	// Readiness check - comprehensive health check
 	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
-		if err := database.HealthCheck(r.Context(), pool); err != nil {
-			logger.Error("Readiness check failed", slog.Any("error", err))
-			http.Error(w, "Database not ready", http.StatusServiceUnavailable)
-			return
+		status := checker.Check(r.Context())
+
+		w.Header().Set("Content-Type", "application/json")
+
+		if status.Status == health.StatusHealthy {
+			w.WriteHeader(http.StatusOK)
+		} else if status.Status == health.StatusDegraded {
+			w.WriteHeader(http.StatusOK) // Still operational but degraded
+		} else {
+			w.WriteHeader(http.StatusServiceUnavailable)
 		}
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("Ready")) //nolint:errcheck // best-effort write
+
+		_ = json.NewEncoder(w).Encode(status) //nolint:errcheck // best-effort encode
+	})
+
+	// Detailed health status endpoint
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		status := checker.Check(r.Context())
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(status) //nolint:errcheck // best-effort encode
 	})
 
 	// Database stats endpoint
@@ -201,8 +245,32 @@ func RegisterRoutes(
 		slog.Int("user_routes", 7),
 		slog.Int("library_routes", 6),
 		slog.Int("rating_routes", 7),
-		slog.Int("health_routes", 3),
+		slog.Int("health_routes", 4),
 	)
+}
+
+// RegisterHealthChecks registers all health checks with the checker
+func RegisterHealthChecks(
+	checker *health.Checker,
+	pool *pgxpool.Pool,
+	logger *slog.Logger,
+) {
+	// Database health check (critical)
+	checker.RegisterFunc("database", health.CategoryCritical, func(ctx context.Context) error {
+		return database.HealthCheck(ctx, pool)
+	})
+
+	// Cache health check (warm) - TODO: add once cache client is available
+	// checker.RegisterFunc("cache", health.CategoryWarm, func(ctx context.Context) error {
+	//     return cacheClient.Ping(ctx).Err()
+	// })
+
+	// Search health check (cold) - TODO: add once search client is available
+	// checker.RegisterFunc("search", health.CategoryCold, func(ctx context.Context) error {
+	//     return searchClient.Health(ctx)
+	// })
+
+	logger.Info("Health checks registered", slog.Int("count", 1))
 }
 
 // NewServer creates a new HTTP server with modern settings
@@ -223,8 +291,25 @@ func NewServer(mux *http.ServeMux, cfg *config.Config, logger *slog.Logger) *htt
 	return srv
 }
 
+// StartShutdowner initializes graceful shutdown handling
+func StartShutdowner(lifecycle fx.Lifecycle, shutdowner *graceful.Shutdowner, logger *slog.Logger) {
+	lifecycle.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			shutdowner.Start()
+			logger.Info("Graceful shutdown handler started")
+			return nil
+		},
+	})
+}
+
 // RunServer starts the HTTP server with graceful shutdown
-func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *slog.Logger) {
+func RunServer(lifecycle fx.Lifecycle, srv *http.Server, shutdowner *graceful.Shutdowner, logger *slog.Logger) {
+	// Register server shutdown hook
+	shutdowner.RegisterFunc("http_server", 100, func(ctx context.Context) error {
+		logger.Info("Shutting down HTTP server")
+		return srv.Shutdown(ctx)
+	})
+
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
@@ -237,27 +322,9 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, logger *slog.Logger) {
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
-			logger.Info("Shutting down HTTP server")
-
-			shutdownCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-			defer cancel()
-
-			if err := srv.Shutdown(shutdownCtx); err != nil {
-				logger.Error("Server shutdown error", slog.Any("error", err))
-				return err
-			}
-
-			logger.Info("Server stopped gracefully")
+			// Fx handles this, but we trigger our graceful shutdown
+			shutdowner.Trigger()
 			return nil
 		},
 	})
-
-	// Setup signal handling
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-	go func() {
-		<-quit
-		logger.Info("Received shutdown signal")
-	}()
 }

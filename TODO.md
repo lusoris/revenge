@@ -1,53 +1,286 @@
-# Revenge - Project TODO
+# Revenge - Development Roadmap
 
 > Modular media server with complete content isolation
 
-**Last Updated**: 2026-01-28
-**Current Focus**: Phase 1.1 - Documentation restructuring (51% complete)
-
-## Architecture
-
-See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for the complete modular design.
+**Last Updated**: 2026-01-29
+**Current Phase**: Foundation (Week 1-2)
+**Implementation Status**: 15% complete
 
 ---
 
-## Documentation Restructuring (Phase 1.1 - IN PROGRESS)
+## 📊 Quick Links
 
-**Progress**: 37 of 72 service files complete (51%)
+- 📐 [Architecture](docs/ARCHITECTURE_V2.md) - Complete system design
+- 📋 [Analysis Reports](#analysis-reports) - Current status
+- 🎯 [Current Sprint](#current-sprint-week-1) - What we're working on now
+- 🗺️ [Roadmap](#roadmap-overview) - 16-week plan to MVP
 
-### Completed (37 files):
-- ✅ REQUEST_SYSTEM.md (enhanced with adult isolation)
-- ✅ Servarr services (5): RADARR, SONARR, LIDARR, WHISPARR, READARR
-- ✅ Metadata/video services (4): TMDB, THETVDB, OMDB, THEPOSTERDB
-- ✅ Metadata/music services (4): MUSICBRAINZ, LASTFM, SPOTIFY, DISCOGS
-- ✅ Metadata/books services (4): GOODREADS, OPENLIBRARY, AUDIBLE, HARDCOVER
-- ✅ Metadata/comics services (3): COMICVINE, MARVEL_API, GRAND_COMICS_DATABASE
-- ✅ Metadata/adult services (3): STASHDB, THEPORNDB, STASH
-- ✅ Wiki/normal services (3): WIKIPEDIA, FANDOM, TVTROPES
-- ✅ Wiki/adult services (3): BABEPEDIA, IAFD, BOOBPEDIA
-- ✅ Scrobbling services (5): TRAKT, LASTFM_SCROBBLE, LISTENBRAINZ, LETTERBOXD, SIMKL
-- ✅ External/adult platforms (4): FREEONES, THENUDE, PORNHUB, ONLYFANS
+---
 
-### Pending (35 files):
-- ⏳ External/adult platforms (2): Twitter/X, Instagram (performer social media)
-- ⏳ Anime services (3): ANILIST, MYANIMELIST, KITSU
-- ⏳ Auth services (4): AUTHELIA, AUTHENTIK, KEYCLOAK, GENERIC_OIDC
-- ⏳ Audiobook service (1): AUDIOBOOKSHELF
-- ⏳ Transcoding service (1): BLACKBEARD
-- ⏳ LiveTV services (2): TVHEADEND, NEXTPVR
-- ⏳ Casting services (2): CHROMECAST, DLNA
-- ⏳ Infrastructure services (4): POSTGRESQL, DRAGONFLY, TYPESENSE, RIVER
-- ⏳ Additional services (16): Home Assistant, notification systems, etc.
+## Analysis Reports
 
-### Pending INDEX files (17):
-- ⏳ 11 category INDEX.md files
-- ⏳ 5 subcategory INDEX.md files
-- ⏳ 1 wiki/adult INDEX.md
-- ⏳ 1 master integrations/INDEX.md
+- [Architecture Compliance](ARCHITECTURE_COMPLIANCE_ANALYSIS.md) - 65% conformance score
+- [Advanced Features Integration](ADVANCED_FEATURES_INTEGRATION_ANALYSIS.md) - 10% integration score
+- [Core Functionality Analysis](CORE_FUNCTIONALITY_ANALYSIS.md) - Missing workers/services
+- [Design TODOs Extraction](DESIGN_TODOS_EXTRACTION.md) - 100+ components to implement
+- [Documentation Cleanup](DOCUMENTATION_CLEANUP_REPORT.md) - 264+ outdated TODOs removed
+- [Comprehensive Analysis](COMPREHENSIVE_ANALYSIS_FINAL.md) - Complete status report
 
-**Important Notes**:
-- **Ratings separation**: External ratings (IMDb, Rotten Tomatoes, etc.) display as-is in UI, user ratings sync with Trakt/Simkl separately (NO merge/bias)
-- **Adult content isolation**: All adult files use `c` schema + `/api/v1/c/` namespace + `internal/content/c/` module location
+---
+
+## Roadmap Overview
+
+```
+Week 1-2:  Foundation (P0)       ████████░░░░░░░░░░░░░░░░ 35%
+Week 3-4:  Movie Module (P1)     ░░░░░░░░░░░░░░░░░░░░░░░░  0%
+Week 4-8:  Modules + Frontend    ░░░░░░░░░░░░░░░░░░░░░░░░  0%
+Week 5-8:  Features (P2)         ░░░░░░░░░░░░░░░░░░░░░░░░  0%
+Week 8+:   Extended (P3)         ░░░░░░░░░░░░░░░░░░░░░░░░  0%
+```
+
+**Target**: MVP in 16 weeks with 3-4 developers
+
+---
+
+## 🎯 Current Sprint (Week 1)
+
+### Day 1: Foundation Setup (TODAY)
+
+#### Step 1: Immediate Fixes (2 hours) ⚡ PRIORITY
+- [x] **Module Registration** (15 min) ✅ DONE
+  - [x] Add missing modules to main.go: cache, search, jobs, oidc, genre, playback
+  - [x] Test application starts without errors
+  - **File**: `cmd/revenge/main.go`
+
+- [x] **Configuration Loading** (45 min) ✅ DONE
+  - [x] Fix hardcoded cache address in `internal/infra/cache/cache.go`
+  - [x] Fix hardcoded search address in `internal/infra/search/search.go`
+  - [x] Config structs already exist in `pkg/config/config.go`
+  - [x] Config files already properly configured
+
+- [x] **Dependencies Update** (10 min) ✅ DONE
+  - [x] `go get github.com/typesense/typesense-go/v4@latest`
+  - [x] `go get github.com/ogen-go/ogen@latest`
+  - [x] `go mod tidy`
+
+- [x] **Basic Integration** (45 min) ✅ DONE
+  - [x] Wire pkg/health Checker to main.go
+  - [x] Wire pkg/graceful Shutdowner to main.go
+  - [x] Register health checks for database, cache, search
+  - [x] Add ShutdownTimeout to ServerConfig
+  - [ ] Test /health endpoints (manual verification needed)
+#### Step 2: Shared Migrations (2 hours) ✅ DONE
+- [x] `000006_genres.up.sql` - Global genres table with common genres
+- [x] `000007_server_settings.up.sql` - Persisted server configuration
+- [x] `000008_activity_log.up.sql` - Audit logging with severity levels
+- [x] `000009_content_ratings.up.sql` - MPAA, FSK, PEGI, BBFC ratings
+- [x] Create corresponding .down.sql files
+- [ ] Test migrations up/down (needs running PostgreSQL)
+
+#### Step 3: Session Service (2 hours)
+- [ ] Create `internal/service/session/service.go`
+- [ ] Implement Create, Validate, Invalidate methods
+- [ ] Add cache integration
+- [ ] Wire to main.go
+- [ ] Update auth handlers to use session service
+
+### Day 2-3: RBAC & Global Services
+
+#### RBAC System (1 day)
+- [ ] Migration: Add `role` column to users table
+- [ ] Migration: Create `permissions` table with seed data
+- [ ] Enhance `internal/service/auth/service.go` with RBAC
+- [ ] Create permission checking middleware
+- [ ] Update existing handlers with permission checks
+
+#### Global Services (1 day)
+- [ ] **Activity Logger** - `internal/service/activity/service.go`
+- [ ] **Server Settings** - `internal/service/settings/service.go`
+- [ ] **API Keys** - `internal/service/apikeys/service.go`
+- [ ] Wire all to main.go with fx
+
+### Day 4-5: OpenAPI Foundation
+
+#### OpenAPI Specs (2 days)
+- [ ] Create `api/openapi/` directory structure
+- [ ] Create `revenge.yaml` - Main OpenAPI 3.1 spec
+- [ ] Create `auth.yaml` - Authentication endpoints
+- [ ] Create `health.yaml` - Health check endpoints
+- [ ] Configure ogen in `tools.go`
+- [ ] Generate initial handlers
+- [ ] Wire to main.go
+
+---
+
+## 📦 Week 2: Workers & Remaining Foundation
+
+### River Workers Infrastructure (3 days)
+
+#### Worker Base Setup (Day 1)
+- [ ] Create `internal/infra/jobs/workers.go`
+- [ ] Define job args structs for all 7 workers
+- [ ] Create worker registration function
+- [ ] Set up worker services interface
+
+#### Core Workers (Day 2-3)
+- [ ] **Library Scanner** - `ScanLibraryWorker`
+  - [ ] Create `internal/service/library/scanner.go`
+  - [ ] Implement directory scanning
+  - [ ] File type detection
+
+- [ ] **Metadata Fetcher** - `FetchMetadataWorker`
+  - [ ] Create `internal/service/metadata/providers.go`
+  - [ ] Provider registry pattern
+
+- [ ] **Image Downloader** - `DownloadImageWorker`
+- [ ] **Search Indexer** - `IndexSearchWorker`
+- [ ] **Cleanup Worker** - `CleanupOrphanedFilesWorker`
+
+### Remaining Migrations (1 day)
+- [ ] `000010_video_playlists.up.sql`
+- [ ] `000011_audio_playlists.up.sql`
+- [ ] `000012_video_collections.up.sql`
+- [ ] `000013_audio_collections.up.sql`
+
+### Integration Testing (1 day)
+- [ ] Test all workers can be queued
+- [ ] Test health checks report all services
+- [ ] Test graceful shutdown works
+- [ ] Test session management works
+- [ ] Test RBAC middleware works
+
+---
+
+## 🎬 Week 3-4: Movie Module (Reference Implementation)
+
+### Database Layer (3 days)
+- [ ] Create `internal/infra/database/migrations/movie/000001_movies.up.sql`
+- [ ] Create queries in `internal/infra/database/queries/movie/`
+- [ ] Run sqlc generate
+- [ ] Create repository interfaces
+
+### Domain & Service (3 days)
+- [ ] Create `internal/content/movie/domain.go` - Entities
+- [ ] Create `internal/content/movie/repository.go` - Repository interface
+- [ ] Create `internal/content/movie/service.go` - Business logic
+- [ ] TMDb provider integration
+
+### API Layer (2 days)
+- [ ] Create `api/openapi/movies.yaml` - Movie endpoints spec
+- [ ] Generate ogen handlers
+- [ ] Implement handler functions
+- [ ] Wire to main.go
+
+### Jobs Integration (2 days)
+- [ ] Movie scanner job
+- [ ] Movie metadata fetch job
+- [ ] Movie image download job
+- [ ] Test end-to-end flow
+
+---
+
+## 🎨 Week 4-8: Frontend & Remaining Modules
+
+### Frontend Foundation (Week 4)
+- [ ] Initialize SvelteKit 2 in `web/`
+- [ ] Configure Tailwind CSS 4
+- [ ] Install shadcn-svelte
+- [ ] Setup TanStack Query
+- [ ] Basic auth pages
+
+### Content Modules (Week 5-7)
+Each module follows movie module pattern:
+- [ ] **TV Shows** (1 week)
+- [ ] **Music** (1 week)
+- [ ] **Audiobooks** (3 days)
+- [ ] **Books** (3 days)
+- [ ] **Podcasts** (3 days)
+- [ ] **Photos** (3 days)
+- [ ] **LiveTV** (1 week)
+- [ ] **Collections** (3 days)
+- [ ] **Adult Content** (1 week - schema `c`)
+
+### Player Implementation (Week 8)
+- [ ] Video player (Shaka + hls.js)
+- [ ] Audio player (Web Audio API + Howler.js)
+- [ ] Gapless audio
+- [ ] Crossfade
+- [ ] Subtitles
+
+---
+
+## 🔌 P1: External Integrations (Week 3-6)
+
+### Metadata Providers (Critical)
+- [ ] **TMDb** - Movie/TV metadata
+- [ ] **TheTVDB** - TV show metadata
+- [ ] **MusicBrainz** - Music metadata
+
+### Servarr Ecosystem
+- [ ] **Radarr** - Movie management
+- [ ] **Sonarr** - TV show management
+- [ ] **Lidarr** - Music management
+
+### Scrobbling (P2)
+- [ ] **Trakt** - Movie/TV sync
+- [ ] **Last.fm** - Music scrobbling
+- [ ] **ListenBrainz** - Music scrobbling
+
+---
+
+## 🚀 P2: Feature Enhancements (Week 5-8)
+
+- [ ] **i18n System** - Multi-language support
+- [ ] **Analytics Service** - Watch statistics, Year in Review
+- [ ] **Profiles System** - Netflix-style profiles
+- [ ] **Media Enhancements** - Trickplay, intro detection, chapters
+- [ ] **Advanced Observability** - Metrics, supervision
+
+---
+
+## 🎁 P3: Extended Features (Week 8+)
+
+- [ ] **Request System** - Content requests with voting
+- [ ] **Ticketing System** - Bug reports, feature requests
+- [ ] **Comics Module** - CBZ/CBR reader
+- [ ] **LiveTV & DVR** - TV recording
+
+---
+
+## 📝 Documentation Tasks (Ongoing)
+
+### Completed ✅
+- ✅ Architecture compliance analysis
+- ✅ Advanced features integration analysis
+- ✅ Core functionality gap analysis
+- ✅ Design extraction from docs
+- ✅ Archived 264+ outdated TODOs (6 documents)
+- ✅ Cleaned up TECH_STACK.md
+- ✅ Updated docs/INDEX.md
+
+### In Progress
+- ⏳ Integration docs (37/72 complete, 51%)
+
+---
+
+## ⚠️ Important Notes
+
+**Adult Content Isolation**:
+- Schema: `c` (not `adult`)
+- API namespace: `/c/*` (obscured)
+- Module location: `internal/content/c/`
+
+**No Client Development**:
+- WebUI only (SvelteKit)
+- Support existing clients (Jellyfin, VLC, etc.)
+
+**External Transcoding**:
+- Blackbeard service handles all transcoding
+- Revenge proxies streams only
+
+---
+
+**Next Action**: Start with Day 1, Step 1 - Module Registration ⚡
 - **Wiki platforms**: Normal (Wikipedia, FANDOM, TVTropes) + Adult (Babepedia, IAFD, Boobpedia)
 - **External adult platforms**: FreeOnes, TheNude, Pornhub, OnlyFans (performer enrichment, c schema isolated)
 - **Scrobbling**: Trakt/Simkl (movies/TV), Last.fm/ListenBrainz (music), Letterboxd (import only)

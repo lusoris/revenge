@@ -5,9 +5,11 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/typesense/typesense-go/v3/typesense"
-	"github.com/typesense/typesense-go/v3/typesense/api"
+	"github.com/typesense/typesense-go/v4/typesense"
+	"github.com/typesense/typesense-go/v4/typesense/api"
 	"go.uber.org/fx"
+
+	"github.com/lusoris/revenge/pkg/config"
 )
 
 // Config holds search configuration.
@@ -69,12 +71,12 @@ func (c *Client) Delete(ctx context.Context, collection string, id string) (map[
 
 // Module provides search dependencies for fx.
 var Module = fx.Module("search",
-	fx.Provide(func(logger *slog.Logger) (*Client, error) {
-		// TODO: Get config from koanf
-		cfg := Config{
-			Host:   "http://localhost:8108",
-			APIKey: "xyz",
+	fx.Provide(func(cfg *config.Config, logger *slog.Logger) (*Client, error) {
+		searchConfig := Config{
+			Host:   cfg.Search.Host,
+			Port:   cfg.Search.Port,
+			APIKey: cfg.Search.APIKey,
 		}
-		return NewClient(cfg, logger)
+		return NewClient(searchConfig, logger)
 	}),
 )
