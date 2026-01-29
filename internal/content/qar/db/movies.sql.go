@@ -13,7 +13,7 @@ import (
 )
 
 const createAdultMovie = `-- name: CreateAdultMovie :one
-INSERT INTO c.movies (
+INSERT INTO qar.movies (
     library_id,
     title,
     sort_title,
@@ -73,7 +73,7 @@ type CreateAdultMovieParams struct {
 	Is3d          *bool       `json:"is3d"`
 }
 
-func (q *Queries) CreateAdultMovie(ctx context.Context, arg CreateAdultMovieParams) (CMovie, error) {
+func (q *Queries) CreateAdultMovie(ctx context.Context, arg CreateAdultMovieParams) (QarMovie, error) {
 	row := q.db.QueryRow(ctx, createAdultMovie,
 		arg.LibraryID,
 		arg.Title,
@@ -100,7 +100,7 @@ func (q *Queries) CreateAdultMovie(ctx context.Context, arg CreateAdultMoviePara
 		arg.IsHdr,
 		arg.Is3d,
 	)
-	var i CMovie
+	var i QarMovie
 	err := row.Scan(
 		&i.ID,
 		&i.LibraryID,
@@ -134,7 +134,7 @@ func (q *Queries) CreateAdultMovie(ctx context.Context, arg CreateAdultMoviePara
 }
 
 const deleteAdultMovie = `-- name: DeleteAdultMovie :exec
-DELETE FROM c.movies WHERE id = $1
+DELETE FROM qar.movies WHERE id = $1
 `
 
 func (q *Queries) DeleteAdultMovie(ctx context.Context, id uuid.UUID) error {
@@ -143,12 +143,12 @@ func (q *Queries) DeleteAdultMovie(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAdultMovieByID = `-- name: GetAdultMovieByID :one
-SELECT id, library_id, whisparr_id, stashdb_id, tpdb_id, title, sort_title, original_title, overview, release_date, runtime_ticks, studio_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, phash, oshash, has_file, is_hdr, is_3d, created_at, updated_at FROM c.movies WHERE id = $1
+SELECT id, library_id, whisparr_id, stashdb_id, tpdb_id, title, sort_title, original_title, overview, release_date, runtime_ticks, studio_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, phash, oshash, has_file, is_hdr, is_3d, created_at, updated_at FROM qar.movies WHERE id = $1
 `
 
-func (q *Queries) GetAdultMovieByID(ctx context.Context, id uuid.UUID) (CMovie, error) {
+func (q *Queries) GetAdultMovieByID(ctx context.Context, id uuid.UUID) (QarMovie, error) {
 	row := q.db.QueryRow(ctx, getAdultMovieByID, id)
-	var i CMovie
+	var i QarMovie
 	err := row.Scan(
 		&i.ID,
 		&i.LibraryID,
@@ -182,7 +182,7 @@ func (q *Queries) GetAdultMovieByID(ctx context.Context, id uuid.UUID) (CMovie, 
 }
 
 const listAdultMovies = `-- name: ListAdultMovies :many
-SELECT id, library_id, whisparr_id, stashdb_id, tpdb_id, title, sort_title, original_title, overview, release_date, runtime_ticks, studio_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, phash, oshash, has_file, is_hdr, is_3d, created_at, updated_at FROM c.movies
+SELECT id, library_id, whisparr_id, stashdb_id, tpdb_id, title, sort_title, original_title, overview, release_date, runtime_ticks, studio_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, phash, oshash, has_file, is_hdr, is_3d, created_at, updated_at FROM qar.movies
 ORDER BY title
 LIMIT $1 OFFSET $2
 `
@@ -192,15 +192,15 @@ type ListAdultMoviesParams struct {
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListAdultMovies(ctx context.Context, arg ListAdultMoviesParams) ([]CMovie, error) {
+func (q *Queries) ListAdultMovies(ctx context.Context, arg ListAdultMoviesParams) ([]QarMovie, error) {
 	rows, err := q.db.Query(ctx, listAdultMovies, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []CMovie{}
+	items := []QarMovie{}
 	for rows.Next() {
-		var i CMovie
+		var i QarMovie
 		if err := rows.Scan(
 			&i.ID,
 			&i.LibraryID,
@@ -241,7 +241,7 @@ func (q *Queries) ListAdultMovies(ctx context.Context, arg ListAdultMoviesParams
 }
 
 const listAdultMoviesByLibrary = `-- name: ListAdultMoviesByLibrary :many
-SELECT id, library_id, whisparr_id, stashdb_id, tpdb_id, title, sort_title, original_title, overview, release_date, runtime_ticks, studio_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, phash, oshash, has_file, is_hdr, is_3d, created_at, updated_at FROM c.movies
+SELECT id, library_id, whisparr_id, stashdb_id, tpdb_id, title, sort_title, original_title, overview, release_date, runtime_ticks, studio_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, phash, oshash, has_file, is_hdr, is_3d, created_at, updated_at FROM qar.movies
 WHERE library_id = $1
 ORDER BY title
 LIMIT $2 OFFSET $3
@@ -253,15 +253,15 @@ type ListAdultMoviesByLibraryParams struct {
 	Offset    int32     `json:"offset"`
 }
 
-func (q *Queries) ListAdultMoviesByLibrary(ctx context.Context, arg ListAdultMoviesByLibraryParams) ([]CMovie, error) {
+func (q *Queries) ListAdultMoviesByLibrary(ctx context.Context, arg ListAdultMoviesByLibraryParams) ([]QarMovie, error) {
 	rows, err := q.db.Query(ctx, listAdultMoviesByLibrary, arg.LibraryID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []CMovie{}
+	items := []QarMovie{}
 	for rows.Next() {
-		var i CMovie
+		var i QarMovie
 		if err := rows.Scan(
 			&i.ID,
 			&i.LibraryID,
@@ -302,7 +302,7 @@ func (q *Queries) ListAdultMoviesByLibrary(ctx context.Context, arg ListAdultMov
 }
 
 const updateAdultMovie = `-- name: UpdateAdultMovie :one
-UPDATE c.movies
+UPDATE qar.movies
 SET
     library_id = $2,
     title = $3,
@@ -360,7 +360,7 @@ type UpdateAdultMovieParams struct {
 	Is3d          *bool       `json:"is3d"`
 }
 
-func (q *Queries) UpdateAdultMovie(ctx context.Context, arg UpdateAdultMovieParams) (CMovie, error) {
+func (q *Queries) UpdateAdultMovie(ctx context.Context, arg UpdateAdultMovieParams) (QarMovie, error) {
 	row := q.db.QueryRow(ctx, updateAdultMovie,
 		arg.ID,
 		arg.LibraryID,
@@ -388,7 +388,7 @@ func (q *Queries) UpdateAdultMovie(ctx context.Context, arg UpdateAdultMoviePara
 		arg.IsHdr,
 		arg.Is3d,
 	)
-	var i CMovie
+	var i QarMovie
 	err := row.Scan(
 		&i.ID,
 		&i.LibraryID,

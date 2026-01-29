@@ -78,6 +78,14 @@ func main() {
 		movie.ModuleWithRiver,
 		tvshow.ModuleWithRiver,
 
+		// Adult content modules (QAR - Queen Anne's Revenge)
+		// TODO: Full obfuscation needed per ADULT_CONTENT_SYSTEM.md:
+		//   - qar/expedition (movies) with Expedition entity
+		//   - qar/voyage (scenes) with Voyage entity
+		//   - qar/crew (performers) with Crew entity
+		//   - qar/port (studios) with Port entity
+		//   - qar/fleet (libraries) with Fleet entity
+
 		// API module (ogen-generated handlers)
 		api.Module,
 

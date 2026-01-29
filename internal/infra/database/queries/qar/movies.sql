@@ -1,19 +1,19 @@
 -- name: GetAdultMovieByID :one
-SELECT * FROM c.movies WHERE id = $1;
+SELECT * FROM qar.movies WHERE id = $1;
 
 -- name: ListAdultMovies :many
-SELECT * FROM c.movies
+SELECT * FROM qar.movies
 ORDER BY title
 LIMIT $1 OFFSET $2;
 
 -- name: ListAdultMoviesByLibrary :many
-SELECT * FROM c.movies
+SELECT * FROM qar.movies
 WHERE library_id = $1
 ORDER BY title
 LIMIT $2 OFFSET $3;
 
 -- name: CreateAdultMovie :one
-INSERT INTO c.movies (
+INSERT INTO qar.movies (
     library_id,
     title,
     sort_title,
@@ -46,7 +46,7 @@ INSERT INTO c.movies (
 RETURNING *;
 
 -- name: UpdateAdultMovie :one
-UPDATE c.movies
+UPDATE qar.movies
 SET
     library_id = $2,
     title = $3,
@@ -76,4 +76,4 @@ WHERE id = $1
 RETURNING *;
 
 -- name: DeleteAdultMovie :exec
-DELETE FROM c.movies WHERE id = $1;
+DELETE FROM qar.movies WHERE id = $1;

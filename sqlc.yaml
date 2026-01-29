@@ -137,16 +137,16 @@ sql:
           - db_type: activity_severity
             go_type: string
 
-  # Adult content module (schema c)
+  # Adult content module (schema qar - Queen Anne's Revenge)
   - engine: postgresql
-    queries: internal/infra/database/queries/c/
+    queries: internal/infra/database/queries/qar/
     schema:
       - internal/infra/database/migrations/shared/
-      - internal/infra/database/migrations/c/
+      - internal/infra/database/migrations/qar/
     gen:
       go:
         package: adultdb
-        out: internal/content/c/db
+        out: internal/content/qar/db
         sql_package: pgx/v5
         emit_json_tags: true
         emit_interface: true

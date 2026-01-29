@@ -1,19 +1,19 @@
 -- name: GetAdultSceneByID :one
-SELECT * FROM c.scenes WHERE id = $1;
+SELECT * FROM qar.scenes WHERE id = $1;
 
 -- name: ListAdultScenes :many
-SELECT * FROM c.scenes
+SELECT * FROM qar.scenes
 ORDER BY title
 LIMIT $1 OFFSET $2;
 
 -- name: ListAdultScenesByLibrary :many
-SELECT * FROM c.scenes
+SELECT * FROM qar.scenes
 WHERE library_id = $1
 ORDER BY title
 LIMIT $2 OFFSET $3;
 
 -- name: CreateAdultScene :one
-INSERT INTO c.scenes (
+INSERT INTO qar.scenes (
     library_id,
     title,
     sort_title,
@@ -41,7 +41,7 @@ INSERT INTO c.scenes (
 RETURNING *;
 
 -- name: UpdateAdultScene :one
-UPDATE c.scenes
+UPDATE qar.scenes
 SET
     library_id = $2,
     title = $3,
@@ -67,4 +67,4 @@ WHERE id = $1
 RETURNING *;
 
 -- name: DeleteAdultScene :exec
-DELETE FROM c.scenes WHERE id = $1;
+DELETE FROM qar.scenes WHERE id = $1;

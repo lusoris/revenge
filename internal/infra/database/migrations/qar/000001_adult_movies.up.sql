@@ -1,11 +1,11 @@
--- Adult movies and shared adult metadata (schema c)
-CREATE SCHEMA IF NOT EXISTS c;
+-- Adult movies and shared adult metadata (schema qar)
+CREATE SCHEMA IF NOT EXISTS qar;
 
 -- Studios
-CREATE TABLE c.studios (
+CREATE TABLE qar.studios (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
-    parent_id       UUID REFERENCES c.studios(id),
+    parent_id       UUID REFERENCES qar.studios(id),
     stashdb_id      VARCHAR(100),
     tpdb_id         VARCHAR(100),
     url             TEXT,
@@ -17,11 +17,11 @@ CREATE TABLE c.studios (
 );
 
 CREATE TRIGGER c_studios_updated_at
-    BEFORE UPDATE ON c.studios
+    BEFORE UPDATE ON qar.studios
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- Performers
-CREATE TABLE c.performers (
+CREATE TABLE qar.performers (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
     disambiguation  VARCHAR(255),
@@ -60,24 +60,24 @@ CREATE TABLE c.performers (
     UNIQUE(tpdb_id)
 );
 
-CREATE INDEX idx_c_performers_name ON c.performers(name);
-CREATE INDEX idx_c_performers_stashdb ON c.performers(stashdb_id);
+CREATE INDEX idx_qar_performers_name ON qar.performers(name);
+CREATE INDEX idx_qar_performers_stashdb ON qar.performers(stashdb_id);
 
 CREATE TRIGGER c_performers_updated_at
-    BEFORE UPDATE ON c.performers
+    BEFORE UPDATE ON qar.performers
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- Performer aliases
-CREATE TABLE c.performer_aliases (
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+CREATE TABLE qar.performer_aliases (
+    performer_id    UUID REFERENCES qar.performers(id) ON DELETE CASCADE,
     alias           VARCHAR(255) NOT NULL,
     PRIMARY KEY (performer_id, alias)
 );
 
 -- Performer images
-CREATE TABLE c.performer_images (
+CREATE TABLE qar.performer_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    performer_id    UUID REFERENCES qar.performers(id) ON DELETE CASCADE,
     path            TEXT NOT NULL,
     type            VARCHAR(50) DEFAULT 'photo',
     source          VARCHAR(50),
@@ -86,17 +86,17 @@ CREATE TABLE c.performer_images (
 );
 
 -- Tags
-CREATE TABLE c.tags (
+CREATE TABLE qar.tags (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL UNIQUE,
     description     TEXT,
-    parent_id       UUID REFERENCES c.tags(id),
+    parent_id       UUID REFERENCES qar.tags(id),
     stashdb_id      VARCHAR(100),
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Movies
-CREATE TABLE c.movies (
+CREATE TABLE qar.movies (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     library_id      UUID NOT NULL,
     whisparr_id     INT,
@@ -109,7 +109,7 @@ CREATE TABLE c.movies (
     overview        TEXT,
     release_date    DATE,
     runtime_ticks   BIGINT,
-    studio_id       UUID REFERENCES c.studios(id),
+    studio_id       UUID REFERENCES qar.studios(id),
     director        VARCHAR(255),
     series          VARCHAR(255),
 
@@ -133,34 +133,34 @@ CREATE TABLE c.movies (
     UNIQUE(stashdb_id)
 );
 
-CREATE INDEX idx_c_movies_library ON c.movies(library_id);
-CREATE INDEX idx_c_movies_studio ON c.movies(studio_id);
-CREATE INDEX idx_c_movies_phash ON c.movies(phash);
-CREATE INDEX idx_c_movies_oshash ON c.movies(oshash);
+CREATE INDEX idx_qar_movies_library ON qar.movies(library_id);
+CREATE INDEX idx_qar_movies_studio ON qar.movies(studio_id);
+CREATE INDEX idx_qar_movies_phash ON qar.movies(phash);
+CREATE INDEX idx_qar_movies_oshash ON qar.movies(oshash);
 
 CREATE TRIGGER c_movies_updated_at
-    BEFORE UPDATE ON c.movies
+    BEFORE UPDATE ON qar.movies
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- Movie performers
-CREATE TABLE c.movie_performers (
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+CREATE TABLE qar.movie_performers (
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE CASCADE,
+    performer_id    UUID REFERENCES qar.performers(id) ON DELETE CASCADE,
     character_name  VARCHAR(255),
     PRIMARY KEY (movie_id, performer_id)
 );
 
 -- Movie tags
-CREATE TABLE c.movie_tags (
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    tag_id          UUID REFERENCES c.tags(id) ON DELETE CASCADE,
+CREATE TABLE qar.movie_tags (
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE CASCADE,
+    tag_id          UUID REFERENCES qar.tags(id) ON DELETE CASCADE,
     PRIMARY KEY (movie_id, tag_id)
 );
 
 -- Movie images
-CREATE TABLE c.movie_images (
+CREATE TABLE qar.movie_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE CASCADE,
     type            VARCHAR(50) NOT NULL,
     path            TEXT NOT NULL,
     source          VARCHAR(50),
@@ -169,26 +169,26 @@ CREATE TABLE c.movie_images (
 );
 
 -- Galleries
-CREATE TABLE c.galleries (
+CREATE TABLE qar.galleries (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE SET NULL,
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE SET NULL,
     title           VARCHAR(500) NOT NULL,
     path            TEXT,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE c.gallery_images (
+CREATE TABLE qar.gallery_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    gallery_id      UUID REFERENCES c.galleries(id) ON DELETE CASCADE,
+    gallery_id      UUID REFERENCES qar.galleries(id) ON DELETE CASCADE,
     path            TEXT NOT NULL,
     sort_order      INT NOT NULL DEFAULT 0,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- User ratings
-CREATE TABLE c.user_ratings (
+CREATE TABLE qar.user_ratings (
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE CASCADE,
     rating          SMALLINT CHECK (rating >= 1 AND rating <= 10),
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -196,33 +196,33 @@ CREATE TABLE c.user_ratings (
 );
 
 CREATE TRIGGER c_user_ratings_updated_at
-    BEFORE UPDATE ON c.user_ratings
+    BEFORE UPDATE ON qar.user_ratings
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- User favorites
-CREATE TABLE c.user_favorites (
+CREATE TABLE qar.user_favorites (
     user_id         UUID NOT NULL,
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE CASCADE,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (user_id, movie_id)
 );
 
 -- Watch history
-CREATE TABLE c.watch_history (
+CREATE TABLE qar.watch_history (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID NOT NULL,
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    movie_id        UUID REFERENCES qar.movies(id) ON DELETE CASCADE,
     watched_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     position_ticks  BIGINT,
     completed       BOOLEAN DEFAULT FALSE
 );
 
-CREATE INDEX idx_c_watch_history_user ON c.watch_history(user_id, watched_at DESC);
+CREATE INDEX idx_qar_watch_history_user ON qar.watch_history(user_id, watched_at DESC);
 
 -- User performer favorites
-CREATE TABLE c.user_performer_favorites (
+CREATE TABLE qar.user_performer_favorites (
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    performer_id    UUID REFERENCES qar.performers(id) ON DELETE CASCADE,
     added_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (user_id, performer_id)
 );

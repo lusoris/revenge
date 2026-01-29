@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	adultdb "github.com/lusoris/revenge/internal/content/c/db"
+	adultdb "github.com/lusoris/revenge/internal/content/qar/db"
 	"github.com/lusoris/revenge/internal/content/shared"
 )
 
@@ -134,7 +134,7 @@ func (r *pgRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
-func moviesFromRows(rows []adultdb.CMovie) []*Movie {
+func moviesFromRows(rows []adultdb.QarMovie) []*Movie {
 	movies := make([]*Movie, 0, len(rows))
 	for _, row := range rows {
 		movies = append(movies, movieFromRow(row))
@@ -142,7 +142,7 @@ func moviesFromRows(rows []adultdb.CMovie) []*Movie {
 	return movies
 }
 
-func movieFromRow(row adultdb.CMovie) *Movie {
+func movieFromRow(row adultdb.QarMovie) *Movie {
 	return &Movie{
 		ContentEntity: shared.ContentEntity{
 			BaseEntity: shared.BaseEntity{

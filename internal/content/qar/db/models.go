@@ -518,231 +518,6 @@ type ApiKey struct {
 	CreatedAt  time.Time          `json:"createdAt"`
 }
 
-type CGallery struct {
-	ID        uuid.UUID   `json:"id"`
-	MovieID   pgtype.UUID `json:"movieId"`
-	Title     string      `json:"title"`
-	Path      *string     `json:"path"`
-	CreatedAt time.Time   `json:"createdAt"`
-}
-
-type CGalleryImage struct {
-	ID        uuid.UUID   `json:"id"`
-	GalleryID pgtype.UUID `json:"galleryId"`
-	Path      string      `json:"path"`
-	SortOrder int32       `json:"sortOrder"`
-	CreatedAt time.Time   `json:"createdAt"`
-}
-
-type CMovie struct {
-	ID            uuid.UUID   `json:"id"`
-	LibraryID     uuid.UUID   `json:"libraryId"`
-	WhisparrID    *int32      `json:"whisparrId"`
-	StashdbID     *string     `json:"stashdbId"`
-	TpdbID        *string     `json:"tpdbId"`
-	Title         string      `json:"title"`
-	SortTitle     *string     `json:"sortTitle"`
-	OriginalTitle *string     `json:"originalTitle"`
-	Overview      *string     `json:"overview"`
-	ReleaseDate   pgtype.Date `json:"releaseDate"`
-	RuntimeTicks  *int64      `json:"runtimeTicks"`
-	StudioID      pgtype.UUID `json:"studioId"`
-	Director      *string     `json:"director"`
-	Series        *string     `json:"series"`
-	Path          string      `json:"path"`
-	SizeBytes     *int64      `json:"sizeBytes"`
-	Container     *string     `json:"container"`
-	VideoCodec    *string     `json:"videoCodec"`
-	AudioCodec    *string     `json:"audioCodec"`
-	Resolution    *string     `json:"resolution"`
-	Phash         *string     `json:"phash"`
-	Oshash        *string     `json:"oshash"`
-	HasFile       *bool       `json:"hasFile"`
-	IsHdr         *bool       `json:"isHdr"`
-	Is3d          *bool       `json:"is3d"`
-	CreatedAt     time.Time   `json:"createdAt"`
-	UpdatedAt     time.Time   `json:"updatedAt"`
-}
-
-type CMovieImage struct {
-	ID           uuid.UUID   `json:"id"`
-	MovieID      pgtype.UUID `json:"movieId"`
-	Type         string      `json:"type"`
-	Path         string      `json:"path"`
-	Source       *string     `json:"source"`
-	PrimaryImage *bool       `json:"primaryImage"`
-	CreatedAt    time.Time   `json:"createdAt"`
-}
-
-type CMoviePerformer struct {
-	MovieID       uuid.UUID `json:"movieId"`
-	PerformerID   uuid.UUID `json:"performerId"`
-	CharacterName *string   `json:"characterName"`
-}
-
-type CMovieTag struct {
-	MovieID uuid.UUID `json:"movieId"`
-	TagID   uuid.UUID `json:"tagId"`
-}
-
-type CPerformer struct {
-	ID             uuid.UUID   `json:"id"`
-	Name           string      `json:"name"`
-	Disambiguation *string     `json:"disambiguation"`
-	Gender         *string     `json:"gender"`
-	Birthdate      pgtype.Date `json:"birthdate"`
-	DeathDate      pgtype.Date `json:"deathDate"`
-	BirthCity      *string     `json:"birthCity"`
-	Ethnicity      *string     `json:"ethnicity"`
-	Nationality    *string     `json:"nationality"`
-	HairColor      *string     `json:"hairColor"`
-	EyeColor       *string     `json:"eyeColor"`
-	HeightCm       *int32      `json:"heightCm"`
-	WeightKg       *int32      `json:"weightKg"`
-	Measurements   *string     `json:"measurements"`
-	CupSize        *string     `json:"cupSize"`
-	BreastType     *string     `json:"breastType"`
-	Tattoos        *string     `json:"tattoos"`
-	Piercings      *string     `json:"piercings"`
-	CareerStart    *int32      `json:"careerStart"`
-	CareerEnd      *int32      `json:"careerEnd"`
-	Bio            *string     `json:"bio"`
-	StashID        *string     `json:"stashId"`
-	StashdbID      *string     `json:"stashdbId"`
-	TpdbID         *string     `json:"tpdbId"`
-	FreeonesID     *string     `json:"freeonesId"`
-	Twitter        *string     `json:"twitter"`
-	Instagram      *string     `json:"instagram"`
-	ImagePath      *string     `json:"imagePath"`
-	CreatedAt      time.Time   `json:"createdAt"`
-	UpdatedAt      time.Time   `json:"updatedAt"`
-}
-
-type CPerformerAlias struct {
-	PerformerID uuid.UUID `json:"performerId"`
-	Alias       string    `json:"alias"`
-}
-
-type CPerformerImage struct {
-	ID           uuid.UUID   `json:"id"`
-	PerformerID  pgtype.UUID `json:"performerId"`
-	Path         string      `json:"path"`
-	Type         *string     `json:"type"`
-	Source       *string     `json:"source"`
-	PrimaryImage *bool       `json:"primaryImage"`
-	CreatedAt    time.Time   `json:"createdAt"`
-}
-
-type CScene struct {
-	ID             uuid.UUID   `json:"id"`
-	LibraryID      uuid.UUID   `json:"libraryId"`
-	Title          string      `json:"title"`
-	SortTitle      *string     `json:"sortTitle"`
-	Overview       *string     `json:"overview"`
-	ReleaseDate    pgtype.Date `json:"releaseDate"`
-	RuntimeMinutes *int32      `json:"runtimeMinutes"`
-	StudioID       pgtype.UUID `json:"studioId"`
-	WhisparrID     *int32      `json:"whisparrId"`
-	StashID        *string     `json:"stashId"`
-	StashdbID      *string     `json:"stashdbId"`
-	TpdbID         *string     `json:"tpdbId"`
-	Path           string      `json:"path"`
-	SizeBytes      *int64      `json:"sizeBytes"`
-	VideoCodec     *string     `json:"videoCodec"`
-	AudioCodec     *string     `json:"audioCodec"`
-	Resolution     *string     `json:"resolution"`
-	Oshash         *string     `json:"oshash"`
-	Phash          *string     `json:"phash"`
-	Md5            *string     `json:"md5"`
-	CoverPath      *string     `json:"coverPath"`
-	CreatedAt      time.Time   `json:"createdAt"`
-	UpdatedAt      time.Time   `json:"updatedAt"`
-}
-
-type CSceneMarker struct {
-	ID            uuid.UUID   `json:"id"`
-	SceneID       pgtype.UUID `json:"sceneId"`
-	Title         *string     `json:"title"`
-	StartSeconds  float64     `json:"startSeconds"`
-	EndSeconds    *float64    `json:"endSeconds"`
-	TagID         pgtype.UUID `json:"tagId"`
-	StashMarkerID *string     `json:"stashMarkerId"`
-	CreatedAt     time.Time   `json:"createdAt"`
-}
-
-type CScenePerformer struct {
-	SceneID     uuid.UUID `json:"sceneId"`
-	PerformerID uuid.UUID `json:"performerId"`
-	Role        *string   `json:"role"`
-}
-
-type CSceneTag struct {
-	SceneID uuid.UUID `json:"sceneId"`
-	TagID   uuid.UUID `json:"tagId"`
-}
-
-type CStudio struct {
-	ID        uuid.UUID   `json:"id"`
-	Name      string      `json:"name"`
-	ParentID  pgtype.UUID `json:"parentId"`
-	StashdbID *string     `json:"stashdbId"`
-	TpdbID    *string     `json:"tpdbId"`
-	Url       *string     `json:"url"`
-	LogoPath  *string     `json:"logoPath"`
-	CreatedAt time.Time   `json:"createdAt"`
-	UpdatedAt time.Time   `json:"updatedAt"`
-}
-
-type CTag struct {
-	ID          uuid.UUID   `json:"id"`
-	Name        string      `json:"name"`
-	Description *string     `json:"description"`
-	ParentID    pgtype.UUID `json:"parentId"`
-	StashdbID   *string     `json:"stashdbId"`
-	CreatedAt   time.Time   `json:"createdAt"`
-}
-
-type CUserFavorite struct {
-	UserID    uuid.UUID `json:"userId"`
-	MovieID   uuid.UUID `json:"movieId"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-type CUserPerformerFavorite struct {
-	UserID      uuid.UUID `json:"userId"`
-	PerformerID uuid.UUID `json:"performerId"`
-	AddedAt     time.Time `json:"addedAt"`
-}
-
-type CUserRating struct {
-	UserID    uuid.UUID `json:"userId"`
-	MovieID   uuid.UUID `json:"movieId"`
-	Rating    *int16    `json:"rating"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-}
-
-type CUserSceneDatum struct {
-	UserID      uuid.UUID          `json:"userId"`
-	SceneID     uuid.UUID          `json:"sceneId"`
-	PositionMs  *int64             `json:"positionMs"`
-	WatchCount  *int32             `json:"watchCount"`
-	LastWatched pgtype.Timestamptz `json:"lastWatched"`
-	Rating      *int16             `json:"rating"`
-	OCounter    *int32             `json:"oCounter"`
-	IsFavorite  *bool              `json:"isFavorite"`
-	IsOrganized *bool              `json:"isOrganized"`
-}
-
-type CWatchHistory struct {
-	ID            uuid.UUID   `json:"id"`
-	UserID        uuid.UUID   `json:"userId"`
-	MovieID       pgtype.UUID `json:"movieId"`
-	WatchedAt     time.Time   `json:"watchedAt"`
-	PositionTicks *int64      `json:"positionTicks"`
-	Completed     *bool       `json:"completed"`
-}
-
 type Collection struct {
 	ID               uuid.UUID      `json:"id"`
 	Name             string         `json:"name"`
@@ -942,6 +717,231 @@ type Profile struct {
 	AutoplayPreviews          *bool     `json:"autoplayPreviews"`
 	CreatedAt                 time.Time `json:"createdAt"`
 	UpdatedAt                 time.Time `json:"updatedAt"`
+}
+
+type QarGallery struct {
+	ID        uuid.UUID   `json:"id"`
+	MovieID   pgtype.UUID `json:"movieId"`
+	Title     string      `json:"title"`
+	Path      *string     `json:"path"`
+	CreatedAt time.Time   `json:"createdAt"`
+}
+
+type QarGalleryImage struct {
+	ID        uuid.UUID   `json:"id"`
+	GalleryID pgtype.UUID `json:"galleryId"`
+	Path      string      `json:"path"`
+	SortOrder int32       `json:"sortOrder"`
+	CreatedAt time.Time   `json:"createdAt"`
+}
+
+type QarMovie struct {
+	ID            uuid.UUID   `json:"id"`
+	LibraryID     uuid.UUID   `json:"libraryId"`
+	WhisparrID    *int32      `json:"whisparrId"`
+	StashdbID     *string     `json:"stashdbId"`
+	TpdbID        *string     `json:"tpdbId"`
+	Title         string      `json:"title"`
+	SortTitle     *string     `json:"sortTitle"`
+	OriginalTitle *string     `json:"originalTitle"`
+	Overview      *string     `json:"overview"`
+	ReleaseDate   pgtype.Date `json:"releaseDate"`
+	RuntimeTicks  *int64      `json:"runtimeTicks"`
+	StudioID      pgtype.UUID `json:"studioId"`
+	Director      *string     `json:"director"`
+	Series        *string     `json:"series"`
+	Path          string      `json:"path"`
+	SizeBytes     *int64      `json:"sizeBytes"`
+	Container     *string     `json:"container"`
+	VideoCodec    *string     `json:"videoCodec"`
+	AudioCodec    *string     `json:"audioCodec"`
+	Resolution    *string     `json:"resolution"`
+	Phash         *string     `json:"phash"`
+	Oshash        *string     `json:"oshash"`
+	HasFile       *bool       `json:"hasFile"`
+	IsHdr         *bool       `json:"isHdr"`
+	Is3d          *bool       `json:"is3d"`
+	CreatedAt     time.Time   `json:"createdAt"`
+	UpdatedAt     time.Time   `json:"updatedAt"`
+}
+
+type QarMovieImage struct {
+	ID           uuid.UUID   `json:"id"`
+	MovieID      pgtype.UUID `json:"movieId"`
+	Type         string      `json:"type"`
+	Path         string      `json:"path"`
+	Source       *string     `json:"source"`
+	PrimaryImage *bool       `json:"primaryImage"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+type QarMoviePerformer struct {
+	MovieID       uuid.UUID `json:"movieId"`
+	PerformerID   uuid.UUID `json:"performerId"`
+	CharacterName *string   `json:"characterName"`
+}
+
+type QarMovieTag struct {
+	MovieID uuid.UUID `json:"movieId"`
+	TagID   uuid.UUID `json:"tagId"`
+}
+
+type QarPerformer struct {
+	ID             uuid.UUID   `json:"id"`
+	Name           string      `json:"name"`
+	Disambiguation *string     `json:"disambiguation"`
+	Gender         *string     `json:"gender"`
+	Birthdate      pgtype.Date `json:"birthdate"`
+	DeathDate      pgtype.Date `json:"deathDate"`
+	BirthCity      *string     `json:"birthCity"`
+	Ethnicity      *string     `json:"ethnicity"`
+	Nationality    *string     `json:"nationality"`
+	HairColor      *string     `json:"hairColor"`
+	EyeColor       *string     `json:"eyeColor"`
+	HeightCm       *int32      `json:"heightCm"`
+	WeightKg       *int32      `json:"weightKg"`
+	Measurements   *string     `json:"measurements"`
+	CupSize        *string     `json:"cupSize"`
+	BreastType     *string     `json:"breastType"`
+	Tattoos        *string     `json:"tattoos"`
+	Piercings      *string     `json:"piercings"`
+	CareerStart    *int32      `json:"careerStart"`
+	CareerEnd      *int32      `json:"careerEnd"`
+	Bio            *string     `json:"bio"`
+	StashID        *string     `json:"stashId"`
+	StashdbID      *string     `json:"stashdbId"`
+	TpdbID         *string     `json:"tpdbId"`
+	FreeonesID     *string     `json:"freeonesId"`
+	Twitter        *string     `json:"twitter"`
+	Instagram      *string     `json:"instagram"`
+	ImagePath      *string     `json:"imagePath"`
+	CreatedAt      time.Time   `json:"createdAt"`
+	UpdatedAt      time.Time   `json:"updatedAt"`
+}
+
+type QarPerformerAlias struct {
+	PerformerID uuid.UUID `json:"performerId"`
+	Alias       string    `json:"alias"`
+}
+
+type QarPerformerImage struct {
+	ID           uuid.UUID   `json:"id"`
+	PerformerID  pgtype.UUID `json:"performerId"`
+	Path         string      `json:"path"`
+	Type         *string     `json:"type"`
+	Source       *string     `json:"source"`
+	PrimaryImage *bool       `json:"primaryImage"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+type QarScene struct {
+	ID             uuid.UUID   `json:"id"`
+	LibraryID      uuid.UUID   `json:"libraryId"`
+	Title          string      `json:"title"`
+	SortTitle      *string     `json:"sortTitle"`
+	Overview       *string     `json:"overview"`
+	ReleaseDate    pgtype.Date `json:"releaseDate"`
+	RuntimeMinutes *int32      `json:"runtimeMinutes"`
+	StudioID       pgtype.UUID `json:"studioId"`
+	WhisparrID     *int32      `json:"whisparrId"`
+	StashID        *string     `json:"stashId"`
+	StashdbID      *string     `json:"stashdbId"`
+	TpdbID         *string     `json:"tpdbId"`
+	Path           string      `json:"path"`
+	SizeBytes      *int64      `json:"sizeBytes"`
+	VideoCodec     *string     `json:"videoCodec"`
+	AudioCodec     *string     `json:"audioCodec"`
+	Resolution     *string     `json:"resolution"`
+	Oshash         *string     `json:"oshash"`
+	Phash          *string     `json:"phash"`
+	Md5            *string     `json:"md5"`
+	CoverPath      *string     `json:"coverPath"`
+	CreatedAt      time.Time   `json:"createdAt"`
+	UpdatedAt      time.Time   `json:"updatedAt"`
+}
+
+type QarSceneMarker struct {
+	ID            uuid.UUID   `json:"id"`
+	SceneID       pgtype.UUID `json:"sceneId"`
+	Title         *string     `json:"title"`
+	StartSeconds  float64     `json:"startSeconds"`
+	EndSeconds    *float64    `json:"endSeconds"`
+	TagID         pgtype.UUID `json:"tagId"`
+	StashMarkerID *string     `json:"stashMarkerId"`
+	CreatedAt     time.Time   `json:"createdAt"`
+}
+
+type QarScenePerformer struct {
+	SceneID     uuid.UUID `json:"sceneId"`
+	PerformerID uuid.UUID `json:"performerId"`
+	Role        *string   `json:"role"`
+}
+
+type QarSceneTag struct {
+	SceneID uuid.UUID `json:"sceneId"`
+	TagID   uuid.UUID `json:"tagId"`
+}
+
+type QarStudio struct {
+	ID        uuid.UUID   `json:"id"`
+	Name      string      `json:"name"`
+	ParentID  pgtype.UUID `json:"parentId"`
+	StashdbID *string     `json:"stashdbId"`
+	TpdbID    *string     `json:"tpdbId"`
+	Url       *string     `json:"url"`
+	LogoPath  *string     `json:"logoPath"`
+	CreatedAt time.Time   `json:"createdAt"`
+	UpdatedAt time.Time   `json:"updatedAt"`
+}
+
+type QarTag struct {
+	ID          uuid.UUID   `json:"id"`
+	Name        string      `json:"name"`
+	Description *string     `json:"description"`
+	ParentID    pgtype.UUID `json:"parentId"`
+	StashdbID   *string     `json:"stashdbId"`
+	CreatedAt   time.Time   `json:"createdAt"`
+}
+
+type QarUserFavorite struct {
+	UserID    uuid.UUID `json:"userId"`
+	MovieID   uuid.UUID `json:"movieId"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type QarUserPerformerFavorite struct {
+	UserID      uuid.UUID `json:"userId"`
+	PerformerID uuid.UUID `json:"performerId"`
+	AddedAt     time.Time `json:"addedAt"`
+}
+
+type QarUserRating struct {
+	UserID    uuid.UUID `json:"userId"`
+	MovieID   uuid.UUID `json:"movieId"`
+	Rating    *int16    `json:"rating"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type QarUserSceneDatum struct {
+	UserID      uuid.UUID          `json:"userId"`
+	SceneID     uuid.UUID          `json:"sceneId"`
+	PositionMs  *int64             `json:"positionMs"`
+	WatchCount  *int32             `json:"watchCount"`
+	LastWatched pgtype.Timestamptz `json:"lastWatched"`
+	Rating      *int16             `json:"rating"`
+	OCounter    *int32             `json:"oCounter"`
+	IsFavorite  *bool              `json:"isFavorite"`
+	IsOrganized *bool              `json:"isOrganized"`
+}
+
+type QarWatchHistory struct {
+	ID            uuid.UUID   `json:"id"`
+	UserID        uuid.UUID   `json:"userId"`
+	MovieID       pgtype.UUID `json:"movieId"`
+	WatchedAt     time.Time   `json:"watchedAt"`
+	PositionTicks *int64      `json:"positionTicks"`
+	Completed     *bool       `json:"completed"`
 }
 
 type Role struct {

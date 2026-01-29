@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS qar.user_scene_data;
+DROP INDEX IF EXISTS idx_qar_markers_scene;
+DROP TABLE IF EXISTS qar.scene_markers;
+DROP TABLE IF EXISTS qar.scene_tags;
+DROP TABLE IF EXISTS qar.scene_performers;
+DROP TRIGGER IF EXISTS qar_scenes_updated_at ON qar.scenes;
+DROP INDEX IF EXISTS idx_qar_scenes_stashdb;
+DROP INDEX IF EXISTS idx_qar_scenes_oshash;
+DROP INDEX IF EXISTS idx_qar_scenes_studio;
+DROP INDEX IF EXISTS idx_qar_scenes_library;
+DROP TABLE IF EXISTS qar.scenes;

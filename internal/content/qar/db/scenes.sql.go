@@ -13,7 +13,7 @@ import (
 )
 
 const createAdultScene = `-- name: CreateAdultScene :one
-INSERT INTO c.scenes (
+INSERT INTO qar.scenes (
     library_id,
     title,
     sort_title,
@@ -64,7 +64,7 @@ type CreateAdultSceneParams struct {
 	CoverPath      *string     `json:"coverPath"`
 }
 
-func (q *Queries) CreateAdultScene(ctx context.Context, arg CreateAdultSceneParams) (CScene, error) {
+func (q *Queries) CreateAdultScene(ctx context.Context, arg CreateAdultSceneParams) (QarScene, error) {
 	row := q.db.QueryRow(ctx, createAdultScene,
 		arg.LibraryID,
 		arg.Title,
@@ -87,7 +87,7 @@ func (q *Queries) CreateAdultScene(ctx context.Context, arg CreateAdultScenePara
 		arg.Md5,
 		arg.CoverPath,
 	)
-	var i CScene
+	var i QarScene
 	err := row.Scan(
 		&i.ID,
 		&i.LibraryID,
@@ -117,7 +117,7 @@ func (q *Queries) CreateAdultScene(ctx context.Context, arg CreateAdultScenePara
 }
 
 const deleteAdultScene = `-- name: DeleteAdultScene :exec
-DELETE FROM c.scenes WHERE id = $1
+DELETE FROM qar.scenes WHERE id = $1
 `
 
 func (q *Queries) DeleteAdultScene(ctx context.Context, id uuid.UUID) error {
@@ -126,12 +126,12 @@ func (q *Queries) DeleteAdultScene(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAdultSceneByID = `-- name: GetAdultSceneByID :one
-SELECT id, library_id, title, sort_title, overview, release_date, runtime_minutes, studio_id, whisparr_id, stash_id, stashdb_id, tpdb_id, path, size_bytes, video_codec, audio_codec, resolution, oshash, phash, md5, cover_path, created_at, updated_at FROM c.scenes WHERE id = $1
+SELECT id, library_id, title, sort_title, overview, release_date, runtime_minutes, studio_id, whisparr_id, stash_id, stashdb_id, tpdb_id, path, size_bytes, video_codec, audio_codec, resolution, oshash, phash, md5, cover_path, created_at, updated_at FROM qar.scenes WHERE id = $1
 `
 
-func (q *Queries) GetAdultSceneByID(ctx context.Context, id uuid.UUID) (CScene, error) {
+func (q *Queries) GetAdultSceneByID(ctx context.Context, id uuid.UUID) (QarScene, error) {
 	row := q.db.QueryRow(ctx, getAdultSceneByID, id)
-	var i CScene
+	var i QarScene
 	err := row.Scan(
 		&i.ID,
 		&i.LibraryID,
@@ -161,7 +161,7 @@ func (q *Queries) GetAdultSceneByID(ctx context.Context, id uuid.UUID) (CScene, 
 }
 
 const listAdultScenes = `-- name: ListAdultScenes :many
-SELECT id, library_id, title, sort_title, overview, release_date, runtime_minutes, studio_id, whisparr_id, stash_id, stashdb_id, tpdb_id, path, size_bytes, video_codec, audio_codec, resolution, oshash, phash, md5, cover_path, created_at, updated_at FROM c.scenes
+SELECT id, library_id, title, sort_title, overview, release_date, runtime_minutes, studio_id, whisparr_id, stash_id, stashdb_id, tpdb_id, path, size_bytes, video_codec, audio_codec, resolution, oshash, phash, md5, cover_path, created_at, updated_at FROM qar.scenes
 ORDER BY title
 LIMIT $1 OFFSET $2
 `
@@ -171,15 +171,15 @@ type ListAdultScenesParams struct {
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListAdultScenes(ctx context.Context, arg ListAdultScenesParams) ([]CScene, error) {
+func (q *Queries) ListAdultScenes(ctx context.Context, arg ListAdultScenesParams) ([]QarScene, error) {
 	rows, err := q.db.Query(ctx, listAdultScenes, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []CScene{}
+	items := []QarScene{}
 	for rows.Next() {
-		var i CScene
+		var i QarScene
 		if err := rows.Scan(
 			&i.ID,
 			&i.LibraryID,
@@ -216,7 +216,7 @@ func (q *Queries) ListAdultScenes(ctx context.Context, arg ListAdultScenesParams
 }
 
 const listAdultScenesByLibrary = `-- name: ListAdultScenesByLibrary :many
-SELECT id, library_id, title, sort_title, overview, release_date, runtime_minutes, studio_id, whisparr_id, stash_id, stashdb_id, tpdb_id, path, size_bytes, video_codec, audio_codec, resolution, oshash, phash, md5, cover_path, created_at, updated_at FROM c.scenes
+SELECT id, library_id, title, sort_title, overview, release_date, runtime_minutes, studio_id, whisparr_id, stash_id, stashdb_id, tpdb_id, path, size_bytes, video_codec, audio_codec, resolution, oshash, phash, md5, cover_path, created_at, updated_at FROM qar.scenes
 WHERE library_id = $1
 ORDER BY title
 LIMIT $2 OFFSET $3
@@ -228,15 +228,15 @@ type ListAdultScenesByLibraryParams struct {
 	Offset    int32     `json:"offset"`
 }
 
-func (q *Queries) ListAdultScenesByLibrary(ctx context.Context, arg ListAdultScenesByLibraryParams) ([]CScene, error) {
+func (q *Queries) ListAdultScenesByLibrary(ctx context.Context, arg ListAdultScenesByLibraryParams) ([]QarScene, error) {
 	rows, err := q.db.Query(ctx, listAdultScenesByLibrary, arg.LibraryID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []CScene{}
+	items := []QarScene{}
 	for rows.Next() {
-		var i CScene
+		var i QarScene
 		if err := rows.Scan(
 			&i.ID,
 			&i.LibraryID,
@@ -273,7 +273,7 @@ func (q *Queries) ListAdultScenesByLibrary(ctx context.Context, arg ListAdultSce
 }
 
 const updateAdultScene = `-- name: UpdateAdultScene :one
-UPDATE c.scenes
+UPDATE qar.scenes
 SET
     library_id = $2,
     title = $3,
@@ -323,7 +323,7 @@ type UpdateAdultSceneParams struct {
 	CoverPath      *string     `json:"coverPath"`
 }
 
-func (q *Queries) UpdateAdultScene(ctx context.Context, arg UpdateAdultSceneParams) (CScene, error) {
+func (q *Queries) UpdateAdultScene(ctx context.Context, arg UpdateAdultSceneParams) (QarScene, error) {
 	row := q.db.QueryRow(ctx, updateAdultScene,
 		arg.ID,
 		arg.LibraryID,
@@ -347,7 +347,7 @@ func (q *Queries) UpdateAdultScene(ctx context.Context, arg UpdateAdultScenePara
 		arg.Md5,
 		arg.CoverPath,
 	)
-	var i CScene
+	var i QarScene
 	err := row.Scan(
 		&i.ID,
 		&i.LibraryID,
