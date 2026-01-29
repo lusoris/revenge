@@ -1,7 +1,7 @@
 # fx Documentation
 
 > Auto-fetched from [https://uber-go.github.io/fx/](https://uber-go.github.io/fx/)
-> Last Updated: 2026-01-28T21:43:08.936937+00:00
+> Last Updated: 2026-01-29T20:11:18.658385+00:00
 
 ---
 

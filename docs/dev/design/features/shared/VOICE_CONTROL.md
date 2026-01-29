@@ -283,8 +283,8 @@ CREATE TABLE voice_devices (
     refresh_token TEXT,
     token_expires_at TIMESTAMPTZ,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(user_id, platform, device_id)
 );
@@ -305,7 +305,7 @@ CREATE TABLE voice_commands (
     response_text TEXT,
     action_taken TEXT,
 
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_voice_devices_user ON voice_devices(user_id);

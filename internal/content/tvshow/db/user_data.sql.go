@@ -813,7 +813,7 @@ func (q *Queries) ListUserEpisodeWatchHistory(ctx context.Context, arg ListUserE
 }
 
 const listUserFavoriteSeries = `-- name: ListUserFavoriteSeries :many
-SELECT s.id, s.library_id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at FROM series s
+SELECT s.id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at, s.tv_library_id FROM series s
 JOIN series_favorites sf ON s.id = sf.series_id
 WHERE sf.user_id = $1
 ORDER BY sf.created_at DESC
@@ -837,7 +837,6 @@ func (q *Queries) ListUserFavoriteSeries(ctx context.Context, arg ListUserFavori
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -870,6 +869,7 @@ func (q *Queries) ListUserFavoriteSeries(ctx context.Context, arg ListUserFavori
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -937,7 +937,7 @@ func (q *Queries) ListUserSeriesRatings(ctx context.Context, arg ListUserSeriesR
 }
 
 const listUserSeriesWatchlist = `-- name: ListUserSeriesWatchlist :many
-SELECT s.id, s.library_id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at FROM series s
+SELECT s.id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at, s.tv_library_id FROM series s
 JOIN series_watchlist sw ON s.id = sw.series_id
 WHERE sw.user_id = $1
 ORDER BY sw.sort_order ASC, sw.added_at DESC
@@ -961,7 +961,6 @@ func (q *Queries) ListUserSeriesWatchlist(ctx context.Context, arg ListUserSerie
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -994,6 +993,7 @@ func (q *Queries) ListUserSeriesWatchlist(ctx context.Context, arg ListUserSerie
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}

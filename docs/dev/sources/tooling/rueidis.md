@@ -1,7 +1,7 @@
 # rueidis
 
 > Auto-fetched from [https://pkg.go.dev/github.com/redis/rueidis](https://pkg.go.dev/github.com/redis/rueidis)
-> Last Updated: 2026-01-28T21:43:34.404420+00:00
+> Last Updated: 2026-01-29T20:11:38.152819+00:00
 
 ---
 
@@ -75,6 +75,10 @@ type NodeInfo
 type PubSubHooks
 type PubSubMessage
 type PubSubSubscription
+type ReadNodeSelectorFunc
+func AZAffinityNodeSelector(clientAZ string) ReadNodeSelectorFunc
+func AZAffinityReplicasAndPrimaryNodeSelector(clientAZ string) ReadNodeSelectorFunc
+func PreferReplicaNodeSelector() ReadNodeSelectorFunc
 type RedirectMode
 type RedisError
 func IsRedisErr(err error) (ret *RedisError, ok bool)
@@ -191,6 +195,7 @@ func (s *RedisResultStream) Error() error
 func (s *RedisResultStream) HasNext() bool
 func (s *RedisResultStream) WriteTo(w io.Writer) (n int64, err error)
 type ReplicaInfo
+type ReplicaSelectorFunc
 type RetryDelayFn
 type ScanEntry
 type Scanner
@@ -260,7 +265,7 @@ ClientMode
 View Source
 const LibName = "rueidis"
 View Source
-const LibVer = "1.0.70"
+const LibVer = "1.0.71"
 Variables
 ¶
 View Source
@@ -1214,24 +1219,16 @@ RetryDelayFn
 // Each ReplicaInfo must not be modified.
 // NOTE: This function can't be used with ReplicaOnly option.
 // NOTE: This function must be used with the SendToReplicas function.
-ReplicaSelector func(slot
-uint16
-, replicas []
-NodeInfo
-)
-int
+ReplicaSelector
+ReplicaSelectorFunc
 // ReadNodeSelector returns index of node selected for a read only command.
 // If set, ReadNodeSelector is prioritized over ReplicaSelector.
 // If the returned index is out of range, the primary node will be selected.
 // The function is called only when SendToReplicas returns true.
 // Each NodeInfo must not be modified.
 // NOTE: This function can't be used with ReplicaSelector option.
-ReadNodeSelector func(slot
-uint16
-, nodes []
-NodeInfo
-)
-int
+ReadNodeSelector
+ReadNodeSelectorFunc
 // Sentinel options, including MasterSet and Auth options
 Sentinel
 SentinelOption
@@ -1388,6 +1385,10 @@ bool
 // EnableReplicaAZInfo enables the client to load the replica node's availability zone.
 // If true, the client will set the `AZ` field in `ReplicaInfo`.
 EnableReplicaAZInfo
+bool
+// AZFromInfo forces the `availability_zone` field to be taken from an INFO command instead of HELLO.
+// Primarily used for AWS MemoryDB.
+AZFromInfo
 bool
 }
 ClientOption should be passed to NewClient to construct a Client
@@ -1834,6 +1835,51 @@ Count
 int64
 }
 PubSubSubscription represent a pubsub "subscribe", "unsubscribe", "ssubscribe", "sunsubscribe", "psubscribe" or "punsubscribe" event.
+type
+ReadNodeSelectorFunc
+¶
+added in
+v1.0.71
+type ReadNodeSelectorFunc func(slot
+uint16
+, nodes []
+NodeInfo
+)
+int
+Define distinct types for safety.
+func
+AZAffinityNodeSelector
+¶
+added in
+v1.0.71
+func AZAffinityNodeSelector(clientAZ
+string
+)
+ReadNodeSelectorFunc
+AZAffinityNodeSelector prioritizes replicas in the same AZ using Round-Robin.
+func
+AZAffinityReplicasAndPrimaryNodeSelector
+¶
+added in
+v1.0.71
+func AZAffinityReplicasAndPrimaryNodeSelector(clientAZ
+string
+)
+ReadNodeSelectorFunc
+AZAffinityReplicasAndPrimaryNodeSelector prioritizes:
+1. Same-AZ Replicas
+2. Same-AZ Primary
+3. Any Replica
+4. Primary
+func
+PreferReplicaNodeSelector
+¶
+added in
+v1.0.71
+func PreferReplicaNodeSelector()
+ReadNodeSelectorFunc
+PreferReplicaNodeSelector prioritizes reading from any replica using Round-Robin.
+If no replicas are available, it falls back to the primary.
 type
 RedirectMode
 ¶
@@ -3108,6 +3154,17 @@ v1.0.52
 type ReplicaInfo =
 NodeInfo
 ReplicaInfo is the information of a replica node in a redis cluster.
+type
+ReplicaSelectorFunc
+¶
+added in
+v1.0.71
+type ReplicaSelectorFunc func(slot
+uint16
+, replicas []
+NodeInfo
+)
+int
 type
 RetryDelayFn
 ¶

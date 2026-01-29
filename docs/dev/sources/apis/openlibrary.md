@@ -1,13 +1,13 @@
 # Open Library API
 
 > Auto-fetched from [https://openlibrary.org/developers/api](https://openlibrary.org/developers/api)
-> Last Updated: 2026-01-28T21:45:07.541533+00:00
+> Last Updated: 2026-01-29T20:13:04.479681+00:00
 
 ---
 
 Last edited by
 The Poison Path Collection
-11 hours ago |
+1 day ago |
 History
 Edit
 APIs
@@ -170,7 +170,7 @@ openlibrary@archive.org
 History
 Created November 12, 2009
 86 revisions
-11 hours ago
+1 day ago
 Edited by
 The Poison Path Collection
 Added mcp-open-library as one of friends using OL APIs.

@@ -56,8 +56,8 @@ CREATE TABLE user_preferences (
     theme VARCHAR(20) DEFAULT 'system',
     language VARCHAR(10) DEFAULT 'en',
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Audit log for NSFW toggles (security/compliance)

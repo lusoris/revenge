@@ -1,7 +1,7 @@
 # Go errors
 
 > Auto-fetched from [https://pkg.go.dev/errors](https://pkg.go.dev/errors)
-> Last Updated: 2026-01-28T21:42:59.157519+00:00
+> Last Updated: 2026-01-29T20:11:09.415131+00:00
 
 ---
 

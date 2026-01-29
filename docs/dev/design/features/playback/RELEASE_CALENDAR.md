@@ -99,7 +99,7 @@ CREATE TABLE user_calendar_settings (
     notify_releases BOOLEAN DEFAULT false,
     notify_hours_before INT DEFAULT 24,
 
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 

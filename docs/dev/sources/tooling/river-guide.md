@@ -1,7 +1,7 @@
 # River Documentation
 
 > Auto-fetched from [https://riverqueue.com/docs](https://riverqueue.com/docs)
-> Last Updated: 2026-01-28T21:43:23.662291+00:00
+> Last Updated: 2026-01-29T20:11:31.145308+00:00
 
 ---
 

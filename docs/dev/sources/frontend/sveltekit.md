@@ -1,7 +1,7 @@
 # SvelteKit Documentation
 
 > Auto-fetched from [https://svelte.dev/docs/kit/introduction](https://svelte.dev/docs/kit/introduction)
-> Last Updated: 2026-01-28T21:46:06.828975+00:00
+> Last Updated: 2026-01-29T20:14:04.897887+00:00
 
 ---
 

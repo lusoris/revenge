@@ -1,0 +1,1359 @@
+paths:
+  /series:
+    get:
+      operationId: listSeries
+      x-ogen-operation-group: TVShows
+      summary: List TV series
+      description: List TV series accessible to the current user with pagination and filtering
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: query
+          description: Filter by library ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: genreId
+          in: query
+          description: Filter by genre ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: networkId
+          in: query
+          description: Filter by network ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: status
+          in: query
+          description: Filter by series status
+          schema:
+            type: string
+            enum: [continuing, ended, canceled, pilot]
+        - name: query
+          in: query
+          description: Search query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          description: Sort field
+          schema:
+            type: string
+            enum: [title, date_added, first_air_date, rating, popularity]
+            default: title
+        - name: sortOrder
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /series/recent:
+    get:
+      operationId: listRecentlyAddedSeries
+      x-ogen-operation-group: TVShows
+      summary: List recently added series
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Recently added series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Series"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /series/continue:
+    get:
+      operationId: listContinueWatchingSeries
+      x-ogen-operation-group: TVShows
+      summary: List series the user is currently watching
+      description: Returns series with in-progress episodes
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Series to continue watching
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SeriesWithProgress"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /series/{seriesId}:
+    get:
+      operationId: getSeries
+      x-ogen-operation-group: TVShows
+      summary: Get series by ID
+      description: Get full series details including seasons, credits, and user data
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Series details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    patch:
+      operationId: updateSeries
+      x-ogen-operation-group: TVShows
+      summary: Update series metadata
+      description: Admin or library manager only
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeriesUpdate"
+      responses:
+        "200":
+          description: Series updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteSeries
+      x-ogen-operation-group: TVShows
+      summary: Delete series
+      description: Admin only. Removes series from database (does not delete files).
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Series deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /series/{seriesId}/refresh:
+    post:
+      operationId: refreshSeriesMetadata
+      x-ogen-operation-group: TVShows
+      summary: Refresh series metadata
+      description: Queue a metadata refresh job for this series
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "202":
+          description: Refresh job queued
+          content:
+            application/json:
+              schema:
+                $ref: "./movies.yaml#/components/schemas/JobResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Seasons
+  /series/{seriesId}/seasons:
+    get:
+      operationId: listSeasons
+      x-ogen-operation-group: TVShows
+      summary: List seasons for a series
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: List of seasons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Season"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /seasons/{seasonId}:
+    get:
+      operationId: getSeason
+      x-ogen-operation-group: TVShows
+      summary: Get season by ID
+      description: Get season details with episodes
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Season details with episodes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Season not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Episodes
+  /seasons/{seasonId}/episodes:
+    get:
+      operationId: listEpisodes
+      x-ogen-operation-group: TVShows
+      summary: List episodes for a season
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: List of episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Episode"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Season not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /episodes/{episodeId}:
+    get:
+      operationId: getEpisode
+      x-ogen-operation-group: TVShows
+      summary: Get episode by ID
+      description: Get episode details including credits and user data
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Episode details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EpisodeFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Episode not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /episodes/{episodeId}/next:
+    get:
+      operationId: getNextEpisode
+      x-ogen-operation-group: TVShows
+      summary: Get next episode
+      description: Get the next episode in the series after this one
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Next episode
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Episode"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Episode not found or no next episode
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /episodes/upcoming:
+    get:
+      operationId: listUpcomingEpisodes
+      x-ogen-operation-group: TVShows
+      summary: List upcoming episodes
+      description: Episodes airing soon from series the user is watching
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Upcoming episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EpisodeWithSeries"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /episodes/recent:
+    get:
+      operationId: listRecentlyAiredEpisodes
+      x-ogen-operation-group: TVShows
+      summary: List recently aired episodes
+      description: Recently aired episodes from series the user is watching
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Recently aired episodes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EpisodeWithSeries"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # User interaction - Series
+  /series/{seriesId}/favorite:
+    put:
+      operationId: addSeriesToFavorites
+      x-ogen-operation-group: TVShows
+      summary: Add series to favorites
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Added to favorites
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: removeSeriesFromFavorites
+      x-ogen-operation-group: TVShows
+      summary: Remove series from favorites
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Removed from favorites
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /series/{seriesId}/watchlist:
+    put:
+      operationId: addSeriesToWatchlist
+      x-ogen-operation-group: TVShows
+      summary: Add series to watchlist
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Added to watchlist
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: removeSeriesFromWatchlist
+      x-ogen-operation-group: TVShows
+      summary: Remove series from watchlist
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Removed from watchlist
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /series/{seriesId}/rating:
+    put:
+      operationId: setSeriesRating
+      x-ogen-operation-group: TVShows
+      summary: Set user rating for series
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./movies.yaml#/components/schemas/UserRatingRequest"
+      responses:
+        "200":
+          description: Rating set
+          content:
+            application/json:
+              schema:
+                $ref: "./movies.yaml#/components/schemas/UserRating"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Series not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteSeriesRating
+      x-ogen-operation-group: TVShows
+      summary: Delete user rating for series
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: seriesId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Rating deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # User interaction - Episodes
+  /episodes/{episodeId}/watched:
+    put:
+      operationId: markEpisodeAsWatched
+      x-ogen-operation-group: TVShows
+      summary: Mark episode as watched
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Marked as watched
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Episode not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: markEpisodeAsUnwatched
+      x-ogen-operation-group: TVShows
+      summary: Mark episode as unwatched
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Marked as unwatched
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /episodes/{episodeId}/rating:
+    put:
+      operationId: setEpisodeRating
+      x-ogen-operation-group: TVShows
+      summary: Set user rating for episode
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./movies.yaml#/components/schemas/UserRatingRequest"
+      responses:
+        "200":
+          description: Rating set
+          content:
+            application/json:
+              schema:
+                $ref: "./movies.yaml#/components/schemas/UserRating"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Episode not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteEpisodeRating
+      x-ogen-operation-group: TVShows
+      summary: Delete user rating for episode
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: episodeId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Rating deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # User lists
+  /me/series/favorites:
+    get:
+      operationId: listMyFavoriteSeries
+      x-ogen-operation-group: TVShows
+      summary: List current user's favorite series
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Favorite series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /me/series/watchlist:
+    get:
+      operationId: listMySeriesWatchlist
+      x-ogen-operation-group: TVShows
+      summary: List current user's series watchlist
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Watchlist series
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Networks
+  /networks:
+    get:
+      operationId: listNetworks
+      x-ogen-operation-group: Networks
+      summary: List TV networks
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of networks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Network"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /networks/{networkId}:
+    get:
+      operationId: getNetwork
+      x-ogen-operation-group: Networks
+      summary: Get network by ID
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Network details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Network"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Network not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /networks/{networkId}/series:
+    get:
+      operationId: listNetworkSeries
+      x-ogen-operation-group: Networks
+      summary: List series by network
+      tags: [TVShows]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: networkId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Series by network
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeriesListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Network not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+components:
+  schemas:
+    # Series schemas
+    Series:
+      type: object
+      required:
+        - id
+        - title
+        - libraryId
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        libraryId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        title:
+          type: string
+        originalTitle:
+          type: string
+        sortTitle:
+          type: string
+        tagline:
+          type: string
+        overview:
+          type: string
+        firstAirDate:
+          type: string
+          format: date
+        lastAirDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [continuing, ended, canceled, pilot]
+        contentRating:
+          type: string
+          description: Age rating (TV-MA, TV-14, etc.)
+        seasonCount:
+          type: integer
+        episodeCount:
+          type: integer
+        communityRating:
+          type: number
+          format: float
+        voteCount:
+          type: integer
+        posterPath:
+          type: string
+        posterBlurhash:
+          type: string
+        backdropPath:
+          type: string
+        backdropBlurhash:
+          type: string
+        logoPath:
+          type: string
+        tmdbId:
+          type: integer
+        tvdbId:
+          type: integer
+        imdbId:
+          type: string
+        dateAdded:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+        userData:
+          $ref: "#/components/schemas/SeriesUserData"
+
+    SeriesFull:
+      allOf:
+        - $ref: "#/components/schemas/Series"
+        - type: object
+          properties:
+            genres:
+              type: array
+              items:
+                $ref: "./movies.yaml#/components/schemas/Genre"
+            networks:
+              type: array
+              items:
+                $ref: "#/components/schemas/Network"
+            seasons:
+              type: array
+              items:
+                $ref: "#/components/schemas/Season"
+            cast:
+              type: array
+              items:
+                $ref: "./movies.yaml#/components/schemas/CastMember"
+            creators:
+              type: array
+              items:
+                $ref: "./movies.yaml#/components/schemas/CrewMember"
+
+    SeriesWithProgress:
+      allOf:
+        - $ref: "#/components/schemas/Series"
+        - type: object
+          properties:
+            progress:
+              $ref: "#/components/schemas/SeriesWatchProgress"
+            nextEpisode:
+              $ref: "#/components/schemas/Episode"
+
+    SeriesUserData:
+      type: object
+      properties:
+        isFavorite:
+          type: boolean
+        isInWatchlist:
+          type: boolean
+        userRating:
+          type: number
+          format: float
+        episodesWatched:
+          type: integer
+        episodesRemaining:
+          type: integer
+
+    SeriesWatchProgress:
+      type: object
+      properties:
+        episodesWatched:
+          type: integer
+        episodesTotal:
+          type: integer
+        episodesRemaining:
+          type: integer
+        percentComplete:
+          type: number
+          format: float
+        lastWatchedAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+
+    SeriesUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        originalTitle:
+          type: string
+        sortTitle:
+          type: string
+        overview:
+          type: string
+        tagline:
+          type: string
+        contentRating:
+          type: string
+        isLocked:
+          type: boolean
+          description: Prevent automatic metadata updates
+
+    SeriesListResponse:
+      type: object
+      required:
+        - series
+        - pagination
+      properties:
+        series:
+          type: array
+          items:
+            $ref: "#/components/schemas/Series"
+        pagination:
+          $ref: "./components/schemas.yaml#/components/schemas/PaginationMeta"
+
+    # Season schemas
+    Season:
+      type: object
+      required:
+        - id
+        - seriesId
+        - seasonNumber
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        seriesId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        seasonNumber:
+          type: integer
+        name:
+          type: string
+        overview:
+          type: string
+        airDate:
+          type: string
+          format: date
+        episodeCount:
+          type: integer
+        posterPath:
+          type: string
+        posterBlurhash:
+          type: string
+        tmdbId:
+          type: integer
+        tvdbId:
+          type: integer
+        userData:
+          $ref: "#/components/schemas/SeasonUserData"
+
+    SeasonFull:
+      allOf:
+        - $ref: "#/components/schemas/Season"
+        - type: object
+          properties:
+            episodes:
+              type: array
+              items:
+                $ref: "#/components/schemas/Episode"
+
+    SeasonUserData:
+      type: object
+      properties:
+        episodesWatched:
+          type: integer
+        episodesRemaining:
+          type: integer
+
+    # Episode schemas
+    Episode:
+      type: object
+      required:
+        - id
+        - seriesId
+        - seasonId
+        - seasonNumber
+        - episodeNumber
+        - title
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        seriesId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        seasonId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        seasonNumber:
+          type: integer
+        episodeNumber:
+          type: integer
+        title:
+          type: string
+        overview:
+          type: string
+        airDate:
+          type: string
+          format: date
+        runtimeTicks:
+          type: integer
+          format: int64
+          description: Runtime in 100ns ticks
+        communityRating:
+          type: number
+          format: float
+        voteCount:
+          type: integer
+        stillPath:
+          type: string
+        stillBlurhash:
+          type: string
+        tmdbId:
+          type: integer
+        tvdbId:
+          type: integer
+        imdbId:
+          type: string
+        userData:
+          $ref: "#/components/schemas/EpisodeUserData"
+
+    EpisodeFull:
+      allOf:
+        - $ref: "#/components/schemas/Episode"
+        - type: object
+          properties:
+            seriesTitle:
+              type: string
+            cast:
+              type: array
+              items:
+                $ref: "./movies.yaml#/components/schemas/CastMember"
+            directors:
+              type: array
+              items:
+                $ref: "./movies.yaml#/components/schemas/CrewMember"
+            writers:
+              type: array
+              items:
+                $ref: "./movies.yaml#/components/schemas/CrewMember"
+
+    EpisodeWithSeries:
+      allOf:
+        - $ref: "#/components/schemas/Episode"
+        - type: object
+          properties:
+            seriesTitle:
+              type: string
+            seriesPosterPath:
+              type: string
+
+    EpisodeUserData:
+      type: object
+      properties:
+        isWatched:
+          type: boolean
+        userRating:
+          type: number
+          format: float
+        playbackPosition:
+          type: integer
+          format: int64
+          description: Current playback position in ticks
+        playedPercentage:
+          type: number
+          format: float
+        lastPlayedAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+
+    # Network
+    Network:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        logoPath:
+          type: string
+        originCountry:
+          type: string
+        tmdbId:
+          type: integer
+        seriesCount:
+          type: integer

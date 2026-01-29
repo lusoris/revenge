@@ -1,7 +1,7 @@
 # StashDB GraphQL API GraphQL Schema
 
 # Auto-fetched from https://stashdb.org/graphql
-# Last Updated: 2026-01-28T21:45:33.853598+00:00
+# Last Updated: 2026-01-29T20:13:27.101135+00:00
 
 input ActivateNewUserInput {
   name: String!

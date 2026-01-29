@@ -2,7 +2,7 @@
 
 > Auto-fetched from [https://github.com/go-resty/resty](https://github.com/go-resty/resty)
 > Raw source: [https://raw.githubusercontent.com/go-resty/resty/HEAD/README.md](https://raw.githubusercontent.com/go-resty/resty/HEAD/README.md)
-> Last Updated: 2026-01-28T21:51:13.681885+00:00
+> Last Updated: 2026-01-29T20:11:59.626707+00:00
 
 ---
 

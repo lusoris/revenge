@@ -1,7 +1,7 @@
 # sqlc
 
 > Auto-fetched from [https://docs.sqlc.dev/en/stable/](https://docs.sqlc.dev/en/stable/)
-> Last Updated: 2026-01-28T21:44:12.494533+00:00
+> Last Updated: 2026-01-29T20:12:13.662706+00:00
 
 ---
 

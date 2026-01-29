@@ -49,6 +49,17 @@ func DefaultAPICacheConfig() APICacheConfig {
 func NewAPICache(cfg *config.Config, logger *slog.Logger) *APICache {
 	apiCfg := DefaultAPICacheConfig()
 
+	// Override defaults with config values if set
+	if cfg.Cache.APICapacity > 0 {
+		apiCfg.Capacity = cfg.Cache.APICapacity
+	}
+	if cfg.Cache.APINumShards > 0 {
+		apiCfg.NumShards = cfg.Cache.APINumShards
+	}
+	if cfg.Cache.APITTL > 0 {
+		apiCfg.TTL = time.Duration(cfg.Cache.APITTL) * time.Second
+	}
+
 	cache := sturdyc.New[any](
 		apiCfg.Capacity,
 		apiCfg.NumShards,

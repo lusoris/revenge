@@ -1,7 +1,7 @@
 # sturdyc
 
 > Auto-fetched from [https://pkg.go.dev/github.com/viccon/sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc)
-> Last Updated: 2026-01-28T21:43:45.291304+00:00
+> Last Updated: 2026-01-29T20:11:47.993517+00:00
 
 ---
 

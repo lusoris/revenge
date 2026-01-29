@@ -1,7 +1,7 @@
 # PostgreSQL JSON Functions
 
 > Auto-fetched from [https://www.postgresql.org/docs/current/functions-json.html](https://www.postgresql.org/docs/current/functions-json.html)
-> Last Updated: 2026-01-28T21:44:25.875250+00:00
+> Last Updated: 2026-01-29T20:12:28.521391+00:00
 
 ---
 

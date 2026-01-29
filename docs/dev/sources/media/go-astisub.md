@@ -1,7 +1,7 @@
 # go-astisub (subtitles)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/asticode/go-astisub](https://pkg.go.dev/github.com/asticode/go-astisub)
-> Last Updated: 2026-01-28T21:46:48.733714+00:00
+> Last Updated: 2026-01-29T20:14:46.305147+00:00
 
 ---
 

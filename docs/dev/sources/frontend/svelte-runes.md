@@ -1,7 +1,7 @@
 # Svelte 5 Runes
 
 > Auto-fetched from [https://svelte.dev/docs/svelte/$state](https://svelte.dev/docs/svelte/$state)
-> Last Updated: 2026-01-28T21:46:04.710251+00:00
+> Last Updated: 2026-01-29T20:14:02.828108+00:00
 
 ---
 

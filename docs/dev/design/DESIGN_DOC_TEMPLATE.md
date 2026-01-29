@@ -189,7 +189,7 @@ CREATE TABLE user_favorites (
     user_id UUID NOT NULL REFERENCES users(id),
     content_id UUID NOT NULL,
     content_type VARCHAR(20) NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (user_id, content_id, content_type)
 );
 ```

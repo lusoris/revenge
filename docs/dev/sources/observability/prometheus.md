@@ -1,7 +1,7 @@
 # Prometheus Go Client
 
 > Auto-fetched from [https://pkg.go.dev/github.com/prometheus/client_golang/prometheus](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus)
-> Last Updated: 2026-01-28T21:47:16.356406+00:00
+> Last Updated: 2026-01-29T20:15:23.811517+00:00
 
 ---
 

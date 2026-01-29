@@ -1,7 +1,7 @@
 # MyAnimeList API
 
 > Auto-fetched from [https://myanimelist.net/apiconfig/references/api/v2](https://myanimelist.net/apiconfig/references/api/v2)
-> Last Updated: 2026-01-28T21:45:28.428909+00:00
+> Last Updated: 2026-01-29T20:13:22.506870+00:00
 
 ---
 

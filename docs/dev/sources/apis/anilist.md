@@ -1,7 +1,7 @@
 # AniList GraphQL API
 
 > Auto-fetched from [https://anilist.gitbook.io/anilist-apiv2-docs](https://anilist.gitbook.io/anilist-apiv2-docs)
-> Last Updated: 2026-01-28T21:45:21.323158+00:00
+> Last Updated: 2026-01-29T20:13:15.986002+00:00
 
 ---
 

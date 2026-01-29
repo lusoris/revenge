@@ -1,7 +1,7 @@
 # Bits UI
 
 > Auto-fetched from [https://www.bits-ui.com/docs/introduction](https://www.bits-ui.com/docs/introduction)
-> Last Updated: 2026-01-28T21:46:12.117280+00:00
+> Last Updated: 2026-01-29T20:14:11.734819+00:00
 
 ---
 

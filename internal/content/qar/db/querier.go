@@ -8,21 +8,109 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
-	CreateAdultMovie(ctx context.Context, arg CreateAdultMovieParams) (QarMovie, error)
-	CreateAdultScene(ctx context.Context, arg CreateAdultSceneParams) (QarScene, error)
-	DeleteAdultMovie(ctx context.Context, id uuid.UUID) error
-	DeleteAdultScene(ctx context.Context, id uuid.UUID) error
-	GetAdultMovieByID(ctx context.Context, id uuid.UUID) (QarMovie, error)
-	GetAdultSceneByID(ctx context.Context, id uuid.UUID) (QarScene, error)
-	ListAdultMovies(ctx context.Context, arg ListAdultMoviesParams) ([]QarMovie, error)
-	ListAdultMoviesByLibrary(ctx context.Context, arg ListAdultMoviesByLibraryParams) ([]QarMovie, error)
-	ListAdultScenes(ctx context.Context, arg ListAdultScenesParams) ([]QarScene, error)
-	ListAdultScenesByLibrary(ctx context.Context, arg ListAdultScenesByLibraryParams) ([]QarScene, error)
-	UpdateAdultMovie(ctx context.Context, arg UpdateAdultMovieParams) (QarMovie, error)
-	UpdateAdultScene(ctx context.Context, arg UpdateAdultSceneParams) (QarScene, error)
+	AddCrewName(ctx context.Context, arg AddCrewNameParams) error
+	AddCrewPortrait(ctx context.Context, arg AddCrewPortraitParams) (QarCrewPortrait, error)
+	AddExpeditionCrew(ctx context.Context, arg AddExpeditionCrewParams) error
+	AddExpeditionFlag(ctx context.Context, arg AddExpeditionFlagParams) error
+	AddVoyageCrew(ctx context.Context, arg AddVoyageCrewParams) error
+	AddVoyageFlag(ctx context.Context, arg AddVoyageFlagParams) error
+	ClearExpeditionFlags(ctx context.Context, expeditionID uuid.UUID) error
+	ClearVoyageFlags(ctx context.Context, voyageID uuid.UUID) error
+	CountExpeditionsByFleet(ctx context.Context, fleetID uuid.UUID) (int64, error)
+	CountExpeditionsByPort(ctx context.Context, portID pgtype.UUID) (int64, error)
+	CountFleetExpeditions(ctx context.Context, fleetID uuid.UUID) (int64, error)
+	CountFleetVoyages(ctx context.Context, fleetID uuid.UUID) (int64, error)
+	CountVoyagesByFleet(ctx context.Context, fleetID uuid.UUID) (int64, error)
+	CountVoyagesByPort(ctx context.Context, portID pgtype.UUID) (int64, error)
+	CreateCrew(ctx context.Context, arg CreateCrewParams) (QarCrew, error)
+	CreateExpedition(ctx context.Context, arg CreateExpeditionParams) (QarExpedition, error)
+	CreateFlag(ctx context.Context, arg CreateFlagParams) (QarFlag, error)
+	CreateFleet(ctx context.Context, arg CreateFleetParams) (QarFleet, error)
+	CreatePort(ctx context.Context, arg CreatePortParams) (QarPort, error)
+	CreateVoyage(ctx context.Context, arg CreateVoyageParams) (QarVoyage, error)
+	CreateWaypoint(ctx context.Context, arg CreateWaypointParams) (QarVoyageWaypoint, error)
+	DeleteCrew(ctx context.Context, id uuid.UUID) error
+	DeleteExpedition(ctx context.Context, id uuid.UUID) error
+	DeleteFlag(ctx context.Context, id uuid.UUID) error
+	DeleteFleet(ctx context.Context, id uuid.UUID) error
+	DeletePort(ctx context.Context, id uuid.UUID) error
+	DeleteVoyage(ctx context.Context, id uuid.UUID) error
+	DeleteWaypoint(ctx context.Context, id uuid.UUID) error
+	DeleteWaypointsByVoyage(ctx context.Context, voyageID pgtype.UUID) error
+	GetCrewByCharter(ctx context.Context, charter *string) (QarCrew, error)
+	// Crew (Performers) - QAR obfuscated queries
+	GetCrewByID(ctx context.Context, id uuid.UUID) (QarCrew, error)
+	GetCrewByRegistry(ctx context.Context, registry *string) (QarCrew, error)
+	GetExpeditionByCharter(ctx context.Context, charter *string) (QarExpedition, error)
+	GetExpeditionByCoordinates(ctx context.Context, coordinates *string) (QarExpedition, error)
+	// Expeditions (Adult Movies) - QAR obfuscated queries
+	GetExpeditionByID(ctx context.Context, id uuid.UUID) (QarExpedition, error)
+	GetExpeditionByPath(ctx context.Context, path string) (QarExpedition, error)
+	// Flags (Tags) - QAR obfuscated queries
+	GetFlagByID(ctx context.Context, id uuid.UUID) (QarFlag, error)
+	GetFlagByName(ctx context.Context, name string) (QarFlag, error)
+	GetFlagByStashDBID(ctx context.Context, stashdbID *string) (QarFlag, error)
+	// Fleets (Libraries) - QAR obfuscated queries
+	GetFleetByID(ctx context.Context, id uuid.UUID) (QarFleet, error)
+	GetFleetStats(ctx context.Context, id uuid.UUID) (GetFleetStatsRow, error)
+	// Ports (Studios) - QAR obfuscated queries
+	GetPortByID(ctx context.Context, id uuid.UUID) (QarPort, error)
+	GetPortByStashDBID(ctx context.Context, stashdbID *string) (QarPort, error)
+	GetPortByTPDBID(ctx context.Context, tpdbID *string) (QarPort, error)
+	GetVoyageByCharter(ctx context.Context, charter *string) (QarVoyage, error)
+	GetVoyageByCoordinates(ctx context.Context, coordinates *string) (QarVoyage, error)
+	// Voyages (Adult Scenes) - QAR obfuscated queries
+	GetVoyageByID(ctx context.Context, id uuid.UUID) (QarVoyage, error)
+	GetVoyageByOshash(ctx context.Context, oshash *string) (QarVoyage, error)
+	GetVoyageByPath(ctx context.Context, path string) (QarVoyage, error)
+	// Waypoints (Scene Markers) - QAR obfuscated queries
+	GetWaypointByID(ctx context.Context, id uuid.UUID) (QarVoyageWaypoint, error)
+	GetWaypointByStashMarkerID(ctx context.Context, stashMarkerID *string) (QarVoyageWaypoint, error)
+	ListCrew(ctx context.Context, arg ListCrewParams) ([]QarCrew, error)
+	ListCrewNames(ctx context.Context, crewID uuid.UUID) ([]QarCrewName, error)
+	ListCrewPortraits(ctx context.Context, crewID pgtype.UUID) ([]QarCrewPortrait, error)
+	ListExpeditionCrew(ctx context.Context, expeditionID uuid.UUID) ([]QarCrew, error)
+	ListExpeditionFlags(ctx context.Context, expeditionID uuid.UUID) ([]QarFlag, error)
+	ListExpeditions(ctx context.Context, arg ListExpeditionsParams) ([]QarExpedition, error)
+	ListExpeditionsByFleet(ctx context.Context, arg ListExpeditionsByFleetParams) ([]QarExpedition, error)
+	ListFlagChildren(ctx context.Context, parentID pgtype.UUID) ([]QarFlag, error)
+	ListFlags(ctx context.Context, arg ListFlagsParams) ([]QarFlag, error)
+	ListFlagsByWaters(ctx context.Context, waters *string) ([]QarFlag, error)
+	ListFleets(ctx context.Context, arg ListFleetsParams) ([]QarFleet, error)
+	ListFleetsByOwner(ctx context.Context, ownerUserID pgtype.UUID) ([]QarFleet, error)
+	ListFleetsByType(ctx context.Context, arg ListFleetsByTypeParams) ([]QarFleet, error)
+	ListPortChildren(ctx context.Context, parentID pgtype.UUID) ([]QarPort, error)
+	ListPorts(ctx context.Context, arg ListPortsParams) ([]QarPort, error)
+	ListRootFlags(ctx context.Context, arg ListRootFlagsParams) ([]QarFlag, error)
+	ListRootPorts(ctx context.Context, arg ListRootPortsParams) ([]QarPort, error)
+	ListVoyageCrew(ctx context.Context, voyageID uuid.UUID) ([]QarCrew, error)
+	ListVoyageFlags(ctx context.Context, voyageID uuid.UUID) ([]QarFlag, error)
+	ListVoyages(ctx context.Context, arg ListVoyagesParams) ([]QarVoyage, error)
+	ListVoyagesByFleet(ctx context.Context, arg ListVoyagesByFleetParams) ([]QarVoyage, error)
+	ListVoyagesByPort(ctx context.Context, arg ListVoyagesByPortParams) ([]QarVoyage, error)
+	ListWaypointsByVoyage(ctx context.Context, voyageID pgtype.UUID) ([]QarVoyageWaypoint, error)
+	RemoveCrewName(ctx context.Context, arg RemoveCrewNameParams) error
+	RemoveExpeditionCrew(ctx context.Context, arg RemoveExpeditionCrewParams) error
+	RemoveExpeditionFlag(ctx context.Context, arg RemoveExpeditionFlagParams) error
+	RemoveVoyageCrew(ctx context.Context, arg RemoveVoyageCrewParams) error
+	RemoveVoyageFlag(ctx context.Context, arg RemoveVoyageFlagParams) error
+	SearchCrew(ctx context.Context, arg SearchCrewParams) ([]QarCrew, error)
+	SearchExpeditions(ctx context.Context, arg SearchExpeditionsParams) ([]QarExpedition, error)
+	SearchFlags(ctx context.Context, arg SearchFlagsParams) ([]QarFlag, error)
+	SearchPorts(ctx context.Context, arg SearchPortsParams) ([]QarPort, error)
+	SearchVoyages(ctx context.Context, arg SearchVoyagesParams) ([]QarVoyage, error)
+	SetPrimaryPortrait(ctx context.Context, arg SetPrimaryPortraitParams) error
+	UpdateCrew(ctx context.Context, arg UpdateCrewParams) (QarCrew, error)
+	UpdateExpedition(ctx context.Context, arg UpdateExpeditionParams) (QarExpedition, error)
+	UpdateFlag(ctx context.Context, arg UpdateFlagParams) (QarFlag, error)
+	UpdateFleet(ctx context.Context, arg UpdateFleetParams) (QarFleet, error)
+	UpdatePort(ctx context.Context, arg UpdatePortParams) (QarPort, error)
+	UpdateVoyage(ctx context.Context, arg UpdateVoyageParams) (QarVoyage, error)
+	UpdateWaypoint(ctx context.Context, arg UpdateWaypointParams) (QarVoyageWaypoint, error)
 }
 
 var _ Querier = (*Queries)(nil)

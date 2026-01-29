@@ -2,7 +2,7 @@
 
 > Auto-fetched from [https://github.com/asticode/go-astiav](https://github.com/asticode/go-astiav)
 > Raw source: [https://raw.githubusercontent.com/asticode/go-astiav/HEAD/README.md](https://raw.githubusercontent.com/asticode/go-astiav/HEAD/README.md)
-> Last Updated: 2026-01-28T21:51:14.560881+00:00
+> Last Updated: 2026-01-29T20:14:33.513330+00:00
 
 ---
 

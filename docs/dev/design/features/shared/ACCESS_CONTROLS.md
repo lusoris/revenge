@@ -100,8 +100,8 @@ CREATE TABLE access_rules (
     enforcement VARCHAR(20) DEFAULT 'soft', -- soft (warning), hard (block)
     notify_admin BOOLEAN DEFAULT false,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Usage tracking
@@ -117,8 +117,8 @@ CREATE TABLE access_usage (
     -- Running totals
     total_watch_seconds BIGINT DEFAULT 0,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(user_id, date)
 );
@@ -133,7 +133,7 @@ CREATE TABLE access_violations (
     details JSONB,
     action_taken VARCHAR(50), -- warned, blocked, logged_out
 
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes

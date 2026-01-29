@@ -1,7 +1,7 @@
 # Dragonfly Documentation
 
 > Auto-fetched from [https://www.dragonflydb.io/docs](https://www.dragonflydb.io/docs)
-> Last Updated: 2026-01-28T21:47:24.470711+00:00
+> Last Updated: 2026-01-29T20:15:32.028938+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # go-blurhash
 
 > Auto-fetched from [https://pkg.go.dev/github.com/bbrks/go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash)
-> Last Updated: 2026-01-28T21:46:51.144014+00:00
+> Last Updated: 2026-01-29T20:14:48.595501+00:00
 
 ---
 

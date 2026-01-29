@@ -1,7 +1,7 @@
 # ListenBrainz API
 
 > Auto-fetched from [https://listenbrainz.readthedocs.io/en/latest/users/api/index.html](https://listenbrainz.readthedocs.io/en/latest/users/api/index.html)
-> Last Updated: 2026-01-28T21:45:41.345787+00:00
+> Last Updated: 2026-01-29T20:13:37.950908+00:00
 
 ---
 
@@ -43,6 +43,9 @@ BrainzPlayer on the ListenBrainz website playing a video from Spotify
 Using Otter for Funkwhale on Android, and submitting with Simple Scrobbler
 Rhythmbox player listening to Jamendo
 Listening to a recording from Bandcamp and submitting with the browser extension WebScrobbler
+Embeddable widgets
+Playing Now Widget
+Pin Widget
 Client Libraries
 Haskell
 Go

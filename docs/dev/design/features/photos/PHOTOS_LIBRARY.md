@@ -124,8 +124,8 @@ CREATE TABLE photos (
     processed BOOLEAN DEFAULT false,
     faces_detected BOOLEAN DEFAULT false,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(library_id, file_path)
 );
@@ -142,8 +142,8 @@ CREATE TABLE photo_albums (
     is_public BOOLEAN DEFAULT false,
     share_code VARCHAR(20) UNIQUE,
     sort_order INT DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Photo-Album relationship
@@ -177,7 +177,7 @@ CREATE TABLE photo_faces (
 
     is_verified BOOLEAN DEFAULT false,
 
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- People (for face recognition)
@@ -188,7 +188,7 @@ CREATE TABLE photo_people (
     thumbnail_face_id UUID REFERENCES photo_faces(id),
     photo_count INT DEFAULT 0,
     is_favorite BOOLEAN DEFAULT false,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes

@@ -1,6 +1,6 @@
 # External Documentation Sources Registry
 # Auto-fetched by scripts/fetch-sources.py
-# Last Updated: 2026-01-28
+# Last Updated: 2026-01-29
 #
 # BLEEDING EDGE STABLE VERSIONS (verified via live web 2026-01-28):
 # ┌────────────────────┬────────────┬─────────────────────────────────┐
@@ -458,6 +458,13 @@ sources:
       output: "apis/simkl.md"
       note: "Developer apps page - Apiary version requires JS"
 
+    - id: letterboxd
+      name: "Letterboxd API"
+      url: "https://api-docs.letterboxd.com/"
+      type: html
+      output: "apis/letterboxd.md"
+      note: "Movie diary/social - import-only initially"
+
     # Servarr (OpenAPI specs from GitHub)
     - id: radarr
       name: "Radarr OpenAPI Spec"
@@ -479,6 +486,43 @@ sources:
       type: json
       output: "apis/lidarr-openapi.json"
       note: "Raw OpenAPI JSON - human docs at https://lidarr.audio/docs/api/"
+
+    - id: readarr
+      name: "Readarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Readarr/Readarr/develop/src/Readarr.Api.V1/openapi.json"
+      type: json
+      output: "apis/readarr-openapi.json"
+      note: "Books/Audiobooks - Chaptarr uses this API"
+
+    - id: whisparr
+      name: "Whisparr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Whisparr/Whisparr/develop/src/Whisparr.Api.V3/openapi.json"
+      type: json
+      output: "apis/whisparr-openapi.json"
+      note: "Adult content - eros theme"
+
+    # Books
+    - id: hardcover
+      name: "Hardcover API"
+      url: "https://hardcover.app/docs/api"
+      type: html
+      output: "apis/hardcover.md"
+      note: "Book tracking/discovery"
+
+    - id: audiobookshelf
+      name: "Audiobookshelf API"
+      url: "https://api.audiobookshelf.org"
+      type: html
+      output: "apis/audiobookshelf.md"
+      note: "Audiobook server integration"
+
+    # Poster Art
+    - id: theposterdb
+      name: "ThePosterDB API"
+      url: "https://theposterdb.com/api"
+      type: manual
+      output: "apis/theposterdb.md"
+      note: "MANUAL - Community poster art. API requires authentication."
 
   # ============================================================================
   # PROTOCOLS - Streaming & Media Protocols
@@ -686,6 +730,25 @@ sources:
       type: html
       output: "security/jwt-rfc7519.md"
 
+    # Auth Providers
+    - id: authelia
+      name: "Authelia Documentation"
+      url: "https://www.authelia.com/overview/"
+      type: html
+      output: "security/authelia.md"
+
+    - id: authentik
+      name: "Authentik Documentation"
+      url: "https://goauthentik.io/docs/"
+      type: html
+      output: "security/authentik.md"
+
+    - id: keycloak
+      name: "Keycloak Documentation"
+      url: "https://www.keycloak.org/documentation"
+      type: html
+      output: "security/keycloak.md"
+
   # ============================================================================
   # TESTING - Testing Patterns
   # ============================================================================
@@ -755,6 +818,63 @@ sources:
       type: github_readme
       output: "infrastructure/typesense-go.md"
       note: "Latest stable is v3.2.0 (March 2025) - there is no v4!"
+
+  # ============================================================================
+  # LIVETV - Live TV & DVR
+  # ============================================================================
+  livetv:
+    - id: tvheadend
+      name: "TVHeadend API"
+      url: "https://tvheadend.org/d/5/api-description"
+      type: html
+      output: "livetv/tvheadend.md"
+
+    - id: nextpvr
+      name: "NextPVR Documentation"
+      url: "https://github.com/sub3/NextPVR"
+      type: github_readme
+      output: "livetv/nextpvr.md"
+
+  # ============================================================================
+  # CASTING - Device Casting
+  # ============================================================================
+  casting:
+    - id: upnp
+      name: "UPnP/DLNA Specification"
+      url: "https://openconnectivity.org/developer/specifications/upnp-resources/upnp/"
+      type: manual
+      output: "casting/upnp.md"
+      note: "MANUAL - PDF specs. UPnP AV is the relevant subset for DLNA."
+
+    - id: go-chromecast
+      name: "go-chromecast"
+      url: "https://github.com/vishen/go-chromecast"
+      type: github_readme
+      output: "casting/go-chromecast.md"
+
+  # ============================================================================
+  # WIKI - Wiki Integrations (metadata enrichment)
+  # ============================================================================
+  wiki:
+    - id: fandom
+      name: "Fandom API"
+      url: "https://community.fandom.com/wiki/Help:Nirvana"
+      type: html
+      output: "wiki/fandom.md"
+      note: "MediaWiki-based API"
+
+    - id: tvtropes
+      name: "TV Tropes"
+      url: "https://tvtropes.org/"
+      type: manual
+      output: "wiki/tvtropes.md"
+      note: "MANUAL - No official API. Requires scraping."
+
+    - id: wikipedia
+      name: "Wikipedia API"
+      url: "https://en.wikipedia.org/w/api.php?action=help&modules=query"
+      type: html
+      output: "wiki/wikipedia.md"
 
 # ============================================================================
 # FETCH STATUS TRACKING

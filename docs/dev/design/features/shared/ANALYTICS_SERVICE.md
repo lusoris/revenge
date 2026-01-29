@@ -160,8 +160,8 @@ CREATE TABLE analytics_sharing_rules (
     config JSONB NOT NULL,             -- Rule-specific configuration
     action VARCHAR(50) NOT NULL,       -- warn, terminate_stream, suspend_account
     severity INT CHECK (severity BETWEEN 1 AND 5), -- 1=Critical, 5=Low
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Sharing violations
@@ -186,8 +186,8 @@ CREATE TABLE analytics_user_trust (
     score INT DEFAULT 100 CHECK (score BETWEEN 0 AND 100),
     violations_count INT DEFAULT 0,
     last_violation_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Library analytics (aggregated data)
@@ -197,7 +197,7 @@ CREATE TABLE analytics_library_stats (
     stat_type VARCHAR(100) NOT NULL,  -- total_items, total_size_gb, resolution_4k_count, codec_h265_count, etc.
     value BIGINT NOT NULL,
     date DATE NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(content_type, stat_type, date)
 );
 
@@ -212,8 +212,8 @@ CREATE TABLE analytics_engagement (
     completion_rate DECIMAL(5,2),     -- Percentage (0.00 to 100.00)
     avg_completion_rate DECIMAL(5,2),
     last_watched_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(content_type, content_id)
 );
 

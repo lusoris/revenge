@@ -1,7 +1,7 @@
 # Marvel API
 
 > Auto-fetched from [https://developer.marvel.com/docs](https://developer.marvel.com/docs)
-> Last Updated: 2026-01-28T21:45:15.560558+00:00
+> Last Updated: 2026-01-29T20:13:12.264709+00:00
 
 ---
 
@@ -69,28 +69,29 @@ Star Wars: Jedi Knights (2025) #8
 Uncle Scrooge: Earth's Mightiest Duck (2025) #3
 2025
 The Latest
+TV Shows
+How ‘Wonder Man’ Crafted That Genre-Bending Doorman Episode
+2 hours ago
+Comics
+Jessica Jones Makes an Unlikely Alliance in ‘Alias: Red Band’ #1 Preview
+3 hours ago
+Comics
+Meet Doorman, the Living Portal to the Darkforce Dimension
+6 hours ago
+Comics
+'Reborn: Ultimate Impact' Defines the Ultimate Universe's Legacy on Marvel Comics Storytelling
 Comics
 Remembering Sal Buscema, 1936-2026
+1 day ago
 TV Shows
 How Ben Kingsley Took Trevor Slattery from ‘Iron Man 3’ Villain to ‘Wonder Man’ Star
+1 day ago
 TV Shows
 Lights, Camera, Action: How Yahya Abdul-Mateen II Brought ‘Wonder Man’ to Life
 1 day ago
 Gear
 Preorder the Upcoming ‘Magic: The Gathering – Marvel Super Heroes’ Set
-1 day ago
-TV Shows
-Matt Murdock Returns in ‘Daredevil: Born Again’ Season 2 Trailer
-1 day ago
-Comics
-January 28's New Marvel Comics: The Full List
 2 days ago
-Comics
-Step Into the Next Spider-Man, Venom, Carnage Crossover in ‘Amazing Spider-Man/Venom: Death Spiral’ #1 Preview
-4 days ago
-Comics
-Meet the Super Hero Celebrities of the Marvel Universe
-5 days ago
 Load More
 The Daily Bugle
 Can’t-miss news and updates from across the Marvel Universe!

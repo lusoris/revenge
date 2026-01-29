@@ -297,7 +297,7 @@ func (q *Queries) ListNetworksWithCounts(ctx context.Context, arg ListNetworksWi
 }
 
 const listSeriesByNetwork = `-- name: ListSeriesByNetwork :many
-SELECT s.id, s.library_id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at FROM series s
+SELECT s.id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at, s.tv_library_id FROM series s
 JOIN series_network_link snl ON s.id = snl.series_id
 WHERE snl.network_id = $1
 ORDER BY s.sort_title ASC
@@ -321,7 +321,6 @@ func (q *Queries) ListSeriesByNetwork(ctx context.Context, arg ListSeriesByNetwo
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -354,6 +353,7 @@ func (q *Queries) ListSeriesByNetwork(ctx context.Context, arg ListSeriesByNetwo
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}

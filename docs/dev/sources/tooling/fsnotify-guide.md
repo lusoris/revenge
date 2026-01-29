@@ -2,7 +2,7 @@
 
 > Auto-fetched from [https://github.com/fsnotify/fsnotify](https://github.com/fsnotify/fsnotify)
 > Raw source: [https://raw.githubusercontent.com/fsnotify/fsnotify/HEAD/README.md](https://raw.githubusercontent.com/fsnotify/fsnotify/HEAD/README.md)
-> Last Updated: 2026-01-28T21:51:14.213863+00:00
+> Last Updated: 2026-01-29T20:12:04.059769+00:00
 
 ---
 

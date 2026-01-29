@@ -1,7 +1,7 @@
 # Go sync
 
 > Auto-fetched from [https://pkg.go.dev/sync](https://pkg.go.dev/sync)
-> Last Updated: 2026-01-28T21:42:56.917277+00:00
+> Last Updated: 2026-01-29T20:11:07.215889+00:00
 
 ---
 

@@ -21,6 +21,7 @@ import (
 type LocalCache struct {
 	cache  otter.Cache[string, cacheEntry]
 	logger *slog.Logger
+	ttl    time.Duration
 }
 
 // cacheEntry wraps a value with its expiration time.
@@ -54,6 +55,14 @@ func DefaultLocalCacheConfig() LocalCacheConfig {
 func NewLocalCache(cfg *config.Config, logger *slog.Logger) (*LocalCache, error) {
 	localCfg := DefaultLocalCacheConfig()
 
+	// Override defaults with config values if set
+	if cfg.Cache.LocalCapacity > 0 {
+		localCfg.MaxSize = cfg.Cache.LocalCapacity
+	}
+	if cfg.Cache.LocalTTL > 0 {
+		localCfg.DefaultTTL = time.Duration(cfg.Cache.LocalTTL) * time.Second
+	}
+
 	cache, err := otter.MustBuilder[string, cacheEntry](localCfg.MaxSize).
 		Build()
 	if err != nil {
@@ -63,11 +72,15 @@ func NewLocalCache(cfg *config.Config, logger *slog.Logger) (*LocalCache, error)
 	return &LocalCache{
 		cache:  cache,
 		logger: logger.With(slog.String("component", "cache.local")),
+		ttl:    localCfg.DefaultTTL,
 	}, nil
 }
 
 // defaultTTL returns the default TTL.
 func (c *LocalCache) defaultTTL() time.Duration {
+	if c.ttl > 0 {
+		return c.ttl
+	}
 	return 5 * time.Minute
 }
 

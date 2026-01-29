@@ -36,6 +36,10 @@ tags:
     description: Movie collections (franchises)
   - name: Studios
     description: Production studios
+  - name: TVShows
+    description: TV series, seasons, and episodes
+  - name: Networks
+    description: TV networks
   - name: Adult
     description: Adult content (scenes, movies, performers, studios, tags)
   - name: AdultMetadata

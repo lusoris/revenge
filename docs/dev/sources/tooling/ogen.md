@@ -1,7 +1,7 @@
 # ogen OpenAPI Generator
 
 > Auto-fetched from [https://pkg.go.dev/github.com/ogen-go/ogen](https://pkg.go.dev/github.com/ogen-go/ogen)
-> Last Updated: 2026-01-28T21:43:14.404468+00:00
+> Last Updated: 2026-01-29T20:11:23.817434+00:00
 
 ---
 

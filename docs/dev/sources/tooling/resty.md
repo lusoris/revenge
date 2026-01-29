@@ -1,7 +1,7 @@
 # resty HTTP Client
 
 > Auto-fetched from [https://pkg.go.dev/resty.dev/v3](https://pkg.go.dev/resty.dev/v3)
-> Last Updated: 2026-01-28T21:43:56.768443+00:00
+> Last Updated: 2026-01-29T20:11:57.434247+00:00
 
 ---
 

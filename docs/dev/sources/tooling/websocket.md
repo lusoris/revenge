@@ -1,7 +1,7 @@
 # coder/websocket
 
 > Auto-fetched from [https://pkg.go.dev/github.com/coder/websocket](https://pkg.go.dev/github.com/coder/websocket)
-> Last Updated: 2026-01-28T21:43:50.462519+00:00
+> Last Updated: 2026-01-29T20:11:52.461378+00:00
 
 ---
 

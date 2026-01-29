@@ -2,7 +2,7 @@
 
 > Auto-fetched from [https://github.com/golang-migrate/migrate](https://github.com/golang-migrate/migrate)
 > Raw source: [https://raw.githubusercontent.com/golang-migrate/migrate/HEAD/README.md](https://raw.githubusercontent.com/golang-migrate/migrate/HEAD/README.md)
-> Last Updated: 2026-01-28T22:02:09.567612+00:00
+> Last Updated: 2026-01-29T20:12:17.985863+00:00
 
 ---
 

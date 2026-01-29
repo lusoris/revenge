@@ -1,7 +1,7 @@
 # testify
 
 > Auto-fetched from [https://pkg.go.dev/github.com/stretchr/testify](https://pkg.go.dev/github.com/stretchr/testify)
-> Last Updated: 2026-01-28T21:47:07.783668+00:00
+> Last Updated: 2026-01-29T20:15:14.949822+00:00
 
 ---
 

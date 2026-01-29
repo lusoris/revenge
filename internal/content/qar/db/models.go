@@ -162,57 +162,6 @@ func (ns NullCollectionType) Value() (driver.Value, error) {
 	return string(ns.CollectionType), nil
 }
 
-type LibraryType string
-
-const (
-	LibraryTypeMovie      LibraryType = "movie"
-	LibraryTypeTvshow     LibraryType = "tvshow"
-	LibraryTypeMusic      LibraryType = "music"
-	LibraryTypeAudiobook  LibraryType = "audiobook"
-	LibraryTypeBook       LibraryType = "book"
-	LibraryTypePodcast    LibraryType = "podcast"
-	LibraryTypePhoto      LibraryType = "photo"
-	LibraryTypeLivetv     LibraryType = "livetv"
-	LibraryTypeComics     LibraryType = "comics"
-	LibraryTypeAdultMovie LibraryType = "adult_movie"
-	LibraryTypeAdultScene LibraryType = "adult_scene"
-)
-
-func (e *LibraryType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = LibraryType(s)
-	case string:
-		*e = LibraryType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for LibraryType: %T", src)
-	}
-	return nil
-}
-
-type NullLibraryType struct {
-	LibraryType LibraryType `json:"libraryType"`
-	Valid       bool        `json:"valid"` // Valid is true if LibraryType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullLibraryType) Scan(value interface{}) error {
-	if value == nil {
-		ns.LibraryType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.LibraryType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullLibraryType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.LibraryType), nil
-}
-
 type PermissionCategory string
 
 const (
@@ -587,33 +536,6 @@ type Genre struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type Library struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	ScanEnabled       bool               `json:"scanEnabled"`
-	ScanIntervalHours int32              `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	LastScanDuration  pgtype.Interval    `json:"lastScanDuration"`
-	PreferredLanguage *string            `json:"preferredLanguage"`
-	DownloadImages    bool               `json:"downloadImages"`
-	DownloadNfo       bool               `json:"downloadNfo"`
-	GenerateChapters  bool               `json:"generateChapters"`
-	IsPrivate         bool               `json:"isPrivate"`
-	OwnerUserID       pgtype.UUID        `json:"ownerUserId"`
-	SortOrder         int32              `json:"sortOrder"`
-	Icon              *string            `json:"icon"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-type LibraryUserAccess struct {
-	LibraryID uuid.UUID `json:"libraryId"`
-	UserID    uuid.UUID `json:"userId"`
-	CanManage bool      `json:"canManage"`
-}
-
 type OidcProvider struct {
 	ID              uuid.UUID       `json:"id"`
 	Name            string          `json:"name"`
@@ -719,35 +641,80 @@ type Profile struct {
 	UpdatedAt                 time.Time `json:"updatedAt"`
 }
 
-type QarGallery struct {
-	ID        uuid.UUID   `json:"id"`
-	MovieID   pgtype.UUID `json:"movieId"`
-	Title     string      `json:"title"`
-	Path      *string     `json:"path"`
-	CreatedAt time.Time   `json:"createdAt"`
+type QarBounty struct {
+	UserID       uuid.UUID `json:"userId"`
+	ExpeditionID uuid.UUID `json:"expeditionId"`
+	Reward       *int16    `json:"reward"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
-type QarGalleryImage struct {
-	ID        uuid.UUID   `json:"id"`
-	GalleryID pgtype.UUID `json:"galleryId"`
-	Path      string      `json:"path"`
-	SortOrder int32       `json:"sortOrder"`
-	CreatedAt time.Time   `json:"createdAt"`
+type QarCrew struct {
+	ID             uuid.UUID   `json:"id"`
+	Name           string      `json:"name"`
+	Disambiguation *string     `json:"disambiguation"`
+	Gender         *string     `json:"gender"`
+	Christening    pgtype.Date `json:"christening"`
+	DeathDate      pgtype.Date `json:"deathDate"`
+	BirthCity      *string     `json:"birthCity"`
+	Origin         *string     `json:"origin"`
+	Nationality    *string     `json:"nationality"`
+	Rigging        *string     `json:"rigging"`
+	Compass        *string     `json:"compass"`
+	HeightCm       *int32      `json:"heightCm"`
+	WeightKg       *int32      `json:"weightKg"`
+	Measurements   *string     `json:"measurements"`
+	CupSize        *string     `json:"cupSize"`
+	BreastType     *string     `json:"breastType"`
+	Markings       *string     `json:"markings"`
+	Anchors        *string     `json:"anchors"`
+	MaidenVoyage   *int32      `json:"maidenVoyage"`
+	LastPort       *int32      `json:"lastPort"`
+	Bio            *string     `json:"bio"`
+	StashID        *string     `json:"stashId"`
+	Charter        *string     `json:"charter"`
+	Registry       *string     `json:"registry"`
+	Manifest       *string     `json:"manifest"`
+	Twitter        *string     `json:"twitter"`
+	Instagram      *string     `json:"instagram"`
+	ImagePath      *string     `json:"imagePath"`
+	CreatedAt      time.Time   `json:"createdAt"`
+	UpdatedAt      time.Time   `json:"updatedAt"`
 }
 
-type QarMovie struct {
+type QarCrewName struct {
+	CrewID uuid.UUID `json:"crewId"`
+	Name   string    `json:"name"`
+}
+
+type QarCrewPortrait struct {
+	ID           uuid.UUID   `json:"id"`
+	CrewID       pgtype.UUID `json:"crewId"`
+	Path         string      `json:"path"`
+	Type         *string     `json:"type"`
+	Source       *string     `json:"source"`
+	PrimaryImage *bool       `json:"primaryImage"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+type QarCrewRoster struct {
+	UserID     uuid.UUID `json:"userId"`
+	CrewID     uuid.UUID `json:"crewId"`
+	EnlistedAt time.Time `json:"enlistedAt"`
+}
+
+type QarExpedition struct {
 	ID            uuid.UUID   `json:"id"`
-	LibraryID     uuid.UUID   `json:"libraryId"`
 	WhisparrID    *int32      `json:"whisparrId"`
-	StashdbID     *string     `json:"stashdbId"`
-	TpdbID        *string     `json:"tpdbId"`
+	Charter       *string     `json:"charter"`
+	Registry      *string     `json:"registry"`
 	Title         string      `json:"title"`
 	SortTitle     *string     `json:"sortTitle"`
 	OriginalTitle *string     `json:"originalTitle"`
 	Overview      *string     `json:"overview"`
-	ReleaseDate   pgtype.Date `json:"releaseDate"`
+	LaunchDate    pgtype.Date `json:"launchDate"`
 	RuntimeTicks  *int64      `json:"runtimeTicks"`
-	StudioID      pgtype.UUID `json:"studioId"`
+	PortID        pgtype.UUID `json:"portId"`
 	Director      *string     `json:"director"`
 	Series        *string     `json:"series"`
 	Path          string      `json:"path"`
@@ -756,18 +723,19 @@ type QarMovie struct {
 	VideoCodec    *string     `json:"videoCodec"`
 	AudioCodec    *string     `json:"audioCodec"`
 	Resolution    *string     `json:"resolution"`
-	Phash         *string     `json:"phash"`
+	Coordinates   *string     `json:"coordinates"`
 	Oshash        *string     `json:"oshash"`
 	HasFile       *bool       `json:"hasFile"`
 	IsHdr         *bool       `json:"isHdr"`
 	Is3d          *bool       `json:"is3d"`
 	CreatedAt     time.Time   `json:"createdAt"`
 	UpdatedAt     time.Time   `json:"updatedAt"`
+	FleetID       uuid.UUID   `json:"fleetId"`
 }
 
-type QarMovieImage struct {
+type QarExpeditionChart struct {
 	ID           uuid.UUID   `json:"id"`
-	MovieID      pgtype.UUID `json:"movieId"`
+	ExpeditionID pgtype.UUID `json:"expeditionId"`
 	Type         string      `json:"type"`
 	Path         string      `json:"path"`
 	Source       *string     `json:"source"`
@@ -775,114 +743,49 @@ type QarMovieImage struct {
 	CreatedAt    time.Time   `json:"createdAt"`
 }
 
-type QarMoviePerformer struct {
-	MovieID       uuid.UUID `json:"movieId"`
-	PerformerID   uuid.UUID `json:"performerId"`
+type QarExpeditionCrew struct {
+	ExpeditionID  uuid.UUID `json:"expeditionId"`
+	CrewID        uuid.UUID `json:"crewId"`
 	CharacterName *string   `json:"characterName"`
 }
 
-type QarMovieTag struct {
-	MovieID uuid.UUID `json:"movieId"`
-	TagID   uuid.UUID `json:"tagId"`
+type QarExpeditionFlag struct {
+	ExpeditionID uuid.UUID `json:"expeditionId"`
+	FlagID       uuid.UUID `json:"flagId"`
 }
 
-type QarPerformer struct {
-	ID             uuid.UUID   `json:"id"`
-	Name           string      `json:"name"`
-	Disambiguation *string     `json:"disambiguation"`
-	Gender         *string     `json:"gender"`
-	Birthdate      pgtype.Date `json:"birthdate"`
-	DeathDate      pgtype.Date `json:"deathDate"`
-	BirthCity      *string     `json:"birthCity"`
-	Ethnicity      *string     `json:"ethnicity"`
-	Nationality    *string     `json:"nationality"`
-	HairColor      *string     `json:"hairColor"`
-	EyeColor       *string     `json:"eyeColor"`
-	HeightCm       *int32      `json:"heightCm"`
-	WeightKg       *int32      `json:"weightKg"`
-	Measurements   *string     `json:"measurements"`
-	CupSize        *string     `json:"cupSize"`
-	BreastType     *string     `json:"breastType"`
-	Tattoos        *string     `json:"tattoos"`
-	Piercings      *string     `json:"piercings"`
-	CareerStart    *int32      `json:"careerStart"`
-	CareerEnd      *int32      `json:"careerEnd"`
-	Bio            *string     `json:"bio"`
-	StashID        *string     `json:"stashId"`
-	StashdbID      *string     `json:"stashdbId"`
-	TpdbID         *string     `json:"tpdbId"`
-	FreeonesID     *string     `json:"freeonesId"`
-	Twitter        *string     `json:"twitter"`
-	Instagram      *string     `json:"instagram"`
-	ImagePath      *string     `json:"imagePath"`
-	CreatedAt      time.Time   `json:"createdAt"`
-	UpdatedAt      time.Time   `json:"updatedAt"`
+type QarFlag struct {
+	ID          uuid.UUID   `json:"id"`
+	Name        string      `json:"name"`
+	Description *string     `json:"description"`
+	ParentID    pgtype.UUID `json:"parentId"`
+	StashdbID   *string     `json:"stashdbId"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	Waters      *string     `json:"waters"`
 }
 
-type QarPerformerAlias struct {
-	PerformerID uuid.UUID `json:"performerId"`
-	Alias       string    `json:"alias"`
+type QarFleet struct {
+	ID                uuid.UUID   `json:"id"`
+	Name              string      `json:"name"`
+	FleetType         string      `json:"fleetType"`
+	Paths             []string    `json:"paths"`
+	StashdbEndpoint   *string     `json:"stashdbEndpoint"`
+	TpdbEnabled       bool        `json:"tpdbEnabled"`
+	WhisparrSync      bool        `json:"whisparrSync"`
+	AutoTagCrew       bool        `json:"autoTagCrew"`
+	FingerprintOnScan bool        `json:"fingerprintOnScan"`
+	OwnerUserID       pgtype.UUID `json:"ownerUserId"`
+	CreatedAt         time.Time   `json:"createdAt"`
+	UpdatedAt         time.Time   `json:"updatedAt"`
 }
 
-type QarPerformerImage struct {
-	ID           uuid.UUID   `json:"id"`
-	PerformerID  pgtype.UUID `json:"performerId"`
-	Path         string      `json:"path"`
-	Type         *string     `json:"type"`
-	Source       *string     `json:"source"`
-	PrimaryImage *bool       `json:"primaryImage"`
-	CreatedAt    time.Time   `json:"createdAt"`
+type QarMarkedChart struct {
+	UserID       uuid.UUID `json:"userId"`
+	ExpeditionID uuid.UUID `json:"expeditionId"`
+	CreatedAt    time.Time `json:"createdAt"`
 }
 
-type QarScene struct {
-	ID             uuid.UUID   `json:"id"`
-	LibraryID      uuid.UUID   `json:"libraryId"`
-	Title          string      `json:"title"`
-	SortTitle      *string     `json:"sortTitle"`
-	Overview       *string     `json:"overview"`
-	ReleaseDate    pgtype.Date `json:"releaseDate"`
-	RuntimeMinutes *int32      `json:"runtimeMinutes"`
-	StudioID       pgtype.UUID `json:"studioId"`
-	WhisparrID     *int32      `json:"whisparrId"`
-	StashID        *string     `json:"stashId"`
-	StashdbID      *string     `json:"stashdbId"`
-	TpdbID         *string     `json:"tpdbId"`
-	Path           string      `json:"path"`
-	SizeBytes      *int64      `json:"sizeBytes"`
-	VideoCodec     *string     `json:"videoCodec"`
-	AudioCodec     *string     `json:"audioCodec"`
-	Resolution     *string     `json:"resolution"`
-	Oshash         *string     `json:"oshash"`
-	Phash          *string     `json:"phash"`
-	Md5            *string     `json:"md5"`
-	CoverPath      *string     `json:"coverPath"`
-	CreatedAt      time.Time   `json:"createdAt"`
-	UpdatedAt      time.Time   `json:"updatedAt"`
-}
-
-type QarSceneMarker struct {
-	ID            uuid.UUID   `json:"id"`
-	SceneID       pgtype.UUID `json:"sceneId"`
-	Title         *string     `json:"title"`
-	StartSeconds  float64     `json:"startSeconds"`
-	EndSeconds    *float64    `json:"endSeconds"`
-	TagID         pgtype.UUID `json:"tagId"`
-	StashMarkerID *string     `json:"stashMarkerId"`
-	CreatedAt     time.Time   `json:"createdAt"`
-}
-
-type QarScenePerformer struct {
-	SceneID     uuid.UUID `json:"sceneId"`
-	PerformerID uuid.UUID `json:"performerId"`
-	Role        *string   `json:"role"`
-}
-
-type QarSceneTag struct {
-	SceneID uuid.UUID `json:"sceneId"`
-	TagID   uuid.UUID `json:"tagId"`
-}
-
-type QarStudio struct {
+type QarPort struct {
 	ID        uuid.UUID   `json:"id"`
 	Name      string      `json:"name"`
 	ParentID  pgtype.UUID `json:"parentId"`
@@ -894,54 +797,89 @@ type QarStudio struct {
 	UpdatedAt time.Time   `json:"updatedAt"`
 }
 
-type QarTag struct {
+type QarTreasure struct {
+	ID           uuid.UUID   `json:"id"`
+	ExpeditionID pgtype.UUID `json:"expeditionId"`
+	Title        string      `json:"title"`
+	Path         *string     `json:"path"`
+	CreatedAt    time.Time   `json:"createdAt"`
+}
+
+type QarTreasureMap struct {
+	ID         uuid.UUID   `json:"id"`
+	TreasureID pgtype.UUID `json:"treasureId"`
+	Path       string      `json:"path"`
+	Bearing    int32       `json:"bearing"`
+	CreatedAt  time.Time   `json:"createdAt"`
+}
+
+type QarVoyage struct {
 	ID          uuid.UUID   `json:"id"`
-	Name        string      `json:"name"`
-	Description *string     `json:"description"`
-	ParentID    pgtype.UUID `json:"parentId"`
-	StashdbID   *string     `json:"stashdbId"`
+	Title       string      `json:"title"`
+	SortTitle   *string     `json:"sortTitle"`
+	Overview    *string     `json:"overview"`
+	LaunchDate  pgtype.Date `json:"launchDate"`
+	Distance    *int32      `json:"distance"`
+	PortID      pgtype.UUID `json:"portId"`
+	WhisparrID  *int32      `json:"whisparrId"`
+	StashID     *string     `json:"stashId"`
+	Charter     *string     `json:"charter"`
+	Registry    *string     `json:"registry"`
+	Path        string      `json:"path"`
+	SizeBytes   *int64      `json:"sizeBytes"`
+	VideoCodec  *string     `json:"videoCodec"`
+	AudioCodec  *string     `json:"audioCodec"`
+	Resolution  *string     `json:"resolution"`
+	Oshash      *string     `json:"oshash"`
+	Coordinates *string     `json:"coordinates"`
+	Md5         *string     `json:"md5"`
+	CoverPath   *string     `json:"coverPath"`
 	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
+	FleetID     uuid.UUID   `json:"fleetId"`
 }
 
-type QarUserFavorite struct {
-	UserID    uuid.UUID `json:"userId"`
-	MovieID   uuid.UUID `json:"movieId"`
-	CreatedAt time.Time `json:"createdAt"`
+type QarVoyageCrew struct {
+	VoyageID uuid.UUID `json:"voyageId"`
+	CrewID   uuid.UUID `json:"crewId"`
+	Role     *string   `json:"role"`
 }
 
-type QarUserPerformerFavorite struct {
-	UserID      uuid.UUID `json:"userId"`
-	PerformerID uuid.UUID `json:"performerId"`
-	AddedAt     time.Time `json:"addedAt"`
+type QarVoyageFlag struct {
+	VoyageID uuid.UUID `json:"voyageId"`
+	FlagID   uuid.UUID `json:"flagId"`
 }
 
-type QarUserRating struct {
-	UserID    uuid.UUID `json:"userId"`
-	MovieID   uuid.UUID `json:"movieId"`
-	Rating    *int16    `json:"rating"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+type QarVoyageLog struct {
+	ID           uuid.UUID   `json:"id"`
+	UserID       uuid.UUID   `json:"userId"`
+	ExpeditionID pgtype.UUID `json:"expeditionId"`
+	WatchedAt    time.Time   `json:"watchedAt"`
+	BearingTicks *int64      `json:"bearingTicks"`
+	Completed    *bool       `json:"completed"`
 }
 
-type QarUserSceneDatum struct {
+type QarVoyageRecord struct {
 	UserID      uuid.UUID          `json:"userId"`
-	SceneID     uuid.UUID          `json:"sceneId"`
-	PositionMs  *int64             `json:"positionMs"`
-	WatchCount  *int32             `json:"watchCount"`
+	VoyageID    uuid.UUID          `json:"voyageId"`
+	BearingMs   *int64             `json:"bearingMs"`
+	Crossings   *int32             `json:"crossings"`
 	LastWatched pgtype.Timestamptz `json:"lastWatched"`
-	Rating      *int16             `json:"rating"`
+	Bounty      *int16             `json:"bounty"`
 	OCounter    *int32             `json:"oCounter"`
-	IsFavorite  *bool              `json:"isFavorite"`
+	Marked      *bool              `json:"marked"`
 	IsOrganized *bool              `json:"isOrganized"`
 }
 
-type QarWatchHistory struct {
+type QarVoyageWaypoint struct {
 	ID            uuid.UUID   `json:"id"`
-	UserID        uuid.UUID   `json:"userId"`
-	MovieID       pgtype.UUID `json:"movieId"`
-	WatchedAt     time.Time   `json:"watchedAt"`
-	PositionTicks *int64      `json:"positionTicks"`
-	Completed     *bool       `json:"completed"`
+	VoyageID      pgtype.UUID `json:"voyageId"`
+	Title         *string     `json:"title"`
+	StartSeconds  float64     `json:"startSeconds"`
+	EndSeconds    *float64    `json:"endSeconds"`
+	FlagID        pgtype.UUID `json:"flagId"`
+	StashMarkerID *string     `json:"stashMarkerId"`
+	CreatedAt     time.Time   `json:"createdAt"`
 }
 
 type Role struct {

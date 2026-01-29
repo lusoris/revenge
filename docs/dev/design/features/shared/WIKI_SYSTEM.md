@@ -82,7 +82,7 @@ CREATE TABLE wiki.spaces (
     visibility VARCHAR(50) DEFAULT 'public', -- public, role_based
     required_roles TEXT[],
     sort_order INT DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Wiki pages
@@ -109,8 +109,8 @@ CREATE TABLE wiki.pages (
     -- Search optimization
     search_vector TSVECTOR,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(space_id, slug)
 );
@@ -123,7 +123,7 @@ CREATE TABLE wiki.page_versions (
     content_markdown TEXT NOT NULL,
     editor_id UUID REFERENCES users(id),
     change_summary TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(page_id, version)
 );
@@ -134,7 +134,7 @@ CREATE TABLE wiki.page_links (
     source_page_id UUID REFERENCES wiki.pages(id),
     target_page_id UUID REFERENCES wiki.pages(id),
     link_text TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(source_page_id, target_page_id)
 );

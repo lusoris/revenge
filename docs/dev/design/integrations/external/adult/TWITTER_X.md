@@ -193,8 +193,8 @@ CREATE TABLE c.performer_social_links (
     profile_url TEXT,
     avatar_url TEXT,
     last_synced_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(performer_id, platform)
 );

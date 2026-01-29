@@ -6,24 +6,32 @@
 
 ## Quick Start
 
-- **New to Revenge?** Start with [Setup Guide](operations/SETUP.md)
-- **Development?** See [Development Guide](operations/DEVELOPMENT.md)
-- **Architecture?** Read [Overall Architecture](architecture/ARCHITECTURE_V2.md)
-- **External APIs?** Check [External Integrations](EXTERNAL_INTEGRATIONS_TODO.md)
-- **Current Status?** See [Analysis Reports](#analysis-reports)
+- **New to Revenge?** Start with [Setup Guide](dev/design/operations/SETUP.md)
+- **Development?** See [Development Guide](dev/design/operations/DEVELOPMENT.md)
+- **Architecture?** Read [Architecture V2](dev/design/architecture/ARCHITECTURE_V2.md)
+- **Current Status?** See [TODO.md](../TODO.md)
 
 ---
 
-## Analysis Reports
+## Documentation Structure
 
-**Current codebase analysis and status reports.**
+```
+docs/
+├── INDEX.md              # This file
+└── dev/                  # Developer documentation
+    ├── INDEX.md          # Main dev docs index
+    ├── design/           # Design documents
+    │   ├── architecture/ # System architecture
+    │   ├── features/     # Feature specifications
+    │   ├── integrations/ # External integrations
+    │   ├── operations/   # Setup & operations
+    │   ├── planning/     # Roadmaps & versioning
+    │   ├── research/     # User research & analysis
+    │   └── technical/    # API & tech specs
+    └── sources/          # Auto-fetched external docs
+```
 
-- [Architecture Compliance Analysis](../ARCHITECTURE_COMPLIANCE_ANALYSIS.md) - 65% compliance score
-- [Advanced Features Integration](../ADVANCED_FEATURES_INTEGRATION_ANALYSIS.md) - 10% integration score
-- [Core Functionality Analysis](../CORE_FUNCTIONALITY_ANALYSIS.md) - Missing workers, services, migrations
-- [Documentation Cleanup Report](../DOCUMENTATION_CLEANUP_REPORT.md) - Archived outdated TODOs
-
-**Action Items**: See [`TODO.md`](../TODO.md)
+**Main Entry Point**: [Developer Documentation](dev/INDEX.md)
 
 ---
 
@@ -31,114 +39,112 @@
 
 Core system design and architectural decisions.
 
-- [Overall Architecture V2](architecture/ARCHITECTURE_V2.md) - Complete system architecture
-- [Design Principles](architecture/DESIGN_PRINCIPLES.md) - Guiding principles
-- [Player Architecture](architecture/PLAYER_ARCHITECTURE.md) - Media player design
-- [Metadata System](architecture/METADATA_SYSTEM.md) - Metadata management
-- [Plugin Architecture Decision](architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
+- [Architecture V2](dev/design/architecture/ARCHITECTURE_V2.md) - Complete system architecture
+- [Design Principles](dev/design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
+- [Player Architecture](dev/design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
+- [Metadata System](dev/design/architecture/METADATA_SYSTEM.md) - Metadata management
+- [Plugin Architecture Decision](dev/design/architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
 
 ## Operations
 
 Setup, deployment, and operational guides.
 
-- [Setup Guide](operations/SETUP.md) - Initial setup instructions
-- [Development Guide](operations/DEVELOPMENT.md) - Development workflow
-- [Database Auto-Healing](operations/DATABASE_AUTO_HEALING.md) - PostgreSQL corruption detection/repair
-- [Reverse Proxy](operations/REVERSE_PROXY.md) - Nginx/Caddy configuration
-- [Git Workflow](operations/GITFLOW.md) - Branch strategy
-- [Branch Protection](operations/BRANCH_PROTECTION.md) - Repository protection rules
-- [Best Practices](operations/BEST_PRACTICES.md) - Coding standards
-- [Upstream Sync](operations/UPSTREAM_SYNC.md) - Syncing with upstream
-
-## Research
-
-Analysis, user research, and technology evaluations.
-
-- [User Pain Points Research](research/USER_PAIN_POINTS_RESEARCH.md) - Jellyfin/Plex/Emby issues
-- [Go Packages Research](research/GO_PACKAGES_RESEARCH.md) - Awesome-Go analysis (500+ packages)
-
-**Archived**: See `archive/reports/` for historical analysis (2026-01-28 snapshots)
-
-**Current Analysis** (2026-01-29):
-- [Architecture Compliance](../ARCHITECTURE_COMPLIANCE_ANALYSIS.md) - 65% compliance
-- [Advanced Features Integration](../ADVANCED_FEATURES_INTEGRATION_ANALYSIS.md) - 10% integration
-- [Core Functionality Analysis](../CORE_FUNCTIONALITY_ANALYSIS.md) - Missing workers/services
-- [Documentation Cleanup Report](../DOCUMENTATION_CLEANUP_REPORT.md) - Archived 264+ outdated TODOs
-- [Design TODOs Extraction](../DESIGN_TODOS_EXTRACTION.md) - 100+ missing components
-
-## Planning
-
-Roadmaps, versioning, and implementation tracking.
-
-- [VERSION_POLICY.md](planning/VERSION_POLICY.md) - Semantic versioning policy
-- [VERSIONING.md](planning/VERSIONING.md) - Version management strategy
-
-**Current Progress**: See [`TODO.md`](../TODO.md) for active tasks
-
-**Archived Planning**: See `archive/planning/` for historical roadmaps
-
-- [Module Implementation Roadmap](planning/MODULE_IMPLEMENTATION_TODO.md) - Module rollout plan
-- [Version Policy](planning/VERSION_POLICY.md) - Bleeding edge/latest stable policy
-- [Versioning Strategy](planning/VERSIONING.md) - Semantic versioning approach
-- [Preparation Master Plan](PREPARATION_MASTER_PLAN.md) - Pre-implementation checklist (2737 lines, SPLIT PENDING)
-
-## Integrations
-
-External service integrations and API documentation.
-
-- [External Integrations TODO](EXTERNAL_INTEGRATIONS_TODO.md) - 66 services (1103 lines, SPLIT PENDING)
-- **Servarr**: Radarr, Sonarr, Lidarr, Whisparr, Readarr
-- **Metadata**: TMDb, TheTVDB, MusicBrainz, StashDB, ComicVine
-- **Scrobbling**: Trakt, Last.fm, ListenBrainz, Letterboxd, Simkl
-- **Auth**: Authelia, Authentik, Keycloak, OIDC
+- [Setup Guide](dev/design/operations/SETUP.md) - Initial setup instructions
+- [Development Guide](dev/design/operations/DEVELOPMENT.md) - Development workflow
+- [Best Practices](dev/design/operations/BEST_PRACTICES.md) - Coding standards
+- [Database Auto-Healing](dev/design/operations/DATABASE_AUTO_HEALING.md) - PostgreSQL corruption detection/repair
+- [Reverse Proxy](dev/design/operations/REVERSE_PROXY.md) - Nginx/Caddy configuration
+- [Git Workflow](dev/design/operations/GITFLOW.md) - Branch strategy
+- [Branch Protection](dev/design/operations/BRANCH_PROTECTION.md) - Repository protection rules
+- [Upstream Sync](dev/design/operations/UPSTREAM_SYNC.md) - Syncing with upstream
 
 ## Features
 
-Content modules and feature designs.
+Content modules and feature designs. See [Features Index](dev/design/features/INDEX.md) for full listing.
 
-- [Adult Content System](features/ADULT_CONTENT_SYSTEM.md) - Adult module isolation (`c` schema)
-- [Adult Metadata](features/ADULT_METADATA.md) - Whisparr/StashDB integration
-- [Comics Module](features/COMICS_MODULE.md) - Digital comics/manga support
-- [Scrobbling](features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
-- [User Experience Features](features/USER_EXPERIENCE_FEATURES.md) - UX enhancements
-- [Media Enhancements](features/MEDIA_ENHANCEMENTS.md) - Media-specific features
-- [Content Rating](features/CONTENT_RATING.md) - Rating systems (MPAA/PEGI/etc.)
-- [Client Support](features/CLIENT_SUPPORT.md) - Client compatibility
-- [Internationalization](features/I18N.md) - i18n/l10n support
-- [Library Types](features/LIBRARY_TYPES.md) - Library management
+### Shared Features
+- [Analytics Service](dev/design/features/shared/ANALYTICS_SERVICE.md) - Usage analytics
+- [RBAC with Casbin](dev/design/features/shared/RBAC_CASBIN.md) - Role-based access control
+- [Access Controls](dev/design/features/shared/ACCESS_CONTROLS.md) - Permission system
+- [Request System](dev/design/features/shared/REQUEST_SYSTEM.md) - Content requests
+- [Content Rating](dev/design/features/shared/CONTENT_RATING.md) - Rating systems (MPAA/PEGI/etc.)
+- [Scrobbling](dev/design/features/shared/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
+- [Client Support](dev/design/features/shared/CLIENT_SUPPORT.md) - Client compatibility
+- [Internationalization](dev/design/features/shared/I18N.md) - i18n/l10n support
+- [Library Types](dev/design/features/shared/LIBRARY_TYPES.md) - Library management
+- [News System](dev/design/features/shared/NEWS_SYSTEM.md) - News/announcements
+- [Wiki System](dev/design/features/shared/WIKI_SYSTEM.md) - Wiki integration
+- [Ticketing System](dev/design/features/shared/TICKETING_SYSTEM.md) - Support tickets
+- [Voice Control](dev/design/features/shared/VOICE_CONTROL.md) - Voice commands
+- [User Experience](dev/design/features/shared/USER_EXPERIENCE_FEATURES.md) - UX enhancements
+
+### Playback Features
+- [Watch Next / Continue Watching](dev/design/features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation
+- [Release Calendar](dev/design/features/playback/RELEASE_CALENDAR.md) - Upcoming releases
+- [Skip Intro/Credits](dev/design/features/playback/SKIP_INTRO.md) - Auto-skip
+- [SyncPlay](dev/design/features/playback/SYNCPLAY.md) - Synchronized playback
+- [Trickplay](dev/design/features/playback/TRICKPLAY.md) - Video thumbnails
+- [Media Enhancements](dev/design/features/playback/MEDIA_ENHANCEMENTS.md) - Media-specific features
+
+### Module-Specific
+- [Adult Content System](dev/design/features/adult/ADULT_CONTENT_SYSTEM.md) - Adult module isolation (`c` schema)
+- [Adult Metadata](dev/design/features/adult/ADULT_METADATA.md) - Whisparr/StashDB integration
+- [Comics Module](dev/design/features/comics/COMICS_MODULE.md) - Digital comics/manga
+- [Live TV / DVR](dev/design/features/livetv/LIVE_TV_DVR.md) - Live television
+- [Photos Library](dev/design/features/photos/PHOTOS_LIBRARY.md) - Photo management
+- [Podcasts](dev/design/features/podcasts/PODCASTS.md) - Podcast support
+
+## Integrations
+
+External service integrations. See [Integrations Index](dev/design/integrations/INDEX.md) for full listing.
+
+- **Servarr**: [Radarr](dev/design/integrations/servarr/RADARR.md), [Sonarr](dev/design/integrations/servarr/SONARR.md), [Lidarr](dev/design/integrations/servarr/LIDARR.md), [Whisparr](dev/design/integrations/servarr/WHISPARR.md), [Chaptarr](dev/design/integrations/servarr/CHAPTARR.md)
+- **Metadata**: [TMDb](dev/design/integrations/metadata/video/TMDB.md), [TheTVDB](dev/design/integrations/metadata/video/THETVDB.md), [MusicBrainz](dev/design/integrations/metadata/music/MUSICBRAINZ.md), [StashDB](dev/design/integrations/metadata/adult/STASHDB.md), [ComicVine](dev/design/integrations/metadata/comics/COMICVINE.md)
+- **Scrobbling**: [Trakt](dev/design/integrations/scrobbling/TRAKT.md), [Last.fm](dev/design/integrations/scrobbling/LASTFM_SCROBBLE.md), [ListenBrainz](dev/design/integrations/scrobbling/LISTENBRAINZ.md), [Letterboxd](dev/design/integrations/scrobbling/LETTERBOXD.md)
+- **Auth**: [Authelia](dev/design/integrations/auth/AUTHELIA.md), [Authentik](dev/design/integrations/auth/AUTHENTIK.md), [Keycloak](dev/design/integrations/auth/KEYCLOAK.md), [OIDC](dev/design/integrations/auth/GENERIC_OIDC.md)
+- **Anime**: [AniList](dev/design/integrations/anime/ANILIST.md), [MyAnimeList](dev/design/integrations/anime/MYANIMELIST.md), [Kitsu](dev/design/integrations/anime/KITSU.md)
+- **Infrastructure**: [PostgreSQL](dev/design/integrations/infrastructure/POSTGRESQL.md), [Dragonfly](dev/design/integrations/infrastructure/DRAGONFLY.md), [Typesense](dev/design/integrations/infrastructure/TYPESENSE.md), [River](dev/design/integrations/infrastructure/RIVER.md)
 
 ## Technical
 
 API design, frontend architecture, and technical documentation.
 
-- [API Documentation](technical/API.md) - REST API design
-- [Frontend Architecture](technical/FRONTEND.md) - Svelte 5 + shadcn-svelte
-- [Tech Stack](technical/TECH_STACK.md) - Technologies used
-- [Audio Streaming](technical/AUDIO_STREAMING.md) - Audio streaming architecture
-- [Offloading](technical/OFFLOADING.md) - Task offloading patterns
+- [API Documentation](dev/design/technical/API.md) - REST API design
+- [Frontend Architecture](dev/design/technical/FRONTEND.md) - Svelte 5 + shadcn-svelte
+- [Tech Stack](dev/design/technical/TECH_STACK.md) - Technologies used
+- [Audio Streaming](dev/design/technical/AUDIO_STREAMING.md) - Audio streaming architecture
+- [Offloading](dev/design/technical/OFFLOADING.md) - Task offloading patterns
 
----
+## Research
 
-## Documentation Status
+Analysis, user research, and technology evaluations.
 
-| Category | Files | Status |
-|----------|-------|--------|
-| Architecture | 5 | ✅ Complete |
-| Operations | 8 | ✅ Complete |
-| Research | 3 | 🟡 Plex/Emby data pending |
-| Planning | 4 | 🟡 Split large files pending |
-| Integrations | 2 | 🔴 Split EXTERNAL_INTEGRATIONS_TODO.md |
-| Features | 10 | 🟡 4 more docs needed |
-| Technical | 5 | ✅ Complete |
+- [User Pain Points Research](dev/design/research/USER_PAIN_POINTS_RESEARCH.md) - Jellyfin/Plex/Emby issues
+- [UX/UI Resources](dev/design/research/UX_UI_RESOURCES.md) - Design patterns and resources
 
-**Total**: 37 files | **Next**: Split PREPARATION_MASTER_PLAN.md, EXTERNAL_INTEGRATIONS_TODO.md
+## Planning
+
+Roadmaps, versioning, and implementation tracking.
+
+- [Module Implementation Roadmap](dev/design/planning/MODULE_IMPLEMENTATION_TODO.md) - Module rollout plan
+- [Version Policy](dev/design/planning/VERSION_POLICY.md) - Bleeding edge/latest stable policy
+- [Versioning Strategy](dev/design/planning/VERSIONING.md) - Semantic versioning approach
+
+**Current Progress**: See [TODO.md](../TODO.md) for active tasks
+
+## External Sources
+
+Auto-fetched external documentation. Updated weekly via CI.
+
+- **Registry**: [sources/SOURCES.yaml](dev/sources/SOURCES.yaml)
+- **Fetcher**: `python scripts/fetch-sources.py`
+- See [Developer Documentation](dev/INDEX.md#external-sources-) for details
 
 ---
 
 ## Related Resources
 
-- [Agent Instructions](../AGENTS.md) - Automated coding agent rules
-- [Copilot Instructions](../.github/copilot-instructions.md) - GitHub Copilot rules
-- [Instruction Files](../.github/instructions/) - 23 pattern-specific instructions
+- [README](../README.md) - Project overview
 - [TODO List](../TODO.md) - Project backlog
 - [Contributing Guide](../CONTRIBUTING.md) - Contribution guidelines
+- [AGENTS.md](../AGENTS.md) - Automated coding agent rules

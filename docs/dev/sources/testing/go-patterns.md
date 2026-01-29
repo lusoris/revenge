@@ -1,7 +1,7 @@
 # Go Testing Patterns
 
 > Auto-fetched from [https://go.dev/doc/tutorial/add-a-test](https://go.dev/doc/tutorial/add-a-test)
-> Last Updated: 2026-01-28T21:47:12.973069+00:00
+> Last Updated: 2026-01-29T20:15:20.654832+00:00
 
 ---
 

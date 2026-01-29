@@ -137,8 +137,8 @@ CREATE TABLE tickets (
     assigned_admin_id UUID REFERENCES users(id) ON DELETE SET NULL, -- Admin assigned to ticket
     github_issue_url VARCHAR(500),           -- Optional GitHub issue link
     metadata_json JSONB,                     -- Environment info (version, browser, OS)
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     resolved_at TIMESTAMPTZ,
     closed_at TIMESTAMPTZ
 );
@@ -150,7 +150,7 @@ CREATE TABLE ticket_comments (
     user_id UUID REFERENCES users(id) ON DELETE SET NULL, -- Commenter (user or admin)
     comment TEXT NOT NULL,
     is_internal BOOLEAN DEFAULT FALSE,       -- TRUE = admin-only note, FALSE = public reply
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Ticket attachments

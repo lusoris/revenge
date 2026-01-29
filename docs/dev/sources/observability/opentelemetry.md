@@ -1,7 +1,7 @@
 # OpenTelemetry Go
 
 > Auto-fetched from [https://opentelemetry.io/docs/languages/go/](https://opentelemetry.io/docs/languages/go/)
-> Last Updated: 2026-01-28T21:47:18.893783+00:00
+> Last Updated: 2026-01-29T20:15:26.960937+00:00
 
 ---
 

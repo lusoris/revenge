@@ -73,7 +73,7 @@ CREATE TABLE news.feeds (
     enabled BOOLEAN DEFAULT true,
     last_fetched_at TIMESTAMPTZ,
     fetch_interval_minutes INT DEFAULT 60,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE news.articles (
@@ -182,8 +182,8 @@ CREATE TABLE announcements (
     published_at TIMESTAMPTZ,
     expires_at TIMESTAMPTZ,
     author_id UUID REFERENCES users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE announcement_reads (

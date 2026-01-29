@@ -705,7 +705,7 @@ CREATE TABLE track_lyrics (
     sync_type VARCHAR(20) NOT NULL,  -- 'line', 'word', 'unsynced'
     lyrics_json JSONB NOT NULL,      -- [{time_ms: 1000, text: "Line"}, ...]
     source VARCHAR(50),               -- 'lrclib', 'embedded', 'manual'
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 

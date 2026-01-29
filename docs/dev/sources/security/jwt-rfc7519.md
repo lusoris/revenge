@@ -1,7 +1,7 @@
 # JWT RFC
 
 > Auto-fetched from [https://datatracker.ietf.org/doc/html/rfc7519](https://datatracker.ietf.org/doc/html/rfc7519)
-> Last Updated: 2026-01-28T21:47:05.420900+00:00
+> Last Updated: 2026-01-29T20:15:12.626212+00:00
 
 ---
 

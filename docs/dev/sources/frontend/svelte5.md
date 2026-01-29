@@ -1,7 +1,7 @@
 # Svelte 5 Documentation
 
 > Auto-fetched from [https://svelte.dev/docs/svelte/overview](https://svelte.dev/docs/svelte/overview)
-> Last Updated: 2026-01-28T21:46:01.454242+00:00
+> Last Updated: 2026-01-29T20:14:00.664250+00:00
 
 ---
 

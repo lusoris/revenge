@@ -1,7 +1,7 @@
 # Google Books API
 
 > Auto-fetched from [https://developers.google.com/books/docs/v1/using](https://developers.google.com/books/docs/v1/using)
-> Last Updated: 2026-01-28T21:45:10.008204+00:00
+> Last Updated: 2026-01-29T20:13:06.899939+00:00
 
 ---
 

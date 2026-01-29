@@ -2,7 +2,7 @@
 
 > Auto-fetched from [https://github.com/typesense/typesense-go](https://github.com/typesense/typesense-go)
 > Raw source: [https://raw.githubusercontent.com/typesense/typesense-go/HEAD/README.md](https://raw.githubusercontent.com/typesense/typesense-go/HEAD/README.md)
-> Last Updated: 2026-01-28T21:51:17.254841+00:00
+> Last Updated: 2026-01-29T20:15:36.481003+00:00
 
 ---
 

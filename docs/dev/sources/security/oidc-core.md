@@ -1,7 +1,7 @@
 # OpenID Connect Core
 
 > Auto-fetched from [https://openid.net/specs/openid-connect-core-1_0.html](https://openid.net/specs/openid-connect-core-1_0.html)
-> Last Updated: 2026-01-28T21:46:58.412933+00:00
+> Last Updated: 2026-01-29T20:14:55.963738+00:00
 
 ---
 

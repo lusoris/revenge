@@ -1,7 +1,7 @@
 # gohlslib (HLS)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/bluenviron/gohlslib/v2](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2)
-> Last Updated: 2026-01-28T21:46:40.616892+00:00
+> Last Updated: 2026-01-29T20:14:38.874237+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # ogen Documentation
 
 > Auto-fetched from [https://ogen.dev/docs/intro](https://ogen.dev/docs/intro)
-> Last Updated: 2026-01-28T21:43:16.836429+00:00
+> Last Updated: 2026-01-29T20:11:26.171950+00:00
 
 ---
 

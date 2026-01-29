@@ -15,7 +15,6 @@ import (
 type Querier interface {
 	AddRolePermission(ctx context.Context, arg AddRolePermissionParams) error
 	CountActiveSessionsByUser(ctx context.Context, userID uuid.UUID) (int64, error)
-	CountLibraries(ctx context.Context) (int64, error)
 	CountProfilesByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CountUsersByRole(ctx context.Context, role string) (int64, error)
@@ -23,7 +22,6 @@ type Querier interface {
 	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (ApiKey, error)
 	// Activity Log
 	CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error)
-	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
 	CreateOIDCLink(ctx context.Context, arg CreateOIDCLinkParams) (OidcUserLink, error)
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
@@ -35,7 +33,6 @@ type Querier interface {
 	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredAPIKeys(ctx context.Context) error
 	DeleteExpiredSessions(ctx context.Context) error
-	DeleteLibrary(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCLink(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCLinksByProvider(ctx context.Context, providerID uuid.UUID) error
 	DeleteOIDCLinksByUser(ctx context.Context, userID uuid.UUID) error
@@ -53,7 +50,6 @@ type Querier interface {
 	GetAllPermissions(ctx context.Context) ([]Permission, error)
 	GetDefaultProfile(ctx context.Context, userID uuid.UUID) (Profile, error)
 	GetDefaultRole(ctx context.Context) (Role, error)
-	GetLibraryByID(ctx context.Context, id uuid.UUID) (Library, error)
 	// OIDC User Links
 	GetOIDCLinkByID(ctx context.Context, id uuid.UUID) (OidcUserLink, error)
 	GetOIDCLinkBySubject(ctx context.Context, arg GetOIDCLinkBySubjectParams) (OidcUserLink, error)
@@ -82,18 +78,12 @@ type Querier interface {
 	GetUserPermissionNames(ctx context.Context, id uuid.UUID) ([]string, error)
 	GetUserPermissions(ctx context.Context, id uuid.UUID) ([]Permission, error)
 	GetUserRoleName(ctx context.Context, id uuid.UUID) (string, error)
-	// Library User Access
-	GrantLibraryAccess(ctx context.Context, arg GrantLibraryAccessParams) error
 	ListAPIKeysByUser(ctx context.Context, userID uuid.UUID) ([]ApiKey, error)
-	ListAccessibleLibraries(ctx context.Context, ownerUserID pgtype.UUID) ([]Library, error)
 	ListActiveSessions(ctx context.Context, arg ListActiveSessionsParams) ([]Session, error)
 	ListActivityLogBySeverity(ctx context.Context, arg ListActivityLogBySeverityParams) ([]ActivityLog, error)
 	ListActivityLogByType(ctx context.Context, arg ListActivityLogByTypeParams) ([]ActivityLog, error)
 	ListActivityLogByUser(ctx context.Context, arg ListActivityLogByUserParams) ([]ActivityLog, error)
 	ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error)
-	ListLibraries(ctx context.Context) ([]Library, error)
-	ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]Library, error)
-	ListLibraryUsers(ctx context.Context, libraryID uuid.UUID) ([]ListLibraryUsersRow, error)
 	ListOIDCLinksByUser(ctx context.Context, userID uuid.UUID) ([]ListOIDCLinksByUserRow, error)
 	ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
 	ListPermissionDefinitions(ctx context.Context) ([]PermissionDefinition, error)
@@ -105,13 +95,10 @@ type Querier interface {
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	ListUsersByRole(ctx context.Context, arg ListUsersByRoleParams) ([]User, error)
 	RemoveRolePermission(ctx context.Context, arg RemoveRolePermissionParams) error
-	RevokeLibraryAccess(ctx context.Context, arg RevokeLibraryAccessParams) error
 	SetDefaultProfile(ctx context.Context, arg SetDefaultProfileParams) error
 	SetDefaultRole(ctx context.Context, name string) error
 	SetUserRole(ctx context.Context, arg SetUserRoleParams) error
 	UpdateAPIKeyUsage(ctx context.Context, id uuid.UUID) error
-	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
-	UpdateLibraryScanStatus(ctx context.Context, arg UpdateLibraryScanStatusParams) error
 	UpdateOIDCLinkLogin(ctx context.Context, arg UpdateOIDCLinkLoginParams) error
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
@@ -121,7 +108,6 @@ type Querier interface {
 	UpdateUserLastLogin(ctx context.Context, id uuid.UUID) error
 	UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) (User, error)
 	UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (ServerSetting, error)
-	UserCanAccessLibrary(ctx context.Context, arg UserCanAccessLibraryParams) (bool, error)
 	UserExistsByEmail(ctx context.Context, email *string) (bool, error)
 	UserExistsByUsername(ctx context.Context, username string) (bool, error)
 	UserHasAnyPermission(ctx context.Context, arg UserHasAnyPermissionParams) (bool, error)

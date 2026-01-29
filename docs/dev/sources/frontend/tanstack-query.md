@@ -1,7 +1,7 @@
 # TanStack Query
 
 > Auto-fetched from [https://tanstack.com/query/latest/docs/framework/svelte/overview](https://tanstack.com/query/latest/docs/framework/svelte/overview)
-> Last Updated: 2026-01-28T21:46:15.322327+00:00
+> Last Updated: 2026-01-29T20:14:14.436498+00:00
 
 ---
 
@@ -10,7 +10,7 @@ Query
 v5
 v5
 Alpha
-Try TanStack MCP
+Try TanStack CLI
 Search...
 K
 Auto

@@ -162,58 +162,6 @@ func (ns NullCollectionType) Value() (driver.Value, error) {
 	return string(ns.CollectionType), nil
 }
 
-// DEPRECATED: Library types are now implicit in per-module tables. This enum will be removed in a future version.
-type LibraryType string
-
-const (
-	LibraryTypeMovie      LibraryType = "movie"
-	LibraryTypeTvshow     LibraryType = "tvshow"
-	LibraryTypeMusic      LibraryType = "music"
-	LibraryTypeAudiobook  LibraryType = "audiobook"
-	LibraryTypeBook       LibraryType = "book"
-	LibraryTypePodcast    LibraryType = "podcast"
-	LibraryTypePhoto      LibraryType = "photo"
-	LibraryTypeLivetv     LibraryType = "livetv"
-	LibraryTypeComics     LibraryType = "comics"
-	LibraryTypeAdultMovie LibraryType = "adult_movie"
-	LibraryTypeAdultScene LibraryType = "adult_scene"
-)
-
-func (e *LibraryType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = LibraryType(s)
-	case string:
-		*e = LibraryType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for LibraryType: %T", src)
-	}
-	return nil
-}
-
-type NullLibraryType struct {
-	LibraryType LibraryType `json:"libraryType"`
-	Valid       bool        `json:"valid"` // Valid is true if LibraryType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullLibraryType) Scan(value interface{}) error {
-	if value == nil {
-		ns.LibraryType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.LibraryType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullLibraryType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.LibraryType), nil
-}
-
 type MovieImageType string
 
 const (
@@ -723,35 +671,6 @@ type Genre struct {
 	Slug      string    `json:"slug"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
-}
-
-// DEPRECATED: Use per-module library tables instead (movie_libraries, tv_libraries, qar.fleets, etc.). This table will be removed in a future version.
-type Library struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              string             `json:"type"`
-	Paths             []string           `json:"paths"`
-	ScanEnabled       bool               `json:"scanEnabled"`
-	ScanIntervalHours int32              `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	LastScanDuration  pgtype.Interval    `json:"lastScanDuration"`
-	PreferredLanguage *string            `json:"preferredLanguage"`
-	DownloadImages    bool               `json:"downloadImages"`
-	DownloadNfo       bool               `json:"downloadNfo"`
-	GenerateChapters  bool               `json:"generateChapters"`
-	IsPrivate         bool               `json:"isPrivate"`
-	OwnerUserID       pgtype.UUID        `json:"ownerUserId"`
-	SortOrder         int32              `json:"sortOrder"`
-	Icon              *string            `json:"icon"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-// DEPRECATED: Use per-module library access tables instead (movie_library_access, tv_library_access, etc.). This table will be removed in a future version.
-type LibraryUserAccess struct {
-	LibraryID uuid.UUID `json:"libraryId"`
-	UserID    uuid.UUID `json:"userId"`
-	CanManage bool      `json:"canManage"`
 }
 
 type Movie struct {

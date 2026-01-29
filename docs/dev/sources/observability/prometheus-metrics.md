@@ -1,7 +1,7 @@
 # Prometheus Metric Types
 
 > Auto-fetched from [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/)
-> Last Updated: 2026-01-28T21:47:22.123670+00:00
+> Last Updated: 2026-01-29T20:15:29.789193+00:00
 
 ---
 

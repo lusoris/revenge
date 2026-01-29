@@ -17,6 +17,7 @@ import (
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/qar"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
@@ -79,12 +80,14 @@ func main() {
 		tvshow.ModuleWithRiver,
 
 		// Adult content modules (QAR - Queen Anne's Revenge)
-		// TODO: Full obfuscation needed per ADULT_CONTENT_SYSTEM.md:
+		// Full obfuscation per ADULT_CONTENT_SYSTEM.md:
 		//   - qar/expedition (movies) with Expedition entity
 		//   - qar/voyage (scenes) with Voyage entity
 		//   - qar/crew (performers) with Crew entity
 		//   - qar/port (studios) with Port entity
+		//   - qar/flag (tags) with Flag entity
 		//   - qar/fleet (libraries) with Fleet entity
+		qar.Module,
 
 		// API module (ogen-generated handlers)
 		api.Module,

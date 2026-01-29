@@ -129,8 +129,8 @@ CREATE TABLE livetv_tuners (
     last_scan_at TIMESTAMPTZ,
     status VARCHAR(50) DEFAULT 'unknown',
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Channels
@@ -154,8 +154,8 @@ CREATE TABLE livetv_channels (
     is_hidden BOOLEAN DEFAULT false,
     sort_order INT DEFAULT 0,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(tuner_id, external_id)
 );
@@ -172,7 +172,7 @@ CREATE TABLE livetv_epg_sources (
     last_refresh_at TIMESTAMPTZ,
 
     is_enabled BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Program guide
@@ -205,7 +205,7 @@ CREATE TABLE livetv_programs (
     is_premiere BOOLEAN DEFAULT false,
     is_finale BOOLEAN DEFAULT false,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(channel_id, start_time)
 );
@@ -242,8 +242,8 @@ CREATE TABLE livetv_recordings (
     commercial_skip BOOLEAN DEFAULT false,
     transcode_to VARCHAR(20), -- h264, hevc, etc.
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Series recordings (Season Pass)
@@ -266,7 +266,7 @@ CREATE TABLE livetv_series_recordings (
     end_padding_minutes INT DEFAULT 3,
 
     is_enabled BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes

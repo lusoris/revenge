@@ -1,7 +1,7 @@
 # Vidstack Player
 
 > Auto-fetched from [https://www.vidstack.io/docs/player/getting-started/installation](https://www.vidstack.io/docs/player/getting-started/installation)
-> Last Updated: 2026-01-28T21:46:18.104547+00:00
+> Last Updated: 2026-01-29T20:14:17.779024+00:00
 
 ---
 

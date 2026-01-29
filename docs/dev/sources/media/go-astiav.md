@@ -1,7 +1,7 @@
 # go-astiav (FFmpeg bindings)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/asticode/go-astiav](https://pkg.go.dev/github.com/asticode/go-astiav)
-> Last Updated: 2026-01-28T21:46:32.663118+00:00
+> Last Updated: 2026-01-29T20:14:31.298563+00:00
 
 ---
 

@@ -217,8 +217,8 @@ CREATE TABLE c.performer_external_urls (
   platform VARCHAR(50) NOT NULL, -- 'twitter', 'instagram', 'onlyfans', etc.
   url TEXT NOT NULL,
   verified BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(performer_id, platform, url)
 );
 

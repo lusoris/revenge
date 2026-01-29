@@ -1,7 +1,7 @@
 # Go testing
 
 > Auto-fetched from [https://pkg.go.dev/testing](https://pkg.go.dev/testing)
-> Last Updated: 2026-01-28T21:42:54.542073+00:00
+> Last Updated: 2026-01-29T20:11:04.960846+00:00
 
 ---
 

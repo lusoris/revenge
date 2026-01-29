@@ -192,6 +192,6 @@ integrations:
 ## Related Documentation
 
 - [Metadata Overview](../INDEX.md)
-- [Adult Content System](../../../features/ADULT_CONTENT_SYSTEM.md)
+- [Adult Content System](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
 - [Whisparr Integration](../../servarr/WHISPARR.md)
 - [Social Links](../../external/adult/INDEX.md)

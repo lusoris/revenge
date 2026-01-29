@@ -2,7 +2,7 @@
 
 > Auto-fetched from [https://github.com/coder/websocket](https://github.com/coder/websocket)
 > Raw source: [https://raw.githubusercontent.com/coder/websocket/HEAD/README.md](https://raw.githubusercontent.com/coder/websocket/HEAD/README.md)
-> Last Updated: 2026-01-28T21:51:13.269677+00:00
+> Last Updated: 2026-01-29T20:11:54.640999+00:00
 
 ---
 

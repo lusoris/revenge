@@ -1,7 +1,7 @@
 # Trakt API
 
 > Auto-fetched from [https://trakt.tv/b/api-docs](https://trakt.tv/b/api-docs)
-> Last Updated: 2026-01-28T21:51:15.766794+00:00
+> Last Updated: 2026-01-29T20:13:35.527805+00:00
 
 ---
 

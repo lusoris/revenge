@@ -1,7 +1,7 @@
 # HTTP Range Requests
 
 > Auto-fetched from [https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests)
-> Last Updated: 2026-01-28T21:45:56.783068+00:00
+> Last Updated: 2026-01-29T20:13:55.992607+00:00
 
 ---
 

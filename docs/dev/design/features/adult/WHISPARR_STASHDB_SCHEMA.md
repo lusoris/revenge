@@ -106,8 +106,8 @@ CREATE TABLE c.studios (
     network_id UUID REFERENCES c.networks(id), -- Parent network (optional)
     logo_path VARCHAR(1000),
     metadata_json JSONB,                     -- Flexible metadata storage
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Networks (e.g., MindGeek, Aylo)
@@ -118,8 +118,8 @@ CREATE TABLE c.networks (
     description TEXT,
     logo_path VARCHAR(1000),
     metadata_json JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Scenes (Whisparr "Episodes")
@@ -135,8 +135,8 @@ CREATE TABLE c.scenes (
     description TEXT,
     file_path VARCHAR(1000),                 -- Actual video file path
     metadata_json JSONB,                     -- Flexible metadata
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Scene Fingerprints (pHash, oshash, MD5 for identification)
@@ -147,7 +147,7 @@ CREATE TABLE c.scene_fingerprints (
     hash VARCHAR(64) NOT NULL,               -- Hash value
     duration_seconds INT,                    -- Duration at time of hash (for validation)
     source VARCHAR(50),                      -- 'stashdb', 'stashapp', 'local'
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(scene_id, algorithm),
     UNIQUE(algorithm, hash)                  -- Same hash = same scene
 );
@@ -167,8 +167,8 @@ CREATE TABLE c.performers (
     country VARCHAR(100),
     image_path VARCHAR(1000),
     metadata_json JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Scene-Performer relationships (many-to-many)
@@ -186,7 +186,7 @@ CREATE TABLE c.tags (
     name VARCHAR(200) NOT NULL UNIQUE,
     category VARCHAR(100),                   -- Genre, Action, Position, etc.
     description TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Scene-Tag relationships (many-to-many)

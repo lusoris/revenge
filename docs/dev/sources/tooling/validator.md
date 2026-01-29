@@ -1,7 +1,7 @@
 # go-playground/validator
 
 > Auto-fetched from [https://pkg.go.dev/github.com/go-playground/validator/v10](https://pkg.go.dev/github.com/go-playground/validator/v10)
-> Last Updated: 2026-01-28T21:44:09.803271+00:00
+> Last Updated: 2026-01-29T20:12:08.756934+00:00
 
 ---
 

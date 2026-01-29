@@ -281,12 +281,42 @@ type LibraryInfo struct {
 
 ## Migration Required
 
-⚠️ **TODO**: Update `shared/000005_libraries.up.sql`
+⚠️ **STATUS**: Pending refactor - current migrations use shared library table
 
-The current migration creates a shared `libraries` table with type enum. This needs to be:
-1. **Removed** from shared migrations (delete `shared/000005_libraries.up.sql`)
-2. **Split** into per-module library tables (e.g., `movie/000001_movie_libraries.up.sql`)
-3. **Add** `resource_grants` table for polymorphic access control (already defined in `shared/000019_resource_grants.up.sql`)
+### Current State (To Be Changed)
+
+The current implementation uses a shared `libraries` table:
+- `shared/000005_libraries.up.sql` - Creates shared `libraries` table with `library_type` enum
+- `movie/000001_movie_core.up.sql` - References `libraries(id)` (should be `movie_libraries(id)`)
+- `tvshow/000001_tvshow_core.up.sql` - References `libraries(id)` (should be `tv_libraries(id)`)
+
+### Migration Plan
+
+1. **Create per-module library tables**:
+   - `movie/000005_movie_libraries.up.sql` → `movie_libraries` table
+   - `tvshow/000005_tv_libraries.up.sql` → `tv_libraries` table
+   - `music/000001_music_libraries.up.sql` → `music_libraries` table
+   - (Similar for audiobook, book, podcast, photo, livetv, comics)
+   - `qar/000001_fleets.up.sql` → `qar.fleets` table (adult)
+
+2. **Update content table FKs**:
+   - `movies.library_id` → `REFERENCES movie_libraries(id)`
+   - `series.library_id` → `REFERENCES tv_libraries(id)`
+
+3. **Deprecate shared library table**:
+   - Add `shared/000020_deprecate_libraries.up.sql` - Migration to move data
+   - Eventually remove `shared/000005_libraries.up.sql`
+
+4. **Update polymorphic permissions**:
+   - `resource_type` values: `'movie_library'`, `'tv_library'`, `'qar.fleet'`, etc.
+
+### Why This Change?
+
+The per-module approach provides:
+- Full module isolation (no shared enum to modify)
+- Module-specific library settings (e.g., `tmdb_enabled` for movies, `lidarr_sync` for music)
+- Independent module deployment
+- Schema-level isolation for adult content (`qar` schema)
 
 See: [MODULE_IMPLEMENTATION_TODO.md](../../planning/MODULE_IMPLEMENTATION_TODO.md)
 

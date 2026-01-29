@@ -1,7 +1,7 @@
 # Go io
 
 > Auto-fetched from [https://pkg.go.dev/io](https://pkg.go.dev/io)
-> Last Updated: 2026-01-28T21:43:01.754557+00:00
+> Last Updated: 2026-01-29T20:11:11.676582+00:00
 
 ---
 

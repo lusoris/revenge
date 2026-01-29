@@ -1,7 +1,7 @@
 # golang-migrate PostgreSQL
 
 > Auto-fetched from [https://pkg.go.dev/github.com/golang-migrate/migrate/v4/database/postgres](https://pkg.go.dev/github.com/golang-migrate/migrate/v4/database/postgres)
-> Last Updated: 2026-01-28T22:02:02.108486+00:00
+> Last Updated: 2026-01-29T20:12:20.333271+00:00
 
 ---
 

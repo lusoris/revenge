@@ -1,7 +1,7 @@
 # Go Release Notes
 
 > Auto-fetched from [https://go.dev/doc/devel/release](https://go.dev/doc/devel/release)
-> Last Updated: 2026-01-28T21:43:04.103218+00:00
+> Last Updated: 2026-01-29T20:11:14.023498+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # MusicBrainz API
 
 > Auto-fetched from [https://musicbrainz.org/doc/MusicBrainz_API](https://musicbrainz.org/doc/MusicBrainz_API)
-> Last Updated: 2026-01-28T21:44:41.123173+00:00
+> Last Updated: 2026-01-29T20:12:44.801296+00:00
 
 ---
 

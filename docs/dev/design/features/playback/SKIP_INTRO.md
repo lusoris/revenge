@@ -127,8 +127,8 @@ CREATE TABLE media_segments (
     is_verified BOOLEAN DEFAULT false,
     verified_by UUID REFERENCES users(id),
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(content_type, content_id, segment_type)
 );
@@ -147,7 +147,7 @@ CREATE TABLE audio_fingerprints (
     occurrences INT DEFAULT 1,
     first_seen_content_id UUID,
 
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- User preferences

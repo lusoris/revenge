@@ -1,7 +1,7 @@
 # testcontainers-go
 
 > Auto-fetched from [https://golang.testcontainers.org/](https://golang.testcontainers.org/)
-> Last Updated: 2026-01-28T21:47:10.725736+00:00
+> Last Updated: 2026-01-29T20:15:18.453870+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # bimg (libvips)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/h2non/bimg](https://pkg.go.dev/github.com/h2non/bimg)
-> Last Updated: 2026-01-28T21:46:45.834707+00:00
+> Last Updated: 2026-01-29T20:14:43.782685+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # mp4ff (MP4 parsing)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/Eyevinn/mp4ff](https://pkg.go.dev/github.com/Eyevinn/mp4ff)
-> Last Updated: 2026-01-28T21:46:43.081401+00:00
+> Last Updated: 2026-01-29T20:14:41.395091+00:00
 
 ---
 

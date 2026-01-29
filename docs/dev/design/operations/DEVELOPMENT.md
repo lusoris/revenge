@@ -94,7 +94,7 @@ Test endpoints:
 ### Development with Docker
 
 ```bash
-# Development environment (PostgreSQL + Redis)
+# Development environment (PostgreSQL + Dragonfly + Typesense)
 docker-compose -f docker-compose.dev.yml up
 
 # Production-like environment
@@ -103,18 +103,22 @@ docker-compose up
 
 ### Project Structure
 
-See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for detailed information.
-
 ```
 revenge/
-├── cmd/           # Application entry points
-├── internal/      # Private application code
-├── pkg/           # Public libraries
-├── migrations/    # Database migrations
-├── configs/       # Configuration files
-├── tests/         # Test files
-├── scripts/       # Helper scripts
-└── docs/          # Documentation
+├── api/               # OpenAPI specs, generated code (ogen)
+├── cmd/               # Application entry points
+├── internal/          # Private application code
+│   ├── content/       # Content modules (movie, tvshow, music, qar)
+│   └── infra/         # Infrastructure (database, cache, search)
+│       └── database/
+│           ├── migrations/  # Database migrations (golang-migrate)
+│           └── queries/     # sqlc queries
+├── pkg/               # Public libraries (resilience, etc.)
+├── configs/           # Configuration files (koanf)
+├── tests/             # Integration tests
+├── testdata/          # Test fixtures
+├── scripts/           # Helper scripts
+└── docs/              # Documentation
 ```
 
 ### Configuration
@@ -237,9 +241,7 @@ go mod download
 
 ### Next Steps
 
-1. Review the [Phase 1 Checklist](docs/PHASE1_CHECKLIST.md)
-2. Pick a task from the checklist
-3. Implement and test
-4. Submit a Pull Request
-
-Happy coding! 🚀
+1. Review the [TODO.md](../../../../TODO.md) for current sprint tasks
+2. Check [Module Implementation TODO](../planning/MODULE_IMPLEMENTATION_TODO.md) for module status
+3. Pick a task and create a feature branch
+4. Implement, test, and submit a Pull Request

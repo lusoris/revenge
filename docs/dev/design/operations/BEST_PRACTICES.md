@@ -84,6 +84,8 @@ playback:
 
 ## Resilience Patterns
 
+> **Implementation**: Uses [failsafe-go](https://github.com/failsafe-go/failsafe-go) for circuit breakers, retries, bulkheads, and rate limiting.
+
 ### Circuit Breaker
 
 Prevent cascade failures when external services fail:
@@ -465,7 +467,7 @@ func NewMemoryBudget(totalMB int64) *MemoryBudget {
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Memory Cache (L1)                           │
-│  go-cache / sync.Map - Hot data, sub-ms access                 │
+│  otter (W-TinyLFU) - Hot data, sub-ms access                   │
 │  Size: ~500MB, TTL: 5-30 minutes                               │
 └─────────────────────────────────────────────────────────────────┘
                               │
@@ -759,13 +761,15 @@ type PaginatedResponse[T any] struct {
 
 | Package | Purpose |
 |---------|---------|
-| `pkg/resilience` | Circuit breaker, bulkhead, rate limiting, retry |
-| `pkg/supervisor` | Service supervision, self-healing |
-| `pkg/graceful` | Graceful shutdown with hooks |
-| `pkg/hotreload` | Config hot reload, feature flags |
-| `pkg/metrics` | Counters, gauges, histograms, HTTP metrics |
-| `pkg/lazy` | Lazy initialization |
-| `pkg/health` | Health checks |
+| `github.com/failsafe-go/failsafe-go` | Circuit breaker, bulkhead, rate limiting, retry |
+| `internal/infra/supervisor` | Service supervision, self-healing |
+| `internal/infra/graceful` | Graceful shutdown with hooks |
+| `github.com/knadh/koanf/v2` + `fsnotify` | Config hot reload |
+| `github.com/maypok86/otter` | L1 cache (W-TinyLFU, sub-ms) |
+| `github.com/viccon/sturdyc` | API response caching |
+| `github.com/redis/rueidis` | L2 cache (Dragonfly, <10ms) |
+| `go.opentelemetry.io/otel` | Metrics, tracing |
+| `internal/infra/health` | Health checks |
 
 ---
 

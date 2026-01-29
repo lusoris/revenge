@@ -57,7 +57,7 @@ CREATE TABLE content_markers (
     end_ms BIGINT NOT NULL,
     detection_method VARCHAR(50),       -- manual, audio_fingerprint, community
     confidence FLOAT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -300,7 +300,7 @@ CREATE TABLE track_lyrics (
     -- Source
     source VARCHAR(50),  -- lrclib, musixmatch, genius, manual
 
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -388,7 +388,7 @@ CREATE TABLE user_collections (
     collection_type VARCHAR(50) NOT NULL,  -- watchlist, favorites, custom
     is_public BOOLEAN DEFAULT false,
     cover_image_url VARCHAR(1024),
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE user_collection_items (
@@ -478,7 +478,7 @@ CREATE TABLE profiles (
     language VARCHAR(10) DEFAULT 'en',
     autoplay_next BOOLEAN DEFAULT true,
     autoplay_previews BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 
@@ -563,7 +563,7 @@ CREATE TABLE activity_feed (
     -- ENCRYPTED activity metadata (AES-256-GCM)
     activity_data BYTEA NOT NULL,  -- Encrypted JSON: {rating, list_name, etc.}
     is_public BOOLEAN DEFAULT false,  -- Privacy by default
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Encryption key derived from user's master key
@@ -648,7 +648,7 @@ CREATE TABLE audio_descriptions (
     language VARCHAR(10) NOT NULL,
     audio_track_index INT NOT NULL,
     description TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 

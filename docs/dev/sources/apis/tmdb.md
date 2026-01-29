@@ -1,7 +1,7 @@
 # TMDb API
 
 > Auto-fetched from [https://developer.themoviedb.org/reference/intro/getting-started](https://developer.themoviedb.org/reference/intro/getting-started)
-> Last Updated: 2026-01-28T21:44:34.455122+00:00
+> Last Updated: 2026-01-29T20:12:37.227582+00:00
 
 ---
 

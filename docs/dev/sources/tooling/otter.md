@@ -1,7 +1,7 @@
 # otter Cache
 
 > Auto-fetched from [https://pkg.go.dev/github.com/maypok86/otter](https://pkg.go.dev/github.com/maypok86/otter)
-> Last Updated: 2026-01-28T21:43:40.141014+00:00
+> Last Updated: 2026-01-29T20:11:42.883418+00:00
 
 ---
 

@@ -366,7 +366,7 @@ CREATE TABLE c.performer_overrides (
     override_value TEXT NOT NULL,
     reason TEXT,
     override_by UUID REFERENCES users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(performer_id, field_name)
 );

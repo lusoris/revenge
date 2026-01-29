@@ -124,7 +124,7 @@ CREATE TABLE syncplay_messages (
     session_id UUID REFERENCES syncplay_sessions(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     message TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_syncplay_sessions_code ON syncplay_sessions(code);

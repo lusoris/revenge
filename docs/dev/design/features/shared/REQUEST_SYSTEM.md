@@ -73,8 +73,8 @@ CREATE TABLE request_polls (
     auto_approve_winner BOOLEAN DEFAULT TRUE,
     status VARCHAR(50) NOT NULL DEFAULT 'active', -- draft, active, closed, cancelled
     created_by_user_id UUID REFERENCES users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Poll options (content items to vote on)
@@ -87,7 +87,7 @@ CREATE TABLE request_poll_options (
     external_id VARCHAR(200),                -- TMDb/TVDB/etc. ID
     metadata_json JSONB,                     -- Additional metadata
     display_order INT DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Poll votes
@@ -303,8 +303,8 @@ CREATE TABLE requests (
     integration_status VARCHAR(100),          -- Radarr/Sonarr status
     estimated_size_gb DECIMAL(10,2),          -- Estimated disk space required
     actual_size_gb DECIMAL(10,2),             -- Actual disk space used (after download)
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     available_at TIMESTAMPTZ,
     triggered_by_automation BOOLEAN DEFAULT FALSE,  -- Auto-requested by automation (e.g., user watching S1 → request S2)
     parent_request_id UUID REFERENCES requests(id) ON DELETE SET NULL  -- Link to parent request (e.g., S2 request triggered by S1)
@@ -325,7 +325,7 @@ CREATE TABLE request_comments (
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     comment TEXT NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,           -- Admin comment (highlighted in UI)
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Request quotas (per user)
@@ -382,7 +382,7 @@ CREATE TABLE global_storage_quotas (
     used_podcasts_gb DECIMAL(10,2) DEFAULT 0,
     used_comics_gb DECIMAL(10,2) DEFAULT 0,
     used_adult_gb DECIMAL(10,2) DEFAULT 0,
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Request rules (auto-approval + automation)
@@ -396,7 +396,7 @@ CREATE TABLE request_rules (
     enabled BOOLEAN DEFAULT TRUE,
     priority INT DEFAULT 0,                   -- Higher priority rules checked first
     automation_trigger VARCHAR(50),           -- NULL (manual rule) OR "season_completed", "user_watching", "storage_low"
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes
@@ -426,7 +426,7 @@ CREATE TABLE request_rules (
     action VARCHAR(50) NOT NULL DEFAULT 'auto_approve', -- auto_approve, require_approval, decline
     enabled BOOLEAN DEFAULT TRUE,
     priority INT DEFAULT 0,                   -- Higher priority rules checked first
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes
@@ -464,8 +464,8 @@ CREATE TABLE c.adult_requests (
     integration_status VARCHAR(100),          -- Whisparr status
     estimated_size_gb DECIMAL(10,2),
     actual_size_gb DECIMAL(10,2),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     available_at TIMESTAMPTZ,
     triggered_by_automation BOOLEAN DEFAULT FALSE,
     parent_request_id UUID REFERENCES c.adult_requests(id) ON DELETE SET NULL
@@ -486,7 +486,7 @@ CREATE TABLE c.adult_request_comments (
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     comment TEXT NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Adult request quotas (per user)
@@ -516,7 +516,7 @@ CREATE TABLE c.adult_request_rules (
     enabled BOOLEAN DEFAULT TRUE,
     priority INT DEFAULT 0,
     automation_trigger VARCHAR(50),
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Indexes

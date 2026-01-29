@@ -1,7 +1,7 @@
 # shadcn-svelte
 
 > Auto-fetched from [https://www.shadcn-svelte.com/docs](https://www.shadcn-svelte.com/docs)
-> Last Updated: 2026-01-28T21:46:09.185837+00:00
+> Last Updated: 2026-01-29T20:14:08.641135+00:00
 
 ---
 

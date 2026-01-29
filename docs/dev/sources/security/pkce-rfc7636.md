@@ -1,7 +1,7 @@
 # OAuth 2.0 PKCE
 
 > Auto-fetched from [https://datatracker.ietf.org/doc/html/rfc7636](https://datatracker.ietf.org/doc/html/rfc7636)
-> Last Updated: 2026-01-28T21:47:03.153122+00:00
+> Last Updated: 2026-01-29T20:15:03.855534+00:00
 
 ---
 

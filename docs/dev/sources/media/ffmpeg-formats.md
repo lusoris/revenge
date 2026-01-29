@@ -1,7 +1,7 @@
 # FFmpeg Formats
 
 > Auto-fetched from [https://ffmpeg.org/ffmpeg-formats.html](https://ffmpeg.org/ffmpeg-formats.html)
-> Last Updated: 2026-01-28T21:46:25.492934+00:00
+> Last Updated: 2026-01-29T20:14:24.739279+00:00
 
 ---
 
@@ -6224,11 +6224,10 @@ pkt_size
 integer
 Set the maximum size, in bytes, of RTP packets that send out.
 Default value is 1200.
-buffer_size, ts_buffer_size
+ts_buffer_size
 integer
 Set the buffer size, in bytes, of underlying protocol.
 Default value is -1(auto). The UDP auto selects a reasonable value.
-Using the buffer_size option name is deprecated and should not be used.
 whip_flags
 flags
 Possible values:
@@ -6363,7 +6362,7 @@ Maintainers for the specific components are listed in the file
 MAINTAINERS
 in the source code tree.
 This document was generated on
-January 28, 2026
+January 29, 2026
 using
 makeinfo
 .

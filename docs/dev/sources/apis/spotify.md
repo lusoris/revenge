@@ -1,7 +1,7 @@
 # Spotify Web API
 
 > Auto-fetched from [https://developer.spotify.com/documentation/web-api](https://developer.spotify.com/documentation/web-api)
-> Last Updated: 2026-01-28T21:44:55.775617+00:00
+> Last Updated: 2026-01-29T20:13:01.699899+00:00
 
 ---
 

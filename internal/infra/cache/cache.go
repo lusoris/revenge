@@ -10,7 +10,7 @@ import (
 	"github.com/redis/rueidis"
 	"go.uber.org/fx"
 
-	"github.com/lusoris/revenge/pkg/config"
+	"github.com/lusoris/revenge/internal/config"
 )
 
 // Config holds cache configuration.
@@ -125,7 +125,12 @@ func (c *Client) Underlying() rueidis.Client {
 }
 
 // Module provides cache dependencies for fx.
+// Provides a 3-tier caching hierarchy:
+//   - Tier 1: LocalCache (otter) - microsecond latency, in-memory
+//   - Tier 2: Client (rueidis/Redis) - sub-millisecond latency, shared
+//   - Tier 3: APICache (sturdyc) - request coalescing for external APIs
 var Module = fx.Module("cache",
+	// Tier 2: Redis/Dragonfly client
 	fx.Provide(func(cfg *config.Config, logger *slog.Logger) (*Client, error) {
 		addr := cfg.Cache.Addr
 		if addr == "" {
@@ -138,4 +143,10 @@ var Module = fx.Module("cache",
 		}
 		return NewClient(cacheConfig, logger)
 	}),
+	// Tier 1: Local in-memory cache (otter)
+	fx.Provide(NewLocalCache),
+	// Tier 3: API response cache (sturdyc)
+	fx.Provide(NewAPICache),
+	// Metadata-specific cache with provider configs
+	fx.Provide(NewMetadataCache),
 )

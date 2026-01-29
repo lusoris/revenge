@@ -1,7 +1,7 @@
 # Uber fx
 
 > Auto-fetched from [https://pkg.go.dev/go.uber.org/fx](https://pkg.go.dev/go.uber.org/fx)
-> Last Updated: 2026-01-28T21:43:06.725689+00:00
+> Last Updated: 2026-01-29T20:11:16.400329+00:00
 
 ---
 

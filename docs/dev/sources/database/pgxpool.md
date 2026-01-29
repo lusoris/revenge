@@ -1,7 +1,7 @@
 # pgxpool Connection Pool
 
 > Auto-fetched from [https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool](https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool)
-> Last Updated: 2026-01-28T21:44:22.374346+00:00
+> Last Updated: 2026-01-29T20:12:25.467749+00:00
 
 ---
 

@@ -130,7 +130,7 @@ func (q *Queries) ListGenresWithMovieCounts(ctx context.Context) ([]ListGenresWi
 }
 
 const listMoviesByGenre = `-- name: ListMoviesByGenre :many
-SELECT m.id, m.library_id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order FROM movies m
+SELECT m.id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order, m.movie_library_id FROM movies m
 JOIN movie_genre_link mg ON m.id = mg.movie_id
 WHERE mg.genre_id = $1
 ORDER BY m.sort_title ASC
@@ -154,7 +154,6 @@ func (q *Queries) ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenrePa
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -190,6 +189,7 @@ func (q *Queries) ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenrePa
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}

@@ -1,7 +1,7 @@
 # AniList GraphQL Schema GraphQL Schema
 
 # Auto-fetched from https://graphql.anilist.co
-# Last Updated: 2026-01-28T21:45:24.780662+00:00
+# Last Updated: 2026-01-29T20:13:19.828216+00:00
 
 """Notification for when a activity is liked"""
 type ActivityLikeNotification {

@@ -1,7 +1,7 @@
 # sqlc Configuration
 
 > Auto-fetched from [https://docs.sqlc.dev/en/stable/reference/config.html](https://docs.sqlc.dev/en/stable/reference/config.html)
-> Last Updated: 2026-01-28T21:44:16.860622+00:00
+> Last Updated: 2026-01-29T20:12:15.811589+00:00
 
 ---
 

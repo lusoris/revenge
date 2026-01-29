@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
 
   typesense:
-    image: typesense/typesense:27.1
+    image: typesense/typesense:latest
     container_name: revenge-typesense
     environment:
       - TYPESENSE_DATA_DIR=/data
@@ -142,14 +142,14 @@ REVENGE_LOG_FORMAT=json         # json or text
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/revenge.git
+git clone https://github.com/lusoris/revenge.git
 cd revenge
 
 # Download dependencies
 go mod download
 
-# Build
-go build -o revenge ./cmd/revenge
+# Build (with experimental features for better performance)
+GOEXPERIMENT=greenteagc,jsonv2 go build -o revenge ./cmd/revenge
 
 # Run
 ./revenge

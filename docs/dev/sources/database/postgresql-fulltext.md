@@ -1,7 +1,7 @@
 # PostgreSQL Full Text Search
 
 > Auto-fetched from [https://www.postgresql.org/docs/current/textsearch.html](https://www.postgresql.org/docs/current/textsearch.html)
-> Last Updated: 2026-01-28T21:44:28.607336+00:00
+> Last Updated: 2026-01-29T20:12:31.133993+00:00
 
 ---
 

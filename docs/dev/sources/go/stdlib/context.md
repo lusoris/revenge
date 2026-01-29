@@ -1,7 +1,7 @@
 # Go context
 
 > Auto-fetched from [https://pkg.go.dev/context](https://pkg.go.dev/context)
-> Last Updated: 2026-01-28T21:42:47.343400+00:00
+> Last Updated: 2026-01-29T20:10:57.946800+00:00
 
 ---
 

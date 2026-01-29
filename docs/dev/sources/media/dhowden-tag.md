@@ -1,7 +1,7 @@
 # dhowden/tag (audio metadata)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/dhowden/tag](https://pkg.go.dev/github.com/dhowden/tag)
-> Last Updated: 2026-01-28T21:46:53.499272+00:00
+> Last Updated: 2026-01-29T20:14:51.117162+00:00
 
 ---
 

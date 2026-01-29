@@ -1,7 +1,7 @@
 # fsnotify
 
 > Auto-fetched from [https://pkg.go.dev/github.com/fsnotify/fsnotify](https://pkg.go.dev/github.com/fsnotify/fsnotify)
-> Last Updated: 2026-01-28T21:44:01.782431+00:00
+> Last Updated: 2026-01-29T20:12:01.860515+00:00
 
 ---
 

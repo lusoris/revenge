@@ -137,7 +137,7 @@ CREATE TABLE trickplay_data (
     progress_percent INT DEFAULT 0,
 
     -- Timestamps
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at TIMESTAMPTZ,
 
     UNIQUE(content_type, content_id)

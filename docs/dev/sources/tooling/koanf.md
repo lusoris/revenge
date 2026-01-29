@@ -1,7 +1,7 @@
 # koanf
 
 > Auto-fetched from [https://pkg.go.dev/github.com/knadh/koanf/v2](https://pkg.go.dev/github.com/knadh/koanf/v2)
-> Last Updated: 2026-01-28T21:43:11.715940+00:00
+> Last Updated: 2026-01-29T20:11:21.210215+00:00
 
 ---
 

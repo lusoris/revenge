@@ -55,7 +55,7 @@ CREATE TABLE prerolls (
     seasonal_end VARCHAR(5),
     library_ids UUID[],
     enabled BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 

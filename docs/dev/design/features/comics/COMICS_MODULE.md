@@ -65,8 +65,8 @@ CREATE TABLE comics (
     metadata_json JSONB,  -- Store extra fields (writers, artists, colorists, etc.)
 
     -- Timestamps
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     scanned_at TIMESTAMPTZ,
 
     -- Full-text search
@@ -94,7 +94,7 @@ CREATE TABLE comic_publishers (
     description TEXT,
     founded_year INT,
     website_url VARCHAR(500),
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_comic_publishers_name ON comic_publishers(name);
@@ -110,7 +110,7 @@ CREATE TABLE comic_creators (
     role VARCHAR(50), -- 'writer', 'penciller', 'inker', 'colorist', 'letterer', 'cover_artist'
     photo_path VARCHAR(1000),
     bio TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE comic_creator_roles (

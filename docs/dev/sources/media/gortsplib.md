@@ -1,7 +1,7 @@
 # gortsplib (RTSP)
 
 > Auto-fetched from [https://pkg.go.dev/github.com/bluenviron/gortsplib/v4](https://pkg.go.dev/github.com/bluenviron/gortsplib/v4)
-> Last Updated: 2026-01-28T21:46:37.955497+00:00
+> Last Updated: 2026-01-29T20:14:36.429979+00:00
 
 ---
 

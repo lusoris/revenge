@@ -1,7 +1,7 @@
 # WebRTC Overview
 
 > Auto-fetched from [https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
-> Last Updated: 2026-01-28T21:45:59.202065+00:00
+> Last Updated: 2026-01-29T20:13:58.521821+00:00
 
 ---
 

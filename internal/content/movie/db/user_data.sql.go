@@ -460,7 +460,7 @@ func (q *Queries) ListResumeableMovies(ctx context.Context, arg ListResumeableMo
 }
 
 const listUserFavoriteMovies = `-- name: ListUserFavoriteMovies :many
-SELECT m.id, m.library_id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order FROM movies m
+SELECT m.id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order, m.movie_library_id FROM movies m
 JOIN movie_favorites mf ON m.id = mf.movie_id
 WHERE mf.user_id = $1
 ORDER BY mf.created_at DESC
@@ -484,7 +484,6 @@ func (q *Queries) ListUserFavoriteMovies(ctx context.Context, arg ListUserFavori
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -520,6 +519,7 @@ func (q *Queries) ListUserFavoriteMovies(ctx context.Context, arg ListUserFavori
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -662,7 +662,7 @@ func (q *Queries) ListUserWatchHistory(ctx context.Context, arg ListUserWatchHis
 }
 
 const listUserWatchlist = `-- name: ListUserWatchlist :many
-SELECT m.id, m.library_id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order FROM movies m
+SELECT m.id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order, m.movie_library_id FROM movies m
 JOIN movie_watchlist mw ON m.id = mw.movie_id
 WHERE mw.user_id = $1
 ORDER BY mw.sort_order ASC, mw.added_at DESC
@@ -686,7 +686,6 @@ func (q *Queries) ListUserWatchlist(ctx context.Context, arg ListUserWatchlistPa
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -722,6 +721,7 @@ func (q *Queries) ListUserWatchlist(ctx context.Context, arg ListUserWatchlistPa
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}

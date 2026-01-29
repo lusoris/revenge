@@ -1,7 +1,7 @@
 # Go net/http
 
 > Auto-fetched from [https://pkg.go.dev/net/http](https://pkg.go.dev/net/http)
-> Last Updated: 2026-01-28T21:42:52.262076+00:00
+> Last Updated: 2026-01-29T20:11:02.580207+00:00
 
 ---
 

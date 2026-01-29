@@ -69,7 +69,7 @@ CREATE TABLE rating_systems (
     name VARCHAR(100) NOT NULL,             -- 'Motion Picture Association'
     country_codes TEXT[] NOT NULL,          -- ['US', 'CA']
     is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Individual ratings within each system
@@ -100,7 +100,7 @@ CREATE TABLE content_ratings (
     content_type VARCHAR(50) NOT NULL,      -- 'media_item', 'image'
     rating_id UUID NOT NULL REFERENCES ratings(id),
     source VARCHAR(100),                    -- 'tmdb', 'manual', 'imdb'
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (content_id, rating_id)
 );
 ```
@@ -234,7 +234,7 @@ CREATE TABLE person_images (
     url VARCHAR(512) NOT NULL,
     rating_id UUID REFERENCES ratings(id),  -- NULL = unrated/SFW
     is_primary BOOLEAN DEFAULT false,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ```
 

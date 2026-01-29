@@ -1,7 +1,7 @@
 # OMDb API
 
 > Auto-fetched from [https://www.omdbapi.com/](https://www.omdbapi.com/)
-> Last Updated: 2026-01-28T21:44:38.938669+00:00
+> Last Updated: 2026-01-29T20:12:42.384680+00:00
 
 ---
 

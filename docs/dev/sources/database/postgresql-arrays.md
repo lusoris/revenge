@@ -1,7 +1,7 @@
 # PostgreSQL Arrays
 
 > Auto-fetched from [https://www.postgresql.org/docs/current/arrays.html](https://www.postgresql.org/docs/current/arrays.html)
-> Last Updated: 2026-01-28T21:44:31.355109+00:00
+> Last Updated: 2026-01-29T20:12:33.872048+00:00
 
 ---
 

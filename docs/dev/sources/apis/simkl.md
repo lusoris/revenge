@@ -1,11 +1,11 @@
 # Simkl API
 
 > Auto-fetched from [https://simkl.com/apps/](https://simkl.com/apps/)
-> Last Updated: 2026-01-28T21:51:16.841963+00:00
+> Last Updated: 2026-01-29T20:13:42.509024+00:00
 
 ---
 
-High Potential
+Fallout
 Automatically track what you’re watching
 Join a community with a new generation of fans
 Join the community
@@ -322,8 +322,8 @@ Simkl automatically tracks what you're watching, tells you how many episodes you
 The best way to keep track of your favorite TV shows!
 Get alerted when new episodes of your favorite TV shows air!
 Get personalized recommendations on what to watch!
-136,200 TV Shows
-14,533 Anime
+136,215 TV Shows
+14,536 Anime
 1,102,753 Movies
 COMMUNITY
 Simkl is nothing without you

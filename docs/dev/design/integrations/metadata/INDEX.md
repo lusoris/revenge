@@ -23,10 +23,10 @@ Movies, TV shows, and video content metadata.
 
 | Provider | Type | Status |
 |----------|------|--------|
-| [TMDB](video/TMDB.md) | Movies, TV | 🟢 Primary |
-| [TVDB](video/TVDB.md) | TV Shows | 🟡 Secondary |
-| [OMDB](video/OMDB.md) | Movies | 🟡 Fallback |
-| [Fanart.tv](video/FANART_TV.md) | Artwork | 🟡 Supplementary |
+| [TMDb](video/TMDB.md) | Movies, TV | 🟢 Primary |
+| [TheTVDB](video/THETVDB.md) | TV Shows | 🟡 Secondary |
+| [OMDb](video/OMDB.md) | Movies | 🟡 Fallback |
+| [ThePosterDB](video/THEPOSTERDB.md) | Artwork | 🟡 Supplementary |
 
 ### 🎵 [Music](music/INDEX.md)
 Artists, albums, and tracks metadata.
@@ -54,8 +54,8 @@ Comics, manga, and graphic novels.
 | Provider | Type | Status |
 |----------|------|--------|
 | [ComicVine](comics/COMICVINE.md) | Comics | 🟢 Primary |
-| [Marvel API](comics/MARVEL.md) | Marvel | 🟡 Supplementary |
-| [Grand Comics DB](comics/GCD.md) | Archive | 🟡 Supplementary |
+| [Marvel API](comics/MARVEL_API.md) | Marvel | 🟡 Supplementary |
+| [Grand Comics DB](comics/GRAND_COMICS_DATABASE.md) | Archive | 🟡 Supplementary |
 
 ### 🔞 [Adult](adult/INDEX.md)
 Adult content metadata (isolated in `c` schema).
@@ -63,8 +63,8 @@ Adult content metadata (isolated in `c` schema).
 | Provider | Type | Status |
 |----------|------|--------|
 | [StashDB](adult/STASHDB.md) | Scenes | 🟢 Primary |
-| [TPDB](adult/TPDB.md) | Scenes | 🟡 Secondary |
-| [FreeOnes](adult/FREEONES.md) | Performers | 🟢 Primary |
+| [ThePornDB](adult/THEPORNDB.md) | Scenes | 🟡 Secondary |
+| [FreeOnes](../external/adult/FREEONES.md) | Performers | 🟢 Primary |
 
 ---
 

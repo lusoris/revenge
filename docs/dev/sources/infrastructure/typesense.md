@@ -1,7 +1,7 @@
 # Typesense API
 
 > Auto-fetched from [https://typesense.org/docs/latest/api/](https://typesense.org/docs/latest/api/)
-> Last Updated: 2026-01-28T21:47:26.787984+00:00
+> Last Updated: 2026-01-29T20:15:34.272672+00:00
 
 ---
 
@@ -35,6 +35,7 @@ Typesense Versions
 Typesense is versioned software and each version has API documentation specifically tied to it.
 You can use the dropdown on the top navigation bar to switch between versions.
 But here are direct clickable links as well:
+30.1
 30.0
 29.0
 28.0

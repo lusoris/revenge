@@ -1,7 +1,7 @@
 # HLS Specification
 
 > Auto-fetched from [https://datatracker.ietf.org/doc/html/rfc8216](https://datatracker.ietf.org/doc/html/rfc8216)
-> Last Updated: 2026-01-28T21:45:52.385499+00:00
+> Last Updated: 2026-01-29T20:13:51.544479+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # FFmpeg Codecs
 
 > Auto-fetched from [https://ffmpeg.org/ffmpeg-codecs.html](https://ffmpeg.org/ffmpeg-codecs.html)
-> Last Updated: 2026-01-28T21:46:23.092467+00:00
+> Last Updated: 2026-01-29T20:14:22.432200+00:00
 
 ---
 
@@ -7548,7 +7548,7 @@ Maintainers for the specific components are listed in the file
 MAINTAINERS
 in the source code tree.
 This document was generated on
-January 28, 2026
+January 29, 2026
 using
 makeinfo
 .

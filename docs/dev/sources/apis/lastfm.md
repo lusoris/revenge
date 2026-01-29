@@ -1,7 +1,7 @@
 # Last.fm API
 
 > Auto-fetched from [https://www.last.fm/api/intro](https://www.last.fm/api/intro)
-> Last Updated: 2026-01-28T21:44:43.750808+00:00
+> Last Updated: 2026-01-29T20:12:47.410011+00:00
 
 ---
 

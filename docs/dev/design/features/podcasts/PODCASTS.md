@@ -72,8 +72,8 @@ CREATE TABLE podcasts (
     is_explicit BOOLEAN DEFAULT false,
     is_complete BOOLEAN DEFAULT false, -- No more episodes
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Episodes
@@ -107,7 +107,7 @@ CREATE TABLE podcast_episodes (
     -- Flags
     is_explicit BOOLEAN DEFAULT false,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     UNIQUE(podcast_id, guid)
 );

@@ -1,7 +1,7 @@
 # pgx PostgreSQL Driver
 
 > Auto-fetched from [https://pkg.go.dev/github.com/jackc/pgx/v5](https://pkg.go.dev/github.com/jackc/pgx/v5)
-> Last Updated: 2026-01-28T21:44:19.900156+00:00
+> Last Updated: 2026-01-29T20:12:23.010640+00:00
 
 ---
 

@@ -1,7 +1,7 @@
 # MediaInfo
 
 > Auto-fetched from [https://mediaarea.net/en/MediaInfo](https://mediaarea.net/en/MediaInfo)
-> Last Updated: 2026-01-28T21:46:27.677815+00:00
+> Last Updated: 2026-01-29T20:14:26.912953+00:00
 
 ---
 

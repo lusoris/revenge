@@ -1,7 +1,7 @@
 # Go log/slog
 
 > Auto-fetched from [https://pkg.go.dev/log/slog](https://pkg.go.dev/log/slog)
-> Last Updated: 2026-01-28T21:42:49.842121+00:00
+> Last Updated: 2026-01-29T20:11:00.213108+00:00
 
 ---
 

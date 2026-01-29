@@ -123,7 +123,8 @@ func normalizeRadarr(meta *radarr.MovieMetadata) *Metadata {
 	if meta == nil {
 		return nil
 	}
-	return &Metadata{
+
+	m := &Metadata{
 		TMDbID:         meta.TMDbID,
 		IMDbID:         meta.IMDbID,
 		Title:          meta.Title,
@@ -131,12 +132,17 @@ func normalizeRadarr(meta *radarr.MovieMetadata) *Metadata {
 		Overview:       meta.Overview,
 		Tagline:        meta.Tagline,
 		RuntimeMinutes: meta.RuntimeMinutes,
-		ReleaseDate:    meta.ReleaseDate,
-		Budget:         meta.Budget,
-		Revenue:        meta.Revenue,
 		Rating:         meta.Rating,
 		VoteCount:      meta.VoteCount,
 		PosterURL:      meta.PosterURL,
 		BackdropURL:    meta.BackdropURL,
+		// Budget and Revenue not available from Radarr
 	}
+
+	// Handle optional release date
+	if meta.ReleaseDate != nil {
+		m.ReleaseDate = *meta.ReleaseDate
+	}
+
+	return m
 }

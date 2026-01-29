@@ -1,7 +1,7 @@
 # OAuth 2.0 RFC
 
 > Auto-fetched from [https://datatracker.ietf.org/doc/html/rfc6749](https://datatracker.ietf.org/doc/html/rfc6749)
-> Last Updated: 2026-01-28T21:47:00.950347+00:00
+> Last Updated: 2026-01-29T20:15:00.577589+00:00
 
 ---
 

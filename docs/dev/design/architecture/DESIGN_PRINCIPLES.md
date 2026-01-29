@@ -81,7 +81,7 @@ CREATE TABLE user_activity (
     -- Encrypted blob containing activity details
     activity_data BYTEA NOT NULL,  -- AES-256-GCM encrypted JSON
     activity_type VARCHAR(50) NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Encryption key derived from user's master key
@@ -194,7 +194,7 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     is_admin BOOLEAN DEFAULT false,
     max_profiles INT DEFAULT 5,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Child profiles under user
@@ -213,7 +213,7 @@ CREATE TABLE profiles (
     autoplay_next BOOLEAN DEFAULT true,
     autoplay_previews BOOLEAN DEFAULT false,
 
-    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(user_id, name)
 );
 

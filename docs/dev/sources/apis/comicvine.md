@@ -1,7 +1,7 @@
 # ComicVine API
 
 > Auto-fetched from [https://comicvine.gamespot.com/api/documentation](https://comicvine.gamespot.com/api/documentation)
-> Last Updated: 2026-01-28T21:45:12.896382+00:00
+> Last Updated: 2026-01-29T20:13:09.741677+00:00
 
 ---
 

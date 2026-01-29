@@ -1,7 +1,7 @@
 # River Job Queue
 
 > Auto-fetched from [https://pkg.go.dev/github.com/riverqueue/river](https://pkg.go.dev/github.com/riverqueue/river)
-> Last Updated: 2026-01-28T21:43:19.574937+00:00
+> Last Updated: 2026-01-29T20:11:28.911075+00:00
 
 ---
 

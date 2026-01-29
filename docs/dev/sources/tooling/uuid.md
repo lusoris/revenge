@@ -1,7 +1,7 @@
 # google/uuid
 
 > Auto-fetched from [https://pkg.go.dev/github.com/google/uuid](https://pkg.go.dev/github.com/google/uuid)
-> Last Updated: 2026-01-28T21:44:06.842537+00:00
+> Last Updated: 2026-01-29T20:12:06.444481+00:00
 
 ---
 
