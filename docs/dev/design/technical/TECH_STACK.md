@@ -135,8 +135,13 @@
 | HTTP | net/http | stdlib |
 | Logging | slog | stdlib |
 | WebSocket | coder/websocket | `coder/websocket` |
-| HTTP Client | resty | `github.com/go-resty/resty/v2` |
+| HTTP Client | resty | `go-resty/resty/v2` |
 | File Watch | fsnotify | `fsnotify/fsnotify` |
+| Image Processing | govips | `davidbyttow/govips/v2` |
+| Audio Tags | dhowden/tag | `dhowden/tag` |
+| Blur Hashes | go-blurhash | `buckket/go-blurhash` |
+| Validation | validator | `go-playground/validator/v10` |
+| Resilience | failsafe-go | `failsafe-go/failsafe-go` |
 
 ---
 

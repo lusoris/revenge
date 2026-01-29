@@ -40,6 +40,7 @@ Content modules and feature specifications.
 - [Library Types](design/features/LIBRARY_TYPES.md) - Library management
 - [Media Enhancements](design/features/MEDIA_ENHANCEMENTS.md) - Media-specific features
 - [NSFW Toggle](design/features/NSFW_TOGGLE.md) - Adult content visibility toggle
+- [RBAC with Casbin](design/features/RBAC_CASBIN.md) - Dynamic role-based access control
 - [Release Calendar](design/features/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
 - [Request System](design/features/REQUEST_SYSTEM.md) - Content request system
 - [Scrobbling](design/features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
