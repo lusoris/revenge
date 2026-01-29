@@ -13,6 +13,14 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
+// Role constants matching the database enum.
+const (
+	RoleAdmin     = "admin"
+	RoleModerator = "moderator"
+	RoleUser      = "user"
+	RoleGuest     = "guest"
+)
+
 var (
 	// ErrUserNotFound indicates the user was not found.
 	ErrUserNotFound = errors.New("user not found")
@@ -22,7 +30,22 @@ var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	// ErrUserDisabled indicates the user account is disabled.
 	ErrUserDisabled = errors.New("user account is disabled")
+	// ErrInvalidRole indicates an invalid role was provided.
+	ErrInvalidRole = errors.New("invalid role")
 )
+
+// ValidRoles contains all valid user roles.
+var ValidRoles = []string{RoleAdmin, RoleModerator, RoleUser, RoleGuest}
+
+// IsValidRole checks if the given role is valid.
+func IsValidRole(role string) bool {
+	for _, r := range ValidRoles {
+		if r == role {
+			return true
+		}
+	}
+	return false
+}
 
 // Service provides user management operations.
 type Service struct {
@@ -45,7 +68,8 @@ type CreateParams struct {
 	Username          string
 	Email             *string
 	Password          string // Plain text password
-	IsAdmin           bool
+	Role              string // User role (admin, moderator, user, guest)
+	IsAdmin           bool   // Deprecated: use Role instead
 	MaxRatingLevel    int32
 	AdultEnabled      bool
 	PreferredLanguage *string
@@ -80,12 +104,28 @@ func (s *Service) Create(ctx context.Context, params CreateParams) (*db.User, er
 	}
 	passwordHash := string(hashedPassword)
 
+	// Determine role - use explicit role if set, fallback to IsAdmin for backwards compat
+	role := params.Role
+	if role == "" {
+		if params.IsAdmin {
+			role = RoleAdmin
+		} else {
+			role = RoleUser
+		}
+	} else if !IsValidRole(role) {
+		return nil, ErrInvalidRole
+	}
+
+	// Sync IsAdmin with role for backwards compatibility
+	isAdmin := role == RoleAdmin
+
 	// Create user
 	user, err := s.queries.CreateUser(ctx, db.CreateUserParams{
 		Username:          params.Username,
 		Email:             params.Email,
 		PasswordHash:      &passwordHash,
-		IsAdmin:           params.IsAdmin,
+		IsAdmin:           isAdmin,
+		Role:              role,
 		MaxRatingLevel:    params.MaxRatingLevel,
 		AdultEnabled:      params.AdultEnabled,
 		PreferredLanguage: params.PreferredLanguage,
@@ -173,7 +213,8 @@ type UpdateParams struct {
 	ID                    uuid.UUID
 	Username              *string
 	Email                 *string
-	IsAdmin               *bool
+	Role                  *string // User role (admin, moderator, user, guest)
+	IsAdmin               *bool   // Deprecated: use Role instead
 	IsDisabled            *bool
 	MaxRatingLevel        *int32
 	AdultEnabled          *bool
@@ -183,11 +224,30 @@ type UpdateParams struct {
 
 // Update updates a user's information.
 func (s *Service) Update(ctx context.Context, params UpdateParams) (*db.User, error) {
+	// Validate role if provided
+	if params.Role != nil && !IsValidRole(*params.Role) {
+		return nil, ErrInvalidRole
+	}
+
+	// Sync IsAdmin with role for backwards compatibility
+	isAdmin := params.IsAdmin
+	if params.Role != nil {
+		adminVal := *params.Role == RoleAdmin
+		isAdmin = &adminVal
+	}
+
+	// Convert role to NullUserRole
+	var role db.NullUserRole
+	if params.Role != nil {
+		role = db.NullUserRole{UserRole: db.UserRole(*params.Role), Valid: true}
+	}
+
 	user, err := s.queries.UpdateUser(ctx, db.UpdateUserParams{
 		ID:                    params.ID,
 		Username:              params.Username,
 		Email:                 params.Email,
-		IsAdmin:               params.IsAdmin,
+		Role:                  role,
+		IsAdmin:               isAdmin,
 		IsDisabled:            params.IsDisabled,
 		MaxRatingLevel:        params.MaxRatingLevel,
 		AdultEnabled:          params.AdultEnabled,

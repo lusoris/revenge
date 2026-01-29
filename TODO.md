@@ -4,7 +4,7 @@
 
 **Last Updated**: 2026-01-29
 **Current Phase**: Foundation (Week 1-2)
-**Implementation Status**: 15% complete
+**Implementation Status**: 25% complete
 
 ---
 
@@ -31,7 +31,7 @@
 ## Roadmap Overview
 
 ```
-Week 1-2:  Foundation (P0)       ████████░░░░░░░░░░░░░░░░ 35%
+Week 1-2:  Foundation (P0)       ██████████░░░░░░░░░░░░░░ 45%
 Week 3-4:  Movie Module (P1)     ░░░░░░░░░░░░░░░░░░░░░░░░  0%
 Week 4-8:  Modules + Frontend    ░░░░░░░░░░░░░░░░░░░░░░░░  0%
 Week 5-8:  Features (P2)         ░░░░░░░░░░░░░░░░░░░░░░░░  0%
@@ -104,14 +104,36 @@ Week 8+:   Extended (P3)         ░░░░░░░░░░░░░░░�
 ⏳ go test ./...   # Pending (needs infrastructure running)
 ```
 
-### Next Steps (Day 2-3):
+---
 
-#### RBAC System (1 day)
-- [ ] Migration: Add `role` column to users table
-- [ ] Migration: Create `permissions` table with seed data
-- [ ] Enhance `internal/service/auth/service.go` with RBAC
-- [ ] Create permission checking middleware
-- [ ] Update existing handlers with permission checks
+## ✅ Day 2 Complete Summary
+
+**Status**: RBAC System fully implemented
+
+### What We Built:
+1. ✅ **Migration 000013_rbac.up.sql** - Added `role` enum and column to users table
+2. ✅ **Migration 000014_permissions.up.sql** - Permissions table with 32 permissions, role mappings
+3. ✅ **RBAC Service** - `internal/service/rbac/service.go` with permission checking
+4. ✅ **RBAC Middleware** - `internal/middleware/rbac.go` with RequirePermission, RequireRole, RequireAdmin
+5. ✅ **User Service Updates** - Role support in CreateParams/UpdateParams
+6. ✅ **Fixed Migration Conflicts** - Renumbered duplicate migrations (006-012)
+7. ✅ **Fixed Build Errors** - uuid type conversion, resty API changes
+
+### Roles Defined:
+| Role | Permissions |
+|------|-------------|
+| `admin` | Full access (all 32 permissions) |
+| `moderator` | Libraries, metadata, content management |
+| `user` | Browse, play, rate, playlists |
+| `guest` | Browse only |
+
+### Build Status:
+```bash
+✅ go build ./...  # SUCCESS
+✅ sqlc generate   # SUCCESS
+```
+
+### Next Steps (Day 3):
 
 #### Global Services (1 day)
 - [ ] **Activity Logger** - `internal/service/activity/service.go`

@@ -1,10 +1,9 @@
 -- Activity Log
 -- name: CreateActivityLog :one
 INSERT INTO activity_log (
-    user_id, profile_id, action, module, item_id, item_type,
-    details, ip_address, user_agent, severity
+    user_id, type, severity, message, metadata, ip_address, user_agent
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
+    $1, $2, $3, $4, $5, $6, $7
 ) RETURNING *;
 
 -- name: ListActivityLogByUser :many
@@ -13,15 +12,15 @@ WHERE user_id = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3;
 
--- name: ListActivityLogByAction :many
+-- name: ListActivityLogByType :many
 SELECT * FROM activity_log
-WHERE action = $1
+WHERE type = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3;
 
--- name: ListActivityLogByModule :many
+-- name: ListActivityLogBySeverity :many
 SELECT * FROM activity_log
-WHERE module = $1
+WHERE severity = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3;
 
@@ -38,16 +37,23 @@ WHERE created_at < $1;
 -- name: GetServerSetting :one
 SELECT * FROM server_settings WHERE key = $1;
 
+-- name: GetServerSettingsByCategory :many
+SELECT * FROM server_settings WHERE category = $1 ORDER BY key ASC;
+
+-- name: GetPublicServerSettings :many
+SELECT * FROM server_settings WHERE is_public = true ORDER BY key ASC;
+
 -- name: ListServerSettings :many
-SELECT * FROM server_settings ORDER BY key ASC;
+SELECT * FROM server_settings ORDER BY category, key ASC;
 
 -- name: UpsertServerSetting :one
-INSERT INTO server_settings (key, value, description, updated_by)
-VALUES ($1, $2, $3, $4)
+INSERT INTO server_settings (key, value, category, description, is_public)
+VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT (key) DO UPDATE SET
     value = $2,
-    description = COALESCE($3, server_settings.description),
-    updated_by = $4,
+    category = COALESCE($3, server_settings.category),
+    description = COALESCE($4, server_settings.description),
+    is_public = COALESCE($5, server_settings.is_public),
     updated_at = NOW()
 RETURNING *;
 

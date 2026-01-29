@@ -15,6 +15,107 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type ActivitySeverity string
+
+const (
+	ActivitySeverityInfo     ActivitySeverity = "info"
+	ActivitySeverityWarning  ActivitySeverity = "warning"
+	ActivitySeverityError    ActivitySeverity = "error"
+	ActivitySeverityCritical ActivitySeverity = "critical"
+)
+
+func (e *ActivitySeverity) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ActivitySeverity(s)
+	case string:
+		*e = ActivitySeverity(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ActivitySeverity: %T", src)
+	}
+	return nil
+}
+
+type NullActivitySeverity struct {
+	ActivitySeverity ActivitySeverity `json:"activitySeverity"`
+	Valid            bool             `json:"valid"` // Valid is true if ActivitySeverity is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullActivitySeverity) Scan(value interface{}) error {
+	if value == nil {
+		ns.ActivitySeverity, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ActivitySeverity.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullActivitySeverity) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ActivitySeverity), nil
+}
+
+type ActivityType string
+
+const (
+	ActivityTypeUserLogin       ActivityType = "user_login"
+	ActivityTypeUserLogout      ActivityType = "user_logout"
+	ActivityTypeUserCreated     ActivityType = "user_created"
+	ActivityTypeUserUpdated     ActivityType = "user_updated"
+	ActivityTypeUserDeleted     ActivityType = "user_deleted"
+	ActivityTypePasswordChanged ActivityType = "password_changed"
+	ActivityTypeSessionCreated  ActivityType = "session_created"
+	ActivityTypeSessionExpired  ActivityType = "session_expired"
+	ActivityTypeLibraryCreated  ActivityType = "library_created"
+	ActivityTypeLibraryUpdated  ActivityType = "library_updated"
+	ActivityTypeLibraryDeleted  ActivityType = "library_deleted"
+	ActivityTypeLibraryScanned  ActivityType = "library_scanned"
+	ActivityTypeContentPlayed   ActivityType = "content_played"
+	ActivityTypeContentRated    ActivityType = "content_rated"
+	ActivityTypeSettingsChanged ActivityType = "settings_changed"
+	ActivityTypeApiError        ActivityType = "api_error"
+	ActivityTypeSecurityEvent   ActivityType = "security_event"
+)
+
+func (e *ActivityType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ActivityType(s)
+	case string:
+		*e = ActivityType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ActivityType: %T", src)
+	}
+	return nil
+}
+
+type NullActivityType struct {
+	ActivityType ActivityType `json:"activityType"`
+	Valid        bool         `json:"valid"` // Valid is true if ActivityType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullActivityType) Scan(value interface{}) error {
+	if value == nil {
+		ns.ActivityType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ActivityType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullActivityType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ActivityType), nil
+}
+
 type LibraryType string
 
 const (
@@ -257,18 +358,152 @@ func (ns NullMovieVideoType) Value() (driver.Value, error) {
 	return string(ns.MovieVideoType), nil
 }
 
+type PermissionCategory string
+
+const (
+	PermissionCategorySystem    PermissionCategory = "system"
+	PermissionCategoryUsers     PermissionCategory = "users"
+	PermissionCategoryLibraries PermissionCategory = "libraries"
+	PermissionCategoryContent   PermissionCategory = "content"
+	PermissionCategoryPlayback  PermissionCategory = "playback"
+	PermissionCategorySocial    PermissionCategory = "social"
+	PermissionCategoryAdult     PermissionCategory = "adult"
+)
+
+func (e *PermissionCategory) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = PermissionCategory(s)
+	case string:
+		*e = PermissionCategory(s)
+	default:
+		return fmt.Errorf("unsupported scan type for PermissionCategory: %T", src)
+	}
+	return nil
+}
+
+type NullPermissionCategory struct {
+	PermissionCategory PermissionCategory `json:"permissionCategory"`
+	Valid              bool               `json:"valid"` // Valid is true if PermissionCategory is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullPermissionCategory) Scan(value interface{}) error {
+	if value == nil {
+		ns.PermissionCategory, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.PermissionCategory.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullPermissionCategory) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.PermissionCategory), nil
+}
+
+type RatingSystem string
+
+const (
+	RatingSystemMPAA       RatingSystem = "MPAA"
+	RatingSystemFSK        RatingSystem = "FSK"
+	RatingSystemPEGI       RatingSystem = "PEGI"
+	RatingSystemBBFC       RatingSystem = "BBFC"
+	RatingSystemACB        RatingSystem = "ACB"
+	RatingSystemKIJKWIJZER RatingSystem = "KIJKWIJZER"
+)
+
+func (e *RatingSystem) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = RatingSystem(s)
+	case string:
+		*e = RatingSystem(s)
+	default:
+		return fmt.Errorf("unsupported scan type for RatingSystem: %T", src)
+	}
+	return nil
+}
+
+type NullRatingSystem struct {
+	RatingSystem RatingSystem `json:"ratingSystem"`
+	Valid        bool         `json:"valid"` // Valid is true if RatingSystem is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullRatingSystem) Scan(value interface{}) error {
+	if value == nil {
+		ns.RatingSystem, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.RatingSystem.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullRatingSystem) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.RatingSystem), nil
+}
+
+type UserRole string
+
+const (
+	UserRoleAdmin     UserRole = "admin"
+	UserRoleModerator UserRole = "moderator"
+	UserRoleUser      UserRole = "user"
+	UserRoleGuest     UserRole = "guest"
+)
+
+func (e *UserRole) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = UserRole(s)
+	case string:
+		*e = UserRole(s)
+	default:
+		return fmt.Errorf("unsupported scan type for UserRole: %T", src)
+	}
+	return nil
+}
+
+type NullUserRole struct {
+	UserRole UserRole `json:"userRole"`
+	Valid    bool     `json:"valid"` // Valid is true if UserRole is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullUserRole) Scan(value interface{}) error {
+	if value == nil {
+		ns.UserRole, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.UserRole.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullUserRole) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.UserRole), nil
+}
+
 type ActivityLog struct {
 	ID        uuid.UUID   `json:"id"`
 	UserID    pgtype.UUID `json:"userId"`
-	ProfileID pgtype.UUID `json:"profileId"`
-	Action    string      `json:"action"`
-	Module    *string     `json:"module"`
-	ItemID    pgtype.UUID `json:"itemId"`
-	ItemType  *string     `json:"itemType"`
-	Details   []byte      `json:"details"`
+	Type      string      `json:"type"`
+	Severity  string      `json:"severity"`
+	Message   string      `json:"message"`
+	Metadata  []byte      `json:"metadata"`
 	IpAddress netip.Addr  `json:"ipAddress"`
 	UserAgent *string     `json:"userAgent"`
-	Severity  string      `json:"severity"`
 	CreatedAt time.Time   `json:"createdAt"`
 }
 
@@ -283,6 +518,27 @@ type ApiKey struct {
 	UseCount   int64              `json:"useCount"`
 	ExpiresAt  pgtype.Timestamptz `json:"expiresAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+type ContentRating struct {
+	ID          uuid.UUID    `json:"id"`
+	System      RatingSystem `json:"system"`
+	Code        string       `json:"code"`
+	DisplayName string       `json:"displayName"`
+	Description *string      `json:"description"`
+	MinAge      *int32       `json:"minAge"`
+	IconUrl     *string      `json:"iconUrl"`
+	SortOrder   int32        `json:"sortOrder"`
+	CreatedAt   time.Time    `json:"createdAt"`
+	UpdatedAt   time.Time    `json:"updatedAt"`
+}
+
+type Genre struct {
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	Slug      string    `json:"slug"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type Library struct {
@@ -536,6 +792,14 @@ type OidcUserLink struct {
 	LastLoginAt pgtype.Timestamptz `json:"lastLoginAt"`
 }
 
+type Permission struct {
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
 type Profile struct {
 	ID                        uuid.UUID `json:"id"`
 	UserID                    uuid.UUID `json:"userId"`
@@ -554,11 +818,18 @@ type Profile struct {
 	UpdatedAt                 time.Time `json:"updatedAt"`
 }
 
+type RolePermission struct {
+	Role         string `json:"role"`
+	PermissionID int32  `json:"permissionId"`
+}
+
 type ServerSetting struct {
 	Key         string          `json:"key"`
 	Value       json.RawMessage `json:"value"`
+	Category    string          `json:"category"`
 	Description *string         `json:"description"`
-	UpdatedBy   pgtype.UUID     `json:"updatedBy"`
+	IsPublic    bool            `json:"isPublic"`
+	CreatedAt   time.Time       `json:"createdAt"`
 	UpdatedAt   time.Time       `json:"updatedAt"`
 }
 
@@ -593,4 +864,5 @@ type User struct {
 	LastLoginAt           pgtype.Timestamptz `json:"lastLoginAt"`
 	CreatedAt             time.Time          `json:"createdAt"`
 	UpdatedAt             time.Time          `json:"updatedAt"`
+	Role                  string             `json:"role"`
 }

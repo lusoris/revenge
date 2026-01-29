@@ -17,11 +17,11 @@ SELECT COUNT(*) FROM users;
 
 -- name: CreateUser :one
 INSERT INTO users (
-    username, email, password_hash, is_admin,
+    username, email, password_hash, is_admin, role,
     max_rating_level, adult_enabled,
     preferred_language, preferred_rating_system
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, $9
 ) RETURNING *;
 
 -- name: UpdateUser :one
@@ -31,6 +31,7 @@ UPDATE users SET
     password_hash = COALESCE(sqlc.narg('password_hash'), password_hash),
     is_admin = COALESCE(sqlc.narg('is_admin'), is_admin),
     is_disabled = COALESCE(sqlc.narg('is_disabled'), is_disabled),
+    role = COALESCE(sqlc.narg('role'), role),
     max_rating_level = COALESCE(sqlc.narg('max_rating_level'), max_rating_level),
     adult_enabled = COALESCE(sqlc.narg('adult_enabled'), adult_enabled),
     preferred_language = COALESCE(sqlc.narg('preferred_language'), preferred_language),
@@ -49,3 +50,15 @@ SELECT EXISTS(SELECT 1 FROM users WHERE username = $1);
 
 -- name: UserExistsByEmail :one
 SELECT EXISTS(SELECT 1 FROM users WHERE email = $1);
+
+-- name: ListUsersByRole :many
+SELECT * FROM users
+WHERE role = $1
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3;
+
+-- name: CountUsersByRole :one
+SELECT COUNT(*) FROM users WHERE role = $1;
+
+-- name: UpdateUserRole :one
+UPDATE users SET role = $1 WHERE id = $2 RETURNING *;

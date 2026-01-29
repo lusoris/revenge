@@ -81,18 +81,18 @@ func NewClient(cfg Config, logger *slog.Logger) *Client {
 		SetRetryCount(cfg.RetryCount).
 		SetRetryWaitTime(500 * time.Millisecond).
 		SetRetryMaxWaitTime(5 * time.Second).
-		AddRetryConditions(func(r *resty.Response, err error) bool {
+		AddRetryCondition(func(r *resty.Response, err error) bool {
 			// Retry on 429 (rate limit) and 5xx errors
 			if err != nil {
 				return true
 			}
 			return r.StatusCode() == 429 || r.StatusCode() >= 500
 		}).
-		AddRequestMiddleware(func(c *resty.Client, r *resty.Request) error {
+		OnBeforeRequest(func(c *resty.Client, r *resty.Request) error {
 			logger.Debug("TMDb request", "method", r.Method, "url", r.URL)
 			return nil
 		}).
-		AddResponseMiddleware(func(c *resty.Client, r *resty.Response) error {
+		OnAfterResponse(func(c *resty.Client, r *resty.Response) error {
 			logger.Debug("TMDb response", "status", r.StatusCode())
 			return nil
 		})
@@ -375,6 +375,6 @@ type ClientStats struct {
 
 // Close releases client resources.
 func (c *Client) Close() error {
-	c.http.Close()
+	// resty.Client doesn't require explicit cleanup
 	return nil
 }

@@ -183,7 +183,7 @@ func uuidFromPg(v pgtype.UUID) *uuid.UUID {
 	if !v.Valid {
 		return nil
 	}
-	id := v.Bytes
+	id := uuid.UUID(v.Bytes)
 	return &id
 }
 

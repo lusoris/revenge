@@ -30,6 +30,14 @@ sql:
             nullable: true
           - db_type: pg_catalog.interval
             go_type: time.Duration
+          - db_type: user_role
+            go_type: string
+          - db_type: permission_category
+            go_type: string
+          - db_type: activity_type
+            go_type: string
+          - db_type: activity_severity
+            go_type: string
 
   # Movie content module
   - engine: postgresql
@@ -74,6 +82,14 @@ sql:
             go_type: string
           - db_type: movie_video_site
             go_type: string
+          - db_type: user_role
+            go_type: string
+          - db_type: permission_category
+            go_type: string
+          - db_type: activity_type
+            go_type: string
+          - db_type: activity_severity
+            go_type: string
 
   # Adult content module (schema c)
   - engine: postgresql
@@ -106,3 +122,11 @@ sql:
             nullable: true
           - db_type: pg_catalog.interval
             go_type: time.Duration
+          - db_type: user_role
+            go_type: string
+          - db_type: permission_category
+            go_type: string
+          - db_type: activity_type
+            go_type: string
+          - db_type: activity_severity
+            go_type: string

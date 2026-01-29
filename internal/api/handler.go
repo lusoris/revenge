@@ -1,3 +1,5 @@
+//go:build ogen
+
 // Package api provides HTTP API handlers for the Revenge media server.
 package api
 

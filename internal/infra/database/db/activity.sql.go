@@ -16,53 +16,43 @@ import (
 
 const createActivityLog = `-- name: CreateActivityLog :one
 INSERT INTO activity_log (
-    user_id, profile_id, action, module, item_id, item_type,
-    details, ip_address, user_agent, severity
+    user_id, type, severity, message, metadata, ip_address, user_agent
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-) RETURNING id, user_id, profile_id, action, module, item_id, item_type, details, ip_address, user_agent, severity, created_at
+    $1, $2, $3, $4, $5, $6, $7
+) RETURNING id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at
 `
 
 type CreateActivityLogParams struct {
 	UserID    pgtype.UUID `json:"userId"`
-	ProfileID pgtype.UUID `json:"profileId"`
-	Action    string      `json:"action"`
-	Module    *string     `json:"module"`
-	ItemID    pgtype.UUID `json:"itemId"`
-	ItemType  *string     `json:"itemType"`
-	Details   []byte      `json:"details"`
+	Type      string      `json:"type"`
+	Severity  string      `json:"severity"`
+	Message   string      `json:"message"`
+	Metadata  []byte      `json:"metadata"`
 	IpAddress netip.Addr  `json:"ipAddress"`
 	UserAgent *string     `json:"userAgent"`
-	Severity  string      `json:"severity"`
 }
 
 // Activity Log
 func (q *Queries) CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error) {
 	row := q.db.QueryRow(ctx, createActivityLog,
 		arg.UserID,
-		arg.ProfileID,
-		arg.Action,
-		arg.Module,
-		arg.ItemID,
-		arg.ItemType,
-		arg.Details,
+		arg.Type,
+		arg.Severity,
+		arg.Message,
+		arg.Metadata,
 		arg.IpAddress,
 		arg.UserAgent,
-		arg.Severity,
 	)
 	var i ActivityLog
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.ProfileID,
-		&i.Action,
-		&i.Module,
-		&i.ItemID,
-		&i.ItemType,
-		&i.Details,
+		&i.Type,
+		&i.Severity,
+		&i.Message,
+		&i.Metadata,
 		&i.IpAddress,
 		&i.UserAgent,
-		&i.Severity,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -87,8 +77,40 @@ func (q *Queries) DeleteServerSetting(ctx context.Context, key string) error {
 	return err
 }
 
+const getPublicServerSettings = `-- name: GetPublicServerSettings :many
+SELECT key, value, category, description, is_public, created_at, updated_at FROM server_settings WHERE is_public = true ORDER BY key ASC
+`
+
+func (q *Queries) GetPublicServerSettings(ctx context.Context) ([]ServerSetting, error) {
+	rows, err := q.db.Query(ctx, getPublicServerSettings)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ServerSetting{}
+	for rows.Next() {
+		var i ServerSetting
+		if err := rows.Scan(
+			&i.Key,
+			&i.Value,
+			&i.Category,
+			&i.Description,
+			&i.IsPublic,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getServerSetting = `-- name: GetServerSetting :one
-SELECT key, value, description, updated_by, updated_at FROM server_settings WHERE key = $1
+SELECT key, value, category, description, is_public, created_at, updated_at FROM server_settings WHERE key = $1
 `
 
 // Server Settings
@@ -98,28 +120,62 @@ func (q *Queries) GetServerSetting(ctx context.Context, key string) (ServerSetti
 	err := row.Scan(
 		&i.Key,
 		&i.Value,
+		&i.Category,
 		&i.Description,
-		&i.UpdatedBy,
+		&i.IsPublic,
+		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const listActivityLogByAction = `-- name: ListActivityLogByAction :many
-SELECT id, user_id, profile_id, action, module, item_id, item_type, details, ip_address, user_agent, severity, created_at FROM activity_log
-WHERE action = $1
+const getServerSettingsByCategory = `-- name: GetServerSettingsByCategory :many
+SELECT key, value, category, description, is_public, created_at, updated_at FROM server_settings WHERE category = $1 ORDER BY key ASC
+`
+
+func (q *Queries) GetServerSettingsByCategory(ctx context.Context, category string) ([]ServerSetting, error) {
+	rows, err := q.db.Query(ctx, getServerSettingsByCategory, category)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ServerSetting{}
+	for rows.Next() {
+		var i ServerSetting
+		if err := rows.Scan(
+			&i.Key,
+			&i.Value,
+			&i.Category,
+			&i.Description,
+			&i.IsPublic,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listActivityLogBySeverity = `-- name: ListActivityLogBySeverity :many
+SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
+WHERE severity = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
 `
 
-type ListActivityLogByActionParams struct {
-	Action string `json:"action"`
-	Limit  int32  `json:"limit"`
-	Offset int32  `json:"offset"`
+type ListActivityLogBySeverityParams struct {
+	Severity string `json:"severity"`
+	Limit    int32  `json:"limit"`
+	Offset   int32  `json:"offset"`
 }
 
-func (q *Queries) ListActivityLogByAction(ctx context.Context, arg ListActivityLogByActionParams) ([]ActivityLog, error) {
-	rows, err := q.db.Query(ctx, listActivityLogByAction, arg.Action, arg.Limit, arg.Offset)
+func (q *Queries) ListActivityLogBySeverity(ctx context.Context, arg ListActivityLogBySeverityParams) ([]ActivityLog, error) {
+	rows, err := q.db.Query(ctx, listActivityLogBySeverity, arg.Severity, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -130,15 +186,12 @@ func (q *Queries) ListActivityLogByAction(ctx context.Context, arg ListActivityL
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.ProfileID,
-			&i.Action,
-			&i.Module,
-			&i.ItemID,
-			&i.ItemType,
-			&i.Details,
+			&i.Type,
+			&i.Severity,
+			&i.Message,
+			&i.Metadata,
 			&i.IpAddress,
 			&i.UserAgent,
-			&i.Severity,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -151,21 +204,21 @@ func (q *Queries) ListActivityLogByAction(ctx context.Context, arg ListActivityL
 	return items, nil
 }
 
-const listActivityLogByModule = `-- name: ListActivityLogByModule :many
-SELECT id, user_id, profile_id, action, module, item_id, item_type, details, ip_address, user_agent, severity, created_at FROM activity_log
-WHERE module = $1
+const listActivityLogByType = `-- name: ListActivityLogByType :many
+SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
+WHERE type = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
 `
 
-type ListActivityLogByModuleParams struct {
-	Module *string `json:"module"`
-	Limit  int32   `json:"limit"`
-	Offset int32   `json:"offset"`
+type ListActivityLogByTypeParams struct {
+	Type   string `json:"type"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
 }
 
-func (q *Queries) ListActivityLogByModule(ctx context.Context, arg ListActivityLogByModuleParams) ([]ActivityLog, error) {
-	rows, err := q.db.Query(ctx, listActivityLogByModule, arg.Module, arg.Limit, arg.Offset)
+func (q *Queries) ListActivityLogByType(ctx context.Context, arg ListActivityLogByTypeParams) ([]ActivityLog, error) {
+	rows, err := q.db.Query(ctx, listActivityLogByType, arg.Type, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -176,15 +229,12 @@ func (q *Queries) ListActivityLogByModule(ctx context.Context, arg ListActivityL
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.ProfileID,
-			&i.Action,
-			&i.Module,
-			&i.ItemID,
-			&i.ItemType,
-			&i.Details,
+			&i.Type,
+			&i.Severity,
+			&i.Message,
+			&i.Metadata,
 			&i.IpAddress,
 			&i.UserAgent,
-			&i.Severity,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -198,7 +248,7 @@ func (q *Queries) ListActivityLogByModule(ctx context.Context, arg ListActivityL
 }
 
 const listActivityLogByUser = `-- name: ListActivityLogByUser :many
-SELECT id, user_id, profile_id, action, module, item_id, item_type, details, ip_address, user_agent, severity, created_at FROM activity_log
+SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
 WHERE user_id = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
@@ -222,15 +272,12 @@ func (q *Queries) ListActivityLogByUser(ctx context.Context, arg ListActivityLog
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.ProfileID,
-			&i.Action,
-			&i.Module,
-			&i.ItemID,
-			&i.ItemType,
-			&i.Details,
+			&i.Type,
+			&i.Severity,
+			&i.Message,
+			&i.Metadata,
 			&i.IpAddress,
 			&i.UserAgent,
-			&i.Severity,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -244,7 +291,7 @@ func (q *Queries) ListActivityLogByUser(ctx context.Context, arg ListActivityLog
 }
 
 const listRecentActivity = `-- name: ListRecentActivity :many
-SELECT id, user_id, profile_id, action, module, item_id, item_type, details, ip_address, user_agent, severity, created_at FROM activity_log
+SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
@@ -266,15 +313,12 @@ func (q *Queries) ListRecentActivity(ctx context.Context, arg ListRecentActivity
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.ProfileID,
-			&i.Action,
-			&i.Module,
-			&i.ItemID,
-			&i.ItemType,
-			&i.Details,
+			&i.Type,
+			&i.Severity,
+			&i.Message,
+			&i.Metadata,
 			&i.IpAddress,
 			&i.UserAgent,
-			&i.Severity,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -288,7 +332,7 @@ func (q *Queries) ListRecentActivity(ctx context.Context, arg ListRecentActivity
 }
 
 const listServerSettings = `-- name: ListServerSettings :many
-SELECT key, value, description, updated_by, updated_at FROM server_settings ORDER BY key ASC
+SELECT key, value, category, description, is_public, created_at, updated_at FROM server_settings ORDER BY category, key ASC
 `
 
 func (q *Queries) ListServerSettings(ctx context.Context) ([]ServerSetting, error) {
@@ -303,8 +347,10 @@ func (q *Queries) ListServerSettings(ctx context.Context) ([]ServerSetting, erro
 		if err := rows.Scan(
 			&i.Key,
 			&i.Value,
+			&i.Category,
 			&i.Description,
-			&i.UpdatedBy,
+			&i.IsPublic,
+			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
@@ -318,36 +364,41 @@ func (q *Queries) ListServerSettings(ctx context.Context) ([]ServerSetting, erro
 }
 
 const upsertServerSetting = `-- name: UpsertServerSetting :one
-INSERT INTO server_settings (key, value, description, updated_by)
-VALUES ($1, $2, $3, $4)
+INSERT INTO server_settings (key, value, category, description, is_public)
+VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT (key) DO UPDATE SET
     value = $2,
-    description = COALESCE($3, server_settings.description),
-    updated_by = $4,
+    category = COALESCE($3, server_settings.category),
+    description = COALESCE($4, server_settings.description),
+    is_public = COALESCE($5, server_settings.is_public),
     updated_at = NOW()
-RETURNING key, value, description, updated_by, updated_at
+RETURNING key, value, category, description, is_public, created_at, updated_at
 `
 
 type UpsertServerSettingParams struct {
 	Key         string          `json:"key"`
 	Value       json.RawMessage `json:"value"`
+	Category    string          `json:"category"`
 	Description *string         `json:"description"`
-	UpdatedBy   pgtype.UUID     `json:"updatedBy"`
+	IsPublic    bool            `json:"isPublic"`
 }
 
 func (q *Queries) UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (ServerSetting, error) {
 	row := q.db.QueryRow(ctx, upsertServerSetting,
 		arg.Key,
 		arg.Value,
+		arg.Category,
 		arg.Description,
-		arg.UpdatedBy,
+		arg.IsPublic,
 	)
 	var i ServerSetting
 	err := row.Scan(
 		&i.Key,
 		&i.Value,
+		&i.Category,
 		&i.Description,
-		&i.UpdatedBy,
+		&i.IsPublic,
+		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
