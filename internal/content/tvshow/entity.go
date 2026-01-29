@@ -15,7 +15,7 @@ import (
 type Series struct {
 	shared.BaseEntity
 
-	LibraryID uuid.UUID
+	TvLibraryID uuid.UUID // Reference to tv_libraries table
 
 	// Metadata
 	Title         string
@@ -294,7 +294,7 @@ func FromDBSeries(s *db.Series) *Series {
 			CreatedAt: s.CreatedAt,
 			UpdatedAt: s.UpdatedAt,
 		},
-		LibraryID:    s.TvLibraryID,
+		TvLibraryID:  s.TvLibraryID,
 		Title:        s.Title,
 		DateAdded:    s.DateAdded,
 		SeasonCount:  int(s.SeasonCount),
@@ -443,9 +443,8 @@ func FromDBEpisode(e *db.Episode) *Episode {
 				CreatedAt: e.CreatedAt,
 				UpdatedAt: e.UpdatedAt,
 			},
-			LibraryID: uuid.UUID{}, // Episodes don't have direct library_id
-			Path:      e.Path,
-			Title:     e.Title,
+			Path:  e.Path,
+			Title: e.Title,
 		},
 		SeriesID:      e.SeriesID,
 		SeasonID:      e.SeasonID,
@@ -516,7 +515,7 @@ func FromDBEpisode(e *db.Episode) *Episode {
 // ToDBCreateParams converts a domain series to database create params.
 func (s *Series) ToDBCreateParams() db.CreateSeriesParams {
 	params := db.CreateSeriesParams{
-		TvLibraryID: s.LibraryID,
+		TvLibraryID: s.TvLibraryID,
 		Title:       s.Title,
 	}
 

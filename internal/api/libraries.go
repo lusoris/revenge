@@ -6,7 +6,6 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/service/library"
@@ -51,7 +50,7 @@ func (h *Handler) ListLibraries(ctx context.Context) (gen.ListLibrariesRes, erro
 
 // CreateLibrary implements the createLibrary operation.
 func (h *Handler) CreateLibrary(ctx context.Context, req *gen.LibraryCreate) (gen.CreateLibraryRes, error) {
-	usr, err := requireAdmin(ctx)
+	_, err := requireAdmin(ctx)
 	if err != nil {
 		if errors.Is(err, ErrUnauthorized) {
 			return &gen.CreateLibraryUnauthorized{
@@ -65,31 +64,13 @@ func (h *Handler) CreateLibrary(ctx context.Context, req *gen.LibraryCreate) (ge
 		}, nil
 	}
 
-	// Convert owner user ID
-	var ownerUserID pgtype.UUID
-	if req.IsPrivate.Or(false) {
-		ownerUserID = pgtype.UUID{Bytes: usr.ID, Valid: true}
-	}
-
+	// Create library with simplified params
+	// Module-specific settings should be passed via Settings field
 	params := library.CreateParams{
-		Name:              req.Name,
-		LibraryType:       string(req.Type),
-		Paths:             req.Paths,
-		ScanEnabled:       req.ScanEnabled.Or(true),
-		ScanIntervalHours: int32(req.ScanIntervalHours.Or(24)),
-		DownloadImages:    req.DownloadImages.Or(true),
-		DownloadNfo:       req.DownloadNfo.Or(false),
-		GenerateChapters:  req.GenerateChapters.Or(false),
-		IsPrivate:         req.IsPrivate.Or(false),
-		OwnerUserID:       ownerUserID,
-		SortOrder:         int32(req.SortOrder.Or(0)),
-	}
-
-	if req.PreferredLanguage.IsSet() {
-		params.PreferredLanguage = ptrString(req.PreferredLanguage.Value)
-	}
-	if req.Icon.IsSet() {
-		params.Icon = ptrString(req.Icon.Value)
+		Name:        req.Name,
+		LibraryType: string(req.Type),
+		Paths:       req.Paths,
+		// TODO: Map API settings to module-specific settings structs
 	}
 
 	lib, err := h.libraryService.Create(ctx, params)
@@ -157,8 +138,8 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *gen.LibraryUpdate, par
 		}, nil
 	}
 
-	// Get library to check ownership
-	lib, err := h.libraryService.GetByID(ctx, params.LibraryId)
+	// Get library to verify it exists
+	_, err = h.libraryService.GetByID(ctx, params.LibraryId)
 	if err != nil {
 		return &gen.UpdateLibraryNotFound{
 			Code:    "not_found",
@@ -166,9 +147,9 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *gen.LibraryUpdate, par
 		}, nil
 	}
 
-	// Check if user can update (admin or owner of private library)
-	isOwner := lib.OwnerUserID.Valid && lib.OwnerUserID.Bytes == usr.ID
-	if !usr.IsAdmin && !isOwner {
+	// Only admins can update libraries for now
+	// TODO: Implement proper ownership checking via module-specific settings
+	if !usr.IsAdmin {
 		return &gen.UpdateLibraryForbidden{
 			Code:    "forbidden",
 			Message: "No permission to update this library",
@@ -185,33 +166,7 @@ func (h *Handler) UpdateLibrary(ctx context.Context, req *gen.LibraryUpdate, par
 	if len(req.Paths) > 0 {
 		updateParams.Paths = req.Paths
 	}
-	if req.ScanEnabled.IsSet() {
-		updateParams.ScanEnabled = ptrBool(req.ScanEnabled.Value)
-	}
-	if req.ScanIntervalHours.IsSet() {
-		updateParams.ScanIntervalHours = ptrInt32(req.ScanIntervalHours.Value)
-	}
-	if req.PreferredLanguage.IsSet() {
-		updateParams.PreferredLanguage = ptrString(req.PreferredLanguage.Value)
-	}
-	if req.DownloadImages.IsSet() {
-		updateParams.DownloadImages = ptrBool(req.DownloadImages.Value)
-	}
-	if req.DownloadNfo.IsSet() {
-		updateParams.DownloadNfo = ptrBool(req.DownloadNfo.Value)
-	}
-	if req.GenerateChapters.IsSet() {
-		updateParams.GenerateChapters = ptrBool(req.GenerateChapters.Value)
-	}
-	if req.IsPrivate.IsSet() {
-		updateParams.IsPrivate = ptrBool(req.IsPrivate.Value)
-	}
-	if req.SortOrder.IsSet() {
-		updateParams.SortOrder = ptrInt32(req.SortOrder.Value)
-	}
-	if req.Icon.IsSet() {
-		updateParams.Icon = ptrString(req.Icon.Value)
-	}
+	// TODO: Map other API settings to module-specific settings structs
 
 	updatedLib, err := h.libraryService.Update(ctx, updateParams)
 	if err != nil {

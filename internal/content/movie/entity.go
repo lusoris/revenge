@@ -14,6 +14,7 @@ import (
 // Movie represents a movie in the library.
 type Movie struct {
 	shared.ContentEntity
+	MovieLibraryID uuid.UUID // Reference to movie_libraries table
 
 	// File info
 	Container    string
@@ -202,10 +203,10 @@ func FromDBMovie(m *db.Movie) *Movie {
 				CreatedAt: m.CreatedAt,
 				UpdatedAt: m.UpdatedAt,
 			},
-			LibraryID: m.MovieLibraryID,
-			Path:      m.Path,
-			Title:     m.Title,
+			Path:  m.Path,
+			Title: m.Title,
 		},
+		MovieLibraryID: m.MovieLibraryID,
 		DateAdded: m.DateAdded,
 		PlayCount: int(m.PlayCount),
 		IsLocked:  m.IsLocked,
@@ -308,7 +309,7 @@ func FromDBMovie(m *db.Movie) *Movie {
 // ToDBCreateParams converts a domain movie to database create params.
 func (m *Movie) ToDBCreateParams() db.CreateMovieParams {
 	params := db.CreateMovieParams{
-		MovieLibraryID: m.LibraryID,
+		MovieLibraryID: m.MovieLibraryID,
 		Path:           m.Path,
 		Title:          m.Title,
 	}

@@ -3,6 +3,7 @@ package api
 import (
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/shared"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
@@ -76,43 +77,23 @@ func sessionToAPI(s *db.Session) gen.Session {
 	return result
 }
 
-// libraryToAPI converts a db.Library to a gen.Library.
-func libraryToAPI(l *db.Library) gen.Library {
+// libraryToAPI converts a shared.LibraryInfo to a gen.Library.
+func libraryToAPI(l *shared.LibraryInfo) gen.Library {
 	result := gen.Library{
 		ID:    l.ID,
 		Name:  l.Name,
-		Type:  gen.LibraryType(l.Type),
+		Type:  gen.LibraryType(l.Module), // Module name as type
 		Paths: l.Paths,
 	}
 
-	result.ScanEnabled = gen.NewOptBool(l.ScanEnabled)
-	result.ScanIntervalHours = gen.NewOptInt(int(l.ScanIntervalHours))
-
-	if l.LastScanAt.Valid {
-		result.LastScanAt = gen.NewOptDateTime(l.LastScanAt.Time)
+	// Adult content libraries are marked as private
+	if l.IsAdult {
+		result.IsPrivate = gen.NewOptBool(true)
 	}
 
-	if l.PreferredLanguage != nil {
-		result.PreferredLanguage = gen.NewOptString(*l.PreferredLanguage)
-	}
-
-	result.DownloadImages = gen.NewOptBool(l.DownloadImages)
-	result.DownloadNfo = gen.NewOptBool(l.DownloadNfo)
-	result.GenerateChapters = gen.NewOptBool(l.GenerateChapters)
-	result.IsPrivate = gen.NewOptBool(l.IsPrivate)
-
-	if l.OwnerUserID.Valid {
-		result.OwnerUserId = gen.NewOptUUID(l.OwnerUserID.Bytes)
-	}
-
-	result.SortOrder = gen.NewOptInt(int(l.SortOrder))
-
-	if l.Icon != nil {
-		result.Icon = gen.NewOptString(*l.Icon)
-	}
-
-	result.CreatedAt = gen.NewOptDateTime(l.CreatedAt)
-	result.UpdatedAt = gen.NewOptDateTime(l.UpdatedAt)
+	// Module-specific settings are in l.Settings but we can't easily
+	// map them to the generic Library API response.
+	// TODO: Extract common settings from l.Settings if needed
 
 	return result
 }
@@ -121,7 +102,7 @@ func libraryToAPI(l *db.Library) gen.Library {
 func movieToAPI(m *movie.Movie, userData *gen.MovieUserData) gen.Movie {
 	result := gen.Movie{
 		ID:        m.ID,
-		LibraryId: m.LibraryID,
+		LibraryId: m.MovieLibraryID,
 		Title:     m.Title,
 	}
 

@@ -219,15 +219,13 @@ func (s *LibraryService) ScanLibrary(ctx context.Context, libraryID uuid.UUID, f
 
 // getFleetItemCount returns the total item count (expeditions + voyages).
 func (s *LibraryService) getFleetItemCount(ctx context.Context, fleetID uuid.UUID) int64 {
-	fleetUUID := pgtype.UUID{Bytes: fleetID, Valid: true}
-
-	expCount, err := s.queries.CountFleetExpeditions(ctx, fleetUUID)
+	expCount, err := s.queries.CountFleetExpeditions(ctx, fleetID)
 	if err != nil {
 		s.logger.Warn("failed to count expeditions", "fleet_id", fleetID, "error", err)
 		expCount = 0
 	}
 
-	voyCount, err := s.queries.CountFleetVoyages(ctx, fleetUUID)
+	voyCount, err := s.queries.CountFleetVoyages(ctx, fleetID)
 	if err != nil {
 		s.logger.Warn("failed to count voyages", "fleet_id", fleetID, "error", err)
 		voyCount = 0

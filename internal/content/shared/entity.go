@@ -15,12 +15,12 @@ type BaseEntity struct {
 }
 
 // ContentEntity contains fields common to all content items (movies, episodes, tracks, etc.).
+// Note: Library reference is module-specific (MovieLibraryID, TvLibraryID, FleetID, etc.)
 type ContentEntity struct {
 	BaseEntity
-	LibraryID uuid.UUID `json:"libraryId"`
-	Path      string    `json:"path"`      // Filesystem path
-	Title     string    `json:"title"`     // Display title
-	SortTitle string    `json:"sortTitle"` // For alphabetical sorting
+	Path      string `json:"path"`      // Filesystem path
+	Title     string `json:"title"`     // Display title
+	SortTitle string `json:"sortTitle"` // For alphabetical sorting
 }
 
 // MediaInfo contains technical information about a media file.
