@@ -24,14 +24,44 @@ Adult external services provide:
 |----------|------|--------|
 | [Twitter/X](TWITTER_X.md) | Social | 🔴 Planned |
 | [Instagram](INSTAGRAM.md) | Social | 🔴 Planned |
+| TikTok | Social | 🔴 Planned |
+| YouTube | Social | 🔴 Planned |
+| Reddit | Social | 🔴 Planned |
 
-### Metadata (Supplementary)
+### Amateur/Creator Platforms
+
+| Provider | Type | Status |
+|----------|------|--------|
+| [OnlyFans](ONLYFANS.md) | Creator | 🔴 Planned |
+| ManyVids | Creator | 🔴 Planned |
+| Clips4Sale | Creator | 🔴 Planned |
+| Fansly | Creator | 🔴 Planned |
+| LoyalFans | Creator | 🔴 Planned |
+| AVN Stars | Creator | 🔴 Planned |
+
+### Studio/Video Platforms
 
 | Provider | Type | Status |
 |----------|------|--------|
 | [Pornhub](PORNHUB.md) | Platform | 🔴 Planned |
-| [OnlyFans](ONLYFANS.md) | Platform | 🔴 Planned |
-| [TheNude](THENUDE.md) | Metadata | 🔴 Planned |
+| Brazzers | Platform | 🔴 Planned |
+| Reality Kings | Platform | 🔴 Planned |
+| Bang Bros | Platform | 🔴 Planned |
+
+### External Databases
+
+| Provider | Type | API | Status |
+|----------|------|-----|--------|
+| [TheNude](THENUDE.md) | Metadata | REST | 🔴 Planned |
+| Data18 | Metadata | Scraping | 🔴 Planned |
+| Indexxx | Metadata | Scraping | 🔴 Planned |
+| EuroBabeIndexxx | Metadata | Scraping | 🔴 Planned |
+| Bgafd | UK Database | Scraping | 🔴 Planned |
+| Egafd | EU Database | Scraping | 🔴 Planned |
+| AdultDVDEmpire | DVD/VOD | REST | 🔴 Planned |
+| HotMovies | VOD | REST | 🔴 Planned |
+
+> **Note**: These external databases are linked from StashDB performer/studio/scene entries. Use as enrichment sources via background River jobs.
 
 ---
 

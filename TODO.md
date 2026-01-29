@@ -129,10 +129,18 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] Watch Next / Continue Watching (design done)
 - [ ] Release Calendar (design done)
 - [ ] Request System with Polls (design done)
+- [ ] News System - RSS aggregation + internal announcements (design done)
+- [ ] Wiki System - Internal helpdesk/knowledge base (design done)
+- [ ] Analytics Service - Tracearr-like monitoring (design done)
 - [ ] i18n System
-- [ ] Analytics Service (Year in Review)
 - [ ] Profiles System (Netflix-style)
 - [ ] Media Enhancements (trickplay, intro detection, chapters)
+- [ ] SyncPlay - Watch together feature
+- [ ] Photos Library
+
+### Adult-Specific (schema `c`)
+- [ ] Fuzzy data reconciliation for conflicting metadata (design done)
+- [ ] Stash app integration as fallback source
 
 ---
 

@@ -23,8 +23,9 @@ Core system design and architectural decisions.
 
 - [Overall Architecture V2](design/architecture/ARCHITECTURE_V2.md) - Complete system architecture
 - [Design Principles](design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
-- [Player Architecture](design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
+- [Go Packages Reference](design/architecture/GO_PACKAGES.md) - Reusable Go packages
 - [Metadata System](design/architecture/METADATA_SYSTEM.md) - Metadata management
+- [Player Architecture](design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
 - [Plugin Architecture Decision](design/architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
 
 ### [Features](design/features/)
@@ -32,22 +33,26 @@ Content modules and feature specifications.
 
 - [Adult Content System](design/features/ADULT_CONTENT_SYSTEM.md) - Adult module isolation (`c` schema)
 - [Adult Metadata](design/features/ADULT_METADATA.md) - Whisparr/StashDB integration
-- [Analytics Service](design/features/ANALYTICS_SERVICE.md) - Analytics design
+- [Adult Data Reconciliation](design/features/adult/DATA_RECONCILIATION.md) - Fuzzy logic for conflicting metadata
+- [Analytics Service](design/features/ANALYTICS_SERVICE.md) - Tracearr-like analytics design
 - [Client Support](design/features/CLIENT_SUPPORT.md) - Client compatibility
 - [Comics Module](design/features/COMICS_MODULE.md) - Digital comics/manga support
 - [Content Rating](design/features/CONTENT_RATING.md) - Rating systems (MPAA/PEGI/etc.)
+- [Feature Comparison](design/features/FEATURE_COMPARISON.md) - Gap analysis vs Jellyfin/Plex/Emby
 - [Internationalization](design/features/I18N.md) - i18n/l10n support
 - [Library Types](design/features/LIBRARY_TYPES.md) - Library management
 - [Media Enhancements](design/features/MEDIA_ENHANCEMENTS.md) - Media-specific features
+- [News System](design/features/NEWS_SYSTEM.md) - External RSS + internal announcements
 - [NSFW Toggle](design/features/NSFW_TOGGLE.md) - Adult content visibility toggle
 - [RBAC with Casbin](design/features/RBAC_CASBIN.md) - Dynamic role-based access control
 - [Release Calendar](design/features/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
-- [Request System](design/features/REQUEST_SYSTEM.md) - Content request system
+- [Request System](design/features/REQUEST_SYSTEM.md) - Content request system with polls
 - [Scrobbling](design/features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
-- [Watch Next / Continue Watching](design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
 - [Ticketing System](design/features/TICKETING_SYSTEM.md) - Support tickets
-- [User Experience Features](design/features/USER_EXPERIENCE_FEATURES.md) - UX enhancements
+- [User Experience Features](design/features/USER_EXPERIENCE_FEATURES.md) - UX enhancements (avatars, etc.)
+- [Watch Next / Continue Watching](design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation
 - [Whisparr/StashDB Schema](design/features/WHISPARR_STASHDB_SCHEMA.md) - Adult metadata schema
+- [Wiki System](design/features/WIKI_SYSTEM.md) - Internal knowledge base/helpdesk
 
 ### [Integrations](design/integrations/)
 External service integration designs.
