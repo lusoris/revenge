@@ -31,9 +31,11 @@ func NewService(pool *pgxpool.Pool, workers *river.Workers, logger *slog.Logger)
 	riverClient, err := river.NewClient(riverpgxv5.New(pool), &river.Config{
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: 100},
-			"scanning":         {MaxWorkers: 2},  // Heavy IO
-			"metadata":         {MaxWorkers: 10}, // Network bound
-			"indexing":         {MaxWorkers: 5},  // CPU bound
+			QueueScanning:      {MaxWorkers: 2},  // Heavy IO
+			QueueMetadata:      {MaxWorkers: 10}, // Network bound
+			QueueIndexing:      {MaxWorkers: 5},  // CPU bound
+			QueueImages:        {MaxWorkers: 5},  // Network bound
+			QueueCleanup:       {MaxWorkers: 1},  // Background maintenance
 		},
 		Workers: workers,
 		Logger:  logger.With(slog.String("component", "river")),
@@ -82,9 +84,22 @@ func NewWorkers() *river.Workers {
 	return river.NewWorkers()
 }
 
+// WorkerDepsInput contains optional worker dependencies for fx injection.
+type WorkerDepsInput struct {
+	fx.In
+	Scanner    LibraryScanner     `optional:"true"`
+	Fetcher    MetadataFetcher    `optional:"true"`
+	Downloader ImageDownloader    `optional:"true"`
+	Indexer    SearchIndexer      `optional:"true"`
+	Cleaner    CleanupService     `optional:"true"`
+	Trickplay  TrickplayGenerator `optional:"true"`
+	Logger     *slog.Logger
+}
+
 // Module provides job queue dependencies for fx.
 var Module = fx.Module("jobs",
 	fx.Provide(NewWorkers),
+	fx.Invoke(registerAllWorkers),
 	fx.Provide(NewService),
 	fx.Provide(func(svc *Service) *river.Client[pgx.Tx] {
 		return svc.client
@@ -100,3 +115,16 @@ var Module = fx.Module("jobs",
 		})
 	}),
 )
+
+// registerAllWorkers registers all workers with their dependencies.
+func registerAllWorkers(workers *river.Workers, deps WorkerDepsInput) error {
+	return RegisterWorkers(workers, WorkerDeps{
+		Scanner:    deps.Scanner,
+		Fetcher:    deps.Fetcher,
+		Downloader: deps.Downloader,
+		Indexer:    deps.Indexer,
+		Cleaner:    deps.Cleaner,
+		Trickplay:  deps.Trickplay,
+		Logger:     deps.Logger,
+	})
+}
