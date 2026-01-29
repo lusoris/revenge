@@ -17,6 +17,7 @@ import (
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
@@ -75,6 +76,7 @@ func main() {
 
 		// Content modules
 		movie.ModuleWithRiver,
+		tvshow.ModuleWithRiver,
 
 		// API module (ogen-generated handlers)
 		api.Module,
@@ -296,7 +298,8 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, shutdowner *graceful.Sh
 				logger.Info("Starting HTTP server", slog.String("address", srv.Addr))
 				if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 					logger.Error("Server error", slog.Any("error", err))
-					os.Exit(1)
+					// Trigger graceful shutdown instead of os.Exit
+					shutdowner.Trigger()
 				}
 			}()
 			return nil

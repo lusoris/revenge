@@ -10,6 +10,7 @@ import (
 
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
@@ -36,6 +37,7 @@ type Handler struct {
 	sessionService *session.Service
 	libraryService *library.Service
 	movieService   *movie.Service
+	tvshowService  *tvshow.Service
 	riverClient    *river.Client[pgx.Tx]
 	healthChecker  *health.Checker
 	logger         *slog.Logger
@@ -59,6 +61,7 @@ type HandlerParams struct {
 	SessionService *session.Service
 	LibraryService *library.Service
 	MovieService   *movie.Service
+	TVShowService  *tvshow.Service
 	RiverClient    *river.Client[pgx.Tx]
 	HealthChecker  *health.Checker
 	Logger         *slog.Logger
@@ -76,6 +79,7 @@ func NewHandler(params HandlerParams) *Handler {
 		sessionService: params.SessionService,
 		libraryService: params.LibraryService,
 		movieService:   params.MovieService,
+		tvshowService:  params.TVShowService,
 		riverClient:    params.RiverClient,
 		healthChecker:  params.HealthChecker,
 		logger:         params.Logger.With(slog.String("component", "api")),

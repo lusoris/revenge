@@ -3,7 +3,7 @@
 > Modular media server with complete content isolation
 
 **Last Updated**: 2026-01-29
-**Current Phase**: Content Modules
+**Current Phase**: Design Audit Fixes
 **Build**: `GOEXPERIMENT=greenteagc,jsonv2 go build ./...`
 
 ---
@@ -12,9 +12,11 @@
 
 ```
 Foundation (Week 1-2)     ████████████████████████ 100%
-Movie Module              ████████████████████████ 100%
-TV Shows Module           ██████████████████████░░  90% (missing: API handlers)
-Design Docs               ████████████████████████ 100%
+Design Audit              ████████████████████████ 100%
+Critical Fixes            ░░░░░░░░░░░░░░░░░░░░░░░░   0%  <- CURRENT
+Movie Module              ████████████████████░░░░  85%
+TV Shows Module           ██████████████████░░░░░░  75%
+Adult Module              ████████░░░░░░░░░░░░░░░░  35%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -23,147 +25,246 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ---
 
-## Current Sprint
+## Phase 1: Critical Fixes (Blocking)
 
-### In Progress: TV Shows Module Completion
+> These must be fixed before any other work
 
-- [x] Database migrations (series, seasons, episodes, credits)
-- [x] sqlc queries (7 files, 100+ queries)
-- [x] Entity definitions
-- [x] Repository (PostgreSQL implementation)
-- [x] Service layer
-- [x] **module.go** - FX dependency injection registration
-- [x] **jobs.go** - River workers (metadata enrichment)
-- [x] **metadata_provider.go** - Provider interface + adapters
-- [ ] API handlers
+### 1.1 Wiring & Registration Issues
+- [ ] **Register TVShow module** in `cmd/revenge/main.go`
+  - Add `tvshow.ModuleWithRiver` to fx.New()
+- [ ] **Add TVShow handler deps** to `internal/api/module.go`
+  - Add TvshowService to handler dependencies
+- [ ] **Register Adult modules** in `cmd/revenge/main.go`
+  - Add c/movie and c/scene modules to fx.New()
 
-### Next: Music Module
+### 1.2 Service Signature Fixes
+- [ ] **Fix Session.UpdateActivity** in `internal/service/session/service.go`
+  - Design: `UpdateActivity(ctx, sessionID, ipAddress *netip.Addr)`
+  - Code: `UpdateActivity(ctx, sessionID, profileID *uuid.UUID)`
+  - Update signature + all callers
 
-- [ ] Database migrations (`music_artists`, `music_albums`, `music_tracks`)
-- [ ] sqlc queries
-- [ ] Entity/Repository/Service
-- [ ] Lidarr integration
-- [ ] MusicBrainz fallback
+### 1.3 Configuration Location
+- [ ] **Move config** from `pkg/config/` to `internal/config/`
+  - Update all imports
+  - Design specifies `internal/config/config.go`
+
+### 1.4 Error Handling
+- [ ] **Remove os.Exit()** from `cmd/revenge/main.go:299`
+  - Return error instead, let Fx handle graceful shutdown
+  - Design principle: never panic/exit for errors
+
+### 1.5 Metadata Service Core
+- [ ] **Implement Radarr provider** in `internal/service/metadata/radarr/`
+  - Currently stub returning ErrUnavailable
+  - Must work per Servarr-first principle (Priority 1)
+- [ ] **Implement central MetadataService**
+  - Create aggregation service with provider priority/fallback
+  - Design: `internal/service/metadata/service.go`
+
+---
+
+## Phase 2: TV Shows Module Completion
+
+### 2.1 API Handlers
+- [ ] **Implement TV Shows handlers** in `internal/api/tvshows.go`
+  - Wire to OpenAPI spec `api/openapi/tvshows.yaml`
+  - All CRUD operations for series, seasons, episodes
+  - User data endpoints (favorites, ratings, watch history)
+
+### 2.2 Watch Next Feature
+- [ ] **Implement GetNextEpisode handler**
+  - Service exists but no API handler
+  - Endpoint defined in OpenAPI spec
+- [ ] **Implement Continue Watching handler** for TV shows
+  - Movies done, TV shows missing
+
+### 2.3 Missing Query Features
+- [ ] **Add 30-day filter** to continue watching queries
+  - Design: `last_played_at > NOW() - INTERVAL '30 days'`
+  - Currently no time window filtering
+
+---
+
+## Phase 3: Adult Module Completion
+
+### 3.1 Schema Obfuscation
+- [ ] **Rename schema** from `c` to `qar`
+- [ ] **Create field mapping** layer per ADULT_CONTENT_SYSTEM.md
+  - performers → crew, scenes → voyages, movies → expeditions
+  - All 13+ field obfuscations (cargo, markings, etc.)
+- [ ] **Update API namespace** from `/c/` to `/qar/`
+
+### 3.2 Access Control Framework
+- [ ] **Add scoped permissions** (adult:read, adult:write)
+- [ ] **Implement AdultAuthMiddleware**
+- [ ] **Add audit logging** for all adult content access
+- [ ] **Implement PIN protection** (optional)
+
+### 3.3 External Integrations
+- [ ] **Implement WhisparrClient** - acquisition proxy
+- [ ] **Implement StashDBClient** - GraphQL enrichment
+- [ ] **Implement StashAppClient** - private instance sync
+- [ ] **Implement FingerprintService** - hash generation/matching
+
+### 3.4 Missing Modules
+- [ ] **Implement c/performer** module (service, repository)
+- [ ] **Implement c/studio** module (service, repository)
+- [ ] **Implement c/tag** module (service, repository)
+- [ ] **Implement c.show** module (directory exists but empty)
+
+### 3.5 Async Processing
+- [ ] **Add River jobs** for fingerprinting
+- [ ] **Add River jobs** for StashDB enrichment
+- [ ] **Add River jobs** for Stash-App sync
+
+### 3.6 Search Isolation
+- [ ] **Create separate Typesense collections** for adult content (qar_movies, qar_voyages)
+- [ ] **Separate search endpoint** `/api/v1/qar/search` requiring adult:read scope
+
+### 3.7 Update Instructions File
+- [ ] **Update adult-modules.instructions.md** to use `qar` schema (currently says `c`)
+  - Instructions file is outdated, design doc is truth
+
+---
+
+## Phase 4: RBAC & Security Completion
+
+### 4.1 Missing RBAC Methods
+- [ ] **Add missing methods** to `internal/service/rbac/casbin.go`
+  - Enforce(), AddRoleForUser(), RemoveRoleForUser()
+  - GetRolesForUser(), GetUsersForRole(), etc.
+
+### 4.2 Resource Grants
+- [ ] **Create resource_grants table** (polymorphic permissions)
+  - Migration: `000019_resource_grants.up.sql`
+- [ ] **Implement HasGrant(), CreateGrant(), DeleteByResource()**
+
+### 4.3 Metadata Audit Logging
+- [ ] **Redesign activity_log schema**
+  - Add: module, entity_id, entity_type, changes (JSONB)
+  - Implement partitioning by month
+- [ ] **Add River async worker** for audit writes
+- [ ] **Implement edit history** with rollback capability
+
+### 4.4 Missing Permissions
+- [ ] **Add access.* permissions** to casbin.go
+  - access.rules.view, access.rules.manage, access.bypass
+- [ ] **Seed request permissions** to database (15 missing)
+- [ ] **Seed adult request permissions** (7 missing)
+
+### 4.5 Activity Encryption
+- [ ] **Implement AES-256-GCM** for activity data at rest
+  - Design principle: Privacy by Default
+
+---
+
+## Phase 5: Playback Features
+
+### 5.1 Up Next / Auto-Play Queue
+- [ ] **Create UpNextQueue struct**
+- [ ] **Implement BuildUpNextQueue()** service
+- [ ] **Add /api/playback/up-next endpoint**
+
+### 5.2 Cross-Device Sync
+- [ ] **Implement WebSocket** for playback sync
+- [ ] **Implement polling fallback** `/api/sync/playback?since={ts}`
+- [ ] **Add BroadcastToUser()** on position updates
+
+### 5.3 User Preferences
+- [ ] **Add user preference fields** to database
+  - auto_play_enabled, auto_play_delay_seconds
+  - continue_watching_days, mark_watched_percent
+
+---
+
+## Phase 6: Tech Stack Alignment
+
+### 6.1 Missing Libraries
+- [ ] **Add failsafe-go** OR document custom `pkg/resilience/`
+- [ ] **Add golang-migrate** OR remove from design doc
+- [ ] **Add coder/websocket** for WebSocket support
+- [ ] **Add govips** for image processing
+- [ ] **Add dhowden/tag** for audio metadata
+
+### 6.2 Documentation Updates
+- [ ] **Add casbin** to TECH_STACK.md (actively used but undocumented)
+- [ ] **Add OpenTelemetry** to TECH_STACK.md (used by ogen)
+- [ ] **Document typesense alpha** status or upgrade to stable
+
+### 6.3 Health Checks
+- [ ] **Enable cache health check** in main.go (commented out)
+- [ ] **Enable search health check** in main.go (commented out)
+
+### 6.4 Advanced Patterns (per instructions)
+- [ ] **Circuit breakers** for external services (TMDb, Radarr, Sonarr)
+  - Use `pkg/resilience/` circuit breaker for all external API calls
+- [ ] **Lazy initialization** for non-critical services
+  - Transcoder client, metadata providers, search client
+- [ ] **Rate limiting** at API boundaries
+  - Per-user and per-IP rate limits using `pkg/resilience/`
+- [ ] **Config hot reload** for runtime settings
+  - Feature flags, log levels, rate limits via `pkg/hotreload/`
+- [ ] **Update adult-modules.instructions.md**
+  - Currently says schema `c`, design doc specifies `qar`
+
+---
+
+## Phase 7: Missing Content Modules
+
+| Module | Priority | Notes |
+|--------|----------|-------|
+| Music | P2 | Lidarr + MusicBrainz |
+| Audiobooks | P2 | Chaptarr + Audible |
+| Books | P2 | Chaptarr + OpenLibrary |
+| Podcasts | P3 | RSS feeds |
+| Comics | P3 | ComicVine |
+| Photos | P3 | EXIF, GPS metadata |
+| LiveTV | P3 | TVHeadend/NextPVR |
+| Collection | P3 | Cross-module pools |
 
 ---
 
 ## Completed
 
 ### Foundation (Week 1-2)
-- PostgreSQL + sqlc type-safe queries
-- Dragonfly cache (rueidis client, 14x faster than go-redis)
-- Typesense search (typesense-go/v4)
-- River job queue (PostgreSQL-native)
-- uber-go/fx dependency injection
-- koanf v2 configuration
-- slog structured logging
-- failsafe-go resilience (circuit breakers, retries)
-- otter local cache (W-TinyLFU)
-- Health checks + graceful shutdown
-- RBAC with Casbin (dynamic roles)
-- Session management + OIDC support
-- OpenAPI spec + ogen code generation
+- [x] PostgreSQL + sqlc type-safe queries
+- [x] Dragonfly cache (rueidis client)
+- [x] Typesense search (typesense-go/v4)
+- [x] River job queue (PostgreSQL-native)
+- [x] uber-go/fx dependency injection
+- [x] koanf v2 configuration
+- [x] slog structured logging
+- [x] otter local cache (W-TinyLFU)
+- [x] Health checks + graceful shutdown
+- [x] RBAC with Casbin (dynamic roles)
+- [x] Session management + OIDC support
+- [x] OpenAPI spec + ogen code generation
 
-### Movie Module
-- Full CRUD with relations (genres, cast, crew, studios)
-- User data (ratings, favorites, watchlist, watch history)
-- TMDb metadata provider
-- Radarr integration ready
-- River jobs for metadata enrichment
-- 3-tier caching (local, API, distributed)
+### Design Audit (2026-01-29)
+- [x] Audit all services against design docs
+- [x] Audit architecture docs
+- [x] Audit technical docs
+- [x] Audit feature docs (playback, RBAC, adult, access)
+- [x] Create DESIGN_AUDIT_REPORT.md with 67 issues
 
-### Design Documentation
-- [DESIGN_DOC_TEMPLATE.md](docs/dev/design/DESIGN_DOC_TEMPLATE.md) - Standard template
-- [WATCH_NEXT_CONTINUE_WATCHING.md](docs/dev/design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation
-- [RELEASE_CALENDAR.md](docs/dev/design/features/RELEASE_CALENDAR.md) - Servarr calendar integration
-- [METADATA_SYSTEM.md](docs/dev/design/architecture/METADATA_SYSTEM.md) - Servarr-first with fallbacks
-- [CONTENT_RATING.md](docs/dev/design/features/CONTENT_RATING.md) - Module-specific age restrictions
-- All docs audited for consistency (rueidis, typesense-go/v4, Chaptarr)
+### Movie Module (85%)
+- [x] Full CRUD with relations
+- [x] User data (ratings, favorites, watchlist)
+- [x] TMDb metadata provider
+- [x] River jobs for metadata enrichment
+- [ ] Continue watching 30-day filter (missing)
 
----
-
-## Content Modules Roadmap
-
-| Module | Status | People Table | Servarr |
-|--------|--------|--------------|---------|
-| Movies | Done | `video_people` (shared) | Radarr |
-| TV Shows | 90% | `video_people` (shared) | Sonarr |
-| Music | Pending | `music_artists` | Lidarr |
-| Audiobooks | Pending | `book_authors` | Chaptarr |
-| Books | Pending | `book_authors` | Chaptarr |
-| Podcasts | Pending | - | RSS |
-| Comics | Pending | `comic_creators` | - |
-| Photos | Pending | - | - |
-| LiveTV | Pending | - | TVHeadend/NextPVR |
-| Adult | Scaffolded | `qar.crew` | Whisparr v3 (eros) |
-
----
-
-## External Integrations
-
-### Metadata Providers
-- [ ] TMDb (movies, TV) - partially done
-- [ ] MusicBrainz (music)
-- [ ] AniList/MyAnimeList (anime)
-- [ ] OpenLibrary/Hardcover (books)
-- [ ] ComicVine (comics)
-- [ ] StashDB (adult, schema `qar`)
-
-### Servarr Ecosystem
-- [ ] Radarr - Movie management
-- [ ] Sonarr - TV show management
-- [ ] Lidarr - Music management
-- [ ] Chaptarr - Books & audiobooks (Readarr API)
-- [ ] Whisparr v3 (eros) - Adult content (schema `qar`)
-
-### Scrobbling
-- [ ] Trakt - Movie/TV sync
-- [ ] Last.fm - Music scrobbling
-- [ ] ListenBrainz - Music scrobbling
-- [ ] Letterboxd - Import only
-
----
-
-## Documentation Pending
-
-- [ ] Audit all design docs for created_at/updated_at consistency
-- [ ] Update shared/000005_libraries migration to per-module
-- [ ] Update sources (live docs from web)
-- [ ] Update best practices documentation
-- [ ] Update dev docs
-- [ ] Update/correct instructions
-
----
-
-## Feature Enhancements (P2)
-
-- [ ] Watch Next / Continue Watching (design done)
-- [ ] Release Calendar (design done)
-- [ ] Request System with Polls (design done)
-- [ ] News System - RSS aggregation + internal announcements (design done)
-- [ ] Wiki System - Internal helpdesk/knowledge base (design done)
-- [ ] Analytics Service - Tracearr-like monitoring (design done)
-- [ ] i18n System
-- [ ] Profiles System (Netflix-style)
-- [ ] Media Enhancements (trickplay, intro detection, chapters)
-- [ ] SyncPlay - Watch together feature
-- [ ] Photos Library
-
-### Adult-Specific (schema `qar` - Queen Anne's Revenge obfuscation)
-- [ ] Fuzzy data reconciliation for conflicting metadata (design done)
-- [ ] Stash app integration as fallback source
-- [ ] Research additional performer data sources (beyond StashDB)
-
----
-
-## Frontend (P3)
-
-- [ ] SvelteKit 2 + Tailwind CSS 4
-- [ ] shadcn-svelte components
-- [ ] TanStack Query
-- [ ] Video player (Shaka + hls.js)
-- [ ] Audio player (Howler.js, gapless)
-- [ ] Admin panel
+### TV Shows Module (75%)
+- [x] Database migrations
+- [x] sqlc queries (100+ queries)
+- [x] Entity definitions
+- [x] Repository (PostgreSQL)
+- [x] Service layer
+- [x] module.go (fx registration)
+- [x] jobs.go (River workers)
+- [x] metadata_provider.go
+- [ ] API handlers (missing)
+- [ ] Module registration in main.go (missing)
 
 ---
 
@@ -177,7 +278,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 | Config | `github.com/knadh/koanf/v2` | NOT viper |
 | Logging | `log/slog` | NOT zap |
 | Jobs | `github.com/riverqueue/river` | PostgreSQL-native |
-| Resilience | `github.com/failsafe-go/failsafe-go` | Circuit breakers |
+| RBAC | `github.com/casbin/casbin/v2` | Dynamic roles |
 | DI | `go.uber.org/fx` | Dependency injection |
 
 ---
@@ -188,11 +289,12 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - Schema: `qar` (isolated PostgreSQL schema)
 - API namespace: `/qar/*`
 - Module location: `internal/content/qar/`
-- See [ADULT_CONTENT_SYSTEM.md](docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md) for full obfuscation mapping
+- See [ADULT_CONTENT_SYSTEM.md](docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md)
 
-**External Transcoding**:
-- Blackbeard service handles all transcoding
-- Revenge proxies streams only
+**Design Docs are Source of Truth**:
+- Only `docs/dev/design/` is authoritative
+- Other documentation may be outdated
+- Code must match design, not vice versa
 
 **Build Commands**:
 ```bash

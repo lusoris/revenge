@@ -8,6 +8,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -32,7 +33,8 @@ type HandlerDeps struct {
 	UserService    *user.Service
 	SessionService *session.Service
 	LibraryService *library.Service
-	MovieService   *movie.Service `optional:"true"`
+	MovieService   *movie.Service   `optional:"true"`
+	TVShowService  *tvshow.Service  `optional:"true"`
 	RiverClient    *river.Client[pgx.Tx]
 	HealthChecker  *health.Checker
 	Logger         *slog.Logger
@@ -47,6 +49,7 @@ func provideHandlerParams(deps HandlerDeps) HandlerParams {
 		SessionService: deps.SessionService,
 		LibraryService: deps.LibraryService,
 		MovieService:   deps.MovieService,
+		TVShowService:  deps.TVShowService,
 		RiverClient:    deps.RiverClient,
 		HealthChecker:  deps.HealthChecker,
 		Logger:         deps.Logger,
