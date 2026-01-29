@@ -29,30 +29,23 @@ Core system design and architectural decisions.
 - [Plugin Architecture Decision](design/architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
 
 ### [Features](design/features/)
-Content modules and feature specifications.
+Content modules and feature specifications. See [Features INDEX](design/features/INDEX.md) for full listing.
 
-- [Adult Content System](design/features/ADULT_CONTENT_SYSTEM.md) - Adult module isolation (`c` schema)
-- [Adult Metadata](design/features/ADULT_METADATA.md) - Whisparr/StashDB integration
-- [Adult Data Reconciliation](design/features/adult/DATA_RECONCILIATION.md) - Fuzzy logic for conflicting metadata
-- [Analytics Service](design/features/ANALYTICS_SERVICE.md) - Tracearr-like analytics design
-- [Client Support](design/features/CLIENT_SUPPORT.md) - Client compatibility
-- [Comics Module](design/features/COMICS_MODULE.md) - Digital comics/manga support
-- [Content Rating](design/features/CONTENT_RATING.md) - Rating systems (MPAA/PEGI/etc.)
-- [Feature Comparison](design/features/FEATURE_COMPARISON.md) - Gap analysis vs Jellyfin/Plex/Emby
-- [Internationalization](design/features/I18N.md) - i18n/l10n support
-- [Library Types](design/features/LIBRARY_TYPES.md) - Library management
-- [Media Enhancements](design/features/MEDIA_ENHANCEMENTS.md) - Media-specific features
-- [News System](design/features/NEWS_SYSTEM.md) - External RSS + internal announcements
-- [NSFW Toggle](design/features/NSFW_TOGGLE.md) - Adult content visibility toggle
-- [RBAC with Casbin](design/features/RBAC_CASBIN.md) - Dynamic role-based access control
-- [Release Calendar](design/features/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
-- [Request System](design/features/REQUEST_SYSTEM.md) - Content request system with polls
-- [Scrobbling](design/features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
-- [Ticketing System](design/features/TICKETING_SYSTEM.md) - Support tickets
-- [User Experience Features](design/features/USER_EXPERIENCE_FEATURES.md) - UX enhancements (avatars, etc.)
-- [Watch Next / Continue Watching](design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation
-- [Whisparr/StashDB Schema](design/features/WHISPARR_STASHDB_SCHEMA.md) - Adult metadata schema
-- [Wiki System](design/features/WIKI_SYSTEM.md) - Internal knowledge base/helpdesk
+**Shared Features** (`design/features/shared/`):
+- Analytics, RBAC, Access Controls, Request System
+- News System, Wiki System, Ticketing
+- Client Support, Voice Control, Scrobbling, i18n
+
+**Playback Features** (`design/features/playback/`):
+- SyncPlay, Trickplay, Skip Intro/Credits
+- Watch Next, Release Calendar, Media Enhancements
+
+**Module-Specific:**
+- `photos/` - Photos Library
+- `podcasts/` - RSS Podcasts
+- `livetv/` - Live TV / DVR
+- `comics/` - Comics/Manga
+- `adult/` - Adult content (isolated in `c` schema)
 
 ### [Integrations](design/integrations/)
 External service integration designs.
