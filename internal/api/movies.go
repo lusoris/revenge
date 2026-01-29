@@ -1,5 +1,3 @@
-//go:build ignore
-
 package api
 
 import (
@@ -12,10 +10,11 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 )
 
-func movieModuleDisabled() *gen.Error {
+// movieModuleDisabledError returns a generic error for endpoints that accept *gen.Error.
+func movieModuleDisabledError() *gen.Error {
 	return &gen.Error{
 		Code:    "module_disabled",
-		Message: "Movie module disabled",
+		Message: "Movie module is not enabled",
 	}
 }
 
@@ -31,7 +30,7 @@ func (h *Handler) ListMovies(ctx context.Context, params gen.ListMoviesParams) (
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	listParams := movie.ListParams{
@@ -87,7 +86,7 @@ func (h *Handler) ListRecentMovies(ctx context.Context, params gen.ListRecentMov
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	// Get accessible library IDs for user
@@ -134,7 +133,7 @@ func (h *Handler) ListContinueWatching(ctx context.Context, params gen.ListConti
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	history, err := svc.ListResumeableMovies(ctx, usr.ID, params.Limit.Or(10))
@@ -170,7 +169,7 @@ func (h *Handler) GetMovie(ctx context.Context, params gen.GetMovieParams) (gen.
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.GetMovieNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	m, err := svc.GetMovieWithRelations(ctx, params.MovieId)
@@ -207,7 +206,7 @@ func (h *Handler) UpdateMovie(ctx context.Context, req *gen.MovieUpdate, params 
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.UpdateMovieNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	// Only admins can update movie metadata
@@ -268,10 +267,10 @@ func (h *Handler) UpdateMovie(ctx context.Context, req *gen.MovieUpdate, params 
 func (h *Handler) DeleteMovie(ctx context.Context, params gen.DeleteMovieParams) (gen.DeleteMovieRes, error) {
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.DeleteMovieNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
-	_, err := requireAdmin(ctx)
+	_, err = requireAdmin(ctx)
 	if err != nil {
 		if errors.Is(err, ErrUnauthorized) {
 			return &gen.DeleteMovieUnauthorized{
@@ -314,7 +313,7 @@ func (h *Handler) RefreshMovieMetadata(ctx context.Context, params gen.RefreshMo
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.RefreshMovieMetadataNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	m, err := svc.GetMovie(ctx, params.MovieId)
@@ -365,7 +364,7 @@ func (h *Handler) AddMovieToFavorites(ctx context.Context, params gen.AddMovieTo
 	// Verify movie exists
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.AddMovieToFavoritesNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	_, err = svc.GetMovie(ctx, params.MovieId)
@@ -405,7 +404,7 @@ func (h *Handler) RemoveMovieFromFavorites(ctx context.Context, params gen.Remov
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	if err := svc.RemoveFavorite(ctx, usr.ID, params.MovieId); err != nil {
@@ -427,7 +426,7 @@ func (h *Handler) AddMovieToWatchlist(ctx context.Context, params gen.AddMovieTo
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.AddMovieToWatchlistNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	// Verify movie exists
@@ -468,7 +467,7 @@ func (h *Handler) RemoveMovieFromWatchlist(ctx context.Context, params gen.Remov
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	if err := svc.RemoveFromWatchlist(ctx, usr.ID, params.MovieId); err != nil {
@@ -490,7 +489,7 @@ func (h *Handler) MarkMovieWatched(ctx context.Context, params gen.MarkMovieWatc
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.MarkMovieWatchedNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	// Verify movie exists
@@ -531,7 +530,7 @@ func (h *Handler) MarkMovieUnwatched(ctx context.Context, params gen.MarkMovieUn
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	if err := svc.MarkAsUnwatched(ctx, usr.ID, params.MovieId); err != nil {
@@ -553,7 +552,7 @@ func (h *Handler) SetMovieRating(ctx context.Context, req *gen.UserRatingRequest
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.SetMovieRatingNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	// Verify movie exists
@@ -612,7 +611,7 @@ func (h *Handler) DeleteMovieRating(ctx context.Context, params gen.DeleteMovieR
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	if err := svc.DeleteUserRating(ctx, usr.ID, params.MovieId); err != nil {
@@ -634,7 +633,7 @@ func (h *Handler) ListMyFavoriteMovies(ctx context.Context, params gen.ListMyFav
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	listParams := movie.ListParams{
@@ -675,7 +674,7 @@ func (h *Handler) ListMyWatchlist(ctx context.Context, params gen.ListMyWatchlis
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	listParams := movie.ListParams{
@@ -716,7 +715,7 @@ func (h *Handler) ListCollections(ctx context.Context, params gen.ListCollection
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return movieModuleDisabledError(), nil
 	}
 
 	listParams := movie.ListParams{
@@ -757,7 +756,7 @@ func (h *Handler) GetCollection(ctx context.Context, params gen.GetCollectionPar
 
 	svc, err := h.requireMovieService()
 	if err != nil {
-		return movieModuleDisabled(), nil
+		return &gen.GetCollectionNotFound{Code: "module_disabled", Message: "Movie module is not enabled"}, nil
 	}
 
 	collection, err := svc.GetCollection(ctx, params.CollectionId)

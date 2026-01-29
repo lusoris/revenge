@@ -20,6 +20,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -71,6 +72,9 @@ func main() {
 		activity.Module,
 		settings.Module,
 		apikeys.Module,
+
+		// Content modules
+		movie.ModuleWithRiver,
 
 		// API module (ogen-generated handlers)
 		api.Module,
