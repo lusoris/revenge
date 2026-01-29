@@ -62,7 +62,7 @@ External service integration designs.
 - **Live TV**: TVHeadend, NextPVR
 - **Metadata**: TMDb, MusicBrainz, StashDB, ComicVine, etc.
 - **Scrobbling**: Trakt, Last.fm, ListenBrainz, Letterboxd, Simkl
-- **Servarr**: Radarr, Sonarr, Lidarr, Whisparr, Readarr
+- **Servarr**: Radarr, Sonarr, Lidarr, Whisparr, Chaptarr
 - **Transcoding**: Blackbeard
 - **Wiki**: Wikipedia, Fandom, TVTropes
 
@@ -89,7 +89,8 @@ Roadmaps, versioning, and implementation phases.
 Analysis, user research, and technology evaluations.
 
 - [User Pain Points Research](design/research/USER_PAIN_POINTS_RESEARCH.md) - Jellyfin/Plex/Emby issues
-- [Go Packages Research](design/research/GO_PACKAGES_RESEARCH.md) - Awesome-Go analysis (500+ packages)
+- [UX/UI Resources](design/research/UX_UI_RESOURCES.md) - Design patterns and resources
+- [Go Packages Research](../archive/reports/GO_PACKAGES_RESEARCH.md) - Awesome-Go analysis (archived)
 - [Documentation Gap Analysis](../archive/reports/DOCUMENTATION_GAP_ANALYSIS.md) - Documentation coverage audit (archived)
 
 ### [Technical](design/technical/)

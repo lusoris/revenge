@@ -36,6 +36,101 @@
 - **Notifications**: Email/Discord/Telegram when requests approved/available
 - **Voting**: Users can upvote requests (priority queue)
 - **Comments**: Discussion on requests
+- **Polls**: Community polls to decide what content to add next
+
+### Polls System
+
+Polls allow admins/mods to create community votes on content decisions:
+
+**Poll Types**:
+- **Manual Polls**: Admin creates poll with specific options ("Which Marvel series should we add next?")
+- **Rule-Based Polls**: Auto-generated based on conditions ("Top 5 most requested movies this month")
+- **Tie-Breaker Polls**: When multiple requests have similar priority
+
+**Features**:
+- Multiple voting options (single-choice or ranked voting)
+- Time-limited polls (e.g., vote closes in 7 days)
+- Minimum participation threshold (e.g., at least 10 users must vote)
+- Results visibility (hidden until poll ends, or real-time)
+- Notification when poll opens/closes
+- Auto-approve winning option(s)
+
+**Database Schema (Polls)**:
+```sql
+-- Polls table
+CREATE TABLE request_polls (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(500) NOT NULL,
+    description TEXT,
+    content_type VARCHAR(50),                -- NULL = mixed content types
+    poll_type VARCHAR(50) NOT NULL DEFAULT 'manual', -- manual, rule_based, tie_breaker
+    voting_style VARCHAR(50) NOT NULL DEFAULT 'single', -- single, ranked, multi_select
+    min_votes INT DEFAULT 1,                 -- Minimum votes required for valid result
+    max_selections INT DEFAULT 1,            -- For multi_select: how many can user pick
+    starts_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ends_at TIMESTAMPTZ NOT NULL,
+    show_results BOOLEAN DEFAULT FALSE,      -- Show results before poll ends
+    auto_approve_winner BOOLEAN DEFAULT TRUE,
+    status VARCHAR(50) NOT NULL DEFAULT 'active', -- draft, active, closed, cancelled
+    created_by_user_id UUID REFERENCES users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Poll options (content items to vote on)
+CREATE TABLE request_poll_options (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    poll_id UUID REFERENCES request_polls(id) ON DELETE CASCADE,
+    request_id UUID REFERENCES requests(id) ON DELETE CASCADE, -- Link to existing request
+    title VARCHAR(500) NOT NULL,             -- Display title
+    description TEXT,
+    external_id VARCHAR(200),                -- TMDb/TVDB/etc. ID
+    metadata_json JSONB,                     -- Additional metadata
+    display_order INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Poll votes
+CREATE TABLE request_poll_votes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    poll_id UUID REFERENCES request_polls(id) ON DELETE CASCADE,
+    option_id UUID REFERENCES request_poll_options(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    rank INT DEFAULT 1,                      -- For ranked voting (1 = first choice)
+    voted_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(poll_id, user_id, option_id)      -- Prevent duplicate votes on same option
+);
+
+CREATE INDEX idx_request_polls_status ON request_polls(status, ends_at);
+CREATE INDEX idx_poll_votes_poll_id ON request_poll_votes(poll_id);
+CREATE INDEX idx_poll_votes_user_id ON request_poll_votes(user_id);
+```
+
+**Rule-Based Poll Generation**:
+```json
+{
+  "name": "Monthly Top Requested Movies Poll",
+  "trigger": "scheduled",
+  "schedule": "0 0 1 * *",  // First of each month
+  "content_type": "movie",
+  "selection_criteria": {
+    "status": "pending",
+    "min_votes": 3,
+    "order_by": "votes_count DESC",
+    "limit": 5
+  },
+  "poll_config": {
+    "title": "Top Movie Requests - {month} {year}",
+    "voting_style": "ranked",
+    "duration_days": 7,
+    "auto_approve_winner": true,
+    "approve_top_n": 2  // Approve top 2 winners
+  }
+}
+```
+
+**Adult Polls (Schema `c`)**:
+Adult content has separate poll tables in schema `c` with identical structure but additional fields for performer/studio/tag filtering.
 
 ### Admin Features
 - **Approval workflow**: Auto-approve OR manual review
@@ -118,15 +213,15 @@ User searches Audible/Goodreads → Selects audiobook → Submits request
                                   Request status: Available → Notify user
 ```
 
-### Books (Readarr Integration)
+### Books (Chaptarr Integration)
 ```
 User searches Goodreads → Selects book → Submits request
                                               ↓
                                    Admin approves
                                               ↓
-                          Revenge adds to Readarr
+                          Revenge adds to Chaptarr
                                               ↓
-                          Readarr downloads → Imports → Notify user
+                          Chaptarr downloads → Imports → Notify user
 ```
 
 ### Podcasts (Audiobookshelf Integration)
@@ -636,7 +731,7 @@ DEL
 - `tvshow.go`: TV show request module (TheTVDB search, Sonarr integration, season selection, intelligent season automation)
 - `music.go`: Music request module (MusicBrainz search, Lidarr integration, artist/album requests)
 - `audiobook.go`: Audiobook request module (Audible search, Audiobookshelf integration)
-- `book.go`: Book request module (Goodreads search, Readarr integration)
+- `book.go`: Book request module (Goodreads search, Chaptarr integration)
 - `podcast.go`: Podcast request module (RSS feed lookup, Audiobookshelf API)
 - `comic.go`: Comic request module (ComicVine search, Mylar3 integration)
 
@@ -678,7 +773,7 @@ DEL
 - [ ] Movie module: Radarr integration (add movie on approval)
 - [ ] TV show module: Sonarr integration (add show + seasons on approval)
 - [ ] Music module: Lidarr integration (add artist/album on approval)
-- [ ] Book module: Readarr integration (add book on approval)
+- [ ] Book module: Chaptarr integration (add book on approval)
 - [ ] Adult module: Whisparr integration (add scene/studio/performer on approval)
 
 ### Phase 4: Audiobookshelf Integration (Week 3)
@@ -990,7 +1085,7 @@ func (s *RequestService) ApprovePodcastRequest(ctx context.Context, requestID uu
 - [ ] Radarr integration (add movie on approval)
 - [ ] Sonarr integration (add TV show on approval)
 - [ ] Lidarr integration (add music on approval)
-- [ ] Readarr integration (add book on approval)
+- [ ] Chaptarr integration (add book on approval)
 - [ ] Whisparr integration (add adult content on approval)
 
 ### Phase 4: Audiobookshelf Integration (Week 3)

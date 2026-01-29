@@ -105,9 +105,11 @@ All documentation lives in [docs/dev/](docs/dev/INDEX.md).
 - [Metadata System](docs/dev/design/architecture/METADATA_SYSTEM.md) - Servarr-first metadata with fallback providers
 - [Watch Next / Continue Watching](docs/dev/design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
 - [Release Calendar](docs/dev/design/features/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
+- [Request System](docs/dev/design/features/REQUEST_SYSTEM.md) - Content requests with polls, voting, RBAC rules
 - [Content Rating](docs/dev/design/features/CONTENT_RATING.md) - Module-specific age restriction systems
 - [Audio Streaming](docs/dev/design/technical/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
 - [Scrobbling](docs/dev/design/features/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
+- [RBAC with Casbin](docs/dev/design/features/RBAC_CASBIN.md) - Dynamic role-based access control
 
 ### Integrations
 - [Servarr Index](docs/dev/design/integrations/servarr/INDEX.md) - Radarr, Sonarr, Lidarr, Whisparr, Chaptarr

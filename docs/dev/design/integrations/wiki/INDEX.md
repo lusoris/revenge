@@ -22,7 +22,7 @@ Wiki providers supply supplementary information for:
 | Provider | Type | Status |
 |----------|------|--------|
 | [Wikipedia](WIKIPEDIA.md) | General | 🟢 Active |
-| [Wikidata](WIKIDATA.md) | Structured | 🟢 Active |
+| Wikidata | Structured | 🟡 Planned |
 | [Fandom](FANDOM.md) | Fan Wikis | 🟡 Planned |
 
 ### Adult Wiki (Isolated)
@@ -30,7 +30,7 @@ Wiki providers supply supplementary information for:
 | Provider | Type | Status |
 |----------|------|--------|
 | [IAFD](adult/IAFD.md) | Performer Wiki | 🟡 Planned |
-| [AFDB](adult/AFDB.md) | Adult Film DB | 🟡 Planned |
+| AFDB | Adult Film DB | 🟡 Planned |
 | [Boobpedia](adult/BOOBPEDIA.md) | Performer Wiki | 🟡 Planned |
 
 ---

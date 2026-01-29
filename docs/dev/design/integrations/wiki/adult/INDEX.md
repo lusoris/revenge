@@ -22,7 +22,7 @@ Adult wiki providers supply supplementary performer information:
 | Provider | Type | Status |
 |----------|------|--------|
 | [IAFD](IAFD.md) | Performer Wiki | 🟡 Planned |
-| [AFDB](AFDB.md) | Adult Film DB | 🟡 Planned |
+| AFDB | Adult Film DB | 🟡 Planned |
 | [Boobpedia](BOOBPEDIA.md) | Performer Wiki | 🟡 Planned |
 
 ---

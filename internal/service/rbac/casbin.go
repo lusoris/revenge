@@ -64,6 +64,8 @@ const (
 	PermContentBrowse        = "content.browse"
 	PermContentMetadataRead  = "content.metadata.read"
 	PermContentMetadataWrite = "content.metadata.write"
+	PermContentMetadataLock  = "content.metadata.lock"
+	PermContentMetadataAudit = "content.metadata.audit"
 	PermContentImagesManage  = "content.images.manage"
 	PermContentDelete        = "content.delete"
 
@@ -81,25 +83,68 @@ const (
 	PermSocialHistoryRead       = "social.history.read"
 	PermSocialFavoritesManage   = "social.favorites.manage"
 
+	// Request permissions
+	PermRequestsSubmit       = "requests.submit"
+	PermRequestsViewOwn      = "requests.view.own"
+	PermRequestsVote         = "requests.vote"
+	PermRequestsComment      = "requests.comment"
+	PermRequestsCancelOwn    = "requests.cancel.own"
+	PermRequestsViewAll      = "requests.view.all"
+	PermRequestsApprove      = "requests.approve"
+	PermRequestsDecline      = "requests.decline"
+	PermRequestsPriority     = "requests.priority"
+	PermRequestsRulesRead    = "requests.rules.read"
+	PermRequestsRulesManage  = "requests.rules.manage"
+	PermRequestsQuotasRead   = "requests.quotas.read"
+	PermRequestsQuotasManage = "requests.quotas.manage"
+	PermRequestsPollsVote    = "requests.polls.vote"
+	PermRequestsPollsCreate  = "requests.polls.create"
+	PermRequestsPollsManage  = "requests.polls.manage"
+
 	// Adult content permissions
-	PermAdultBrowse        = "adult.browse"
-	PermAdultStream        = "adult.stream"
-	PermAdultMetadataWrite = "adult.metadata.write"
+	PermAdultBrowse               = "adult.browse"
+	PermAdultStream               = "adult.stream"
+	PermAdultMetadataWrite        = "adult.metadata.write"
+	PermAdultRequestsSubmit       = "adult.requests.submit"
+	PermAdultRequestsViewOwn      = "adult.requests.view.own"
+	PermAdultRequestsVote         = "adult.requests.vote"
+	PermAdultRequestsApprove      = "adult.requests.approve"
+	PermAdultRequestsDecline      = "adult.requests.decline"
+	PermAdultRequestsRulesManage  = "adult.requests.rules.manage"
+	PermAdultRequestsPollsCreate  = "adult.requests.polls.create"
+	PermAdultRequestsPollsManage  = "adult.requests.polls.manage"
 )
 
 // AllPermissions returns all available permission names.
 func AllPermissions() []string {
 	return []string{
+		// System
 		PermSystemSettingsRead, PermSystemSettingsWrite, PermSystemLogsRead,
 		PermSystemJobsRead, PermSystemJobsManage, PermSystemAPIKeysManage,
 		PermSystemRolesRead, PermSystemRolesManage,
+		// Users
 		PermUsersRead, PermUsersCreate, PermUsersUpdate, PermUsersDelete, PermUsersSessionsManage,
+		// Libraries
 		PermLibrariesRead, PermLibrariesCreate, PermLibrariesUpdate, PermLibrariesDelete, PermLibrariesScan,
-		PermContentBrowse, PermContentMetadataRead, PermContentMetadataWrite, PermContentImagesManage, PermContentDelete,
+		// Content
+		PermContentBrowse, PermContentMetadataRead, PermContentMetadataWrite,
+		PermContentMetadataLock, PermContentMetadataAudit,
+		PermContentImagesManage, PermContentDelete,
+		// Playback
 		PermPlaybackStream, PermPlaybackDownload, PermPlaybackTranscode,
+		// Social
 		PermSocialRate, PermSocialPlaylistsCreate, PermSocialPlaylistsManage,
 		PermSocialCollectionsCreate, PermSocialCollectionsManage, PermSocialHistoryRead, PermSocialFavoritesManage,
+		// Requests
+		PermRequestsSubmit, PermRequestsViewOwn, PermRequestsVote, PermRequestsComment, PermRequestsCancelOwn,
+		PermRequestsViewAll, PermRequestsApprove, PermRequestsDecline, PermRequestsPriority,
+		PermRequestsRulesRead, PermRequestsRulesManage, PermRequestsQuotasRead, PermRequestsQuotasManage,
+		PermRequestsPollsVote, PermRequestsPollsCreate, PermRequestsPollsManage,
+		// Adult
 		PermAdultBrowse, PermAdultStream, PermAdultMetadataWrite,
+		PermAdultRequestsSubmit, PermAdultRequestsViewOwn, PermAdultRequestsVote,
+		PermAdultRequestsApprove, PermAdultRequestsDecline, PermAdultRequestsRulesManage,
+		PermAdultRequestsPollsCreate, PermAdultRequestsPollsManage,
 	}
 }
 
@@ -198,10 +243,14 @@ func (s *CasbinService) seedDefaultPolicies() error {
 		PermSystemLogsRead, PermSystemJobsRead, PermSystemRolesRead,
 		PermUsersRead,
 		PermLibrariesRead, PermLibrariesCreate, PermLibrariesUpdate, PermLibrariesScan,
-		PermContentBrowse, PermContentMetadataRead, PermContentMetadataWrite, PermContentImagesManage,
+		PermContentBrowse, PermContentMetadataRead, PermContentMetadataWrite,
+		PermContentMetadataLock, PermContentMetadataAudit, PermContentImagesManage,
 		PermPlaybackStream, PermPlaybackDownload, PermPlaybackTranscode,
 		PermSocialRate, PermSocialPlaylistsCreate, PermSocialPlaylistsManage,
 		PermSocialCollectionsCreate, PermSocialCollectionsManage, PermSocialHistoryRead, PermSocialFavoritesManage,
+		PermRequestsSubmit, PermRequestsViewOwn, PermRequestsVote, PermRequestsComment, PermRequestsCancelOwn,
+		PermRequestsViewAll, PermRequestsApprove, PermRequestsDecline, PermRequestsPriority,
+		PermRequestsRulesRead, PermRequestsPollsVote, PermRequestsPollsCreate,
 	}
 	for _, perm := range moderatorPerms {
 		if _, err := s.enforcer.AddPolicy("moderator", perm, "allow"); err != nil {
@@ -216,6 +265,8 @@ func (s *CasbinService) seedDefaultPolicies() error {
 		PermPlaybackStream, PermPlaybackDownload, PermPlaybackTranscode,
 		PermSocialRate, PermSocialPlaylistsCreate, PermSocialPlaylistsManage,
 		PermSocialCollectionsCreate, PermSocialCollectionsManage, PermSocialHistoryRead, PermSocialFavoritesManage,
+		PermRequestsSubmit, PermRequestsViewOwn, PermRequestsVote, PermRequestsComment, PermRequestsCancelOwn,
+		PermRequestsPollsVote,
 	}
 	for _, perm := range userPerms {
 		if _, err := s.enforcer.AddPolicy("user", perm, "allow"); err != nil {

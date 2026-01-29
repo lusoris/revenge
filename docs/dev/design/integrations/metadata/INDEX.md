@@ -44,9 +44,9 @@ Books and literature metadata.
 | Provider | Type | Status |
 |----------|------|--------|
 | [Open Library](books/OPENLIBRARY.md) | Books | 🟢 Primary |
-| [Google Books](books/GOOGLE_BOOKS.md) | Books | 🟡 Secondary |
+| Google Books | Books | 🟡 Secondary (planned) |
 | [Goodreads](books/GOODREADS.md) | Reviews | 🟡 Supplementary |
-| [ISBN DB](books/ISBNDB.md) | ISBN Lookup | 🟡 Fallback |
+| ISBN DB | ISBN Lookup | 🟡 Fallback (planned) |
 
 ### 📖 [Comics](comics/INDEX.md)
 Comics, manga, and graphic novels.

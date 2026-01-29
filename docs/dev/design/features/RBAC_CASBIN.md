@@ -153,7 +153,9 @@ CREATE TABLE permission_definitions (
 |------------|-------------|-----------|
 | `content.browse` | Browse content | No |
 | `content.metadata.read` | View metadata | No |
-| `content.metadata.write` | Edit metadata | No |
+| `content.metadata.write` | Edit metadata (audited) | No |
+| `content.metadata.lock` | Lock metadata from auto-updates | No |
+| `content.metadata.audit` | View metadata edit history | No |
 | `content.images.manage` | Manage images | No |
 | `content.delete` | Delete content | Yes |
 
@@ -176,6 +178,40 @@ CREATE TABLE permission_definitions (
 | `social.collections.manage` | Manage collections | No |
 | `social.history.read` | View history | No |
 | `social.favorites.manage` | Manage favorites | No |
+
+### Request Permissions
+
+| Permission | Description | Dangerous |
+|------------|-------------|-----------|
+| `requests.submit` | Submit content requests | No |
+| `requests.view.own` | View own requests | No |
+| `requests.vote` | Vote on requests | No |
+| `requests.comment` | Comment on requests | No |
+| `requests.cancel.own` | Cancel own pending requests | No |
+| `requests.view.all` | View all users' requests | No |
+| `requests.approve` | Approve requests | No |
+| `requests.decline` | Decline requests | No |
+| `requests.priority` | Set request priority | No |
+| `requests.rules.read` | View request rules | No |
+| `requests.rules.manage` | Create/edit request rules | Yes |
+| `requests.quotas.read` | View user quotas | No |
+| `requests.quotas.manage` | Manage user quotas | Yes |
+| `requests.polls.vote` | Vote in polls | No |
+| `requests.polls.create` | Create polls | No |
+| `requests.polls.manage` | Manage polls | Yes |
+
+### Adult Request Permissions (Schema `c`)
+
+| Permission | Description | Dangerous |
+|------------|-------------|-----------|
+| `adult.requests.submit` | Submit adult content requests | No |
+| `adult.requests.view.own` | View own adult requests | No |
+| `adult.requests.vote` | Vote on adult requests | No |
+| `adult.requests.approve` | Approve adult requests | No |
+| `adult.requests.decline` | Decline adult requests | No |
+| `adult.requests.rules.manage` | Manage adult request rules | Yes |
+| `adult.requests.polls.create` | Create adult content polls | No |
+| `adult.requests.polls.manage` | Manage adult polls | Yes |
 
 ### Adult Permissions
 
@@ -297,6 +333,102 @@ The migration `000018_dynamic_rbac.up.sql`:
 ```go
 github.com/casbin/casbin/v2           // Casbin core
 github.com/pckhoi/casbin-pgx-adapter/v3  // PostgreSQL adapter (pgx native)
+```
+
+## Metadata Auditing
+
+All metadata edits by users with `content.metadata.write` permission are logged to the `activity_log` table for accountability and rollback capability.
+
+### Audit Log Schema
+
+```sql
+-- activity_log table stores all audited actions
+CREATE TABLE activity_log (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID NOT NULL REFERENCES users(id),
+    action          VARCHAR(50) NOT NULL,      -- 'metadata.edit', 'metadata.lock', 'image.upload'
+    module          VARCHAR(50) NOT NULL,      -- 'movie', 'tvshow', 'music', etc.
+    entity_id       UUID NOT NULL,             -- ID of the edited item
+    entity_type     VARCHAR(50) NOT NULL,      -- 'movie', 'series', 'episode', 'album', etc.
+    changes         JSONB NOT NULL,            -- {"field": {"old": "...", "new": "..."}}
+    ip_address      INET,
+    user_agent      TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_activity_log_entity ON activity_log(module, entity_type, entity_id);
+CREATE INDEX idx_activity_log_user ON activity_log(user_id, created_at DESC);
+CREATE INDEX idx_activity_log_action ON activity_log(action, created_at DESC);
+```
+
+### Audited Actions
+
+| Action | Description |
+|--------|-------------|
+| `metadata.edit` | Field values changed (title, overview, year, etc.) |
+| `metadata.lock` | Metadata locked from automatic provider updates |
+| `metadata.unlock` | Metadata unlocked, allows auto-updates again |
+| `metadata.refresh` | Manual metadata refresh triggered |
+| `image.upload` | Custom image uploaded |
+| `image.select` | Different image selected from provider |
+| `image.delete` | Image removed |
+
+### Metadata Locking
+
+Editors can lock specific items from automatic metadata updates:
+
+```go
+// Lock metadata - prevents automatic updates
+err := metadataService.LockMetadata(ctx, rbac.LockMetadataParams{
+    EntityType: "movie",
+    EntityID:   movieID,
+    LockedBy:   userID,
+    Reason:     "Manual corrections applied",
+})
+
+// Locked metadata is skipped during scheduled refreshes
+func (s *MetadataService) RefreshMetadata(ctx context.Context, entityType string, entityID uuid.UUID) error {
+    if s.IsLocked(ctx, entityType, entityID) {
+        slog.Debug("skipping locked metadata", "type", entityType, "id", entityID)
+        return nil
+    }
+    // ... fetch from provider
+}
+```
+
+### Viewing Edit History
+
+Users with `content.metadata.audit` permission can view edit history:
+
+```go
+// Get edit history for an item
+history, err := activityService.GetEntityHistory(ctx, rbac.EntityHistoryParams{
+    Module:     "movie",
+    EntityType: "movie",
+    EntityID:   movieID,
+    Limit:      50,
+})
+
+// Returns list of changes with diffs
+for _, entry := range history {
+    fmt.Printf("%s by %s at %s\n", entry.Action, entry.UserName, entry.CreatedAt)
+    for field, change := range entry.Changes {
+        fmt.Printf("  %s: %q → %q\n", field, change.Old, change.New)
+    }
+}
+```
+
+### Rollback Support
+
+Admins can revert to previous values using the audit log:
+
+```go
+// Revert a specific change
+err := metadataService.RevertChange(ctx, rbac.RevertChangeParams{
+    ActivityLogID: logEntryID,
+    RevertedBy:    adminUserID,
+    Reason:        "Incorrect edit by user",
+})
 ```
 
 ## Related Documents

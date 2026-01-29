@@ -412,7 +412,7 @@ Multiple profiles per account with separate preferences.
 
 | Feature | Description |
 |---------|-------------|
-| Avatar | Custom or preset avatars |
+| Avatar | Custom upload, Gravatar, or generated |
 | Name | Display name |
 | Language | UI and content language |
 | Maturity | Content rating filter |
@@ -420,12 +420,59 @@ Multiple profiles per account with separate preferences.
 | History | Separate watch history |
 | Recommendations | Personalized per profile |
 
+#### Avatar Sources
+
+Avatars use a cascading fallback system:
+
+| Priority | Source | Description |
+|----------|--------|-------------|
+| 1 | Custom Upload | User-uploaded image stored in `/media/avatars/{user_id}.{ext}` |
+| 2 | Gravatar | Email hash lookup: `https://gravatar.com/avatar/{md5(email)}?d=404` |
+| 3 | DiceBear | Generated avatar: `https://api.dicebear.com/7.x/bottts/svg?seed={username}` |
+
+**DiceBear Styles** (configurable per server):
+- `bottts` - Robot avatars (default)
+- `avataaars` - Cartoon people
+- `identicon` - Geometric patterns
+- `pixel-art` - Retro pixel art
+- `shapes` - Abstract shapes
+
+**Implementation:**
+```go
+func (u *User) AvatarURL() string {
+    // 1. Custom upload
+    if u.AvatarPath != "" {
+        return fmt.Sprintf("/media/avatars/%s", u.AvatarPath)
+    }
+    // 2. Gravatar (if email exists and Gravatar returns 200)
+    if u.Email != "" {
+        hash := md5.Sum([]byte(strings.ToLower(strings.TrimSpace(u.Email))))
+        return fmt.Sprintf("https://gravatar.com/avatar/%x?d=404", hash)
+    }
+    // 3. DiceBear fallback
+    return fmt.Sprintf("https://api.dicebear.com/7.x/bottts/svg?seed=%s", u.Username)
+}
+```
+
+**Frontend Handling:**
+```typescript
+function getAvatarUrl(user: User): string {
+  // Try custom avatar first
+  if (user.avatar_path) return `/media/avatars/${user.avatar_path}`;
+  // Then Gravatar with DiceBear fallback in URL
+  const emailHash = md5(user.email?.toLowerCase().trim() || '');
+  const dicebear = encodeURIComponent(`https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`);
+  return `https://gravatar.com/avatar/${emailHash}?d=${dicebear}`;
+}
+```
+
 ```sql
 CREATE TABLE profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id),
     name VARCHAR(100) NOT NULL,
-    avatar_url VARCHAR(1024),
+    avatar_path VARCHAR(255),        -- Custom upload path (NULL = use fallback)
+    avatar_url VARCHAR(1024),        -- Computed/cached avatar URL
     is_kids BOOLEAN DEFAULT false,
     max_maturity_rating VARCHAR(20),  -- G, PG, PG-13, R, NC-17
     language VARCHAR(10) DEFAULT 'en',

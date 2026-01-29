@@ -13,7 +13,7 @@
 ```
 Foundation (Week 1-2)     ████████████████████████ 100%
 Movie Module              ████████████████████████ 100%
-TV Shows Module           ██████████████████░░░░░░  75% (missing: module.go, jobs)
+TV Shows Module           ██████████████████████░░  90% (missing: API handlers)
 Design Docs               ████████████████████████ 100%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -32,8 +32,9 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] Entity definitions
 - [x] Repository (PostgreSQL implementation)
 - [x] Service layer
-- [ ] **module.go** - FX dependency injection registration
-- [ ] **jobs.go** - River workers (metadata enrichment, image download)
+- [x] **module.go** - FX dependency injection registration
+- [x] **jobs.go** - River workers (metadata enrichment)
+- [x] **metadata_provider.go** - Provider interface + adapters
 - [ ] API handlers
 
 ### Next: Music Module
@@ -86,7 +87,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 | Module | Status | People Table | Servarr |
 |--------|--------|--------------|---------|
 | Movies | Done | `video_people` (shared) | Radarr |
-| TV Shows | 75% | `video_people` (shared) | Sonarr |
+| TV Shows | 90% | `video_people` (shared) | Sonarr |
 | Music | Pending | `music_artists` | Lidarr |
 | Audiobooks | Pending | `book_authors` | Chaptarr |
 | Books | Pending | `book_authors` | Chaptarr |
@@ -127,6 +128,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 - [ ] Watch Next / Continue Watching (design done)
 - [ ] Release Calendar (design done)
+- [ ] Request System with Polls (design done)
 - [ ] i18n System
 - [ ] Analytics Service (Year in Review)
 - [ ] Profiles System (Netflix-style)
