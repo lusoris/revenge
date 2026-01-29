@@ -1,63 +1,14 @@
 -- TV Show Credits: Cast and crew relationships
+-- Uses shared video_people table from shared/000017_video_people
 BEGIN;
-
--- TV Show People: actors, directors, writers, etc.
-CREATE TABLE tvshow_people (
-    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name                VARCHAR(255) NOT NULL,
-    sort_name           VARCHAR(255),
-    original_name       VARCHAR(255),
-
-    -- Bio
-    biography           TEXT,
-    birthdate           DATE,
-    deathdate           DATE,
-    birthplace          VARCHAR(255),
-    gender              VARCHAR(20),
-
-    -- Images
-    primary_image_url   TEXT,
-    primary_image_blurhash VARCHAR(50),
-
-    -- External IDs
-    tmdb_id             INT,
-    imdb_id             VARCHAR(20),
-    tvdb_id             INT,
-
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_tvshow_people_name ON tvshow_people(name);
-CREATE INDEX idx_tvshow_people_tmdb ON tvshow_people(tmdb_id) WHERE tmdb_id IS NOT NULL;
-CREATE INDEX idx_tvshow_people_imdb ON tvshow_people(imdb_id) WHERE imdb_id IS NOT NULL;
-
-CREATE TRIGGER tvshow_people_updated_at
-    BEFORE UPDATE ON tvshow_people
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-
--- Credit role enum for TV
-CREATE TYPE tvshow_credit_role AS ENUM (
-    'actor',
-    'director',
-    'writer',
-    'creator',
-    'showrunner',
-    'producer',
-    'executive_producer',
-    'composer',
-    'cinematographer',
-    'editor',
-    'guest_star'
-);
 
 -- Series Credits: Regular cast and crew for the whole series
 CREATE TABLE series_credits (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     series_id           UUID NOT NULL REFERENCES series(id) ON DELETE CASCADE,
-    person_id           UUID NOT NULL REFERENCES tvshow_people(id) ON DELETE CASCADE,
+    person_id           UUID NOT NULL REFERENCES video_people(id) ON DELETE CASCADE,
 
-    role                tvshow_credit_role NOT NULL,
+    role                video_credit_role NOT NULL,
     character_name      VARCHAR(255),
     department          VARCHAR(100),
     job                 VARCHAR(100),
@@ -80,9 +31,9 @@ CREATE UNIQUE INDEX idx_series_credits_unique ON series_credits(series_id, perso
 CREATE TABLE episode_credits (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     episode_id          UUID NOT NULL REFERENCES episodes(id) ON DELETE CASCADE,
-    person_id           UUID NOT NULL REFERENCES tvshow_people(id) ON DELETE CASCADE,
+    person_id           UUID NOT NULL REFERENCES video_people(id) ON DELETE CASCADE,
 
-    role                tvshow_credit_role NOT NULL,
+    role                video_credit_role NOT NULL,
     character_name      VARCHAR(255),
     department          VARCHAR(100),
     job                 VARCHAR(100),

@@ -1,9 +1,8 @@
 -- TV Show Credits: Rollback
+-- Note: video_people and video_credit_role are managed by shared/000017_video_people
 BEGIN;
 
 DROP TABLE IF EXISTS episode_credits;
 DROP TABLE IF EXISTS series_credits;
-DROP TYPE IF EXISTS tvshow_credit_role;
-DROP TABLE IF EXISTS tvshow_people;
 
 COMMIT;

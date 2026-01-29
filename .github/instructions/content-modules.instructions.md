@@ -31,9 +31,18 @@ Naming:
 
 - `000001_{module}_core.up.sql` - Main content tables
 - `000001_{module}_core.down.sql` - Rollback
-- `000002_{module}_people.up.sql` - People/credits (if applicable)
+- `000002_{module}_credits.up.sql` - Credits/cast (references shared or module-specific people)
 - `000003_{module}_streams.up.sql` - Media streams
 - `000004_{module}_user_data.up.sql` - Ratings, favorites, history
+
+**People Tables Strategy:**
+- **Video modules (movie, tvshow):** Use shared `video_people` from `shared/000017_video_people.up.sql`
+  - Data overlaps 100% after background worker enrichment (TMDB, TVDB, IMDB)
+  - `movie_credits` and `series_credits` reference `video_people`
+- **Other modules (music, books, comics):** Module-specific people tables
+  - Different metadata schemas (discography vs bibliography vs comic credits)
+- **Adult module:** Completely isolated `c.performers` in schema `c`
+  - NSFW images, different metadata sources (StashDB, ThePornDB)
 
 ### Table Naming
 

@@ -46,11 +46,11 @@ func WithSession(ctx context.Context, session *db.Session) context.Context {
 
 // RBACMiddleware provides permission checking middleware.
 type RBACMiddleware struct {
-	rbacService *rbac.Service
+	rbacService *rbac.CasbinService
 }
 
 // NewRBACMiddleware creates a new RBAC middleware.
-func NewRBACMiddleware(rbacService *rbac.Service) *RBACMiddleware {
+func NewRBACMiddleware(rbacService *rbac.CasbinService) *RBACMiddleware {
 	return &RBACMiddleware{
 		rbacService: rbacService,
 	}
@@ -160,7 +160,7 @@ func (m *RBACMiddleware) RequireAdultAccess() func(http.Handler) http.Handler {
 
 // CheckPermission is a helper function to check permission without middleware.
 // Returns the user ID if authorized, or an error.
-func CheckPermission(ctx context.Context, rbacService *rbac.Service, permission string) (uuid.UUID, error) {
+func CheckPermission(ctx context.Context, rbacService *rbac.CasbinService, permission string) (uuid.UUID, error) {
 	user, ok := UserFromContext(ctx)
 	if !ok {
 		return uuid.Nil, errors.New("unauthorized")

@@ -42,9 +42,49 @@ Week 8+:   Extended (P3)         ░░░░░░░░░░░░░░░�
 
 ---
 
-## 🎯 Current Sprint (Week 1)
+## 🎯 Current Work
 
-### Day 1: Foundation Setup (TODAY)
+### In Progress
+- [ ] **TV Shows Module** - Migrations complete, need sqlc queries, entities, service
+- [ ] **Dynamic RBAC** - Current RBAC is static, needs Casbin integration (see RBAC section below)
+
+### Completed Today (2026-01-29)
+- [x] **Shared video_people** - Created `shared/000017_video_people.up.sql`, refactored movie/tvshow credits
+- [x] **Design Docs Updated** - Fixed ARCHITECTURE_V2.md and content-modules.instructions.md for shared video_people
+- [x] **Lint cleanup** - Fixed all 100+ lint errors with strict golangci-lint config
+
+### Pending Content Modules
+- [ ] TV Shows module - sqlc queries, entities, repository, service, jobs
+- [ ] Music module (isolated people: `music_artists`)
+- [ ] Books module (isolated people: `book_authors`)
+- [ ] Comics module (isolated people: `comic_creators`)
+
+---
+
+## 🔐 RBAC Enhancement (Dynamic Roles) ✅ DONE
+
+**Status**: Casbin-based dynamic RBAC implemented!
+
+**Completed**:
+- [x] Add `github.com/casbin/casbin/v2` dependency
+- [x] Add `github.com/pckhoi/casbin-pgx-adapter/v3` for PostgreSQL (native pgx)
+- [x] Create `roles` table for custom role management
+- [x] Create `permission_definitions` table for UI reference
+- [x] Add `role_id` FK to users table
+- [x] Implement `CasbinService` with full CRUD for roles
+- [x] Update RBAC middleware for Casbin
+- [x] Create documentation: `docs/dev/design/features/RBAC_CASBIN.md`
+- [x] Create instructions: `.github/instructions/rbac-casbin.instructions.md`
+
+**Pending** (Frontend):
+- [ ] Create admin UI for role management
+- [ ] Create API endpoints for role CRUD (OpenAPI spec)
+
+---
+
+## 🎯 Sprint History
+
+### Day 1: Foundation Setup
 
 #### Step 1: Immediate Fixes (2 hours) ⚡ PRIORITY
 - [x] **Module Registration** (15 min) ✅ DONE
@@ -534,10 +574,14 @@ Each module follows movie module pattern:
 - [ ] `runtime/trace.FlightRecorder` - Observability
 - [ ] `reflect.TypeAssert` - Zero-allocation type assertions
 
-## Experimental (Evaluate)
+## Experimental Features ✅ ENABLED
 
-- [ ] `GOEXPERIMENT=greenteagc` - New GC (10-40% reduction)
-- [ ] `GOEXPERIMENT=jsonv2` - Faster JSON
+Both experimental features enabled in `Dockerfile` and `Makefile`:
+
+- [x] `GOEXPERIMENT=greenteagc` - New GC (10-40% memory reduction)
+- [x] `GOEXPERIMENT=jsonv2` - Faster JSON encoding/decoding
+
+Build with experiments: `make build` (automatic) or `GOEXPERIMENT=greenteagc,jsonv2 go build`
 
 ---
 

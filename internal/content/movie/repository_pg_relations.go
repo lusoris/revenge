@@ -110,7 +110,7 @@ func (r *pgRepository) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]C
 		crew[i] = CrewMember{
 			PersonID:     row.PersonID,
 			Name:         row.Name,
-			Role:         row.Role,
+			Role:         string(row.Role),
 			BillingOrder: int(row.BillingOrder),
 		}
 		if row.Department != nil {
@@ -141,7 +141,7 @@ func (r *pgRepository) GetMovieDirectors(ctx context.Context, movieID uuid.UUID)
 		crew[i] = CrewMember{
 			PersonID:     row.PersonID,
 			Name:         row.Name,
-			Role:         row.Role,
+			Role:         string(row.Role),
 			BillingOrder: int(row.BillingOrder),
 		}
 		if row.PrimaryImageUrl != nil {
@@ -166,7 +166,7 @@ func (r *pgRepository) GetMovieWriters(ctx context.Context, movieID uuid.UUID) (
 		crew[i] = CrewMember{
 			PersonID:     row.PersonID,
 			Name:         row.Name,
-			Role:         row.Role,
+			Role:         string(row.Role),
 			BillingOrder: int(row.BillingOrder),
 		}
 		if row.PrimaryImageUrl != nil {

@@ -8,6 +8,11 @@ BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GIT_COMMIT}"
 
+# Go 1.25 experimental features:
+# - greenteagc: New garbage collector with 10-40% memory reduction
+# - jsonv2: Faster JSON encoding/decoding
+export GOEXPERIMENT=greenteagc,jsonv2
+
 # Database configuration (override with environment variables)
 DB_HOST?=localhost
 DB_PORT?=5432

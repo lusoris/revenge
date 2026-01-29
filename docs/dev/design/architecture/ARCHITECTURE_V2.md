@@ -671,8 +671,20 @@ Each content module typically has:
 - `{item}_genres` - Genre assignments (domain-scoped)
 - `{item}_tags` - User-defined tags
 
-### People/Credits (where applicable)
-- `{module}_people` - Cast and crew
+### People/Credits (domain-dependent)
+**Video modules (movie, tvshow):** Share `video_people` table in `shared/` migrations
+- Background workers enrich people data (TMDB, TVDB) and data overlaps 100% after enrichment
+- `movie_credits` and `series_credits` both reference `video_people`
+
+**Other modules:** Isolated people tables per module
+- `music_artists` - Music artists (different metadata: discography, genres, etc.)
+- `book_authors` - Book authors (different metadata: bibliography, awards, etc.)
+- `comic_creators` - Comic creators (writers, artists, colorists, etc.)
+
+**Adult module:** Completely isolated in schema `c`
+- `c.performers` - Separate performer data with NSFW images, different metadata sources
+
+### Studios (per module)
 - `{module}_studios` - Production studios
 
 ### Video-specific (movie, tvshow, adult)

@@ -109,7 +109,7 @@ const getMovieCast = `-- name: GetMovieCast :many
 
 SELECT mc.id, mc.movie_id, mc.person_id, mc.role, mc.character_name, mc.department, mc.job, mc.billing_order, mc.is_guest, mc.tmdb_credit_id, mc.created_at, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN movie_people p ON mc.person_id = p.id
+JOIN video_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role = 'actor'
 ORDER BY mc.billing_order ASC
 `
@@ -170,7 +170,7 @@ func (q *Queries) GetMovieCast(ctx context.Context, movieID uuid.UUID) ([]GetMov
 const getMovieCrew = `-- name: GetMovieCrew :many
 SELECT mc.id, mc.movie_id, mc.person_id, mc.role, mc.character_name, mc.department, mc.job, mc.billing_order, mc.is_guest, mc.tmdb_credit_id, mc.created_at, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN movie_people p ON mc.person_id = p.id
+JOIN video_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role != 'actor'
 ORDER BY
     CASE mc.role
@@ -237,7 +237,7 @@ func (q *Queries) GetMovieCrew(ctx context.Context, movieID uuid.UUID) ([]GetMov
 const getMovieDirectors = `-- name: GetMovieDirectors :many
 SELECT mc.id, mc.movie_id, mc.person_id, mc.role, mc.character_name, mc.department, mc.job, mc.billing_order, mc.is_guest, mc.tmdb_credit_id, mc.created_at, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN movie_people p ON mc.person_id = p.id
+JOIN video_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role = 'director'
 ORDER BY mc.billing_order ASC
 `
@@ -297,7 +297,7 @@ func (q *Queries) GetMovieDirectors(ctx context.Context, movieID uuid.UUID) ([]G
 const getMovieWriters = `-- name: GetMovieWriters :many
 SELECT mc.id, mc.movie_id, mc.person_id, mc.role, mc.character_name, mc.department, mc.job, mc.billing_order, mc.is_guest, mc.tmdb_credit_id, mc.created_at, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN movie_people p ON mc.person_id = p.id
+JOIN video_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role = 'writer'
 ORDER BY mc.billing_order ASC
 `

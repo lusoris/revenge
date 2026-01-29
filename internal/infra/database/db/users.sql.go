@@ -40,7 +40,7 @@ INSERT INTO users (
     preferred_language, preferred_rating_system
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9
-) RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role
+) RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id
 `
 
 type CreateUserParams struct {
@@ -83,6 +83,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Role,
+		&i.RoleID,
 	)
 	return i, err
 }
@@ -97,7 +98,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role FROM users WHERE email = $1
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email *string) (User, error) {
@@ -118,12 +119,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email *string) (User, erro
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Role,
+		&i.RoleID,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role FROM users WHERE id = $1
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
@@ -144,12 +146,13 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Role,
+		&i.RoleID,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role FROM users WHERE username = $1
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id FROM users WHERE username = $1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -170,12 +173,13 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Role,
+		&i.RoleID,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role FROM users
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id FROM users
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
@@ -209,6 +213,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Role,
+			&i.RoleID,
 		); err != nil {
 			return nil, err
 		}
@@ -221,7 +226,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 }
 
 const listUsersByRole = `-- name: ListUsersByRole :many
-SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role FROM users
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id FROM users
 WHERE role = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
@@ -257,6 +262,7 @@ func (q *Queries) ListUsersByRole(ctx context.Context, arg ListUsersByRoleParams
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Role,
+			&i.RoleID,
 		); err != nil {
 			return nil, err
 		}
@@ -281,7 +287,7 @@ UPDATE users SET
     preferred_language = COALESCE($9, preferred_language),
     preferred_rating_system = COALESCE($10, preferred_rating_system)
 WHERE id = $11
-RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role
+RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id
 `
 
 type UpdateUserParams struct {
@@ -328,6 +334,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Role,
+		&i.RoleID,
 	)
 	return i, err
 }
@@ -342,7 +349,7 @@ func (q *Queries) UpdateUserLastLogin(ctx context.Context, id uuid.UUID) error {
 }
 
 const updateUserRole = `-- name: UpdateUserRole :one
-UPDATE users SET role = $1 WHERE id = $2 RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role
+UPDATE users SET role = $1 WHERE id = $2 RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at, role, role_id
 `
 
 type UpdateUserRoleParams struct {
@@ -368,6 +375,7 @@ func (q *Queries) UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) 
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Role,
+		&i.RoleID,
 	)
 	return i, err
 }

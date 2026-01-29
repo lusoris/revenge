@@ -19,6 +19,11 @@ ARG VERSION=dev
 ARG BUILD_TIME
 ARG GIT_COMMIT
 
+# Enable Go 1.25 experimental features:
+# - greenteagc: New garbage collector with 10-40% memory reduction
+# - jsonv2: Faster JSON encoding/decoding
+ENV GOEXPERIMENT=greenteagc,jsonv2
+
 RUN CGO_ENABLED=1 GOOS=linux go build \
     -ldflags "-X main.Version=${VERSION} -X main.BuildTime=${BUILD_TIME} -X main.GitCommit=${GIT_COMMIT} -w -s" \
     -a -installsuffix cgo \

@@ -116,6 +116,52 @@ func (ns NullActivityType) Value() (driver.Value, error) {
 	return string(ns.ActivityType), nil
 }
 
+type CollectionType string
+
+const (
+	CollectionTypeVideo     CollectionType = "video"
+	CollectionTypeAudio     CollectionType = "audio"
+	CollectionTypeMixed     CollectionType = "mixed"
+	CollectionTypeFranchise CollectionType = "franchise"
+	CollectionTypeBoxSet    CollectionType = "box_set"
+	CollectionTypeSmart     CollectionType = "smart"
+)
+
+func (e *CollectionType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = CollectionType(s)
+	case string:
+		*e = CollectionType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for CollectionType: %T", src)
+	}
+	return nil
+}
+
+type NullCollectionType struct {
+	CollectionType CollectionType `json:"collectionType"`
+	Valid          bool           `json:"valid"` // Valid is true if CollectionType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullCollectionType) Scan(value interface{}) error {
+	if value == nil {
+		ns.CollectionType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.CollectionType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullCollectionType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.CollectionType), nil
+}
+
 type LibraryType string
 
 const (
@@ -165,60 +211,6 @@ func (ns NullLibraryType) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return string(ns.LibraryType), nil
-}
-
-type MovieCreditRole string
-
-const (
-	MovieCreditRoleActor              MovieCreditRole = "actor"
-	MovieCreditRoleDirector           MovieCreditRole = "director"
-	MovieCreditRoleWriter             MovieCreditRole = "writer"
-	MovieCreditRoleProducer           MovieCreditRole = "producer"
-	MovieCreditRoleExecutiveProducer  MovieCreditRole = "executive_producer"
-	MovieCreditRoleComposer           MovieCreditRole = "composer"
-	MovieCreditRoleCinematographer    MovieCreditRole = "cinematographer"
-	MovieCreditRoleEditor             MovieCreditRole = "editor"
-	MovieCreditRoleProductionDesigner MovieCreditRole = "production_designer"
-	MovieCreditRoleCostumeDesigner    MovieCreditRole = "costume_designer"
-	MovieCreditRoleMakeupArtist       MovieCreditRole = "makeup_artist"
-	MovieCreditRoleVisualEffects      MovieCreditRole = "visual_effects"
-	MovieCreditRoleStuntCoordinator   MovieCreditRole = "stunt_coordinator"
-	MovieCreditRoleSoundDesigner      MovieCreditRole = "sound_designer"
-)
-
-func (e *MovieCreditRole) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = MovieCreditRole(s)
-	case string:
-		*e = MovieCreditRole(s)
-	default:
-		return fmt.Errorf("unsupported scan type for MovieCreditRole: %T", src)
-	}
-	return nil
-}
-
-type NullMovieCreditRole struct {
-	MovieCreditRole MovieCreditRole `json:"movieCreditRole"`
-	Valid           bool            `json:"valid"` // Valid is true if MovieCreditRole is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullMovieCreditRole) Scan(value interface{}) error {
-	if value == nil {
-		ns.MovieCreditRole, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.MovieCreditRole.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullMovieCreditRole) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.MovieCreditRole), nil
 }
 
 type MovieImageType string
@@ -405,6 +397,92 @@ func (ns NullPermissionCategory) Value() (driver.Value, error) {
 	return string(ns.PermissionCategory), nil
 }
 
+type PlaylistType string
+
+const (
+	PlaylistTypeVideo PlaylistType = "video"
+	PlaylistTypeAudio PlaylistType = "audio"
+	PlaylistTypeMixed PlaylistType = "mixed"
+)
+
+func (e *PlaylistType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = PlaylistType(s)
+	case string:
+		*e = PlaylistType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for PlaylistType: %T", src)
+	}
+	return nil
+}
+
+type NullPlaylistType struct {
+	PlaylistType PlaylistType `json:"playlistType"`
+	Valid        bool         `json:"valid"` // Valid is true if PlaylistType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullPlaylistType) Scan(value interface{}) error {
+	if value == nil {
+		ns.PlaylistType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.PlaylistType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullPlaylistType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.PlaylistType), nil
+}
+
+type PlaylistVisibility string
+
+const (
+	PlaylistVisibilityPrivate PlaylistVisibility = "private"
+	PlaylistVisibilityShared  PlaylistVisibility = "shared"
+	PlaylistVisibilityPublic  PlaylistVisibility = "public"
+)
+
+func (e *PlaylistVisibility) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = PlaylistVisibility(s)
+	case string:
+		*e = PlaylistVisibility(s)
+	default:
+		return fmt.Errorf("unsupported scan type for PlaylistVisibility: %T", src)
+	}
+	return nil
+}
+
+type NullPlaylistVisibility struct {
+	PlaylistVisibility PlaylistVisibility `json:"playlistVisibility"`
+	Valid              bool               `json:"valid"` // Valid is true if PlaylistVisibility is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullPlaylistVisibility) Scan(value interface{}) error {
+	if value == nil {
+		ns.PlaylistVisibility, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.PlaylistVisibility.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullPlaylistVisibility) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.PlaylistVisibility), nil
+}
+
 type RatingSystem string
 
 const (
@@ -495,6 +573,63 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 	return string(ns.UserRole), nil
 }
 
+type VideoCreditRole string
+
+const (
+	VideoCreditRoleActor              VideoCreditRole = "actor"
+	VideoCreditRoleDirector           VideoCreditRole = "director"
+	VideoCreditRoleWriter             VideoCreditRole = "writer"
+	VideoCreditRoleCreator            VideoCreditRole = "creator"
+	VideoCreditRoleShowrunner         VideoCreditRole = "showrunner"
+	VideoCreditRoleProducer           VideoCreditRole = "producer"
+	VideoCreditRoleExecutiveProducer  VideoCreditRole = "executive_producer"
+	VideoCreditRoleComposer           VideoCreditRole = "composer"
+	VideoCreditRoleCinematographer    VideoCreditRole = "cinematographer"
+	VideoCreditRoleEditor             VideoCreditRole = "editor"
+	VideoCreditRoleProductionDesigner VideoCreditRole = "production_designer"
+	VideoCreditRoleCostumeDesigner    VideoCreditRole = "costume_designer"
+	VideoCreditRoleMakeupArtist       VideoCreditRole = "makeup_artist"
+	VideoCreditRoleVisualEffects      VideoCreditRole = "visual_effects"
+	VideoCreditRoleStuntCoordinator   VideoCreditRole = "stunt_coordinator"
+	VideoCreditRoleSoundDesigner      VideoCreditRole = "sound_designer"
+	VideoCreditRoleGuestStar          VideoCreditRole = "guest_star"
+)
+
+func (e *VideoCreditRole) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = VideoCreditRole(s)
+	case string:
+		*e = VideoCreditRole(s)
+	default:
+		return fmt.Errorf("unsupported scan type for VideoCreditRole: %T", src)
+	}
+	return nil
+}
+
+type NullVideoCreditRole struct {
+	VideoCreditRole VideoCreditRole `json:"videoCreditRole"`
+	Valid           bool            `json:"valid"` // Valid is true if VideoCreditRole is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullVideoCreditRole) Scan(value interface{}) error {
+	if value == nil {
+		ns.VideoCreditRole, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.VideoCreditRole.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullVideoCreditRole) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.VideoCreditRole), nil
+}
+
 type ActivityLog struct {
 	ID        uuid.UUID   `json:"id"`
 	UserID    pgtype.UUID `json:"userId"`
@@ -518,6 +653,54 @@ type ApiKey struct {
 	UseCount   int64              `json:"useCount"`
 	ExpiresAt  pgtype.Timestamptz `json:"expiresAt"`
 	CreatedAt  time.Time          `json:"createdAt"`
+}
+
+type Collection struct {
+	ID               uuid.UUID      `json:"id"`
+	Name             string         `json:"name"`
+	Slug             *string        `json:"slug"`
+	Description      *string        `json:"description"`
+	CollectionType   CollectionType `json:"collectionType"`
+	PosterUrl        *string        `json:"posterUrl"`
+	BackdropUrl      *string        `json:"backdropUrl"`
+	LogoUrl          *string        `json:"logoUrl"`
+	ThemeColor       *string        `json:"themeColor"`
+	ItemCount        int32          `json:"itemCount"`
+	TotalDurationMs  int64          `json:"totalDurationMs"`
+	TmdbCollectionID *int32         `json:"tmdbCollectionId"`
+	TvdbID           *int32         `json:"tvdbId"`
+	ImdbID           *string        `json:"imdbId"`
+	SmartRules       []byte         `json:"smartRules"`
+	IsVisible        bool           `json:"isVisible"`
+	SortOrder        int32          `json:"sortOrder"`
+	CreatedBy        pgtype.UUID    `json:"createdBy"`
+	CreatedAt        time.Time      `json:"createdAt"`
+	UpdatedAt        time.Time      `json:"updatedAt"`
+}
+
+type CollectionItem struct {
+	ID                 uuid.UUID `json:"id"`
+	CollectionID       uuid.UUID `json:"collectionId"`
+	ContentType        string    `json:"contentType"`
+	ContentID          uuid.UUID `json:"contentId"`
+	Position           int32     `json:"position"`
+	ReleaseOrder       *int32    `json:"releaseOrder"`
+	ChronologicalOrder *int32    `json:"chronologicalOrder"`
+	CustomTitle        *string   `json:"customTitle"`
+	Notes              *string   `json:"notes"`
+	AddedAt            time.Time `json:"addedAt"`
+}
+
+type CollectionSubscription struct {
+	CollectionID   uuid.UUID `json:"collectionId"`
+	UserID         uuid.UUID `json:"userId"`
+	NotifyNewItems bool      `json:"notifyNewItems"`
+	SubscribedAt   time.Time `json:"subscribedAt"`
+}
+
+type CollectionTag struct {
+	CollectionID uuid.UUID `json:"collectionId"`
+	Tag          string    `json:"tag"`
 }
 
 type ContentRating struct {
@@ -684,25 +867,6 @@ type MovieImage struct {
 	CreatedAt   time.Time      `json:"createdAt"`
 }
 
-type MoviePerson struct {
-	ID                   uuid.UUID   `json:"id"`
-	Name                 string      `json:"name"`
-	SortName             *string     `json:"sortName"`
-	OriginalName         *string     `json:"originalName"`
-	Biography            *string     `json:"biography"`
-	Birthdate            pgtype.Date `json:"birthdate"`
-	Deathdate            pgtype.Date `json:"deathdate"`
-	Birthplace           *string     `json:"birthplace"`
-	Gender               *string     `json:"gender"`
-	PrimaryImageUrl      *string     `json:"primaryImageUrl"`
-	PrimaryImageBlurhash *string     `json:"primaryImageBlurhash"`
-	TmdbID               *int32      `json:"tmdbId"`
-	ImdbID               *string     `json:"imdbId"`
-	TvdbID               *int32      `json:"tvdbId"`
-	CreatedAt            time.Time   `json:"createdAt"`
-	UpdatedAt            time.Time   `json:"updatedAt"`
-}
-
 type MovieStudio struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
@@ -800,6 +964,56 @@ type Permission struct {
 	CreatedAt   time.Time `json:"createdAt"`
 }
 
+type PermissionDefinition struct {
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	DisplayName string    `json:"displayName"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	IsDangerous bool      `json:"isDangerous"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+type Playlist struct {
+	ID              uuid.UUID          `json:"id"`
+	UserID          uuid.UUID          `json:"userId"`
+	Name            string             `json:"name"`
+	Description     *string            `json:"description"`
+	PlaylistType    PlaylistType       `json:"playlistType"`
+	Visibility      PlaylistVisibility `json:"visibility"`
+	ThumbnailUrl    *string            `json:"thumbnailUrl"`
+	SortOrder       int32              `json:"sortOrder"`
+	ShuffleEnabled  bool               `json:"shuffleEnabled"`
+	RepeatMode      string             `json:"repeatMode"`
+	ItemCount       int32              `json:"itemCount"`
+	TotalDurationMs int64              `json:"totalDurationMs"`
+	CreatedAt       time.Time          `json:"createdAt"`
+	UpdatedAt       time.Time          `json:"updatedAt"`
+	LastPlayedAt    pgtype.Timestamptz `json:"lastPlayedAt"`
+}
+
+type PlaylistCollaborator struct {
+	PlaylistID uuid.UUID `json:"playlistId"`
+	UserID     uuid.UUID `json:"userId"`
+	CanEdit    bool      `json:"canEdit"`
+	AddedAt    time.Time `json:"addedAt"`
+}
+
+type PlaylistItem struct {
+	ID           uuid.UUID          `json:"id"`
+	PlaylistID   uuid.UUID          `json:"playlistId"`
+	ContentType  string             `json:"contentType"`
+	ContentID    uuid.UUID          `json:"contentId"`
+	Position     int32              `json:"position"`
+	StartTimeMs  *int64             `json:"startTimeMs"`
+	EndTimeMs    *int64             `json:"endTimeMs"`
+	Title        *string            `json:"title"`
+	DurationMs   *int64             `json:"durationMs"`
+	ThumbnailUrl *string            `json:"thumbnailUrl"`
+	AddedAt      time.Time          `json:"addedAt"`
+	LastPlayedAt pgtype.Timestamptz `json:"lastPlayedAt"`
+}
+
 type Profile struct {
 	ID                        uuid.UUID `json:"id"`
 	UserID                    uuid.UUID `json:"userId"`
@@ -816,6 +1030,21 @@ type Profile struct {
 	AutoplayPreviews          *bool     `json:"autoplayPreviews"`
 	CreatedAt                 time.Time `json:"createdAt"`
 	UpdatedAt                 time.Time `json:"updatedAt"`
+}
+
+type Role struct {
+	ID          uuid.UUID   `json:"id"`
+	Name        string      `json:"name"`
+	DisplayName string      `json:"displayName"`
+	Description *string     `json:"description"`
+	Color       *string     `json:"color"`
+	Icon        *string     `json:"icon"`
+	IsSystem    bool        `json:"isSystem"`
+	IsDefault   bool        `json:"isDefault"`
+	Priority    int32       `json:"priority"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
+	CreatedBy   pgtype.UUID `json:"createdBy"`
 }
 
 type RolePermission struct {
@@ -865,4 +1094,24 @@ type User struct {
 	CreatedAt             time.Time          `json:"createdAt"`
 	UpdatedAt             time.Time          `json:"updatedAt"`
 	Role                  string             `json:"role"`
+	RoleID                pgtype.UUID        `json:"roleId"`
+}
+
+type VideoPerson struct {
+	ID                   uuid.UUID   `json:"id"`
+	Name                 string      `json:"name"`
+	SortName             *string     `json:"sortName"`
+	OriginalName         *string     `json:"originalName"`
+	Biography            *string     `json:"biography"`
+	Birthdate            pgtype.Date `json:"birthdate"`
+	Deathdate            pgtype.Date `json:"deathdate"`
+	Birthplace           *string     `json:"birthplace"`
+	Gender               *string     `json:"gender"`
+	PrimaryImageUrl      *string     `json:"primaryImageUrl"`
+	PrimaryImageBlurhash *string     `json:"primaryImageBlurhash"`
+	TmdbID               *int32      `json:"tmdbId"`
+	ImdbID               *string     `json:"imdbId"`
+	TvdbID               *int32      `json:"tvdbId"`
+	CreatedAt            time.Time   `json:"createdAt"`
+	UpdatedAt            time.Time   `json:"updatedAt"`
 }
