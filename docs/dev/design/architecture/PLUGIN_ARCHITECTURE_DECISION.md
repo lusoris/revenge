@@ -4,7 +4,7 @@
 
 ## Context
 
-User requirement: *"sollen wir überhaupt ein plugin system erstellen? oder das meiste lieber...selbst integrieren"* (Should we even create a plugin system? Or integrate most things ourselves?)
+User requirement: "Should we create a plugin system at all, or integrate most features natively?"
 
 This decision impacts:
 - Development velocity (build vs integrate)

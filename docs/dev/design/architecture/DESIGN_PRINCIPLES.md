@@ -1,12 +1,12 @@
 # Revenge - Design Principles
 
-> Unverhandelbare Architektur-Prinzipien für das gesamte Projekt.
+> Non-negotiable architecture principles for the entire project.
 
 ## Core Principles
 
 ### 1. Performance First
 
-**UX darf niemals blockiert werden.**
+**UX must never be blocked.**
 
 | Rule | Implementation |
 |------|----------------|
@@ -59,7 +59,7 @@ api:
 
 ### 3. Privacy by Default, Features by Choice
 
-**Minimales Tracking, maximale Kontrolle.**
+**Minimal tracking, maximum control.**
 
 | Data | Storage | Encryption | Purpose |
 |------|---------|------------|---------|
@@ -68,10 +68,10 @@ api:
 | User Preferences | Local DB | At-rest | Personalization |
 
 **Rules:**
-- Alle User-Daten verschlüsselt at-rest
-- Keine externe Telemetrie ohne explizites Opt-in
-- Keine Cloud-Calls ohne User-Consent
-- Export aller eigenen Daten jederzeit möglich (GDPR)
+- All user data encrypted at-rest
+- No external telemetry without explicit opt-in
+- No cloud calls without user consent
+- Export all personal data anytime (GDPR compliant)
 
 ```sql
 -- Encrypted user activity storage
@@ -90,7 +90,7 @@ CREATE TABLE user_activity (
 
 ### 4. Bleeding Edge, Stable Core
 
-**Neueste stabile Versionen, keine Experimente in Production.**
+**Latest stable versions, no experiments in production.**
 
 | Component | Version Policy | Current |
 |-----------|---------------|---------|
@@ -116,7 +116,7 @@ require (
 
 ### 5. Optional ML Integration
 
-**Self-hosted ML nur wenn explizit konfiguriert.**
+**Self-hosted ML only when explicitly configured.**
 
 | Feature | Without ML | With ML (Ollama/etc.) |
 |---------|------------|----------------------|
@@ -140,7 +140,7 @@ ml:
 
 ### 6. Resource-Aware Background Tasks
 
-**Heavy tasks nur bei verfügbaren Ressourcen.**
+**Heavy tasks only when resources are available.**
 
 | Task Priority | Condition | Examples |
 |---------------|-----------|----------|
@@ -178,7 +178,7 @@ func (s *Scheduler) ShouldRun(priority JobPriority) bool {
 
 ### 7. Profile-Based Multi-User
 
-**Ein Account, mehrere Profile (Netflix-Modell).**
+**One account, multiple profiles (Netflix model).**
 
 | Concept | Description |
 |---------|-------------|
@@ -226,7 +226,7 @@ CREATE TABLE watch_history (
 
 ### 8. WebUI Player Capabilities
 
-**Unsere WebUI muss vollständige Player-Features haben.**
+**Our WebUI must have complete player features.**
 
 | Feature | Implementation | Priority |
 |---------|----------------|----------|
