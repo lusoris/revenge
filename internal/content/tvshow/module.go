@@ -9,6 +9,8 @@ import (
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 
+	"github.com/lusoris/revenge/internal/content/shared"
+	tvshowdb "github.com/lusoris/revenge/internal/content/tvshow/db"
 	"github.com/lusoris/revenge/internal/service/metadata/tmdb"
 )
 
@@ -25,8 +27,10 @@ type ModuleParams struct {
 type ModuleResult struct {
 	fx.Out
 
-	Repository Repository
-	Service    *Service
+	Repository      Repository
+	Service         *Service
+	LibraryService  *LibraryService
+	LibraryProvider shared.LibraryProvider `group:"library_providers"`
 }
 
 // ProvideModule provides all tvshow module dependencies.
@@ -42,9 +46,15 @@ func ProvideModule(p ModuleParams) (ModuleResult, error) {
 		return ModuleResult{}, err
 	}
 
+	// Create library service
+	queries := tvshowdb.New(p.Pool)
+	libraryService := NewLibraryService(queries, p.Logger)
+
 	return ModuleResult{
-		Repository: repo,
-		Service:    service,
+		Repository:      repo,
+		Service:         service,
+		LibraryService:  libraryService,
+		LibraryProvider: libraryService,
 	}, nil
 }
 
