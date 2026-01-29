@@ -304,10 +304,154 @@ When content is restricted but `hide_restricted = false`:
 |----------|---------------|
 | TMDB | Certifications by country |
 | IMDB | Parents Guide (parsed) |
-| MusicBrainz | - (music has no ratings) |
+| MusicBrainz | - (music has separate system) |
 | Stash-Box | Adult (always 100) |
 | TPDB | Adult (always 100) |
-| OpenLibrary | - (books need manual) |
+| OpenLibrary | - (books have separate system) |
+
+---
+
+## Module-Specific Rating Systems
+
+**Important**: Audio, Books, and Comics modules have **separate** age restriction systems from video content (movies/tvshows). These content types use different industry rating systems.
+
+### Video Content (Movies & TV Shows)
+Uses the international film/TV rating systems described above (MPAA, FSK, BBFC, etc.)
+
+### Music (Audio Content)
+
+Music uses the **Parental Advisory** system and regional equivalents:
+
+| System | Region | Labels |
+|--------|--------|--------|
+| RIAA PAL | USA | Explicit, Clean |
+| BVMI | Germany | USK-controlled |
+| BPI | UK | Parental Advisory |
+
+```sql
+-- Music-specific ratings (separate table)
+CREATE TABLE music_ratings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(20) NOT NULL UNIQUE,  -- 'explicit', 'clean', 'none'
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    min_age INT,  -- 18 for explicit
+    sort_order INT NOT NULL
+);
+
+-- Per-track and per-album ratings
+CREATE TABLE music_content_ratings (
+    content_id UUID NOT NULL,
+    content_type VARCHAR(50) NOT NULL,  -- 'album', 'track'
+    rating_id UUID NOT NULL REFERENCES music_ratings(id),
+    source VARCHAR(100),  -- 'musicbrainz', 'spotify', 'manual'
+    PRIMARY KEY (content_id, content_type)
+);
+```
+
+### Books
+
+Books use **age range** recommendations and content warnings:
+
+| System | Region | Ratings |
+|--------|--------|---------|
+| Publisher Age Range | Universal | Children, YA, Adult, Mature |
+| Common Sense Media | USA | Age recommendations (0-18+) |
+| Book Trust | UK | Age bands |
+
+```sql
+-- Book-specific ratings (separate table)
+CREATE TABLE book_ratings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(20) NOT NULL UNIQUE,  -- 'children', 'ya', 'adult', 'mature'
+    name VARCHAR(100) NOT NULL,
+    age_range_min INT,  -- 0, 12, 16, 18
+    age_range_max INT,  -- 12, 16, 100, 100
+    sort_order INT NOT NULL
+);
+
+-- Book content warnings (separate from rating)
+CREATE TABLE book_content_warnings (
+    book_id UUID NOT NULL,
+    warning_type VARCHAR(50) NOT NULL,  -- 'violence', 'sexual', 'language', 'drugs'
+    severity VARCHAR(20) NOT NULL,      -- 'mild', 'moderate', 'graphic'
+    PRIMARY KEY (book_id, warning_type)
+);
+
+CREATE TABLE book_content_ratings (
+    book_id UUID NOT NULL,
+    rating_id UUID NOT NULL REFERENCES book_ratings(id),
+    source VARCHAR(100),  -- 'goodreads', 'manual'
+    PRIMARY KEY (book_id)
+);
+```
+
+### Comics
+
+Comics use **publisher rating systems** and regional equivalents:
+
+| System | Publisher/Region | Ratings |
+|--------|------------------|---------|
+| Marvel Comics | Marvel | All Ages, T, T+, Parental Advisory, MAX |
+| DC Comics | DC | E, E10+, T, T+, M |
+| CCA | Historical | Approved, Not Approved |
+| Manga | Japan | All Ages, Shōnen, Seinen, Josei |
+
+```sql
+-- Comic-specific ratings (separate table)
+CREATE TABLE comic_ratings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(20) NOT NULL UNIQUE,  -- 'all_ages', 'teen', 'teen_plus', 'mature', 'max'
+    name VARCHAR(100) NOT NULL,
+    publisher VARCHAR(50),  -- 'marvel', 'dc', 'manga', 'universal'
+    min_age INT,
+    sort_order INT NOT NULL
+);
+
+CREATE TABLE comic_content_ratings (
+    comic_id UUID NOT NULL,
+    rating_id UUID NOT NULL REFERENCES comic_ratings(id),
+    source VARCHAR(100),  -- 'comicvine', 'manual'
+    PRIMARY KEY (comic_id)
+);
+```
+
+### Per-Module Filtering
+
+Each module maintains its own filtering logic:
+
+```go
+// Video content uses shared normalized_level system
+type VideoRatingFilter struct {
+    maxNormalizedLevel int
+}
+
+// Music uses explicit/clean system
+type MusicRatingFilter struct {
+    allowExplicit bool
+}
+
+// Books use age-range system
+type BookRatingFilter struct {
+    userAge       int
+    allowMature   bool
+}
+
+// Comics use publisher rating system
+type ComicRatingFilter struct {
+    maxRatingCode string  // 'teen', 'teen_plus', 'mature'
+    allowAdult    bool
+}
+```
+
+### User Preferences
+
+```sql
+-- User settings per module (separate from video rating preferences)
+ALTER TABLE users ADD COLUMN music_allow_explicit BOOLEAN DEFAULT false;
+ALTER TABLE users ADD COLUMN book_max_age_rating VARCHAR(20) DEFAULT 'adult';
+ALTER TABLE users ADD COLUMN comic_max_rating VARCHAR(20) DEFAULT 'teen_plus';
+```
 
 ## See Also
 

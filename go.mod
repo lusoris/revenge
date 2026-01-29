@@ -17,7 +17,7 @@ require (
 	github.com/maypok86/otter v1.2.4
 	github.com/ogen-go/ogen v1.18.0
 	github.com/pckhoi/casbin-pgx-adapter/v3 v3.2.0
-	github.com/redis/go-redis/v9 v9.17.3
+	github.com/redis/rueidis v1.0.71
 	github.com/riverqueue/river v0.30.2
 	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.30.2
 	github.com/riverqueue/river/rivertype v0.30.2
@@ -36,7 +36,6 @@ require (
 	github.com/casbin/govaluate v1.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/dolthub/maphash v0.1.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect

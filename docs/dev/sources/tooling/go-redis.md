@@ -1,5 +1,14 @@
 # go-redis (DEPRECATED)
 
+> **DEPRECATED**: This package has been replaced by **rueidis** in Revenge.
+>
+> **Migration**: Use `github.com/redis/rueidis` instead of `github.com/redis/go-redis/v9`.
+> Rueidis provides 14x faster performance with auto-pipelining.
+>
+> See: [rueidis documentation](https://github.com/redis/rueidis) | [TECH_STACK.md](../../design/technical/TECH_STACK.md)
+
+---
+
 > Auto-fetched from [https://pkg.go.dev/github.com/redis/go-redis/v9](https://pkg.go.dev/github.com/redis/go-redis/v9)
 > Last Updated: 2026-01-28T21:43:29.828269+00:00
 

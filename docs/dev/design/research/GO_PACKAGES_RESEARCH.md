@@ -171,7 +171,7 @@ resp, err := client.R().
 | HTTP | **stdlib net/http** | Go 1.22+ routing patterns, ogen handlers |
 | Database | **pgx/v5 + sqlc** | Type-safe, no runtime overhead |
 | Job Queue | **River** | PostgreSQL-native, no extra service |
-| Search | **typesense-go/v3** | Fast, typo-tolerant |
+| Search | **typesense-go/v4** | Fast, typo-tolerant |
 | DI | **uber-go/fx** | Production-proven |
 | Config | **koanf/v2** | Hot reload, multiple sources |
 | API | **ogen** | OpenAPI spec-first code generation |

@@ -1,6 +1,6 @@
-# Readarr Integration
+# Chaptarr Integration
 
-> Book management automation
+> Book & audiobook management automation (uses Readarr API)
 
 **Status**: 🟡 PLANNED
 **Priority**: 🟡 MEDIUM (Phase 6 - Book Module)
@@ -10,7 +10,8 @@
 
 ## Overview
 
-Readarr is the industry-standard book management automation tool. Revenge integrates with Readarr to:
+Chaptarr is a book and audiobook management tool that uses the Readarr API.
+It replaces Readarr, which is currently inactive. Revenge integrates with Chaptarr to:
 - Receive webhook notifications when books are imported
 - Sync author and book metadata
 - Monitor Readarr download/import status
@@ -214,7 +215,7 @@ Audiobook available for listening
 ### Go Client Example
 
 ```go
-type ReadarrClient struct {
+type ChaptarrClient struct {
     baseURL string
     apiKey  string
     client  *http.Client

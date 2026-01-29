@@ -6,7 +6,7 @@
 **Type**: Metadata Provider (Audiobooks)
 **API Version**: NO official public API
 **Website**: https://www.audible.com
-**Alternative**: Web scraping OR Readarr metadata
+**Alternative**: Web scraping OR Chaptarr metadata
 
 ---
 
@@ -25,7 +25,7 @@
 **Current Status**:
 - ❌ **NO official public API**
 - ✅ **Web scraping** (fragile, not recommended)
-- ✅ **Readarr metadata** (uses Goodreads/custom sources)
+- ✅ **Chaptarr metadata** (uses Goodreads/custom sources)
 - ✅ **Unofficial API libraries** (community projects, no guarantees)
 
 **Use Cases**:
@@ -45,7 +45,7 @@
 - **Audnexus** (community API): https://github.com/laxamentumtech/audnexus
 
 **Alternatives**:
-1. **Readarr** (recommended): Use Readarr's metadata sources
+1. **Chaptarr** (recommended): Use Chaptarr's metadata sources
 2. **Web scraping** (fragile, not recommended)
 3. **Audnexus API** (community-driven, unofficial)
 
@@ -53,16 +53,16 @@
 
 ## Migration Strategy
 
-### Option 1: Readarr Metadata (Recommended)
-Use **Readarr** as audiobook manager, fetch metadata from Readarr.
+### Option 1: Chaptarr Metadata (Recommended)
+Use **Chaptarr** as audiobook manager, fetch metadata from Chaptarr.
 
 **Advantages**:
-- Readarr has audiobook support (uses Goodreads, custom sources)
+- Chaptarr has audiobook support (uses Goodreads, custom sources)
 - Webhook integration
 - Automated downloads
 - Quality management
 
-**See**: [../servarr/READARR.md](../servarr/READARR.md)
+**See**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
 
 ### Option 2: Audnexus API (Community Project)
 Use **Audnexus** API (unofficial community project).
@@ -148,10 +148,10 @@ GET /books/{ASIN}
 
 ## Implementation Checklist
 
-### Option 1: Readarr Integration (Recommended)
-- [ ] **Use Readarr for audiobook management** (see [../servarr/READARR.md](../servarr/READARR.md))
-- [ ] Fetch audiobook metadata from Readarr API
-- [ ] Webhook integration (Readarr → Revenge)
+### Option 1: Chaptarr Integration (Recommended)
+- [ ] **Use Chaptarr for audiobook management** (see [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md))
+- [ ] Fetch audiobook metadata from Chaptarr API
+- [ ] Webhook integration (Chaptarr → Revenge)
 - [ ] Store in `audiobooks` table
 
 ### Option 2: Audnexus API Client (Unofficial)
@@ -192,21 +192,21 @@ GET /books/{ASIN}
 
 ## Integration Pattern
 
-### Readarr Webhook → Audiobook Metadata Sync
+### Chaptarr Webhook → Audiobook Metadata Sync
 ```go
-// Webhook: Readarr added new audiobook
-func (s *AudiobookService) HandleReadarrAudiobookAdded(audiobookID string) error {
-    // 1. Get audiobook from Readarr
-    readarrAudiobook := s.readarrClient.GetBook(audiobookID)
+// Webhook: Chaptarr added new audiobook
+func (s *AudiobookService) HandleChaptarrAudiobookAdded(audiobookID string) error {
+    // 1. Get audiobook from Chaptarr
+    chaptarrAudiobook := s.chaptarrClient.GetBook(audiobookID)
 
     // 2. Check if audiobook (not ebook)
-    if !readarrAudiobook.IsAudiobook {
+    if !chaptarrAudiobook.IsAudiobook {
         return nil // Skip ebooks
     }
 
     // 3. Fetch additional metadata from Audnexus (optional)
     var narrator string
-    if asin := readarrAudiobook.ForeignBookId; asin != "" {
+    if asin := chaptarrAudiobook.ForeignBookId; asin != "" {
         audnexusBook := s.audnexusClient.GetBookByASIN(asin)
         if audnexusBook != nil {
             narrator = audnexusBook.Narrators[0].Name
@@ -215,12 +215,12 @@ func (s *AudiobookService) HandleReadarrAudiobookAdded(audiobookID string) error
 
     // 4. Store in Revenge database
     s.db.InsertAudiobook(map[string]interface{}{
-        "title":            readarrAudiobook.Title,
-        "author":           readarrAudiobook.Author.Name,
+        "title":            chaptarrAudiobook.Title,
+        "author":           chaptarrAudiobook.Author.Name,
         "narrator":         narrator,
-        "duration_minutes": readarrAudiobook.DurationMinutes,
-        "release_date":     readarrAudiobook.ReleaseDate,
-        "asin":             readarrAudiobook.ForeignBookId,
+        "duration_minutes": chaptarrAudiobook.DurationMinutes,
+        "release_date":     chaptarrAudiobook.ReleaseDate,
+        "asin":             chaptarrAudiobook.ForeignBookId,
     })
 
     return nil
@@ -232,7 +232,7 @@ func (s *AudiobookService) HandleReadarrAudiobookAdded(audiobookID string) error
 ## Related Documentation
 
 - **Audiobook Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Audiobook section)
-- **Readarr Integration**: [../servarr/READARR.md](../servarr/READARR.md) (recommended approach)
+- **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md) (recommended approach)
 - **Audiobookshelf Integration**: [../audiobook/AUDIOBOOKSHELF.md](../audiobook/AUDIOBOOKSHELF.md) (audiobook server)
 
 ---
@@ -242,14 +242,14 @@ func (s *AudiobookService) HandleReadarrAudiobookAdded(audiobookID string) error
 - **NO official API**: Audible does not provide public API
 - **Unofficial libraries**: audible-cli, Audnexus (community projects, no guarantees)
 - **Audnexus recommended**: Community-driven API aggregator (Audible + Goodreads + ASIN lookup)
-- **Readarr recommended**: Use Readarr for audiobook management (has built-in metadata sources)
+- **Chaptarr recommended**: Use Chaptarr for audiobook management (has built-in metadata sources)
 - **ASIN**: Audible Standard Identification Number (unique identifier, e.g., B002V1A0WE)
 - **Narrator information**: Critical for audiobooks (Audnexus provides, Readarr may not)
 - **Series information**: Harry Potter, Lord of the Rings, etc. (position in series)
 - **Duration**: Runtime in minutes (important for audiobooks)
 - **Cover art**: High-quality covers available (download from Audible CDN via Audnexus)
 - **Web scraping**: NOT recommended (fragile, legal gray area, CAPTCHA challenges)
-- **Fallback strategy**: Readarr primary, Audnexus fallback (narrator info)
+- **Fallback strategy**: Chaptarr primary, Audnexus fallback (narrator info)
 - **User privacy**: No user data collected (metadata only)
 - **Self-hosted option**: Audnexus can be self-hosted (Docker available)
 - **Public instance**: https://api.audnex.us/ (community-maintained, may have downtime)

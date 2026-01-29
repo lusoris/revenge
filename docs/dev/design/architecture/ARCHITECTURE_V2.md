@@ -44,7 +44,7 @@ go.uber.org/fx                       // Dependency injection
 github.com/redis/rueidis             // Dragonfly/Redis client (14x faster than go-redis)
 github.com/maypok86/otter            // W-TinyLFU local cache
 github.com/viccon/sturdyc            // API response caching with coalescing
-github.com/typesense/typesense-go/v3 // Search client
+github.com/typesense/typesense-go/v4 // Search client
 github.com/riverqueue/river          // Job queue
 
 // API

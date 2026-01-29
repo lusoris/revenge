@@ -2,7 +2,15 @@
 
 > Design documentation, research, and external sources
 
-**Last Updated**: 2026-01-28
+**Last Updated**: 2026-01-29
+
+---
+
+## Design Document Template
+
+All new design documents should follow the standard template for consistency:
+
+- **[DESIGN_DOC_TEMPLATE.md](design/DESIGN_DOC_TEMPLATE.md)** - Template and guidelines for writing design docs
 
 ---
 
@@ -32,8 +40,10 @@ Content modules and feature specifications.
 - [Library Types](design/features/LIBRARY_TYPES.md) - Library management
 - [Media Enhancements](design/features/MEDIA_ENHANCEMENTS.md) - Media-specific features
 - [NSFW Toggle](design/features/NSFW_TOGGLE.md) - Adult content visibility toggle
+- [Release Calendar](design/features/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
 - [Request System](design/features/REQUEST_SYSTEM.md) - Content request system
 - [Scrobbling](design/features/SCROBBLING.md) - Trakt/Last.fm/ListenBrainz
+- [Watch Next / Continue Watching](design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
 - [Ticketing System](design/features/TICKETING_SYSTEM.md) - Support tickets
 - [User Experience Features](design/features/USER_EXPERIENCE_FEATURES.md) - UX enhancements
 - [Whisparr/StashDB Schema](design/features/WHISPARR_STASHDB_SCHEMA.md) - Adult metadata schema
@@ -79,7 +89,7 @@ Analysis, user research, and technology evaluations.
 
 - [User Pain Points Research](design/research/USER_PAIN_POINTS_RESEARCH.md) - Jellyfin/Plex/Emby issues
 - [Go Packages Research](design/research/GO_PACKAGES_RESEARCH.md) - Awesome-Go analysis (500+ packages)
-- [Documentation Gap Analysis](design/research/DOCUMENTATION_GAP_ANALYSIS.md) - Documentation coverage audit
+- [Documentation Gap Analysis](../archive/reports/DOCUMENTATION_GAP_ANALYSIS.md) - Documentation coverage audit (archived)
 
 ### [Technical](design/technical/)
 API design, frontend architecture, and technical documentation.
@@ -90,11 +100,13 @@ API design, frontend architecture, and technical documentation.
 - [Audio Streaming](design/technical/AUDIO_STREAMING.md) - Audio streaming architecture
 - [Offloading](design/technical/OFFLOADING.md) - Task offloading patterns
 
-### Root Design Docs
-- [Documentation Analysis](design/DOCUMENTATION_ANALYSIS.md)
-- [External Integrations TODO](design/EXTERNAL_INTEGRATIONS_TODO.md) - 66 services (1103 lines)
-- [Preparation Master Plan](design/PREPARATION_MASTER_PLAN.md) - Pre-implementation checklist (2737 lines)
-- [Restructuring Plan](design/RESTRUCTURING_PLAN.md)
+### Archived Planning Docs
+Historical planning and analysis documents.
+
+- [Documentation Analysis](../archive/reports/DOCUMENTATION_ANALYSIS.md) - Historical analysis
+- [Preparation Master Plan](../archive/planning/PREPARATION_MASTER_PLAN.md) - Pre-implementation checklist
+- [Module Implementation TODO](../archive/planning/MODULE_IMPLEMENTATION_TODO.md) - Module rollout (archived)
+- [Restructuring Plan](../archive/planning/RESTRUCTURING_PLAN.md) - Codebase restructuring plan
 
 ---
 

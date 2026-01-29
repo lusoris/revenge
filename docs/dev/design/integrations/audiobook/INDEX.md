@@ -102,4 +102,4 @@ integrations:
 ## Related Documentation
 
 - [Book Metadata](../metadata/books/INDEX.md)
-- [Readarr Integration](../servarr/READARR.md)
+- [Chaptarr Integration](../servarr/CHAPTARR.md)

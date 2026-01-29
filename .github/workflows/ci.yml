@@ -51,6 +51,8 @@ jobs:
         run: go mod download
 
       - name: Run tests
+        env:
+          GOEXPERIMENT: greenteagc,jsonv2
         run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Upload coverage to Codecov
@@ -76,6 +78,8 @@ jobs:
           cache: true
 
       - name: Build binary
+        env:
+          GOEXPERIMENT: greenteagc,jsonv2
         run: |
           mkdir -p bin
           go build -v -o bin/revenge ./cmd/revenge

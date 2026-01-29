@@ -1,17 +1,18 @@
-# Whisparr Integration
+# Whisparr v3 Integration
 
-> Adult content management automation
+> Adult content management automation (eros branch)
 
 **Status**: 🟡 PLANNED
 **Priority**: 🟡 MEDIUM (Phase 7 - Adult Modules)
 **Type**: Webhook listener + API client for metadata sync
 **Schema Isolation**: PostgreSQL schema `c` (see [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md))
+**Branch**: `eros` (Whisparr v3)
 
 ---
 
 ## Overview
 
-Whisparr is the Sonarr-based adult content management automation tool (Radarr fork for adult scenes). Revenge integrates with Whisparr to:
+Whisparr v3 (eros branch) is the adult content management automation tool. Revenge integrates with Whisparr to:
 - Receive webhook notifications when adult scenes are imported
 - Sync performer, studio, and scene metadata
 - Monitor Whisparr download/import status
@@ -30,9 +31,10 @@ Whisparr is the Sonarr-based adult content management automation tool (Radarr fo
 ## Developer Resources
 
 - 📚 **API Docs**: https://whisparr.com/docs/api/ (similar to Radarr v3)
-- 🔗 **GitHub**: https://github.com/Whisparr/Whisparr
+- 🔗 **GitHub**: https://github.com/Whisparr/Whisparr (branch: `eros`)
 - 🔗 **Based on**: Radarr v3 codebase (API structure similar)
 - 🔗 **Metadata**: StashDB integration (performer/studio data)
+- ℹ️ **Note**: Use `eros` branch for v3 features
 
 ---
 

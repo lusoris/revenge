@@ -309,7 +309,7 @@ func (s *BookService) AddToHardcoverWantToRead(userID uuid.UUID, bookID uuid.UUI
 - **Book Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Book section)
 - **OpenLibrary Integration**: [OPENLIBRARY.md](OPENLIBRARY.md) (primary metadata)
 - **Goodreads Integration**: [GOODREADS.md](GOODREADS.md) (API retired)
-- **Readarr Integration**: [../servarr/READARR.md](../servarr/READARR.md)
+- **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
 
 ---
 

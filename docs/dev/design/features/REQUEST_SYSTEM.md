@@ -1026,7 +1026,7 @@ func (s *RequestService) ApprovePodcastRequest(ctx context.Context, requestID uu
 - [Sonarr Integration](../../integrations/servarr/SONARR.md)
 - [Lidarr Integration](../../integrations/servarr/LIDARR.md)
 - [Whisparr Integration](../../integrations/servarr/WHISPARR.md)
-- [Readarr Integration](../../integrations/servarr/READARR.md)
+- [Chaptarr Integration](../../integrations/servarr/CHAPTARR.md)
 - [Audiobookshelf Integration](../../integrations/audiobook/AUDIOBOOKSHELF.md)
 - [User Management](../../operations/USER_MANAGEMENT.md) - User roles & permissions
 - [Notifications](../../technical/NOTIFICATIONS.md) - Email/Discord/Telegram

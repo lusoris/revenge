@@ -281,7 +281,7 @@ func (s *BookService) HandleReadarrBookAdded(bookID string) error {
 
 - **Book Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Book section)
 - **Goodreads Integration**: [GOODREADS.md](GOODREADS.md) (API retired, use OpenLibrary)
-- **Readarr Integration**: [../servarr/READARR.md](../servarr/READARR.md)
+- **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
 - **Hardcover Integration**: [HARDCOVER.md](HARDCOVER.md) (social reading platform)
 
 ---

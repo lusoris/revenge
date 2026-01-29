@@ -50,9 +50,9 @@
 #### Cache & Search
 - **Dragonfly** (via rueidis) - Redis-compatible cache
   - **rueidis** v1.0.71 (14x faster than go-redis, auto-pipelining)
-  - **otter** v2.3.0 (local W-TinyLFU cache, 50% less memory than ristretto)
+  - **otter** v1.2.4 (local W-TinyLFU cache, 50% less memory than ristretto)
   - **sturdyc** v1.1.5 (90% API call reduction via request coalescing)
-- **Typesense** (via typesense-go/v3) - Search engine
+- **Typesense** (via typesense-go/v4) - Search engine
   - Lightning-fast typo-tolerant search
   - Faceted filtering
   - Lower latency than Elasticsearch
@@ -125,7 +125,7 @@
 | Cache (Dragonfly) | rueidis | `redis/rueidis` |
 | Cache (Local) | otter | `maypok86/otter` |
 | Cache (API) | sturdyc | `viccon/sturdyc` |
-| Search | Typesense | `typesense-go/v3` |
+| Search | Typesense | `typesense-go/v4` |
 | Job Queue | River | `riverqueue/river` |
 | API Docs | ogen | `ogen-go/ogen` |
 | DI | fx | `uber-go/fx` |

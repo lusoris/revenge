@@ -45,16 +45,27 @@ Week 8+:   Extended (P3)         ░░░░░░░░░░░░░░░�
 ## 🎯 Current Work
 
 ### In Progress
-- [ ] **TV Shows Module** - Migrations complete, need sqlc queries, entities, service
-- [ ] **Dynamic RBAC** - Current RBAC is static, needs Casbin integration (see RBAC section below)
+- [ ] **TV Shows Module** - sqlc queries ✅, entities & repository ✅, service & jobs pending
+  - **Docs**: [content-modules.instructions.md](.github/instructions/content-modules.instructions.md)
+  - **Design**: [ARCHITECTURE_V2.md](docs/dev/design/architecture/ARCHITECTURE_V2.md)
 
 ### Completed Today (2026-01-29)
+- [x] **Dynamic RBAC with Casbin** - Full implementation complete
+  - **Docs**: [RBAC_CASBIN.md](docs/dev/design/features/RBAC_CASBIN.md)
+  - **Instructions**: [rbac-casbin.instructions.md](.github/instructions/rbac-casbin.instructions.md)
+- [x] **TV Shows sqlc queries** - 7 query files, 100+ queries generated
+  - Files: `internal/infra/database/queries/tvshow/` (series, seasons, episodes, credits, genres, networks, images, user_data)
+  - Generated: `internal/content/tvshow/db/` (11 Go files)
+- [x] **TV Shows entities & repository** - Complete domain model and PostgreSQL repository
+  - Files: `internal/content/tvshow/` (entity.go, repository.go, repository_pg*.go)
 - [x] **Shared video_people** - Created `shared/000017_video_people.up.sql`, refactored movie/tvshow credits
 - [x] **Design Docs Updated** - Fixed ARCHITECTURE_V2.md and content-modules.instructions.md for shared video_people
 - [x] **Lint cleanup** - Fixed all 100+ lint errors with strict golangci-lint config
+- [x] **Go 1.25 Experimental Features** - greenteagc + jsonv2 enabled
 
 ### Pending Content Modules
-- [ ] TV Shows module - sqlc queries, entities, repository, service, jobs
+- [ ] TV Shows module - service, jobs
+  - **Instructions**: [content-modules.instructions.md](.github/instructions/content-modules.instructions.md)
 - [ ] Music module (isolated people: `music_artists`)
 - [ ] Books module (isolated people: `book_authors`)
 - [ ] Comics module (isolated people: `comic_creators`)
@@ -396,6 +407,8 @@ Each module follows movie module pattern:
 - [ ] **Radarr** - Movie management
 - [ ] **Sonarr** - TV show management
 - [ ] **Lidarr** - Music management
+- [ ] **Chaptarr** - Books & audiobooks (uses Readarr API)
+- [ ] **Whisparr v3 (eros)** - Adult content management (schema `c`)
 
 ### Scrobbling (P2)
 - [ ] **Trakt** - Movie/TV sync

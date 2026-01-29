@@ -21,8 +21,10 @@ The *arr stack provides automated media acquisition and organization:
 | [Radarr](RADARR.md) | Movies | 🟢 Supported |
 | [Sonarr](SONARR.md) | TV Shows | 🟢 Supported |
 | [Lidarr](LIDARR.md) | Music | 🟢 Supported |
-| [Readarr](READARR.md) | Books | 🟢 Supported |
-| [Whisparr](WHISPARR.md) | Adult | 🟢 Supported |
+| [Chaptarr](CHAPTARR.md) | Books & Audiobooks | 🟢 Supported |
+| [Whisparr v3](WHISPARR.md) | Adult (eros branch) | 🟢 Supported |
+
+> **Note**: Chaptarr uses the Readarr API but handles both books and audiobooks. Readarr itself is currently inactive.
 
 ---
 
@@ -52,15 +54,16 @@ The *arr stack provides automated media acquisition and organization:
 - ✅ Quality profiles
 - ✅ Import lists
 
-### Readarr
-**Book collection management**
+### Chaptarr
+**Book & audiobook collection management** (uses Readarr API)
 
 - ✅ Author tracking
 - ✅ Book management
 - ✅ Audiobook support
 - ✅ Calibre integration
+- ℹ️ Replaces Readarr (which is currently inactive)
 
-### Whisparr
+### Whisparr v3 (eros)
 **Adult content management**
 
 - ✅ Scene tracking (NOT series/episodes)
@@ -68,6 +71,7 @@ The *arr stack provides automated media acquisition and organization:
 - ✅ Studio management
 - ⚠️ Isolated in `c` schema
 - ⚠️ Custom UI/UX required (differs from TV structure)
+- ℹ️ Uses `eros` branch for v3 features
 
 ---
 
@@ -156,12 +160,12 @@ servarr:
     url: "http://lidarr:8686"
     api_key: "${LIDARR_API_KEY}"
 
-  readarr:
+  chaptarr:
     enabled: true
-    url: "http://readarr:8787"
-    api_key: "${READARR_API_KEY}"
+    url: "http://chaptarr:8787"
+    api_key: "${CHAPTARR_API_KEY}"
 
-  whisparr:
+  whisparr:  # v3 (eros branch)
     enabled: false  # Adult content disabled by default
     url: "http://whisparr:6969"
     api_key: "${WHISPARR_API_KEY}"

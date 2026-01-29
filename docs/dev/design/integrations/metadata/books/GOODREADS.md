@@ -169,7 +169,7 @@ func (s *BookService) FetchBookMetadata(isbn string) error {
 
 - **Book Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Book section)
 - **OpenLibrary Integration**: [OPENLIBRARY.md](OPENLIBRARY.md) (recommended alternative)
-- **Readarr Integration**: [../servarr/READARR.md](../servarr/READARR.md)
+- **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
 - **Hardcover Integration**: [HARDCOVER.md](HARDCOVER.md) (social reading platform)
 
 ---

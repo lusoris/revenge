@@ -812,7 +812,7 @@ paths:
 
 | Aspect | Decision |
 |--------|----------|
-| Primary Source | Arrs (Radarr, Sonarr, Lidarr, Readarr) |
+| Primary Source | Arrs (Radarr, Sonarr, Lidarr, Chaptarr) |
 | Fallback | TMDb, TVDB, MusicBrainz, etc. |
 | Translation Strategy | Show available immediately, fetch async |
 | Cache Layers | Memory (5min) → Dragonfly (1h) → PostgreSQL |
