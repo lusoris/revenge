@@ -1,4 +1,4 @@
-// Package user provides user management services for Revenge Go.
+// Package user provides user management services.
 package user
 
 import (
@@ -6,309 +6,267 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"strings"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 
-	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
-// Service implements user management operations.
+var (
+	// ErrUserNotFound indicates the user was not found.
+	ErrUserNotFound = errors.New("user not found")
+	// ErrUserExists indicates a user with that username/email already exists.
+	ErrUserExists = errors.New("user already exists")
+	// ErrInvalidCredentials indicates invalid login credentials.
+	ErrInvalidCredentials = errors.New("invalid credentials")
+	// ErrUserDisabled indicates the user account is disabled.
+	ErrUserDisabled = errors.New("user account is disabled")
+)
+
+// Service provides user management operations.
 type Service struct {
-	users     domain.UserRepository
-	sessions  domain.SessionRepository
-	passwords domain.PasswordService
+	queries    *db.Queries
+	logger     *slog.Logger
+	bcryptCost int
 }
 
-// newService creates a new user service.
-// Use NewService from module.go for fx integration.
-func newService(
-	users domain.UserRepository,
-	sessions domain.SessionRepository,
-	passwords domain.PasswordService,
-) *Service {
+// NewService creates a new user service.
+func NewService(queries *db.Queries, logger *slog.Logger) *Service {
 	return &Service{
-		users:     users,
-		sessions:  sessions,
-		passwords: passwords,
+		queries:    queries,
+		logger:     logger.With(slog.String("service", "user")),
+		bcryptCost: 12, // Default bcrypt cost
 	}
+}
+
+// CreateParams contains parameters for creating a user.
+type CreateParams struct {
+	Username          string
+	Email             *string
+	Password          string // Plain text password
+	IsAdmin           bool
+	MaxRatingLevel    int32
+	AdultEnabled      bool
+	PreferredLanguage *string
+}
+
+// Create creates a new user with a hashed password.
+func (s *Service) Create(ctx context.Context, params CreateParams) (*db.User, error) {
+	// Check if username exists
+	exists, err := s.queries.UserExistsByUsername(ctx, params.Username)
+	if err != nil {
+		return nil, fmt.Errorf("check username: %w", err)
+	}
+	if exists {
+		return nil, ErrUserExists
+	}
+
+	// Check if email exists (if provided)
+	if params.Email != nil {
+		exists, err = s.queries.UserExistsByEmail(ctx, params.Email)
+		if err != nil {
+			return nil, fmt.Errorf("check email: %w", err)
+		}
+		if exists {
+			return nil, ErrUserExists
+		}
+	}
+
+	// Hash password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(params.Password), s.bcryptCost)
+	if err != nil {
+		return nil, fmt.Errorf("hash password: %w", err)
+	}
+	passwordHash := string(hashedPassword)
+
+	// Create user
+	user, err := s.queries.CreateUser(ctx, db.CreateUserParams{
+		Username:          params.Username,
+		Email:             params.Email,
+		PasswordHash:      &passwordHash,
+		IsAdmin:           params.IsAdmin,
+		MaxRatingLevel:    params.MaxRatingLevel,
+		AdultEnabled:      params.AdultEnabled,
+		PreferredLanguage: params.PreferredLanguage,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create user: %w", err)
+	}
+
+	s.logger.Info("User created",
+		slog.String("user_id", user.ID.String()),
+		slog.String("username", user.Username),
+	)
+
+	return &user, nil
 }
 
 // GetByID retrieves a user by ID.
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*domain.User, error) {
-	user, err := s.users.GetByID(ctx, id)
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*db.User, error) {
+	user, err := s.queries.GetUserByID(ctx, id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get user: %w", err)
 	}
-	return user, nil
+	return &user, nil
 }
 
 // GetByUsername retrieves a user by username.
-func (s *Service) GetByUsername(ctx context.Context, username string) (*domain.User, error) {
-	user, err := s.users.GetByUsername(ctx, username)
+func (s *Service) GetByUsername(ctx context.Context, username string) (*db.User, error) {
+	user, err := s.queries.GetUserByUsername(ctx, username)
 	if err != nil {
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+	return &user, nil
+}
+
+// GetByEmail retrieves a user by email.
+func (s *Service) GetByEmail(ctx context.Context, email string) (*db.User, error) {
+	user, err := s.queries.GetUserByEmail(ctx, &email)
+	if err != nil {
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+	return &user, nil
+}
+
+// ValidatePassword checks if the provided password matches the user's password.
+func (s *Service) ValidatePassword(ctx context.Context, user *db.User, password string) error {
+	if user.PasswordHash == nil {
+		return ErrInvalidCredentials
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(password)); err != nil {
+		return ErrInvalidCredentials
+	}
+
+	return nil
+}
+
+// Authenticate validates credentials and returns the user if valid.
+func (s *Service) Authenticate(ctx context.Context, username, password string) (*db.User, error) {
+	user, err := s.queries.GetUserByUsername(ctx, username)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+
+	if user.IsDisabled {
+		return nil, ErrUserDisabled
+	}
+
+	if err := s.ValidatePassword(ctx, &user, password); err != nil {
 		return nil, err
 	}
-	return user, nil
-}
 
-// List retrieves users with pagination.
-func (s *Service) List(ctx context.Context, limit, offset int32) ([]*domain.User, error) {
-	if limit <= 0 {
-		limit = 50
-	}
-	if limit > 100 {
-		limit = 100
-	}
-	if offset < 0 {
-		offset = 0
-	}
+	// Update last login
+	_ = s.queries.UpdateUserLastLogin(ctx, user.ID)
 
-	users, err := s.users.List(ctx, limit, offset)
-	if err != nil {
-		return nil, fmt.Errorf("failed to list users: %w", err)
-	}
-	return users, nil
-}
-
-// CreateParams contains parameters for creating a new user.
-type CreateParams struct {
-	Username    string
-	Password    string // Will be hashed
-	Email       *string
-	DisplayName *string
-	IsAdmin     bool
-}
-
-// Create creates a new user.
-func (s *Service) Create(ctx context.Context, params CreateParams) (*domain.User, error) {
-	// Validate username
-	username := strings.TrimSpace(params.Username)
-	if username == "" {
-		return nil, errors.New("username is required")
-	}
-	if len(username) < 3 {
-		return nil, errors.New("username must be at least 3 characters")
-	}
-	if len(username) > 64 {
-		return nil, errors.New("username must be at most 64 characters")
-	}
-
-	// Check username uniqueness
-	exists, err := s.users.UsernameExists(ctx, username)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check username: %w", err)
-	}
-	if exists {
-		return nil, domain.ErrDuplicateUsername
-	}
-
-	// Check email uniqueness if provided
-	var email *string
-	if params.Email != nil && *params.Email != "" {
-		e := strings.TrimSpace(*params.Email)
-		email = &e
-
-		emailExists, err := s.users.EmailExists(ctx, e)
-		if err != nil {
-			return nil, fmt.Errorf("failed to check email: %w", err)
-		}
-		if emailExists {
-			return nil, domain.ErrDuplicateEmail
-		}
-	}
-
-	// Hash password if provided
-	var passwordHash *string
-	if params.Password != "" {
-		if len(params.Password) < 8 {
-			return nil, errors.New("password must be at least 8 characters")
-		}
-		hash, err := s.passwords.Hash(params.Password)
-		if err != nil {
-			return nil, fmt.Errorf("failed to hash password: %w", err)
-		}
-		passwordHash = &hash
-	}
-
-	// Create user
-	user, err := s.users.Create(ctx, domain.CreateUserParams{
-		Username:     username,
-		Email:        email,
-		PasswordHash: passwordHash,
-		DisplayName:  params.DisplayName,
-		IsAdmin:      params.IsAdmin,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create user: %w", err)
-	}
-
-	slog.Info("user created",
+	s.logger.Info("User authenticated",
 		slog.String("user_id", user.ID.String()),
-		slog.String("username", user.Username))
+		slog.String("username", user.Username),
+	)
 
-	return user, nil
+	return &user, nil
 }
 
 // UpdateParams contains parameters for updating a user.
 type UpdateParams struct {
-	ID          uuid.UUID
-	Username    *string
-	Email       *string
-	DisplayName *string
-	IsAdmin     *bool
-	IsDisabled  *bool
+	ID                    uuid.UUID
+	Username              *string
+	Email                 *string
+	IsAdmin               *bool
+	IsDisabled            *bool
+	MaxRatingLevel        *int32
+	AdultEnabled          *bool
+	PreferredLanguage     *string
+	PreferredRatingSystem *string
 }
 
-// Update updates an existing user.
-func (s *Service) Update(ctx context.Context, params UpdateParams) error {
-	// Get existing user
-	user, err := s.users.GetByID(ctx, params.ID)
+// Update updates a user's information.
+func (s *Service) Update(ctx context.Context, params UpdateParams) (*db.User, error) {
+	user, err := s.queries.UpdateUser(ctx, db.UpdateUserParams{
+		ID:                    params.ID,
+		Username:              params.Username,
+		Email:                 params.Email,
+		IsAdmin:               params.IsAdmin,
+		IsDisabled:            params.IsDisabled,
+		MaxRatingLevel:        params.MaxRatingLevel,
+		AdultEnabled:          params.AdultEnabled,
+		PreferredLanguage:     params.PreferredLanguage,
+		PreferredRatingSystem: params.PreferredRatingSystem,
+	})
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("update user: %w", err)
 	}
 
-	// Validate and check username uniqueness if changing
-	if params.Username != nil {
-		username := strings.TrimSpace(*params.Username)
-		if username == "" {
-			return errors.New("username cannot be empty")
-		}
-		if len(username) < 3 {
-			return errors.New("username must be at least 3 characters")
-		}
-		if username != user.Username {
-			exists, err := s.users.UsernameExists(ctx, username)
-			if err != nil {
-				return fmt.Errorf("failed to check username: %w", err)
-			}
-			if exists {
-				return domain.ErrDuplicateUsername
-			}
-		}
-		params.Username = &username
+	s.logger.Info("User updated",
+		slog.String("user_id", user.ID.String()),
+	)
+
+	return &user, nil
+}
+
+// UpdatePassword updates a user's password.
+func (s *Service) UpdatePassword(ctx context.Context, userID uuid.UUID, newPassword string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), s.bcryptCost)
+	if err != nil {
+		return fmt.Errorf("hash password: %w", err)
+	}
+	passwordHash := string(hashedPassword)
+
+	_, err = s.queries.UpdateUser(ctx, db.UpdateUserParams{
+		ID:           userID,
+		PasswordHash: &passwordHash,
+	})
+	if err != nil {
+		return fmt.Errorf("update password: %w", err)
 	}
 
-	// Check email uniqueness if changing
-	if params.Email != nil && *params.Email != "" {
-		email := strings.TrimSpace(*params.Email)
-		if user.Email == nil || email != *user.Email {
-			exists, err := s.users.EmailExists(ctx, email)
-			if err != nil {
-				return fmt.Errorf("failed to check email: %w", err)
-			}
-			if exists {
-				return domain.ErrDuplicateEmail
-			}
-		}
-		params.Email = &email
-	}
-
-	// Prevent removing last admin
-	if params.IsAdmin != nil && !*params.IsAdmin && user.IsAdmin {
-		count, err := s.users.CountAdmins(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to count admins: %w", err)
-		}
-		if count <= 1 {
-			return errors.New("cannot remove the last administrator")
-		}
-	}
-
-	// Update user
-	if err := s.users.Update(ctx, domain.UpdateUserParams{
-		ID:          params.ID,
-		Username:    params.Username,
-		Email:       params.Email,
-		DisplayName: params.DisplayName,
-		IsAdmin:     params.IsAdmin,
-		IsDisabled:  params.IsDisabled,
-	}); err != nil {
-		return fmt.Errorf("failed to update user: %w", err)
-	}
-
-	slog.Info("user updated",
-		slog.String("user_id", params.ID.String()))
-
-	// If user is being disabled, invalidate all their sessions
-	if params.IsDisabled != nil && *params.IsDisabled && !user.IsDisabled {
-		if err := s.sessions.DeleteByUser(ctx, params.ID); err != nil {
-			slog.Warn("failed to delete sessions for disabled user",
-				slog.String("user_id", params.ID.String()),
-				slog.Any("error", err))
-		}
-	}
+	s.logger.Info("User password updated",
+		slog.String("user_id", userID.String()),
+	)
 
 	return nil
 }
 
-// Delete removes a user and all their sessions.
+// Delete deletes a user.
 func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
-	// Get user to check if exists and if last admin
-	user, err := s.users.GetByID(ctx, id)
-	if err != nil {
-		return err
+	if err := s.queries.DeleteUser(ctx, id); err != nil {
+		return fmt.Errorf("delete user: %w", err)
 	}
 
-	// Prevent deleting last admin
-	if user.IsAdmin {
-		count, err := s.users.CountAdmins(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to count admins: %w", err)
-		}
-		if count <= 1 {
-			return errors.New("cannot delete the last administrator")
-		}
-	}
-
-	// Delete all sessions first
-	if err := s.sessions.DeleteByUser(ctx, id); err != nil {
-		slog.Warn("failed to delete user sessions",
-			slog.String("user_id", id.String()),
-			slog.Any("error", err))
-	}
-
-	// Delete user
-	if err := s.users.Delete(ctx, id); err != nil {
-		return fmt.Errorf("failed to delete user: %w", err)
-	}
-
-	slog.Info("user deleted",
+	s.logger.Info("User deleted",
 		slog.String("user_id", id.String()),
-		slog.String("username", user.Username))
+	)
 
 	return nil
+}
+
+// List returns a paginated list of users.
+func (s *Service) List(ctx context.Context, limit, offset int32) ([]db.User, error) {
+	users, err := s.queries.ListUsers(ctx, db.ListUsersParams{
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list users: %w", err)
+	}
+	return users, nil
 }
 
 // Count returns the total number of users.
 func (s *Service) Count(ctx context.Context) (int64, error) {
-	return s.users.Count(ctx)
-}
-
-// SetPassword sets a user's password.
-func (s *Service) SetPassword(ctx context.Context, userID uuid.UUID, password string) error {
-	if len(password) < 8 {
-		return errors.New("password must be at least 8 characters")
-	}
-
-	hash, err := s.passwords.Hash(password)
+	count, err := s.queries.CountUsers(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %w", err)
+		return 0, fmt.Errorf("count users: %w", err)
 	}
-
-	if err := s.users.SetPassword(ctx, userID, hash); err != nil {
-		return fmt.Errorf("failed to set password: %w", err)
-	}
-
-	// Invalidate all sessions
-	if err := s.sessions.DeleteByUser(ctx, userID); err != nil {
-		slog.Warn("failed to delete sessions after password set",
-			slog.String("user_id", userID.String()),
-			slog.Any("error", err))
-	}
-
-	return nil
+	return count, nil
 }
 
-// Ensure Service implements UserService if we had an interface.
-// For now, handlers will use the concrete type.
+// HasAnyUsers checks if there are any users in the system.
+func (s *Service) HasAnyUsers(ctx context.Context) (bool, error) {
+	count, err := s.Count(ctx)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}

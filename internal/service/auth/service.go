@@ -1,4 +1,4 @@
-// Package auth provides authentication services for Revenge Go.
+// Package auth provides authentication services.
 package auth
 
 import (
@@ -7,407 +7,228 @@ import (
 	"fmt"
 	"log/slog"
 	"net/netip"
-	"time"
 
 	"github.com/google/uuid"
 
-	"github.com/lusoris/revenge/internal/domain"
+	"github.com/lusoris/revenge/internal/infra/database/db"
+	"github.com/lusoris/revenge/internal/service/session"
+	"github.com/lusoris/revenge/internal/service/user"
 )
 
-// Service implements domain.AuthService.
+var (
+	// ErrSetupRequired indicates initial setup has not been completed.
+	ErrSetupRequired = errors.New("initial setup required")
+)
+
+// Service provides authentication operations.
 type Service struct {
-	users              domain.UserRepository
-	sessions           domain.SessionRepository
-	passwords          domain.PasswordService
-	tokens             domain.TokenService
-	maxSessionsPerUser int
-	accessDuration     time.Duration
-	refreshDuration    time.Duration
+	userService    *user.Service
+	sessionService *session.Service
+	logger         *slog.Logger
 }
 
-// newService creates a new authentication service.
-// Use NewService from module.go for fx integration.
-func newService(
-	users domain.UserRepository,
-	sessions domain.SessionRepository,
-	passwords domain.PasswordService,
-	tokens domain.TokenService,
-	maxSessionsPerUser int,
-	accessDuration time.Duration,
-	refreshDuration time.Duration,
+// NewService creates a new auth service.
+func NewService(
+	userService *user.Service,
+	sessionService *session.Service,
+	logger *slog.Logger,
 ) *Service {
-	if accessDuration <= 0 {
-		accessDuration = 15 * time.Minute
-	}
-	if refreshDuration <= 0 {
-		refreshDuration = 7 * 24 * time.Hour
-	}
-
 	return &Service{
-		users:              users,
-		sessions:           sessions,
-		passwords:          passwords,
-		tokens:             tokens,
-		maxSessionsPerUser: maxSessionsPerUser,
-		accessDuration:     accessDuration,
-		refreshDuration:    refreshDuration,
+		userService:    userService,
+		sessionService: sessionService,
+		logger:         logger.With(slog.String("service", "auth")),
 	}
 }
 
-// Login authenticates a user with username and password.
-func (s *Service) Login(ctx context.Context, params domain.LoginParams) (*domain.AuthResult, error) {
-	// Find user by username
-	user, err := s.users.GetByUsername(ctx, params.Username)
-	if err != nil {
-		if errors.Is(err, domain.ErrUserNotFound) {
-			slog.Warn("login attempt for non-existent user",
-				slog.String("username", params.Username))
-			return nil, domain.ErrInvalidCredentials
-		}
-		return nil, fmt.Errorf("failed to get user: %w", err)
-	}
+// LoginParams contains parameters for login.
+type LoginParams struct {
+	Username      string
+	Password      string
+	DeviceName    *string
+	DeviceType    *string
+	ClientName    *string
+	ClientVersion *string
+	IPAddress     netip.Addr
+	UserAgent     *string
+}
 
-	// Check if user is disabled
-	if user.IsDisabled {
-		slog.Warn("login attempt for disabled user",
-			slog.String("username", params.Username),
-			slog.String("user_id", user.ID.String()))
-		return nil, domain.ErrUserDisabled
-	}
+// LoginResult contains the result of a successful login.
+type LoginResult struct {
+	User    *db.User
+	Session *db.Session
+	Token   string // Raw token to return to client
+}
 
-	// Verify password
-	if user.PasswordHash == nil {
-		slog.Warn("login attempt for user without password (OIDC-only)",
-			slog.String("username", params.Username))
-		return nil, domain.ErrInvalidCredentials
-	}
-
-	if err := s.passwords.Verify(params.Password, *user.PasswordHash); err != nil {
-		slog.Warn("invalid password",
-			slog.String("username", params.Username),
-			slog.String("user_id", user.ID.String()))
-		return nil, domain.ErrInvalidCredentials
-	}
-
-	// Check max sessions limit
-	if s.maxSessionsPerUser > 0 {
-		count, err := s.sessions.CountByUser(ctx, user.ID)
-		if err != nil {
-			return nil, fmt.Errorf("failed to count sessions: %w", err)
-		}
-		if count >= int64(s.maxSessionsPerUser) {
-			// Delete oldest sessions to make room
-			sessions, err := s.sessions.ListByUser(ctx, user.ID)
-			if err != nil {
-				return nil, fmt.Errorf("failed to list sessions: %w", err)
-			}
-			// Sessions are ordered by created_at DESC, so delete from the end
-			for i := s.maxSessionsPerUser - 1; i < len(sessions); i++ {
-				if err := s.sessions.Delete(ctx, sessions[i].ID); err != nil {
-					slog.Warn("failed to delete old session",
-						slog.String("session_id", sessions[i].ID.String()),
-						slog.Any("error", err))
-				}
-			}
-		}
-	}
-
-	// Create session and tokens
-	result, err := s.createSession(ctx, user, params.DeviceID, params.DeviceName,
-		params.ClientName, params.ClientVersion, params.IPAddress)
+// Login authenticates a user and creates a session.
+func (s *Service) Login(ctx context.Context, params LoginParams) (*LoginResult, error) {
+	// Authenticate user
+	usr, err := s.userService.Authenticate(ctx, params.Username, params.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	// Update last login
-	if err := s.users.UpdateLastLogin(ctx, user.ID); err != nil {
-		slog.Warn("failed to update last login",
-			slog.String("user_id", user.ID.String()),
-			slog.Any("error", err))
-	}
-
-	slog.Info("user logged in",
-		slog.String("user_id", user.ID.String()),
-		slog.String("username", user.Username),
-		slog.String("session_id", result.SessionID.String()))
-
-	return result, nil
-}
-
-// Logout invalidates a session by its access token.
-func (s *Service) Logout(ctx context.Context, accessToken string) error {
-	tokenHash := s.tokens.HashToken(accessToken)
-
-	if err := s.sessions.DeleteByTokenHash(ctx, tokenHash); err != nil {
-		return fmt.Errorf("failed to delete session: %w", err)
-	}
-
-	slog.Info("session logged out")
-	return nil
-}
-
-// LogoutAll invalidates all sessions for a user.
-func (s *Service) LogoutAll(ctx context.Context, userID uuid.UUID) error {
-	if err := s.sessions.DeleteByUser(ctx, userID); err != nil {
-		return fmt.Errorf("failed to delete user sessions: %w", err)
-	}
-
-	slog.Info("all sessions logged out",
-		slog.String("user_id", userID.String()))
-	return nil
-}
-
-// RefreshToken exchanges a refresh token for new access/refresh tokens.
-func (s *Service) RefreshToken(ctx context.Context, params domain.RefreshParams) (*domain.AuthResult, error) {
-	refreshTokenHash := s.tokens.HashToken(params.RefreshToken)
-
-	// Find session by refresh token
-	session, err := s.sessions.GetByRefreshTokenHash(ctx, refreshTokenHash)
-	if err != nil {
-		if errors.Is(err, domain.ErrSessionNotFound) {
-			return nil, domain.ErrInvalidCredentials
-		}
-		return nil, fmt.Errorf("failed to get session: %w", err)
-	}
-
-	// Check refresh token expiry
-	if session.RefreshExpiresAt != nil && session.RefreshExpiresAt.Before(time.Now()) {
-		// Clean up expired session - error ignored as this is best-effort cleanup
-		_ = s.sessions.Delete(ctx, session.ID) //nolint:errcheck
-		return nil, domain.ErrSessionExpired
-	}
-
-	// Get user
-	user, err := s.users.GetByID(ctx, session.UserID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user: %w", err)
-	}
-
-	// Check if user is disabled
-	if user.IsDisabled {
-		// Clean up session for disabled user - error ignored as this is best-effort cleanup
-		_ = s.sessions.Delete(ctx, session.ID) //nolint:errcheck
-		return nil, domain.ErrUserDisabled
-	}
-
-	// Generate new tokens
-	now := time.Now()
-	accessExpiry := now.Add(s.accessDuration)
-	refreshExpiry := now.Add(s.refreshDuration)
-
-	accessToken, err := s.tokens.GenerateAccessToken(domain.TokenClaims{
-		UserID:    user.ID,
-		SessionID: session.ID,
-		Username:  user.Username,
-		IsAdmin:   user.IsAdmin,
-		IssuedAt:  now,
-		ExpiresAt: accessExpiry,
+	// Create session
+	result, err := s.sessionService.Create(ctx, session.CreateParams{
+		UserID:        usr.ID,
+		DeviceName:    params.DeviceName,
+		DeviceType:    params.DeviceType,
+		ClientName:    params.ClientName,
+		ClientVersion: params.ClientVersion,
+		IPAddress:     params.IPAddress,
+		UserAgent:     params.UserAgent,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to generate access token: %w", err)
+		return nil, fmt.Errorf("create session: %w", err)
 	}
 
-	newRefreshToken, err := s.tokens.GenerateRefreshToken()
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate refresh token: %w", err)
-	}
+	s.logger.Info("User logged in",
+		slog.String("user_id", usr.ID.String()),
+		slog.String("session_id", result.Session.ID.String()),
+	)
 
-	// Update session with new tokens
-	newAccessTokenHash := s.tokens.HashToken(accessToken)
-	newRefreshTokenHash := s.tokens.HashToken(newRefreshToken)
-
-	// Delete old session and create new one (atomic token rotation)
-	if err := s.sessions.Delete(ctx, session.ID); err != nil {
-		return nil, fmt.Errorf("failed to delete old session: %w", err)
-	}
-
-	newSession, err := s.sessions.Create(ctx, domain.CreateSessionParams{
-		UserID:           user.ID,
-		TokenHash:        newAccessTokenHash,
-		RefreshTokenHash: &newRefreshTokenHash,
-		DeviceID:         session.DeviceID,
-		DeviceName:       session.DeviceName,
-		ClientName:       session.ClientName,
-		ClientVersion:    session.ClientVersion,
-		IPAddress:        params.IPAddress,
-		ExpiresAt:        accessExpiry,
-		RefreshExpiresAt: &refreshExpiry,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create new session: %w", err)
-	}
-
-	slog.Info("token refreshed",
-		slog.String("user_id", user.ID.String()),
-		slog.String("session_id", newSession.ID.String()))
-
-	return &domain.AuthResult{
-		User:         user,
-		AccessToken:  accessToken,
-		RefreshToken: newRefreshToken,
-		ExpiresAt:    accessExpiry,
-		SessionID:    newSession.ID,
+	return &LoginResult{
+		User:    usr,
+		Session: result.Session,
+		Token:   result.Token,
 	}, nil
 }
 
-// ValidateToken validates an access token and returns the claims.
-func (s *Service) ValidateToken(ctx context.Context, accessToken string) (*domain.TokenClaims, error) {
-	// Parse and validate JWT
-	claims, err := s.tokens.ValidateAccessToken(accessToken)
+// Logout deactivates the session for the given token.
+func (s *Service) Logout(ctx context.Context, token string) error {
+	sess, err := s.sessionService.ValidateToken(ctx, token)
+	if err != nil {
+		// Already logged out or invalid token - not an error
+		return nil
+	}
+
+	if err := s.sessionService.Deactivate(ctx, sess.ID); err != nil {
+		return fmt.Errorf("deactivate session: %w", err)
+	}
+
+	s.logger.Info("User logged out",
+		slog.String("session_id", sess.ID.String()),
+		slog.String("user_id", sess.UserID.String()),
+	)
+
+	return nil
+}
+
+// LogoutAll deactivates all sessions for a user.
+func (s *Service) LogoutAll(ctx context.Context, userID uuid.UUID) error {
+	if err := s.sessionService.DeactivateAllForUser(ctx, userID); err != nil {
+		return fmt.Errorf("deactivate all sessions: %w", err)
+	}
+
+	s.logger.Info("All sessions logged out for user",
+		slog.String("user_id", userID.String()),
+	)
+
+	return nil
+}
+
+// ValidateToken validates a token and returns the associated user and session.
+func (s *Service) ValidateToken(ctx context.Context, token string) (*db.User, *db.Session, error) {
+	sess, err := s.sessionService.ValidateToken(ctx, token)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	usr, err := s.userService.GetByID(ctx, sess.UserID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get user: %w", err)
+	}
+
+	// Check if user is disabled
+	if usr.IsDisabled {
+		// Deactivate the session
+		_ = s.sessionService.Deactivate(ctx, sess.ID)
+		return nil, nil, user.ErrUserDisabled
+	}
+
+	// Update session activity
+	_ = s.sessionService.UpdateActivity(ctx, sess.ID, nil)
+
+	return usr, sess, nil
+}
+
+// RegisterParams contains parameters for user registration.
+type RegisterParams struct {
+	Username          string
+	Email             *string
+	Password          string
+	PreferredLanguage *string
+}
+
+// Register creates a new user account.
+// The first user registered becomes an admin.
+func (s *Service) Register(ctx context.Context, params RegisterParams) (*db.User, error) {
+	// Check if this is the first user
+	hasUsers, err := s.userService.HasAnyUsers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("check existing users: %w", err)
+	}
+
+	// First user is always admin
+	isAdmin := !hasUsers
+
+	usr, err := s.userService.Create(ctx, user.CreateParams{
+		Username:          params.Username,
+		Email:             params.Email,
+		Password:          params.Password,
+		IsAdmin:           isAdmin,
+		MaxRatingLevel:    100, // Full access by default
+		AdultEnabled:      false,
+		PreferredLanguage: params.PreferredLanguage,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	// Verify session still exists and is valid
-	tokenHash := s.tokens.HashToken(accessToken)
-	exists, err := s.sessions.Exists(ctx, tokenHash)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check session: %w", err)
-	}
-	if !exists {
-		return nil, domain.ErrSessionNotFound
-	}
+	s.logger.Info("User registered",
+		slog.String("user_id", usr.ID.String()),
+		slog.String("username", usr.Username),
+		slog.Bool("is_admin", isAdmin),
+	)
 
-	return claims, nil
+	return usr, nil
 }
 
-// GetSession retrieves session with user info by access token.
-func (s *Service) GetSession(ctx context.Context, accessToken string) (*domain.SessionWithUser, error) {
-	tokenHash := s.tokens.HashToken(accessToken)
-
-	session, err := s.sessions.GetWithUser(ctx, tokenHash)
-	if err != nil {
-		return nil, err
-	}
-
-	return session, nil
-}
-
-// ChangePassword changes a user's password (requires current password).
+// ChangePassword changes a user's password.
 func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, currentPassword, newPassword string) error {
-	user, err := s.users.GetByID(ctx, userID)
+	// Get user
+	usr, err := s.userService.GetByID(ctx, userID)
 	if err != nil {
+		return fmt.Errorf("get user: %w", err)
+	}
+
+	// Validate current password
+	if err := s.userService.ValidatePassword(ctx, usr, currentPassword); err != nil {
 		return err
 	}
 
-	// Verify current password
-	if user.PasswordHash == nil {
-		return errors.New("user has no password set")
+	// Update password
+	if err := s.userService.UpdatePassword(ctx, userID, newPassword); err != nil {
+		return err
 	}
 
-	if err := s.passwords.Verify(currentPassword, *user.PasswordHash); err != nil {
-		return domain.ErrInvalidCredentials
-	}
+	// Optionally: deactivate all sessions to force re-login
+	// This is a security best practice after password change
+	// Uncomment if desired:
+	// _ = s.sessionService.DeactivateAllForUser(ctx, userID)
 
-	// Hash and set new password
-	newHash, err := s.passwords.Hash(newPassword)
-	if err != nil {
-		return fmt.Errorf("failed to hash password: %w", err)
-	}
-
-	if err := s.users.SetPassword(ctx, userID, newHash); err != nil {
-		return fmt.Errorf("failed to set password: %w", err)
-	}
-
-	// Invalidate all sessions (security best practice)
-	if err := s.sessions.DeleteByUser(ctx, userID); err != nil {
-		slog.Warn("failed to delete sessions after password change",
-			slog.String("user_id", userID.String()),
-			slog.Any("error", err))
-	}
-
-	slog.Info("password changed",
-		slog.String("user_id", userID.String()))
+	s.logger.Info("Password changed",
+		slog.String("user_id", userID.String()),
+	)
 
 	return nil
 }
 
-// ResetPassword sets a new password (admin operation, no current password required).
-func (s *Service) ResetPassword(ctx context.Context, userID uuid.UUID, newPassword string) error {
-	// Hash and set new password
-	newHash, err := s.passwords.Hash(newPassword)
+// IsSetupRequired returns true if initial setup has not been completed.
+// Initial setup is required if there are no users in the system.
+func (s *Service) IsSetupRequired(ctx context.Context) (bool, error) {
+	hasUsers, err := s.userService.HasAnyUsers(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to hash password: %w", err)
+		return false, err
 	}
-
-	if err := s.users.SetPassword(ctx, userID, newHash); err != nil {
-		return fmt.Errorf("failed to set password: %w", err)
-	}
-
-	// Invalidate all sessions
-	if err := s.sessions.DeleteByUser(ctx, userID); err != nil {
-		slog.Warn("failed to delete sessions after password reset",
-			slog.String("user_id", userID.String()),
-			slog.Any("error", err))
-	}
-
-	slog.Info("password reset",
-		slog.String("user_id", userID.String()))
-
-	return nil
+	return !hasUsers, nil
 }
-
-// createSession creates a new session with tokens for a user.
-func (s *Service) createSession(
-	ctx context.Context,
-	user *domain.User,
-	deviceID, deviceName, clientName, clientVersion *string,
-	ipAddress *netip.Addr,
-) (*domain.AuthResult, error) {
-	now := time.Now()
-	accessExpiry := now.Add(s.accessDuration)
-	refreshExpiry := now.Add(s.refreshDuration)
-
-	// Create session first to get ID
-	sessionID := uuid.New()
-
-	// Generate tokens
-	accessToken, err := s.tokens.GenerateAccessToken(domain.TokenClaims{
-		UserID:    user.ID,
-		SessionID: sessionID,
-		Username:  user.Username,
-		IsAdmin:   user.IsAdmin,
-		IssuedAt:  now,
-		ExpiresAt: accessExpiry,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate access token: %w", err)
-	}
-
-	refreshToken, err := s.tokens.GenerateRefreshToken()
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate refresh token: %w", err)
-	}
-
-	// Hash tokens for storage
-	accessTokenHash := s.tokens.HashToken(accessToken)
-	refreshTokenHash := s.tokens.HashToken(refreshToken)
-
-	// Create session
-	session, err := s.sessions.Create(ctx, domain.CreateSessionParams{
-		UserID:           user.ID,
-		TokenHash:        accessTokenHash,
-		RefreshTokenHash: &refreshTokenHash,
-		DeviceID:         deviceID,
-		DeviceName:       deviceName,
-		ClientName:       clientName,
-		ClientVersion:    clientVersion,
-		IPAddress:        ipAddress,
-		ExpiresAt:        accessExpiry,
-		RefreshExpiresAt: &refreshExpiry,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create session: %w", err)
-	}
-
-	return &domain.AuthResult{
-		User:         user,
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-		ExpiresAt:    accessExpiry,
-		SessionID:    session.ID,
-	}, nil
-}
-
-// Ensure Service implements domain.AuthService.
-var _ domain.AuthService = (*Service)(nil)
