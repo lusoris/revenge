@@ -215,7 +215,7 @@ if cfg.Modules.Comics.Enabled {
 
 ### User Requirement: Efficiency Priority
 
-*"ob wir iwelche fertigen go pakete nutzen können um massiv arbeit zu sparen"* (whether we can use existing Go packages to massively save work)
+> "Can we use existing Go packages to massively reduce development effort?"
 
 **Analysis**:
 - Plugins = MORE work (API design, versioning, gRPC, testing, documentation)
