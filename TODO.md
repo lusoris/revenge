@@ -95,7 +95,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 | Comics | Pending | `comic_creators` | - |
 | Photos | Pending | - | - |
 | LiveTV | Pending | - | TVHeadend/NextPVR |
-| Adult | Scaffolded | `c.performers` | Whisparr v3 (eros) |
+| Adult | Scaffolded | `qar.crew` | Whisparr v3 (eros) |
 
 ---
 
@@ -107,20 +107,31 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] AniList/MyAnimeList (anime)
 - [ ] OpenLibrary/Hardcover (books)
 - [ ] ComicVine (comics)
-- [ ] StashDB (adult, schema `c`)
+- [ ] StashDB (adult, schema `qar`)
 
 ### Servarr Ecosystem
 - [ ] Radarr - Movie management
 - [ ] Sonarr - TV show management
 - [ ] Lidarr - Music management
 - [ ] Chaptarr - Books & audiobooks (Readarr API)
-- [ ] Whisparr v3 (eros) - Adult content (schema `c`)
+- [ ] Whisparr v3 (eros) - Adult content (schema `qar`)
 
 ### Scrobbling
 - [ ] Trakt - Movie/TV sync
 - [ ] Last.fm - Music scrobbling
 - [ ] ListenBrainz - Music scrobbling
 - [ ] Letterboxd - Import only
+
+---
+
+## Documentation Pending
+
+- [ ] Audit all design docs for created_at/updated_at consistency
+- [ ] Update shared/000005_libraries migration to per-module
+- [ ] Update sources (live docs from web)
+- [ ] Update best practices documentation
+- [ ] Update dev docs
+- [ ] Update/correct instructions
 
 ---
 
@@ -138,9 +149,10 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] SyncPlay - Watch together feature
 - [ ] Photos Library
 
-### Adult-Specific (schema `c`)
+### Adult-Specific (schema `qar` - Queen Anne's Revenge obfuscation)
 - [ ] Fuzzy data reconciliation for conflicting metadata (design done)
 - [ ] Stash app integration as fallback source
+- [ ] Research additional performer data sources (beyond StashDB)
 
 ---
 
@@ -172,10 +184,11 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ## Important Notes
 
-**Adult Content**:
-- Schema: `c` (isolated PostgreSQL schema)
-- API namespace: `/c/*`
-- Module location: `internal/content/c/`
+**Adult Content** (Queen Anne's Revenge obfuscation):
+- Schema: `qar` (isolated PostgreSQL schema)
+- API namespace: `/qar/*`
+- Module location: `internal/content/qar/`
+- See [ADULT_CONTENT_SYSTEM.md](docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md) for full obfuscation mapping
 
 **External Transcoding**:
 - Blackbeard service handles all transcoding
