@@ -1,7 +1,7 @@
 # Revenge - Adult Content System
 
 > Complete adult content management with Stash ecosystem integration.
-> All adult content isolated in PostgreSQL schema `c` with obscured `/c/` API namespace.
+> All adult content isolated in PostgreSQL schema `qar` with "Queen Anne's Revenge" themed obfuscation.
 
 ## Design Principles
 
@@ -9,7 +9,196 @@
 2. **Whisparr as Proxy** - Whisparr-v3 for acquisition, local metadata enrichment
 3. **Stash as Enrichment** - StashDB, Stash-App for comprehensive performer/scene data
 4. **Perceptual Hashing** - pHash fingerprinting for scene identification
-5. **Privacy First** - Obscured paths, optional analytics exclusion, audit logging
+5. **Privacy First** - Fully obfuscated terminology, optional analytics exclusion, audit logging
+
+---
+
+## Queen Anne's Revenge Obfuscation
+
+All adult content uses pirate ship terminology themed after Blackbeard's famous vessel.
+
+### Schema & API Namespace
+
+| Real Concept | Obfuscated | Reason |
+|--------------|------------|--------|
+| Adult schema | `qar` | Queen Anne's Revenge |
+| API namespace | `/api/v1/qar/` | Matches schema |
+| Storage path | `/media/qar/` | Consistent theming |
+
+### Entity Obfuscation
+
+| Real Entity | Obfuscated | Database Table | API Endpoint |
+|-------------|------------|----------------|--------------|
+| Performers | **Crew** | `qar.crew` | `/qar/crew` |
+| Scenes | **Voyages** | `qar.voyages` | `/qar/voyages` |
+| Movies | **Expeditions** | `qar.expeditions` | `/qar/expeditions` |
+| Studios | **Ports** | `qar.ports` | `/qar/ports` |
+| Tags | **Flags** | `qar.flags` | `/qar/flags` |
+| Categories | **Waters** | `qar.waters` | `/qar/waters` |
+| Galleries/Images | **Treasures** | `qar.treasures` | `/qar/treasures` |
+| Libraries | **Fleets** | `qar.fleets` | `/qar/fleets` |
+
+### Field Obfuscation
+
+| Real Field | Obfuscated | Used In |
+|------------|------------|---------|
+| measurements | `cargo` | crew |
+| aliases | `names` | crew |
+| tattoos | `markings` | crew |
+| piercings | `anchors` | crew |
+| career_start | `maiden_voyage` | crew |
+| career_end | `last_port` | crew |
+| birth_date | `christening` | crew |
+| ethnicity | `origin` | crew |
+| hair_color | `rigging` | crew |
+| eye_color | `compass` | crew |
+| scene_count | `voyage_count` | crew |
+| penis_size | `cutlass` | crew (male/trans) |
+| has_breasts | `figurehead` | crew (trans) |
+| genitalia_type | `keel` | crew (trans: male/female/both) |
+| surgical_status | `refit` | crew (trans: pre-op/post-op/non-op) |
+| gallery | `chest` | crew |
+| stashdb_id | `charter` | all entities |
+| tpdb_id | `registry` | all entities |
+| freeones_id | `manifest` | crew |
+| rating | `bounty` | voyages, expeditions |
+| duration | `distance` | voyages, expeditions |
+| release_date | `launch_date` | expeditions |
+| fingerprint | `coordinates` | voyages |
+
+### Example API Responses
+
+```json
+// GET /api/v1/qar/crew/123
+{
+  "id": "123",
+  "names": ["Anne Bonny", "Anne Cormac"],
+  "christening": "1697-03-08",
+  "origin": "Irish",
+  "maiden_voyage": "1719",
+  "last_port": null,
+  "cargo": {
+    "height": 165,
+    "measurements": "34-24-35"
+  },
+  "voyage_count": 142,
+  "chest": ["/qar/treasures/123/1.jpg"]
+}
+
+// GET /api/v1/qar/voyages/456
+{
+  "id": "456",
+  "title": "Caribbean Adventure",
+  "port": {"id": "789", "name": "Port Royal"},
+  "crew": [{"id": "123", "name": "Anne Bonny"}],
+  "flags": ["adventure", "caribbean"],
+  "distance": 1847,
+  "bounty": 4.5,
+  "coordinates": "phash:abc123def456"
+}
+```
+
+### Database Schema Example
+
+```sql
+-- Schema named after Queen Anne's Revenge
+CREATE SCHEMA qar;
+
+-- Performers → Crew
+CREATE TABLE qar.crew (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    names           TEXT[] NOT NULL,              -- aliases
+    christening     DATE,                         -- birth_date
+    origin          VARCHAR(50),                  -- ethnicity
+    maiden_voyage   INT,                          -- career_start year
+    last_port       INT,                          -- career_end year
+    cargo           JSONB,                        -- measurements
+    markings        TEXT[],                       -- tattoos
+    anchors         TEXT[],                       -- piercings
+    rigging         VARCHAR(20),                  -- hair_color
+    compass         VARCHAR(20),                  -- eye_color
+    cutlass         VARCHAR(20),                  -- penis_size (male/trans only)
+    figurehead      BOOLEAN,                      -- has_breasts (trans)
+    keel            VARCHAR(20),                  -- genitalia_type (male/female/both)
+    refit           VARCHAR(20),                  -- surgical_status (pre-op/post-op/non-op)
+    voyage_count    INT NOT NULL DEFAULT 0,       -- scene_count
+    charter         VARCHAR(100),                 -- stashdb_id (obfuscated)
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Scenes → Voyages
+CREATE TABLE qar.voyages (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    fleet_id        UUID NOT NULL REFERENCES qar.fleets(id),
+    title           VARCHAR(500) NOT NULL,
+    port_id         UUID REFERENCES qar.ports(id),
+    distance        INT,                          -- duration_seconds
+    bounty          DECIMAL(3,1),                 -- rating
+    launch_date     DATE,                         -- release_date
+    coordinates     VARCHAR(100),                 -- phash fingerprint
+    oshash          VARCHAR(32),
+    flags           UUID[],                       -- tag IDs
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Junction: Voyages ↔ Crew
+CREATE TABLE qar.voyage_crew (
+    voyage_id       UUID NOT NULL REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    crew_id         UUID NOT NULL REFERENCES qar.crew(id) ON DELETE CASCADE,
+    role            VARCHAR(50),                  -- position in scene
+    PRIMARY KEY (voyage_id, crew_id)
+);
+
+-- Studios → Ports
+CREATE TABLE qar.ports (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name            VARCHAR(255) NOT NULL,
+    parent_id       UUID REFERENCES qar.ports(id), -- network/parent studio
+    logo_path       TEXT,
+    stashdb_id      VARCHAR(100),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Tags → Flags
+CREATE TABLE qar.flags (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name            VARCHAR(100) NOT NULL UNIQUE,
+    category        VARCHAR(50),                  -- waters reference
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Libraries → Fleets
+CREATE TABLE qar.fleets (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name            VARCHAR(255) NOT NULL,
+    fleet_type      VARCHAR(20) NOT NULL CHECK (fleet_type IN ('expedition', 'voyage')),
+    paths           TEXT[] NOT NULL,
+    stashdb_endpoint TEXT DEFAULT 'https://stashdb.org/graphql',
+    owner_user_id   UUID REFERENCES shared.users(id),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+### Code Mapping Layer
+
+```go
+// internal/content/qar/mapping.go
+// Thin mapping layer for developer sanity - internally use real terms
+
+type Performer = Crew
+type Scene = Voyage
+type Movie = Expedition
+type Studio = Port
+type Tag = Flag
+type Library = Fleet
+
+// Repository methods use obfuscated names externally
+func (r *Repository) GetCrew(ctx context.Context, id uuid.UUID) (*Crew, error)
+func (r *Repository) ListVoyages(ctx context.Context, fleetID uuid.UUID) ([]Voyage, error)
+func (r *Repository) GetPort(ctx context.Context, id uuid.UUID) (*Port, error)
+```
 
 ---
 
@@ -452,6 +641,12 @@ CREATE TABLE c.performers (
     measurements    VARCHAR(50),           -- e.g., "34D-24-34"
     cup_size        VARCHAR(10),
     breast_type     VARCHAR(50),
+    penis_size      VARCHAR(20),           -- male/trans performers (Stash-App source)
+
+    -- Trans-specific (obfuscated: figurehead, keel, refit)
+    has_breasts     BOOLEAN,               -- trans: breast presence
+    genitalia_type  VARCHAR(20),           -- trans: male/female/both
+    surgical_status VARCHAR(20),           -- trans: pre-op/post-op/non-op
 
     -- Appearance
     hair_color      VARCHAR(50),

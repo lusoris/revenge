@@ -16,17 +16,17 @@ Revenge uses **per-module library tables** for full module isolation:
 │                           Module Boundaries                              │
 ├─────────────────┬─────────────────┬─────────────────┬───────────────────┤
 │  movie module   │  tvshow module  │  music module   │   adult module    │
-│                 │                 │                 │    (c schema)     │
+│                 │                 │                 │   (qar schema)    │
 │ ┌─────────────┐ │ ┌─────────────┐ │ ┌─────────────┐ │ ┌───────────────┐ │
-│ │movie_       │ │ │tv_          │ │ │music_       │ │ │c.adult_       │ │
-│ │libraries    │ │ │libraries    │ │ │libraries    │ │ │libraries      │ │
+│ │movie_       │ │ │tv_          │ │ │music_       │ │ │qar.fleets     │ │
+│ │libraries    │ │ │libraries    │ │ │libraries    │ │ │               │ │
 │ └──────┬──────┘ │ └──────┬──────┘ │ └──────┬──────┘ │ └───────┬───────┘ │
 │        │        │        │        │        │        │         │         │
 │        ▼        │        ▼        │        ▼        │         ▼         │
 │ ┌─────────────┐ │ ┌─────────────┐ │ ┌─────────────┐ │ ┌───────────────┐ │
-│ │   movies    │ │ │   series    │ │ │   albums    │ │ │c.adult_movies │ │
-│ └─────────────┘ │ │   seasons   │ │ │   tracks    │ │ │c.adult_scenes │ │
-│                 │ │   episodes  │ │ │   artists   │ │ │c.performers   │ │
+│ │   movies    │ │ │   series    │ │ │   albums    │ │ │qar.expeditions│ │
+│ └─────────────┘ │ │   seasons   │ │ │   tracks    │ │ │qar.voyages    │ │
+│                 │ │   episodes  │ │ │   artists   │ │ │qar.crew       │ │
 │                 │ └─────────────┘ │ └─────────────┘ │ └───────────────┘ │
 └─────────────────┴─────────────────┴─────────────────┴───────────────────┘
 ```
@@ -37,7 +37,7 @@ Revenge uses **per-module library tables** for full module isolation:
 2. **Module-specific settings** - Library settings baked into each schema
 3. **No shared enum** - Modules can be added without modifying shared code
 4. **Independent deployment** - Modules can be enabled/disabled cleanly
-5. **Schema-level isolation** - Adult content fully contained in `c` schema
+5. **Schema-level isolation** - Adult content fully contained in `qar` schema (Queen Anne's Revenge)
 
 ### Shared Components
 
@@ -64,7 +64,7 @@ Each module defines its own library table with module-specific settings:
 | photo | `photo_libraries` | `photos`, `photo_albums` | `photo/000001_*.sql` |
 | livetv | `livetv_sources` | `channels`, `programs`, `recordings` | `livetv/000001_*.sql` |
 | comics | `comic_libraries` | `comics`, `issues` | `comics/000001_*.sql` |
-| adult | `c.adult_libraries` | `c.adult_movies`, `c.adult_scenes` | `c/000001_*.sql` |
+| adult | `qar.fleets` | `qar.expeditions`, `qar.voyages`, `qar.crew` | `qar/000001_*.sql` |
 
 ---
 
@@ -109,40 +109,47 @@ CREATE TABLE movies (
 
 ---
 
-## Example: Adult Library Schema (Isolated)
+## Example: Adult Library Schema (Isolated - QAR Obfuscation)
 
-Adult module lives entirely in `c` schema:
+Adult module lives entirely in `qar` schema (Queen Anne's Revenge themed):
 
 ```sql
--- c/000001_adult_libraries.up.sql
-SET search_path TO c;
+-- qar/000001_fleets.up.sql
+SET search_path TO qar;
 
-CREATE TABLE adult_libraries (
+-- Libraries → Fleets
+CREATE TABLE fleets (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
-    library_type    VARCHAR(20) NOT NULL CHECK (library_type IN ('movie', 'scene')),
+    fleet_type      VARCHAR(20) NOT NULL CHECK (fleet_type IN ('expedition', 'voyage')),
     paths           TEXT[] NOT NULL,
 
     -- Adult-specific settings
     stashdb_endpoint    TEXT DEFAULT 'https://stashdb.org/graphql',
     tpdb_enabled        BOOLEAN NOT NULL DEFAULT true,
     whisparr_sync       BOOLEAN NOT NULL DEFAULT false,
-    auto_tag_performers BOOLEAN NOT NULL DEFAULT true,
-
-    -- Always adult content
-    content_rating      VARCHAR(10) NOT NULL DEFAULT 'XXX',
+    auto_tag_crew       BOOLEAN NOT NULL DEFAULT true,  -- performers → crew
 
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Content in same schema
-CREATE TABLE adult_movies (
+-- Movies → Expeditions
+CREATE TABLE expeditions (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    library_id  UUID NOT NULL REFERENCES adult_libraries(id) ON DELETE CASCADE,
-    -- ... adult movie fields
+    fleet_id    UUID NOT NULL REFERENCES fleets(id) ON DELETE CASCADE,
+    -- ... expedition (movie) fields
+);
+
+-- Scenes → Voyages
+CREATE TABLE voyages (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    fleet_id    UUID NOT NULL REFERENCES fleets(id) ON DELETE CASCADE,
+    -- ... voyage (scene) fields
 );
 ```
+
+See [ADULT_CONTENT_SYSTEM.md](../adult/ADULT_CONTENT_SYSTEM.md) for full obfuscation mapping.
 
 ---
 
@@ -157,7 +164,7 @@ CREATE TABLE permissions (
     user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 
     -- Polymorphic reference (permission knows what it's for)
-    resource_type   VARCHAR(50) NOT NULL,   -- 'movie_library', 'tv_library', 'c.adult_library'
+    resource_type   VARCHAR(50) NOT NULL,   -- 'movie_library', 'tv_library', 'qar.fleet'
     resource_id     UUID NOT NULL,          -- UUID of the actual resource
 
     -- Permission level
@@ -262,7 +269,7 @@ type LibraryProvider interface {
 // LibraryInfo is the common interface for all library types
 type LibraryInfo struct {
     ID        uuid.UUID
-    Module    string   // "movie", "tvshow", "music", "c.adult"
+    Module    string   // "movie", "tvshow", "music", "qar"
     Name      string
     Paths     []string
     IsAdult   bool
