@@ -13,10 +13,11 @@
 ```
 Foundation (Week 1-2)     ████████████████████████ 100%
 Design Audit              ████████████████████████ 100%
-Critical Fixes            ░░░░░░░░░░░░░░░░░░░░░░░░   0%  <- CURRENT
+Critical Fixes            ████████░░░░░░░░░░░░░░░░  30%  <- CURRENT
+Library Refactor          ░░░░░░░░░░░░░░░░░░░░░░░░   0%  <- BLOCKING
 Movie Module              ████████████████████░░░░  85%
-TV Shows Module           ██████████████████░░░░░░  75%
-Adult Module              ████████░░░░░░░░░░░░░░░░  35%
+TV Shows Module           ████████████████████░░░░  80%
+Adult Module (QAR)        ████████░░░░░░░░░░░░░░░░  35%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -30,12 +31,12 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 > These must be fixed before any other work
 
 ### 1.1 Wiring & Registration Issues
-- [ ] **Register TVShow module** in `cmd/revenge/main.go`
-  - Add `tvshow.ModuleWithRiver` to fx.New()
-- [ ] **Add TVShow handler deps** to `internal/api/module.go`
-  - Add TvshowService to handler dependencies
+- [x] **Register TVShow module** in `cmd/revenge/main.go`
+  - Added `tvshow.ModuleWithRiver` to fx.New()
+- [x] **Add TVShow handler deps** to `internal/api/module.go`
+  - Added TvshowService to handler dependencies
 - [ ] **Register Adult modules** in `cmd/revenge/main.go`
-  - Add c/movie and c/scene modules to fx.New()
+  - ⚠️ Blocked: Requires full QAR obfuscation first (Phase 3)
 
 ### 1.2 Service Signature Fixes
 - [ ] **Fix Session.UpdateActivity** in `internal/service/session/service.go`
@@ -49,8 +50,8 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - Design specifies `internal/config/config.go`
 
 ### 1.4 Error Handling
-- [ ] **Remove os.Exit()** from `cmd/revenge/main.go:299`
-  - Return error instead, let Fx handle graceful shutdown
+- [x] **Remove os.Exit()** from `cmd/revenge/main.go`
+  - Now triggers graceful shutdown via shutdowner.Trigger()
   - Design principle: never panic/exit for errors
 
 ### 1.5 Metadata Service Core
@@ -85,14 +86,62 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ---
 
+## Phase 2.5: Library Architecture Refactor
+
+> Per LIBRARY_TYPES.md - migrate from shared library table to per-module tables
+
+### 2.5.1 Create Per-Module Library Tables
+- [ ] **movie_libraries** table in `movie/000005_movie_libraries.up.sql`
+  - Movie-specific settings: tmdb_enabled, imdb_enabled, download_trailers, etc.
+- [ ] **tv_libraries** table in `tvshow/000005_tv_libraries.up.sql`
+  - TV-specific settings: sonarr_sync, tvdb_enabled, anime_mode, etc.
+- [ ] **music_libraries** table in `music/000001_*.up.sql`
+- [ ] **audiobook_libraries** table in `audiobook/000001_*.up.sql`
+- [ ] **book_libraries** table in `book/000001_*.up.sql`
+- [ ] **podcast_libraries** table in `podcast/000001_*.up.sql`
+- [ ] **photo_libraries** table in `photo/000001_*.up.sql`
+- [ ] **livetv_sources** table in `livetv/000001_*.up.sql`
+- [ ] **comic_libraries** table in `comics/000001_*.up.sql`
+- [ ] **qar.fleets** table in `qar/000001_fleets.up.sql` (adult)
+
+### 2.5.2 Update Foreign Keys
+- [ ] `movies.library_id` → `REFERENCES movie_libraries(id)`
+- [ ] `series.library_id` → `REFERENCES tv_libraries(id)`
+- [ ] Remove `library_type` enum (no shared enum)
+
+### 2.5.3 Deprecate Shared Library Table
+- [ ] Add data migration: `shared/000020_deprecate_libraries.up.sql`
+- [ ] Eventually remove `shared/000005_libraries.up.sql`
+
+### 2.5.4 Polymorphic Permissions
+- [ ] Create `permissions` table with polymorphic `resource_type` + `resource_id`
+- [ ] Resource types: `movie_library`, `tv_library`, `qar.fleet`, etc.
+- [ ] Implement `LibraryProvider` interface in each module
+
+---
+
 ## Phase 3: Adult Module Completion
 
-### 3.1 Schema Obfuscation
-- [ ] **Rename schema** from `c` to `qar`
-- [ ] **Create field mapping** layer per ADULT_CONTENT_SYSTEM.md
-  - performers → crew, scenes → voyages, movies → expeditions
-  - All 13+ field obfuscations (cargo, markings, etc.)
-- [ ] **Update API namespace** from `/c/` to `/qar/`
+### 3.1 Schema Obfuscation (Queen Anne's Revenge)
+- [x] **Rename directories** from `c/` to `qar/` (done)
+- [ ] **Full entity obfuscation** per ADULT_CONTENT_SYSTEM.md:
+  - `qar/movie/` → `qar/expedition/` (Movie → Expedition)
+  - `qar/scene/` → `qar/voyage/` (Scene → Voyage)
+  - Create `qar/crew/` (Performer → Crew)
+  - Create `qar/port/` (Studio → Port)
+  - Create `qar/flag/` (Tag → Flag)
+  - Create `qar/fleet/` (Library → Fleet)
+- [ ] **Update SQL tables** to obfuscated names:
+  - `qar.movies` → `qar.expeditions`
+  - `qar.scenes` → `qar.voyages`
+  - `qar.performers` → `qar.crew`
+  - `qar.studios` → `qar.ports`
+  - `qar.tags` → `qar.flags`
+- [ ] **Field obfuscation** (13+ fields):
+  - measurements → cargo, aliases → names, tattoos → markings
+  - career_start → maiden_voyage, birth_date → christening
+  - penis_size → cutlass, has_breasts → figurehead, etc.
+- [ ] **Update API namespace** to `/api/v1/qar/`
 
 ### 3.2 Access Control Framework
 - [ ] **Add scoped permissions** (adult:read, adult:write)
@@ -254,7 +303,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] River jobs for metadata enrichment
 - [ ] Continue watching 30-day filter (missing)
 
-### TV Shows Module (75%)
+### TV Shows Module (80%)
 - [x] Database migrations
 - [x] sqlc queries (100+ queries)
 - [x] Entity definitions
@@ -263,8 +312,9 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] module.go (fx registration)
 - [x] jobs.go (River workers)
 - [x] metadata_provider.go
+- [x] Module registration in main.go
+- [x] Handler deps in api/module.go
 - [ ] API handlers (missing)
-- [ ] Module registration in main.go (missing)
 
 ---
 
