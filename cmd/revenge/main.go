@@ -18,10 +18,14 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/search"
+	"github.com/lusoris/revenge/internal/service/activity"
+	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/oidc"
+	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
+	"github.com/lusoris/revenge/internal/service/settings"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/pkg/config"
 	"github.com/lusoris/revenge/pkg/graceful"
@@ -60,6 +64,10 @@ func main() {
 		session.Module,
 		library.Module,
 		oidc.Module,
+		rbac.Module,
+		activity.Module,
+		settings.Module,
+		apikeys.Module,
 
 		// API modules - TODO: Add handlers when created
 		// fx.Provide(
