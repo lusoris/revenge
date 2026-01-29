@@ -1,4 +1,4 @@
-//go:build ogen
+//go:build ignore
 
 package api
 

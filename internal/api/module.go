@@ -1,5 +1,3 @@
-//go:build ogen
-
 package api
 
 import (
@@ -9,7 +7,6 @@ import (
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 
-	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
@@ -40,7 +37,6 @@ type HandlerDeps struct {
 	HealthChecker  *health.Checker
 	Logger         *slog.Logger
 	BuildInfo      BuildInfo
-	Config         *config.Config
 }
 
 // provideHandlerParams creates HandlerParams from dependencies.
@@ -54,7 +50,7 @@ func provideHandlerParams(deps HandlerDeps) HandlerParams {
 		RiverClient:    deps.RiverClient,
 		HealthChecker:  deps.HealthChecker,
 		Logger:         deps.Logger,
-		AdultEnabled:   deps.Config.Modules.Adult,
+		AdultEnabled:   false, // TODO: wire from config when adult module is ready
 		Version:        deps.BuildInfo.Version,
 		BuildTime:      deps.BuildInfo.BuildTime,
 		GitCommit:      deps.BuildInfo.GitCommit,

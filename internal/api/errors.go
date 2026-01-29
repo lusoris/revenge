@@ -1,5 +1,3 @@
-//go:build ogen
-
 package api
 
 import "errors"

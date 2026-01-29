@@ -14,6 +14,8 @@ import (
 	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
 
+	gen "github.com/lusoris/revenge/api/generated"
+	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
@@ -50,6 +52,7 @@ func main() {
 			NewLogger,
 			NewHealthChecker,
 			NewShutdowner,
+			NewBuildInfo,
 		),
 
 		// Infrastructure modules
@@ -69,14 +72,8 @@ func main() {
 		settings.Module,
 		apikeys.Module,
 
-		// API modules - TODO: Add handlers when created
-		// fx.Provide(
-		// 	middleware.NewAuth,
-		// 	handlers.NewAuthHandler,
-		// 	handlers.NewUserHandler,
-		// 	handlers.NewLibraryHandler,
-		// 	handlers.NewRatingHandler,
-		// ),
+		// API module (ogen-generated handlers)
+		api.Module,
 
 		// HTTP modules
 		fx.Provide(
@@ -85,6 +82,7 @@ func main() {
 		),
 		fx.Invoke(RegisterRoutes),
 		fx.Invoke(RegisterHealthChecks),
+		fx.Invoke(MountAPIServer),
 		fx.Invoke(StartShutdowner),
 		fx.Invoke(RunServer),
 	)
@@ -306,4 +304,32 @@ func RunServer(lifecycle fx.Lifecycle, srv *http.Server, shutdowner *graceful.Sh
 			return nil
 		},
 	})
+}
+
+// NewBuildInfo creates build info for the API handlers.
+func NewBuildInfo() api.BuildInfo {
+	return api.BuildInfo{
+		Version:   Version,
+		BuildTime: BuildTime,
+		GitCommit: GitCommit,
+	}
+}
+
+// MountAPIServer mounts the ogen-generated API server to the mux.
+func MountAPIServer(
+	mux *http.ServeMux,
+	handler *api.Handler,
+	security *api.SecurityHandler,
+	logger *slog.Logger,
+) error {
+	srv, err := gen.NewServer(handler, security)
+	if err != nil {
+		return fmt.Errorf("create API server: %w", err)
+	}
+
+	// Mount API under /api/v1
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", srv))
+
+	logger.Info("API server mounted", slog.String("prefix", "/api/v1"))
+	return nil
 }

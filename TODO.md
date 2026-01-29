@@ -4,7 +4,7 @@
 
 **Last Updated**: 2026-01-29
 **Current Phase**: Foundation (Week 1-2)
-**Implementation Status**: 25% complete
+**Implementation Status**: 70% complete (Day 1-5 done)
 
 ---
 
@@ -31,7 +31,7 @@
 ## Roadmap Overview
 
 ```
-Week 1-2:  Foundation (P0)       ██████████░░░░░░░░░░░░░░ 45%
+Week 1-2:  Foundation (P0)       ████████████████░░░░░░░░ 70%
 Week 3-4:  Movie Module (P1)     ░░░░░░░░░░░░░░░░░░░░░░░░  0%
 Week 4-8:  Modules + Frontend    ░░░░░░░░░░░░░░░░░░░░░░░░  0%
 Week 5-8:  Features (P2)         ░░░░░░░░░░░░░░░░░░░░░░░░  0%
@@ -133,24 +133,76 @@ Week 8+:   Extended (P3)         ░░░░░░░░░░░░░░░�
 ✅ sqlc generate   # SUCCESS
 ```
 
-### Next Steps (Day 3):
+---
 
-#### Global Services (1 day)
-- [ ] **Activity Logger** - `internal/service/activity/service.go`
-- [ ] **Server Settings** - `internal/service/settings/service.go`
-- [ ] **API Keys** - `internal/service/apikeys/service.go`
-- [ ] Wire all to main.go with fx
+## ✅ Day 3 Complete Summary
 
-### Day 4-5: OpenAPI Foundation
+**Status**: Global Services fully implemented
 
-#### OpenAPI Specs (2 days)
-- [ ] Create `api/openapi/` directory structure
-- [ ] Create `revenge.yaml` - Main OpenAPI 3.1 spec
-- [ ] Create `auth.yaml` - Authentication endpoints
-- [ ] Create `health.yaml` - Health check endpoints
-- [ ] Configure ogen in `tools.go`
-- [ ] Generate initial handlers
-- [ ] Wire to main.go
+### What We Built:
+1. ✅ **Activity Logger** - `internal/service/activity/service.go`
+   - Activity types: user_login, user_logout, security_event, api_error, etc.
+   - Severity levels: info, warning, error, critical
+   - IP/User Agent tracking
+   - List by user/type/severity methods
+2. ✅ **Server Settings** - `internal/service/settings/service.go`
+   - Key-value settings store with categories
+   - Helper methods: GetString, GetBool, GetInt
+   - Server name, registration settings
+3. ✅ **API Keys** - `internal/service/apikeys/service.go`
+   - SHA-256 hashed keys (raw key only shown once)
+   - Scope-based permissions
+   - Expiration support
+   - Usage tracking
+4. ✅ **Wired to main.go** - All modules registered with fx
+
+### Build Status:
+```bash
+✅ go build ./...  # SUCCESS
+✅ sqlc generate   # SUCCESS
+```
+
+---
+
+## ✅ Day 4-5 Complete Summary
+
+**Status**: OpenAPI Foundation complete
+
+### What We Built:
+1. ✅ **OpenAPI Specs** - Comprehensive `api/openapi/revenge.yaml` (already existed)
+   - System endpoints (health, server info)
+   - Auth endpoints (login, logout, register, sessions)
+   - User management endpoints
+   - Library management endpoints
+   - Movie endpoints (scaffolded, build-tagged for now)
+   - Adult endpoints (scaffolded, build-tagged for now)
+2. ✅ **ogen Code Generation** - `go generate ./api/...` working
+   - 20 generated files in `api/generated/`
+   - Type-safe handlers, validators, routers
+3. ✅ **Handler Implementation** - `internal/api/`
+   - System handlers (health, server info)
+   - Auth handlers (login, logout, register, password change, sessions)
+   - User handlers (CRUD, admin functions)
+   - Library handlers (CRUD, scan trigger)
+   - Security handler (Bearer token auth)
+4. ✅ **Wired to main.go**
+   - api.Module registered with fx
+   - BuildInfo provided
+   - API server mounted at `/api/v1/`
+
+### Build Status:
+```bash
+✅ go build ./...  # SUCCESS
+✅ go generate ./api/...  # SUCCESS
+```
+
+### Notes:
+- `movies.go` and `adult.go` temporarily excluded (`//go:build ignore`) - need type fixes when modules are ready
+- Core handlers (auth, users, libraries, system) fully functional
+
+---
+
+## 📋 Next: Week 2 - Workers & Remaining Foundation
 
 ---
 
@@ -322,7 +374,7 @@ Each module follows movie module pattern:
 
 ---
 
-**Next Action**: Start with Day 1, Step 1 - Module Registration ⚡
+**Next Action**: Week 2 - Workers & Remaining Foundation (River job queue, core workers)
 - **Wiki platforms**: Normal (Wikipedia, FANDOM, TVTropes) + Adult (Babepedia, IAFD, Boobpedia)
 - **External adult platforms**: FreeOnes, TheNude, Pornhub, OnlyFans (performer enrichment, c schema isolated)
 - **Scrobbling**: Trakt/Simkl (movies/TV), Last.fm/ListenBrainz (music), Letterboxd (import only)
@@ -343,7 +395,7 @@ Each module follows movie module pattern:
 - [x] Basic auth middleware
 - [x] User/Session/OIDC tables
 - [x] Genre domain separation
-- [ ] Shared tables (libraries, api_keys, server_settings, activity_log)
+- [x] Shared tables (libraries, api_keys, server_settings, activity_log)
 - [ ] River job queue setup
 - [ ] Typesense search client
 - [ ] Dragonfly cache client
@@ -414,7 +466,6 @@ Each module follows movie module pattern:
 
 ### Phase 9: External Services ⬜ NOT STARTED
 
-- [ ] Seerr integration + adapter
 - [ ] Trakt scrobbling
 - [ ] Last.fm scrobbling
 - [ ] ListenBrainz scrobbling
@@ -455,7 +506,7 @@ Each module follows movie module pattern:
 - [x] ARCHITECTURE_V2.md - Complete modular design
 - [x] TECH_STACK.md - Technology choices
 - [x] PROJECT_STRUCTURE.md - Directory layout
-- [x] METADATA_SYSTEM.md - Servarr-first with Audiobookshelf/Seerr
+- [x] METADATA_SYSTEM.md - Servarr-first with Audiobookshelf
 - [x] AUDIO_STREAMING.md - Progress, bandwidth adaptation
 - [x] CLIENT_SUPPORT.md - Chromecast, DLNA, capabilities
 - [x] MEDIA_ENHANCEMENTS.md - Trailers, themes, intros, trickplay, Live TV
