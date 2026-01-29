@@ -3,19 +3,16 @@ package search
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/typesense/typesense-go/v3/typesense"
 	"github.com/typesense/typesense-go/v3/typesense/api"
 	"go.uber.org/fx"
+
+	"github.com/lusoris/revenge/internal/config"
 )
 
-// Config holds search configuration.
-type Config struct {
-	Host   string
-	Port   int
-	APIKey string
-}
 
 // Client wraps the Typesense client for search operations.
 type Client struct {
@@ -24,10 +21,11 @@ type Client struct {
 }
 
 // NewClient creates a new search client.
-func NewClient(cfg Config, logger *slog.Logger) (*Client, error) {
+func NewClient(cfg *config.Config, logger *slog.Logger) (*Client, error) {
+	serverURL := fmt.Sprintf("http://%s:%d", cfg.Search.Host, cfg.Search.Port)
 	ts := typesense.NewClient(
-		typesense.WithServer(cfg.Host),
-		typesense.WithAPIKey(cfg.APIKey),
+		typesense.WithServer(serverURL),
+		typesense.WithAPIKey(cfg.Search.APIKey),
 	)
 
 	return &Client{
@@ -69,12 +67,5 @@ func (c *Client) Delete(ctx context.Context, collection string, id string) (map[
 
 // Module provides search dependencies for fx.
 var Module = fx.Module("search",
-	fx.Provide(func(logger *slog.Logger) (*Client, error) {
-		// TODO: Get config from koanf
-		cfg := Config{
-			Host:   "http://localhost:8108",
-			APIKey: "xyz",
-		}
-		return NewClient(cfg, logger)
-	}),
+	fx.Provide(NewClient),
 )

@@ -15,7 +15,7 @@ import (
 	"github.com/redis/rueidis"
 	"go.uber.org/fx"
 
-	"github.com/lusoris/revenge/pkg/config"
+	"github.com/lusoris/revenge/internal/config"
 )
 
 var (

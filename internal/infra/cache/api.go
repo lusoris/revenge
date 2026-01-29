@@ -7,7 +7,7 @@ import (
 
 	"github.com/viccon/sturdyc"
 
-	"github.com/lusoris/revenge/pkg/config"
+	"github.com/lusoris/revenge/internal/config"
 )
 
 // APICache provides request coalescing and stale-while-revalidate for API responses.

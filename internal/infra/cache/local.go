@@ -8,7 +8,7 @@ import (
 
 	"github.com/maypok86/otter"
 
-	"github.com/lusoris/revenge/pkg/config"
+	"github.com/lusoris/revenge/internal/config"
 )
 
 // LocalCache provides a high-performance in-memory cache using otter.
