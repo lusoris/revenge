@@ -431,7 +431,136 @@ err := metadataService.RevertChange(ctx, rbac.RevertChangeParams{
 })
 ```
 
+---
+
+## Resource-Level Permissions (Polymorphic)
+
+Role permissions (above) define **what actions a role can perform**. Resource permissions define **which specific resources a user can access**.
+
+### Two Permission Types
+
+| Type | Question | Example |
+|------|----------|---------|
+| **Role** (Casbin) | "Can this role do X?" | Can `user` role stream content? |
+| **Resource** (Polymorphic) | "Can this user access Y?" | Can user 123 view movie library 456? |
+
+### Polymorphic Resource Grants
+
+```sql
+-- shared/000019_resource_grants.up.sql
+-- Polymorphic resource access (no central registry needed)
+CREATE TABLE resource_grants (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Polymorphic reference (grant knows what it's for)
+    resource_type   VARCHAR(50) NOT NULL,   -- 'movie_library', 'playlist', 'collection'
+    resource_id     UUID NOT NULL,          -- UUID of the actual resource
+
+    -- Grant level
+    grant_type      VARCHAR(20) NOT NULL DEFAULT 'view',  -- 'view', 'edit', 'manage', 'owner'
+
+    -- Audit
+    granted_by      UUID REFERENCES users(id),
+    granted_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expires_at      TIMESTAMPTZ,            -- Optional expiration
+
+    UNIQUE (user_id, resource_type, resource_id)
+);
+
+CREATE INDEX idx_resource_grants_user ON resource_grants(user_id);
+CREATE INDEX idx_resource_grants_resource ON resource_grants(resource_type, resource_id);
+CREATE INDEX idx_resource_grants_expires ON resource_grants(expires_at) WHERE expires_at IS NOT NULL;
+```
+
+### Why Polymorphic?
+
+1. **No registry to sync** - No central table tracking all resources
+2. **Grant owns the reference** - Self-describing, module validates existence
+3. **Works for any resource** - Libraries, playlists, collections, items
+4. **Clean deletes** - Module deletes grants when resource deleted
+5. **No FK constraints to modules** - Loose coupling
+
+### Resource Types
+
+| Type | Description | Module |
+|------|-------------|--------|
+| `movie_library` | Movie library | movie |
+| `tv_library` | TV library | tvshow |
+| `music_library` | Music library | music |
+| `adult_library` | Adult library | c (adult) |
+| `playlist` | User playlist | shared |
+| `collection` | User collection | shared |
+
+### Grant Types
+
+| Grant | Can View | Can Edit | Can Manage | Is Owner |
+|-------|----------|----------|------------|----------|
+| `view` | ✅ | ❌ | ❌ | ❌ |
+| `edit` | ✅ | ✅ | ❌ | ❌ |
+| `manage` | ✅ | ✅ | ✅ | ❌ |
+| `owner` | ✅ | ✅ | ✅ | ✅ |
+
+### Usage
+
+```go
+// Check resource access
+func (s *MovieModule) CanAccessLibrary(ctx context.Context, userID, libraryID uuid.UUID) (bool, error) {
+    // 1. Check if user owns the library (stored in library table)
+    lib, err := s.repo.GetLibrary(ctx, libraryID)
+    if err != nil {
+        return false, err
+    }
+    if lib.OwnerUserID == userID {
+        return true, nil
+    }
+
+    // 2. Check polymorphic resource grant
+    return s.grants.HasGrant(ctx, userID, "movie_library", libraryID, "view")
+}
+
+// Grant access to another user
+func (s *MovieModule) ShareLibrary(ctx context.Context, ownerID, targetUserID, libraryID uuid.UUID) error {
+    // Verify ownership
+    lib, err := s.repo.GetLibrary(ctx, libraryID)
+    if err != nil {
+        return err
+    }
+    if lib.OwnerUserID != ownerID {
+        return ErrNotOwner
+    }
+
+    // Create polymorphic grant
+    return s.grants.CreateGrant(ctx, grants.CreateParams{
+        UserID:       targetUserID,
+        ResourceType: "movie_library",
+        ResourceID:   libraryID,
+        GrantType:    "view",
+        GrantedBy:    ownerID,
+    })
+}
+```
+
+### Cleanup on Delete
+
+Modules delete grants when resource is deleted:
+
+```go
+func (s *MovieModule) DeleteLibrary(ctx context.Context, libraryID uuid.UUID) error {
+    // Delete the library
+    if err := s.repo.DeleteLibrary(ctx, libraryID); err != nil {
+        return err
+    }
+
+    // Clean up grants (no FK, so must be explicit)
+    return s.grants.DeleteByResource(ctx, "movie_library", libraryID)
+}
+```
+
+---
+
 ## Related Documents
 
-- [ARCHITECTURE_V2.md](../architecture/ARCHITECTURE_V2.md) - Overall architecture
-- [DESIGN_PRINCIPLES.md](../architecture/DESIGN_PRINCIPLES.md) - Design principles
+- [ARCHITECTURE_V2.md](../../architecture/ARCHITECTURE_V2.md) - Overall architecture
+- [DESIGN_PRINCIPLES.md](../../architecture/DESIGN_PRINCIPLES.md) - Design principles
+- [LIBRARY_TYPES.md](LIBRARY_TYPES.md) - Per-module library architecture

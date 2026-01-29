@@ -146,35 +146,96 @@ CREATE TABLE adult_movies (
 
 ---
 
-## Cross-Module Access Control
+## Cross-Module Access Control (Polymorphic)
 
-For unified library listing in UI, use a shared registry:
+**No central registry.** Permissions are polymorphic - each permission knows its target:
 
 ```sql
--- shared/000020_library_registry.up.sql
--- Lightweight registry for cross-module access control
-CREATE TABLE library_registry (
-    id              UUID PRIMARY KEY,           -- Same as module library ID
-    module          VARCHAR(50) NOT NULL,       -- 'movie', 'tvshow', 'c.adult'
-    name            VARCHAR(255) NOT NULL,      -- Cached for listing
-    is_adult        BOOLEAN NOT NULL DEFAULT false,
-    owner_user_id   UUID REFERENCES users(id),
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_library_registry_module ON library_registry(module);
-CREATE INDEX idx_library_registry_owner ON library_registry(owner_user_id);
-
--- Access grants (who can see what)
-CREATE TABLE library_access (
-    library_id      UUID NOT NULL REFERENCES library_registry(id) ON DELETE CASCADE,
+-- shared/000014_permissions.up.sql
+CREATE TABLE permissions (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    can_manage      BOOLEAN NOT NULL DEFAULT false,
-    PRIMARY KEY (library_id, user_id)
+
+    -- Polymorphic reference (permission knows what it's for)
+    resource_type   VARCHAR(50) NOT NULL,   -- 'movie_library', 'tv_library', 'c.adult_library'
+    resource_id     UUID NOT NULL,          -- UUID of the actual resource
+
+    -- Permission level
+    permission      VARCHAR(50) NOT NULL,   -- 'view', 'manage', 'admin'
+
+    granted_by      UUID REFERENCES users(id),
+    granted_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    UNIQUE (user_id, resource_type, resource_id, permission)
 );
+
+CREATE INDEX idx_permissions_user ON permissions(user_id);
+CREATE INDEX idx_permissions_resource ON permissions(resource_type, resource_id);
 ```
 
-Modules register/unregister on library create/delete via triggers or service calls.
+### Why Polymorphic?
+
+1. **No registry to maintain** - Modules don't register/unregister
+2. **Permission owns the reference** - Self-describing, no joins needed
+3. **Works for any resource** - Libraries, items, playlists, etc.
+4. **Module isolation** - Each module handles its own FK validation
+5. **No giant join table** - Smaller, faster queries
+
+### Usage Pattern
+
+```go
+// Check permission - module validates resource exists
+func (s *MovieModule) CanAccess(ctx context.Context, userID, libraryID uuid.UUID) (bool, error) {
+    // Check if user owns the library
+    lib, err := s.repo.GetLibrary(ctx, libraryID)
+    if err != nil {
+        return false, err
+    }
+    if lib.OwnerUserID == userID {
+        return true, nil
+    }
+
+    // Check polymorphic permission
+    return s.permissions.HasPermission(ctx, userID, "movie_library", libraryID, "view")
+}
+
+// List accessible libraries - query module table + filter by permissions
+func (s *MovieModule) ListLibraries(ctx context.Context, userID uuid.UUID) ([]Library, error) {
+    // Get all libraries user owns OR has permission for
+    return s.repo.ListAccessibleLibraries(ctx, userID)
+}
+```
+
+### Listing All Libraries (UI)
+
+For unified listing, query each enabled module in parallel:
+
+```go
+func (s *LibraryService) ListAllLibraries(ctx context.Context, userID uuid.UUID) ([]LibraryInfo, error) {
+    var results []LibraryInfo
+    var mu sync.Mutex
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, module := range s.enabledModules {
+        module := module
+        g.Go(func() error {
+            libs, err := module.ListLibraries(ctx, userID)
+            if err != nil {
+                return err
+            }
+            mu.Lock()
+            results = append(results, libs...)
+            mu.Unlock()
+            return nil
+        })
+    }
+
+    if err := g.Wait(); err != nil {
+        return nil, err
+    }
+    return results, nil
+}
+```
 
 ---
 
