@@ -26,6 +26,8 @@ applyTo: "**"
 | [koanf-configuration](koanf-configuration.instructions.md)         | `github.com/knadh/koanf/v2` | [koanf.md](../../docs/dev/sources/tooling/koanf.md)            |
 | [go-features](go-features.instructions.md)                         | Go 1.25 stdlib              | [release-notes.md](../../docs/dev/sources/go/release-notes.md) |
 | [testing-patterns](testing-patterns.instructions.md)               | `testing`, `testify`        | [testify.md](../../docs/dev/sources/testing/testify.md)        |
+| [service-layer-patterns](service-layer-patterns.instructions.md)   | —                           | [Services](../../docs/dev/design/services/INDEX.md)            |
+| [http-handler-patterns](http-handler-patterns.instructions.md)     | `ogen`                      | [API.md](../../docs/dev/design/technical/API.md)               |
 
 ---
 
@@ -69,8 +71,8 @@ See [BEST_PRACTICES.md#caching](../../docs/dev/design/operations/BEST_PRACTICES.
 
 | Instruction                                                      | Design Docs                                                                                                                                                                |
 | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [content-modules](content-modules.instructions.md)               | [LIBRARY_TYPES.md](../../docs/dev/design/features/LIBRARY_TYPES.md)                                                                                                        |
-| [adult-modules](adult-modules.instructions.md)                   | [ADULT_CONTENT_SYSTEM.md](../../docs/dev/design/features/ADULT_CONTENT_SYSTEM.md), [WHISPARR_STASHDB_SCHEMA.md](../../docs/dev/design/features/WHISPARR_STASHDB_SCHEMA.md) |
+| [content-modules](content-modules.instructions.md)               | [LIBRARY_TYPES.md](../../docs/dev/design/features/shared/LIBRARY_TYPES.md)                                                                                                        |
+| [adult-modules](adult-modules.instructions.md)                   | [ADULT_CONTENT_SYSTEM.md](../../docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md), [WHISPARR_STASHDB_SCHEMA.md](../../docs/dev/design/features/adult/WHISPARR_STASHDB_SCHEMA.md) |
 | [metadata-providers](metadata-providers.instructions.md)         | [METADATA_SYSTEM.md](../../docs/dev/design/architecture/METADATA_SYSTEM.md)                                                                                                |
 | [fsnotify-file-watching](fsnotify-file-watching.instructions.md) | [fsnotify.md](../../docs/dev/sources/tooling/fsnotify.md)                                                                                                                  |
 
@@ -95,7 +97,7 @@ See [docs/dev/design/integrations/metadata/](../../docs/dev/design/integrations/
 | ---------------------------------------------------------- | ------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
 | [river-job-queue](river-job-queue.instructions.md)         | `river` | [river.md](../../docs/dev/sources/tooling/river.md)          | [RIVER.md](../../docs/dev/design/integrations/infrastructure/RIVER.md)         |
 | [oidc-authentication](oidc-authentication.instructions.md) | —       | [oidc-core.md](../../docs/dev/sources/security/oidc-core.md) | [docs/dev/design/integrations/auth/](../../docs/dev/design/integrations/auth/) |
-| [external-services](external-services.instructions.md)     | —       | —                                                            | [SCROBBLING.md](../../docs/dev/design/features/SCROBBLING.md)                  |
+| [external-services](external-services.instructions.md)     | —       | —                                                            | [SCROBBLING.md](../../docs/dev/design/features/shared/SCROBBLING.md)                  |
 
 ### Scrobbling Services
 
@@ -113,7 +115,7 @@ See [docs/dev/design/integrations/metadata/](../../docs/dev/design/integrations/
 | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | [streaming-best-practices](streaming-best-practices.instructions.md) | [AUDIO_STREAMING.md](../../docs/dev/design/technical/AUDIO_STREAMING.md)                                                                      |
 | [player-architecture](player-architecture.instructions.md)           | [PLAYER_ARCHITECTURE.md](../../docs/dev/design/architecture/PLAYER_ARCHITECTURE.md)                                                           |
-| [client-detection](client-detection.instructions.md)                 | [CLIENT_SUPPORT.md](../../docs/dev/design/features/CLIENT_SUPPORT.md)                                                                         |
+| [client-detection](client-detection.instructions.md)                 | [CLIENT_SUPPORT.md](../../docs/dev/design/features/shared/CLIENT_SUPPORT.md)                                                                         |
 | [disk-cache](disk-cache.instructions.md)                             | [BEST_PRACTICES.md#disk-cache](../../docs/dev/design/operations/BEST_PRACTICES.md)                                                            |
 | [offloading-patterns](offloading-patterns.instructions.md)           | [OFFLOADING.md](../../docs/dev/design/technical/OFFLOADING.md), [BLACKBEARD.md](../../docs/dev/design/integrations/transcoding/BLACKBEARD.md) |
 | [media-processing](media-processing.instructions.md)                 | go-astiav (FFmpeg), bimg, dhowden/tag, go-astisub, go-blurhash                                                                                |

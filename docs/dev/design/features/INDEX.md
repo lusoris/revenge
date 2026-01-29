@@ -54,6 +54,14 @@ Features related to media playback and streaming.
 
 ## Module-Specific Features
 
+### Video (Movies & TV Shows)
+
+| Feature | Document | Status |
+|---------|----------|--------|
+| Video Overview | [video/INDEX.md](video/INDEX.md) | ✅ Code exists |
+| Movie Module | [video/MOVIE_MODULE.md](video/MOVIE_MODULE.md) | ✅ Code exists |
+| TV Show Module | [video/TVSHOW_MODULE.md](video/TVSHOW_MODULE.md) | ✅ Code exists |
+
 ### Photos
 
 | Feature | Document | Status |

@@ -87,8 +87,6 @@ Analysis, user research, and technology evaluations.
 
 - [User Pain Points Research](design/research/USER_PAIN_POINTS_RESEARCH.md) - Jellyfin/Plex/Emby issues
 - [UX/UI Resources](design/research/UX_UI_RESOURCES.md) - Design patterns and resources
-- [Go Packages Research](../archive/reports/GO_PACKAGES_RESEARCH.md) - Awesome-Go analysis (archived)
-- [Documentation Gap Analysis](../archive/reports/DOCUMENTATION_GAP_ANALYSIS.md) - Documentation coverage audit (archived)
 
 ### [Technical](design/technical/)
 API design, frontend architecture, and technical documentation.
@@ -99,13 +97,20 @@ API design, frontend architecture, and technical documentation.
 - [Audio Streaming](design/technical/AUDIO_STREAMING.md) - Audio streaming architecture
 - [Offloading](design/technical/OFFLOADING.md) - Task offloading patterns
 
-### Archived Planning Docs
-Historical planning and analysis documents.
+### [Services](design/services/)
+Core application services implementing business logic.
 
-- [Documentation Analysis](../archive/reports/DOCUMENTATION_ANALYSIS.md) - Historical analysis
-- [Preparation Master Plan](../archive/planning/PREPARATION_MASTER_PLAN.md) - Pre-implementation checklist
-- [Module Implementation TODO](../archive/planning/MODULE_IMPLEMENTATION_TODO.md) - Module rollout (archived)
-- [Restructuring Plan](../archive/planning/RESTRUCTURING_PLAN.md) - Codebase restructuring plan
+- [Services Overview](design/services/INDEX.md) - Service layer architecture
+- [Auth Service](design/services/AUTH.md) - Authentication, registration, password management
+- [User Service](design/services/USER.md) - User CRUD, roles, profile management
+- [Session Service](design/services/SESSION.md) - Session tokens, device tracking
+- [Library Service](design/services/LIBRARY.md) - Library CRUD, access control
+- [Metadata Service](design/services/METADATA.md) - TMDb, Radarr providers
+- [RBAC Service](design/services/RBAC.md) - Casbin permission management
+- [OIDC Service](design/services/OIDC.md) - SSO provider management
+- [API Keys Service](design/services/APIKEYS.md) - API key management
+- [Activity Service](design/services/ACTIVITY.md) - Audit logging
+- [Settings Service](design/services/SETTINGS.md) - Server settings
 
 ---
 

@@ -296,5 +296,5 @@ if playlist.OwnerID == user.ID {
 
 ## Related
 
-- [RBAC_CASBIN.md](../../docs/dev/design/features/RBAC_CASBIN.md) - Full documentation
+- [RBAC_CASBIN.md](../../docs/dev/design/features/shared/RBAC_CASBIN.md) - Full documentation
 - [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture

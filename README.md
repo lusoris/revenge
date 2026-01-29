@@ -100,25 +100,44 @@ All documentation lives in [docs/dev/](docs/dev/INDEX.md).
 - [Architecture V2](docs/dev/design/architecture/ARCHITECTURE_V2.md) - Complete modular architecture
 - [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices with rationale
 - [Design Principles](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
+- [Configuration Reference](docs/dev/design/technical/CONFIGURATION.md) - koanf configuration options
+
+### Services
+- [Services Index](docs/dev/design/services/INDEX.md) - Service layer overview
+- [Auth Service](docs/dev/design/services/AUTH.md) - Authentication and login flows
+- [User Service](docs/dev/design/services/USER.md) - User management and roles
+- [Session Service](docs/dev/design/services/SESSION.md) - Token and session management
+- [Library Service](docs/dev/design/services/LIBRARY.md) - Library management and scanning
+- [RBAC Service](docs/dev/design/services/RBAC.md) - Casbin role-based access control
+- [OIDC Service](docs/dev/design/services/OIDC.md) - SSO provider integration
+- [Settings Service](docs/dev/design/services/SETTINGS.md) - Server settings persistence
+
+### Content Modules
+- [Movie Module](docs/dev/design/features/video/MOVIE_MODULE.md) - Movie content management
+- [TV Show Module](docs/dev/design/features/video/TVSHOW_MODULE.md) - Series, seasons, episodes
 
 ### Features
 - [Metadata System](docs/dev/design/architecture/METADATA_SYSTEM.md) - Servarr-first metadata with fallback providers
-- [Watch Next / Continue Watching](docs/dev/design/features/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
-- [Release Calendar](docs/dev/design/features/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
-- [Request System](docs/dev/design/features/REQUEST_SYSTEM.md) - Content requests with polls, voting, RBAC rules
-- [Content Rating](docs/dev/design/features/CONTENT_RATING.md) - Module-specific age restriction systems
+- [Watch Next / Continue Watching](docs/dev/design/features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
+- [Release Calendar](docs/dev/design/features/playback/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
+- [Request System](docs/dev/design/features/shared/REQUEST_SYSTEM.md) - Content requests with polls, voting, RBAC rules
+- [Content Rating](docs/dev/design/features/shared/CONTENT_RATING.md) - Module-specific age restriction systems
 - [Audio Streaming](docs/dev/design/technical/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
-- [Scrobbling](docs/dev/design/features/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
-- [RBAC with Casbin](docs/dev/design/features/RBAC_CASBIN.md) - Dynamic role-based access control
+- [Scrobbling](docs/dev/design/features/shared/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
+- [RBAC with Casbin](docs/dev/design/features/shared/RBAC_CASBIN.md) - Dynamic role-based access control
 
 ### Integrations
 - [Servarr Index](docs/dev/design/integrations/servarr/INDEX.md) - Radarr, Sonarr, Lidarr, Whisparr, Chaptarr
 - [Metadata Providers](docs/dev/design/integrations/metadata/INDEX.md) - TMDb, MusicBrainz, AniList, etc.
+- [Authentication Providers](docs/dev/design/integrations/auth/INDEX.md) - Authelia, Authentik, Keycloak
 
 ### Operations
 - [Setup Guide](docs/dev/design/operations/SETUP.md) - Production deployment
 - [Development Guide](docs/dev/design/operations/DEVELOPMENT.md) - Development environment
 - [Best Practices](docs/dev/design/operations/BEST_PRACTICES.md) - Resilience, observability patterns
+
+### Development Instructions
+- [Instructions Index](.github/instructions/INDEX.instructions.md) - AI-assisted development guidelines
 
 ---
 
