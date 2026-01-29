@@ -169,16 +169,16 @@ func (s *Service) ListByUser(ctx context.Context, userID uuid.UUID) ([]db.Sessio
 	return sessions, nil
 }
 
-// UpdateActivity updates the last activity time for a session.
-func (s *Service) UpdateActivity(ctx context.Context, sessionID uuid.UUID, profileID *uuid.UUID) error {
-	var pid pgtype.UUID
-	if profileID != nil {
-		pid = pgtype.UUID{Bytes: *profileID, Valid: true}
+// UpdateActivity updates the last activity time and IP address for a session.
+func (s *Service) UpdateActivity(ctx context.Context, sessionID uuid.UUID, ipAddress *netip.Addr) error {
+	var ip netip.Addr
+	if ipAddress != nil {
+		ip = *ipAddress
 	}
 
 	if err := s.queries.UpdateSessionActivity(ctx, db.UpdateSessionActivityParams{
 		ID:        sessionID,
-		ProfileID: pid,
+		IpAddress: ip,
 	}); err != nil {
 		return fmt.Errorf("update activity: %w", err)
 	}

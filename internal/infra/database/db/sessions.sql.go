@@ -262,16 +262,16 @@ func (q *Queries) ListSessionsByUser(ctx context.Context, userID uuid.UUID) ([]S
 const updateSessionActivity = `-- name: UpdateSessionActivity :exec
 UPDATE sessions SET
     last_activity = NOW(),
-    profile_id = COALESCE($1, profile_id)
+    ip_address = COALESCE($1, ip_address)
 WHERE id = $2
 `
 
 type UpdateSessionActivityParams struct {
-	ProfileID pgtype.UUID `json:"profileId"`
-	ID        uuid.UUID   `json:"id"`
+	IpAddress netip.Addr `json:"ipAddress"`
+	ID        uuid.UUID  `json:"id"`
 }
 
 func (q *Queries) UpdateSessionActivity(ctx context.Context, arg UpdateSessionActivityParams) error {
-	_, err := q.db.Exec(ctx, updateSessionActivity, arg.ProfileID, arg.ID)
+	_, err := q.db.Exec(ctx, updateSessionActivity, arg.IpAddress, arg.ID)
 	return err
 }

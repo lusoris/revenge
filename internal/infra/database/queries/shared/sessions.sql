@@ -28,7 +28,7 @@ INSERT INTO sessions (
 -- name: UpdateSessionActivity :exec
 UPDATE sessions SET
     last_activity = NOW(),
-    profile_id = COALESCE(sqlc.narg('profile_id'), profile_id)
+    ip_address = COALESCE(sqlc.narg('ip_address'), ip_address)
 WHERE id = sqlc.arg('id');
 
 -- name: DeactivateSession :exec
