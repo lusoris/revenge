@@ -8,37 +8,10 @@ package db
 import (
 	"context"
 	"encoding/json"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
-
-const assignGenreToMediaItem = `-- name: AssignGenreToMediaItem :exec
-
-INSERT INTO media_item_genres (media_item_id, genre_id, source, confidence)
-VALUES ($1, $2, $3, $4)
-ON CONFLICT (media_item_id, genre_id) DO UPDATE
-SET source = EXCLUDED.source, confidence = EXCLUDED.confidence
-`
-
-type AssignGenreToMediaItemParams struct {
-	MediaItemID uuid.UUID      `json:"mediaItemId"`
-	GenreID     uuid.UUID      `json:"genreId"`
-	Source      string         `json:"source"`
-	Confidence  pgtype.Numeric `json:"confidence"`
-}
-
-// Media Item Genre Associations
-func (q *Queries) AssignGenreToMediaItem(ctx context.Context, arg AssignGenreToMediaItemParams) error {
-	_, err := q.db.Exec(ctx, assignGenreToMediaItem,
-		arg.MediaItemID,
-		arg.GenreID,
-		arg.Source,
-		arg.Confidence,
-	)
-	return err
-}
 
 const countGenresByDomain = `-- name: CountGenresByDomain :one
 SELECT COUNT(*) FROM genres WHERE domain = $1
@@ -46,19 +19,6 @@ SELECT COUNT(*) FROM genres WHERE domain = $1
 
 func (q *Queries) CountGenresByDomain(ctx context.Context, domain GenreDomain) (int64, error) {
 	row := q.db.QueryRow(ctx, countGenresByDomain, domain)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
-const countMediaItemsWithGenre = `-- name: CountMediaItemsWithGenre :one
-SELECT COUNT(DISTINCT media_item_id)
-FROM media_item_genres
-WHERE genre_id = $1
-`
-
-func (q *Queries) CountMediaItemsWithGenre(ctx context.Context, genreID uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, countMediaItemsWithGenre, genreID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -74,7 +34,7 @@ type CreateGenreParams struct {
 	Domain      GenreDomain     `json:"domain"`
 	Name        string          `json:"name"`
 	Slug        string          `json:"slug"`
-	Description pgtype.Text     `json:"description"`
+	Description *string         `json:"description"`
 	ParentID    pgtype.UUID     `json:"parentId"`
 	ExternalIds json.RawMessage `json:"externalIds"`
 }
@@ -140,9 +100,7 @@ func (q *Queries) GenreSlugExists(ctx context.Context, arg GenreSlugExistsParams
 }
 
 const getGenreByID = `-- name: GetGenreByID :one
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
-WHERE id = $1
+SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at FROM genres WHERE id = $1
 `
 
 func (q *Queries) GetGenreByID(ctx context.Context, id uuid.UUID) (Genre, error) {
@@ -163,9 +121,7 @@ func (q *Queries) GetGenreByID(ctx context.Context, id uuid.UUID) (Genre, error)
 }
 
 const getGenreBySlug = `-- name: GetGenreBySlug :one
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
-WHERE domain = $1 AND slug = $2
+SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at FROM genres WHERE domain = $1 AND slug = $2
 `
 
 type GetGenreBySlugParams struct {
@@ -190,41 +146,8 @@ func (q *Queries) GetGenreBySlug(ctx context.Context, arg GetGenreBySlugParams) 
 	return i, err
 }
 
-const getMediaItemGenres = `-- name: GetMediaItemGenres :many
-SELECT mig.media_item_id, mig.genre_id, mig.source, mig.confidence, mig.created_at
-FROM media_item_genres mig
-WHERE mig.media_item_id = $1
-`
-
-func (q *Queries) GetMediaItemGenres(ctx context.Context, mediaItemID uuid.UUID) ([]MediaItemGenre, error) {
-	rows, err := q.db.Query(ctx, getMediaItemGenres, mediaItemID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []MediaItemGenre{}
-	for rows.Next() {
-		var i MediaItemGenre
-		if err := rows.Scan(
-			&i.MediaItemID,
-			&i.GenreID,
-			&i.Source,
-			&i.Confidence,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listChildGenres = `-- name: ListChildGenres :many
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
+SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at FROM genres
 WHERE parent_id = $1
 ORDER BY name ASC
 `
@@ -260,8 +183,7 @@ func (q *Queries) ListChildGenres(ctx context.Context, parentID pgtype.UUID) ([]
 }
 
 const listGenresByDomain = `-- name: ListGenresByDomain :many
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
+SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at FROM genres
 WHERE domain = $1
 ORDER BY name ASC
 `
@@ -296,108 +218,8 @@ func (q *Queries) ListGenresByDomain(ctx context.Context, domain GenreDomain) ([
 	return items, nil
 }
 
-const listGenresForMediaItem = `-- name: ListGenresForMediaItem :many
-SELECT g.id, g.domain, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at
-FROM genres g
-INNER JOIN media_item_genres mig ON mig.genre_id = g.id
-WHERE mig.media_item_id = $1
-ORDER BY g.name ASC
-`
-
-func (q *Queries) ListGenresForMediaItem(ctx context.Context, mediaItemID uuid.UUID) ([]Genre, error) {
-	rows, err := q.db.Query(ctx, listGenresForMediaItem, mediaItemID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Genre{}
-	for rows.Next() {
-		var i Genre
-		if err := rows.Scan(
-			&i.ID,
-			&i.Domain,
-			&i.Name,
-			&i.Slug,
-			&i.Description,
-			&i.ParentID,
-			&i.ExternalIds,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listGenresWithCounts = `-- name: ListGenresWithCounts :many
-SELECT 
-    g.id, g.domain, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at,
-    COUNT(mig.media_item_id) as item_count
-FROM genres g
-LEFT JOIN media_item_genres mig ON mig.genre_id = g.id
-WHERE g.domain = $1
-GROUP BY g.id
-ORDER BY item_count DESC, g.name ASC
-LIMIT $2
-`
-
-type ListGenresWithCountsParams struct {
-	Domain GenreDomain `json:"domain"`
-	Limit  int32       `json:"limit"`
-}
-
-type ListGenresWithCountsRow struct {
-	ID          uuid.UUID       `json:"id"`
-	Domain      GenreDomain     `json:"domain"`
-	Name        string          `json:"name"`
-	Slug        string          `json:"slug"`
-	Description pgtype.Text     `json:"description"`
-	ParentID    pgtype.UUID     `json:"parentId"`
-	ExternalIds json.RawMessage `json:"externalIds"`
-	CreatedAt   time.Time       `json:"createdAt"`
-	UpdatedAt   time.Time       `json:"updatedAt"`
-	ItemCount   int64           `json:"itemCount"`
-}
-
-func (q *Queries) ListGenresWithCounts(ctx context.Context, arg ListGenresWithCountsParams) ([]ListGenresWithCountsRow, error) {
-	rows, err := q.db.Query(ctx, listGenresWithCounts, arg.Domain, arg.Limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []ListGenresWithCountsRow{}
-	for rows.Next() {
-		var i ListGenresWithCountsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Domain,
-			&i.Name,
-			&i.Slug,
-			&i.Description,
-			&i.ParentID,
-			&i.ExternalIds,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.ItemCount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listTopLevelGenresByDomain = `-- name: ListTopLevelGenresByDomain :many
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
+SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at FROM genres
 WHERE domain = $1 AND parent_id IS NULL
 ORDER BY name ASC
 `
@@ -432,44 +254,18 @@ func (q *Queries) ListTopLevelGenresByDomain(ctx context.Context, domain GenreDo
 	return items, nil
 }
 
-const removeAllGenresFromMediaItem = `-- name: RemoveAllGenresFromMediaItem :exec
-DELETE FROM media_item_genres
-WHERE media_item_id = $1
-`
-
-func (q *Queries) RemoveAllGenresFromMediaItem(ctx context.Context, mediaItemID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, removeAllGenresFromMediaItem, mediaItemID)
-	return err
-}
-
-const removeGenreFromMediaItem = `-- name: RemoveGenreFromMediaItem :exec
-DELETE FROM media_item_genres
-WHERE media_item_id = $1 AND genre_id = $2
-`
-
-type RemoveGenreFromMediaItemParams struct {
-	MediaItemID uuid.UUID `json:"mediaItemId"`
-	GenreID     uuid.UUID `json:"genreId"`
-}
-
-func (q *Queries) RemoveGenreFromMediaItem(ctx context.Context, arg RemoveGenreFromMediaItemParams) error {
-	_, err := q.db.Exec(ctx, removeGenreFromMediaItem, arg.MediaItemID, arg.GenreID)
-	return err
-}
-
 const searchGenres = `-- name: SearchGenres :many
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
+SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at FROM genres
 WHERE domain = $1 AND name ILIKE '%' || $2 || '%'
-ORDER BY 
-    CASE WHEN name ILIKE $2 THEN 0 ELSE 1 END,  -- Exact matches first
+ORDER BY
+    CASE WHEN name ILIKE $2 THEN 0 ELSE 1 END,
     name ASC
 LIMIT $3
 `
 
 type SearchGenresParams struct {
 	Domain  GenreDomain `json:"domain"`
-	Column2 pgtype.Text `json:"column2"`
+	Column2 *string     `json:"column2"`
 	Limit   int32       `json:"limit"`
 }
 
@@ -503,69 +299,21 @@ func (q *Queries) SearchGenres(ctx context.Context, arg SearchGenresParams) ([]G
 	return items, nil
 }
 
-const searchGenresAllDomains = `-- name: SearchGenresAllDomains :many
-SELECT id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
-FROM genres
-WHERE name ILIKE '%' || $1 || '%'
-ORDER BY 
-    CASE WHEN name ILIKE $1 THEN 0 ELSE 1 END,
-    domain ASC,
-    name ASC
-LIMIT $2
-`
-
-type SearchGenresAllDomainsParams struct {
-	Column1 pgtype.Text `json:"column1"`
-	Limit   int32       `json:"limit"`
-}
-
-func (q *Queries) SearchGenresAllDomains(ctx context.Context, arg SearchGenresAllDomainsParams) ([]Genre, error) {
-	rows, err := q.db.Query(ctx, searchGenresAllDomains, arg.Column1, arg.Limit)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Genre{}
-	for rows.Next() {
-		var i Genre
-		if err := rows.Scan(
-			&i.ID,
-			&i.Domain,
-			&i.Name,
-			&i.Slug,
-			&i.Description,
-			&i.ParentID,
-			&i.ExternalIds,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const updateGenre = `-- name: UpdateGenre :one
-UPDATE genres
-SET 
+UPDATE genres SET
     name = COALESCE($1, name),
     slug = COALESCE($2, slug),
     description = COALESCE($3, description),
     parent_id = $4,
-    external_ids = COALESCE($5, external_ids),
-    updated_at = NOW()
+    external_ids = COALESCE($5, external_ids)
 WHERE id = $6
 RETURNING id, domain, name, slug, description, parent_id, external_ids, created_at, updated_at
 `
 
 type UpdateGenreParams struct {
-	Name        pgtype.Text `json:"name"`
-	Slug        pgtype.Text `json:"slug"`
-	Description pgtype.Text `json:"description"`
+	Name        *string     `json:"name"`
+	Slug        *string     `json:"slug"`
+	Description *string     `json:"description"`
 	ParentID    pgtype.UUID `json:"parentId"`
 	ExternalIds []byte      `json:"externalIds"`
 	ID          uuid.UUID   `json:"id"`

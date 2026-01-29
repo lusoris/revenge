@@ -15,61 +15,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type ActivityType string
-
-const (
-	ActivityTypeUserLogin           ActivityType = "user_login"
-	ActivityTypeUserLogout          ActivityType = "user_logout"
-	ActivityTypeUserCreated         ActivityType = "user_created"
-	ActivityTypeUserDeleted         ActivityType = "user_deleted"
-	ActivityTypePlaybackStart       ActivityType = "playback_start"
-	ActivityTypePlaybackStop        ActivityType = "playback_stop"
-	ActivityTypePlaybackProgress    ActivityType = "playback_progress"
-	ActivityTypeLibraryScanStart    ActivityType = "library_scan_start"
-	ActivityTypeLibraryScanComplete ActivityType = "library_scan_complete"
-	ActivityTypeItemAdded           ActivityType = "item_added"
-	ActivityTypeItemRemoved         ActivityType = "item_removed"
-	ActivityTypeItemUpdated         ActivityType = "item_updated"
-	ActivityTypeSystemStart         ActivityType = "system_start"
-	ActivityTypeSystemStop          ActivityType = "system_stop"
-	ActivityTypeSystemUpdate        ActivityType = "system_update"
-)
-
-func (e *ActivityType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = ActivityType(s)
-	case string:
-		*e = ActivityType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for ActivityType: %T", src)
-	}
-	return nil
-}
-
-type NullActivityType struct {
-	ActivityType ActivityType `json:"activityType"`
-	Valid        bool         `json:"valid"` // Valid is true if ActivityType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullActivityType) Scan(value interface{}) error {
-	if value == nil {
-		ns.ActivityType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.ActivityType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullActivityType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.ActivityType), nil
-}
-
 type GenreDomain string
 
 const (
@@ -79,6 +24,7 @@ const (
 	GenreDomainBook    GenreDomain = "book"
 	GenreDomainPodcast GenreDomain = "podcast"
 	GenreDomainGame    GenreDomain = "game"
+	GenreDomainAdult   GenreDomain = "adult"
 )
 
 func (e *GenreDomain) Scan(src interface{}) error {
@@ -116,74 +62,20 @@ func (ns NullGenreDomain) Value() (driver.Value, error) {
 	return string(ns.GenreDomain), nil
 }
 
-type ImageType string
-
-const (
-	ImageTypePrimary    ImageType = "primary"
-	ImageTypeBackdrop   ImageType = "backdrop"
-	ImageTypeLogo       ImageType = "logo"
-	ImageTypeThumb      ImageType = "thumb"
-	ImageTypeBanner     ImageType = "banner"
-	ImageTypeArt        ImageType = "art"
-	ImageTypeDisc       ImageType = "disc"
-	ImageTypeBox        ImageType = "box"
-	ImageTypeScreenshot ImageType = "screenshot"
-	ImageTypeChapter    ImageType = "chapter"
-)
-
-func (e *ImageType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = ImageType(s)
-	case string:
-		*e = ImageType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for ImageType: %T", src)
-	}
-	return nil
-}
-
-type NullImageType struct {
-	ImageType ImageType `json:"imageType"`
-	Valid     bool      `json:"valid"` // Valid is true if ImageType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullImageType) Scan(value interface{}) error {
-	if value == nil {
-		ns.ImageType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.ImageType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullImageType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.ImageType), nil
-}
-
 type LibraryType string
 
 const (
-	LibraryTypeMovies      LibraryType = "movies"
-	LibraryTypeTvshows     LibraryType = "tvshows"
-	LibraryTypeMusic       LibraryType = "music"
-	LibraryTypePhotos      LibraryType = "photos"
-	LibraryTypeMixed       LibraryType = "mixed"
-	LibraryTypeMusicvideos LibraryType = "musicvideos"
-	LibraryTypeHomevideos  LibraryType = "homevideos"
-	LibraryTypeBoxsets     LibraryType = "boxsets"
-	LibraryTypeLivetv      LibraryType = "livetv"
-	LibraryTypePlaylists   LibraryType = "playlists"
-	LibraryTypeBooks       LibraryType = "books"
-	LibraryTypeAudiobooks  LibraryType = "audiobooks"
-	LibraryTypePodcasts    LibraryType = "podcasts"
-	LibraryTypeAdultMovies LibraryType = "adult_movies"
-	LibraryTypeAdultShows  LibraryType = "adult_shows"
+	LibraryTypeMovie      LibraryType = "movie"
+	LibraryTypeTvshow     LibraryType = "tvshow"
+	LibraryTypeMusic      LibraryType = "music"
+	LibraryTypeAudiobook  LibraryType = "audiobook"
+	LibraryTypeBook       LibraryType = "book"
+	LibraryTypePodcast    LibraryType = "podcast"
+	LibraryTypePhoto      LibraryType = "photo"
+	LibraryTypeLivetv     LibraryType = "livetv"
+	LibraryTypeComics     LibraryType = "comics"
+	LibraryTypeAdultMovie LibraryType = "adult_movie"
+	LibraryTypeAdultShow  LibraryType = "adult_show"
 )
 
 func (e *LibraryType) Scan(src interface{}) error {
@@ -221,142 +113,32 @@ func (ns NullLibraryType) Value() (driver.Value, error) {
 	return string(ns.LibraryType), nil
 }
 
-type MediaType string
-
-const (
-	MediaTypeMovie            MediaType = "movie"
-	MediaTypeSeries           MediaType = "series"
-	MediaTypeSeason           MediaType = "season"
-	MediaTypeEpisode          MediaType = "episode"
-	MediaTypeArtist           MediaType = "artist"
-	MediaTypeAlbum            MediaType = "album"
-	MediaTypeAudio            MediaType = "audio"
-	MediaTypePhoto            MediaType = "photo"
-	MediaTypePhotoAlbum       MediaType = "photo_album"
-	MediaTypeFolder           MediaType = "folder"
-	MediaTypeMusicvideo       MediaType = "musicvideo"
-	MediaTypeTrailer          MediaType = "trailer"
-	MediaTypeHomevideo        MediaType = "homevideo"
-	MediaTypeAudiobookChapter MediaType = "audiobook_chapter"
-	MediaTypePodcastEpisode   MediaType = "podcast_episode"
-	MediaTypeBook             MediaType = "book"
-	MediaTypeAudiobook        MediaType = "audiobook"
-	MediaTypePodcast          MediaType = "podcast"
-	MediaTypeBoxset           MediaType = "boxset"
-	MediaTypePlaylist         MediaType = "playlist"
-	MediaTypeChannel          MediaType = "channel"
-	MediaTypeProgram          MediaType = "program"
-	MediaTypeRecording        MediaType = "recording"
-)
-
-func (e *MediaType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = MediaType(s)
-	case string:
-		*e = MediaType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for MediaType: %T", src)
-	}
-	return nil
-}
-
-type NullMediaType struct {
-	MediaType MediaType `json:"mediaType"`
-	Valid     bool      `json:"valid"` // Valid is true if MediaType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullMediaType) Scan(value interface{}) error {
-	if value == nil {
-		ns.MediaType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.MediaType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullMediaType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.MediaType), nil
-}
-
-type PersonType string
-
-const (
-	PersonTypeActor     PersonType = "actor"
-	PersonTypeDirector  PersonType = "director"
-	PersonTypeWriter    PersonType = "writer"
-	PersonTypeProducer  PersonType = "producer"
-	PersonTypeComposer  PersonType = "composer"
-	PersonTypeGuestStar PersonType = "guest_star"
-)
-
-func (e *PersonType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = PersonType(s)
-	case string:
-		*e = PersonType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for PersonType: %T", src)
-	}
-	return nil
-}
-
-type NullPersonType struct {
-	PersonType PersonType `json:"personType"`
-	Valid      bool       `json:"valid"` // Valid is true if PersonType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullPersonType) Scan(value interface{}) error {
-	if value == nil {
-		ns.PersonType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.PersonType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullPersonType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.PersonType), nil
-}
-
 type ActivityLog struct {
-	ID            uuid.UUID       `json:"id"`
-	UserID        pgtype.UUID     `json:"userId"`
-	Type          ActivityType    `json:"type"`
-	ItemID        pgtype.UUID     `json:"itemId"`
-	Severity      string          `json:"severity"`
-	Overview      pgtype.Text     `json:"overview"`
-	ShortOverview pgtype.Text     `json:"shortOverview"`
-	Data          json.RawMessage `json:"data"`
-	IpAddress     *netip.Addr     `json:"ipAddress"`
-	CreatedAt     time.Time       `json:"createdAt"`
+	ID        uuid.UUID   `json:"id"`
+	UserID    pgtype.UUID `json:"userId"`
+	ProfileID pgtype.UUID `json:"profileId"`
+	Action    string      `json:"action"`
+	Module    *string     `json:"module"`
+	ItemID    pgtype.UUID `json:"itemId"`
+	ItemType  *string     `json:"itemType"`
+	Details   []byte      `json:"details"`
+	IpAddress netip.Addr  `json:"ipAddress"`
+	UserAgent *string     `json:"userAgent"`
+	Severity  string      `json:"severity"`
+	CreatedAt time.Time   `json:"createdAt"`
 }
 
-type ContentMinRatingLevel struct {
-	ContentID   uuid.UUID   `json:"contentId"`
-	ContentType string      `json:"contentType"`
-	MinLevel    interface{} `json:"minLevel"`
-	IsAdult     bool        `json:"isAdult"`
-}
-
-type ContentRating struct {
-	ID          uuid.UUID   `json:"id"`
-	ContentID   uuid.UUID   `json:"contentId"`
-	ContentType string      `json:"contentType"`
-	RatingID    uuid.UUID   `json:"ratingId"`
-	Source      pgtype.Text `json:"source"`
-	CreatedAt   time.Time   `json:"createdAt"`
+type ApiKey struct {
+	ID         uuid.UUID          `json:"id"`
+	UserID     uuid.UUID          `json:"userId"`
+	Name       string             `json:"name"`
+	KeyHash    string             `json:"keyHash"`
+	KeyPrefix  string             `json:"keyPrefix"`
+	Scopes     []string           `json:"scopes"`
+	LastUsedAt pgtype.Timestamptz `json:"lastUsedAt"`
+	UseCount   int64              `json:"useCount"`
+	ExpiresAt  pgtype.Timestamptz `json:"expiresAt"`
+	CreatedAt  time.Time          `json:"createdAt"`
 }
 
 type Genre struct {
@@ -364,24 +146,11 @@ type Genre struct {
 	Domain      GenreDomain     `json:"domain"`
 	Name        string          `json:"name"`
 	Slug        string          `json:"slug"`
-	Description pgtype.Text     `json:"description"`
+	Description *string         `json:"description"`
 	ParentID    pgtype.UUID     `json:"parentId"`
 	ExternalIds json.RawMessage `json:"externalIds"`
 	CreatedAt   time.Time       `json:"createdAt"`
 	UpdatedAt   time.Time       `json:"updatedAt"`
-}
-
-type Image struct {
-	ID        uuid.UUID   `json:"id"`
-	ItemID    uuid.UUID   `json:"itemId"`
-	Type      ImageType   `json:"type"`
-	Index     int32       `json:"index"`
-	Path      string      `json:"path"`
-	Width     pgtype.Int4 `json:"width"`
-	Height    pgtype.Int4 `json:"height"`
-	Blurhash  pgtype.Text `json:"blurhash"`
-	Provider  pgtype.Text `json:"provider"`
-	CreatedAt time.Time   `json:"createdAt"`
 }
 
 type Library struct {
@@ -389,85 +158,43 @@ type Library struct {
 	Name              string             `json:"name"`
 	Type              LibraryType        `json:"type"`
 	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
+	ScanEnabled       bool               `json:"scanEnabled"`
+	ScanIntervalHours int32              `json:"scanIntervalHours"`
 	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
+	LastScanDuration  pgtype.Interval    `json:"lastScanDuration"`
+	PreferredLanguage *string            `json:"preferredLanguage"`
+	DownloadImages    bool               `json:"downloadImages"`
+	DownloadNfo       bool               `json:"downloadNfo"`
+	GenerateChapters  bool               `json:"generateChapters"`
+	IsPrivate         bool               `json:"isPrivate"`
+	OwnerUserID       pgtype.UUID        `json:"ownerUserId"`
+	SortOrder         int32              `json:"sortOrder"`
+	Icon              *string            `json:"icon"`
 	CreatedAt         time.Time          `json:"createdAt"`
 	UpdatedAt         time.Time          `json:"updatedAt"`
-	// Whether this library contains adult (XXX) content. Auto-set for adult_movies/adult_shows types.
-	IsAdult bool `json:"isAdult"`
 }
 
-type MediaItem struct {
-	ID                    uuid.UUID          `json:"id"`
-	LibraryID             uuid.UUID          `json:"libraryId"`
-	ParentID              pgtype.UUID        `json:"parentId"`
-	Type                  MediaType          `json:"type"`
-	Name                  string             `json:"name"`
-	SortName              pgtype.Text        `json:"sortName"`
-	Path                  pgtype.Text        `json:"path"`
-	Overview              pgtype.Text        `json:"overview"`
-	Tagline               pgtype.Text        `json:"tagline"`
-	Year                  pgtype.Int4        `json:"year"`
-	PremiereDate          pgtype.Date        `json:"premiereDate"`
-	EndDate               pgtype.Date        `json:"endDate"`
-	RuntimeTicks          pgtype.Int8        `json:"runtimeTicks"`
-	SeasonNumber          pgtype.Int4        `json:"seasonNumber"`
-	EpisodeNumber         pgtype.Int4        `json:"episodeNumber"`
-	AbsoluteEpisodeNumber pgtype.Int4        `json:"absoluteEpisodeNumber"`
-	AlbumArtist           pgtype.Text        `json:"albumArtist"`
-	TrackNumber           pgtype.Int4        `json:"trackNumber"`
-	DiscNumber            pgtype.Int4        `json:"discNumber"`
-	CommunityRating       pgtype.Numeric     `json:"communityRating"`
-	CriticRating          pgtype.Numeric     `json:"criticRating"`
-	ProviderIds           json.RawMessage    `json:"providerIds"`
-	Genres                []string           `json:"genres"`
-	Tags                  []string           `json:"tags"`
-	Studios               []string           `json:"studios"`
-	Container             pgtype.Text        `json:"container"`
-	VideoCodec            pgtype.Text        `json:"videoCodec"`
-	AudioCodec            pgtype.Text        `json:"audioCodec"`
-	Width                 pgtype.Int4        `json:"width"`
-	Height                pgtype.Int4        `json:"height"`
-	Bitrate               pgtype.Int4        `json:"bitrate"`
-	DateCreated           pgtype.Timestamptz `json:"dateCreated"`
-	DateModified          pgtype.Timestamptz `json:"dateModified"`
-	CreatedAt             time.Time          `json:"createdAt"`
-	UpdatedAt             time.Time          `json:"updatedAt"`
-	SearchVector          interface{}        `json:"searchVector"`
-}
-
-type MediaItemGenre struct {
-	MediaItemID uuid.UUID      `json:"mediaItemId"`
-	GenreID     uuid.UUID      `json:"genreId"`
-	Source      string         `json:"source"`
-	Confidence  pgtype.Numeric `json:"confidence"`
-	CreatedAt   time.Time      `json:"createdAt"`
-}
-
-type MediaPerson struct {
-	ItemID    uuid.UUID   `json:"itemId"`
-	PersonID  uuid.UUID   `json:"personId"`
-	Type      PersonType  `json:"type"`
-	Role      pgtype.Text `json:"role"`
-	SortOrder int32       `json:"sortOrder"`
+type LibraryUserAccess struct {
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	CanManage bool      `json:"canManage"`
 }
 
 type OidcProvider struct {
-	ID                    uuid.UUID       `json:"id"`
-	Name                  string          `json:"name"`
-	DisplayName           string          `json:"displayName"`
-	IssuerUrl             string          `json:"issuerUrl"`
-	ClientID              string          `json:"clientId"`
-	ClientSecretEncrypted []byte          `json:"clientSecretEncrypted"`
-	Scopes                []string        `json:"scopes"`
-	Enabled               bool            `json:"enabled"`
-	AutoCreateUsers       bool            `json:"autoCreateUsers"`
-	DefaultAdmin          bool            `json:"defaultAdmin"`
-	ClaimMappings         json.RawMessage `json:"claimMappings"`
-	CreatedAt             time.Time       `json:"createdAt"`
-	UpdatedAt             time.Time       `json:"updatedAt"`
+	ID              uuid.UUID       `json:"id"`
+	Name            string          `json:"name"`
+	Slug            string          `json:"slug"`
+	Enabled         bool            `json:"enabled"`
+	IssuerUrl       string          `json:"issuerUrl"`
+	ClientID        string          `json:"clientId"`
+	ClientSecretEnc []byte          `json:"clientSecretEnc"`
+	Scopes          []string        `json:"scopes"`
+	ClaimMapping    json.RawMessage `json:"claimMapping"`
+	RoleMapping     json.RawMessage `json:"roleMapping"`
+	AutoProvision   bool            `json:"autoProvision"`
+	DefaultRole     string          `json:"defaultRole"`
+	CreatedAt       time.Time       `json:"createdAt"`
+	UpdatedAt       time.Time       `json:"updatedAt"`
 }
 
 type OidcUserLink struct {
@@ -475,103 +202,88 @@ type OidcUserLink struct {
 	UserID      uuid.UUID          `json:"userId"`
 	ProviderID  uuid.UUID          `json:"providerId"`
 	Subject     string             `json:"subject"`
-	Email       pgtype.Text        `json:"email"`
-	CreatedAt   time.Time          `json:"createdAt"`
+	Email       *string            `json:"email"`
+	Name        *string            `json:"name"`
+	Groups      []string           `json:"groups"`
+	LinkedAt    time.Time          `json:"linkedAt"`
 	LastLoginAt pgtype.Timestamptz `json:"lastLoginAt"`
 }
 
 type Person struct {
-	ID          uuid.UUID       `json:"id"`
-	Name        string          `json:"name"`
-	SortName    pgtype.Text     `json:"sortName"`
-	Overview    pgtype.Text     `json:"overview"`
-	BirthDate   pgtype.Date     `json:"birthDate"`
-	DeathDate   pgtype.Date     `json:"deathDate"`
-	BirthPlace  pgtype.Text     `json:"birthPlace"`
-	ProviderIds json.RawMessage `json:"providerIds"`
-	CreatedAt   time.Time       `json:"createdAt"`
+	ID                   uuid.UUID   `json:"id"`
+	Name                 string      `json:"name"`
+	SortName             *string     `json:"sortName"`
+	OriginalName         *string     `json:"originalName"`
+	Biography            *string     `json:"biography"`
+	Birthdate            pgtype.Date `json:"birthdate"`
+	Deathdate            pgtype.Date `json:"deathdate"`
+	Birthplace           *string     `json:"birthplace"`
+	Gender               *string     `json:"gender"`
+	PrimaryImageUrl      *string     `json:"primaryImageUrl"`
+	PrimaryImageBlurhash *string     `json:"primaryImageBlurhash"`
+	TmdbID               *int32      `json:"tmdbId"`
+	ImdbID               *string     `json:"imdbId"`
+	TvdbID               *int32      `json:"tvdbId"`
+	MusicbrainzID        pgtype.UUID `json:"musicbrainzId"`
+	CreatedAt            time.Time   `json:"createdAt"`
+	UpdatedAt            time.Time   `json:"updatedAt"`
+}
+
+type Profile struct {
+	ID                        uuid.UUID `json:"id"`
+	UserID                    uuid.UUID `json:"userId"`
+	Name                      string    `json:"name"`
+	AvatarUrl                 *string   `json:"avatarUrl"`
+	IsDefault                 bool      `json:"isDefault"`
+	IsKids                    bool      `json:"isKids"`
+	MaxRatingLevel            int32     `json:"maxRatingLevel"`
+	AdultEnabled              bool      `json:"adultEnabled"`
+	PreferredLanguage         *string   `json:"preferredLanguage"`
+	PreferredAudioLanguage    *string   `json:"preferredAudioLanguage"`
+	PreferredSubtitleLanguage *string   `json:"preferredSubtitleLanguage"`
+	AutoplayNext              *bool     `json:"autoplayNext"`
+	AutoplayPreviews          *bool     `json:"autoplayPreviews"`
+	CreatedAt                 time.Time `json:"createdAt"`
+	UpdatedAt                 time.Time `json:"updatedAt"`
+}
+
+type ServerSetting struct {
+	Key         string          `json:"key"`
+	Value       json.RawMessage `json:"value"`
+	Description *string         `json:"description"`
+	UpdatedBy   pgtype.UUID     `json:"updatedBy"`
 	UpdatedAt   time.Time       `json:"updatedAt"`
 }
 
-type PlaybackProgress struct {
-	UserID              uuid.UUID          `json:"userId"`
-	ItemID              uuid.UUID          `json:"itemId"`
-	PositionTicks       int64              `json:"positionTicks"`
-	Played              bool               `json:"played"`
-	PlayCount           int32              `json:"playCount"`
-	LastPlayedAt        pgtype.Timestamptz `json:"lastPlayedAt"`
-	AudioStreamIndex    pgtype.Int4        `json:"audioStreamIndex"`
-	SubtitleStreamIndex pgtype.Int4        `json:"subtitleStreamIndex"`
-	CreatedAt           time.Time          `json:"createdAt"`
-	UpdatedAt           time.Time          `json:"updatedAt"`
-}
-
-type Rating struct {
-	ID              uuid.UUID   `json:"id"`
-	SystemID        uuid.UUID   `json:"systemId"`
-	Code            string      `json:"code"`
-	Name            string      `json:"name"`
-	Description     pgtype.Text `json:"description"`
-	MinAge          pgtype.Int4 `json:"minAge"`
-	NormalizedLevel int32       `json:"normalizedLevel"`
-	SortOrder       int32       `json:"sortOrder"`
-	IsAdult         bool        `json:"isAdult"`
-	IconUrl         pgtype.Text `json:"iconUrl"`
-	CreatedAt       time.Time   `json:"createdAt"`
-}
-
-type RatingEquivalent struct {
-	RatingID           uuid.UUID `json:"ratingId"`
-	EquivalentRatingID uuid.UUID `json:"equivalentRatingId"`
-}
-
-type RatingSystem struct {
-	ID           uuid.UUID `json:"id"`
-	Code         string    `json:"code"`
-	Name         string    `json:"name"`
-	CountryCodes []string  `json:"countryCodes"`
-	IsActive     bool      `json:"isActive"`
-	SortOrder    int32     `json:"sortOrder"`
-	CreatedAt    time.Time `json:"createdAt"`
-}
-
 type Session struct {
-	ID               uuid.UUID          `json:"id"`
-	UserID           uuid.UUID          `json:"userId"`
-	TokenHash        string             `json:"tokenHash"`
-	RefreshTokenHash pgtype.Text        `json:"refreshTokenHash"`
-	DeviceID         pgtype.Text        `json:"deviceId"`
-	DeviceName       pgtype.Text        `json:"deviceName"`
-	ClientName       pgtype.Text        `json:"clientName"`
-	ClientVersion    pgtype.Text        `json:"clientVersion"`
-	IpAddress        *netip.Addr        `json:"ipAddress"`
-	ExpiresAt        time.Time          `json:"expiresAt"`
-	RefreshExpiresAt pgtype.Timestamptz `json:"refreshExpiresAt"`
-	CreatedAt        time.Time          `json:"createdAt"`
+	ID            uuid.UUID   `json:"id"`
+	UserID        uuid.UUID   `json:"userId"`
+	ProfileID     pgtype.UUID `json:"profileId"`
+	TokenHash     string      `json:"tokenHash"`
+	DeviceName    *string     `json:"deviceName"`
+	DeviceType    *string     `json:"deviceType"`
+	ClientName    *string     `json:"clientName"`
+	ClientVersion *string     `json:"clientVersion"`
+	IpAddress     netip.Addr  `json:"ipAddress"`
+	UserAgent     *string     `json:"userAgent"`
+	IsActive      bool        `json:"isActive"`
+	LastActivity  time.Time   `json:"lastActivity"`
+	ExpiresAt     time.Time   `json:"expiresAt"`
+	CreatedAt     time.Time   `json:"createdAt"`
 }
 
 type User struct {
-	ID             uuid.UUID          `json:"id"`
-	Username       string             `json:"username"`
-	Email          pgtype.Text        `json:"email"`
-	PasswordHash   pgtype.Text        `json:"passwordHash"`
-	DisplayName    pgtype.Text        `json:"displayName"`
-	IsAdmin        bool               `json:"isAdmin"`
-	IsDisabled     bool               `json:"isDisabled"`
-	LastLoginAt    pgtype.Timestamptz `json:"lastLoginAt"`
-	LastActivityAt pgtype.Timestamptz `json:"lastActivityAt"`
-	CreatedAt      time.Time          `json:"createdAt"`
-	UpdatedAt      time.Time          `json:"updatedAt"`
-	// User birthdate for age-based content filtering
-	Birthdate pgtype.Date `json:"birthdate"`
-	// Maximum normalized rating level (0-100) user can view. Parental override.
-	MaxRatingLevel int32 `json:"maxRatingLevel"`
-	// Whether user can access adult (XXX) content libraries
-	AdultContentEnabled bool `json:"adultContentEnabled"`
-	// Preferred rating system code for display (fsk, mpaa, bbfc)
-	PreferredRatingSystem pgtype.Text `json:"preferredRatingSystem"`
-	// Hashed PIN for temporary unlock of restricted content
-	ParentalPinHash pgtype.Text `json:"parentalPinHash"`
-	// If true, hide restricted content entirely. If false, show as locked.
-	HideRestricted bool `json:"hideRestricted"`
+	ID                    uuid.UUID          `json:"id"`
+	Username              string             `json:"username"`
+	Email                 *string            `json:"email"`
+	PasswordHash          *string            `json:"passwordHash"`
+	IsAdmin               bool               `json:"isAdmin"`
+	IsDisabled            bool               `json:"isDisabled"`
+	MaxRatingLevel        int32              `json:"maxRatingLevel"`
+	AdultEnabled          bool               `json:"adultEnabled"`
+	PreferredLanguage     *string            `json:"preferredLanguage"`
+	PreferredRatingSystem *string            `json:"preferredRatingSystem"`
+	LastLoginAt           pgtype.Timestamptz `json:"lastLoginAt"`
+	CreatedAt             time.Time          `json:"createdAt"`
+	UpdatedAt             time.Time          `json:"updatedAt"`
 }

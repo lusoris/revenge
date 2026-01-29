@@ -14,81 +14,31 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createOIDCProvider = `-- name: CreateOIDCProvider :one
-INSERT INTO oidc_providers (
-    name, display_name, issuer_url, client_id, client_secret_encrypted,
-    scopes, enabled, auto_create_users, default_admin, claim_mappings
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-) RETURNING id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at
-`
-
-type CreateOIDCProviderParams struct {
-	Name                  string          `json:"name"`
-	DisplayName           string          `json:"displayName"`
-	IssuerUrl             string          `json:"issuerUrl"`
-	ClientID              string          `json:"clientId"`
-	ClientSecretEncrypted []byte          `json:"clientSecretEncrypted"`
-	Scopes                []string        `json:"scopes"`
-	Enabled               bool            `json:"enabled"`
-	AutoCreateUsers       bool            `json:"autoCreateUsers"`
-	DefaultAdmin          bool            `json:"defaultAdmin"`
-	ClaimMappings         json.RawMessage `json:"claimMappings"`
-}
-
-func (q *Queries) CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error) {
-	row := q.db.QueryRow(ctx, createOIDCProvider,
-		arg.Name,
-		arg.DisplayName,
-		arg.IssuerUrl,
-		arg.ClientID,
-		arg.ClientSecretEncrypted,
-		arg.Scopes,
-		arg.Enabled,
-		arg.AutoCreateUsers,
-		arg.DefaultAdmin,
-		arg.ClaimMappings,
-	)
-	var i OidcProvider
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.DisplayName,
-		&i.IssuerUrl,
-		&i.ClientID,
-		&i.ClientSecretEncrypted,
-		&i.Scopes,
-		&i.Enabled,
-		&i.AutoCreateUsers,
-		&i.DefaultAdmin,
-		&i.ClaimMappings,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const createOIDCUserLink = `-- name: CreateOIDCUserLink :one
+const createOIDCLink = `-- name: CreateOIDCLink :one
 INSERT INTO oidc_user_links (
-    user_id, provider_id, subject, email
+    user_id, provider_id, subject, email, name, groups
 ) VALUES (
-    $1, $2, $3, $4
-) RETURNING id, user_id, provider_id, subject, email, created_at, last_login_at
+    $1, $2, $3, $4, $5, $6
+) RETURNING id, user_id, provider_id, subject, email, name, groups, linked_at, last_login_at
 `
 
-type CreateOIDCUserLinkParams struct {
-	UserID     uuid.UUID   `json:"userId"`
-	ProviderID uuid.UUID   `json:"providerId"`
-	Subject    string      `json:"subject"`
-	Email      pgtype.Text `json:"email"`
+type CreateOIDCLinkParams struct {
+	UserID     uuid.UUID `json:"userId"`
+	ProviderID uuid.UUID `json:"providerId"`
+	Subject    string    `json:"subject"`
+	Email      *string   `json:"email"`
+	Name       *string   `json:"name"`
+	Groups     []string  `json:"groups"`
 }
 
-func (q *Queries) CreateOIDCUserLink(ctx context.Context, arg CreateOIDCUserLinkParams) (OidcUserLink, error) {
-	row := q.db.QueryRow(ctx, createOIDCUserLink,
+func (q *Queries) CreateOIDCLink(ctx context.Context, arg CreateOIDCLinkParams) (OidcUserLink, error) {
+	row := q.db.QueryRow(ctx, createOIDCLink,
 		arg.UserID,
 		arg.ProviderID,
 		arg.Subject,
 		arg.Email,
+		arg.Name,
+		arg.Groups,
 	)
 	var i OidcUserLink
 	err := row.Scan(
@@ -97,10 +47,98 @@ func (q *Queries) CreateOIDCUserLink(ctx context.Context, arg CreateOIDCUserLink
 		&i.ProviderID,
 		&i.Subject,
 		&i.Email,
-		&i.CreatedAt,
+		&i.Name,
+		&i.Groups,
+		&i.LinkedAt,
 		&i.LastLoginAt,
 	)
 	return i, err
+}
+
+const createOIDCProvider = `-- name: CreateOIDCProvider :one
+INSERT INTO oidc_providers (
+    name, slug, enabled,
+    issuer_url, client_id, client_secret_enc, scopes,
+    claim_mapping, role_mapping,
+    auto_provision, default_role
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+) RETURNING id, name, slug, enabled, issuer_url, client_id, client_secret_enc, scopes, claim_mapping, role_mapping, auto_provision, default_role, created_at, updated_at
+`
+
+type CreateOIDCProviderParams struct {
+	Name            string          `json:"name"`
+	Slug            string          `json:"slug"`
+	Enabled         bool            `json:"enabled"`
+	IssuerUrl       string          `json:"issuerUrl"`
+	ClientID        string          `json:"clientId"`
+	ClientSecretEnc []byte          `json:"clientSecretEnc"`
+	Scopes          []string        `json:"scopes"`
+	ClaimMapping    json.RawMessage `json:"claimMapping"`
+	RoleMapping     json.RawMessage `json:"roleMapping"`
+	AutoProvision   bool            `json:"autoProvision"`
+	DefaultRole     string          `json:"defaultRole"`
+}
+
+func (q *Queries) CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error) {
+	row := q.db.QueryRow(ctx, createOIDCProvider,
+		arg.Name,
+		arg.Slug,
+		arg.Enabled,
+		arg.IssuerUrl,
+		arg.ClientID,
+		arg.ClientSecretEnc,
+		arg.Scopes,
+		arg.ClaimMapping,
+		arg.RoleMapping,
+		arg.AutoProvision,
+		arg.DefaultRole,
+	)
+	var i OidcProvider
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Slug,
+		&i.Enabled,
+		&i.IssuerUrl,
+		&i.ClientID,
+		&i.ClientSecretEnc,
+		&i.Scopes,
+		&i.ClaimMapping,
+		&i.RoleMapping,
+		&i.AutoProvision,
+		&i.DefaultRole,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const deleteOIDCLink = `-- name: DeleteOIDCLink :exec
+DELETE FROM oidc_user_links WHERE id = $1
+`
+
+func (q *Queries) DeleteOIDCLink(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOIDCLink, id)
+	return err
+}
+
+const deleteOIDCLinksByProvider = `-- name: DeleteOIDCLinksByProvider :exec
+DELETE FROM oidc_user_links WHERE provider_id = $1
+`
+
+func (q *Queries) DeleteOIDCLinksByProvider(ctx context.Context, providerID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOIDCLinksByProvider, providerID)
+	return err
+}
+
+const deleteOIDCLinksByUser = `-- name: DeleteOIDCLinksByUser :exec
+DELETE FROM oidc_user_links WHERE user_id = $1
+`
+
+func (q *Queries) DeleteOIDCLinksByUser(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteOIDCLinksByUser, userID)
+	return err
 }
 
 const deleteOIDCProvider = `-- name: DeleteOIDCProvider :exec
@@ -112,106 +150,13 @@ func (q *Queries) DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const deleteOIDCUserLink = `-- name: DeleteOIDCUserLink :exec
-DELETE FROM oidc_user_links WHERE id = $1
+const getOIDCLinkByID = `-- name: GetOIDCLinkByID :one
+SELECT id, user_id, provider_id, subject, email, name, groups, linked_at, last_login_at FROM oidc_user_links WHERE id = $1
 `
 
-func (q *Queries) DeleteOIDCUserLink(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteOIDCUserLink, id)
-	return err
-}
-
-const deleteOIDCUserLinksByProvider = `-- name: DeleteOIDCUserLinksByProvider :exec
-DELETE FROM oidc_user_links WHERE provider_id = $1
-`
-
-func (q *Queries) DeleteOIDCUserLinksByProvider(ctx context.Context, providerID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteOIDCUserLinksByProvider, providerID)
-	return err
-}
-
-const deleteOIDCUserLinksByUser = `-- name: DeleteOIDCUserLinksByUser :exec
-DELETE FROM oidc_user_links WHERE user_id = $1
-`
-
-func (q *Queries) DeleteOIDCUserLinksByUser(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteOIDCUserLinksByUser, userID)
-	return err
-}
-
-const getOIDCProviderByID = `-- name: GetOIDCProviderByID :one
-
-
-SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers WHERE id = $1 LIMIT 1
-`
-
-// OIDC provider queries for Revenge Go
-// =============================================================================
-// PROVIDERS
-// =============================================================================
-func (q *Queries) GetOIDCProviderByID(ctx context.Context, id uuid.UUID) (OidcProvider, error) {
-	row := q.db.QueryRow(ctx, getOIDCProviderByID, id)
-	var i OidcProvider
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.DisplayName,
-		&i.IssuerUrl,
-		&i.ClientID,
-		&i.ClientSecretEncrypted,
-		&i.Scopes,
-		&i.Enabled,
-		&i.AutoCreateUsers,
-		&i.DefaultAdmin,
-		&i.ClaimMappings,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getOIDCProviderByName = `-- name: GetOIDCProviderByName :one
-SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers WHERE name = $1 LIMIT 1
-`
-
-func (q *Queries) GetOIDCProviderByName(ctx context.Context, name string) (OidcProvider, error) {
-	row := q.db.QueryRow(ctx, getOIDCProviderByName, name)
-	var i OidcProvider
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.DisplayName,
-		&i.IssuerUrl,
-		&i.ClientID,
-		&i.ClientSecretEncrypted,
-		&i.Scopes,
-		&i.Enabled,
-		&i.AutoCreateUsers,
-		&i.DefaultAdmin,
-		&i.ClaimMappings,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getOIDCUserLink = `-- name: GetOIDCUserLink :one
-
-SELECT id, user_id, provider_id, subject, email, created_at, last_login_at FROM oidc_user_links
-WHERE provider_id = $1 AND subject = $2
-LIMIT 1
-`
-
-type GetOIDCUserLinkParams struct {
-	ProviderID uuid.UUID `json:"providerId"`
-	Subject    string    `json:"subject"`
-}
-
-// =============================================================================
-// USER LINKS
-// =============================================================================
-func (q *Queries) GetOIDCUserLink(ctx context.Context, arg GetOIDCUserLinkParams) (OidcUserLink, error) {
-	row := q.db.QueryRow(ctx, getOIDCUserLink, arg.ProviderID, arg.Subject)
+// OIDC User Links
+func (q *Queries) GetOIDCLinkByID(ctx context.Context, id uuid.UUID) (OidcUserLink, error) {
+	row := q.db.QueryRow(ctx, getOIDCLinkByID, id)
 	var i OidcUserLink
 	err := row.Scan(
 		&i.ID,
@@ -219,110 +164,96 @@ func (q *Queries) GetOIDCUserLink(ctx context.Context, arg GetOIDCUserLinkParams
 		&i.ProviderID,
 		&i.Subject,
 		&i.Email,
-		&i.CreatedAt,
+		&i.Name,
+		&i.Groups,
+		&i.LinkedAt,
 		&i.LastLoginAt,
 	)
 	return i, err
 }
 
-const getOIDCUserLinkByUserID = `-- name: GetOIDCUserLinkByUserID :many
-SELECT
-    l.id, l.user_id, l.provider_id, l.subject, l.email, l.created_at, l.last_login_at,
-    p.name AS provider_name,
-    p.display_name AS provider_display_name
-FROM oidc_user_links l
-JOIN oidc_providers p ON l.provider_id = p.id
-WHERE l.user_id = $1
+const getOIDCLinkBySubject = `-- name: GetOIDCLinkBySubject :one
+SELECT id, user_id, provider_id, subject, email, name, groups, linked_at, last_login_at FROM oidc_user_links
+WHERE provider_id = $1 AND subject = $2
 `
 
-type GetOIDCUserLinkByUserIDRow struct {
-	ID                  uuid.UUID          `json:"id"`
-	UserID              uuid.UUID          `json:"userId"`
-	ProviderID          uuid.UUID          `json:"providerId"`
-	Subject             string             `json:"subject"`
-	Email               pgtype.Text        `json:"email"`
-	CreatedAt           time.Time          `json:"createdAt"`
-	LastLoginAt         pgtype.Timestamptz `json:"lastLoginAt"`
-	ProviderName        string             `json:"providerName"`
-	ProviderDisplayName string             `json:"providerDisplayName"`
-}
-
-func (q *Queries) GetOIDCUserLinkByUserID(ctx context.Context, userID uuid.UUID) ([]GetOIDCUserLinkByUserIDRow, error) {
-	rows, err := q.db.Query(ctx, getOIDCUserLinkByUserID, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []GetOIDCUserLinkByUserIDRow{}
-	for rows.Next() {
-		var i GetOIDCUserLinkByUserIDRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.ProviderID,
-			&i.Subject,
-			&i.Email,
-			&i.CreatedAt,
-			&i.LastLoginAt,
-			&i.ProviderName,
-			&i.ProviderDisplayName,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getUserByOIDCLink = `-- name: GetUserByOIDCLink :one
-
-SELECT u.id, u.username, u.email, u.password_hash, u.display_name, u.is_admin, u.is_disabled, u.last_login_at, u.last_activity_at, u.created_at, u.updated_at, u.birthdate, u.max_rating_level, u.adult_content_enabled, u.preferred_rating_system, u.parental_pin_hash, u.hide_restricted
-FROM users u
-JOIN oidc_user_links l ON u.id = l.user_id
-WHERE l.provider_id = $1 AND l.subject = $2
-LIMIT 1
-`
-
-type GetUserByOIDCLinkParams struct {
+type GetOIDCLinkBySubjectParams struct {
 	ProviderID uuid.UUID `json:"providerId"`
 	Subject    string    `json:"subject"`
 }
 
-// =============================================================================
-// JOIN QUERIES
-// =============================================================================
-func (q *Queries) GetUserByOIDCLink(ctx context.Context, arg GetUserByOIDCLinkParams) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByOIDCLink, arg.ProviderID, arg.Subject)
-	var i User
+func (q *Queries) GetOIDCLinkBySubject(ctx context.Context, arg GetOIDCLinkBySubjectParams) (OidcUserLink, error) {
+	row := q.db.QueryRow(ctx, getOIDCLinkBySubject, arg.ProviderID, arg.Subject)
+	var i OidcUserLink
 	err := row.Scan(
 		&i.ID,
-		&i.Username,
+		&i.UserID,
+		&i.ProviderID,
+		&i.Subject,
 		&i.Email,
-		&i.PasswordHash,
-		&i.DisplayName,
-		&i.IsAdmin,
-		&i.IsDisabled,
+		&i.Name,
+		&i.Groups,
+		&i.LinkedAt,
 		&i.LastLoginAt,
-		&i.LastActivityAt,
+	)
+	return i, err
+}
+
+const getOIDCProviderByID = `-- name: GetOIDCProviderByID :one
+SELECT id, name, slug, enabled, issuer_url, client_id, client_secret_enc, scopes, claim_mapping, role_mapping, auto_provision, default_role, created_at, updated_at FROM oidc_providers WHERE id = $1
+`
+
+// OIDC Providers
+func (q *Queries) GetOIDCProviderByID(ctx context.Context, id uuid.UUID) (OidcProvider, error) {
+	row := q.db.QueryRow(ctx, getOIDCProviderByID, id)
+	var i OidcProvider
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Slug,
+		&i.Enabled,
+		&i.IssuerUrl,
+		&i.ClientID,
+		&i.ClientSecretEnc,
+		&i.Scopes,
+		&i.ClaimMapping,
+		&i.RoleMapping,
+		&i.AutoProvision,
+		&i.DefaultRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Birthdate,
-		&i.MaxRatingLevel,
-		&i.AdultContentEnabled,
-		&i.PreferredRatingSystem,
-		&i.ParentalPinHash,
-		&i.HideRestricted,
+	)
+	return i, err
+}
+
+const getOIDCProviderBySlug = `-- name: GetOIDCProviderBySlug :one
+SELECT id, name, slug, enabled, issuer_url, client_id, client_secret_enc, scopes, claim_mapping, role_mapping, auto_provision, default_role, created_at, updated_at FROM oidc_providers WHERE slug = $1
+`
+
+func (q *Queries) GetOIDCProviderBySlug(ctx context.Context, slug string) (OidcProvider, error) {
+	row := q.db.QueryRow(ctx, getOIDCProviderBySlug, slug)
+	var i OidcProvider
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Slug,
+		&i.Enabled,
+		&i.IssuerUrl,
+		&i.ClientID,
+		&i.ClientSecretEnc,
+		&i.Scopes,
+		&i.ClaimMapping,
+		&i.RoleMapping,
+		&i.AutoProvision,
+		&i.DefaultRole,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const listEnabledOIDCProviders = `-- name: ListEnabledOIDCProviders :many
-SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers
-WHERE enabled = true
-ORDER BY display_name ASC
+SELECT id, name, slug, enabled, issuer_url, client_id, client_secret_enc, scopes, claim_mapping, role_mapping, auto_provision, default_role, created_at, updated_at FROM oidc_providers WHERE enabled = true ORDER BY name ASC
 `
 
 func (q *Queries) ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error) {
@@ -337,15 +268,16 @@ func (q *Queries) ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider,
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.DisplayName,
+			&i.Slug,
+			&i.Enabled,
 			&i.IssuerUrl,
 			&i.ClientID,
-			&i.ClientSecretEncrypted,
+			&i.ClientSecretEnc,
 			&i.Scopes,
-			&i.Enabled,
-			&i.AutoCreateUsers,
-			&i.DefaultAdmin,
-			&i.ClaimMappings,
+			&i.ClaimMapping,
+			&i.RoleMapping,
+			&i.AutoProvision,
+			&i.DefaultRole,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -359,8 +291,61 @@ func (q *Queries) ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider,
 	return items, nil
 }
 
+const listOIDCLinksByUser = `-- name: ListOIDCLinksByUser :many
+SELECT l.id, l.user_id, l.provider_id, l.subject, l.email, l.name, l.groups, l.linked_at, l.last_login_at, p.name as provider_name, p.slug as provider_slug
+FROM oidc_user_links l
+JOIN oidc_providers p ON l.provider_id = p.id
+WHERE l.user_id = $1
+`
+
+type ListOIDCLinksByUserRow struct {
+	ID           uuid.UUID          `json:"id"`
+	UserID       uuid.UUID          `json:"userId"`
+	ProviderID   uuid.UUID          `json:"providerId"`
+	Subject      string             `json:"subject"`
+	Email        *string            `json:"email"`
+	Name         *string            `json:"name"`
+	Groups       []string           `json:"groups"`
+	LinkedAt     time.Time          `json:"linkedAt"`
+	LastLoginAt  pgtype.Timestamptz `json:"lastLoginAt"`
+	ProviderName string             `json:"providerName"`
+	ProviderSlug string             `json:"providerSlug"`
+}
+
+func (q *Queries) ListOIDCLinksByUser(ctx context.Context, userID uuid.UUID) ([]ListOIDCLinksByUserRow, error) {
+	rows, err := q.db.Query(ctx, listOIDCLinksByUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListOIDCLinksByUserRow{}
+	for rows.Next() {
+		var i ListOIDCLinksByUserRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.ProviderID,
+			&i.Subject,
+			&i.Email,
+			&i.Name,
+			&i.Groups,
+			&i.LinkedAt,
+			&i.LastLoginAt,
+			&i.ProviderName,
+			&i.ProviderSlug,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listOIDCProviders = `-- name: ListOIDCProviders :many
-SELECT id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at FROM oidc_providers ORDER BY display_name ASC
+SELECT id, name, slug, enabled, issuer_url, client_id, client_secret_enc, scopes, claim_mapping, role_mapping, auto_provision, default_role, created_at, updated_at FROM oidc_providers ORDER BY name ASC
 `
 
 func (q *Queries) ListOIDCProviders(ctx context.Context) ([]OidcProvider, error) {
@@ -375,15 +360,16 @@ func (q *Queries) ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.DisplayName,
+			&i.Slug,
+			&i.Enabled,
 			&i.IssuerUrl,
 			&i.ClientID,
-			&i.ClientSecretEncrypted,
+			&i.ClientSecretEnc,
 			&i.Scopes,
-			&i.Enabled,
-			&i.AutoCreateUsers,
-			&i.DefaultAdmin,
-			&i.ClaimMappings,
+			&i.ClaimMapping,
+			&i.RoleMapping,
+			&i.AutoProvision,
+			&i.DefaultRole,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -397,110 +383,92 @@ func (q *Queries) ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
 	return items, nil
 }
 
-const oIDCUserLinkExists = `-- name: OIDCUserLinkExists :one
-SELECT EXISTS(
-    SELECT 1 FROM oidc_user_links
-    WHERE provider_id = $1 AND subject = $2
-)
+const updateOIDCLinkLogin = `-- name: UpdateOIDCLinkLogin :exec
+UPDATE oidc_user_links SET
+    last_login_at = NOW(),
+    email = COALESCE($1, email),
+    name = COALESCE($2, name),
+    groups = COALESCE($3, groups)
+WHERE id = $4
 `
 
-type OIDCUserLinkExistsParams struct {
-	ProviderID uuid.UUID `json:"providerId"`
-	Subject    string    `json:"subject"`
+type UpdateOIDCLinkLoginParams struct {
+	Email  *string   `json:"email"`
+	Name   *string   `json:"name"`
+	Groups []string  `json:"groups"`
+	ID     uuid.UUID `json:"id"`
 }
 
-func (q *Queries) OIDCUserLinkExists(ctx context.Context, arg OIDCUserLinkExistsParams) (bool, error) {
-	row := q.db.QueryRow(ctx, oIDCUserLinkExists, arg.ProviderID, arg.Subject)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
+func (q *Queries) UpdateOIDCLinkLogin(ctx context.Context, arg UpdateOIDCLinkLoginParams) error {
+	_, err := q.db.Exec(ctx, updateOIDCLinkLogin,
+		arg.Email,
+		arg.Name,
+		arg.Groups,
+		arg.ID,
+	)
+	return err
 }
 
 const updateOIDCProvider = `-- name: UpdateOIDCProvider :one
-UPDATE oidc_providers
-SET
-    display_name = COALESCE($2, display_name),
+UPDATE oidc_providers SET
+    name = COALESCE($1, name),
+    enabled = COALESCE($2, enabled),
     issuer_url = COALESCE($3, issuer_url),
     client_id = COALESCE($4, client_id),
-    client_secret_encrypted = COALESCE($5, client_secret_encrypted),
+    client_secret_enc = COALESCE($5, client_secret_enc),
     scopes = COALESCE($6, scopes),
-    enabled = COALESCE($7, enabled),
-    auto_create_users = COALESCE($8, auto_create_users),
-    default_admin = COALESCE($9, default_admin),
-    claim_mappings = COALESCE($10, claim_mappings),
-    updated_at = NOW()
-WHERE id = $1
-RETURNING id, name, display_name, issuer_url, client_id, client_secret_encrypted, scopes, enabled, auto_create_users, default_admin, claim_mappings, created_at, updated_at
+    claim_mapping = COALESCE($7, claim_mapping),
+    role_mapping = COALESCE($8, role_mapping),
+    auto_provision = COALESCE($9, auto_provision),
+    default_role = COALESCE($10, default_role)
+WHERE id = $11
+RETURNING id, name, slug, enabled, issuer_url, client_id, client_secret_enc, scopes, claim_mapping, role_mapping, auto_provision, default_role, created_at, updated_at
 `
 
 type UpdateOIDCProviderParams struct {
-	ID                    uuid.UUID       `json:"id"`
-	DisplayName           string          `json:"displayName"`
-	IssuerUrl             string          `json:"issuerUrl"`
-	ClientID              string          `json:"clientId"`
-	ClientSecretEncrypted []byte          `json:"clientSecretEncrypted"`
-	Scopes                []string        `json:"scopes"`
-	Enabled               bool            `json:"enabled"`
-	AutoCreateUsers       bool            `json:"autoCreateUsers"`
-	DefaultAdmin          bool            `json:"defaultAdmin"`
-	ClaimMappings         json.RawMessage `json:"claimMappings"`
+	Name            *string   `json:"name"`
+	Enabled         *bool     `json:"enabled"`
+	IssuerUrl       *string   `json:"issuerUrl"`
+	ClientID        *string   `json:"clientId"`
+	ClientSecretEnc []byte    `json:"clientSecretEnc"`
+	Scopes          []string  `json:"scopes"`
+	ClaimMapping    []byte    `json:"claimMapping"`
+	RoleMapping     []byte    `json:"roleMapping"`
+	AutoProvision   *bool     `json:"autoProvision"`
+	DefaultRole     *string   `json:"defaultRole"`
+	ID              uuid.UUID `json:"id"`
 }
 
 func (q *Queries) UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error) {
 	row := q.db.QueryRow(ctx, updateOIDCProvider,
-		arg.ID,
-		arg.DisplayName,
+		arg.Name,
+		arg.Enabled,
 		arg.IssuerUrl,
 		arg.ClientID,
-		arg.ClientSecretEncrypted,
+		arg.ClientSecretEnc,
 		arg.Scopes,
-		arg.Enabled,
-		arg.AutoCreateUsers,
-		arg.DefaultAdmin,
-		arg.ClaimMappings,
+		arg.ClaimMapping,
+		arg.RoleMapping,
+		arg.AutoProvision,
+		arg.DefaultRole,
+		arg.ID,
 	)
 	var i OidcProvider
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
-		&i.DisplayName,
+		&i.Slug,
+		&i.Enabled,
 		&i.IssuerUrl,
 		&i.ClientID,
-		&i.ClientSecretEncrypted,
+		&i.ClientSecretEnc,
 		&i.Scopes,
-		&i.Enabled,
-		&i.AutoCreateUsers,
-		&i.DefaultAdmin,
-		&i.ClaimMappings,
+		&i.ClaimMapping,
+		&i.RoleMapping,
+		&i.AutoProvision,
+		&i.DefaultRole,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
-}
-
-const updateOIDCProviderEnabled = `-- name: UpdateOIDCProviderEnabled :exec
-UPDATE oidc_providers
-SET enabled = $2, updated_at = NOW()
-WHERE id = $1
-`
-
-type UpdateOIDCProviderEnabledParams struct {
-	ID      uuid.UUID `json:"id"`
-	Enabled bool      `json:"enabled"`
-}
-
-func (q *Queries) UpdateOIDCProviderEnabled(ctx context.Context, arg UpdateOIDCProviderEnabledParams) error {
-	_, err := q.db.Exec(ctx, updateOIDCProviderEnabled, arg.ID, arg.Enabled)
-	return err
-}
-
-const updateOIDCUserLinkLastLogin = `-- name: UpdateOIDCUserLinkLastLogin :exec
-UPDATE oidc_user_links
-SET last_login_at = NOW()
-WHERE id = $1
-`
-
-func (q *Queries) UpdateOIDCUserLinkLastLogin(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, updateOIDCUserLinkLastLogin, id)
-	return err
 }
