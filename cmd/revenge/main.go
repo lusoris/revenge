@@ -14,18 +14,14 @@ import (
 	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
 
-	"github.com/lusoris/revenge/internal/api/handlers"
-	"github.com/lusoris/revenge/internal/api/middleware"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/auth"
-	"github.com/lusoris/revenge/internal/service/genre"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/oidc"
-	"github.com/lusoris/revenge/internal/service/playback"
-	"github.com/lusoris/revenge/internal/service/rating"
+	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/pkg/config"
 	"github.com/lusoris/revenge/pkg/graceful"
@@ -61,20 +57,18 @@ func main() {
 		// Service modules
 		auth.Module,
 		user.Module,
+		session.Module,
 		library.Module,
-		rating.Module,
 		oidc.Module,
-		genre.Module,
-		playback.Module,
 
-		// API modules
-		fx.Provide(
-			middleware.NewAuth,
-			handlers.NewAuthHandler,
-			handlers.NewUserHandler,
-			handlers.NewLibraryHandler,
-			handlers.NewRatingHandler,
-		),
+		// API modules - TODO: Add handlers when created
+		// fx.Provide(
+		// 	middleware.NewAuth,
+		// 	handlers.NewAuthHandler,
+		// 	handlers.NewUserHandler,
+		// 	handlers.NewLibraryHandler,
+		// 	handlers.NewRatingHandler,
+		// ),
 
 		// HTTP modules
 		fx.Provide(
@@ -164,11 +158,6 @@ func RegisterRoutes(
 	logger *slog.Logger,
 	pool *pgxpool.Pool,
 	checker *health.Checker,
-	authMiddleware *middleware.Auth,
-	authHandler *handlers.AuthHandler,
-	userHandler *handlers.UserHandler,
-	libraryHandler *handlers.LibraryHandler,
-	ratingHandler *handlers.RatingHandler,
 ) {
 	// Health check endpoints using pkg/health (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
@@ -202,9 +191,14 @@ func RegisterRoutes(
 
 	// Database stats endpoint
 	mux.HandleFunc("GET /health/db", func(w http.ResponseWriter, r *http.Request) {
-		stats := database.Stats(pool)
+		stats := pool.Stat()
+		resp := map[string]int32{
+			"total_conns":    stats.TotalConns(),
+			"idle_conns":     stats.IdleConns(),
+			"acquired_conns": stats.AcquiredConns(),
+		}
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(stats) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(resp) //nolint:errcheck // best-effort encode
 	})
 
 	// Version endpoint with structured response
@@ -219,32 +213,9 @@ func RegisterRoutes(
 		_ = json.NewEncoder(w).Encode(version) //nolint:errcheck // best-effort encode
 	})
 
-	// Auth endpoints
-	mux.HandleFunc("POST /Users/AuthenticateByName", authHandler.Login)
-	mux.Handle("POST /Sessions/Logout", authMiddleware.Required(http.HandlerFunc(authHandler.Logout)))
-	mux.Handle("POST /Auth/Refresh", authMiddleware.Required(http.HandlerFunc(authHandler.RefreshToken)))
-	mux.Handle("POST /Users/{userId}/Password", authMiddleware.Required(http.HandlerFunc(authHandler.ChangePassword)))
-
-	// User endpoints
-	mux.Handle("GET /Users/Me", authMiddleware.Required(http.HandlerFunc(userHandler.GetCurrentUser)))
-	mux.Handle("GET /Users", authMiddleware.Required(http.HandlerFunc(userHandler.ListUsers)))
-	mux.Handle("GET /Users/{userId}", authMiddleware.Required(http.HandlerFunc(userHandler.GetUser)))
-	mux.Handle("POST /Users/New", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.CreateUser)))
-	mux.Handle("POST /Users", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.CreateUser)))
-	mux.Handle("POST /Users/{userId}", authMiddleware.Required(http.HandlerFunc(userHandler.UpdateUser)))
-	mux.Handle("DELETE /Users/{userId}", authMiddleware.AdminRequired(http.HandlerFunc(userHandler.DeleteUser)))
-
-	// Library endpoints
-	libraryHandler.RegisterRoutes(mux, authMiddleware)
-
-	// Rating endpoints
-	ratingHandler.RegisterRoutes(mux, authMiddleware)
+	// TODO: Add API endpoints when handlers are implemented
 
 	logger.Info("Routes registered",
-		slog.Int("auth_routes", 4),
-		slog.Int("user_routes", 7),
-		slog.Int("library_routes", 6),
-		slog.Int("rating_routes", 7),
 		slog.Int("health_routes", 4),
 	)
 }

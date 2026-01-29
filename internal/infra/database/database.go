@@ -42,6 +42,11 @@ func NewPool(ctx context.Context, cfg *config.Config, logger *slog.Logger) (*pgx
 	return pool, nil
 }
 
+// HealthCheck verifies database connectivity.
+func HealthCheck(ctx context.Context, pool *pgxpool.Pool) error {
+	return pool.Ping(ctx)
+}
+
 // Module provides database dependencies for fx.
 var Module = fx.Module("database",
 	fx.Provide(func(lc fx.Lifecycle, cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {

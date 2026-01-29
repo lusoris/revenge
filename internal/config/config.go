@@ -3,7 +3,6 @@ package config
 
 import (
 	"fmt"
-	"log/slog"
 	"net/url"
 	"os"
 	"strconv"
