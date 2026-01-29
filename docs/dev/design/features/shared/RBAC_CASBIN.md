@@ -339,26 +339,89 @@ github.com/pckhoi/casbin-pgx-adapter/v3  // PostgreSQL adapter (pgx native)
 
 All metadata edits by users with `content.metadata.write` permission are logged to the `activity_log` table for accountability and rollback capability.
 
+### Design Principles
+
+1. **Async writes** - Audit entries written via River job queue, never blocking
+2. **Retention policy** - Auto-cleanup after configurable period (default: 90 days)
+3. **Partitioned** - Monthly partitions for fast queries and efficient cleanup
+
 ### Audit Log Schema
 
 ```sql
--- activity_log table stores all audited actions
+-- activity_log with monthly partitioning for performance
 CREATE TABLE activity_log (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id         UUID NOT NULL REFERENCES users(id),
-    action          VARCHAR(50) NOT NULL,      -- 'metadata.edit', 'metadata.lock', 'image.upload'
-    module          VARCHAR(50) NOT NULL,      -- 'movie', 'tvshow', 'music', etc.
-    entity_id       UUID NOT NULL,             -- ID of the edited item
-    entity_type     VARCHAR(50) NOT NULL,      -- 'movie', 'series', 'episode', 'album', etc.
-    changes         JSONB NOT NULL,            -- {"field": {"old": "...", "new": "..."}}
+    id              UUID NOT NULL DEFAULT gen_random_uuid(),
+    user_id         UUID NOT NULL,  -- No FK to avoid write contention
+    action          VARCHAR(50) NOT NULL,
+    module          VARCHAR(50) NOT NULL,
+    entity_id       UUID NOT NULL,
+    entity_type     VARCHAR(50) NOT NULL,
+    changes         JSONB NOT NULL,
     ip_address      INET,
     user_agent      TEXT,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
+    PRIMARY KEY (id, created_at)  -- Partition key included
+) PARTITION BY RANGE (created_at);
+
+-- Create partitions (managed by pg_partman or River job)
+CREATE TABLE activity_log_2026_01 PARTITION OF activity_log
+    FOR VALUES FROM ('2026-01-01') TO ('2026-02-01');
+
+-- Indexes on each partition (auto-created)
 CREATE INDEX idx_activity_log_entity ON activity_log(module, entity_type, entity_id);
 CREATE INDEX idx_activity_log_user ON activity_log(user_id, created_at DESC);
-CREATE INDEX idx_activity_log_action ON activity_log(action, created_at DESC);
+```
+
+### Async Write Pattern
+
+```go
+// Never write directly - queue via River
+func (s *AuditService) LogAction(ctx context.Context, entry AuditEntry) error {
+    // Fire-and-forget via River job queue
+    _, err := s.river.Insert(ctx, AuditLogArgs{Entry: entry}, nil)
+    return err  // Only fails if queue insert fails, not the actual log write
+}
+
+// River worker processes audit entries async
+type AuditLogWorker struct {
+    river.WorkerDefaults[AuditLogArgs]
+    db *pgxpool.Pool
+}
+
+func (w *AuditLogWorker) Work(ctx context.Context, job *river.Job[AuditLogArgs]) error {
+    _, err := w.db.Exec(ctx, `INSERT INTO activity_log ...`, job.Args.Entry)
+    return err
+}
+```
+
+### Retention & Cleanup
+
+```go
+// River scheduled job - runs daily at 03:00
+type AuditCleanupArgs struct{}
+
+func (AuditCleanupArgs) Kind() string { return "audit_cleanup" }
+
+func (w *AuditCleanupWorker) Work(ctx context.Context, job *river.Job[AuditCleanupArgs]) error {
+    retention := w.config.AuditRetentionDays  // Default: 90
+    cutoff := time.Now().AddDate(0, 0, -retention)
+
+    // Drop old partitions (fast, O(1))
+    // Or DELETE for non-partitioned: DELETE FROM activity_log WHERE created_at < $1
+    _, err := w.db.Exec(ctx, `DROP TABLE IF EXISTS activity_log_`+cutoff.Format("2006_01"))
+    return err
+}
+```
+
+### Configuration
+
+```yaml
+audit:
+  enabled: true
+  retention_days: 90          # Auto-delete after 90 days
+  async: true                 # Always async via River (recommended)
+  partition_by: month         # monthly partitions
 ```
 
 ### Audited Actions

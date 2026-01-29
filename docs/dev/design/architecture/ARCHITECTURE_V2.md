@@ -91,12 +91,15 @@ github.com/golang-migrate/migrate/v4 // Migrations
 | `users` | User accounts, authentication |
 | `profiles` | User profiles under accounts (Netflix-style) |
 | `sessions` | Active sessions, devices |
-| `libraries` | Library definitions (links to modules) |
+| `resource_grants` | Polymorphic resource access grants |
 | `api_keys` | External API authentication |
 | `server_settings` | Persisted configuration |
-| `activity_log` | Audit log with module column |
+| `activity_log` | Partitioned audit log (async writes, auto-cleanup) |
 | `oidc` | SSO/OIDC provider configuration |
 | `river_*` | Job queue tables (managed by River) |
+
+> **Note:** Libraries are per-module (e.g., `movie_libraries`, `tv_libraries`, `c.adult_libraries`).
+> See [LIBRARY_TYPES.md](../features/shared/LIBRARY_TYPES.md) for details.
 
 ---
 
@@ -109,7 +112,7 @@ internal/
     user/                     # User management
     session/                  # Session handling
     oidc/                     # SSO/OIDC
-    library/                  # Library management
+    grants/                   # Polymorphic resource grants
     playback/                 # Playback session management
       client.go               # Client detection & capabilities
       bandwidth.go            # Bandwidth monitoring (external)
@@ -148,11 +151,11 @@ internal/
   infra/
     database/                 # Shared DB infrastructure
       migrations/
-        shared/               # Users, sessions, libraries
-        movie/                # Movie module migrations
-        tvshow/
-        music/
-        c/                    # Adult schema migrations
+        shared/               # Users, sessions, grants, RBAC
+        movie/                # Movie module (incl. movie_libraries)
+        tvshow/               # TV module (incl. tv_libraries)
+        music/                # Music module (incl. music_libraries)
+        c/                    # Adult schema (incl. adult_libraries)
       queries/
         movie/
         tvshow/

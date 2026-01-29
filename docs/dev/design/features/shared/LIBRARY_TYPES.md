@@ -45,7 +45,7 @@ Only truly cross-cutting concerns remain shared:
 - `shared.users` - User accounts
 - `shared.profiles` - User profiles
 - `shared.sessions` - Auth sessions
-- `shared.library_access` - Cross-module access control (references module libraries by UUID + type)
+- `shared.resource_grants` - Polymorphic access control (see [RBAC_CASBIN.md](RBAC_CASBIN.md))
 
 ---
 
@@ -277,9 +277,9 @@ type LibraryInfo struct {
 ⚠️ **TODO**: Update `shared/000005_libraries.up.sql`
 
 The current migration creates a shared `libraries` table with type enum. This needs to be:
-1. **Removed** from shared migrations
-2. **Split** into per-module library tables
-3. **Add** lightweight `library_registry` for cross-module access
+1. **Removed** from shared migrations (delete `shared/000005_libraries.up.sql`)
+2. **Split** into per-module library tables (e.g., `movie/000001_movie_libraries.up.sql`)
+3. **Add** `resource_grants` table for polymorphic access control (already defined in `shared/000019_resource_grants.up.sql`)
 
 See: [MODULE_IMPLEMENTATION_TODO.md](../../planning/MODULE_IMPLEMENTATION_TODO.md)
 
