@@ -3,14 +3,14 @@
 -- name: GetMovieCast :many
 SELECT mc.*, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN people p ON mc.person_id = p.id
+JOIN movie_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role = 'actor'
 ORDER BY mc.billing_order ASC;
 
 -- name: GetMovieCrew :many
 SELECT mc.*, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN people p ON mc.person_id = p.id
+JOIN movie_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role != 'actor'
 ORDER BY
     CASE mc.role
@@ -24,14 +24,14 @@ ORDER BY
 -- name: GetMovieDirectors :many
 SELECT mc.*, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN people p ON mc.person_id = p.id
+JOIN movie_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role = 'director'
 ORDER BY mc.billing_order ASC;
 
 -- name: GetMovieWriters :many
 SELECT mc.*, p.name, p.primary_image_url, p.primary_image_blurhash
 FROM movie_credits mc
-JOIN people p ON mc.person_id = p.id
+JOIN movie_people p ON mc.person_id = p.id
 WHERE mc.movie_id = $1 AND mc.role = 'writer'
 ORDER BY mc.billing_order ASC;
 

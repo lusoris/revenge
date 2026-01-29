@@ -16,6 +16,9 @@ import (
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/api"
 	"github.com/lusoris/revenge/internal/config"
+	adultmovie "github.com/lusoris/revenge/internal/content/c/movie"
+	adultscene "github.com/lusoris/revenge/internal/content/c/scene"
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -24,9 +27,12 @@ import (
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/metadata/radarr"
+	"github.com/lusoris/revenge/internal/service/metadata/tmdb"
 	"github.com/lusoris/revenge/internal/service/oidc"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/user"
+	"github.com/lusoris/revenge/pkg/health"
 )
 
 var (
@@ -39,10 +45,34 @@ var (
 )
 
 func main() {
-	app := fx.New(
+	cfg, err := config.LoadDefault()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to load config: %v\n", err)
+		os.Exit(1)
+	}
+
+	options := []fx.Option{
 		// Core infrastructure
-		config.Module,
+		fx.Supply(cfg),
 		fx.Provide(NewLogger),
+		fx.Provide(func() api.BuildInfo {
+			return api.BuildInfo{
+				Version:   Version,
+				BuildTime: BuildTime,
+				GitCommit: GitCommit,
+			}
+		}),
+		fx.Provide(func(cfg *config.Config) tmdb.Config {
+			return tmdb.Config{
+				APIKey:     cfg.Metadata.TMDb.APIKey,
+				BaseURL:    cfg.Metadata.TMDb.BaseURL,
+				ImageURL:   cfg.Metadata.TMDb.ImageURL,
+				Timeout:    time.Duration(cfg.Metadata.TMDb.Timeout) * time.Second,
+				CacheTTL:   time.Duration(cfg.Metadata.TMDb.CacheTTL) * time.Second,
+				CacheSize:  cfg.Metadata.TMDb.CacheSize,
+				RetryCount: cfg.Metadata.TMDb.RetryCount,
+			}
+		}),
 
 		// Infrastructure modules
 		database.Module,
@@ -51,6 +81,8 @@ func main() {
 		jobs.Module,
 		search.Module,
 		infrahealth.Module,
+		radarr.Module,
+		tmdb.Module,
 
 		// Shared services
 		user.Module,
@@ -64,10 +96,16 @@ func main() {
 		fx.Provide(NewAPIServer),
 
 		// Content modules will be added here as they're implemented
-		// movie.Module,
-		// tvshow.Module,
-		// music.Module,
+	}
 
+	if cfg.Modules.Movie {
+		options = append(options, movie.ModuleWithRiver)
+	}
+	if cfg.Modules.Adult {
+		options = append(options, adultmovie.Module, adultscene.Module)
+	}
+
+	options = append(options,
 		// HTTP server
 		fx.Provide(
 			NewMux,
@@ -76,6 +114,8 @@ func main() {
 		fx.Invoke(RegisterRoutes),
 		fx.Invoke(RunServer),
 	)
+
+	app := fx.New(options...)
 
 	app.Run()
 }
@@ -146,9 +186,43 @@ func RegisterRoutes(
 	mux *http.ServeMux,
 	logger *slog.Logger,
 	apiServer *gen.Server,
+	pool *pgxpool.Pool,
+	healthChecker *health.Checker,
+	cfg *config.Config,
 ) {
 	// Mount the ogen-generated API server on /api/v1
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", apiServer))
+
+	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("OK"))
+	})
+
+	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
+		if healthChecker.IsReady(r.Context()) {
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("Ready"))
+			return
+		}
+		w.WriteHeader(http.StatusServiceUnavailable)
+		_, _ = w.Write([]byte("Not Ready"))
+	})
+
+	mux.HandleFunc("GET /health/db", func(w http.ResponseWriter, r *http.Request) {
+		stats := pool.Stat()
+		resp := map[string]int32{
+			"total_connections":  stats.TotalConns(),
+			"idle_connections":   stats.IdleConns(),
+			"active_connections": stats.AcquiredConns(),
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(resp)
+	})
+
+	mux.HandleFunc("GET /version", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(Version))
+	})
 
 	logger.Info("Routes registered",
 		slog.String("api_prefix", "/api/v1"),
@@ -162,11 +236,11 @@ func NewServer(mux *http.ServeMux, cfg *config.Config, logger *slog.Logger) *htt
 	srv := &http.Server{
 		Addr:              addr,
 		Handler:           mux,
-		ReadTimeout:       15 * time.Second,
-		WriteTimeout:      15 * time.Second,
-		IdleTimeout:       60 * time.Second,
-		ReadHeaderTimeout: 5 * time.Second,
-		MaxHeaderBytes:    1 << 20,
+		ReadTimeout:       cfg.Server.ReadTimeout,
+		WriteTimeout:      cfg.Server.WriteTimeout,
+		IdleTimeout:       cfg.Server.IdleTimeout,
+		ReadHeaderTimeout: cfg.Server.ReadHeaderTimeout,
+		MaxHeaderBytes:    cfg.Server.MaxHeaderBytes,
 	}
 
 	logger.Info("Server configured", slog.String("address", addr))

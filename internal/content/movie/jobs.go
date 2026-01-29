@@ -7,9 +7,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
-
-	"github.com/lusoris/revenge/internal/service/metadata/tmdb"
 )
 
 // Job kinds for movie module.
@@ -49,12 +48,12 @@ func (EnrichMetadataArgs) InsertOpts() river.InsertOpts {
 type EnrichMetadataWorker struct {
 	river.WorkerDefaults[EnrichMetadataArgs]
 	service  *Service
-	provider *tmdb.Provider
+	provider MetadataProvider
 	logger   *slog.Logger
 }
 
 // NewEnrichMetadataWorker creates a new metadata enrichment worker.
-func NewEnrichMetadataWorker(service *Service, provider *tmdb.Provider, logger *slog.Logger) *EnrichMetadataWorker {
+func NewEnrichMetadataWorker(service *Service, provider MetadataProvider, logger *slog.Logger) *EnrichMetadataWorker {
 	return &EnrichMetadataWorker{
 		service:  service,
 		provider: provider,
@@ -64,6 +63,10 @@ func NewEnrichMetadataWorker(service *Service, provider *tmdb.Provider, logger *
 
 // Work executes the metadata enrichment job.
 func (w *EnrichMetadataWorker) Work(ctx context.Context, job *river.Job[EnrichMetadataArgs]) error {
+	if w.provider == nil || !w.provider.IsAvailable() {
+		return ErrMetadataUnavailable
+	}
+
 	w.logger.Info("enriching movie metadata",
 		"movie_id", job.Args.MovieID,
 		"tmdb_id", job.Args.TmdbID,
@@ -71,7 +74,7 @@ func (w *EnrichMetadataWorker) Work(ctx context.Context, job *river.Job[EnrichMe
 	)
 
 	// Get metadata from TMDb
-	var metadata *tmdb.MovieMetadata
+	var metadata *Metadata
 	var err error
 
 	if job.Args.TmdbID > 0 {
@@ -173,7 +176,7 @@ type ScanLibraryWorker struct {
 	river.WorkerDefaults[ScanLibraryArgs]
 	service *Service
 	scanner Scanner
-	client  *river.Client[any]
+	client  *river.Client[pgx.Tx]
 	logger  *slog.Logger
 }
 
@@ -196,7 +199,7 @@ type ScanResult struct {
 func NewScanLibraryWorker(
 	service *Service,
 	scanner Scanner,
-	client *river.Client[any],
+	client *river.Client[pgx.Tx],
 	logger *slog.Logger,
 ) *ScanLibraryWorker {
 	return &ScanLibraryWorker{
@@ -278,7 +281,7 @@ type ScanFileWorker struct {
 	river.WorkerDefaults[ScanFileArgs]
 	service *Service
 	scanner Scanner
-	client  *river.Client[any]
+	client  *river.Client[pgx.Tx]
 	logger  *slog.Logger
 }
 
@@ -286,7 +289,7 @@ type ScanFileWorker struct {
 func NewScanFileWorker(
 	service *Service,
 	scanner Scanner,
-	client *river.Client[any],
+	client *river.Client[pgx.Tx],
 	logger *slog.Logger,
 ) *ScanFileWorker {
 	return &ScanFileWorker{
@@ -326,12 +329,12 @@ func RegisterWorkers(
 	workers *river.Workers,
 	service *Service,
 	scanner Scanner,
-	provider *tmdb.Provider,
-	client *river.Client[any],
+	provider MetadataProvider,
+	client *river.Client[pgx.Tx],
 	logger *slog.Logger,
 ) error {
 	// Register enrichment worker if provider is available
-	if provider != nil {
+	if provider != nil && provider.IsAvailable() {
 		if err := river.AddWorkerSafely(workers, NewEnrichMetadataWorker(service, provider, logger)); err != nil {
 			return fmt.Errorf("register EnrichMetadataWorker: %w", err)
 		}

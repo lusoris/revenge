@@ -10,6 +10,13 @@ import (
 	"github.com/lusoris/revenge/internal/content/movie"
 )
 
+func movieModuleDisabled() *gen.Error {
+	return &gen.Error{
+		Code:    "module_disabled",
+		Message: "Movie module disabled",
+	}
+}
+
 // ListMovies implements the listMovies operation.
 func (h *Handler) ListMovies(ctx context.Context, params gen.ListMoviesParams) (gen.ListMoviesRes, error) {
 	usr, err := requireUser(ctx)
@@ -18,6 +25,11 @@ func (h *Handler) ListMovies(ctx context.Context, params gen.ListMoviesParams) (
 			Code:    "unauthorized",
 			Message: "Not authenticated",
 		}, nil
+	}
+
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
 	}
 
 	listParams := movie.ListParams{
@@ -31,14 +43,14 @@ func (h *Handler) ListMovies(ctx context.Context, params gen.ListMoviesParams) (
 	var total int64
 
 	if params.LibraryId.IsSet() {
-		movies, total, err = h.movieService.ListMovies(ctx, params.LibraryId.Value, listParams)
+		movies, total, err = svc.ListMovies(ctx, params.LibraryId.Value, listParams)
 	} else if params.Query.IsSet() {
-		movies, err = h.movieService.SearchMovies(ctx, params.Query.Value, listParams)
+		movies, err = svc.SearchMovies(ctx, params.Query.Value, listParams)
 		if err == nil {
 			total = int64(len(movies))
 		}
 	} else {
-		movies, total, err = h.movieService.ListAllMovies(ctx, listParams)
+		movies, total, err = svc.ListAllMovies(ctx, listParams)
 	}
 
 	if err != nil {
@@ -71,6 +83,11 @@ func (h *Handler) ListRecentMovies(ctx context.Context, params gen.ListRecentMov
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	// Get accessible library IDs for user
 	libs, err := h.libraryService.ListForUser(ctx, usr.ID)
 	if err != nil {
@@ -86,7 +103,7 @@ func (h *Handler) ListRecentMovies(ctx context.Context, params gen.ListRecentMov
 		libraryIDs[i] = l.Library.ID
 	}
 
-	movies, err := h.movieService.ListRecentlyAdded(ctx, libraryIDs, params.Limit.Or(20))
+	movies, err := svc.ListRecentlyAdded(ctx, libraryIDs, params.Limit.Or(20))
 	if err != nil {
 		h.logger.Error("List recent movies failed", "error", err)
 		return &gen.Error{
@@ -113,7 +130,12 @@ func (h *Handler) ListContinueWatching(ctx context.Context, params gen.ListConti
 		}, nil
 	}
 
-	history, err := h.movieService.ListResumeableMovies(ctx, usr.ID, params.Limit.Or(10))
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	history, err := svc.ListResumeableMovies(ctx, usr.ID, params.Limit.Or(10))
 	if err != nil {
 		h.logger.Error("List continue watching failed", "error", err)
 		return &gen.Error{
@@ -124,7 +146,7 @@ func (h *Handler) ListContinueWatching(ctx context.Context, params gen.ListConti
 
 	result := make(gen.ListContinueWatchingOKApplicationJSON, 0, len(history))
 	for _, hist := range history {
-		m, err := h.movieService.GetMovie(ctx, hist.MovieID)
+		m, err := svc.GetMovie(ctx, hist.MovieID)
 		if err != nil {
 			continue
 		}
@@ -144,7 +166,12 @@ func (h *Handler) GetMovie(ctx context.Context, params gen.GetMovieParams) (gen.
 		}, nil
 	}
 
-	m, err := h.movieService.GetMovieWithRelations(ctx, params.MovieId)
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	m, err := svc.GetMovieWithRelations(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.GetMovieNotFound{
@@ -176,6 +203,11 @@ func (h *Handler) UpdateMovie(ctx context.Context, req *gen.MovieUpdate, params 
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	// Only admins can update movie metadata
 	if !usr.IsAdmin {
 		return &gen.UpdateMovieForbidden{
@@ -184,7 +216,7 @@ func (h *Handler) UpdateMovie(ctx context.Context, req *gen.MovieUpdate, params 
 		}, nil
 	}
 
-	m, err := h.movieService.GetMovie(ctx, params.MovieId)
+	m, err := svc.GetMovie(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.UpdateMovieNotFound{
@@ -218,7 +250,7 @@ func (h *Handler) UpdateMovie(ctx context.Context, req *gen.MovieUpdate, params 
 		m.ContentRating = req.ContentRating.Value
 	}
 
-	if err := h.movieService.UpdateMovie(ctx, m); err != nil {
+	if err := svc.UpdateMovie(ctx, m); err != nil {
 		h.logger.Error("Update movie failed", "error", err, "movie_id", params.MovieId)
 		return &gen.UpdateMovieNotFound{
 			Code:    "update_failed",
@@ -232,6 +264,11 @@ func (h *Handler) UpdateMovie(ctx context.Context, req *gen.MovieUpdate, params 
 
 // DeleteMovie implements the deleteMovie operation.
 func (h *Handler) DeleteMovie(ctx context.Context, params gen.DeleteMovieParams) (gen.DeleteMovieRes, error) {
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	_, err := requireAdmin(ctx)
 	if err != nil {
 		if errors.Is(err, ErrUnauthorized) {
@@ -246,7 +283,7 @@ func (h *Handler) DeleteMovie(ctx context.Context, params gen.DeleteMovieParams)
 		}, nil
 	}
 
-	if err := h.movieService.DeleteMovie(ctx, params.MovieId); err != nil {
+	if err := svc.DeleteMovie(ctx, params.MovieId); err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.DeleteMovieNotFound{
 				Code:    "not_found",
@@ -273,7 +310,12 @@ func (h *Handler) RefreshMovieMetadata(ctx context.Context, params gen.RefreshMo
 		}, nil
 	}
 
-	m, err := h.movieService.GetMovie(ctx, params.MovieId)
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	m, err := svc.GetMovie(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.RefreshMovieMetadataNotFound{
@@ -319,7 +361,12 @@ func (h *Handler) AddMovieToFavorites(ctx context.Context, params gen.AddMovieTo
 	}
 
 	// Verify movie exists
-	_, err = h.movieService.GetMovie(ctx, params.MovieId)
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	_, err = svc.GetMovie(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.AddMovieToFavoritesNotFound{
@@ -333,7 +380,7 @@ func (h *Handler) AddMovieToFavorites(ctx context.Context, params gen.AddMovieTo
 		}, nil
 	}
 
-	if err := h.movieService.AddFavorite(ctx, usr.ID, params.MovieId); err != nil {
+	if err := svc.AddFavorite(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Add favorite failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 		return &gen.AddMovieToFavoritesNotFound{
 			Code:    "add_failed",
@@ -354,7 +401,12 @@ func (h *Handler) RemoveMovieFromFavorites(ctx context.Context, params gen.Remov
 		}, nil
 	}
 
-	if err := h.movieService.RemoveFavorite(ctx, usr.ID, params.MovieId); err != nil {
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	if err := svc.RemoveFavorite(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Remove favorite failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 	}
 
@@ -371,8 +423,13 @@ func (h *Handler) AddMovieToWatchlist(ctx context.Context, params gen.AddMovieTo
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	// Verify movie exists
-	_, err = h.movieService.GetMovie(ctx, params.MovieId)
+	_, err = svc.GetMovie(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.AddMovieToWatchlistNotFound{
@@ -386,7 +443,7 @@ func (h *Handler) AddMovieToWatchlist(ctx context.Context, params gen.AddMovieTo
 		}, nil
 	}
 
-	if err := h.movieService.AddToWatchlist(ctx, usr.ID, params.MovieId); err != nil {
+	if err := svc.AddToWatchlist(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Add to watchlist failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 		return &gen.AddMovieToWatchlistNotFound{
 			Code:    "add_failed",
@@ -407,7 +464,12 @@ func (h *Handler) RemoveMovieFromWatchlist(ctx context.Context, params gen.Remov
 		}, nil
 	}
 
-	if err := h.movieService.RemoveFromWatchlist(ctx, usr.ID, params.MovieId); err != nil {
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	if err := svc.RemoveFromWatchlist(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Remove from watchlist failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 	}
 
@@ -424,8 +486,13 @@ func (h *Handler) MarkMovieWatched(ctx context.Context, params gen.MarkMovieWatc
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	// Verify movie exists
-	_, err = h.movieService.GetMovie(ctx, params.MovieId)
+	_, err = svc.GetMovie(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.MarkMovieWatchedNotFound{
@@ -439,7 +506,7 @@ func (h *Handler) MarkMovieWatched(ctx context.Context, params gen.MarkMovieWatc
 		}, nil
 	}
 
-	if err := h.movieService.MarkAsWatched(ctx, usr.ID, params.MovieId); err != nil {
+	if err := svc.MarkAsWatched(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Mark watched failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 		return &gen.MarkMovieWatchedNotFound{
 			Code:    "mark_failed",
@@ -460,7 +527,12 @@ func (h *Handler) MarkMovieUnwatched(ctx context.Context, params gen.MarkMovieUn
 		}, nil
 	}
 
-	if err := h.movieService.MarkAsUnwatched(ctx, usr.ID, params.MovieId); err != nil {
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	if err := svc.MarkAsUnwatched(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Mark unwatched failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 	}
 
@@ -477,8 +549,13 @@ func (h *Handler) SetMovieRating(ctx context.Context, req *gen.UserRatingRequest
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	// Verify movie exists
-	_, err = h.movieService.GetMovie(ctx, params.MovieId)
+	_, err = svc.GetMovie(ctx, params.MovieId)
 	if err != nil {
 		if errors.Is(err, movie.ErrMovieNotFoundInService) {
 			return &gen.SetMovieRatingNotFound{
@@ -497,7 +574,7 @@ func (h *Handler) SetMovieRating(ctx context.Context, req *gen.UserRatingRequest
 		review = req.Review.Value
 	}
 
-	if err := h.movieService.SetUserRating(ctx, usr.ID, params.MovieId, req.Rating, review); err != nil {
+	if err := svc.SetUserRating(ctx, usr.ID, params.MovieId, req.Rating, review); err != nil {
 		h.logger.Error("Set rating failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 		return &gen.SetMovieRatingNotFound{
 			Code:    "set_failed",
@@ -505,7 +582,7 @@ func (h *Handler) SetMovieRating(ctx context.Context, req *gen.UserRatingRequest
 		}, nil
 	}
 
-	rating, err := h.movieService.GetUserRating(ctx, usr.ID, params.MovieId)
+	rating, err := svc.GetUserRating(ctx, usr.ID, params.MovieId)
 	if err != nil || rating == nil {
 		return &gen.UserRating{
 			Rating: req.Rating,
@@ -531,7 +608,12 @@ func (h *Handler) DeleteMovieRating(ctx context.Context, params gen.DeleteMovieR
 		}, nil
 	}
 
-	if err := h.movieService.DeleteUserRating(ctx, usr.ID, params.MovieId); err != nil {
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	if err := svc.DeleteUserRating(ctx, usr.ID, params.MovieId); err != nil {
 		h.logger.Error("Delete rating failed", "error", err, "movie_id", params.MovieId, "user_id", usr.ID)
 	}
 
@@ -548,12 +630,17 @@ func (h *Handler) ListMyFavoriteMovies(ctx context.Context, params gen.ListMyFav
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	listParams := movie.ListParams{
 		Limit:  params.Limit.Or(20),
 		Offset: params.Offset.Or(0),
 	}
 
-	movies, total, err := h.movieService.ListFavorites(ctx, usr.ID, listParams)
+	movies, total, err := svc.ListFavorites(ctx, usr.ID, listParams)
 	if err != nil {
 		h.logger.Error("List favorites failed", "error", err, "user_id", usr.ID)
 		return &gen.Error{
@@ -584,12 +671,17 @@ func (h *Handler) ListMyWatchlist(ctx context.Context, params gen.ListMyWatchlis
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	listParams := movie.ListParams{
 		Limit:  params.Limit.Or(20),
 		Offset: params.Offset.Or(0),
 	}
 
-	movies, total, err := h.movieService.ListWatchlist(ctx, usr.ID, listParams)
+	movies, total, err := svc.ListWatchlist(ctx, usr.ID, listParams)
 	if err != nil {
 		h.logger.Error("List watchlist failed", "error", err, "user_id", usr.ID)
 		return &gen.Error{
@@ -620,12 +712,17 @@ func (h *Handler) ListCollections(ctx context.Context, params gen.ListCollection
 		}, nil
 	}
 
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
 	listParams := movie.ListParams{
 		Limit:  params.Limit.Or(20),
 		Offset: params.Offset.Or(0),
 	}
 
-	collections, total, err := h.movieService.ListCollections(ctx, listParams)
+	collections, total, err := svc.ListCollections(ctx, listParams)
 	if err != nil {
 		h.logger.Error("List collections failed", "error", err)
 		return &gen.Error{
@@ -656,7 +753,12 @@ func (h *Handler) GetCollection(ctx context.Context, params gen.GetCollectionPar
 		}, nil
 	}
 
-	collection, err := h.movieService.GetCollection(ctx, params.CollectionId)
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return movieModuleDisabled(), nil
+	}
+
+	collection, err := svc.GetCollection(ctx, params.CollectionId)
 	if err != nil {
 		if errors.Is(err, movie.ErrCollectionNotFound) {
 			return &gen.GetCollectionNotFound{
@@ -672,7 +774,7 @@ func (h *Handler) GetCollection(ctx context.Context, params gen.GetCollectionPar
 	}
 
 	// Get movies in collection
-	movies, err := h.movieService.ListMoviesByCollection(ctx, params.CollectionId)
+	movies, err := svc.ListMoviesByCollection(ctx, params.CollectionId)
 	if err != nil {
 		h.logger.Error("List collection movies failed", "error", err, "collection_id", params.CollectionId)
 	}
@@ -686,23 +788,28 @@ func (h *Handler) GetCollection(ctx context.Context, params gen.GetCollectionPar
 func (h *Handler) getUserMovieData(ctx context.Context, userID, movieID uuid.UUID) *gen.MovieUserData {
 	data := &gen.MovieUserData{}
 
-	if favorite, err := h.movieService.IsFavorite(ctx, userID, movieID); err == nil {
+	svc, err := h.requireMovieService()
+	if err != nil {
+		return data
+	}
+
+	if favorite, err := svc.IsFavorite(ctx, userID, movieID); err == nil {
 		data.IsFavorite = gen.NewOptBool(favorite)
 	}
 
-	if watchlist, err := h.movieService.IsInWatchlist(ctx, userID, movieID); err == nil {
+	if watchlist, err := svc.IsInWatchlist(ctx, userID, movieID); err == nil {
 		data.IsInWatchlist = gen.NewOptBool(watchlist)
 	}
 
-	if watched, err := h.movieService.IsWatched(ctx, userID, movieID); err == nil {
+	if watched, err := svc.IsWatched(ctx, userID, movieID); err == nil {
 		data.IsWatched = gen.NewOptBool(watched)
 	}
 
-	if rating, err := h.movieService.GetUserRating(ctx, userID, movieID); err == nil && rating != nil {
+	if rating, err := svc.GetUserRating(ctx, userID, movieID); err == nil && rating != nil {
 		data.UserRating = gen.NewOptFloat64(rating.Rating)
 	}
 
-	if history, err := h.movieService.GetWatchHistory(ctx, userID, movieID); err == nil && history != nil {
+	if history, err := svc.GetWatchHistory(ctx, userID, movieID); err == nil && history != nil {
 		data.PlaybackPosition = gen.NewOptInt64(history.PositionTicks)
 		data.PlayedPercentage = gen.NewOptFloat64(history.PlayedPercentage)
 		data.LastPlayedAt = gen.NewOptDateTime(history.LastUpdatedAt)

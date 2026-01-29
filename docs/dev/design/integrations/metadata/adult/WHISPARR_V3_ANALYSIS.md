@@ -1,6 +1,6 @@
 # Whisparr v3 (eros) - Adult Content Structure Analysis
 
-> Analysis of Whisparr v3 (eros) codebase for adult movie/show schema structure
+> Analysis of Whisparr v3 (eros) codebase for adult movie/scene schema structure (Whisparr models scenes as episodes under series)
 
 **Source**: https://github.com/Whisparr/Whisparr/tree/eros
 **API Docs**: https://github.com/Whisparr/Whisparr/tree/eros-api-docs
@@ -203,10 +203,10 @@ mutation {
 
 ## Schema Mapping for Revenge
 
-### c.adult_movies Table
+### c.movies Table
 
 ```sql
-CREATE TABLE c.adult_movies (
+CREATE TABLE c.movies (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     -- External IDs
@@ -289,11 +289,11 @@ CREATE TABLE c.studios (
 );
 ```
 
-### c.adult_movie_performers (Junction Table)
+### c.movie_performers (Junction Table)
 
 ```sql
-CREATE TABLE c.adult_movie_performers (
-    movie_id UUID REFERENCES c.adult_movies(id) ON DELETE CASCADE,
+CREATE TABLE c.movie_performers (
+    movie_id UUID REFERENCES c.movies(id) ON DELETE CASCADE,
     performer_id UUID REFERENCES c.performers(id) ON DELETE CASCADE,
     "order" INT,                          -- Display order (Whisparr: Actor order)
     PRIMARY KEY (movie_id, performer_id)

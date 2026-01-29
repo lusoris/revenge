@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/viccon/sturdyc"
-	"resty.dev/v3"
+	"github.com/go-resty/resty/v2"
 
 	"github.com/lusoris/revenge/pkg/resilience"
 )

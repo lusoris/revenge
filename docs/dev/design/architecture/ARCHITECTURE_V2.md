@@ -51,7 +51,7 @@ github.com/riverqueue/river          // Job queue
 github.com/ogen-go/ogen              // OpenAPI code generation
 
 // HTTP & WebSocket
-resty.dev/v3                         // HTTP client (metadata providers)
+github.com/go-resty/resty/v2         // HTTP client (metadata providers)
 github.com/coder/websocket           // WebSocket (Watch Party, live updates)
 
 // Media Processing
@@ -80,7 +80,7 @@ github.com/golang-migrate/migrate/v4 // Migrations
 | `comics` | public | Comics, manga, graphic novels |
 | `collection` | public | Cross-module collections (video/audio pools) |
 | `adult_movie` | c | Adult movies, scenes |
-| `adult_show` | c | Adult series, seasons, episodes |
+| `adult_scene` | c | Adult scenes |
 
 > **Note:** Adult content uses schema `c` (not `adult`) for obscurity.
 
@@ -473,7 +473,7 @@ go generate ./api/...
   /collections/...
 
   /c/movies/...         # Adult movies (obscured namespace)
-  /c/shows/...          # Adult shows (obscured namespace)
+  /c/scenes/...         # Adult scenes (obscured namespace)
 
   /users/...            # Shared
   /libraries/...        # Shared
@@ -582,7 +582,7 @@ func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
 |------|---------|--------|
 | Video | movie, tvshow | `video_playlists`, `video_playlist_items` |
 | Audio | music, audiobook, podcast | `audio_playlists`, `audio_playlist_items` |
-| Adult | adult_movie, adult_show | `c.playlists`, `c.playlist_items` |
+| Adult | adult_movie, adult_scene | Planned (`c.playlists`, `c.playlist_items`) |
 
 ### Collection Pools (3)
 
@@ -590,7 +590,7 @@ func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
 |------|---------|--------|
 | Video | movie, tvshow | `video_collections`, `video_collection_movies`, `video_collection_episodes` |
 | Audio | music, audiobook | `audio_collections`, `audio_collection_tracks`, `audio_collection_audiobooks` |
-| Adult | adult_movie, adult_show | `c.collections`, `c.collection_items` |
+| Adult | adult_movie, adult_scene | Planned (`c.collections`, `c.collection_items`) |
 
 ---
 
@@ -611,7 +611,7 @@ func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
 | audiobook | audiobooks | Goodreads, Audible |
 | book | books | Goodreads, OpenLibrary |
 | adult_movie | movies, scenes, performers | — |
-| adult_show | series, episodes, performers | — |
+| adult_scene | scenes, performers | — |
 
 ### External Ratings (Per Module)
 
@@ -635,20 +635,20 @@ CREATE SCHEMA c;
 -- Tables
 c.movies
 c.scenes
-c.series
-c.seasons
-c.episodes
-c.performers        -- Shared between adult_movie and adult_show
+c.performers        -- Shared between adult_movie and adult_scene
 c.studios
 c.tags
-c.images
-c.playlists
-c.playlist_items
-c.collections
-c.collection_items
+c.movie_images
+c.performer_images
+c.gallery_images
+c.movie_tags
+c.scene_tags
+c.scene_markers
 c.user_ratings
+c.user_favorites
 c.watch_history
-c.favorites
+c.user_scene_data
+c.user_performer_favorites
 ```
 
 **Benefits:**
@@ -1043,4 +1043,3 @@ volumes:
 | Document | Description |
 |----------|-------------|
 | [API.md](API.md) | API design guidelines |
-

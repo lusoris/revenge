@@ -418,8 +418,8 @@ CREATE TABLE c.studios (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
     parent_id       UUID REFERENCES c.studios(id),
-    stashdb_id      VARCHAR(36),           -- StashDB studio ID
-    tpdb_id         VARCHAR(36),           -- TPDB studio ID
+    stashdb_id      VARCHAR(100),          -- StashDB studio ID
+    tpdb_id         VARCHAR(100),          -- TPDB studio ID
     url             TEXT,
     logo_path       TEXT,
     created_at      TIMESTAMPTZ DEFAULT NOW(),
@@ -428,17 +428,20 @@ CREATE TABLE c.studios (
     UNIQUE(tpdb_id)
 );
 
--- Performers (shared between movies and shows)
+-- Performers (shared between movies and scenes)
 CREATE TABLE c.performers (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
-    disambiguation  VARCHAR(100),          -- For same-name performers
-    stashdb_id      VARCHAR(36),
-    tpdb_id         VARCHAR(36),
+    disambiguation  VARCHAR(255),          -- For same-name performers
+    stash_id        VARCHAR(100),
+    stashdb_id      VARCHAR(100),
+    tpdb_id         VARCHAR(100),
+    freeones_id     VARCHAR(100),
 
     -- Demographics
     gender          VARCHAR(50),
     birthdate       DATE,
+    death_date      DATE,
     birth_city      VARCHAR(255),
     ethnicity       VARCHAR(100),
     nationality     VARCHAR(100),
@@ -448,6 +451,7 @@ CREATE TABLE c.performers (
     -- Measurements
     measurements    VARCHAR(50),           -- e.g., "34D-24-34"
     cup_size        VARCHAR(10),
+    breast_type     VARCHAR(50),
 
     -- Appearance
     hair_color      VARCHAR(50),
@@ -458,10 +462,11 @@ CREATE TABLE c.performers (
     -- Career
     career_start    INT,                   -- Year
     career_end      INT,                   -- Year (NULL = active)
+    bio             TEXT,
 
     -- Social
-    twitter         VARCHAR(255),
-    instagram       VARCHAR(255),
+    twitter         TEXT,
+    instagram       TEXT,
 
     -- Images
     image_path      TEXT,                  -- Primary image
@@ -495,8 +500,8 @@ CREATE TABLE c.movies (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     library_id      UUID NOT NULL,              -- Reference to public.libraries (no FK)
     whisparr_id     INT,
-    stashdb_id      VARCHAR(36),
-    tpdb_id         VARCHAR(36),
+    stashdb_id      VARCHAR(100),
+    tpdb_id         VARCHAR(100),
 
     -- Metadata
     title           VARCHAR(500) NOT NULL,
@@ -556,19 +561,37 @@ CREATE TABLE c.movie_tags (
     PRIMARY KEY (movie_id, tag_id)
 );
 
--- Scenes (for multi-scene movies or standalone scenes)
+-- Scenes (primary adult scene content)
 CREATE TABLE c.scenes (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    stashdb_id      VARCHAR(36),
+    library_id      UUID NOT NULL,
+    title           VARCHAR(500) NOT NULL,
+    sort_title      VARCHAR(500),
+    overview        TEXT,
+    release_date    DATE,
+    runtime_minutes INT,
+    studio_id       UUID REFERENCES c.studios(id),
 
-    title           VARCHAR(500),
-    scene_number    INT,
-    start_ticks     BIGINT,
-    end_ticks       BIGINT,
+    whisparr_id     INT,
+    stash_id        VARCHAR(100),
+    stashdb_id      VARCHAR(100),
+    tpdb_id         VARCHAR(100),
+
+    path            TEXT NOT NULL,
+    size_bytes      BIGINT,
+    video_codec     VARCHAR(50),
+    audio_codec     VARCHAR(50),
+    resolution      VARCHAR(20),
+
+    oshash          VARCHAR(32),
+    phash           VARCHAR(32),
+    md5             VARCHAR(64),
+
+    cover_path      TEXT,
 
     created_at      TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(movie_id, scene_number)
+    updated_at      TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(path)
 );
 
 CREATE TABLE c.scene_performers (
@@ -586,19 +609,13 @@ CREATE TABLE c.scene_tags (
 -- Scene markers (timestamped tags from Stash)
 CREATE TABLE c.scene_markers (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
     title           VARCHAR(255),
-    start_ticks     BIGINT NOT NULL,
-    end_ticks       BIGINT,
-    primary_tag_id  UUID REFERENCES c.tags(id),
-    thumbnail_path  TEXT,
+    start_seconds   FLOAT NOT NULL,
+    end_seconds     FLOAT,
+    tag_id          UUID REFERENCES c.tags(id),
+    stash_marker_id VARCHAR(100),
     created_at      TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE c.scene_marker_tags (
-    marker_id       UUID REFERENCES c.scene_markers(id) ON DELETE CASCADE,
-    tag_id          UUID REFERENCES c.tags(id) ON DELETE CASCADE,
-    PRIMARY KEY (marker_id, tag_id)
 );
 
 -- Movie images
@@ -668,63 +685,13 @@ CREATE INDEX idx_c_watch_history_user ON c.watch_history(user_id, watched_at DES
 
 ---
 
-## TV Shows (Adult Series)
+## Scene-First Model (Whisparr v3)
 
-Similar structure for adult TV series:
+Whisparr models scenes as episodes under a series/site. Revenge keeps a scene-first model:
 
-```sql
--- Adult series
-CREATE TABLE c.series (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    library_id      UUID NOT NULL,
-    stashdb_id      VARCHAR(36),
-
-    title           VARCHAR(500) NOT NULL,
-    sort_title      VARCHAR(500),
-    overview        TEXT,
-    first_aired     DATE,
-    studio_id       UUID REFERENCES c.studios(id),
-    status          VARCHAR(50),                -- continuing, ended
-
-    created_at      TIMESTAMPTZ DEFAULT NOW(),
-    updated_at      TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE c.seasons (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    series_id       UUID REFERENCES c.series(id) ON DELETE CASCADE,
-    season_number   INT NOT NULL,
-    title           VARCHAR(255),
-    overview        TEXT,
-    first_aired     DATE,
-    UNIQUE(series_id, season_number)
-);
-
-CREATE TABLE c.episodes (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    season_id       UUID REFERENCES c.seasons(id) ON DELETE CASCADE,
-    stashdb_id      VARCHAR(36),
-
-    episode_number  INT NOT NULL,
-    title           VARCHAR(500),
-    overview        TEXT,
-    runtime_ticks   BIGINT,
-    air_date        DATE,
-    path            TEXT,
-
-    phash           VARCHAR(64),
-    oshash          VARCHAR(64),
-
-    created_at      TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(season_id, episode_number)
-);
-
-CREATE TABLE c.episode_performers (
-    episode_id      UUID REFERENCES c.episodes(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
-    PRIMARY KEY (episode_id, performer_id)
-);
-```
+- No `c.series`, `c.seasons`, or `c.episodes` tables.
+- Scenes are stored directly in `c.scenes` and linked to `c.performers`, `c.studios`, and `c.tags`.
+- Series/site grouping is represented via studio/site metadata and UI grouping, not separate tables.
 
 ---
 
@@ -915,10 +882,8 @@ GET    /api/v1/c/studios/{id}/movies       # Get studio's movies
 GET    /api/v1/c/tags                      # List tags
 GET    /api/v1/c/tags/{id}/movies          # Get movies with tag
 
-GET    /api/v1/c/shows                     # List series
-GET    /api/v1/c/shows/{id}                # Get series
-GET    /api/v1/c/shows/{id}/seasons        # Get seasons
-GET    /api/v1/c/shows/{id}/seasons/{num}/episodes
+GET    /api/v1/c/scenes                    # List scenes
+GET    /api/v1/c/scenes/{id}               # Get scene
 
 POST   /api/v1/c/match                     # Match file by fingerprint
 POST   /api/v1/c/identify                  # Submit for identification

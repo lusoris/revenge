@@ -32,7 +32,7 @@
 - Duplicate scene detection
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.adult_movies`, `c.adult_shows`, `c.performers`, `c.studios`)
+- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
 - **API namespace**: `/api/v1/c/metadata/stashdb/*` (NOT `/api/v1/metadata/stashdb/*`)
 - **Module location**: `internal/content/c/metadata/stashdb/` (NOT `internal/service/metadata/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
@@ -329,7 +329,7 @@ query FingerprintLookup($fingerprints: [FingerprintQueryInput!]!) {
 ### Phase 1: Core Integration
 - [ ] GraphQL client setup (`machinebox/graphql` OR `genqlient`)
 - [ ] API Key configuration (`configs/config.yaml` - `stashdb.api_key`)
-- [ ] **Adult schema**: `c.performers`, `c.studios`, `c.adult_scenes` tables (NOT public schema)
+- [ ] **Adult schema**: `c.performers`, `c.studios`, `c.scenes` tables (NOT public schema)
 - [ ] **API namespace**: `/api/v1/c/metadata/stashdb/*` endpoints
 - [ ] **Module location**: `internal/content/c/metadata/stashdb/` (isolated from public metadata)
 - [ ] Basic scene search (GraphQL `searchScene` query)
@@ -338,7 +338,7 @@ query FingerprintLookup($fingerprints: [FingerprintQueryInput!]!) {
 - [ ] Performer details fetch (GraphQL `findPerformer` query)
 - [ ] Studio search (GraphQL `searchStudio` query)
 - [ ] Image downloads (performer images, scene covers, studio logos)
-- [ ] JSONB storage (`c.adult_movies.metadata_json.stashdb_data`)
+- [ ] JSONB storage (`c.movies.metadata_json.stashdb_data`)
 
 ### Phase 2: Fingerprinting & Auto-Identification
 - [ ] Perceptual hashing (phash) generation for video files
@@ -381,7 +381,7 @@ Match found? → Fetch scene details (findScene)
               ↓
               Extract: title, release_date, performers, studio, tags, images
               ↓
-              Store in c.adult_movies OR c.adult_shows (c schema ONLY)
+              Store in c.movies OR c.scenes (c schema ONLY)
               ↓
               metadata_json.stashdb_data = full GraphQL response
               ↓
@@ -397,9 +397,9 @@ Match found? → Fetch scene details (findScene)
               ↓
               Store in c.studios table
               ↓
-              Link performers → scene (c.adult_movie_performers junction table)
+              Link performers → scene (c.movie_performers junction table)
               ↓
-              Update Typesense search index (c_adult_movies collection)
+              Update Typesense search index (c_movies collection)
               ↓
               Notify user: "Metadata updated from StashDB"
 
@@ -482,13 +482,13 @@ StashDB has no hard rate limit, but avoid abuse:
 - **Duration**: Include video duration for additional validation
 
 ### Adult Content Isolation (CRITICAL)
-- **Database schema**: `c` schema ONLY (`c.adult_movies`, `c.adult_shows`, `c.performers`, `c.studios`)
-  - `c.adult_movies.metadata_json.stashdb_data` (JSONB)
-  - `c.adult_shows.metadata_json.stashdb_data` (JSONB)
+- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
+  - `c.movies.metadata_json.stashdb_data` (JSONB)
+  - `c.scenes.metadata_json.stashdb_data` (JSONB)
   - `c.performers` (dedicated table)
   - `c.studios` (dedicated table)
-  - `c.adult_movie_performers` (junction table)
-  - `c.adult_show_performers` (junction table)
+  - `c.movie_performers` (junction table)
+  - `c.scene_performers` (junction table)
 - **API namespace**: `/api/v1/c/metadata/stashdb/*` (isolated)
   - `/api/v1/c/metadata/stashdb/search/scenes`
   - `/api/v1/c/metadata/stashdb/search/performers`
@@ -510,7 +510,7 @@ StashDB has no hard rate limit, but avoid abuse:
 - **Filtering**: Filter scenes by parent studio (e.g., all MindGeek content)
 
 ### JSONB Storage
-- Store full StashDB GraphQL response in `c.adult_movies.metadata_json.stashdb_data`
+- Store full StashDB GraphQL response in `c.movies.metadata_json.stashdb_data`
 - Future-proofing: If StashDB adds new fields, they're automatically stored
 - Querying: Use PostgreSQL JSONB operators for advanced queries
 

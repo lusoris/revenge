@@ -10,7 +10,7 @@ CREATE TYPE library_type AS ENUM (
     'livetv',
     'comics',
     'adult_movie',
-    'adult_show'
+    'adult_scene'
 );
 
 -- Libraries table: Content library definitions

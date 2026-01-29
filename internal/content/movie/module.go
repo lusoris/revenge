@@ -4,10 +4,12 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 
+	"github.com/lusoris/revenge/internal/service/metadata/radarr"
 	"github.com/lusoris/revenge/internal/service/metadata/tmdb"
 )
 
@@ -64,15 +66,35 @@ type RiverParams struct {
 
 	Workers  *river.Workers
 	Service  *Service
-	Client   *river.Client[any]
+	Client   *river.Client[pgx.Tx]
 	Logger   *slog.Logger
 	Provider *tmdb.Provider `optional:"true"` // Optional: for metadata enrichment
+	Radarr   *radarr.Provider `optional:"true"` // Optional: for local metadata
 	Scanner  Scanner        `optional:"true"` // Optional: for library scanning
 }
 
 // RegisterRiverWorkers registers movie workers with River if available.
 func RegisterRiverWorkers(p RiverParams) error {
-	return RegisterWorkers(p.Workers, p.Service, p.Scanner, p.Provider, p.Client, p.Logger)
+	provider := selectMetadataProvider(p.Radarr, p.Provider)
+	return RegisterWorkers(p.Workers, p.Service, p.Scanner, provider, p.Client, p.Logger)
+}
+
+func selectMetadataProvider(radarrProvider *radarr.Provider, tmdbProvider *tmdb.Provider) MetadataProvider {
+	if radarrProvider != nil {
+		adapter := newRadarrAdapter(radarrProvider)
+		if adapter != nil && adapter.IsAvailable() {
+			return adapter
+		}
+	}
+
+	if tmdbProvider != nil {
+		adapter := newTMDbAdapter(tmdbProvider)
+		if adapter != nil && adapter.IsAvailable() {
+			return adapter
+		}
+	}
+
+	return nil
 }
 
 // Module is the fx module for movies.

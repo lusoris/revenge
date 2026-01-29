@@ -30,7 +30,7 @@
 - Alternative name/alias resolution
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.performers`, `c.adult_movies`)
+- **Database schema**: `c` schema ONLY (`c.performers`, `c.movies`)
 - **API namespace**: `/api/v1/c/wiki/babepedia/*` (NOT `/api/v1/wiki/babepedia/*`)
 - **Module location**: `internal/content/c/wiki/babepedia/` (NOT `internal/service/wiki/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library

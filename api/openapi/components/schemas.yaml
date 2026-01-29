@@ -289,7 +289,7 @@ components:
         - livetv
         - comics
         - adult_movie
-        - adult_show
+        - adult_scene
 
     Library:
       type: object

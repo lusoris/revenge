@@ -15,7 +15,7 @@ import (
 )
 
 const countMoviesByGenre = `-- name: CountMoviesByGenre :one
-SELECT COUNT(*) FROM movie_genres WHERE genre_id = $1
+SELECT COUNT(*) FROM movie_genre_link WHERE genre_id = $1
 `
 
 func (q *Queries) CountMoviesByGenre(ctx context.Context, genreID uuid.UUID) (int64, error) {
@@ -27,25 +27,24 @@ func (q *Queries) CountMoviesByGenre(ctx context.Context, genreID uuid.UUID) (in
 
 const getMovieGenres = `-- name: GetMovieGenres :many
 
-SELECT g.id, g.domain, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at FROM genres g
-JOIN movie_genres mg ON g.id = mg.genre_id
+SELECT g.id, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at FROM movie_genres g
+JOIN movie_genre_link mg ON g.id = mg.genre_id
 WHERE mg.movie_id = $1
 ORDER BY g.name ASC
 `
 
 // Movie Genre Queries
-func (q *Queries) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]Genre, error) {
+func (q *Queries) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error) {
 	rows, err := q.db.Query(ctx, getMovieGenres, movieID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Genre{}
+	items := []MovieGenre{}
 	for rows.Next() {
-		var i Genre
+		var i MovieGenre
 		if err := rows.Scan(
 			&i.ID,
-			&i.Domain,
 			&i.Name,
 			&i.Slug,
 			&i.Description,
@@ -65,7 +64,7 @@ func (q *Queries) GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]Genr
 }
 
 const linkMovieGenre = `-- name: LinkMovieGenre :exec
-INSERT INTO movie_genres (movie_id, genre_id)
+INSERT INTO movie_genre_link (movie_id, genre_id)
 VALUES ($1, $2)
 ON CONFLICT (movie_id, genre_id) DO NOTHING
 `
@@ -81,17 +80,15 @@ func (q *Queries) LinkMovieGenre(ctx context.Context, arg LinkMovieGenreParams) 
 }
 
 const listGenresWithMovieCounts = `-- name: ListGenresWithMovieCounts :many
-SELECT g.id, g.domain, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at, COUNT(mg.movie_id) as movie_count
-FROM genres g
-LEFT JOIN movie_genres mg ON g.id = mg.genre_id
-WHERE g.domain = 'movie'
+SELECT g.id, g.name, g.slug, g.description, g.parent_id, g.external_ids, g.created_at, g.updated_at, COUNT(mg.movie_id) as movie_count
+FROM movie_genres g
+LEFT JOIN movie_genre_link mg ON g.id = mg.genre_id
 GROUP BY g.id
 ORDER BY movie_count DESC, g.name ASC
 `
 
 type ListGenresWithMovieCountsRow struct {
 	ID          uuid.UUID       `json:"id"`
-	Domain      string          `json:"domain"`
 	Name        string          `json:"name"`
 	Slug        string          `json:"slug"`
 	Description *string         `json:"description"`
@@ -113,7 +110,6 @@ func (q *Queries) ListGenresWithMovieCounts(ctx context.Context) ([]ListGenresWi
 		var i ListGenresWithMovieCountsRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.Domain,
 			&i.Name,
 			&i.Slug,
 			&i.Description,
@@ -135,7 +131,7 @@ func (q *Queries) ListGenresWithMovieCounts(ctx context.Context) ([]ListGenresWi
 
 const listMoviesByGenre = `-- name: ListMoviesByGenre :many
 SELECT m.id, m.library_id, m.path, m.container, m.size_bytes, m.runtime_ticks, m.title, m.sort_title, m.original_title, m.tagline, m.overview, m.release_date, m.year, m.content_rating, m.rating_level, m.budget, m.revenue, m.community_rating, m.vote_count, m.critic_rating, m.critic_count, m.poster_path, m.poster_blurhash, m.backdrop_path, m.backdrop_blurhash, m.logo_path, m.tmdb_id, m.imdb_id, m.tvdb_id, m.date_added, m.last_played_at, m.play_count, m.is_locked, m.created_at, m.updated_at, m.collection_id, m.collection_order FROM movies m
-JOIN movie_genres mg ON m.id = mg.movie_id
+JOIN movie_genre_link mg ON m.id = mg.movie_id
 WHERE mg.genre_id = $1
 ORDER BY m.sort_title ASC
 LIMIT $2 OFFSET $3
@@ -206,7 +202,7 @@ func (q *Queries) ListMoviesByGenre(ctx context.Context, arg ListMoviesByGenrePa
 }
 
 const unlinkMovieGenres = `-- name: UnlinkMovieGenres :exec
-DELETE FROM movie_genres WHERE movie_id = $1
+DELETE FROM movie_genre_link WHERE movie_id = $1
 `
 
 func (q *Queries) UnlinkMovieGenres(ctx context.Context, movieID uuid.UUID) error {

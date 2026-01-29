@@ -14,19 +14,15 @@ import (
 
 type Querier interface {
 	CountActiveSessionsByUser(ctx context.Context, userID uuid.UUID) (int64, error)
-	CountGenresByDomain(ctx context.Context, domain GenreDomain) (int64, error)
 	CountLibraries(ctx context.Context) (int64, error)
-	CountPeople(ctx context.Context) (int64, error)
 	CountProfilesByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (ApiKey, error)
 	// Activity Log
 	CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error)
-	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
 	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
 	CreateOIDCLink(ctx context.Context, arg CreateOIDCLinkParams) (OidcUserLink, error)
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error)
-	CreatePerson(ctx context.Context, arg CreatePersonParams) (Person, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
@@ -35,26 +31,20 @@ type Querier interface {
 	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredAPIKeys(ctx context.Context) error
 	DeleteExpiredSessions(ctx context.Context) error
-	DeleteGenre(ctx context.Context, id uuid.UUID) error
 	DeleteLibrary(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCLink(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCLinksByProvider(ctx context.Context, providerID uuid.UUID) error
 	DeleteOIDCLinksByUser(ctx context.Context, userID uuid.UUID) error
 	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
 	DeleteOldActivityLogs(ctx context.Context, createdAt time.Time) error
-	DeletePerson(ctx context.Context, id uuid.UUID) error
 	DeleteProfile(ctx context.Context, id uuid.UUID) error
 	DeleteServerSetting(ctx context.Context, key string) error
 	DeleteSession(ctx context.Context, id uuid.UUID) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
-	GenreExists(ctx context.Context, id uuid.UUID) (bool, error)
-	GenreSlugExists(ctx context.Context, arg GenreSlugExistsParams) (bool, error)
 	GetAPIKeyByHash(ctx context.Context, keyHash string) (ApiKey, error)
 	GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, error)
 	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) ([]ApiKey, error)
 	GetDefaultProfile(ctx context.Context, userID uuid.UUID) (Profile, error)
-	GetGenreByID(ctx context.Context, id uuid.UUID) (Genre, error)
-	GetGenreBySlug(ctx context.Context, arg GetGenreBySlugParams) (Genre, error)
 	GetLibraryByID(ctx context.Context, id uuid.UUID) (Library, error)
 	// OIDC User Links
 	GetOIDCLinkByID(ctx context.Context, id uuid.UUID) (OidcUserLink, error)
@@ -62,9 +52,6 @@ type Querier interface {
 	// OIDC Providers
 	GetOIDCProviderByID(ctx context.Context, id uuid.UUID) (OidcProvider, error)
 	GetOIDCProviderBySlug(ctx context.Context, slug string) (OidcProvider, error)
-	GetPersonByID(ctx context.Context, id uuid.UUID) (Person, error)
-	GetPersonByImdbID(ctx context.Context, imdbID *string) (Person, error)
-	GetPersonByTmdbID(ctx context.Context, tmdbID *int32) (Person, error)
 	GetProfileByID(ctx context.Context, id uuid.UUID) (Profile, error)
 	// Server Settings
 	GetServerSetting(ctx context.Context, key string) (ServerSetting, error)
@@ -81,33 +68,24 @@ type Querier interface {
 	ListActivityLogByAction(ctx context.Context, arg ListActivityLogByActionParams) ([]ActivityLog, error)
 	ListActivityLogByModule(ctx context.Context, arg ListActivityLogByModuleParams) ([]ActivityLog, error)
 	ListActivityLogByUser(ctx context.Context, arg ListActivityLogByUserParams) ([]ActivityLog, error)
-	ListChildGenres(ctx context.Context, parentID pgtype.UUID) ([]Genre, error)
 	ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error)
-	ListGenresByDomain(ctx context.Context, domain GenreDomain) ([]Genre, error)
 	ListLibraries(ctx context.Context) ([]Library, error)
 	ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]Library, error)
 	ListLibraryUsers(ctx context.Context, libraryID uuid.UUID) ([]ListLibraryUsersRow, error)
 	ListOIDCLinksByUser(ctx context.Context, userID uuid.UUID) ([]ListOIDCLinksByUserRow, error)
 	ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
-	ListPeople(ctx context.Context, arg ListPeopleParams) ([]Person, error)
 	ListProfilesByUser(ctx context.Context, userID uuid.UUID) ([]Profile, error)
 	ListRecentActivity(ctx context.Context, arg ListRecentActivityParams) ([]ActivityLog, error)
 	ListServerSettings(ctx context.Context) ([]ServerSetting, error)
 	ListSessionsByUser(ctx context.Context, userID uuid.UUID) ([]Session, error)
-	ListTopLevelGenresByDomain(ctx context.Context, domain GenreDomain) ([]Genre, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
-	PersonExistsByTmdbID(ctx context.Context, tmdbID *int32) (bool, error)
 	RevokeLibraryAccess(ctx context.Context, arg RevokeLibraryAccessParams) error
-	SearchGenres(ctx context.Context, arg SearchGenresParams) ([]Genre, error)
-	SearchPeople(ctx context.Context, arg SearchPeopleParams) ([]Person, error)
 	SetDefaultProfile(ctx context.Context, arg SetDefaultProfileParams) error
 	UpdateAPIKeyUsage(ctx context.Context, id uuid.UUID) error
-	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
 	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
 	UpdateLibraryScanStatus(ctx context.Context, arg UpdateLibraryScanStatusParams) error
 	UpdateOIDCLinkLogin(ctx context.Context, arg UpdateOIDCLinkLoginParams) error
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error)
-	UpdatePerson(ctx context.Context, arg UpdatePersonParams) (Person, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
 	UpdateSessionActivity(ctx context.Context, arg UpdateSessionActivityParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)

@@ -5,7 +5,7 @@
 
 ## Overview
 
-The NSFW toggle controls visibility and access to adult content modules (`adult_movie`, `adult_show`) stored in PostgreSQL schema `c`.
+The NSFW toggle controls visibility and access to adult content modules (`adult_movie`, `adult_scene`) stored in PostgreSQL schema `c`.
 
 **Default State:** OFF (explicit opt-in required)
 
@@ -157,7 +157,7 @@ func (s *SearchService) Search(ctx context.Context, query string, opts SearchOpt
     // Only include adult results if enabled
     if nsfwEnabled {
         results.AdultMovies = s.searchAdultMovies(ctx, query, opts)
-        results.AdultShows = s.searchAdultShows(ctx, query, opts)
+        results.AdultScenes = s.searchAdultScenes(ctx, query, opts)
     }
 
     return results, nil
@@ -340,7 +340,7 @@ func (s *SearchService) Search(ctx context.Context, query string, opts SearchOpt
     {#if nsfwEnabled}
         <div class="sidebar-divider" />
         <NavItem href="/c/movies" icon="lock">Adult Movies</NavItem>
-        <NavItem href="/c/shows" icon="lock">Adult Shows</NavItem>
+        <NavItem href="/c/scenes" icon="lock">Adult Scenes</NavItem>
     {/if}
 </nav>
 ```

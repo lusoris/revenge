@@ -4,7 +4,11 @@ package config
 import (
 	"fmt"
 	"log/slog"
+	"net/url"
+	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/env"
@@ -20,14 +24,21 @@ type Config struct {
 	Cache    CacheConfig    `koanf:"cache"`
 	Search   SearchConfig   `koanf:"search"`
 	Auth     AuthConfig     `koanf:"auth"`
+	Metadata MetadataConfig `koanf:"metadata"`
 	Modules  ModulesConfig  `koanf:"modules"`
 	Logging  LoggingConfig  `koanf:"logging"`
 }
 
 // ServerConfig holds HTTP server settings.
 type ServerConfig struct {
-	Host string `koanf:"host"`
-	Port int    `koanf:"port"`
+	Host              string        `koanf:"host"`
+	Port              int           `koanf:"port"`
+	BaseURL           string        `koanf:"base_url"`
+	ReadTimeout       time.Duration `koanf:"read_timeout"`
+	WriteTimeout      time.Duration `koanf:"write_timeout"`
+	IdleTimeout       time.Duration `koanf:"idle_timeout"`
+	ReadHeaderTimeout time.Duration `koanf:"read_header_timeout"`
+	MaxHeaderBytes    int           `koanf:"max_header_bytes"`
 }
 
 // DatabaseConfig holds PostgreSQL connection settings.
@@ -84,6 +95,29 @@ type AuthConfig struct {
 	SessionDuration int    `koanf:"session_duration"` // hours
 }
 
+// MetadataConfig holds metadata provider settings.
+type MetadataConfig struct {
+	Radarr RadarrConfig `koanf:"radarr"`
+	TMDb   TMDbConfig   `koanf:"tmdb"`
+}
+
+// RadarrConfig holds Radarr connection settings.
+type RadarrConfig struct {
+	BaseURL string `koanf:"base_url"`
+	APIKey  string `koanf:"api_key"`
+}
+
+// TMDbConfig holds TMDb connection settings.
+type TMDbConfig struct {
+	APIKey     string `koanf:"api_key"`
+	BaseURL    string `koanf:"base_url"`
+	ImageURL   string `koanf:"image_url"`
+	Timeout    int    `koanf:"timeout"` // seconds
+	CacheTTL   int    `koanf:"cache_ttl"` // seconds
+	CacheSize  int    `koanf:"cache_size"`
+	RetryCount int    `koanf:"retry_count"`
+}
+
 // ModulesConfig holds settings for which modules are enabled.
 type ModulesConfig struct {
 	Movie     bool `koanf:"movie"`
@@ -127,6 +161,8 @@ func Load(configPath string) (*Config, error) {
 		return nil, fmt.Errorf("load env vars: %w", err)
 	}
 
+	applyEnvAliases(k)
+
 	// Set defaults
 	setDefaults(k)
 
@@ -139,12 +175,120 @@ func Load(configPath string) (*Config, error) {
 	return &cfg, nil
 }
 
+// LoadDefault attempts to load configuration from standard paths, then env-only.
+func LoadDefault() (*Config, error) {
+	paths := []string{
+		"config.yaml",
+		"configs/config.yaml",
+		"/etc/revenge/config.yaml",
+	}
+
+	for _, path := range paths {
+		cfg, err := Load(path)
+		if err == nil {
+			return cfg, nil
+		}
+	}
+
+	return Load("")
+}
+
+func applyEnvAliases(k *koanf.Koanf) {
+	setIfMissing := func(key string, value any) {
+		if !k.Exists(key) {
+			_ = k.Set(key, value)
+		}
+	}
+
+	if v, ok := os.LookupEnv("REVENGE_DB_HOST"); ok {
+		setIfMissing("database.host", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_DB_PORT"); ok {
+		if port, err := strconv.Atoi(v); err == nil {
+			setIfMissing("database.port", port)
+		}
+	}
+	if v, ok := os.LookupEnv("REVENGE_DB_USER"); ok {
+		setIfMissing("database.user", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_DB_PASSWORD"); ok {
+		setIfMissing("database.password", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_DB_NAME"); ok {
+		setIfMissing("database.name", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_DB_SSLMODE"); ok {
+		setIfMissing("database.sslmode", v)
+	}
+
+	if v, ok := os.LookupEnv("REVENGE_CACHE_URL"); ok {
+		setIfMissing("cache.addr", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_CACHE_PASSWORD"); ok {
+		setIfMissing("cache.password", v)
+	}
+
+	if v, ok := os.LookupEnv("REVENGE_TYPESENSE_URL"); ok {
+		if parsed, err := url.Parse(v); err == nil {
+			if host := parsed.Hostname(); host != "" {
+				setIfMissing("search.host", host)
+			}
+			if port := parsed.Port(); port != "" {
+				if portInt, err := strconv.Atoi(port); err == nil {
+					setIfMissing("search.port", portInt)
+				}
+			}
+		}
+	}
+	if v, ok := os.LookupEnv("REVENGE_TYPESENSE_API_KEY"); ok {
+		setIfMissing("search.api_key", v)
+	}
+
+	if v, ok := os.LookupEnv("REVENGE_HOST"); ok {
+		setIfMissing("server.host", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_PORT"); ok {
+		if port, err := strconv.Atoi(v); err == nil {
+			setIfMissing("server.port", port)
+		}
+	}
+	if v, ok := os.LookupEnv("REVENGE_BASE_URL"); ok {
+		setIfMissing("server.base_url", v)
+	}
+
+	if v, ok := os.LookupEnv("REVENGE_LOG_LEVEL"); ok {
+		setIfMissing("logging.level", v)
+	}
+	if v, ok := os.LookupEnv("REVENGE_LOG_FORMAT"); ok {
+		setIfMissing("logging.format", v)
+	}
+
+	if v := k.String("search.url"); v != "" && !k.Exists("search.host") {
+		if parsed, err := url.Parse(v); err == nil {
+			if host := parsed.Hostname(); host != "" {
+				setIfMissing("search.host", host)
+			}
+			if port := parsed.Port(); port != "" {
+				if portInt, err := strconv.Atoi(port); err == nil {
+					setIfMissing("search.port", portInt)
+				}
+			}
+		}
+	}
+}
+
 // setDefaults sets default configuration values.
 func setDefaults(k *koanf.Koanf) {
 	defaults := map[string]any{
 		// Server
-		"server.host": "0.0.0.0",
-		"server.port": 8096,
+		"server.host":               "0.0.0.0",
+		"server.port":               8096,
+		"server.base_url":           "/",
+		"server.read_timeout":       30 * time.Second,
+		"server.write_timeout":      30 * time.Second,
+		"server.idle_timeout":       60 * time.Second,
+		"server.read_header_timeout": 5 * time.Second,
+		"server.max_header_bytes":   1 << 20,
 
 		// Database
 		"database.host":      "localhost",
@@ -174,6 +318,19 @@ func setDefaults(k *koanf.Koanf) {
 		// Auth
 		"auth.jwt_secret":       "",
 		"auth.session_duration": 24,
+
+		// Metadata - Radarr
+		"metadata.radarr.base_url": "",
+		"metadata.radarr.api_key":  "",
+
+		// Metadata - TMDb
+		"metadata.tmdb.api_key":     "",
+		"metadata.tmdb.base_url":    "https://api.themoviedb.org/3",
+		"metadata.tmdb.image_url":   "https://image.tmdb.org/t/p",
+		"metadata.tmdb.timeout":     30,
+		"metadata.tmdb.cache_ttl":   3600,
+		"metadata.tmdb.cache_size":  50000,
+		"metadata.tmdb.retry_count": 3,
 
 		// Modules (only core modules enabled by default)
 		"modules.movie":     true,
@@ -218,23 +375,5 @@ var Module = fx.Module("config",
 
 		// Fall back to env-only config
 		return Load("")
-	}),
-	fx.Provide(func(cfg *Config) *slog.Logger {
-		level := slog.LevelInfo
-		switch cfg.Logging.Level {
-		case "debug":
-			level = slog.LevelDebug
-		case "warn":
-			level = slog.LevelWarn
-		case "error":
-			level = slog.LevelError
-		}
-
-		opts := &slog.HandlerOptions{Level: level}
-
-		if cfg.Logging.Format == "text" {
-			return slog.New(slog.NewTextHandler(nil, opts))
-		}
-		return slog.New(slog.NewJSONHandler(nil, opts))
 	}),
 )

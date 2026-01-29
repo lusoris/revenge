@@ -30,6 +30,11 @@ func (p *Provider) Priority() int {
 	return 2 // TMDb is secondary to Servarr (Radarr)
 }
 
+// IsAvailable reports whether the provider is configured.
+func (p *Provider) IsAvailable() bool {
+	return p != nil && p.client != nil && p.client.config.APIKey != ""
+}
+
 // MovieSearchResult represents a movie search result.
 type MovieSearchResult struct {
 	TMDbID    int

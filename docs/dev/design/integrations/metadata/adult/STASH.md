@@ -32,7 +32,7 @@
 - Migrate from Stash to Revenge (one-time import)
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.adult_movies`, `c.adult_shows`, `c.performers`, `c.studios`)
+- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
 - **API namespace**: `/api/v1/c/integrations/stash/*` (NOT `/api/v1/integrations/stash/*`)
 - **Module location**: `internal/content/c/integrations/stash/` (NOT `internal/service/integrations/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
@@ -344,7 +344,7 @@ query Configuration {
 ### Phase 1: Core Integration (Optional)
 - [ ] GraphQL client setup (`machinebox/graphql` OR `genqlient`)
 - [ ] Stash instance configuration (`configs/config.yaml` - `stash.url`, `stash.api_key`)
-- [ ] **Adult schema**: Use existing `c.adult_movies`, `c.performers`, `c.studios` tables
+- [ ] **Adult schema**: Use existing `c.movies`, `c.performers`, `c.studios` tables
 - [ ] **API namespace**: `/api/v1/c/integrations/stash/*` endpoints
 - [ ] **Module location**: `internal/content/c/integrations/stash/` (isolated)
 - [ ] List Stash scenes (GraphQL `findScenes`)
@@ -393,7 +393,7 @@ For each scene:
                 ↓
                 Copy OR symlink video file (user preference)
                 ↓
-                Store in c.adult_movies OR c.adult_shows
+                Store in c.movies OR c.scenes
                 ↓
                 metadata_json.stash_data = full GraphQL response
                 ↓
@@ -430,7 +430,7 @@ For each updated scene:
                 ↓
                 Stash updated_at > Revenge updated_at? → Sync metadata
                 ↓
-                Update c.adult_movies.metadata_json.stash_data
+                Update c.movies.metadata_json.stash_data
                 ↓
                 Update performers/studio/tags (if changed)
         ↓
@@ -462,8 +462,8 @@ For each updated scene:
 
 ### Adult Content Isolation (CRITICAL)
 - **Database schema**: `c` schema ONLY
-  - `c.adult_movies.metadata_json.stash_data` (JSONB)
-  - `c.adult_shows.metadata_json.stash_data` (JSONB)
+  - `c.movies.metadata_json.stash_data` (JSONB)
+  - `c.scenes.metadata_json.stash_data` (JSONB)
   - `c.performers` (shared with StashDB/ThePornDB)
   - `c.studios` (shared with StashDB/ThePornDB)
 - **API namespace**: `/api/v1/c/integrations/stash/*` (isolated)
@@ -505,7 +505,7 @@ For each updated scene:
 ### Watch History (Optional)
 - **Stash tracks watch history**: `o_counter` (play count), `last_played_at`
 - **Import watch history**: Optionally import play count/last played into Revenge
-- **Schema**: `c.adult_watch_history` table (user_id, scene_id, play_count, last_played_at)
+- **Schema**: `c.watch_history` table (user_id, scene_id, play_count, last_played_at)
 
 ### Two-Way Sync (Advanced)
 - **Revenge → Stash**: Optionally sync Revenge edits back to Stash database
@@ -519,7 +519,7 @@ For each updated scene:
 - **Default**: Prefer Revenge data (user edited in Revenge = authoritative)
 
 ### JSONB Storage
-- Store full Stash GraphQL response in `c.adult_movies.metadata_json.stash_data`
+- Store full Stash GraphQL response in `c.movies.metadata_json.stash_data`
 - Preserves all Stash-specific fields (scene markers, ratings, etc.)
 - Allows querying Stash-specific data via PostgreSQL JSONB operators
 

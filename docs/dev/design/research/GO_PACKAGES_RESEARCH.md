@@ -82,10 +82,10 @@ err = wsjson.Write(ctx, c, response)
 
 | Package | Version | Stars | License | Use Case |
 |---------|---------|-------|---------|----------|
-| **resty** | v3.0.0-beta.6 | 11.5k | MIT | ✅ **USE** - REST APIs (TMDb, MusicBrainz) |
+| **resty** | v2.16.0 | 11.5k | MIT | ✅ **USE** - REST APIs (TMDb, MusicBrainz) |
 | fasthttp | v1.69.0 | 23.2k | MIT | ❌ Server-only (API incompatible) |
 
-**Winner: `resty.dev/v3`**
+**Winner: `github.com/go-resty/resty/v2`**
 - Circuit breaker built-in
 - Retry with exponential backoff
 - SSE (Server-Sent Events) support
@@ -191,7 +191,7 @@ require (
     github.com/coder/websocket v1.8.14     // Watch Party, live updates
 
     // HTTP Client
-    resty.dev/v3                           // Metadata provider calls
+    github.com/go-resty/resty/v2           // Metadata provider calls
 
     // Video/Streaming (Blackbeard integration)
     github.com/asticode/go-astiav          // FFmpeg bindings
@@ -257,4 +257,3 @@ require (
 4. 🔄 Create `pkg/httpclient/` with resty + sturdyc
 5. 🔄 Update Blackbeard integration docs with go-astiav
 6. 🔄 Add WebSocket handlers with coder/websocket
-

@@ -3,8 +3,12 @@ package api
 import (
 	"log/slog"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 
+	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
 	"github.com/lusoris/revenge/internal/service/session"
@@ -29,8 +33,12 @@ type HandlerDeps struct {
 	UserService    *user.Service
 	SessionService *session.Service
 	LibraryService *library.Service
+	MovieService   *movie.Service `optional:"true"`
+	RiverClient    *river.Client[pgx.Tx]
 	HealthChecker  *health.Checker
 	Logger         *slog.Logger
+	BuildInfo      BuildInfo
+	Config         *config.Config
 }
 
 // provideHandlerParams creates HandlerParams from dependencies.
@@ -40,10 +48,13 @@ func provideHandlerParams(deps HandlerDeps) HandlerParams {
 		UserService:    deps.UserService,
 		SessionService: deps.SessionService,
 		LibraryService: deps.LibraryService,
+		MovieService:   deps.MovieService,
+		RiverClient:    deps.RiverClient,
 		HealthChecker:  deps.HealthChecker,
 		Logger:         deps.Logger,
-		Version:        "0.1.0",  // TODO: inject from build
-		BuildTime:      "",       // TODO: inject from build
-		GitCommit:      "",       // TODO: inject from build
+		AdultEnabled:   deps.Config.Modules.Adult,
+		Version:        deps.BuildInfo.Version,
+		BuildTime:      deps.BuildInfo.BuildTime,
+		GitCommit:      deps.BuildInfo.GitCommit,
 	}
 }

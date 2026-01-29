@@ -59,7 +59,7 @@
 | 4 | **TPDB** | ThePornDB API - extended metadata |
 | 5 | **NFO Files** | Local metadata sidecar files |
 
-### Adult Shows (Series)
+### Adult Scenes (Series)
 
 | Priority | Source | Data Provided |
 |----------|--------|---------------|
@@ -670,6 +670,7 @@ All adult content data is stored in the isolated `c` PostgreSQL schema.
 -- Scenes (main content)
 CREATE TABLE c.scenes (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    library_id      UUID NOT NULL,
     title           VARCHAR(500) NOT NULL,
     sort_title      VARCHAR(500),
     overview        TEXT,
@@ -702,6 +703,7 @@ CREATE TABLE c.scenes (
     updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE INDEX idx_c_scenes_library ON c.scenes(library_id);
 CREATE INDEX idx_c_scenes_studio ON c.scenes(studio_id);
 CREATE INDEX idx_c_scenes_oshash ON c.scenes(oshash);
 CREATE INDEX idx_c_scenes_stashdb ON c.scenes(stashdb_id);
@@ -711,10 +713,10 @@ CREATE TABLE c.performers (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
     disambiguation  VARCHAR(255),
-    aliases         TEXT[],
     gender          VARCHAR(50),
     birthdate       DATE,
     death_date      DATE,
+    birth_city      VARCHAR(255),
     ethnicity       VARCHAR(100),
     nationality     VARCHAR(100),
     hair_color      VARCHAR(50),
@@ -750,6 +752,24 @@ CREATE TABLE c.performers (
 CREATE INDEX idx_c_performers_name ON c.performers(name);
 CREATE INDEX idx_c_performers_stashdb ON c.performers(stashdb_id);
 
+-- Performer aliases
+CREATE TABLE c.performer_aliases (
+    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    alias           VARCHAR(255) NOT NULL,
+    PRIMARY KEY (performer_id, alias)
+);
+
+-- Performer images (additional)
+CREATE TABLE c.performer_images (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    path            TEXT NOT NULL,
+    type            VARCHAR(50) DEFAULT 'photo', -- photo, headshot, full
+    source          VARCHAR(50),                  -- stashdb, tpdb, local
+    primary_image   BOOLEAN DEFAULT FALSE,
+    created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Scene-Performer relationship
 CREATE TABLE c.scene_performers (
     scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
@@ -772,7 +792,8 @@ CREATE TABLE c.studios (
     -- Images
     logo_path       TEXT,
 
-    created_at      TIMESTAMPTZ DEFAULT NOW()
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Tags
@@ -781,7 +802,8 @@ CREATE TABLE c.tags (
     name            VARCHAR(255) NOT NULL UNIQUE,
     description     TEXT,
     parent_id       UUID REFERENCES c.tags(id), -- Hierarchical tags
-    stashdb_id      VARCHAR(100)
+    stashdb_id      VARCHAR(100),
+    created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE c.scene_tags (

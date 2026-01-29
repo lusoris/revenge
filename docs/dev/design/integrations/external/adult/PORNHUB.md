@@ -28,7 +28,7 @@
 - Verified performer status
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.performers`, `c.adult_movies`)
+- **Database schema**: `c` schema ONLY (`c.performers`, `c.movies`)
 - **API namespace**: `/api/v1/c/external/pornhub/*` (NOT `/api/v1/external/pornhub/*`)
 - **Module location**: `internal/content/c/external/pornhub/` (NOT `internal/service/external/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library

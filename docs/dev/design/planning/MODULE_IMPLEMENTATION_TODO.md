@@ -372,7 +372,7 @@ CREATE TABLE c.movies (
     -- ...
 );
 
--- Performers (shared between adult_movie and adult_show)
+-- Performers (shared between adult_movie and adult_scene)
 CREATE TABLE c.performers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,

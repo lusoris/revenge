@@ -308,8 +308,8 @@ Create a new library.
 - `books` - Book library
 - `audiobooks` - Audiobook library
 - `podcasts` - Podcast library
-- `adult_movies` - Adult movie library
-- `adult_shows` - Adult TV show library
+- `adult_movie` - Adult movie library
+- `adult_scene` - Adult scene library
 
 **Response:** 201 Created with library object
 

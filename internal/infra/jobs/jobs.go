@@ -86,6 +86,9 @@ func NewWorkers() *river.Workers {
 var Module = fx.Module("jobs",
 	fx.Provide(NewWorkers),
 	fx.Provide(NewService),
+	fx.Provide(func(svc *Service) *river.Client[pgx.Tx] {
+		return svc.client
+	}),
 	fx.Invoke(func(lc fx.Lifecycle, svc *Service) {
 		lc.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {

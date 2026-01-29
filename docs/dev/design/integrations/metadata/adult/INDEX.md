@@ -42,7 +42,7 @@ Adult metadata providers supply information for:
 **Secondary scene database**
 
 - ✅ Scene metadata
-- ✅ DVD/series info
+- ✅ DVD/series info (mapped to scene releases)
 - ✅ REST API
 - ⚠️ API key required
 

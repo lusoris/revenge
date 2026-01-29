@@ -57,7 +57,7 @@ type Querier interface {
 	// External Ratings
 	GetMovieExternalRatings(ctx context.Context, movieID uuid.UUID) ([]MovieExternalRating, error)
 	// Movie Genre Queries
-	GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]Genre, error)
+	GetMovieGenres(ctx context.Context, movieID uuid.UUID) ([]MovieGenre, error)
 	// Movie Images and Videos Queries
 	// Images
 	GetMovieImages(ctx context.Context, movieID uuid.UUID) ([]MovieImage, error)

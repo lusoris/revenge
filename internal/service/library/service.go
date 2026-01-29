@@ -329,7 +329,7 @@ func isValidLibraryType(t db.LibraryType) bool {
 		db.LibraryTypeLivetv,
 		db.LibraryTypeComics,
 		db.LibraryTypeAdultMovie,
-		db.LibraryTypeAdultShow:
+		db.LibraryTypeAdultScene:
 		return true
 	default:
 		return false

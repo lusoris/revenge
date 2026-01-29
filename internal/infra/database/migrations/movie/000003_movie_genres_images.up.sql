@@ -1,15 +1,36 @@
 -- Movie Genres and Images
 BEGIN;
 
--- Junction: Movie <-> Genre
+-- Movie Genres: Per-module genre definitions
 CREATE TABLE movie_genres (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name                VARCHAR(100) NOT NULL,
+    slug                VARCHAR(100) NOT NULL,
+    description         TEXT,
+    parent_id           UUID REFERENCES movie_genres(id) ON DELETE SET NULL,
+    external_ids        JSONB NOT NULL DEFAULT '{}'::jsonb,  -- {tmdb: "28"}
+
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    UNIQUE (slug)
+);
+
+CREATE INDEX idx_movie_genres_parent ON movie_genres(parent_id) WHERE parent_id IS NOT NULL;
+
+CREATE TRIGGER movie_genres_updated_at
+    BEFORE UPDATE ON movie_genres
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Junction: Movie <-> Genre
+CREATE TABLE movie_genre_link (
     movie_id            UUID NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
-    genre_id            UUID NOT NULL REFERENCES genres(id) ON DELETE CASCADE,
+    genre_id            UUID NOT NULL REFERENCES movie_genres(id) ON DELETE CASCADE,
 
     PRIMARY KEY (movie_id, genre_id)
 );
 
-CREATE INDEX idx_movie_genres_genre ON movie_genres(genre_id);
+CREATE INDEX idx_movie_genre_link_genre ON movie_genre_link(genre_id);
 
 -- Movie Images: Additional artwork beyond primary poster/backdrop
 CREATE TYPE movie_image_type AS ENUM (

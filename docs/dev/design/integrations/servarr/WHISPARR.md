@@ -127,11 +127,11 @@ Triggered when Whisparr detects health issues.
   - [ ] Parse webhook payload (On Download event)
   - [ ] Extract scene + performer + studio metadata
   - [ ] Trigger metadata enrichment (StashDB)
-  - [ ] Store in PostgreSQL schema `c` (`c.movies`, `c.performers`, `c.studios`)
+  - [ ] Store in PostgreSQL schema `c` (`c.scenes`, `c.performers`, `c.studios`)
   - [ ] Update Typesense search index (schema `c`)
 
 - [ ] **Metadata Sync**
-  - [ ] Map Whisparr scenes → Revenge `c.movies` table
+  - [ ] Map Whisparr scenes → Revenge `c.scenes` table
   - [ ] Map performers → Revenge `c.performers` table
   - [ ] Map studios → Revenge `c.studios` table
   - [ ] Map Whisparr quality profiles → Revenge quality tiers
@@ -139,7 +139,7 @@ Triggered when Whisparr detects health issues.
 
 - [ ] **Privacy Controls**
   - [ ] **Schema Isolation**: All queries use `SET search_path TO c, public;`
-  - [ ] **API Namespace**: All endpoints use `/api/v1/c/movies`, `/api/v1/c/performers`
+  - [ ] **API Namespace**: All endpoints use `/api/v1/c/movies`, `/api/v1/c/scenes`, `/api/v1/c/performers`
   - [ ] **NSFW Toggle**: Frontend toggle to show/hide adult content
   - [ ] **Secure Access**: Require NSFW permission for schema `c` access
 

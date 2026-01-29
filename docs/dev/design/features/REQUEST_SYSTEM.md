@@ -351,7 +351,7 @@ CREATE INDEX idx_request_comments_request_id ON request_comments(request_id);
 CREATE TABLE c.adult_requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('adult_movie', 'adult_show')),
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('adult_movie', 'adult_scene')),
     request_subtype VARCHAR(50),              -- "scene", "studio", "performer", "tag_combination"
     external_id VARCHAR(200),                 -- StashDB ID (NULL for tag combinations)
     title VARCHAR(500) NOT NULL,
@@ -414,7 +414,7 @@ CREATE TABLE c.adult_request_quotas (
 CREATE TABLE c.adult_request_rules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(200) NOT NULL,
-    content_type VARCHAR(50),                 -- 'adult_movie', 'adult_show', or NULL for all
+    content_type VARCHAR(50),                 -- 'adult_movie', 'adult_scene', or NULL for all
     condition_type VARCHAR(50) NOT NULL,
     condition_value JSONB NOT NULL,
     action VARCHAR(50) NOT NULL DEFAULT 'auto_approve',

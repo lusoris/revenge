@@ -135,7 +135,7 @@
 | HTTP | net/http | stdlib |
 | Logging | slog | stdlib |
 | WebSocket | coder/websocket | `coder/websocket` |
-| HTTP Client | resty | `resty.dev/v3` |
+| HTTP Client | resty | `github.com/go-resty/resty/v2` |
 | File Watch | fsnotify | `fsnotify/fsnotify` |
 
 ---

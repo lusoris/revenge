@@ -167,14 +167,14 @@ Pull requests must pass:
 
 ## Adult Content
 
-Adult modules (`adult_movie`, `adult_show`) use isolated PostgreSQL schema `c`:
+Adult modules (`adult_movie`, `adult_scene`) use isolated PostgreSQL schema `c`:
 
 ```sql
 CREATE SCHEMA IF NOT EXISTS c;
 -- All adult tables in c.* schema
 ```
 
-API namespace: `/api/v1/c/movies`, `/api/v1/c/shows`
+API namespace: `/api/v1/c/movies`, `/api/v1/c/scenes`
 
 **Whisparr v3 Integration**: Uses Sonarr codebase for "scenes" (NOT series/episodes), data stored in Whisparr cache, custom UI/UX required (folder structure differs from TV shows).
 

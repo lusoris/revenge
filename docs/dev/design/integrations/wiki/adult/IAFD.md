@@ -30,7 +30,7 @@
 - Cross-referencing performers across scenes
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.performers`, `c.adult_movies`, `c.studios`)
+- **Database schema**: `c` schema ONLY (`c.performers`, `c.movies`, `c.studios`)
 - **API namespace**: `/api/v1/c/wiki/iafd/*` (NOT `/api/v1/wiki/iafd/*`)
 - **Module location**: `internal/content/c/wiki/iafd/` (NOT `internal/service/wiki/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
@@ -173,7 +173,7 @@ HTML Structure (example):
 - [ ] Filmography extraction (scene list, release dates)
 - [ ] Scene metadata extraction (studio, director, cast)
 - [ ] Studio info extraction (parent company, website)
-- [ ] **c schema storage**: `c.performers.metadata_json.iafd_data`, `c.adult_movies.metadata_json.iafd_data`, `c.studios.metadata_json.iafd_data` (JSONB)
+- [ ] **c schema storage**: `c.performers.metadata_json.iafd_data`, `c.movies.metadata_json.iafd_data`, `c.studios.metadata_json.iafd_data` (JSONB)
 
 ### Phase 2: Data Enrichment
 - [ ] Filmography completion (fill gaps in performer filmographies)
@@ -218,7 +218,7 @@ Display in UI (performer filmography section, c schema isolated)
 
 ### Scene Metadata Enrichment Flow
 ```
-User views adult scene (c.adult_movies)
+User views adult scene (c.movies)
         ↓
 Check if IAFD data exists in cache
         ↓
@@ -234,7 +234,7 @@ Parse scene metadata:
   - Release date
   - Cast (performers)
         ↓
-Store in c.adult_movies.metadata_json.iafd_data (c schema JSONB)
+Store in c.movies.metadata_json.iafd_data (c schema JSONB)
         ↓
 Display in UI (scene details page, c schema isolated)
 ```
@@ -270,7 +270,7 @@ IAFD scraping: 1 req/sec (very conservative)
 ### Adult Content Isolation (CRITICAL)
 - **Database schema**: `c` schema ONLY
   - `c.performers.metadata_json.iafd_data` (JSONB)
-  - `c.adult_movies.metadata_json.iafd_data` (JSONB)
+  - `c.movies.metadata_json.iafd_data` (JSONB)
   - `c.studios.metadata_json.iafd_data` (JSONB)
   - NO data in public schema
 - **API namespace**: `/api/v1/c/wiki/iafd/*` (isolated)
@@ -330,7 +330,7 @@ IAFD scraping: 1 req/sec (very conservative)
 }
 ```
 
-#### Scene Data (`c.adult_movies.metadata_json.iafd_data`)
+#### Scene Data (`c.movies.metadata_json.iafd_data`)
 ```json
 {
   "url": "https://www.iafd.com/title.rme/title=movie-title/year=2023/movie-title-2023.htm",
@@ -360,7 +360,7 @@ IAFD scraping: 1 req/sec (very conservative)
 ### Caching Strategy
 - **Cache duration**: 90 days (filmography changes infrequently)
 - **Invalidation**: Manual refresh OR periodic background job (quarterly)
-- **Storage**: Store in JSONB (`c.performers/adult_movies/studios.metadata_json.iafd_data`) + Dragonfly cache (c namespace)
+- **Storage**: Store in JSONB (`c.performers/movies/studios.metadata_json.iafd_data`) + Dragonfly cache (c namespace)
 
 ### Use Case: Filmography Completion
 - **Primary source**: StashDB/ThePornDB for performer metadata

@@ -29,7 +29,7 @@
 - Alternative to StashDB for specific content gaps
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.adult_movies`, `c.adult_shows`, `c.performers`, `c.studios`)
+- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
 - **API namespace**: `/api/v1/c/metadata/theporndb/*` (NOT `/api/v1/metadata/theporndb/*`)
 - **Module location**: `internal/content/c/metadata/theporndb/` (NOT `internal/service/metadata/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
@@ -285,7 +285,7 @@ Response:
 ### Phase 1: Core Integration
 - [ ] REST API client setup (Go `net/http`)
 - [ ] API Key configuration (`configs/config.yaml` - `theporndb.api_key`)
-- [ ] **Adult schema**: Use existing `c.performers`, `c.studios`, `c.adult_scenes` tables
+- [ ] **Adult schema**: Use existing `c.performers`, `c.studios`, `c.scenes` tables
 - [ ] **API namespace**: `/api/v1/c/metadata/theporndb/*` endpoints
 - [ ] **Module location**: `internal/content/c/metadata/theporndb/` (isolated)
 - [ ] Basic scene search (REST `/scenes/search`)
@@ -294,7 +294,7 @@ Response:
 - [ ] Performer details fetch (REST `/performers/{id}`)
 - [ ] Studio search (REST `/studios/search`)
 - [ ] Image downloads (posters, performer images, studio logos)
-- [ ] JSONB storage (`c.adult_movies.metadata_json.theporndb_data`)
+- [ ] JSONB storage (`c.movies.metadata_json.theporndb_data`)
 
 ### Phase 2: Fallback Logic
 - [ ] Fallback to ThePornDB when StashDB lacks data
@@ -329,7 +329,7 @@ ThePornDB data found? → Fetch scene details (REST /scenes/{id})
               ↓
               Extract: title, release_date, performers, studio, tags, images
               ↓
-              Store in c.adult_movies.metadata_json.theporndb_data
+              Store in c.movies.metadata_json.theporndb_data
               ↓
               Download scene cover image
               ↓
@@ -394,8 +394,8 @@ ThePornDB rate limit: 120 req/min (2 req/sec)
 
 ### Adult Content Isolation (CRITICAL)
 - **Database schema**: `c` schema ONLY
-  - `c.adult_movies.metadata_json.theporndb_data` (JSONB)
-  - `c.adult_shows.metadata_json.theporndb_data` (JSONB)
+  - `c.movies.metadata_json.theporndb_data` (JSONB)
+  - `c.scenes.metadata_json.theporndb_data` (JSONB)
   - `c.performers` (shared with StashDB)
   - `c.studios` (shared with StashDB)
 - **API namespace**: `/api/v1/c/metadata/theporndb/*` (isolated)
@@ -414,7 +414,7 @@ ThePornDB rate limit: 120 req/min (2 req/sec)
 - **Merge metadata**: Combine StashDB + ThePornDB data (prefer StashDB, fill gaps with TPDb)
 
 ### JSONB Storage
-- Store ThePornDB response in `c.adult_movies.metadata_json.theporndb_data`
+- Store ThePornDB response in `c.movies.metadata_json.theporndb_data`
 - Separate from StashDB data (`stashdb_data` field)
 - Allows querying both sources independently
 

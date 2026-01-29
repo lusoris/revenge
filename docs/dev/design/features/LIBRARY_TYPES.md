@@ -8,7 +8,7 @@ revenge extends the original Revenge library types to support additional content
 
 - **Books & Audiobooks** - For Calibre/Audiobookshelf-like functionality
 - **Podcasts** - RSS-based podcast management
-- **Adult Content** - Whisparr/Stash integration for adult movies and shows
+- **Adult Content** - Whisparr/Stash integration for adult movies and scenes
 
 ## Library Type Enum
 
@@ -30,8 +30,8 @@ CREATE TYPE library_type AS ENUM (
     'books',            -- E-books (epub, pdf, mobi)
     'audiobooks',       -- Audiobooks (m4b, mp3)
     'podcasts',         -- Podcast feeds
-    'adult_movies',     -- Adult movies (Whisparr integration)
-    'adult_shows'       -- Adult series (Stash integration)
+    'adult_movie',     -- Adult movies (Whisparr integration)
+    'adult_scene'       -- Adult scenes (Stash integration)
 );
 ```
 
@@ -158,7 +158,7 @@ library:
     maxEpisodes: 50
 ```
 
-#### Adult Movies (`adult_movies`)
+#### Adult Movies (`adult_movie`)
 
 Adult movie library supporting:
 - **Integration**: Whisparr, Stash
@@ -171,7 +171,7 @@ Adult movie library supporting:
 
 ```yaml
 library:
-  type: adult_movies
+  type: adult_movie
   paths:
     - /media/adult/movies
   settings:
@@ -180,9 +180,9 @@ library:
     autoOrganize: true
 ```
 
-#### Adult Shows (`adult_shows`)
+#### Adult Scenes (`adult_scene`)
 
-Adult series library supporting:
+Adult scenes library supporting:
 - **Integration**: Stash, Whisparr
 - **Metadata Sources**: Stash-Box, TPDB
 - **Rating**: Always `normalized_level: 100` (Adult)
@@ -192,9 +192,9 @@ Adult series library supporting:
 
 ```yaml
 library:
-  type: adult_shows
+  type: adult_scene
   paths:
-    - /media/adult/series
+    - /media/adult/scenes
   settings:
     provider: stash-box
 ```
@@ -221,7 +221,7 @@ func (s *LibraryService) ListUserLibraries(ctx context.Context, userID uuid.UUID
 }
 
 func (l *Library) IsAdultLibrary() bool {
-    return l.Type == LibraryTypeAdultMovies || l.Type == LibraryTypeAdultShows
+    return l.Type == LibraryTypeAdultMovies || l.Type == LibraryTypeAdultScene
 }
 ```
 
@@ -240,7 +240,7 @@ func (s *MetadataService) GetProvidersForLibrary(libType LibraryType) []Metadata
         return []MetadataProvider{Audnexus, Audible, OpenLibrary}
     case LibraryTypePodcasts:
         return []MetadataProvider{PodcastIndex, ITunes}
-    case LibraryTypeAdultMovies, LibraryTypeAdultShows:
+    case LibraryTypeAdultMovies, LibraryTypeAdultScene:
         return []MetadataProvider{StashBox, TPDB}
     default:
         return []MetadataProvider{Local}
@@ -254,7 +254,7 @@ func (s *MetadataService) GetProvidersForLibrary(libType LibraryType) []Metadata
 -- Efficient library type filtering
 CREATE INDEX idx_libraries_type ON libraries(type);
 CREATE INDEX idx_libraries_type_adult ON libraries(type)
-    WHERE type IN ('adult_movies', 'adult_shows');
+    WHERE type IN ('adult_movie', 'adult_scene');
 
 -- Efficient content filtering for adult libraries
 CREATE INDEX idx_media_items_library_type ON media_items(library_id, media_type);
@@ -269,7 +269,7 @@ When migrating an existing Revenge installation:
 3. Music Videos → `musicvideos`
 4. Home Videos → `homevideos`
 5. Adult content requires:
-   - Create new `adult_movies` or `adult_shows` library
+   - Create new `adult_movie` or `adult_scene` library
    - Move content from `movies`/`tvshows`
    - Re-scan with adult metadata providers
 

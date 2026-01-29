@@ -15,53 +15,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type GenreDomain string
-
-const (
-	GenreDomainMovie   GenreDomain = "movie"
-	GenreDomainTv      GenreDomain = "tv"
-	GenreDomainMusic   GenreDomain = "music"
-	GenreDomainBook    GenreDomain = "book"
-	GenreDomainPodcast GenreDomain = "podcast"
-	GenreDomainGame    GenreDomain = "game"
-	GenreDomainAdult   GenreDomain = "adult"
-)
-
-func (e *GenreDomain) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = GenreDomain(s)
-	case string:
-		*e = GenreDomain(s)
-	default:
-		return fmt.Errorf("unsupported scan type for GenreDomain: %T", src)
-	}
-	return nil
-}
-
-type NullGenreDomain struct {
-	GenreDomain GenreDomain `json:"genreDomain"`
-	Valid       bool        `json:"valid"` // Valid is true if GenreDomain is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullGenreDomain) Scan(value interface{}) error {
-	if value == nil {
-		ns.GenreDomain, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.GenreDomain.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullGenreDomain) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.GenreDomain), nil
-}
-
 type LibraryType string
 
 const (
@@ -75,7 +28,7 @@ const (
 	LibraryTypeLivetv     LibraryType = "livetv"
 	LibraryTypeComics     LibraryType = "comics"
 	LibraryTypeAdultMovie LibraryType = "adult_movie"
-	LibraryTypeAdultShow  LibraryType = "adult_show"
+	LibraryTypeAdultScene LibraryType = "adult_scene"
 )
 
 func (e *LibraryType) Scan(src interface{}) error {
@@ -141,18 +94,6 @@ type ApiKey struct {
 	CreatedAt  time.Time          `json:"createdAt"`
 }
 
-type Genre struct {
-	ID          uuid.UUID       `json:"id"`
-	Domain      GenreDomain     `json:"domain"`
-	Name        string          `json:"name"`
-	Slug        string          `json:"slug"`
-	Description *string         `json:"description"`
-	ParentID    pgtype.UUID     `json:"parentId"`
-	ExternalIds json.RawMessage `json:"externalIds"`
-	CreatedAt   time.Time       `json:"createdAt"`
-	UpdatedAt   time.Time       `json:"updatedAt"`
-}
-
 type Library struct {
 	ID                uuid.UUID          `json:"id"`
 	Name              string             `json:"name"`
@@ -207,26 +148,6 @@ type OidcUserLink struct {
 	Groups      []string           `json:"groups"`
 	LinkedAt    time.Time          `json:"linkedAt"`
 	LastLoginAt pgtype.Timestamptz `json:"lastLoginAt"`
-}
-
-type Person struct {
-	ID                   uuid.UUID   `json:"id"`
-	Name                 string      `json:"name"`
-	SortName             *string     `json:"sortName"`
-	OriginalName         *string     `json:"originalName"`
-	Biography            *string     `json:"biography"`
-	Birthdate            pgtype.Date `json:"birthdate"`
-	Deathdate            pgtype.Date `json:"deathdate"`
-	Birthplace           *string     `json:"birthplace"`
-	Gender               *string     `json:"gender"`
-	PrimaryImageUrl      *string     `json:"primaryImageUrl"`
-	PrimaryImageBlurhash *string     `json:"primaryImageBlurhash"`
-	TmdbID               *int32      `json:"tmdbId"`
-	ImdbID               *string     `json:"imdbId"`
-	TvdbID               *int32      `json:"tvdbId"`
-	MusicbrainzID        pgtype.UUID `json:"musicbrainzId"`
-	CreatedAt            time.Time   `json:"createdAt"`
-	UpdatedAt            time.Time   `json:"updatedAt"`
 }
 
 type Profile struct {

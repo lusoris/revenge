@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
 
 	gen "github.com/lusoris/revenge/api/generated"
@@ -36,12 +37,20 @@ type Handler struct {
 	sessionService *session.Service
 	libraryService *library.Service
 	movieService   *movie.Service
-	riverClient    *river.Client[any]
+	riverClient    *river.Client[pgx.Tx]
 	healthChecker  *health.Checker
 	logger         *slog.Logger
+	adultEnabled   bool
 	version        string
 	buildTime      string
 	gitCommit      string
+}
+
+// BuildInfo contains build metadata for server info responses.
+type BuildInfo struct {
+	Version   string
+	BuildTime string
+	GitCommit string
 }
 
 // HandlerParams contains parameters for creating a new Handler.
@@ -51,9 +60,10 @@ type HandlerParams struct {
 	SessionService *session.Service
 	LibraryService *library.Service
 	MovieService   *movie.Service
-	RiverClient    *river.Client[any]
+	RiverClient    *river.Client[pgx.Tx]
 	HealthChecker  *health.Checker
 	Logger         *slog.Logger
+	AdultEnabled   bool
 	Version        string
 	BuildTime      string
 	GitCommit      string
@@ -70,6 +80,7 @@ func NewHandler(params HandlerParams) *Handler {
 		riverClient:    params.RiverClient,
 		healthChecker:  params.HealthChecker,
 		logger:         params.Logger.With(slog.String("component", "api")),
+		adultEnabled:   params.AdultEnabled,
 		version:        params.Version,
 		buildTime:      params.BuildTime,
 		gitCommit:      params.GitCommit,
@@ -126,6 +137,13 @@ func requireAdmin(ctx context.Context) (*db.User, error) {
 		return nil, ErrForbidden
 	}
 	return u, nil
+}
+
+func (h *Handler) requireMovieService() (*movie.Service, error) {
+	if h.movieService == nil {
+		return nil, ErrModuleDisabled
+	}
+	return h.movieService, nil
 }
 
 // ptrString returns a pointer to a string, or nil if empty.
