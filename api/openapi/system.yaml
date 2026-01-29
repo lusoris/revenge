@@ -1,0 +1,254 @@
+paths:
+  /system/info:
+    get:
+      operationId: getServerInfo
+      x-ogen-operation-group: System
+      summary: Get server information
+      description: Public endpoint for server info and setup status
+      tags:
+        - System
+      responses:
+        "200":
+          description: Server information
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ServerInfo"
+
+  /system/health:
+    get:
+      operationId: getHealth
+      x-ogen-operation-group: System
+      summary: Health check with component status
+      tags:
+        - System
+      responses:
+        "200":
+          description: Health status
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/HealthStatus"
+
+  /system/health/live:
+    get:
+      operationId: getLiveness
+      x-ogen-operation-group: System
+      summary: Liveness probe
+      description: Returns 200 if server is running
+      tags:
+        - System
+      responses:
+        "200":
+          description: Server is alive
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+
+  /system/health/ready:
+    get:
+      operationId: getReadiness
+      x-ogen-operation-group: System
+      summary: Readiness probe
+      description: Returns 200 if server can accept requests
+      tags:
+        - System
+      responses:
+        "200":
+          description: Server is ready
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ready"
+        "503":
+          description: Server is not ready
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /system/settings:
+    get:
+      operationId: listSettings
+      x-ogen-operation-group: System
+      summary: List server settings
+      description: Admin only
+      tags:
+        - System
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of settings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServerSetting"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /system/settings/{key}:
+    get:
+      operationId: getSetting
+      x-ogen-operation-group: System
+      summary: Get a specific setting
+      description: Admin only
+      tags:
+        - System
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Setting value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerSetting"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Setting not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    put:
+      operationId: updateSetting
+      x-ogen-operation-group: System
+      summary: Update a setting
+      description: Admin only
+      tags:
+        - System
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServerSettingUpdate"
+      responses:
+        "200":
+          description: Setting updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerSetting"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /system/oidc:
+    get:
+      operationId: listOIDCProviders
+      x-ogen-operation-group: System
+      summary: List OIDC providers
+      description: Admin only
+      tags:
+        - System
+        - OIDC
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of OIDC providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components/schemas.yaml#/components/schemas/OIDCProvider"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+components:
+  schemas:
+    ServerSetting:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+        value:
+          type: object
+          additionalProperties: true
+        description:
+          type: string
+        updatedAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+
+    ServerSettingUpdate:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: object
+          additionalProperties: true
+        description:
+          type: string

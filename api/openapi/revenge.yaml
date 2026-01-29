@@ -1,0 +1,2175 @@
+openapi: 3.1.0
+info:
+  title: Revenge API
+  description: |
+    Revenge Media Server API
+
+    ## Authentication
+
+    Most endpoints require authentication via Bearer token. Obtain a token
+    through the login endpoint.
+
+    ```
+    Authorization: Bearer <token>
+    ```
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: System
+    description: Server information and health checks
+  - name: Authentication
+    description: Login, logout, and session management
+  - name: Users
+    description: User management (admin)
+  - name: Libraries
+    description: Library management
+  - name: Movies
+    description: Movie browsing, metadata, and user interactions
+  - name: Collections
+    description: Movie collections (franchises)
+  - name: Studios
+    description: Production studios
+
+paths:
+  # System endpoints
+  /system/info:
+    get:
+      operationId: getServerInfo
+      x-ogen-operation-group: System
+      summary: Get server information
+      tags: [System]
+      responses:
+        "200":
+          description: Server information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerInfo"
+
+  /system/health:
+    get:
+      operationId: getHealth
+      x-ogen-operation-group: System
+      summary: Health check with component status
+      tags: [System]
+      responses:
+        "200":
+          description: Health status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /system/health/live:
+    get:
+      operationId: getLiveness
+      x-ogen-operation-group: System
+      summary: Liveness probe
+      tags: [System]
+      responses:
+        "200":
+          description: Server is alive
+
+  /system/health/ready:
+    get:
+      operationId: getReadiness
+      x-ogen-operation-group: System
+      summary: Readiness probe
+      tags: [System]
+      responses:
+        "200":
+          description: Server is ready
+        "503":
+          description: Server is not ready
+
+  # Auth endpoints
+  /auth/login:
+    post:
+      operationId: login
+      x-ogen-operation-group: Auth
+      summary: Authenticate user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Account disabled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      x-ogen-operation-group: Auth
+      summary: Logout current session
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Logout successful
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/register:
+    post:
+      operationId: register
+      x-ogen-operation-group: Auth
+      summary: Register new user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      x-ogen-operation-group: Auth
+      summary: Get current user info
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/password:
+    put:
+      operationId: changePassword
+      x-ogen-operation-group: Auth
+      summary: Change password
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "204":
+          description: Password changed
+        "401":
+          description: Invalid current password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/sessions:
+    get:
+      operationId: listSessions
+      x-ogen-operation-group: Auth
+      summary: List current user's sessions
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/sessions/{sessionId}:
+    delete:
+      operationId: revokeSession
+      x-ogen-operation-group: Auth
+      summary: Revoke a specific session
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Session revoked
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # User endpoints
+  /users:
+    get:
+      operationId: listUsers
+      x-ogen-operation-group: Users
+      summary: List all users (admin only)
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      operationId: createUser
+      x-ogen-operation-group: Users
+      summary: Create a new user (admin only)
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{userId}:
+    get:
+      operationId: getUser
+      x-ogen-operation-group: Users
+      summary: Get user by ID
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    patch:
+      operationId: updateUser
+      x-ogen-operation-group: Users
+      summary: Update user
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: deleteUser
+      x-ogen-operation-group: Users
+      summary: Delete user (admin only)
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: User deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Library endpoints
+  /libraries:
+    get:
+      operationId: listLibraries
+      x-ogen-operation-group: Libraries
+      summary: List libraries accessible to current user
+      tags: [Libraries]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of libraries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Library"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      operationId: createLibrary
+      x-ogen-operation-group: Libraries
+      summary: Create a new library (admin only)
+      tags: [Libraries]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryCreate"
+      responses:
+        "201":
+          description: Library created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Library"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /libraries/{libraryId}:
+    get:
+      operationId: getLibrary
+      x-ogen-operation-group: Libraries
+      summary: Get library by ID
+      tags: [Libraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Library details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Library"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: No access to library
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    patch:
+      operationId: updateLibrary
+      x-ogen-operation-group: Libraries
+      summary: Update library
+      tags: [Libraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LibraryUpdate"
+      responses:
+        "200":
+          description: Library updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Library"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: deleteLibrary
+      x-ogen-operation-group: Libraries
+      summary: Delete library (admin only)
+      tags: [Libraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Library deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /libraries/{libraryId}/scan:
+    post:
+      operationId: scanLibrary
+      x-ogen-operation-group: Libraries
+      summary: Trigger library scan
+      tags: [Libraries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScanRequest"
+      responses:
+        "202":
+          description: Scan started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Library not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Movie endpoints
+  /movies:
+    get:
+      operationId: listMovies
+      x-ogen-operation-group: Movies
+      summary: List movies
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [title, date_added, release_date, rating]
+            default: title
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/recent:
+    get:
+      operationId: listRecentMovies
+      x-ogen-operation-group: Movies
+      summary: List recently added movies
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Recently added movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Movie"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/continue:
+    get:
+      operationId: listContinueWatching
+      x-ogen-operation-group: Movies
+      summary: List movies to continue watching
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Movies to continue
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovieWithProgress"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/{movieId}:
+    get:
+      operationId: getMovie
+      x-ogen-operation-group: Movies
+      summary: Get movie by ID
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    patch:
+      operationId: updateMovie
+      x-ogen-operation-group: Movies
+      summary: Update movie metadata
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieUpdate"
+      responses:
+        "200":
+          description: Movie updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: deleteMovie
+      x-ogen-operation-group: Movies
+      summary: Delete movie
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Movie deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/{movieId}/refresh:
+    post:
+      operationId: refreshMovieMetadata
+      x-ogen-operation-group: Movies
+      summary: Refresh movie metadata
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "202":
+          description: Refresh queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/{movieId}/favorite:
+    put:
+      operationId: addMovieToFavorites
+      x-ogen-operation-group: Movies
+      summary: Add to favorites
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Added to favorites
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: removeMovieFromFavorites
+      x-ogen-operation-group: Movies
+      summary: Remove from favorites
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Removed from favorites
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/{movieId}/watchlist:
+    put:
+      operationId: addMovieToWatchlist
+      x-ogen-operation-group: Movies
+      summary: Add to watchlist
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Added to watchlist
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: removeMovieFromWatchlist
+      x-ogen-operation-group: Movies
+      summary: Remove from watchlist
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Removed from watchlist
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/{movieId}/watched:
+    put:
+      operationId: markMovieWatched
+      x-ogen-operation-group: Movies
+      summary: Mark as watched
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Marked as watched
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: markMovieUnwatched
+      x-ogen-operation-group: Movies
+      summary: Mark as unwatched
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Marked as unwatched
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /movies/{movieId}/rating:
+    put:
+      operationId: setMovieRating
+      x-ogen-operation-group: Movies
+      summary: Set user rating
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRatingRequest"
+      responses:
+        "200":
+          description: Rating set
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRating"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: deleteMovieRating
+      x-ogen-operation-group: Movies
+      summary: Delete user rating
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Rating deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /me/movies/favorites:
+    get:
+      operationId: listMyFavoriteMovies
+      x-ogen-operation-group: Movies
+      summary: List my favorite movies
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Favorite movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /me/movies/watchlist:
+    get:
+      operationId: listMyWatchlist
+      x-ogen-operation-group: Movies
+      summary: List my watchlist
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Watchlist movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Collection endpoints
+  /collections:
+    get:
+      operationId: listCollections
+      x-ogen-operation-group: Collections
+      summary: List movie collections
+      tags: [Collections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of collections
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /collections/{collectionId}:
+    get:
+      operationId: getCollection
+      x-ogen-operation-group: Collections
+      summary: Get collection by ID
+      tags: [Collections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: collectionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Collection details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: token
+      description: Session token from login endpoint
+
+  schemas:
+    # Error types
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+    ValidationError:
+      type: object
+      required:
+        - code
+        - message
+        - errors
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+              - field
+              - message
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+
+    # Pagination
+    PaginationMeta:
+      type: object
+      required:
+        - total
+        - limit
+        - offset
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    # User types
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - isAdmin
+        - isDisabled
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        isAdmin:
+          type: boolean
+        isDisabled:
+          type: boolean
+        maxRatingLevel:
+          type: integer
+        adultEnabled:
+          type: boolean
+        preferredLanguage:
+          type: string
+        lastLoginAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UserCreate:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        isAdmin:
+          type: boolean
+          default: false
+        maxRatingLevel:
+          type: integer
+          default: 100
+        adultEnabled:
+          type: boolean
+          default: false
+        preferredLanguage:
+          type: string
+
+    UserUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        isAdmin:
+          type: boolean
+        isDisabled:
+          type: boolean
+        maxRatingLevel:
+          type: integer
+        adultEnabled:
+          type: boolean
+        preferredLanguage:
+          type: string
+
+    UserListResponse:
+      type: object
+      required:
+        - users
+        - pagination
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    # Session types
+    Session:
+      type: object
+      required:
+        - id
+        - userId
+        - isActive
+        - lastActivity
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        profileId:
+          type: string
+          format: uuid
+        deviceName:
+          type: string
+        deviceType:
+          type: string
+        clientName:
+          type: string
+        clientVersion:
+          type: string
+        ipAddress:
+          type: string
+        isActive:
+          type: boolean
+        lastActivity:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    # Auth types
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        deviceName:
+          type: string
+        deviceType:
+          type: string
+        clientName:
+          type: string
+        clientVersion:
+          type: string
+
+    LoginResponse:
+      type: object
+      required:
+        - token
+        - user
+        - session
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+        session:
+          $ref: "#/components/schemas/Session"
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        preferredLanguage:
+          type: string
+
+    CurrentUser:
+      type: object
+      required:
+        - user
+        - session
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        session:
+          $ref: "#/components/schemas/Session"
+
+    ChangePasswordRequest:
+      type: object
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+          minLength: 8
+
+    # Library types
+    LibraryType:
+      type: string
+      enum:
+        - movie
+        - tvshow
+        - music
+        - audiobook
+        - book
+        - podcast
+        - photo
+        - livetv
+        - comics
+        - adult_movie
+        - adult_show
+
+    Library:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - paths
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/LibraryType"
+        paths:
+          type: array
+          items:
+            type: string
+        scanEnabled:
+          type: boolean
+        scanIntervalHours:
+          type: integer
+        lastScanAt:
+          type: string
+          format: date-time
+        preferredLanguage:
+          type: string
+        downloadImages:
+          type: boolean
+        downloadNfo:
+          type: boolean
+        generateChapters:
+          type: boolean
+        isPrivate:
+          type: boolean
+        ownerUserId:
+          type: string
+          format: uuid
+        sortOrder:
+          type: integer
+        icon:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    LibraryCreate:
+      type: object
+      required:
+        - name
+        - type
+        - paths
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        type:
+          $ref: "#/components/schemas/LibraryType"
+        paths:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        scanEnabled:
+          type: boolean
+          default: true
+        scanIntervalHours:
+          type: integer
+          default: 24
+        preferredLanguage:
+          type: string
+        downloadImages:
+          type: boolean
+          default: true
+        downloadNfo:
+          type: boolean
+          default: false
+        generateChapters:
+          type: boolean
+          default: false
+        isPrivate:
+          type: boolean
+          default: false
+        sortOrder:
+          type: integer
+          default: 0
+        icon:
+          type: string
+
+    LibraryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        paths:
+          type: array
+          items:
+            type: string
+        scanEnabled:
+          type: boolean
+        scanIntervalHours:
+          type: integer
+        preferredLanguage:
+          type: string
+        downloadImages:
+          type: boolean
+        downloadNfo:
+          type: boolean
+        generateChapters:
+          type: boolean
+        isPrivate:
+          type: boolean
+        sortOrder:
+          type: integer
+        icon:
+          type: string
+
+    ScanRequest:
+      type: object
+      properties:
+        fullScan:
+          type: boolean
+          default: false
+
+    ScanResponse:
+      type: object
+      required:
+        - jobId
+        - status
+      properties:
+        jobId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, running]
+        message:
+          type: string
+
+    # System types
+    ServerInfo:
+      type: object
+      required:
+        - version
+        - setupRequired
+      properties:
+        version:
+          type: string
+        buildTime:
+          type: string
+        gitCommit:
+          type: string
+        setupRequired:
+          type: boolean
+
+    HealthStatus:
+      type: object
+      required:
+        - status
+        - version
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        version:
+          type: string
+        checks:
+          type: object
+          additionalProperties:
+            type: string
+
+    # Movie types
+    Movie:
+      type: object
+      required:
+        - id
+        - title
+        - libraryId
+      properties:
+        id:
+          type: string
+          format: uuid
+        libraryId:
+          type: string
+          format: uuid
+        collectionId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        originalTitle:
+          type: string
+        sortTitle:
+          type: string
+        overview:
+          type: string
+        tagline:
+          type: string
+        year:
+          type: integer
+        releaseDate:
+          type: string
+          format: date
+        runtimeTicks:
+          type: integer
+          format: int64
+        communityRating:
+          type: number
+        voteCount:
+          type: integer
+        contentRating:
+          type: string
+        status:
+          type: string
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        tmdbId:
+          type: integer
+        imdbId:
+          type: string
+        isAdult:
+          type: boolean
+        dateAdded:
+          type: string
+          format: date-time
+        userData:
+          $ref: "#/components/schemas/MovieUserData"
+
+    MovieFull:
+      allOf:
+        - $ref: "#/components/schemas/Movie"
+        - type: object
+          properties:
+            budget:
+              type: integer
+              format: int64
+            revenue:
+              type: integer
+              format: int64
+            homepage:
+              type: string
+            genres:
+              type: array
+              items:
+                $ref: "#/components/schemas/Genre"
+            studios:
+              type: array
+              items:
+                $ref: "#/components/schemas/Studio"
+            cast:
+              type: array
+              items:
+                $ref: "#/components/schemas/CastMember"
+            directors:
+              type: array
+              items:
+                $ref: "#/components/schemas/CrewMember"
+            writers:
+              type: array
+              items:
+                $ref: "#/components/schemas/CrewMember"
+            collection:
+              $ref: "#/components/schemas/Collection"
+
+    MovieWithProgress:
+      allOf:
+        - $ref: "#/components/schemas/Movie"
+        - type: object
+          properties:
+            progress:
+              $ref: "#/components/schemas/WatchProgress"
+
+    MovieUserData:
+      type: object
+      properties:
+        isFavorite:
+          type: boolean
+        isInWatchlist:
+          type: boolean
+        isWatched:
+          type: boolean
+        userRating:
+          type: number
+        playbackPosition:
+          type: integer
+          format: int64
+        playedPercentage:
+          type: number
+        lastPlayedAt:
+          type: string
+          format: date-time
+
+    MovieUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        originalTitle:
+          type: string
+        sortTitle:
+          type: string
+        overview:
+          type: string
+        tagline:
+          type: string
+        contentRating:
+          type: string
+        isLocked:
+          type: boolean
+
+    MovieListResponse:
+      type: object
+      required:
+        - movies
+        - pagination
+      properties:
+        movies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Movie"
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    WatchProgress:
+      type: object
+      required:
+        - positionTicks
+        - durationTicks
+      properties:
+        positionTicks:
+          type: integer
+          format: int64
+        durationTicks:
+          type: integer
+          format: int64
+        playedPercentage:
+          type: number
+        lastPlayedAt:
+          type: string
+          format: date-time
+
+    UserRating:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: number
+          minimum: 0
+          maximum: 10
+        review:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UserRatingRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: number
+          minimum: 0
+          maximum: 10
+        review:
+          type: string
+          maxLength: 10000
+
+    Genre:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        tmdbId:
+          type: integer
+
+    Collection:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        overview:
+          type: string
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        tmdbId:
+          type: integer
+        movieCount:
+          type: integer
+
+    CollectionFull:
+      allOf:
+        - $ref: "#/components/schemas/Collection"
+        - type: object
+          properties:
+            movies:
+              type: array
+              items:
+                $ref: "#/components/schemas/Movie"
+
+    CollectionListResponse:
+      type: object
+      required:
+        - collections
+        - pagination
+      properties:
+        collections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Collection"
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    Studio:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        logoPath:
+          type: string
+        originCountry:
+          type: string
+        tmdbId:
+          type: integer
+        movieCount:
+          type: integer
+
+    CastMember:
+      type: object
+      required:
+        - personId
+        - name
+        - character
+      properties:
+        personId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        character:
+          type: string
+        order:
+          type: integer
+        profilePath:
+          type: string
+        tmdbId:
+          type: integer
+
+    CrewMember:
+      type: object
+      required:
+        - personId
+        - name
+        - job
+      properties:
+        personId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        department:
+          type: string
+        job:
+          type: string
+        profilePath:
+          type: string
+        tmdbId:
+          type: integer
+
+    JobResponse:
+      type: object
+      required:
+        - jobId
+        - status
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [queued, running]
+        message:
+          type: string
+
+security:
+  - bearerAuth: []

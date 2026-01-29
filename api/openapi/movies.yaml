@@ -1,0 +1,1277 @@
+paths:
+  /movies:
+    get:
+      operationId: listMovies
+      x-ogen-operation-group: Movies
+      summary: List movies
+      description: List movies accessible to the current user with pagination and filtering
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: libraryId
+          in: query
+          description: Filter by library ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: genreId
+          in: query
+          description: Filter by genre ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: collectionId
+          in: query
+          description: Filter by collection ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: studioId
+          in: query
+          description: Filter by studio ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: query
+          in: query
+          description: Search query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          description: Sort field
+          schema:
+            type: string
+            enum: [title, date_added, release_date, rating, popularity]
+            default: title
+        - name: sortOrder
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/recent:
+    get:
+      operationId: listRecentlyAddedMovies
+      x-ogen-operation-group: Movies
+      summary: List recently added movies
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Recently added movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Movie"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/continue:
+    get:
+      operationId: listContinueWatching
+      x-ogen-operation-group: Movies
+      summary: List movies the user can continue watching
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Movies to continue watching
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovieWithProgress"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}:
+    get:
+      operationId: getMovie
+      x-ogen-operation-group: Movies
+      summary: Get movie by ID
+      description: Get full movie details including credits, images, and user data
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    patch:
+      operationId: updateMovie
+      x-ogen-operation-group: Movies
+      summary: Update movie metadata
+      description: Admin or library manager only
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieUpdate"
+      responses:
+        "200":
+          description: Movie updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteMovie
+      x-ogen-operation-group: Movies
+      summary: Delete movie
+      description: Admin only. Removes movie from database (does not delete file).
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Movie deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}/refresh:
+    post:
+      operationId: refreshMovieMetadata
+      x-ogen-operation-group: Movies
+      summary: Refresh movie metadata
+      description: Queue a metadata refresh job for this movie
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "202":
+          description: Refresh job queued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}/images:
+    get:
+      operationId: getMovieImages
+      x-ogen-operation-group: Movies
+      summary: Get movie images
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: type
+          in: query
+          description: Filter by image type
+          schema:
+            type: string
+            enum: [poster, backdrop, logo]
+      responses:
+        "200":
+          description: Movie images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovieImage"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}/similar:
+    get:
+      operationId: getSimilarMovies
+      x-ogen-operation-group: Movies
+      summary: Get similar movies
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Similar movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Movie"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # User interaction endpoints
+  /movies/{movieId}/favorite:
+    put:
+      operationId: addMovieToFavorites
+      x-ogen-operation-group: Movies
+      summary: Add movie to favorites
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Added to favorites
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: removeMovieFromFavorites
+      x-ogen-operation-group: Movies
+      summary: Remove movie from favorites
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Removed from favorites
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}/watchlist:
+    put:
+      operationId: addMovieToWatchlist
+      x-ogen-operation-group: Movies
+      summary: Add movie to watchlist
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Added to watchlist
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: removeMovieFromWatchlist
+      x-ogen-operation-group: Movies
+      summary: Remove movie from watchlist
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Removed from watchlist
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}/watched:
+    put:
+      operationId: markMovieAsWatched
+      x-ogen-operation-group: Movies
+      summary: Mark movie as watched
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Marked as watched
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: markMovieAsUnwatched
+      x-ogen-operation-group: Movies
+      summary: Mark movie as unwatched
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Marked as unwatched
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /movies/{movieId}/rating:
+    put:
+      operationId: setMovieRating
+      x-ogen-operation-group: Movies
+      summary: Set user rating for movie
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRatingRequest"
+      responses:
+        "200":
+          description: Rating set
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRating"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteMovieRating
+      x-ogen-operation-group: Movies
+      summary: Delete user rating for movie
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Rating deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # User lists
+  /me/movies/favorites:
+    get:
+      operationId: listMyFavoriteMovies
+      x-ogen-operation-group: Movies
+      summary: List current user's favorite movies
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Favorite movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /me/movies/watchlist:
+    get:
+      operationId: listMyWatchlist
+      x-ogen-operation-group: Movies
+      summary: List current user's movie watchlist
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Watchlist movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Collections
+  /collections:
+    get:
+      operationId: listCollections
+      x-ogen-operation-group: Collections
+      summary: List movie collections
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of collections
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /collections/{collectionId}:
+    get:
+      operationId: getCollection
+      x-ogen-operation-group: Collections
+      summary: Get collection by ID
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: collectionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Collection details with movies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionFull"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Studios
+  /studios:
+    get:
+      operationId: listStudios
+      x-ogen-operation-group: Studios
+      summary: List movie studios
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of studios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Studio"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /studios/{studioId}:
+    get:
+      operationId: getStudio
+      x-ogen-operation-group: Studios
+      summary: Get studio by ID
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studioId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Studio details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Studio"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Studio not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /studios/{studioId}/movies:
+    get:
+      operationId: listStudioMovies
+      x-ogen-operation-group: Studios
+      summary: List movies by studio
+      tags: [Movies]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: studioId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Movies by studio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MovieListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Studio not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+components:
+  schemas:
+    # Movie schemas
+    Movie:
+      type: object
+      required:
+        - id
+        - title
+        - libraryId
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        libraryId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        collectionId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        title:
+          type: string
+        originalTitle:
+          type: string
+        sortTitle:
+          type: string
+        overview:
+          type: string
+        tagline:
+          type: string
+        year:
+          type: integer
+        releaseDate:
+          type: string
+          format: date
+        runtimeTicks:
+          type: integer
+          format: int64
+          description: Runtime in 100ns ticks
+        communityRating:
+          type: number
+          format: float
+        voteCount:
+          type: integer
+        contentRating:
+          type: string
+          description: Age rating (PG-13, R, etc.)
+        status:
+          type: string
+          enum: [rumored, planned, in_production, post_production, released, canceled]
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        tmdbId:
+          type: integer
+        imdbId:
+          type: string
+        isAdult:
+          type: boolean
+        dateAdded:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+        # User-specific fields (populated based on current user)
+        userData:
+          $ref: "#/components/schemas/MovieUserData"
+
+    MovieFull:
+      allOf:
+        - $ref: "#/components/schemas/Movie"
+        - type: object
+          properties:
+            budget:
+              type: integer
+              format: int64
+            revenue:
+              type: integer
+              format: int64
+            homepage:
+              type: string
+            genres:
+              type: array
+              items:
+                $ref: "#/components/schemas/Genre"
+            studios:
+              type: array
+              items:
+                $ref: "#/components/schemas/Studio"
+            cast:
+              type: array
+              items:
+                $ref: "#/components/schemas/CastMember"
+            directors:
+              type: array
+              items:
+                $ref: "#/components/schemas/CrewMember"
+            writers:
+              type: array
+              items:
+                $ref: "#/components/schemas/CrewMember"
+            images:
+              type: array
+              items:
+                $ref: "#/components/schemas/MovieImage"
+            videos:
+              type: array
+              items:
+                $ref: "#/components/schemas/MovieVideo"
+            collection:
+              $ref: "#/components/schemas/Collection"
+
+    MovieWithProgress:
+      allOf:
+        - $ref: "#/components/schemas/Movie"
+        - type: object
+          properties:
+            progress:
+              $ref: "#/components/schemas/WatchProgress"
+
+    MovieUserData:
+      type: object
+      properties:
+        isFavorite:
+          type: boolean
+        isInWatchlist:
+          type: boolean
+        isWatched:
+          type: boolean
+        userRating:
+          type: number
+          format: float
+        playbackPosition:
+          type: integer
+          format: int64
+          description: Current playback position in ticks
+        playedPercentage:
+          type: number
+          format: float
+        lastPlayedAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+
+    MovieUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        originalTitle:
+          type: string
+        sortTitle:
+          type: string
+        overview:
+          type: string
+        tagline:
+          type: string
+        contentRating:
+          type: string
+        isLocked:
+          type: boolean
+          description: Prevent automatic metadata updates
+
+    MovieListResponse:
+      type: object
+      required:
+        - movies
+        - pagination
+      properties:
+        movies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Movie"
+        pagination:
+          $ref: "./components/schemas.yaml#/components/schemas/PaginationMeta"
+
+    # Watch progress
+    WatchProgress:
+      type: object
+      required:
+        - positionTicks
+        - durationTicks
+      properties:
+        positionTicks:
+          type: integer
+          format: int64
+        durationTicks:
+          type: integer
+          format: int64
+        playedPercentage:
+          type: number
+          format: float
+        lastPlayedAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+
+    # Rating
+    UserRating:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 10
+        review:
+          type: string
+        createdAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+        updatedAt:
+          $ref: "./components/schemas.yaml#/components/schemas/Timestamp"
+
+    UserRatingRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 10
+        review:
+          type: string
+          maxLength: 10000
+
+    # Genre
+    Genre:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        tmdbId:
+          type: integer
+
+    # Collection
+    Collection:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        overview:
+          type: string
+        posterPath:
+          type: string
+        backdropPath:
+          type: string
+        tmdbId:
+          type: integer
+        movieCount:
+          type: integer
+
+    CollectionFull:
+      allOf:
+        - $ref: "#/components/schemas/Collection"
+        - type: object
+          properties:
+            movies:
+              type: array
+              items:
+                $ref: "#/components/schemas/Movie"
+
+    CollectionListResponse:
+      type: object
+      required:
+        - collections
+        - pagination
+      properties:
+        collections:
+          type: array
+          items:
+            $ref: "#/components/schemas/Collection"
+        pagination:
+          $ref: "./components/schemas.yaml#/components/schemas/PaginationMeta"
+
+    # Studio
+    Studio:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        logoPath:
+          type: string
+        originCountry:
+          type: string
+        tmdbId:
+          type: integer
+        movieCount:
+          type: integer
+
+    # Cast/Crew
+    CastMember:
+      type: object
+      required:
+        - personId
+        - name
+        - character
+      properties:
+        personId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        character:
+          type: string
+        order:
+          type: integer
+        profilePath:
+          type: string
+        tmdbId:
+          type: integer
+
+    CrewMember:
+      type: object
+      required:
+        - personId
+        - name
+        - job
+      properties:
+        personId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        department:
+          type: string
+        job:
+          type: string
+        profilePath:
+          type: string
+        tmdbId:
+          type: integer
+
+    # Images
+    MovieImage:
+      type: object
+      required:
+        - type
+        - url
+      properties:
+        type:
+          type: string
+          enum: [poster, backdrop, logo]
+        url:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+        aspectRatio:
+          type: number
+          format: float
+        language:
+          type: string
+        voteAverage:
+          type: number
+          format: float
+
+    # Videos
+    MovieVideo:
+      type: object
+      required:
+        - key
+        - site
+        - type
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        site:
+          type: string
+          enum: [YouTube, Vimeo]
+        type:
+          type: string
+          enum: [Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers]
+        size:
+          type: integer
+          description: Video quality (360, 480, 720, 1080)
+        official:
+          type: boolean
+        publishedAt:
+          type: string
+        language:
+          type: string
+
+    # Job response
+    JobResponse:
+      type: object
+      required:
+        - jobId
+        - status
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [queued, running]
+        message:
+          type: string

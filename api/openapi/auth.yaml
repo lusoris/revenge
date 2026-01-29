@@ -1,0 +1,373 @@
+paths:
+  /auth/login:
+    post:
+      operationId: login
+      x-ogen-operation-group: Auth
+      summary: Authenticate user
+      description: Authenticate with username and password, returns session token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Account disabled
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      x-ogen-operation-group: Auth
+      summary: Logout current session
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: Logout successful
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/logout/all:
+    post:
+      operationId: logoutAll
+      x-ogen-operation-group: Auth
+      summary: Logout all sessions for current user
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "204":
+          description: All sessions logged out
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/register:
+    post:
+      operationId: register
+      x-ogen-operation-group: Auth
+      summary: Register new user
+      description: Register a new user account. First user becomes admin.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      x-ogen-operation-group: Auth
+      summary: Get current user info
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentUser"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/password:
+    put:
+      operationId: changePassword
+      x-ogen-operation-group: Auth
+      summary: Change password
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "204":
+          description: Password changed
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Invalid current password
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/sessions:
+    get:
+      operationId: listSessions
+      x-ogen-operation-group: Auth
+      summary: List current user's sessions
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components/schemas.yaml#/components/schemas/Session"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/sessions/{sessionId}:
+    delete:
+      operationId: revokeSession
+      x-ogen-operation-group: Auth
+      summary: Revoke a specific session
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Session revoked
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/oidc/{provider}/authorize:
+    get:
+      operationId: oidcAuthorize
+      x-ogen-operation-group: Auth
+      summary: Start OIDC authorization flow
+      tags:
+        - Authentication
+        - OIDC
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect to OIDC provider
+        "404":
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /auth/oidc/{provider}/callback:
+    get:
+      operationId: oidcCallback
+      x-ogen-operation-group: Auth
+      summary: OIDC callback endpoint
+      tags:
+        - Authentication
+        - OIDC
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "400":
+          description: Invalid callback
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        deviceName:
+          type: string
+        deviceType:
+          type: string
+        clientName:
+          type: string
+        clientVersion:
+          type: string
+
+    LoginResponse:
+      type: object
+      required:
+        - token
+        - user
+        - session
+      properties:
+        token:
+          type: string
+          description: Bearer token for authentication
+        user:
+          $ref: "./components/schemas.yaml#/components/schemas/User"
+        session:
+          $ref: "./components/schemas.yaml#/components/schemas/Session"
+
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        preferredLanguage:
+          type: string
+
+    CurrentUser:
+      type: object
+      required:
+        - user
+        - session
+      properties:
+        user:
+          $ref: "./components/schemas.yaml#/components/schemas/User"
+        session:
+          $ref: "./components/schemas.yaml#/components/schemas/Session"
+        profiles:
+          type: array
+          items:
+            $ref: "./components/schemas.yaml#/components/schemas/Profile"
+
+    ChangePasswordRequest:
+      type: object
+      required:
+        - currentPassword
+        - newPassword
+      properties:
+        currentPassword:
+          type: string
+          minLength: 1
+        newPassword:
+          type: string
+          minLength: 8
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
