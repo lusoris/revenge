@@ -31,7 +31,7 @@ function Test-Requirements {
     Write-Info "Checking requirements..."
 
     if (-not (Get-Command go -ErrorAction SilentlyContinue)) {
-        Write-Error "Go is not installed. Please install Go 1.24 or later."
+        Write-Error "Go is not installed. Please install Go 1.25 or later."
         exit 1
     }
 

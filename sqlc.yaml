@@ -1,31 +1,108 @@
-# sqlc Configuration for Revenge Go
-# Generates type-safe Go code from SQL queries
-
 version: "2"
 
 sql:
-  - engine: "postgresql"
-    queries: "internal/infra/database/queries/"
-    schema: "internal/infra/database/migrations/"
+  # Shared infrastructure queries
+  - engine: postgresql
+    queries: internal/infra/database/queries/shared/
+    schema: internal/infra/database/migrations/shared/
     gen:
       go:
-        package: "db"
-        out: "internal/infra/database/db"
-        sql_package: "pgx/v5"
+        package: db
+        out: internal/infra/database/db
+        sql_package: pgx/v5
         emit_json_tags: true
         emit_interface: true
         emit_empty_slices: true
-        emit_result_struct_pointers: false
-        emit_params_struct_pointers: false
-        emit_methods_with_db_argument: false
-        json_tags_case_style: "camel"
-        output_db_file_name: "db.go"
-        output_models_file_name: "models.go"
-        output_querier_file_name: "querier.go"
+        emit_pointers_for_null_types: true
+        json_tags_case_style: camel
+        output_db_file_name: db.go
+        output_models_file_name: models.go
+        output_querier_file_name: querier.go
         overrides:
-          - db_type: "uuid"
-            go_type: "github.com/google/uuid.UUID"
-          - db_type: "timestamptz"
-            go_type: "time.Time"
-          - db_type: "jsonb"
-            go_type: "encoding/json.RawMessage"
+          - db_type: uuid
+            go_type: github.com/google/uuid.UUID
+          - db_type: timestamptz
+            go_type: time.Time
+          - db_type: jsonb
+            go_type: encoding/json.RawMessage
+          - db_type: inet
+            go_type: net/netip.Addr
+            nullable: true
+          - db_type: pg_catalog.interval
+            go_type: time.Duration
+
+  # Movie content module
+  - engine: postgresql
+    queries: internal/infra/database/queries/movie/
+    schema:
+      - internal/infra/database/migrations/shared/
+      - internal/infra/database/migrations/movie/
+    gen:
+      go:
+        package: moviedb
+        out: internal/content/movie/db
+        sql_package: pgx/v5
+        emit_json_tags: true
+        emit_interface: true
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true
+        json_tags_case_style: camel
+        output_db_file_name: db.go
+        output_models_file_name: models.go
+        output_querier_file_name: querier.go
+        overrides:
+          - db_type: uuid
+            go_type: github.com/google/uuid.UUID
+          - db_type: timestamptz
+            go_type: time.Time
+          - db_type: jsonb
+            go_type: encoding/json.RawMessage
+          - db_type: inet
+            go_type: net/netip.Addr
+            nullable: true
+          - db_type: pg_catalog.interval
+            go_type: time.Duration
+          - db_type: library_type
+            go_type: string
+          - db_type: genre_domain
+            go_type: string
+          - db_type: movie_credit_role
+            go_type: string
+          - db_type: movie_image_type
+            go_type: string
+          - db_type: movie_video_type
+            go_type: string
+          - db_type: movie_video_site
+            go_type: string
+
+  # Adult content module (schema c)
+  - engine: postgresql
+    queries: internal/infra/database/queries/c/
+    schema:
+      - internal/infra/database/migrations/shared/
+      - internal/infra/database/migrations/c/
+    gen:
+      go:
+        package: adultdb
+        out: internal/content/c/db
+        sql_package: pgx/v5
+        emit_json_tags: true
+        emit_interface: true
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true
+        json_tags_case_style: camel
+        output_db_file_name: db.go
+        output_models_file_name: models.go
+        output_querier_file_name: querier.go
+        overrides:
+          - db_type: uuid
+            go_type: github.com/google/uuid.UUID
+          - db_type: timestamptz
+            go_type: time.Time
+          - db_type: jsonb
+            go_type: encoding/json.RawMessage
+          - db_type: inet
+            go_type: net/netip.Addr
+            nullable: true
+          - db_type: pg_catalog.interval
+            go_type: time.Duration

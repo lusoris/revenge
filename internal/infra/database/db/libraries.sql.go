@@ -7,8 +7,6 @@ package db
 
 import (
 	"context"
-	"encoding/json"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -26,57 +24,66 @@ func (q *Queries) CountLibraries(ctx context.Context) (int64, error) {
 }
 
 const createLibrary = `-- name: CreateLibrary :one
-INSERT INTO libraries (name, type, paths, settings, is_visible, is_adult, scan_interval_hours)
-VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING id, name, type, paths, settings, is_visible, is_adult,
-          scan_interval_hours, last_scan_at, created_at, updated_at
+INSERT INTO libraries (
+    name, type, paths,
+    scan_enabled, scan_interval_hours,
+    preferred_language, download_images, download_nfo, generate_chapters,
+    is_private, owner_user_id, sort_order, icon
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+) RETURNING id, name, type, paths, scan_enabled, scan_interval_hours, last_scan_at, last_scan_duration, preferred_language, download_images, download_nfo, generate_chapters, is_private, owner_user_id, sort_order, icon, created_at, updated_at
 `
 
 type CreateLibraryParams struct {
-	Name              string          `json:"name"`
-	Type              LibraryType     `json:"type"`
-	Paths             []string        `json:"paths"`
-	Settings          json.RawMessage `json:"settings"`
-	IsVisible         bool            `json:"isVisible"`
-	IsAdult           bool            `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4     `json:"scanIntervalHours"`
+	Name              string      `json:"name"`
+	Type              LibraryType `json:"type"`
+	Paths             []string    `json:"paths"`
+	ScanEnabled       bool        `json:"scanEnabled"`
+	ScanIntervalHours int32       `json:"scanIntervalHours"`
+	PreferredLanguage *string     `json:"preferredLanguage"`
+	DownloadImages    bool        `json:"downloadImages"`
+	DownloadNfo       bool        `json:"downloadNfo"`
+	GenerateChapters  bool        `json:"generateChapters"`
+	IsPrivate         bool        `json:"isPrivate"`
+	OwnerUserID       pgtype.UUID `json:"ownerUserId"`
+	SortOrder         int32       `json:"sortOrder"`
+	Icon              *string     `json:"icon"`
 }
 
-type CreateLibraryRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-func (q *Queries) CreateLibrary(ctx context.Context, arg CreateLibraryParams) (CreateLibraryRow, error) {
+func (q *Queries) CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error) {
 	row := q.db.QueryRow(ctx, createLibrary,
 		arg.Name,
 		arg.Type,
 		arg.Paths,
-		arg.Settings,
-		arg.IsVisible,
-		arg.IsAdult,
+		arg.ScanEnabled,
 		arg.ScanIntervalHours,
+		arg.PreferredLanguage,
+		arg.DownloadImages,
+		arg.DownloadNfo,
+		arg.GenerateChapters,
+		arg.IsPrivate,
+		arg.OwnerUserID,
+		arg.SortOrder,
+		arg.Icon,
 	)
-	var i CreateLibraryRow
+	var i Library
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.Type,
 		&i.Paths,
-		&i.Settings,
-		&i.IsVisible,
-		&i.IsAdult,
+		&i.ScanEnabled,
 		&i.ScanIntervalHours,
 		&i.LastScanAt,
+		&i.LastScanDuration,
+		&i.PreferredLanguage,
+		&i.DownloadImages,
+		&i.DownloadNfo,
+		&i.GenerateChapters,
+		&i.IsPrivate,
+		&i.OwnerUserID,
+		&i.SortOrder,
+		&i.Icon,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -93,152 +100,132 @@ func (q *Queries) DeleteLibrary(ctx context.Context, id uuid.UUID) error {
 }
 
 const getLibraryByID = `-- name: GetLibraryByID :one
-SELECT id, name, type, paths, settings, is_visible, is_adult,
-       scan_interval_hours, last_scan_at, created_at, updated_at
-FROM libraries
-WHERE id = $1
+SELECT id, name, type, paths, scan_enabled, scan_interval_hours, last_scan_at, last_scan_duration, preferred_language, download_images, download_nfo, generate_chapters, is_private, owner_user_id, sort_order, icon, created_at, updated_at FROM libraries WHERE id = $1
 `
 
-type GetLibraryByIDRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-func (q *Queries) GetLibraryByID(ctx context.Context, id uuid.UUID) (GetLibraryByIDRow, error) {
+func (q *Queries) GetLibraryByID(ctx context.Context, id uuid.UUID) (Library, error) {
 	row := q.db.QueryRow(ctx, getLibraryByID, id)
-	var i GetLibraryByIDRow
+	var i Library
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.Type,
 		&i.Paths,
-		&i.Settings,
-		&i.IsVisible,
-		&i.IsAdult,
+		&i.ScanEnabled,
 		&i.ScanIntervalHours,
 		&i.LastScanAt,
+		&i.LastScanDuration,
+		&i.PreferredLanguage,
+		&i.DownloadImages,
+		&i.DownloadNfo,
+		&i.GenerateChapters,
+		&i.IsPrivate,
+		&i.OwnerUserID,
+		&i.SortOrder,
+		&i.Icon,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const getLibraryByName = `-- name: GetLibraryByName :one
-SELECT id, name, type, paths, settings, is_visible, is_adult,
-       scan_interval_hours, last_scan_at, created_at, updated_at
-FROM libraries
-WHERE name = $1
+const grantLibraryAccess = `-- name: GrantLibraryAccess :exec
+INSERT INTO library_user_access (library_id, user_id, can_manage)
+VALUES ($1, $2, $3)
+ON CONFLICT (library_id, user_id) DO UPDATE SET can_manage = $3
 `
 
-type GetLibraryByNameRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
+type GrantLibraryAccessParams struct {
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	CanManage bool      `json:"canManage"`
 }
 
-func (q *Queries) GetLibraryByName(ctx context.Context, name string) (GetLibraryByNameRow, error) {
-	row := q.db.QueryRow(ctx, getLibraryByName, name)
-	var i GetLibraryByNameRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Type,
-		&i.Paths,
-		&i.Settings,
-		&i.IsVisible,
-		&i.IsAdult,
-		&i.ScanIntervalHours,
-		&i.LastScanAt,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
+// Library User Access
+func (q *Queries) GrantLibraryAccess(ctx context.Context, arg GrantLibraryAccessParams) error {
+	_, err := q.db.Exec(ctx, grantLibraryAccess, arg.LibraryID, arg.UserID, arg.CanManage)
+	return err
 }
 
-const libraryNameExists = `-- name: LibraryNameExists :one
-SELECT EXISTS (SELECT 1 FROM libraries WHERE name = $1) AS exists
+const listAccessibleLibraries = `-- name: ListAccessibleLibraries :many
+SELECT l.id, l.name, l.type, l.paths, l.scan_enabled, l.scan_interval_hours, l.last_scan_at, l.last_scan_duration, l.preferred_language, l.download_images, l.download_nfo, l.generate_chapters, l.is_private, l.owner_user_id, l.sort_order, l.icon, l.created_at, l.updated_at FROM libraries l
+LEFT JOIN library_user_access lua ON l.id = lua.library_id
+WHERE l.is_private = false
+   OR l.owner_user_id = $1
+   OR lua.user_id = $1
+ORDER BY l.sort_order ASC, l.name ASC
 `
 
-func (q *Queries) LibraryNameExists(ctx context.Context, name string) (bool, error) {
-	row := q.db.QueryRow(ctx, libraryNameExists, name)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
-const libraryNameExistsExcluding = `-- name: LibraryNameExistsExcluding :one
-SELECT EXISTS (SELECT 1 FROM libraries WHERE name = $1 AND id != $2) AS exists
-`
-
-type LibraryNameExistsExcludingParams struct {
-	Name string    `json:"name"`
-	ID   uuid.UUID `json:"id"`
-}
-
-func (q *Queries) LibraryNameExistsExcluding(ctx context.Context, arg LibraryNameExistsExcludingParams) (bool, error) {
-	row := q.db.QueryRow(ctx, libraryNameExistsExcluding, arg.Name, arg.ID)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
-const listLibraries = `-- name: ListLibraries :many
-SELECT id, name, type, paths, settings, is_visible, is_adult,
-       scan_interval_hours, last_scan_at, created_at, updated_at
-FROM libraries
-ORDER BY name
-`
-
-type ListLibrariesRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-func (q *Queries) ListLibraries(ctx context.Context) ([]ListLibrariesRow, error) {
-	rows, err := q.db.Query(ctx, listLibraries)
+func (q *Queries) ListAccessibleLibraries(ctx context.Context, ownerUserID pgtype.UUID) ([]Library, error) {
+	rows, err := q.db.Query(ctx, listAccessibleLibraries, ownerUserID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListLibrariesRow{}
+	items := []Library{}
 	for rows.Next() {
-		var i ListLibrariesRow
+		var i Library
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
 			&i.Type,
 			&i.Paths,
-			&i.Settings,
-			&i.IsVisible,
-			&i.IsAdult,
+			&i.ScanEnabled,
 			&i.ScanIntervalHours,
 			&i.LastScanAt,
+			&i.LastScanDuration,
+			&i.PreferredLanguage,
+			&i.DownloadImages,
+			&i.DownloadNfo,
+			&i.GenerateChapters,
+			&i.IsPrivate,
+			&i.OwnerUserID,
+			&i.SortOrder,
+			&i.Icon,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listLibraries = `-- name: ListLibraries :many
+SELECT id, name, type, paths, scan_enabled, scan_interval_hours, last_scan_at, last_scan_duration, preferred_language, download_images, download_nfo, generate_chapters, is_private, owner_user_id, sort_order, icon, created_at, updated_at FROM libraries
+ORDER BY sort_order ASC, name ASC
+`
+
+func (q *Queries) ListLibraries(ctx context.Context) ([]Library, error) {
+	rows, err := q.db.Query(ctx, listLibraries)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Library{}
+	for rows.Next() {
+		var i Library
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Type,
+			&i.Paths,
+			&i.ScanEnabled,
+			&i.ScanIntervalHours,
+			&i.LastScanAt,
+			&i.LastScanDuration,
+			&i.PreferredLanguage,
+			&i.DownloadImages,
+			&i.DownloadNfo,
+			&i.GenerateChapters,
+			&i.IsPrivate,
+			&i.OwnerUserID,
+			&i.SortOrder,
+			&i.Icon,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -253,46 +240,37 @@ func (q *Queries) ListLibraries(ctx context.Context) ([]ListLibrariesRow, error)
 }
 
 const listLibrariesByType = `-- name: ListLibrariesByType :many
-SELECT id, name, type, paths, settings, is_visible, is_adult,
-       scan_interval_hours, last_scan_at, created_at, updated_at
-FROM libraries
+SELECT id, name, type, paths, scan_enabled, scan_interval_hours, last_scan_at, last_scan_duration, preferred_language, download_images, download_nfo, generate_chapters, is_private, owner_user_id, sort_order, icon, created_at, updated_at FROM libraries
 WHERE type = $1
-ORDER BY name
+ORDER BY sort_order ASC, name ASC
 `
 
-type ListLibrariesByTypeRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-func (q *Queries) ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]ListLibrariesByTypeRow, error) {
+func (q *Queries) ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]Library, error) {
 	rows, err := q.db.Query(ctx, listLibrariesByType, type_)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListLibrariesByTypeRow{}
+	items := []Library{}
 	for rows.Next() {
-		var i ListLibrariesByTypeRow
+		var i Library
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
 			&i.Type,
 			&i.Paths,
-			&i.Settings,
-			&i.IsVisible,
-			&i.IsAdult,
+			&i.ScanEnabled,
 			&i.ScanIntervalHours,
 			&i.LastScanAt,
+			&i.LastScanDuration,
+			&i.PreferredLanguage,
+			&i.DownloadImages,
+			&i.DownloadNfo,
+			&i.GenerateChapters,
+			&i.IsPrivate,
+			&i.OwnerUserID,
+			&i.SortOrder,
+			&i.Icon,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -306,52 +284,36 @@ func (q *Queries) ListLibrariesByType(ctx context.Context, type_ LibraryType) ([
 	return items, nil
 }
 
-const listLibrariesForUser = `-- name: ListLibrariesForUser :many
-SELECT l.id, l.name, l.type, l.paths, l.settings, l.is_visible, l.is_adult,
-       l.scan_interval_hours, l.last_scan_at, l.created_at, l.updated_at
-FROM libraries l
-JOIN users u ON u.id = $1
-WHERE l.is_visible = true
-  AND (NOT l.is_adult OR u.adult_content_enabled = true)
-ORDER BY l.name
+const listLibraryUsers = `-- name: ListLibraryUsers :many
+SELECT lua.library_id, lua.user_id, lua.can_manage, u.username, u.email
+FROM library_user_access lua
+JOIN users u ON lua.user_id = u.id
+WHERE lua.library_id = $1
 `
 
-type ListLibrariesForUserRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
+type ListLibraryUsersRow struct {
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	CanManage bool      `json:"canManage"`
+	Username  string    `json:"username"`
+	Email     *string   `json:"email"`
 }
 
-// List libraries accessible to a user (considers adult content settings)
-func (q *Queries) ListLibrariesForUser(ctx context.Context, id uuid.UUID) ([]ListLibrariesForUserRow, error) {
-	rows, err := q.db.Query(ctx, listLibrariesForUser, id)
+func (q *Queries) ListLibraryUsers(ctx context.Context, libraryID uuid.UUID) ([]ListLibraryUsersRow, error) {
+	rows, err := q.db.Query(ctx, listLibraryUsers, libraryID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListLibrariesForUserRow{}
+	items := []ListLibraryUsersRow{}
 	for rows.Next() {
-		var i ListLibrariesForUserRow
+		var i ListLibraryUsersRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Type,
-			&i.Paths,
-			&i.Settings,
-			&i.IsVisible,
-			&i.IsAdult,
-			&i.ScanIntervalHours,
-			&i.LastScanAt,
-			&i.CreatedAt,
-			&i.UpdatedAt,
+			&i.LibraryID,
+			&i.UserID,
+			&i.CanManage,
+			&i.Username,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}
@@ -363,153 +325,126 @@ func (q *Queries) ListLibrariesForUser(ctx context.Context, id uuid.UUID) ([]Lis
 	return items, nil
 }
 
-const listNonAdultLibraries = `-- name: ListNonAdultLibraries :many
-SELECT id, name, type, paths, settings, is_visible, is_adult,
-       scan_interval_hours, last_scan_at, created_at, updated_at
-FROM libraries
-WHERE is_adult = false
-ORDER BY name
+const revokeLibraryAccess = `-- name: RevokeLibraryAccess :exec
+DELETE FROM library_user_access
+WHERE library_id = $1 AND user_id = $2
 `
 
-type ListNonAdultLibrariesRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
+type RevokeLibraryAccessParams struct {
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
 }
 
-func (q *Queries) ListNonAdultLibraries(ctx context.Context) ([]ListNonAdultLibrariesRow, error) {
-	rows, err := q.db.Query(ctx, listNonAdultLibraries)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []ListNonAdultLibrariesRow{}
-	for rows.Next() {
-		var i ListNonAdultLibrariesRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Type,
-			&i.Paths,
-			&i.Settings,
-			&i.IsVisible,
-			&i.IsAdult,
-			&i.ScanIntervalHours,
-			&i.LastScanAt,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) RevokeLibraryAccess(ctx context.Context, arg RevokeLibraryAccessParams) error {
+	_, err := q.db.Exec(ctx, revokeLibraryAccess, arg.LibraryID, arg.UserID)
+	return err
 }
 
-const listVisibleLibraries = `-- name: ListVisibleLibraries :many
-SELECT id, name, type, paths, settings, is_visible, is_adult,
-       scan_interval_hours, last_scan_at, created_at, updated_at
-FROM libraries
-WHERE is_visible = true
-ORDER BY name
-`
-
-type ListVisibleLibrariesRow struct {
-	ID                uuid.UUID          `json:"id"`
-	Name              string             `json:"name"`
-	Type              LibraryType        `json:"type"`
-	Paths             []string           `json:"paths"`
-	Settings          json.RawMessage    `json:"settings"`
-	IsVisible         bool               `json:"isVisible"`
-	IsAdult           bool               `json:"isAdult"`
-	ScanIntervalHours pgtype.Int4        `json:"scanIntervalHours"`
-	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
-	CreatedAt         time.Time          `json:"createdAt"`
-	UpdatedAt         time.Time          `json:"updatedAt"`
-}
-
-func (q *Queries) ListVisibleLibraries(ctx context.Context) ([]ListVisibleLibrariesRow, error) {
-	rows, err := q.db.Query(ctx, listVisibleLibraries)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []ListVisibleLibrariesRow{}
-	for rows.Next() {
-		var i ListVisibleLibrariesRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Type,
-			&i.Paths,
-			&i.Settings,
-			&i.IsVisible,
-			&i.IsAdult,
-			&i.ScanIntervalHours,
-			&i.LastScanAt,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const updateLibrary = `-- name: UpdateLibrary :exec
-UPDATE libraries
-SET name = COALESCE($1, name),
+const updateLibrary = `-- name: UpdateLibrary :one
+UPDATE libraries SET
+    name = COALESCE($1, name),
     paths = COALESCE($2, paths),
-    settings = COALESCE($3, settings),
-    is_visible = COALESCE($4, is_visible),
-    scan_interval_hours = COALESCE($5, scan_interval_hours),
-    updated_at = NOW()
-WHERE id = $6
+    scan_enabled = COALESCE($3, scan_enabled),
+    scan_interval_hours = COALESCE($4, scan_interval_hours),
+    preferred_language = COALESCE($5, preferred_language),
+    download_images = COALESCE($6, download_images),
+    download_nfo = COALESCE($7, download_nfo),
+    generate_chapters = COALESCE($8, generate_chapters),
+    is_private = COALESCE($9, is_private),
+    sort_order = COALESCE($10, sort_order),
+    icon = COALESCE($11, icon)
+WHERE id = $12
+RETURNING id, name, type, paths, scan_enabled, scan_interval_hours, last_scan_at, last_scan_duration, preferred_language, download_images, download_nfo, generate_chapters, is_private, owner_user_id, sort_order, icon, created_at, updated_at
 `
 
 type UpdateLibraryParams struct {
-	Name              pgtype.Text `json:"name"`
-	Paths             []string    `json:"paths"`
-	Settings          []byte      `json:"settings"`
-	IsVisible         pgtype.Bool `json:"isVisible"`
-	ScanIntervalHours pgtype.Int4 `json:"scanIntervalHours"`
-	ID                uuid.UUID   `json:"id"`
+	Name              *string   `json:"name"`
+	Paths             []string  `json:"paths"`
+	ScanEnabled       *bool     `json:"scanEnabled"`
+	ScanIntervalHours *int32    `json:"scanIntervalHours"`
+	PreferredLanguage *string   `json:"preferredLanguage"`
+	DownloadImages    *bool     `json:"downloadImages"`
+	DownloadNfo       *bool     `json:"downloadNfo"`
+	GenerateChapters  *bool     `json:"generateChapters"`
+	IsPrivate         *bool     `json:"isPrivate"`
+	SortOrder         *int32    `json:"sortOrder"`
+	Icon              *string   `json:"icon"`
+	ID                uuid.UUID `json:"id"`
 }
 
-func (q *Queries) UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) error {
-	_, err := q.db.Exec(ctx, updateLibrary,
+func (q *Queries) UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error) {
+	row := q.db.QueryRow(ctx, updateLibrary,
 		arg.Name,
 		arg.Paths,
-		arg.Settings,
-		arg.IsVisible,
+		arg.ScanEnabled,
 		arg.ScanIntervalHours,
+		arg.PreferredLanguage,
+		arg.DownloadImages,
+		arg.DownloadNfo,
+		arg.GenerateChapters,
+		arg.IsPrivate,
+		arg.SortOrder,
+		arg.Icon,
 		arg.ID,
 	)
-	return err
+	var i Library
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Type,
+		&i.Paths,
+		&i.ScanEnabled,
+		&i.ScanIntervalHours,
+		&i.LastScanAt,
+		&i.LastScanDuration,
+		&i.PreferredLanguage,
+		&i.DownloadImages,
+		&i.DownloadNfo,
+		&i.GenerateChapters,
+		&i.IsPrivate,
+		&i.OwnerUserID,
+		&i.SortOrder,
+		&i.Icon,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateLibraryLastScan = `-- name: UpdateLibraryLastScan :exec
-UPDATE libraries
-SET last_scan_at = NOW(), updated_at = NOW()
+const updateLibraryScanStatus = `-- name: UpdateLibraryScanStatus :exec
+UPDATE libraries SET
+    last_scan_at = NOW(),
+    last_scan_duration = $2
 WHERE id = $1
 `
 
-func (q *Queries) UpdateLibraryLastScan(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, updateLibraryLastScan, id)
+type UpdateLibraryScanStatusParams struct {
+	ID               uuid.UUID       `json:"id"`
+	LastScanDuration pgtype.Interval `json:"lastScanDuration"`
+}
+
+func (q *Queries) UpdateLibraryScanStatus(ctx context.Context, arg UpdateLibraryScanStatusParams) error {
+	_, err := q.db.Exec(ctx, updateLibraryScanStatus, arg.ID, arg.LastScanDuration)
 	return err
+}
+
+const userCanAccessLibrary = `-- name: UserCanAccessLibrary :one
+SELECT EXISTS(
+    SELECT 1 FROM libraries l
+    LEFT JOIN library_user_access lua ON l.id = lua.library_id
+    WHERE l.id = $1
+      AND (l.is_private = false OR l.owner_user_id = $2 OR lua.user_id = $2)
+)
+`
+
+type UserCanAccessLibraryParams struct {
+	ID          uuid.UUID   `json:"id"`
+	OwnerUserID pgtype.UUID `json:"ownerUserId"`
+}
+
+func (q *Queries) UserCanAccessLibrary(ctx context.Context, arg UserCanAccessLibraryParams) (bool, error) {
+	row := q.db.QueryRow(ctx, userCanAccessLibrary, arg.ID, arg.OwnerUserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }

@@ -1,22 +1,28 @@
-// Package library provides the library management service.
+// Package library provides library management services.
 package library
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/lusoris/revenge/internal/domain"
+
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
-// Service handles library management operations.
+var (
+	// ErrLibraryNotFound indicates the library was not found.
+	ErrLibraryNotFound = errors.New("library not found")
+	// ErrAccessDenied indicates the user doesn't have access to the library.
+	ErrAccessDenied = errors.New("access denied")
+	// ErrInvalidLibraryType indicates an invalid library type.
+	ErrInvalidLibraryType = errors.New("invalid library type")
+)
+
+// Service provides library management operations.
 type Service struct {
 	queries *db.Queries
 	logger  *slog.Logger
@@ -30,352 +36,302 @@ func NewService(queries *db.Queries, logger *slog.Logger) *Service {
 	}
 }
 
-// GetByID retrieves a library by its unique ID.
-func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*domain.Library, error) {
-	row, err := s.queries.GetLibraryByID(ctx, id)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, domain.ErrNotFound
-		}
-		return nil, fmt.Errorf("failed to get library: %w", err)
-	}
-
-	return s.rowToLibrary(&row), nil
+// LibraryWithAccess contains a library and access info.
+type LibraryWithAccess struct {
+	Library   db.Library
+	CanManage bool
 }
 
-// GetByName retrieves a library by its name.
-func (s *Service) GetByName(ctx context.Context, name string) (*domain.Library, error) {
-	row, err := s.queries.GetLibraryByName(ctx, name)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, domain.ErrNotFound
-		}
-		return nil, fmt.Errorf("failed to get library by name: %w", err)
-	}
-
-	return s.getByNameRowToLibrary(&row), nil
-}
-
-// List retrieves all libraries.
-func (s *Service) List(ctx context.Context) ([]*domain.Library, error) {
-	rows, err := s.queries.ListLibraries(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to list libraries: %w", err)
-	}
-
-	libraries := make([]*domain.Library, len(rows))
-	for i := range rows {
-		libraries[i] = s.listRowToLibrary(&rows[i])
-	}
-
-	return libraries, nil
-}
-
-// ListByType retrieves libraries of a specific type.
-func (s *Service) ListByType(ctx context.Context, libType domain.LibraryType) ([]*domain.Library, error) {
-	rows, err := s.queries.ListLibrariesByType(ctx, db.LibraryType(libType))
-	if err != nil {
-		return nil, fmt.Errorf("failed to list libraries by type: %w", err)
-	}
-
-	libraries := make([]*domain.Library, len(rows))
-	for i := range rows {
-		libraries[i] = s.listByTypeRowToLibrary(&rows[i])
-	}
-
-	return libraries, nil
-}
-
-// ListVisible retrieves only visible libraries.
-func (s *Service) ListVisible(ctx context.Context) ([]*domain.Library, error) {
-	rows, err := s.queries.ListVisibleLibraries(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to list visible libraries: %w", err)
-	}
-
-	libraries := make([]*domain.Library, len(rows))
-	for i := range rows {
-		libraries[i] = s.listVisibleRowToLibrary(&rows[i])
-	}
-
-	return libraries, nil
-}
-
-// ListNonAdult retrieves libraries that are not adult content.
-func (s *Service) ListNonAdult(ctx context.Context) ([]*domain.Library, error) {
-	rows, err := s.queries.ListNonAdultLibraries(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed to list non-adult libraries: %w", err)
-	}
-
-	libraries := make([]*domain.Library, len(rows))
-	for i := range rows {
-		libraries[i] = s.listNonAdultRowToLibrary(&rows[i])
-	}
-
-	return libraries, nil
-}
-
-// ListForUser retrieves libraries accessible to a specific user.
-func (s *Service) ListForUser(ctx context.Context, userID uuid.UUID) ([]*domain.Library, error) {
-	rows, err := s.queries.ListLibrariesForUser(ctx, userID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to list libraries for user: %w", err)
-	}
-
-	libraries := make([]*domain.Library, len(rows))
-	for i := range rows {
-		libraries[i] = s.listForUserRowToLibrary(&rows[i])
-	}
-
-	return libraries, nil
+// CreateParams contains parameters for creating a library.
+type CreateParams struct {
+	Name              string
+	LibraryType       string // String type that gets converted to db.LibraryType
+	Paths             []string
+	ScanEnabled       bool
+	ScanIntervalHours int32
+	PreferredLanguage *string
+	DownloadImages    bool
+	DownloadNfo       bool
+	GenerateChapters  bool
+	IsPrivate         bool
+	OwnerUserID       pgtype.UUID
+	SortOrder         int32
+	Icon              *string
 }
 
 // Create creates a new library.
-func (s *Service) Create(ctx context.Context, params domain.CreateLibraryParams) (*domain.Library, error) {
-	// Validate library type
-	if !params.Type.IsValid() {
-		return nil, fmt.Errorf("invalid library type: %s", params.Type)
+func (s *Service) Create(ctx context.Context, params CreateParams) (*db.Library, error) {
+	// Convert and validate library type
+	libType := db.LibraryType(params.LibraryType)
+	if !isValidLibraryType(libType) {
+		return nil, ErrInvalidLibraryType
 	}
 
-	// Check if name already exists
-	exists, err := s.queries.LibraryNameExists(ctx, params.Name)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check library name: %w", err)
-	}
-	if exists {
-		return nil, domain.ErrAlreadyExists
-	}
-
-	// Determine if adult library based on type
-	isAdult := params.Type.IsAdultType()
-
-	// Convert settings to JSON
-	settingsJSON, err := json.Marshal(params.Settings)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal settings: %w", err)
-	}
-
-	// Convert scan interval
-	var scanInterval pgtype.Int4
-	if params.ScanIntervalHours != nil {
-		scanInterval = pgtype.Int4{Int32: int32(*params.ScanIntervalHours), Valid: true}
-	}
-
-	row, err := s.queries.CreateLibrary(ctx, db.CreateLibraryParams{
+	library, err := s.queries.CreateLibrary(ctx, db.CreateLibraryParams{
 		Name:              params.Name,
-		Type:              db.LibraryType(params.Type),
+		Type:              libType,
 		Paths:             params.Paths,
-		Settings:          settingsJSON,
-		IsVisible:         params.IsVisible,
-		IsAdult:           isAdult,
-		ScanIntervalHours: scanInterval,
+		ScanEnabled:       params.ScanEnabled,
+		ScanIntervalHours: params.ScanIntervalHours,
+		PreferredLanguage: params.PreferredLanguage,
+		DownloadImages:    params.DownloadImages,
+		DownloadNfo:       params.DownloadNfo,
+		GenerateChapters:  params.GenerateChapters,
+		IsPrivate:         params.IsPrivate,
+		OwnerUserID:       params.OwnerUserID,
+		SortOrder:         params.SortOrder,
+		Icon:              params.Icon,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to create library: %w", err)
+		return nil, fmt.Errorf("create library: %w", err)
 	}
 
-	s.logger.Info("library created",
-		slog.String("library_id", row.ID.String()),
-		slog.String("name", row.Name),
-		slog.String("type", string(row.Type)),
+	s.logger.Info("Library created",
+		slog.String("library_id", library.ID.String()),
+		slog.String("name", library.Name),
+		slog.String("type", string(library.Type)),
 	)
 
-	return s.createRowToLibrary(&row), nil
+	return &library, nil
 }
 
-// Update updates an existing library.
-func (s *Service) Update(ctx context.Context, params domain.UpdateLibraryParams) error {
-	// Check if name already exists (excluding current library)
-	if params.Name != nil {
-		exists, err := s.queries.LibraryNameExistsExcluding(ctx, db.LibraryNameExistsExcludingParams{
-			Name: *params.Name,
-			ID:   params.ID,
-		})
-		if err != nil {
-			return fmt.Errorf("failed to check library name: %w", err)
-		}
-		if exists {
-			return domain.ErrAlreadyExists
-		}
-	}
-
-	// Build update params with nullable types
-	updateParams := db.UpdateLibraryParams{
-		ID: params.ID,
-	}
-
-	if params.Name != nil {
-		updateParams.Name = pgtype.Text{String: *params.Name, Valid: true}
-	}
-
-	if params.Paths != nil {
-		updateParams.Paths = params.Paths
-	}
-
-	if params.Settings != nil {
-		settingsJSON, err := json.Marshal(params.Settings)
-		if err != nil {
-			return fmt.Errorf("failed to marshal settings: %w", err)
-		}
-		updateParams.Settings = settingsJSON
-	}
-
-	if params.IsVisible != nil {
-		updateParams.IsVisible = pgtype.Bool{Bool: *params.IsVisible, Valid: true}
-	}
-
-	if params.ScanIntervalHours != nil {
-		updateParams.ScanIntervalHours = pgtype.Int4{Int32: int32(*params.ScanIntervalHours), Valid: true}
-	}
-
-	err := s.queries.UpdateLibrary(ctx, updateParams)
+// GetByID retrieves a library by ID.
+func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*db.Library, error) {
+	library, err := s.queries.GetLibraryByID(ctx, id)
 	if err != nil {
-		return fmt.Errorf("failed to update library: %w", err)
+		return nil, fmt.Errorf("get library: %w", err)
 	}
-
-	s.logger.Info("library updated", slog.String("library_id", params.ID.String()))
-
-	return nil
+	return &library, nil
 }
 
-// Delete removes a library by its ID.
+// GetByIDWithAccess retrieves a library by ID, checking user access.
+func (s *Service) GetByIDWithAccess(ctx context.Context, id, userID uuid.UUID, isAdmin bool) (*db.Library, error) {
+	library, err := s.queries.GetLibraryByID(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("get library: %w", err)
+	}
+
+	// Admins have access to all libraries
+	if isAdmin {
+		return &library, nil
+	}
+
+	// Check access
+	hasAccess, err := s.UserCanAccess(ctx, id, userID)
+	if err != nil {
+		return nil, err
+	}
+	if !hasAccess {
+		return nil, ErrAccessDenied
+	}
+
+	return &library, nil
+}
+
+// List returns all libraries (admin only).
+func (s *Service) List(ctx context.Context) ([]db.Library, error) {
+	libraries, err := s.queries.ListLibraries(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list libraries: %w", err)
+	}
+	return libraries, nil
+}
+
+// ListAccessible returns libraries accessible to a user.
+func (s *Service) ListAccessible(ctx context.Context, userID uuid.UUID) ([]db.Library, error) {
+	libraries, err := s.queries.ListAccessibleLibraries(ctx, pgtype.UUID{Bytes: userID, Valid: true})
+	if err != nil {
+		return nil, fmt.Errorf("list accessible libraries: %w", err)
+	}
+	return libraries, nil
+}
+
+// ListAll returns all libraries with access info (for admins).
+func (s *Service) ListAll(ctx context.Context) ([]LibraryWithAccess, error) {
+	libraries, err := s.queries.ListLibraries(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list libraries: %w", err)
+	}
+
+	result := make([]LibraryWithAccess, len(libraries))
+	for i, lib := range libraries {
+		result[i] = LibraryWithAccess{
+			Library:   lib,
+			CanManage: true, // Admins can manage all
+		}
+	}
+	return result, nil
+}
+
+// ListForUser returns libraries accessible to a user with access info.
+func (s *Service) ListForUser(ctx context.Context, userID uuid.UUID) ([]LibraryWithAccess, error) {
+	libraries, err := s.queries.ListAccessibleLibraries(ctx, pgtype.UUID{Bytes: userID, Valid: true})
+	if err != nil {
+		return nil, fmt.Errorf("list accessible libraries: %w", err)
+	}
+
+	result := make([]LibraryWithAccess, len(libraries))
+	for i, lib := range libraries {
+		// Check if user can manage this library
+		canManage := false
+		if lib.OwnerUserID.Valid && lib.OwnerUserID.Bytes == userID {
+			canManage = true
+		}
+		result[i] = LibraryWithAccess{
+			Library:   lib,
+			CanManage: canManage,
+		}
+	}
+	return result, nil
+}
+
+// ListByType returns libraries of a specific type.
+func (s *Service) ListByType(ctx context.Context, libraryType db.LibraryType) ([]db.Library, error) {
+	libraries, err := s.queries.ListLibrariesByType(ctx, libraryType)
+	if err != nil {
+		return nil, fmt.Errorf("list libraries by type: %w", err)
+	}
+	return libraries, nil
+}
+
+// UpdateParams contains parameters for updating a library.
+type UpdateParams struct {
+	ID                uuid.UUID
+	Name              *string
+	Paths             []string
+	ScanEnabled       *bool
+	ScanIntervalHours *int32
+	PreferredLanguage *string
+	DownloadImages    *bool
+	DownloadNfo       *bool
+	GenerateChapters  *bool
+	IsPrivate         *bool
+	SortOrder         *int32
+	Icon              *string
+}
+
+// Update updates a library.
+func (s *Service) Update(ctx context.Context, params UpdateParams) (*db.Library, error) {
+	library, err := s.queries.UpdateLibrary(ctx, db.UpdateLibraryParams{
+		ID:                params.ID,
+		Name:              params.Name,
+		Paths:             params.Paths,
+		ScanEnabled:       params.ScanEnabled,
+		ScanIntervalHours: params.ScanIntervalHours,
+		PreferredLanguage: params.PreferredLanguage,
+		DownloadImages:    params.DownloadImages,
+		DownloadNfo:       params.DownloadNfo,
+		GenerateChapters:  params.GenerateChapters,
+		IsPrivate:         params.IsPrivate,
+		SortOrder:         params.SortOrder,
+		Icon:              params.Icon,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("update library: %w", err)
+	}
+
+	s.logger.Info("Library updated",
+		slog.String("library_id", library.ID.String()),
+	)
+
+	return &library, nil
+}
+
+// Delete deletes a library.
 func (s *Service) Delete(ctx context.Context, id uuid.UUID) error {
-	err := s.queries.DeleteLibrary(ctx, id)
-	if err != nil {
-		return fmt.Errorf("failed to delete library: %w", err)
+	if err := s.queries.DeleteLibrary(ctx, id); err != nil {
+		return fmt.Errorf("delete library: %w", err)
 	}
 
-	s.logger.Info("library deleted", slog.String("library_id", id.String()))
+	s.logger.Info("Library deleted",
+		slog.String("library_id", id.String()),
+	)
 
 	return nil
 }
 
-// UpdateLastScan updates the library's last scan timestamp.
-func (s *Service) UpdateLastScan(ctx context.Context, id uuid.UUID) error {
-	err := s.queries.UpdateLibraryLastScan(ctx, id)
-	if err != nil {
-		return fmt.Errorf("failed to update last scan: %w", err)
+// GrantAccess grants a user access to a library.
+func (s *Service) GrantAccess(ctx context.Context, libraryID, userID uuid.UUID, canManage bool) error {
+	if err := s.queries.GrantLibraryAccess(ctx, db.GrantLibraryAccessParams{
+		LibraryID: libraryID,
+		UserID:    userID,
+		CanManage: canManage,
+	}); err != nil {
+		return fmt.Errorf("grant access: %w", err)
 	}
 
+	s.logger.Info("Library access granted",
+		slog.String("library_id", libraryID.String()),
+		slog.String("user_id", userID.String()),
+		slog.Bool("can_manage", canManage),
+	)
+
 	return nil
+}
+
+// RevokeAccess revokes a user's access to a library.
+func (s *Service) RevokeAccess(ctx context.Context, libraryID, userID uuid.UUID) error {
+	if err := s.queries.RevokeLibraryAccess(ctx, db.RevokeLibraryAccessParams{
+		LibraryID: libraryID,
+		UserID:    userID,
+	}); err != nil {
+		return fmt.Errorf("revoke access: %w", err)
+	}
+
+	s.logger.Info("Library access revoked",
+		slog.String("library_id", libraryID.String()),
+		slog.String("user_id", userID.String()),
+	)
+
+	return nil
+}
+
+// ListUsers returns all users with access to a library.
+func (s *Service) ListUsers(ctx context.Context, libraryID uuid.UUID) ([]db.ListLibraryUsersRow, error) {
+	users, err := s.queries.ListLibraryUsers(ctx, libraryID)
+	if err != nil {
+		return nil, fmt.Errorf("list library users: %w", err)
+	}
+	return users, nil
+}
+
+// UserCanAccess checks if a user can access a library.
+func (s *Service) UserCanAccess(ctx context.Context, libraryID, userID uuid.UUID) (bool, error) {
+	canAccess, err := s.queries.UserCanAccessLibrary(ctx, db.UserCanAccessLibraryParams{
+		ID:          libraryID,
+		OwnerUserID: pgtype.UUID{Bytes: userID, Valid: true},
+	})
+	if err != nil {
+		return false, fmt.Errorf("check access: %w", err)
+	}
+	return canAccess, nil
 }
 
 // Count returns the total number of libraries.
 func (s *Service) Count(ctx context.Context) (int64, error) {
 	count, err := s.queries.CountLibraries(ctx)
 	if err != nil {
-		return 0, fmt.Errorf("failed to count libraries: %w", err)
+		return 0, fmt.Errorf("count libraries: %w", err)
 	}
-
 	return count, nil
 }
 
-// Helper conversion functions for different row types
-
-func (s *Service) rowToLibrary(row *db.GetLibraryByIDRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) listRowToLibrary(row *db.ListLibrariesRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) listByTypeRowToLibrary(row *db.ListLibrariesByTypeRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) listVisibleRowToLibrary(row *db.ListVisibleLibrariesRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) listNonAdultRowToLibrary(row *db.ListNonAdultLibrariesRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) listForUserRowToLibrary(row *db.ListLibrariesForUserRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) getByNameRowToLibrary(row *db.GetLibraryByNameRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) createRowToLibrary(row *db.CreateLibraryRow) *domain.Library {
-	return s.convertLibrary(
-		row.ID, row.Name, row.Type, row.Paths, row.Settings,
-		row.IsVisible, row.IsAdult, row.ScanIntervalHours, row.LastScanAt,
-		row.CreatedAt, row.UpdatedAt,
-	)
-}
-
-func (s *Service) convertLibrary(
-	id uuid.UUID,
-	name string,
-	libType db.LibraryType,
-	paths []string,
-	settingsRaw json.RawMessage,
-	isVisible bool,
-	isAdult bool,
-	scanIntervalHours pgtype.Int4,
-	lastScanAt pgtype.Timestamptz,
-	createdAt, updatedAt time.Time,
-) *domain.Library {
-	var settings map[string]any
-	if len(settingsRaw) > 0 {
-		_ = json.Unmarshal(settingsRaw, &settings)
-	}
-
-	var scanInterval *int
-	if scanIntervalHours.Valid {
-		v := int(scanIntervalHours.Int32)
-		scanInterval = &v
-	}
-
-	var lastScan *time.Time
-	if lastScanAt.Valid {
-		lastScan = &lastScanAt.Time
-	}
-
-	return &domain.Library{
-		ID:                id,
-		Name:              name,
-		Type:              domain.LibraryType(libType),
-		Paths:             paths,
-		Settings:          settings,
-		IsVisible:         isVisible,
-		IsAdult:           isAdult,
-		ScanIntervalHours: scanInterval,
-		LastScanAt:        lastScan,
-		CreatedAt:         createdAt,
-		UpdatedAt:         updatedAt,
+// isValidLibraryType validates a library type.
+func isValidLibraryType(t db.LibraryType) bool {
+	switch t {
+	case db.LibraryTypeMovie,
+		db.LibraryTypeTvshow,
+		db.LibraryTypeMusic,
+		db.LibraryTypeAudiobook,
+		db.LibraryTypeBook,
+		db.LibraryTypePodcast,
+		db.LibraryTypePhoto,
+		db.LibraryTypeLivetv,
+		db.LibraryTypeComics,
+		db.LibraryTypeAdultMovie,
+		db.LibraryTypeAdultScene:
+		return true
+	default:
+		return false
 	}
 }

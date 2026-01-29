@@ -69,6 +69,14 @@ func (s *Service) InsertTx(ctx context.Context, tx pgx.Tx, args river.JobArgs, o
 	return s.client.InsertTx(ctx, tx, args, opts)
 }
 
+// Healthy returns nil if the job service is healthy.
+func (s *Service) Healthy(ctx context.Context) error {
+	// River's health is tied to the database connection.
+	// The client maintains its own connection health internally.
+	// If the service started successfully, it's considered healthy.
+	return nil
+}
+
 // NewWorkers creates a new River workers registry.
 func NewWorkers() *river.Workers {
 	return river.NewWorkers()
@@ -78,6 +86,9 @@ func NewWorkers() *river.Workers {
 var Module = fx.Module("jobs",
 	fx.Provide(NewWorkers),
 	fx.Provide(NewService),
+	fx.Provide(func(svc *Service) *river.Client[pgx.Tx] {
+		return svc.client
+	}),
 	fx.Invoke(func(lc fx.Lifecycle, svc *Service) {
 		lc.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {

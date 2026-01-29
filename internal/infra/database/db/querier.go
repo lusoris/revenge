@@ -6,140 +6,94 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
-	// Media Item Genre Associations
-	AssignGenreToMediaItem(ctx context.Context, arg AssignGenreToMediaItemParams) error
-	CountAdminUsers(ctx context.Context) (int64, error)
-	CountGenresByDomain(ctx context.Context, domain GenreDomain) (int64, error)
+	CountActiveSessionsByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountLibraries(ctx context.Context) (int64, error)
-	CountMediaItemsWithGenre(ctx context.Context, genreID uuid.UUID) (int64, error)
-	CountUserSessions(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountProfilesByUser(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
-	CreateContentRating(ctx context.Context, arg CreateContentRatingParams) (ContentRating, error)
-	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
-	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (CreateLibraryRow, error)
+	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (ApiKey, error)
+	// Activity Log
+	CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error)
+	CreateLibrary(ctx context.Context, arg CreateLibraryParams) (Library, error)
+	CreateOIDCLink(ctx context.Context, arg CreateOIDCLinkParams) (OidcUserLink, error)
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error)
-	CreateOIDCUserLink(ctx context.Context, arg CreateOIDCUserLinkParams) (OidcUserLink, error)
+	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	DeleteAllContentRatings(ctx context.Context, arg DeleteAllContentRatingsParams) error
-	DeleteContentRating(ctx context.Context, arg DeleteContentRatingParams) error
-	DeleteExpiredSessions(ctx context.Context) (int64, error)
-	DeleteGenre(ctx context.Context, id uuid.UUID) error
+	DeactivateSession(ctx context.Context, id uuid.UUID) error
+	DeactivateUserSessions(ctx context.Context, userID uuid.UUID) error
+	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
+	DeleteExpiredAPIKeys(ctx context.Context) error
+	DeleteExpiredSessions(ctx context.Context) error
 	DeleteLibrary(ctx context.Context, id uuid.UUID) error
+	DeleteOIDCLink(ctx context.Context, id uuid.UUID) error
+	DeleteOIDCLinksByProvider(ctx context.Context, providerID uuid.UUID) error
+	DeleteOIDCLinksByUser(ctx context.Context, userID uuid.UUID) error
 	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
-	DeleteOIDCUserLink(ctx context.Context, id uuid.UUID) error
-	DeleteOIDCUserLinksByProvider(ctx context.Context, providerID uuid.UUID) error
-	DeleteOIDCUserLinksByUser(ctx context.Context, userID uuid.UUID) error
+	DeleteOldActivityLogs(ctx context.Context, createdAt time.Time) error
+	DeleteProfile(ctx context.Context, id uuid.UUID) error
+	DeleteServerSetting(ctx context.Context, key string) error
 	DeleteSession(ctx context.Context, id uuid.UUID) error
-	DeleteSessionByTokenHash(ctx context.Context, tokenHash string) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
-	DeleteUserSessions(ctx context.Context, userID uuid.UUID) error
-	EmailExists(ctx context.Context, email pgtype.Text) (bool, error)
-	// Filter a list of content IDs to only those allowed for a user
-	FilterAllowedContentIDs(ctx context.Context, arg FilterAllowedContentIDsParams) ([]uuid.UUID, error)
-	GenreExists(ctx context.Context, id uuid.UUID) (bool, error)
-	GenreSlugExists(ctx context.Context, arg GenreSlugExistsParams) (bool, error)
-	// Get the rating to display for content, preferring the specified system
-	GetContentDisplayRating(ctx context.Context, arg GetContentDisplayRatingParams) (GetContentDisplayRatingRow, error)
-	GetContentMinLevel(ctx context.Context, arg GetContentMinLevelParams) (ContentMinRatingLevel, error)
-	GetContentRatings(ctx context.Context, arg GetContentRatingsParams) ([]GetContentRatingsRow, error)
-	GetGenreByID(ctx context.Context, id uuid.UUID) (Genre, error)
-	GetGenreBySlug(ctx context.Context, arg GetGenreBySlugParams) (Genre, error)
-	GetLibraryByID(ctx context.Context, id uuid.UUID) (GetLibraryByIDRow, error)
-	GetLibraryByName(ctx context.Context, name string) (GetLibraryByNameRow, error)
-	GetMediaItemGenres(ctx context.Context, mediaItemID uuid.UUID) ([]MediaItemGenre, error)
-	// OIDC provider queries for Revenge Go
-	// =============================================================================
-	// PROVIDERS
-	// =============================================================================
+	GetAPIKeyByHash(ctx context.Context, keyHash string) (ApiKey, error)
+	GetAPIKeyByID(ctx context.Context, id uuid.UUID) (ApiKey, error)
+	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) ([]ApiKey, error)
+	GetDefaultProfile(ctx context.Context, userID uuid.UUID) (Profile, error)
+	GetLibraryByID(ctx context.Context, id uuid.UUID) (Library, error)
+	// OIDC User Links
+	GetOIDCLinkByID(ctx context.Context, id uuid.UUID) (OidcUserLink, error)
+	GetOIDCLinkBySubject(ctx context.Context, arg GetOIDCLinkBySubjectParams) (OidcUserLink, error)
+	// OIDC Providers
 	GetOIDCProviderByID(ctx context.Context, id uuid.UUID) (OidcProvider, error)
-	GetOIDCProviderByName(ctx context.Context, name string) (OidcProvider, error)
-	// =============================================================================
-	// USER LINKS
-	// =============================================================================
-	GetOIDCUserLink(ctx context.Context, arg GetOIDCUserLinkParams) (OidcUserLink, error)
-	GetOIDCUserLinkByUserID(ctx context.Context, userID uuid.UUID) ([]GetOIDCUserLinkByUserIDRow, error)
-	GetRatingByID(ctx context.Context, id uuid.UUID) (GetRatingByIDRow, error)
-	GetRatingBySystemAndCode(ctx context.Context, arg GetRatingBySystemAndCodeParams) (GetRatingBySystemAndCodeRow, error)
-	GetRatingEquivalents(ctx context.Context, ratingID uuid.UUID) ([]GetRatingEquivalentsRow, error)
-	GetRatingSystemByCode(ctx context.Context, code string) (RatingSystem, error)
-	GetRatingSystemByID(ctx context.Context, id uuid.UUID) (RatingSystem, error)
-	// Session queries for Revenge Go
-	// =============================================================================
-	// BASIC CRUD
-	// =============================================================================
+	GetOIDCProviderBySlug(ctx context.Context, slug string) (OidcProvider, error)
+	GetProfileByID(ctx context.Context, id uuid.UUID) (Profile, error)
+	// Server Settings
+	GetServerSetting(ctx context.Context, key string) (ServerSetting, error)
 	GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error)
-	GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash pgtype.Text) (Session, error)
 	GetSessionByTokenHash(ctx context.Context, tokenHash string) (Session, error)
-	// =============================================================================
-	// JOIN QUERIES
-	// =============================================================================
-	GetSessionWithUser(ctx context.Context, tokenHash string) (GetSessionWithUserRow, error)
-	GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error)
-	// User queries for Revenge Go
-	// sqlc generates type-safe Go code from these queries
-	// =============================================================================
-	// BASIC CRUD
-	// =============================================================================
+	GetUserByEmail(ctx context.Context, email *string) (User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
-	// =============================================================================
-	// JOIN QUERIES
-	// =============================================================================
-	GetUserByOIDCLink(ctx context.Context, arg GetUserByOIDCLinkParams) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
-	// Check if content is allowed for a user's rating level
-	IsContentAllowed(ctx context.Context, arg IsContentAllowedParams) (bool, error)
-	LibraryNameExists(ctx context.Context, name string) (bool, error)
-	LibraryNameExistsExcluding(ctx context.Context, arg LibraryNameExistsExcludingParams) (bool, error)
+	// Library User Access
+	GrantLibraryAccess(ctx context.Context, arg GrantLibraryAccessParams) error
+	ListAPIKeysByUser(ctx context.Context, userID uuid.UUID) ([]ApiKey, error)
+	ListAccessibleLibraries(ctx context.Context, ownerUserID pgtype.UUID) ([]Library, error)
 	ListActiveSessions(ctx context.Context, arg ListActiveSessionsParams) ([]Session, error)
-	ListAdminUsers(ctx context.Context) ([]User, error)
-	ListChildGenres(ctx context.Context, parentID pgtype.UUID) ([]Genre, error)
+	ListActivityLogByAction(ctx context.Context, arg ListActivityLogByActionParams) ([]ActivityLog, error)
+	ListActivityLogByModule(ctx context.Context, arg ListActivityLogByModuleParams) ([]ActivityLog, error)
+	ListActivityLogByUser(ctx context.Context, arg ListActivityLogByUserParams) ([]ActivityLog, error)
 	ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error)
-	ListGenresByDomain(ctx context.Context, domain GenreDomain) ([]Genre, error)
-	ListGenresForMediaItem(ctx context.Context, mediaItemID uuid.UUID) ([]Genre, error)
-	ListGenresWithCounts(ctx context.Context, arg ListGenresWithCountsParams) ([]ListGenresWithCountsRow, error)
-	ListLibraries(ctx context.Context) ([]ListLibrariesRow, error)
-	ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]ListLibrariesByTypeRow, error)
-	// List libraries accessible to a user (considers adult content settings)
-	ListLibrariesForUser(ctx context.Context, id uuid.UUID) ([]ListLibrariesForUserRow, error)
-	ListNonAdultLibraries(ctx context.Context) ([]ListNonAdultLibrariesRow, error)
+	ListLibraries(ctx context.Context) ([]Library, error)
+	ListLibrariesByType(ctx context.Context, type_ LibraryType) ([]Library, error)
+	ListLibraryUsers(ctx context.Context, libraryID uuid.UUID) ([]ListLibraryUsersRow, error)
+	ListOIDCLinksByUser(ctx context.Context, userID uuid.UUID) ([]ListOIDCLinksByUserRow, error)
 	ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
-	ListRatingSystems(ctx context.Context) ([]RatingSystem, error)
-	ListRatingSystemsByCountry(ctx context.Context, countryCodes []string) ([]RatingSystem, error)
-	ListRatingsByNormalizedLevel(ctx context.Context, normalizedLevel int32) ([]ListRatingsByNormalizedLevelRow, error)
-	ListRatingsBySystem(ctx context.Context, systemID uuid.UUID) ([]ListRatingsBySystemRow, error)
-	ListTopLevelGenresByDomain(ctx context.Context, domain GenreDomain) ([]Genre, error)
-	ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Session, error)
+	ListProfilesByUser(ctx context.Context, userID uuid.UUID) ([]Profile, error)
+	ListRecentActivity(ctx context.Context, arg ListRecentActivityParams) ([]ActivityLog, error)
+	ListServerSettings(ctx context.Context) ([]ServerSetting, error)
+	ListSessionsByUser(ctx context.Context, userID uuid.UUID) ([]Session, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
-	ListVisibleLibraries(ctx context.Context) ([]ListVisibleLibrariesRow, error)
-	OIDCUserLinkExists(ctx context.Context, arg OIDCUserLinkExistsParams) (bool, error)
-	RefreshContentMinRatingLevels(ctx context.Context) error
-	RemoveAllGenresFromMediaItem(ctx context.Context, mediaItemID uuid.UUID) error
-	RemoveGenreFromMediaItem(ctx context.Context, arg RemoveGenreFromMediaItemParams) error
-	SearchGenres(ctx context.Context, arg SearchGenresParams) ([]Genre, error)
-	SearchGenresAllDomains(ctx context.Context, arg SearchGenresAllDomainsParams) ([]Genre, error)
-	SessionExists(ctx context.Context, tokenHash string) (bool, error)
-	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
-	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) error
-	UpdateLibraryLastScan(ctx context.Context, id uuid.UUID) error
+	RevokeLibraryAccess(ctx context.Context, arg RevokeLibraryAccessParams) error
+	SetDefaultProfile(ctx context.Context, arg SetDefaultProfileParams) error
+	UpdateAPIKeyUsage(ctx context.Context, id uuid.UUID) error
+	UpdateLibrary(ctx context.Context, arg UpdateLibraryParams) (Library, error)
+	UpdateLibraryScanStatus(ctx context.Context, arg UpdateLibraryScanStatusParams) error
+	UpdateOIDCLinkLogin(ctx context.Context, arg UpdateOIDCLinkLoginParams) error
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error)
-	UpdateOIDCProviderEnabled(ctx context.Context, arg UpdateOIDCProviderEnabledParams) error
-	UpdateOIDCUserLinkLastLogin(ctx context.Context, id uuid.UUID) error
-	UpdateSessionRefreshToken(ctx context.Context, arg UpdateSessionRefreshTokenParams) error
+	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
+	UpdateSessionActivity(ctx context.Context, arg UpdateSessionActivityParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
-	UpdateUserAdmin(ctx context.Context, arg UpdateUserAdminParams) error
-	UpdateUserDisabled(ctx context.Context, arg UpdateUserDisabledParams) error
-	UpdateUserLastActivity(ctx context.Context, id uuid.UUID) error
 	UpdateUserLastLogin(ctx context.Context, id uuid.UUID) error
-	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
-	UserExists(ctx context.Context, id uuid.UUID) (bool, error)
-	UsernameExists(ctx context.Context, username string) (bool, error)
+	UpsertServerSetting(ctx context.Context, arg UpsertServerSettingParams) (ServerSetting, error)
+	UserCanAccessLibrary(ctx context.Context, arg UserCanAccessLibraryParams) (bool, error)
+	UserExistsByEmail(ctx context.Context, email *string) (bool, error)
+	UserExistsByUsername(ctx context.Context, username string) (bool, error)
 }
 
 var _ Querier = (*Queries)(nil)

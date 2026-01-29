@@ -1,0 +1,323 @@
+paths:
+  /users:
+    get:
+      operationId: listUsers
+      x-ogen-operation-group: Users
+      summary: List all users
+      description: Admin only
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    post:
+      operationId: createUser
+      x-ogen-operation-group: Users
+      summary: Create a new user
+      description: Admin only
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas.yaml#/components/schemas/UserCreate"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /users/{userId}:
+    get:
+      operationId: getUser
+      x-ogen-operation-group: Users
+      summary: Get user by ID
+      description: Admin or own user
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    patch:
+      operationId: updateUser
+      x-ogen-operation-group: Users
+      summary: Update user
+      description: Admin or own user (limited fields)
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas.yaml#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/User"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteUser
+      x-ogen-operation-group: Users
+      summary: Delete user
+      description: Admin only, cannot delete self
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: User deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized or cannot delete self
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /users/{userId}/profiles:
+    get:
+      operationId: listUserProfiles
+      x-ogen-operation-group: Users
+      summary: List user profiles
+      tags:
+        - Users
+        - Profiles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: List of profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./components/schemas.yaml#/components/schemas/Profile"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    post:
+      operationId: createUserProfile
+      x-ogen-operation-group: Users
+      summary: Create profile for user
+      tags:
+        - Users
+        - Profiles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./components/schemas.yaml#/components/schemas/ProfileCreate"
+      responses:
+        "201":
+          description: Profile created
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Profile"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/ValidationError"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+components:
+  schemas:
+    UserListResponse:
+      type: object
+      required:
+        - users
+        - pagination
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "./components/schemas.yaml#/components/schemas/User"
+        pagination:
+          $ref: "./components/schemas.yaml#/components/schemas/PaginationMeta"

@@ -1,0 +1,602 @@
+status: completed
+last_run: '2026-01-28T22:02:09.568117+00:00'
+next_scheduled: null
+sources:
+  go-context:
+    status: success
+    last_fetched: '2026-01-28T21:42:47.343823+00:00'
+    file_size: 20736
+    checksum: f773e1affd853f2761d5bc1288ea97ec817e0aa3d1d1c5bd11d7fb4490aecf6c
+    error: null
+  go-slog:
+    status: success
+    last_fetched: '2026-01-28T21:42:49.842686+00:00'
+    file_size: 59461
+    checksum: 7fb4bbedb69f640d61491f096376e737bc0686b7b4a702fc57394b71237e1f4f
+    error: null
+  go-nethttp:
+    status: success
+    last_fetched: '2026-01-28T21:42:52.263314+00:00'
+    file_size: 143120
+    checksum: 6cf33713c97ec3af513e431182703d7381783b4e09a0483af2f657c5266f3142
+    error: null
+  go-testing:
+    status: success
+    last_fetched: '2026-01-28T21:42:54.542755+00:00'
+    file_size: 56332
+    checksum: e8926497af26e0f60edb951cd3b598d76869b2b533bffb969b3eb9632f337557
+    error: null
+  go-sync:
+    status: success
+    last_fetched: '2026-01-28T21:42:56.917783+00:00'
+    file_size: 23253
+    checksum: 022edb2fa9fed1bef49c12040522346cae3ba7b7d27471361d9deacd6d3784a7
+    error: null
+  go-errors:
+    status: success
+    last_fetched: '2026-01-28T21:42:59.158780+00:00'
+    file_size: 7926
+    checksum: 42b11a2332824e7747b7263ed30f09cba13b71cdc24f6673bd9b6ec07f21cafd
+    error: null
+  go-io:
+    status: success
+    last_fetched: '2026-01-28T21:43:01.755256+00:00'
+    file_size: 28852
+    checksum: 8745b8ebdffcbd5042fab0e7d3c7b0b11996e47bafe2183ee8824bfd468a52fd
+    error: null
+  go-release-notes:
+    status: success
+    last_fetched: '2026-01-28T21:43:04.103985+00:00'
+    file_size: 56561
+    checksum: 81b4b6f4ae4390ddebc46b4c6b1fcc015e826ef77b641b27e7e5c7874390847e
+    error: null
+  fx:
+    status: success
+    last_fetched: '2026-01-28T21:43:06.726233+00:00'
+    file_size: 61985
+    checksum: 0950ea6545d3f1cd6ce4c1a412a717ddc90b7e6df1f10334630f2469ce36c2bb
+    error: null
+  fx-docs:
+    status: success
+    last_fetched: '2026-01-28T21:43:08.937311+00:00'
+    file_size: 1583
+    checksum: 35dd65e8f9fc5ff6950adbacd0052a7f234c91a23ad0f79276144282c84fb97c
+    error: null
+  koanf:
+    status: success
+    last_fetched: '2026-01-28T21:43:11.716847+00:00'
+    file_size: 19123
+    checksum: 7c3a1b155e903bf2dee071d2a034b64130023b0b82d5da3608b0e114414433e5
+    error: null
+  ogen:
+    status: success
+    last_fetched: '2026-01-28T21:43:14.405900+00:00'
+    file_size: 83132
+    checksum: 92e901405d74c70eb18aad6df5b577668a9cf81d809471299c565369b01f4923
+    error: null
+  ogen-docs:
+    status: success
+    last_fetched: '2026-01-28T21:43:16.836824+00:00'
+    file_size: 5402
+    checksum: 461d0054020d3dbd140bdf71d74f6dbd5ca59a8b6dfdfebbcfebbe1689617323
+    error: null
+  river:
+    status: success
+    last_fetched: '2026-01-28T21:43:19.576625+00:00'
+    file_size: 188286
+    checksum: 2f7caaf9a091415ad2975136d841f1d7ab6ba9aec0cbb314b0e37853bdf21ffe
+    error: null
+  river-docs:
+    status: success
+    last_fetched: '2026-01-28T21:43:23.662848+00:00'
+    file_size: 6039
+    checksum: c84d4c234110b8c97d0b8dc372678cce6198000e07d9ebbe8f91c05f93963d94
+    error: null
+  go-redis:
+    status: success
+    last_fetched: '2026-01-28T21:43:29.834489+00:00'
+    file_size: 1427774
+    checksum: f602da456a8806a5ea386d79333365d5a1a77a1d316585f14229ad9b5c5da91d
+    error: null
+  rueidis:
+    status: success
+    last_fetched: '2026-01-28T21:43:34.405602+00:00'
+    file_size: 74722
+    checksum: 55ed342405aea913e375aeb2f61340d3e723228426b8107a6cb0eddd77cc06e8
+    error: null
+  rueidis-docs:
+    status: success
+    last_fetched: '2026-01-28T21:50:46.546855+00:00'
+    file_size: 31189
+    checksum: 05174aaf74f7f3871d54a3d48a76b8fb6e56bfbcfce47c092ba51b2dd856f45e
+    error: null
+  otter:
+    status: success
+    last_fetched: '2026-01-28T21:43:40.141404+00:00'
+    file_size: 20598
+    checksum: 9b8115865cbe4aaf101f931d7870a2a01e384872eaf5b91a4f3063b14af6f12f
+    error: null
+  otter-docs:
+    status: success
+    last_fetched: '2026-01-28T21:51:12.155648+00:00'
+    file_size: 11063
+    checksum: 84587945fea7c6414a37268a76efb3bb81631d92732064502c74f026955c9ea3
+    error: null
+  sturdyc:
+    status: success
+    last_fetched: '2026-01-28T21:43:45.291714+00:00'
+    file_size: 29569
+    checksum: 6995ac08323f7a602f38ac26baf15122ea74d6050237122f28901c9cf1531efe
+    error: null
+  sturdyc-docs:
+    status: success
+    last_fetched: '2026-01-28T21:51:12.745126+00:00'
+    file_size: 70943
+    checksum: cb412405bc842fab3c1b66c80c4f1eb1d6afba47975135802b4c0c214e81e7a3
+    error: null
+  coder-websocket:
+    status: success
+    last_fetched: '2026-01-28T21:43:50.462951+00:00'
+    file_size: 23798
+    checksum: b801de9a0b4b0f24a063b7bc8bf7dfef86cde1a1090844f02b1f70c35fa0a2e1
+    error: null
+  coder-websocket-docs:
+    status: success
+    last_fetched: '2026-01-28T21:51:13.269976+00:00'
+    file_size: 7300
+    checksum: edc0355b7a877605d881739f5530d3890984e8d0d494385030cd7ee581ebefb4
+    error: null
+  resty:
+    status: success
+    last_fetched: '2026-01-28T21:43:56.769588+00:00'
+    file_size: 140079
+    checksum: 1cc00ce1406aadd63aa27232addfc8dc065e87da510513f82d73f625e44a028c
+    error: null
+  resty-docs:
+    status: success
+    last_fetched: '2026-01-28T21:51:13.682544+00:00'
+    file_size: 3917
+    checksum: 40404da4efdb4693ca177390803e56410f67e0b8623023fdd422734965f5a03a
+    error: null
+  fsnotify:
+    status: success
+    last_fetched: '2026-01-28T21:44:01.782790+00:00'
+    file_size: 12814
+    checksum: 8f5c278448ca0de2f5f20d07b23dbbbe560af39fd545b9b8e08f32611b522139
+    error: null
+  fsnotify-docs:
+    status: success
+    last_fetched: '2026-01-28T21:51:14.214821+00:00'
+    file_size: 7185
+    checksum: 2f48cf4e04eb2cce0c0d6b5244538ff31ff495916920d9a12ef4bbd471e7317f
+    error: null
+  google-uuid:
+    status: success
+    last_fetched: '2026-01-28T21:44:06.842998+00:00'
+    file_size: 19025
+    checksum: 8e06bc4c7b44ee930cd027ea86a9c131f487bda85b54ae110c454839c4334e59
+    error: null
+  validator:
+    status: success
+    last_fetched: '2026-01-28T21:44:09.804535+00:00'
+    file_size: 72811
+    checksum: d27d2a7df0da9cd9337ba31bf588e7bb3c501933343996dc89158f5c169aaa08
+    error: null
+  sqlc:
+    status: success
+    last_fetched: '2026-01-28T21:44:12.495533+00:00'
+    file_size: 1527
+    checksum: 5fbee1f41d3d2509143a8573b238fb8c7f231ecbe812bcae00d3ebba969ff304
+    error: null
+  sqlc-config:
+    status: success
+    last_fetched: '2026-01-28T21:44:16.861070+00:00'
+    file_size: 17257
+    checksum: 0153c825b189168cdbee80fab35c6249c8ddf45ae2dcf2c5c4c6b8b56132314e
+    error: null
+  pgx:
+    status: success
+    last_fetched: '2026-01-28T21:44:19.900832+00:00'
+    file_size: 66485
+    checksum: f0b00952ea315ffd24cd9f442431c53e38047c3132562425b43c765d8a25b8be
+    error: null
+  pgxpool:
+    status: success
+    last_fetched: '2026-01-28T21:44:22.374828+00:00'
+    file_size: 24165
+    checksum: 3b3c94563d9e26dce43c55babb839bbb4f12ad653c4e35b388d8a8ba6fd400e3
+    error: null
+  postgresql-json:
+    status: success
+    last_fetched: '2026-01-28T21:44:25.875988+00:00'
+    file_size: 73607
+    checksum: 42e0c881282d138d8a92be9471c556d41c35d34e414ec4fa7b08ada95a861e88
+    error: null
+  postgresql-fulltext:
+    status: success
+    last_fetched: '2026-01-28T21:44:28.608486+00:00'
+    file_size: 2022
+    checksum: f94e68ad8961325f7045209c5795612ed89b7aa4f2dfcb97520129ea04befb7f
+    error: null
+  postgresql-arrays:
+    status: success
+    last_fetched: '2026-01-28T21:44:31.355712+00:00'
+    file_size: 21006
+    checksum: 2a18c22063b799072de891ef4646385e0658219dfbeae7d48ee093212839c99b
+    error: null
+  tmdb:
+    status: success
+    last_fetched: '2026-01-28T21:44:34.455667+00:00'
+    file_size: 3392
+    checksum: 147573eb6e7f6cf2ec6ad25485418dc8e1647a19b09f3549d4b3ed655ff60cc1
+    error: null
+  thetvdb:
+    status: failed
+    last_fetched: null
+    error: 'Request failed after 3 attempts: 404 Client Error: Not Found for url:
+      https://raw.githubusercontent.com/thetvdb/v4-api/main/openapi.yaml'
+    attempted: '2026-01-28T21:51:23.696662+00:00'
+  omdb:
+    status: success
+    last_fetched: '2026-01-28T21:44:38.938983+00:00'
+    file_size: 4009
+    checksum: acc7b529eb8c6305b44ecf601c523b7443f8769b055130806c142106448f50f1
+    error: null
+  musicbrainz:
+    status: success
+    last_fetched: '2026-01-28T21:44:41.123663+00:00'
+    file_size: 30597
+    checksum: 10ebcd71fdfc2fdebeaab14fca3991072f7a3c0c819aa8a1149f0c7456ca64e7
+    error: null
+  lastfm-api:
+    status: success
+    last_fetched: '2026-01-28T21:44:43.752007+00:00'
+    file_size: 2468
+    checksum: 5601cf1ef5ae20d59e8840911bc56118caccfeca93e09738f70daa66c2fc3942
+    error: null
+  discogs:
+    status: success
+    last_fetched: '2026-01-28T21:44:53.441520+00:00'
+    file_size: 135613
+    checksum: ef851ac5fc28e3bb08d10526c199a7ca2f4d72ea5f75fb60def77804c2d9a71b
+    error: null
+  spotify:
+    status: success
+    last_fetched: '2026-01-28T21:44:55.776300+00:00'
+    file_size: 2242
+    checksum: 3ae7711f6ad564b57740ea5e8dfbe0ed534341123b48861b136382d6ca477439
+    error: null
+  openlibrary:
+    status: success
+    last_fetched: '2026-01-28T21:45:07.542353+00:00'
+    file_size: 7990
+    checksum: 01f54f664cd4e5575b5822f2b028d101e5dac52c369639bfb80b8b434ade67e6
+    error: null
+  google-books:
+    status: success
+    last_fetched: '2026-01-28T21:45:10.008783+00:00'
+    file_size: 37742
+    checksum: 6f1a148ea54a14abfeba72c2ba6c3f1a3fb85c4d57ac4bd10928401caae5cf7b
+    error: null
+  comicvine:
+    status: success
+    last_fetched: '2026-01-28T21:45:12.897419+00:00'
+    file_size: 54967
+    checksum: edc7a3fe96531b76b347d61b5b4f88e83b8b1847b759d6965f231b37b33ac17d
+    error: null
+  marvel-api:
+    status: success
+    last_fetched: '2026-01-28T21:45:15.561299+00:00'
+    file_size: 7468
+    checksum: 02d802a07876494d8441c977866b4d67af1bbe72c18ae7ace7b26759249cc6c8
+    error: null
+  anilist:
+    status: success
+    last_fetched: '2026-01-28T21:45:21.323180+00:00'
+    file_size: 1225
+    checksum: f29f80665219d8ac14554ee83da30ecb0ea00711907ab4cbb45541bd1b6ac792
+    error: null
+  anilist-graphql:
+    status: success
+    last_fetched: '2026-01-28T21:45:24.781388+00:00'
+    file_size: 88304
+    checksum: 961b934dafe3ed12aa8a9937f2e6630e7664819f37dd8881d85f55603e3e244d
+    error: null
+  myanimelist:
+    status: success
+    last_fetched: '2026-01-28T21:45:28.429675+00:00'
+    file_size: 15570
+    checksum: 7302bc194665517f919ec09965b34f9afd7ef7777a2d6e200e58443bd62b7e57
+    error: null
+  kitsu:
+    status: success
+    last_fetched: '2026-01-28T21:51:16.313843+00:00'
+    file_size: 6043
+    checksum: a54cbc025fcd572158c5cb9857422dd1bb15da62f797d8a23d5febc929dbbc51
+    error: null
+  stashdb:
+    status: success
+    last_fetched: '2026-01-28T21:45:33.854091+00:00'
+    file_size: 31650
+    checksum: 047cbdb13b22bdec3fc45b27fc52d26f790dfafe46d37137ba029f264f44a555
+    error: null
+  theporndb:
+    status: failed
+    last_fetched: null
+    error: 'Request failed after 3 attempts: 404 Client Error: Not Found for url:
+      https://api.theporndb.net/doc.json'
+    attempted: '2026-01-28T21:51:03.629083+00:00'
+  trakt:
+    status: success
+    last_fetched: '2026-01-28T21:51:15.767943+00:00'
+    file_size: 236
+    checksum: 23b4bb827db73cd98f812816ab40d2c4a5479b0222259d5abdfdaa5e5ece31ad
+    error: null
+  listenbrainz:
+    status: success
+    last_fetched: '2026-01-28T21:45:41.346163+00:00'
+    file_size: 6239
+    checksum: 3fb6b98220645d3a7b40d450d1b777e78d2fe1366606567650fb09b66b821d43
+    error: null
+  simkl:
+    status: success
+    last_fetched: '2026-01-28T21:51:16.843016+00:00'
+    file_size: 7345
+    checksum: a12140b4191312cb40f4701fdac409a097dbed922a0ade3a1f226dcf1d945b2f
+    error: null
+  radarr:
+    status: success
+    last_fetched: '2026-01-28T21:45:45.800700+00:00'
+    file_size: 309392
+    checksum: 95ea9062485118d6a8abed8250b9bfbf94e4de0f55e9c5611da6805864f9a26e
+    error: null
+  sonarr:
+    status: success
+    last_fetched: '2026-01-28T21:45:47.860762+00:00'
+    file_size: 297108
+    checksum: 3fd4c4f4385b1043c3568bd3b37fa6c3c0161135072962dffb611f4ff270e2b7
+    error: null
+  lidarr:
+    status: success
+    last_fetched: '2026-01-28T21:45:50.069303+00:00'
+    file_size: 316102
+    checksum: 4ae9e79e9662898ed4704ce80f091161587a9f0d664f9e518b11a038616e491f
+    error: null
+  hls:
+    status: success
+    last_fetched: '2026-01-28T21:45:52.386143+00:00'
+    file_size: 117117
+    checksum: 1acb2806fff8e0222f512247bb47f627936bbe1ec26d56a0a9d1e31b5ac16a24
+    error: null
+  dash:
+    status: skipped
+    reason: manual type - requires manual download
+    note: PDF - MANUAL ONLY. Download and extract manually. Fetcher skips this.
+  http-range:
+    status: success
+    last_fetched: '2026-01-28T21:45:56.783820+00:00'
+    file_size: 6078
+    checksum: b5c90df163ed582589ab22e1d392ba2713019684b15f1b8e0d04c7fd5cb4bd5d
+    error: null
+  webrtc:
+    status: success
+    last_fetched: '2026-01-28T21:45:59.202447+00:00'
+    file_size: 15439
+    checksum: 5cc3f6bb651e1967bc3326760b70309e162752e45978e49ca24bbdb5f0d2eea1
+    error: null
+  svelte5:
+    status: success
+    last_fetched: '2026-01-28T21:46:01.454545+00:00'
+    file_size: 2617
+    checksum: b547d864bb7d161367baf77a21ab6423e81ca1dc4c938455858318e77148ad38
+    error: null
+  svelte-runes:
+    status: success
+    last_fetched: '2026-01-28T21:46:04.711027+00:00'
+    file_size: 52400
+    checksum: e04a0c18041784aac41381a6e33fb7f78f4007d3edc8bd4b8f087211cec086b9
+    error: null
+  sveltekit:
+    status: success
+    last_fetched: '2026-01-28T21:46:06.829342+00:00'
+    file_size: 3669
+    checksum: 5c0ac2aa594b5f57bdf627e6c47f4b9bebc9bbf1953dcd5ccd4f3ccc6a3a99a5
+    error: null
+  shadcn-svelte:
+    status: success
+    last_fetched: '2026-01-28T21:46:09.186293+00:00'
+    file_size: 5352
+    checksum: 0e2447c51bcac40c131f7a83f755f53b639b956ec578de828fc34dfbd402ea60
+    error: null
+  bits-ui:
+    status: success
+    last_fetched: '2026-01-28T21:46:12.117864+00:00'
+    file_size: 2234
+    checksum: 51e84ce801032e83780a7d9d54d5c99199601132f73a6adac21736dbb8f398bd
+    error: null
+  tanstack-query:
+    status: success
+    last_fetched: '2026-01-28T21:46:15.322904+00:00'
+    file_size: 4933
+    checksum: 84c3a1adab6c9ac65670abe76796713624e79f514a8266ea55a9f62a2f63c7c6
+    error: null
+  vidstack:
+    status: success
+    last_fetched: '2026-01-28T21:46:18.105297+00:00'
+    file_size: 1416
+    checksum: be7dbb54d17d0f0f579a0743b97f7db5753c33dbceffad48111c7ad67bdc9a51
+    error: null
+  ffmpeg:
+    status: success
+    last_fetched: '2026-01-28T21:46:20.502876+00:00'
+    file_size: 137344
+    checksum: 00edcecdd627cd321a1544204c17a63d521e8b40cebc423fbdf744a081f22b90
+    error: null
+  ffmpeg-codecs:
+    status: success
+    last_fetched: '2026-01-28T21:46:23.094584+00:00'
+    file_size: 164719
+    checksum: be23ef1f37b5642043e852540731ced9ef7a10a19f3d17543f460e0d9f5dedd1
+    error: null
+  ffmpeg-formats:
+    status: success
+    last_fetched: '2026-01-28T21:46:25.493773+00:00'
+    file_size: 176437
+    checksum: d9945925074ab736ff363e91760f2dd73b8698bee7d50332dbb277db870074f5
+    error: null
+  mediainfo:
+    status: success
+    last_fetched: '2026-01-28T21:46:27.678162+00:00'
+    file_size: 2461
+    checksum: 8e9a07b9247a285dd00fa83de19d393519f2f8e1d065fe386df3939bfdd84727
+    error: null
+  go-astiav:
+    status: success
+    last_fetched: '2026-01-28T21:46:32.664452+00:00'
+    file_size: 256892
+    checksum: 543920005e33e31af7dd5299e96c09d0a36816a4ccf0805073cc4986be650d62
+    error: null
+  go-astiav-docs:
+    status: success
+    last_fetched: '2026-01-28T21:51:14.561618+00:00'
+    file_size: 6269
+    checksum: fd82b9ecc8f871e17904a94863b7888c50dbffaf4b0c1db062ea806f91bd8cba
+    error: null
+  gortsplib:
+    status: success
+    last_fetched: '2026-01-28T21:46:37.956321+00:00'
+    file_size: 39517
+    checksum: 34332ac3b3165cbbb5cd79ae9bd303b71af778a842afd1a1cecf69d4fccad71e
+    error: null
+  gohlslib:
+    status: success
+    last_fetched: '2026-01-28T21:46:40.617682+00:00'
+    file_size: 10306
+    checksum: 25b03551d38d2e0cb37b1a2b1406b70eb0bc9ebecc40379b65fa514193f14cf2
+    error: null
+  mp4ff:
+    status: success
+    last_fetched: '2026-01-28T21:46:43.082254+00:00'
+    file_size: 3494
+    checksum: f450ae33c3f1fb8b3912d7176bcaf6092617841c74aeb7faf629d9a3b6cec20a
+    error: null
+  bimg:
+    status: success
+    last_fetched: '2026-01-28T21:46:45.835138+00:00'
+    file_size: 25888
+    checksum: b73b3fe430d22b8cff8feecda78cf61caee2e032656e46afba16443f50949c1d
+    error: null
+  go-astisub:
+    status: success
+    last_fetched: '2026-01-28T21:46:48.734202+00:00'
+    file_size: 24539
+    checksum: e914c52bcfdb19101dabe9240e15c3318648872d2e471741aa0b2b1772e0d3f4
+    error: null
+  go-blurhash:
+    status: success
+    last_fetched: '2026-01-28T21:46:51.144436+00:00'
+    file_size: 1504
+    checksum: edf35c8de10eb61de004c8c85effd50ecaba4da4925c1da60d24bbf5cb81c553
+    error: null
+  dhowden-tag:
+    status: success
+    last_fetched: '2026-01-28T21:46:53.499645+00:00'
+    file_size: 8995
+    checksum: b4e0cea260c79d11b70b09f71571e30a50446621def200038f34826656c10e3b
+    error: null
+  bogem-id3v2:
+    status: success
+    last_fetched: '2026-01-28T21:46:56.012097+00:00'
+    file_size: 30794
+    checksum: e061f2dbdf6c0249670efdff41c3483de9749d2f9c62fff3ec3d7bfc15c843a7
+    error: null
+  oidc:
+    status: success
+    last_fetched: '2026-01-28T21:46:58.415435+00:00'
+    file_size: 258004
+    checksum: 6396c7d1f42ee24aa1904739f0a6a71eeebd92e60dbbb4649564f081060ce24c
+    error: null
+  oauth2:
+    status: success
+    last_fetched: '2026-01-28T21:47:00.951212+00:00'
+    file_size: 149577
+    checksum: b286c2fc8b34045b3088ac6d100f17eb6881baf72b00bb678914d7a8506ada04
+    error: null
+  pkce:
+    status: success
+    last_fetched: '2026-01-28T21:47:03.154116+00:00'
+    file_size: 36080
+    checksum: 3a5594de62bc38692a479b569772090848a2489812de5195f7e449ea9c42d025
+    error: null
+  jwt:
+    status: success
+    last_fetched: '2026-01-28T21:47:05.421475+00:00'
+    file_size: 58012
+    checksum: 71b9d4634405e1a0ffedefeb82f7b63e84df79bec854a5a0c38251c3126dbdd1
+    error: null
+  testify:
+    status: success
+    last_fetched: '2026-01-28T21:47:07.784063+00:00'
+    file_size: 1036
+    checksum: 8587836b5ae860dabb1ea22064e538f318f02d498fccc87ccf2c95020cbb125f
+    error: null
+  testcontainers:
+    status: success
+    last_fetched: '2026-01-28T21:47:10.726175+00:00'
+    file_size: 3306
+    checksum: 483cc11ebe8bb7d8c10ac1ed8aa0aafa1f3cdc50fab2a78cd9bd0c2ec9b9ea4d
+    error: null
+  go-test-patterns:
+    status: success
+    last_fetched: '2026-01-28T21:47:12.974320+00:00'
+    file_size: 4725
+    checksum: 13feb971c7001772fc252d6dd6ef6b0cbbbe5a0bed9925d556f00d000e6a4bec
+    error: null
+  prometheus:
+    status: success
+    last_fetched: '2026-01-28T21:47:16.358298+00:00'
+    file_size: 162690
+    checksum: c67c4f46e410d3966f9b814c04cc2b206970ec1967d77de23535c8a3b98e3c8a
+    error: null
+  otel-go:
+    status: success
+    last_fetched: '2026-01-28T21:47:18.894446+00:00'
+    file_size: 1360
+    checksum: 16d55e8a716d32970a5234e6c27b9770fd2bd647e8681a73f23e8ce6f0b25c2e
+    error: null
+  prometheus-metrics:
+    status: success
+    last_fetched: '2026-01-28T21:47:22.124739+00:00'
+    file_size: 5873
+    checksum: 5545bde6fdab8708916cdc2f9ebe15b68f1a1c1008448aea87b0ab290447b5ca
+    error: null
+  dragonfly:
+    status: success
+    last_fetched: '2026-01-28T21:47:24.472030+00:00'
+    file_size: 856
+    checksum: 78da1814b3a2a654d49d19d389c23eb88c0ac95ebf16b91c0731d8d39e5b0152
+    error: null
+  typesense:
+    status: success
+    last_fetched: '2026-01-28T21:47:26.788724+00:00'
+    file_size: 1952
+    checksum: c0ee0d475b2b9c7273fa38d933afcc495ae186d9ab2d4df5f5984fb30387504a
+    error: null
+  typesense-go:
+    status: success
+    last_fetched: '2026-01-28T21:51:17.255420+00:00'
+    file_size: 12060
+    checksum: 7d15aa5c7adf9a3e1531ed0f72578423efe17933442892baf84f6925603ec56b
+    error: null
+  golang-migrate-postgres:
+    status: success
+    last_fetched: '2026-01-28T22:02:02.109505+00:00'
+    file_size: 2532
+    checksum: 1642e4dbcc33b3fa72d0ce682a83f5d6f74fa2c5ec607249cb7537263d753137
+    error: null
+  golang-migrate:
+    status: success
+    last_fetched: '2026-01-28T22:02:09.567909+00:00'
+    file_size: 8675
+    checksum: 98fb1799e6500999a2378a84fdeaf97c6ea6e3e4bcb79acc8099786388cb1b61
+    error: null

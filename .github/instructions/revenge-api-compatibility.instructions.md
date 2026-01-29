@@ -421,3 +421,10 @@ When implementing an endpoint:
 4. Check interfaces in `MediaBrowser.Controller/`
 5. Check implementations in `Revenge.Server.Implementations/`
 6. Run original Revenge and capture real API responses for testing
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
+- [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

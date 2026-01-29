@@ -9,22 +9,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const countAdminUsers = `-- name: CountAdminUsers :one
-SELECT count(*) FROM users WHERE is_admin = true
-`
-
-func (q *Queries) CountAdminUsers(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, countAdminUsers)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
 const countUsers = `-- name: CountUsers :one
-SELECT count(*) FROM users
+SELECT COUNT(*) FROM users
 `
 
 func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
@@ -36,18 +24,23 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-    username, email, password_hash, display_name, is_admin
+    username, email, password_hash, is_admin,
+    max_rating_level, adult_enabled,
+    preferred_language, preferred_rating_system
 ) VALUES (
-    $1, $2, $3, $4, $5
-) RETURNING id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted
+    $1, $2, $3, $4, $5, $6, $7, $8
+) RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Username     string      `json:"username"`
-	Email        pgtype.Text `json:"email"`
-	PasswordHash pgtype.Text `json:"passwordHash"`
-	DisplayName  pgtype.Text `json:"displayName"`
-	IsAdmin      bool        `json:"isAdmin"`
+	Username              string  `json:"username"`
+	Email                 *string `json:"email"`
+	PasswordHash          *string `json:"passwordHash"`
+	IsAdmin               bool    `json:"isAdmin"`
+	MaxRatingLevel        int32   `json:"maxRatingLevel"`
+	AdultEnabled          bool    `json:"adultEnabled"`
+	PreferredLanguage     *string `json:"preferredLanguage"`
+	PreferredRatingSystem *string `json:"preferredRatingSystem"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -55,8 +48,11 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Username,
 		arg.Email,
 		arg.PasswordHash,
-		arg.DisplayName,
 		arg.IsAdmin,
+		arg.MaxRatingLevel,
+		arg.AdultEnabled,
+		arg.PreferredLanguage,
+		arg.PreferredRatingSystem,
 	)
 	var i User
 	err := row.Scan(
@@ -64,19 +60,15 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Username,
 		&i.Email,
 		&i.PasswordHash,
-		&i.DisplayName,
 		&i.IsAdmin,
 		&i.IsDisabled,
+		&i.MaxRatingLevel,
+		&i.AdultEnabled,
+		&i.PreferredLanguage,
+		&i.PreferredRatingSystem,
 		&i.LastLoginAt,
-		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Birthdate,
-		&i.MaxRatingLevel,
-		&i.AdultContentEnabled,
-		&i.PreferredRatingSystem,
-		&i.ParentalPinHash,
-		&i.HideRestricted,
 	)
 	return i, err
 }
@@ -90,22 +82,11 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const emailExists = `-- name: EmailExists :one
-SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)
-`
-
-func (q *Queries) EmailExists(ctx context.Context, email pgtype.Text) (bool, error) {
-	row := q.db.QueryRow(ctx, emailExists, email)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE email = $1 LIMIT 1
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at FROM users WHERE email = $1
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error) {
+func (q *Queries) GetUserByEmail(ctx context.Context, email *string) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
@@ -113,34 +94,23 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, 
 		&i.Username,
 		&i.Email,
 		&i.PasswordHash,
-		&i.DisplayName,
 		&i.IsAdmin,
 		&i.IsDisabled,
+		&i.MaxRatingLevel,
+		&i.AdultEnabled,
+		&i.PreferredLanguage,
+		&i.PreferredRatingSystem,
 		&i.LastLoginAt,
-		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Birthdate,
-		&i.MaxRatingLevel,
-		&i.AdultContentEnabled,
-		&i.PreferredRatingSystem,
-		&i.ParentalPinHash,
-		&i.HideRestricted,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-
-
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE id = $1 LIMIT 1
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at FROM users WHERE id = $1
 `
 
-// User queries for Revenge Go
-// sqlc generates type-safe Go code from these queries
-// =============================================================================
-// BASIC CRUD
-// =============================================================================
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
@@ -149,25 +119,21 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Username,
 		&i.Email,
 		&i.PasswordHash,
-		&i.DisplayName,
 		&i.IsAdmin,
 		&i.IsDisabled,
+		&i.MaxRatingLevel,
+		&i.AdultEnabled,
+		&i.PreferredLanguage,
+		&i.PreferredRatingSystem,
 		&i.LastLoginAt,
-		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Birthdate,
-		&i.MaxRatingLevel,
-		&i.AdultContentEnabled,
-		&i.PreferredRatingSystem,
-		&i.ParentalPinHash,
-		&i.HideRestricted,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users WHERE username = $1 LIMIT 1
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at FROM users WHERE username = $1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -178,70 +144,22 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.Username,
 		&i.Email,
 		&i.PasswordHash,
-		&i.DisplayName,
 		&i.IsAdmin,
 		&i.IsDisabled,
+		&i.MaxRatingLevel,
+		&i.AdultEnabled,
+		&i.PreferredLanguage,
+		&i.PreferredRatingSystem,
 		&i.LastLoginAt,
-		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Birthdate,
-		&i.MaxRatingLevel,
-		&i.AdultContentEnabled,
-		&i.PreferredRatingSystem,
-		&i.ParentalPinHash,
-		&i.HideRestricted,
 	)
 	return i, err
 }
 
-const listAdminUsers = `-- name: ListAdminUsers :many
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users
-WHERE is_admin = true
-ORDER BY username ASC
-`
-
-func (q *Queries) ListAdminUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.Query(ctx, listAdminUsers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []User{}
-	for rows.Next() {
-		var i User
-		if err := rows.Scan(
-			&i.ID,
-			&i.Username,
-			&i.Email,
-			&i.PasswordHash,
-			&i.DisplayName,
-			&i.IsAdmin,
-			&i.IsDisabled,
-			&i.LastLoginAt,
-			&i.LastActivityAt,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Birthdate,
-			&i.MaxRatingLevel,
-			&i.AdultContentEnabled,
-			&i.PreferredRatingSystem,
-			&i.ParentalPinHash,
-			&i.HideRestricted,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listUsers = `-- name: ListUsers :many
-SELECT id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted FROM users
-ORDER BY username ASC
+SELECT id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at FROM users
+ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
 
@@ -264,19 +182,15 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.Username,
 			&i.Email,
 			&i.PasswordHash,
-			&i.DisplayName,
 			&i.IsAdmin,
 			&i.IsDisabled,
+			&i.MaxRatingLevel,
+			&i.AdultEnabled,
+			&i.PreferredLanguage,
+			&i.PreferredRatingSystem,
 			&i.LastLoginAt,
-			&i.LastActivityAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.Birthdate,
-			&i.MaxRatingLevel,
-			&i.AdultContentEnabled,
-			&i.PreferredRatingSystem,
-			&i.ParentalPinHash,
-			&i.HideRestricted,
 		); err != nil {
 			return nil, err
 		}
@@ -289,93 +203,67 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 }
 
 const updateUser = `-- name: UpdateUser :one
-UPDATE users
-SET
+UPDATE users SET
+    username = COALESCE($1, username),
     email = COALESCE($2, email),
-    display_name = COALESCE($3, display_name),
-    updated_at = NOW()
-WHERE id = $1
-RETURNING id, username, email, password_hash, display_name, is_admin, is_disabled, last_login_at, last_activity_at, created_at, updated_at, birthdate, max_rating_level, adult_content_enabled, preferred_rating_system, parental_pin_hash, hide_restricted
+    password_hash = COALESCE($3, password_hash),
+    is_admin = COALESCE($4, is_admin),
+    is_disabled = COALESCE($5, is_disabled),
+    max_rating_level = COALESCE($6, max_rating_level),
+    adult_enabled = COALESCE($7, adult_enabled),
+    preferred_language = COALESCE($8, preferred_language),
+    preferred_rating_system = COALESCE($9, preferred_rating_system)
+WHERE id = $10
+RETURNING id, username, email, password_hash, is_admin, is_disabled, max_rating_level, adult_enabled, preferred_language, preferred_rating_system, last_login_at, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	ID          uuid.UUID   `json:"id"`
-	Email       pgtype.Text `json:"email"`
-	DisplayName pgtype.Text `json:"displayName"`
+	Username              *string   `json:"username"`
+	Email                 *string   `json:"email"`
+	PasswordHash          *string   `json:"passwordHash"`
+	IsAdmin               *bool     `json:"isAdmin"`
+	IsDisabled            *bool     `json:"isDisabled"`
+	MaxRatingLevel        *int32    `json:"maxRatingLevel"`
+	AdultEnabled          *bool     `json:"adultEnabled"`
+	PreferredLanguage     *string   `json:"preferredLanguage"`
+	PreferredRatingSystem *string   `json:"preferredRatingSystem"`
+	ID                    uuid.UUID `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, updateUser, arg.ID, arg.Email, arg.DisplayName)
+	row := q.db.QueryRow(ctx, updateUser,
+		arg.Username,
+		arg.Email,
+		arg.PasswordHash,
+		arg.IsAdmin,
+		arg.IsDisabled,
+		arg.MaxRatingLevel,
+		arg.AdultEnabled,
+		arg.PreferredLanguage,
+		arg.PreferredRatingSystem,
+		arg.ID,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Email,
 		&i.PasswordHash,
-		&i.DisplayName,
 		&i.IsAdmin,
 		&i.IsDisabled,
+		&i.MaxRatingLevel,
+		&i.AdultEnabled,
+		&i.PreferredLanguage,
+		&i.PreferredRatingSystem,
 		&i.LastLoginAt,
-		&i.LastActivityAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Birthdate,
-		&i.MaxRatingLevel,
-		&i.AdultContentEnabled,
-		&i.PreferredRatingSystem,
-		&i.ParentalPinHash,
-		&i.HideRestricted,
 	)
 	return i, err
 }
 
-const updateUserAdmin = `-- name: UpdateUserAdmin :exec
-UPDATE users
-SET is_admin = $2, updated_at = NOW()
-WHERE id = $1
-`
-
-type UpdateUserAdminParams struct {
-	ID      uuid.UUID `json:"id"`
-	IsAdmin bool      `json:"isAdmin"`
-}
-
-func (q *Queries) UpdateUserAdmin(ctx context.Context, arg UpdateUserAdminParams) error {
-	_, err := q.db.Exec(ctx, updateUserAdmin, arg.ID, arg.IsAdmin)
-	return err
-}
-
-const updateUserDisabled = `-- name: UpdateUserDisabled :exec
-UPDATE users
-SET is_disabled = $2, updated_at = NOW()
-WHERE id = $1
-`
-
-type UpdateUserDisabledParams struct {
-	ID         uuid.UUID `json:"id"`
-	IsDisabled bool      `json:"isDisabled"`
-}
-
-func (q *Queries) UpdateUserDisabled(ctx context.Context, arg UpdateUserDisabledParams) error {
-	_, err := q.db.Exec(ctx, updateUserDisabled, arg.ID, arg.IsDisabled)
-	return err
-}
-
-const updateUserLastActivity = `-- name: UpdateUserLastActivity :exec
-UPDATE users
-SET last_activity_at = NOW()
-WHERE id = $1
-`
-
-func (q *Queries) UpdateUserLastActivity(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, updateUserLastActivity, id)
-	return err
-}
-
 const updateUserLastLogin = `-- name: UpdateUserLastLogin :exec
-UPDATE users
-SET last_login_at = NOW(), updated_at = NOW()
-WHERE id = $1
+UPDATE users SET last_login_at = NOW() WHERE id = $1
 `
 
 func (q *Queries) UpdateUserLastLogin(ctx context.Context, id uuid.UUID) error {
@@ -383,39 +271,23 @@ func (q *Queries) UpdateUserLastLogin(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const updateUserPassword = `-- name: UpdateUserPassword :exec
-UPDATE users
-SET password_hash = $2, updated_at = NOW()
-WHERE id = $1
+const userExistsByEmail = `-- name: UserExistsByEmail :one
+SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)
 `
 
-type UpdateUserPasswordParams struct {
-	ID           uuid.UUID   `json:"id"`
-	PasswordHash pgtype.Text `json:"passwordHash"`
-}
-
-func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
-	_, err := q.db.Exec(ctx, updateUserPassword, arg.ID, arg.PasswordHash)
-	return err
-}
-
-const userExists = `-- name: UserExists :one
-SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)
-`
-
-func (q *Queries) UserExists(ctx context.Context, id uuid.UUID) (bool, error) {
-	row := q.db.QueryRow(ctx, userExists, id)
+func (q *Queries) UserExistsByEmail(ctx context.Context, email *string) (bool, error) {
+	row := q.db.QueryRow(ctx, userExistsByEmail, email)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err
 }
 
-const usernameExists = `-- name: UsernameExists :one
+const userExistsByUsername = `-- name: UserExistsByUsername :one
 SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)
 `
 
-func (q *Queries) UsernameExists(ctx context.Context, username string) (bool, error) {
-	row := q.db.QueryRow(ctx, usernameExists, username)
+func (q *Queries) UserExistsByUsername(ctx context.Context, username string) (bool, error) {
+	row := q.db.QueryRow(ctx, userExistsByUsername, username)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err

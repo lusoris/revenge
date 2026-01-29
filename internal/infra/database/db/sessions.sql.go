@@ -14,12 +14,13 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const countUserSessions = `-- name: CountUserSessions :one
-SELECT count(*) FROM sessions WHERE user_id = $1
+const countActiveSessionsByUser = `-- name: CountActiveSessionsByUser :one
+SELECT COUNT(*) FROM sessions
+WHERE user_id = $1 AND is_active = true AND expires_at > NOW()
 `
 
-func (q *Queries) CountUserSessions(ctx context.Context, userID uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, countUserSessions, userID)
+func (q *Queries) CountActiveSessionsByUser(ctx context.Context, userID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countActiveSessionsByUser, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -27,67 +28,85 @@ func (q *Queries) CountUserSessions(ctx context.Context, userID uuid.UUID) (int6
 
 const createSession = `-- name: CreateSession :one
 INSERT INTO sessions (
-    user_id, token_hash, refresh_token_hash, device_id, device_name,
-    client_name, client_version, ip_address, expires_at, refresh_expires_at
+    user_id, profile_id, token_hash,
+    device_name, device_type, client_name, client_version,
+    ip_address, user_agent, expires_at
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-) RETURNING id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at
+) RETURNING id, user_id, profile_id, token_hash, device_name, device_type, client_name, client_version, ip_address, user_agent, is_active, last_activity, expires_at, created_at
 `
 
 type CreateSessionParams struct {
-	UserID           uuid.UUID          `json:"userId"`
-	TokenHash        string             `json:"tokenHash"`
-	RefreshTokenHash pgtype.Text        `json:"refreshTokenHash"`
-	DeviceID         pgtype.Text        `json:"deviceId"`
-	DeviceName       pgtype.Text        `json:"deviceName"`
-	ClientName       pgtype.Text        `json:"clientName"`
-	ClientVersion    pgtype.Text        `json:"clientVersion"`
-	IpAddress        *netip.Addr        `json:"ipAddress"`
-	ExpiresAt        time.Time          `json:"expiresAt"`
-	RefreshExpiresAt pgtype.Timestamptz `json:"refreshExpiresAt"`
+	UserID        uuid.UUID   `json:"userId"`
+	ProfileID     pgtype.UUID `json:"profileId"`
+	TokenHash     string      `json:"tokenHash"`
+	DeviceName    *string     `json:"deviceName"`
+	DeviceType    *string     `json:"deviceType"`
+	ClientName    *string     `json:"clientName"`
+	ClientVersion *string     `json:"clientVersion"`
+	IpAddress     netip.Addr  `json:"ipAddress"`
+	UserAgent     *string     `json:"userAgent"`
+	ExpiresAt     time.Time   `json:"expiresAt"`
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
 	row := q.db.QueryRow(ctx, createSession,
 		arg.UserID,
+		arg.ProfileID,
 		arg.TokenHash,
-		arg.RefreshTokenHash,
-		arg.DeviceID,
 		arg.DeviceName,
+		arg.DeviceType,
 		arg.ClientName,
 		arg.ClientVersion,
 		arg.IpAddress,
+		arg.UserAgent,
 		arg.ExpiresAt,
-		arg.RefreshExpiresAt,
 	)
 	var i Session
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
+		&i.ProfileID,
 		&i.TokenHash,
-		&i.RefreshTokenHash,
-		&i.DeviceID,
 		&i.DeviceName,
+		&i.DeviceType,
 		&i.ClientName,
 		&i.ClientVersion,
 		&i.IpAddress,
+		&i.UserAgent,
+		&i.IsActive,
+		&i.LastActivity,
 		&i.ExpiresAt,
-		&i.RefreshExpiresAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
-const deleteExpiredSessions = `-- name: DeleteExpiredSessions :execrows
+const deactivateSession = `-- name: DeactivateSession :exec
+UPDATE sessions SET is_active = false WHERE id = $1
+`
+
+func (q *Queries) DeactivateSession(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deactivateSession, id)
+	return err
+}
+
+const deactivateUserSessions = `-- name: DeactivateUserSessions :exec
+UPDATE sessions SET is_active = false WHERE user_id = $1
+`
+
+func (q *Queries) DeactivateUserSessions(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deactivateUserSessions, userID)
+	return err
+}
+
+const deleteExpiredSessions = `-- name: DeleteExpiredSessions :exec
 DELETE FROM sessions WHERE expires_at < NOW()
 `
 
-func (q *Queries) DeleteExpiredSessions(ctx context.Context) (int64, error) {
-	result, err := q.db.Exec(ctx, deleteExpiredSessions)
-	if err != nil {
-		return 0, err
-	}
-	return result.RowsAffected(), nil
+func (q *Queries) DeleteExpiredSessions(ctx context.Context) error {
+	_, err := q.db.Exec(ctx, deleteExpiredSessions)
+	return err
 }
 
 const deleteSession = `-- name: DeleteSession :exec
@@ -99,80 +118,35 @@ func (q *Queries) DeleteSession(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const deleteSessionByTokenHash = `-- name: DeleteSessionByTokenHash :exec
-DELETE FROM sessions WHERE token_hash = $1
-`
-
-func (q *Queries) DeleteSessionByTokenHash(ctx context.Context, tokenHash string) error {
-	_, err := q.db.Exec(ctx, deleteSessionByTokenHash, tokenHash)
-	return err
-}
-
-const deleteUserSessions = `-- name: DeleteUserSessions :exec
-DELETE FROM sessions WHERE user_id = $1
-`
-
-func (q *Queries) DeleteUserSessions(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteUserSessions, userID)
-	return err
-}
-
 const getSessionByID = `-- name: GetSessionByID :one
-
-
-SELECT id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at FROM sessions WHERE id = $1 LIMIT 1
+SELECT id, user_id, profile_id, token_hash, device_name, device_type, client_name, client_version, ip_address, user_agent, is_active, last_activity, expires_at, created_at FROM sessions WHERE id = $1
 `
 
-// Session queries for Revenge Go
-// =============================================================================
-// BASIC CRUD
-// =============================================================================
 func (q *Queries) GetSessionByID(ctx context.Context, id uuid.UUID) (Session, error) {
 	row := q.db.QueryRow(ctx, getSessionByID, id)
 	var i Session
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
+		&i.ProfileID,
 		&i.TokenHash,
-		&i.RefreshTokenHash,
-		&i.DeviceID,
 		&i.DeviceName,
+		&i.DeviceType,
 		&i.ClientName,
 		&i.ClientVersion,
 		&i.IpAddress,
+		&i.UserAgent,
+		&i.IsActive,
+		&i.LastActivity,
 		&i.ExpiresAt,
-		&i.RefreshExpiresAt,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const getSessionByRefreshTokenHash = `-- name: GetSessionByRefreshTokenHash :one
-SELECT id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at FROM sessions WHERE refresh_token_hash = $1 LIMIT 1
-`
-
-func (q *Queries) GetSessionByRefreshTokenHash(ctx context.Context, refreshTokenHash pgtype.Text) (Session, error) {
-	row := q.db.QueryRow(ctx, getSessionByRefreshTokenHash, refreshTokenHash)
-	var i Session
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.TokenHash,
-		&i.RefreshTokenHash,
-		&i.DeviceID,
-		&i.DeviceName,
-		&i.ClientName,
-		&i.ClientVersion,
-		&i.IpAddress,
-		&i.ExpiresAt,
-		&i.RefreshExpiresAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getSessionByTokenHash = `-- name: GetSessionByTokenHash :one
-SELECT id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at FROM sessions WHERE token_hash = $1 LIMIT 1
+SELECT id, user_id, profile_id, token_hash, device_name, device_type, client_name, client_version, ip_address, user_agent, is_active, last_activity, expires_at, created_at FROM sessions
+WHERE token_hash = $1 AND is_active = true AND expires_at > NOW()
 `
 
 func (q *Queries) GetSessionByTokenHash(ctx context.Context, tokenHash string) (Session, error) {
@@ -181,90 +155,26 @@ func (q *Queries) GetSessionByTokenHash(ctx context.Context, tokenHash string) (
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
+		&i.ProfileID,
 		&i.TokenHash,
-		&i.RefreshTokenHash,
-		&i.DeviceID,
 		&i.DeviceName,
+		&i.DeviceType,
 		&i.ClientName,
 		&i.ClientVersion,
 		&i.IpAddress,
+		&i.UserAgent,
+		&i.IsActive,
+		&i.LastActivity,
 		&i.ExpiresAt,
-		&i.RefreshExpiresAt,
 		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const getSessionWithUser = `-- name: GetSessionWithUser :one
-
-SELECT
-    s.id, s.user_id, s.token_hash, s.refresh_token_hash, s.device_id, s.device_name, s.client_name, s.client_version, s.ip_address, s.expires_at, s.refresh_expires_at, s.created_at,
-    u.id AS user_id,
-    u.username,
-    u.email,
-    u.display_name,
-    u.is_admin,
-    u.is_disabled
-FROM sessions s
-JOIN users u ON s.user_id = u.id
-WHERE s.token_hash = $1 AND s.expires_at > NOW()
-LIMIT 1
-`
-
-type GetSessionWithUserRow struct {
-	ID               uuid.UUID          `json:"id"`
-	UserID           uuid.UUID          `json:"userId"`
-	TokenHash        string             `json:"tokenHash"`
-	RefreshTokenHash pgtype.Text        `json:"refreshTokenHash"`
-	DeviceID         pgtype.Text        `json:"deviceId"`
-	DeviceName       pgtype.Text        `json:"deviceName"`
-	ClientName       pgtype.Text        `json:"clientName"`
-	ClientVersion    pgtype.Text        `json:"clientVersion"`
-	IpAddress        *netip.Addr        `json:"ipAddress"`
-	ExpiresAt        time.Time          `json:"expiresAt"`
-	RefreshExpiresAt pgtype.Timestamptz `json:"refreshExpiresAt"`
-	CreatedAt        time.Time          `json:"createdAt"`
-	UserID_2         uuid.UUID          `json:"userId2"`
-	Username         string             `json:"username"`
-	Email            pgtype.Text        `json:"email"`
-	DisplayName      pgtype.Text        `json:"displayName"`
-	IsAdmin          bool               `json:"isAdmin"`
-	IsDisabled       bool               `json:"isDisabled"`
-}
-
-// =============================================================================
-// JOIN QUERIES
-// =============================================================================
-func (q *Queries) GetSessionWithUser(ctx context.Context, tokenHash string) (GetSessionWithUserRow, error) {
-	row := q.db.QueryRow(ctx, getSessionWithUser, tokenHash)
-	var i GetSessionWithUserRow
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.TokenHash,
-		&i.RefreshTokenHash,
-		&i.DeviceID,
-		&i.DeviceName,
-		&i.ClientName,
-		&i.ClientVersion,
-		&i.IpAddress,
-		&i.ExpiresAt,
-		&i.RefreshExpiresAt,
-		&i.CreatedAt,
-		&i.UserID_2,
-		&i.Username,
-		&i.Email,
-		&i.DisplayName,
-		&i.IsAdmin,
-		&i.IsDisabled,
 	)
 	return i, err
 }
 
 const listActiveSessions = `-- name: ListActiveSessions :many
-SELECT id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at FROM sessions
-WHERE expires_at > NOW()
-ORDER BY created_at DESC
+SELECT id, user_id, profile_id, token_hash, device_name, device_type, client_name, client_version, ip_address, user_agent, is_active, last_activity, expires_at, created_at FROM sessions
+WHERE is_active = true AND expires_at > NOW()
+ORDER BY last_activity DESC
 LIMIT $1 OFFSET $2
 `
 
@@ -285,15 +195,17 @@ func (q *Queries) ListActiveSessions(ctx context.Context, arg ListActiveSessions
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
+			&i.ProfileID,
 			&i.TokenHash,
-			&i.RefreshTokenHash,
-			&i.DeviceID,
 			&i.DeviceName,
+			&i.DeviceType,
 			&i.ClientName,
 			&i.ClientVersion,
 			&i.IpAddress,
+			&i.UserAgent,
+			&i.IsActive,
+			&i.LastActivity,
 			&i.ExpiresAt,
-			&i.RefreshExpiresAt,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -306,14 +218,14 @@ func (q *Queries) ListActiveSessions(ctx context.Context, arg ListActiveSessions
 	return items, nil
 }
 
-const listUserSessions = `-- name: ListUserSessions :many
-SELECT id, user_id, token_hash, refresh_token_hash, device_id, device_name, client_name, client_version, ip_address, expires_at, refresh_expires_at, created_at FROM sessions
+const listSessionsByUser = `-- name: ListSessionsByUser :many
+SELECT id, user_id, profile_id, token_hash, device_name, device_type, client_name, client_version, ip_address, user_agent, is_active, last_activity, expires_at, created_at FROM sessions
 WHERE user_id = $1
-ORDER BY created_at DESC
+ORDER BY last_activity DESC
 `
 
-func (q *Queries) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Session, error) {
-	rows, err := q.db.Query(ctx, listUserSessions, userID)
+func (q *Queries) ListSessionsByUser(ctx context.Context, userID uuid.UUID) ([]Session, error) {
+	rows, err := q.db.Query(ctx, listSessionsByUser, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -324,15 +236,17 @@ func (q *Queries) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Ses
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
+			&i.ProfileID,
 			&i.TokenHash,
-			&i.RefreshTokenHash,
-			&i.DeviceID,
 			&i.DeviceName,
+			&i.DeviceType,
 			&i.ClientName,
 			&i.ClientVersion,
 			&i.IpAddress,
+			&i.UserAgent,
+			&i.IsActive,
+			&i.LastActivity,
 			&i.ExpiresAt,
-			&i.RefreshExpiresAt,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -345,32 +259,19 @@ func (q *Queries) ListUserSessions(ctx context.Context, userID uuid.UUID) ([]Ses
 	return items, nil
 }
 
-const sessionExists = `-- name: SessionExists :one
-SELECT EXISTS(SELECT 1 FROM sessions WHERE token_hash = $1 AND expires_at > NOW())
+const updateSessionActivity = `-- name: UpdateSessionActivity :exec
+UPDATE sessions SET
+    last_activity = NOW(),
+    profile_id = COALESCE($1, profile_id)
+WHERE id = $2
 `
 
-func (q *Queries) SessionExists(ctx context.Context, tokenHash string) (bool, error) {
-	row := q.db.QueryRow(ctx, sessionExists, tokenHash)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
+type UpdateSessionActivityParams struct {
+	ProfileID pgtype.UUID `json:"profileId"`
+	ID        uuid.UUID   `json:"id"`
 }
 
-const updateSessionRefreshToken = `-- name: UpdateSessionRefreshToken :exec
-UPDATE sessions
-SET
-    refresh_token_hash = $2,
-    refresh_expires_at = $3
-WHERE id = $1
-`
-
-type UpdateSessionRefreshTokenParams struct {
-	ID               uuid.UUID          `json:"id"`
-	RefreshTokenHash pgtype.Text        `json:"refreshTokenHash"`
-	RefreshExpiresAt pgtype.Timestamptz `json:"refreshExpiresAt"`
-}
-
-func (q *Queries) UpdateSessionRefreshToken(ctx context.Context, arg UpdateSessionRefreshTokenParams) error {
-	_, err := q.db.Exec(ctx, updateSessionRefreshToken, arg.ID, arg.RefreshTokenHash, arg.RefreshExpiresAt)
+func (q *Queries) UpdateSessionActivity(ctx context.Context, arg UpdateSessionActivityParams) error {
+	_, err := q.db.Exec(ctx, updateSessionActivity, arg.ProfileID, arg.ID)
 	return err
 }

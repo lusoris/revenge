@@ -61,3 +61,10 @@ user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_media_items_library_id ON media_items(library_id);
 ```
+---
+
+## Related
+
+- [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
+- [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

@@ -1,8 +1,8 @@
 # Revenge
 
-[![CI](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/jellyfin-go/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/jellyfin-go)](https://goreportcard.com/report/github.com/lusoris/jellyfin-go)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/jellyfin-go)](go.mod)
+[![CI](https://github.com/lusoris/revenge/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/revenge)](https://goreportcard.com/report/github.com/lusoris/revenge)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/lusoris/revenge)](go.mod)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 > Modular media server with complete content isolation
@@ -31,16 +31,16 @@ A ground-up media server built in Go with a fully modular architecture. Each con
 ## 📋 Design Principles
 
 - **Performance First** - UX never blocked by backend tasks
-- **Client Agnostic** - Support Jellyfin/Subsonic/DLNA clients, no native apps
+- **Client Agnostic** - Native mobile/TV apps with Revenge API, DLNA compatibility
 - **Privacy by Default** - Encrypted local storage, opt-in tracking only
 - **Bleeding Edge Stable** - Latest stable Go/PostgreSQL, no alpha deps
 - **Optional ML** - Ollama integration for recommendations, not required
 
-See [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) for full details.
+See [docs/dev/design/architecture/DESIGN_PRINCIPLES.md](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) for full details.
 
 ## ✨ Features
 
-- **11 Content Modules**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Collections, and Adult content (isolated schema)
+- **12 Content Modules**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Comics, Collections, and Adult content (isolated schema)
 - **External Transcoding**: Delegates to "Blackbeard" service - Revenge stays lightweight
 - **Servarr Integration**: Radarr, Sonarr, Lidarr, Whisparr, Chaptarr as primary metadata sources
 - **Modern Stack**: Go 1.25, PostgreSQL 18, Dragonfly (Redis-compatible), Typesense, River job queue
@@ -59,15 +59,15 @@ See [docs/DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) for full details.
 | DI | uber-go/fx |
 | Config | koanf v2 |
 
-See [docs/ARCHITECTURE_V2.md](docs/ARCHITECTURE_V2.md) for the complete design.
+See [docs/dev/design/architecture/ARCHITECTURE_V2.md](docs/dev/design/architecture/ARCHITECTURE_V2.md) for the complete design.
 
 ## 🚀 Quick Start
 
 ### Docker Compose (Recommended)
 
 ```bash
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 docker compose up -d
 
 # Opens at http://localhost:8096
@@ -77,8 +77,8 @@ docker compose up -d
 
 ```bash
 # Prerequisites: Go 1.25+, PostgreSQL, Dragonfly
-git clone https://github.com/lusoris/jellyfin-go.git
-cd jellyfin-go
+git clone https://github.com/lusoris/revenge.git
+cd revenge
 
 # Start dependencies
 docker compose -f docker-compose.dev.yml up -d
@@ -90,21 +90,21 @@ go run ./cmd/revenge
 ## 📖 Documentation
 
 ### Architecture & Design
-- [Architecture V2](docs/ARCHITECTURE_V2.md) - Complete modular architecture
-- [Tech Stack](docs/TECH_STACK.md) - Technology choices
-- [Project Structure](docs/PROJECT_STRUCTURE.md) - Directory layout
+- [Architecture V2](docs/dev/design/architecture/ARCHITECTURE_V2.md) - Complete modular architecture
+- [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices
+- [Design Principles](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) - Directory layout
 
 ### Features
-- [Metadata System](docs/METADATA_SYSTEM.md) - Servarr-first metadata with fallback
-- [Audio Streaming](docs/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
-- [Media Enhancements](docs/MEDIA_ENHANCEMENTS.md) - Trailers, themes, intros, trickplay, Live TV
-- [Client Support](docs/CLIENT_SUPPORT.md) - Chromecast, DLNA, device capabilities
-- [Scrobbling](docs/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
+- [Metadata System](docs/dev/design/architecture/METADATA_SYSTEM.md) - Servarr-first metadata with fallback
+- [Audio Streaming](docs/dev/design/technical/AUDIO_STREAMING.md) - Progress tracking, bandwidth adaptation
+- [Media Enhancements](docs/dev/design/features/MEDIA_ENHANCEMENTS.md) - Trailers, themes, intros, trickplay, Live TV
+- [Client Support](docs/dev/design/features/CLIENT_SUPPORT.md) - Chromecast, DLNA, device capabilities
+- [Scrobbling](docs/dev/design/features/SCROBBLING.md) - Trakt, Last.fm, ListenBrainz sync
 
 ### Operations
-- [Setup Guide](docs/SETUP.md) - Production deployment
-- [Development Guide](docs/DEVELOPMENT.md) - Development environment
-- [Best Practices](docs/BEST_PRACTICES.md) - Resilience, observability patterns
+- [Setup Guide](docs/dev/design/operations/SETUP.md) - Production deployment
+- [Development Guide](docs/dev/design/operations/DEVELOPMENT.md) - Development environment
+- [Best Practices](docs/dev/design/operations/BEST_PRACTICES.md) - Resilience, observability patterns
 
 ## 🛠️ Development
 
@@ -145,5 +145,5 @@ GNU General Public License v2.0 - see [LICENSE](LICENSE).
 
 ## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/lusoris/jellyfin-go/issues)
+- **Issues**: [GitHub Issues](https://github.com/lusoris/revenge/issues)
 - **Security**: See [SECURITY.md](SECURITY.md)

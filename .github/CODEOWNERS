@@ -9,6 +9,13 @@
 /docs/ @lusoris
 *.md @lusoris
 
+# Protected design documentation (manual changes only)
+# Auto-fetcher MUST NOT modify these files
+/docs/dev/design/ @lusoris
+
+# Auto-fetched sources (bot can create PRs, requires review)
+/docs/dev/sources/ @lusoris
+
 # CI/CD and Infrastructure
 /.github/ @lusoris
 /Dockerfile @lusoris

@@ -9,9 +9,9 @@ If you need help with revenge, there are several ways to get support:
 Before asking for help, please check our documentation:
 
 - [README](README.md) - Project overview and quick start
-- [Architecture](docs/ARCHITECTURE.md) - System design and components
-- [Setup Guide](docs/SETUP.md) - Installation and configuration
-- [Development](docs/DEVELOPMENT.md) - Development setup
+- [Architecture](docs/dev/design/architecture/ARCHITECTURE_V2.md) - System design and components
+- [Setup Guide](docs/dev/design/operations/SETUP.md) - Installation and configuration
+- [Development](docs/dev/design/operations/DEVELOPMENT.md) - Development setup
 - [Contributing](CONTRIBUTING.md) - How to contribute
 
 ### 💬 GitHub Discussions
@@ -34,7 +34,7 @@ If you found a bug:
 
 Have an idea for a new feature?
 
-1. Check the [roadmap](docs/PHASE1_CHECKLIST.md) first
+1. Check the [roadmap](docs/dev/design/planning/MODULE_IMPLEMENTATION_TODO.md) first
 2. Search [existing requests](https://github.com/lusoris/revenge/issues?q=is%3Aissue+label%3Aenhancement)
 3. [Submit a feature request](https://github.com/lusoris/revenge/issues/new?template=feature_request.md)
 

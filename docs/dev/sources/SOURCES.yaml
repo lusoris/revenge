@@ -1,0 +1,762 @@
+# External Documentation Sources Registry
+# Auto-fetched by scripts/fetch-sources.py
+# Last Updated: 2026-01-28
+#
+# BLEEDING EDGE STABLE VERSIONS (verified via live web 2026-01-28):
+# ┌────────────────────┬────────────┬─────────────────────────────────┐
+# │ Package            │ Version    │ Notes                           │
+# ├────────────────────┼────────────┼─────────────────────────────────┤
+# │ Go                 │ 1.25.6     │ Latest stable (2026-01-15)      │
+# │ PostgreSQL         │ 18.1       │ Latest stable                   │
+# │ Dragonfly          │ v1.36.0    │ 3 weeks ago                     │
+# │ Typesense          │ 30.0       │ Uses /latest/ in URL            │
+# │ typesense-go       │ v3.2.0     │ NO v4 exists!                   │
+# │ pgx                │ v5.8.0     │ Dec 26, 2025                    │
+# │ koanf              │ v2.3.2     │ 4 days ago (min Go 1.23)        │
+# │ fx                 │ v1.24.0    │ May 14, 2025                    │
+# │ River              │ v0.30.2    │ 2 days ago                      │
+# │ rueidis            │ v1.0.71    │ 14x faster than go-redis        │
+# │ otter              │ v2.3.0     │ W-TinyLFU local cache           │
+# │ sturdyc            │ v1.1.5     │ API response caching            │
+# │ sqlc               │ v1.30.0    │ Sep 2, 2025                     │
+# │ ogen               │ v1.18.0    │ Dec 1, 2025                     │
+# │ golang-migrate     │ v4.19.1    │ Nov 29, 2025 (Go 1.25)          │
+# │ coder/websocket    │ v1.8.14    │ Gorilla replacement             │
+# │ resty              │ v3.0.0-b6  │ HTTP client with retry          │
+# │ fsnotify           │ v1.9.0     │ File watching                   │
+# └────────────────────┴────────────┴─────────────────────────────────┘
+
+version: "1.0"
+fetch_config:
+  delay_between_requests: 2  # seconds
+  timeout: 30  # seconds
+  retry_count: 3
+  user_agent: "Revenge-DocFetcher/1.0"
+
+sources:
+  # ============================================================================
+  # GO - Go Language & Standard Library
+  # ============================================================================
+  go:
+    # Standard Library
+    - id: go-context
+      name: "Go context"
+      url: "https://pkg.go.dev/context"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/context.md"
+
+    - id: go-slog
+      name: "Go log/slog"
+      url: "https://pkg.go.dev/log/slog"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/slog.md"
+
+    - id: go-nethttp
+      name: "Go net/http"
+      url: "https://pkg.go.dev/net/http"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/nethttp.md"
+
+    - id: go-testing
+      name: "Go testing"
+      url: "https://pkg.go.dev/testing"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/testing.md"
+
+    - id: go-sync
+      name: "Go sync"
+      url: "https://pkg.go.dev/sync"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/sync.md"
+
+    - id: go-errors
+      name: "Go errors"
+      url: "https://pkg.go.dev/errors"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/errors.md"
+
+    - id: go-io
+      name: "Go io"
+      url: "https://pkg.go.dev/io"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/stdlib/io.md"
+
+    - id: go-release-notes
+      name: "Go Release Notes"
+      url: "https://go.dev/doc/devel/release"
+      type: html
+      output: "go/release-notes.md"
+
+  # ============================================================================
+  # TOOLING - Go Libraries & Tools
+  # ============================================================================
+  tooling:
+    # Dependency Injection
+    - id: fx
+      name: "Uber fx"
+      url: "https://pkg.go.dev/go.uber.org/fx"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/fx.md"
+
+    - id: fx-docs
+      name: "fx Documentation"
+      url: "https://uber-go.github.io/fx/"
+      type: html
+      output: "tooling/fx-guide.md"
+
+    # Configuration
+    - id: koanf
+      name: "koanf"
+      url: "https://pkg.go.dev/github.com/knadh/koanf/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/koanf.md"
+
+    # API Generation
+    - id: ogen
+      name: "ogen OpenAPI Generator"
+      url: "https://pkg.go.dev/github.com/ogen-go/ogen"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/ogen.md"
+
+    - id: ogen-docs
+      name: "ogen Documentation"
+      url: "https://ogen.dev/docs/intro"
+      type: html
+      output: "tooling/ogen-guide.md"
+
+    # Job Queue
+    - id: river
+      name: "River Job Queue"
+      url: "https://pkg.go.dev/github.com/riverqueue/river"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/river.md"
+
+    - id: river-docs
+      name: "River Documentation"
+      url: "https://riverqueue.com/docs"
+      type: html
+      output: "tooling/river-guide.md"
+
+    # Redis Client (DEPRECATED - use rueidis)
+    - id: go-redis
+      name: "go-redis (DEPRECATED)"
+      url: "https://pkg.go.dev/github.com/redis/go-redis/v9"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/go-redis.md"
+      note: "DEPRECATED - Use rueidis instead (14x faster)"
+
+    # Redis Client - rueidis (RECOMMENDED)
+    - id: rueidis
+      name: "rueidis"
+      url: "https://pkg.go.dev/github.com/redis/rueidis"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/rueidis.md"
+
+    - id: rueidis-docs
+      name: "rueidis GitHub README"
+      url: "https://github.com/redis/rueidis"
+      type: github_readme
+      output: "tooling/rueidis-guide.md"
+
+    # Local Cache - otter
+    - id: otter
+      name: "otter Cache"
+      url: "https://pkg.go.dev/github.com/maypok86/otter"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/otter.md"
+
+    - id: otter-docs
+      name: "otter GitHub README"
+      url: "https://github.com/maypok86/otter"
+      type: github_readme
+      output: "tooling/otter-guide.md"
+
+    # API Response Cache - sturdyc
+    - id: sturdyc
+      name: "sturdyc"
+      url: "https://pkg.go.dev/github.com/viccon/sturdyc"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/sturdyc.md"
+
+    - id: sturdyc-docs
+      name: "sturdyc GitHub README"
+      url: "https://github.com/viccon/sturdyc"
+      type: github_readme
+      output: "tooling/sturdyc-guide.md"
+
+    # WebSocket - coder/websocket
+    - id: coder-websocket
+      name: "coder/websocket"
+      url: "https://pkg.go.dev/github.com/coder/websocket"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/websocket.md"
+
+    - id: coder-websocket-docs
+      name: "coder/websocket GitHub README"
+      url: "https://github.com/coder/websocket"
+      type: github_readme
+      output: "tooling/websocket-guide.md"
+
+    # HTTP Client - resty
+    - id: resty
+      name: "resty HTTP Client"
+      url: "https://pkg.go.dev/resty.dev/v3"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/resty.md"
+
+    - id: resty-docs
+      name: "resty GitHub README"
+      url: "https://github.com/go-resty/resty"
+      type: github_readme
+      output: "tooling/resty-guide.md"
+
+    # File Watching - fsnotify
+    - id: fsnotify
+      name: "fsnotify"
+      url: "https://pkg.go.dev/github.com/fsnotify/fsnotify"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/fsnotify.md"
+
+    - id: fsnotify-docs
+      name: "fsnotify GitHub README"
+      url: "https://github.com/fsnotify/fsnotify"
+      type: github_readme
+      output: "tooling/fsnotify-guide.md"
+
+    # UUID
+    - id: google-uuid
+      name: "google/uuid"
+      url: "https://pkg.go.dev/github.com/google/uuid"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/uuid.md"
+
+    # Validation
+    - id: validator
+      name: "go-playground/validator"
+      url: "https://pkg.go.dev/github.com/go-playground/validator/v10"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/validator.md"
+
+  # ============================================================================
+  # DATABASE - Database Documentation
+  # ============================================================================
+  database:
+    # sqlc
+    - id: sqlc
+      name: "sqlc"
+      url: "https://docs.sqlc.dev/en/stable/"
+      type: html
+      output: "database/sqlc.md"
+
+    - id: sqlc-config
+      name: "sqlc Configuration"
+      url: "https://docs.sqlc.dev/en/stable/reference/config.html"
+      type: html
+      output: "database/sqlc-config.md"
+
+    # golang-migrate
+    - id: golang-migrate
+      name: "golang-migrate"
+      url: "https://github.com/golang-migrate/migrate"
+      type: github_readme
+      output: "database/migrations.md"
+
+    - id: golang-migrate-postgres
+      name: "golang-migrate PostgreSQL"
+      url: "https://pkg.go.dev/github.com/golang-migrate/migrate/v4/database/postgres"
+      type: html
+      selectors: [".Documentation"]
+      output: "database/migrations-postgres.md"
+
+    # pgx
+    - id: pgx
+      name: "pgx PostgreSQL Driver"
+      url: "https://pkg.go.dev/github.com/jackc/pgx/v5"
+      type: html
+      selectors: [".Documentation"]
+      output: "database/pgx.md"
+
+    - id: pgxpool
+      name: "pgxpool Connection Pool"
+      url: "https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool"
+      type: html
+      selectors: [".Documentation"]
+      output: "database/pgxpool.md"
+
+    # PostgreSQL
+    - id: postgresql-json
+      name: "PostgreSQL JSON Functions"
+      url: "https://www.postgresql.org/docs/current/functions-json.html"
+      type: html
+      output: "database/postgresql-json.md"
+
+    - id: postgresql-fulltext
+      name: "PostgreSQL Full Text Search"
+      url: "https://www.postgresql.org/docs/current/textsearch.html"
+      type: html
+      output: "database/postgresql-fulltext.md"
+
+    - id: postgresql-arrays
+      name: "PostgreSQL Arrays"
+      url: "https://www.postgresql.org/docs/current/arrays.html"
+      type: html
+      output: "database/postgresql-arrays.md"
+
+  # ============================================================================
+  # APIS - External API Documentation
+  # ============================================================================
+  apis:
+    # Metadata - Video
+    - id: tmdb
+      name: "TMDb API"
+      url: "https://developer.themoviedb.org/reference/intro/getting-started"
+      type: html
+      output: "apis/tmdb.md"
+
+    - id: thetvdb
+      name: "TheTVDB API"
+      url: "https://thetvdb.github.io/v4-api/"
+      type: manual
+      output: "apis/thetvdb.md"
+      note: "MANUAL - JavaScript-heavy docs, requires manual extraction. API docs at URL."
+
+    - id: omdb
+      name: "OMDb API"
+      url: "https://www.omdbapi.com/"
+      type: html
+      output: "apis/omdb.md"
+
+    # Metadata - Music
+    - id: musicbrainz
+      name: "MusicBrainz API"
+      url: "https://musicbrainz.org/doc/MusicBrainz_API"
+      type: html
+      output: "apis/musicbrainz.md"
+
+    - id: lastfm-api
+      name: "Last.fm API"
+      url: "https://www.last.fm/api/intro"
+      type: html
+      output: "apis/lastfm.md"
+
+    - id: discogs
+      name: "Discogs API"
+      url: "https://www.discogs.com/developers"
+      type: html
+      output: "apis/discogs.md"
+
+    - id: spotify
+      name: "Spotify Web API"
+      url: "https://developer.spotify.com/documentation/web-api"
+      type: html
+      output: "apis/spotify.md"
+
+    # Metadata - Books
+    - id: openlibrary
+      name: "Open Library API"
+      url: "https://openlibrary.org/developers/api"
+      type: html
+      output: "apis/openlibrary.md"
+
+    - id: google-books
+      name: "Google Books API"
+      url: "https://developers.google.com/books/docs/v1/using"
+      type: html
+      output: "apis/google-books.md"
+
+    # Metadata - Comics
+    - id: comicvine
+      name: "ComicVine API"
+      url: "https://comicvine.gamespot.com/api/documentation"
+      type: html
+      output: "apis/comicvine.md"
+
+    - id: marvel-api
+      name: "Marvel API"
+      url: "https://developer.marvel.com/docs"
+      type: html
+      output: "apis/marvel.md"
+
+    # Metadata - Anime
+    - id: anilist
+      name: "AniList GraphQL API"
+      url: "https://anilist.gitbook.io/anilist-apiv2-docs"
+      type: html
+      output: "apis/anilist.md"
+
+    - id: anilist-graphql
+      name: "AniList GraphQL Schema"
+      url: "https://graphql.anilist.co"
+      type: graphql_schema
+      output: "apis/anilist-schema.graphql"
+
+    - id: myanimelist
+      name: "MyAnimeList API"
+      url: "https://myanimelist.net/apiconfig/references/api/v2"
+      type: html
+      output: "apis/myanimelist.md"
+
+    - id: kitsu
+      name: "Kitsu API"
+      url: "https://github.com/hummingbird-me/api-docs"
+      type: github_readme
+      output: "apis/kitsu.md"
+      note: "JSON:API spec - Apiary version requires JS"
+
+    # Metadata - Adult
+    - id: stashdb
+      name: "StashDB GraphQL API"
+      url: "https://stashdb.org/graphql"
+      type: graphql_schema
+      output: "apis/stashdb-schema.graphql"
+
+    - id: theporndb
+      name: "ThePornDB API"
+      url: "https://api.theporndb.net/docs"
+      type: manual
+      output: "apis/theporndb.md"
+      note: "MANUAL - Swagger UI requires interaction. JSON spec not publicly available."
+
+    # Scrobbling
+    - id: trakt
+      name: "Trakt API"
+      url: "https://trakt.tv/b/api-docs"
+      type: html
+      output: "apis/trakt.md"
+      note: "Main API docs - Apiary version requires JS"
+
+    - id: listenbrainz
+      name: "ListenBrainz API"
+      url: "https://listenbrainz.readthedocs.io/en/latest/users/api/index.html"
+      type: html
+      output: "apis/listenbrainz.md"
+
+    - id: simkl
+      name: "Simkl API"
+      url: "https://simkl.com/apps/"
+      type: html
+      output: "apis/simkl.md"
+      note: "Developer apps page - Apiary version requires JS"
+
+    # Servarr (OpenAPI specs from GitHub)
+    - id: radarr
+      name: "Radarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json"
+      type: json
+      output: "apis/radarr-openapi.json"
+      note: "Raw OpenAPI JSON - human docs at https://radarr.video/docs/api/"
+
+    - id: sonarr
+      name: "Sonarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json"
+      type: json
+      output: "apis/sonarr-openapi.json"
+      note: "Raw OpenAPI JSON - human docs at https://sonarr.tv/docs/api/"
+
+    - id: lidarr
+      name: "Lidarr OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/Lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json"
+      type: json
+      output: "apis/lidarr-openapi.json"
+      note: "Raw OpenAPI JSON - human docs at https://lidarr.audio/docs/api/"
+
+  # ============================================================================
+  # PROTOCOLS - Streaming & Media Protocols
+  # ============================================================================
+  protocols:
+    - id: hls
+      name: "HLS Specification"
+      url: "https://datatracker.ietf.org/doc/html/rfc8216"
+      type: html
+      output: "protocols/hls-rfc8216.md"
+
+    - id: dash
+      name: "DASH Overview"
+      url: "https://dashif.org/docs/DASH-IF-IOP-v4.3.pdf"
+      type: manual
+      output: "protocols/dash-iop.md"
+      note: "PDF - MANUAL ONLY. Download and extract manually. Fetcher skips this."
+
+    - id: http-range
+      name: "HTTP Range Requests"
+      url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests"
+      type: html
+      output: "protocols/http-range.md"
+
+    - id: webrtc
+      name: "WebRTC Overview"
+      url: "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API"
+      type: html
+      output: "protocols/webrtc.md"
+
+  # ============================================================================
+  # FRONTEND - Frontend Technologies
+  # ============================================================================
+  frontend:
+    # Svelte
+    - id: svelte5
+      name: "Svelte 5 Documentation"
+      url: "https://svelte.dev/docs/svelte/overview"
+      type: html
+      output: "frontend/svelte5.md"
+
+    - id: svelte-runes
+      name: "Svelte 5 Runes"
+      url: "https://svelte.dev/docs/svelte/$state"
+      type: html
+      output: "frontend/svelte-runes.md"
+
+    - id: sveltekit
+      name: "SvelteKit Documentation"
+      url: "https://svelte.dev/docs/kit/introduction"
+      type: html
+      output: "frontend/sveltekit.md"
+
+    # UI Components
+    - id: shadcn-svelte
+      name: "shadcn-svelte"
+      url: "https://www.shadcn-svelte.com/docs"
+      type: html
+      output: "frontend/shadcn-svelte.md"
+
+    - id: bits-ui
+      name: "Bits UI"
+      url: "https://www.bits-ui.com/docs/introduction"
+      type: html
+      output: "frontend/bits-ui.md"
+
+    # State Management
+    - id: tanstack-query
+      name: "TanStack Query"
+      url: "https://tanstack.com/query/latest/docs/framework/svelte/overview"
+      type: html
+      output: "frontend/tanstack-query.md"
+
+    # Video Players
+    - id: vidstack
+      name: "Vidstack Player"
+      url: "https://www.vidstack.io/docs/player/getting-started/installation"
+      type: html
+      output: "frontend/vidstack.md"
+
+  # ============================================================================
+  # MEDIA - Media Processing
+  # ============================================================================
+  media:
+    - id: ffmpeg
+      name: "FFmpeg Documentation"
+      url: "https://ffmpeg.org/ffmpeg.html"
+      type: html
+      output: "media/ffmpeg.md"
+
+    - id: ffmpeg-codecs
+      name: "FFmpeg Codecs"
+      url: "https://ffmpeg.org/ffmpeg-codecs.html"
+      type: html
+      output: "media/ffmpeg-codecs.md"
+
+    - id: ffmpeg-formats
+      name: "FFmpeg Formats"
+      url: "https://ffmpeg.org/ffmpeg-formats.html"
+      type: html
+      output: "media/ffmpeg-formats.md"
+
+    - id: mediainfo
+      name: "MediaInfo"
+      url: "https://mediaarea.net/en/MediaInfo"
+      type: html
+      output: "media/mediainfo.md"
+
+    # Go Media Libraries
+    - id: go-astiav
+      name: "go-astiav (FFmpeg bindings)"
+      url: "https://pkg.go.dev/github.com/asticode/go-astiav"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-astiav.md"
+
+    - id: go-astiav-docs
+      name: "go-astiav GitHub README"
+      url: "https://github.com/asticode/go-astiav"
+      type: github_readme
+      output: "media/go-astiav-guide.md"
+
+    - id: gortsplib
+      name: "gortsplib (RTSP)"
+      url: "https://pkg.go.dev/github.com/bluenviron/gortsplib/v4"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/gortsplib.md"
+
+    - id: gohlslib
+      name: "gohlslib (HLS)"
+      url: "https://pkg.go.dev/github.com/bluenviron/gohlslib/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/gohlslib.md"
+
+    - id: mp4ff
+      name: "mp4ff (MP4 parsing)"
+      url: "https://pkg.go.dev/github.com/Eyevinn/mp4ff"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/mp4ff.md"
+
+    - id: bimg
+      name: "bimg (libvips)"
+      url: "https://pkg.go.dev/github.com/h2non/bimg"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/bimg.md"
+
+    - id: go-astisub
+      name: "go-astisub (subtitles)"
+      url: "https://pkg.go.dev/github.com/asticode/go-astisub"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-astisub.md"
+
+    - id: go-blurhash
+      name: "go-blurhash"
+      url: "https://pkg.go.dev/github.com/bbrks/go-blurhash"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-blurhash.md"
+
+    # Audio Metadata
+    - id: dhowden-tag
+      name: "dhowden/tag (audio metadata)"
+      url: "https://pkg.go.dev/github.com/dhowden/tag"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/dhowden-tag.md"
+
+    - id: bogem-id3v2
+      name: "bogem/id3v2"
+      url: "https://pkg.go.dev/github.com/bogem/id3v2/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/bogem-id3v2.md"
+
+  # ============================================================================
+  # SECURITY - Security Standards
+  # ============================================================================
+  security:
+    - id: oidc
+      name: "OpenID Connect Core"
+      url: "https://openid.net/specs/openid-connect-core-1_0.html"
+      type: html
+      output: "security/oidc-core.md"
+
+    - id: oauth2
+      name: "OAuth 2.0 RFC"
+      url: "https://datatracker.ietf.org/doc/html/rfc6749"
+      type: html
+      output: "security/oauth2-rfc6749.md"
+
+    - id: pkce
+      name: "OAuth 2.0 PKCE"
+      url: "https://datatracker.ietf.org/doc/html/rfc7636"
+      type: html
+      output: "security/pkce-rfc7636.md"
+
+    - id: jwt
+      name: "JWT RFC"
+      url: "https://datatracker.ietf.org/doc/html/rfc7519"
+      type: html
+      output: "security/jwt-rfc7519.md"
+
+  # ============================================================================
+  # TESTING - Testing Patterns
+  # ============================================================================
+  testing:
+    - id: testify
+      name: "testify"
+      url: "https://pkg.go.dev/github.com/stretchr/testify"
+      type: html
+      selectors: [".Documentation"]
+      output: "testing/testify.md"
+
+    - id: testcontainers
+      name: "testcontainers-go"
+      url: "https://golang.testcontainers.org/"
+      type: html
+      output: "testing/testcontainers.md"
+
+    - id: go-test-patterns
+      name: "Go Testing Patterns"
+      url: "https://go.dev/doc/tutorial/add-a-test"
+      type: html
+      output: "testing/go-patterns.md"
+
+  # ============================================================================
+  # OBSERVABILITY - Monitoring & Logging
+  # ============================================================================
+  observability:
+    - id: prometheus
+      name: "Prometheus Go Client"
+      url: "https://pkg.go.dev/github.com/prometheus/client_golang/prometheus"
+      type: html
+      selectors: [".Documentation"]
+      output: "observability/prometheus.md"
+
+    - id: otel-go
+      name: "OpenTelemetry Go"
+      url: "https://opentelemetry.io/docs/languages/go/"
+      type: html
+      output: "observability/opentelemetry.md"
+
+    - id: prometheus-metrics
+      name: "Prometheus Metric Types"
+      url: "https://prometheus.io/docs/concepts/metric_types/"
+      type: html
+      output: "observability/prometheus-metrics.md"
+
+  # ============================================================================
+  # INFRASTRUCTURE - Infrastructure Components
+  # ============================================================================
+  infrastructure:
+    - id: dragonfly
+      name: "Dragonfly Documentation"
+      url: "https://www.dragonflydb.io/docs"
+      type: html
+      output: "infrastructure/dragonfly.md"
+
+    - id: typesense
+      name: "Typesense API"
+      url: "https://typesense.org/docs/latest/api/"
+      type: html
+      output: "infrastructure/typesense.md"
+      note: "Uses /latest/ for auto-versioning"
+
+    - id: typesense-go
+      name: "Typesense Go Client"
+      url: "https://github.com/typesense/typesense-go"
+      type: github_readme
+      output: "infrastructure/typesense-go.md"
+      note: "Latest stable is v3.2.0 (March 2025) - there is no v4!"
+
+# ============================================================================
+# FETCH STATUS TRACKING
+# ============================================================================
+# Status is tracked in INDEX.yaml after each fetch run

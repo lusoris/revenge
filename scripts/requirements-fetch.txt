@@ -1,0 +1,6 @@
+# Fetch Sources - Python Dependencies
+# Install with: pip install -r scripts/requirements-fetch.txt
+
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+pyyaml>=6.0.1
