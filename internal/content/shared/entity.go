@@ -1,4 +1,4 @@
-// Package shared provides common types and interfaces for all content modules.
+// Package shared provides base types and interfaces for all content modules.
 package shared
 
 import (
@@ -7,72 +7,109 @@ import (
 	"github.com/google/uuid"
 )
 
-// BaseEntity contains fields common to all entities.
+// BaseEntity contains fields common to all database entities.
 type BaseEntity struct {
 	ID        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-// ContentEntity contains fields common to all content items.
+// ContentEntity contains fields common to all content items (movies, episodes, tracks, etc.).
 type ContentEntity struct {
 	BaseEntity
-	LibraryID uuid.UUID `json:"library_id"`
-	Path      string    `json:"path"`
-	Title     string    `json:"title"`
-	SortTitle string    `json:"sort_title"`
+	LibraryID uuid.UUID `json:"libraryId"`
+	Path      string    `json:"path"`      // Filesystem path
+	Title     string    `json:"title"`     // Display title
+	SortTitle string    `json:"sortTitle"` // For alphabetical sorting
 }
 
-// UserDataEntity contains fields for user-specific data.
-type UserDataEntity struct {
-	UserID    uuid.UUID `json:"user_id"`
-	ItemID    uuid.UUID `json:"item_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+// MediaInfo contains technical information about a media file.
+type MediaInfo struct {
+	Container    string `json:"container,omitempty"`    // mkv, mp4, avi
+	Size         int64  `json:"size,omitempty"`         // File size in bytes
+	Bitrate      int    `json:"bitrate,omitempty"`      // Total bitrate in kbps
+	DurationTicks int64 `json:"durationTicks,omitempty"` // Duration in ticks (100ns units)
 }
 
-// Rating represents a user's rating for an item.
-type Rating struct {
-	UserDataEntity
-	Score float64 `json:"score"` // 1.0 - 10.0
+// DurationSeconds returns the duration as seconds.
+func (m *MediaInfo) DurationSeconds() float64 {
+	if m.DurationTicks == 0 {
+		return 0
+	}
+	return float64(m.DurationTicks) / 10_000_000
 }
 
-// Favorite represents a user's favorite item.
-type Favorite struct {
-	UserDataEntity
-	AddedAt time.Time `json:"added_at"`
+// DurationDuration returns the duration as time.Duration.
+func (m *MediaInfo) DurationDuration() time.Duration {
+	return time.Duration(m.DurationTicks * 100)
 }
 
-// WatchHistory represents watch/play history for video content.
-type WatchHistory struct {
-	UserDataEntity
-	PositionTicks int64     `json:"position_ticks"` // Current position in ticks (100ns units)
-	Completed     bool      `json:"completed"`
-	WatchCount    int       `json:"watch_count"`
-	LastWatched   time.Time `json:"last_watched"`
+// VideoStream represents a video stream in a media file.
+type VideoStream struct {
+	Index         int     `json:"index"`
+	Codec         string  `json:"codec"`         // h264, hevc, av1, vp9
+	Profile       string  `json:"profile"`       // main, high, etc.
+	Level         string  `json:"level"`         // 4.1, 5.1, etc.
+	Width         int     `json:"width"`
+	Height        int     `json:"height"`
+	AspectRatio   string  `json:"aspectRatio"`   // 16:9, 2.35:1
+	Framerate     float64 `json:"framerate"`
+	Bitrate       int     `json:"bitrate"`       // kbps
+	BitDepth      int     `json:"bitDepth"`      // 8, 10, 12
+	ColorSpace    string  `json:"colorSpace"`    // bt709, bt2020
+	HDRFormat     string  `json:"hdrFormat"`     // hdr10, dolby_vision, hlg
+	IsInterlaced  bool    `json:"isInterlaced"`
+	IsDefault     bool    `json:"isDefault"`
 }
 
-// PlayHistory represents play history for audio content.
-type PlayHistory struct {
-	UserDataEntity
-	PlayCount  int       `json:"play_count"`
-	LastPlayed time.Time `json:"last_played"`
+// AudioStream represents an audio stream in a media file.
+type AudioStream struct {
+	Index        int    `json:"index"`
+	Codec        string `json:"codec"`        // aac, ac3, eac3, dts, flac, opus
+	Profile      string `json:"profile"`      // lc, he-aac, etc.
+	Channels     int    `json:"channels"`     // 2, 6, 8
+	ChannelLayout string `json:"channelLayout"` // stereo, 5.1, 7.1
+	SampleRate   int    `json:"sampleRate"`   // 44100, 48000, etc.
+	Bitrate      int    `json:"bitrate"`      // kbps
+	BitDepth     int    `json:"bitDepth"`     // 16, 24
+	Language     string `json:"language"`     // ISO 639-1
+	Title        string `json:"title"`        // Track title
+	IsDefault    bool   `json:"isDefault"`
+	IsForced     bool   `json:"isForced"`
 }
 
-// Image represents an image associated with content.
-type Image struct {
-	ID         uuid.UUID `json:"id"`
-	ItemID     uuid.UUID `json:"item_id"`
-	Type       ImageType `json:"type"`
-	Language   *string   `json:"language,omitempty"`
-	URL        string    `json:"url"`
-	LocalPath  *string   `json:"local_path,omitempty"`
-	Width      int       `json:"width"`
-	Height     int       `json:"height"`
-	Blurhash   *string   `json:"blurhash,omitempty"`
-	IsPrimary  bool      `json:"is_primary"`
-	Source     string    `json:"source"` // "arr", "tmdb", "fanart", "manual"
-	CreatedAt  time.Time `json:"created_at"`
+// SubtitleStream represents a subtitle stream in a media file.
+type SubtitleStream struct {
+	Index     int    `json:"index"`
+	Codec     string `json:"codec"`    // srt, ass, pgs, vobsub
+	Language  string `json:"language"` // ISO 639-1
+	Title     string `json:"title"`
+	IsDefault bool   `json:"isDefault"`
+	IsForced  bool   `json:"isForced"`
+	IsExternal bool  `json:"isExternal"` // External subtitle file
+	Path      string `json:"path"`       // Path if external
+}
+
+// ChapterInfo represents a chapter in a media file.
+type ChapterInfo struct {
+	Index     int    `json:"index"`
+	Title     string `json:"title"`
+	StartTicks int64 `json:"startTicks"` // Start position in ticks
+	EndTicks   int64 `json:"endTicks"`   // End position in ticks
+}
+
+// ImageInfo represents an image associated with content.
+type ImageInfo struct {
+	ID        uuid.UUID `json:"id"`
+	Type      ImageType `json:"type"`
+	URL       string    `json:"url"`       // Remote URL or local path
+	LocalPath string    `json:"localPath"` // Cached local path
+	Width     int       `json:"width"`
+	Height    int       `json:"height"`
+	Blurhash  string    `json:"blurhash"` // Loading placeholder
+	Language  string    `json:"language"` // For text-containing images
+	IsPrimary bool      `json:"isPrimary"`
+	Source    string    `json:"source"` // tmdb, tvdb, manual
 }
 
 // ImageType represents the type of image.
@@ -81,137 +118,68 @@ type ImageType string
 const (
 	ImageTypePoster    ImageType = "poster"
 	ImageTypeBackdrop  ImageType = "backdrop"
+	ImageTypeBanner    ImageType = "banner"
 	ImageTypeLogo      ImageType = "logo"
 	ImageTypeThumb     ImageType = "thumb"
-	ImageTypeBanner    ImageType = "banner"
 	ImageTypeDisc      ImageType = "disc"
-	ImageTypeClearart  ImageType = "clearart"
-	ImageTypeProfile   ImageType = "profile"   // For people/performers
-	ImageTypeCover     ImageType = "cover"     // For albums
-	ImageTypeArtist    ImageType = "artist"    // For artists
-	ImageTypeScreenshot ImageType = "screenshot" // For scenes
+	ImageTypeArt       ImageType = "art"
+	ImageTypeProfile   ImageType = "profile"   // For people
+	ImageTypeClearArt  ImageType = "clearart"
+	ImageTypeClearLogo ImageType = "clearlogo"
 )
 
-// Stream represents a media stream (video, audio, subtitle).
-type Stream struct {
-	ID         uuid.UUID  `json:"id"`
-	ItemID     uuid.UUID  `json:"item_id"`
-	Type       StreamType `json:"type"`
-	Index      int        `json:"index"`
-	Codec      string     `json:"codec"`
-	Language   *string    `json:"language,omitempty"`
-	Title      *string    `json:"title,omitempty"`
-	IsDefault  bool       `json:"is_default"`
-	IsForced   bool       `json:"is_forced"`
-	IsExternal bool       `json:"is_external"`
-
-	// Video-specific
-	Width       *int     `json:"width,omitempty"`
-	Height      *int     `json:"height,omitempty"`
-	Bitrate     *int     `json:"bitrate,omitempty"`
-	Framerate   *float64 `json:"framerate,omitempty"`
-	AspectRatio *string  `json:"aspect_ratio,omitempty"`
-
-	// Audio-specific
-	Channels      *int `json:"channels,omitempty"`
-	SampleRate    *int `json:"sample_rate,omitempty"`
-	BitDepth      *int `json:"bit_depth,omitempty"`
-
-	CreatedAt time.Time `json:"created_at"`
+// ExternalIDs holds external provider IDs.
+type ExternalIDs struct {
+	TmdbID       *int       `json:"tmdbId,omitempty"`
+	ImdbID       *string    `json:"imdbId,omitempty"`
+	TvdbID       *int       `json:"tvdbId,omitempty"`
+	MusicBrainzID *uuid.UUID `json:"musicbrainzId,omitempty"`
 }
 
-// StreamType represents the type of media stream.
-type StreamType string
+// CreditRole represents the role of a person in a production.
+type CreditRole string
 
 const (
-	StreamTypeVideo    StreamType = "video"
-	StreamTypeAudio    StreamType = "audio"
-	StreamTypeSubtitle StreamType = "subtitle"
+	CreditRoleActor       CreditRole = "actor"
+	CreditRoleDirector    CreditRole = "director"
+	CreditRoleWriter      CreditRole = "writer"
+	CreditRoleProducer    CreditRole = "producer"
+	CreditRoleComposer    CreditRole = "composer"
+	CreditRoleCinematographer CreditRole = "cinematographer"
+	CreditRoleEditor      CreditRole = "editor"
+	CreditRoleGuest       CreditRole = "guest" // TV show guest
 )
 
-// ExternalID represents an external identifier (e.g., TMDb, IMDb).
-type ExternalID struct {
-	Provider string `json:"provider"` // "tmdb", "imdb", "tvdb", "musicbrainz", etc.
-	ID       string `json:"id"`
+// Credit represents a person's involvement in content.
+type Credit struct {
+	PersonID  uuid.UUID  `json:"personId"`
+	Role      CreditRole `json:"role"`
+	Character string     `json:"character,omitempty"` // For actors
+	Order     int        `json:"order"`               // Billing order
 }
 
-// Genre represents a genre.
-type Genre struct {
-	ID   uuid.UUID `json:"id"`
-	Name string    `json:"name"`
-	Slug string    `json:"slug"`
+// UserItemData represents user-specific data for any content item.
+type UserItemData struct {
+	UserID      uuid.UUID  `json:"userId"`
+	ProfileID   uuid.UUID  `json:"profileId"`
+	ItemID      uuid.UUID  `json:"itemId"`
+
+	// Playback state
+	PlaybackPositionTicks int64      `json:"playbackPositionTicks"`
+	PlayCount             int        `json:"playCount"`
+	LastPlayedAt          *time.Time `json:"lastPlayedAt,omitempty"`
+	Played                bool       `json:"played"` // Marked as watched/listened
+
+	// User actions
+	IsFavorite bool       `json:"isFavorite"`
+	Rating     *int       `json:"rating,omitempty"` // 1-10
+	RatedAt    *time.Time `json:"ratedAt,omitempty"`
 }
 
-// Tag represents a user-defined tag.
-type Tag struct {
-	ID   uuid.UUID `json:"id"`
-	Name string    `json:"name"`
-}
-
-// Person represents a person (actor, director, artist, etc.).
-type Person struct {
-	ID         uuid.UUID  `json:"id"`
-	Name       string     `json:"name"`
-	SortName   string     `json:"sort_name"`
-	Birthdate  *time.Time `json:"birthdate,omitempty"`
-	Deathdate  *time.Time `json:"deathdate,omitempty"`
-	Birthplace *string    `json:"birthplace,omitempty"`
-	Bio        *string    `json:"bio,omitempty"`
-	ImagePath  *string    `json:"image_path,omitempty"`
-	TmdbID     *int       `json:"tmdb_id,omitempty"`
-	ImdbID     *string    `json:"imdb_id,omitempty"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-}
-
-// CastMember represents a person's role in content.
-type CastMember struct {
-	Person    Person  `json:"person"`
-	Character *string `json:"character,omitempty"`
-	Order     int     `json:"order"`
-}
-
-// CrewMember represents a person's crew role in content.
-type CrewMember struct {
-	Person     Person `json:"person"`
-	Department string `json:"department"`
-	Job        string `json:"job"`
-}
-
-// TicksToDuration converts ticks (100ns units) to time.Duration.
-func TicksToDuration(ticks int64) time.Duration {
-	return time.Duration(ticks * 100)
-}
-
-// DurationToTicks converts time.Duration to ticks (100ns units).
-func DurationToTicks(d time.Duration) int64 {
-	return int64(d / 100)
-}
-
-// GenerateSortTitle generates a sort title from a regular title.
-// Removes common prefixes like "The", "A", "An" for better sorting.
-func GenerateSortTitle(title string) string {
-	prefixes := []string{"the ", "a ", "an ", "der ", "die ", "das ", "ein ", "eine "}
-	lower := stringToLower(title)
-
-	for _, prefix := range prefixes {
-		if len(lower) > len(prefix) && lower[:len(prefix)] == prefix {
-			return title[len(prefix):]
-		}
+// PlayedPercentage calculates the percentage played based on duration.
+func (u *UserItemData) PlayedPercentage(durationTicks int64) float64 {
+	if durationTicks == 0 {
+		return 0
 	}
-
-	return title
-}
-
-// stringToLower is a simple lowercase function without importing strings.
-func stringToLower(s string) string {
-	b := make([]byte, len(s))
-	for i := 0; i < len(s); i++ {
-		c := s[i]
-		if c >= 'A' && c <= 'Z' {
-			c += 'a' - 'A'
-		}
-		b[i] = c
-	}
-	return string(b)
+	return float64(u.PlaybackPositionTicks) / float64(durationTicks) * 100
 }
