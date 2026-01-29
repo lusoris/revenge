@@ -12,7 +12,7 @@ import (
 type ModuleParams struct {
 	fx.In
 
-	Config Config        `optional:"true"`
+	Config Config `optional:"true"`
 	Logger *slog.Logger
 }
 

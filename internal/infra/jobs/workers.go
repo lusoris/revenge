@@ -411,13 +411,13 @@ func (w *GenerateTrickplayWorker) Work(ctx context.Context, job *river.Job[Gener
 
 // WorkerDeps contains optional dependencies for workers.
 type WorkerDeps struct {
-	Scanner     LibraryScanner
-	Fetcher     MetadataFetcher
-	Downloader  ImageDownloader
-	Indexer     SearchIndexer
-	Cleaner     CleanupService
-	Trickplay   TrickplayGenerator
-	Logger      *slog.Logger
+	Scanner    LibraryScanner
+	Fetcher    MetadataFetcher
+	Downloader ImageDownloader
+	Indexer    SearchIndexer
+	Cleaner    CleanupService
+	Trickplay  TrickplayGenerator
+	Logger     *slog.Logger
 }
 
 // RegisterWorkers registers all workers with the River workers registry.

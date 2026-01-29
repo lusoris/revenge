@@ -117,23 +117,6 @@ func libraryToAPI(l *db.Library) gen.Library {
 	return result
 }
 
-// makeError creates a gen.Error.
-func makeError(code, message string) gen.Error {
-	return gen.Error{
-		Code:    code,
-		Message: message,
-	}
-}
-
-// makeValidationError creates a gen.ValidationError.
-func makeValidationError(message string, errors []gen.ValidationErrorErrorsItem) gen.ValidationError {
-	return gen.ValidationError{
-		Code:    "validation_error",
-		Message: message,
-		Errors:  errors,
-	}
-}
-
 // movieToAPI converts a movie.Movie to a gen.Movie.
 func movieToAPI(m *movie.Movie, userData *gen.MovieUserData) gen.Movie {
 	result := gen.Movie{

@@ -5,7 +5,6 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
 
@@ -163,9 +162,4 @@ func ptrInt32(i int) *int32 {
 // ptrBool returns a pointer to a bool.
 func ptrBool(b bool) *bool {
 	return &b
-}
-
-// optUUID converts a pgtype.UUID to a gen.OptUUID.
-func optUUID(u uuid.UUID) gen.OptUUID {
-	return gen.NewOptUUID(u)
 }

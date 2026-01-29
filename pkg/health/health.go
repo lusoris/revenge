@@ -44,11 +44,11 @@ type ServiceStatus struct {
 	Error       string        `json:"error,omitempty"`
 }
 
-// HealthStatus represents overall system health.
-type HealthStatus struct {
-	Status   Status                   `json:"status"`
-	Services map[string]ServiceStatus `json:"services"`
-	CheckedAt time.Time               `json:"checked_at"`
+// Report represents overall system health.
+type Report struct {
+	Status    Status                   `json:"status"`
+	Services  map[string]ServiceStatus `json:"services"`
+	CheckedAt time.Time                `json:"checked_at"`
 }
 
 // Checker manages health checks.
@@ -58,7 +58,7 @@ type Checker struct {
 	logger *slog.Logger
 
 	// Cached status
-	lastStatus    HealthStatus
+	lastStatus    Report
 	lastCheckTime time.Time
 	cacheDuration time.Duration
 }
@@ -95,7 +95,7 @@ func (c *Checker) RegisterFunc(name string, category Category, check func(ctx co
 }
 
 // Check performs all health checks.
-func (c *Checker) Check(ctx context.Context) HealthStatus {
+func (c *Checker) Check(ctx context.Context) Report {
 	c.mu.RLock()
 	// Return cached if recent
 	if time.Since(c.lastCheckTime) < c.cacheDuration {
@@ -113,7 +113,7 @@ func (c *Checker) Check(ctx context.Context) HealthStatus {
 		return c.lastStatus
 	}
 
-	status := HealthStatus{
+	status := Report{
 		Status:    StatusHealthy,
 		Services:  make(map[string]ServiceStatus),
 		CheckedAt: time.Now(),
@@ -174,11 +174,11 @@ func (c *Checker) Check(ctx context.Context) HealthStatus {
 }
 
 // CheckCategory performs health checks for a specific category.
-func (c *Checker) CheckCategory(ctx context.Context, category Category) HealthStatus {
+func (c *Checker) CheckCategory(ctx context.Context, category Category) Report {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	status := HealthStatus{
+	status := Report{
 		Status:    StatusHealthy,
 		Services:  make(map[string]ServiceStatus),
 		CheckedAt: time.Now(),

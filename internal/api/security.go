@@ -43,7 +43,7 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName ge
 
 	if t.Token == "" {
 		s.logger.Debug("No token provided",
-			slog.String("operation", string(operationName)),
+			slog.String("operation", operationName),
 		)
 		return ctx, ErrUnauthorized
 	}
@@ -52,7 +52,7 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName ge
 	user, session, err := s.authService.ValidateToken(ctx, t.Token)
 	if err != nil {
 		s.logger.Debug("Token validation failed",
-			slog.String("operation", string(operationName)),
+			slog.String("operation", operationName),
 			slog.String("error", err.Error()),
 		)
 		return ctx, ErrUnauthorized
@@ -63,7 +63,7 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName ge
 	ctx = contextWithSession(ctx, session)
 
 	s.logger.Debug("Request authenticated",
-		slog.String("operation", string(operationName)),
+		slog.String("operation", operationName),
 		slog.String("user_id", user.ID.String()),
 		slog.String("session_id", session.ID.String()),
 	)

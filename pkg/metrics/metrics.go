@@ -296,11 +296,11 @@ func (m *HTTPMetrics) Stats() map[string]any {
 	defer m.mu.Unlock()
 
 	stats := map[string]any{
-		"requests_total":     m.Requests.Value(),
-		"requests_active":    m.RequestsActive.Value(),
-		"response_time_p50":  m.ResponseTime.P50().Milliseconds(),
-		"response_time_p95":  m.ResponseTime.P95().Milliseconds(),
-		"response_time_p99":  m.ResponseTime.P99().Milliseconds(),
+		"requests_total":    m.Requests.Value(),
+		"requests_active":   m.RequestsActive.Value(),
+		"response_time_p50": m.ResponseTime.P50().Milliseconds(),
+		"response_time_p95": m.ResponseTime.P95().Milliseconds(),
+		"response_time_p99": m.ResponseTime.P99().Milliseconds(),
 	}
 
 	for status, c := range m.StatusCodes {

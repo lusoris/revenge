@@ -20,9 +20,9 @@ type Deps struct {
 
 	Logger *slog.Logger
 	Pool   *pgxpool.Pool
-	Cache  *cache.Client   `optional:"true"`
-	Jobs   *jobs.Service   `optional:"true"`
-	Search *search.Client  `optional:"true"`
+	Cache  *cache.Client  `optional:"true"`
+	Jobs   *jobs.Service  `optional:"true"`
+	Search *search.Client `optional:"true"`
 }
 
 // NewChecker creates a health checker with registered infrastructure checks.

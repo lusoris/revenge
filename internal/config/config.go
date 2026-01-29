@@ -71,9 +71,9 @@ type CacheConfig struct {
 	LocalTTL      int `koanf:"local_ttl"` // seconds
 
 	// API cache settings (sturdyc)
-	APICapacity   int `koanf:"api_capacity"`
-	APINumShards  int `koanf:"api_num_shards"`
-	APITTL        int `koanf:"api_ttl"` // seconds
+	APICapacity  int `koanf:"api_capacity"`
+	APINumShards int `koanf:"api_num_shards"`
+	APITTL       int `koanf:"api_ttl"` // seconds
 }
 
 // SearchConfig holds Typesense connection settings.
@@ -111,7 +111,7 @@ type TMDbConfig struct {
 	APIKey     string `koanf:"api_key"`
 	BaseURL    string `koanf:"base_url"`
 	ImageURL   string `koanf:"image_url"`
-	Timeout    int    `koanf:"timeout"` // seconds
+	Timeout    int    `koanf:"timeout"`   // seconds
 	CacheTTL   int    `koanf:"cache_ttl"` // seconds
 	CacheSize  int    `koanf:"cache_size"`
 	RetryCount int    `koanf:"retry_count"`
@@ -133,7 +133,7 @@ type ModulesConfig struct {
 
 // LoggingConfig holds logging settings.
 type LoggingConfig struct {
-	Level  string `koanf:"level"` // debug, info, warn, error
+	Level  string `koanf:"level"`  // debug, info, warn, error
 	Format string `koanf:"format"` // json, text
 }
 
@@ -280,14 +280,14 @@ func applyEnvAliases(k *koanf.Koanf) {
 func setDefaults(k *koanf.Koanf) {
 	defaults := map[string]any{
 		// Server
-		"server.host":               "0.0.0.0",
-		"server.port":               8096,
-		"server.base_url":           "/",
-		"server.read_timeout":       30 * time.Second,
-		"server.write_timeout":      30 * time.Second,
-		"server.idle_timeout":       60 * time.Second,
+		"server.host":                "0.0.0.0",
+		"server.port":                8096,
+		"server.base_url":            "/",
+		"server.read_timeout":        30 * time.Second,
+		"server.write_timeout":       30 * time.Second,
+		"server.idle_timeout":        60 * time.Second,
 		"server.read_header_timeout": 5 * time.Second,
-		"server.max_header_bytes":   1 << 20,
+		"server.max_header_bytes":    1 << 20,
 
 		// Database
 		"database.host":      "localhost",
@@ -304,7 +304,7 @@ func setDefaults(k *koanf.Koanf) {
 		"cache.password":       "",
 		"cache.db":             0,
 		"cache.local_capacity": 10000,
-		"cache.local_ttl":      300,  // 5 minutes
+		"cache.local_ttl":      300, // 5 minutes
 		"cache.api_capacity":   5000,
 		"cache.api_num_shards": 10,
 		"cache.api_ttl":        3600, // 1 hour

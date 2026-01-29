@@ -103,16 +103,16 @@ func New() (*Config, error) {
 	defaults := Defaults()
 
 	// Set defaults programmatically
-	_ = k.Load(nil, nil) //nolint:errcheck // Initialize - nil provider always succeeds
+	_ = k.Load(nil, nil) // Initialize - nil provider always succeeds
 
 	// Load main config file (optional)
-	_ = k.Load(file.Provider("configs/config.yaml"), yaml.Parser()) //nolint:errcheck // config file is optional
+	_ = k.Load(file.Provider("configs/config.yaml"), yaml.Parser()) // config file is optional
 
 	// Load environment-specific config (optional)
 	envConfig := os.Getenv("REVENGE_ENV")
 	if envConfig != "" {
 		configPath := fmt.Sprintf("configs/config.%s.yaml", envConfig)
-		_ = k.Load(file.Provider(configPath), yaml.Parser()) //nolint:errcheck // env-specific config is optional
+		_ = k.Load(file.Provider(configPath), yaml.Parser()) // env-specific config is optional
 	}
 
 	// Load environment variables (highest priority)

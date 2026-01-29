@@ -68,9 +68,9 @@ type RiverParams struct {
 	Service  *Service
 	Client   *river.Client[pgx.Tx]
 	Logger   *slog.Logger
-	Provider *tmdb.Provider `optional:"true"` // Optional: for metadata enrichment
+	Provider *tmdb.Provider   `optional:"true"` // Optional: for metadata enrichment
 	Radarr   *radarr.Provider `optional:"true"` // Optional: for local metadata
-	Scanner  Scanner        `optional:"true"` // Optional: for library scanning
+	Scanner  Scanner          `optional:"true"` // Optional: for library scanning
 }
 
 // RegisterRiverWorkers registers movie workers with River if available.

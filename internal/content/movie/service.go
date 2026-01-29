@@ -253,7 +253,7 @@ func (s *Service) DeleteMovie(ctx context.Context, id uuid.UUID) error {
 
 // ApplyMetadata updates movie fields from external metadata.
 // This is called by the enrichment River job, not directly by the service.
-func (s *Service) ApplyMetadata(ctx context.Context, id uuid.UUID, updates MovieMetadataUpdate) error {
+func (s *Service) ApplyMetadata(ctx context.Context, id uuid.UUID, updates MetadataUpdate) error {
 	movie, err := s.repo.GetByID(ctx, id)
 	if err != nil {
 		return err
@@ -321,8 +321,8 @@ func (s *Service) ApplyMetadata(ctx context.Context, id uuid.UUID, updates Movie
 	return nil
 }
 
-// MovieMetadataUpdate contains fields that can be updated from metadata providers.
-type MovieMetadataUpdate struct {
+// MetadataUpdate contains fields that can be updated from metadata providers.
+type MetadataUpdate struct {
 	Title           string
 	OriginalTitle   string
 	Overview        string
@@ -560,7 +560,7 @@ func (s *ServiceWithRetry) GetMovieWithRetry(ctx context.Context, id uuid.UUID) 
 }
 
 // ApplyMetadataWithRetry applies metadata updates with automatic retry.
-func (s *ServiceWithRetry) ApplyMetadataWithRetry(ctx context.Context, id uuid.UUID, updates MovieMetadataUpdate) error {
+func (s *ServiceWithRetry) ApplyMetadataWithRetry(ctx context.Context, id uuid.UUID, updates MetadataUpdate) error {
 	return s.retry.DoWithContext(ctx, func(ctx context.Context) error {
 		return s.Service.ApplyMetadata(ctx, id, updates)
 	})

@@ -22,10 +22,10 @@ const (
 // This job fetches additional metadata from TMDb for a movie.
 type EnrichMetadataArgs struct {
 	MovieID uuid.UUID `json:"movie_id"`
-	TmdbID  int       `json:"tmdb_id,omitempty"`  // Optional: if known
-	ImdbID  string    `json:"imdb_id,omitempty"`  // Optional: for lookup
-	Title   string    `json:"title,omitempty"`    // For search fallback
-	Year    int       `json:"year,omitempty"`     // For search fallback
+	TmdbID  int       `json:"tmdb_id,omitempty"` // Optional: if known
+	ImdbID  string    `json:"imdb_id,omitempty"` // Optional: for lookup
+	Title   string    `json:"title,omitempty"`   // For search fallback
+	Year    int       `json:"year,omitempty"`    // For search fallback
 }
 
 // Kind returns the job kind.
@@ -94,7 +94,7 @@ func (w *EnrichMetadataWorker) Work(ctx context.Context, job *river.Job[EnrichMe
 	}
 
 	// Convert TMDb metadata to movie update
-	updates := MovieMetadataUpdate{
+	updates := MetadataUpdate{
 		Title:           metadata.Title,
 		OriginalTitle:   metadata.OriginalTitle,
 		Overview:        metadata.Overview,

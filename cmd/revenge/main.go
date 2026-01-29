@@ -16,11 +16,11 @@ import (
 
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/api"
+	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/search"
-	"github.com/lusoris/revenge/internal/content/movie"
 	"github.com/lusoris/revenge/internal/service/activity"
 	"github.com/lusoris/revenge/internal/service/apikeys"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -172,7 +172,7 @@ func RegisterRoutes(
 	// Health check endpoints using pkg/health (Go 1.22+ pattern matching)
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("OK")) //nolint:errcheck // best-effort write
+		_, _ = w.Write([]byte("OK"))
 	})
 
 	// Readiness check - comprehensive health check
@@ -181,22 +181,21 @@ func RegisterRoutes(
 
 		w.Header().Set("Content-Type", "application/json")
 
-		if status.Status == health.StatusHealthy {
+		switch status.Status {
+		case health.StatusHealthy, health.StatusDegraded:
 			w.WriteHeader(http.StatusOK)
-		} else if status.Status == health.StatusDegraded {
-			w.WriteHeader(http.StatusOK) // Still operational but degraded
-		} else {
+		default:
 			w.WriteHeader(http.StatusServiceUnavailable)
 		}
 
-		_ = json.NewEncoder(w).Encode(status) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(status)
 	})
 
 	// Detailed health status endpoint
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		status := checker.Check(r.Context())
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(status) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(status)
 	})
 
 	// Database stats endpoint
@@ -208,7 +207,7 @@ func RegisterRoutes(
 			"acquired_conns": stats.AcquiredConns(),
 		}
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(resp) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(resp)
 	})
 
 	// Version endpoint with structured response
@@ -220,7 +219,7 @@ func RegisterRoutes(
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(version) //nolint:errcheck // best-effort encode
+		_ = json.NewEncoder(w).Encode(version)
 	})
 
 	// TODO: Add API endpoints when handlers are implemented

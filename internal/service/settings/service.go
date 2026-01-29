@@ -27,14 +27,14 @@ const (
 
 // Common setting keys.
 const (
-	KeyServerName               = "server.name"
-	KeyServerVersion            = "server.version"
-	KeyServerTimezone           = "server.timezone"
-	KeySecurityRequireAuth      = "security.require_authentication"
+	KeyServerName                = "server.name"
+	KeyServerVersion             = "server.version"
+	KeyServerTimezone            = "server.timezone"
+	KeySecurityRequireAuth       = "security.require_authentication"
 	KeySecurityAllowRegistration = "security.allow_registration"
-	KeyMediaDefaultProfile      = "media.default_transcoding_profile"
-	KeyMediaHWAccel             = "media.enable_hardware_acceleration"
-	KeyAdultGloballyEnabled     = "adult.globally_enabled"
+	KeyMediaDefaultProfile       = "media.default_transcoding_profile"
+	KeyMediaHWAccel              = "media.enable_hardware_acceleration"
+	KeyAdultGloballyEnabled      = "adult.globally_enabled"
 )
 
 // Service provides server settings management operations.

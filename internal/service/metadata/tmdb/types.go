@@ -27,15 +27,15 @@ type Movie struct {
 	BackdropPath     string  `json:"backdrop_path"`
 
 	// Included via append_to_response
-	Genres           []Genre        `json:"genres"`
-	ProductionCompanies []Company   `json:"production_companies"`
-	ProductionCountries []Country   `json:"production_countries"`
-	SpokenLanguages  []Language     `json:"spoken_languages"`
-	BelongsToCollection *Collection `json:"belongs_to_collection"`
-	Credits          *Credits       `json:"credits,omitempty"`
-	Images           *Images        `json:"images,omitempty"`
-	Videos           *Videos        `json:"videos,omitempty"`
-	ExternalIDs      *ExternalIDs   `json:"external_ids,omitempty"`
+	Genres              []Genre      `json:"genres"`
+	ProductionCompanies []Company    `json:"production_companies"`
+	ProductionCountries []Country    `json:"production_countries"`
+	SpokenLanguages     []Language   `json:"spoken_languages"`
+	BelongsToCollection *Collection  `json:"belongs_to_collection"`
+	Credits             *Credits     `json:"credits,omitempty"`
+	Images              *Images      `json:"images,omitempty"`
+	Videos              *Videos      `json:"videos,omitempty"`
+	ExternalIDs         *ExternalIDs `json:"external_ids,omitempty"`
 }
 
 // ReleaseYear extracts year from release_date.

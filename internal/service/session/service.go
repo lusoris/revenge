@@ -53,8 +53,8 @@ func (s *Service) SetSessionDuration(d time.Duration) {
 }
 
 // SetMaxSessionsPerUser sets the maximum sessions per user (0 = unlimited).
-func (s *Service) SetMaxSessionsPerUser(max int) {
-	s.maxSessionsPerUser = max
+func (s *Service) SetMaxSessionsPerUser(maxSessions int) {
+	s.maxSessionsPerUser = maxSessions
 }
 
 // CreateParams contains parameters for creating a session.

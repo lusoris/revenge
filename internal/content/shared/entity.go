@@ -25,10 +25,10 @@ type ContentEntity struct {
 
 // MediaInfo contains technical information about a media file.
 type MediaInfo struct {
-	Container    string `json:"container,omitempty"`    // mkv, mp4, avi
-	Size         int64  `json:"size,omitempty"`         // File size in bytes
-	Bitrate      int    `json:"bitrate,omitempty"`      // Total bitrate in kbps
-	DurationTicks int64 `json:"durationTicks,omitempty"` // Duration in ticks (100ns units)
+	Container     string `json:"container,omitempty"`     // mkv, mp4, avi
+	Size          int64  `json:"size,omitempty"`          // File size in bytes
+	Bitrate       int    `json:"bitrate,omitempty"`       // Total bitrate in kbps
+	DurationTicks int64  `json:"durationTicks,omitempty"` // Duration in ticks (100ns units)
 }
 
 // DurationSeconds returns the duration as seconds.
@@ -46,56 +46,56 @@ func (m *MediaInfo) DurationDuration() time.Duration {
 
 // VideoStream represents a video stream in a media file.
 type VideoStream struct {
-	Index         int     `json:"index"`
-	Codec         string  `json:"codec"`         // h264, hevc, av1, vp9
-	Profile       string  `json:"profile"`       // main, high, etc.
-	Level         string  `json:"level"`         // 4.1, 5.1, etc.
-	Width         int     `json:"width"`
-	Height        int     `json:"height"`
-	AspectRatio   string  `json:"aspectRatio"`   // 16:9, 2.35:1
-	Framerate     float64 `json:"framerate"`
-	Bitrate       int     `json:"bitrate"`       // kbps
-	BitDepth      int     `json:"bitDepth"`      // 8, 10, 12
-	ColorSpace    string  `json:"colorSpace"`    // bt709, bt2020
-	HDRFormat     string  `json:"hdrFormat"`     // hdr10, dolby_vision, hlg
-	IsInterlaced  bool    `json:"isInterlaced"`
-	IsDefault     bool    `json:"isDefault"`
+	Index        int     `json:"index"`
+	Codec        string  `json:"codec"`   // h264, hevc, av1, vp9
+	Profile      string  `json:"profile"` // main, high, etc.
+	Level        string  `json:"level"`   // 4.1, 5.1, etc.
+	Width        int     `json:"width"`
+	Height       int     `json:"height"`
+	AspectRatio  string  `json:"aspectRatio"` // 16:9, 2.35:1
+	Framerate    float64 `json:"framerate"`
+	Bitrate      int     `json:"bitrate"`    // kbps
+	BitDepth     int     `json:"bitDepth"`   // 8, 10, 12
+	ColorSpace   string  `json:"colorSpace"` // bt709, bt2020
+	HDRFormat    string  `json:"hdrFormat"`  // hdr10, dolby_vision, hlg
+	IsInterlaced bool    `json:"isInterlaced"`
+	IsDefault    bool    `json:"isDefault"`
 }
 
 // AudioStream represents an audio stream in a media file.
 type AudioStream struct {
-	Index        int    `json:"index"`
-	Codec        string `json:"codec"`        // aac, ac3, eac3, dts, flac, opus
-	Profile      string `json:"profile"`      // lc, he-aac, etc.
-	Channels     int    `json:"channels"`     // 2, 6, 8
+	Index         int    `json:"index"`
+	Codec         string `json:"codec"`         // aac, ac3, eac3, dts, flac, opus
+	Profile       string `json:"profile"`       // lc, he-aac, etc.
+	Channels      int    `json:"channels"`      // 2, 6, 8
 	ChannelLayout string `json:"channelLayout"` // stereo, 5.1, 7.1
-	SampleRate   int    `json:"sampleRate"`   // 44100, 48000, etc.
-	Bitrate      int    `json:"bitrate"`      // kbps
-	BitDepth     int    `json:"bitDepth"`     // 16, 24
-	Language     string `json:"language"`     // ISO 639-1
-	Title        string `json:"title"`        // Track title
-	IsDefault    bool   `json:"isDefault"`
-	IsForced     bool   `json:"isForced"`
+	SampleRate    int    `json:"sampleRate"`    // 44100, 48000, etc.
+	Bitrate       int    `json:"bitrate"`       // kbps
+	BitDepth      int    `json:"bitDepth"`      // 16, 24
+	Language      string `json:"language"`      // ISO 639-1
+	Title         string `json:"title"`         // Track title
+	IsDefault     bool   `json:"isDefault"`
+	IsForced      bool   `json:"isForced"`
 }
 
 // SubtitleStream represents a subtitle stream in a media file.
 type SubtitleStream struct {
-	Index     int    `json:"index"`
-	Codec     string `json:"codec"`    // srt, ass, pgs, vobsub
-	Language  string `json:"language"` // ISO 639-1
-	Title     string `json:"title"`
-	IsDefault bool   `json:"isDefault"`
-	IsForced  bool   `json:"isForced"`
-	IsExternal bool  `json:"isExternal"` // External subtitle file
-	Path      string `json:"path"`       // Path if external
+	Index      int    `json:"index"`
+	Codec      string `json:"codec"`    // srt, ass, pgs, vobsub
+	Language   string `json:"language"` // ISO 639-1
+	Title      string `json:"title"`
+	IsDefault  bool   `json:"isDefault"`
+	IsForced   bool   `json:"isForced"`
+	IsExternal bool   `json:"isExternal"` // External subtitle file
+	Path       string `json:"path"`       // Path if external
 }
 
 // ChapterInfo represents a chapter in a media file.
 type ChapterInfo struct {
-	Index     int    `json:"index"`
-	Title     string `json:"title"`
-	StartTicks int64 `json:"startTicks"` // Start position in ticks
-	EndTicks   int64 `json:"endTicks"`   // End position in ticks
+	Index      int    `json:"index"`
+	Title      string `json:"title"`
+	StartTicks int64  `json:"startTicks"` // Start position in ticks
+	EndTicks   int64  `json:"endTicks"`   // End position in ticks
 }
 
 // ImageInfo represents an image associated with content.
@@ -123,16 +123,16 @@ const (
 	ImageTypeThumb     ImageType = "thumb"
 	ImageTypeDisc      ImageType = "disc"
 	ImageTypeArt       ImageType = "art"
-	ImageTypeProfile   ImageType = "profile"   // For people
+	ImageTypeProfile   ImageType = "profile" // For people
 	ImageTypeClearArt  ImageType = "clearart"
 	ImageTypeClearLogo ImageType = "clearlogo"
 )
 
 // ExternalIDs holds external provider IDs.
 type ExternalIDs struct {
-	TmdbID       *int       `json:"tmdbId,omitempty"`
-	ImdbID       *string    `json:"imdbId,omitempty"`
-	TvdbID       *int       `json:"tvdbId,omitempty"`
+	TmdbID        *int       `json:"tmdbId,omitempty"`
+	ImdbID        *string    `json:"imdbId,omitempty"`
+	TvdbID        *int       `json:"tvdbId,omitempty"`
 	MusicBrainzID *uuid.UUID `json:"musicbrainzId,omitempty"`
 }
 
@@ -140,14 +140,14 @@ type ExternalIDs struct {
 type CreditRole string
 
 const (
-	CreditRoleActor       CreditRole = "actor"
-	CreditRoleDirector    CreditRole = "director"
-	CreditRoleWriter      CreditRole = "writer"
-	CreditRoleProducer    CreditRole = "producer"
-	CreditRoleComposer    CreditRole = "composer"
+	CreditRoleActor           CreditRole = "actor"
+	CreditRoleDirector        CreditRole = "director"
+	CreditRoleWriter          CreditRole = "writer"
+	CreditRoleProducer        CreditRole = "producer"
+	CreditRoleComposer        CreditRole = "composer"
 	CreditRoleCinematographer CreditRole = "cinematographer"
-	CreditRoleEditor      CreditRole = "editor"
-	CreditRoleGuest       CreditRole = "guest" // TV show guest
+	CreditRoleEditor          CreditRole = "editor"
+	CreditRoleGuest           CreditRole = "guest" // TV show guest
 )
 
 // Credit represents a person's involvement in content.
@@ -160,9 +160,9 @@ type Credit struct {
 
 // UserItemData represents user-specific data for any content item.
 type UserItemData struct {
-	UserID      uuid.UUID  `json:"userId"`
-	ProfileID   uuid.UUID  `json:"profileId"`
-	ItemID      uuid.UUID  `json:"itemId"`
+	UserID    uuid.UUID `json:"userId"`
+	ProfileID uuid.UUID `json:"profileId"`
+	ItemID    uuid.UUID `json:"itemId"`
 
 	// Playback state
 	PlaybackPositionTicks int64      `json:"playbackPositionTicks"`

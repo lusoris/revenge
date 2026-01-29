@@ -7,18 +7,18 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/viccon/sturdyc"
 	"github.com/go-resty/resty/v2"
+	"github.com/viccon/sturdyc"
 
 	"github.com/lusoris/revenge/pkg/resilience"
 )
 
 // Client errors.
 var (
-	ErrNotFound     = errors.New("movie not found")
-	ErrRateLimited  = errors.New("rate limit exceeded")
-	ErrUnavailable  = errors.New("service unavailable")
-	ErrInvalidKey   = errors.New("invalid API key")
+	ErrNotFound    = errors.New("movie not found")
+	ErrRateLimited = errors.New("rate limit exceeded")
+	ErrUnavailable = errors.New("service unavailable")
+	ErrInvalidKey  = errors.New("invalid API key")
 )
 
 // Config holds TMDb client configuration.
@@ -104,10 +104,10 @@ func NewClient(cfg Config, logger *slog.Logger) *Client {
 		cfg.CacheTTL,
 		5, // eviction percentage
 		sturdyc.WithEarlyRefreshes(
-			cfg.CacheTTL/2,       // min async refresh time
-			cfg.CacheTTL*3/4,     // max async refresh time
-			cfg.CacheTTL*9/10,    // sync refresh time
-			5*time.Minute,        // retry base delay
+			cfg.CacheTTL/2,    // min async refresh time
+			cfg.CacheTTL*3/4,  // max async refresh time
+			cfg.CacheTTL*9/10, // sync refresh time
+			5*time.Minute,     // retry base delay
 		),
 	)
 

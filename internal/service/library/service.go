@@ -36,8 +36,8 @@ func NewService(queries *db.Queries, logger *slog.Logger) *Service {
 	}
 }
 
-// LibraryWithAccess contains a library and access info.
-type LibraryWithAccess struct {
+// WithAccess contains a library and access info.
+type WithAccess struct {
 	Library   db.Library
 	CanManage bool
 }
@@ -147,15 +147,15 @@ func (s *Service) ListAccessible(ctx context.Context, userID uuid.UUID) ([]db.Li
 }
 
 // ListAll returns all libraries with access info (for admins).
-func (s *Service) ListAll(ctx context.Context) ([]LibraryWithAccess, error) {
+func (s *Service) ListAll(ctx context.Context) ([]WithAccess, error) {
 	libraries, err := s.queries.ListLibraries(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("list libraries: %w", err)
 	}
 
-	result := make([]LibraryWithAccess, len(libraries))
+	result := make([]WithAccess, len(libraries))
 	for i, lib := range libraries {
-		result[i] = LibraryWithAccess{
+		result[i] = WithAccess{
 			Library:   lib,
 			CanManage: true, // Admins can manage all
 		}
@@ -164,20 +164,20 @@ func (s *Service) ListAll(ctx context.Context) ([]LibraryWithAccess, error) {
 }
 
 // ListForUser returns libraries accessible to a user with access info.
-func (s *Service) ListForUser(ctx context.Context, userID uuid.UUID) ([]LibraryWithAccess, error) {
+func (s *Service) ListForUser(ctx context.Context, userID uuid.UUID) ([]WithAccess, error) {
 	libraries, err := s.queries.ListAccessibleLibraries(ctx, pgtype.UUID{Bytes: userID, Valid: true})
 	if err != nil {
 		return nil, fmt.Errorf("list accessible libraries: %w", err)
 	}
 
-	result := make([]LibraryWithAccess, len(libraries))
+	result := make([]WithAccess, len(libraries))
 	for i, lib := range libraries {
 		// Check if user can manage this library
 		canManage := false
 		if lib.OwnerUserID.Valid && lib.OwnerUserID.Bytes == userID {
 			canManage = true
 		}
-		result[i] = LibraryWithAccess{
+		result[i] = WithAccess{
 			Library:   lib,
 			CanManage: canManage,
 		}

@@ -45,13 +45,13 @@ func DefaultWatcherConfig(files ...string) WatcherConfig {
 
 // ConfigWatcher watches config files for changes.
 type ConfigWatcher struct {
-	config     WatcherConfig
-	loader     ReloadableConfig
-	logger     *slog.Logger
-	modTimes   map[string]time.Time
-	mu         sync.Mutex
-	stopCh     chan struct{}
-	reloading  atomic.Bool
+	config    WatcherConfig
+	loader    ReloadableConfig
+	logger    *slog.Logger
+	modTimes  map[string]time.Time
+	mu        sync.Mutex
+	stopCh    chan struct{}
+	reloading atomic.Bool
 }
 
 // NewConfigWatcher creates a new config watcher.
@@ -105,14 +105,14 @@ func (w *ConfigWatcher) watchLoop(ctx context.Context) {
 						pendingReload.Store(true)
 						debounceTimer = time.AfterFunc(w.config.Debounce, func() {
 							pendingReload.Store(false)
-							w.doReload()
+							_ = w.doReload()
 						})
 					} else if debounceTimer != nil {
 						// Reset debounce timer
 						debounceTimer.Reset(w.config.Debounce)
 					}
 				} else {
-					w.doReload()
+					_ = w.doReload()
 				}
 			}
 		}
@@ -285,7 +285,7 @@ func (ff *FeatureFlags) IsEnabledForUser(name string, userID string) bool {
 		for _, c := range userID {
 			hash = 31*hash + int(c)
 		}
-		return (hash%100)+1 <= flag.Percentage
+		return hash%100 < flag.Percentage
 	}
 
 	return flag.Enabled
@@ -305,14 +305,14 @@ func (ff *FeatureFlags) All() []FeatureFlagConfig {
 
 // DirWatcher watches a directory for file changes.
 type DirWatcher struct {
-	dir        string
-	pattern    string
-	logger     *slog.Logger
-	onChange   func(path string)
-	files      map[string]time.Time
-	mu         sync.Mutex
-	stopCh     chan struct{}
-	interval   time.Duration
+	dir      string
+	pattern  string
+	logger   *slog.Logger
+	onChange func(path string)
+	files    map[string]time.Time
+	mu       sync.Mutex
+	stopCh   chan struct{}
+	interval time.Duration
 }
 
 // NewDirWatcher creates a directory watcher.

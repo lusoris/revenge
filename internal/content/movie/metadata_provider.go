@@ -46,8 +46,8 @@ func newTMDbAdapter(provider *tmdb.Provider) MetadataProvider {
 	return &tmdbAdapter{provider: provider}
 }
 
-func (a *tmdbAdapter) Name() string { return a.provider.Name() }
-func (a *tmdbAdapter) Priority() int { return a.provider.Priority() }
+func (a *tmdbAdapter) Name() string      { return a.provider.Name() }
+func (a *tmdbAdapter) Priority() int     { return a.provider.Priority() }
 func (a *tmdbAdapter) IsAvailable() bool { return a.provider.IsAvailable() }
 
 func (a *tmdbAdapter) GetMovieMetadata(ctx context.Context, tmdbID int) (*Metadata, error) {
@@ -99,8 +99,8 @@ func newRadarrAdapter(provider *radarr.Provider) MetadataProvider {
 	return &radarrAdapter{provider: provider}
 }
 
-func (a *radarrAdapter) Name() string { return a.provider.Name() }
-func (a *radarrAdapter) Priority() int { return a.provider.Priority() }
+func (a *radarrAdapter) Name() string      { return a.provider.Name() }
+func (a *radarrAdapter) Priority() int     { return a.provider.Priority() }
 func (a *radarrAdapter) IsAvailable() bool { return a.provider.IsAvailable() }
 
 func (a *radarrAdapter) GetMovieMetadata(ctx context.Context, tmdbID int) (*Metadata, error) {

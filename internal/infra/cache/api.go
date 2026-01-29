@@ -160,12 +160,12 @@ func (c *MetadataCache) GetProviderConfig(provider string) (ProviderConfig, bool
 	return cfg, ok
 }
 
-// CacheKey generates a cache key for a provider and resource.
-func CacheKey(provider, resourceType, id string) string {
+// Key generates a cache key for a provider and resource.
+func Key(provider, resourceType, id string) string {
 	return "meta:" + provider + ":" + resourceType + ":" + id
 }
 
-// CacheKeyWithLang generates a cache key including language.
-func CacheKeyWithLang(provider, resourceType, id, lang string) string {
+// KeyWithLang generates a cache key including language.
+func KeyWithLang(provider, resourceType, id, lang string) string {
 	return "meta:" + provider + ":" + resourceType + ":" + id + ":" + lang
 }

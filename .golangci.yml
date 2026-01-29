@@ -22,7 +22,7 @@ linters:
 linters-settings:
   errcheck:
     check-type-assertions: true
-    check-blank: true
+    check-blank: false  # We intentionally use _ = ... for non-critical errors
 
   govet:
     enable-all: true
@@ -54,6 +54,7 @@ linters-settings:
   gosec:
     excludes:
       - G104 # Audit errors not checked
+      - G115 # Integer overflow conversion - safe for API params (Limit, Offset, Year)
       - G304 # File path provided as taint input
       - G404 # Use of weak random number generator
 
@@ -67,6 +68,8 @@ linters-settings:
       - unnamedResult
       - hugeParam        # Interface signatures can't always use pointers
       - rangeValCopy     # Minor optimization, not worth interface changes
+      - paramTypeCombine # Stylistic preference - explicit params are clearer
+      - ifElseChain      # Stylistic preference - if-else can be clearer than switch
 
 issues:
   exclude-rules:

@@ -37,8 +37,8 @@ var (
 	ErrServiceNotFound = errors.New("service not found")
 )
 
-// SupervisorConfig configures the supervisor.
-type SupervisorConfig struct {
+// Config configures the supervisor.
+type Config struct {
 	// Name for logging.
 	Name string
 
@@ -61,9 +61,9 @@ type SupervisorConfig struct {
 	ShutdownTimeout time.Duration
 }
 
-// DefaultSupervisorConfig returns sensible defaults.
-func DefaultSupervisorConfig(name string) SupervisorConfig {
-	return SupervisorConfig{
+// DefaultConfig returns sensible defaults.
+func DefaultConfig(name string) Config {
+	return Config{
 		Name:             name,
 		Strategy:         StrategyOneForOne,
 		MaxRestarts:      5,
@@ -123,7 +123,7 @@ type supervisedService struct {
 
 // Supervisor manages and restarts services.
 type Supervisor struct {
-	config   SupervisorConfig
+	config   Config
 	logger   *slog.Logger
 	services []*supervisedService
 	mu       sync.RWMutex
@@ -134,7 +134,7 @@ type Supervisor struct {
 }
 
 // NewSupervisor creates a new supervisor.
-func NewSupervisor(config SupervisorConfig, logger *slog.Logger) *Supervisor {
+func NewSupervisor(config Config, logger *slog.Logger) *Supervisor {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &Supervisor{
 		config: config,
@@ -171,7 +171,7 @@ func (s *Supervisor) Start() error {
 		if err := s.startService(ss); err != nil {
 			s.logger.Error("failed to start service", "service", ss.service.Name(), "error", err)
 			// Stop already started services
-			s.Stop()
+			_ = s.Stop()
 			return err
 		}
 	}
@@ -191,7 +191,7 @@ func (s *Supervisor) startService(ss *supervisedService) error {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
-		s.runService(ss, ctx)
+		s.runService(ctx, ss)
 	}()
 
 	// Wait briefly for startup
@@ -200,7 +200,7 @@ func (s *Supervisor) startService(ss *supervisedService) error {
 }
 
 // runService runs a service and handles restarts.
-func (s *Supervisor) runService(ss *supervisedService, ctx context.Context) {
+func (s *Supervisor) runService(ctx context.Context, ss *supervisedService) {
 	restartDelay := s.config.RestartDelay
 
 	for {
@@ -286,7 +286,7 @@ func (s *Supervisor) handleMaxRestartsExceeded(ss *supervisedService) {
 	case StrategyOneForAll:
 		s.logger.Warn("stopping all services due to max restarts exceeded",
 			"failed_service", ss.service.Name())
-		go s.Stop()
+		go func() { _ = s.Stop() }()
 
 	case StrategyRestForOne:
 		s.logger.Warn("stopping rest of services due to max restarts exceeded",

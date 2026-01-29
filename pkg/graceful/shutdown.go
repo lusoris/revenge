@@ -35,12 +35,12 @@ func DefaultShutdownConfig() ShutdownConfig {
 
 // Shutdowner handles graceful shutdown.
 type Shutdowner struct {
-	config   ShutdownConfig
-	logger   *slog.Logger
-	hooks    []ShutdownHook
-	mu       sync.Mutex
-	done     chan struct{}
-	started  bool
+	config  ShutdownConfig
+	logger  *slog.Logger
+	hooks   []ShutdownHook
+	mu      sync.Mutex
+	done    chan struct{}
+	started bool
 }
 
 // ShutdownHook is called during shutdown.

@@ -41,11 +41,11 @@ func DefaultRateLimiterConfig(name string) RateLimiterConfig {
 type TokenBucketLimiter struct {
 	config RateLimiterConfig
 
-	mu           sync.Mutex
-	tokens       float64
-	lastRefill   time.Time
-	refillRate   float64 // tokens per nanosecond
-	maxTokens    float64
+	mu         sync.Mutex
+	tokens     float64
+	lastRefill time.Time
+	refillRate float64 // tokens per nanosecond
+	maxTokens  float64
 }
 
 // NewTokenBucketLimiter creates a new token bucket limiter.
@@ -151,11 +151,11 @@ func (l *TokenBucketLimiter) Stats() RateLimiterStats {
 	l.refill()
 
 	return RateLimiterStats{
-		Name:       l.config.Name,
-		Rate:       l.config.Rate,
-		Burst:      l.config.Burst,
-		Available:  l.tokens,
-		MaxTokens:  l.maxTokens,
+		Name:      l.config.Name,
+		Rate:      l.config.Rate,
+		Burst:     l.config.Burst,
+		Available: l.tokens,
+		MaxTokens: l.maxTokens,
 	}
 }
 

@@ -22,7 +22,7 @@ func (h *Handler) ListLibraries(ctx context.Context) (gen.ListLibrariesRes, erro
 		}, nil
 	}
 
-	var libs []library.LibraryWithAccess
+	var libs []library.WithAccess
 	var libErr error
 
 	if usr.IsAdmin {
