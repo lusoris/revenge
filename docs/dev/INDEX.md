@@ -23,7 +23,6 @@ Core system design and architectural decisions.
 
 - [Overall Architecture V2](design/architecture/ARCHITECTURE_V2.md) - Complete system architecture
 - [Design Principles](design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
-- [Go Packages Reference](design/architecture/GO_PACKAGES.md) - Reusable Go packages
 - [Metadata System](design/architecture/METADATA_SYSTEM.md) - Metadata management
 - [Player Architecture](design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
 - [Plugin Architecture Decision](design/architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
