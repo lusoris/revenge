@@ -202,7 +202,7 @@ func FromDBMovie(m *db.Movie) *Movie {
 				CreatedAt: m.CreatedAt,
 				UpdatedAt: m.UpdatedAt,
 			},
-			LibraryID: m.LibraryID,
+			LibraryID: m.MovieLibraryID,
 			Path:      m.Path,
 			Title:     m.Title,
 		},
@@ -308,9 +308,9 @@ func FromDBMovie(m *db.Movie) *Movie {
 // ToDBCreateParams converts a domain movie to database create params.
 func (m *Movie) ToDBCreateParams() db.CreateMovieParams {
 	params := db.CreateMovieParams{
-		LibraryID: m.LibraryID,
-		Path:      m.Path,
-		Title:     m.Title,
+		MovieLibraryID: m.LibraryID,
+		Path:           m.Path,
+		Title:          m.Title,
 	}
 
 	if m.SortTitle != "" {

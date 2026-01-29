@@ -294,7 +294,7 @@ func FromDBSeries(s *db.Series) *Series {
 			CreatedAt: s.CreatedAt,
 			UpdatedAt: s.UpdatedAt,
 		},
-		LibraryID:    s.LibraryID,
+		LibraryID:    s.TvLibraryID,
 		Title:        s.Title,
 		DateAdded:    s.DateAdded,
 		SeasonCount:  int(s.SeasonCount),
@@ -516,8 +516,8 @@ func FromDBEpisode(e *db.Episode) *Episode {
 // ToDBCreateParams converts a domain series to database create params.
 func (s *Series) ToDBCreateParams() db.CreateSeriesParams {
 	params := db.CreateSeriesParams{
-		LibraryID: s.LibraryID,
-		Title:     s.Title,
+		TvLibraryID: s.LibraryID,
+		Title:       s.Title,
 	}
 
 	if s.SortTitle != "" {

@@ -79,3 +79,54 @@ type Indexer interface {
 	// Reindex rebuilds the entire search index for a module.
 	Reindex(ctx context.Context) error
 }
+
+// LibraryProvider is the interface for module-specific library management.
+// Each content module (movie, tvshow, music, qar) implements this interface
+// to provide unified library operations.
+type LibraryProvider interface {
+	// ModuleName returns the module identifier (e.g., "movie", "tvshow", "qar").
+	ModuleName() string
+
+	// ListLibraries returns all libraries for this module accessible by the user.
+	ListLibraries(ctx context.Context, userID uuid.UUID) ([]LibraryInfo, error)
+
+	// GetLibrary returns a specific library by ID.
+	GetLibrary(ctx context.Context, libraryID uuid.UUID) (*LibraryInfo, error)
+
+	// CreateLibrary creates a new library for this module.
+	CreateLibrary(ctx context.Context, req CreateLibraryRequest) (*LibraryInfo, error)
+
+	// UpdateLibrary updates library settings.
+	UpdateLibrary(ctx context.Context, libraryID uuid.UUID, req UpdateLibraryRequest) (*LibraryInfo, error)
+
+	// DeleteLibrary removes a library and optionally its content.
+	DeleteLibrary(ctx context.Context, libraryID uuid.UUID, deleteContent bool) error
+
+	// ScanLibrary triggers a library scan.
+	ScanLibrary(ctx context.Context, libraryID uuid.UUID, fullScan bool) error
+}
+
+// LibraryInfo is the common representation of a library across all modules.
+type LibraryInfo struct {
+	ID        uuid.UUID `json:"id"`
+	Module    string    `json:"module"`    // "movie", "tvshow", "music", "qar"
+	Name      string    `json:"name"`
+	Paths     []string  `json:"paths"`
+	IsAdult   bool      `json:"is_adult"`
+	ItemCount int64     `json:"item_count"`
+	Settings  any       `json:"settings,omitempty"` // Module-specific settings
+}
+
+// CreateLibraryRequest contains parameters for creating a library.
+type CreateLibraryRequest struct {
+	Name     string   `json:"name"`
+	Paths    []string `json:"paths"`
+	Settings any      `json:"settings,omitempty"` // Module-specific settings
+}
+
+// UpdateLibraryRequest contains parameters for updating a library.
+type UpdateLibraryRequest struct {
+	Name     *string  `json:"name,omitempty"`
+	Paths    []string `json:"paths,omitempty"`
+	Settings any      `json:"settings,omitempty"`
+}

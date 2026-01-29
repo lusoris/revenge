@@ -100,11 +100,11 @@ func (r *pgRepository) ListSeries(ctx context.Context, params ListParams) ([]*Se
 // ListSeriesByLibrary retrieves series from a specific library.
 func (r *pgRepository) ListSeriesByLibrary(ctx context.Context, libraryID uuid.UUID, params ListParams) ([]*Series, error) {
 	rows, err := r.queries.ListSeriesByLibrary(ctx, db.ListSeriesByLibraryParams{
-		LibraryID: libraryID,
-		Limit:     int32(params.Limit),
-		Offset:    int32(params.Offset),
-		SortBy:    params.SortBy,
-		SortOrder: params.SortOrder,
+		TvLibraryID: libraryID,
+		Limit:       int32(params.Limit),
+		Offset:      int32(params.Offset),
+		SortBy:      params.SortBy,
+		SortOrder:   params.SortOrder,
 	})
 	if err != nil {
 		return nil, err

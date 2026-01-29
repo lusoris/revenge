@@ -162,6 +162,7 @@ func (ns NullCollectionType) Value() (driver.Value, error) {
 	return string(ns.CollectionType), nil
 }
 
+// DEPRECATED: Library types are now implicit in per-module tables. This enum will be removed in a future version.
 type LibraryType string
 
 const (
@@ -724,6 +725,7 @@ type Genre struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+// DEPRECATED: Use per-module library tables instead (movie_libraries, tv_libraries, qar.fleets, etc.). This table will be removed in a future version.
 type Library struct {
 	ID                uuid.UUID          `json:"id"`
 	Name              string             `json:"name"`
@@ -745,6 +747,7 @@ type Library struct {
 	UpdatedAt         time.Time          `json:"updatedAt"`
 }
 
+// DEPRECATED: Use per-module library access tables instead (movie_library_access, tv_library_access, etc.). This table will be removed in a future version.
 type LibraryUserAccess struct {
 	LibraryID uuid.UUID `json:"libraryId"`
 	UserID    uuid.UUID `json:"userId"`
@@ -753,7 +756,6 @@ type LibraryUserAccess struct {
 
 type Movie struct {
 	ID               uuid.UUID          `json:"id"`
-	LibraryID        uuid.UUID          `json:"libraryId"`
 	Path             string             `json:"path"`
 	Container        *string            `json:"container"`
 	SizeBytes        *int64             `json:"sizeBytes"`
@@ -789,6 +791,7 @@ type Movie struct {
 	UpdatedAt        time.Time          `json:"updatedAt"`
 	CollectionID     pgtype.UUID        `json:"collectionId"`
 	CollectionOrder  *int32             `json:"collectionOrder"`
+	MovieLibraryID   uuid.UUID          `json:"movieLibraryId"`
 }
 
 type MovieCollection struct {
@@ -865,6 +868,35 @@ type MovieImage struct {
 	IsPrimary   bool           `json:"isPrimary"`
 	Source      string         `json:"source"`
 	CreatedAt   time.Time      `json:"createdAt"`
+}
+
+type MovieLibrary struct {
+	ID                uuid.UUID          `json:"id"`
+	Name              string             `json:"name"`
+	Paths             []string           `json:"paths"`
+	ScanEnabled       bool               `json:"scanEnabled"`
+	ScanIntervalHours int32              `json:"scanIntervalHours"`
+	LastScanAt        pgtype.Timestamptz `json:"lastScanAt"`
+	LastScanDuration  pgtype.Interval    `json:"lastScanDuration"`
+	PreferredLanguage *string            `json:"preferredLanguage"`
+	TmdbEnabled       bool               `json:"tmdbEnabled"`
+	ImdbEnabled       bool               `json:"imdbEnabled"`
+	DownloadTrailers  bool               `json:"downloadTrailers"`
+	DownloadBackdrops bool               `json:"downloadBackdrops"`
+	DownloadNfo       bool               `json:"downloadNfo"`
+	GenerateChapters  bool               `json:"generateChapters"`
+	IsPrivate         bool               `json:"isPrivate"`
+	OwnerUserID       pgtype.UUID        `json:"ownerUserId"`
+	SortOrder         int32              `json:"sortOrder"`
+	Icon              *string            `json:"icon"`
+	CreatedAt         time.Time          `json:"createdAt"`
+	UpdatedAt         time.Time          `json:"updatedAt"`
+}
+
+type MovieLibraryAccess struct {
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	CanManage bool      `json:"canManage"`
 }
 
 type MovieStudio struct {

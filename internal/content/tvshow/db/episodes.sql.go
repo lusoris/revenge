@@ -527,7 +527,7 @@ func (q *Queries) GetPreviousEpisode(ctx context.Context, arg GetPreviousEpisode
 
 const listEpisodePaths = `-- name: ListEpisodePaths :many
 SELECT id, path FROM episodes
-WHERE series_id IN (SELECT id FROM series WHERE library_id = $1)
+WHERE series_id IN (SELECT id FROM series WHERE tv_library_id = $1)
 `
 
 type ListEpisodePathsRow struct {
@@ -535,8 +535,8 @@ type ListEpisodePathsRow struct {
 	Path string    `json:"path"`
 }
 
-func (q *Queries) ListEpisodePaths(ctx context.Context, libraryID uuid.UUID) ([]ListEpisodePathsRow, error) {
-	rows, err := q.db.Query(ctx, listEpisodePaths, libraryID)
+func (q *Queries) ListEpisodePaths(ctx context.Context, tvLibraryID uuid.UUID) ([]ListEpisodePathsRow, error) {
+	rows, err := q.db.Query(ctx, listEpisodePaths, tvLibraryID)
 	if err != nil {
 		return nil, err
 	}

@@ -35,11 +35,11 @@ func (q *Queries) CountMovies(ctx context.Context) (int64, error) {
 }
 
 const countMoviesByLibrary = `-- name: CountMoviesByLibrary :one
-SELECT COUNT(*) FROM movies WHERE library_id = $1
+SELECT COUNT(*) FROM movies WHERE movie_library_id = $1
 `
 
-func (q *Queries) CountMoviesByLibrary(ctx context.Context, libraryID uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, countMoviesByLibrary, libraryID)
+func (q *Queries) CountMoviesByLibrary(ctx context.Context, movieLibraryID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countMoviesByLibrary, movieLibraryID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -92,7 +92,7 @@ func (q *Queries) CreateCollection(ctx context.Context, arg CreateCollectionPara
 
 const createMovie = `-- name: CreateMovie :one
 INSERT INTO movies (
-    library_id, path, container, size_bytes, runtime_ticks,
+    movie_library_id, path, container, size_bytes, runtime_ticks,
     title, sort_title, original_title, tagline, overview,
     release_date, year, content_rating, rating_level,
     budget, revenue, community_rating, vote_count,
@@ -107,11 +107,11 @@ INSERT INTO movies (
     $19, $20, $21, $22, $23,
     $24, $25, $26,
     $27, $28
-) RETURNING id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order
+) RETURNING id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id
 `
 
 type CreateMovieParams struct {
-	LibraryID        uuid.UUID      `json:"libraryId"`
+	MovieLibraryID   uuid.UUID      `json:"movieLibraryId"`
 	Path             string         `json:"path"`
 	Container        *string        `json:"container"`
 	SizeBytes        *int64         `json:"sizeBytes"`
@@ -143,7 +143,7 @@ type CreateMovieParams struct {
 
 func (q *Queries) CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie, error) {
 	row := q.db.QueryRow(ctx, createMovie,
-		arg.LibraryID,
+		arg.MovieLibraryID,
 		arg.Path,
 		arg.Container,
 		arg.SizeBytes,
@@ -175,7 +175,6 @@ func (q *Queries) CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie
 	var i Movie
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Path,
 		&i.Container,
 		&i.SizeBytes,
@@ -211,6 +210,7 @@ func (q *Queries) CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie
 		&i.UpdatedAt,
 		&i.CollectionID,
 		&i.CollectionOrder,
+		&i.MovieLibraryID,
 	)
 	return i, err
 }
@@ -259,11 +259,11 @@ func (q *Queries) DeleteMovie(ctx context.Context, id uuid.UUID) error {
 }
 
 const deleteMoviesByLibrary = `-- name: DeleteMoviesByLibrary :exec
-DELETE FROM movies WHERE library_id = $1
+DELETE FROM movies WHERE movie_library_id = $1
 `
 
-func (q *Queries) DeleteMoviesByLibrary(ctx context.Context, libraryID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteMoviesByLibrary, libraryID)
+func (q *Queries) DeleteMoviesByLibrary(ctx context.Context, movieLibraryID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteMoviesByLibrary, movieLibraryID)
 	return err
 }
 
@@ -317,7 +317,7 @@ func (q *Queries) GetCollectionByTmdbID(ctx context.Context, tmdbID *int32) (Mov
 
 const getMovieByID = `-- name: GetMovieByID :one
 
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies WHERE id = $1
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies WHERE id = $1
 `
 
 // Movie Core Queries
@@ -326,7 +326,6 @@ func (q *Queries) GetMovieByID(ctx context.Context, id uuid.UUID) (Movie, error)
 	var i Movie
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Path,
 		&i.Container,
 		&i.SizeBytes,
@@ -362,12 +361,13 @@ func (q *Queries) GetMovieByID(ctx context.Context, id uuid.UUID) (Movie, error)
 		&i.UpdatedAt,
 		&i.CollectionID,
 		&i.CollectionOrder,
+		&i.MovieLibraryID,
 	)
 	return i, err
 }
 
 const getMovieByImdbID = `-- name: GetMovieByImdbID :one
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies WHERE imdb_id = $1
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies WHERE imdb_id = $1
 `
 
 func (q *Queries) GetMovieByImdbID(ctx context.Context, imdbID *string) (Movie, error) {
@@ -375,7 +375,6 @@ func (q *Queries) GetMovieByImdbID(ctx context.Context, imdbID *string) (Movie, 
 	var i Movie
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Path,
 		&i.Container,
 		&i.SizeBytes,
@@ -411,12 +410,13 @@ func (q *Queries) GetMovieByImdbID(ctx context.Context, imdbID *string) (Movie, 
 		&i.UpdatedAt,
 		&i.CollectionID,
 		&i.CollectionOrder,
+		&i.MovieLibraryID,
 	)
 	return i, err
 }
 
 const getMovieByPath = `-- name: GetMovieByPath :one
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies WHERE path = $1
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies WHERE path = $1
 `
 
 func (q *Queries) GetMovieByPath(ctx context.Context, path string) (Movie, error) {
@@ -424,7 +424,6 @@ func (q *Queries) GetMovieByPath(ctx context.Context, path string) (Movie, error
 	var i Movie
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Path,
 		&i.Container,
 		&i.SizeBytes,
@@ -460,12 +459,13 @@ func (q *Queries) GetMovieByPath(ctx context.Context, path string) (Movie, error
 		&i.UpdatedAt,
 		&i.CollectionID,
 		&i.CollectionOrder,
+		&i.MovieLibraryID,
 	)
 	return i, err
 }
 
 const getMovieByTmdbID = `-- name: GetMovieByTmdbID :one
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies WHERE tmdb_id = $1
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies WHERE tmdb_id = $1
 `
 
 func (q *Queries) GetMovieByTmdbID(ctx context.Context, tmdbID *int32) (Movie, error) {
@@ -473,7 +473,6 @@ func (q *Queries) GetMovieByTmdbID(ctx context.Context, tmdbID *int32) (Movie, e
 	var i Movie
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Path,
 		&i.Container,
 		&i.SizeBytes,
@@ -509,6 +508,7 @@ func (q *Queries) GetMovieByTmdbID(ctx context.Context, tmdbID *int32) (Movie, e
 		&i.UpdatedAt,
 		&i.CollectionID,
 		&i.CollectionOrder,
+		&i.MovieLibraryID,
 	)
 	return i, err
 }
@@ -610,7 +610,7 @@ func (q *Queries) ListCollections(ctx context.Context, arg ListCollectionsParams
 }
 
 const listMoviePaths = `-- name: ListMoviePaths :many
-SELECT id, path FROM movies WHERE library_id = $1
+SELECT id, path FROM movies WHERE movie_library_id = $1
 `
 
 type ListMoviePathsRow struct {
@@ -618,8 +618,8 @@ type ListMoviePathsRow struct {
 	Path string    `json:"path"`
 }
 
-func (q *Queries) ListMoviePaths(ctx context.Context, libraryID uuid.UUID) ([]ListMoviePathsRow, error) {
-	rows, err := q.db.Query(ctx, listMoviePaths, libraryID)
+func (q *Queries) ListMoviePaths(ctx context.Context, movieLibraryID uuid.UUID) ([]ListMoviePathsRow, error) {
+	rows, err := q.db.Query(ctx, listMoviePaths, movieLibraryID)
 	if err != nil {
 		return nil, err
 	}
@@ -672,7 +672,7 @@ func (q *Queries) ListMovieStudios(ctx context.Context, movieID uuid.UUID) ([]Mo
 }
 
 const listMovies = `-- name: ListMovies :many
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies
 ORDER BY
     CASE WHEN $3::text = 'title' AND $4::text = 'asc' THEN sort_title END ASC,
     CASE WHEN $3::text = 'title' AND $4::text = 'desc' THEN sort_title END DESC,
@@ -709,7 +709,6 @@ func (q *Queries) ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -745,6 +744,7 @@ func (q *Queries) ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -757,7 +757,7 @@ func (q *Queries) ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie
 }
 
 const listMoviesByCollection = `-- name: ListMoviesByCollection :many
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies
 WHERE collection_id = $1
 ORDER BY collection_order ASC, release_date ASC
 `
@@ -773,7 +773,6 @@ func (q *Queries) ListMoviesByCollection(ctx context.Context, collectionID pgtyp
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -809,6 +808,7 @@ func (q *Queries) ListMoviesByCollection(ctx context.Context, collectionID pgtyp
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -821,8 +821,8 @@ func (q *Queries) ListMoviesByCollection(ctx context.Context, collectionID pgtyp
 }
 
 const listMoviesByLibrary = `-- name: ListMoviesByLibrary :many
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies
-WHERE library_id = $1
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies
+WHERE movie_library_id = $1
 ORDER BY
     CASE WHEN $4::text = 'title' AND $5::text = 'asc' THEN sort_title END ASC,
     CASE WHEN $4::text = 'title' AND $5::text = 'desc' THEN sort_title END DESC,
@@ -837,16 +837,16 @@ LIMIT $2 OFFSET $3
 `
 
 type ListMoviesByLibraryParams struct {
-	LibraryID uuid.UUID `json:"libraryId"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-	SortBy    string    `json:"sortBy"`
-	SortOrder string    `json:"sortOrder"`
+	MovieLibraryID uuid.UUID `json:"movieLibraryId"`
+	Limit          int32     `json:"limit"`
+	Offset         int32     `json:"offset"`
+	SortBy         string    `json:"sortBy"`
+	SortOrder      string    `json:"sortOrder"`
 }
 
 func (q *Queries) ListMoviesByLibrary(ctx context.Context, arg ListMoviesByLibraryParams) ([]Movie, error) {
 	rows, err := q.db.Query(ctx, listMoviesByLibrary,
-		arg.LibraryID,
+		arg.MovieLibraryID,
 		arg.Limit,
 		arg.Offset,
 		arg.SortBy,
@@ -861,7 +861,6 @@ func (q *Queries) ListMoviesByLibrary(ctx context.Context, arg ListMoviesByLibra
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -897,6 +896,7 @@ func (q *Queries) ListMoviesByLibrary(ctx context.Context, arg ListMoviesByLibra
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -909,8 +909,8 @@ func (q *Queries) ListMoviesByLibrary(ctx context.Context, arg ListMoviesByLibra
 }
 
 const listRecentlyAddedMovies = `-- name: ListRecentlyAddedMovies :many
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies
-WHERE library_id = ANY($2::uuid[])
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies
+WHERE movie_library_id = ANY($2::uuid[])
 ORDER BY date_added DESC
 LIMIT $1
 `
@@ -931,7 +931,6 @@ func (q *Queries) ListRecentlyAddedMovies(ctx context.Context, arg ListRecentlyA
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -967,6 +966,7 @@ func (q *Queries) ListRecentlyAddedMovies(ctx context.Context, arg ListRecentlyA
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -979,8 +979,8 @@ func (q *Queries) ListRecentlyAddedMovies(ctx context.Context, arg ListRecentlyA
 }
 
 const listRecentlyPlayedMovies = `-- name: ListRecentlyPlayedMovies :many
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies
-WHERE library_id = ANY($2::uuid[])
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies
+WHERE movie_library_id = ANY($2::uuid[])
   AND last_played_at IS NOT NULL
 ORDER BY last_played_at DESC
 LIMIT $1
@@ -1002,7 +1002,6 @@ func (q *Queries) ListRecentlyPlayedMovies(ctx context.Context, arg ListRecently
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -1038,6 +1037,7 @@ func (q *Queries) ListRecentlyPlayedMovies(ctx context.Context, arg ListRecently
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -1107,7 +1107,7 @@ func (q *Queries) MovieExistsByTmdbID(ctx context.Context, tmdbID *int32) (bool,
 }
 
 const searchMovies = `-- name: SearchMovies :many
-SELECT id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order FROM movies
+SELECT id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id FROM movies
 WHERE to_tsvector('english', COALESCE(title, '') || ' ' || COALESCE(original_title, '') || ' ' || COALESCE(overview, ''))
       @@ plainto_tsquery('english', $1)
 ORDER BY ts_rank(
@@ -1134,7 +1134,6 @@ func (q *Queries) SearchMovies(ctx context.Context, arg SearchMoviesParams) ([]M
 		var i Movie
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Path,
 			&i.Container,
 			&i.SizeBytes,
@@ -1170,6 +1169,7 @@ func (q *Queries) SearchMovies(ctx context.Context, arg SearchMoviesParams) ([]M
 			&i.UpdatedAt,
 			&i.CollectionID,
 			&i.CollectionOrder,
+			&i.MovieLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -1269,7 +1269,7 @@ UPDATE movies SET
     collection_order = COALESCE($23, collection_order),
     is_locked = COALESCE($24, is_locked)
 WHERE id = $25
-RETURNING id, library_id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order
+RETURNING id, path, container, size_bytes, runtime_ticks, title, sort_title, original_title, tagline, overview, release_date, year, content_rating, rating_level, budget, revenue, community_rating, vote_count, critic_rating, critic_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, date_added, last_played_at, play_count, is_locked, created_at, updated_at, collection_id, collection_order, movie_library_id
 `
 
 type UpdateMovieParams struct {
@@ -1331,7 +1331,6 @@ func (q *Queries) UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie
 	var i Movie
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Path,
 		&i.Container,
 		&i.SizeBytes,
@@ -1367,6 +1366,7 @@ func (q *Queries) UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie
 		&i.UpdatedAt,
 		&i.CollectionID,
 		&i.CollectionOrder,
+		&i.MovieLibraryID,
 	)
 	return i, err
 }

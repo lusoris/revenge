@@ -34,7 +34,7 @@ LIMIT $1 OFFSET $2;
 
 -- name: ListSeriesByLibrary :many
 SELECT * FROM series
-WHERE library_id = $1
+WHERE tv_library_id = $1
 ORDER BY
     CASE WHEN @sort_by::text = 'title' AND @sort_order::text = 'asc' THEN sort_title END ASC,
     CASE WHEN @sort_by::text = 'title' AND @sort_order::text = 'desc' THEN sort_title END DESC,
@@ -49,20 +49,20 @@ LIMIT $2 OFFSET $3;
 
 -- name: ListRecentlyAddedSeries :many
 SELECT * FROM series
-WHERE library_id = ANY(@library_ids::uuid[])
+WHERE tv_library_id = ANY(@library_ids::uuid[])
 ORDER BY date_added DESC
 LIMIT $1;
 
 -- name: ListRecentlyPlayedSeries :many
 SELECT * FROM series
-WHERE library_id = ANY(@library_ids::uuid[])
+WHERE tv_library_id = ANY(@library_ids::uuid[])
   AND last_played_at IS NOT NULL
 ORDER BY last_played_at DESC
 LIMIT $1;
 
 -- name: ListCurrentlyAiringSeries :many
 SELECT * FROM series
-WHERE library_id = ANY(@library_ids::uuid[])
+WHERE tv_library_id = ANY(@library_ids::uuid[])
   AND status IN ('Returning Series', 'In Production')
 ORDER BY last_air_date DESC NULLS LAST
 LIMIT $1;
@@ -81,11 +81,11 @@ LIMIT $2 OFFSET $3;
 SELECT COUNT(*) FROM series;
 
 -- name: CountSeriesByLibrary :one
-SELECT COUNT(*) FROM series WHERE library_id = $1;
+SELECT COUNT(*) FROM series WHERE tv_library_id = $1;
 
 -- name: CreateSeries :one
 INSERT INTO series (
-    library_id, title, sort_title, original_title, tagline, overview,
+    tv_library_id, title, sort_title, original_title, tagline, overview,
     first_air_date, last_air_date, year, status, type,
     content_rating, rating_level, community_rating, vote_count,
     poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path,
@@ -137,7 +137,7 @@ UPDATE series SET last_played_at = NOW() WHERE id = $1;
 DELETE FROM series WHERE id = $1;
 
 -- name: DeleteSeriesByLibrary :exec
-DELETE FROM series WHERE library_id = $1;
+DELETE FROM series WHERE tv_library_id = $1;
 
 -- name: SeriesExistsByTmdbID :one
 SELECT EXISTS(SELECT 1 FROM series WHERE tmdb_id = $1);
@@ -148,4 +148,4 @@ SELECT EXISTS(SELECT 1 FROM series WHERE tvdb_id = $1);
 -- name: ListSeriesPaths :many
 SELECT DISTINCT s.id, e.path FROM series s
 JOIN episodes e ON e.series_id = s.id
-WHERE s.library_id = $1;
+WHERE s.tv_library_id = $1;

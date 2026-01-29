@@ -8,6 +8,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
@@ -19,8 +20,9 @@ type Querier interface {
 	CountSeasons(ctx context.Context, seriesID uuid.UUID) (int64, error)
 	CountSeries(ctx context.Context) (int64, error)
 	CountSeriesByGenre(ctx context.Context, genreID uuid.UUID) (int64, error)
-	CountSeriesByLibrary(ctx context.Context, libraryID uuid.UUID) (int64, error)
+	CountSeriesByLibrary(ctx context.Context, tvLibraryID uuid.UUID) (int64, error)
 	CountSeriesByNetwork(ctx context.Context, networkID uuid.UUID) (int64, error)
+	CountSeriesByTVLibrary(ctx context.Context, tvLibraryID uuid.UUID) (int64, error)
 	CountSeriesCast(ctx context.Context, seriesID uuid.UUID) (int64, error)
 	CountSeriesCrew(ctx context.Context, seriesID uuid.UUID) (int64, error)
 	CountSpecialEpisodes(ctx context.Context, seriesID uuid.UUID) (int64, error)
@@ -40,6 +42,7 @@ type Querier interface {
 	CreateSeriesCredit(ctx context.Context, arg CreateSeriesCreditParams) (SeriesCredit, error)
 	CreateSeriesImage(ctx context.Context, arg CreateSeriesImageParams) (SeriesImage, error)
 	CreateSeriesVideo(ctx context.Context, arg CreateSeriesVideoParams) (SeriesVideo, error)
+	CreateTVLibrary(ctx context.Context, arg CreateTVLibraryParams) (TvLibrary, error)
 	CreateTVShowGenre(ctx context.Context, arg CreateTVShowGenreParams) (TvshowGenre, error)
 	DeleteEpisode(ctx context.Context, id uuid.UUID) error
 	DeleteEpisodeCredits(ctx context.Context, episodeID uuid.UUID) error
@@ -56,7 +59,7 @@ type Querier interface {
 	DeleteSeasonImagesBySeries(ctx context.Context, seriesID uuid.UUID) error
 	DeleteSeasonsBySeries(ctx context.Context, seriesID uuid.UUID) error
 	DeleteSeries(ctx context.Context, id uuid.UUID) error
-	DeleteSeriesByLibrary(ctx context.Context, libraryID uuid.UUID) error
+	DeleteSeriesByLibrary(ctx context.Context, tvLibraryID uuid.UUID) error
 	DeleteSeriesCredits(ctx context.Context, seriesID uuid.UUID) error
 	DeleteSeriesCreditsByRole(ctx context.Context, arg DeleteSeriesCreditsByRoleParams) error
 	DeleteSeriesImages(ctx context.Context, seriesID uuid.UUID) error
@@ -64,6 +67,7 @@ type Querier interface {
 	DeleteSeriesUserRating(ctx context.Context, arg DeleteSeriesUserRatingParams) error
 	DeleteSeriesVideos(ctx context.Context, seriesID uuid.UUID) error
 	DeleteSeriesWatchProgress(ctx context.Context, arg DeleteSeriesWatchProgressParams) error
+	DeleteTVLibrary(ctx context.Context, id uuid.UUID) error
 	EpisodeExistsByNumber(ctx context.Context, arg EpisodeExistsByNumberParams) (bool, error)
 	EpisodeExistsByPath(ctx context.Context, path string) (bool, error)
 	GetAverageSeriesUserRating(ctx context.Context, seriesID uuid.UUID) (GetAverageSeriesUserRatingRow, error)
@@ -137,9 +141,13 @@ type Querier interface {
 	GetSeriesVideosByType(ctx context.Context, arg GetSeriesVideosByTypeParams) ([]SeriesVideo, error)
 	// Series Watch Progress (Continue Watching)
 	GetSeriesWatchProgress(ctx context.Context, arg GetSeriesWatchProgressParams) (SeriesWatchProgress, error)
+	// TV Libraries queries
+	GetTVLibraryByID(ctx context.Context, id uuid.UUID) (TvLibrary, error)
 	GetTVShowGenreByID(ctx context.Context, id uuid.UUID) (TvshowGenre, error)
 	GetTVShowGenreByName(ctx context.Context, name string) (TvshowGenre, error)
 	GetTVShowGenreByTmdbID(ctx context.Context, tmdbID *int32) (TvshowGenre, error)
+	GrantTVLibraryAccess(ctx context.Context, arg GrantTVLibraryAccessParams) error
+	HasTVLibraryAccess(ctx context.Context, arg HasTVLibraryAccessParams) (bool, error)
 	IsEpisodeWatched(ctx context.Context, arg IsEpisodeWatchedParams) (bool, error)
 	// Series Favorites
 	IsSeriesFavorite(ctx context.Context, arg IsSeriesFavoriteParams) (bool, error)
@@ -147,10 +155,11 @@ type Querier interface {
 	IsSeriesInWatchlist(ctx context.Context, arg IsSeriesInWatchlistParams) (bool, error)
 	LinkSeriesGenre(ctx context.Context, arg LinkSeriesGenreParams) error
 	LinkSeriesNetwork(ctx context.Context, arg LinkSeriesNetworkParams) error
+	ListAccessibleTVLibraries(ctx context.Context, userID uuid.UUID) ([]TvLibrary, error)
 	ListCompletedSeries(ctx context.Context, arg ListCompletedSeriesParams) ([]ListCompletedSeriesRow, error)
 	ListContinueWatchingSeries(ctx context.Context, arg ListContinueWatchingSeriesParams) ([]ListContinueWatchingSeriesRow, error)
 	ListCurrentlyAiringSeries(ctx context.Context, arg ListCurrentlyAiringSeriesParams) ([]Series, error)
-	ListEpisodePaths(ctx context.Context, libraryID uuid.UUID) ([]ListEpisodePathsRow, error)
+	ListEpisodePaths(ctx context.Context, tvLibraryID uuid.UUID) ([]ListEpisodePathsRow, error)
 	ListEpisodes(ctx context.Context, seriesID uuid.UUID) ([]Episode, error)
 	ListEpisodesBySeason(ctx context.Context, seasonID uuid.UUID) ([]Episode, error)
 	ListEpisodesBySeasonNumber(ctx context.Context, arg ListEpisodesBySeasonNumberParams) ([]Episode, error)
@@ -167,7 +176,10 @@ type Querier interface {
 	ListSeriesByGenre(ctx context.Context, arg ListSeriesByGenreParams) ([]Series, error)
 	ListSeriesByLibrary(ctx context.Context, arg ListSeriesByLibraryParams) ([]Series, error)
 	ListSeriesByNetwork(ctx context.Context, arg ListSeriesByNetworkParams) ([]Series, error)
-	ListSeriesPaths(ctx context.Context, libraryID uuid.UUID) ([]ListSeriesPathsRow, error)
+	ListSeriesPaths(ctx context.Context, tvLibraryID uuid.UUID) ([]ListSeriesPathsRow, error)
+	ListTVLibraries(ctx context.Context, arg ListTVLibrariesParams) ([]TvLibrary, error)
+	ListTVLibrariesByOwner(ctx context.Context, ownerUserID pgtype.UUID) ([]TvLibrary, error)
+	ListTVLibraryAccess(ctx context.Context, libraryID uuid.UUID) ([]TvLibraryAccess, error)
 	ListTVShowGenres(ctx context.Context) ([]TvshowGenre, error)
 	ListTVShowGenresWithCounts(ctx context.Context) ([]ListTVShowGenresWithCountsRow, error)
 	ListUpcomingEpisodes(ctx context.Context, arg ListUpcomingEpisodesParams) ([]ListUpcomingEpisodesRow, error)
@@ -179,6 +191,7 @@ type Querier interface {
 	RemoveSeriesFavorite(ctx context.Context, arg RemoveSeriesFavoriteParams) error
 	RemoveSeriesFromWatchlist(ctx context.Context, arg RemoveSeriesFromWatchlistParams) error
 	ReorderSeriesWatchlist(ctx context.Context, arg ReorderSeriesWatchlistParams) error
+	RevokeTVLibraryAccess(ctx context.Context, arg RevokeTVLibraryAccessParams) error
 	SearchSeries(ctx context.Context, arg SearchSeriesParams) ([]Series, error)
 	SeasonExistsByNumber(ctx context.Context, arg SeasonExistsByNumberParams) (bool, error)
 	SeriesExistsByTmdbID(ctx context.Context, tmdbID *int32) (bool, error)
@@ -198,6 +211,8 @@ type Querier interface {
 	UpdateSeries(ctx context.Context, arg UpdateSeriesParams) (Series, error)
 	UpdateSeriesPlaybackStats(ctx context.Context, id uuid.UUID) error
 	UpdateSeriesWatchProgress(ctx context.Context, arg UpdateSeriesWatchProgressParams) (SeriesWatchProgress, error)
+	UpdateTVLibrary(ctx context.Context, arg UpdateTVLibraryParams) (TvLibrary, error)
+	UpdateTVLibraryScanStatus(ctx context.Context, arg UpdateTVLibraryScanStatusParams) error
 	UpsertSeriesExternalRating(ctx context.Context, arg UpsertSeriesExternalRatingParams) error
 }
 

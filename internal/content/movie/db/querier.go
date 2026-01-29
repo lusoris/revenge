@@ -19,7 +19,8 @@ type Querier interface {
 	CountMovieCrew(ctx context.Context, movieID uuid.UUID) (int64, error)
 	CountMovies(ctx context.Context) (int64, error)
 	CountMoviesByGenre(ctx context.Context, genreID uuid.UUID) (int64, error)
-	CountMoviesByLibrary(ctx context.Context, libraryID uuid.UUID) (int64, error)
+	CountMoviesByLibrary(ctx context.Context, movieLibraryID uuid.UUID) (int64, error)
+	CountMoviesByMovieLibrary(ctx context.Context, movieLibraryID uuid.UUID) (int64, error)
 	CountUserFavoriteMovies(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUserWatchedMovies(ctx context.Context, userID uuid.UUID) (int64, error)
 	CountUserWatchlist(ctx context.Context, userID uuid.UUID) (int64, error)
@@ -27,6 +28,7 @@ type Querier interface {
 	CreateMovie(ctx context.Context, arg CreateMovieParams) (Movie, error)
 	CreateMovieCredit(ctx context.Context, arg CreateMovieCreditParams) (MovieCredit, error)
 	CreateMovieImage(ctx context.Context, arg CreateMovieImageParams) (MovieImage, error)
+	CreateMovieLibrary(ctx context.Context, arg CreateMovieLibraryParams) (MovieLibrary, error)
 	CreateMovieVideo(ctx context.Context, arg CreateMovieVideoParams) (MovieVideo, error)
 	CreateStudio(ctx context.Context, arg CreateStudioParams) (MovieStudio, error)
 	CreateWatchHistory(ctx context.Context, arg CreateWatchHistoryParams) (MovieWatchHistory, error)
@@ -36,9 +38,10 @@ type Querier interface {
 	DeleteMovieCreditsByRole(ctx context.Context, arg DeleteMovieCreditsByRoleParams) error
 	DeleteMovieImages(ctx context.Context, movieID uuid.UUID) error
 	DeleteMovieImagesByType(ctx context.Context, arg DeleteMovieImagesByTypeParams) error
+	DeleteMovieLibrary(ctx context.Context, id uuid.UUID) error
 	DeleteMovieUserRating(ctx context.Context, arg DeleteMovieUserRatingParams) error
 	DeleteMovieVideos(ctx context.Context, movieID uuid.UUID) error
-	DeleteMoviesByLibrary(ctx context.Context, libraryID uuid.UUID) error
+	DeleteMoviesByLibrary(ctx context.Context, movieLibraryID uuid.UUID) error
 	DeleteWatchHistory(ctx context.Context, id uuid.UUID) error
 	GetAverageUserRating(ctx context.Context, movieID uuid.UUID) (GetAverageUserRatingRow, error)
 	// Collections
@@ -62,6 +65,8 @@ type Querier interface {
 	// Images
 	GetMovieImages(ctx context.Context, movieID uuid.UUID) ([]MovieImage, error)
 	GetMovieImagesByType(ctx context.Context, arg GetMovieImagesByTypeParams) ([]MovieImage, error)
+	// Movie Libraries queries
+	GetMovieLibraryByID(ctx context.Context, id uuid.UUID) (MovieLibrary, error)
 	// Movie User Data Queries
 	// User Ratings
 	GetMovieUserRating(ctx context.Context, arg GetMovieUserRatingParams) (MovieUserRating, error)
@@ -76,6 +81,8 @@ type Querier interface {
 	// Studios
 	GetStudioByID(ctx context.Context, id uuid.UUID) (MovieStudio, error)
 	GetStudioByTmdbID(ctx context.Context, tmdbID *int32) (MovieStudio, error)
+	GrantMovieLibraryAccess(ctx context.Context, arg GrantMovieLibraryAccessParams) error
+	HasMovieLibraryAccess(ctx context.Context, arg HasMovieLibraryAccessParams) (bool, error)
 	// Favorites
 	IsMovieFavorite(ctx context.Context, arg IsMovieFavoriteParams) (bool, error)
 	// Watchlist
@@ -83,9 +90,13 @@ type Querier interface {
 	IsMovieWatched(ctx context.Context, arg IsMovieWatchedParams) (bool, error)
 	LinkMovieGenre(ctx context.Context, arg LinkMovieGenreParams) error
 	LinkMovieStudio(ctx context.Context, arg LinkMovieStudioParams) error
+	ListAccessibleMovieLibraries(ctx context.Context, userID uuid.UUID) ([]MovieLibrary, error)
 	ListCollections(ctx context.Context, arg ListCollectionsParams) ([]MovieCollection, error)
 	ListGenresWithMovieCounts(ctx context.Context) ([]ListGenresWithMovieCountsRow, error)
-	ListMoviePaths(ctx context.Context, libraryID uuid.UUID) ([]ListMoviePathsRow, error)
+	ListMovieLibraries(ctx context.Context, arg ListMovieLibrariesParams) ([]MovieLibrary, error)
+	ListMovieLibrariesByOwner(ctx context.Context, ownerUserID pgtype.UUID) ([]MovieLibrary, error)
+	ListMovieLibraryAccess(ctx context.Context, libraryID uuid.UUID) ([]MovieLibraryAccess, error)
+	ListMoviePaths(ctx context.Context, movieLibraryID uuid.UUID) ([]ListMoviePathsRow, error)
 	ListMovieStudios(ctx context.Context, movieID uuid.UUID) ([]MovieStudio, error)
 	ListMovies(ctx context.Context, arg ListMoviesParams) ([]Movie, error)
 	ListMoviesByCollection(ctx context.Context, collectionID pgtype.UUID) ([]Movie, error)
@@ -105,6 +116,7 @@ type Querier interface {
 	RemoveMovieFavorite(ctx context.Context, arg RemoveMovieFavoriteParams) error
 	RemoveMovieFromWatchlist(ctx context.Context, arg RemoveMovieFromWatchlistParams) error
 	ReorderWatchlist(ctx context.Context, arg ReorderWatchlistParams) error
+	RevokeMovieLibraryAccess(ctx context.Context, arg RevokeMovieLibraryAccessParams) error
 	SearchMovies(ctx context.Context, arg SearchMoviesParams) ([]Movie, error)
 	SetMovieUserRating(ctx context.Context, arg SetMovieUserRatingParams) (MovieUserRating, error)
 	SetPrimaryMovieImage(ctx context.Context, arg SetPrimaryMovieImageParams) error
@@ -112,6 +124,8 @@ type Querier interface {
 	UnlinkMovieStudios(ctx context.Context, movieID uuid.UUID) error
 	UpdateCollection(ctx context.Context, arg UpdateCollectionParams) (MovieCollection, error)
 	UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movie, error)
+	UpdateMovieLibrary(ctx context.Context, arg UpdateMovieLibraryParams) (MovieLibrary, error)
+	UpdateMovieLibraryScanStatus(ctx context.Context, arg UpdateMovieLibraryScanStatusParams) error
 	UpdateMoviePlaybackStats(ctx context.Context, id uuid.UUID) error
 	UpdateWatchHistory(ctx context.Context, arg UpdateWatchHistoryParams) (MovieWatchHistory, error)
 	UpsertMovieExternalRating(ctx context.Context, arg UpsertMovieExternalRatingParams) error

@@ -97,11 +97,11 @@ func (r *pgRepository) List(ctx context.Context, params ListParams) ([]*Movie, e
 // ListByLibrary retrieves movies from a specific library.
 func (r *pgRepository) ListByLibrary(ctx context.Context, libraryID uuid.UUID, params ListParams) ([]*Movie, error) {
 	rows, err := r.queries.ListMoviesByLibrary(ctx, db.ListMoviesByLibraryParams{
-		LibraryID: libraryID,
-		Limit:     int32(params.Limit),
-		Offset:    int32(params.Offset),
-		SortBy:    params.SortBy,
-		SortOrder: params.SortOrder,
+		MovieLibraryID: libraryID,
+		Limit:          int32(params.Limit),
+		Offset:         int32(params.Offset),
+		SortBy:         params.SortBy,
+		SortOrder:      params.SortOrder,
 	})
 	if err != nil {
 		return nil, err

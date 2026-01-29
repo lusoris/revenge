@@ -28,7 +28,7 @@ LIMIT $1 OFFSET $2;
 
 -- name: ListMoviesByLibrary :many
 SELECT * FROM movies
-WHERE library_id = $1
+WHERE movie_library_id = $1
 ORDER BY
     CASE WHEN @sort_by::text = 'title' AND @sort_order::text = 'asc' THEN sort_title END ASC,
     CASE WHEN @sort_by::text = 'title' AND @sort_order::text = 'desc' THEN sort_title END DESC,
@@ -48,13 +48,13 @@ ORDER BY collection_order ASC, release_date ASC;
 
 -- name: ListRecentlyAddedMovies :many
 SELECT * FROM movies
-WHERE library_id = ANY(@library_ids::uuid[])
+WHERE movie_library_id = ANY(@library_ids::uuid[])
 ORDER BY date_added DESC
 LIMIT $1;
 
 -- name: ListRecentlyPlayedMovies :many
 SELECT * FROM movies
-WHERE library_id = ANY(@library_ids::uuid[])
+WHERE movie_library_id = ANY(@library_ids::uuid[])
   AND last_played_at IS NOT NULL
 ORDER BY last_played_at DESC
 LIMIT $1;
@@ -73,11 +73,11 @@ LIMIT $2 OFFSET $3;
 SELECT COUNT(*) FROM movies;
 
 -- name: CountMoviesByLibrary :one
-SELECT COUNT(*) FROM movies WHERE library_id = $1;
+SELECT COUNT(*) FROM movies WHERE movie_library_id = $1;
 
 -- name: CreateMovie :one
 INSERT INTO movies (
-    library_id, path, container, size_bytes, runtime_ticks,
+    movie_library_id, path, container, size_bytes, runtime_ticks,
     title, sort_title, original_title, tagline, overview,
     release_date, year, content_rating, rating_level,
     budget, revenue, community_rating, vote_count,
@@ -133,7 +133,7 @@ WHERE id = $1;
 DELETE FROM movies WHERE id = $1;
 
 -- name: DeleteMoviesByLibrary :exec
-DELETE FROM movies WHERE library_id = $1;
+DELETE FROM movies WHERE movie_library_id = $1;
 
 -- name: MovieExistsByPath :one
 SELECT EXISTS(SELECT 1 FROM movies WHERE path = $1);
@@ -142,7 +142,7 @@ SELECT EXISTS(SELECT 1 FROM movies WHERE path = $1);
 SELECT EXISTS(SELECT 1 FROM movies WHERE tmdb_id = $1);
 
 -- name: ListMoviePaths :many
-SELECT id, path FROM movies WHERE library_id = $1;
+SELECT id, path FROM movies WHERE movie_library_id = $1;
 
 -- Collections
 

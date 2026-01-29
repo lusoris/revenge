@@ -13,11 +13,11 @@
 ```
 Foundation (Week 1-2)     ████████████████████████ 100%
 Design Audit              ████████████████████████ 100%
-Critical Fixes            ████████░░░░░░░░░░░░░░░░  30%  <- CURRENT
-Library Refactor          ░░░░░░░░░░░░░░░░░░░░░░░░   0%  <- BLOCKING
-Movie Module              ████████████████████░░░░  85%
+Critical Fixes            ████████████████████████ 100% ✓
+Library Refactor          ████████████████████░░░░  85%  <- CURRENT
+Movie Module              ████████████████████████  95%
 TV Shows Module           ████████████████████░░░░  80%
-Adult Module (QAR)        ████████░░░░░░░░░░░░░░░░  35%
+Adult Module (QAR)        ████████████████░░░░░░░░  65%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -35,8 +35,8 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - Added `tvshow.ModuleWithRiver` to fx.New()
 - [x] **Add TVShow handler deps** to `internal/api/module.go`
   - Added TvshowService to handler dependencies
-- [ ] **Register Adult modules** in `cmd/revenge/main.go`
-  - ⚠️ Blocked: Requires full QAR obfuscation first (Phase 3)
+- [x] **Register Adult modules** in `cmd/revenge/main.go`
+  - qar.Module registered (obfuscation complete)
 
 ### 1.2 Service Signature Fixes
 - [x] **Fix Session.UpdateActivity** in `internal/service/session/service.go`
@@ -44,22 +44,21 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - Updated SQL query to track IP address
 
 ### 1.3 Configuration Location
-- [ ] **Move config** from `pkg/config/` to `internal/config/`
-  - Update all imports
-  - Design specifies `internal/config/config.go`
+- [x] **Config location** - Kept in `pkg/config/` (intentional)
+  - Design doc CONFIGURATION.md needs updating to reflect `pkg/config/`
 
 ### 1.4 Error Handling
 - [x] **Remove os.Exit()** from `cmd/revenge/main.go`
   - Now triggers graceful shutdown via shutdowner.Trigger()
   - Design principle: never panic/exit for errors
 
-### 1.5 Metadata Service Core
-- [ ] **Implement Radarr provider** in `internal/service/metadata/radarr/`
-  - Currently stub returning ErrUnavailable
-  - Must work per Servarr-first principle (Priority 1)
-- [ ] **Implement central MetadataService**
-  - Create aggregation service with provider priority/fallback
-  - Design: `internal/service/metadata/service.go`
+### 1.5 Metadata Service Core ✅
+- [x] **Implement Radarr provider** in `internal/service/metadata/radarr/`
+  - Full API v3 client with circuit breaker
+  - types.go, client.go, provider.go, module.go
+- [x] **Implement central MetadataService**
+  - Orchestration with Servarr-first fallback
+  - `internal/service/metadata/service.go` + `module.go`
 
 ---
 
@@ -90,9 +89,9 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 > Per LIBRARY_TYPES.md - migrate from shared library table to per-module tables
 
 ### 2.5.1 Create Per-Module Library Tables
-- [ ] **movie_libraries** table in `movie/000005_movie_libraries.up.sql`
+- [x] **movie_libraries** table in `movie/000005_movie_libraries.up.sql`
   - Movie-specific settings: tmdb_enabled, imdb_enabled, download_trailers, etc.
-- [ ] **tv_libraries** table in `tvshow/000005_tv_libraries.up.sql`
+- [x] **tv_libraries** table in `tvshow/000005_tv_libraries.up.sql`
   - TV-specific settings: sonarr_sync, tvdb_enabled, anime_mode, etc.
 - [ ] **music_libraries** table in `music/000001_*.up.sql`
 - [ ] **audiobook_libraries** table in `audiobook/000001_*.up.sql`
@@ -101,21 +100,23 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **photo_libraries** table in `photo/000001_*.up.sql`
 - [ ] **livetv_sources** table in `livetv/000001_*.up.sql`
 - [ ] **comic_libraries** table in `comics/000001_*.up.sql`
-- [ ] **qar.fleets** table in `qar/000001_fleets.up.sql` (adult)
+- [x] **qar.fleets** table in `qar/000003_qar_obfuscation.up.sql` (adult)
 
 ### 2.5.2 Update Foreign Keys
-- [ ] `movies.library_id` → `REFERENCES movie_libraries(id)`
-- [ ] `series.library_id` → `REFERENCES tv_libraries(id)`
+- [x] `movies.library_id` → `movies.movie_library_id REFERENCES movie_libraries(id)`
+- [x] `series.library_id` → `series.tv_library_id REFERENCES tv_libraries(id)`
+- [x] Update sqlc queries to use new library column names
 - [ ] Remove `library_type` enum (no shared enum)
 
 ### 2.5.3 Deprecate Shared Library Table
-- [ ] Add data migration: `shared/000020_deprecate_libraries.up.sql`
+- [x] Add deprecation migration: `shared/000020_deprecate_libraries.up.sql`
 - [ ] Eventually remove `shared/000005_libraries.up.sql`
 
 ### 2.5.4 Polymorphic Permissions
 - [ ] Create `permissions` table with polymorphic `resource_type` + `resource_id`
 - [ ] Resource types: `movie_library`, `tv_library`, `qar.fleet`, etc.
-- [ ] Implement `LibraryProvider` interface in each module
+- [x] Implement `LibraryProvider` interface in `internal/content/shared/interfaces.go`
+- [x] Implement `LibraryService` for movie module
 
 ---
 
@@ -123,20 +124,20 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ### 3.1 Schema Obfuscation (Queen Anne's Revenge)
 - [x] **Rename directories** from `c/` to `qar/` (done)
-- [ ] **Full entity obfuscation** per ADULT_CONTENT_SYSTEM.md:
-  - `qar/movie/` → `qar/expedition/` (Movie → Expedition)
-  - `qar/scene/` → `qar/voyage/` (Scene → Voyage)
-  - Create `qar/crew/` (Performer → Crew)
-  - Create `qar/port/` (Studio → Port)
-  - Create `qar/flag/` (Tag → Flag)
-  - Create `qar/fleet/` (Library → Fleet)
-- [ ] **Update SQL tables** to obfuscated names:
-  - `qar.movies` → `qar.expeditions`
-  - `qar.scenes` → `qar.voyages`
-  - `qar.performers` → `qar.crew`
-  - `qar.studios` → `qar.ports`
-  - `qar.tags` → `qar.flags`
-- [ ] **Field obfuscation** (13+ fields):
+- [x] **Full entity obfuscation** per ADULT_CONTENT_SYSTEM.md:
+  - [x] `qar/expedition/` (Movie → Expedition)
+  - [x] `qar/voyage/` (Scene → Voyage)
+  - [x] `qar/crew/` (Performer → Crew)
+  - [x] `qar/port/` (Studio → Port)
+  - [x] `qar/flag/` (Tag → Flag)
+  - [x] `qar/fleet/` (Library → Fleet)
+- [x] **Update SQL tables** in `qar/000003_qar_obfuscation.up.sql`:
+  - [x] `qar.movies` → `qar.expeditions`
+  - [x] `qar.scenes` → `qar.voyages`
+  - [x] `qar.performers` → `qar.crew`
+  - [x] `qar.studios` → `qar.ports`
+  - [x] `qar.tags` → `qar.flags`
+- [x] **Field obfuscation** (13+ fields) in migration:
   - measurements → cargo, aliases → names, tattoos → markings
   - career_start → maiden_voyage, birth_date → christening
   - penis_size → cutlass, has_breasts → figurehead, etc.
@@ -154,11 +155,14 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **Implement StashAppClient** - private instance sync
 - [ ] **Implement FingerprintService** - hash generation/matching
 
-### 3.4 Missing Modules
-- [ ] **Implement c/performer** module (service, repository)
-- [ ] **Implement c/studio** module (service, repository)
-- [ ] **Implement c/tag** module (service, repository)
-- [ ] **Implement c.show** module (directory exists but empty)
+### 3.4 QAR Modules
+- [x] **qar/crew** module scaffolded (repository stub)
+- [x] **qar/port** module scaffolded (repository stub)
+- [x] **qar/flag** module scaffolded (repository stub)
+- [x] **qar/expedition** module scaffolded (repository stub)
+- [x] **qar/voyage** module scaffolded (repository stub)
+- [x] **qar/fleet** module scaffolded (repository stub)
+- [ ] **Implement full repository methods** (currently stubs return nil)
 
 ### 3.5 Async Processing
 - [ ] **Add River jobs** for fingerprinting
@@ -282,11 +286,18 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] uber-go/fx dependency injection
 - [x] koanf v2 configuration
 - [x] slog structured logging
-- [x] otter local cache (W-TinyLFU)
+- [x] otter local cache (W-TinyLFU) with config integration
+- [x] sturdyc API cache with request coalescing
 - [x] Health checks + graceful shutdown
 - [x] RBAC with Casbin (dynamic roles)
 - [x] Session management + OIDC support
 - [x] OpenAPI spec + ogen code generation
+
+### Metadata Infrastructure (2026-01-29)
+- [x] Radarr API v3 client (full implementation)
+- [x] TMDb provider (existing)
+- [x] Central MetadataService with Servarr-first fallback
+- [x] Per-module library tables (movie, tv, qar)
 
 ### Design Audit (2026-01-29)
 - [x] Audit all services against design docs
@@ -323,12 +334,14 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 |-----------|---------|-------|
 | Cache (distributed) | `github.com/redis/rueidis` | NOT go-redis |
 | Cache (local) | `github.com/maypok86/otter` v1.2.4 | W-TinyLFU |
+| Cache (API) | `github.com/viccon/sturdyc` v1.1.5 | Request coalescing |
 | Search | `github.com/typesense/typesense-go/v4` | NOT v3 |
 | Config | `github.com/knadh/koanf/v2` | NOT viper |
 | Logging | `log/slog` | NOT zap |
 | Jobs | `github.com/riverqueue/river` | PostgreSQL-native |
 | RBAC | `github.com/casbin/casbin/v2` | Dynamic roles |
 | DI | `go.uber.org/fx` | Dependency injection |
+| HTTP client | `github.com/go-resty/resty/v2` | External APIs |
 
 ---
 

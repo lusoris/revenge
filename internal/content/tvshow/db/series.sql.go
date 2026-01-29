@@ -24,11 +24,11 @@ func (q *Queries) CountSeries(ctx context.Context) (int64, error) {
 }
 
 const countSeriesByLibrary = `-- name: CountSeriesByLibrary :one
-SELECT COUNT(*) FROM series WHERE library_id = $1
+SELECT COUNT(*) FROM series WHERE tv_library_id = $1
 `
 
-func (q *Queries) CountSeriesByLibrary(ctx context.Context, libraryID uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, countSeriesByLibrary, libraryID)
+func (q *Queries) CountSeriesByLibrary(ctx context.Context, tvLibraryID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSeriesByLibrary, tvLibraryID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -36,7 +36,7 @@ func (q *Queries) CountSeriesByLibrary(ctx context.Context, libraryID uuid.UUID)
 
 const createSeries = `-- name: CreateSeries :one
 INSERT INTO series (
-    library_id, title, sort_title, original_title, tagline, overview,
+    tv_library_id, title, sort_title, original_title, tagline, overview,
     first_air_date, last_air_date, year, status, type,
     content_rating, rating_level, community_rating, vote_count,
     poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path,
@@ -49,11 +49,11 @@ INSERT INTO series (
     $16, $17, $18, $19, $20,
     $21, $22, $23,
     $24, $25
-) RETURNING id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at
+) RETURNING id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id
 `
 
 type CreateSeriesParams struct {
-	LibraryID        uuid.UUID      `json:"libraryId"`
+	TvLibraryID      uuid.UUID      `json:"tvLibraryId"`
 	Title            string         `json:"title"`
 	SortTitle        *string        `json:"sortTitle"`
 	OriginalTitle    *string        `json:"originalTitle"`
@@ -82,7 +82,7 @@ type CreateSeriesParams struct {
 
 func (q *Queries) CreateSeries(ctx context.Context, arg CreateSeriesParams) (Series, error) {
 	row := q.db.QueryRow(ctx, createSeries,
-		arg.LibraryID,
+		arg.TvLibraryID,
 		arg.Title,
 		arg.SortTitle,
 		arg.OriginalTitle,
@@ -111,7 +111,6 @@ func (q *Queries) CreateSeries(ctx context.Context, arg CreateSeriesParams) (Ser
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -144,6 +143,7 @@ func (q *Queries) CreateSeries(ctx context.Context, arg CreateSeriesParams) (Ser
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }
@@ -158,17 +158,17 @@ func (q *Queries) DeleteSeries(ctx context.Context, id uuid.UUID) error {
 }
 
 const deleteSeriesByLibrary = `-- name: DeleteSeriesByLibrary :exec
-DELETE FROM series WHERE library_id = $1
+DELETE FROM series WHERE tv_library_id = $1
 `
 
-func (q *Queries) DeleteSeriesByLibrary(ctx context.Context, libraryID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteSeriesByLibrary, libraryID)
+func (q *Queries) DeleteSeriesByLibrary(ctx context.Context, tvLibraryID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteSeriesByLibrary, tvLibraryID)
 	return err
 }
 
 const getSeriesByID = `-- name: GetSeriesByID :one
 
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series WHERE id = $1
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series WHERE id = $1
 `
 
 // TV Series Core Queries
@@ -177,7 +177,6 @@ func (q *Queries) GetSeriesByID(ctx context.Context, id uuid.UUID) (Series, erro
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -210,12 +209,13 @@ func (q *Queries) GetSeriesByID(ctx context.Context, id uuid.UUID) (Series, erro
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }
 
 const getSeriesByImdbID = `-- name: GetSeriesByImdbID :one
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series WHERE imdb_id = $1
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series WHERE imdb_id = $1
 `
 
 func (q *Queries) GetSeriesByImdbID(ctx context.Context, imdbID *string) (Series, error) {
@@ -223,7 +223,6 @@ func (q *Queries) GetSeriesByImdbID(ctx context.Context, imdbID *string) (Series
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -256,12 +255,13 @@ func (q *Queries) GetSeriesByImdbID(ctx context.Context, imdbID *string) (Series
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }
 
 const getSeriesByPath = `-- name: GetSeriesByPath :one
-SELECT s.id, s.library_id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at FROM series s
+SELECT s.id, s.title, s.sort_title, s.original_title, s.tagline, s.overview, s.first_air_date, s.last_air_date, s.year, s.status, s.type, s.content_rating, s.rating_level, s.community_rating, s.vote_count, s.season_count, s.episode_count, s.special_count, s.poster_path, s.poster_blurhash, s.backdrop_path, s.backdrop_blurhash, s.logo_path, s.tmdb_id, s.imdb_id, s.tvdb_id, s.network_name, s.network_logo_path, s.date_added, s.last_played_at, s.is_locked, s.created_at, s.updated_at, s.tv_library_id FROM series s
 JOIN episodes e ON e.series_id = s.id
 WHERE e.path = $1
 LIMIT 1
@@ -272,7 +272,6 @@ func (q *Queries) GetSeriesByPath(ctx context.Context, path string) (Series, err
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -305,12 +304,13 @@ func (q *Queries) GetSeriesByPath(ctx context.Context, path string) (Series, err
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }
 
 const getSeriesByTmdbID = `-- name: GetSeriesByTmdbID :one
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series WHERE tmdb_id = $1
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series WHERE tmdb_id = $1
 `
 
 func (q *Queries) GetSeriesByTmdbID(ctx context.Context, tmdbID *int32) (Series, error) {
@@ -318,7 +318,6 @@ func (q *Queries) GetSeriesByTmdbID(ctx context.Context, tmdbID *int32) (Series,
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -351,12 +350,13 @@ func (q *Queries) GetSeriesByTmdbID(ctx context.Context, tmdbID *int32) (Series,
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }
 
 const getSeriesByTvdbID = `-- name: GetSeriesByTvdbID :one
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series WHERE tvdb_id = $1
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series WHERE tvdb_id = $1
 `
 
 func (q *Queries) GetSeriesByTvdbID(ctx context.Context, tvdbID *int32) (Series, error) {
@@ -364,7 +364,6 @@ func (q *Queries) GetSeriesByTvdbID(ctx context.Context, tvdbID *int32) (Series,
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -397,13 +396,14 @@ func (q *Queries) GetSeriesByTvdbID(ctx context.Context, tvdbID *int32) (Series,
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }
 
 const listCurrentlyAiringSeries = `-- name: ListCurrentlyAiringSeries :many
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series
-WHERE library_id = ANY($2::uuid[])
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series
+WHERE tv_library_id = ANY($2::uuid[])
   AND status IN ('Returning Series', 'In Production')
 ORDER BY last_air_date DESC NULLS LAST
 LIMIT $1
@@ -425,7 +425,6 @@ func (q *Queries) ListCurrentlyAiringSeries(ctx context.Context, arg ListCurrent
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -458,6 +457,7 @@ func (q *Queries) ListCurrentlyAiringSeries(ctx context.Context, arg ListCurrent
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -470,8 +470,8 @@ func (q *Queries) ListCurrentlyAiringSeries(ctx context.Context, arg ListCurrent
 }
 
 const listRecentlyAddedSeries = `-- name: ListRecentlyAddedSeries :many
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series
-WHERE library_id = ANY($2::uuid[])
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series
+WHERE tv_library_id = ANY($2::uuid[])
 ORDER BY date_added DESC
 LIMIT $1
 `
@@ -492,7 +492,6 @@ func (q *Queries) ListRecentlyAddedSeries(ctx context.Context, arg ListRecentlyA
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -525,6 +524,7 @@ func (q *Queries) ListRecentlyAddedSeries(ctx context.Context, arg ListRecentlyA
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -537,8 +537,8 @@ func (q *Queries) ListRecentlyAddedSeries(ctx context.Context, arg ListRecentlyA
 }
 
 const listRecentlyPlayedSeries = `-- name: ListRecentlyPlayedSeries :many
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series
-WHERE library_id = ANY($2::uuid[])
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series
+WHERE tv_library_id = ANY($2::uuid[])
   AND last_played_at IS NOT NULL
 ORDER BY last_played_at DESC
 LIMIT $1
@@ -560,7 +560,6 @@ func (q *Queries) ListRecentlyPlayedSeries(ctx context.Context, arg ListRecently
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -593,6 +592,7 @@ func (q *Queries) ListRecentlyPlayedSeries(ctx context.Context, arg ListRecently
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -605,7 +605,7 @@ func (q *Queries) ListRecentlyPlayedSeries(ctx context.Context, arg ListRecently
 }
 
 const listSeries = `-- name: ListSeries :many
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series
 ORDER BY
     CASE WHEN $3::text = 'title' AND $4::text = 'asc' THEN sort_title END ASC,
     CASE WHEN $3::text = 'title' AND $4::text = 'desc' THEN sort_title END DESC,
@@ -642,7 +642,6 @@ func (q *Queries) ListSeries(ctx context.Context, arg ListSeriesParams) ([]Serie
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -675,6 +674,7 @@ func (q *Queries) ListSeries(ctx context.Context, arg ListSeriesParams) ([]Serie
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -687,8 +687,8 @@ func (q *Queries) ListSeries(ctx context.Context, arg ListSeriesParams) ([]Serie
 }
 
 const listSeriesByLibrary = `-- name: ListSeriesByLibrary :many
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series
-WHERE library_id = $1
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series
+WHERE tv_library_id = $1
 ORDER BY
     CASE WHEN $4::text = 'title' AND $5::text = 'asc' THEN sort_title END ASC,
     CASE WHEN $4::text = 'title' AND $5::text = 'desc' THEN sort_title END DESC,
@@ -703,16 +703,16 @@ LIMIT $2 OFFSET $3
 `
 
 type ListSeriesByLibraryParams struct {
-	LibraryID uuid.UUID `json:"libraryId"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-	SortBy    string    `json:"sortBy"`
-	SortOrder string    `json:"sortOrder"`
+	TvLibraryID uuid.UUID `json:"tvLibraryId"`
+	Limit       int32     `json:"limit"`
+	Offset      int32     `json:"offset"`
+	SortBy      string    `json:"sortBy"`
+	SortOrder   string    `json:"sortOrder"`
 }
 
 func (q *Queries) ListSeriesByLibrary(ctx context.Context, arg ListSeriesByLibraryParams) ([]Series, error) {
 	rows, err := q.db.Query(ctx, listSeriesByLibrary,
-		arg.LibraryID,
+		arg.TvLibraryID,
 		arg.Limit,
 		arg.Offset,
 		arg.SortBy,
@@ -727,7 +727,6 @@ func (q *Queries) ListSeriesByLibrary(ctx context.Context, arg ListSeriesByLibra
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -760,6 +759,7 @@ func (q *Queries) ListSeriesByLibrary(ctx context.Context, arg ListSeriesByLibra
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -774,7 +774,7 @@ func (q *Queries) ListSeriesByLibrary(ctx context.Context, arg ListSeriesByLibra
 const listSeriesPaths = `-- name: ListSeriesPaths :many
 SELECT DISTINCT s.id, e.path FROM series s
 JOIN episodes e ON e.series_id = s.id
-WHERE s.library_id = $1
+WHERE s.tv_library_id = $1
 `
 
 type ListSeriesPathsRow struct {
@@ -782,8 +782,8 @@ type ListSeriesPathsRow struct {
 	Path string    `json:"path"`
 }
 
-func (q *Queries) ListSeriesPaths(ctx context.Context, libraryID uuid.UUID) ([]ListSeriesPathsRow, error) {
-	rows, err := q.db.Query(ctx, listSeriesPaths, libraryID)
+func (q *Queries) ListSeriesPaths(ctx context.Context, tvLibraryID uuid.UUID) ([]ListSeriesPathsRow, error) {
+	rows, err := q.db.Query(ctx, listSeriesPaths, tvLibraryID)
 	if err != nil {
 		return nil, err
 	}
@@ -803,7 +803,7 @@ func (q *Queries) ListSeriesPaths(ctx context.Context, libraryID uuid.UUID) ([]L
 }
 
 const searchSeries = `-- name: SearchSeries :many
-SELECT id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at FROM series
+SELECT id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id FROM series
 WHERE to_tsvector('english', COALESCE(title, '') || ' ' || COALESCE(original_title, '') || ' ' || COALESCE(overview, ''))
       @@ plainto_tsquery('english', $1)
 ORDER BY ts_rank(
@@ -830,7 +830,6 @@ func (q *Queries) SearchSeries(ctx context.Context, arg SearchSeriesParams) ([]S
 		var i Series
 		if err := rows.Scan(
 			&i.ID,
-			&i.LibraryID,
 			&i.Title,
 			&i.SortTitle,
 			&i.OriginalTitle,
@@ -863,6 +862,7 @@ func (q *Queries) SearchSeries(ctx context.Context, arg SearchSeriesParams) ([]S
 			&i.IsLocked,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.TvLibraryID,
 		); err != nil {
 			return nil, err
 		}
@@ -924,7 +924,7 @@ UPDATE series SET
     network_logo_path = COALESCE($24, network_logo_path),
     is_locked = COALESCE($25, is_locked)
 WHERE id = $26
-RETURNING id, library_id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at
+RETURNING id, title, sort_title, original_title, tagline, overview, first_air_date, last_air_date, year, status, type, content_rating, rating_level, community_rating, vote_count, season_count, episode_count, special_count, poster_path, poster_blurhash, backdrop_path, backdrop_blurhash, logo_path, tmdb_id, imdb_id, tvdb_id, network_name, network_logo_path, date_added, last_played_at, is_locked, created_at, updated_at, tv_library_id
 `
 
 type UpdateSeriesParams struct {
@@ -988,7 +988,6 @@ func (q *Queries) UpdateSeries(ctx context.Context, arg UpdateSeriesParams) (Ser
 	var i Series
 	err := row.Scan(
 		&i.ID,
-		&i.LibraryID,
 		&i.Title,
 		&i.SortTitle,
 		&i.OriginalTitle,
@@ -1021,6 +1020,7 @@ func (q *Queries) UpdateSeries(ctx context.Context, arg UpdateSeriesParams) (Ser
 		&i.IsLocked,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.TvLibraryID,
 	)
 	return i, err
 }

@@ -9,6 +9,8 @@ import (
 	"github.com/riverqueue/river"
 	"go.uber.org/fx"
 
+	moviedb "github.com/lusoris/revenge/internal/content/movie/db"
+	"github.com/lusoris/revenge/internal/content/shared"
 	"github.com/lusoris/revenge/internal/service/metadata/radarr"
 	"github.com/lusoris/revenge/internal/service/metadata/tmdb"
 )
@@ -26,8 +28,10 @@ type ModuleParams struct {
 type ModuleResult struct {
 	fx.Out
 
-	Repository Repository
-	Service    *Service
+	Repository     Repository
+	Service        *Service
+	LibraryService *LibraryService
+	LibraryProvider shared.LibraryProvider `group:"library_providers"`
 }
 
 // ProvideModule provides all movie module dependencies.
@@ -43,9 +47,15 @@ func ProvideModule(p ModuleParams) (ModuleResult, error) {
 		return ModuleResult{}, err
 	}
 
+	// Create library service
+	queries := moviedb.New(p.Pool)
+	libraryService := NewLibraryService(queries, p.Logger)
+
 	return ModuleResult{
-		Repository: repo,
-		Service:    service,
+		Repository:      repo,
+		Service:         service,
+		LibraryService:  libraryService,
+		LibraryProvider: libraryService, // Implements shared.LibraryProvider
 	}, nil
 }
 

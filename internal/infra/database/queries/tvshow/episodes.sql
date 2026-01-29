@@ -136,7 +136,7 @@ SELECT EXISTS(SELECT 1 FROM episodes WHERE series_id = $1 AND season_number = $2
 
 -- name: ListEpisodePaths :many
 SELECT id, path FROM episodes
-WHERE series_id IN (SELECT id FROM series WHERE library_id = $1);
+WHERE series_id IN (SELECT id FROM series WHERE tv_library_id = $1);
 
 -- name: GetNextEpisode :one
 SELECT * FROM episodes

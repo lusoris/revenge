@@ -162,6 +162,7 @@ func (ns NullCollectionType) Value() (driver.Value, error) {
 	return string(ns.CollectionType), nil
 }
 
+// DEPRECATED: Library types are now implicit in per-module tables. This enum will be removed in a future version.
 type LibraryType string
 
 const (
@@ -676,6 +677,7 @@ type Genre struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+// DEPRECATED: Use per-module library tables instead (movie_libraries, tv_libraries, qar.fleets, etc.). This table will be removed in a future version.
 type Library struct {
 	ID                uuid.UUID          `json:"id"`
 	Name              string             `json:"name"`
@@ -697,6 +699,7 @@ type Library struct {
 	UpdatedAt         time.Time          `json:"updatedAt"`
 }
 
+// DEPRECATED: Use per-module library access tables instead (movie_library_access, tv_library_access, etc.). This table will be removed in a future version.
 type LibraryUserAccess struct {
 	LibraryID uuid.UUID `json:"libraryId"`
 	UserID    uuid.UUID `json:"userId"`
@@ -866,7 +869,6 @@ type SeasonImage struct {
 
 type Series struct {
 	ID               uuid.UUID          `json:"id"`
-	LibraryID        uuid.UUID          `json:"libraryId"`
 	Title            string             `json:"title"`
 	SortTitle        *string            `json:"sortTitle"`
 	OriginalTitle    *string            `json:"originalTitle"`
@@ -899,6 +901,7 @@ type Series struct {
 	IsLocked         bool               `json:"isLocked"`
 	CreatedAt        time.Time          `json:"createdAt"`
 	UpdatedAt        time.Time          `json:"updatedAt"`
+	TvLibraryID      uuid.UUID          `json:"tvLibraryId"`
 }
 
 type SeriesCredit struct {
@@ -1029,6 +1032,37 @@ type Session struct {
 	LastActivity  time.Time   `json:"lastActivity"`
 	ExpiresAt     time.Time   `json:"expiresAt"`
 	CreatedAt     time.Time   `json:"createdAt"`
+}
+
+type TvLibrary struct {
+	ID                  uuid.UUID          `json:"id"`
+	Name                string             `json:"name"`
+	Paths               []string           `json:"paths"`
+	ScanEnabled         bool               `json:"scanEnabled"`
+	ScanIntervalHours   int32              `json:"scanIntervalHours"`
+	LastScanAt          pgtype.Timestamptz `json:"lastScanAt"`
+	LastScanDuration    pgtype.Interval    `json:"lastScanDuration"`
+	PreferredLanguage   *string            `json:"preferredLanguage"`
+	TmdbEnabled         bool               `json:"tmdbEnabled"`
+	TvdbEnabled         bool               `json:"tvdbEnabled"`
+	DownloadBackdrops   bool               `json:"downloadBackdrops"`
+	DownloadNfo         bool               `json:"downloadNfo"`
+	GenerateChapters    bool               `json:"generateChapters"`
+	SeasonFolderFormat  *string            `json:"seasonFolderFormat"`
+	EpisodeNamingFormat *string            `json:"episodeNamingFormat"`
+	AutoAddMissing      bool               `json:"autoAddMissing"`
+	IsPrivate           bool               `json:"isPrivate"`
+	OwnerUserID         pgtype.UUID        `json:"ownerUserId"`
+	SortOrder           int32              `json:"sortOrder"`
+	Icon                *string            `json:"icon"`
+	CreatedAt           time.Time          `json:"createdAt"`
+	UpdatedAt           time.Time          `json:"updatedAt"`
+}
+
+type TvLibraryAccess struct {
+	LibraryID uuid.UUID `json:"libraryId"`
+	UserID    uuid.UUID `json:"userId"`
+	CanManage bool      `json:"canManage"`
 }
 
 type TvNetwork struct {

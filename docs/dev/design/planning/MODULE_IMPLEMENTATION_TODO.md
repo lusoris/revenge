@@ -2,57 +2,51 @@
 
 > Concrete coding tasks for implementing Revenge modules
 
-**Last Updated**: 2026-01-28
-**Current Phase**: Phase 1 - Core Infrastructure Completion
+**Last Updated**: 2026-01-29
+**Current Phase**: Phase 2 - Movie Module Implementation
 
 ---
 
 ## Phase 1: Core Infrastructure Completion
 
-### 1.1 Migrate Cache to rueidis
+### 1.1 Migrate Cache to rueidis ✅
 
-**Files to modify:**
-- [ ] `internal/infra/cache/cache.go` - Replace go-redis with rueidis
-- [ ] `go.mod` - Add `github.com/redis/rueidis`
+**Files modified:**
+- [x] `internal/infra/cache/cache.go` - Using rueidis client
+- [x] `go.mod` - Has `github.com/redis/rueidis`
 
-**Implementation:**
-```go
-// Replace go-redis client with rueidis
-import "github.com/redis/rueidis"
+### 1.2 Register Missing Modules in main.go ✅
 
-client, err := rueidis.NewClient(rueidis.ClientOption{
-    InitAddress: []string{fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)},
-    Password:    cfg.Password,
-    SelectDB:    cfg.DB,
-})
-```
+**File:** `cmd/revenge/main.go` - cache.Module, search.Module, jobs.Module registered
 
-### 1.2 Register Missing Modules in main.go
+### 1.3 Add Local Cache (otter) ✅
 
-**File:** `cmd/revenge/main.go`
+**File:** `internal/infra/cache/local.go`
+- [x] LocalCache struct with otter
+- [x] Config integration (LocalCapacity, LocalTTL)
+- [x] GetOrSet, GetJSON, SetJSON methods
+- [x] Stats and HitRate tracking
 
-Add to fx.New():
-```go
-// Currently missing - add these:
-cache.Module,
-search.Module,
-jobs.Module,
-oidc.Module,
-genre.Module,
-playback.Module,
-```
+### 1.4 Add API Cache (sturdyc) ✅
 
-### 1.3 Add Local Cache (otter)
+**File:** `internal/infra/cache/api.go`
+- [x] APICache with request coalescing
+- [x] MetadataCache with provider-specific configs
+- [x] Config integration (APICapacity, APINumShards, APITTL)
 
-**New file:** `internal/infra/cache/local.go`
+### 1.5 Implement Radarr Provider ✅
 
-```go
-import "github.com/maypok86/otter"
+**Files:**
+- [x] `internal/service/metadata/radarr/types.go` - Full API types
+- [x] `internal/service/metadata/radarr/client.go` - HTTP client with circuit breaker
+- [x] `internal/service/metadata/radarr/provider.go` - Metadata provider
+- [x] `internal/service/metadata/radarr/module.go` - fx module
 
-type LocalCache struct {
-    cache otter.Cache[string, []byte]
-}
-```
+### 1.6 Implement Central MetadataService ✅
+
+**Files:**
+- [x] `internal/service/metadata/service.go` - Orchestration with fallback
+- [x] `internal/service/metadata/module.go` - fx module with all providers
 
 ---
 
@@ -84,8 +78,8 @@ CREATE TABLE movies (
     budget BIGINT,
     revenue BIGINT,
     -- Timestamps
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_movies_tmdb_id ON movies(tmdb_id);
@@ -386,28 +380,41 @@ CREATE TABLE c.performers (
 
 ## Checklist Summary
 
-### Phase 1: Core Completion
-- [ ] Migrate cache.go to rueidis
-- [ ] Add otter local cache
-- [ ] Register all modules in main.go
-- [ ] Add sturdyc for API response caching
+### Phase 1: Core Completion ✅
+- [x] Migrate cache.go to rueidis
+- [x] Add otter local cache
+- [x] Register all modules in main.go
+- [x] Add sturdyc for API response caching
+- [x] Implement Radarr provider (full client)
+- [x] Implement TMDb provider (already existed)
+- [x] Implement central MetadataService
+
+### Phase 1.5: Library Refactor ✅
+- [x] Create per-module library tables (movie_libraries, tv_libraries)
+- [x] Update FK: `movies.movie_library_id` → `movie_libraries(id)`
+- [x] Update FK: `series.tv_library_id` → `tv_libraries(id)`
+- [x] Update sqlc queries for new library columns
+- [x] Create deprecation migration for shared libraries
+- [x] Implement `LibraryProvider` interface in shared
+- [x] Implement `LibraryService` for movie module
 
 ### Phase 2: Movie Module
-- [ ] Migration: 000001_movies.up.sql
-- [ ] Migration: 000002_movie_genres.up.sql
-- [ ] Migration: 000003_movie_people.up.sql
-- [ ] Migration: 000004_movie_images.up.sql
-- [ ] Migration: 000005_movie_streams.up.sql
-- [ ] Migration: 000006_movie_user_data.up.sql
-- [ ] sqlc queries
-- [ ] entity.go
-- [ ] repository.go
-- [ ] service.go
-- [ ] handler.go
-- [ ] jobs.go
-- [ ] module.go
-- [ ] Radarr client
-- [ ] TMDb client
+- [x] Migration: 000001_movie_core.up.sql
+- [x] Migration: 000002_movie_genres.up.sql
+- [x] Migration: 000003_movie_people.up.sql
+- [x] Migration: 000004_movie_images.up.sql
+- [x] Migration: 000005_movie_libraries.up.sql
+- [x] Migration: 000006_migrate_library_fk.up.sql
+- [x] sqlc queries
+- [x] entity.go
+- [x] repository.go
+- [x] service.go
+- [x] library_service.go
+- [ ] handler.go (API handlers)
+- [x] jobs.go
+- [x] module.go
+- [x] Radarr client
+- [x] TMDb client
 - [ ] Unit tests
 
 ### Phase 3-9: Remaining Modules
