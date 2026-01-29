@@ -21,9 +21,10 @@ Video metadata providers supply information for movies and TV shows:
 | Provider | Type | API | Status |
 |----------|------|-----|--------|
 | [TMDB](TMDB.md) | Movies, TV | REST | 🟢 Primary |
-| [TVDB](TVDB.md) | TV Shows | REST v4 | 🟡 Secondary |
+| [TVDB](THETVDB.md) | TV Shows | REST v4 | 🟡 Secondary |
 | [OMDB](OMDB.md) | Movies | REST | 🟡 Fallback |
-| [Fanart.tv](FANART_TV.md) | Artwork | REST | 🟡 Supplementary |
+| [ThePosterDB](THEPOSTERDB.md) | Artwork | Scraping | 🟡 Supplementary |
+| Fanart.tv | Artwork | REST | 🟡 Planned |
 
 ---
 

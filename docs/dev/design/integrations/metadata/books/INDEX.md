@@ -21,9 +21,11 @@ Book metadata providers supply information for:
 | Provider | Type | API | Status |
 |----------|------|-----|--------|
 | [Open Library](OPENLIBRARY.md) | Books | REST | 🟢 Primary |
-| Google Books | Books | REST | 🟡 Secondary (planned) |
+| [Hardcover](HARDCOVER.md) | Books | GraphQL | 🟡 Secondary |
+| Google Books | Books | REST | 🟡 Planned |
 | [Goodreads](GOODREADS.md) | Reviews | Scraping | 🟡 Supplementary |
-| ISBN DB | ISBN | REST | 🟡 Fallback (planned) |
+| [Audible](AUDIBLE.md) | Audiobooks | API | 🟡 Supplementary |
+| ISBN DB | ISBN | REST | 🟡 Planned |
 
 ---
 

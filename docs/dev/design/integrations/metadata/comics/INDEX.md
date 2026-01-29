@@ -21,8 +21,8 @@ Comics metadata providers supply information for:
 | Provider | Type | API | Status |
 |----------|------|-----|--------|
 | [ComicVine](COMICVINE.md) | Comics | REST | 🟢 Primary |
-| [Marvel API](MARVEL.md) | Marvel | REST | 🟡 Supplementary |
-| [Grand Comics DB](GCD.md) | Archive | REST | 🟡 Supplementary |
+| [Marvel API](MARVEL_API.md) | Marvel | REST | 🟡 Supplementary |
+| [Grand Comics DB](GRAND_COMICS_DATABASE.md) | Archive | REST | 🟡 Supplementary |
 
 ---
 

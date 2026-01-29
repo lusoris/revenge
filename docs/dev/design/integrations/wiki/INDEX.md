@@ -24,6 +24,7 @@ Wiki providers supply supplementary information for:
 | [Wikipedia](WIKIPEDIA.md) | General | 🟢 Active |
 | Wikidata | Structured | 🟡 Planned |
 | [Fandom](FANDOM.md) | Fan Wikis | 🟡 Planned |
+| [TV Tropes](TVTROPES.md) | Tropes/Analysis | 🟡 Planned |
 
 ### Adult Wiki (Isolated)
 
