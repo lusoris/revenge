@@ -39,10 +39,9 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - ⚠️ Blocked: Requires full QAR obfuscation first (Phase 3)
 
 ### 1.2 Service Signature Fixes
-- [ ] **Fix Session.UpdateActivity** in `internal/service/session/service.go`
-  - Design: `UpdateActivity(ctx, sessionID, ipAddress *netip.Addr)`
-  - Code: `UpdateActivity(ctx, sessionID, profileID *uuid.UUID)`
-  - Update signature + all callers
+- [x] **Fix Session.UpdateActivity** in `internal/service/session/service.go`
+  - Changed from `(ctx, sessionID, profileID *uuid.UUID)` to `(ctx, sessionID, ipAddress *netip.Addr)`
+  - Updated SQL query to track IP address
 
 ### 1.3 Configuration Location
 - [ ] **Move config** from `pkg/config/` to `internal/config/`
