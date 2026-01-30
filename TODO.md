@@ -26,6 +26,30 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ---
 
+## 🔴 Critical Path (Optimal Execution Order)
+
+> Based on design doc analysis - dependencies mapped, blockers identified
+
+### P0: Access Control + API (BLOCKING)
+- [ ] **RBAC adult permissions** → `internal/service/rbac/casbin.go`
+- [ ] **AdultAuthMiddleware** → `internal/service/auth/middleware_adult.go`
+- [ ] **QAR OpenAPI spec** → `api/openapi/qar.yaml`
+- [ ] **QAR API handlers** → `internal/api/qar.go` (~50 endpoints)
+
+### P1: Enable QAR Workflow
+- [ ] **FingerprintService** → `internal/service/fingerprint/`
+- [ ] **WhisparrClient** → `internal/service/metadata/whisparr/`
+
+### P2: Quality & Polish
+- [ ] **QAR Search isolation** → Typesense collections
+- [ ] **StashAppClient** → `internal/service/metadata/stash_app/` (optional)
+
+### P3: Cross-Module (parallelizable)
+- [ ] **Playback service** → `internal/service/playback/` (affects movie, tv, qar)
+- [ ] **30-day continue watching filter** (movie + tvshow queries)
+
+---
+
 ## Phase 1: Critical Fixes (Blocking)
 
 > These must be fixed before any other work
@@ -143,17 +167,55 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - penis_size → cutlass, has_breasts → figurehead, etc.
 - [ ] **Update API namespace** to `/api/v1/qar/`
 
-### 3.2 Access Control Framework
-- [ ] **Add scoped permissions** (adult:read, adult:write)
-- [ ] **Implement AdultAuthMiddleware**
+### 3.2 Access Control Framework (CRITICAL PATH - BLOCKING)
+- [ ] **Add adult permissions** to `internal/service/rbac/casbin.go`:
+  - `adult.browse` - view adult content listings
+  - `adult.stream` - stream adult content
+  - `adult.metadata.write` - edit adult metadata
+  - Assign to roles: admin=all, user=opt-in, moderator=all, guest=denied
+- [ ] **Implement AdultAuthMiddleware** in `internal/service/auth/middleware_adult.go`:
+  - Extract user from context
+  - Check RBAC for adult.* permissions
+  - Optional PIN verification (stored hashed in user profile)
+  - Fire audit event via River (async, fire-and-forget)
 - [ ] **Add audit logging** for all adult content access
+  - River worker: `AuditAdultAccessWorker`
+  - Logs: user_id, resource_type, resource_id, action, timestamp, ip_address
 - [ ] **Implement PIN protection** (optional)
+  - `user_profiles.adult_pin_hash` column
+  - Middleware checks if PIN required + validates
+
+### 3.2.5 QAR API Handlers (CRITICAL PATH - after 3.2)
+- [ ] **Create OpenAPI spec** `api/openapi/qar.yaml`:
+  - Expedition endpoints (CRUD + user data + crew/flags)
+  - Voyage endpoints (CRUD + fingerprint lookup + crew/flags)
+  - Crew endpoints (CRUD + names/portraits + expedition/voyage relations)
+  - Port endpoints (CRUD + hierarchy)
+  - Flag endpoints (CRUD + hierarchy + tagging)
+  - Fleet endpoints (CRUD + stats)
+- [ ] **Integrate qar.yaml** into `api/openapi/revenge.yaml`
+- [ ] **Run ogen codegen** `go generate ./api/...`
+- [ ] **Implement handlers** in `internal/api/qar.go`:
+  - ~50 endpoints total (copy movie pattern)
+  - All require AdultAuthMiddleware
+- [ ] **Add converters** in `internal/api/converters.go`:
+  - Domain ↔ API types for all QAR entities
+- [ ] **Wire handler deps** in `internal/api/module.go`
 
 ### 3.3 External Integrations
-- [ ] **Implement WhisparrClient** - acquisition proxy
+- [ ] **Implement WhisparrClient** in `internal/service/metadata/whisparr/`:
+  - Mirror Radarr client structure (types.go, client.go, provider.go, module.go)
+  - API v3: GET /api/v3/movie, /api/v3/person
+  - Circuit breaker integration
 - [x] **Implement StashDBClient** - GraphQL enrichment (`internal/service/metadata/stashdb/`)
-- [ ] **Implement StashAppClient** - private instance sync
-- [ ] **Implement FingerprintService** - hash generation/matching
+- [ ] **Implement StashAppClient** in `internal/service/metadata/stash_app/`:
+  - Sync scene markers as chapters
+  - Import user ratings from local Stash instance
+  - One-way sync (Stash → Revenge)
+- [ ] **Implement FingerprintService** in `internal/service/fingerprint/`:
+  - `Fingerprint(path) → VideoFingerprint` (oshash + optional pHash)
+  - `MatchScene(fingerprint) → StashDBScene` (query StashDB by hash)
+  - Requires ffprobe binary
 
 ### 3.4 QAR Modules
 - [x] **qar/crew** repository fully implemented (21 methods)
