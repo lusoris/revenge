@@ -823,6 +823,19 @@ sources:
   # LIVETV - Live TV & DVR
   # ============================================================================
   livetv:
+    - id: ersatztv
+      name: "ErsatzTV"
+      url: "https://github.com/ErsatzTV/ErsatzTV"
+      type: github_readme
+      output: "livetv/ersatztv.md"
+      note: "Custom IPTV channels from media library. v26.x. Swagger at /swagger"
+
+    - id: ersatztv-docs
+      name: "ErsatzTV Documentation"
+      url: "https://ersatztv.org/docs/"
+      type: html
+      output: "livetv/ersatztv-guide.md"
+
     - id: tvheadend
       name: "TVHeadend API"
       url: "https://tvheadend.org/d/5/api-description"
@@ -834,6 +847,32 @@ sources:
       url: "https://github.com/sub3/NextPVR"
       type: github_readme
       output: "livetv/nextpvr.md"
+
+  # ============================================================================
+  # DISTRIBUTED - Consensus & Clustering
+  # ============================================================================
+  distributed:
+    - id: hashicorp-raft
+      name: "HashiCorp Raft"
+      url: "https://pkg.go.dev/github.com/hashicorp/raft"
+      type: html
+      selectors: [".Documentation"]
+      output: "distributed/hashicorp-raft.md"
+
+    - id: hashicorp-raft-docs
+      name: "HashiCorp Raft GitHub"
+      url: "https://github.com/hashicorp/raft"
+      type: github_readme
+      output: "distributed/hashicorp-raft-guide.md"
+      note: "Used by Consul, Nomad, Vault"
+
+    - id: etcd-raft
+      name: "etcd Raft"
+      url: "https://pkg.go.dev/go.etcd.io/raft/v3"
+      type: html
+      selectors: [".Documentation"]
+      output: "distributed/etcd-raft.md"
+      note: "Minimal core - used by K8s, CockroachDB"
 
   # ============================================================================
   # CASTING - Device Casting

@@ -124,6 +124,15 @@
 | `github.com/viccon/sturdyc` | v1.1.5 | Circuit breaker | Bulkhead pattern |
 | `github.com/sony/gobreaker` | v1.0.0 | Circuit breaker | Simple, fast |
 
+## Go Dependencies (Distributed/Clustering) — Optional
+
+| Package | Version | Purpose | Notes |
+|---------|---------|---------|-------|
+| `github.com/hashicorp/raft` | v1.7.x | Consensus | Leader election, state sync |
+| `github.com/hashicorp/raft-boltdb/v2` | v2.3.x | Raft storage | BoltDB log store |
+
+**Note**: Clustering is optional. Single-instance mode is default and sufficient for most deployments.
+
 ## Go Dependencies (Serialization)
 
 | Package | Version | Purpose | Notes |
@@ -452,6 +461,219 @@ Environment variables always override config file values, enabling:
 GOGC=50          # Frequent short pauses (low latency)
 GOMEMLIMIT=2GiB  # Prevent OOM
 ```
+
+---
+
+## Network QoS Design Principle
+
+> User experience ALWAYS takes priority over background operations
+
+### Priority Hierarchy
+
+| Priority | Traffic Type | Examples | Bandwidth |
+|----------|--------------|----------|-----------|
+| **P0 (Critical)** | User interface | API responses, WebSocket | Unlimited |
+| **P1 (High)** | Active streaming | Video/audio playback | Reserved 80% |
+| **P2 (Normal)** | User-initiated | Manual metadata refresh | Fair share |
+| **P3 (Low)** | Background jobs | Library scan, thumbnails | Throttled |
+| **P4 (Idle)** | Maintenance | Cache cleanup, analytics | Opportunistic |
+
+### Bandwidth Management
+
+```
+Available Bandwidth: 100 Mbps
+    ↓
+P0 + P1 Reserved: 80 Mbps (streaming + UI)
+    ↓
+P2 + P3 Shared: 20 Mbps (background tasks)
+    ↓
+When P1 active:
+  - P3 throttled to 5 Mbps
+  - P4 paused entirely
+```
+
+### Implementation Rules
+
+| Rule | Description |
+|------|-------------|
+| **Stream Priority** | Active playback sessions get priority bandwidth |
+| **Job Throttling** | Background jobs pause/slow when user active |
+| **Adaptive Quality** | Transcoding adjusts based on available bandwidth |
+| **Connection Limits** | External API calls limited per-second |
+| **Fair Queuing** | Multiple users share bandwidth fairly |
+
+### River Job QoS
+
+| Queue | Priority | Max Workers (Idle) | Max Workers (Active User) |
+|-------|----------|-------------------|---------------------------|
+| `playback` | P1 | 50 | 50 (unchanged) |
+| `metadata` | P2 | 20 | 10 (reduced) |
+| `library` | P3 | 10 | 2 (heavily reduced) |
+| `maintenance` | P4 | 5 | 0 (paused) |
+
+### Monitoring Metrics
+
+| Metric | Purpose |
+|--------|---------|
+| `active_streams_count` | Number of active playback sessions |
+| `background_job_throttle_ratio` | How much jobs are throttled (0-1) |
+| `bandwidth_utilization_percent` | Current bandwidth usage |
+| `job_queue_depth` | Pending jobs per queue |
+
+---
+
+## Distributed Consensus (Raft)
+
+> For multi-instance deployments requiring leader election and state synchronization
+
+### Use Cases
+
+| Feature | Requires Consensus | Reason |
+|---------|-------------------|--------|
+| Library scan coordination | Yes | Avoid duplicate work |
+| Job queue leadership | Yes | Single scheduler |
+| Cache invalidation | Yes | Consistent state |
+| Session management | No | Dragonfly handles this |
+| Playback state | No | Per-user, no conflict |
+
+### Go Packages (Raft)
+
+| Package | Version | Use Case | Notes |
+|---------|---------|----------|-------|
+| `github.com/hashicorp/raft` | v1.7.x | Batteries-included | Used by Consul, Nomad |
+| `go.etcd.io/raft/v3` | v3.6.x | Minimal core | Used by K8s, CockroachDB |
+
+**Recommendation**: Use `hashicorp/raft` for simpler integration (includes storage, transport).
+
+### Cluster Configuration
+
+```yaml
+cluster:
+  enabled: false              # Single-instance by default
+  mode: "raft"                # Consensus mode
+  node_id: "node-1"           # Unique node identifier
+
+  raft:
+    bind_addr: "0.0.0.0:7000"
+    advertise_addr: "192.168.1.10:7000"
+    data_dir: "/data/raft"
+
+    # Bootstrap (first node only)
+    bootstrap: true
+
+    # Join existing cluster
+    join_addrs:
+      - "192.168.1.11:7000"
+      - "192.168.1.12:7000"
+
+    # Tuning
+    heartbeat_timeout: "1s"
+    election_timeout: "1s"
+    snapshot_interval: "120s"
+    snapshot_threshold: 8192
+```
+
+### Leader Responsibilities
+
+| Task | Leader Only | Follower Behavior |
+|------|-------------|-------------------|
+| Schedule library scans | Yes | Forward to leader |
+| Process River jobs | All nodes | Distributed workers |
+| Serve API requests | All nodes | Proxy writes to leader |
+| EPG refresh | Yes | Read from cache |
+| Metadata enrichment | All nodes | Idempotent operations |
+
+### Failure Handling
+
+| Scenario | Behavior |
+|----------|----------|
+| Leader fails | Election within 1-2s, new leader elected |
+| Follower fails | Cluster continues, rejoin on recovery |
+| Network partition | Minority partition read-only |
+| Split brain | Prevented by quorum requirement |
+
+### Minimum Cluster Size
+
+| Nodes | Fault Tolerance | Quorum |
+|-------|-----------------|--------|
+| 1 | 0 (single instance) | 1 |
+| 3 | 1 node failure | 2 |
+| 5 | 2 node failures | 3 |
+
+**Note**: For most home server deployments, single-instance mode is sufficient. Enable clustering only for high-availability requirements.
+
+---
+
+## External Client Support
+
+> Integrations for external apps, devices, and systems
+
+### Client Types
+
+| Client Type | Protocol | Features | Example Apps |
+|-------------|----------|----------|--------------|
+| **Web App** | HTTP/WS | Full UI | Browser |
+| **Mobile App** | REST API | Native UX | iOS, Android apps |
+| **Smart TV** | REST + HLS | 10-foot UI | LG webOS, Samsung Tizen |
+| **IPTV Client** | M3U/XMLTV | Live TV | VLC, Kodi, TiviMate |
+| **Media Player** | DLNA/UPnP | Direct play | VLC, MPV |
+| **Home Automation** | REST API | Webhooks | Home Assistant |
+
+### Frontend Applets
+
+Embeddable components for external systems:
+
+| Applet | Purpose | Embed Target |
+|--------|---------|--------------|
+| `now-playing` | Current playback widget | Home Assistant dashboard |
+| `recently-added` | New content carousel | Home screen widgets |
+| `continue-watching` | Resume playback list | Smart TV apps |
+| `live-tv-guide` | EPG mini-guide | Kodi addon |
+
+### Export Endpoints
+
+| Export | Format | Endpoint | Auth |
+|--------|--------|----------|------|
+| IPTV Channels | M3U8 | `/api/v1/livetv/export/m3u` | API Token |
+| EPG Guide | XMLTV | `/api/v1/livetv/export/epg` | API Token |
+| Calendar | iCal | `/api/v1/calendar/export/ical` | API Token |
+| Watchlist | JSON | `/api/v1/users/me/watchlist/export` | Bearer |
+
+### Kodi Integration
+
+| Addon | Purpose | Protocol |
+|-------|---------|----------|
+| `plugin.video.revenge` | Browse & play | REST API + HLS |
+| `service.revenge.sync` | Watch state sync | WebSocket |
+| `pvr.revenge.livetv` | Live TV | IPTV Simple Client |
+
+### Home Assistant Integration
+
+```yaml
+# configuration.yaml
+media_player:
+  - platform: revenge
+    host: revenge.local
+    port: 8080
+    api_key: !secret revenge_api_key
+
+sensor:
+  - platform: revenge
+    host: revenge.local
+    resources:
+      - now_playing
+      - recently_added
+      - library_stats
+```
+
+### Webhook Events
+
+| Event | Payload | Use Case |
+|-------|---------|----------|
+| `playback.started` | Media info, user | Lighting automation |
+| `playback.stopped` | Duration watched | Scrobble trigger |
+| `library.new_item` | Item metadata | Notification |
+| `transcode.complete` | Job result | Monitoring |
 
 ---
 

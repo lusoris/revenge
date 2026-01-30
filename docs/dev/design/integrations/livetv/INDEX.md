@@ -1,29 +1,49 @@
 # Live TV Providers
 
-> PVR backend integration for live TV and DVR
+> PVR backend and custom IPTV channel integration
 
 ---
 
 ## Overview
 
 Live TV integration provides:
-- Live channel streaming
+- **Custom IPTV channels** from your media library (via ErsatzTV)
+- Live channel streaming from PVR backends
 - EPG (Electronic Program Guide)
 - DVR recording
 - Timeshift playback
+- **Age-restricted channels** (including QAR isolation)
 
 ---
 
 ## Providers
 
-| Provider | Type | Status |
-|----------|------|--------|
-| [TVHeadend](TVHEADEND.md) | Full PVR | 🟡 Planned |
-| [NextPVR](NEXTPVR.md) | Windows PVR | 🟡 Planned |
+| Provider | Type | Status | Priority |
+|----------|------|--------|----------|
+| [ErsatzTV](ERSATZTV.md) | Custom IPTV | 🟡 Planned | HIGH |
+| [TVHeadend](TVHEADEND.md) | Full PVR | 🟡 Planned | Medium |
+| [NextPVR](NEXTPVR.md) | Windows PVR | 🟡 Planned | Low |
 
 ---
 
 ## Provider Details
+
+### ErsatzTV (PRIMARY)
+**Custom IPTV channel creation from media library**
+
+- ✅ Create custom 24/7 channels from your media
+- ✅ Scheduling (shuffle, block, scripted)
+- ✅ Hardware transcoding (NVENC, QSV, VAAPI)
+- ✅ M3U/XMLTV export for external apps
+- ✅ Plex/Jellyfin/Emby media source support
+- ✅ Age-restricted channels (including QAR isolation)
+- ✅ Free and open source
+
+**Use Cases:**
+- "Movie Channel" playing random movies 24/7
+- "Kids Channel" with age-appropriate content only
+- "80s Night" scheduled programming
+- QAR channels (isolated, PIN-protected)
 
 ### TVHeadend
 **Full-featured PVR backend**
