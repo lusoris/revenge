@@ -15,6 +15,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/qar/flag"
 	"github.com/lusoris/revenge/internal/content/qar/fleet"
 	"github.com/lusoris/revenge/internal/content/qar/port"
+	"github.com/lusoris/revenge/internal/content/qar/request"
 	"github.com/lusoris/revenge/internal/content/qar/voyage"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -61,6 +62,7 @@ type Handler struct {
 	portService       *port.Service
 	flagService       *flag.Service
 	fleetService      *fleet.Service
+	requestService    *request.Service
 }
 
 // BuildInfo contains build metadata for server info responses.
@@ -94,6 +96,7 @@ type HandlerParams struct {
 	PortService       *port.Service
 	FlagService       *flag.Service
 	FleetService      *fleet.Service
+	RequestService    *request.Service
 }
 
 // NewHandler creates a new API handler.
@@ -120,6 +123,7 @@ func NewHandler(params HandlerParams) *Handler {
 		portService:       params.PortService,
 		flagService:       params.FlagService,
 		fleetService:      params.FleetService,
+		requestService:    params.RequestService,
 	}
 }
 

@@ -768,12 +768,38 @@ type Profile struct {
 	AdultPinHash *string `json:"adultPinHash"`
 }
 
+type QarArticle struct {
+	ID                uuid.UUID       `json:"id"`
+	Name              string          `json:"name"`
+	Description       *string         `json:"description"`
+	ContentType       *string         `json:"contentType"`
+	ConditionType     string          `json:"conditionType"`
+	ConditionValue    json.RawMessage `json:"conditionValue"`
+	Action            string          `json:"action"`
+	AutomationTrigger *string         `json:"automationTrigger"`
+	Enabled           bool            `json:"enabled"`
+	Priority          int32           `json:"priority"`
+	CreatedAt         time.Time       `json:"createdAt"`
+	UpdatedAt         time.Time       `json:"updatedAt"`
+}
+
 type QarBounty struct {
 	UserID       uuid.UUID `json:"userId"`
 	ExpeditionID uuid.UUID `json:"expeditionId"`
 	Reward       *int16    `json:"reward"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
+}
+
+type QarCargoHold struct {
+	ID                int32          `json:"id"`
+	TotalQuotaGb      pgtype.Numeric `json:"totalQuotaGb"`
+	TotalUsedGb       pgtype.Numeric `json:"totalUsedGb"`
+	ExpeditionQuotaGb pgtype.Numeric `json:"expeditionQuotaGb"`
+	ExpeditionUsedGb  pgtype.Numeric `json:"expeditionUsedGb"`
+	VoyageQuotaGb     pgtype.Numeric `json:"voyageQuotaGb"`
+	VoyageUsedGb      pgtype.Numeric `json:"voyageUsedGb"`
+	UpdatedAt         time.Time      `json:"updatedAt"`
 }
 
 type QarCrew struct {
@@ -922,6 +948,67 @@ type QarPort struct {
 	LogoPath  *string     `json:"logoPath"`
 	CreatedAt time.Time   `json:"createdAt"`
 	UpdatedAt time.Time   `json:"updatedAt"`
+}
+
+type QarProvision struct {
+	ID                    uuid.UUID          `json:"id"`
+	UserID                uuid.UUID          `json:"userId"`
+	ContentType           string             `json:"contentType"`
+	RequestSubtype        *string            `json:"requestSubtype"`
+	ExternalID            *string            `json:"externalId"`
+	ExternalSource        *string            `json:"externalSource"`
+	Title                 string             `json:"title"`
+	ReleaseYear           *int32             `json:"releaseYear"`
+	Manifest              []byte             `json:"manifest"`
+	Status                string             `json:"status"`
+	AutoApproved          bool               `json:"autoApproved"`
+	AutoArticleID         pgtype.UUID        `json:"autoArticleId"`
+	ApprovedByUserID      pgtype.UUID        `json:"approvedByUserId"`
+	ApprovedAt            pgtype.Timestamptz `json:"approvedAt"`
+	DeclinedReason        *string            `json:"declinedReason"`
+	Priority              int32              `json:"priority"`
+	AyesCount             int32              `json:"ayesCount"`
+	IntegrationID         *string            `json:"integrationId"`
+	IntegrationStatus     *string            `json:"integrationStatus"`
+	EstimatedCargoGb      pgtype.Numeric     `json:"estimatedCargoGb"`
+	ActualCargoGb         pgtype.Numeric     `json:"actualCargoGb"`
+	CreatedAt             time.Time          `json:"createdAt"`
+	UpdatedAt             time.Time          `json:"updatedAt"`
+	AvailableAt           pgtype.Timestamptz `json:"availableAt"`
+	TriggeredByAutomation bool               `json:"triggeredByAutomation"`
+	ParentProvisionID     pgtype.UUID        `json:"parentProvisionId"`
+}
+
+type QarProvisionAye struct {
+	ProvisionID uuid.UUID `json:"provisionId"`
+	UserID      uuid.UUID `json:"userId"`
+	VotedAt     time.Time `json:"votedAt"`
+}
+
+type QarProvisionMissive struct {
+	ID             uuid.UUID   `json:"id"`
+	ProvisionID    uuid.UUID   `json:"provisionId"`
+	UserID         pgtype.UUID `json:"userId"`
+	Message        string      `json:"message"`
+	IsCaptainOrder bool        `json:"isCaptainOrder"`
+	CreatedAt      time.Time   `json:"createdAt"`
+}
+
+type QarRation struct {
+	UserID           uuid.UUID      `json:"userId"`
+	DailyLimit       int32          `json:"dailyLimit"`
+	WeeklyLimit      int32          `json:"weeklyLimit"`
+	MonthlyLimit     int32          `json:"monthlyLimit"`
+	DailyUsed        int32          `json:"dailyUsed"`
+	WeeklyUsed       int32          `json:"weeklyUsed"`
+	MonthlyUsed      int32          `json:"monthlyUsed"`
+	CargoQuotaGb     pgtype.Numeric `json:"cargoQuotaGb"`
+	CargoUsedGb      pgtype.Numeric `json:"cargoUsedGb"`
+	LastResetDaily   pgtype.Date    `json:"lastResetDaily"`
+	LastResetWeekly  pgtype.Date    `json:"lastResetWeekly"`
+	LastResetMonthly pgtype.Date    `json:"lastResetMonthly"`
+	CreatedAt        time.Time      `json:"createdAt"`
+	UpdatedAt        time.Time      `json:"updatedAt"`
 }
 
 type QarTreasure struct {

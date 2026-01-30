@@ -79,15 +79,15 @@ func (r *SQLCRepository) ListProvisions(ctx context.Context, params ListProvisio
 
 func (r *SQLCRepository) CreateProvision(ctx context.Context, params CreateProvisionParams) (*Provision, error) {
 	row, err := r.queries.CreateProvision(ctx, adultdb.CreateProvisionParams{
-		UserID:         params.UserID,
-		ContentType:    string(params.ContentType),
-		RequestSubtype: ptrString(string(params.RequestSubtype)),
-		ExternalID:     ptrString(params.ExternalID),
-		ExternalSource: ptrString(string(params.ExternalSource)),
-		Title:          params.Title,
-		ReleaseYear:    ptrInt32(params.ReleaseYear),
-		Manifest:       params.Manifest,
-		EstimatedCargoGb: nil,
+		UserID:           params.UserID,
+		ContentType:      string(params.ContentType),
+		RequestSubtype:   ptrString(string(params.RequestSubtype)),
+		ExternalID:       ptrString(params.ExternalID),
+		ExternalSource:   ptrString(string(params.ExternalSource)),
+		Title:            params.Title,
+		ReleaseYear:      ptrInt32(params.ReleaseYear),
+		Manifest:         params.Manifest,
+		EstimatedCargoGb: pgtype.Numeric{},
 	})
 	if err != nil {
 		return nil, err
@@ -357,9 +357,9 @@ func (r *SQLCRepository) UpsertRation(ctx context.Context, userID uuid.UUID) (*R
 func (r *SQLCRepository) UpdateRationLimits(ctx context.Context, userID uuid.UUID, params UpdateRationParams) (*Ration, error) {
 	row, err := r.queries.UpdateRationLimits(ctx, adultdb.UpdateRationLimitsParams{
 		UserID:       userID,
-		DailyLimit:   ptrInt32(params.DailyLimit),
-		WeeklyLimit:  ptrInt32(params.WeeklyLimit),
-		MonthlyLimit: ptrInt32(params.MonthlyLimit),
+		DailyLimit:   derefInt32(params.DailyLimit),
+		WeeklyLimit:  derefInt32(params.WeeklyLimit),
+		MonthlyLimit: derefInt32(params.MonthlyLimit),
 		CargoQuotaGb: numericFromFloat(params.CargoQuotaGB),
 	})
 	if err != nil {
@@ -384,8 +384,8 @@ func (r *SQLCRepository) IncrementRationUsage(ctx context.Context, userID uuid.U
 
 func (r *SQLCRepository) AddRationCargoUsage(ctx context.Context, userID uuid.UUID, cargoGB float64) (*Ration, error) {
 	row, err := r.queries.AddRationCargoUsage(ctx, adultdb.AddRationCargoUsageParams{
-		UserID:  userID,
-		Column2: numericFromFloat(&cargoGB),
+		UserID:      userID,
+		CargoUsedGb: numericFromFloat(&cargoGB),
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -478,29 +478,17 @@ func (r *SQLCRepository) UpdateArticle(ctx context.Context, id uuid.UUID, params
 		contentType = &s
 	}
 
-	var conditionType *string
-	if params.ConditionType != nil {
-		s := string(*params.ConditionType)
-		conditionType = &s
-	}
-
-	var action *string
-	if params.Action != nil {
-		s := string(*params.Action)
-		action = &s
-	}
-
 	row, err := r.queries.UpdateArticle(ctx, adultdb.UpdateArticleParams{
 		ID:                id,
-		Name:              params.Name,
+		Name:              derefString(params.Name),
 		Description:       params.Description,
 		ContentType:       contentType,
-		ConditionType:     conditionType,
+		ConditionType:     derefConditionType(params.ConditionType),
 		ConditionValue:    params.ConditionValue,
-		Action:            action,
+		Action:            derefAction(params.Action),
 		AutomationTrigger: params.AutomationTrigger,
-		Enabled:           params.Enabled,
-		Priority:          ptrInt32(params.Priority),
+		Enabled:           derefBool(params.Enabled),
+		Priority:          derefInt32(params.Priority),
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -557,9 +545,11 @@ func (r *SQLCRepository) UpdateCargoHoldQuotas(ctx context.Context, totalQuota, 
 }
 
 func (r *SQLCRepository) AddCargoHoldUsage(ctx context.Context, cargoGB float64, isExpedition bool) (*CargoHold, error) {
+	// ExpeditionUsedGb is actually the boolean flag for whether it's an expedition
+	// The SQL uses it in a CASE expression
 	row, err := r.queries.AddCargoHoldUsage(ctx, adultdb.AddCargoHoldUsageParams{
-		TotalUsedGb: numericFromFloat(&cargoGB),
-		Column2:     isExpedition,
+		TotalUsedGb:      numericFromFloat(&cargoGB),
+		ExpeditionUsedGb: boolToNumeric(isExpedition),
 	})
 	if err != nil {
 		return nil, err
@@ -782,6 +772,53 @@ func ptrInt32(i *int) *int32 {
 	}
 	v := int32(*i)
 	return &v
+}
+
+func derefInt32(i *int) int32 {
+	if i == nil {
+		return 0
+	}
+	return int32(*i)
+}
+
+func derefString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+func derefBool(b *bool) bool {
+	if b == nil {
+		return false
+	}
+	return *b
+}
+
+func derefConditionType(ct *ArticleConditionType) string {
+	if ct == nil {
+		return ""
+	}
+	return string(*ct)
+}
+
+func derefAction(a *ArticleAction) string {
+	if a == nil {
+		return ""
+	}
+	return string(*a)
+}
+
+// boolToNumeric converts a boolean to pgtype.Numeric (1 for true, 0 for false).
+// Used for SQL queries that use boolean in CASE WHEN expressions.
+func boolToNumeric(b bool) pgtype.Numeric {
+	n := pgtype.Numeric{}
+	if b {
+		_ = n.Scan(1)
+	} else {
+		_ = n.Scan(0)
+	}
+	return n
 }
 
 func numericFromFloat(f *float64) pgtype.Numeric {
