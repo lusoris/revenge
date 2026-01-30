@@ -2,8 +2,8 @@
 
 > Modular media server with complete content isolation
 
-**Last Updated**: 2026-01-29
-**Current Phase**: Design Audit Fixes
+**Last Updated**: 2026-01-30
+**Current Phase**: TV Shows Module Completion
 **Build**: `GOEXPERIMENT=greenteagc,jsonv2 go build ./...`
 
 ---
@@ -14,10 +14,10 @@
 Foundation (Week 1-2)     ████████████████████████ 100%
 Design Audit              ████████████████████████ 100%
 Critical Fixes            ████████████████████████ 100% ✓
-Library Refactor          ████████████████████░░░░  85%  <- CURRENT
+Library Refactor          ████████████████████████ 100% ✓
 Movie Module              ████████████████████████  95%
-TV Shows Module           ████████████████████░░░░  80%
-Adult Module (QAR)        ████████████████░░░░░░░░  65%
+TV Shows Module           ████████████████████░░░░  80%  <- CURRENT
+Adult Module (QAR)        ████████████████████░░░░  80%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -110,7 +110,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ### 2.5.3 Deprecate Shared Library Table
 - [x] Add deprecation migration: `shared/000020_deprecate_libraries.up.sql`
-- [ ] Eventually remove `shared/000005_libraries.up.sql`
+- [x] Remove `shared/000005_libraries.up.sql` (fully migrated to per-module tables)
 
 ### 2.5.4 Polymorphic Permissions
 - [ ] Create `permissions` table with polymorphic `resource_type` + `resource_id`
@@ -151,7 +151,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 
 ### 3.3 External Integrations
 - [ ] **Implement WhisparrClient** - acquisition proxy
-- [ ] **Implement StashDBClient** - GraphQL enrichment
+- [x] **Implement StashDBClient** - GraphQL enrichment (`internal/service/metadata/stashdb/`)
 - [ ] **Implement StashAppClient** - private instance sync
 - [ ] **Implement FingerprintService** - hash generation/matching
 
@@ -165,8 +165,8 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **Implement full repository methods** (currently stubs return nil)
 
 ### 3.5 Async Processing
-- [ ] **Add River jobs** for fingerprinting
-- [ ] **Add River jobs** for StashDB enrichment
+- [x] **Add River jobs** for fingerprinting (expedition/jobs.go, voyage/jobs.go)
+- [x] **Add River jobs** for StashDB enrichment (EnrichMetadataWorker)
 - [ ] **Add River jobs** for Stash-App sync
 
 ### 3.6 Search Isolation
@@ -293,11 +293,13 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] Session management + OIDC support
 - [x] OpenAPI spec + ogen code generation
 
-### Metadata Infrastructure (2026-01-29)
+### Metadata Infrastructure (2026-01-30)
 - [x] Radarr API v3 client (full implementation)
 - [x] TMDb provider (existing)
 - [x] Central MetadataService with Servarr-first fallback
 - [x] Per-module library tables (movie, tv, qar)
+- [x] StashDB GraphQL client for QAR metadata enrichment
+- [x] LibraryAggregator service with provider interface
 
 ### Design Audit (2026-01-29)
 - [x] Audit all services against design docs
