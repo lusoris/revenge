@@ -3,292 +3,585 @@
 > Modular media server with complete content isolation
 
 **Last Updated**: 2026-01-30
-**Current Phase**: Pre-Testing Implementation
 **Build**: `GOEXPERIMENT=greenteagc,jsonv2 go build ./...`
+
+---
+
+## Milestone Approach
+
+Each milestone requires **all three criteria** before moving on:
+- **Structure** - All types, interfaces, and packages present per design spec
+- **Linted** - `golangci-lint run` passes with no errors
+- **Tested** - Unit tests written and passing
+
+```
+Legend:
+[x] Complete
+[~] Partial (in progress)
+[ ] Not started
+```
 
 ---
 
 ## Quick Status
 
 ```
-Foundation (Week 1-2)     ████████████████████████ 100%
-Design Audit              ████████████████████████ 100%
-Critical Fixes            ████████████████████████ 100% ✓
-Library Refactor          ████████████████████████ 100% ✓
-Movie Module              ████████████████████████ 100% ✓
-TV Shows Module           ████████████████████████ 100% ✓
-Adult Module (QAR)        ████████████████████████ 100% ✓
-Pre-Test Implementation   ███████████████░░░░░░░░░  60%  <- CURRENT
-Unit Tests                ░░░░░░░░░░░░░░░░░░░░░░░░   0%
-Integration Tests         ░░░░░░░░░░░░░░░░░░░░░░░░   0%
-Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
-Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
-Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
-Frontend                  ░░░░░░░░░░░░░░░░░░░░░░░░   0%
+M1: Infrastructure       [x][x][~]  Structure ✓ | Lint ✓ | Tests ~
+M2: Shared Services      [x][x][ ]  Structure ✓ | Lint ✓ | Tests -
+M3: Movie Module         [x][x][ ]  Structure ✓ | Lint ✓ | Tests -
+M4: TV Shows Module      [x][x][ ]  Structure ✓ | Lint ✓ | Tests -
+M5: QAR Module           [x][x][ ]  Structure ✓ | Lint ✓ | Tests -
+M6: Music Module         [ ][ ][ ]  Structure - | Lint - | Tests -
+M7: Books Module         [ ][ ][ ]  Structure - | Lint - | Tests -
+M8: Comics Module        [ ][ ][ ]  Structure - | Lint - | Tests -
+M9: Playback & Streaming [~][ ][ ]  Structure ~ | Lint - | Tests -
+M10: External Metadata   [~][ ][ ]  Structure ~ | Lint - | Tests -
+M11: Integration Tests   [ ][ ][ ]  Structure - | Lint - | Tests -
+M12: Frontend            [ ][ ][ ]  Structure - | Lint - | Tests -
 ```
 
 ---
 
-## 🎯 Current Goal: Complete Everything Before Tests
+## M1: Infrastructure
 
-> Implement all features that don't require tests to validate, then write comprehensive test suites.
+> Core infrastructure: database, cache, search, jobs, health, config
+
+### Structure
+- [x] **Database** → `internal/infra/database/`
+  - [x] PostgreSQL connection with pgx
+  - [x] sqlc code generation setup
+  - [x] Migration framework (goose)
+  - [x] Partitioned activity_log table (000021)
+- [x] **Cache** → `internal/infra/cache/`
+  - [x] Rueidis client (distributed)
+  - [x] Otter local cache (W-TinyLFU)
+  - [x] Sturdyc API response coalescing
+- [x] **Search** → `internal/infra/search/`
+  - [x] Typesense client v4
+  - [x] Collection management
+  - [x] Isolated collections per module
+- [x] **Jobs** → `internal/infra/jobs/`
+  - [x] River queue setup
+  - [x] Worker registration
+  - [x] AuditLogWorker (async audit writes)
+- [x] **Health** → `internal/infra/health/`
+  - [x] Database health check
+  - [x] Cache health check
+  - [x] Search health check
+  - [x] Jobs health check
+- [x] **Config** → `pkg/config/`
+  - [x] Koanf setup
+  - [x] Environment binding
+  - [x] Validation
+
+### Lint
+- [x] `golangci-lint run ./internal/infra/...` passes
+- [x] `golangci-lint run ./pkg/config/...` passes
+
+### Tests
+- [~] Database connection tests
+- [ ] Cache integration tests
+- [ ] Search integration tests
+- [ ] Jobs worker tests
+- [ ] Health check tests
+- [ ] Config validation tests
 
 ---
 
-## Phase A: Pre-Unit-Test Implementation
+## M2: Shared Services
 
-> Everything that can be built without needing tests to verify correctness.
+> User management, authentication, RBAC, sessions, activity logging
 
-### A.1 QAR Relationship Handlers (Complete Stubs)
-- [x] **ListAdultPerformerMovies** - `expedition.ListByPerformer()` method
-  - [x] Add repository method: `ListByCrewID(ctx, crewID, limit, offset)`
-  - [x] Add service method: `ListByPerformer(ctx, performerID, limit, offset)`
-  - [x] Wire to handler
-- [x] **ListAdultStudioMovies** - `expedition.ListByPort()` method
-  - [x] Add repository method: `ListByPortID(ctx, portID, limit, offset)`
-  - [x] Add service method: `ListByStudio(ctx, studioID, limit, offset)`
-  - [x] Wire to handler
-- [x] **ListAdultTagMovies** - `expedition.ListByFlag()` method
-  - [x] Add repository method: `ListByFlagID(ctx, flagID, limit, offset)`
-  - [x] Add service method: `ListByTag(ctx, tagID, limit, offset)`
-  - [x] Wire to handler
-- [ ] **ListAdultSimilarMovies** - needs similar recommendation logic
-  - Based on shared flags/crew/port
-- [ ] **ListAdultMovieMarkers** - needs marker/chapter entity
-  - Create `qar/marker/` module or add to voyage
+### Structure
+- [x] **Users** → `internal/service/user/`
+  - [x] User entity
+  - [x] Repository (sqlc)
+  - [x] Service layer
+  - [x] Password hashing (argon2)
+- [x] **Profiles** → `internal/service/profile/`
+  - [x] Profile entity
+  - [x] Repository
+  - [x] Service
+  - [x] User preferences (auto_play, continue_watching_days, etc.)
+- [x] **Sessions** → `internal/service/session/`
+  - [x] Session entity
+  - [x] Repository
+  - [x] Token generation
+  - [x] Device tracking
+- [x] **RBAC** → `internal/service/rbac/`
+  - [x] Casbin setup
+  - [x] Role definitions (admin, moderator, user, guest)
+  - [x] Permission checks
+  - [x] User-role management methods
+    - [x] SetUserRole
+    - [x] GetUserRole
+    - [x] GetUsersForRole
+    - [x] CountUsersForRole
+    - [x] AddRoleForUser
+    - [x] RemoveRoleForUser
+- [x] **Grants** → `internal/service/grants/`
+  - [x] Resource grants entity
+  - [x] Repository
+  - [x] HasGrant, CreateGrant, DeleteGrant, DeleteByResource
+- [x] **Activity** → `internal/service/activity/`
+  - [x] Activity log entity (partitioned)
+  - [x] Repository
+  - [x] Service with JSON changes
+  - [x] Module constants (movie, tvshow, qar, user, library, system)
+- [x] **Auth** → `internal/service/auth/`
+  - [x] Login/logout
+  - [x] Token validation
+  - [x] Password reset flow
+- [x] **API Keys** → `internal/service/apikeys/`
+  - [x] Key generation
+  - [x] Key validation
+  - [x] Scopes
 
-### A.2 QAR Request System
-- [ ] **SearchAdultRequests** - implement full search
-- [ ] **ListAdultRequests** - implement user request listing
-- [ ] **CreateAdultRequest** - create download/metadata requests
-- [ ] **GetAdultRequest** - get single request
-- [ ] **VoteAdultRequest** - user voting on requests
-- [ ] **CommentAdultRequest** - comments on requests
-- [ ] **ListAdultAdminRequests** - admin view of all requests
-- [ ] **ApproveAdultRequest** - admin approval
-- [ ] **DeclineAdultRequest** - admin decline
-- [ ] **UpdateAdultRequestQuota** - admin quota management
-- [ ] **ListAdultRequestRules** - auto-approval rules
-- [ ] **CreateAdultRequestRule** - create auto-rules
-- [ ] **UpdateAdultRequestRule** - modify rules
-- [ ] **DeleteAdultRequestRule** - remove rules
+### Lint
+- [x] `golangci-lint run ./internal/service/...` passes
 
-### A.3 External Metadata Integrations
-- [ ] **StashAppClient** → `internal/service/metadata/stash_app/`
-  - [ ] types.go - Stash-App GraphQL types
-  - [ ] client.go - GraphQL client with circuit breaker
-  - [ ] provider.go - Implements metadata provider interface
-  - [ ] module.go - fx wiring
-  - Features:
-    - Import scenes from local Stash instance
-    - Sync scene markers as chapters
-    - Import user ratings
-    - One-way sync (Stash → Revenge)
-- [ ] **StashDB Search handlers**
-  - [ ] SearchAdultStashDBScenes - search StashDB
-  - [ ] GetAdultStashDBScene - get scene details
-  - [ ] SearchAdultStashDBPerformers - search performers
-  - [ ] GetAdultStashDBPerformer - get performer details
-  - [ ] IdentifyAdultStashDBScene - fingerprint lookup
-- [ ] **TPDB handlers**
-  - [ ] SearchAdultTPDBScenes - search TPDB
-  - [ ] GetAdultTPDBScene - get scene
-  - [ ] GetAdultTPDBPerformer - get performer
-- [ ] **Stash-App sync handlers**
-  - [ ] SyncAdultStash - sync with Stash-App
-  - [ ] ImportAdultStash - import from Stash-App
-  - [ ] GetAdultStashStatus - connection status
+### Tests
+- [ ] User service tests
+- [ ] Profile service tests
+- [ ] Session service tests
+- [ ] RBAC service tests
+- [ ] Grants service tests
+- [ ] Activity service tests
+- [ ] Auth service tests
+- [ ] API keys service tests
 
-### A.4 Playback Service
-- [x] **Create service** → `internal/service/playback/`
-  - [x] service.go - Playback orchestration
-  - [x] types.go - PlaybackSession, StreamInfo, etc.
-  - [x] module.go - fx wiring
-- [x] **Implement core methods**
-  - [x] StartPlayback(ctx, userID, mediaID, mediaType) → PlaybackSession
-  - [x] UpdateProgress(ctx, sessionID, positionTicks)
-  - [x] StopPlayback(ctx, sessionID)
-  - [x] GetActiveSession(ctx, userID, mediaID)
-- [x] **Up Next / Auto-Play Queue** (framework with provider interfaces)
-  - [x] BuildUpNextQueue(ctx, userID, currentMediaID) → []MediaItem
-  - [x] UpNextProvider interface for content modules
-  - [x] RegisterUpNextProvider() for module registration
-  - [ ] TV: next episode in series (provider impl)
-  - [ ] Movie: similar movies or collection next (provider impl)
-  - [ ] QAR: similar expeditions (provider impl)
-- [ ] **API endpoints**
+---
+
+## M3: Movie Module
+
+> Movies with metadata, cast, crew, collections, user data
+
+### Structure
+- [x] **Entities** → `internal/content/movie/`
+  - [x] Movie entity
+  - [x] Collection entity
+  - [x] Cast/Crew entities
+  - [x] User data (ratings, favorites, watchlist)
+- [x] **Repository** → `internal/content/movie/repository.go`
+  - [x] Full CRUD
+  - [x] Relations (cast, crew, collections)
+  - [x] User data queries
+  - [x] ListResumeableMovies (30-day filter)
+- [x] **Service** → `internal/content/movie/service.go`
+  - [x] Business logic
+  - [x] Metadata enrichment
+  - [x] User data management
+- [x] **Search** → Typesense collection
+  - [x] Movies collection
+  - [x] Search handlers
+- [x] **API Handlers** → `internal/api/movie.go`
+  - [x] CRUD endpoints
+  - [x] Relationship endpoints
+  - [x] User data endpoints
+
+### Lint
+- [x] `golangci-lint run ./internal/content/movie/...` passes
+
+### Tests
+- [ ] Movie repository tests
+- [ ] Movie service tests
+- [ ] Movie handler tests
+
+---
+
+## M4: TV Shows Module
+
+> Series → Seasons → Episodes hierarchy
+
+### Structure
+- [x] **Entities** → `internal/content/tvshow/`
+  - [x] Series entity
+  - [x] Season entity
+  - [x] Episode entity
+  - [x] Cast/Crew entities
+- [x] **Repository** → `internal/content/tvshow/repository.go`
+  - [x] Full CRUD for series/seasons/episodes
+  - [x] Hierarchical queries
+  - [x] ListResumeableEpisodes (30-day filter)
+  - [x] ListContinueWatchingSeries
+- [x] **Service** → `internal/content/tvshow/service.go`
+  - [x] Business logic
+  - [x] Season/episode management
+- [x] **Search** → Typesense collections
+  - [x] Series collection
+  - [x] Episodes collection
+- [x] **API Handlers** → `internal/api/tvshow.go`
+  - [x] Series CRUD
+  - [x] Season CRUD
+  - [x] Episode CRUD
+
+### Lint
+- [x] `golangci-lint run ./internal/content/tvshow/...` passes
+
+### Tests
+- [ ] TVShow repository tests
+- [ ] TVShow service tests
+- [ ] TVShow handler tests
+
+---
+
+## M5: QAR Module (Adult Content)
+
+> Queen Anne's Revenge - isolated adult content system
+> Schema: `qar` | Namespace: `/api/v1/qar/`
+
+### Structure
+- [x] **Expedition** (Movies) → `internal/content/qar/expedition/`
+  - [x] Entity
+  - [x] Repository
+  - [x] Service
+  - [x] ListByCrewID, ListByPortID, ListByFlagID
+- [x] **Voyage** (Scenes) → `internal/content/qar/voyage/`
+  - [x] Entity
+  - [x] Repository
+  - [x] Service
+- [x] **Crew** (Performers) → `internal/content/qar/crew/`
+  - [x] Entity
+  - [x] Repository
+  - [x] Service
+- [x] **Port** (Studios) → `internal/content/qar/port/`
+  - [x] Entity
+  - [x] Repository
+  - [x] Service
+- [x] **Flag** (Tags) → `internal/content/qar/flag/`
+  - [x] Entity
+  - [x] Repository
+  - [x] Service
+- [x] **Fleet** (Libraries) → `internal/content/qar/fleet/`
+  - [x] Entity
+  - [x] Repository
+  - [x] Service
+- [x] **Fingerprinting** → `internal/service/fingerprint/`
+  - [x] OSHash
+  - [x] pHash
+  - [x] MD5
+- [x] **API Handlers** → `internal/api/adult.go`
+  - [x] ~50 endpoints
+  - [x] Converters
+  - [x] RBAC checks (adult.browse, adult.stream, adult.metadata.write)
+- [x] **Search** → 5 Typesense collections
+  - [x] expeditions, voyages, crew, ports, flags
+
+### Lint
+- [x] `golangci-lint run ./internal/content/qar/...` passes
+
+### Tests
+- [ ] Expedition repository tests
+- [ ] Voyage repository tests
+- [ ] Crew repository tests
+- [ ] Port repository tests
+- [ ] Flag repository tests
+- [ ] Fleet repository tests
+- [ ] Fingerprint service tests
+- [ ] QAR handler tests
+
+---
+
+## M6: Music Module
+
+> Artists, albums, tracks with gapless playback
+
+### Structure
+- [ ] **Entities** → `internal/content/music/`
+  - [ ] Artist entity
+  - [ ] Album entity
+  - [ ] Track entity
+  - [ ] Playlist entity
+- [ ] **Repository**
+  - [ ] Full CRUD
+  - [ ] Artist-Album-Track relationships
+- [ ] **Service**
+  - [ ] Business logic
+  - [ ] Gapless playback support
+- [ ] **Metadata Providers**
+  - [ ] MusicBrainz client
+  - [ ] Last.fm client
+- [ ] **Search** → Typesense collections
+- [ ] **API Handlers**
+
+### Lint
+- [ ] `golangci-lint run ./internal/content/music/...` passes
+
+### Tests
+- [ ] Music repository tests
+- [ ] Music service tests
+- [ ] Music handler tests
+
+---
+
+## M7: Books Module
+
+> E-books and audiobooks
+
+### Structure
+- [ ] **Entities** → `internal/content/book/`
+  - [ ] Book entity
+  - [ ] Author entity
+  - [ ] Series entity
+  - [ ] Audiobook entity (with chapters)
+- [ ] **Repository**
+  - [ ] Full CRUD
+  - [ ] Series management
+- [ ] **Service**
+  - [ ] Business logic
+  - [ ] Chapter markers
+- [ ] **Metadata Providers**
+  - [ ] Open Library client
+  - [ ] Google Books client
+  - [ ] Audible client
+- [ ] **Search** → Typesense collections
+- [ ] **API Handlers**
+
+### Lint
+- [ ] `golangci-lint run ./internal/content/book/...` passes
+
+### Tests
+- [ ] Book repository tests
+- [ ] Book service tests
+- [ ] Book handler tests
+
+---
+
+## M8: Comics Module
+
+> Comics, manga, graphic novels
+
+### Structure
+- [ ] **Entities** → `internal/content/comics/`
+  - [ ] Comic entity
+  - [ ] Series entity
+  - [ ] Publisher entity
+  - [ ] Character entity
+- [ ] **Repository**
+  - [ ] Full CRUD
+  - [ ] Reading progress
+- [ ] **Service**
+  - [ ] Business logic
+  - [ ] Page tracking
+- [ ] **Metadata Providers**
+  - [ ] ComicVine client
+  - [ ] Marvel API client
+- [ ] **Search** → Typesense collections
+- [ ] **API Handlers**
+
+### Lint
+- [ ] `golangci-lint run ./internal/content/comics/...` passes
+
+### Tests
+- [ ] Comics repository tests
+- [ ] Comics service tests
+- [ ] Comics handler tests
+
+---
+
+## M9: Playback & Streaming
+
+> Session management, progress tracking, up-next queue
+
+### Structure
+- [x] **Playback Service** → `internal/service/playback/`
+  - [x] PlaybackSession entity
+  - [x] StreamInfo types
+  - [x] StartPlayback, UpdateProgress, StopPlayback
+  - [x] GetActiveSession
+  - [x] UpNextProvider interface
+  - [x] RegisterUpNextProvider
+  - [x] BuildUpNextQueue framework
+- [ ] **Provider Implementations**
+  - [ ] TV: next episode provider
+  - [ ] Movie: similar movies provider
+  - [ ] QAR: similar expeditions provider
+- [ ] **API Endpoints**
   - [ ] POST /api/playback/start
   - [ ] PUT /api/playback/{sessionId}/progress
   - [ ] POST /api/playback/{sessionId}/stop
   - [ ] GET /api/playback/up-next
+- [ ] **Cross-Device Sync**
+  - [ ] Polling endpoint `/api/sync/playback?since={ts}`
+  - [ ] BroadcastToUser()
 
-### A.5 Cross-Device Sync (Basic)
-- [ ] **Polling endpoint** `/api/sync/playback?since={ts}`
-  - Returns playback state changes since timestamp
-  - Lightweight alternative to WebSocket
-- [ ] **BroadcastToUser()** - notify all user sessions of changes
+### Lint
+- [ ] `golangci-lint run ./internal/service/playback/...` passes
 
-### A.6 RBAC Completion
-- [x] **Missing Casbin methods** in `internal/service/rbac/casbin.go`
-  - [x] SetUserRole(userID, role) - assigns role to user
-  - [x] AddRoleForUser(userID, role) - alias for SetUserRole
-  - [x] RemoveRoleForUser(userID) - sets user to default role
-  - [x] GetUserRole(userID) → Role
-  - [x] GetUsersForRole(role) → []uuid.UUID
-  - [x] CountUsersForRole(role) → int64
-- [x] **Resource grants table** (polymorphic permissions)
-  - [x] Migration: `shared/000019_resource_grants.up.sql`
-  - [x] Service: `internal/service/grants/`
-  - [x] HasGrant(userID, resourceType, resourceID, grantTypes...) bool
-  - [x] CreateGrant(userID, resourceType, resourceID, grantType)
-  - [x] DeleteGrant(userID, resourceType, resourceID)
-  - [x] DeleteByResource(resourceType, resourceID)
-- [ ] **Missing permissions** to seed
-  - [ ] access.rules.view, access.rules.manage, access.bypass
-  - [ ] request.* permissions (15 total)
-  - [ ] adult.request.* permissions (7 total)
-
-### A.7 Health Checks
-- [x] **Enable cache health check** via infra/health module
-- [x] **Enable search health check** via infra/health module
-- [x] **Enable jobs health check** via infra/health module
-- [ ] **Add QAR-specific health** - check adult module enabled
-
-### A.8 User Preferences
-- [x] **Add preference fields** to profiles table
-  - [x] Migration: `shared/000020_user_preferences.up.sql`
-  - [x] auto_play_enabled boolean DEFAULT true
-  - [x] auto_play_delay_seconds int DEFAULT 10
-  - [x] continue_watching_days int DEFAULT 30
-  - [x] mark_watched_percent int DEFAULT 90
-  - [x] adult_pin_hash text (for PIN protection)
-- [ ] **API endpoints**
-  - [ ] GET /api/users/me/preferences
-  - [ ] PUT /api/users/me/preferences
-- [ ] **Implement PIN protection** (optional adult content lock)
-
-### A.9 Audit Logging
-- [x] **Redesign activity_log schema**
-  - [x] Migration: `shared/000021_audit_log_redesign.up.sql`
-  - [x] Add: module, entity_id, entity_type, changes (JSONB)
-  - [x] Partition by month (2026-01 through 2026-06 + default)
-  - [x] Updated activity service to use new schema
-- [x] **River async worker** for audit writes
-  - [x] AuditLogArgs job args in `internal/infra/jobs/workers.go`
-  - [x] AuditLogWorker - fire-and-forget audit entries
-  - [x] AuditLogger interface for dependency injection
-- [ ] **Adult access audit** - log all QAR access
-  - [ ] user_id, resource_type, resource_id, action, timestamp, ip
-
-### A.10 Documentation Cleanup
-- [x] **Remove bogus UPSTREAM_SYNC.md** (was hallucinated)
-- [x] **Remove sync scripts** (sync-upstream.sh, sync-upstream.ps1)
-- [x] **Create QUICKLIST.md** - task-based quick reference guide
-- [ ] **Split QUICKLIST.md** into themed files (rbac, playback, qar, etc.)
-- [ ] **Add cross-references** to design docs with templates
-- [ ] **Update TECH_STACK.md** - add casbin, otel
-- [ ] **Update CONFIGURATION.md** - reflects pkg/config/
-- [ ] **Review all docs/dev/design/** for accuracy
+### Tests
+- [ ] Playback service tests
+- [ ] Session management tests
+- [ ] Up-next provider tests
 
 ---
 
-## Phase B: Unit Test Suite
+## M10: External Metadata
 
-> After Phase A, create comprehensive unit tests.
+> Third-party metadata providers and integrations
 
-### B.1 Repository Tests
-- [ ] **Movie repository tests** - all CRUD + queries
-- [ ] **TVShow repository tests** - series, seasons, episodes
-- [ ] **QAR repository tests** - expedition, voyage, crew, port, flag, fleet
+### Structure
+- [x] **TMDb** → `internal/service/metadata/tmdb/`
+  - [x] Client with circuit breaker
+  - [x] Movie provider
+  - [x] TV provider
+- [x] **Radarr** → `internal/service/metadata/radarr/`
+  - [x] Client
+  - [x] Movie sync
+- [x] **Sonarr** → `internal/service/metadata/sonarr/`
+  - [x] Client
+  - [x] TV sync
+- [x] **Whisparr** → `internal/service/metadata/whisparr/`
+  - [x] Client with circuit breaker
+  - [x] Adult content sync
+- [x] **StashDB** → `internal/service/metadata/stashdb/`
+  - [x] GraphQL client
+  - [x] Scene lookup
+  - [x] Performer lookup
+- [ ] **Stash-App** → `internal/service/metadata/stash_app/`
+  - [ ] types.go - Stash-App GraphQL types
+  - [ ] client.go - GraphQL client
+  - [ ] provider.go - Metadata provider
+  - [ ] module.go - fx wiring
+- [ ] **StashDB Search Handlers**
+  - [ ] SearchAdultStashDBScenes
+  - [ ] GetAdultStashDBScene
+  - [ ] SearchAdultStashDBPerformers
+  - [ ] GetAdultStashDBPerformer
+  - [ ] IdentifyAdultStashDBScene
+- [ ] **TPDB Handlers**
+  - [ ] SearchAdultTPDBScenes
+  - [ ] GetAdultTPDBScene
+  - [ ] GetAdultTPDBPerformer
+- [ ] **Stash-App Sync Handlers**
+  - [ ] SyncAdultStash
+  - [ ] ImportAdultStash
+  - [ ] GetAdultStashStatus
 
-### B.2 Service Tests
-- [ ] **Movie service tests** - business logic
-- [ ] **TVShow service tests** - business logic
-- [ ] **QAR service tests** - all 5 services
-- [ ] **Playback service tests** - session management
-- [ ] **RBAC service tests** - permission checks
+### Lint
+- [ ] `golangci-lint run ./internal/service/metadata/...` passes
 
-### B.3 Handler Tests
-- [ ] **Movie handler tests** - HTTP layer
-- [ ] **TVShow handler tests** - HTTP layer
-- [ ] **QAR handler tests** - HTTP layer, auth checks
-
-### B.4 Utility Tests
-- [ ] **Fingerprint service tests** - oshash, phash, md5
-- [ ] **Config tests** - loading, validation
-- [ ] **Cache tests** - otter, sturdyc integration
-
----
-
-## Phase C: Integration/Feature Tests
-
-> After unit tests, create integration tests.
-
-### C.1 Database Integration
-- [ ] **Migration tests** - up/down migrations work
-- [ ] **Transaction tests** - rollback behavior
-- [ ] **Concurrent access tests** - race conditions
-
-### C.2 External Service Integration
-- [ ] **TMDb integration tests** - mock server
-- [ ] **Radarr integration tests** - mock server
-- [ ] **Sonarr integration tests** - mock server
-- [ ] **StashDB integration tests** - mock GraphQL
-- [ ] **Typesense integration tests** - test container
-
-### C.3 End-to-End Workflows
-- [ ] **User registration → login → browse → play**
-- [ ] **Library scan → metadata fetch → index**
-- [ ] **Watch progress → continue watching → complete**
-- [ ] **QAR access control → browse → stream**
-
-### C.4 Performance Tests
-- [ ] **API response time benchmarks**
-- [ ] **Database query benchmarks**
-- [ ] **Cache hit rate tests**
-- [ ] **Concurrent user load tests**
+### Tests
+- [ ] TMDb client tests
+- [ ] Radarr client tests
+- [ ] Sonarr client tests
+- [ ] Whisparr client tests
+- [ ] StashDB client tests
+- [ ] Stash-App client tests
 
 ---
 
-## Completed (2026-01-30)
+## M11: Integration Tests
 
-### QAR Module (100%)
-- [x] Full schema obfuscation (Queen Anne's Revenge)
-- [x] All 6 domain packages (expedition, voyage, crew, port, flag, fleet)
-- [x] All repositories with sqlc
-- [x] All services with business logic
-- [x] QAR API handlers (~50 endpoints) in `internal/api/adult.go`
-- [x] QAR converters in `internal/api/converters.go`
-- [x] Handler wiring in `internal/api/module.go`
-- [x] Search support in List handlers (Query parameter)
-- [x] Fingerprinting handlers (Identify, Match)
-- [x] RBAC adult permissions (adult.browse, adult.stream, adult.metadata.write)
-- [x] WhisparrClient with circuit breaker
-- [x] StashDB GraphQL client
-- [x] FingerprintService (oshash + pHash + MD5)
-- [x] Typesense collections (5 isolated collections)
+> End-to-end workflows and external service integration
 
-### Continue Watching
-- [x] 30-day filter for movies (`ListResumeableMovies`)
-- [x] 30-day filter for TV episodes (`ListResumeableEpisodes`)
-- [x] 30-day filter for TV series (`ListContinueWatchingSeries`)
+### Structure
+- [ ] **Database Integration**
+  - [ ] Migration up/down tests
+  - [ ] Transaction rollback tests
+  - [ ] Concurrent access tests
+- [ ] **External Service Mocks**
+  - [ ] TMDb mock server
+  - [ ] Radarr mock server
+  - [ ] Sonarr mock server
+  - [ ] StashDB mock GraphQL
+- [ ] **Workflow Tests**
+  - [ ] User registration → login → browse → play
+  - [ ] Library scan → metadata fetch → index
+  - [ ] Watch progress → continue watching → complete
+  - [ ] QAR access control → browse → stream
+- [ ] **Performance Benchmarks**
+  - [ ] API response time
+  - [ ] Database query performance
+  - [ ] Cache hit rates
 
-### Movie Module (100%)
-- [x] Full CRUD with relations
-- [x] User data (ratings, favorites, watchlist)
-- [x] TMDb metadata provider
-- [x] Radarr metadata provider
-- [x] River jobs for metadata enrichment
-- [x] 30-day continue watching filter
+### Lint
+- [ ] All test files pass linting
 
-### TV Shows Module (100%)
-- [x] Database migrations
-- [x] sqlc queries (100+ queries)
-- [x] Entity definitions
-- [x] Repository (PostgreSQL)
-- [x] Service layer
-- [x] API handlers
-- [x] 30-day continue watching filter
+### Tests
+- [ ] All integration tests pass
+
+---
+
+## M12: Frontend
+
+> SvelteKit 2 + Tailwind CSS 4 + shadcn-svelte
+
+### Structure
+- [ ] **Core Setup** → `web/`
+  - [ ] SvelteKit 2 project
+  - [ ] Tailwind CSS 4
+  - [ ] shadcn-svelte components
+- [ ] **Routes**
+  - [ ] (auth) - login, register, forgot password
+  - [ ] (admin) - admin dashboard
+  - [ ] (media) - browse, library, search
+  - [ ] (player) - video/audio player
+- [ ] **Components**
+  - [ ] Media cards
+  - [ ] Player controls
+  - [ ] Search interface
+  - [ ] Navigation
+- [ ] **State Management**
+  - [ ] User session
+  - [ ] Playback state
+  - [ ] Theme preferences
+- [ ] **RBAC Integration**
+  - [ ] Route guards
+  - [ ] Permission checks
+
+### Lint
+- [ ] ESLint/Prettier passes
+
+### Tests
+- [ ] Component tests (Vitest)
+- [ ] E2E tests (Playwright)
+
+---
+
+## Pending Items (Not Milestone-Bound)
+
+### QAR Relationship Handlers (Remaining)
+- [ ] ListAdultSimilarMovies - shared flags/crew/port logic
+- [ ] ListAdultMovieMarkers - needs marker/chapter entity
+
+### QAR Request System
+- [ ] SearchAdultRequests
+- [ ] ListAdultRequests
+- [ ] CreateAdultRequest
+- [ ] GetAdultRequest
+- [ ] VoteAdultRequest
+- [ ] CommentAdultRequest
+- [ ] ListAdultAdminRequests
+- [ ] ApproveAdultRequest
+- [ ] DeclineAdultRequest
+- [ ] UpdateAdultRequestQuota
+- [ ] ListAdultRequestRules
+- [ ] CreateAdultRequestRule
+- [ ] UpdateAdultRequestRule
+- [ ] DeleteAdultRequestRule
+
+### RBAC Permissions to Seed
+- [ ] access.rules.view, access.rules.manage, access.bypass
+- [ ] request.* permissions (15 total)
+- [ ] adult.request.* permissions (7 total)
+
+### User Preferences API
+- [ ] GET /api/users/me/preferences
+- [ ] PUT /api/users/me/preferences
+- [ ] PIN protection implementation
+
+### QAR Health Check
+- [ ] Check adult module enabled status
+
+### Adult Access Audit
+- [ ] Log all QAR access (user_id, resource_type, resource_id, action, timestamp, ip)
+
+### Documentation
+- [ ] Split QUICKLIST.md into themed files
+- [ ] Add cross-references to design docs
+- [ ] Update TECH_STACK.md (add casbin, otel)
+- [ ] Update CONFIGURATION.md (reflects pkg/config/)
+- [ ] Review all docs/dev/design/ for accuracy
 
 ---
 
@@ -322,8 +615,12 @@ go generate ./api/...
 # Lint
 golangci-lint run
 
-# Test (after Phase B)
+# Test
 go test ./...
+
+# Test with coverage
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
 ```
 
 ---
@@ -340,3 +637,8 @@ go test ./...
 - Only `docs/dev/design/` is authoritative
 - Other documentation may be outdated
 - Code must match design, not vice versa
+
+**Milestone Completion Criteria**:
+1. All structures present per design spec
+2. `golangci-lint run` passes with no errors
+3. Unit tests written and passing with >80% coverage
