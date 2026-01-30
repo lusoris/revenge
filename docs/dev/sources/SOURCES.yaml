@@ -148,15 +148,6 @@ sources:
       type: html
       output: "tooling/river-guide.md"
 
-    # Redis Client (DEPRECATED - use rueidis)
-    - id: go-redis
-      name: "go-redis (DEPRECATED)"
-      url: "https://pkg.go.dev/github.com/redis/go-redis/v9"
-      type: html
-      selectors: [".Documentation"]
-      output: "tooling/go-redis.md"
-      note: "DEPRECATED - Use rueidis instead (14x faster)"
-
     # Redis Client - rueidis (RECOMMENDED)
     - id: rueidis
       name: "rueidis"
@@ -391,12 +382,6 @@ sources:
       type: html
       output: "apis/comicvine.md"
 
-    - id: marvel-api
-      name: "Marvel API"
-      url: "https://developer.marvel.com/docs"
-      type: html
-      output: "apis/marvel.md"
-
     # Metadata - Anime
     - id: anilist
       name: "AniList GraphQL API"
@@ -415,13 +400,6 @@ sources:
       url: "https://myanimelist.net/apiconfig/references/api/v2"
       type: html
       output: "apis/myanimelist.md"
-
-    - id: kitsu
-      name: "Kitsu API"
-      url: "https://github.com/hummingbird-me/api-docs"
-      type: github_readme
-      output: "apis/kitsu.md"
-      note: "JSON:API spec - Apiary version requires JS"
 
     # Metadata - Adult
     - id: stashdb
@@ -450,20 +428,6 @@ sources:
       url: "https://listenbrainz.readthedocs.io/en/latest/users/api/index.html"
       type: html
       output: "apis/listenbrainz.md"
-
-    - id: simkl
-      name: "Simkl API"
-      url: "https://simkl.com/apps/"
-      type: html
-      output: "apis/simkl.md"
-      note: "Developer apps page - Apiary version requires JS"
-
-    - id: letterboxd
-      name: "Letterboxd API"
-      url: "https://api-docs.letterboxd.com/"
-      type: html
-      output: "apis/letterboxd.md"
-      note: "Movie diary/social - import-only initially"
 
     # Servarr (OpenAPI specs from GitHub)
     - id: radarr
@@ -546,12 +510,6 @@ sources:
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests"
       type: html
       output: "protocols/http-range.md"
-
-    - id: webrtc
-      name: "WebRTC Overview"
-      url: "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API"
-      type: html
-      output: "protocols/webrtc.md"
 
   # ============================================================================
   # FRONTEND - Frontend Technologies
@@ -944,13 +902,6 @@ sources:
       type: html
       output: "wiki/fandom.md"
       note: "MediaWiki-based API"
-
-    - id: tvtropes
-      name: "TV Tropes"
-      url: "https://tvtropes.org/"
-      type: manual
-      output: "wiki/tvtropes.md"
-      note: "MANUAL - No official API. Requires scraping."
 
     - id: wikipedia
       name: "Wikipedia API"
