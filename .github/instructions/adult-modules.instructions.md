@@ -1,293 +1,354 @@
 # Adult Content Module Development Instructions
 
 > Special instructions for developing adult content modules.
-> All adult content is completely isolated in a separate PostgreSQL schema `c` (obscured name).
+> All adult content is completely isolated in a separate PostgreSQL schema `qar` (Queen Anne's Revenge obfuscation).
+
+## Queen Anne's Revenge (QAR) Terminology
+
+All adult content uses pirate ship terminology themed after Blackbeard's famous vessel:
+
+| Real Entity | QAR Term | Database Table | API Endpoint |
+|-------------|----------|----------------|--------------|
+| Libraries | **Fleets** | `qar.fleets` | `/qar/fleets` |
+| Movies | **Expeditions** | `qar.expeditions` | `/qar/expeditions` |
+| Scenes | **Voyages** | `qar.voyages` | `/qar/voyages` |
+| Performers | **Crew** | `qar.crew` | `/qar/crew` |
+| Studios | **Ports** | `qar.ports` | `/qar/ports` |
+| Tags | **Flags** | `qar.flags` | `/qar/flags` |
+| Categories | **Waters** | Field in flags | - |
+
+### Field Obfuscation
+
+| Real Field | QAR Term | Used In |
+|------------|----------|---------|
+| birth_date | `christening` | crew |
+| ethnicity | `origin` | crew |
+| hair_color | `rigging` | crew |
+| eye_color | `compass` | crew |
+| career_start | `maiden_voyage` | crew |
+| career_end | `last_port` | crew |
+| tattoos | `markings` | crew |
+| piercings | `anchors` | crew |
+| stashdb_id | `charter` | all entities |
+| tpdb_id | `registry` | all entities |
+| freeones_id | `manifest` | crew |
+| release_date | `launch_date` | expeditions, voyages |
+| runtime | `distance` | expeditions, voyages |
+| phash | `coordinates` | voyages |
 
 ## Schema Isolation
 
-All adult content tables MUST be in the `c` PostgreSQL schema:
+All adult content tables MUST be in the `qar` PostgreSQL schema:
 
 ```sql
-CREATE SCHEMA IF NOT EXISTS c;
+CREATE SCHEMA IF NOT EXISTS qar;
 
--- All tables in c schema
-c.movies
-c.scenes
-c.performers
-c.studios
-c.tags
+-- All tables in qar schema
+qar.fleets        -- Libraries
+qar.expeditions   -- Movies
+qar.voyages       -- Scenes
+qar.crew          -- Performers
+qar.ports         -- Studios
+qar.flags         -- Tags
 -- etc.
 ```
 
 ## API Namespace
 
-Adult content uses obscured API namespace `/c/`:
+Adult content uses the QAR namespace `/qar/`:
 
 ```
-/api/v1/c/movies
-/api/v1/c/movies/{id}
-/api/v1/c/shows
-/api/v1/c/performers
+/api/v1/qar/fleets
+/api/v1/qar/expeditions
+/api/v1/qar/expeditions/{id}
+/api/v1/qar/voyages
+/api/v1/qar/crew
+/api/v1/qar/ports
+/api/v1/qar/flags
 ```
 
-> **Security:** `/c/` endpoints require special auth scope, are not listed in public API docs, have separate rate limiting, and all access is audit-logged.
+> **Security:** `/qar/` endpoints require special auth scope, are not listed in public API docs, have separate rate limiting, and all access is audit-logged.
 
 ## Why Full Isolation?
 
 1. **Legal compliance** - Clear data separation for regulations
-2. **Backup flexibility** - `pg_dump -n c` or exclude from backups
+2. **Backup flexibility** - `pg_dump -n qar` or exclude from backups
 3. **Access control** - PostgreSQL GRANT per schema
-4. **Easy purge** - `DROP SCHEMA c CASCADE` removes everything
+4. **Easy purge** - `DROP SCHEMA qar CASCADE` removes everything
 5. **No data leakage** - No FK references to public schema
 6. **Separate images** - Adult images completely isolated
-7. **Obscured namespace** - `/c/` and schema `c` for discretion
+7. **Obscured namespace** - `/qar/` and schema `qar` for discretion
 
 ## Module Structure
 
 ```
 internal/
   content/
-    c/                      # Obscured directory name
-      movie/
+    qar/                     # Queen Anne's Revenge namespace
+      expedition/            # Movies
         entity.go
         repository.go
-        repository_pg.go
+        repository_sqlc.go
         service.go
         handler.go
         scanner.go
-        jobs.go             # River job definitions
+        jobs.go
         module.go
-      show/
+      voyage/                # Scenes
+        entity.go
+        repository.go
+        ...
+      crew/                  # Performers
+        entity.go
+        repository.go
+        ...
+      port/                  # Studios
+        entity.go
+        repository.go
+        ...
+      flag/                  # Tags
+        entity.go
+        repository.go
+        ...
+      fleet/                 # Libraries
         entity.go
         repository.go
         ...
       shared/
-        performer.go       # Shared between c/movie and c/show
-        studio.go          # Shared between c/movie and c/show
-        repository_performer.go
-        repository_studio.go
+        content_entity.go    # Common embedded struct
+        interfaces.go        # Shared interfaces
 ```
 
 ## Database Tables
 
-### Adult Movies
+### Fleets (Libraries)
 
 ```sql
--- Core
-c.movies (
+qar.fleets (
     id UUID PRIMARY KEY,
-    library_id UUID NOT NULL,  -- FK to public.libraries but not enforced
+    name VARCHAR(255) NOT NULL,
+    fleet_type VARCHAR(20) NOT NULL,  -- 'expedition', 'voyage'
+    paths TEXT[] NOT NULL,
+    stashdb_endpoint TEXT DEFAULT 'https://stashdb.org/graphql',
+    owner_user_id UUID,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
+)
+```
+
+### Expeditions (Movies)
+
+```sql
+qar.expeditions (
+    id UUID PRIMARY KEY,
+    fleet_id UUID NOT NULL REFERENCES qar.fleets(id),
     title VARCHAR(500) NOT NULL,
+    sort_title VARCHAR(500),
+    overview TEXT,
+    launch_date DATE,       -- release_date
+    distance INT,           -- runtime_minutes
+    port_id UUID REFERENCES qar.ports(id),
+    charter VARCHAR(100),   -- stashdb_id
+    registry VARCHAR(100),  -- tpdb_id
+    whisparr_id INT,
+    cover_path TEXT,
     path TEXT NOT NULL,
-    runtime_ticks BIGINT,
-    release_date DATE,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ
 )
+```
 
-c.scenes (
+### Voyages (Scenes)
+
+```sql
+qar.voyages (
     id UUID PRIMARY KEY,
-    movie_id UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    title VARCHAR(500),
-    start_ticks BIGINT,
-    end_ticks BIGINT
+    fleet_id UUID NOT NULL REFERENCES qar.fleets(id),
+    title VARCHAR(500) NOT NULL,
+    overview TEXT,
+    launch_date DATE,       -- release_date
+    distance INT,           -- runtime_minutes
+    port_id UUID REFERENCES qar.ports(id),
+    coordinates VARCHAR(64), -- phash
+    oshash VARCHAR(32),
+    md5 VARCHAR(64),
+    charter VARCHAR(100),   -- stashdb_id
+    registry VARCHAR(100),  -- tpdb_id
+    stash_id VARCHAR(100),
+    whisparr_id INT,
+    cover_path TEXT,
+    path TEXT NOT NULL,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 )
 ```
 
-### Performers (shared c/movie + c/show)
+### Crew (Performers)
 
 ```sql
-c.performers (
+qar.crew (
     id UUID PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    aliases TEXT[],
-    gender VARCHAR(20),
-    birth_date DATE,
-    ethnicity VARCHAR(50),
+    name VARCHAR(255) NOT NULL,
+    disambiguation VARCHAR(255),
+    gender VARCHAR(50),
+    christening DATE,       -- birth_date
+    death_date DATE,
+    birth_city VARCHAR(255),
+    origin VARCHAR(100),    -- ethnicity
+    nationality VARCHAR(100),
+    rigging VARCHAR(50),    -- hair_color
+    compass VARCHAR(50),    -- eye_color
     height_cm INT,
-    measurements VARCHAR(20),
-    tattoos TEXT,
-    piercings TEXT,
-    career_start INT,
-    career_end INT,
+    weight_kg INT,
+    measurements VARCHAR(50),
+    cup_size VARCHAR(10),
+    breast_type VARCHAR(50),
+    markings TEXT,          -- tattoos
+    anchors TEXT,           -- piercings
+    maiden_voyage INT,      -- career_start
+    last_port INT,          -- career_end
     bio TEXT,
+    stash_id VARCHAR(100),
+    charter VARCHAR(100),   -- stashdb_id
+    registry VARCHAR(100),  -- tpdb_id
+    manifest VARCHAR(100),  -- freeones_id
+    twitter TEXT,
+    instagram TEXT,
+    image_path TEXT,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ
 )
 
-c.movie_performers (
-    movie_id UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    performer_id UUID REFERENCES c.performers(id) ON DELETE CASCADE,
-    PRIMARY KEY (movie_id, performer_id)
-)
-
-c.scene_performers (
-    scene_id UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
-    performer_id UUID REFERENCES c.performers(id) ON DELETE CASCADE,
-    PRIMARY KEY (scene_id, performer_id)
+qar.crew_names (
+    crew_id UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (crew_id, name)
 )
 ```
 
-### Studios
+### Ports (Studios)
 
 ```sql
-c.studios (
+qar.ports (
     id UUID PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    parent_id UUID REFERENCES qar.ports(id),  -- Network/parent
+    stashdb_id VARCHAR(100),
+    tpdb_id VARCHAR(100),
+    url TEXT,
     logo_path TEXT,
-    website TEXT,
-    created_at TIMESTAMPTZ
-)
-
-c.movie_studios (
-    movie_id UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    studio_id UUID REFERENCES c.studios(id) ON DELETE CASCADE,
-    PRIMARY KEY (movie_id, studio_id)
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
 )
 ```
 
-### Tags (own taxonomy, not genres)
+### Flags (Tags)
 
 ```sql
-c.tags (
+qar.flags (
     id UUID PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
-    category VARCHAR(50)  -- 'act', 'attribute', 'setting', etc.
-)
-
-c.movie_tags (
-    movie_id UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    tag_id UUID REFERENCES c.tags(id) ON DELETE CASCADE,
-    PRIMARY KEY (movie_id, tag_id)
-)
-
-c.scene_tags (
-    scene_id UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
-    tag_id UUID REFERENCES c.tags(id) ON DELETE CASCADE,
-    PRIMARY KEY (scene_id, tag_id)
-)
-```
-
-### User Data (all isolated)
-
-```sql
-c.movie_user_ratings (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,  -- References public.users but not enforced
-    movie_id UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    score DECIMAL(3,1) NOT NULL,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ,
-    UNIQUE(user_id, movie_id)
-)
-
-c.scene_user_ratings (...)
-c.performer_user_ratings (...)
-c.studio_user_ratings (...)
-
-c.movie_favorites (user_id, movie_id, added_at)
-c.scene_favorites (...)
-c.performer_favorites (...)
-c.studio_favorites (...)
-
-c.movie_history (user_id, movie_id, position_ticks, completed, watched_at)
-```
-
-### Images (isolated)
-
-```sql
-c.images (
-    id UUID PRIMARY KEY,
-    item_type VARCHAR(20) NOT NULL,  -- 'movie', 'scene', 'performer', 'studio'
-    item_id UUID NOT NULL,
-    image_type VARCHAR(20) NOT NULL, -- 'poster', 'backdrop', 'profile'
-    path TEXT NOT NULL,
-    width INT,
-    height INT,
-    blurhash TEXT,
+    description TEXT,
+    parent_id UUID REFERENCES qar.flags(id),
+    stashdb_id VARCHAR(36),
+    waters VARCHAR(50),    -- category
     created_at TIMESTAMPTZ
 )
 ```
 
-### Playlists & Collections (isolated)
+### Junction Tables
 
 ```sql
-c.playlists (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL,
-    name VARCHAR(200) NOT NULL,
-    is_public BOOLEAN DEFAULT false,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
+qar.expedition_crew (
+    expedition_id UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
+    crew_id UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
+    PRIMARY KEY (expedition_id, crew_id)
 )
 
-c.playlist_items (
-    id UUID PRIMARY KEY,
-    playlist_id UUID REFERENCES c.playlists(id) ON DELETE CASCADE,
-    item_type VARCHAR(20) NOT NULL,  -- 'movie', 'scene', 'episode'
-    item_id UUID NOT NULL,
-    position INT NOT NULL
+qar.voyage_crew (
+    voyage_id UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    crew_id UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
+    PRIMARY KEY (voyage_id, crew_id)
 )
 
-c.collections (...)
-c.collection_items (...)
+qar.expedition_flags (
+    expedition_id UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
+    flag_id UUID REFERENCES qar.flags(id) ON DELETE CASCADE,
+    PRIMARY KEY (expedition_id, flag_id)
+)
+
+qar.voyage_flags (
+    voyage_id UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    flag_id UUID REFERENCES qar.flags(id) ON DELETE CASCADE,
+    PRIMARY KEY (voyage_id, flag_id)
+)
 ```
 
 ## Entity Design
 
 ```go
-// content/c/movie/entity.go
-package movie
+// content/qar/voyage/entity.go
+package voyage
 
-type Movie struct {
-    ID           uuid.UUID
-    LibraryID    uuid.UUID
-    Title        string
-    Path         string
-    RuntimeTicks int64
-    ReleaseDate  *time.Time
-    CreatedAt    time.Time
-    UpdatedAt    time.Time
+import (
+    "github.com/lusoris/revenge/internal/content/shared"
+)
 
-    // Relationships
-    Scenes     []Scene
-    Performers []Performer
-    Studios    []Studio
-    Tags       []Tag
-}
-
-type Scene struct {
-    ID         uuid.UUID
-    MovieID    uuid.UUID
-    Title      string
-    StartTicks int64
-    EndTicks   int64
-
-    Performers []Performer
-    Tags       []Tag
+// Voyage represents an adult scene (obfuscated as "voyage").
+type Voyage struct {
+    shared.ContentEntity
+    FleetID     uuid.UUID   // Library reference
+    LaunchDate  *time.Time  // release_date
+    Distance    int         // runtime_minutes
+    Overview    string
+    PortID      *uuid.UUID  // studio_id
+    Coordinates string      // phash
+    Oshash      string
+    MD5         string
+    CoverPath   string
+    Charter     string      // stashdb_id
+    Registry    string      // tpdb_id
+    StashID     string
+    WhisparrID  *int
 }
 ```
 
 ```go
-// content/c/shared/performer.go
-package shared
+// content/qar/crew/entity.go
+package crew
 
-type Performer struct {
-    ID           uuid.UUID
-    Name         string
-    Aliases      []string
-    Gender       string
-    BirthDate    *time.Time
-    Ethnicity    string
-    HeightCm     *int
-    Measurements string
-    Tattoos      string
-    Piercings    string
-    CareerStart  *int
-    CareerEnd    *int
-    Bio          string
-    CreatedAt    time.Time
-    UpdatedAt    time.Time
+// Crew represents an adult performer (obfuscated as "crew").
+type Crew struct {
+    ID             uuid.UUID
+    Name           string
+    Disambiguation string
+    Gender         string
+    Christening    *time.Time  // birth_date
+    DeathDate      *time.Time
+    BirthCity      string
+    Origin         string      // ethnicity
+    Nationality    string
+    Rigging        string      // hair_color
+    Compass        string      // eye_color
+    HeightCM       *int
+    WeightKG       *int
+    Measurements   string
+    CupSize        string
+    BreastType     string
+    Markings       string      // tattoos
+    Anchors        string      // piercings
+    MaidenVoyage   *int        // career_start
+    LastPort       *int        // career_end
+    Bio            string
+    StashID        string
+    Charter        string      // stashdb_id
+    Registry       string      // tpdb_id
+    Manifest       string      // freeones_id
+    Twitter        string
+    Instagram      string
+    ImagePath      string
+    CreatedAt      time.Time
+    UpdatedAt      time.Time
 }
 ```
 
@@ -296,79 +357,76 @@ type Performer struct {
 EVERY adult handler MUST verify user has adult content access:
 
 ```go
-// content/c/movie/handler.go
-func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
-    ctx := r.Context()
-    user := middleware.UserFromContext(ctx)
-
-    // REQUIRED: Check adult access scope
-    if !user.HasScope("adult:read") {
-        handlers.Forbidden(w, "Adult content access not enabled")
-        return
+// content/qar/voyage/handler.go
+func (h *Handler) Get(ctx context.Context, params api.GetVoyageParams) (*api.Voyage, error) {
+    // REQUIRED: Check adult access via handler helper
+    user, err := h.handler.requireAdultBrowse(ctx)
+    if err != nil {
+        return nil, err
     }
 
     // Proceed with handler logic
-}
-```
-
-Consider middleware for adult routes:
-
-```go
-func (h *Handler) RegisterRoutes(mux *http.ServeMux, auth *middleware.Auth) {
-    adultAuth := auth.ScopeRequired("adult:read")
-
-    mux.Handle("GET /api/v1/c/movies", auth.Required(adultAuth(http.HandlerFunc(h.List))))
-    mux.Handle("GET /api/v1/c/movies/{id}", auth.Required(adultAuth(http.HandlerFunc(h.Get))))
+    voyage, err := h.service.GetByID(ctx, params.ID)
     // ...
 }
 ```
 
-## API Routes
+RBAC permissions for adult content:
 
-Adult content uses obscured `/c/` namespace:
-
-```
-/api/v1/c/
-  /movies
-  /movies/{id}
-  /movies/{id}/scenes
-  /movies/{id}/performers
-  /shows
-  /shows/{id}
-  /shows/{id}/seasons
-  /shows/{id}/seasons/{seasonId}/episodes
-  /performers
-  /performers/{id}
-  /performers/{id}/movies
-  /studios
-  /studios/{id}
-  /tags
-  /playlists
+```go
+// Permission constants
+const (
+    PermAdultBrowse            = "adult:browse"
+    PermAdultStream            = "adult:stream"
+    PermAdultMetadataWrite     = "adult:metadata:write"
+    PermAdultRequestsSubmit    = "adult:requests:submit"
+    PermAdultRequestsViewOwn   = "adult:requests:view_own"
+    PermAdultRequestsVote      = "adult:requests:vote"
+    PermAdultRequestsApprove   = "adult:requests:approve"
+    PermAdultRequestsDecline   = "adult:requests:decline"
+    // ... more permissions
+)
 ```
 
-## No External Ratings
+## Fingerprinting
 
-Adult modules do NOT have external ratings (no IMDb, etc.):
+Adult content uses fingerprinting for scene identification:
 
-- Only user ratings
-- No sync services
-- Privacy by default
+| Algorithm | Description | Use Case |
+|-----------|-------------|----------|
+| **oshash** | OpenSubtitles hash | Fast file-based matching |
+| **pHash** | Perceptual hash | StashDB scene matching |
+| **MD5** | File content hash | Exact duplicate detection |
 
-## No Content Ratings
+```go
+// Fingerprint service generates hashes
+type Fingerprinter interface {
+    GenerateFingerprints(ctx context.Context, filePath string) (*FingerprintResult, error)
+}
 
-Adult content has no age restriction ratings:
+type FingerprintResult struct {
+    Coordinates string  // phash
+    Oshash      string
+    MD5         string
+}
+```
 
-- Implicit 18+/adult-only
-- Access controlled by scope
-- No MPAA/FSK/etc. needed
+## Metadata Sources
+
+Adult content uses specialized metadata sources:
+
+1. **Whisparr** - Primary acquisition proxy (Radarr fork)
+2. **StashDB** - Community database for scenes/performers
+3. **Stash-App** - Local instance sync
+4. **TPDB** - Fallback metadata source
 
 ## Search Isolation
 
 Adult content is NOT included in unified search:
 
-- Separate Typesense collections: `c_movies`, `c_series`
-- Separate search endpoint: `/api/v1/c/search`
-- Requires `adult:read` scope
+- Separate Typesense collections: `qar_expeditions`, `qar_voyages`, `qar_crew`
+- Separate search endpoint: `/api/v1/qar/search`
+- Requires `adult:browse` scope
 
 ## Testing
 
@@ -379,11 +437,11 @@ Tests for adult modules should:
 3. Use separate test fixtures
 
 ```go
-func TestAdultMovieHandler_RequiresAdultScope(t *testing.T) {
+func TestVoyageHandler_RequiresAdultScope(t *testing.T) {
     // Create user WITHOUT adult scope
-    user := &domain.User{Scopes: []string{"read"}}  // No "adult:read"
+    user := &domain.User{AdultEnabled: false}
 
-    req := httptest.NewRequest("GET", "/api/v1/c/movies", nil)
+    req := httptest.NewRequest("GET", "/api/v1/qar/voyages", nil)
     req = req.WithContext(middleware.ContextWithUser(req.Context(), user))
 
     rr := httptest.NewRecorder()
@@ -392,10 +450,12 @@ func TestAdultMovieHandler_RequiresAdultScope(t *testing.T) {
     assert.Equal(t, http.StatusForbidden, rr.Code)
 }
 ```
+
 ---
 
 ## Related
 
 - [INDEX.instructions.md](INDEX.instructions.md) - Main instruction index with all cross-references
 - [ARCHITECTURE_V2.md](../../docs/dev/design/architecture/ARCHITECTURE_V2.md) - System architecture
+- [ADULT_CONTENT_SYSTEM.md](../../docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md) - Full adult content design
 - [BEST_PRACTICES.md](../../docs/dev/design/operations/BEST_PRACTICES.md) - Best practices

@@ -1306,7 +1306,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   # Adult endpoints
-  /c/movies:
+  /qar/movies:
     get:
       operationId: listAdultMovies
       x-ogen-operation-group: Adult
@@ -1378,7 +1378,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/movies/{movieId}:
+  /qar/movies/{movieId}:
     get:
       operationId: getAdultMovie
       x-ogen-operation-group: Adult
@@ -1483,7 +1483,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/movies/{movieId}/performers:
+  /qar/movies/{movieId}/performers:
     get:
       operationId: listAdultMoviePerformers
       x-ogen-operation-group: Adult
@@ -1520,7 +1520,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/movies/{movieId}/markers:
+  /qar/movies/{movieId}/markers:
     get:
       operationId: listAdultMovieMarkers
       x-ogen-operation-group: Adult
@@ -1557,7 +1557,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/movies/{movieId}/similar:
+  /qar/movies/{movieId}/similar:
     get:
       operationId: listAdultSimilarMovies
       x-ogen-operation-group: Adult
@@ -1594,7 +1594,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/scenes:
+  /qar/scenes:
     get:
       operationId: listAdultScenes
       x-ogen-operation-group: Adult
@@ -1666,7 +1666,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/scenes/{sceneId}:
+  /qar/scenes/{sceneId}:
     get:
       operationId: getAdultScene
       x-ogen-operation-group: Adult
@@ -1771,7 +1771,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/performers:
+  /qar/performers:
     get:
       operationId: listAdultPerformers
       x-ogen-operation-group: Adult
@@ -1838,7 +1838,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/performers/{performerId}:
+  /qar/performers/{performerId}:
     get:
       operationId: getAdultPerformer
       x-ogen-operation-group: Adult
@@ -1943,7 +1943,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/performers/{performerId}/movies:
+  /qar/performers/{performerId}/movies:
     get:
       operationId: listAdultPerformerMovies
       x-ogen-operation-group: Adult
@@ -1978,7 +1978,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/studios:
+  /qar/studios:
     get:
       operationId: listAdultStudios
       x-ogen-operation-group: Adult
@@ -2045,7 +2045,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/studios/{studioId}:
+  /qar/studios/{studioId}:
     get:
       operationId: getAdultStudio
       x-ogen-operation-group: Adult
@@ -2150,7 +2150,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/studios/{studioId}/movies:
+  /qar/studios/{studioId}/movies:
     get:
       operationId: listAdultStudioMovies
       x-ogen-operation-group: Adult
@@ -2185,7 +2185,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/tags:
+  /qar/tags:
     get:
       operationId: listAdultTags
       x-ogen-operation-group: Adult
@@ -2225,7 +2225,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/tags/{tagId}:
+  /qar/tags/{tagId}:
     get:
       operationId: getAdultTag
       x-ogen-operation-group: Adult
@@ -2260,7 +2260,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/tags/{tagId}/movies:
+  /qar/tags/{tagId}/movies:
     get:
       operationId: listAdultTagMovies
       x-ogen-operation-group: Adult
@@ -2295,7 +2295,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/match:
+  /qar/match:
     post:
       operationId: matchAdultScene
       x-ogen-operation-group: Adult
@@ -2323,7 +2323,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/identify:
+  /qar/identify:
     post:
       operationId: identifyAdultScene
       x-ogen-operation-group: Adult
@@ -2352,7 +2352,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   # Adult metadata endpoints
-  /c/metadata/stashdb/search/scenes:
+  /qar/metadata/stashdb/search/scenes:
     get:
       operationId: searchAdultStashDBScenes
       x-ogen-operation-group: AdultMetadata
@@ -2380,7 +2380,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/stashdb/scenes/{stashdbId}:
+  /qar/metadata/stashdb/scenes/{stashdbId}:
     get:
       operationId: getAdultStashDBScene
       x-ogen-operation-group: AdultMetadata
@@ -2414,7 +2414,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/stashdb/search/performers:
+  /qar/metadata/stashdb/search/performers:
     get:
       operationId: searchAdultStashDBPerformers
       x-ogen-operation-group: AdultMetadata
@@ -2442,7 +2442,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/stashdb/performers/{stashdbId}:
+  /qar/metadata/stashdb/performers/{stashdbId}:
     get:
       operationId: getAdultStashDBPerformer
       x-ogen-operation-group: AdultMetadata
@@ -2476,7 +2476,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/stashdb/identify:
+  /qar/metadata/stashdb/identify:
     post:
       operationId: identifyAdultStashDBScene
       x-ogen-operation-group: AdultMetadata
@@ -2504,7 +2504,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/theporndb/search/scenes:
+  /qar/metadata/theporndb/search/scenes:
     get:
       operationId: searchAdultTPDBScenes
       x-ogen-operation-group: AdultMetadata
@@ -2532,7 +2532,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/theporndb/scenes/{tpdbId}:
+  /qar/metadata/theporndb/scenes/{tpdbId}:
     get:
       operationId: getAdultTPDBScene
       x-ogen-operation-group: AdultMetadata
@@ -2566,7 +2566,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/metadata/theporndb/performers/{tpdbId}:
+  /qar/metadata/theporndb/performers/{tpdbId}:
     get:
       operationId: getAdultTPDBPerformer
       x-ogen-operation-group: AdultMetadata
@@ -2601,7 +2601,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   # Adult integrations (Stash)
-  /c/integrations/stash/sync:
+  /qar/integrations/stash/sync:
     post:
       operationId: syncAdultStash
       x-ogen-operation-group: AdultIntegrations
@@ -2623,7 +2623,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/integrations/stash/import:
+  /qar/integrations/stash/import:
     post:
       operationId: importAdultStash
       x-ogen-operation-group: AdultIntegrations
@@ -2645,7 +2645,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/integrations/stash/status:
+  /qar/integrations/stash/status:
     get:
       operationId: getAdultStashStatus
       x-ogen-operation-group: AdultIntegrations
@@ -2668,7 +2668,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   # Adult requests
-  /c/requests/search:
+  /qar/requests/search:
     get:
       operationId: searchAdultRequests
       x-ogen-operation-group: AdultRequests
@@ -2702,7 +2702,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/requests:
+  /qar/requests:
     get:
       operationId: listAdultRequests
       x-ogen-operation-group: AdultRequests
@@ -2775,7 +2775,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/requests/{requestId}:
+  /qar/requests/{requestId}:
     get:
       operationId: getAdultRequest
       x-ogen-operation-group: AdultRequests
@@ -2810,7 +2810,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/requests/{requestId}/vote:
+  /qar/requests/{requestId}/vote:
     post:
       operationId: voteAdultRequest
       x-ogen-operation-group: AdultRequests
@@ -2845,7 +2845,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/requests/{requestId}/comments:
+  /qar/requests/{requestId}/comments:
     post:
       operationId: commentAdultRequest
       x-ogen-operation-group: AdultRequests
@@ -2880,7 +2880,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/admin/requests:
+  /qar/admin/requests:
     get:
       operationId: listAdultAdminRequests
       x-ogen-operation-group: AdultRequests
@@ -2927,7 +2927,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/admin/requests/{requestId}/approve:
+  /qar/admin/requests/{requestId}/approve:
     put:
       operationId: approveAdultRequest
       x-ogen-operation-group: AdultRequests
@@ -2964,7 +2964,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/admin/requests/{requestId}/decline:
+  /qar/admin/requests/{requestId}/decline:
     put:
       operationId: declineAdultRequest
       x-ogen-operation-group: AdultRequests
@@ -3001,7 +3001,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/admin/users/{userId}/quota:
+  /qar/admin/users/{userId}/quota:
     put:
       operationId: updateAdultRequestQuota
       x-ogen-operation-group: AdultRequests
@@ -3038,7 +3038,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/admin/request-rules:
+  /qar/admin/request-rules:
     get:
       operationId: listAdultRequestRules
       x-ogen-operation-group: AdultRequests
@@ -3099,7 +3099,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /c/admin/request-rules/{ruleId}:
+  /qar/admin/request-rules/{ruleId}:
     put:
       operationId: updateAdultRequestRule
       x-ogen-operation-group: AdultRequests

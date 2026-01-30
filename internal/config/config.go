@@ -26,6 +26,7 @@ type Config struct {
 	Metadata MetadataConfig `koanf:"metadata"`
 	Modules  ModulesConfig  `koanf:"modules"`
 	Logging  LoggingConfig  `koanf:"logging"`
+	Adult    AdultConfig    `koanf:"adult"`
 }
 
 // ServerConfig holds HTTP server settings.
@@ -135,6 +136,60 @@ type ModulesConfig struct {
 type LoggingConfig struct {
 	Level  string `koanf:"level"`  // debug, info, warn, error
 	Format string `koanf:"format"` // json, text
+}
+
+// AdultConfig holds QAR (adult content) module settings.
+type AdultConfig struct {
+	Enabled     bool              `koanf:"enabled"`
+	Whisparr    WhisparrConfig    `koanf:"whisparr"`
+	StashDB     StashDBConfig     `koanf:"stashdb"`
+	StashApp    StashAppConfig    `koanf:"stash_app"`
+	TPDB        TPDBConfig        `koanf:"tpdb"`
+	Fingerprint FingerprintConfig `koanf:"fingerprint"`
+	Privacy     PrivacyConfig     `koanf:"privacy"`
+}
+
+// WhisparrConfig holds Whisparr-v3 connection settings.
+type WhisparrConfig struct {
+	URL    string `koanf:"url"`
+	APIKey string `koanf:"api_key"`
+}
+
+// StashDBConfig holds StashDB connection settings.
+type StashDBConfig struct {
+	Endpoint string `koanf:"endpoint"`
+	APIKey   string `koanf:"api_key"`
+}
+
+// StashAppConfig holds local Stash-App connection settings.
+type StashAppConfig struct {
+	URL    string `koanf:"url"`
+	APIKey string `koanf:"api_key"`
+}
+
+// TPDBConfig holds TPDB (fallback) connection settings.
+type TPDBConfig struct {
+	URL    string `koanf:"url"`
+	APIKey string `koanf:"api_key"`
+}
+
+// FingerprintConfig holds fingerprinting settings.
+type FingerprintConfig struct {
+	FFProbePath   string        `koanf:"ffprobe_path"`
+	FFMpegPath    string        `koanf:"ffmpeg_path"`
+	GeneratePHash bool          `koanf:"generate_phash"`
+	GenerateMD5   bool          `koanf:"generate_md5"`
+	Timeout       time.Duration `koanf:"timeout"`
+	AutoMatch     bool          `koanf:"auto_match"` // Auto-match on scan
+}
+
+// PrivacyConfig holds adult content privacy settings.
+type PrivacyConfig struct {
+	ExcludeFromAnalytics       bool          `koanf:"exclude_from_analytics"`
+	ExcludeFromRecommendations bool          `koanf:"exclude_from_recommendations"`
+	RequirePIN                 bool          `koanf:"require_pin"`
+	PINTimeout                 time.Duration `koanf:"pin_timeout"`
+	AuditAllAccess             bool          `koanf:"audit_all_access"`
 }
 
 // Load loads configuration from file and environment variables.
@@ -346,6 +401,28 @@ func setDefaults(k *koanf.Koanf) {
 		// Logging
 		"logging.level":  "info",
 		"logging.format": "json",
+
+		// Adult (QAR) module
+		"adult.enabled":                             false, // Explicit opt-in
+		"adult.whisparr.url":                        "",
+		"adult.whisparr.api_key":                    "",
+		"adult.stashdb.endpoint":                    "https://stashdb.org/graphql",
+		"adult.stashdb.api_key":                     "",
+		"adult.stash_app.url":                       "",
+		"adult.stash_app.api_key":                   "",
+		"adult.tpdb.url":                            "https://api.metadataapi.net/api",
+		"adult.tpdb.api_key":                        "",
+		"adult.fingerprint.ffprobe_path":            "ffprobe",
+		"adult.fingerprint.ffmpeg_path":             "ffmpeg",
+		"adult.fingerprint.generate_phash":          true,
+		"adult.fingerprint.generate_md5":            true,
+		"adult.fingerprint.timeout":                 30 * time.Second,
+		"adult.fingerprint.auto_match":              true,
+		"adult.privacy.exclude_from_analytics":      true,
+		"adult.privacy.exclude_from_recommendations": true,
+		"adult.privacy.require_pin":                 false,
+		"adult.privacy.pin_timeout":                 30 * time.Minute,
+		"adult.privacy.audit_all_access":            true,
 	}
 
 	for key, value := range defaults {

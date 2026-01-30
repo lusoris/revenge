@@ -17,7 +17,7 @@ Critical Fixes            ██████████████████
 Library Refactor          ████████████████████████ 100% ✓
 Movie Module              ████████████████████████  95%
 TV Shows Module           ██████████████████████░░  95%
-Adult Module (QAR)        ██████████████████████░░  92%  <- CURRENT
+Adult Module (QAR)        ███████████████████████░  97%  <- CURRENT
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -38,15 +38,25 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - Wired RBAC service to Handler for permission checks
 - [x] **QAR OpenAPI spec** → `api/openapi/qar.yaml` (1935 lines)
   - Full spec with Fleet, Expedition, Voyage, Crew, Port, Flag, Search endpoints
-  - Integration with revenge.yaml + ogen codegen pending
+- [x] **Integrate qar.yaml into revenge.yaml** + ogen codegen
+  - Migrated all `/c/` paths to `/qar/` namespace
+  - Regenerated ogen API code
 - [ ] **QAR API handlers** → `internal/api/qar.go` (~50 endpoints)
 
 ### P1: Enable QAR Workflow
-- [ ] **FingerprintService** → `internal/service/fingerprint/`
-- [ ] **WhisparrClient** → `internal/service/metadata/whisparr/`
+- [x] **FingerprintService** → `internal/service/fingerprint/`
+  - Implements voyage.Fingerprinter interface
+  - oshash (OpenSubtitles algorithm), pHash, MD5
+  - ffprobe/ffmpeg integration for video metadata
+- [x] **WhisparrClient** → `internal/service/metadata/whisparr/`
+  - Full Whisparr v3 API client with circuit breaker
+  - Movie CRUD, performer management, commands
+  - fx module with config-based initialization
 
 ### P2: Quality & Polish
-- [ ] **QAR Search isolation** → Typesense collections
+- [x] **QAR Search isolation** → Typesense collections
+  - Created 5 collections: qar_expeditions, qar_voyages, qar_crew, qar_ports, qar_flags
+  - Document structs and InitQARCollections() method
 - [ ] **StashAppClient** → `internal/service/metadata/stash_app/` (optional)
 
 ### P3: Cross-Module (parallelizable)
@@ -170,7 +180,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - measurements → cargo, aliases → names, tattoos → markings
   - career_start → maiden_voyage, birth_date → christening
   - penis_size → cutlass, has_breasts → figurehead, etc.
-- [ ] **Update API namespace** to `/api/v1/qar/`
+- [x] **Update API namespace** to `/api/v1/qar/` (migrated from `/c/`)
 
 ### 3.2 Access Control Framework (CRITICAL PATH - BLOCKING)
 - [ ] **Add adult permissions** to `internal/service/rbac/casbin.go`:
@@ -208,19 +218,19 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **Wire handler deps** in `internal/api/module.go`
 
 ### 3.3 External Integrations
-- [ ] **Implement WhisparrClient** in `internal/service/metadata/whisparr/`:
-  - Mirror Radarr client structure (types.go, client.go, provider.go, module.go)
-  - API v3: GET /api/v3/movie, /api/v3/person
+- [x] **Implement WhisparrClient** in `internal/service/metadata/whisparr/`:
+  - Mirror Radarr client structure (types.go, client.go, module.go)
+  - API v3: GET /api/v3/movie, /api/v3/person, commands
   - Circuit breaker integration
 - [x] **Implement StashDBClient** - GraphQL enrichment (`internal/service/metadata/stashdb/`)
 - [ ] **Implement StashAppClient** in `internal/service/metadata/stash_app/`:
   - Sync scene markers as chapters
   - Import user ratings from local Stash instance
   - One-way sync (Stash → Revenge)
-- [ ] **Implement FingerprintService** in `internal/service/fingerprint/`:
-  - `Fingerprint(path) → VideoFingerprint` (oshash + optional pHash)
-  - `MatchScene(fingerprint) → StashDBScene` (query StashDB by hash)
-  - Requires ffprobe binary
+- [x] **Implement FingerprintService** in `internal/service/fingerprint/`:
+  - `GenerateFingerprints(path) → FingerprintResult` (oshash + pHash + MD5)
+  - Implements voyage.Fingerprinter interface
+  - ffprobe/ffmpeg integration
 
 ### 3.4 QAR Modules
 - [x] **qar/crew** repository fully implemented (21 methods)
@@ -237,12 +247,16 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **Add River jobs** for Stash-App sync
 
 ### 3.6 Search Isolation
-- [ ] **Create separate Typesense collections** for adult content (qar_movies, qar_voyages)
-- [ ] **Separate search endpoint** `/api/v1/qar/search` requiring adult:read scope
+- [x] **Create separate Typesense collections** for adult content
+  - qar_expeditions, qar_voyages, qar_crew, qar_ports, qar_flags
+  - `internal/infra/search/qar_collections.go`
+- [ ] **Separate search endpoint** `/api/v1/qar/search` requiring adult:browse scope
 
 ### 3.7 Update Instructions File
-- [ ] **Update adult-modules.instructions.md** to use `qar` schema (currently says `c`)
-  - Instructions file is outdated, design doc is truth
+- [x] **Update adult-modules.instructions.md** to use `qar` schema
+  - Full QAR terminology documentation
+  - Updated schema, API paths, table names, entity names
+  - Added fingerprinting and metadata source documentation
 
 ---
 
@@ -323,8 +337,8 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - Per-user and per-IP rate limits using `pkg/resilience/`
 - [ ] **Config hot reload** for runtime settings
   - Feature flags, log levels, rate limits via `pkg/hotreload/`
-- [ ] **Update adult-modules.instructions.md**
-  - Currently says schema `c`, design doc specifies `qar`
+- [x] **Update adult-modules.instructions.md**
+  - Migrated from `c` schema to `qar` (Queen Anne's Revenge)
 
 ---
 
@@ -367,6 +381,10 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] Per-module library tables (movie, tv, qar)
 - [x] StashDB GraphQL client for QAR metadata enrichment
 - [x] LibraryAggregator service with provider interface
+- [x] Whisparr v3 API client with circuit breaker
+- [x] FingerprintService (oshash + pHash + MD5)
+- [x] QAR Typesense collections (5 isolated collections)
+- [x] Adult config section in config.go
 
 ### Design Audit (2026-01-29)
 - [x] Audit all services against design docs
