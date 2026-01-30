@@ -28,7 +28,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`)
-- **API namespace**: `/api/v1/c/external/onlyfans/*` (NOT `/api/v1/external/onlyfans/*`)
+- **API namespace**: `/api/v1/legacy/external/onlyfans/*` (NOT `/api/v1/external/onlyfans/*`)
 - **Module location**: `internal/content/c/external/onlyfans/` (NOT `internal/service/external/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -139,7 +139,7 @@ Display verified badge (✓) next to OnlyFans link
 - **Database schema**: `c` schema ONLY
   - `c.performers.external_urls` (OnlyFans profile link)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/external/onlyfans/*` (isolated)
+- **API namespace**: `/api/v1/legacy/external/onlyfans/*` (isolated)
 - **Module location**: `internal/content/c/external/onlyfans/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

@@ -31,7 +31,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`, `c.movies`)
-- **API namespace**: `/api/v1/c/wiki/babepedia/*` (NOT `/api/v1/wiki/babepedia/*`)
+- **API namespace**: `/api/v1/legacy/wiki/babepedia/*` (NOT `/api/v1/wiki/babepedia/*`)
 - **Module location**: `internal/content/c/wiki/babepedia/` (NOT `internal/service/wiki/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -196,9 +196,9 @@ Babepedia scraping: 1 req/sec (very conservative)
 - **Database schema**: `c` schema ONLY
   - `c.performers.metadata_json.babepedia_data` (JSONB)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/wiki/babepedia/*` (isolated)
-  - `/api/v1/c/wiki/babepedia/search/{performer_name}`
-  - `/api/v1/c/wiki/babepedia/performers/{performer_id}`
+- **API namespace**: `/api/v1/legacy/wiki/babepedia/*` (isolated)
+  - `/api/v1/legacy/wiki/babepedia/search/{performer_name}`
+  - `/api/v1/legacy/wiki/babepedia/performers/{performer_id}`
 - **Module location**: `internal/content/c/wiki/babepedia/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

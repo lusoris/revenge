@@ -5,7 +5,7 @@
 **Status**: 🟡 PLANNED
 **Priority**: 🟡 MEDIUM (Phase 7 - Adult Modules)
 **Type**: Webhook listener + API client for metadata sync
-**Schema Isolation**: PostgreSQL schema `c` (see [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md))
+**Schema Isolation**: PostgreSQL schema `qar` (see [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md))
 **Branch**: `eros` (Whisparr v3)
 
 ---
@@ -16,13 +16,13 @@ Whisparr v3 (eros branch) is the adult content management automation tool. Reven
 - Receive webhook notifications when adult scenes are imported
 - Sync performer, studio, and scene metadata
 - Monitor Whisparr download/import status
-- Respect privacy isolation (schema `c`, `/c/` API namespace)
+- Respect privacy isolation (schema `qar`, `/api/v1/legacy/` API namespace)
 
 **Integration Points**:
 - **Webhook listener**: Process Whisparr events (On Import, On Scene Added, etc.)
 - **API client**: Query scenes, performers, studios
 - **Metadata sync**: Enrich Revenge metadata with Whisparr data + StashDB
-- **Privacy isolation**: All adult data stored in PostgreSQL schema `c`, API namespace `/c/`
+- **Privacy isolation**: All adult data stored in PostgreSQL schema `qar`, API namespace `/api/v1/legacy/`
 
 **⚠️ Important**: Whisparr uses Radarr codebase (fork) but treats "scenes" as individual videos (NOT series/episodes). Folder structure differs from TV shows. See [WHISPARR_STASHDB_SCHEMA.md](../../features/WHISPARR_STASHDB_SCHEMA.md) for details.
 
@@ -129,8 +129,8 @@ Triggered when Whisparr detects health issues.
   - [ ] Parse webhook payload (On Download event)
   - [ ] Extract scene + performer + studio metadata
   - [ ] Trigger metadata enrichment (StashDB)
-  - [ ] Store in PostgreSQL schema `c` (`c.scenes`, `c.performers`, `c.studios`)
-  - [ ] Update Typesense search index (schema `c`)
+  - [ ] Store in PostgreSQL schema `qar` (`c.scenes`, `c.performers`, `c.studios`)
+  - [ ] Update Typesense search index (schema `qar`)
 
 - [ ] **Metadata Sync**
   - [ ] Map Whisparr scenes → Revenge `c.scenes` table
@@ -141,9 +141,9 @@ Triggered when Whisparr detects health issues.
 
 - [ ] **Privacy Controls**
   - [ ] **Schema Isolation**: All queries use `SET search_path TO c, public;`
-  - [ ] **API Namespace**: All endpoints use `/api/v1/c/movies`, `/api/v1/c/scenes`, `/api/v1/c/performers`
+  - [ ] **API Namespace**: All endpoints use `/api/v1/legacy/movies`, `/api/v1/legacy/scenes`, `/api/v1/legacy/performers`
   - [ ] **NSFW Toggle**: Frontend toggle to show/hide adult content
-  - [ ] **Secure Access**: Require NSFW permission for schema `c` access
+  - [ ] **Secure Access**: Require NSFW permission for schema `qar` access
 
 - [ ] **Quality Profile Mapping**
   - [ ] Ultra HD (4K) → `quality='4K'`, `max_bitrate=80000`
@@ -167,11 +167,11 @@ Sends webhook to Revenge
            ↓
 Revenge processes webhook
            ↓
-Stores scene/performers/studio in PostgreSQL schema `c`
+Stores scene/performers/studio in PostgreSQL schema `qar`
            ↓
 Enriches metadata from StashDB (performer bios, studio info)
            ↓
-Updates Typesense search index (schema `c`)
+Updates Typesense search index (schema `qar`)
            ↓
 Scene available for playback (requires NSFW permission)
 ```
@@ -238,7 +238,7 @@ func (c *WhisparrClient) GetScene(ctx context.Context, sceneID int) (*Scene, err
 - Whisparr API v3 assumed (Radarr-based), NOT fully documented
 - Self-hosted = no rate limits (unlike cloud APIs)
 - Quality profiles are customizable in Whisparr (respect user settings)
-- **Privacy isolation CRITICAL**: PostgreSQL schema `c`, API namespace `/c/`, NSFW toggle required
+- **Privacy isolation CRITICAL**: PostgreSQL schema `qar`, API namespace `/api/v1/legacy/`, NSFW toggle required
 - **Logs must be obfuscated** - never log adult content titles/performers in plain text
 - **NSFW permission required** - users must explicitly enable adult content access
 - Scene metadata: Whisparr stores performer names, studio, tags, release date

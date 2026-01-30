@@ -32,7 +32,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`)
-- **API namespace**: `/api/v1/c/external/freeones/*` (NOT `/api/v1/external/freeones/*`)
+- **API namespace**: `/api/v1/legacy/external/freeones/*` (NOT `/api/v1/external/freeones/*`)
 - **Module location**: `internal/content/c/external/freeones/` (NOT `internal/service/external/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -202,9 +202,9 @@ Display in UI (performer profile page, c schema isolated)
   - `c.performers.metadata_json.freeones_data` (JSONB)
   - `c.performers.external_urls` (table for external links)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/external/freeones/*` (isolated)
-  - `/api/v1/c/external/freeones/search/{performer_name}`
-  - `/api/v1/c/external/freeones/performers/{performer_id}`
+- **API namespace**: `/api/v1/legacy/external/freeones/*` (isolated)
+  - `/api/v1/legacy/external/freeones/search/{performer_name}`
+  - `/api/v1/legacy/external/freeones/performers/{performer_id}`
 - **Module location**: `internal/content/c/external/freeones/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

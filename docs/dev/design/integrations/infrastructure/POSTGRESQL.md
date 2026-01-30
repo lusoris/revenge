@@ -107,17 +107,19 @@ CREATE TABLE episode_user_ratings (...);
 -- NO shared content tables!
 ```
 
-### Adult Content Isolation
+### QAR Content Isolation
 
-Adult content uses separate schema `c`:
+Adult content uses separate schema `qar` (Queen Anne's Revenge):
 
 ```sql
-CREATE SCHEMA IF NOT EXISTS c;
+CREATE SCHEMA IF NOT EXISTS qar;
 
-CREATE TABLE c.movies (...);
-CREATE TABLE c.shows (...);
-CREATE TABLE c.performers (...);
+CREATE TABLE qar.expeditions (...);  -- Movies
+CREATE TABLE qar.voyages (...);      -- Scenes
+CREATE TABLE qar.crew (...);         -- Performers
 ```
+
+See [SOURCE_OF_TRUTH.md](../../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping.
 
 ### User Data Separation
 

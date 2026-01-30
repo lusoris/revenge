@@ -8,7 +8,7 @@
 1. **Maximum Isolation** - Each content module is fully self-contained
 2. **No Shared Content Tables** - Every module has its own optimized tables
 3. **Per-Module Everything** - Ratings, history, favorites, metadata all per module
-4. **Adult Content Isolation** - Separate PostgreSQL schema (`c`) for complete separation
+4. **Adult Content Isolation** - Separate PostgreSQL schema (`qar`) for complete separation (see [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology))
 5. **Enable/Disable Modules** - Each module can be independently enabled/disabled
 6. **Type Safety** - No polymorphic references, proper FK constraints everywhere
 7. **External Transcoding** - Delegate to "Blackbeard" service for scalability
@@ -79,10 +79,9 @@ github.com/golang-migrate/migrate/v4 // Migrations
 | `livetv` | public | Channels, programs, DVR recordings |
 | `comics` | public | Comics, manga, graphic novels |
 | `collection` | public | Cross-module collections (video/audio pools) |
-| `adult_movie` | c | Adult movies, scenes |
-| `adult_scene` | c | Adult scenes |
+| `qar` | qar | Adult content (expeditions, voyages, crew) |
 
-> **Note:** Adult content uses schema `c` (not `adult`) for obscurity.
+> **Note:** Adult content uses schema `qar` with "Queen Anne's Revenge" obfuscation terminology. See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for mapping.
 
 ### Shared Infrastructure
 
@@ -585,7 +584,7 @@ func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
 |------|---------|--------|
 | Video | movie, tvshow | `video_playlists`, `video_playlist_items` |
 | Audio | music, audiobook, podcast | `audio_playlists`, `audio_playlist_items` |
-| Adult | adult_movie, adult_scene | Planned (`c.playlists`, `c.playlist_items`) |
+| Adult | qar (expeditions, voyages) | Planned (`qar.playlists`, `qar.playlist_items`) |
 
 ### Collection Pools (3)
 
@@ -593,7 +592,7 @@ func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
 |------|---------|--------|
 | Video | movie, tvshow | `video_collections`, `video_collection_movies`, `video_collection_episodes` |
 | Audio | music, audiobook | `audio_collections`, `audio_collection_tracks`, `audio_collection_audiobooks` |
-| Adult | adult_movie, adult_scene | Planned (`c.collections`, `c.collection_items`) |
+| Adult | qar (expeditions, voyages) | Planned (`qar.collections`, `qar.collection_items`) |
 
 ---
 
@@ -628,38 +627,37 @@ func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
 
 ---
 
-## Adult Schema Isolation
+## QAR Schema Isolation (Adult Content)
 
-All adult content in separate PostgreSQL schema `c`:
+> See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for complete QAR terminology mapping.
+
+All adult content in separate PostgreSQL schema `qar` (Queen Anne's Revenge):
 
 ```sql
-CREATE SCHEMA c;
+CREATE SCHEMA qar;
 
--- Tables
-c.movies
-c.scenes
-c.performers        -- Shared between adult_movie and adult_scene
-c.studios
-c.tags
-c.movie_images
-c.performer_images
-c.gallery_images
-c.movie_tags
-c.scene_tags
-c.scene_markers
-c.user_ratings
-c.user_favorites
-c.watch_history
-c.user_scene_data
-c.user_performer_favorites
+-- Tables (QAR terminology)
+qar.expeditions      -- Movies (full-length releases)
+qar.voyages          -- Scenes (individual scenes)
+qar.crew             -- Performers
+qar.ports            -- Studios
+qar.flags            -- Tags
+qar.fleets           -- Libraries
+qar.treasures        -- Gallery images
+qar.expedition_crew  -- Movie-performer relations
+qar.voyage_crew      -- Scene-performer relations
+qar.user_ratings
+qar.user_favorites
+qar.watch_history
 ```
 
 **Benefits:**
 - Complete data isolation
-- Separate backup/restore (`pg_dump -n c`)
-- PostgreSQL-level access control (`REVOKE ALL ON SCHEMA c FROM public_role`)
+- Separate backup/restore (`pg_dump -n qar`)
+- PostgreSQL-level access control (`REVOKE ALL ON SCHEMA qar FROM public_role`)
 - Easy to purge entire schema
 - Legal/compliance separation
+- Obfuscated terminology for discretion
 
 ---
 
@@ -684,8 +682,8 @@ Each content module typically has:
 - `book_authors` - Book authors (different metadata: bibliography, awards, etc.)
 - `comic_creators` - Comic creators (writers, artists, colorists, etc.)
 
-**Adult module:** Completely isolated in schema `c`
-- `c.performers` - Separate performer data with NSFW images, different metadata sources
+**QAR module:** Completely isolated in schema `qar`
+- `qar.crew` - Performer data with NSFW images, StashDB/TPDB metadata sources
 
 ### Studios (per module)
 - `{module}_studios` - Production studios

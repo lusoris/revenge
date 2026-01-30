@@ -313,7 +313,7 @@ See [NSFW Toggle](NSFW_TOGGLE.md) for component details.
 1. **Import from Whisparr cache**: Extract scene/performer/studio data
 2. **Match with StashDB**: Use StashDB IDs OR fuzzy matching (name + date)
 3. **Enrich metadata**: Download StashDB-provided metadata (descriptions, images, aliases)
-4. **Store in Revenge**: Save to PostgreSQL schema `c`
+4. **Store in Revenge**: Save to PostgreSQL schema `qar`
 
 ### StashDB Schema Mapping
 | StashDB Entity | Revenge Table | ID Column |

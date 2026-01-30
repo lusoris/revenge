@@ -129,8 +129,8 @@ CREATE INDEX idx_poll_votes_user_id ON request_poll_votes(user_id);
 }
 ```
 
-**Adult Polls (Schema `c`)**:
-Adult content has separate poll tables in schema `c` with identical structure but additional fields for performer/studio/tag filtering.
+**QAR Polls (Schema `qar`)**:
+Adult content has separate poll tables in schema `qar` with identical structure but additional fields for crew/port/flag filtering. See [SOURCE_OF_TRUTH.md](../../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology.
 
 ### Admin Features
 - **Approval workflow**: Auto-approve OR manual review
@@ -442,11 +442,11 @@ CREATE INDEX idx_request_comments_request_id ON request_comments(request_id);
 ### Adult Content Schema (Isolated in `c` schema)
 
 ```sql
--- Adult requests table (isolated in c schema)
-CREATE TABLE c.adult_requests (
+-- QAR requests table (isolated in qar schema)
+CREATE TABLE qar.requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('adult_movie', 'adult_scene')),
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('expedition', 'voyage')),
     request_subtype VARCHAR(50),              -- "scene", "studio", "performer", "tag_combination"
     external_id VARCHAR(200),                 -- StashDB ID (NULL for tag combinations)
     title VARCHAR(500) NOT NULL,
@@ -505,11 +505,11 @@ CREATE TABLE c.adult_request_quotas (
     last_reset_monthly DATE DEFAULT CURRENT_DATE
 );
 
--- Adult request rules (auto-approval + automation)
-CREATE TABLE c.adult_request_rules (
+-- QAR request rules (auto-approval + automation)
+CREATE TABLE qar.request_rules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(200) NOT NULL,
-    content_type VARCHAR(50),                 -- 'adult_movie', 'adult_scene', or NULL for all
+    content_type VARCHAR(50),                 -- 'expedition', 'voyage', or NULL for all
     condition_type VARCHAR(50) NOT NULL,
     condition_value JSONB NOT NULL,
     action VARCHAR(50) NOT NULL DEFAULT 'auto_approve',
@@ -562,20 +562,20 @@ POST /api/v1/requests/{id}/vote
 POST /api/v1/requests/{id}/comments
 ```
 
-### Adult Content Endpoints (Isolated - `/api/v1/c/` namespace)
+### Adult Content Endpoints (Isolated - `/api/v1/legacy/` namespace)
 
-**⚠️ CRITICAL: Adult requests use separate API namespace `/api/v1/c/`**
+**⚠️ CRITICAL: Adult requests use separate API namespace `/api/v1/legacy/`**
 
 ```bash
 # Search adult content (StashDB)
-GET  /api/v1/c/requests/search?type=scene&query=...
-GET  /api/v1/c/requests/search?type=studio&query=...
-GET  /api/v1/c/requests/search?type=performer&query=...
+GET  /api/v1/legacy/requests/search?type=scene&query=...
+GET  /api/v1/legacy/requests/search?type=studio&query=...
+GET  /api/v1/legacy/requests/search?type=performer&query=...
 
 # Submit adult request
-POST /api/v1/c/requests
+POST /api/v1/legacy/requests
 {
-  "content_type": "adult_movie",
+  "content_type": "expedition",
   "request_subtype": "scene",  // "scene", "studio", "performer", "tag_combination"
   "external_id": "stashdb-uuid",
   "title": "Scene Title",
@@ -587,38 +587,38 @@ POST /api/v1/c/requests
 }
 
 # List user's adult requests
-GET  /api/v1/c/requests?user_id=me&status=pending
+GET  /api/v1/legacy/requests?user_id=me&status=pending
 
 # Get adult request detail
-GET  /api/v1/c/requests/{id}
+GET  /api/v1/legacy/requests/{id}
 
 # Vote on adult request
-POST /api/v1/c/requests/{id}/vote
+POST /api/v1/legacy/requests/{id}/vote
 
 # Comment on adult request
-POST /api/v1/c/requests/{id}/comments
+POST /api/v1/legacy/requests/{id}/comments
 ```
 
-### Admin Endpoints (Adult: `/api/v1/c/admin/`)
+### Admin Endpoints (Adult: `/api/v1/legacy/admin/`)
 
 ```bash
 # List all adult requests (isolated)
-GET  /api/v1/c/admin/requests?status=pending
+GET  /api/v1/legacy/admin/requests?status=pending
 
 # Approve adult request
-PUT  /api/v1/c/admin/requests/{id}/approve
+PUT  /api/v1/legacy/admin/requests/{id}/approve
 
 # Decline adult request
-PUT  /api/v1/c/admin/requests/{id}/decline
+PUT  /api/v1/legacy/admin/requests/{id}/decline
 
 # Manage adult quotas
-PUT  /api/v1/c/admin/users/{user_id}/quota
+PUT  /api/v1/legacy/admin/users/{user_id}/quota
 
 # Manage adult request rules
-GET  /api/v1/c/admin/request-rules
-POST /api/v1/c/admin/request-rules
-PUT  /api/v1/c/admin/request-rules/{id}
-DEL  /api/v1/c/admin/request-rules/{id}
+GET  /api/v1/legacy/admin/request-rules
+POST /api/v1/legacy/admin/request-rules
+PUT  /api/v1/legacy/admin/request-rules/{id}
+DEL  /api/v1/legacy/admin/request-rules/{id}
 ```
 
 ### Admin Endpoints (Non-Adult)
@@ -738,7 +738,7 @@ DEL
 ### Adult Content Request Module (ISOLATED)
 **Location**: `internal/content/c/requests/` (NOT in `internal/service/requests/modules/`)
 **Database**: `c` schema only (`c.adult_requests`, `c.adult_request_votes`, etc.)
-**API**: `/api/v1/c/requests/*` namespace
+**API**: `/api/v1/legacy/requests/*` namespace
 
 - `adult.go`: Adult content request module (StashDB search, Whisparr integration, studio/performer/tag requests)
 - Complete isolation from public request system

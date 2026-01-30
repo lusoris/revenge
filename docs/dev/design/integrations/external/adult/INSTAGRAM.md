@@ -168,7 +168,7 @@ INSERT INTO c.performer_social_links (
 ### Add Instagram Link
 
 ```
-POST /api/v1/c/performers/{id}/social-links
+POST /api/v1/legacy/performers/{id}/social-links
 Content-Type: application/json
 
 {
@@ -181,7 +181,7 @@ Content-Type: application/json
 ### Get Social Links
 
 ```
-GET /api/v1/c/performers/{id}/social-links
+GET /api/v1/legacy/performers/{id}/social-links
 
 {
     "social_links": [

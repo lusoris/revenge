@@ -110,7 +110,7 @@ CREATE TABLE permission_definitions (
 | `Content` | Content browsing and metadata |
 | `Playback` | Streaming, downloading, transcoding |
 | `Social` | Ratings, playlists, collections, history |
-| `Adult` | Adult content access (schema `c`) |
+| `Adult` | QAR adult content access (schema `qar`) |
 
 ## Available Permissions
 

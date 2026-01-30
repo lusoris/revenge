@@ -233,7 +233,7 @@ if cfg.Modules.Comics.Enabled {
 - ✅ Internal modularity (12 content modules as packages)
 - ✅ Feature flags (YAML config: enable/disable modules)
 - ✅ External services (Blackbeard transcoding, Typesense search)
-- ✅ Strategic isolation (adult content in separate schema `c`)
+- ✅ Strategic isolation (adult content in separate schema `qar`)
 
 **Verdict**: Aligns with state-of-the-art (no plugins needed).
 

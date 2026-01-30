@@ -276,8 +276,8 @@ GET  /api/v1/news/articles           # List articles
 GET  /api/v1/news/articles/:id       # Get article
 
 # Adult (isolated)
-GET  /api/v1/c/news/feeds
-GET  /api/v1/c/news/articles
+GET  /api/v1/legacy/news/feeds
+GET  /api/v1/legacy/news/articles
 ```
 
 ### Internal Announcements

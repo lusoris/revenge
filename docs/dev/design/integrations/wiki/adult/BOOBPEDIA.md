@@ -31,7 +31,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`)
-- **API namespace**: `/api/v1/c/wiki/boobpedia/*` (NOT `/api/v1/wiki/boobpedia/*`)
+- **API namespace**: `/api/v1/legacy/wiki/boobpedia/*` (NOT `/api/v1/wiki/boobpedia/*`)
 - **Module location**: `internal/content/c/wiki/boobpedia/` (NOT `internal/service/wiki/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -249,9 +249,9 @@ Boobpedia API: 10 req/sec (conservative, same as Wikipedia)
 - **Database schema**: `c` schema ONLY
   - `c.performers.metadata_json.boobpedia_data` (JSONB)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/wiki/boobpedia/*` (isolated)
-  - `/api/v1/c/wiki/boobpedia/search/{performer_name}`
-  - `/api/v1/c/wiki/boobpedia/performers/{performer_id}`
+- **API namespace**: `/api/v1/legacy/wiki/boobpedia/*` (isolated)
+  - `/api/v1/legacy/wiki/boobpedia/search/{performer_name}`
+  - `/api/v1/legacy/wiki/boobpedia/performers/{performer_id}`
 - **Module location**: `internal/content/c/wiki/boobpedia/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

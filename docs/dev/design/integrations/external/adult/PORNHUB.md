@@ -29,7 +29,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`, `c.movies`)
-- **API namespace**: `/api/v1/c/external/pornhub/*` (NOT `/api/v1/external/pornhub/*`)
+- **API namespace**: `/api/v1/legacy/external/pornhub/*` (NOT `/api/v1/external/pornhub/*`)
 - **Module location**: `internal/content/c/external/pornhub/` (NOT `internal/service/external/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -180,7 +180,7 @@ Display in UI:
   - `c.performers.external_urls` (Pornhub profile link)
   - `c.performers.pornhub_verified` (BOOLEAN verified flag)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/external/pornhub/*` (isolated)
+- **API namespace**: `/api/v1/legacy/external/pornhub/*` (isolated)
 - **Module location**: `internal/content/c/external/pornhub/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

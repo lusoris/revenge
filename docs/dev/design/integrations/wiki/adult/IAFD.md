@@ -31,7 +31,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`, `c.movies`, `c.studios`)
-- **API namespace**: `/api/v1/c/wiki/iafd/*` (NOT `/api/v1/wiki/iafd/*`)
+- **API namespace**: `/api/v1/legacy/wiki/iafd/*` (NOT `/api/v1/wiki/iafd/*`)
 - **Module location**: `internal/content/c/wiki/iafd/` (NOT `internal/service/wiki/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -273,11 +273,11 @@ IAFD scraping: 1 req/sec (very conservative)
   - `c.movies.metadata_json.iafd_data` (JSONB)
   - `c.studios.metadata_json.iafd_data` (JSONB)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/wiki/iafd/*` (isolated)
-  - `/api/v1/c/wiki/iafd/search/{performer_name}`
-  - `/api/v1/c/wiki/iafd/performers/{performer_id}`
-  - `/api/v1/c/wiki/iafd/movies/{movie_id}`
-  - `/api/v1/c/wiki/iafd/studios/{studio_id}`
+- **API namespace**: `/api/v1/legacy/wiki/iafd/*` (isolated)
+  - `/api/v1/legacy/wiki/iafd/search/{performer_name}`
+  - `/api/v1/legacy/wiki/iafd/performers/{performer_id}`
+  - `/api/v1/legacy/wiki/iafd/movies/{movie_id}`
+  - `/api/v1/legacy/wiki/iafd/studios/{studio_id}`
 - **Module location**: `internal/content/c/wiki/iafd/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

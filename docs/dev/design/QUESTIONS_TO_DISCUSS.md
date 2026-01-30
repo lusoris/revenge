@@ -54,15 +54,38 @@
 
 ## Outdated References Found
 
-### Old Namespace 'c' → 'qar'
-- [x] Already fixed in previous session
+### Old Namespace 'c' → 'qar' ✅ COMPLETE
 
-### ARCHITECTURE_V2.md → ARCHITECTURE.md
-- [x] Already fixed in this session
+**All Fixed (2026-01-30):**
+- [x] INDEX.md, docs/dev/INDEX.md, MODULE_IMPLEMENTATION_TODO.md
+- [x] ARCHITECTURE.md - updated to `qar` schema + SOT reference
+- [x] WHISPARR.md - all `/api/v1/c/` → `/api/v1/legacy/`
+- [x] POSTGRESQL.md - updated to `qar` schema
+- [x] features/adult/INDEX.md - SOT reference added
+- [x] REQUEST_SYSTEM.md - QAR terminology (expedition, voyage)
+- [x] RBAC_CASBIN.md - `qar` schema reference
+- [x] All external/adult integrations (6 files) - `/api/v1/legacy/`
+- [x] All wiki/adult integrations (3 files) - `/api/v1/legacy/`
+- [x] NEWS_SYSTEM.md, WIKI_SYSTEM.md
+- [x] WHISPARR_STASHDB_SCHEMA.md, WHISPARR_V3_ANALYSIS.md
+- [x] PLUGIN_ARCHITECTURE_DECISION.md
 
-### Other Potential Issues
-- [ ] Some adult module docs still reference `c` schema? (need verification)
-- [ ] INDEX.md still has `c` schema reference? (line 90: `adult/ADULT_CONTENT_SYSTEM.md` mentions `c` schema)
+### Broken Internal Links (CRITICAL)
+
+| File | Line | Broken Link |
+|------|------|-------------|
+| ARCHITECTURE.md | 1020 | `PROJECT_STRUCTURE.md` - **does not exist** |
+| DATA_RECONCILIATION.md | 426 | `RIVER_JOBS.md` - **does not exist** |
+| SKIP_INTRO.md | 404 | `RIVER_JOBS.md` - **does not exist** |
+| TRICKPLAY.md | 361 | `RIVER_JOBS.md` - **does not exist** |
+| NEWS_SYSTEM.md | 320 | `RIVER_JOBS.md` - **does not exist** |
+
+**Decision needed:** Create these files or update references?
+
+### Unreferenced Documentation
+
+- [ ] GALLERY_MODULE.md - not in features/adult/INDEX.md
+- [ ] STASH.md - not in metadata/adult/INDEX.md
 
 ---
 
@@ -109,6 +132,74 @@ These need to be verified against actual package/API documentation:
 | 2026-01-30 | otter version | SOURCES.yaml was wrong, go.mod is correct |
 | 2026-01-30 | resty version | SOURCES.yaml references v3 beta, we use stable v2 |
 | | | |
+
+---
+
+## Document Naming Convention Proposal
+
+**Problem:** Current docs lack numbering and categorization in filenames, making order and relationships unclear.
+
+**Proposed Convention:**
+```
+[NN]-[CATEGORY]-[name].md
+
+Examples:
+01-arch-overview.md          # Architecture overview (read first)
+02-arch-principles.md        # Design principles
+03-arch-data-flow.md         # Data flow patterns
+10-svc-auth.md               # Auth service
+11-svc-user.md               # User service
+20-mod-movie.md              # Movie module
+21-mod-tvshow.md             # TV Show module
+30-int-tmdb.md               # TMDb integration
+31-int-radarr.md             # Radarr integration
+90-ref-api-endpoints.md      # Reference: API endpoints
+91-ref-db-tables.md          # Reference: Database tables
+```
+
+**Categories:**
+- `arch` - Architecture & design
+- `svc` - Services
+- `mod` - Content modules
+- `int` - Integrations
+- `ops` - Operations
+- `ref` - Reference tables
+
+**Benefits:**
+- Clear reading order (numbers)
+- Category visible in filename
+- Alphabetical sorting = logical order
+- Easy to identify doc purpose
+
+**Decision needed:** Adopt this convention? Rename existing files?
+
+---
+
+## Design Strategy Requirements (MANDATORY)
+
+**Principle:** All advanced design patterns and coding strategies MUST be documented in SOURCE_OF_TRUTH.md BEFORE implementation.
+
+**Required in SOT:**
+- [ ] All performance patterns (caching, pooling, batching)
+- [ ] All resilience patterns (circuit breaker, retry, fallback)
+- [ ] All security patterns (auth, RBAC, isolation)
+- [ ] All async patterns (jobs, queues, workers)
+- [ ] All data patterns (transactions, consistency, partitioning)
+- [ ] All API patterns (versioning, errors, pagination)
+
+**Why:**
+- No "write first, fix later" approach
+- Prevents wasted time on reiteration
+- Every implementation inherits patterns from SOT
+- Consistency across all modules
+
+**Current gaps to add to SOT:**
+- [ ] Error handling patterns (Go errors, API errors)
+- [ ] Testing patterns (unit, integration, mocks)
+- [ ] Logging patterns (slog, structured, levels)
+- [ ] Metrics patterns (Prometheus, OTel)
+- [ ] Validation patterns (input, business rules)
+- [ ] Pagination patterns (cursor, offset)
 
 ---
 

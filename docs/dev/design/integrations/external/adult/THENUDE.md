@@ -29,7 +29,7 @@
 
 **⚠️ CRITICAL: Adult Content Isolation**:
 - **Database schema**: `c` schema ONLY (`c.performers`)
-- **API namespace**: `/api/v1/c/external/thenude/*` (NOT `/api/v1/external/thenude/*`)
+- **API namespace**: `/api/v1/legacy/external/thenude/*` (NOT `/api/v1/external/thenude/*`)
 - **Module location**: `internal/content/c/external/thenude/` (NOT `internal/service/external/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
@@ -173,7 +173,7 @@ Use aliases for performer matching across databases
 - **Database schema**: `c` schema ONLY
   - `c.performers.metadata_json.thenude_data` (JSONB)
   - NO data in public schema
-- **API namespace**: `/api/v1/c/external/thenude/*` (isolated)
+- **API namespace**: `/api/v1/legacy/external/thenude/*` (isolated)
 - **Module location**: `internal/content/c/external/thenude/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 

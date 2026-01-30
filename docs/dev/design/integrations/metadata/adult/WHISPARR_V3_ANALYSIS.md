@@ -322,7 +322,7 @@ CREATE TABLE c.movie_performers (
 
 9. **File naming**: Support Whisparr-style file naming tokens (`{Episode PerformersFemale}`, `{TpdbSceneId}`).
 
-10. **API namespace**: Use `/api/v1/c/` namespace for all adult endpoints (isolation from public API).
+10. **API namespace**: Use `/api/v1/legacy/` namespace for all adult endpoints (isolation from public API).
 
 ---
 

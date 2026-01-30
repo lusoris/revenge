@@ -403,9 +403,9 @@ POST /api/v1/wiki/pages/:id/restore/:v # Restore version
 GET  /api/v1/wiki/search?q=...        # Full-text search
 
 # Adult (isolated)
-GET  /api/v1/c/wiki/spaces
-GET  /api/v1/c/wiki/pages/:path
-GET  /api/v1/c/wiki/search?q=...
+GET  /api/v1/legacy/wiki/spaces
+GET  /api/v1/legacy/wiki/pages/:path
+GET  /api/v1/legacy/wiki/search?q=...
 ```
 
 ---
