@@ -565,6 +565,7 @@ JOIN series s ON swp.series_id = s.id
 LEFT JOIN episodes e ON e.id = swp.last_episode_id
 WHERE swp.user_id = $1
   AND swp.is_watching = true
+  AND swp.last_watched_at > NOW() - INTERVAL '30 days'  -- Only show recent activity
 ORDER BY swp.last_watched_at DESC
 LIMIT $2
 `
@@ -648,6 +649,7 @@ WHERE ewh.user_id = $1
   AND ewh.completed = false
   AND ewh.played_percentage > 5
   AND ewh.played_percentage < 90
+  AND ewh.last_updated_at > NOW() - INTERVAL '30 days'  -- Only show recent activity
 ORDER BY ewh.last_updated_at DESC
 LIMIT $2
 `

@@ -5,6 +5,11 @@ import (
 
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/qar/crew"
+	"github.com/lusoris/revenge/internal/content/qar/expedition"
+	"github.com/lusoris/revenge/internal/content/qar/flag"
+	"github.com/lusoris/revenge/internal/content/qar/port"
+	"github.com/lusoris/revenge/internal/content/qar/voyage"
 	"github.com/lusoris/revenge/internal/content/shared"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/database/db"
@@ -778,6 +783,243 @@ func tvshowCrewMemberToAPI(c *tvshow.CrewMember) gen.CrewMember {
 	if c.PrimaryImageURL != "" {
 		result.ProfilePath = gen.NewOptString(c.PrimaryImageURL)
 	}
+
+	return result
+}
+
+// =============================================================================
+// QAR (Adult Content) Converters
+// These convert between internal QAR entities and public API types.
+// Internal: expedition/voyage/crew/port/flag (QAR obfuscation)
+// API: AdultMovie/AdultScene/AdultPerformer/AdultStudio/AdultTag
+// =============================================================================
+
+// expeditionToAPI converts an expedition.Expedition to a gen.AdultMovie.
+func expeditionToAPI(e *expedition.Expedition) gen.AdultMovie {
+	result := gen.AdultMovie{
+		ID:        e.ID,
+		LibraryId: e.FleetID,
+		Title:     e.Title,
+		Path:      e.Path,
+	}
+
+	if e.SortTitle != "" {
+		result.SortTitle = gen.NewOptString(e.SortTitle)
+	}
+	if e.Overview != "" {
+		result.Overview = gen.NewOptString(e.Overview)
+	}
+	if e.LaunchDate != nil {
+		result.ReleaseDate = gen.NewOptDate(*e.LaunchDate)
+	}
+	if e.RuntimeTicks > 0 {
+		result.RuntimeTicks = gen.NewOptInt64(e.RuntimeTicks)
+	}
+	if e.PortID != nil {
+		result.StudioId = gen.NewOptUUID(*e.PortID)
+	}
+	if e.Director != "" {
+		result.Director = gen.NewOptString(e.Director)
+	}
+	if e.Series != "" {
+		result.Series = gen.NewOptString(e.Series)
+	}
+	if e.Coordinates != "" {
+		result.Phash = gen.NewOptString(e.Coordinates)
+	}
+	if e.Charter != "" {
+		result.StashdbId = gen.NewOptString(e.Charter)
+	}
+	if e.Registry != "" {
+		result.TpdbId = gen.NewOptString(e.Registry)
+	}
+	if e.WhisparrID != nil {
+		result.WhisparrId = gen.NewOptInt(*e.WhisparrID)
+	}
+	result.CreatedAt = gen.NewOptDateTime(e.CreatedAt)
+	result.UpdatedAt = gen.NewOptDateTime(e.UpdatedAt)
+
+	return result
+}
+
+// voyageToAPI converts a voyage.Voyage to a gen.AdultScene.
+func voyageToAPI(v *voyage.Voyage) gen.AdultScene {
+	result := gen.AdultScene{
+		ID:        v.ID,
+		LibraryId: v.FleetID,
+		Title:     v.Title,
+		Path:      v.Path,
+	}
+
+	if v.SortTitle != "" {
+		result.SortTitle = gen.NewOptString(v.SortTitle)
+	}
+	if v.Overview != "" {
+		result.Overview = gen.NewOptString(v.Overview)
+	}
+	if v.LaunchDate != nil {
+		result.ReleaseDate = gen.NewOptDate(*v.LaunchDate)
+	}
+	if v.Distance > 0 {
+		result.RuntimeMinutes = gen.NewOptInt(v.Distance)
+	}
+	if v.PortID != nil {
+		result.StudioId = gen.NewOptUUID(*v.PortID)
+	}
+	if v.Coordinates != "" {
+		result.Phash = gen.NewOptString(v.Coordinates)
+	}
+	if v.Oshash != "" {
+		result.Oshash = gen.NewOptString(v.Oshash)
+	}
+	if v.Charter != "" {
+		result.StashdbId = gen.NewOptString(v.Charter)
+	}
+	if v.Registry != "" {
+		result.TpdbId = gen.NewOptString(v.Registry)
+	}
+	if v.WhisparrID != nil {
+		result.WhisparrId = gen.NewOptInt(*v.WhisparrID)
+	}
+	result.CreatedAt = gen.NewOptDateTime(v.CreatedAt)
+	result.UpdatedAt = gen.NewOptDateTime(v.UpdatedAt)
+
+	return result
+}
+
+// crewToAPI converts a crew.Crew to a gen.AdultPerformer.
+func crewToAPI(c *crew.Crew) gen.AdultPerformer {
+	result := gen.AdultPerformer{
+		ID:   c.ID,
+		Name: c.Name,
+	}
+
+	if c.Disambiguation != "" {
+		result.Disambiguation = gen.NewOptString(c.Disambiguation)
+	}
+	if c.Gender != "" {
+		result.Gender = gen.NewOptString(c.Gender)
+	}
+	if c.Christening != nil {
+		result.Birthdate = gen.NewOptDate(*c.Christening)
+	}
+	if c.DeathDate != nil {
+		result.DeathDate = gen.NewOptDate(*c.DeathDate)
+	}
+	if c.BirthCity != "" {
+		result.BirthCity = gen.NewOptString(c.BirthCity)
+	}
+	if c.Origin != "" {
+		result.Ethnicity = gen.NewOptString(c.Origin)
+	}
+	if c.Nationality != "" {
+		result.Nationality = gen.NewOptString(c.Nationality)
+	}
+	if c.Rigging != "" {
+		result.HairColor = gen.NewOptString(c.Rigging)
+	}
+	if c.Compass != "" {
+		result.EyeColor = gen.NewOptString(c.Compass)
+	}
+	if c.HeightCM != nil {
+		result.HeightCm = gen.NewOptInt(*c.HeightCM)
+	}
+	if c.WeightKG != nil {
+		result.WeightKg = gen.NewOptInt(*c.WeightKG)
+	}
+	if c.Measurements != "" {
+		result.Measurements = gen.NewOptString(c.Measurements)
+	}
+	if c.CupSize != "" {
+		result.CupSize = gen.NewOptString(c.CupSize)
+	}
+	if c.BreastType != "" {
+		result.BreastType = gen.NewOptString(c.BreastType)
+	}
+	if c.Markings != "" {
+		result.Tattoos = gen.NewOptString(c.Markings)
+	}
+	if c.Anchors != "" {
+		result.Piercings = gen.NewOptString(c.Anchors)
+	}
+	if c.MaidenVoyage != nil {
+		result.CareerStart = gen.NewOptInt(*c.MaidenVoyage)
+	}
+	if c.LastPort != nil {
+		result.CareerEnd = gen.NewOptInt(*c.LastPort)
+	}
+	if c.Bio != "" {
+		result.Bio = gen.NewOptString(c.Bio)
+	}
+	if c.Charter != "" {
+		result.StashdbId = gen.NewOptString(c.Charter)
+	}
+	if c.Registry != "" {
+		result.TpdbId = gen.NewOptString(c.Registry)
+	}
+	if c.Manifest != "" {
+		result.FreeonesId = gen.NewOptString(c.Manifest)
+	}
+	if c.Twitter != "" {
+		result.Twitter = gen.NewOptString(c.Twitter)
+	}
+	if c.Instagram != "" {
+		result.Instagram = gen.NewOptString(c.Instagram)
+	}
+	if c.ImagePath != "" {
+		result.ImagePath = gen.NewOptString(c.ImagePath)
+	}
+	result.CreatedAt = gen.NewOptDateTime(c.CreatedAt)
+	result.UpdatedAt = gen.NewOptDateTime(c.UpdatedAt)
+
+	return result
+}
+
+// portToAPI converts a port.Port to a gen.AdultStudio.
+func portToAPI(p *port.Port) gen.AdultStudio {
+	result := gen.AdultStudio{
+		ID:   p.ID,
+		Name: p.Name,
+	}
+
+	if p.ParentID != nil {
+		result.ParentId = gen.NewOptUUID(*p.ParentID)
+	}
+	if p.StashDBID != "" {
+		result.StashdbId = gen.NewOptString(p.StashDBID)
+	}
+	if p.TPDBID != "" {
+		result.TpdbId = gen.NewOptString(p.TPDBID)
+	}
+	if p.URL != "" {
+		result.URL = gen.NewOptString(p.URL)
+	}
+	if p.LogoPath != "" {
+		result.LogoPath = gen.NewOptString(p.LogoPath)
+	}
+	result.CreatedAt = gen.NewOptDateTime(p.CreatedAt)
+	result.UpdatedAt = gen.NewOptDateTime(p.UpdatedAt)
+
+	return result
+}
+
+// flagToAPI converts a flag.Flag to a gen.AdultTag.
+func flagToAPI(f *flag.Flag) gen.AdultTag {
+	result := gen.AdultTag{
+		ID:   f.ID,
+		Name: f.Name,
+	}
+
+	if f.Description != "" {
+		result.Description = gen.NewOptString(f.Description)
+	}
+	if f.ParentID != nil {
+		result.ParentId = gen.NewOptUUID(*f.ParentID)
+	}
+	if f.StashDBID != "" {
+		result.StashdbId = gen.NewOptString(f.StashDBID)
+	}
+	// Note: f.Waters (category) is not exposed in the API schema
 
 	return result
 }

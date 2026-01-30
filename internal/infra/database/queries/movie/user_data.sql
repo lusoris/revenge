@@ -88,6 +88,7 @@ WHERE mwh.user_id = $1
   AND mwh.completed = false
   AND mwh.played_percentage > 5   -- At least 5% watched
   AND mwh.played_percentage < 90  -- Less than 90% watched
+  AND mwh.last_updated_at > NOW() - INTERVAL '30 days'  -- Only show recent activity
 ORDER BY mwh.last_updated_at DESC
 LIMIT $2;
 

@@ -10,6 +10,12 @@ import (
 
 	gen "github.com/lusoris/revenge/api/generated"
 	"github.com/lusoris/revenge/internal/content/movie"
+	"github.com/lusoris/revenge/internal/content/qar/crew"
+	"github.com/lusoris/revenge/internal/content/qar/expedition"
+	"github.com/lusoris/revenge/internal/content/qar/flag"
+	"github.com/lusoris/revenge/internal/content/qar/fleet"
+	"github.com/lusoris/revenge/internal/content/qar/port"
+	"github.com/lusoris/revenge/internal/content/qar/voyage"
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/auth"
@@ -47,6 +53,14 @@ type Handler struct {
 	version        string
 	buildTime      string
 	gitCommit      string
+
+	// QAR (adult content) services
+	expeditionService *expedition.Service
+	voyageService     *voyage.Service
+	crewService       *crew.Service
+	portService       *port.Service
+	flagService       *flag.Service
+	fleetService      *fleet.Service
 }
 
 // BuildInfo contains build metadata for server info responses.
@@ -72,6 +86,14 @@ type HandlerParams struct {
 	Version        string
 	BuildTime      string
 	GitCommit      string
+
+	// QAR (adult content) services
+	ExpeditionService *expedition.Service
+	VoyageService     *voyage.Service
+	CrewService       *crew.Service
+	PortService       *port.Service
+	FlagService       *flag.Service
+	FleetService      *fleet.Service
 }
 
 // NewHandler creates a new API handler.
@@ -91,6 +113,13 @@ func NewHandler(params HandlerParams) *Handler {
 		version:        params.Version,
 		buildTime:      params.BuildTime,
 		gitCommit:      params.GitCommit,
+		// QAR (adult content) services
+		expeditionService: params.ExpeditionService,
+		voyageService:     params.VoyageService,
+		crewService:       params.CrewService,
+		portService:       params.PortService,
+		flagService:       params.FlagService,
+		fleetService:      params.FleetService,
 	}
 }
 
