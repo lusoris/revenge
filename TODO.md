@@ -18,7 +18,7 @@ Library Refactor          ██████████████████
 Movie Module              ████████████████████████ 100% ✓
 TV Shows Module           ████████████████████████ 100% ✓
 Adult Module (QAR)        ████████████████████████ 100% ✓
-Pre-Test Implementation   ██████░░░░░░░░░░░░░░░░░░  25%  <- CURRENT
+Pre-Test Implementation   ██████████░░░░░░░░░░░░░░  40%  <- CURRENT
 Unit Tests                ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Integration Tests         ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -40,18 +40,18 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 > Everything that can be built without needing tests to verify correctness.
 
 ### A.1 QAR Relationship Handlers (Complete Stubs)
-- [ ] **ListAdultPerformerMovies** - needs `expedition.ListByPerformer()` method
-  - Add repository method: `ListByCrewID(ctx, crewID, limit, offset)`
-  - Add service method: `ListByPerformer(ctx, performerID, limit, offset)`
-  - Wire to handler
-- [ ] **ListAdultStudioMovies** - needs `expedition.ListByPort()` method
-  - Add repository method: `ListByPortID(ctx, portID, limit, offset)`
-  - Add service method: `ListByStudio(ctx, studioID, limit, offset)`
-  - Wire to handler
-- [ ] **ListAdultTagMovies** - needs `expedition.ListByFlag()` method
-  - Add repository method: `ListByFlagID(ctx, flagID, limit, offset)`
-  - Add service method: `ListByTag(ctx, tagID, limit, offset)`
-  - Wire to handler
+- [x] **ListAdultPerformerMovies** - `expedition.ListByPerformer()` method
+  - [x] Add repository method: `ListByCrewID(ctx, crewID, limit, offset)`
+  - [x] Add service method: `ListByPerformer(ctx, performerID, limit, offset)`
+  - [x] Wire to handler
+- [x] **ListAdultStudioMovies** - `expedition.ListByPort()` method
+  - [x] Add repository method: `ListByPortID(ctx, portID, limit, offset)`
+  - [x] Add service method: `ListByStudio(ctx, studioID, limit, offset)`
+  - [x] Wire to handler
+- [x] **ListAdultTagMovies** - `expedition.ListByFlag()` method
+  - [x] Add repository method: `ListByFlagID(ctx, flagID, limit, offset)`
+  - [x] Add service method: `ListByTag(ctx, tagID, limit, offset)`
+  - [x] Wire to handler
 - [ ] **ListAdultSimilarMovies** - needs similar recommendation logic
   - Based on shared flags/crew/port
 - [ ] **ListAdultMovieMarkers** - needs marker/chapter entity
@@ -100,16 +100,16 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - [ ] GetAdultStashStatus - connection status
 
 ### A.4 Playback Service
-- [ ] **Create service** → `internal/service/playback/`
-  - [ ] service.go - Playback orchestration
-  - [ ] types.go - PlaybackSession, StreamInfo, etc.
-  - [ ] module.go - fx wiring
-- [ ] **Implement core methods**
-  - [ ] StartPlayback(ctx, userID, mediaID, mediaType) → PlaybackSession
-  - [ ] UpdateProgress(ctx, sessionID, positionTicks)
-  - [ ] StopPlayback(ctx, sessionID)
-  - [ ] GetActiveSession(ctx, userID, mediaID)
-- [ ] **Up Next / Auto-Play Queue**
+- [x] **Create service** → `internal/service/playback/`
+  - [x] service.go - Playback orchestration
+  - [x] types.go - PlaybackSession, StreamInfo, etc.
+  - [x] module.go - fx wiring
+- [x] **Implement core methods**
+  - [x] StartPlayback(ctx, userID, mediaID, mediaType) → PlaybackSession
+  - [x] UpdateProgress(ctx, sessionID, positionTicks)
+  - [x] StopPlayback(ctx, sessionID)
+  - [x] GetActiveSession(ctx, userID, mediaID)
+- [ ] **Up Next / Auto-Play Queue** (stub implemented)
   - [ ] BuildUpNextQueue(ctx, userID, currentMediaID) → []MediaItem
   - [ ] TV: next episode in series
   - [ ] Movie: similar movies or collection next
@@ -146,8 +146,9 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - [ ] adult.request.* permissions (7 total)
 
 ### A.7 Health Checks
-- [ ] **Enable cache health check** in main.go (currently commented)
-- [ ] **Enable search health check** in main.go (currently commented)
+- [x] **Enable cache health check** via infra/health module
+- [x] **Enable search health check** via infra/health module
+- [x] **Enable jobs health check** via infra/health module
 - [ ] **Add QAR-specific health** - check adult module enabled
 
 ### A.8 User Preferences
