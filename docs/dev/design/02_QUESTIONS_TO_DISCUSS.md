@@ -9,25 +9,30 @@
 
 ## Critical Discrepancies Found
 
-### Package Version Mismatches
+### Package Version Mismatches ✅ ALL RESOLVED (2026-01-30)
 
-| Package | go.mod (actual) | SOURCES.yaml | 00_SOURCE_OF_TRUTH.md | Resolution |
-|---------|-----------------|--------------|---------------------|------------|
-| otter | v1.2.4 | v2.3.0 | v1.2.4 ✅ | Update SOURCES.yaml |
-| typesense-go | v4.0.0-alpha2 ❌ | v3.2.0 | v3.2.0 ✅ | **CODE FIX NEEDED**: go.mod must use v3.2.0 stable |
-| resty | go-resty/resty/v2 v2.17.1 ✅ | resty v3.0.0-b6 | v2.17.1 ✅ | Update SOURCES.yaml |
+All versions have been verified and aligned across SOT, SOURCES.yaml, and documentation:
 
-### Resolved (2026-01-30)
+| Package | Version | Status | Notes |
+|---------|---------|--------|-------|
+| otter | v2.x | ✅ | W-TinyLFU local cache |
+| typesense-go | v4.x | ✅ | v4 is current major version (stable) |
+| resty | v2.17.1 | ✅ | Stable, NOT v3 beta |
+| pgx | v5.7.5 | ✅ | PostgreSQL driver |
+| River | v0.26.0 | ✅ | PostgreSQL job queue |
+| rueidis | v1.0.49 | ✅ | Redis/Dragonfly client |
+| koanf | v2.3.0 | ✅ | Configuration |
+| fx | v1.23.0 | ✅ | DI framework |
 
-1. **Typesense Go Client**: ✅ DECISION MADE
-   - **Answer**: Use stable v3.2.0, NOT alpha v4
-   - **Principle**: "Bleeding edge stable" = newest STABLE version, never alphas/RCs
-   - **Action needed**: Fix go.mod when doing code work (change v4 alpha → v3 stable)
-   - **Verified**: [typesense-go releases](https://github.com/typesense/typesense-go/releases) - v3.2.0 is latest stable (March 2025)
+### Package Decisions (2026-01-30)
 
-2. **Resty HTTP Client**: ✅ CORRECT
-   - go.mod uses v2 stable which is correct
-   - SOURCES.yaml mentioned v3 beta incorrectly - needs update
+1. **Typesense Go Client**: ✅ v4.x
+   - v4 is the current stable major version
+   - Import as `github.com/typesense/typesense-go/v4/typesense`
+
+2. **Resty HTTP Client**: ✅ v2.17.1
+   - Stable v2, NOT v3 beta
+   - All sources aligned
 
 ---
 

@@ -21,7 +21,7 @@ A ground-up media server built in Go with a fully modular architecture. Each con
 - **Bleeding Edge Stable** - Latest stable Go/PostgreSQL, no alpha deps
 - **Optional ML** - Ollama integration for recommendations, not required
 
-See [DESIGN_PRINCIPLES.md](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) for full details.
+See [02_DESIGN_PRINCIPLES.md](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.md) for full details.
 
 ---
 
@@ -51,16 +51,16 @@ See [DESIGN_PRINCIPLES.md](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) fo
 | Language    | Go 1.25+            | `GOEXPERIMENT=greenteagc,jsonv2` |
 | Database    | PostgreSQL 18+      | sqlc for type-safe queries       |
 | Cache       | Dragonfly + rueidis | Redis-compatible, auto-pipelining|
-| Local Cache | otter v1.2.4        | W-TinyLFU eviction               |
+| Local Cache | otter v2.x          | W-TinyLFU eviction               |
 | Search      | Typesense           | typesense-go/v4 client           |
 | Job Queue   | River               | PostgreSQL-native                |
 | API         | ogen                | OpenAPI spec-first               |
 | DI          | uber-go/fx          | Dependency injection             |
 | Config      | koanf v2            | Multi-source configuration       |
 | Logging     | slog                | Structured logging               |
-| Resilience  | failsafe-go         | Circuit breakers, retries        |
+| Resilience  | gobreaker + backoff | Circuit breakers, retries        |
 
-See [ARCHITECTURE_V2.md](docs/dev/design/architecture/ARCHITECTURE_V2.md) for the complete design.
+See [01_ARCHITECTURE.md](docs/dev/design/architecture/01_ARCHITECTURE.md) for the complete design.
 
 ---
 
@@ -94,12 +94,13 @@ GOEXPERIMENT=greenteagc,jsonv2 go run ./cmd/revenge
 
 ## Documentation
 
-All documentation lives in [docs/dev/](docs/dev/INDEX.md).
+All documentation lives in [docs/dev/design/](docs/dev/design/00_SOURCE_OF_TRUTH.md).
 
 ### Core Design
-- [Architecture V2](docs/dev/design/architecture/ARCHITECTURE_V2.md) - Complete modular architecture
+- [Source of Truth](docs/dev/design/00_SOURCE_OF_TRUTH.md) - Master reference for all versions and modules
+- [Architecture](docs/dev/design/architecture/01_ARCHITECTURE.md) - Complete modular architecture
 - [Tech Stack](docs/dev/design/technical/TECH_STACK.md) - Technology choices with rationale
-- [Design Principles](docs/dev/design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
+- [Design Principles](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.md) - Guiding principles
 - [Configuration Reference](docs/dev/design/technical/CONFIGURATION.md) - koanf configuration options
 
 ### Services
@@ -117,7 +118,7 @@ All documentation lives in [docs/dev/](docs/dev/INDEX.md).
 - [TV Show Module](docs/dev/design/features/video/TVSHOW_MODULE.md) - Series, seasons, episodes
 
 ### Features
-- [Metadata System](docs/dev/design/architecture/METADATA_SYSTEM.md) - Servarr-first metadata with fallback providers
+- [Metadata System](docs/dev/design/architecture/03_METADATA_SYSTEM.md) - Servarr-first metadata with fallback providers
 - [Watch Next / Continue Watching](docs/dev/design/features/playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Playback continuation system
 - [Release Calendar](docs/dev/design/features/playback/RELEASE_CALENDAR.md) - Upcoming releases via Servarr
 - [Request System](docs/dev/design/features/shared/REQUEST_SYSTEM.md) - Content requests with polls, voting, RBAC rules

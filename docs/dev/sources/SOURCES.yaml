@@ -95,6 +95,53 @@ sources:
       output: "go/release-notes.md"
 
   # ============================================================================
+  # GO EXTENDED - golang.org/x packages and security
+  # ============================================================================
+  go_extended:
+    - id: golang-x-crypto
+      name: "golang.org/x/crypto"
+      url: "https://pkg.go.dev/golang.org/x/crypto"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/x/crypto.md"
+
+    - id: golang-x-sync
+      name: "golang.org/x/sync"
+      url: "https://pkg.go.dev/golang.org/x/sync"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/x/sync.md"
+
+    - id: golang-x-time
+      name: "golang.org/x/time"
+      url: "https://pkg.go.dev/golang.org/x/time"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/x/time.md"
+
+    - id: golang-x-net
+      name: "golang.org/x/net"
+      url: "https://pkg.go.dev/golang.org/x/net"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/x/net.md"
+
+    - id: golang-x-text
+      name: "golang.org/x/text"
+      url: "https://pkg.go.dev/golang.org/x/text"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/x/text.md"
+
+    - id: golang-x-exp
+      name: "golang.org/x/exp"
+      url: "https://pkg.go.dev/golang.org/x/exp"
+      type: html
+      selectors: [".Documentation"]
+      output: "go/x/exp.md"
+      note: "Experimental packages - slog moved to stdlib"
+
+  # ============================================================================
   # TOOLING - Go Libraries & Tools
   # ============================================================================
   tooling:
@@ -315,6 +362,42 @@ sources:
       selectors: [".Documentation"]
       output: "tooling/gobreaker.md"
 
+    # Rate Limiting
+    - id: golang-rate
+      name: "golang.org/x/time/rate"
+      url: "https://pkg.go.dev/golang.org/x/time/rate"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/rate-limiter.md"
+
+    # Retry/Backoff
+    - id: cenkalti-backoff
+      name: "cenkalti/backoff"
+      url: "https://pkg.go.dev/github.com/cenkalti/backoff/v4"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/backoff.md"
+
+    - id: cenkalti-backoff-docs
+      name: "cenkalti/backoff GitHub"
+      url: "https://github.com/cenkalti/backoff"
+      type: github_readme
+      output: "tooling/backoff-guide.md"
+
+    # RSS/Atom Feed Parsing
+    - id: gofeed
+      name: "mmcdole/gofeed"
+      url: "https://pkg.go.dev/github.com/mmcdole/gofeed"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/gofeed.md"
+
+    - id: gofeed-docs
+      name: "gofeed GitHub README"
+      url: "https://github.com/mmcdole/gofeed"
+      type: github_readme
+      output: "tooling/gofeed-guide.md"
+
   # ============================================================================
   # DATABASE - Database Documentation
   # ============================================================================
@@ -496,6 +579,50 @@ sources:
       type: html
       output: "apis/listenbrainz.md"
 
+    # Scrobbling - Additional Services
+    - id: letterboxd
+      name: "Letterboxd API"
+      url: "https://api-docs.letterboxd.com/"
+      type: html
+      output: "apis/letterboxd.md"
+      note: "Movie logging/social. Requires API key application."
+
+    - id: simkl
+      name: "Simkl API"
+      url: "https://simkl.docs.apiary.io/"
+      type: html
+      output: "apis/simkl.md"
+      note: "TV/Movie tracking - Apiary docs"
+
+    # Photo Management APIs
+    - id: immich
+      name: "Immich API"
+      url: "https://immich.app/docs/api"
+      type: html
+      output: "apis/immich.md"
+      note: "Self-hosted photo/video backup. OpenAPI spec available."
+
+    - id: immich-openapi
+      name: "Immich OpenAPI Spec"
+      url: "https://raw.githubusercontent.com/immich-app/immich/main/open-api/immich-openapi-specs.json"
+      type: json
+      output: "apis/immich-openapi.json"
+
+    - id: photoprism
+      name: "PhotoPrism API"
+      url: "https://docs.photoprism.app/developer-guide/api/"
+      type: html
+      output: "apis/photoprism.md"
+      note: "AI-powered photo app"
+
+    # Podcast APIs
+    - id: podcastindex
+      name: "Podcast Index API"
+      url: "https://podcastindex-org.github.io/docs-api/"
+      type: html
+      output: "apis/podcastindex.md"
+      note: "Open podcast directory - replaces iTunes dependency"
+
     # Servarr (OpenAPI specs from GitHub)
     - id: radarr
       name: "Radarr OpenAPI Spec"
@@ -578,6 +705,64 @@ sources:
       type: html
       output: "protocols/http-range.md"
 
+    # RTSP
+    - id: rtsp-rfc
+      name: "RTSP RFC 7826"
+      url: "https://datatracker.ietf.org/doc/html/rfc7826"
+      type: html
+      output: "protocols/rtsp-rfc7826.md"
+      note: "Real-Time Streaming Protocol 2.0"
+
+    # M3U/M3U8 Playlist
+    - id: m3u8
+      name: "M3U8 Extended Format"
+      url: "https://datatracker.ietf.org/doc/html/rfc8216"
+      type: html
+      output: "protocols/m3u8.md"
+      note: "Same as HLS - M3U8 is HLS playlist format"
+
+    # XMLTV (EPG format)
+    - id: xmltv
+      name: "XMLTV Format"
+      url: "https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd"
+      type: html
+      output: "protocols/xmltv.md"
+      note: "DTD for electronic program guide data"
+
+    - id: xmltv-wiki
+      name: "XMLTV Wiki"
+      url: "https://wiki.xmltv.org/index.php/XMLTVFormat"
+      type: html
+      output: "protocols/xmltv-format.md"
+
+    # WebRTC
+    - id: webrtc
+      name: "WebRTC API"
+      url: "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API"
+      type: html
+      output: "protocols/webrtc.md"
+
+    - id: pion-webrtc
+      name: "Pion WebRTC (Go)"
+      url: "https://pkg.go.dev/github.com/pion/webrtc/v4"
+      type: html
+      selectors: [".Documentation"]
+      output: "protocols/pion-webrtc.md"
+
+    - id: pion-webrtc-docs
+      name: "Pion Examples"
+      url: "https://github.com/pion/webrtc"
+      type: github_readme
+      output: "protocols/pion-webrtc-guide.md"
+
+    # MPEG-TS
+    - id: mpeg-ts
+      name: "MPEG Transport Stream"
+      url: "https://en.wikipedia.org/wiki/MPEG_transport_stream"
+      type: html
+      output: "protocols/mpeg-ts.md"
+      note: "Wikipedia overview - ISO 13818-1 spec is paywalled"
+
   # ============================================================================
   # FRONTEND - Frontend Technologies
   # ============================================================================
@@ -627,6 +812,74 @@ sources:
       url: "https://www.vidstack.io/docs/player/getting-started/installation"
       type: html
       output: "frontend/vidstack.md"
+
+    # Build Tools
+    - id: vite
+      name: "Vite Documentation"
+      url: "https://vite.dev/guide/"
+      type: html
+      output: "frontend/vite.md"
+
+    - id: vite-config
+      name: "Vite Configuration"
+      url: "https://vite.dev/config/"
+      type: html
+      output: "frontend/vite-config.md"
+
+    # TypeScript
+    - id: typescript
+      name: "TypeScript Documentation"
+      url: "https://www.typescriptlang.org/docs/"
+      type: html
+      output: "frontend/typescript.md"
+
+    - id: typescript-handbook
+      name: "TypeScript Handbook"
+      url: "https://www.typescriptlang.org/docs/handbook/intro.html"
+      type: html
+      output: "frontend/typescript-handbook.md"
+
+    # CSS
+    - id: tailwindcss
+      name: "TailwindCSS Documentation"
+      url: "https://tailwindcss.com/docs"
+      type: html
+      output: "frontend/tailwindcss.md"
+
+    - id: tailwindcss-v4
+      name: "TailwindCSS v4"
+      url: "https://tailwindcss.com/blog/tailwindcss-v4"
+      type: html
+      output: "frontend/tailwindcss-v4.md"
+      note: "v4 uses Rust engine, CSS-first config"
+
+    # Validation
+    - id: zod
+      name: "Zod Documentation"
+      url: "https://zod.dev/"
+      type: html
+      output: "frontend/zod.md"
+
+    - id: zod-github
+      name: "Zod GitHub"
+      url: "https://github.com/colinhacks/zod"
+      type: github_readme
+      output: "frontend/zod-guide.md"
+
+    # Form Handling
+    - id: superforms
+      name: "SvelteKit Superforms"
+      url: "https://superforms.rocks/"
+      type: html
+      output: "frontend/superforms.md"
+      note: "Form validation with Zod for SvelteKit"
+
+    # Icons
+    - id: lucide-svelte
+      name: "Lucide Svelte"
+      url: "https://lucide.dev/guide/packages/lucide-svelte"
+      type: html
+      output: "frontend/lucide-svelte.md"
 
   # ============================================================================
   # MEDIA - Media Processing
@@ -726,6 +979,51 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "media/bogem-id3v2.md"
+
+    # Image Processing - Additional
+    - id: govips
+      name: "davidbyttow/govips"
+      url: "https://pkg.go.dev/github.com/davidbyttow/govips/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/govips.md"
+
+    - id: govips-docs
+      name: "govips GitHub README"
+      url: "https://github.com/davidbyttow/govips"
+      type: github_readme
+      output: "media/govips-guide.md"
+
+    - id: goimagehash
+      name: "corona10/goimagehash"
+      url: "https://pkg.go.dev/github.com/corona10/goimagehash"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/goimagehash.md"
+      note: "Perceptual hashing for image similarity"
+
+    - id: goimagehash-docs
+      name: "goimagehash GitHub"
+      url: "https://github.com/corona10/goimagehash"
+      type: github_readme
+      output: "media/goimagehash-guide.md"
+
+    # Audio Fingerprinting
+    - id: chromaprint
+      name: "go-chromaprint"
+      url: "https://github.com/go-fingerprint/chromaprint"
+      type: github_readme
+      output: "media/chromaprint.md"
+      note: "AcoustID fingerprinting"
+
+    # Comic/Book Processing
+    - id: go-unarr
+      name: "gen2brain/go-unarr"
+      url: "https://pkg.go.dev/github.com/gen2brain/go-unarr"
+      type: html
+      selectors: [".Documentation"]
+      output: "media/go-unarr.md"
+      note: "CBR/CBZ extraction"
 
   # ============================================================================
   # SECURITY - Security Standards
@@ -880,6 +1178,56 @@ sources:
       type: html
       output: "observability/prometheus-metrics.md"
 
+    # Grafana Stack
+    - id: grafana
+      name: "Grafana Documentation"
+      url: "https://grafana.com/docs/grafana/latest/"
+      type: html
+      output: "observability/grafana.md"
+
+    - id: grafana-dashboards
+      name: "Grafana Dashboard JSON"
+      url: "https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/"
+      type: html
+      output: "observability/grafana-dashboards.md"
+
+    # Loki (Log aggregation)
+    - id: loki
+      name: "Grafana Loki"
+      url: "https://grafana.com/docs/loki/latest/"
+      type: html
+      output: "observability/loki.md"
+
+    - id: loki-logql
+      name: "LogQL Query Language"
+      url: "https://grafana.com/docs/loki/latest/query/"
+      type: html
+      output: "observability/logql.md"
+
+    # Jaeger (Distributed tracing)
+    - id: jaeger
+      name: "Jaeger Documentation"
+      url: "https://www.jaegertracing.io/docs/"
+      type: html
+      output: "observability/jaeger.md"
+
+    - id: jaeger-client-go
+      name: "Jaeger Go Client"
+      url: "https://pkg.go.dev/github.com/jaegertracing/jaeger-client-go"
+      type: html
+      selectors: [".Documentation"]
+      output: "observability/jaeger-go.md"
+      note: "Legacy - prefer OpenTelemetry exporter"
+
+    # Slog handlers
+    - id: slog-multi
+      name: "slog-multi"
+      url: "https://pkg.go.dev/github.com/samber/slog-multi"
+      type: html
+      selectors: [".Documentation"]
+      output: "observability/slog-multi.md"
+      note: "Fan-out to multiple slog handlers"
+
   # ============================================================================
   # INFRASTRUCTURE - Infrastructure Components
   # ============================================================================
@@ -959,6 +1307,22 @@ sources:
       output: "distributed/etcd-raft.md"
       note: "Minimal core - used by K8s, CockroachDB"
 
+    - id: raft-boltdb
+      name: "hashicorp/raft-boltdb"
+      url: "https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "distributed/raft-boltdb.md"
+      note: "BoltDB backend for Raft log storage"
+
+    - id: memberlist
+      name: "hashicorp/memberlist"
+      url: "https://pkg.go.dev/github.com/hashicorp/memberlist"
+      type: html
+      selectors: [".Documentation"]
+      output: "distributed/memberlist.md"
+      note: "SWIM gossip protocol for cluster membership"
+
   # ============================================================================
   # ORCHESTRATION - Container Deployment (K8s, K3s, Swarm)
   # ============================================================================
@@ -1001,6 +1365,30 @@ sources:
       type: html
       output: "orchestration/longhorn.md"
       note: "Cloud-native distributed storage for K8s"
+
+    # K8s Go SDK
+    - id: client-go
+      name: "k8s.io/client-go"
+      url: "https://pkg.go.dev/k8s.io/client-go"
+      type: html
+      selectors: [".Documentation"]
+      output: "orchestration/client-go.md"
+      note: "Official K8s Go client"
+
+    - id: controller-runtime
+      name: "sigs.k8s.io/controller-runtime"
+      url: "https://pkg.go.dev/sigs.k8s.io/controller-runtime"
+      type: html
+      selectors: [".Documentation"]
+      output: "orchestration/controller-runtime.md"
+      note: "Framework for building K8s operators"
+
+    - id: kubebuilder
+      name: "Kubebuilder Book"
+      url: "https://book.kubebuilder.io/"
+      type: html
+      output: "orchestration/kubebuilder.md"
+      note: "Official guide for building K8s operators"
 
   # ============================================================================
   # CASTING - Device Casting

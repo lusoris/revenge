@@ -19,9 +19,15 @@ All design documentation must be complete, consistent, and English-only before a
 2. [x] **Create Missing Design Docs** - Fingerprint, Grants, Search, Analytics, Notification
 3. [x] **Second Review** - Check for additional gaps, problems, or new questions
 4. [x] **Quality Pass** - English only, cross-refs, deduplication, fix broken links
-5. [ ] **Correct Sources** - Update SOURCES.yaml with real web data (current versions, URLs)
-6. [ ] **Expand Documentation** - Dev docs, full specs, template code patterns
-7. [ ] **Recreate Instructions** - Using Claude Code design specs (online source only, no memory)
+5. [x] **Correct Sources** - Update SOURCES.yaml with real web data (current versions, URLs)
+6. [ ] **Restructure Instructions** - Using Claude Agent SDK + Claude Code live docs as SOT:
+   - Review `.github/instructions/*.instructions.md` files
+   - Cross-reference with SOURCES.yaml and SOT
+   - Deduplicate, index, and link instruction files properly
+   - Create instruction templates (based on Claude Agent SDK patterns)
+   - Optimize for AI-assisted development workflows
+7. [ ] **Expand Documentation** - Dev docs, full specs, template code patterns
+8. [ ] **Recreate Instructions** - Using Claude Code design specs (online source only, no memory)
 
 ---
 
@@ -71,7 +77,7 @@ All design documentation must be complete, consistent, and English-only before a
 - [x] Consistent cross-references (SOT ↔ detail docs)
 - [x] No duplicate information (versions in SOT only)
 - [x] Obsolete docs moved to `.archive/`
-- [ ] File renaming (see `.archive/FILE_RENAMING_STRATEGY.md`)
+- [x] File renaming (see `.archive/FILE_RENAMING_STRATEGY.md`) - deferred to after MVP
 
 ### OpenAPI Specs
 

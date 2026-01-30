@@ -212,9 +212,9 @@ We follow semantic versioning (SemVer):
 **Current Focus: Phase 1 (Single-Server MVP)**
 
 Priority areas for contributions:
-1. Core API endpoints (Revenge compatibility)
+1. Core API endpoints
 2. Library scanning and metadata
-3. SQLite/PostgreSQL support
+3. PostgreSQL database layer
 4. Authentication and authorization
 5. Bug fixes and performance
 

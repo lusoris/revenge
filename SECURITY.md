@@ -13,7 +13,7 @@
 
 Instead, please report them via GitHub's Security Advisory feature:
 
-1. Go to https://github.com/revenge/revenge/security/advisories/new
+1. Go to https://github.com/lusoris/revenge/security/advisories/new
 2. Fill out the advisory form with:
    - Description of the vulnerability
    - Steps to reproduce
