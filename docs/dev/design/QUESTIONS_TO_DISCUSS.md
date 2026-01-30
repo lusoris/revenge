@@ -323,8 +323,295 @@ operations/
 
 ---
 
+## Go Package Review (COMPREHENSIVE)
+
+> After adding ErsatzTV, Raft, Network QoS, Container Orchestration - review ALL package choices
+
+**Principle**: Best/fastest solution for each use case. No compromises. Bleeding edge STABLE only.
+
+### Core Infrastructure Packages
+
+#### 1. Database Driver
+**Current**: `github.com/jackc/pgx/v5`
+**Alternatives**: None serious (stdlib database/sql is slower)
+
+| Question | Answer |
+|----------|--------|
+| Is pgx still the fastest PostgreSQL driver for Go? | |
+| Any breaking changes in v5.8.0 we need to handle? | |
+| Do we need pgx for SQLite or pure database/sql? | |
+
+#### 2. Redis/Cache Client
+**Current**: `github.com/redis/rueidis` (14x faster than go-redis)
+**Alternatives**: `go-redis/redis`, `mediocregopher/radix`
+
+| Question | Answer |
+|----------|--------|
+| Is rueidis still the fastest option? | |
+| Does it support all Dragonfly features we need? | |
+| Any issues with client-side caching in our use case? | |
+
+#### 3. In-Memory Cache
+**Current**: `github.com/maypok86/otter` (W-TinyLFU)
+**Alternatives**: `dgraph-io/ristretto`, `allegro/bigcache`, `coocood/freecache`
+
+| Question | Answer |
+|----------|--------|
+| Otter vs Ristretto - which is actually faster now? | |
+| Do we need the S3-FIFO algorithm or is LRU enough? | |
+| Memory overhead considerations for embedded/single-user? | |
+
+#### 4. Job Queue
+**Current**: `github.com/riverqueue/river` (PostgreSQL-backed)
+**Alternatives**: `hibiken/asynq` (Redis), `gocraft/work`, custom
+
+| Question | Answer |
+|----------|--------|
+| River vs Asynq - PostgreSQL vs Redis trade-offs? | |
+| Is transactional enqueueing critical for us? | |
+| River's unique job constraints sufficient? | |
+| Need for job scheduling (cron-like)? River has it? | |
+
+#### 5. HTTP Client
+**Current**: `github.com/go-resty/resty/v2` (stable)
+**Alternatives**: `net/http` (stdlib), `valyala/fasthttp`, `carlmjohnson/requests`
+
+| Question | Answer |
+|----------|--------|
+| Do we need resty's middleware or is stdlib enough? | |
+| fasthttp for high-throughput external API calls? | |
+| Retry/backoff - resty built-in vs custom? | |
+
+#### 6. Configuration
+**Current**: `github.com/knadh/koanf/v2`
+**Alternatives**: `spf13/viper`, `kelseyhightower/envconfig`
+
+| Question | Answer |
+|----------|--------|
+| koanf vs viper performance/features? | |
+| Hot reload necessary or just restart? | |
+| Environment variable precedence working correctly? | |
+
+### New Feature Packages
+
+#### 7. Raft Consensus (NEW)
+**Current**: `github.com/hashicorp/raft` (proposed)
+**Alternatives**: `etcd-io/raft`, `lni/dragonboat`
+
+| Question | Answer |
+|----------|--------|
+| hashicorp/raft vs etcd/raft - batteries-included vs minimal? | |
+| Do we actually need consensus or is Redis-based leader election enough? | |
+| Is Raft overkill for home server clustering? | |
+| Dragonboat claims 10x faster - worth investigating? | |
+
+#### 8. IPTV/Streaming (NEW - ErsatzTV)
+**Current**: Custom REST client for ErsatzTV
+**Alternatives**: Native IPTV generation in Go?
+
+| Question | Answer |
+|----------|--------|
+| Should we rely on ErsatzTV or build native IPTV? | |
+| HLS generation - `bluenviron/gohlslib` or FFmpeg? | |
+| XMLTV generation - existing Go packages? | |
+
+#### 9. WebSocket
+**Current**: `github.com/coder/websocket`
+**Alternatives**: `gorilla/websocket` (deprecated?), `gobwas/ws`, `nhooyr/websocket`
+
+| Question | Answer |
+|----------|--------|
+| coder/websocket = fork of nhooyr, is it maintained? | |
+| Do we need gobwas/ws for ultra-high performance? | |
+| WebSocket compression needed? | |
+
+### API & Serialization Packages
+
+#### 10. OpenAPI Codegen
+**Current**: `github.com/ogen-go/ogen`
+**Alternatives**: `deepmap/oapi-codegen`, `go-swagger/go-swagger`
+
+| Question | Answer |
+|----------|--------|
+| ogen vs oapi-codegen - which generates cleaner code? | |
+| ogen's zero-allocation JSON - necessary for us? | |
+| Client generation quality for Arr APIs? | |
+
+#### 11. JSON Parsing
+**Current**: `github.com/go-faster/jx` (zero-allocation)
+**Alternatives**: `encoding/json` (stdlib), `json-iterator/go`, `goccy/go-json`
+
+| Question | Answer |
+|----------|--------|
+| jx vs go-json - which is faster for our use case? | |
+| Do we need streaming JSON for large responses? | |
+| Compatibility with ogen's generated code? | |
+
+#### 12. GraphQL Client (StashDB, AniList)
+**Current**: Not specified
+**Alternatives**: `machinebox/graphql`, `hasura/go-graphql-client`, `Khan/genqlient`
+
+| Question | Answer |
+|----------|--------|
+| Which GraphQL client is best for type-safe queries? | |
+| genqlient (code-gen) vs runtime clients? | |
+| Need subscriptions for real-time updates? | |
+
+### Media Processing Packages
+
+#### 13. Image Processing
+**Current**: `github.com/davidbyttow/govips/v2` (proposed)
+**Alternatives**: `h2non/bimg`, `disintegration/imaging`, stdlib
+
+| Question | Answer |
+|----------|--------|
+| govips vs bimg - both use libvips, which wrapper is better? | |
+| CGo dependency acceptable for image processing? | |
+| Pure Go alternative for CGo-free builds? | |
+
+#### 14. FFmpeg Integration
+**Current**: `github.com/asticode/go-astiav` (proposed)
+**Alternatives**: Shell out to ffmpeg, `giorgisio/goav`
+
+| Question | Answer |
+|----------|--------|
+| go-astiav vs shell exec - performance difference? | |
+| CGo dependency for FFmpeg acceptable? | |
+| Need Go bindings or is CLI sufficient? | |
+
+#### 15. Audio Metadata
+**Current**: `github.com/dhowden/tag`
+**Alternatives**: `bogem/id3v2`, `mikkyang/id3-go`
+
+| Question | Answer |
+|----------|--------|
+| dhowden/tag covers all formats (ID3, FLAC, MP4)? | |
+| Performance for large music libraries? | |
+| Write support needed or read-only? | |
+
+### Observability Packages
+
+#### 16. Logging
+**Current**: `log/slog` (stdlib) + `github.com/lmittmann/tint`
+**Alternatives**: `uber-go/zap`, `rs/zerolog`, `sirupsen/logrus`
+
+| Question | Answer |
+|----------|--------|
+| slog sufficient or need zap's performance? | |
+| tint for colored output - production-ready? | |
+| Structured logging format (JSON vs text)? | |
+
+#### 17. Metrics
+**Current**: `github.com/prometheus/client_golang`
+**Alternatives**: OpenTelemetry metrics, custom
+
+| Question | Answer |
+|----------|--------|
+| Prometheus vs OpenTelemetry metrics? | |
+| Both needed for different use cases? | |
+| Cardinality concerns for media server? | |
+
+#### 18. Tracing
+**Current**: `go.opentelemetry.io/otel` (proposed)
+**Alternatives**: Jaeger client, Zipkin
+
+| Question | Answer |
+|----------|--------|
+| OpenTelemetry vs vendor-specific? | |
+| Trace sampling strategy for media server? | |
+| Performance overhead acceptable? | |
+
+### Security Packages
+
+#### 19. RBAC
+**Current**: `github.com/casbin/casbin/v2`
+**Alternatives**: `ory/ladon`, `open-policy-agent/opa`, custom
+
+| Question | Answer |
+|----------|--------|
+| Casbin RBAC/ABAC sufficient for our needs? | |
+| OPA for more complex policy decisions? | |
+| Performance for frequent permission checks? | |
+
+#### 20. Cryptography
+**Current**: `golang.org/x/crypto` (stdlib)
+**Alternatives**: None serious
+
+| Question | Answer |
+|----------|--------|
+| Argon2id for password hashing confirmed? | |
+| AES-256-GCM for field encryption? | |
+| Need hardware acceleration (AES-NI)? | |
+
+### Testing Packages
+
+#### 21. Testing Framework
+**Current**: `github.com/stretchr/testify`
+**Alternatives**: stdlib only, `onsi/ginkgo`, `smartystreets/goconvey`
+
+| Question | Answer |
+|----------|--------|
+| testify sufficient or need BDD framework? | |
+| Mock generation - testify/mock vs mockery vs gomock? | |
+| Table-driven tests pattern adopted? | |
+
+#### 22. Integration Testing
+**Current**: `github.com/testcontainers/testcontainers-go` (proposed)
+**Alternatives**: Docker Compose for tests, embedded DBs
+
+| Question | Answer |
+|----------|--------|
+| Testcontainers vs Docker Compose test setup? | |
+| Embedded PostgreSQL for faster tests? | |
+| Test parallelization strategy? | |
+
+### Container/Orchestration Packages
+
+#### 23. Kubernetes Client
+**Current**: Not specified (for programmatic K8s interaction)
+**Alternatives**: `k8s.io/client-go`, `kubernetes-sigs/controller-runtime`
+
+| Question | Answer |
+|----------|--------|
+| Do we need K8s client in the app itself? | |
+| Or just Helm/kubectl for deployment? | |
+| Operator pattern for self-healing? | |
+
+### Summary Questions
+
+| Area | Current Choice | Confidence | Needs Research? |
+|------|----------------|------------|-----------------|
+| Database | pgx | HIGH | No |
+| Cache (distributed) | rueidis | HIGH | No |
+| Cache (local) | otter | MEDIUM | Maybe |
+| Job Queue | River | HIGH | No |
+| HTTP Client | resty | MEDIUM | Maybe |
+| Config | koanf | HIGH | No |
+| Raft | hashicorp/raft | LOW | YES |
+| WebSocket | coder/websocket | MEDIUM | Maybe |
+| OpenAPI | ogen | HIGH | No |
+| JSON | go-faster/jx | MEDIUM | Maybe |
+| GraphQL | TBD | NONE | YES |
+| Image | govips | MEDIUM | Maybe |
+| FFmpeg | go-astiav | LOW | YES |
+| Audio | dhowden/tag | MEDIUM | Maybe |
+| Logging | slog + tint | HIGH | No |
+| Metrics | Prometheus | HIGH | No |
+| RBAC | Casbin | HIGH | No |
+| Testing | testify | HIGH | No |
+
+**Action Items:**
+1. [ ] Research Raft alternatives (is it even needed?)
+2. [ ] Decide on GraphQL client
+3. [ ] Evaluate FFmpeg integration approach
+4. [ ] Confirm image processing package
+5. [ ] Verify all "MEDIUM" confidence choices
+
+---
+
 ## Notes
 
 - This file is temporary - items should be resolved and moved to appropriate docs
 - When resolved, update SOURCE_OF_TRUTH.md and remove from here
 - Questions for owner should be asked and answers documented in design docs
+- **Live docs verification DELAYED** until package choices finalized
