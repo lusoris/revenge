@@ -442,16 +442,133 @@ func (ns NullVideoCreditRole) Value() (driver.Value, error) {
 	return string(ns.VideoCreditRole), nil
 }
 
+// Partitioned audit log for metadata changes, written async via River
 type ActivityLog struct {
-	ID        uuid.UUID   `json:"id"`
-	UserID    pgtype.UUID `json:"userId"`
-	Type      string      `json:"type"`
-	Severity  string      `json:"severity"`
-	Message   string      `json:"message"`
-	Metadata  []byte      `json:"metadata"`
-	IpAddress netip.Addr  `json:"ipAddress"`
-	UserAgent *string     `json:"userAgent"`
-	CreatedAt time.Time   `json:"createdAt"`
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLog202601 struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLog202602 struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLog202603 struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLog202604 struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLog202605 struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLog202606 struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+type ActivityLogDefault struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Action type: metadata.edit, metadata.lock, metadata.unlock, metadata.refresh, image.upload, image.select, image.delete, content.delete, user.login, user.logout
+	Action string `json:"action"`
+	// Module: movie, tvshow, qar, user, library, system
+	Module     string    `json:"module"`
+	EntityID   uuid.UUID `json:"entityId"`
+	EntityType string    `json:"entityType"`
+	// JSONB of field changes: {"field": {"old": value, "new": value}}
+	Changes   json.RawMessage `json:"changes"`
+	IpAddress netip.Addr      `json:"ipAddress"`
+	UserAgent *string         `json:"userAgent"`
+	CreatedAt time.Time       `json:"createdAt"`
 }
 
 type ApiKey struct {
@@ -639,6 +756,16 @@ type Profile struct {
 	AutoplayPreviews          *bool     `json:"autoplayPreviews"`
 	CreatedAt                 time.Time `json:"createdAt"`
 	UpdatedAt                 time.Time `json:"updatedAt"`
+	// Whether to auto-play next episode/item
+	AutoPlayEnabled bool `json:"autoPlayEnabled"`
+	// Countdown seconds before auto-play (0-60)
+	AutoPlayDelaySeconds int32 `json:"autoPlayDelaySeconds"`
+	// Days to keep items in continue watching (1-365)
+	ContinueWatchingDays int32 `json:"continueWatchingDays"`
+	// Percentage of media watched to mark as complete (50-100)
+	MarkWatchedPercent int32 `json:"markWatchedPercent"`
+	// Hashed PIN for adult content access (optional)
+	AdultPinHash *string `json:"adultPinHash"`
 }
 
 type QarBounty struct {
@@ -880,6 +1007,20 @@ type QarVoyageWaypoint struct {
 	FlagID        pgtype.UUID `json:"flagId"`
 	StashMarkerID *string     `json:"stashMarkerId"`
 	CreatedAt     time.Time   `json:"createdAt"`
+}
+
+// Polymorphic per-resource access grants for sharing libraries, playlists, etc.
+type ResourceGrant struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"userId"`
+	// Type of resource: movie_library, tv_library, music_library, adult_library, playlist, collection
+	ResourceType string    `json:"resourceType"`
+	ResourceID   uuid.UUID `json:"resourceId"`
+	// Access level: view, edit, manage, owner
+	GrantType string             `json:"grantType"`
+	GrantedBy pgtype.UUID        `json:"grantedBy"`
+	GrantedAt time.Time          `json:"grantedAt"`
+	ExpiresAt pgtype.Timestamptz `json:"expiresAt"`
 }
 
 type Role struct {
