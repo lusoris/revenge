@@ -1,0 +1,1935 @@
+# QAR (Queen Anne's Revenge) API - Adult Content Module
+# Obfuscated terminology: expeditions=movies, voyages=scenes, crew=performers, ports=studios, flags=tags, fleets=libraries
+paths:
+  # Fleet (Library) endpoints
+  /qar/fleets:
+    get:
+      operationId: listFleets
+      x-ogen-operation-group: QAR
+      summary: List fleets
+      description: List all adult content libraries (fleets)
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of fleets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FleetListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    post:
+      operationId: createFleet
+      x-ogen-operation-group: QAR
+      summary: Create fleet
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FleetCreate"
+      responses:
+        "201":
+          description: Fleet created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fleet"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/fleets/{fleetId}:
+    get:
+      operationId: getFleet
+      x-ogen-operation-group: QAR
+      summary: Get fleet by ID
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fleetId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Fleet details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fleet"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    put:
+      operationId: updateFleet
+      x-ogen-operation-group: QAR
+      summary: Update fleet
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fleetId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FleetUpdate"
+      responses:
+        "200":
+          description: Fleet updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fleet"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteFleet
+      x-ogen-operation-group: QAR
+      summary: Delete fleet
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fleetId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Fleet deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Expedition (Movie) endpoints
+  /qar/expeditions:
+    get:
+      operationId: listExpeditions
+      x-ogen-operation-group: QAR
+      summary: List expeditions
+      description: List adult movies (expeditions) with pagination and filtering
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fleetId
+          in: query
+          description: Filter by fleet ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: portId
+          in: query
+          description: Filter by port (studio) ID
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: query
+          in: query
+          description: Search query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [title, launch_date, date_added]
+            default: title
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of expeditions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpeditionListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    post:
+      operationId: createExpedition
+      x-ogen-operation-group: QAR
+      summary: Create expedition
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpeditionCreate"
+      responses:
+        "201":
+          description: Expedition created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expedition"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/expeditions/{expeditionId}:
+    get:
+      operationId: getExpedition
+      x-ogen-operation-group: QAR
+      summary: Get expedition by ID
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: expeditionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Expedition details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expedition"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    put:
+      operationId: updateExpedition
+      x-ogen-operation-group: QAR
+      summary: Update expedition metadata
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: expeditionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpeditionUpdate"
+      responses:
+        "200":
+          description: Expedition updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expedition"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteExpedition
+      x-ogen-operation-group: QAR
+      summary: Delete expedition
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: expeditionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Expedition deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/expeditions/{expeditionId}/crew:
+    get:
+      operationId: listExpeditionCrew
+      x-ogen-operation-group: QAR
+      summary: List expedition crew
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: expeditionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Expedition crew
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Crew"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/expeditions/{expeditionId}/flags:
+    get:
+      operationId: listExpeditionFlags
+      x-ogen-operation-group: QAR
+      summary: List expedition flags (tags)
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: expeditionId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Expedition flags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flag"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Voyage (Scene) endpoints
+  /qar/voyages:
+    get:
+      operationId: listVoyages
+      x-ogen-operation-group: QAR
+      summary: List voyages
+      description: List adult scenes (voyages) with pagination and filtering
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fleetId
+          in: query
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: portId
+          in: query
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [title, launch_date, date_added]
+            default: title
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of voyages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VoyageListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/voyages/{voyageId}:
+    get:
+      operationId: getVoyage
+      x-ogen-operation-group: QAR
+      summary: Get voyage by ID
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: voyageId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Voyage details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Voyage"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    put:
+      operationId: updateVoyage
+      x-ogen-operation-group: QAR
+      summary: Update voyage metadata
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: voyageId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VoyageUpdate"
+      responses:
+        "200":
+          description: Voyage updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Voyage"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteVoyage
+      x-ogen-operation-group: QAR
+      summary: Delete voyage
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: voyageId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Voyage deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/voyages/{voyageId}/crew:
+    get:
+      operationId: listVoyageCrew
+      x-ogen-operation-group: QAR
+      summary: List voyage crew
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: voyageId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Voyage crew
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CrewWithRole"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/voyages/{voyageId}/flags:
+    get:
+      operationId: listVoyageFlags
+      x-ogen-operation-group: QAR
+      summary: List voyage flags (tags)
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: voyageId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Voyage flags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flag"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Crew (Performer) endpoints
+  /qar/crew:
+    get:
+      operationId: listCrew
+      x-ogen-operation-group: QAR
+      summary: List crew members
+      description: List adult performers (crew) with pagination and filtering
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [male, female, non_binary]
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [name, date_added]
+            default: name
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of crew members
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrewListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    post:
+      operationId: createCrew
+      x-ogen-operation-group: QAR
+      summary: Create crew member
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewCreate"
+      responses:
+        "201":
+          description: Crew member created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crew"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/crew/{crewId}:
+    get:
+      operationId: getCrewMember
+      x-ogen-operation-group: QAR
+      summary: Get crew member by ID
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: crewId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Crew member details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crew"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    put:
+      operationId: updateCrewMember
+      x-ogen-operation-group: QAR
+      summary: Update crew member
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: crewId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CrewUpdate"
+      responses:
+        "200":
+          description: Crew member updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crew"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deleteCrewMember
+      x-ogen-operation-group: QAR
+      summary: Delete crew member
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: crewId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Crew member deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Port (Studio) endpoints
+  /qar/ports:
+    get:
+      operationId: listPorts
+      x-ogen-operation-group: QAR
+      summary: List ports
+      description: List adult studios (ports) with pagination
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of ports
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    post:
+      operationId: createPort
+      x-ogen-operation-group: QAR
+      summary: Create port
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PortCreate"
+      responses:
+        "201":
+          description: Port created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Port"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/ports/{portId}:
+    get:
+      operationId: getPort
+      x-ogen-operation-group: QAR
+      summary: Get port by ID
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: portId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Port details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Port"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    put:
+      operationId: updatePort
+      x-ogen-operation-group: QAR
+      summary: Update port
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: portId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PortUpdate"
+      responses:
+        "200":
+          description: Port updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Port"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+    delete:
+      operationId: deletePort
+      x-ogen-operation-group: QAR
+      summary: Delete port
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: portId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "204":
+          description: Port deleted
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Flag (Tag) endpoints
+  /qar/flags:
+    get:
+      operationId: listFlags
+      x-ogen-operation-group: QAR
+      summary: List flags
+      description: List adult tags (flags) with pagination
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: waters
+          in: query
+          description: Filter by category (waters)
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of flags
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlagListResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  /qar/flags/{flagId}:
+    get:
+      operationId: getFlag
+      x-ogen-operation-group: QAR
+      summary: Get flag by ID
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: flagId
+          in: path
+          required: true
+          schema:
+            $ref: "./components/schemas.yaml#/components/schemas/UUID"
+      responses:
+        "200":
+          description: Flag details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flag"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+  # Search endpoint
+  /qar/search:
+    get:
+      operationId: searchQAR
+      x-ogen-operation-group: QAR
+      summary: Search QAR content
+      description: Search across expeditions, voyages, crew, and ports
+      tags: [QAR]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 2
+        - name: types
+          in: query
+          description: Content types to search (comma-separated)
+          schema:
+            type: string
+            default: "expedition,voyage,crew,port"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QARSearchResults"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+        "403":
+          description: Access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "./components/schemas.yaml#/components/schemas/Error"
+
+components:
+  schemas:
+    # Fleet (Library)
+    Fleet:
+      type: object
+      required: [id, name, fleetType, createdAt]
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        fleetType:
+          type: string
+          enum: [expedition, voyage]
+        paths:
+          type: array
+          items:
+            type: string
+        stashdbEndpoint:
+          type: string
+        tpdbEnabled:
+          type: boolean
+        whisparrSync:
+          type: boolean
+        autoTagCrew:
+          type: boolean
+        fingerprintOnScan:
+          type: boolean
+        ownerUserId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        stats:
+          $ref: "#/components/schemas/FleetStats"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    FleetStats:
+      type: object
+      properties:
+        expeditionCount:
+          type: integer
+        voyageCount:
+          type: integer
+        totalSizeBytes:
+          type: integer
+          format: int64
+
+    FleetCreate:
+      type: object
+      required: [name, fleetType]
+      properties:
+        name:
+          type: string
+        fleetType:
+          type: string
+          enum: [expedition, voyage]
+        paths:
+          type: array
+          items:
+            type: string
+        stashdbEndpoint:
+          type: string
+        tpdbEnabled:
+          type: boolean
+        whisparrSync:
+          type: boolean
+        autoTagCrew:
+          type: boolean
+        fingerprintOnScan:
+          type: boolean
+
+    FleetUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        paths:
+          type: array
+          items:
+            type: string
+        stashdbEndpoint:
+          type: string
+        tpdbEnabled:
+          type: boolean
+        whisparrSync:
+          type: boolean
+        autoTagCrew:
+          type: boolean
+        fingerprintOnScan:
+          type: boolean
+
+    FleetListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Fleet"
+        total:
+          type: integer
+
+    # Expedition (Movie)
+    Expedition:
+      type: object
+      required: [id, title, path, fleetId, createdAt]
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        title:
+          type: string
+        sortTitle:
+          type: string
+        path:
+          type: string
+        fleetId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        portId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        launchDate:
+          type: string
+          format: date
+        runtimeTicks:
+          type: integer
+          format: int64
+        overview:
+          type: string
+        director:
+          type: string
+        series:
+          type: string
+        coordinates:
+          type: string
+          description: Perceptual hash (phash)
+        charter:
+          type: string
+          description: StashDB ID
+        registry:
+          type: string
+          description: ThePornDB ID
+        whisparrId:
+          type: integer
+        hasFile:
+          type: boolean
+        isHdr:
+          type: boolean
+        is3d:
+          type: boolean
+        port:
+          $ref: "#/components/schemas/Port"
+        crew:
+          type: array
+          items:
+            $ref: "#/components/schemas/Crew"
+        flags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Flag"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ExpeditionCreate:
+      type: object
+      required: [title, path, fleetId]
+      properties:
+        title:
+          type: string
+        sortTitle:
+          type: string
+        path:
+          type: string
+        fleetId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        portId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        launchDate:
+          type: string
+          format: date
+        runtimeTicks:
+          type: integer
+          format: int64
+        overview:
+          type: string
+        director:
+          type: string
+        series:
+          type: string
+
+    ExpeditionUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        sortTitle:
+          type: string
+        portId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        launchDate:
+          type: string
+          format: date
+        runtimeTicks:
+          type: integer
+          format: int64
+        overview:
+          type: string
+        director:
+          type: string
+        series:
+          type: string
+
+    ExpeditionListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Expedition"
+        total:
+          type: integer
+
+    # Voyage (Scene)
+    Voyage:
+      type: object
+      required: [id, title, path, fleetId, createdAt]
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        title:
+          type: string
+        path:
+          type: string
+        fleetId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        portId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        launchDate:
+          type: string
+          format: date
+        distance:
+          type: integer
+          description: Runtime in minutes
+        overview:
+          type: string
+        coordinates:
+          type: string
+          description: Perceptual hash (phash)
+        oshash:
+          type: string
+        md5:
+          type: string
+        coverPath:
+          type: string
+        charter:
+          type: string
+          description: StashDB ID
+        registry:
+          type: string
+          description: ThePornDB ID
+        stashId:
+          type: string
+        whisparrId:
+          type: integer
+        port:
+          $ref: "#/components/schemas/Port"
+        crew:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrewWithRole"
+        flags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Flag"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    VoyageUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        portId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        launchDate:
+          type: string
+          format: date
+        distance:
+          type: integer
+        overview:
+          type: string
+
+    VoyageListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Voyage"
+        total:
+          type: integer
+
+    # Crew (Performer)
+    Crew:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        disambiguation:
+          type: string
+        gender:
+          type: string
+        christening:
+          type: string
+          format: date
+          description: Birth date
+        deathDate:
+          type: string
+          format: date
+        birthCity:
+          type: string
+        origin:
+          type: string
+          description: Ethnicity
+        nationality:
+          type: string
+        rigging:
+          type: string
+          description: Hair color
+        compass:
+          type: string
+          description: Eye color
+        heightCm:
+          type: integer
+        weightKg:
+          type: integer
+        measurements:
+          type: string
+        cupSize:
+          type: string
+        breastType:
+          type: string
+        markings:
+          type: string
+          description: Tattoos
+        anchors:
+          type: string
+          description: Piercings
+        maidenVoyage:
+          type: integer
+          description: Career start year
+        lastPort:
+          type: integer
+          description: Career end year
+        bio:
+          type: string
+        charter:
+          type: string
+          description: StashDB ID
+        registry:
+          type: string
+          description: ThePornDB ID
+        imagePath:
+          type: string
+        names:
+          type: array
+          items:
+            type: string
+          description: Aliases
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CrewWithRole:
+      allOf:
+        - $ref: "#/components/schemas/Crew"
+        - type: object
+          properties:
+            role:
+              type: string
+              description: Role in the scene/movie
+
+    CrewCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        disambiguation:
+          type: string
+        gender:
+          type: string
+        christening:
+          type: string
+          format: date
+        birthCity:
+          type: string
+        origin:
+          type: string
+        nationality:
+          type: string
+        bio:
+          type: string
+
+    CrewUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        disambiguation:
+          type: string
+        gender:
+          type: string
+        christening:
+          type: string
+          format: date
+        deathDate:
+          type: string
+          format: date
+        birthCity:
+          type: string
+        origin:
+          type: string
+        nationality:
+          type: string
+        rigging:
+          type: string
+        compass:
+          type: string
+        heightCm:
+          type: integer
+        weightKg:
+          type: integer
+        measurements:
+          type: string
+        cupSize:
+          type: string
+        breastType:
+          type: string
+        markings:
+          type: string
+        anchors:
+          type: string
+        maidenVoyage:
+          type: integer
+        lastPort:
+          type: integer
+        bio:
+          type: string
+
+    CrewListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Crew"
+        total:
+          type: integer
+
+    # Port (Studio)
+    Port:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        parentId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        parent:
+          $ref: "#/components/schemas/Port"
+        stashdbId:
+          type: string
+        tpdbId:
+          type: string
+        url:
+          type: string
+        logoPath:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PortCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        parentId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        url:
+          type: string
+
+    PortUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        parentId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        url:
+          type: string
+
+    PortListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Port"
+        total:
+          type: integer
+
+    # Flag (Tag)
+    Flag:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        name:
+          type: string
+        description:
+          type: string
+        parentId:
+          $ref: "./components/schemas.yaml#/components/schemas/UUID"
+        parent:
+          $ref: "#/components/schemas/Flag"
+        stashdbId:
+          type: string
+        waters:
+          type: string
+          description: Category
+        createdAt:
+          type: string
+          format: date-time
+
+    FlagListResponse:
+      type: object
+      required: [items, total]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Flag"
+        total:
+          type: integer
+
+    # Search
+    QARSearchResults:
+      type: object
+      properties:
+        expeditions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Expedition"
+        voyages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Voyage"
+        crew:
+          type: array
+          items:
+            $ref: "#/components/schemas/Crew"
+        ports:
+          type: array
+          items:
+            $ref: "#/components/schemas/Port"
