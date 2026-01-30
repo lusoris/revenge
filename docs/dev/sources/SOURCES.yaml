@@ -9,14 +9,14 @@
 # │ Go                 │ 1.25.6     │ Latest stable (2026-01-15)      │
 # │ PostgreSQL         │ 18.1       │ Latest stable                   │
 # │ Dragonfly          │ v1.36.0    │ 3 weeks ago                     │
-# │ Typesense          │ 30.0       │ Uses /latest/ in URL            │
-# │ typesense-go       │ v3.2.0     │ Latest stable (Mar 2025)        │
-# │ pgx                │ v5.8.0     │ Dec 26, 2025                    │
-# │ koanf              │ v2.3.2     │ 4 days ago (min Go 1.23)        │
-# │ fx                 │ v1.24.0    │ May 14, 2025                    │
-# │ River              │ v0.30.2    │ 2 days ago                      │
-# │ rueidis            │ v1.0.71    │ 14x faster than go-redis        │
-# │ otter              │ v1.2.4     │ W-TinyLFU local cache           │
+# │ Typesense          │ v30.1      │ Uses /latest/ in URL            │
+# │ typesense-go       │ v4.x       │ v4 is current major version     │
+# │ pgx                │ v5.7.5     │ PostgreSQL driver               │
+# │ koanf              │ v2.3.0     │ Min Go 1.23 required            │
+# │ fx                 │ v1.23.0    │ DI framework                    │
+# │ River              │ v0.26.0    │ PostgreSQL job queue            │
+# │ rueidis            │ v1.0.49+   │ 14x faster than go-redis        │
+# │ otter              │ v2.x       │ W-TinyLFU local cache           │
 # │ sturdyc            │ v1.1.5     │ API response caching            │
 # │ sqlc               │ v1.30.0    │ Sep 2, 2025                     │
 # │ ogen               │ v1.18.0    │ Dec 1, 2025                     │
@@ -165,7 +165,7 @@ sources:
     # Local Cache - otter
     - id: otter
       name: "otter Cache"
-      url: "https://pkg.go.dev/github.com/maypok86/otter"
+      url: "https://pkg.go.dev/github.com/maypok86/otter/v2"
       type: html
       selectors: [".Documentation"]
       output: "tooling/otter.md"
@@ -248,6 +248,72 @@ sources:
       type: html
       selectors: [".Documentation"]
       output: "tooling/validator.md"
+
+    # go-faster packages (serialization, errors)
+    - id: go-faster-jx
+      name: "go-faster/jx (JSON)"
+      url: "https://pkg.go.dev/github.com/go-faster/jx"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/go-faster-jx.md"
+
+    - id: go-faster-yaml
+      name: "go-faster/yaml"
+      url: "https://pkg.go.dev/github.com/go-faster/yaml"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/go-faster-yaml.md"
+
+    - id: go-faster-errors
+      name: "go-faster/errors"
+      url: "https://pkg.go.dev/github.com/go-faster/errors"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/go-faster-errors.md"
+
+    # GraphQL Client
+    - id: genqlient
+      name: "Khan/genqlient"
+      url: "https://pkg.go.dev/github.com/Khan/genqlient"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/genqlient.md"
+
+    - id: genqlient-docs
+      name: "genqlient GitHub README"
+      url: "https://github.com/Khan/genqlient"
+      type: github_readme
+      output: "tooling/genqlient-guide.md"
+
+    # Hot Reload
+    - id: air
+      name: "air (hot reload)"
+      url: "https://github.com/air-verse/air"
+      type: github_readme
+      output: "tooling/air.md"
+
+    # Logging
+    - id: tint
+      name: "lmittmann/tint"
+      url: "https://pkg.go.dev/github.com/lmittmann/tint"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/tint.md"
+
+    - id: zap
+      name: "uber-go/zap"
+      url: "https://pkg.go.dev/go.uber.org/zap"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/zap.md"
+
+    # Circuit Breaker
+    - id: gobreaker
+      name: "sony/gobreaker"
+      url: "https://pkg.go.dev/github.com/sony/gobreaker"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/gobreaker.md"
 
   # ============================================================================
   # DATABASE - Database Documentation
@@ -708,6 +774,40 @@ sources:
       type: html
       output: "security/keycloak.md"
 
+    # RBAC & Policy Engines
+    - id: casbin
+      name: "Casbin"
+      url: "https://pkg.go.dev/github.com/casbin/casbin/v2"
+      type: html
+      selectors: [".Documentation"]
+      output: "security/casbin.md"
+
+    - id: casbin-docs
+      name: "Casbin Documentation"
+      url: "https://casbin.org/docs/overview"
+      type: html
+      output: "security/casbin-guide.md"
+
+    - id: casbin-pgx-adapter
+      name: "Casbin pgx Adapter"
+      url: "https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3"
+      type: html
+      selectors: [".Documentation"]
+      output: "security/casbin-pgx.md"
+
+    - id: opa
+      name: "Open Policy Agent"
+      url: "https://pkg.go.dev/github.com/open-policy-agent/opa"
+      type: html
+      selectors: [".Documentation"]
+      output: "security/opa.md"
+
+    - id: opa-docs
+      name: "OPA Documentation"
+      url: "https://www.openpolicyagent.org/docs/latest/"
+      type: html
+      output: "security/opa-guide.md"
+
   # ============================================================================
   # TESTING - Testing Patterns
   # ============================================================================
@@ -730,6 +830,32 @@ sources:
       url: "https://go.dev/doc/tutorial/add-a-test"
       type: html
       output: "testing/go-patterns.md"
+
+    - id: mockery
+      name: "mockery"
+      url: "https://pkg.go.dev/github.com/vektra/mockery/v3"
+      type: html
+      selectors: [".Documentation"]
+      output: "testing/mockery.md"
+
+    - id: mockery-docs
+      name: "mockery Documentation"
+      url: "https://vektra.github.io/mockery/"
+      type: html
+      output: "testing/mockery-guide.md"
+
+    - id: embedded-postgres
+      name: "embedded-postgres"
+      url: "https://pkg.go.dev/github.com/fergusstrange/embedded-postgres"
+      type: html
+      selectors: [".Documentation"]
+      output: "testing/embedded-postgres.md"
+
+    - id: embedded-postgres-docs
+      name: "embedded-postgres GitHub README"
+      url: "https://github.com/fergusstrange/embedded-postgres"
+      type: github_readme
+      output: "testing/embedded-postgres-guide.md"
 
   # ============================================================================
   # OBSERVABILITY - Monitoring & Logging
@@ -776,7 +902,7 @@ sources:
       url: "https://github.com/typesense/typesense-go"
       type: github_readme
       output: "infrastructure/typesense-go.md"
-      note: "Latest stable is v3.2.0 (March 2025) - there is no v4!"
+      note: "v4 is current major version, import as github.com/typesense/typesense-go/v4/typesense"
 
   # ============================================================================
   # LIVETV - Live TV & DVR

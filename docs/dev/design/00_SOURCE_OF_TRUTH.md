@@ -98,10 +98,10 @@ This applies to ALL data types across all modules.
 
 | Component | Package/Service | Version | Purpose | Design Doc |
 |-----------|-----------------|---------|---------|------------|
-| PostgreSQL | `pgx/v5` | v5.8.0 | Primary database | [POSTGRESQL.md](integrations/infrastructure/) |
-| Dragonfly | `rueidis` | v1.0.71 | Cache/sessions | [DRAGONFLY.md](integrations/infrastructure/) |
-| Typesense | `typesense-go/v3` | v3.2.0 | Full-text search | [TYPESENSE.md](integrations/infrastructure/) |
-| River | `riverqueue/river` | v0.30.2 | Job queue | [RIVER.md](integrations/infrastructure/) |
+| PostgreSQL | `pgx/v5` | v5.7.5 | Primary database | [POSTGRESQL.md](integrations/infrastructure/) |
+| Dragonfly | `rueidis` | v1.0.49 | Cache/sessions | [DRAGONFLY.md](integrations/infrastructure/) |
+| Typesense | `typesense-go/v4` | v4.x | Full-text search | [TYPESENSE.md](integrations/infrastructure/) |
+| River | `riverqueue/river` | v0.26.0 | Job queue | [RIVER.md](integrations/infrastructure/) |
 
 ---
 
@@ -109,12 +109,12 @@ This applies to ALL data types across all modules.
 
 | Package | Version | Purpose | Notes |
 |---------|---------|---------|-------|
-| `go.uber.org/fx` | v1.24.0 | Dependency injection | Lifecycle hooks, graceful shutdown |
-| `github.com/jackc/pgx/v5` | v5.8.0 | PostgreSQL driver | Self-healing pool via pgxpool |
-| `github.com/riverqueue/river` | v0.30.2 | Job queue | PostgreSQL-backed, transactional |
-| `github.com/redis/rueidis` | v1.0.71 | Redis/Dragonfly client | Pipelining, client-side cache |
-| `github.com/maypok86/otter` | v1.2.4 | In-memory cache | Faster than Ristretto, S3-FIFO |
-| `github.com/knadh/koanf/v2` | v2.3.2 | Configuration | Hot reload via Watch() |
+| `go.uber.org/fx` | v1.23.0 | Dependency injection | Lifecycle hooks, graceful shutdown |
+| `github.com/jackc/pgx/v5` | v5.7.5 | PostgreSQL driver | Self-healing pool via pgxpool |
+| `github.com/riverqueue/river` | v0.26.0 | Job queue | PostgreSQL-backed, transactional |
+| `github.com/redis/rueidis` | v1.0.49 | Redis/Dragonfly client | Pipelining, client-side cache |
+| `github.com/maypok86/otter/v2` | v2.x | In-memory cache | W-TinyLFU, faster than Ristretto |
+| `github.com/knadh/koanf/v2` | v2.3.0 | Configuration | Hot reload via Watch() |
 | `github.com/ogen-go/ogen` | v1.18.0 | OpenAPI codegen | Type-safe handlers |
 | `github.com/golang-migrate/migrate/v4` | v4.19.1 | DB migrations | Embedded SQL support |
 | `github.com/gobwas/ws` | latest | WebSocket | Zero-alloc, maximum performance |
