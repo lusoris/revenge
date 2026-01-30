@@ -548,7 +548,10 @@ One collection per module:
 | `series` | title, overview, genres, year, cast |
 | `tracks` | title, artist, album, genre |
 | `audiobooks` | title, author, narrator |
-| `c_movies` | title, performers, studio, tags |
+| `expeditions` | title, crew, port, flags |
+| `voyages` | title, crew, expedition_id |
+
+> **Note**: `expeditions` and `voyages` use QAR obfuscation. See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping.
 
 ```go
 // Example: Index a movie

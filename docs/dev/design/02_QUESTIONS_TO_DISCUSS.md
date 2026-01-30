@@ -42,12 +42,12 @@
 - [ ] Test coverage requirements
 - [ ] CI/CD pipeline stages
 
-### Need Design Docs
-- [ ] Fingerprint service design doc
-- [ ] Grants service design doc
-- [ ] Search service design doc
-- [ ] Analytics service design doc
-- [ ] Notification service design doc
+### Need Design Docs ✅ COMPLETE
+- [x] Fingerprint service design doc → `services/FINGERPRINT.md`
+- [x] Grants service design doc → `services/GRANTS.md`
+- [x] Search service design doc → `services/SEARCH.md`
+- [x] Analytics service design doc → `services/ANALYTICS.md`
+- [x] Notification service design doc → `services/NOTIFICATION.md`
 
 ---
 
@@ -629,25 +629,31 @@ Priority Order (ALWAYS):
 
 ---
 
-## New Questions (From Integration Audit 2026-01-30)
+## New Questions (From Integration Audit 2026-01-30) ✅ ALL RESOLVED
 
-### Q5: Multi-Provider OIDC Architecture
+### Q5: Multi-Provider OIDC Architecture ✅
 - **Context**: GENERIC_OIDC.md proposes `oidc_providers` table supporting multiple OIDC providers
 - **Question**: Support multiple simultaneous OIDC providers (multiple login buttons)?
-- **Options**: Single provider only | Multiple providers with selection
+- **Answer**: **Multiple providers** - Allow multiple login buttons (Google, GitHub, Keycloak, etc.)
+- **Implementation**: `oidc_providers` table with enabled flag per provider
 
-### Q6: Webhook Handler Architecture
+### Q6: Webhook Handler Architecture ✅
 - **Context**: RADARR.md references webhook handling for import/upgrade/rename/delete events
 - **Question**: Centralized webhook dispatcher or per-service handlers?
-- **Missing**: Validation strategy, idempotency handling, payload schema
+- **Answer**: **Per-service endpoints** (`/webhooks/radarr`, `/webhooks/sonarr`, etc.)
+- **Rationale**: More scalable, better River job handling, clearer separation of concerns
 
-### Q7: Rate Limiting Strategy
+### Q7: Rate Limiting Strategy ✅
 - **Context**: Different services have different limits (TMDb 40/10s, Trakt 1000/5min, StashDB undefined)
 - **Question**: Global rate limiter or per-provider limiters?
+- **Answer**: **Per-provider** - Each API has its own rate limits
+- **Implementation**: Rate limiter per external client, configured in provider settings
 
-### Q8: Watch History Sync Conflict Resolution
+### Q8: Watch History Sync Conflict Resolution ✅
 - **Context**: TRAKT.md specifies "Keep Trakt timestamp if earlier, Revenge if later"
 - **Question**: Should conflict resolution be configurable per service or global policy?
+- **Answer**: **Full history with watch counts** (like Trakt does)
+- **Implementation**: Track watch count + timestamps, merge histories on sync
 
 ---
 

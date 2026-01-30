@@ -81,16 +81,16 @@ This applies to ALL data types across all modules.
 | Settings | `internal/service/settings` | `settings.Module` | ✅ Complete | [SETTINGS.md](services/SETTINGS.md) |
 | API Keys | `internal/service/apikeys` | `apikeys.Module` | ✅ Complete | [APIKEYS.md](services/APIKEYS.md) |
 | OIDC | `internal/service/oidc` | `oidc.Module` | ✅ Complete | [OIDC.md](services/OIDC.md) |
-| Grants | `internal/service/grants` | `grants.Module` | ✅ Complete | - |
-| Fingerprint | `internal/service/fingerprint` | `fingerprint.Module` | ✅ Complete | - |
+| Grants | `internal/service/grants` | `grants.Module` | 🔵 Planned | [GRANTS.md](services/GRANTS.md) |
+| Fingerprint | `internal/service/fingerprint` | `fingerprint.Module` | 🔵 Planned | [FINGERPRINT.md](services/FINGERPRINT.md) |
 | Library | `internal/service/library` | `library.Module` | ✅ Complete | [LIBRARY.md](services/LIBRARY.md) |
 | Playback | `internal/service/playback` | `playback.Module` | 🟡 Partial | [PLAYBACK.md](technical/) |
 | Metadata | `internal/service/metadata` | `metadata.Module` | 🟡 Partial | [METADATA.md](services/METADATA.md) |
-| Search | `internal/service/search` | `search.Module` | 🟡 Partial | - |
+| Search | `internal/service/search` | `search.Module` | 🟡 Partial | [SEARCH.md](services/SEARCH.md) |
 | Health | `internal/infra/health` | `health.Module` | ✅ Complete | - |
 | Scrobbling | `internal/service/scrobbling` | `scrobbling.Module` | 🔴 Planned | [SCROBBLING.md](features/shared/) |
-| Analytics | `internal/service/analytics` | `analytics.Module` | 🔴 Planned | - |
-| Notification | `internal/service/notification` | `notification.Module` | 🔴 Planned | - |
+| Analytics | `internal/service/analytics` | `analytics.Module` | 🔴 Planned | [ANALYTICS.md](services/ANALYTICS.md) |
+| Notification | `internal/service/notification` | `notification.Module` | 🔴 Planned | [NOTIFICATION.md](services/NOTIFICATION.md) |
 
 ---
 

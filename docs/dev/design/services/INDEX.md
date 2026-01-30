@@ -2,6 +2,8 @@
 
 > Core application services implementing business logic
 
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#backend-services)
+
 ---
 
 ## Overview
@@ -60,21 +62,25 @@ Services in Revenge implement business logic and coordinate between repositories
 | Service | Location | Description |
 |---------|----------|-------------|
 | [Library](LIBRARY.md) | `internal/service/library/` | Library CRUD, access control, scanning |
-| [Metadata](METADATA.md) | `internal/service/metadata/` | TMDb, Radarr metadata providers |
+| [Metadata](METADATA.md) | `internal/service/metadata/` | TMDb, Radarr, etc. metadata providers |
+| [Search](SEARCH.md) | `internal/service/search/` | Typesense full-text search |
+| [Fingerprint](FINGERPRINT.md) | `internal/service/fingerprint/` | pHash, AcoustID matching |
 
-### Access Control & Audit
+### Access Control & Sharing
 
 | Service | Location | Description |
 |---------|----------|-------------|
 | [RBAC](RBAC.md) | `internal/service/rbac/` | Casbin-based role permissions |
+| [Grants](GRANTS.md) | `internal/service/grants/` | Fine-grained resource sharing |
 | [Activity](ACTIVITY.md) | `internal/service/activity/` | Audit logging, event tracking |
 
-### Audit & Configuration
+### Configuration & Communication
 
 | Service | Location | Description |
 |---------|----------|-------------|
-| [Activity](ACTIVITY.md) | `internal/service/activity/` | Audit logging, event tracking |
 | [Settings](SETTINGS.md) | `internal/service/settings/` | Server settings persistence |
+| [Analytics](ANALYTICS.md) | `internal/service/analytics/` | Usage stats, playback tracking |
+| [Notification](NOTIFICATION.md) | `internal/service/notification/` | Multi-channel notifications |
 
 ---
 

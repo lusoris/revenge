@@ -2,34 +2,123 @@
 
 > External metadata providers for media enrichment
 
-**Location**: `internal/service/metadata/`
+**Status**: 🟡 PARTIAL
+**Priority**: 🔴 HIGH
+**Module**: `internal/service/metadata/`
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-providers)
 
 ---
 
 ## Overview
 
-The Metadata service provides access to external APIs for fetching media metadata:
+The Metadata service provides unified access to external APIs for fetching media metadata. It follows the **Servarr-First** principle: when connected to an *arr service, use its cached metadata as primary source.
 
-- **TMDb** - Movies and TV shows (primary external source)
-- **Radarr** - Movies via Servarr (primary when connected)
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-priority-chain) for the priority chain.
+
+---
+
+## Provider Inventory
+
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-providers) for rate limits and implementation status.
+
+### Video Providers
+
+| Provider | Content | Location | Status |
+|----------|---------|----------|--------|
+| TMDb | Movies, TV | `internal/service/metadata/tmdb` | ✅ |
+| TheTVDB | TV | `internal/service/metadata/thetvdb` | 🔴 |
+
+### Music Providers
+
+| Provider | Content | Location | Status |
+|----------|---------|----------|--------|
+| MusicBrainz | Music | `internal/service/metadata/musicbrainz` | 🔴 |
+| Last.fm | Music | `internal/service/metadata/lastfm` | 🔴 |
+
+### Book Providers
+
+| Provider | Content | Location | Status |
+|----------|---------|----------|--------|
+| Audnexus | Audiobooks | `internal/service/metadata/audnexus` | 🔴 |
+| OpenLibrary | Books | `internal/service/metadata/openlibrary` | 🔴 |
+
+### Comics Providers
+
+| Provider | Content | Location | Status |
+|----------|---------|----------|--------|
+| ComicVine | Comics | `internal/service/metadata/comicvine` | 🔴 |
+
+### QAR Providers (Adult)
+
+| Provider | Content | Location | Status |
+|----------|---------|----------|--------|
+| StashDB | Voyages, Expeditions | `internal/service/metadata/stashdb` | 🟡 |
+| ThePornDB | Voyages, Expeditions | `internal/service/metadata/tpdb` | 🔴 |
+
+### Arr Services (Primary)
+
+| Provider | Content | Location | Status |
+|----------|---------|----------|--------|
+| Radarr | Movies | `internal/service/metadata/radarr` | ✅ |
+| Sonarr | TV | `internal/service/metadata/sonarr` | 🔴 |
+| Lidarr | Music | `internal/service/metadata/lidarr` | 🔴 |
+| Whisparr | QAR | `internal/service/metadata/whisparr` | 🔴 |
 
 ---
 
 ## Provider Architecture
 
 ```
-┌─────────────────────────────────────────────┐
-│            Metadata Service                  │
-└──────────────┬──────────────────────────────┘
-               │
-    ┌──────────┴──────────┐
-    ▼                     ▼
-┌────────┐          ┌──────────┐
-│ Radarr │          │   TMDb   │
-│Provider│          │ Provider │
-│Priority│          │ Priority │
-│   1    │          │    2     │
-└────────┘          └──────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Metadata Service                          │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+         ▼                 ▼                 ▼
+    ┌─────────┐      ┌──────────┐     ┌──────────┐
+    │   Arr   │      │ External │     │ Enrichment│
+    │Services │      │   APIs   │     │   APIs   │
+    │Priority │      │ Priority │     │ Priority │
+    │   1-2   │      │   3-4    │     │    5     │
+    └─────────┘      └──────────┘     └──────────┘
+         │                 │                 │
+    ┌────┴────┐     ┌──────┴──────┐    ┌────┴────┐
+    │ Radarr  │     │    TMDb     │    │  Fanart │
+    │ Sonarr  │     │   TheTVDB   │    │  OMDB   │
+    │ Lidarr  │     │ MusicBrainz │    │         │
+    │ Whisparr│     │   StashDB   │    │         │
+    └─────────┘     └─────────────┘    └─────────┘
+```
+
+---
+
+## Provider Interface
+
+All providers implement a common interface:
+
+```go
+type Provider interface {
+    Name() string
+    Priority() int
+    ContentTypes() []string
+    IsAvailable(ctx context.Context) bool
+    Search(ctx context.Context, query SearchQuery) ([]SearchResult, error)
+    GetMetadata(ctx context.Context, id ExternalID) (*Metadata, error)
+}
+
+type SearchQuery struct {
+    Title    string
+    Year     int
+    IMDbID   string
+    TVDbID   int
+    // Content-specific fields...
+}
+
+type ExternalID struct {
+    Provider string // "tmdb", "tvdb", "musicbrainz", etc.
+    ID       string
+}
 ```
 
 ---
@@ -38,79 +127,18 @@ The Metadata service provides access to external APIs for fetching media metadat
 
 **Location**: `internal/service/metadata/tmdb/`
 
-### Interface
+Primary external source for movies and TV shows.
 
 ```go
-type Provider struct {
-    client *Client
-    logger *slog.Logger
-}
-
-func (p *Provider) Name() string        // Returns "tmdb"
-func (p *Provider) Priority() int       // Returns 2 (secondary to Servarr)
-func (p *Provider) IsAvailable() bool   // Checks if API key configured
+func (p *Provider) Name() string        { return "tmdb" }
+func (p *Provider) Priority() int       { return 4 }
+func (p *Provider) ContentTypes() []string { return []string{"movie", "series"} }
 ```
 
-### Movie Search
+### Rate Limits
 
-```go
-type MovieSearchResult struct {
-    TMDbID    int
-    Title     string
-    Year      int
-    Overview  string
-    PosterURL string
-    Score     float64
-}
-
-func (p *Provider) SearchMovies(ctx context.Context, query string, year int) ([]MovieSearchResult, error)
-```
-
-### Movie Metadata
-
-```go
-type MovieMetadata struct {
-    TMDbID           int
-    IMDbID           string
-    Title            string
-    OriginalTitle    string
-    OriginalLanguage string
-    Overview         string
-    Tagline          string
-    RuntimeMinutes   int
-    ReleaseDate      time.Time
-    ReleaseYear      int
-    Budget           int64
-    Revenue          int64
-    Rating           float64
-    VoteCount        int
-    Popularity       float64
-    Adult            bool
-    Status           string
-    Homepage         string
-    PosterURL        string
-    BackdropURL      string
-    Genres           []string
-    Studios          []StudioInfo
-    Collection       *CollectionInfo
-    Cast             []CastInfo
-    Crew             []CrewInfo
-    Images           []ImageInfo
-    Videos           []VideoInfo
-}
-
-func (p *Provider) GetMovieMetadata(ctx context.Context, tmdbID int) (*MovieMetadata, error)
-```
-
-### Movie Matching
-
-```go
-// Match by IMDb ID first, then title/year search
-func (p *Provider) MatchMovie(ctx context.Context, title string, year int, imdbID string) (*MovieMetadata, error)
-
-// Find by IMDb ID
-func (p *Provider) FindByIMDbID(ctx context.Context, imdbID string) (*MovieSearchResult, error)
-```
+- 50 requests/second (with API key)
+- Uses sturdyc for request coalescing
 
 ---
 
@@ -120,76 +148,33 @@ func (p *Provider) FindByIMDbID(ctx context.Context, imdbID string) (*MovieSearc
 
 Primary metadata source when Radarr is connected. Uses cached metadata from Radarr which itself aggregates from TMDb and other sources.
 
+```go
+func (p *Provider) Name() string        { return "radarr" }
+func (p *Provider) Priority() int       { return 2 }
+func (p *Provider) ContentTypes() []string { return []string{"movie"} }
+```
+
 ### Priority
 
-Radarr takes priority over TMDb when connected:
-- **Priority 1**: Radarr (Servarr-first principle)
-- **Priority 2**: TMDb (fallback/enrichment)
+Radarr takes priority over TMDb when connected (Servarr-first principle).
 
 ---
 
-## Data Types
+## StashDB Provider (QAR)
 
-### Studio Info
+**Location**: `internal/service/metadata/stashdb/`
 
-```go
-type StudioInfo struct {
-    TMDbID        int
-    Name          string
-    LogoURL       string
-    OriginCountry string
-}
-```
-
-### Cast/Crew Info
+GraphQL-based metadata for QAR content (adult).
 
 ```go
-type CastInfo struct {
-    TMDbID     int
-    Name       string
-    Character  string
-    Order      int
-    ProfileURL string
-}
-
-type CrewInfo struct {
-    TMDbID     int
-    Name       string
-    Department string
-    Job        string
-    ProfileURL string
-}
+func (p *Provider) Name() string        { return "stashdb" }
+func (p *Provider) Priority() int       { return 4 }
+func (p *Provider) ContentTypes() []string { return []string{"expedition", "voyage", "crew"} }
 ```
 
-### Images
+### GraphQL Client
 
-```go
-type ImageInfo struct {
-    Type        string  // poster, backdrop, logo
-    URL         string
-    Width       int
-    Height      int
-    AspectRatio float64
-    Language    string
-    VoteAverage float64
-    VoteCount   int
-}
-```
-
-### Videos
-
-```go
-type VideoInfo struct {
-    Key         string  // YouTube/Vimeo key
-    Name        string
-    Site        string  // YouTube, Vimeo
-    Type        string  // Trailer, Teaser, Clip
-    Size        int     // Resolution
-    Official    bool
-    PublishedAt string
-    Language    string
-}
-```
+Uses `Khan/genqlient` for type-safe GraphQL queries.
 
 ---
 
@@ -197,12 +182,49 @@ type VideoInfo struct {
 
 ```yaml
 metadata:
+  # Video
   tmdb:
-    api_key: "${TMDB_API_KEY}"
+    api_key: "${REVENGE_TMDB_API_KEY}"
     enabled: true
+  thetvdb:
+    api_key: "${REVENGE_THETVDB_API_KEY}"
+    enabled: true
+
+  # Music
+  musicbrainz:
+    enabled: true  # No API key required
+  lastfm:
+    api_key: "${REVENGE_LASTFM_API_KEY}"
+    enabled: true
+
+  # Books
+  audnexus:
+    enabled: true  # No API key required
+  openlibrary:
+    enabled: true  # No API key required
+
+  # Comics
+  comicvine:
+    api_key: "${REVENGE_COMICVINE_API_KEY}"
+    enabled: true
+
+  # QAR (Adult)
+  stashdb:
+    api_key: "${REVENGE_STASHDB_API_KEY}"
+    enabled: true
+  tpdb:
+    api_key: "${REVENGE_TPDB_API_KEY}"
+    enabled: true
+
+# Arr Services
+arr:
   radarr:
-    url: "http://localhost:7878"
-    api_key: "${RADARR_API_KEY}"
+    url: "${REVENGE_RADARR_URL}"
+    api_key: "${REVENGE_RADARR_API_KEY}"
+    enabled: true
+  sonarr:
+    url: "${REVENGE_SONARR_URL}"
+    api_key: "${REVENGE_SONARR_API_KEY}"
     enabled: true
 ```
 
@@ -210,6 +232,7 @@ metadata:
 
 ## Related
 
-- [Metadata System](../architecture/03_METADATA_SYSTEM.md) - Architecture
-- [TMDb Integration](../integrations/metadata/video/TMDB.md) - API details
-- [Radarr Integration](../integrations/servarr/RADARR.md) - Servarr integration
+- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-providers) - Provider inventory and status
+- [03_METADATA_SYSTEM.md](../architecture/03_METADATA_SYSTEM.md) - Architecture
+- [integrations/metadata/](../integrations/metadata/) - Per-provider API details
+- [integrations/servarr/](../integrations/servarr/) - Arr service integrations
