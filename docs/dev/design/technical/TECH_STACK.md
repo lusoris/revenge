@@ -328,10 +328,28 @@ cp config.example.yaml config.yaml
 ./revenge serve
 ```
 
-#### 3. Kubernetes / Helm
+#### 3. Container Orchestration
+
+> **📋 Full orchestration patterns**: See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#container-orchestration) for complete Helm, K3s, and Swarm configurations.
+
+##### Kubernetes / Helm
+
 ```bash
 helm repo add revenge https://lusoris.github.io/revenge-charts
 helm install revenge revenge/revenge -f values.yaml
+```
+
+##### K3s (Lightweight K8s)
+
+```bash
+# K3s comes with Traefik ingress built-in
+kubectl apply -f https://lusoris.github.io/revenge/k3s-quickstart.yaml
+```
+
+##### Docker Swarm
+
+```bash
+docker stack deploy -c docker-stack.yml revenge
 ```
 
 ### Hardware Transcoding (Blackbeard)

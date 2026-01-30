@@ -12,6 +12,9 @@
 5. **Enable/Disable Modules** - Each module can be independently enabled/disabled
 6. **Type Safety** - No polymorphic references, proper FK constraints everywhere
 7. **External Transcoding** - Delegate to "Blackbeard" service for scalability
+8. **Optional Clustering** - Single-instance default, Raft consensus for HA (see [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#distributed-consensus-raft))
+9. **Network QoS** - Priority hierarchy (P0-P4) ensures user experience over background jobs (see [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#network-qos-design-principle))
+10. **Orchestration-Ready** - Docker Compose, K8s, K3s, Swarm support (see [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#container-orchestration))
 
 ---
 
@@ -720,7 +723,8 @@ Each content module typically has:
 | Cache | Dragonfly (rueidis) + otter (local) + sturdyc (API) |
 | Search | Typesense (per-module collections) |
 | Frontend | SvelteKit 2 + Tailwind CSS 4 |
-| Deployment | Docker Compose (primary) |
+| Deployment | Docker Compose (primary), K8s/K3s/Swarm supported |
+| Clustering | Optional Raft consensus (hashicorp/raft) |
 
 ---
 
@@ -1050,6 +1054,8 @@ volumes:
 | [BEST_PRACTICES.md](BEST_PRACTICES.md) | Resilience, self-healing, observability |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Development environment setup |
 | [SETUP.md](SETUP.md) | Production deployment |
+| [Source of Truth - Orchestration](../SOURCE_OF_TRUTH.md#container-orchestration) | K8s, K3s, Swarm deployment patterns |
+| [Source of Truth - Clustering](../SOURCE_OF_TRUTH.md#distributed-consensus-raft) | Optional Raft consensus for HA |
 
 ### API & Integration
 
