@@ -21,7 +21,7 @@ Project design documents - manually maintained, protected from auto-updates.
 ### [Architecture](design/architecture/)
 Core system design and architectural decisions.
 
-- [Overall Architecture V2](design/architecture/ARCHITECTURE_V2.md) - Complete system architecture
+- [Overall Architecture](design/architecture/ARCHITECTURE.md) - Complete system architecture
 - [Design Principles](design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
 - [Metadata System](design/architecture/METADATA_SYSTEM.md) - Metadata management
 - [Player Architecture](design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
@@ -44,7 +44,7 @@ Content modules and feature specifications. See [Features INDEX](design/features
 - `podcasts/` - RSS Podcasts
 - `livetv/` - Live TV / DVR
 - `comics/` - Comics/Manga
-- `adult/` - Adult content (isolated in `c` schema)
+- `adult/` - QAR adult content (isolated in `qar` schema)
 
 ### [Integrations](design/integrations/)
 External service integration designs.
@@ -52,7 +52,7 @@ External service integration designs.
 - [Index](design/integrations/INDEX.md) - Integration overview
 - **Anime**: AniList, MyAnimeList, Kitsu
 - **Auth**: Authelia, Authentik, Keycloak, OIDC
-- **Audiobook**: Audiobookshelf
+- **Audiobook/Podcast**: Native implementation (Audnexus for metadata)
 - **Casting**: Chromecast, DLNA
 - **External**: Social media, adult platforms
 - **Infrastructure**: PostgreSQL, Dragonfly, Typesense, River

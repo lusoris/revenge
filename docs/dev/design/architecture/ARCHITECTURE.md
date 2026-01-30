@@ -1015,7 +1015,7 @@ volumes:
 
 | Document | Description |
 |----------|-------------|
-| [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) | This document - system architecture |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | This document - system architecture |
 | [TECH_STACK.md](TECH_STACK.md) | Technology choices and rationale |
 | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Directory layout |
 

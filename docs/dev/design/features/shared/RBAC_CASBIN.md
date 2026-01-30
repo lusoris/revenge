@@ -624,6 +624,6 @@ func (s *MovieModule) DeleteLibrary(ctx context.Context, libraryID uuid.UUID) er
 
 ## Related Documents
 
-- [ARCHITECTURE_V2.md](../../architecture/ARCHITECTURE_V2.md) - Overall architecture
+- [ARCHITECTURE.md](../../architecture/ARCHITECTURE.md) - Overall architecture
 - [DESIGN_PRINCIPLES.md](../../architecture/DESIGN_PRINCIPLES.md) - Design principles
 - [LIBRARY_TYPES.md](LIBRARY_TYPES.md) - Per-module library architecture

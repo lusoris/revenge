@@ -576,12 +576,25 @@ M12: Frontend            [ ][ ][ ]  Structure - | Lint - | Tests -
 ### Adult Access Audit
 - [ ] Log all QAR access (user_id, resource_type, resource_id, action, timestamp, ip)
 
-### Documentation
-- [ ] Split QUICKLIST.md into themed files
-- [ ] Add cross-references to design docs
-- [ ] Update TECH_STACK.md (add casbin, otel)
-- [ ] Update CONFIGURATION.md (reflects pkg/config/)
-- [ ] Review all docs/dev/design/ for accuracy
+### Documentation (BLOCKING - Must Complete Before Scaffolding)
+> Docs must be consistent and data-driven before any new code scaffolding
+
+- [x] Create SOURCE_OF_TRUTH.md with all packages/versions
+- [x] Deduplicate TECH_STACK.md (reference SOT)
+- [x] Deduplicate CONFIGURATION.md (reference SOT)
+- [x] Rename ARCHITECTURE_V2.md → ARCHITECTURE.md
+- [x] Fix `c` → `qar` namespace across all docs
+- [x] Add SOT ↔ SOURCES.yaml cross-reference
+- [x] Create QUESTIONS_TO_DISCUSS.md for gaps
+- [ ] Full docs analysis (find outdated/unreferenced files)
+- [ ] Live docs deep dive (verify schemas, changelogs, breaking changes)
+- [ ] Resolve version discrepancies in QUESTIONS_TO_DISCUSS.md
+- [ ] Add missing items to SOURCE_OF_TRUTH.md
+- [ ] Research Claude Code best practices
+- [ ] Rework .github/instructions based on SOT (deduplicated)
+- [ ] Clean out docs/archive/reports after info integrated
+
+See: [QUESTIONS_TO_DISCUSS.md](docs/dev/design/QUESTIONS_TO_DISCUSS.md) for pending decisions
 
 ---
 
@@ -633,10 +646,11 @@ go tool cover -html=coverage.out
 - Module location: `internal/content/qar/`
 - See [ADULT_CONTENT_SYSTEM.md](docs/dev/design/features/adult/ADULT_CONTENT_SYSTEM.md)
 
-**Design Docs are Source of Truth**:
-- Only `docs/dev/design/` is authoritative
-- Other documentation may be outdated
-- Code must match design, not vice versa
+**SOURCE_OF_TRUTH.md is Master**:
+- [SOURCE_OF_TRUTH.md](docs/dev/design/SOURCE_OF_TRUTH.md) is the single authority for packages, versions, schemas
+- All design docs reference SOT instead of duplicating version tables
+- Code must match SOT, not vice versa
+- [QUESTIONS_TO_DISCUSS.md](docs/dev/design/QUESTIONS_TO_DISCUSS.md) tracks discrepancies until resolved
 
 **Milestone Completion Criteria**:
 1. All structures present per design spec

@@ -8,7 +8,7 @@
 
 | Document | Description |
 |----------|-------------|
-| [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) | Complete system architecture |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Complete system architecture |
 | [DESIGN_PRINCIPLES.md](DESIGN_PRINCIPLES.md) | Guiding design principles |
 | [METADATA_SYSTEM.md](METADATA_SYSTEM.md) | Metadata management approach |
 | [PLAYER_ARCHITECTURE.md](PLAYER_ARCHITECTURE.md) | Media player design |

@@ -1,9 +1,9 @@
 # Adult Wiki Providers
 
-> Performer information from wiki sources (isolated in `c` schema)
+> Performer information from wiki sources (isolated in `qar` schema)
 
-**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `c`.
-API namespace: `/api/v1/c/`
+**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `qar` (Queen Anne's Revenge).
+API namespace: `/api/v1/qar/`
 
 ---
 
@@ -61,10 +61,10 @@ Adult wiki providers supply supplementary performer information:
 All adult wiki data is isolated:
 
 ```sql
--- Stored in 'c' schema
-c.performer_wiki_data
-c.performer_awards
-c.performer_filmography
+-- Stored in 'qar' schema
+qar.crew_wiki_data
+qar.crew_awards
+qar.crew_filmography
 ```
 
 ---

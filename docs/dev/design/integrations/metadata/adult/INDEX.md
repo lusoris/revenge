@@ -1,9 +1,9 @@
 # Adult Metadata Providers
 
-> Adult content metadata (isolated in `c` schema)
+> Adult content metadata (isolated in `qar` schema)
 
-**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `c`.
-API namespace: `/api/v1/c/`
+**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `qar` (Queen Anne's Revenge).
+API namespace: `/api/v1/qar/`
 
 ---
 
@@ -100,21 +100,21 @@ Adult metadata providers supply information for:
 All adult content is isolated:
 
 ```sql
--- Separate PostgreSQL schema
-CREATE SCHEMA IF NOT EXISTS c;
+-- Separate PostgreSQL schema (Queen Anne's Revenge)
+CREATE SCHEMA IF NOT EXISTS qar;
 
--- All tables prefixed
-c.scenes
-c.performers
-c.studios
-c.scene_performers
+-- All tables use obfuscated names
+qar.voyages      -- scenes
+qar.crew         -- performers
+qar.ports        -- studios
+qar.voyage_crew  -- scene_performers
 ```
 
 API namespace separation:
 ```
-/api/v1/c/scenes
-/api/v1/c/performers
-/api/v1/c/studios
+/api/v1/qar/voyages
+/api/v1/qar/crew
+/api/v1/qar/ports
 ```
 
 ---
@@ -136,7 +136,7 @@ Fallback to TPDB
     ↓
 Enrich performer data (FreeOnes, Babepedia, etc.)
     ↓
-Store in 'c' schema
+Store in 'qar' schema
 ```
 
 > **Note**: Stash app integration requires user configuration. StashDB.org is always the first external source when Servarr/Stash don't have the data.
@@ -181,8 +181,8 @@ integrations:
 
 ## Privacy Considerations
 
-- All data isolated in `c` schema
-- Separate API namespace `/api/v1/c/`
+- All data isolated in `qar` schema
+- Separate API namespace `/api/v1/qar/`
 - Can be completely disabled
 - Separate user permissions
 - No cross-referencing with regular content

@@ -19,11 +19,20 @@ All adult content uses pirate ship terminology themed after Blackbeard's famous 
 
 ### Schema & API Namespace
 
-| Real Concept | Obfuscated | Reason |
-|--------------|------------|--------|
-| Adult schema | `qar` | Queen Anne's Revenge |
-| API namespace | `/api/v1/qar/` | Matches schema |
-| Storage path | `/media/qar/` | Consistent theming |
+| Real Concept | Internal (DB) | External (API) | Reason |
+|--------------|---------------|----------------|--------|
+| Adult schema | `qar` | - | Queen Anne's Revenge (internal only) |
+| API namespace | - | `/api/v1/legacy/` | Looks like deprecated/old content |
+| Storage path | `/data/qar/` | - | Internal path only |
+| Config section | `legacy` | - | Config key in YAML |
+
+**URL Obfuscation Strategy**: The API uses `/legacy/` externally - this looks like deprecated API endpoints or archived content. Network inspection reveals nothing suspicious. The internal `qar` schema name is never exposed in URLs.
+
+```
+External URL:  /api/v1/legacy/crew/123
+Internal:      qar.crew WHERE id = '123'
+Storage:       /data/qar/crew/123/
+```
 
 ### Entity Obfuscation
 
@@ -40,63 +49,167 @@ All adult content uses pirate ship terminology themed after Blackbeard's famous 
 
 ### Field Obfuscation
 
-| Real Field | Obfuscated | Used In |
-|------------|------------|---------|
-| measurements | `cargo` | crew |
-| aliases | `names` | crew |
-| tattoos | `markings` | crew |
-| piercings | `anchors` | crew |
-| career_start | `maiden_voyage` | crew |
-| career_end | `last_port` | crew |
-| birth_date | `christening` | crew |
-| ethnicity | `origin` | crew |
-| hair_color | `rigging` | crew |
-| eye_color | `compass` | crew |
-| scene_count | `voyage_count` | crew |
-| penis_size | `cutlass` | crew (male/trans) |
-| has_breasts | `figurehead` | crew (trans) |
-| genitalia_type | `keel` | crew (trans: male/female/both) |
-| surgical_status | `refit` | crew (trans: pre-op/post-op/non-op) |
-| gallery | `chest` | crew |
-| stashdb_id | `charter` | all entities |
-| tpdb_id | `registry` | all entities |
-| freeones_id | `manifest` | crew |
-| rating | `bounty` | voyages, expeditions |
-| duration | `distance` | voyages, expeditions |
-| release_date | `launch_date` | expeditions |
-| fingerprint | `coordinates` | voyages |
+#### Crew (Performer) Fields
+
+| Real Field | Obfuscated | Type | Description |
+|------------|------------|------|-------------|
+| name | `title` | VARCHAR | Primary name |
+| aliases | `names` | TEXT[] | All known names |
+| disambiguation | `callsign` | VARCHAR | Unique identifier suffix |
+| birth_date | `christening` | DATE | Birth date |
+| death_date | `scuttled` | DATE | Death date (null = active) |
+| ethnicity | `origin` | VARCHAR | Ethnic background |
+| country | `homeland` | VARCHAR | Country of origin |
+| height_cm | `mast` | INT | Height in centimeters |
+| weight_kg | `ballast` | INT | Weight in kilograms |
+| measurements | `cargo` | VARCHAR | Body measurements (e.g., "34D-24-34") |
+| cup_size | `hold_size` | VARCHAR | Cup size |
+| fake_tits | `rigged` | BOOLEAN | Breast augmentation (true = augmented) |
+| hair_color | `rigging` | VARCHAR | Hair color |
+| eye_color | `compass` | VARCHAR | Eye color |
+| tattoos | `markings` | TEXT | Tattoo descriptions |
+| piercings | `anchors` | TEXT | Piercing descriptions |
+| career_start | `maiden_voyage` | INT | Career start year |
+| career_end | `last_port` | INT | Career end year (null = active) |
+| scene_count | `voyage_count` | INT | Total scene count |
+| image_count | `portrait_count` | INT | Total image count |
+| gallery_count | `chest_count` | INT | Total gallery count |
+| stashdb_id | `charter` | VARCHAR | StashDB performer ID |
+| tpdb_id | `registry` | VARCHAR | ThePornDB performer ID |
+| freeones_id | `manifest` | VARCHAR | FreeOnes performer ID |
+| gallery | `chest` | TEXT | Primary gallery path |
+| bio | `logbook` | TEXT | Biography/details |
+| urls | `ports_of_call` | TEXT[] | Social/website URLs |
+| ignore_autotag | `ghost_flag` | BOOLEAN | Exclude from auto-tagging |
+
+#### Crew (Male/Trans-Specific) Fields
+
+| Real Field | Obfuscated | Type | Description |
+|------------|------------|------|-------------|
+| penis_length | `cutlass` | VARCHAR | Penis size category |
+| circumcised | `trimmed` | BOOLEAN | Circumcision status |
+| has_breasts | `figurehead` | BOOLEAN | Has breasts (trans) |
+| genitalia_type | `keel` | VARCHAR | male/female/both (trans) |
+| surgical_status | `refit` | VARCHAR | pre-op/post-op/non-op |
+
+#### User Interaction Fields
+
+| Real Field | Obfuscated | Type | Description |
+|------------|------------|------|-------------|
+| rating | `bounty` | INT | User rating (0-100) |
+| favorite | `prized` | BOOLEAN | User favorite status |
+| play_count | `boarding_count` | INT | Times watched |
+| o_counter | `plunder_count` | INT | User completion counter |
+| position_seconds | `bearing` | INT | Playback position |
+| completed | `docked` | BOOLEAN | Watched to completion |
+
+#### Voyage (Scene) / Expedition (Movie) Fields
+
+| Real Field | Obfuscated | Type | Description |
+|------------|------------|------|-------------|
+| title | `title` | VARCHAR | Scene/movie title |
+| duration_seconds | `distance` | INT | Duration in seconds |
+| release_date | `launch_date` | DATE | Release date |
+| rating | `bounty` | DECIMAL | Average rating |
+| phash | `coordinates` | VARCHAR | Perceptual hash |
+| oshash | `bearing_hash` | VARCHAR | OpenSubtitles hash |
+| studio_id | `port_id` | UUID | Studio reference |
+| tags | `flags` | UUID[] | Tag references |
+| description | `manifest` | TEXT | Scene description |
+| code | `serial` | VARCHAR | Scene code (e.g., "BZ-123") |
+| director | `captain` | VARCHAR | Director name |
+| interactive | `rigged_voyage` | BOOLEAN | Has funscript |
+
+#### Entity Reference Fields (All Entities)
+
+| Real Field | Obfuscated | Type | Description |
+|------------|------------|------|-------------|
+| stashdb_id | `charter` | VARCHAR | StashDB ID |
+| tpdb_id | `registry` | VARCHAR | ThePornDB ID |
+| whisparr_id | `dock_id` | INT | Whisparr ID |
+| stash_id | `berth_id` | VARCHAR | Local Stash ID |
 
 ### Example API Responses
 
 ```json
-// GET /api/v1/qar/crew/123
+// GET /api/v1/legacy/crew/123
+// Note: External URL uses /legacy/, internal schema is qar.*
 {
   "id": "123",
+  "title": "Anne Bonny",
   "names": ["Anne Bonny", "Anne Cormac"],
+  "callsign": "pirate-queen",
   "christening": "1697-03-08",
+  "scuttled": null,
   "origin": "Irish",
-  "maiden_voyage": "1719",
+  "homeland": "Ireland",
+  "mast": 165,
+  "ballast": 54,
+  "cargo": "34D-24-35",
+  "hold_size": "D",
+  "rigged": false,
+  "rigging": "red",
+  "compass": "green",
+  "markings": "anchor on shoulder",
+  "anchors": "ears, navel",
+  "maiden_voyage": 1719,
   "last_port": null,
-  "cargo": {
-    "height": 165,
-    "measurements": "34-24-35"
-  },
   "voyage_count": 142,
-  "chest": ["/qar/treasures/123/1.jpg"]
+  "portrait_count": 87,
+  "chest_count": 5,
+  "logbook": "Famous female pirate...",
+  "charter": "stashdb-uuid-here",
+  "ports_of_call": ["https://twitter.com/example"]
 }
 
-// GET /api/v1/qar/voyages/456
+// GET /api/v1/legacy/voyages/456
 {
   "id": "456",
   "title": "Caribbean Adventure",
-  "port": {"id": "789", "name": "Port Royal"},
-  "crew": [{"id": "123", "name": "Anne Bonny"}],
-  "flags": ["adventure", "caribbean"],
+  "port": {"id": "789", "title": "Port Royal Productions"},
+  "crew": [
+    {"id": "123", "title": "Anne Bonny", "is_primary": true}
+  ],
+  "flags": [
+    {"id": "f1", "name": "adventure"},
+    {"id": "f2", "name": "caribbean"}
+  ],
   "distance": 1847,
+  "launch_date": "2024-03-15",
   "bounty": 4.5,
-  "coordinates": "phash:abc123def456"
+  "coordinates": "phash:abc123def456",
+  "bearing_hash": "oshash:def789",
+  "serial": "PRP-2024-042",
+  "captain": "Edward Teach",
+  "rigged_voyage": false,
+  "manifest": "Two pirates embark on a Caribbean adventure..."
+}
+
+// GET /api/v1/legacy/expeditions/789
+{
+  "id": "789",
+  "title": "Pirates of the Caribbean Collection",
+  "port": {"id": "456", "title": "Sea Dog Studios"},
+  "launch_date": "2024-01-01",
+  "distance": 7200,
+  "bounty": 4.8,
+  "voyage_count": 4,
+  "charter": "stashdb-movie-uuid"
 }
 ```
+
+### URL Mapping (External → Internal)
+
+| External URL | Internal Query |
+|--------------|----------------|
+| `GET /api/v1/legacy/crew` | `SELECT * FROM qar.crew` |
+| `GET /api/v1/legacy/crew/:id` | `SELECT * FROM qar.crew WHERE id = :id` |
+| `GET /api/v1/legacy/voyages` | `SELECT * FROM qar.voyages` |
+| `GET /api/v1/legacy/expeditions` | `SELECT * FROM qar.expeditions` |
+| `GET /api/v1/legacy/ports` | `SELECT * FROM qar.ports` |
+| `GET /api/v1/legacy/flags` | `SELECT * FROM qar.flags` |
+| `GET /api/v1/legacy/treasures` | `SELECT * FROM qar.treasures` |
+| `GET /api/v1/legacy/fleets` | `SELECT * FROM qar.fleets` |
 
 ### Database Schema Example
 
@@ -210,7 +323,7 @@ func (r *Repository) GetPort(ctx context.Context, id uuid.UUID) (*Port, error)
 └─────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────┐     ┌───────────────────┐     ┌─────────────────┐
-│  Library │ ──→ │  Whisparr-v3      │ ──→ │  c.* Schema     │
+│  Library │ ──→ │  Whisparr-v3      │ ──→ │  qar.* Schema   │
 │   Scan   │     │  (Acquisition)    │     │  (PostgreSQL)   │
 └──────────┘     └───────────────────┘     └─────────────────┘
                         │                          │
@@ -597,16 +710,16 @@ func (s *FingerprintService) MatchScene(ctx context.Context, fp *VideoFingerprin
 
 ## Database Schema
 
-All tables in isolated `c` schema:
+All tables in isolated `qar` schema:
 
 ```sql
-CREATE SCHEMA IF NOT EXISTS c;
+CREATE SCHEMA IF NOT EXISTS qar;
 
--- Studios
-CREATE TABLE c.studios (
+-- Studios → Ports
+CREATE TABLE qar.ports (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
-    parent_id       UUID REFERENCES c.studios(id),
+    parent_id       UUID REFERENCES qar.ports(id),
     stashdb_id      VARCHAR(100),          -- StashDB studio ID
     tpdb_id         VARCHAR(100),          -- TPDB studio ID
     url             TEXT,
@@ -617,46 +730,46 @@ CREATE TABLE c.studios (
     UNIQUE(tpdb_id)
 );
 
--- Performers (shared between movies and scenes)
-CREATE TABLE c.performers (
+-- Performers → Crew (shared between expeditions and voyages)
+CREATE TABLE qar.crew (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
     disambiguation  VARCHAR(255),          -- For same-name performers
     stash_id        VARCHAR(100),
-    stashdb_id      VARCHAR(100),
-    tpdb_id         VARCHAR(100),
-    freeones_id     VARCHAR(100),
+    charter         VARCHAR(100),          -- stashdb_id (obfuscated)
+    registry        VARCHAR(100),          -- tpdb_id (obfuscated)
+    manifest        VARCHAR(100),          -- freeones_id (obfuscated)
 
     -- Demographics
     gender          VARCHAR(50),
-    birthdate       DATE,
+    christening     DATE,                  -- birthdate (obfuscated)
     death_date      DATE,
     birth_city      VARCHAR(255),
-    ethnicity       VARCHAR(100),
+    origin          VARCHAR(100),          -- ethnicity (obfuscated)
     nationality     VARCHAR(100),
     height_cm       INT,
     weight_kg       INT,
 
-    -- Measurements
-    measurements    VARCHAR(50),           -- e.g., "34D-24-34"
+    -- Measurements → Cargo
+    cargo           JSONB,                 -- measurements (obfuscated)
     cup_size        VARCHAR(10),
     breast_type     VARCHAR(50),
-    penis_size      VARCHAR(20),           -- male/trans performers (Stash-App source)
+    cutlass         VARCHAR(20),           -- penis_size (obfuscated) - male/trans performers
 
-    -- Trans-specific (obfuscated: figurehead, keel, refit)
-    has_breasts     BOOLEAN,               -- trans: breast presence
-    genitalia_type  VARCHAR(20),           -- trans: male/female/both
-    surgical_status VARCHAR(20),           -- trans: pre-op/post-op/non-op
+    -- Trans-specific (obfuscated)
+    figurehead      BOOLEAN,               -- has_breasts: trans breast presence
+    keel            VARCHAR(20),           -- genitalia_type: male/female/both
+    refit           VARCHAR(20),           -- surgical_status: pre-op/post-op/non-op
 
     -- Appearance
-    hair_color      VARCHAR(50),
-    eye_color       VARCHAR(50),
-    tattoos         TEXT,
-    piercings       TEXT,
+    rigging         VARCHAR(50),           -- hair_color (obfuscated)
+    compass         VARCHAR(50),           -- eye_color (obfuscated)
+    markings        TEXT[],                -- tattoos (obfuscated)
+    anchors         TEXT[],                -- piercings (obfuscated)
 
     -- Career
-    career_start    INT,                   -- Year
-    career_end      INT,                   -- Year (NULL = active)
+    maiden_voyage   INT,                   -- career_start year (obfuscated)
+    last_port       INT,                   -- career_end year (obfuscated) (NULL = active)
     bio             TEXT,
 
     -- Social
@@ -668,21 +781,21 @@ CREATE TABLE c.performers (
 
     created_at      TIMESTAMPTZ DEFAULT NOW(),
     updated_at      TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(stashdb_id),
-    UNIQUE(tpdb_id)
+    UNIQUE(charter),
+    UNIQUE(registry)
 );
 
--- Performer aliases
-CREATE TABLE c.performer_aliases (
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+-- Crew aliases (performer aliases)
+CREATE TABLE qar.crew_aliases (
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     alias           VARCHAR(255) NOT NULL,
-    PRIMARY KEY (performer_id, alias)
+    PRIMARY KEY (crew_id, alias)
 );
 
--- Performer images (additional)
-CREATE TABLE c.performer_images (
+-- Crew images (performer images - additional)
+CREATE TABLE qar.crew_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     path            TEXT NOT NULL,
     type            VARCHAR(50) DEFAULT 'photo', -- photo, headshot, full
     source          VARCHAR(50),                  -- stashdb, tpdb, local
@@ -690,22 +803,22 @@ CREATE TABLE c.performer_images (
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Movies
-CREATE TABLE c.movies (
+-- Movies → Expeditions
+CREATE TABLE qar.expeditions (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    library_id      UUID NOT NULL,              -- Reference to public.libraries (no FK)
+    fleet_id        UUID NOT NULL,              -- Reference to qar.fleets (library)
     whisparr_id     INT,
-    stashdb_id      VARCHAR(100),
-    tpdb_id         VARCHAR(100),
+    charter         VARCHAR(100),               -- stashdb_id (obfuscated)
+    registry        VARCHAR(100),               -- tpdb_id (obfuscated)
 
     -- Metadata
     title           VARCHAR(500) NOT NULL,
     sort_title      VARCHAR(500),
     original_title  VARCHAR(500),
     overview        TEXT,
-    release_date    DATE,
+    launch_date     DATE,                       -- release_date (obfuscated)
     runtime_ticks   BIGINT,                     -- 10,000,000 ticks = 1 second
-    studio_id       UUID REFERENCES c.studios(id),
+    port_id         UUID REFERENCES qar.ports(id), -- studio_id (obfuscated)
     director        VARCHAR(255),
     series          VARCHAR(255),
 
@@ -717,8 +830,8 @@ CREATE TABLE c.movies (
     audio_codec     VARCHAR(50),
     resolution      VARCHAR(50),
 
-    -- Fingerprints
-    phash           VARCHAR(64),
+    -- Fingerprints → Coordinates
+    coordinates     VARCHAR(64),                -- phash (obfuscated)
     oshash          VARCHAR(64),
 
     -- Status
@@ -728,49 +841,49 @@ CREATE TABLE c.movies (
 
     created_at      TIMESTAMPTZ DEFAULT NOW(),
     updated_at      TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(stashdb_id),
+    UNIQUE(charter),
     UNIQUE(path)
 );
 
--- Movie performers
-CREATE TABLE c.movie_performers (
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+-- Expedition crew (movie performers)
+CREATE TABLE qar.expedition_crew (
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     character_name  VARCHAR(255),               -- Optional role name
-    PRIMARY KEY (movie_id, performer_id)
+    PRIMARY KEY (expedition_id, crew_id)
 );
 
--- Movie tags
-CREATE TABLE c.tags (
+-- Tags → Flags
+CREATE TABLE qar.flags (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL UNIQUE,
-    stashdb_id      VARCHAR(36),
-    parent_id       UUID REFERENCES c.tags(id),
+    charter         VARCHAR(36),                -- stashdb_id (obfuscated)
+    parent_id       UUID REFERENCES qar.flags(id),
     description     TEXT,
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE c.movie_tags (
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    tag_id          UUID REFERENCES c.tags(id) ON DELETE CASCADE,
-    PRIMARY KEY (movie_id, tag_id)
+CREATE TABLE qar.expedition_flags (
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
+    flag_id         UUID REFERENCES qar.flags(id) ON DELETE CASCADE,
+    PRIMARY KEY (expedition_id, flag_id)
 );
 
--- Scenes (primary adult scene content)
-CREATE TABLE c.scenes (
+-- Scenes → Voyages (primary adult scene content)
+CREATE TABLE qar.voyages (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    library_id      UUID NOT NULL,
+    fleet_id        UUID NOT NULL REFERENCES qar.fleets(id), -- library
     title           VARCHAR(500) NOT NULL,
     sort_title      VARCHAR(500),
     overview        TEXT,
-    release_date    DATE,
-    runtime_minutes INT,
-    studio_id       UUID REFERENCES c.studios(id),
+    launch_date     DATE,                       -- release_date (obfuscated)
+    distance        INT,                        -- runtime_minutes (obfuscated)
+    port_id         UUID REFERENCES qar.ports(id), -- studio
 
     whisparr_id     INT,
     stash_id        VARCHAR(100),
-    stashdb_id      VARCHAR(100),
-    tpdb_id         VARCHAR(100),
+    charter         VARCHAR(100),               -- stashdb_id (obfuscated)
+    registry        VARCHAR(100),               -- tpdb_id (obfuscated)
 
     path            TEXT NOT NULL,
     size_bytes      BIGINT,
@@ -779,7 +892,7 @@ CREATE TABLE c.scenes (
     resolution      VARCHAR(20),
 
     oshash          VARCHAR(32),
-    phash           VARCHAR(32),
+    coordinates     VARCHAR(32),                -- phash (obfuscated)
     md5             VARCHAR(64),
 
     cover_path      TEXT,
@@ -789,34 +902,34 @@ CREATE TABLE c.scenes (
     UNIQUE(path)
 );
 
-CREATE TABLE c.scene_performers (
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
-    PRIMARY KEY (scene_id, performer_id)
+CREATE TABLE qar.voyage_crew (
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
+    PRIMARY KEY (voyage_id, crew_id)
 );
 
-CREATE TABLE c.scene_tags (
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
-    tag_id          UUID REFERENCES c.tags(id) ON DELETE CASCADE,
-    PRIMARY KEY (scene_id, tag_id)
+CREATE TABLE qar.voyage_flags (
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    flag_id         UUID REFERENCES qar.flags(id) ON DELETE CASCADE,
+    PRIMARY KEY (voyage_id, flag_id)
 );
 
--- Scene markers (timestamped tags from Stash)
-CREATE TABLE c.scene_markers (
+-- Voyage markers (scene markers - timestamped tags from Stash)
+CREATE TABLE qar.voyage_markers (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
     title           VARCHAR(255),
     start_seconds   FLOAT NOT NULL,
     end_seconds     FLOAT,
-    tag_id          UUID REFERENCES c.tags(id),
+    flag_id         UUID REFERENCES qar.flags(id),
     stash_marker_id VARCHAR(100),
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Movie images
-CREATE TABLE c.movie_images (
+-- Expedition images (movie images)
+CREATE TABLE qar.expedition_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
     type            VARCHAR(50) NOT NULL,       -- poster, backdrop, screenshot
     path            TEXT NOT NULL,
     source          VARCHAR(50),                -- stashdb, whisparr, local
@@ -824,19 +937,19 @@ CREATE TABLE c.movie_images (
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Galleries (image sets)
-CREATE TABLE c.galleries (
+-- Galleries → Treasures (image sets)
+CREATE TABLE qar.treasures (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE SET NULL,
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE SET NULL,
     title           VARCHAR(500) NOT NULL,
     path            TEXT,
     image_count     INT,
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE c.gallery_images (
+CREATE TABLE qar.treasure_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    gallery_id      UUID REFERENCES c.galleries(id) ON DELETE CASCADE,
+    treasure_id     UUID REFERENCES qar.treasures(id) ON DELETE CASCADE,
     path            TEXT NOT NULL,
     position        INT,
     width           INT,
@@ -844,77 +957,80 @@ CREATE TABLE c.gallery_images (
 );
 
 -- User data (per-module)
-CREATE TABLE c.user_ratings (
+CREATE TABLE qar.user_bounties (
     user_id         UUID NOT NULL,              -- Reference to public.users (no FK)
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    rating          INT CHECK (rating >= 0 AND rating <= 100),
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
+    bounty          INT CHECK (bounty >= 0 AND bounty <= 100), -- rating (obfuscated)
     rated_at        TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (user_id, movie_id)
+    PRIMARY KEY (user_id, expedition_id)
 );
 
-CREATE TABLE c.user_favorites (
+CREATE TABLE qar.user_favorites (
     user_id         UUID NOT NULL,
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
     created_at      TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (user_id, movie_id)
+    PRIMARY KEY (user_id, expedition_id)
 );
 
-CREATE TABLE c.watch_history (
+CREATE TABLE qar.ship_log (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID NOT NULL,
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
-    watched_at      TIMESTAMPTZ DEFAULT NOW(),
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
+    logged_at       TIMESTAMPTZ DEFAULT NOW(),  -- watched_at (obfuscated)
     position_ticks  BIGINT,                     -- Last position
     completed       BOOLEAN DEFAULT FALSE
 );
 
 -- Indexes
-CREATE INDEX idx_c_movies_library ON c.movies(library_id);
-CREATE INDEX idx_c_movies_studio ON c.movies(studio_id);
-CREATE INDEX idx_c_movies_phash ON c.movies(phash);
-CREATE INDEX idx_c_movies_oshash ON c.movies(oshash);
-CREATE INDEX idx_c_performers_name ON c.performers(name);
-CREATE INDEX idx_c_performers_stashdb ON c.performers(stashdb_id);
-CREATE INDEX idx_c_watch_history_user ON c.watch_history(user_id, watched_at DESC);
+CREATE INDEX idx_qar_expeditions_fleet ON qar.expeditions(fleet_id);
+CREATE INDEX idx_qar_expeditions_port ON qar.expeditions(port_id);
+CREATE INDEX idx_qar_expeditions_coordinates ON qar.expeditions(coordinates);
+CREATE INDEX idx_qar_expeditions_oshash ON qar.expeditions(oshash);
+CREATE INDEX idx_qar_crew_name ON qar.crew(name);
+CREATE INDEX idx_qar_crew_charter ON qar.crew(charter);
+CREATE INDEX idx_qar_ship_log_user ON qar.ship_log(user_id, logged_at DESC);
+CREATE INDEX idx_qar_voyages_fleet ON qar.voyages(fleet_id);
+CREATE INDEX idx_qar_voyages_port ON qar.voyages(port_id);
+CREATE INDEX idx_qar_voyages_coordinates ON qar.voyages(coordinates);
 ```
 
 ---
 
-## Scene-First Model (Whisparr v3)
+## Voyage-First Model (Whisparr v3)
 
-Whisparr models scenes as episodes under a series/site. Revenge keeps a scene-first model:
+Whisparr models scenes as episodes under a series/site. Revenge keeps a voyage-first model:
 
-- No `c.series`, `c.seasons`, or `c.episodes` tables.
-- Scenes are stored directly in `c.scenes` and linked to `c.performers`, `c.studios`, and `c.tags`.
-- Series/site grouping is represented via studio/site metadata and UI grouping, not separate tables.
+- No `qar.series`, `qar.seasons`, or `qar.episodes` tables.
+- Voyages (scenes) are stored directly in `qar.voyages` and linked to `qar.crew`, `qar.ports`, and `qar.flags`.
+- Series/site grouping is represented via port/site metadata and UI grouping, not separate tables.
 
 ---
 
 ## Features Specific to Adult Content
 
-### Scene Markers (Timestamped Tags)
+### Voyage Markers (Timestamped Tags)
 
 Import Stash scene markers as navigable chapters:
 
 ```go
-type SceneMarkerService struct {
+type VoyageMarkerService struct {
     db    *pgxpool.Pool
     stash *StashAppClient
 }
 
-type SceneMarker struct {
+type VoyageMarker struct {
     ID          uuid.UUID
-    MovieID     uuid.UUID
+    VoyageID    uuid.UUID
     Title       string
     StartTicks  int64
     EndTicks    *int64
-    PrimaryTag  *Tag
-    Tags        []Tag
+    PrimaryFlag *Flag
+    Flags       []Flag
     Thumbnail   string
 }
 
 // Import markers from Stash
-func (s *SceneMarkerService) ImportFromStash(ctx context.Context, movieID uuid.UUID, stashSceneID string) error {
+func (s *VoyageMarkerService) ImportFromStash(ctx context.Context, voyageID uuid.UUID, stashSceneID string) error {
     markers, err := s.stash.GetSceneMarkers(ctx, stashSceneID)
     if err != nil {
         return err
@@ -922,10 +1038,10 @@ func (s *SceneMarkerService) ImportFromStash(ctx context.Context, movieID uuid.U
 
     for _, marker := range markers {
         _, err := s.db.Exec(ctx, `
-            INSERT INTO c.scene_markers (movie_id, title, start_ticks, primary_tag_id, thumbnail_path)
+            INSERT INTO qar.voyage_markers (voyage_id, title, start_ticks, primary_flag_id, thumbnail_path)
             VALUES ($1, $2, $3, $4, $5)
-        `, movieID, marker.Title, int64(marker.Seconds*10_000_000),
-           s.ensureTag(ctx, marker.PrimaryTag), marker.Screenshot)
+        `, voyageID, marker.Title, int64(marker.Seconds*10_000_000),
+           s.ensureFlag(ctx, marker.PrimaryTag), marker.Screenshot)
         if err != nil {
             return err
         }
@@ -981,12 +1097,12 @@ Support for interactive content (funscripts):
 
 ```sql
 -- Interactive content support
-ALTER TABLE c.movies ADD COLUMN interactive BOOLEAN DEFAULT FALSE;
-ALTER TABLE c.movies ADD COLUMN funscript_path TEXT;
+ALTER TABLE qar.expeditions ADD COLUMN interactive BOOLEAN DEFAULT FALSE;
+ALTER TABLE qar.expeditions ADD COLUMN funscript_path TEXT;
 
-CREATE TABLE c.interactive_scripts (
+CREATE TABLE qar.interactive_scripts (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    movie_id        UUID REFERENCES c.movies(id) ON DELETE CASCADE,
+    expedition_id   UUID REFERENCES qar.expeditions(id) ON DELETE CASCADE,
     script_path     TEXT NOT NULL,
     script_type     VARCHAR(50) DEFAULT 'funscript',
     created_at      TIMESTAMPTZ DEFAULT NOW()
@@ -995,93 +1111,297 @@ CREATE TABLE c.interactive_scripts (
 
 ---
 
-## Privacy & Security
+## Security Hardening
 
-### Access Control
+### 1. Complete Schema Isolation
+
+```sql
+-- Separate schema with no cross-references to public schema
+CREATE SCHEMA qar;
+
+-- QAR tables NEVER reference public.* tables directly
+-- User IDs are stored but no foreign keys to shared.users
+-- This prevents accidental data leakage through JOINs
+
+-- Row-level security (RLS) for additional protection
+ALTER TABLE qar.crew ENABLE ROW LEVEL SECURITY;
+ALTER TABLE qar.voyages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE qar.expeditions ENABLE ROW LEVEL SECURITY;
+
+-- Only users with legacy_access role can query
+CREATE POLICY qar_crew_policy ON qar.crew
+    FOR ALL TO authenticated
+    USING (current_setting('app.legacy_access', true)::boolean = true);
+```
+
+### 2. Access Control (RBAC)
 
 ```go
-// Adult content requires special auth scope
-const ScopeAdultContent = "adult:read"
-const ScopeAdultWrite   = "adult:write"
+// Obfuscated scope names - no "adult" in any token/claim
+const (
+    ScopeLegacyRead  = "legacy:read"   // Read access
+    ScopeLegacyWrite = "legacy:write"  // Write access
+    ScopeLegacyAdmin = "legacy:admin"  // Admin access
+)
 
-func AdultAuthMiddleware(next http.Handler) http.Handler {
+// Middleware validates scope AND explicit user opt-in
+func LegacyAuthMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         claims := auth.ClaimsFromContext(r.Context())
-        if !claims.HasScope(ScopeAdultContent) {
-            http.Error(w, "Forbidden", http.StatusForbidden)
+
+        // 1. Check scope in token
+        if !claims.HasScope(ScopeLegacyRead) {
+            http.Error(w, "Not Found", http.StatusNotFound) // 404, not 403
             return
         }
+
+        // 2. Check user has explicitly enabled legacy content
+        if !claims.LegacyEnabled {
+            http.Error(w, "Not Found", http.StatusNotFound)
+            return
+        }
+
+        // 3. Check PIN if required
+        if config.Legacy.RequirePIN && !validatePIN(r, claims.UserID) {
+            http.Error(w, "PIN Required", http.StatusUnauthorized)
+            return
+        }
+
+        // Set database session variable for RLS
+        ctx := context.WithValue(r.Context(), "legacy_access", true)
+        next.ServeHTTP(w, r.WithContext(ctx))
+    })
+}
+```
+
+### 3. URL Obfuscation
+
+```go
+// Router configuration - external URLs never reveal content type
+router.Route("/api/v1/legacy", func(r chi.Router) {
+    r.Use(LegacyAuthMiddleware)
+
+    // All routes look like generic "legacy" API
+    r.Get("/crew/{id}", handlers.GetCrew)
+    r.Get("/voyages/{id}", handlers.GetVoyage)
+    r.Get("/expeditions/{id}", handlers.GetExpedition)
+})
+
+// Response headers - no hints about content type
+func SetSecurityHeaders(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Remove any identifying headers
+        w.Header().Del("X-Content-Type")
+        w.Header().Set("X-Content-Type-Options", "nosniff")
+        w.Header().Set("Cache-Control", "private, no-store")
         next.ServeHTTP(w, r)
     })
 }
 ```
 
-### Audit Logging
-
-All adult content access is logged:
+### 4. Audit Logging (Isolated)
 
 ```go
-type AuditLogger struct {
-    db *pgxpool.Pool
-}
-
-func (l *AuditLogger) LogAccess(ctx context.Context, userID uuid.UUID, action, resource string) {
+// Audit logs stored in QAR schema, not main activity_log
+func (l *AuditLogger) LogLegacyAccess(ctx context.Context, userID uuid.UUID, action, resource string) {
     _, err := l.db.Exec(ctx, `
-        INSERT INTO activity_log (user_id, action, resource, module, ip_address, user_agent, created_at)
-        VALUES ($1, $2, $3, 'adult', $4, $5, NOW())
+        INSERT INTO qar.ship_log (sailor_id, action, cargo, bearing, vessel, logged_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
     `, userID, action, resource, getIP(ctx), getUserAgent(ctx))
     if err != nil {
-        slog.Error("audit log failed", "error", err)
+        slog.Error("ship log failed", "error", err)
+    }
+}
+
+// Audit log table uses QAR terminology
+// sailor_id = user_id, cargo = resource, bearing = ip_address, vessel = user_agent
+```
+
+### 5. Network Security
+
+```yaml
+# Reverse proxy configuration (nginx/caddy)
+# Legacy endpoints should:
+# 1. Not appear in access logs (or use separate log file)
+# 2. Use separate rate limiting
+# 3. Have no referrer leakage
+
+location /api/v1/legacy/ {
+    # Disable access logging for privacy
+    access_log off;
+
+    # Separate rate limit bucket
+    limit_req zone=legacy burst=10 nodelay;
+
+    # No referrer leakage
+    add_header Referrer-Policy "no-referrer" always;
+
+    # Prevent caching at proxy level
+    proxy_no_cache 1;
+    proxy_cache_bypass 1;
+
+    proxy_pass http://backend;
+}
+```
+
+### 6. Data Encryption
+
+```go
+// Sensitive fields encrypted at rest
+type EncryptedField struct {
+    Ciphertext []byte
+    Nonce      []byte
+}
+
+// Crew names and aliases can be encrypted
+func (r *Repository) GetCrew(ctx context.Context, id uuid.UUID) (*Crew, error) {
+    var crew Crew
+    err := r.db.QueryRow(ctx, `
+        SELECT id, pgp_sym_decrypt(names_encrypted, $2) as names, ...
+        FROM qar.crew WHERE id = $1
+    `, id, r.encryptionKey).Scan(&crew)
+    return &crew, err
+}
+```
+
+### 7. Privacy Controls
+
+```yaml
+# config.yaml - obfuscated section name
+legacy:
+  enabled: true
+
+  privacy:
+    # Exclude from all cross-module features
+    exclude_from_analytics: true
+    exclude_from_recommendations: true
+    exclude_from_continue_watching: true
+    exclude_from_search_history: true
+
+    # Access controls
+    require_pin: true
+    pin_timeout: 30m
+    auto_lock_on_idle: 5m
+
+    # Audit settings
+    audit_all_access: true
+    audit_retention_days: 90
+
+    # Network privacy
+    disable_external_requests: false  # Set true to block StashDB calls
+    proxy_all_images: true            # Proxy images through server
+```
+
+### 8. Error Response Obfuscation
+
+```go
+// Never reveal that legacy content exists in error messages
+func LegacyErrorHandler(err error, w http.ResponseWriter, r *http.Request) {
+    switch {
+    case errors.Is(err, ErrCrewNotFound):
+        http.Error(w, "Not Found", http.StatusNotFound)
+    case errors.Is(err, ErrUnauthorized):
+        http.Error(w, "Not Found", http.StatusNotFound) // 404, not 401
+    case errors.Is(err, ErrForbidden):
+        http.Error(w, "Not Found", http.StatusNotFound) // 404, not 403
+    default:
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
     }
 }
 ```
 
-### Analytics Exclusion
+### 9. Database Connection Isolation
 
-Option to exclude adult viewing from analytics:
+```go
+// Separate connection pool for QAR queries
+func NewQARPool(cfg config.Database) (*pgxpool.Pool, error) {
+    config, _ := pgxpool.ParseConfig(cfg.URL)
 
-```yaml
-# config.yaml
-adult:
-  exclude_from_analytics: true
-  exclude_from_recommendations: true
-  require_pin: true           # Require PIN to access
-  pin_timeout: 30m            # Re-prompt after timeout
+    // Set search_path to only qar schema
+    config.ConnConfig.RuntimeParams["search_path"] = "qar"
+
+    // Use separate pool with lower limits
+    config.MaxConns = 5
+    config.MinConns = 1
+
+    return pgxpool.NewWithConfig(context.Background(), config)
+}
 ```
+
+### Security Checklist
+
+- [ ] Schema isolation verified (no FK to public.*)
+- [ ] RLS policies enabled on all QAR tables
+- [ ] URL obfuscation tested (no "adult" in any URL/response)
+- [ ] Error messages don't reveal content type
+- [ ] Audit logging to separate table
+- [ ] Access logging disabled for /legacy/ endpoints
+- [ ] PIN protection implemented
+- [ ] Session timeout configured
+- [ ] Image proxying enabled
+- [ ] Encryption at rest for sensitive fields
+- [ ] RBAC scopes use obfuscated names
 
 ---
 
 ## API Endpoints
 
-All endpoints under obscured `/c/` namespace:
+All endpoints under innocuous `/legacy/` namespace (looks like deprecated API):
 
 ```
-POST   /api/v1/c/movies                    # Create movie
-GET    /api/v1/c/movies                    # List movies
-GET    /api/v1/c/movies/{id}               # Get movie
-PUT    /api/v1/c/movies/{id}               # Update movie
-DELETE /api/v1/c/movies/{id}               # Delete movie
+# Expeditions (Movies)
+POST   /api/v1/legacy/expeditions                 # Create expedition
+GET    /api/v1/legacy/expeditions                 # List expeditions
+GET    /api/v1/legacy/expeditions/{id}            # Get expedition
+PUT    /api/v1/legacy/expeditions/{id}            # Update expedition
+DELETE /api/v1/legacy/expeditions/{id}            # Delete expedition
+GET    /api/v1/legacy/expeditions/{id}/crew       # Get expedition crew
+GET    /api/v1/legacy/expeditions/{id}/markers    # Get voyage markers
+GET    /api/v1/legacy/expeditions/{id}/similar    # Get similar expeditions
 
-GET    /api/v1/c/movies/{id}/performers    # Get movie performers
-GET    /api/v1/c/movies/{id}/markers       # Get scene markers
-GET    /api/v1/c/movies/{id}/similar       # Get similar movies
+# Voyages (Scenes)
+GET    /api/v1/legacy/voyages                     # List voyages
+GET    /api/v1/legacy/voyages/{id}                # Get voyage
+GET    /api/v1/legacy/voyages/{id}/crew           # Get voyage crew
+GET    /api/v1/legacy/voyages/{id}/markers        # Get voyage markers
 
-GET    /api/v1/c/performers                # List performers
-GET    /api/v1/c/performers/{id}           # Get performer
-GET    /api/v1/c/performers/{id}/movies    # Get performer's movies
+# Crew (Performers)
+GET    /api/v1/legacy/crew                        # List crew
+GET    /api/v1/legacy/crew/{id}                   # Get crew member
+GET    /api/v1/legacy/crew/{id}/voyages           # Get crew voyages
+GET    /api/v1/legacy/crew/{id}/expeditions       # Get crew expeditions
+GET    /api/v1/legacy/crew/{id}/treasures         # Get crew galleries
 
-GET    /api/v1/c/studios                   # List studios
-GET    /api/v1/c/studios/{id}              # Get studio
-GET    /api/v1/c/studios/{id}/movies       # Get studio's movies
+# Ports (Studios)
+GET    /api/v1/legacy/ports                       # List ports
+GET    /api/v1/legacy/ports/{id}                  # Get port
+GET    /api/v1/legacy/ports/{id}/voyages          # Get port voyages
+GET    /api/v1/legacy/ports/{id}/expeditions      # Get port expeditions
 
-GET    /api/v1/c/tags                      # List tags
-GET    /api/v1/c/tags/{id}/movies          # Get movies with tag
+# Flags (Tags)
+GET    /api/v1/legacy/flags                       # List flags
+GET    /api/v1/legacy/flags/{id}                  # Get flag
+GET    /api/v1/legacy/flags/{id}/voyages          # Get flagged voyages
 
-GET    /api/v1/c/scenes                    # List scenes
-GET    /api/v1/c/scenes/{id}               # Get scene
+# Treasures (Galleries)
+GET    /api/v1/legacy/treasures                   # List treasures
+GET    /api/v1/legacy/treasures/{id}              # Get treasure
+GET    /api/v1/legacy/treasures/{id}/doubloons    # Get treasure images
 
-POST   /api/v1/c/match                     # Match file by fingerprint
-POST   /api/v1/c/identify                  # Submit for identification
+# Fleets (Libraries)
+GET    /api/v1/legacy/fleets                      # List fleets
+GET    /api/v1/legacy/fleets/{id}                 # Get fleet
+POST   /api/v1/legacy/fleets/{id}/scan            # Trigger fleet scan
+
+# Identification
+POST   /api/v1/legacy/match                       # Match file by fingerprint
+POST   /api/v1/legacy/identify                    # Submit for identification
+
+# User Data (per-user stats)
+GET    /api/v1/legacy/logbook                     # User watch history
+GET    /api/v1/legacy/prized                      # User favorites
+POST   /api/v1/legacy/voyages/{id}/bounty         # Rate voyage
+POST   /api/v1/legacy/expeditions/{id}/bounty     # Rate expedition
 ```
 
 ---
@@ -1090,15 +1410,16 @@ POST   /api/v1/c/identify                  # Submit for identification
 
 ```yaml
 # config.yaml
-adult:
+# Note: Section named "legacy" for obfuscation - no "adult" in config keys
+legacy:
   enabled: true
 
-  # Whisparr integration
+  # Whisparr integration (Arr for acquisition)
   whisparr:
     url: "http://whisparr:6969"
     api_key: "${WHISPARR_API_KEY}"
 
-  # StashDB integration
+  # StashDB integration (metadata enrichment)
   stashdb:
     endpoint: "https://stashdb.org/graphql"
     api_key: "${STASHDB_API_KEY}"
@@ -1108,7 +1429,7 @@ adult:
     url: "http://stash:9999"
     api_key: "${STASH_API_KEY}"
 
-  # TPDB fallback
+  # ThePornDB fallback
   tpdb:
     url: "https://api.metadataapi.net/api"
     api_key: "${TPDB_API_KEY}"
@@ -1117,19 +1438,34 @@ adult:
   fingerprint:
     generate_phash: true
     generate_oshash: true
-    auto_match: true          # Auto-match on scan
+    auto_match: true
 
-  # Privacy
+  # Privacy & Security
   privacy:
     exclude_from_analytics: true
     exclude_from_recommendations: true
-    require_pin: false
+    exclude_from_continue_watching: true
+    exclude_from_search_history: true
+    require_pin: true
+    pin_timeout: 30m
+    auto_lock_on_idle: 5m
     audit_all_access: true
+    audit_retention_days: 90
+    proxy_all_images: true
 
-  # Storage
+  # Storage (paths use "qar" internally, never exposed)
   storage:
-    images_path: "/data/adult/images"
-    thumbnails_path: "/data/adult/thumbnails"
+    base_path: "/data/qar"
+    images_path: "/data/qar/images"
+    thumbnails_path: "/data/qar/thumbs"
+    cache_path: "/data/qar/cache"
+
+  # Database
+  database:
+    schema: "qar"
+    separate_pool: true
+    max_connections: 5
+    encryption_key: "${QAR_ENCRYPTION_KEY}"
 ```
 
 ---
@@ -1151,9 +1487,9 @@ type FingerprintSceneWorker struct {
 }
 
 func (w *FingerprintSceneWorker) Work(ctx context.Context, job *river.Job[FingerprintSceneArgs]) error {
-    // Get movie path
+    // Get expedition path
     var path string
-    err := w.db.QueryRow(ctx, `SELECT path FROM c.movies WHERE id = $1`, job.Args.MovieID).Scan(&path)
+    err := w.db.QueryRow(ctx, `SELECT path FROM qar.expeditions WHERE id = $1`, job.Args.MovieID).Scan(&path)
     if err != nil {
         return err
     }
@@ -1166,7 +1502,7 @@ func (w *FingerprintSceneWorker) Work(ctx context.Context, job *river.Job[Finger
 
     // Store fingerprints
     _, err = w.db.Exec(ctx, `
-        UPDATE c.movies SET phash = $1, oshash = $2 WHERE id = $3
+        UPDATE qar.expeditions SET coordinates = $1, oshash = $2 WHERE id = $3
     `, fp.PHash, fp.OsHash, job.Args.MovieID)
     if err != nil {
         return err
@@ -1207,11 +1543,11 @@ func (SyncStashAppArgs) Kind() string { return "adult.sync_stash_app" }
 
 | Aspect | Implementation |
 |--------|----------------|
-| Schema | Isolated `c` PostgreSQL schema |
-| API Namespace | Obscured `/c/` path |
+| Schema | Isolated `qar` PostgreSQL schema |
+| API Namespace | Obscured `/qar/` path |
 | Primary Source | Whisparr-v3 for acquisition |
 | Enrichment | StashDB (public), Stash-App (private) |
-| Identification | pHash + oshash fingerprinting |
+| Identification | pHash (coordinates) + oshash fingerprinting |
 | Privacy | Audit logging, analytics exclusion, PIN protection |
-| Scene Markers | Timestamped tags from Stash |
-| Performer Data | StashDB with aliases, demographics, measurements |
+| Voyage Markers | Timestamped flags from Stash |
+| Crew Data | StashDB with aliases, demographics, cargo |

@@ -32,9 +32,9 @@
 - Migrate from Stash to Revenge (one-time import)
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
-- **API namespace**: `/api/v1/c/integrations/stash/*` (NOT `/api/v1/integrations/stash/*`)
-- **Module location**: `internal/content/c/integrations/stash/` (NOT `internal/service/integrations/`)
+- **Database schema**: `qar` schema ONLY (`qar.expeditions`, `qar.voyages`, `qar.crew`, `qar.ports`)
+- **API namespace**: `/api/v1/qar/integrations/stash/*` (NOT `/api/v1/integrations/stash/*`)
+- **Module location**: `internal/content/qar/integrations/stash/` (NOT `internal/service/integrations/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
 ---
@@ -344,9 +344,9 @@ query Configuration {
 ### Phase 1: Core Integration (Optional)
 - [ ] GraphQL client setup (`machinebox/graphql` OR `genqlient`)
 - [ ] Stash instance configuration (`configs/config.yaml` - `stash.url`, `stash.api_key`)
-- [ ] **Adult schema**: Use existing `c.movies`, `c.performers`, `c.studios` tables
-- [ ] **API namespace**: `/api/v1/c/integrations/stash/*` endpoints
-- [ ] **Module location**: `internal/content/c/integrations/stash/` (isolated)
+- [ ] **Adult schema**: Use existing `qar.expeditions`, `qar.crew`, `qar.ports` tables
+- [ ] **API namespace**: `/api/v1/qar/integrations/stash/*` endpoints
+- [ ] **Module location**: `internal/content/qar/integrations/stash/` (isolated)
 - [ ] List Stash scenes (GraphQL `findScenes`)
 - [ ] Import scene metadata (title, date, performers, studio, tags)
 - [ ] Import scene files (copy OR symlink video files)
@@ -364,7 +364,7 @@ query Configuration {
 - [ ] Duplicate detection (avoid re-importing existing content)
 
 ### Phase 3: Ongoing Sync (Optional)
-- [ ] **Job**: `c.integrations.stash.sync_library` (periodic sync)
+- [ ] **Job**: `qar.integrations.stash.sync_library` (periodic sync)
 - [ ] Incremental sync (only new/updated scenes since last sync)
 - [ ] Two-way sync (Revenge edits → Stash database)
 - [ ] Conflict resolution (prefer Revenge data OR prefer Stash data)
@@ -393,19 +393,19 @@ For each scene:
                 ↓
                 Copy OR symlink video file (user preference)
                 ↓
-                Store in c.movies OR c.scenes
+                Store in qar.expeditions OR qar.voyages
                 ↓
                 metadata_json.stash_data = full GraphQL response
                 ↓
-                Import performers (create in c.performers if not exists)
+                Import crew (create in qar.crew if not exists)
                 ↓
-                Download performer images
+                Download crew images
                 ↓
-                Import studio (create in c.studios if not exists)
+                Import port (create in qar.ports if not exists)
                 ↓
                 Download studio logo
                 ↓
-                Import tags (create in c.tags if not exists)
+                Import flags (create in qar.flags if not exists)
                 ↓
                 Import scene markers (time-based markers)
                 ↓
@@ -430,9 +430,9 @@ For each updated scene:
                 ↓
                 Stash updated_at > Revenge updated_at? → Sync metadata
                 ↓
-                Update c.movies.metadata_json.stash_data
+                Update qar.expeditions.metadata_json.stash_data
                 ↓
-                Update performers/studio/tags (if changed)
+                Update crew/port/flags (if changed)
         ↓
         Scene NOT exists? → Import scene (same flow as one-time import)
 ```
@@ -461,16 +461,16 @@ For each updated scene:
 - **Recommended**: One-time migration (Revenge replaces Stash)
 
 ### Adult Content Isolation (CRITICAL)
-- **Database schema**: `c` schema ONLY
-  - `c.movies.metadata_json.stash_data` (JSONB)
-  - `c.scenes.metadata_json.stash_data` (JSONB)
-  - `c.performers` (shared with StashDB/ThePornDB)
-  - `c.studios` (shared with StashDB/ThePornDB)
-- **API namespace**: `/api/v1/c/integrations/stash/*` (isolated)
-  - `/api/v1/c/integrations/stash/sync` (trigger sync)
-  - `/api/v1/c/integrations/stash/import` (one-time import)
-  - `/api/v1/c/integrations/stash/status` (sync status)
-- **Module location**: `internal/content/c/integrations/stash/` (isolated)
+- **Database schema**: `qar` schema ONLY
+  - `qar.expeditions.metadata_json.stash_data` (JSONB)
+  - `qar.voyages.metadata_json.stash_data` (JSONB)
+  - `qar.crew` (shared with StashDB/ThePornDB)
+  - `qar.ports` (shared with StashDB/ThePornDB)
+- **API namespace**: `/api/v1/qar/integrations/stash/*` (isolated)
+  - `/api/v1/qar/integrations/stash/sync` (trigger sync)
+  - `/api/v1/qar/integrations/stash/import` (one-time import)
+  - `/api/v1/qar/integrations/stash/status` (sync status)
+- **Module location**: `internal/content/qar/integrations/stash/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 
 ### File Handling
@@ -483,10 +483,10 @@ For each updated scene:
 - **Use for deduplication**: Match scenes by StashDB ID (avoid re-importing)
 - **Sync with StashDB**: If scene has StashDB ID → fetch fresh metadata from StashDB (prefer StashDB over Stash metadata)
 
-### Scene Markers
+### Voyage Markers
 - **Time-based markers**: Stash supports scene markers (positions, performers, acts at specific timestamps)
-- **Import markers**: Store markers in Revenge database (useful for scene navigation)
-- **Schema**: `c.scene_markers` table (scene_id, timestamp, tag_id, title)
+- **Import markers**: Store markers in Revenge database (useful for voyage navigation)
+- **Schema**: `qar.voyage_markers` table (voyage_id, timestamp, flag_id, title)
 
 ### Performer Images
 - **Stash stores performer images**: `image_path` field (relative to Stash `generatedPath`)
@@ -502,10 +502,10 @@ For each updated scene:
 - **No rate limits**: Stash is self-hosted (no rate limiting)
 - **Batch processing**: Use batches to avoid overwhelming server (e.g., import 100 scenes at a time)
 
-### Watch History (Optional)
+### Ship Log (Watch History - Optional)
 - **Stash tracks watch history**: `o_counter` (play count), `last_played_at`
 - **Import watch history**: Optionally import play count/last played into Revenge
-- **Schema**: `c.watch_history` table (user_id, scene_id, play_count, last_played_at)
+- **Schema**: `qar.ship_log` table (user_id, voyage_id, play_count, logged_at)
 
 ### Two-Way Sync (Advanced)
 - **Revenge → Stash**: Optionally sync Revenge edits back to Stash database
@@ -519,7 +519,7 @@ For each updated scene:
 - **Default**: Prefer Revenge data (user edited in Revenge = authoritative)
 
 ### JSONB Storage
-- Store full Stash GraphQL response in `c.movies.metadata_json.stash_data`
+- Store full Stash GraphQL response in `qar.expeditions.metadata_json.stash_data`
 - Preserves all Stash-specific fields (scene markers, ratings, etc.)
 - Allows querying Stash-specific data via PostgreSQL JSONB operators
 

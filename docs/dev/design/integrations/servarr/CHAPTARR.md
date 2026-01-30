@@ -262,7 +262,7 @@ func (c *ReadarrClient) GetBooksByAuthor(ctx context.Context, authorID int) ([]B
 - [Audiobook Module](../../architecture/modules/AUDIOBOOK.md)
 - [Goodreads Integration](../metadata/books/GOODREADS.md)
 - [Audible Integration](../metadata/books/AUDIBLE.md)
-- [Audiobookshelf Integration](../audiobook/AUDIOBOOKSHELF.md)
+- [Native Audiobook/Podcast](../audiobook/INDEX.md)
 - [Arr Integration Pattern](../../patterns/arr_integration.md)
 - [Webhook Handling](../../patterns/webhook_patterns.md)
 

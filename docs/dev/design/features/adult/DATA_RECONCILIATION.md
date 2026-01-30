@@ -2,7 +2,7 @@
 
 > Fuzzy logic and confidence scoring for conflicting metadata
 
-**⚠️ Adult Content**: All processing isolated in `c` schema.
+**⚠️ Adult Content**: All processing isolated in `qar` schema.
 
 ---
 
@@ -248,10 +248,10 @@ func CalculateConfidence(winner Cluster, allClusters []Cluster) float64 {
 ## Database Schema
 
 ```sql
--- Reconciled performer data (stored in c schema)
-CREATE TABLE c.performer_reconciled (
+-- Reconciled crew data (stored in qar schema)
+CREATE TABLE qar.crew_reconciled (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id UUID REFERENCES c.performers(id),
+    crew_id UUID REFERENCES qar.crew(id),
 
     -- Reconciled values with confidence
     height_cm INT,
@@ -269,8 +269,8 @@ CREATE TABLE c.performer_reconciled (
     hip_size INT,
     hip_confidence DECIMAL(3,2),
 
-    birth_date DATE,
-    birth_date_confidence DECIMAL(3,2),
+    christening DATE,                        -- birth_date (obfuscated)
+    christening_confidence DECIMAL(3,2),
 
     career_status VARCHAR(50),
     career_status_confidence DECIMAL(3,2),
@@ -283,16 +283,16 @@ CREATE TABLE c.performer_reconciled (
 );
 
 -- Raw source data (for re-reconciliation)
-CREATE TABLE c.performer_source_data (
+CREATE TABLE qar.crew_source_data (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id UUID REFERENCES c.performers(id),
+    crew_id UUID REFERENCES qar.crew(id),
     source VARCHAR(100) NOT NULL,
     field_name VARCHAR(100) NOT NULL,
     field_value TEXT,
     source_url TEXT,
     fetched_at TIMESTAMPTZ DEFAULT NOW(),
 
-    UNIQUE(performer_id, source, field_name)
+    UNIQUE(crew_id, source, field_name)
 );
 ```
 
@@ -359,16 +359,16 @@ const (
 Admins/mods can override reconciled values:
 
 ```sql
-CREATE TABLE c.performer_overrides (
+CREATE TABLE qar.crew_overrides (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id UUID REFERENCES c.performers(id),
+    crew_id UUID REFERENCES qar.crew(id),
     field_name VARCHAR(100) NOT NULL,
     override_value TEXT NOT NULL,
     reason TEXT,
     override_by UUID REFERENCES users(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-    UNIQUE(performer_id, field_name)
+    UNIQUE(crew_id, field_name)
 );
 ```
 

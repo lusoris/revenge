@@ -326,4 +326,4 @@ See: [MODULE_IMPLEMENTATION_TODO.md](../../planning/MODULE_IMPLEMENTATION_TODO.m
 
 - [CONTENT_RATING.md](CONTENT_RATING.md) - Age restriction and rating systems
 - [Adult Content System](../adult/ADULT_CONTENT_SYSTEM.md) - Adult module isolation
-- [Architecture V2](../../architecture/ARCHITECTURE_V2.md) - System architecture
+- [Architecture](../../architecture/ARCHITECTURE.md) - System architecture

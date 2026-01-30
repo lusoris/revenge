@@ -8,7 +8,7 @@
 
 - **New to Revenge?** Start with [Setup Guide](dev/design/operations/SETUP.md)
 - **Development?** See [Development Guide](dev/design/operations/DEVELOPMENT.md)
-- **Architecture?** Read [Architecture V2](dev/design/architecture/ARCHITECTURE_V2.md)
+- **Architecture?** Read [Architecture](dev/design/architecture/ARCHITECTURE.md)
 - **Current Status?** See [TODO.md](../TODO.md)
 
 ---
@@ -39,7 +39,7 @@ docs/
 
 Core system design and architectural decisions.
 
-- [Architecture V2](dev/design/architecture/ARCHITECTURE_V2.md) - Complete system architecture
+- [Architecture](dev/design/architecture/ARCHITECTURE.md) - Complete system architecture
 - [Design Principles](dev/design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
 - [Player Architecture](dev/design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
 - [Metadata System](dev/design/architecture/METADATA_SYSTEM.md) - Metadata management
@@ -87,7 +87,7 @@ Content modules and feature designs. See [Features Index](dev/design/features/IN
 - [Media Enhancements](dev/design/features/playback/MEDIA_ENHANCEMENTS.md) - Media-specific features
 
 ### Module-Specific
-- [Adult Content System](dev/design/features/adult/ADULT_CONTENT_SYSTEM.md) - Adult module isolation (`c` schema)
+- [Adult Content System](dev/design/features/adult/ADULT_CONTENT_SYSTEM.md) - QAR module isolation (`qar` schema)
 - [Adult Metadata](dev/design/features/adult/ADULT_METADATA.md) - Whisparr/StashDB integration
 - [Comics Module](dev/design/features/comics/COMICS_MODULE.md) - Digital comics/manga
 - [Live TV / DVR](dev/design/features/livetv/LIVE_TV_DVR.md) - Live television

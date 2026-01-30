@@ -4,11 +4,11 @@
 
 ## Design Philosophy
 
-1. **Local Sources First** - Servarr suite and Audiobookshelf have curated, cached metadata
-2. **Avoid External Calls** - Only fetch what local sources don't provide
-3. **Language Awareness** - UI shows available data immediately, fetches translations async
-4. **Progressive Enhancement** - Never block UI waiting for metadata
-5. **User Connection** - OIDC-capable sources (Audiobookshelf) can link user accounts
+1. **Local Sources First** - Servarr suite provides curated, cached metadata
+2. **Native Audio Content** - Audiobooks/Podcasts managed natively with metadata providers
+3. **Avoid External Calls** - Only fetch what local sources don't provide
+4. **Language Awareness** - UI shows available data immediately, fetches translations async
+5. **Progressive Enhancement** - Never block UI waiting for metadata
 
 ---
 
@@ -27,8 +27,8 @@
         ┌──────────────┼──────────────┐           │
         ▼              ▼              ▼           ▼
 ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────────┐
-│   Servarr   │ │Audiobookshelf│ │ StashApp  │ │  Translation    │
-│ (Arr Suite) │ │(Pods/Books) │ │ (Adult)   │ │   Job Queue     │
+│   Servarr   │ │   Native    │ │ StashApp    │ │  Translation    │
+│ (Arr Suite) │ │ Audio/Books │ │ (Adult)     │ │   Job Queue     │
 └─────────────┘ └─────────────┘ └─────────────┘ └─────────────────┘
         │              │              │           │
         └──────────────┼──────────────┘           ▼
@@ -42,6 +42,7 @@
                 ┌──────────────┐
                 │  TMDb/TVDB   │
                 │  MusicBrainz │
+                │  Audnexus    │
                 └──────────────┘
 ```
 
@@ -82,9 +83,9 @@
 
 | Priority | Source | Data Provided |
 |----------|--------|---------------|
-| 1 | **Audiobookshelf** | Title, author, narrator, duration, chapters, cover, progress |
-| 2 | Chaptarr | Series info, Goodreads/Hardcover metadata (Readarr API spec) |
-| 3 | Audible API | Ratings, reviews, recommendations |
+| 1 | **Native Scanner** | File metadata (ID3/M4B), duration, chapters, cover |
+| 2 | Audnexus | Chapters, metadata from Audible |
+| 3 | Chaptarr | Series info, Goodreads/Hardcover metadata (Readarr API spec) |
 | 4 | Goodreads | Reviews, ratings, series info |
 | 5 | OpenLibrary | ISBN, editions, subjects |
 
@@ -92,7 +93,7 @@
 
 | Priority | Source | Data Provided |
 |----------|--------|---------------|
-| 1 | **Audiobookshelf** | Title, author, description, cover, reading progress |
+| 1 | **Native Scanner** | EPUB/PDF metadata, cover extraction |
 | 2 | Chaptarr | Series info, Goodreads/Hardcover metadata |
 | 3 | Goodreads | Reviews, ratings, lists |
 | 4 | Hardcover | Modern book database, lists |
@@ -102,9 +103,9 @@
 
 | Priority | Source | Data Provided |
 |----------|--------|---------------|
-| 1 | **Audiobookshelf** | Episodes (downloaded), artwork, progress, subscriptions |
-| 2 | RSS Feed | Latest episodes, metadata updates |
-| 3 | iTunes API | Categories, ratings, reviews |
+| 1 | **RSS Feed** | Episodes, artwork, metadata (native parsing) |
+| 2 | iTunes API | Categories, ratings, reviews |
+| 3 | Podcast Index | Chapters (podcast namespace), value4value |
 | 4 | Podchaser | Guest info, ratings |
 
 ### Adult Content
@@ -218,64 +219,59 @@ The complete Servarr suite provides curated, cached metadata for most content ty
 | **Whisparr-v3** | Adult | v3 | Scenes, performers, studios |
 | **Chaptarr** | Books | Readarr spec | Goodreads, Hardcover integration |
 
-### Audiobookshelf Integration
+### Native Audio Content Management
 
-Audiobookshelf serves as primary source for podcasts, audiobooks, and e-books with OIDC user linking:
+Audiobooks and podcasts are managed natively without external dependencies:
 
 ```go
-type AudiobookshelfClient struct {
-    baseURL string
-    apiKey  string
-    client  *http.Client
+// Native audiobook metadata extraction
+type AudiobookScanner struct {
+    tagReader  TagReader      // ID3/M4B metadata
+    audnexus   *AudnexusClient // Chapter lookup
+    covers     CoverExtractor
 }
 
-// Audiobookshelf provides:
-// - Downloaded podcast episodes with progress
-// - Audiobook metadata, chapters, narrators
-// - E-book metadata and reading progress
-// - User libraries and progress (via OIDC linking)
-
-type AudiobookshelfLibrary struct {
-    ID            string `json:"id"`
-    Name          string `json:"name"`
-    Type          string `json:"mediaType"` // "podcast", "book"
-    Provider      string `json:"provider"`
-    Items         int    `json:"numItems"`
+// Extract metadata from audio files
+func (s *AudiobookScanner) ScanFile(ctx context.Context, path string) (*Audiobook, error) {
+    // 1. Read embedded metadata (ID3, M4B atoms)
+    // 2. Extract embedded cover art
+    // 3. Parse chapter markers
+    // 4. Lookup additional data from Audnexus if ASIN available
 }
 
-type AudiobookshelfBook struct {
-    ID            string           `json:"id"`
-    Title         string           `json:"title"`
-    Subtitle      string           `json:"subtitle"`
-    Authors       []Author         `json:"authors"`
-    Narrators     []string         `json:"narrators"`
-    Description   string           `json:"description"`
-    Cover         string           `json:"cover"`
-    Genres        []string         `json:"genres"`
-    PublishedYear string           `json:"publishedYear"`
-    Duration      float64          `json:"duration"`
-    Chapters      []Chapter        `json:"chapters"`
-    Progress      *UserProgress    `json:"userMediaProgress,omitempty"`
+// Native podcast RSS parsing
+type PodcastService struct {
+    parser    *gofeed.Parser
+    downloader EpisodeDownloader
+    scheduler  *river.Client
 }
 
-type AudiobookshelfPodcast struct {
-    ID            string           `json:"id"`
-    Title         string           `json:"title"`
-    Author        string           `json:"author"`
-    Description   string           `json:"description"`
-    Cover         string           `json:"cover"`
-    Episodes      []PodcastEpisode `json:"episodes"`
-    AutoDownload  bool             `json:"autoDownloadEpisodes"`
+// Subscribe and parse RSS feed
+func (s *PodcastService) Subscribe(ctx context.Context, feedURL string) (*Podcast, error) {
+    feed, err := s.parser.ParseURL(feedURL)
+    if err != nil {
+        return nil, fmt.Errorf("parse feed: %w", err)
+    }
+
+    podcast := &Podcast{
+        Title:       feed.Title,
+        Author:      feed.Author.Name,
+        Description: feed.Description,
+        FeedURL:     feedURL,
+        ImageURL:    feed.Image.URL,
+    }
+
+    // Convert episodes
+    for _, item := range feed.Items {
+        podcast.Episodes = append(podcast.Episodes, convertEpisode(item))
+    }
+
+    return podcast, nil
 }
 
-// OIDC User Linking - connect Revenge users to Audiobookshelf
-func (c *AudiobookshelfClient) LinkUser(ctx context.Context, revengeUserID, absUserID string) error {
-    // Store mapping for progress sync
-}
-
-// Sync progress from Audiobookshelf to Revenge
-func (c *AudiobookshelfClient) SyncUserProgress(ctx context.Context, userID string) error {
-    // Fetch and merge progress data
+// Schedule episode downloads via River
+func (s *PodcastService) DownloadEpisode(ctx context.Context, episodeID uuid.UUID) error {
+    return s.scheduler.Insert(ctx, &DownloadEpisodeArgs{EpisodeID: episodeID})
 }
 ```
 

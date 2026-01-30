@@ -5,7 +5,7 @@
 
 ## Overview
 
-The NSFW toggle controls visibility and access to adult content modules (`adult_movie`, `adult_scene`) stored in PostgreSQL schema `c`.
+The NSFW toggle controls visibility and access to adult content modules (`adult_movie`, `adult_scene`) stored in PostgreSQL schema `qar`.
 
 **Default State:** OFF (explicit opt-in required)
 
@@ -26,7 +26,7 @@ The NSFW toggle controls visibility and access to adult content modules (`adult_
                         ▼                          ▼
               ┌─────────────────┐       ┌──────────────────────┐
               │  Session Cache  │       │  Route Filtering     │
-              │  (Dragonfly)    │       │  (/c/* visibility)   │
+              │  (Dragonfly)    │       │  (/qar/* visibility) │
               └─────────────────┘       └──────────────────────┘
                                                    │
                                                    ▼
@@ -109,12 +109,12 @@ func (s *SessionService) GetNSFWEnabled(ctx context.Context, userID uuid.UUID) (
 ### Route Protection
 
 ```go
-// NSFWMiddleware blocks /c/* routes when NSFW is disabled
+// NSFWMiddleware blocks /qar/* routes when NSFW is disabled
 func NSFWMiddleware(sessions *SessionService) func(http.Handler) http.Handler {
     return func(next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            // Only apply to /c/* routes
-            if !strings.HasPrefix(r.URL.Path, "/api/v1/c/") {
+            // Only apply to /qar/* routes
+            if !strings.HasPrefix(r.URL.Path, "/api/v1/qar/") {
                 next.ServeHTTP(w, r)
                 return
             }
@@ -339,8 +339,8 @@ func (s *SearchService) Search(ctx context.Context, query string, opts SearchOpt
     <!-- Adult section (only visible when enabled) -->
     {#if nsfwEnabled}
         <div class="sidebar-divider" />
-        <NavItem href="/c/movies" icon="lock">Adult Movies</NavItem>
-        <NavItem href="/c/scenes" icon="lock">Adult Scenes</NavItem>
+        <NavItem href="/qar/expeditions" icon="lock">Adult Movies</NavItem>
+        <NavItem href="/qar/voyages" icon="lock">Adult Scenes</NavItem>
     {/if}
 </nav>
 ```
@@ -644,8 +644,8 @@ paths:
 
 ## Behavior Summary
 
-| State | `/c/*` Routes | Search | Sidebar | Dashboard |
-|-------|---------------|--------|---------|-----------|
+| State | `/qar/*` Routes | Search | Sidebar | Dashboard |
+|-------|-----------------|--------|---------|-----------|
 | NSFW OFF | 404 | Hidden | Hidden | Excluded |
 | NSFW ON | Accessible | Included | Visible | Included |
 | NSFW ON + Timeout | Auto-locks | — | — | — |

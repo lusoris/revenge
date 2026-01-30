@@ -233,7 +233,7 @@ func (s *AudiobookService) HandleChaptarrAudiobookAdded(audiobookID string) erro
 
 - **Audiobook Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Audiobook section)
 - **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md) (recommended approach)
-- **Audiobookshelf Integration**: [../audiobook/AUDIOBOOKSHELF.md](../audiobook/AUDIOBOOKSHELF.md) (audiobook server)
+- **Native Audiobook/Podcast**: [../audiobook/INDEX.md](../audiobook/INDEX.md) (native implementation)
 
 ---
 

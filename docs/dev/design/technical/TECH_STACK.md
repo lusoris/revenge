@@ -118,30 +118,9 @@
 
 ## 🔄 Technology Stack Summary
 
-| Component | Technology | Package |
-|-----------|------------|---------|
-| Language | Go 1.25+ | - |
-| Database | PostgreSQL 18+ | `pgx/v5` |
-| Cache (Dragonfly) | rueidis | `redis/rueidis` |
-| Cache (Local) | otter | `maypok86/otter` |
-| Cache (API) | sturdyc | `viccon/sturdyc` |
-| Search | Typesense | `typesense-go/v4` |
-| Job Queue | River | `riverqueue/river` |
-| API Docs | ogen | `ogen-go/ogen` |
-| DI | fx | `uber-go/fx` |
-| Config | koanf | `knadh/koanf/v2` |
-| Migrations | golang-migrate | `golang-migrate/migrate/v4` |
-| SQL | sqlc | `sqlc-dev/sqlc` |
-| HTTP | net/http | stdlib |
-| Logging | slog | stdlib |
-| WebSocket | coder/websocket | `coder/websocket` |
-| HTTP Client | resty | `go-resty/resty/v2` |
-| File Watch | fsnotify | `fsnotify/fsnotify` |
-| Image Processing | govips | `davidbyttow/govips/v2` |
-| Audio Tags | dhowden/tag | `dhowden/tag` |
-| Blur Hashes | go-blurhash | `buckket/go-blurhash` |
-| Validation | validator | `go-playground/validator/v10` |
-| Resilience | failsafe-go | `failsafe-go/failsafe-go` |
+> **📋 Authoritative Package Versions**: See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#go-dependencies-core) for current package versions and imports.
+
+This section documents the **rationale** for technology choices. For exact versions, always refer to SOURCE_OF_TRUTH.
 
 ---
 

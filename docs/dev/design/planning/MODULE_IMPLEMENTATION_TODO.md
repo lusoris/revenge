@@ -346,35 +346,22 @@ Same pattern with:
 
 ---
 
-## Phase 5: Adult Modules (c schema)
+## Phase 5: QAR Module (Adult Content)
 
-### 5.1 Create Isolated Schema
+> Queen Anne's Revenge - isolated adult content in `qar` schema
+> See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping
 
-**New file:** `internal/infra/database/migrations/c/000001_c_schema.up.sql`
+### 5.1 Schema Already Complete ✅
 
-```sql
--- Create isolated adult content schema
-CREATE SCHEMA IF NOT EXISTS c;
+The QAR module uses isolated `qar` PostgreSQL schema:
+- `qar.expeditions` - Movies
+- `qar.voyages` - Scenes
+- `qar.crew` - Performers
+- `qar.ports` - Studios
+- `qar.flags` - Tags
+- `qar.fleets` - Libraries
 
--- Adult movies
-CREATE TABLE c.movies (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    -- TPDb/StashDB IDs
-    tpdb_id TEXT UNIQUE,
-    stashdb_id TEXT UNIQUE,
-    -- ...
-);
-
--- Performers (shared between adult_movie and adult_scene)
-CREATE TABLE c.performers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    gender TEXT, -- 'female', 'male', 'other'
-    tpdb_id TEXT UNIQUE,
-    stashdb_id TEXT UNIQUE
-);
-```
+See [M5 in TODO.md](../../../../TODO.md#m5-qar-module-adult-content) for implementation status.
 
 ---
 
@@ -424,7 +411,7 @@ See [TODO.md](../../../TODO.md) for high-level phases.
 
 ## References
 
-- [Architecture](../architecture/ARCHITECTURE_V2.md)
+- [Architecture](../architecture/ARCHITECTURE.md)
 - [Content Modules Instructions](../../../.github/instructions/content-modules.instructions.md)
 - [sqlc Instructions](../../../.github/instructions/sqlc-database.instructions.md)
 - [fx Instructions](../../../.github/instructions/fx-dependency-injection.instructions.md)

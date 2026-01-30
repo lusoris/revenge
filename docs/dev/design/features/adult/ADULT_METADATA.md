@@ -13,7 +13,7 @@
 1. **Whisparr as Primary Source** - Curated, cached metadata (like Radarr for movies)
 2. **Stash App as Enrichment** - Local Stash instance provides additional metadata, organization
 3. **StashDB as Fallback** - Community database for scenes, performers, studios
-4. **Complete Isolation** - All data in `c` PostgreSQL schema
+4. **Complete Isolation** - All data in `qar` PostgreSQL schema
 5. **User Privacy** - No external calls without explicit consent, all data stays local
 
 ---
@@ -662,27 +662,27 @@ func (c *TPDBClient) SearchPerformer(ctx context.Context, name string) (*TPDBPer
 
 ---
 
-## Database Schema (`c` Schema)
+## Database Schema (`qar` Schema)
 
-All adult content data is stored in the isolated `c` PostgreSQL schema.
+All adult content data is stored in the isolated `qar` PostgreSQL schema (Queen Anne's Revenge).
 
 ```sql
--- Scenes (main content)
-CREATE TABLE c.scenes (
+-- Voyages (scenes - main content)
+CREATE TABLE qar.voyages (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    library_id      UUID NOT NULL,
+    fleet_id        UUID NOT NULL,               -- library
     title           VARCHAR(500) NOT NULL,
     sort_title      VARCHAR(500),
     overview        TEXT,
-    release_date    DATE,
-    runtime_minutes INT,
-    studio_id       UUID REFERENCES c.studios(id),
+    launch_date     DATE,                        -- release_date (obfuscated)
+    distance        INT,                         -- runtime_minutes (obfuscated)
+    port_id         UUID REFERENCES qar.ports(id), -- studio
 
-    -- External IDs
+    -- External IDs (obfuscated)
     whisparr_id     INT,
     stash_id        VARCHAR(100),
-    stashdb_id      VARCHAR(100),
-    tpdb_id         VARCHAR(100),
+    charter         VARCHAR(100),                -- stashdb_id
+    registry        VARCHAR(100),                -- tpdb_id
 
     -- File info
     path            TEXT NOT NULL,
@@ -691,9 +691,9 @@ CREATE TABLE c.scenes (
     audio_codec     VARCHAR(50),
     resolution      VARCHAR(20),
 
-    -- Fingerprints for matching
+    -- Fingerprints for matching (obfuscated)
     oshash          VARCHAR(32),
-    phash           VARCHAR(32),
+    coordinates     VARCHAR(32),                 -- phash
     md5             VARCHAR(64),
 
     -- Images
@@ -703,40 +703,40 @@ CREATE TABLE c.scenes (
     updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_c_scenes_library ON c.scenes(library_id);
-CREATE INDEX idx_c_scenes_studio ON c.scenes(studio_id);
-CREATE INDEX idx_c_scenes_oshash ON c.scenes(oshash);
-CREATE INDEX idx_c_scenes_stashdb ON c.scenes(stashdb_id);
+CREATE INDEX idx_qar_voyages_fleet ON qar.voyages(fleet_id);
+CREATE INDEX idx_qar_voyages_port ON qar.voyages(port_id);
+CREATE INDEX idx_qar_voyages_oshash ON qar.voyages(oshash);
+CREATE INDEX idx_qar_voyages_charter ON qar.voyages(charter);
 
--- Performers
-CREATE TABLE c.performers (
+-- Crew (performers)
+CREATE TABLE qar.crew (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
     disambiguation  VARCHAR(255),
     gender          VARCHAR(50),
-    birthdate       DATE,
+    christening     DATE,                        -- birthdate (obfuscated)
     death_date      DATE,
     birth_city      VARCHAR(255),
-    ethnicity       VARCHAR(100),
+    origin          VARCHAR(100),                -- ethnicity (obfuscated)
     nationality     VARCHAR(100),
-    hair_color      VARCHAR(50),
-    eye_color       VARCHAR(50),
+    rigging         VARCHAR(50),                 -- hair_color (obfuscated)
+    compass         VARCHAR(50),                 -- eye_color (obfuscated)
     height_cm       INT,
     weight_kg       INT,
-    measurements    VARCHAR(50),
+    cargo           JSONB,                       -- measurements (obfuscated)
     cup_size        VARCHAR(10),
     breast_type     VARCHAR(50),
-    tattoos         TEXT,
-    piercings       TEXT,
-    career_start    INT,
-    career_end      INT,
+    markings        TEXT[],                      -- tattoos (obfuscated)
+    anchors         TEXT[],                      -- piercings (obfuscated)
+    maiden_voyage   INT,                         -- career_start (obfuscated)
+    last_port       INT,                         -- career_end (obfuscated)
     bio             TEXT,
 
-    -- External IDs
+    -- External IDs (obfuscated)
     stash_id        VARCHAR(100),
-    stashdb_id      VARCHAR(100),
-    tpdb_id         VARCHAR(100),
-    freeones_id     VARCHAR(100),
+    charter         VARCHAR(100),                -- stashdb_id
+    registry        VARCHAR(100),                -- tpdb_id
+    manifest        VARCHAR(100),                -- freeones_id
 
     -- Social links (encrypted)
     twitter         TEXT,
@@ -749,20 +749,20 @@ CREATE TABLE c.performers (
     updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_c_performers_name ON c.performers(name);
-CREATE INDEX idx_c_performers_stashdb ON c.performers(stashdb_id);
+CREATE INDEX idx_qar_crew_name ON qar.crew(name);
+CREATE INDEX idx_qar_crew_charter ON qar.crew(charter);
 
--- Performer aliases
-CREATE TABLE c.performer_aliases (
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+-- Crew aliases (performer aliases)
+CREATE TABLE qar.crew_aliases (
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     alias           VARCHAR(255) NOT NULL,
-    PRIMARY KEY (performer_id, alias)
+    PRIMARY KEY (crew_id, alias)
 );
 
--- Performer images (additional)
-CREATE TABLE c.performer_images (
+-- Crew images (performer images - additional)
+CREATE TABLE qar.crew_images (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     path            TEXT NOT NULL,
     type            VARCHAR(50) DEFAULT 'photo', -- photo, headshot, full
     source          VARCHAR(50),                  -- stashdb, tpdb, local
@@ -770,24 +770,24 @@ CREATE TABLE c.performer_images (
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Scene-Performer relationship
-CREATE TABLE c.scene_performers (
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+-- Voyage-Crew relationship (scene-performer)
+CREATE TABLE qar.voyage_crew (
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     role            VARCHAR(100), -- Character name if applicable
-    PRIMARY KEY (scene_id, performer_id)
+    PRIMARY KEY (voyage_id, crew_id)
 );
 
--- Studios
-CREATE TABLE c.studios (
+-- Ports (studios)
+CREATE TABLE qar.ports (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL,
-    parent_id       UUID REFERENCES c.studios(id), -- For studio networks
+    parent_id       UUID REFERENCES qar.ports(id), -- For port networks
     url             TEXT,
 
-    -- External IDs
-    stashdb_id      VARCHAR(100),
-    tpdb_id         VARCHAR(100),
+    -- External IDs (obfuscated)
+    charter         VARCHAR(100),                -- stashdb_id
+    registry        VARCHAR(100),                -- tpdb_id
 
     -- Images
     logo_path       TEXT,
@@ -796,48 +796,48 @@ CREATE TABLE c.studios (
     updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tags
-CREATE TABLE c.tags (
+-- Flags (tags)
+CREATE TABLE qar.flags (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(255) NOT NULL UNIQUE,
     description     TEXT,
-    parent_id       UUID REFERENCES c.tags(id), -- Hierarchical tags
-    stashdb_id      VARCHAR(100),
+    parent_id       UUID REFERENCES qar.flags(id), -- Hierarchical flags
+    charter         VARCHAR(100),                -- stashdb_id
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE c.scene_tags (
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
-    tag_id          UUID REFERENCES c.tags(id) ON DELETE CASCADE,
-    PRIMARY KEY (scene_id, tag_id)
+CREATE TABLE qar.voyage_flags (
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
+    flag_id         UUID REFERENCES qar.flags(id) ON DELETE CASCADE,
+    PRIMARY KEY (voyage_id, flag_id)
 );
 
--- Scene markers (chapters/positions)
-CREATE TABLE c.scene_markers (
+-- Voyage markers (scene markers - chapters/positions)
+CREATE TABLE qar.voyage_markers (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
     title           VARCHAR(255),
     start_seconds   FLOAT NOT NULL,
     end_seconds     FLOAT,
-    tag_id          UUID REFERENCES c.tags(id),
+    flag_id         UUID REFERENCES qar.flags(id),
     stash_marker_id VARCHAR(100),
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_c_markers_scene ON c.scene_markers(scene_id);
+CREATE INDEX idx_qar_markers_voyage ON qar.voyage_markers(voyage_id);
 
--- User data (per-module, in c schema)
-CREATE TABLE c.user_scene_data (
+-- User data (per-module, in qar schema)
+CREATE TABLE qar.user_voyage_data (
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
-    scene_id        UUID REFERENCES c.scenes(id) ON DELETE CASCADE,
+    voyage_id       UUID REFERENCES qar.voyages(id) ON DELETE CASCADE,
 
     -- Watch progress
     position_ms     BIGINT DEFAULT 0,
     watch_count     INT DEFAULT 0,
     last_watched    TIMESTAMPTZ,
 
-    -- Rating
-    rating          SMALLINT CHECK (rating >= 1 AND rating <= 10),
+    -- Rating (bounty)
+    bounty          SMALLINT CHECK (bounty >= 1 AND bounty <= 10),
 
     -- Stash-style O-counter
     o_counter       INT DEFAULT 0,
@@ -848,15 +848,15 @@ CREATE TABLE c.user_scene_data (
     -- Organization
     is_organized    BOOLEAN DEFAULT false,
 
-    PRIMARY KEY (user_id, scene_id)
+    PRIMARY KEY (user_id, voyage_id)
 );
 
--- User performer favorites
-CREATE TABLE c.user_performer_favorites (
+-- User crew favorites (performer favorites)
+CREATE TABLE qar.user_crew_favorites (
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
-    performer_id    UUID REFERENCES c.performers(id) ON DELETE CASCADE,
+    crew_id         UUID REFERENCES qar.crew(id) ON DELETE CASCADE,
     added_at        TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (user_id, performer_id)
+    PRIMARY KEY (user_id, crew_id)
 );
 ```
 

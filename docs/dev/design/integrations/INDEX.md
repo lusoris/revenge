@@ -85,12 +85,13 @@ Third-party integrations.
 |----------|----------|
 | [Adult](external/adult/INDEX.md) | Twitter/X, Instagram |
 
-### 🎧 [Audiobook](audiobook/INDEX.md)
-Audiobook management.
+### 🎧 [Audiobook & Podcast](audiobook/INDEX.md)
+Native audiobook and podcast management.
 
-| Provider | Purpose |
-|----------|---------|
-| Audiobookshelf | Library sync |
+| Feature | Implementation |
+|---------|----------------|
+| Audiobooks | Native library + metadata |
+| Podcasts | Native RSS + downloads |
 
 ### 🔄 [Transcoding](transcoding/INDEX.md)
 External transcoding services.
@@ -163,6 +164,6 @@ auth:
 
 ## Related Documentation
 
-- [Architecture](../architecture/ARCHITECTURE_V2.md)
+- [Architecture](../architecture/ARCHITECTURE.md)
 - [Tech Stack](../technical/TECH_STACK.md)
 - [Setup Guide](../operations/SETUP.md)

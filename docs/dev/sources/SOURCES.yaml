@@ -509,12 +509,12 @@ sources:
       output: "apis/hardcover.md"
       note: "Book tracking/discovery"
 
-    - id: audiobookshelf
-      name: "Audiobookshelf API"
-      url: "https://api.audiobookshelf.org"
+    - id: audnexus
+      name: "Audnexus API"
+      url: "https://api.audnex.us/"
       type: html
-      output: "apis/audiobookshelf.md"
-      note: "Audiobook server integration"
+      output: "apis/audnexus.md"
+      note: "Community audiobook metadata API (chapters, narrators)"
 
     # Poster Art
     - id: theposterdb

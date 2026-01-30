@@ -84,45 +84,9 @@ logging:
 
 All settings can be set via environment variables with `REVENGE_` prefix.
 
-### Server
+> **📋 Complete Environment Variable Reference**: See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#environment-variable-mapping) for the authoritative list of all environment variables with platform-specific mappings (Docker Compose, K8s, K3s, Swarm).
 
-| Variable | Config Key | Default | Description |
-|----------|------------|---------|-------------|
-| `REVENGE_HOST` | `server.host` | `0.0.0.0` | Listen address |
-| `REVENGE_PORT` | `server.port` | `8096` | Listen port |
-| `REVENGE_BASE_URL` | `server.base_url` | `/` | Base URL path |
-
-### Database (PostgreSQL)
-
-| Variable | Config Key | Default | Description |
-|----------|------------|---------|-------------|
-| `REVENGE_DB_HOST` | `database.host` | `localhost` | PostgreSQL host |
-| `REVENGE_DB_PORT` | `database.port` | `5432` | PostgreSQL port |
-| `REVENGE_DB_USER` | `database.user` | `revenge` | Database user |
-| `REVENGE_DB_PASSWORD` | `database.password` | | Database password |
-| `REVENGE_DB_NAME` | `database.name` | `revenge` | Database name |
-| `REVENGE_DB_SSLMODE` | `database.sslmode` | `disable` | SSL mode |
-
-### Cache (Dragonfly/Redis)
-
-| Variable | Config Key | Default | Description |
-|----------|------------|---------|-------------|
-| `REVENGE_CACHE_URL` | `cache.addr` | `localhost:6379` | Cache address |
-| `REVENGE_CACHE_PASSWORD` | `cache.password` | | Cache password |
-
-### Search (Typesense)
-
-| Variable | Config Key | Default | Description |
-|----------|------------|---------|-------------|
-| `REVENGE_TYPESENSE_URL` | `search.host`/`search.port` | `localhost:8108` | Typesense URL |
-| `REVENGE_TYPESENSE_API_KEY` | `search.api_key` | | API key |
-
-### Logging
-
-| Variable | Config Key | Default | Description |
-|----------|------------|---------|-------------|
-| `REVENGE_LOG_LEVEL` | `logging.level` | `info` | Log level (debug, info, warn, error) |
-| `REVENGE_LOG_FORMAT` | `logging.format` | `json` | Log format (json, text) |
+The sections below document the **config structure and Go types**. For the complete env var list, always refer to SOURCE_OF_TRUTH.
 
 ---
 

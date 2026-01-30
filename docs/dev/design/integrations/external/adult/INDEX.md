@@ -2,8 +2,8 @@
 
 > Social media and supplementary services for adult content
 
-**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `c`.
-API namespace: `/api/v1/c/`
+**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `qar` (Queen Anne's Revenge).
+API namespace: `/api/v1/qar/`
 
 ---
 
@@ -107,12 +107,12 @@ Adult external services provide:
 
 ## Data Isolation
 
-All data stored in `c` schema:
+All data stored in `qar` schema:
 
 ```sql
--- Performer social links
-c.performer_social_links (
-    performer_id,
+-- Crew social links (performer social links)
+qar.crew_social_links (
+    crew_id,
     platform,
     handle,
     profile_url,

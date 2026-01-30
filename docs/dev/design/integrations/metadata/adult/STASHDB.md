@@ -32,9 +32,9 @@
 - Duplicate scene detection
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
-- **API namespace**: `/api/v1/c/metadata/stashdb/*` (NOT `/api/v1/metadata/stashdb/*`)
-- **Module location**: `internal/content/c/metadata/stashdb/` (NOT `internal/service/metadata/`)
+- **Database schema**: `qar` schema ONLY (`qar.expeditions`, `qar.voyages`, `qar.crew`, `qar.ports`)
+- **API namespace**: `/api/v1/qar/metadata/stashdb/*` (NOT `/api/v1/metadata/stashdb/*`)
+- **Module location**: `internal/content/qar/metadata/stashdb/` (NOT `internal/service/metadata/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
 ---
@@ -329,16 +329,16 @@ query FingerprintLookup($fingerprints: [FingerprintQueryInput!]!) {
 ### Phase 1: Core Integration
 - [ ] GraphQL client setup (`machinebox/graphql` OR `genqlient`)
 - [ ] API Key configuration (`configs/config.yaml` - `stashdb.api_key`)
-- [ ] **Adult schema**: `c.performers`, `c.studios`, `c.scenes` tables (NOT public schema)
-- [ ] **API namespace**: `/api/v1/c/metadata/stashdb/*` endpoints
-- [ ] **Module location**: `internal/content/c/metadata/stashdb/` (isolated from public metadata)
+- [ ] **Adult schema**: `qar.crew`, `qar.ports`, `qar.voyages` tables (NOT public schema)
+- [ ] **API namespace**: `/api/v1/qar/metadata/stashdb/*` endpoints
+- [ ] **Module location**: `internal/content/qar/metadata/stashdb/` (isolated from public metadata)
 - [ ] Basic scene search (GraphQL `searchScene` query)
 - [ ] Scene details fetch (GraphQL `findScene` query)
 - [ ] Performer search (GraphQL `searchPerformer` query)
 - [ ] Performer details fetch (GraphQL `findPerformer` query)
 - [ ] Studio search (GraphQL `searchStudio` query)
 - [ ] Image downloads (performer images, scene covers, studio logos)
-- [ ] JSONB storage (`c.movies.metadata_json.stashdb_data`)
+- [ ] JSONB storage (`qar.expeditions.metadata_json.stashdb_data`)
 
 ### Phase 2: Fingerprinting & Auto-Identification
 - [ ] Perceptual hashing (phash) generation for video files
@@ -358,10 +358,10 @@ query FingerprintLookup($fingerprints: [FingerprintQueryInput!]!) {
 - [ ] Performer scene filmography (all scenes with performer)
 
 ### Phase 4: Background Jobs (River)
-- [ ] **Job**: `c.metadata.stashdb.fetch_scene` (fetch scene metadata)
-- [ ] **Job**: `c.metadata.stashdb.fetch_performer` (fetch performer metadata)
-- [ ] **Job**: `c.metadata.stashdb.identify_scenes` (fingerprint-based identification)
-- [ ] **Job**: `c.metadata.stashdb.refresh_metadata` (weekly refresh for active content)
+- [ ] **Job**: `qar.metadata.stashdb.fetch_voyage` (fetch voyage/scene metadata)
+- [ ] **Job**: `qar.metadata.stashdb.fetch_crew` (fetch crew/performer metadata)
+- [ ] **Job**: `qar.metadata.stashdb.identify_voyages` (fingerprint-based identification)
+- [ ] **Job**: `qar.metadata.stashdb.refresh_metadata` (weekly refresh for active content)
 - [ ] Rate limiting (reasonable usage, avoid API abuse)
 - [ ] Retry logic (exponential backoff for failures)
 
@@ -381,25 +381,25 @@ Match found? → Fetch scene details (findScene)
               ↓
               Extract: title, release_date, performers, studio, tags, images
               ↓
-              Store in c.movies OR c.scenes (c schema ONLY)
+              Store in qar.expeditions OR qar.voyages (qar schema ONLY)
               ↓
               metadata_json.stashdb_data = full GraphQL response
               ↓
-              Download scene cover image
+              Download voyage cover image
               ↓
-              Fetch performer details (findPerformer for each performer)
+              Fetch crew details (findPerformer for each crew member)
               ↓
-              Store in c.performers table
+              Store in qar.crew table
               ↓
-              Download performer images
+              Download crew images
               ↓
-              Fetch studio details (findStudio)
+              Fetch port details (findStudio)
               ↓
-              Store in c.studios table
+              Store in qar.ports table
               ↓
-              Link performers → scene (c.movie_performers junction table)
+              Link crew → voyage (qar.voyage_crew junction table)
               ↓
-              Update Typesense search index (c_movies collection)
+              Update Typesense search index (qar_voyages collection)
               ↓
               Notify user: "Metadata updated from StashDB"
 
@@ -410,28 +410,28 @@ Match not found? → Manual search UI (user searches StashDB by title)
                    Fetch scene details (same flow as above)
 ```
 
-### Performer Search Flow
+### Crew Search Flow
 ```
-User searches performer name
+User searches crew name
         ↓
 GraphQL searchPerformer query
         ↓
-Display results: name, image, measurements, career dates
+Display results: name, image, cargo (measurements), career dates
         ↓
-User selects performer
+User selects crew member
         ↓
-Fetch performer details (findPerformer)
+Fetch crew details (findPerformer)
         ↓
-Store in c.performers table
+Store in qar.crew table
         ↓
-Download performer images
+Download crew images
         ↓
-Display performer profile page:
+Display crew profile page:
   - Bio (birthdate, ethnicity, country, measurements)
   - Images (gallery)
   - Tattoos & piercings (detailed)
   - Career info (start/end year, active status)
-  - Filmography (all scenes with this performer)
+  - Filmography (all voyages with this crew member)
 ```
 
 ### Rate Limiting Strategy
@@ -482,20 +482,20 @@ StashDB has no hard rate limit, but avoid abuse:
 - **Duration**: Include video duration for additional validation
 
 ### Adult Content Isolation (CRITICAL)
-- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
-  - `c.movies.metadata_json.stashdb_data` (JSONB)
-  - `c.scenes.metadata_json.stashdb_data` (JSONB)
-  - `c.performers` (dedicated table)
-  - `c.studios` (dedicated table)
-  - `c.movie_performers` (junction table)
-  - `c.scene_performers` (junction table)
-- **API namespace**: `/api/v1/c/metadata/stashdb/*` (isolated)
-  - `/api/v1/c/metadata/stashdb/search/scenes`
-  - `/api/v1/c/metadata/stashdb/search/performers`
-  - `/api/v1/c/metadata/stashdb/scenes/{stashdb_id}`
-  - `/api/v1/c/metadata/stashdb/performers/{stashdb_id}`
-  - `/api/v1/c/metadata/stashdb/identify` (fingerprint lookup)
-- **Module location**: `internal/content/c/metadata/stashdb/` (NOT `internal/service/metadata/`)
+- **Database schema**: `qar` schema ONLY (`qar.expeditions`, `qar.voyages`, `qar.crew`, `qar.ports`)
+  - `qar.expeditions.metadata_json.stashdb_data` (JSONB)
+  - `qar.voyages.metadata_json.stashdb_data` (JSONB)
+  - `qar.crew` (dedicated table)
+  - `qar.ports` (dedicated table)
+  - `qar.expedition_crew` (junction table)
+  - `qar.voyage_crew` (junction table)
+- **API namespace**: `/api/v1/qar/metadata/stashdb/*` (isolated)
+  - `/api/v1/qar/metadata/stashdb/search/voyages`
+  - `/api/v1/qar/metadata/stashdb/search/crew`
+  - `/api/v1/qar/metadata/stashdb/voyages/{stashdb_id}`
+  - `/api/v1/qar/metadata/stashdb/crew/{stashdb_id}`
+  - `/api/v1/qar/metadata/stashdb/identify` (fingerprint lookup)
+- **Module location**: `internal/content/qar/metadata/stashdb/` (NOT `internal/service/metadata/`)
 - **Access control**: Mods/admins see all data for monitoring, regular users see only their library
 
 ### Tags & Categories
@@ -510,7 +510,7 @@ StashDB has no hard rate limit, but avoid abuse:
 - **Filtering**: Filter scenes by parent studio (e.g., all MindGeek content)
 
 ### JSONB Storage
-- Store full StashDB GraphQL response in `c.movies.metadata_json.stashdb_data`
+- Store full StashDB GraphQL response in `qar.expeditions.metadata_json.stashdb_data`
 - Future-proofing: If StashDB adds new fields, they're automatically stored
 - Querying: Use PostgreSQL JSONB operators for advanced queries
 

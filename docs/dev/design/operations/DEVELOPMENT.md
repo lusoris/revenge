@@ -203,7 +203,7 @@ chore: update dependencies
 
 ### Useful Resources
 
-- [Architecture Documentation](../architecture/ARCHITECTURE_V2.md)
+- [Architecture Documentation](../architecture/ARCHITECTURE.md)
 - [Setup Guide](SETUP.md)
 - [Contributing Guidelines](../../../../CONTRIBUTING.md)
 - [Module Implementation TODO](../planning/MODULE_IMPLEMENTATION_TODO.md)

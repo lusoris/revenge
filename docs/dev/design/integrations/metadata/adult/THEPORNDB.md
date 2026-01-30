@@ -29,9 +29,9 @@
 - Alternative to StashDB for specific content gaps
 
 **⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.movies`, `c.scenes`, `c.performers`, `c.studios`)
-- **API namespace**: `/api/v1/c/metadata/theporndb/*` (NOT `/api/v1/metadata/theporndb/*`)
-- **Module location**: `internal/content/c/metadata/theporndb/` (NOT `internal/service/metadata/`)
+- **Database schema**: `qar` schema ONLY (`qar.expeditions`, `qar.voyages`, `qar.crew`, `qar.ports`)
+- **API namespace**: `/api/v1/qar/metadata/theporndb/*` (NOT `/api/v1/metadata/theporndb/*`)
+- **Module location**: `internal/content/qar/metadata/theporndb/` (NOT `internal/service/metadata/`)
 - **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
 ---
@@ -285,16 +285,16 @@ Response:
 ### Phase 1: Core Integration
 - [ ] REST API client setup (Go `net/http`)
 - [ ] API Key configuration (`configs/config.yaml` - `theporndb.api_key`)
-- [ ] **Adult schema**: Use existing `c.performers`, `c.studios`, `c.scenes` tables
-- [ ] **API namespace**: `/api/v1/c/metadata/theporndb/*` endpoints
-- [ ] **Module location**: `internal/content/c/metadata/theporndb/` (isolated)
+- [ ] **Adult schema**: Use existing `qar.crew`, `qar.ports`, `qar.voyages` tables
+- [ ] **API namespace**: `/api/v1/qar/metadata/theporndb/*` endpoints
+- [ ] **Module location**: `internal/content/qar/metadata/theporndb/` (isolated)
 - [ ] Basic scene search (REST `/scenes/search`)
 - [ ] Scene details fetch (REST `/scenes/{id}`)
 - [ ] Performer search (REST `/performers/search`)
 - [ ] Performer details fetch (REST `/performers/{id}`)
 - [ ] Studio search (REST `/studios/search`)
 - [ ] Image downloads (posters, performer images, studio logos)
-- [ ] JSONB storage (`c.movies.metadata_json.theporndb_data`)
+- [ ] JSONB storage (`qar.expeditions.metadata_json.theporndb_data`)
 
 ### Phase 2: Fallback Logic
 - [ ] Fallback to ThePornDB when StashDB lacks data
@@ -303,9 +303,9 @@ Response:
 - [ ] Data quality scoring (prefer source with more complete data)
 
 ### Phase 3: Background Jobs (River)
-- [ ] **Job**: `c.metadata.theporndb.fetch_scene` (fetch scene metadata)
-- [ ] **Job**: `c.metadata.theporndb.fetch_performer` (fetch performer metadata)
-- [ ] **Job**: `c.metadata.theporndb.refresh_metadata` (monthly refresh fallback data)
+- [ ] **Job**: `qar.metadata.theporndb.fetch_voyage` (fetch voyage/scene metadata)
+- [ ] **Job**: `qar.metadata.theporndb.fetch_crew` (fetch crew/performer metadata)
+- [ ] **Job**: `qar.metadata.theporndb.refresh_metadata` (monthly refresh fallback data)
 - [ ] Rate limiting (120 req/min = 2 req/sec token bucket)
 - [ ] Retry logic (exponential backoff for failures)
 
@@ -329,19 +329,19 @@ ThePornDB data found? → Fetch scene details (REST /scenes/{id})
               ↓
               Extract: title, release_date, performers, studio, tags, images
               ↓
-              Store in c.movies.metadata_json.theporndb_data
+              Store in qar.expeditions.metadata_json.theporndb_data
               ↓
-              Download scene cover image
+              Download voyage cover image
               ↓
-              Fetch performer details (REST /performers/{id})
+              Fetch crew details (REST /performers/{id})
               ↓
-              Store in c.performers table
+              Store in qar.crew table
               ↓
-              Download performer images
+              Download crew images
               ↓
-              Fetch studio details (REST /studios/{id})
+              Fetch port details (REST /studios/{id})
               ↓
-              Store in c.studios table
+              Store in qar.ports table
               ↓
               Update Typesense search index
               ↓
@@ -393,16 +393,16 @@ ThePornDB rate limit: 120 req/min (2 req/sec)
 - **Use case**: Fallback when StashDB lacks data
 
 ### Adult Content Isolation (CRITICAL)
-- **Database schema**: `c` schema ONLY
-  - `c.movies.metadata_json.theporndb_data` (JSONB)
-  - `c.scenes.metadata_json.theporndb_data` (JSONB)
-  - `c.performers` (shared with StashDB)
-  - `c.studios` (shared with StashDB)
-- **API namespace**: `/api/v1/c/metadata/theporndb/*` (isolated)
-  - `/api/v1/c/metadata/theporndb/search/scenes`
-  - `/api/v1/c/metadata/theporndb/scenes/{tpdb_id}`
-  - `/api/v1/c/metadata/theporndb/performers/{tpdb_id}`
-- **Module location**: `internal/content/c/metadata/theporndb/` (isolated)
+- **Database schema**: `qar` schema ONLY
+  - `qar.expeditions.metadata_json.theporndb_data` (JSONB)
+  - `qar.voyages.metadata_json.theporndb_data` (JSONB)
+  - `qar.crew` (shared with StashDB)
+  - `qar.ports` (shared with StashDB)
+- **API namespace**: `/api/v1/qar/metadata/theporndb/*` (isolated)
+  - `/api/v1/qar/metadata/theporndb/search/voyages`
+  - `/api/v1/qar/metadata/theporndb/voyages/{tpdb_id}`
+  - `/api/v1/qar/metadata/theporndb/crew/{tpdb_id}`
+- **Module location**: `internal/content/qar/metadata/theporndb/` (isolated)
 - **Access control**: Mods/admins see all, regular users see only their library
 
 ### Fallback Strategy
@@ -414,7 +414,7 @@ ThePornDB rate limit: 120 req/min (2 req/sec)
 - **Merge metadata**: Combine StashDB + ThePornDB data (prefer StashDB, fill gaps with TPDb)
 
 ### JSONB Storage
-- Store ThePornDB response in `c.movies.metadata_json.theporndb_data`
+- Store ThePornDB response in `qar.expeditions.metadata_json.theporndb_data`
 - Separate from StashDB data (`stashdb_data` field)
 - Allows querying both sources independently
 

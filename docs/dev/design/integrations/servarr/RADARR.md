@@ -168,7 +168,7 @@ func (c *RadarrClient) GetMovie(ctx context.Context, id int) (*Movie, error) {
 
 - [Sonarr Integration](SONARR.md) - TV show management
 - [Lidarr Integration](LIDARR.md) - Music management
-- [Movie Module](../../architecture/ARCHITECTURE_V2.md#movie-module) - Revenge movie module design
+- [Movie Module](../../architecture/ARCHITECTURE.md#movie-module) - Revenge movie module design
 - [Arr Integration Pattern](../../patterns/arr_integration.md) - Common patterns for all *arr services
 - [Webhook Handling](../../patterns/webhook_patterns.md) - Webhook processing patterns
 
