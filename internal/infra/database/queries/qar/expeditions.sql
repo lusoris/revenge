@@ -98,3 +98,36 @@ WHERE title ILIKE '%' || $1 || '%'
    OR original_title ILIKE '%' || $1 || '%'
 ORDER BY title
 LIMIT $2 OFFSET $3;
+
+-- name: ListExpeditionsByCrewID :many
+SELECT e.* FROM qar.expeditions e
+JOIN qar.expedition_crew ec ON e.id = ec.expedition_id
+WHERE ec.crew_id = $1
+ORDER BY e.launch_date DESC NULLS LAST, e.title
+LIMIT $2 OFFSET $3;
+
+-- name: CountExpeditionsByCrewID :one
+SELECT COUNT(DISTINCT e.id) FROM qar.expeditions e
+JOIN qar.expedition_crew ec ON e.id = ec.expedition_id
+WHERE ec.crew_id = $1;
+
+-- name: ListExpeditionsByPortID :many
+SELECT * FROM qar.expeditions
+WHERE port_id = $1
+ORDER BY launch_date DESC NULLS LAST, title
+LIMIT $2 OFFSET $3;
+
+-- name: CountExpeditionsByPortID :one
+SELECT COUNT(*) FROM qar.expeditions WHERE port_id = $1;
+
+-- name: ListExpeditionsByFlagID :many
+SELECT e.* FROM qar.expeditions e
+JOIN qar.expedition_flags ef ON e.id = ef.expedition_id
+WHERE ef.flag_id = $1
+ORDER BY e.launch_date DESC NULLS LAST, e.title
+LIMIT $2 OFFSET $3;
+
+-- name: CountExpeditionsByFlagID :one
+SELECT COUNT(DISTINCT e.id) FROM qar.expeditions e
+JOIN qar.expedition_flags ef ON e.id = ef.expedition_id
+WHERE ef.flag_id = $1;

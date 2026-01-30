@@ -41,4 +41,22 @@ type Repository interface {
 
 	// Search searches expeditions by title.
 	Search(ctx context.Context, query string, limit, offset int) ([]Expedition, error)
+
+	// ListByCrewID retrieves expeditions featuring a specific crew member (performer).
+	ListByCrewID(ctx context.Context, crewID uuid.UUID, limit, offset int) ([]Expedition, error)
+
+	// CountByCrewID returns the number of expeditions featuring a crew member.
+	CountByCrewID(ctx context.Context, crewID uuid.UUID) (int64, error)
+
+	// ListByPortID retrieves expeditions from a specific port (studio).
+	ListByPortID(ctx context.Context, portID uuid.UUID, limit, offset int) ([]Expedition, error)
+
+	// CountByPortID returns the number of expeditions from a port.
+	CountByPortID(ctx context.Context, portID uuid.UUID) (int64, error)
+
+	// ListByFlagID retrieves expeditions with a specific flag (tag).
+	ListByFlagID(ctx context.Context, flagID uuid.UUID, limit, offset int) ([]Expedition, error)
+
+	// CountByFlagID returns the number of expeditions with a flag.
+	CountByFlagID(ctx context.Context, flagID uuid.UUID) (int64, error)
 }

@@ -21,6 +21,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
+	infrahealth "github.com/lusoris/revenge/internal/infra/health"
 	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/search"
 	"github.com/lusoris/revenge/internal/service/activity"
@@ -53,7 +54,6 @@ func main() {
 		fx.Provide(
 			config.New,
 			NewLogger,
-			NewHealthChecker,
 			NewShutdowner,
 			NewBuildInfo,
 		),
@@ -63,6 +63,7 @@ func main() {
 		cache.Module,
 		search.Module,
 		jobs.Module,
+		infrahealth.Module, // Health checks with all infra dependencies
 
 		// Service modules
 		auth.Module,
@@ -98,7 +99,6 @@ func main() {
 			NewServer,
 		),
 		fx.Invoke(RegisterRoutes),
-		fx.Invoke(RegisterHealthChecks),
 		fx.Invoke(MountAPIServer),
 		fx.Invoke(StartShutdowner),
 		fx.Invoke(RunServer),
@@ -136,11 +136,6 @@ func NewLogger(cfg *config.Config) *slog.Logger {
 	)
 
 	return logger
-}
-
-// NewHealthChecker creates a health checker with proper configuration
-func NewHealthChecker(logger *slog.Logger) *health.Checker {
-	return health.NewChecker(logger)
 }
 
 // NewShutdowner creates a graceful shutdown handler
@@ -240,30 +235,6 @@ func RegisterRoutes(
 	logger.Info("Routes registered",
 		slog.Int("health_routes", 4),
 	)
-}
-
-// RegisterHealthChecks registers all health checks with the checker
-func RegisterHealthChecks(
-	checker *health.Checker,
-	pool *pgxpool.Pool,
-	logger *slog.Logger,
-) {
-	// Database health check (critical)
-	checker.RegisterFunc("database", health.CategoryCritical, func(ctx context.Context) error {
-		return database.HealthCheck(ctx, pool)
-	})
-
-	// Cache health check (warm) - TODO: add once cache client is available
-	// checker.RegisterFunc("cache", health.CategoryWarm, func(ctx context.Context) error {
-	//     return cacheClient.Ping(ctx).Err()
-	// })
-
-	// Search health check (cold) - TODO: add once search client is available
-	// checker.RegisterFunc("search", health.CategoryCold, func(ctx context.Context) error {
-	//     return searchClient.Health(ctx)
-	// })
-
-	logger.Info("Health checks registered", slog.Int("count", 1))
 }
 
 // NewServer creates a new HTTP server with modern settings

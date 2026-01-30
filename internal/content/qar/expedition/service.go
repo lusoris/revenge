@@ -97,3 +97,42 @@ func (s *Service) MatchByCoordinates(ctx context.Context, coordinates string) (*
 	}
 	return expedition, nil
 }
+
+// ListByPerformer retrieves expeditions featuring a specific performer (crew).
+func (s *Service) ListByPerformer(ctx context.Context, performerID uuid.UUID, limit, offset int) ([]Expedition, int64, error) {
+	expeditions, err := s.repo.ListByCrewID(ctx, performerID, limit, offset)
+	if err != nil {
+		return nil, 0, fmt.Errorf("list expeditions by performer: %w", err)
+	}
+	count, err := s.repo.CountByCrewID(ctx, performerID)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count expeditions by performer: %w", err)
+	}
+	return expeditions, count, nil
+}
+
+// ListByStudio retrieves expeditions from a specific studio (port).
+func (s *Service) ListByStudio(ctx context.Context, studioID uuid.UUID, limit, offset int) ([]Expedition, int64, error) {
+	expeditions, err := s.repo.ListByPortID(ctx, studioID, limit, offset)
+	if err != nil {
+		return nil, 0, fmt.Errorf("list expeditions by studio: %w", err)
+	}
+	count, err := s.repo.CountByPortID(ctx, studioID)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count expeditions by studio: %w", err)
+	}
+	return expeditions, count, nil
+}
+
+// ListByTag retrieves expeditions with a specific tag (flag).
+func (s *Service) ListByTag(ctx context.Context, tagID uuid.UUID, limit, offset int) ([]Expedition, int64, error) {
+	expeditions, err := s.repo.ListByFlagID(ctx, tagID, limit, offset)
+	if err != nil {
+		return nil, 0, fmt.Errorf("list expeditions by tag: %w", err)
+	}
+	count, err := s.repo.CountByFlagID(ctx, tagID)
+	if err != nil {
+		return nil, 0, fmt.Errorf("count expeditions by tag: %w", err)
+	}
+	return expeditions, count, nil
+}

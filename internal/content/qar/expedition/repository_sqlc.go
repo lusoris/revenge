@@ -144,6 +144,54 @@ func (r *SQLCRepository) Search(ctx context.Context, query string, limit, offset
 	return r.rowsToExpeditions(rows), nil
 }
 
+func (r *SQLCRepository) ListByCrewID(ctx context.Context, crewID uuid.UUID, limit, offset int) ([]Expedition, error) {
+	rows, err := r.queries.ListExpeditionsByCrewID(ctx, adultdb.ListExpeditionsByCrewIDParams{
+		CrewID: crewID,
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return r.rowsToExpeditions(rows), nil
+}
+
+func (r *SQLCRepository) CountByCrewID(ctx context.Context, crewID uuid.UUID) (int64, error) {
+	return r.queries.CountExpeditionsByCrewID(ctx, crewID)
+}
+
+func (r *SQLCRepository) ListByPortID(ctx context.Context, portID uuid.UUID, limit, offset int) ([]Expedition, error) {
+	rows, err := r.queries.ListExpeditionsByPortID(ctx, adultdb.ListExpeditionsByPortIDParams{
+		PortID: pgtype.UUID{Bytes: portID, Valid: true},
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return r.rowsToExpeditions(rows), nil
+}
+
+func (r *SQLCRepository) CountByPortID(ctx context.Context, portID uuid.UUID) (int64, error) {
+	return r.queries.CountExpeditionsByPortID(ctx, pgtype.UUID{Bytes: portID, Valid: true})
+}
+
+func (r *SQLCRepository) ListByFlagID(ctx context.Context, flagID uuid.UUID, limit, offset int) ([]Expedition, error) {
+	rows, err := r.queries.ListExpeditionsByFlagID(ctx, adultdb.ListExpeditionsByFlagIDParams{
+		FlagID: flagID,
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return r.rowsToExpeditions(rows), nil
+}
+
+func (r *SQLCRepository) CountByFlagID(ctx context.Context, flagID uuid.UUID) (int64, error) {
+	return r.queries.CountExpeditionsByFlagID(ctx, flagID)
+}
+
 // rowToExpedition converts a database row to a domain entity.
 func (r *SQLCRepository) rowToExpedition(row *adultdb.QarExpedition) *Expedition {
 	if row == nil {

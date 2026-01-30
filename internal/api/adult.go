@@ -1063,11 +1063,36 @@ func (h *Handler) ListAdultPerformerMovies(ctx context.Context, params gen.ListA
 		}, nil
 	}
 
-	// TODO: Implement with expedition service - requires ListByPerformer method
-	return &gen.ListAdultPerformerMoviesNotFound{
-		Code:    "not_implemented",
-		Message: "Listing performer movies not yet implemented",
-	}, nil
+	svc, err := h.requireExpeditionService()
+	if err != nil {
+		return &gen.ListAdultPerformerMoviesNotFound{
+			Code:    "module_disabled",
+			Message: "Adult module is not enabled",
+		}, nil
+	}
+
+	limit := 100
+	offset := 0
+
+	expeditions, total, err := svc.ListByPerformer(ctx, params.PerformerId, limit, offset)
+	if err != nil {
+		h.logger.Error("List performer movies failed", "error", err, "performerId", params.PerformerId)
+		return &gen.ListAdultPerformerMoviesNotFound{
+			Code:    "list_failed",
+			Message: "Failed to list performer movies",
+		}, nil
+	}
+
+	result := gen.AdultMovieListResponse{
+		Movies:     make([]gen.AdultMovie, len(expeditions)),
+		Pagination: paginationMeta(total, limit, offset),
+	}
+
+	for i, e := range expeditions {
+		result.Movies[i] = expeditionToAPI(&e)
+	}
+
+	return &result, nil
 }
 
 func (h *Handler) ListAdultStudioMovies(ctx context.Context, params gen.ListAdultStudioMoviesParams) (gen.ListAdultStudioMoviesRes, error) {
@@ -1078,11 +1103,36 @@ func (h *Handler) ListAdultStudioMovies(ctx context.Context, params gen.ListAdul
 		}, nil
 	}
 
-	// TODO: Implement with expedition service - requires ListByPort method
-	return &gen.ListAdultStudioMoviesNotFound{
-		Code:    "not_implemented",
-		Message: "Listing studio movies not yet implemented",
-	}, nil
+	svc, err := h.requireExpeditionService()
+	if err != nil {
+		return &gen.ListAdultStudioMoviesNotFound{
+			Code:    "module_disabled",
+			Message: "Adult module is not enabled",
+		}, nil
+	}
+
+	limit := 100
+	offset := 0
+
+	expeditions, total, err := svc.ListByStudio(ctx, params.StudioId, limit, offset)
+	if err != nil {
+		h.logger.Error("List studio movies failed", "error", err, "studioId", params.StudioId)
+		return &gen.ListAdultStudioMoviesNotFound{
+			Code:    "list_failed",
+			Message: "Failed to list studio movies",
+		}, nil
+	}
+
+	result := gen.AdultMovieListResponse{
+		Movies:     make([]gen.AdultMovie, len(expeditions)),
+		Pagination: paginationMeta(total, limit, offset),
+	}
+
+	for i, e := range expeditions {
+		result.Movies[i] = expeditionToAPI(&e)
+	}
+
+	return &result, nil
 }
 
 func (h *Handler) ListAdultTagMovies(ctx context.Context, params gen.ListAdultTagMoviesParams) (gen.ListAdultTagMoviesRes, error) {
@@ -1093,11 +1143,36 @@ func (h *Handler) ListAdultTagMovies(ctx context.Context, params gen.ListAdultTa
 		}, nil
 	}
 
-	// TODO: Implement with expedition service - requires ListByFlag method
-	return &gen.ListAdultTagMoviesNotFound{
-		Code:    "not_implemented",
-		Message: "Listing tag movies not yet implemented",
-	}, nil
+	svc, err := h.requireExpeditionService()
+	if err != nil {
+		return &gen.ListAdultTagMoviesNotFound{
+			Code:    "module_disabled",
+			Message: "Adult module is not enabled",
+		}, nil
+	}
+
+	limit := 100
+	offset := 0
+
+	expeditions, total, err := svc.ListByTag(ctx, params.TagId, limit, offset)
+	if err != nil {
+		h.logger.Error("List tag movies failed", "error", err, "tagId", params.TagId)
+		return &gen.ListAdultTagMoviesNotFound{
+			Code:    "list_failed",
+			Message: "Failed to list tag movies",
+		}, nil
+	}
+
+	result := gen.AdultMovieListResponse{
+		Movies:     make([]gen.AdultMovie, len(expeditions)),
+		Pagination: paginationMeta(total, limit, offset),
+	}
+
+	for i, e := range expeditions {
+		result.Movies[i] = expeditionToAPI(&e)
+	}
+
+	return &result, nil
 }
 
 func (h *Handler) ListAdultSimilarMovies(ctx context.Context, params gen.ListAdultSimilarMoviesParams) (gen.ListAdultSimilarMoviesRes, error) {

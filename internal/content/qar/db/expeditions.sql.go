@@ -12,12 +12,49 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countExpeditionsByCrewID = `-- name: CountExpeditionsByCrewID :one
+SELECT COUNT(DISTINCT e.id) FROM qar.expeditions e
+JOIN qar.expedition_crew ec ON e.id = ec.expedition_id
+WHERE ec.crew_id = $1
+`
+
+func (q *Queries) CountExpeditionsByCrewID(ctx context.Context, crewID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countExpeditionsByCrewID, crewID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countExpeditionsByFlagID = `-- name: CountExpeditionsByFlagID :one
+SELECT COUNT(DISTINCT e.id) FROM qar.expeditions e
+JOIN qar.expedition_flags ef ON e.id = ef.expedition_id
+WHERE ef.flag_id = $1
+`
+
+func (q *Queries) CountExpeditionsByFlagID(ctx context.Context, flagID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countExpeditionsByFlagID, flagID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countExpeditionsByFleet = `-- name: CountExpeditionsByFleet :one
 SELECT COUNT(*) FROM qar.expeditions WHERE fleet_id = $1
 `
 
 func (q *Queries) CountExpeditionsByFleet(ctx context.Context, fleetID uuid.UUID) (int64, error) {
 	row := q.db.QueryRow(ctx, countExpeditionsByFleet, fleetID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countExpeditionsByPortID = `-- name: CountExpeditionsByPortID :one
+SELECT COUNT(*) FROM qar.expeditions WHERE port_id = $1
+`
+
+func (q *Queries) CountExpeditionsByPortID(ctx context.Context, portID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countExpeditionsByPortID, portID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -370,6 +407,130 @@ func (q *Queries) ListExpeditions(ctx context.Context, arg ListExpeditionsParams
 	return items, nil
 }
 
+const listExpeditionsByCrewID = `-- name: ListExpeditionsByCrewID :many
+SELECT e.id, e.whisparr_id, e.charter, e.registry, e.title, e.sort_title, e.original_title, e.overview, e.launch_date, e.runtime_ticks, e.port_id, e.director, e.series, e.path, e.size_bytes, e.container, e.video_codec, e.audio_codec, e.resolution, e.coordinates, e.oshash, e.has_file, e.is_hdr, e.is_3d, e.created_at, e.updated_at, e.fleet_id FROM qar.expeditions e
+JOIN qar.expedition_crew ec ON e.id = ec.expedition_id
+WHERE ec.crew_id = $1
+ORDER BY e.launch_date DESC NULLS LAST, e.title
+LIMIT $2 OFFSET $3
+`
+
+type ListExpeditionsByCrewIDParams struct {
+	CrewID uuid.UUID `json:"crewId"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
+}
+
+func (q *Queries) ListExpeditionsByCrewID(ctx context.Context, arg ListExpeditionsByCrewIDParams) ([]QarExpedition, error) {
+	rows, err := q.db.Query(ctx, listExpeditionsByCrewID, arg.CrewID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QarExpedition{}
+	for rows.Next() {
+		var i QarExpedition
+		if err := rows.Scan(
+			&i.ID,
+			&i.WhisparrID,
+			&i.Charter,
+			&i.Registry,
+			&i.Title,
+			&i.SortTitle,
+			&i.OriginalTitle,
+			&i.Overview,
+			&i.LaunchDate,
+			&i.RuntimeTicks,
+			&i.PortID,
+			&i.Director,
+			&i.Series,
+			&i.Path,
+			&i.SizeBytes,
+			&i.Container,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Resolution,
+			&i.Coordinates,
+			&i.Oshash,
+			&i.HasFile,
+			&i.IsHdr,
+			&i.Is3d,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.FleetID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listExpeditionsByFlagID = `-- name: ListExpeditionsByFlagID :many
+SELECT e.id, e.whisparr_id, e.charter, e.registry, e.title, e.sort_title, e.original_title, e.overview, e.launch_date, e.runtime_ticks, e.port_id, e.director, e.series, e.path, e.size_bytes, e.container, e.video_codec, e.audio_codec, e.resolution, e.coordinates, e.oshash, e.has_file, e.is_hdr, e.is_3d, e.created_at, e.updated_at, e.fleet_id FROM qar.expeditions e
+JOIN qar.expedition_flags ef ON e.id = ef.expedition_id
+WHERE ef.flag_id = $1
+ORDER BY e.launch_date DESC NULLS LAST, e.title
+LIMIT $2 OFFSET $3
+`
+
+type ListExpeditionsByFlagIDParams struct {
+	FlagID uuid.UUID `json:"flagId"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
+}
+
+func (q *Queries) ListExpeditionsByFlagID(ctx context.Context, arg ListExpeditionsByFlagIDParams) ([]QarExpedition, error) {
+	rows, err := q.db.Query(ctx, listExpeditionsByFlagID, arg.FlagID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QarExpedition{}
+	for rows.Next() {
+		var i QarExpedition
+		if err := rows.Scan(
+			&i.ID,
+			&i.WhisparrID,
+			&i.Charter,
+			&i.Registry,
+			&i.Title,
+			&i.SortTitle,
+			&i.OriginalTitle,
+			&i.Overview,
+			&i.LaunchDate,
+			&i.RuntimeTicks,
+			&i.PortID,
+			&i.Director,
+			&i.Series,
+			&i.Path,
+			&i.SizeBytes,
+			&i.Container,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Resolution,
+			&i.Coordinates,
+			&i.Oshash,
+			&i.HasFile,
+			&i.IsHdr,
+			&i.Is3d,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.FleetID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listExpeditionsByFleet = `-- name: ListExpeditionsByFleet :many
 SELECT id, whisparr_id, charter, registry, title, sort_title, original_title, overview, launch_date, runtime_ticks, port_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, coordinates, oshash, has_file, is_hdr, is_3d, created_at, updated_at, fleet_id FROM qar.expeditions
 WHERE fleet_id = $1
@@ -385,6 +546,67 @@ type ListExpeditionsByFleetParams struct {
 
 func (q *Queries) ListExpeditionsByFleet(ctx context.Context, arg ListExpeditionsByFleetParams) ([]QarExpedition, error) {
 	rows, err := q.db.Query(ctx, listExpeditionsByFleet, arg.FleetID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []QarExpedition{}
+	for rows.Next() {
+		var i QarExpedition
+		if err := rows.Scan(
+			&i.ID,
+			&i.WhisparrID,
+			&i.Charter,
+			&i.Registry,
+			&i.Title,
+			&i.SortTitle,
+			&i.OriginalTitle,
+			&i.Overview,
+			&i.LaunchDate,
+			&i.RuntimeTicks,
+			&i.PortID,
+			&i.Director,
+			&i.Series,
+			&i.Path,
+			&i.SizeBytes,
+			&i.Container,
+			&i.VideoCodec,
+			&i.AudioCodec,
+			&i.Resolution,
+			&i.Coordinates,
+			&i.Oshash,
+			&i.HasFile,
+			&i.IsHdr,
+			&i.Is3d,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.FleetID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listExpeditionsByPortID = `-- name: ListExpeditionsByPortID :many
+SELECT id, whisparr_id, charter, registry, title, sort_title, original_title, overview, launch_date, runtime_ticks, port_id, director, series, path, size_bytes, container, video_codec, audio_codec, resolution, coordinates, oshash, has_file, is_hdr, is_3d, created_at, updated_at, fleet_id FROM qar.expeditions
+WHERE port_id = $1
+ORDER BY launch_date DESC NULLS LAST, title
+LIMIT $2 OFFSET $3
+`
+
+type ListExpeditionsByPortIDParams struct {
+	PortID pgtype.UUID `json:"portId"`
+	Limit  int32       `json:"limit"`
+	Offset int32       `json:"offset"`
+}
+
+func (q *Queries) ListExpeditionsByPortID(ctx context.Context, arg ListExpeditionsByPortIDParams) ([]QarExpedition, error) {
+	rows, err := q.db.Query(ctx, listExpeditionsByPortID, arg.PortID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

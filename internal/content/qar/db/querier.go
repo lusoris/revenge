@@ -20,8 +20,11 @@ type Querier interface {
 	AddVoyageFlag(ctx context.Context, arg AddVoyageFlagParams) error
 	ClearExpeditionFlags(ctx context.Context, expeditionID uuid.UUID) error
 	ClearVoyageFlags(ctx context.Context, voyageID uuid.UUID) error
+	CountExpeditionsByCrewID(ctx context.Context, crewID uuid.UUID) (int64, error)
+	CountExpeditionsByFlagID(ctx context.Context, flagID uuid.UUID) (int64, error)
 	CountExpeditionsByFleet(ctx context.Context, fleetID uuid.UUID) (int64, error)
 	CountExpeditionsByPort(ctx context.Context, portID pgtype.UUID) (int64, error)
+	CountExpeditionsByPortID(ctx context.Context, portID pgtype.UUID) (int64, error)
 	CountFleetExpeditions(ctx context.Context, fleetID uuid.UUID) (int64, error)
 	CountFleetVoyages(ctx context.Context, fleetID uuid.UUID) (int64, error)
 	CountVoyagesByFleet(ctx context.Context, fleetID uuid.UUID) (int64, error)
@@ -76,7 +79,10 @@ type Querier interface {
 	ListExpeditionCrew(ctx context.Context, expeditionID uuid.UUID) ([]QarCrew, error)
 	ListExpeditionFlags(ctx context.Context, expeditionID uuid.UUID) ([]QarFlag, error)
 	ListExpeditions(ctx context.Context, arg ListExpeditionsParams) ([]QarExpedition, error)
+	ListExpeditionsByCrewID(ctx context.Context, arg ListExpeditionsByCrewIDParams) ([]QarExpedition, error)
+	ListExpeditionsByFlagID(ctx context.Context, arg ListExpeditionsByFlagIDParams) ([]QarExpedition, error)
 	ListExpeditionsByFleet(ctx context.Context, arg ListExpeditionsByFleetParams) ([]QarExpedition, error)
+	ListExpeditionsByPortID(ctx context.Context, arg ListExpeditionsByPortIDParams) ([]QarExpedition, error)
 	ListFlagChildren(ctx context.Context, parentID pgtype.UUID) ([]QarFlag, error)
 	ListFlags(ctx context.Context, arg ListFlagsParams) ([]QarFlag, error)
 	ListFlagsByWaters(ctx context.Context, waters *string) ([]QarFlag, error)
