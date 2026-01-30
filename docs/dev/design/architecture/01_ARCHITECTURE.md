@@ -548,10 +548,13 @@ One collection per module:
 | `series` | title, overview, genres, year, cast |
 | `tracks` | title, artist, album, genre |
 | `audiobooks` | title, author, narrator |
-| `expeditions` | title, crew, port, flags |
-| `voyages` | title, crew, expedition_id |
+| `qar_expeditions` | title, crew, port, flags, year |
+| `qar_voyages` | title, crew, expedition_id, flags |
+| `qar_crew` | name, aliases, ports, flags |
+| `qar_ports` | name, parent_port |
+| `qar_treasures` | title, crew, port, flags |
 
-> **Note**: `expeditions` and `voyages` use QAR obfuscation. See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping.
+> **Note**: QAR collections use obfuscated terminology. See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for full mapping (expeditions=movies, voyages=scenes, crew=performers, ports=studios, treasures=galleries, flags=tags).
 
 ```go
 // Example: Index a movie

@@ -49,8 +49,13 @@ Key features:
 | `episodes` | title, overview | series_id, season |
 | `tracks` | title, artist, album | genres, year |
 | `audiobooks` | title, author, narrator | genres |
-| `qar_expeditions` | title, port | flags, year |
-| `qar_voyages` | title, crew | flags, port |
+| `qar_expeditions` | title, crew, port | flags, year |
+| `qar_voyages` | title, crew, expedition_id | flags, port |
+| `qar_crew` | name, aliases | ports, flags |
+| `qar_ports` | name | parent_port |
+| `qar_treasures` | title, crew | port, flags |
+
+> **QAR Terminology**: expeditions=movies, voyages=scenes, crew=performers, ports=studios, treasures=galleries, flags=tags. See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology).
 
 ### Collection Schema Example
 
