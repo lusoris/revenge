@@ -83,10 +83,10 @@ All broken links have been updated to point to SOURCE_OF_TRUTH.md sections:
 
 **Status:** RESOLVED - Links now point to SOT master sections
 
-### Unreferenced Documentation
+### Unreferenced Documentation (RESOLVED)
 
-- [ ] GALLERY_MODULE.md - not in features/adult/INDEX.md
-- [ ] STASH.md - not in metadata/adult/INDEX.md
+- [x] GALLERY_MODULE.md - added to features/adult/INDEX.md
+- [x] STASH.md - added to metadata/adult/INDEX.md
 
 ---
 

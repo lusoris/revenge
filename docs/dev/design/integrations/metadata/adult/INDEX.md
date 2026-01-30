@@ -24,7 +24,7 @@ Adult metadata providers supply information for:
 | Provider | Type | API | Status |
 |----------|------|-----|--------|
 | Whisparr v3 (eros) | Scenes | REST | 🟢 **Primary** (Servarr) |
-| Stash App | Scenes | GraphQL | 🟡 Fallback (if connected) |
+| [Stash App](STASH.md) | Scenes | GraphQL | 🟡 Fallback (if connected) |
 | [StashDB.org](STASHDB.md) | Scenes | GraphQL | 🟡 External Primary |
 | [TPDB](THEPORNDB.md) | Scenes | REST | 🟡 External Fallback |
 
@@ -33,7 +33,7 @@ Adult metadata providers supply information for:
 | Provider | Type | API | Status |
 |----------|------|-----|--------|
 | Whisparr v3 (eros) | Performers | REST | 🟢 **Primary** (cached) |
-| Stash App | Performers | GraphQL | 🟡 Fallback (if connected) |
+| [Stash App](STASH.md) | Performers | GraphQL | 🟡 Fallback (if connected) |
 | [StashDB.org](STASHDB.md) | Performers | GraphQL | 🟡 External Primary |
 | [FreeOnes](../../external/adult/FREEONES.md) | Performers | REST | 🟡 Enrichment |
 | [Babepedia](../../wiki/adult/BABEPEDIA.md) | Performers | Scraping | 🟡 Enrichment |

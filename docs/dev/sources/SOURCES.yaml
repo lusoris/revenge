@@ -207,10 +207,11 @@ sources:
     # HTTP Client - resty
     - id: resty
       name: "resty HTTP Client"
-      url: "https://pkg.go.dev/resty.dev/v3"
+      url: "https://pkg.go.dev/github.com/go-resty/resty/v2"
       type: html
       selectors: [".Documentation"]
       output: "tooling/resty.md"
+      note: "Using stable v2, NOT v3 beta"
 
     - id: resty-docs
       name: "resty GitHub README"

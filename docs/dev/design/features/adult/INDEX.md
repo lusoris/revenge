@@ -1,6 +1,6 @@
 # Adult Content Documentation
 
-> Adult module with isolated `c` schema (Queen Anne's Revenge)
+> Adult module with isolated `qar` schema (Queen Anne's Revenge)
 
 ---
 
@@ -11,6 +11,7 @@
 | [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md) | Complete adult module isolation design |
 | [ADULT_METADATA.md](ADULT_METADATA.md) | Whisparr/StashDB metadata integration |
 | [DATA_RECONCILIATION.md](DATA_RECONCILIATION.md) | Data matching and deduplication |
+| [GALLERY_MODULE.md](GALLERY_MODULE.md) | Gallery/image management for performers |
 | [WHISPARR_STASHDB_SCHEMA.md](WHISPARR_STASHDB_SCHEMA.md) | Database schema for adult content |
 
 ---
