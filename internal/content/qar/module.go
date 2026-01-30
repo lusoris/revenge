@@ -18,6 +18,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/qar/flag"
 	"github.com/lusoris/revenge/internal/content/qar/fleet"
 	"github.com/lusoris/revenge/internal/content/qar/port"
+	"github.com/lusoris/revenge/internal/content/qar/request"
 	"github.com/lusoris/revenge/internal/content/qar/voyage"
 )
 
@@ -29,4 +30,5 @@ var Module = fx.Module("qar",
 	crew.Module,
 	port.Module,
 	flag.Module,
+	request.Module,
 )
