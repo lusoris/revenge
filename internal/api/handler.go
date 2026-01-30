@@ -14,6 +14,7 @@ import (
 	"github.com/lusoris/revenge/internal/infra/database/db"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/pkg/health"
@@ -36,6 +37,7 @@ type Handler struct {
 	userService    *user.Service
 	sessionService *session.Service
 	libraryService *library.Service
+	rbacService    *rbac.CasbinService
 	movieService   *movie.Service
 	tvshowService  *tvshow.Service
 	riverClient    *river.Client[pgx.Tx]
@@ -60,6 +62,7 @@ type HandlerParams struct {
 	UserService    *user.Service
 	SessionService *session.Service
 	LibraryService *library.Service
+	RBACService    *rbac.CasbinService
 	MovieService   *movie.Service
 	TVShowService  *tvshow.Service
 	RiverClient    *river.Client[pgx.Tx]
@@ -78,6 +81,7 @@ func NewHandler(params HandlerParams) *Handler {
 		userService:    params.UserService,
 		sessionService: params.SessionService,
 		libraryService: params.LibraryService,
+		rbacService:    params.RBACService,
 		movieService:   params.MovieService,
 		tvshowService:  params.TVShowService,
 		riverClient:    params.RiverClient,
@@ -140,6 +144,60 @@ func requireAdmin(ctx context.Context) (*db.User, error) {
 		return nil, ErrForbidden
 	}
 	return u, nil
+}
+
+// requireAdultAccess checks if the user can access adult content.
+// Returns the user if access is granted, otherwise returns an error.
+// Checks: authenticated, user.AdultEnabled=true, and RBAC permission.
+func (h *Handler) requireAdultAccess(ctx context.Context, permission string) (*db.User, error) {
+	// Must be authenticated
+	u, err := requireUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Module must be enabled
+	if !h.adultEnabled {
+		return nil, ErrModuleDisabled
+	}
+
+	// User must have adult content enabled on their account
+	if !u.AdultEnabled {
+		return nil, ErrForbidden
+	}
+
+	// Check RBAC permission
+	if h.rbacService != nil {
+		has, err := h.rbacService.HasPermission(ctx, u.ID, permission)
+		if err != nil {
+			h.logger.Error("RBAC permission check failed",
+				slog.String("user_id", u.ID.String()),
+				slog.String("permission", permission),
+				slog.String("error", err.Error()),
+			)
+			return nil, ErrForbidden
+		}
+		if !has {
+			return nil, ErrForbidden
+		}
+	}
+
+	return u, nil
+}
+
+// requireAdultBrowse checks if the user can browse adult content.
+func (h *Handler) requireAdultBrowse(ctx context.Context) (*db.User, error) {
+	return h.requireAdultAccess(ctx, rbac.PermAdultBrowse)
+}
+
+// requireAdultStream checks if the user can stream adult content.
+func (h *Handler) requireAdultStream(ctx context.Context) (*db.User, error) {
+	return h.requireAdultAccess(ctx, rbac.PermAdultStream)
+}
+
+// requireAdultMetadataWrite checks if the user can edit adult content metadata.
+func (h *Handler) requireAdultMetadataWrite(ctx context.Context) (*db.User, error) {
+	return h.requireAdultAccess(ctx, rbac.PermAdultMetadataWrite)
 }
 
 func (h *Handler) requireMovieService() (*movie.Service, error) {

@@ -11,6 +11,7 @@ import (
 	"github.com/lusoris/revenge/internal/content/tvshow"
 	"github.com/lusoris/revenge/internal/service/auth"
 	"github.com/lusoris/revenge/internal/service/library"
+	"github.com/lusoris/revenge/internal/service/rbac"
 	"github.com/lusoris/revenge/internal/service/session"
 	"github.com/lusoris/revenge/internal/service/user"
 	"github.com/lusoris/revenge/pkg/health"
@@ -33,8 +34,9 @@ type HandlerDeps struct {
 	UserService    *user.Service
 	SessionService *session.Service
 	LibraryService *library.Service
-	MovieService   *movie.Service   `optional:"true"`
-	TVShowService  *tvshow.Service  `optional:"true"`
+	RBACService    *rbac.CasbinService
+	MovieService   *movie.Service  `optional:"true"`
+	TVShowService  *tvshow.Service `optional:"true"`
 	RiverClient    *river.Client[pgx.Tx]
 	HealthChecker  *health.Checker
 	Logger         *slog.Logger
@@ -48,6 +50,7 @@ func provideHandlerParams(deps HandlerDeps) HandlerParams {
 		UserService:    deps.UserService,
 		SessionService: deps.SessionService,
 		LibraryService: deps.LibraryService,
+		RBACService:    deps.RBACService,
 		MovieService:   deps.MovieService,
 		TVShowService:  deps.TVShowService,
 		RiverClient:    deps.RiverClient,

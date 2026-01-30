@@ -251,6 +251,11 @@ func (s *CasbinService) seedDefaultPolicies() error {
 		PermRequestsSubmit, PermRequestsViewOwn, PermRequestsVote, PermRequestsComment, PermRequestsCancelOwn,
 		PermRequestsViewAll, PermRequestsApprove, PermRequestsDecline, PermRequestsPriority,
 		PermRequestsRulesRead, PermRequestsPollsVote, PermRequestsPollsCreate,
+		// Adult content - moderators have full adult access
+		PermAdultBrowse, PermAdultStream, PermAdultMetadataWrite,
+		PermAdultRequestsSubmit, PermAdultRequestsViewOwn, PermAdultRequestsVote,
+		PermAdultRequestsApprove, PermAdultRequestsDecline, PermAdultRequestsRulesManage,
+		PermAdultRequestsPollsCreate, PermAdultRequestsPollsManage,
 	}
 	for _, perm := range moderatorPerms {
 		if _, err := s.enforcer.AddPolicy("moderator", perm, "allow"); err != nil {
