@@ -17,7 +17,7 @@ Critical Fixes            ██████████████████
 Library Refactor          ████████████████████████ 100% ✓
 Movie Module              ████████████████████████  95%
 TV Shows Module           ██████████████████████░░  95%
-Adult Module (QAR)        ██████████████████████░░  90%  <- CURRENT
+Adult Module (QAR)        ██████████████████████░░  92%  <- CURRENT
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -31,9 +31,14 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 > Based on design doc analysis - dependencies mapped, blockers identified
 
 ### P0: Access Control + API (BLOCKING)
-- [ ] **RBAC adult permissions** → `internal/service/rbac/casbin.go`
-- [ ] **AdultAuthMiddleware** → `internal/service/auth/middleware_adult.go`
-- [ ] **QAR OpenAPI spec** → `api/openapi/qar.yaml`
+- [x] **RBAC adult permissions** → `internal/service/rbac/casbin.go`
+  - Added adult.* permissions to moderator role in seedDefaultPolicies
+- [x] **AdultAuthMiddleware** → `internal/api/handler.go`
+  - Added requireAdultAccess, requireAdultBrowse, requireAdultStream helpers
+  - Wired RBAC service to Handler for permission checks
+- [x] **QAR OpenAPI spec** → `api/openapi/qar.yaml` (1935 lines)
+  - Full spec with Fleet, Expedition, Voyage, Crew, Port, Flag, Search endpoints
+  - Integration with revenge.yaml + ogen codegen pending
 - [ ] **QAR API handlers** → `internal/api/qar.go` (~50 endpoints)
 
 ### P1: Enable QAR Workflow
