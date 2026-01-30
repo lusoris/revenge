@@ -16,7 +16,7 @@ Design Audit              ██████████████████
 Critical Fixes            ████████████████████████ 100% ✓
 Library Refactor          ████████████████████████ 100% ✓
 Movie Module              ████████████████████████  95%
-TV Shows Module           ████████████████████░░░░  80%  <- CURRENT
+TV Shows Module           ██████████████████████░░  95%  <- CURRENT
 Adult Module (QAR)        ████████████████████░░░░  80%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -65,17 +65,17 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 ## Phase 2: TV Shows Module Completion
 
 ### 2.1 API Handlers
-- [ ] **Implement TV Shows handlers** in `internal/api/tvshows.go`
-  - Wire to OpenAPI spec `api/openapi/tvshows.yaml`
+- [x] **Implement TV Shows handlers** in `internal/api/tvshows.go`
+  - Integrated tvshows.yaml into revenge.yaml OpenAPI spec
   - All CRUD operations for series, seasons, episodes
   - User data endpoints (favorites, ratings, watch history)
+  - Converters added to `internal/api/converters.go`
 
 ### 2.2 Watch Next Feature
-- [ ] **Implement GetNextEpisode handler**
-  - Service exists but no API handler
-  - Endpoint defined in OpenAPI spec
-- [ ] **Implement Continue Watching handler** for TV shows
-  - Movies done, TV shows missing
+- [x] **Implement GetNextEpisode handler**
+  - Handler in tvshows.go calls TvshowService.GetNextEpisode
+- [x] **Implement Continue Watching handler** for TV shows
+  - Handler in tvshows.go calls TvshowService.GetContinueWatching
 
 ### 2.3 Missing Query Features
 - [ ] **Add 30-day filter** to continue watching queries
@@ -315,7 +315,7 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] River jobs for metadata enrichment
 - [ ] Continue watching 30-day filter (missing)
 
-### TV Shows Module (80%)
+### TV Shows Module (95%)
 - [x] Database migrations
 - [x] sqlc queries (100+ queries)
 - [x] Entity definitions
@@ -326,7 +326,8 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [x] metadata_provider.go
 - [x] Module registration in main.go
 - [x] Handler deps in api/module.go
-- [ ] API handlers (missing)
+- [x] API handlers in `internal/api/tvshows.go`
+- [ ] 30-day filter for continue watching (missing)
 
 ---
 
