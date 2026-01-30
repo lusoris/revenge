@@ -210,6 +210,6 @@ metadata:
 
 ## Related
 
-- [Metadata System](../architecture/METADATA_SYSTEM.md) - Architecture
+- [Metadata System](../architecture/03_METADATA_SYSTEM.md) - Architecture
 - [TMDb Integration](../integrations/metadata/video/TMDB.md) - API details
 - [Radarr Integration](../integrations/servarr/RADARR.md) - Servarr integration

@@ -84,7 +84,7 @@ logging:
 
 All settings can be set via environment variables with `REVENGE_` prefix.
 
-> **📋 Complete Environment Variable Reference**: See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#environment-variable-mapping) for the authoritative list of all environment variables with platform-specific mappings (Docker Compose, K8s, K3s, Swarm).
+> **📋 Complete Environment Variable Reference**: See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#environment-variable-mapping) for the authoritative list of all environment variables with platform-specific mappings (Docker Compose, K8s, K3s, Swarm).
 
 The sections below document the **config structure and Go types**. For the complete env var list, always refer to SOURCE_OF_TRUTH.
 

@@ -10,7 +10,7 @@
 
 All new design documents should follow the standard template for consistency:
 
-- **[DESIGN_DOC_TEMPLATE.md](design/DESIGN_DOC_TEMPLATE.md)** - Template and guidelines for writing design docs
+- **[01_DESIGN_DOC_TEMPLATE.md](design/01_DESIGN_DOC_TEMPLATE.md)** - Template and guidelines for writing design docs
 
 ---
 
@@ -21,11 +21,11 @@ Project design documents - manually maintained, protected from auto-updates.
 ### [Architecture](design/architecture/)
 Core system design and architectural decisions.
 
-- [Overall Architecture](design/architecture/ARCHITECTURE.md) - Complete system architecture
-- [Design Principles](design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
-- [Metadata System](design/architecture/METADATA_SYSTEM.md) - Metadata management
-- [Player Architecture](design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
-- [Plugin Architecture Decision](design/architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
+- [Overall Architecture](design/architecture/01_ARCHITECTURE.md) - Complete system architecture
+- [Design Principles](design/architecture/02_DESIGN_PRINCIPLES.md) - Guiding principles
+- [Metadata System](design/architecture/03_METADATA_SYSTEM.md) - Metadata management
+- [Player Architecture](design/architecture/04_PLAYER_ARCHITECTURE.md) - Media player design
+- [Plugin Architecture Decision](design/architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
 
 ### [Features](design/features/)
 Content modules and feature specifications. See [Features INDEX](design/features/INDEX.md) for full listing.

@@ -130,7 +130,7 @@ CREATE INDEX idx_poll_votes_user_id ON request_poll_votes(user_id);
 ```
 
 **QAR Polls (Schema `qar`)**:
-Adult content has separate poll tables in schema `qar` with identical structure but additional fields for crew/port/flag filtering. See [SOURCE_OF_TRUTH.md](../../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology.
+Adult content has separate poll tables in schema `qar` with identical structure but additional fields for crew/port/flag filtering. See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology.
 
 ### Admin Features
 - **Approval workflow**: Auto-approve OR manual review

@@ -164,6 +164,6 @@ auth:
 
 ## Related Documentation
 
-- [Architecture](../architecture/ARCHITECTURE.md)
+- [Architecture](../architecture/01_ARCHITECTURE.md)
 - [Tech Stack](../technical/TECH_STACK.md)
 - [Setup Guide](../operations/SETUP.md)

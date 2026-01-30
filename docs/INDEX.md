@@ -8,7 +8,7 @@
 
 - **New to Revenge?** Start with [Setup Guide](dev/design/operations/SETUP.md)
 - **Development?** See [Development Guide](dev/design/operations/DEVELOPMENT.md)
-- **Architecture?** Read [Architecture](dev/design/architecture/ARCHITECTURE.md)
+- **Architecture?** Read [Architecture](dev/design/architecture/01_ARCHITECTURE.md)
 - **Current Status?** See [TODO.md](../TODO.md)
 
 ---
@@ -39,11 +39,11 @@ docs/
 
 Core system design and architectural decisions.
 
-- [Architecture](dev/design/architecture/ARCHITECTURE.md) - Complete system architecture
-- [Design Principles](dev/design/architecture/DESIGN_PRINCIPLES.md) - Guiding principles
-- [Player Architecture](dev/design/architecture/PLAYER_ARCHITECTURE.md) - Media player design
-- [Metadata System](dev/design/architecture/METADATA_SYSTEM.md) - Metadata management
-- [Plugin Architecture Decision](dev/design/architecture/PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
+- [Architecture](dev/design/architecture/01_ARCHITECTURE.md) - Complete system architecture
+- [Design Principles](dev/design/architecture/02_DESIGN_PRINCIPLES.md) - Guiding principles
+- [Player Architecture](dev/design/architecture/04_PLAYER_ARCHITECTURE.md) - Media player design
+- [Metadata System](dev/design/architecture/03_METADATA_SYSTEM.md) - Metadata management
+- [Plugin Architecture Decision](dev/design/architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) - Native vs plugins
 
 ## Operations
 

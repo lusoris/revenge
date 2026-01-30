@@ -28,4 +28,4 @@
 ## Related
 
 - [Technical: Audio Streaming](../../technical/AUDIO_STREAMING.md)
-- [Architecture: Player](../../architecture/PLAYER_ARCHITECTURE.md)
+- [Architecture: Player](../../architecture/04_PLAYER_ARCHITECTURE.md)

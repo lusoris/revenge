@@ -344,4 +344,4 @@ Content-Type: video/mp4
 
 - [Chromecast Integration](CHROMECAST.md)
 - [Client Support](../../features/CLIENT_SUPPORT.md)
-- [Player Architecture](../../architecture/PLAYER_ARCHITECTURE.md)
+- [Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md)

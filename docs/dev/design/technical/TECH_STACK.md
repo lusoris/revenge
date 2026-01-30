@@ -48,11 +48,14 @@
   - Per-module migration folders
 
 #### Cache & Search
+
+> **📋 Package Versions**: See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for exact versions.
+
 - **Dragonfly** (via rueidis) - Redis-compatible cache
-  - **rueidis** v1.0.71 (14x faster than go-redis, auto-pipelining)
-  - **otter** v1.2.4 (local W-TinyLFU cache, 50% less memory than ristretto)
-  - **sturdyc** v1.1.5 (90% API call reduction via request coalescing)
-- **Typesense** (via typesense-go/v4) - Search engine
+  - **rueidis** - 14x faster than go-redis, auto-pipelining
+  - **otter** - Local W-TinyLFU cache, 50% less memory than ristretto
+  - **sturdyc** - 90% API call reduction via request coalescing
+- **Typesense** (via typesense-go/v3) - Search engine
   - Lightning-fast typo-tolerant search
   - Faceted filtering
   - Lower latency than Elasticsearch
@@ -78,8 +81,8 @@
 ❌ **Viper** → ✅ **koanf v2**
 - Reason: Viper is in maintenance mode
 
-❌ **zap** → ✅ **slog (stdlib)**
-- Reason: slog is now standard library
+✅ **slog + tint (dev)** + ✅ **zap (prod)**
+- Reason: tint for colorized dev logs, zap for high-perf JSON in production
 
 ❌ **automaxprocs** → ✅ **Go 1.25 built-in**
 - Reason: Go 1.25 has native container support
@@ -118,7 +121,7 @@
 
 ## 🔄 Technology Stack Summary
 
-> **📋 Authoritative Package Versions**: See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#go-dependencies-core) for current package versions and imports.
+> **📋 Authoritative Package Versions**: See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for current package versions and imports.
 
 This section documents the **rationale** for technology choices. For exact versions, always refer to SOURCE_OF_TRUTH.
 
@@ -330,7 +333,7 @@ cp config.example.yaml config.yaml
 
 #### 3. Container Orchestration
 
-> **📋 Full orchestration patterns**: See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#container-orchestration) for complete Helm, K3s, and Swarm configurations.
+> **📋 Full orchestration patterns**: See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#container-orchestration) for complete Helm, K3s, and Swarm configurations.
 
 ##### Kubernetes / Helm
 
@@ -446,15 +449,17 @@ wg.Add(1)
 go func() { defer wg.Done(); processItem(ctx, item) }()
 ```
 
-## 🔧 Development Tools (Latest)
+## 🔧 Development Tools
 
-- **golangci-lint v1.64+**: Latest linters
+> **📋 Package Versions**: See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-development) for exact versions.
+
+- **golangci-lint**: Latest linters
 - **gopls**: Latest Go language server
 - **govulncheck**: Security scanning
-- **air v1.61+**: Hot reload
-- **migrate v4.18+**: Database migrations
-- **sqlc v1.28+**: SQL code generation
-- **ogen v1.8+**: OpenAPI code generation
+- **air**: Hot reload
+- **migrate**: Database migrations
+- **sqlc**: SQL code generation
+- **ogen**: OpenAPI code generation
 
 ## 📚 Resources
 
@@ -470,7 +475,7 @@ go func() { defer wg.Done(); processItem(ctx, item) }()
 
 - [x] Go 1.25 (latest stable)
 - [x] stdlib routing (no gorilla/mux)
-- [x] slog for logging (no zap)
+- [x] slog/tint for dev, zap for prod
 - [x] koanf for config (no viper)
 - [x] Modern error handling
 - [x] Context-first APIs

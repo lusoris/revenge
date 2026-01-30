@@ -18,7 +18,7 @@
 
 ## Key Concepts
 
-- **Schema Isolation**: All adult content in `qar` schema (Queen Anne's Revenge obfuscation) - see [SOURCE_OF_TRUTH.md](../../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology)
+- **Schema Isolation**: All adult content in `qar` schema (Queen Anne's Revenge obfuscation) - see [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology)
 - **Metadata**: Whisparr as primary, StashDB as fallback
 - **Access Control**: Requires explicit RBAC permission
 

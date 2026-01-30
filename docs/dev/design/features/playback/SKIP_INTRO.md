@@ -401,4 +401,4 @@ skip_detection:
 
 - [Trickplay](TRICKPLAY.md)
 - [Media Enhancements](MEDIA_ENHANCEMENTS.md)
-- [River Job Queue Patterns](../../SOURCE_OF_TRUTH.md#river-job-queue-patterns)
+- [River Job Queue Patterns](../../00_SOURCE_OF_TRUTH.md#river-job-queue-patterns)

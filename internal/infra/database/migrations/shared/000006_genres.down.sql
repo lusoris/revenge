@@ -1,7 +1,0 @@
--- 000006_genres.down.sql
-
-BEGIN;
-
-DROP TABLE IF EXISTS genres CASCADE;
-
-COMMIT;

@@ -408,7 +408,7 @@ var (
 
 ## Related Documentation
 
-- [Player Architecture](../../architecture/PLAYER_ARCHITECTURE.md)
+- [Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md)
 - [Streaming Best Practices](../../.github/instructions/streaming-best-practices.instructions.md)
 - [Client Detection](../../.github/instructions/client-detection.instructions.md)
 - [Offloading Patterns](../../technical/OFFLOADING.md)

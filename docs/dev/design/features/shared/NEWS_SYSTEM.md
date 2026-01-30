@@ -317,4 +317,4 @@ GET  /api/v1/news/stream             # SSE endpoint
 
 - [Notification System](NOTIFICATIONS.md)
 - [RBAC Permissions](RBAC_CASBIN.md)
-- [River Job Queue Patterns](../../SOURCE_OF_TRUTH.md#river-job-queue-patterns)
+- [River Job Queue Patterns](../../00_SOURCE_OF_TRUTH.md#river-job-queue-patterns)

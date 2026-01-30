@@ -109,5 +109,5 @@ Revenge prioritizes direct play:
 
 ## Related Documentation
 
-- [Playback Architecture](../../architecture/PLAYER_ARCHITECTURE.md)
+- [Playback Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md)
 - [Client Support](../../features/CLIENT_SUPPORT.md)

@@ -558,4 +558,4 @@ npx shadcn-svelte@latest add dialog
 | [I18N.md](I18N.md) | Multi-language support (UI, metadata, audio/subtitle) |
 | [AUDIO_STREAMING.md](AUDIO_STREAMING.md) | Audio player integration, progress tracking |
 | [SCROBBLING.md](SCROBBLING.md) | External service connections (Trakt, Last.fm) |
-| [ARCHITECTURE.md](../architecture/ARCHITECTURE.md) | Backend architecture overview |
+| [ARCHITECTURE.md](../architecture/01_ARCHITECTURE.md) | Backend architecture overview |

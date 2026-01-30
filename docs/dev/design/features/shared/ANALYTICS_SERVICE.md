@@ -403,7 +403,7 @@ POST /api/v1/analytics/bulk/delete-sessions # Bulk delete sessions
 ## Related Documentation
 
 - [User Management](../../operations/USER_MANAGEMENT.md) - User roles & permissions (pending)
-- [Playback Service](../../architecture/PLAYER_ARCHITECTURE.md) - Session tracking integration point
+- [Playback Service](../../architecture/04_PLAYER_ARCHITECTURE.md) - Session tracking integration point
 - [Webhook Configuration](../../technical/WEBHOOKS.md) - Webhook patterns (pending)
 - [River Job Queue](../../integrations/infrastructure/RIVER.md) - Background job processing (pending)
 

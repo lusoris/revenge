@@ -4,7 +4,7 @@
 
 **Status**: 🟡 DESIGN
 **Priority**: 🔴 HIGH (Core UX Feature)
-**Related**: [METADATA_SYSTEM.md](../architecture/METADATA_SYSTEM.md), [SCROBBLING.md](SCROBBLING.md)
+**Related**: [METADATA_SYSTEM.md](../architecture/03_METADATA_SYSTEM.md), [SCROBBLING.md](SCROBBLING.md)
 
 ---
 
@@ -440,4 +440,4 @@ func OnPlaybackStop(ctx context.Context, userID uuid.UUID, contentID uuid.UUID, 
 
 - [SCROBBLING.md](SCROBBLING.md) - External service sync (Trakt, etc.)
 - [USER_EXPERIENCE_FEATURES.md](USER_EXPERIENCE_FEATURES.md) - Other UX features
-- [PLAYER_ARCHITECTURE.md](../architecture/PLAYER_ARCHITECTURE.md) - Video player design
+- [PLAYER_ARCHITECTURE.md](../architecture/04_PLAYER_ARCHITECTURE.md) - Video player design

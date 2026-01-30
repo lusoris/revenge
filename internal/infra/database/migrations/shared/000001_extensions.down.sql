@@ -1,4 +1,0 @@
--- Extensions are shared, don't drop them (may be used by other schemas)
--- DROP EXTENSION IF EXISTS unaccent;
--- DROP EXTENSION IF EXISTS pg_trgm;
--- DROP EXTENSION IF EXISTS pgcrypto;

@@ -358,5 +358,5 @@ Content is prioritized for trickplay generation:
 ## Related Documentation
 
 - [Media Enhancements](MEDIA_ENHANCEMENTS.md)
-- [River Job Queue Patterns](../../SOURCE_OF_TRUTH.md#river-job-queue-patterns)
+- [River Job Queue Patterns](../../00_SOURCE_OF_TRUTH.md#river-job-queue-patterns)
 - [Go Packages](../architecture/GO_PACKAGES.md)

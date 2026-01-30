@@ -119,7 +119,7 @@ CREATE TABLE qar.voyages (...);      -- Scenes
 CREATE TABLE qar.crew (...);         -- Performers
 ```
 
-See [SOURCE_OF_TRUTH.md](../../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping.
+See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping.
 
 ### User Data Separation
 

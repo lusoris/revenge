@@ -349,7 +349,7 @@ Same pattern with:
 ## Phase 5: QAR Module (Adult Content)
 
 > Queen Anne's Revenge - isolated adult content in `qar` schema
-> See [SOURCE_OF_TRUTH.md](../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for terminology mapping
 
 ### 5.1 Schema Already Complete ✅
 
@@ -411,7 +411,7 @@ See [TODO.md](../../../TODO.md) for high-level phases.
 
 ## References
 
-- [Architecture](../architecture/ARCHITECTURE.md)
+- [Architecture](../architecture/01_ARCHITECTURE.md)
 - [Content Modules Instructions](../../../.github/instructions/content-modules.instructions.md)
 - [sqlc Instructions](../../../.github/instructions/sqlc-database.instructions.md)
 - [fx Instructions](../../../.github/instructions/fx-dependency-injection.instructions.md)

@@ -133,6 +133,6 @@ func (s *Service) GetByID(ctx context.Context, id uuid.UUID) (*Entity, error) {
 
 ## Related Documentation
 
-- [Architecture](../architecture/ARCHITECTURE.md) - System design
+- [Architecture](../architecture/01_ARCHITECTURE.md) - System design
 - [Database](../integrations/infrastructure/POSTGRESQL.md) - PostgreSQL patterns
 - [Tech Stack](../technical/TECH_STACK.md) - Technology choices

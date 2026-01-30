@@ -313,4 +313,4 @@ DELETE /api/v1/cast/sessions/{id}  # Stop casting
 
 - [DLNA Integration](DLNA.md)
 - [Client Support](../../features/CLIENT_SUPPORT.md)
-- [Player Architecture](../../architecture/PLAYER_ARCHITECTURE.md)
+- [Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md)

@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(sqlc generate:*)",
+      "Bash(go build:*)",
+      "Bash(go vet:*)",
+      "Bash(git push:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(ls -la \"c:\\\\Users\\\\ms\\\\dev\\\\revenge\\\\docs\\\\dev\\\\design\"\" 2>/dev/null || dir \"c:Usersmsdevrevengedocsdevdesign\" 2>/dev/null || echo \"Design directory not found \")",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.audiobookshelf.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(tree:*)",
+      "Bash(for dir in activity apikeys auth fingerprint grants library metadata oidc playback rbac session settings user)",
+      "Bash(do)",
+      "Bash(if [ -d \"c:\\\\Users\\\\ms\\\\dev\\\\revenge\\\\internal\\\\service$dir\" ])",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(for dir in audiobook book comics livetv movie music photo podcast qar shared tvshow)",
+      "Bash(if [ -d \"c:\\\\Users\\\\ms\\\\dev\\\\revenge\\\\internal\\\\content$dir\" ])"
+    ]
+  }
+}

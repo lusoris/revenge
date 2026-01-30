@@ -318,7 +318,7 @@ For integration with external IPTV systems, Revenge provides:
 - [TVHeadend](TVHEADEND.md) - Traditional PVR backend
 - [NextPVR](NEXTPVR.md) - Windows PVR
 - [LIVE_TV_DVR.md](../../features/livetv/LIVE_TV_DVR.md) - Feature specification
-- [QAR Obfuscation](../../SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) - Adult content isolation
+- [QAR Obfuscation](../../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) - Adult content isolation
 - [Age Restrictions](../../features/shared/CONTENT_RATING.md) - Content rating system
 
 ---
