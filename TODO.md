@@ -3,7 +3,7 @@
 > Modular media server with complete content isolation
 
 **Last Updated**: 2026-01-30
-**Current Phase**: TV Shows Module Completion
+**Current Phase**: Adult Module (QAR) Completion
 **Build**: `GOEXPERIMENT=greenteagc,jsonv2 go build ./...`
 
 ---
@@ -16,8 +16,8 @@ Design Audit              ██████████████████
 Critical Fixes            ████████████████████████ 100% ✓
 Library Refactor          ████████████████████████ 100% ✓
 Movie Module              ████████████████████████  95%
-TV Shows Module           ██████████████████████░░  95%  <- CURRENT
-Adult Module (QAR)        ████████████████████░░░░  80%
+TV Shows Module           ██████████████████████░░  95%
+Adult Module (QAR)        ██████████████████████░░  90%  <- CURRENT
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Books Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Comics Module             ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -156,13 +156,13 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **Implement FingerprintService** - hash generation/matching
 
 ### 3.4 QAR Modules
-- [x] **qar/crew** module scaffolded (repository stub)
-- [x] **qar/port** module scaffolded (repository stub)
-- [x] **qar/flag** module scaffolded (repository stub)
-- [x] **qar/expedition** module scaffolded (repository stub)
-- [x] **qar/voyage** module scaffolded (repository stub)
-- [x] **qar/fleet** module scaffolded (repository stub)
-- [ ] **Implement full repository methods** (currently stubs return nil)
+- [x] **qar/crew** repository fully implemented (21 methods)
+- [x] **qar/port** repository fully implemented (12 methods)
+- [x] **qar/flag** repository fully implemented (18 methods)
+- [x] **qar/expedition** repository fully implemented (11 methods)
+- [x] **qar/voyage** repository fully implemented (13 methods)
+- [x] **qar/fleet** repository fully implemented (10 methods)
+- [x] **Implement full repository methods** (all complete)
 
 ### 3.5 Async Processing
 - [x] **Add River jobs** for fingerprinting (expedition/jobs.go, voyage/jobs.go)
