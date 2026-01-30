@@ -423,5 +423,5 @@ reconciliation:
 
 - [Adult Metadata Providers](../../integrations/metadata/adult/INDEX.md)
 - [Adult Wiki Providers](../../integrations/wiki/adult/INDEX.md)
-- [River Jobs](../architecture/RIVER_JOBS.md)
+- [River Job Queue Patterns](../../SOURCE_OF_TRUTH.md#river-job-queue-patterns)
 - [RBAC Permissions](RBAC_CASBIN.md)

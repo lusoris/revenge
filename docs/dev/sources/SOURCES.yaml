@@ -2,7 +2,7 @@
 # Auto-fetched by scripts/fetch-sources.py
 # Last Updated: 2026-01-29
 #
-# BLEEDING EDGE STABLE VERSIONS (verified via live web 2026-01-28):
+# BLEEDING EDGE STABLE VERSIONS (verified 2026-01-30):
 # ┌────────────────────┬────────────┬─────────────────────────────────┐
 # │ Package            │ Version    │ Notes                           │
 # ├────────────────────┼────────────┼─────────────────────────────────┤
@@ -10,19 +10,19 @@
 # │ PostgreSQL         │ 18.1       │ Latest stable                   │
 # │ Dragonfly          │ v1.36.0    │ 3 weeks ago                     │
 # │ Typesense          │ 30.0       │ Uses /latest/ in URL            │
-# │ typesense-go       │ v3.2.0     │ NO v4 exists!                   │
+# │ typesense-go       │ v3.2.0     │ Latest stable (Mar 2025)        │
 # │ pgx                │ v5.8.0     │ Dec 26, 2025                    │
 # │ koanf              │ v2.3.2     │ 4 days ago (min Go 1.23)        │
 # │ fx                 │ v1.24.0    │ May 14, 2025                    │
 # │ River              │ v0.30.2    │ 2 days ago                      │
 # │ rueidis            │ v1.0.71    │ 14x faster than go-redis        │
-# │ otter              │ v2.3.0     │ W-TinyLFU local cache           │
+# │ otter              │ v1.2.4     │ W-TinyLFU local cache           │
 # │ sturdyc            │ v1.1.5     │ API response caching            │
 # │ sqlc               │ v1.30.0    │ Sep 2, 2025                     │
 # │ ogen               │ v1.18.0    │ Dec 1, 2025                     │
 # │ golang-migrate     │ v4.19.1    │ Nov 29, 2025 (Go 1.25)          │
 # │ coder/websocket    │ v1.8.14    │ Gorilla replacement             │
-# │ resty              │ v3.0.0-b6  │ HTTP client with retry          │
+# │ resty              │ v2.17.1    │ HTTP client (stable, not v3 beta) │
 # │ fsnotify           │ v1.9.0     │ File watching                   │
 # └────────────────────┴────────────┴─────────────────────────────────┘
 

@@ -585,6 +585,66 @@ tx.InsertTx(ctx, tx, MetadataEnrichJob{MovieID: id})
 
 ---
 
+## Project Structure
+
+### Backend (Go)
+
+```
+revenge/
+├── cmd/revenge/          # Main entry point
+├── internal/
+│   ├── api/              # HTTP handlers (ogen-generated)
+│   ├── config/           # Configuration loading
+│   ├── content/          # Content modules
+│   │   ├── movie/        # Movie module
+│   │   ├── tvshow/       # TV Show module
+│   │   ├── music/        # Music module (scaffold)
+│   │   ├── qar/          # QAR adult module
+│   │   │   ├── expedition/
+│   │   │   ├── voyage/
+│   │   │   ├── crew/
+│   │   │   ├── port/
+│   │   │   ├── flag/
+│   │   │   └── fleet/
+│   │   └── ...
+│   ├── service/          # Business services
+│   │   ├── auth/
+│   │   ├── user/
+│   │   ├── session/
+│   │   ├── rbac/
+│   │   ├── metadata/     # Metadata providers
+│   │   │   ├── tmdb/
+│   │   │   ├── radarr/
+│   │   │   ├── stashdb/
+│   │   │   └── whisparr/
+│   │   └── ...
+│   └── infra/            # Infrastructure
+│       ├── database/     # pgx, sqlc, migrations
+│       ├── cache/        # rueidis, otter, sturdyc
+│       ├── search/       # Typesense client
+│       ├── jobs/         # River queue
+│       └── health/       # Health checks
+├── api/openapi/          # OpenAPI specs
+├── pkg/                  # Public packages
+└── docs/                 # Documentation
+```
+
+### Module Pattern
+
+Each content module follows:
+```
+internal/content/{module}/
+├── entity.go           # Domain types
+├── repository.go       # Repository interface
+├── repository_pg.go    # PostgreSQL implementation
+├── service.go          # Business logic
+├── jobs.go             # River job definitions
+├── library_service.go  # LibraryProvider impl
+└── module.go           # fx module
+```
+
+---
+
 ## Document Deduplication Policy
 
 > This document is the **single source of truth** for inventory data.

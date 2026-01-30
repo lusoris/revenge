@@ -1015,7 +1015,7 @@ volumes:
 |----------|-------------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | This document - system architecture |
 | [TECH_STACK.md](TECH_STACK.md) | Technology choices and rationale |
-| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Directory layout |
+| [Source of Truth - Project Structure](../SOURCE_OF_TRUTH.md#project-structure) | Directory layout |
 
 ### Frontend & UI
 
