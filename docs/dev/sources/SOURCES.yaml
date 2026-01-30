@@ -875,6 +875,49 @@ sources:
       note: "Minimal core - used by K8s, CockroachDB"
 
   # ============================================================================
+  # ORCHESTRATION - Container Deployment (K8s, K3s, Swarm)
+  # ============================================================================
+  orchestration:
+    - id: kubernetes-docs
+      name: "Kubernetes Documentation"
+      url: "https://kubernetes.io/docs/home/"
+      type: html
+      output: "orchestration/kubernetes.md"
+
+    - id: helm-docs
+      name: "Helm Documentation"
+      url: "https://helm.sh/docs/"
+      type: html
+      output: "orchestration/helm.md"
+
+    - id: k3s-docs
+      name: "K3s Documentation"
+      url: "https://docs.k3s.io/"
+      type: html
+      output: "orchestration/k3s.md"
+      note: "Lightweight K8s for edge/IoT/home lab"
+
+    - id: docker-swarm
+      name: "Docker Swarm Documentation"
+      url: "https://docs.docker.com/engine/swarm/"
+      type: html
+      output: "orchestration/docker-swarm.md"
+
+    - id: traefik-docs
+      name: "Traefik Documentation"
+      url: "https://doc.traefik.io/traefik/"
+      type: html
+      output: "orchestration/traefik.md"
+      note: "Default K3s ingress, also works with Swarm"
+
+    - id: longhorn-docs
+      name: "Longhorn Storage"
+      url: "https://longhorn.io/docs/"
+      type: html
+      output: "orchestration/longhorn.md"
+      note: "Cloud-native distributed storage for K8s"
+
+  # ============================================================================
   # CASTING - Device Casting
   # ============================================================================
   casting:

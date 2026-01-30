@@ -707,6 +707,245 @@ sensor:
 
 ---
 
+## Container Orchestration
+
+> Deployment patterns for Kubernetes, K3s, and Docker Swarm
+
+### Deployment Modes
+
+| Mode | Use Case | Scaling | State |
+|------|----------|---------|-------|
+| **Single Instance** | Home server, NAS | None | Local volumes |
+| **Docker Compose** | Small deployments | Manual | Named volumes |
+| **Docker Swarm** | Multi-node home lab | Replicas | Shared storage |
+| **K3s** | Lightweight K8s | HPA | PVC |
+| **Kubernetes** | Production, HA | HPA + VPA | PVC + CSI |
+
+### Architecture Requirements
+
+| Component | Stateless | Scalable | Notes |
+|-----------|-----------|----------|-------|
+| Revenge API | Yes | Yes | Horizontal scaling OK |
+| River Workers | Yes | Yes | Distributed job processing |
+| PostgreSQL | No | Read replicas | Use managed DB or StatefulSet |
+| Dragonfly | No | Cluster mode | Use managed Redis or StatefulSet |
+| Typesense | No | Cluster mode | StatefulSet with PVC |
+| ErsatzTV | No | Single | Per-channel instance possible |
+
+### Kubernetes Resources
+
+```yaml
+# Deployment pattern for stateless Revenge pods
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: revenge
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: revenge
+  template:
+    spec:
+      containers:
+      - name: revenge
+        image: revenge:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: revenge-config
+        - secretRef:
+            name: revenge-secrets
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: media
+          mountPath: /media
+          readOnly: true
+      volumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-pvc
+```
+
+### Helm Chart Structure
+
+```
+charts/revenge/
+├── Chart.yaml
+├── values.yaml
+├── templates/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── ingress.yaml
+│   ├── configmap.yaml
+│   ├── secret.yaml
+│   ├── hpa.yaml
+│   ├── pvc.yaml
+│   └── _helpers.tpl
+└── charts/
+    ├── postgresql/          # Bitnami subchart
+    ├── dragonfly/           # Optional subchart
+    └── typesense/           # Optional subchart
+```
+
+### Docker Swarm Stack
+
+```yaml
+version: "3.8"
+services:
+  revenge:
+    image: revenge:latest
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+    environment:
+      REVENGE_DATABASE_URL: "postgres://revenge:secret@db:5432/revenge"
+      REVENGE_CACHE_URL: "redis://dragonfly:6379"
+    volumes:
+      - media:/media:ro
+    networks:
+      - revenge-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: postgres:18
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - revenge-net
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - dfdata:/data
+    networks:
+      - revenge-net
+
+volumes:
+  media:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=nas.local,rw
+      device: ":/volume1/media"
+  pgdata:
+  dfdata:
+
+networks:
+  revenge-net:
+    driver: overlay
+```
+
+### K3s Specifics
+
+| Feature | K3s Approach | Notes |
+|---------|--------------|-------|
+| **Ingress** | Traefik (default) | Auto-provisioned |
+| **Storage** | Local-path (default) | Or Longhorn for HA |
+| **Load Balancer** | ServiceLB (default) | Or MetalLB |
+| **Certificates** | cert-manager | Let's Encrypt |
+
+### Scaling Strategy
+
+| Component | Min | Max | Trigger |
+|-----------|-----|-----|---------|
+| Revenge API | 2 | 10 | CPU > 70% |
+| River Workers | 1 | 5 | Queue depth > 100 |
+| Transcoding | 0 | 3 | Active transcode jobs |
+
+### Persistent Storage
+
+| Data Type | Storage Class | Access Mode | Backup |
+|-----------|---------------|-------------|--------|
+| Database | SSD/NVMe | RWO | pg_dump daily |
+| Cache | SSD | RWO | Not required |
+| Search Index | SSD | RWO | Rebuild from DB |
+| Media Files | HDD/NAS | ROX | External backup |
+| Config | Any | RWO | GitOps |
+
+### Service Discovery
+
+| Platform | Method | Service Name |
+|----------|--------|--------------|
+| Docker Compose | DNS | `revenge`, `db`, `dragonfly` |
+| Docker Swarm | DNS + VIP | `revenge_revenge`, `revenge_db` |
+| Kubernetes | CoreDNS | `revenge.default.svc.cluster.local` |
+
+### Secrets Management
+
+| Platform | Method | Notes |
+|----------|--------|-------|
+| Docker Compose | `.env` file | Not for production |
+| Docker Swarm | Docker Secrets | `docker secret create` |
+| Kubernetes | Secrets + Sealed Secrets | Encrypt at rest |
+| External | Vault, AWS Secrets Manager | Enterprise |
+
+### Init Containers (K8s)
+
+```yaml
+initContainers:
+- name: wait-for-db
+  image: busybox
+  command: ['sh', '-c', 'until nc -z db 5432; do sleep 2; done']
+- name: run-migrations
+  image: revenge:latest
+  command: ['revenge', 'migrate', 'up']
+  envFrom:
+  - secretRef:
+      name: revenge-secrets
+```
+
+### Resource Recommendations
+
+| Deployment | CPU Request | Memory Request | CPU Limit | Memory Limit |
+|------------|-------------|----------------|-----------|--------------|
+| Minimal | 100m | 256Mi | 500m | 512Mi |
+| Standard | 250m | 512Mi | 1000m | 1Gi |
+| Production | 500m | 1Gi | 2000m | 2Gi |
+| + Transcoding | 2000m | 2Gi | 4000m | 4Gi |
+
+---
+
 ## Guided Setup Wizard
 
 ### Initial Setup Flow
