@@ -1,9 +1,11 @@
--- Activity Log
+-- Activity Log (uses new partitioned schema from migration 000021)
+-- Note: Prefer using audit_log.sql queries for audit-specific operations
+
 -- name: CreateActivityLog :one
 INSERT INTO activity_log (
-    user_id, type, severity, message, metadata, ip_address, user_agent
+    user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $8
 ) RETURNING *;
 
 -- name: ListActivityLogByUser :many
@@ -12,15 +14,15 @@ WHERE user_id = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3;
 
--- name: ListActivityLogByType :many
+-- name: ListActivityLogByAction :many
 SELECT * FROM activity_log
-WHERE type = $1
+WHERE action = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3;
 
--- name: ListActivityLogBySeverity :many
+-- name: ListActivityLogByModule :many
 SELECT * FROM activity_log
-WHERE severity = $1
+WHERE module = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3;
 

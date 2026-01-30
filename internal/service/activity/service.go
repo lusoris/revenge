@@ -1,4 +1,4 @@
-// Package activity provides activity logging services.
+// Package activity provides activity/audit logging services.
 package activity
 
 import (
@@ -9,38 +9,41 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 
 	"github.com/lusoris/revenge/internal/infra/database/db"
 )
 
-// Activity type constants matching the database enum.
+// Action constants for audit logging.
 const (
-	TypeUserLogin       = "user_login"
-	TypeUserLogout      = "user_logout"
-	TypeUserCreated     = "user_created"
-	TypeUserUpdated     = "user_updated"
-	TypeUserDeleted     = "user_deleted"
-	TypePasswordChanged = "password_changed"
-	TypeSessionCreated  = "session_created"
-	TypeSessionExpired  = "session_expired"
-	TypeLibraryCreated  = "library_created"
-	TypeLibraryUpdated  = "library_updated"
-	TypeLibraryDeleted  = "library_deleted"
-	TypeLibraryScanned  = "library_scanned"
-	TypeContentPlayed   = "content_played"
-	TypeContentRated    = "content_rated"
-	TypeSettingsChanged = "settings_changed"
-	TypeAPIError        = "api_error"
-	TypeSecurityEvent   = "security_event"
+	ActionMetadataEdit    = "metadata.edit"
+	ActionMetadataLock    = "metadata.lock"
+	ActionMetadataUnlock  = "metadata.unlock"
+	ActionMetadataRefresh = "metadata.refresh"
+	ActionImageUpload     = "image.upload"
+	ActionImageSelect     = "image.select"
+	ActionImageDelete     = "image.delete"
+	ActionContentDelete   = "content.delete"
+	ActionUserLogin       = "user.login"
+	ActionUserLogout      = "user.logout"
+	ActionUserCreate      = "user.create"
+	ActionUserUpdate      = "user.update"
+	ActionUserDelete      = "user.delete"
+	ActionLibraryCreate   = "library.create"
+	ActionLibraryUpdate   = "library.update"
+	ActionLibraryDelete   = "library.delete"
+	ActionLibraryScan     = "library.scan"
+	ActionSettingsChange  = "settings.change"
+	ActionSecurityEvent   = "security.event"
 )
 
-// Severity constants matching the database enum.
+// Module constants for categorizing audit entries.
 const (
-	SeverityInfo     = "info"
-	SeverityWarning  = "warning"
-	SeverityError    = "error"
-	SeverityCritical = "critical"
+	ModuleMovie   = "movie"
+	ModuleTVShow  = "tvshow"
+	ModuleQAR     = "qar"
+	ModuleUser    = "user"
+	ModuleLibrary = "library"
+	ModuleSystem  = "system"
 )
 
 // Service provides activity logging operations.
@@ -59,60 +62,52 @@ func NewService(queries *db.Queries, logger *slog.Logger) *Service {
 
 // LogParams contains parameters for logging an activity.
 type LogParams struct {
-	UserID    *uuid.UUID
-	Type      string
-	Severity  string
-	Message   string
-	Metadata  map[string]any
-	IPAddress netip.Addr
-	UserAgent *string
+	UserID     uuid.UUID
+	Action     string
+	Module     string
+	EntityID   uuid.UUID
+	EntityType string
+	Changes    map[string]any
+	IPAddress  netip.Addr
+	UserAgent  *string
 }
 
 // Log creates a new activity log entry.
 func (s *Service) Log(ctx context.Context, params LogParams) (*db.ActivityLog, error) {
-	// Default severity to info
-	severity := params.Severity
-	if severity == "" {
-		severity = SeverityInfo
-	}
-
-	// Marshal metadata to JSON
-	var metadata []byte
-	if params.Metadata != nil {
-		data, err := json.Marshal(params.Metadata)
+	// Marshal changes to JSON
+	var changesJSON json.RawMessage
+	if params.Changes != nil {
+		data, err := json.Marshal(params.Changes)
 		if err != nil {
-			s.logger.Warn("Failed to marshal activity metadata", "error", err)
-			metadata = []byte("{}")
+			s.logger.Warn("Failed to marshal activity changes", "error", err)
+			changesJSON = json.RawMessage("{}")
 		} else {
-			metadata = data
+			changesJSON = data
 		}
 	} else {
-		metadata = []byte("{}")
-	}
-
-	// Convert userID to pgtype.UUID
-	var userID pgtype.UUID
-	if params.UserID != nil {
-		userID = pgtype.UUID{Bytes: *params.UserID, Valid: true}
+		changesJSON = json.RawMessage("{}")
 	}
 
 	log, err := s.queries.CreateActivityLog(ctx, db.CreateActivityLogParams{
-		UserID:    userID,
-		Type:      params.Type,
-		Severity:  severity,
-		Message:   params.Message,
-		Metadata:  metadata,
-		IpAddress: params.IPAddress,
-		UserAgent: params.UserAgent,
+		UserID:     params.UserID,
+		Action:     params.Action,
+		Module:     params.Module,
+		EntityID:   params.EntityID,
+		EntityType: params.EntityType,
+		Changes:    changesJSON,
+		IpAddress:  params.IPAddress,
+		UserAgent:  params.UserAgent,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	// Also log to slog for observability
-	s.logger.Log(ctx, severityToLevel(severity), params.Message,
-		slog.String("type", params.Type),
-		slog.Any("user_id", params.UserID),
+	s.logger.Info("Activity logged",
+		slog.String("action", params.Action),
+		slog.String("module", params.Module),
+		slog.String("user_id", params.UserID.String()),
+		slog.String("entity_id", params.EntityID.String()),
 	)
 
 	return &log, nil
@@ -121,12 +116,14 @@ func (s *Service) Log(ctx context.Context, params LogParams) (*db.ActivityLog, e
 // LogUserLogin logs a user login event.
 func (s *Service) LogUserLogin(ctx context.Context, userID uuid.UUID, ip netip.Addr, userAgent *string) error {
 	_, err := s.Log(ctx, LogParams{
-		UserID:    &userID,
-		Type:      TypeUserLogin,
-		Severity:  SeverityInfo,
-		Message:   "User logged in",
-		IPAddress: ip,
-		UserAgent: userAgent,
+		UserID:     userID,
+		Action:     ActionUserLogin,
+		Module:     ModuleUser,
+		EntityID:   userID,
+		EntityType: "user",
+		Changes:    map[string]any{},
+		IPAddress:  ip,
+		UserAgent:  userAgent,
 	})
 	return err
 }
@@ -134,35 +131,45 @@ func (s *Service) LogUserLogin(ctx context.Context, userID uuid.UUID, ip netip.A
 // LogUserLogout logs a user logout event.
 func (s *Service) LogUserLogout(ctx context.Context, userID uuid.UUID) error {
 	_, err := s.Log(ctx, LogParams{
-		UserID:   &userID,
-		Type:     TypeUserLogout,
-		Severity: SeverityInfo,
-		Message:  "User logged out",
+		UserID:     userID,
+		Action:     ActionUserLogout,
+		Module:     ModuleUser,
+		EntityID:   userID,
+		EntityType: "user",
+		Changes:    map[string]any{},
+	})
+	return err
+}
+
+// LogMetadataEdit logs a metadata edit event.
+func (s *Service) LogMetadataEdit(ctx context.Context, userID uuid.UUID, module, entityType string, entityID uuid.UUID, changes map[string]any) error {
+	_, err := s.Log(ctx, LogParams{
+		UserID:     userID,
+		Action:     ActionMetadataEdit,
+		Module:     module,
+		EntityID:   entityID,
+		EntityType: entityType,
+		Changes:    changes,
 	})
 	return err
 }
 
 // LogSecurityEvent logs a security-related event.
-func (s *Service) LogSecurityEvent(ctx context.Context, userID *uuid.UUID, message string, metadata map[string]any, ip netip.Addr) error {
-	_, err := s.Log(ctx, LogParams{
-		UserID:    userID,
-		Type:      TypeSecurityEvent,
-		Severity:  SeverityWarning,
-		Message:   message,
-		Metadata:  metadata,
-		IPAddress: ip,
-	})
-	return err
-}
+func (s *Service) LogSecurityEvent(ctx context.Context, userID uuid.UUID, message string, metadata map[string]any, ip netip.Addr) error {
+	changes := metadata
+	if changes == nil {
+		changes = map[string]any{}
+	}
+	changes["message"] = message
 
-// LogAPIError logs an API error event.
-func (s *Service) LogAPIError(ctx context.Context, userID *uuid.UUID, message string, metadata map[string]any) error {
 	_, err := s.Log(ctx, LogParams{
-		UserID:   userID,
-		Type:     TypeAPIError,
-		Severity: SeverityError,
-		Message:  message,
-		Metadata: metadata,
+		UserID:     userID,
+		Action:     ActionSecurityEvent,
+		Module:     ModuleSystem,
+		EntityID:   userID,
+		EntityType: "user",
+		Changes:    changes,
+		IPAddress:  ip,
 	})
 	return err
 }
@@ -170,27 +177,27 @@ func (s *Service) LogAPIError(ctx context.Context, userID *uuid.UUID, message st
 // ListByUser returns activity logs for a specific user.
 func (s *Service) ListByUser(ctx context.Context, userID uuid.UUID, limit, offset int32) ([]db.ActivityLog, error) {
 	return s.queries.ListActivityLogByUser(ctx, db.ListActivityLogByUserParams{
-		UserID: pgtype.UUID{Bytes: userID, Valid: true},
+		UserID: userID,
 		Limit:  limit,
 		Offset: offset,
 	})
 }
 
-// ListByType returns activity logs filtered by type.
-func (s *Service) ListByType(ctx context.Context, activityType string, limit, offset int32) ([]db.ActivityLog, error) {
-	return s.queries.ListActivityLogByType(ctx, db.ListActivityLogByTypeParams{
-		Type:   activityType,
+// ListByAction returns activity logs filtered by action.
+func (s *Service) ListByAction(ctx context.Context, action string, limit, offset int32) ([]db.ActivityLog, error) {
+	return s.queries.ListActivityLogByAction(ctx, db.ListActivityLogByActionParams{
+		Action: action,
 		Limit:  limit,
 		Offset: offset,
 	})
 }
 
-// ListBySeverity returns activity logs filtered by severity.
-func (s *Service) ListBySeverity(ctx context.Context, severity string, limit, offset int32) ([]db.ActivityLog, error) {
-	return s.queries.ListActivityLogBySeverity(ctx, db.ListActivityLogBySeverityParams{
-		Severity: severity,
-		Limit:    limit,
-		Offset:   offset,
+// ListByModule returns activity logs filtered by module.
+func (s *Service) ListByModule(ctx context.Context, module string, limit, offset int32) ([]db.ActivityLog, error) {
+	return s.queries.ListActivityLogByModule(ctx, db.ListActivityLogByModuleParams{
+		Module: module,
+		Limit:  limit,
+		Offset: offset,
 	})
 }
 
@@ -205,18 +212,4 @@ func (s *Service) ListRecent(ctx context.Context, limit, offset int32) ([]db.Act
 // DeleteOlderThan deletes activity logs older than the specified time.
 func (s *Service) DeleteOlderThan(ctx context.Context, before time.Time) error {
 	return s.queries.DeleteOldActivityLogs(ctx, before)
-}
-
-// severityToLevel converts activity severity to slog level.
-func severityToLevel(severity string) slog.Level {
-	switch severity {
-	case SeverityCritical:
-		return slog.LevelError + 4 // Custom level above Error
-	case SeverityError:
-		return slog.LevelError
-	case SeverityWarning:
-		return slog.LevelWarn
-	default:
-		return slog.LevelInfo
-	}
 }

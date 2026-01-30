@@ -12,6 +12,19 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countUsersByRoleName = `-- name: CountUsersByRoleName :one
+SELECT COUNT(*) FROM users u
+JOIN roles r ON r.id = u.role_id
+WHERE r.name = $1
+`
+
+func (q *Queries) CountUsersByRoleName(ctx context.Context, name string) (int64, error) {
+	row := q.db.QueryRow(ctx, countUsersByRoleName, name)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countUsersWithRole = `-- name: CountUsersWithRole :one
 SELECT COUNT(*) FROM users WHERE role_id = $1
 `
@@ -266,6 +279,56 @@ func (q *Queries) ListRoles(ctx context.Context) ([]Role, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.CreatedBy,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listUsersByRoleName = `-- name: ListUsersByRoleName :many
+SELECT u.id, u.username, u.email, u.password_hash, u.is_admin, u.is_disabled, u.max_rating_level, u.adult_enabled, u.preferred_language, u.preferred_rating_system, u.last_login_at, u.created_at, u.updated_at, u.role, u.role_id FROM users u
+JOIN roles r ON r.id = u.role_id
+WHERE r.name = $1
+ORDER BY u.created_at DESC
+LIMIT $2 OFFSET $3
+`
+
+type ListUsersByRoleNameParams struct {
+	Name   string `json:"name"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
+}
+
+func (q *Queries) ListUsersByRoleName(ctx context.Context, arg ListUsersByRoleNameParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsersByRoleName, arg.Name, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []User{}
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.Email,
+			&i.PasswordHash,
+			&i.IsAdmin,
+			&i.IsDisabled,
+			&i.MaxRatingLevel,
+			&i.AdultEnabled,
+			&i.PreferredLanguage,
+			&i.PreferredRatingSystem,
+			&i.LastLoginAt,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Role,
+			&i.RoleID,
 		); err != nil {
 			return nil, err
 		}

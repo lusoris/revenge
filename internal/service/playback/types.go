@@ -2,6 +2,7 @@
 package playback
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -66,4 +67,21 @@ type UpNextItem struct {
 type UpNextQueue struct {
 	Items       []UpNextItem `json:"items"`
 	CurrentItem *UpNextItem  `json:"currentItem,omitempty"`
+}
+
+// UpNextProvider defines the interface for content modules to provide up-next items.
+type UpNextProvider interface {
+	// GetUpNextItems returns the next items to play after the given media.
+	// For TV: next episodes in the series
+	// For Movies: similar movies or next in collection
+	// For Adult: similar content
+	GetUpNextItems(ctx context.Context, userID, mediaID uuid.UUID, limit int) ([]UpNextItem, error)
+}
+
+// UpNextProviderFunc is a function adapter for UpNextProvider.
+type UpNextProviderFunc func(ctx context.Context, userID, mediaID uuid.UUID, limit int) ([]UpNextItem, error)
+
+// GetUpNextItems implements UpNextProvider.
+func (f UpNextProviderFunc) GetUpNextItems(ctx context.Context, userID, mediaID uuid.UUID, limit int) ([]UpNextItem, error) {
+	return f(ctx, userID, mediaID, limit)
 }

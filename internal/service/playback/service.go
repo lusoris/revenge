@@ -31,6 +31,9 @@ type Service struct {
 	userSessions   map[uuid.UUID]map[string]uuid.UUID // userID -> deviceID -> sessionID
 	userSessionsMu sync.RWMutex
 
+	// Up-next providers by media type
+	upNextProviders map[MediaType]UpNextProvider
+
 	// Configuration
 	autoMarkWatchedPercent float64       // Mark as watched when this percent is reached
 	continueWatchingDays   int           // How many days to keep in continue watching
@@ -43,10 +46,16 @@ func NewService(logger *slog.Logger) *Service {
 		logger:                 logger.With(slog.String("service", "playback")),
 		sessions:               make(map[uuid.UUID]*PlaybackSession),
 		userSessions:           make(map[uuid.UUID]map[string]uuid.UUID),
+		upNextProviders:        make(map[MediaType]UpNextProvider),
 		autoMarkWatchedPercent: 90.0,
 		continueWatchingDays:   30,
 		sessionTimeout:         30 * time.Minute,
 	}
+}
+
+// RegisterUpNextProvider registers a provider for a specific media type.
+func (s *Service) RegisterUpNextProvider(mediaType MediaType, provider UpNextProvider) {
+	s.upNextProviders[mediaType] = provider
 }
 
 // StartPlayback starts a new playback session or resumes an existing one.
@@ -219,11 +228,34 @@ func (s *Service) GetUserSessions(ctx context.Context, userID uuid.UUID) ([]*Pla
 // For movies: similar movies or next in collection
 // For adult: similar content
 func (s *Service) BuildUpNextQueue(ctx context.Context, userID, currentMediaID uuid.UUID, mediaType MediaType) (*UpNextQueue, error) {
-	// TODO: Implement based on media type
-	// For now, return empty queue
-	return &UpNextQueue{
-		Items: []UpNextItem{},
-	}, nil
+	provider, ok := s.upNextProviders[mediaType]
+	if !ok {
+		// No provider registered for this media type
+		s.logger.Debug("No up-next provider for media type",
+			slog.String("media_type", string(mediaType)),
+		)
+		return &UpNextQueue{Items: []UpNextItem{}}, nil
+	}
+
+	items, err := provider.GetUpNextItems(ctx, userID, currentMediaID, 10) // Get up to 10 items
+	if err != nil {
+		s.logger.Error("Failed to get up-next items",
+			slog.String("media_type", string(mediaType)),
+			slog.String("error", err.Error()),
+		)
+		return &UpNextQueue{Items: []UpNextItem{}}, nil // Return empty queue on error
+	}
+
+	queue := &UpNextQueue{
+		Items: items,
+	}
+
+	// Set the first item as current if available
+	if len(items) > 0 {
+		queue.CurrentItem = &items[0]
+	}
+
+	return queue, nil
 }
 
 // CleanupInactiveSessions removes sessions that have been inactive for too long.

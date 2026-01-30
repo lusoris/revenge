@@ -30,7 +30,7 @@ INSERT INTO profiles (
     autoplay_next, autoplay_previews
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
-) RETURNING id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at
+) RETURNING id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at, auto_play_enabled, auto_play_delay_seconds, continue_watching_days, mark_watched_percent, adult_pin_hash
 `
 
 type CreateProfileParams struct {
@@ -80,6 +80,11 @@ func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (P
 		&i.AutoplayPreviews,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AutoPlayEnabled,
+		&i.AutoPlayDelaySeconds,
+		&i.ContinueWatchingDays,
+		&i.MarkWatchedPercent,
+		&i.AdultPinHash,
 	)
 	return i, err
 }
@@ -94,7 +99,7 @@ func (q *Queries) DeleteProfile(ctx context.Context, id uuid.UUID) error {
 }
 
 const getDefaultProfile = `-- name: GetDefaultProfile :one
-SELECT id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at FROM profiles
+SELECT id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at, auto_play_enabled, auto_play_delay_seconds, continue_watching_days, mark_watched_percent, adult_pin_hash FROM profiles
 WHERE user_id = $1 AND is_default = true
 `
 
@@ -117,12 +122,17 @@ func (q *Queries) GetDefaultProfile(ctx context.Context, userID uuid.UUID) (Prof
 		&i.AutoplayPreviews,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AutoPlayEnabled,
+		&i.AutoPlayDelaySeconds,
+		&i.ContinueWatchingDays,
+		&i.MarkWatchedPercent,
+		&i.AdultPinHash,
 	)
 	return i, err
 }
 
 const getProfileByID = `-- name: GetProfileByID :one
-SELECT id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at FROM profiles WHERE id = $1
+SELECT id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at, auto_play_enabled, auto_play_delay_seconds, continue_watching_days, mark_watched_percent, adult_pin_hash FROM profiles WHERE id = $1
 `
 
 func (q *Queries) GetProfileByID(ctx context.Context, id uuid.UUID) (Profile, error) {
@@ -144,12 +154,17 @@ func (q *Queries) GetProfileByID(ctx context.Context, id uuid.UUID) (Profile, er
 		&i.AutoplayPreviews,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AutoPlayEnabled,
+		&i.AutoPlayDelaySeconds,
+		&i.ContinueWatchingDays,
+		&i.MarkWatchedPercent,
+		&i.AdultPinHash,
 	)
 	return i, err
 }
 
 const listProfilesByUser = `-- name: ListProfilesByUser :many
-SELECT id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at FROM profiles
+SELECT id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at, auto_play_enabled, auto_play_delay_seconds, continue_watching_days, mark_watched_percent, adult_pin_hash FROM profiles
 WHERE user_id = $1
 ORDER BY is_default DESC, created_at ASC
 `
@@ -179,6 +194,11 @@ func (q *Queries) ListProfilesByUser(ctx context.Context, userID uuid.UUID) ([]P
 			&i.AutoplayPreviews,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.AutoPlayEnabled,
+			&i.AutoPlayDelaySeconds,
+			&i.ContinueWatchingDays,
+			&i.MarkWatchedPercent,
+			&i.AdultPinHash,
 		); err != nil {
 			return nil, err
 		}
@@ -218,7 +238,7 @@ UPDATE profiles SET
     autoplay_next = COALESCE($9, autoplay_next),
     autoplay_previews = COALESCE($10, autoplay_previews)
 WHERE id = $11
-RETURNING id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at
+RETURNING id, user_id, name, avatar_url, is_default, is_kids, max_rating_level, adult_enabled, preferred_language, preferred_audio_language, preferred_subtitle_language, autoplay_next, autoplay_previews, created_at, updated_at, auto_play_enabled, auto_play_delay_seconds, continue_watching_days, mark_watched_percent, adult_pin_hash
 `
 
 type UpdateProfileParams struct {
@@ -266,6 +286,11 @@ func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (P
 		&i.AutoplayPreviews,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.AutoPlayEnabled,
+		&i.AutoPlayDelaySeconds,
+		&i.ContinueWatchingDays,
+		&i.MarkWatchedPercent,
+		&i.AdultPinHash,
 	)
 	return i, err
 }

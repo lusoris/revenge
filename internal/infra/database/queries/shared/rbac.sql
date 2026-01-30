@@ -59,3 +59,15 @@ SELECT id, name, display_name, description, category, is_dangerous, created_at
 FROM permission_definitions
 WHERE category = $1
 ORDER BY name;
+
+-- name: ListUsersByRoleName :many
+SELECT u.* FROM users u
+JOIN roles r ON r.id = u.role_id
+WHERE r.name = $1
+ORDER BY u.created_at DESC
+LIMIT $2 OFFSET $3;
+
+-- name: CountUsersByRoleName :one
+SELECT COUNT(*) FROM users u
+JOIN roles r ON r.id = u.role_id
+WHERE r.name = $1;

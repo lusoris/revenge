@@ -11,35 +11,39 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 const createActivityLog = `-- name: CreateActivityLog :one
+
 INSERT INTO activity_log (
-    user_id, type, severity, message, metadata, ip_address, user_agent
+    user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at
+    $1, $2, $3, $4, $5, $6, $7, $8
+) RETURNING id, user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent, created_at
 `
 
 type CreateActivityLogParams struct {
-	UserID    pgtype.UUID `json:"userId"`
-	Type      string      `json:"type"`
-	Severity  string      `json:"severity"`
-	Message   string      `json:"message"`
-	Metadata  []byte      `json:"metadata"`
-	IpAddress netip.Addr  `json:"ipAddress"`
-	UserAgent *string     `json:"userAgent"`
+	UserID     uuid.UUID       `json:"userId"`
+	Action     string          `json:"action"`
+	Module     string          `json:"module"`
+	EntityID   uuid.UUID       `json:"entityId"`
+	EntityType string          `json:"entityType"`
+	Changes    json.RawMessage `json:"changes"`
+	IpAddress  netip.Addr      `json:"ipAddress"`
+	UserAgent  *string         `json:"userAgent"`
 }
 
-// Activity Log
+// Activity Log (uses new partitioned schema from migration 000021)
+// Note: Prefer using audit_log.sql queries for audit-specific operations
 func (q *Queries) CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error) {
 	row := q.db.QueryRow(ctx, createActivityLog,
 		arg.UserID,
-		arg.Type,
-		arg.Severity,
-		arg.Message,
-		arg.Metadata,
+		arg.Action,
+		arg.Module,
+		arg.EntityID,
+		arg.EntityType,
+		arg.Changes,
 		arg.IpAddress,
 		arg.UserAgent,
 	)
@@ -47,10 +51,11 @@ func (q *Queries) CreateActivityLog(ctx context.Context, arg CreateActivityLogPa
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.Type,
-		&i.Severity,
-		&i.Message,
-		&i.Metadata,
+		&i.Action,
+		&i.Module,
+		&i.EntityID,
+		&i.EntityType,
+		&i.Changes,
 		&i.IpAddress,
 		&i.UserAgent,
 		&i.CreatedAt,
@@ -161,21 +166,21 @@ func (q *Queries) GetServerSettingsByCategory(ctx context.Context, category stri
 	return items, nil
 }
 
-const listActivityLogBySeverity = `-- name: ListActivityLogBySeverity :many
-SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
-WHERE severity = $1
+const listActivityLogByAction = `-- name: ListActivityLogByAction :many
+SELECT id, user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent, created_at FROM activity_log
+WHERE action = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
 `
 
-type ListActivityLogBySeverityParams struct {
-	Severity string `json:"severity"`
-	Limit    int32  `json:"limit"`
-	Offset   int32  `json:"offset"`
+type ListActivityLogByActionParams struct {
+	Action string `json:"action"`
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
 }
 
-func (q *Queries) ListActivityLogBySeverity(ctx context.Context, arg ListActivityLogBySeverityParams) ([]ActivityLog, error) {
-	rows, err := q.db.Query(ctx, listActivityLogBySeverity, arg.Severity, arg.Limit, arg.Offset)
+func (q *Queries) ListActivityLogByAction(ctx context.Context, arg ListActivityLogByActionParams) ([]ActivityLog, error) {
+	rows, err := q.db.Query(ctx, listActivityLogByAction, arg.Action, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -186,10 +191,11 @@ func (q *Queries) ListActivityLogBySeverity(ctx context.Context, arg ListActivit
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.Type,
-			&i.Severity,
-			&i.Message,
-			&i.Metadata,
+			&i.Action,
+			&i.Module,
+			&i.EntityID,
+			&i.EntityType,
+			&i.Changes,
 			&i.IpAddress,
 			&i.UserAgent,
 			&i.CreatedAt,
@@ -204,21 +210,21 @@ func (q *Queries) ListActivityLogBySeverity(ctx context.Context, arg ListActivit
 	return items, nil
 }
 
-const listActivityLogByType = `-- name: ListActivityLogByType :many
-SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
-WHERE type = $1
+const listActivityLogByModule = `-- name: ListActivityLogByModule :many
+SELECT id, user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent, created_at FROM activity_log
+WHERE module = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
 `
 
-type ListActivityLogByTypeParams struct {
-	Type   string `json:"type"`
+type ListActivityLogByModuleParams struct {
+	Module string `json:"module"`
 	Limit  int32  `json:"limit"`
 	Offset int32  `json:"offset"`
 }
 
-func (q *Queries) ListActivityLogByType(ctx context.Context, arg ListActivityLogByTypeParams) ([]ActivityLog, error) {
-	rows, err := q.db.Query(ctx, listActivityLogByType, arg.Type, arg.Limit, arg.Offset)
+func (q *Queries) ListActivityLogByModule(ctx context.Context, arg ListActivityLogByModuleParams) ([]ActivityLog, error) {
+	rows, err := q.db.Query(ctx, listActivityLogByModule, arg.Module, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -229,10 +235,11 @@ func (q *Queries) ListActivityLogByType(ctx context.Context, arg ListActivityLog
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.Type,
-			&i.Severity,
-			&i.Message,
-			&i.Metadata,
+			&i.Action,
+			&i.Module,
+			&i.EntityID,
+			&i.EntityType,
+			&i.Changes,
 			&i.IpAddress,
 			&i.UserAgent,
 			&i.CreatedAt,
@@ -248,16 +255,16 @@ func (q *Queries) ListActivityLogByType(ctx context.Context, arg ListActivityLog
 }
 
 const listActivityLogByUser = `-- name: ListActivityLogByUser :many
-SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
+SELECT id, user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent, created_at FROM activity_log
 WHERE user_id = $1
 ORDER BY created_at DESC
 LIMIT $2 OFFSET $3
 `
 
 type ListActivityLogByUserParams struct {
-	UserID pgtype.UUID `json:"userId"`
-	Limit  int32       `json:"limit"`
-	Offset int32       `json:"offset"`
+	UserID uuid.UUID `json:"userId"`
+	Limit  int32     `json:"limit"`
+	Offset int32     `json:"offset"`
 }
 
 func (q *Queries) ListActivityLogByUser(ctx context.Context, arg ListActivityLogByUserParams) ([]ActivityLog, error) {
@@ -272,10 +279,11 @@ func (q *Queries) ListActivityLogByUser(ctx context.Context, arg ListActivityLog
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.Type,
-			&i.Severity,
-			&i.Message,
-			&i.Metadata,
+			&i.Action,
+			&i.Module,
+			&i.EntityID,
+			&i.EntityType,
+			&i.Changes,
 			&i.IpAddress,
 			&i.UserAgent,
 			&i.CreatedAt,
@@ -291,7 +299,7 @@ func (q *Queries) ListActivityLogByUser(ctx context.Context, arg ListActivityLog
 }
 
 const listRecentActivity = `-- name: ListRecentActivity :many
-SELECT id, user_id, type, severity, message, metadata, ip_address, user_agent, created_at FROM activity_log
+SELECT id, user_id, action, module, entity_id, entity_type, changes, ip_address, user_agent, created_at FROM activity_log
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
@@ -313,10 +321,11 @@ func (q *Queries) ListRecentActivity(ctx context.Context, arg ListRecentActivity
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.Type,
-			&i.Severity,
-			&i.Message,
-			&i.Metadata,
+			&i.Action,
+			&i.Module,
+			&i.EntityID,
+			&i.EntityType,
+			&i.Changes,
 			&i.IpAddress,
 			&i.UserAgent,
 			&i.CreatedAt,

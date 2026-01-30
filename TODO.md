@@ -18,7 +18,7 @@ Library Refactor          ██████████████████
 Movie Module              ████████████████████████ 100% ✓
 TV Shows Module           ████████████████████████ 100% ✓
 Adult Module (QAR)        ████████████████████████ 100% ✓
-Pre-Test Implementation   ██████████░░░░░░░░░░░░░░  40%  <- CURRENT
+Pre-Test Implementation   ███████████████░░░░░░░░░  60%  <- CURRENT
 Unit Tests                ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Integration Tests         ░░░░░░░░░░░░░░░░░░░░░░░░   0%
 Music Module              ░░░░░░░░░░░░░░░░░░░░░░░░   0%
@@ -109,11 +109,13 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
   - [x] UpdateProgress(ctx, sessionID, positionTicks)
   - [x] StopPlayback(ctx, sessionID)
   - [x] GetActiveSession(ctx, userID, mediaID)
-- [ ] **Up Next / Auto-Play Queue** (stub implemented)
-  - [ ] BuildUpNextQueue(ctx, userID, currentMediaID) → []MediaItem
-  - [ ] TV: next episode in series
-  - [ ] Movie: similar movies or collection next
-  - [ ] QAR: similar expeditions
+- [x] **Up Next / Auto-Play Queue** (framework with provider interfaces)
+  - [x] BuildUpNextQueue(ctx, userID, currentMediaID) → []MediaItem
+  - [x] UpNextProvider interface for content modules
+  - [x] RegisterUpNextProvider() for module registration
+  - [ ] TV: next episode in series (provider impl)
+  - [ ] Movie: similar movies or collection next (provider impl)
+  - [ ] QAR: similar expeditions (provider impl)
 - [ ] **API endpoints**
   - [ ] POST /api/playback/start
   - [ ] PUT /api/playback/{sessionId}/progress
@@ -127,19 +129,20 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **BroadcastToUser()** - notify all user sessions of changes
 
 ### A.6 RBAC Completion
-- [ ] **Missing Casbin methods** in `internal/service/rbac/casbin.go`
-  - [ ] Enforce(subject, object, action) bool
-  - [ ] AddRoleForUser(userID, role)
-  - [ ] RemoveRoleForUser(userID, role)
-  - [ ] GetRolesForUser(userID) []string
-  - [ ] GetUsersForRole(role) []string
-  - [ ] GetPermissionsForUser(userID) [][]string
-- [ ] **Resource grants table** (polymorphic permissions)
-  - [ ] Migration: `shared/000021_resource_grants.up.sql`
-  - [ ] HasGrant(userID, resourceType, resourceID, permission) bool
-  - [ ] CreateGrant(userID, resourceType, resourceID, permission)
-  - [ ] DeleteGrant(grantID)
-  - [ ] DeleteByResource(resourceType, resourceID)
+- [x] **Missing Casbin methods** in `internal/service/rbac/casbin.go`
+  - [x] SetUserRole(userID, role) - assigns role to user
+  - [x] AddRoleForUser(userID, role) - alias for SetUserRole
+  - [x] RemoveRoleForUser(userID) - sets user to default role
+  - [x] GetUserRole(userID) → Role
+  - [x] GetUsersForRole(role) → []uuid.UUID
+  - [x] CountUsersForRole(role) → int64
+- [x] **Resource grants table** (polymorphic permissions)
+  - [x] Migration: `shared/000019_resource_grants.up.sql`
+  - [x] Service: `internal/service/grants/`
+  - [x] HasGrant(userID, resourceType, resourceID, grantTypes...) bool
+  - [x] CreateGrant(userID, resourceType, resourceID, grantType)
+  - [x] DeleteGrant(userID, resourceType, resourceID)
+  - [x] DeleteByResource(resourceType, resourceID)
 - [ ] **Missing permissions** to seed
   - [ ] access.rules.view, access.rules.manage, access.bypass
   - [ ] request.* permissions (15 total)
@@ -152,29 +155,37 @@ Frontend                  ░░░░░░░░░░░░░░░░░░
 - [ ] **Add QAR-specific health** - check adult module enabled
 
 ### A.8 User Preferences
-- [ ] **Add preference fields** to user_profiles table
-  - [ ] auto_play_enabled boolean DEFAULT true
-  - [ ] auto_play_delay_seconds int DEFAULT 10
-  - [ ] continue_watching_days int DEFAULT 30
-  - [ ] mark_watched_percent int DEFAULT 90
-  - [ ] adult_pin_hash text (for PIN protection)
+- [x] **Add preference fields** to profiles table
+  - [x] Migration: `shared/000020_user_preferences.up.sql`
+  - [x] auto_play_enabled boolean DEFAULT true
+  - [x] auto_play_delay_seconds int DEFAULT 10
+  - [x] continue_watching_days int DEFAULT 30
+  - [x] mark_watched_percent int DEFAULT 90
+  - [x] adult_pin_hash text (for PIN protection)
 - [ ] **API endpoints**
   - [ ] GET /api/users/me/preferences
   - [ ] PUT /api/users/me/preferences
 - [ ] **Implement PIN protection** (optional adult content lock)
 
 ### A.9 Audit Logging
-- [ ] **Redesign activity_log schema**
-  - [ ] Add: module, entity_id, entity_type, changes (JSONB)
-  - [ ] Partition by month for performance
-- [ ] **River async worker** for audit writes
-  - [ ] AuditLogWorker - fire-and-forget audit entries
+- [x] **Redesign activity_log schema**
+  - [x] Migration: `shared/000021_audit_log_redesign.up.sql`
+  - [x] Add: module, entity_id, entity_type, changes (JSONB)
+  - [x] Partition by month (2026-01 through 2026-06 + default)
+  - [x] Updated activity service to use new schema
+- [x] **River async worker** for audit writes
+  - [x] AuditLogArgs job args in `internal/infra/jobs/workers.go`
+  - [x] AuditLogWorker - fire-and-forget audit entries
+  - [x] AuditLogger interface for dependency injection
 - [ ] **Adult access audit** - log all QAR access
   - [ ] user_id, resource_type, resource_id, action, timestamp, ip
 
 ### A.10 Documentation Cleanup
 - [x] **Remove bogus UPSTREAM_SYNC.md** (was hallucinated)
 - [x] **Remove sync scripts** (sync-upstream.sh, sync-upstream.ps1)
+- [x] **Create QUICKLIST.md** - task-based quick reference guide
+- [ ] **Split QUICKLIST.md** into themed files (rbac, playback, qar, etc.)
+- [ ] **Add cross-references** to design docs with templates
 - [ ] **Update TECH_STACK.md** - add casbin, otel
 - [ ] **Update CONFIGURATION.md** - reflects pkg/config/
 - [ ] **Review all docs/dev/design/** for accuracy

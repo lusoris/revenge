@@ -15,16 +15,22 @@ import (
 type Querier interface {
 	AddRolePermission(ctx context.Context, arg AddRolePermissionParams) error
 	CountActiveSessionsByUser(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountAuditLogsByEntity(ctx context.Context, arg CountAuditLogsByEntityParams) (int64, error)
 	CountProfilesByUser(ctx context.Context, userID uuid.UUID) (int64, error)
+	CountResourceGrants(ctx context.Context, arg CountResourceGrantsParams) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CountUsersByRole(ctx context.Context, role string) (int64, error)
+	CountUsersByRoleName(ctx context.Context, name string) (int64, error)
 	CountUsersWithRole(ctx context.Context, roleID pgtype.UUID) (int64, error)
 	CreateAPIKey(ctx context.Context, arg CreateAPIKeyParams) (ApiKey, error)
-	// Activity Log
+	// Activity Log (uses new partitioned schema from migration 000021)
+	// Note: Prefer using audit_log.sql queries for audit-specific operations
 	CreateActivityLog(ctx context.Context, arg CreateActivityLogParams) (ActivityLog, error)
+	CreateAuditLog(ctx context.Context, arg CreateAuditLogParams) (ActivityLog, error)
 	CreateOIDCLink(ctx context.Context, arg CreateOIDCLinkParams) (OidcUserLink, error)
 	CreateOIDCProvider(ctx context.Context, arg CreateOIDCProviderParams) (OidcProvider, error)
 	CreateProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
+	CreateResourceGrant(ctx context.Context, arg CreateResourceGrantParams) (ResourceGrant, error)
 	CreateRole(ctx context.Context, arg CreateRoleParams) (Role, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
@@ -32,13 +38,18 @@ type Querier interface {
 	DeactivateUserSessions(ctx context.Context, userID uuid.UUID) error
 	DeleteAPIKey(ctx context.Context, id uuid.UUID) error
 	DeleteExpiredAPIKeys(ctx context.Context) error
+	DeleteExpiredResourceGrants(ctx context.Context) error
 	DeleteExpiredSessions(ctx context.Context) error
 	DeleteOIDCLink(ctx context.Context, id uuid.UUID) error
 	DeleteOIDCLinksByProvider(ctx context.Context, providerID uuid.UUID) error
 	DeleteOIDCLinksByUser(ctx context.Context, userID uuid.UUID) error
 	DeleteOIDCProvider(ctx context.Context, id uuid.UUID) error
 	DeleteOldActivityLogs(ctx context.Context, createdAt time.Time) error
+	DeleteOldAuditLogs(ctx context.Context, createdAt time.Time) error
 	DeleteProfile(ctx context.Context, id uuid.UUID) error
+	DeleteResourceGrant(ctx context.Context, arg DeleteResourceGrantParams) error
+	DeleteResourceGrantByID(ctx context.Context, id uuid.UUID) error
+	DeleteResourceGrantsByResource(ctx context.Context, arg DeleteResourceGrantsByResourceParams) error
 	DeleteRole(ctx context.Context, name string) error
 	DeleteServerSetting(ctx context.Context, key string) error
 	DeleteSession(ctx context.Context, id uuid.UUID) error
@@ -48,6 +59,7 @@ type Querier interface {
 	GetAPIKeyByPrefix(ctx context.Context, keyPrefix string) ([]ApiKey, error)
 	// RBAC Permission queries
 	GetAllPermissions(ctx context.Context) ([]Permission, error)
+	GetAuditLogByID(ctx context.Context, arg GetAuditLogByIDParams) (ActivityLog, error)
 	GetDefaultProfile(ctx context.Context, userID uuid.UUID) (Profile, error)
 	GetDefaultRole(ctx context.Context) (Role, error)
 	// OIDC User Links
@@ -64,6 +76,7 @@ type Querier interface {
 	GetPermissionsForRole(ctx context.Context, role string) ([]Permission, error)
 	GetProfileByID(ctx context.Context, id uuid.UUID) (Profile, error)
 	GetPublicServerSettings(ctx context.Context) ([]ServerSetting, error)
+	GetResourceGrant(ctx context.Context, arg GetResourceGrantParams) (ResourceGrant, error)
 	GetRoleByID(ctx context.Context, id uuid.UUID) (Role, error)
 	GetRoleByName(ctx context.Context, name string) (Role, error)
 	GetRolesForPermission(ctx context.Context, permissionID int32) ([]string, error)
@@ -78,22 +91,32 @@ type Querier interface {
 	GetUserPermissionNames(ctx context.Context, id uuid.UUID) ([]string, error)
 	GetUserPermissions(ctx context.Context, id uuid.UUID) ([]Permission, error)
 	GetUserRoleName(ctx context.Context, id uuid.UUID) (string, error)
+	HasResourceGrant(ctx context.Context, arg HasResourceGrantParams) (bool, error)
 	ListAPIKeysByUser(ctx context.Context, userID uuid.UUID) ([]ApiKey, error)
 	ListActiveSessions(ctx context.Context, arg ListActiveSessionsParams) ([]Session, error)
-	ListActivityLogBySeverity(ctx context.Context, arg ListActivityLogBySeverityParams) ([]ActivityLog, error)
-	ListActivityLogByType(ctx context.Context, arg ListActivityLogByTypeParams) ([]ActivityLog, error)
+	ListActivityLogByAction(ctx context.Context, arg ListActivityLogByActionParams) ([]ActivityLog, error)
+	ListActivityLogByModule(ctx context.Context, arg ListActivityLogByModuleParams) ([]ActivityLog, error)
 	ListActivityLogByUser(ctx context.Context, arg ListActivityLogByUserParams) ([]ActivityLog, error)
+	ListAuditLogsByAction(ctx context.Context, arg ListAuditLogsByActionParams) ([]ActivityLog, error)
+	ListAuditLogsByEntity(ctx context.Context, arg ListAuditLogsByEntityParams) ([]ActivityLog, error)
+	ListAuditLogsByModule(ctx context.Context, arg ListAuditLogsByModuleParams) ([]ActivityLog, error)
+	ListAuditLogsByUser(ctx context.Context, arg ListAuditLogsByUserParams) ([]ActivityLog, error)
 	ListEnabledOIDCProviders(ctx context.Context) ([]OidcProvider, error)
 	ListOIDCLinksByUser(ctx context.Context, userID uuid.UUID) ([]ListOIDCLinksByUserRow, error)
 	ListOIDCProviders(ctx context.Context) ([]OidcProvider, error)
 	ListPermissionDefinitions(ctx context.Context) ([]PermissionDefinition, error)
 	ListProfilesByUser(ctx context.Context, userID uuid.UUID) ([]Profile, error)
 	ListRecentActivity(ctx context.Context, arg ListRecentActivityParams) ([]ActivityLog, error)
+	ListRecentAuditLogs(ctx context.Context, arg ListRecentAuditLogsParams) ([]ActivityLog, error)
+	ListResourceGrants(ctx context.Context, arg ListResourceGrantsParams) ([]ResourceGrant, error)
 	ListRoles(ctx context.Context) ([]Role, error)
 	ListServerSettings(ctx context.Context) ([]ServerSetting, error)
 	ListSessionsByUser(ctx context.Context, userID uuid.UUID) ([]Session, error)
+	ListUserResourceGrants(ctx context.Context, arg ListUserResourceGrantsParams) ([]ResourceGrant, error)
+	ListUserResourceGrantsByType(ctx context.Context, arg ListUserResourceGrantsByTypeParams) ([]ResourceGrant, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	ListUsersByRole(ctx context.Context, arg ListUsersByRoleParams) ([]User, error)
+	ListUsersByRoleName(ctx context.Context, arg ListUsersByRoleNameParams) ([]User, error)
 	RemoveRolePermission(ctx context.Context, arg RemoveRolePermissionParams) error
 	SetDefaultProfile(ctx context.Context, arg SetDefaultProfileParams) error
 	SetDefaultRole(ctx context.Context, name string) error
@@ -102,6 +125,7 @@ type Querier interface {
 	UpdateOIDCLinkLogin(ctx context.Context, arg UpdateOIDCLinkLoginParams) error
 	UpdateOIDCProvider(ctx context.Context, arg UpdateOIDCProviderParams) (OidcProvider, error)
 	UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error)
+	UpdateResourceGrant(ctx context.Context, arg UpdateResourceGrantParams) (ResourceGrant, error)
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error)
 	UpdateSessionActivity(ctx context.Context, arg UpdateSessionActivityParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)

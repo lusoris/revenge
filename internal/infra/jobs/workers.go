@@ -18,6 +18,7 @@ const (
 	QueueIndexing = "indexing"
 	QueueImages   = "images"
 	QueueCleanup  = "cleanup"
+	QueueAudit    = "audit"
 )
 
 // =============================================================================
@@ -162,6 +163,27 @@ func (args GenerateTrickplayArgs) InsertOpts() river.InsertOpts {
 	}
 }
 
+// AuditLogArgs are arguments for writing audit log entries async.
+type AuditLogArgs struct {
+	UserID     uuid.UUID         `json:"user_id"`
+	Action     string            `json:"action"`
+	Module     string            `json:"module"`
+	EntityID   uuid.UUID         `json:"entity_id"`
+	EntityType string            `json:"entity_type"`
+	Changes    map[string]any    `json:"changes"`
+	IPAddress  string            `json:"ip_address,omitempty"`
+	UserAgent  string            `json:"user_agent,omitempty"`
+}
+
+func (AuditLogArgs) Kind() string { return "audit_log" }
+
+func (args AuditLogArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{
+		Queue:    QueueAudit,
+		Priority: 4, // Low priority - fire and forget
+	}
+}
+
 // =============================================================================
 // Worker Dependencies - Interfaces for worker dependencies
 // =============================================================================
@@ -197,6 +219,11 @@ type CleanupService interface {
 // TrickplayGenerator handles trickplay generation.
 type TrickplayGenerator interface {
 	Generate(ctx context.Context, contentType string, contentID, streamID uuid.UUID) error
+}
+
+// AuditLogger handles audit log writing.
+type AuditLogger interface {
+	WriteAuditLog(ctx context.Context, args AuditLogArgs) error
 }
 
 // =============================================================================
@@ -405,6 +432,32 @@ func (w *GenerateTrickplayWorker) Work(ctx context.Context, job *river.Job[Gener
 	return nil
 }
 
+// AuditLogWorker handles audit log writing jobs.
+type AuditLogWorker struct {
+	river.WorkerDefaults[AuditLogArgs]
+	auditor AuditLogger
+	logger  *slog.Logger
+}
+
+func (w *AuditLogWorker) Work(ctx context.Context, job *river.Job[AuditLogArgs]) error {
+	if w.auditor == nil {
+		w.logger.Warn("Audit logger not configured, skipping")
+		return nil
+	}
+
+	if err := w.auditor.WriteAuditLog(ctx, job.Args); err != nil {
+		// Log error but don't fail the job - audit logs are best-effort
+		w.logger.Error("Failed to write audit log",
+			slog.String("action", job.Args.Action),
+			slog.String("module", job.Args.Module),
+			slog.String("error", err.Error()),
+		)
+		return nil // Don't retry audit failures
+	}
+
+	return nil
+}
+
 // =============================================================================
 // Worker Registration
 // =============================================================================
@@ -417,6 +470,7 @@ type WorkerDeps struct {
 	Indexer    SearchIndexer
 	Cleaner    CleanupService
 	Trickplay  TrickplayGenerator
+	Auditor    AuditLogger
 	Logger     *slog.Logger
 }
 
@@ -469,8 +523,14 @@ func RegisterWorkers(workers *river.Workers, deps WorkerDeps) error {
 		logger:    logger.With(slog.String("worker", "generate_trickplay")),
 	})
 
+	// Register audit log worker
+	river.AddWorker(workers, &AuditLogWorker{
+		auditor: deps.Auditor,
+		logger:  logger.With(slog.String("worker", "audit_log")),
+	})
+
 	logger.Info("Registered job workers",
-		slog.Int("count", 7),
+		slog.Int("count", 8),
 	)
 
 	return nil

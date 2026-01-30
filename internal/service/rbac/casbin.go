@@ -656,6 +656,78 @@ func (s *CasbinService) getUserRole(ctx context.Context, userID uuid.UUID) (stri
 	return role, nil
 }
 
+// SetUserRole assigns a role to a user by role name.
+func (s *CasbinService) SetUserRole(ctx context.Context, userID uuid.UUID, roleName string) error {
+	// Verify role exists
+	_, err := s.queries.GetRoleByName(ctx, roleName)
+	if err != nil {
+		return ErrRoleNotFound
+	}
+
+	if err := s.queries.SetUserRole(ctx, db.SetUserRoleParams{
+		ID:   userID,
+		Name: roleName,
+	}); err != nil {
+		return fmt.Errorf("failed to set user role: %w", err)
+	}
+
+	s.logger.Info("User role changed",
+		slog.String("user_id", userID.String()),
+		slog.String("role", roleName),
+	)
+
+	return nil
+}
+
+// GetUserRole returns the full Role struct for a user.
+func (s *CasbinService) GetUserRole(ctx context.Context, userID uuid.UUID) (*Role, error) {
+	roleName, err := s.getUserRole(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.GetRole(ctx, roleName)
+}
+
+// GetUsersForRole returns all users with a specific role.
+func (s *CasbinService) GetUsersForRole(ctx context.Context, roleName string, limit, offset int) ([]uuid.UUID, error) {
+	users, err := s.queries.ListUsersByRoleName(ctx, db.ListUsersByRoleNameParams{
+		Name:   roleName,
+		Limit:  int32(limit),
+		Offset: int32(offset),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to list users for role: %w", err)
+	}
+
+	userIDs := make([]uuid.UUID, len(users))
+	for i, u := range users {
+		userIDs[i] = u.ID
+	}
+
+	return userIDs, nil
+}
+
+// CountUsersForRole returns the number of users with a specific role.
+func (s *CasbinService) CountUsersForRole(ctx context.Context, roleName string) (int64, error) {
+	return s.queries.CountUsersByRoleName(ctx, roleName)
+}
+
+// AddRoleForUser is an alias for SetUserRole (single role per user model).
+func (s *CasbinService) AddRoleForUser(ctx context.Context, userID uuid.UUID, roleName string) error {
+	return s.SetUserRole(ctx, userID, roleName)
+}
+
+// RemoveRoleForUser removes a user's role by setting them to the default role.
+func (s *CasbinService) RemoveRoleForUser(ctx context.Context, userID uuid.UUID) error {
+	defaultRole, err := s.queries.GetDefaultRole(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get default role: %w", err)
+	}
+
+	return s.SetUserRole(ctx, userID, defaultRole.Name)
+}
+
 // CreateRoleParams contains parameters for creating a role.
 type CreateRoleParams struct {
 	Name        string
