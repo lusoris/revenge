@@ -1,91 +1,72 @@
 # OpenTelemetry Go
 
 > Source: https://opentelemetry.io/docs/languages/go/
-> Fetched: 2026-01-30T23:55:10.483703+00:00
-> Content-Hash: d7205f0d531f15fa
+> Fetched: 2026-01-31T11:02:27.983375+00:00
+> Content-Hash: 14ef08c93b230877
 > Type: html
 
 ---
 
-Go
+# Go
 
 A language-specific implementation of OpenTelemetry in Go.
 
-This is the OpenTelemetry Go documentation. OpenTelemetry is an
-observability framework – an API, SDK, and tools that are designed to aid in
-the generation and collection of application telemetry data such as metrics,
-logs, and traces. This documentation is designed to help you understand how to
-get started using OpenTelemetry Go.
+This is the OpenTelemetry Go documentation. OpenTelemetry is an observability framework – an API, SDK, and tools that are designed to aid in the generation and collection of application telemetry data such as metrics, logs, and traces. This documentation is designed to help you understand how to get started using OpenTelemetry Go.
 
-Status and Releases
+## Status and Releases
 
-The current status of the major functional components for OpenTelemetry
-Go is as follows:
+The current status of the major functional components for OpenTelemetry Go is as follows:
 
-Traces
+Traces| Metrics| Logs  
+---|---|---  
+[Stable](/docs/specs/otel/versioning-and-stability/#stable)| [Stable](/docs/specs/otel/versioning-and-stability/#stable)| [Beta](https://github.com/open-telemetry/opentelemetry-specification/blob/main/oteps/0232-maturity-of-otel.md#beta)  
+  
+For releases, including the [latest release](https://github.com/open-telemetry/opentelemetry-go/releases/latest), see [Releases](https://github.com/open-telemetry/opentelemetry-go/releases).
 
-Metrics
+## More
 
-Logs
+  * [Contrib repository](https://github.com/open-telemetry/opentelemetry-go-contrib)
 
-Stable
 
-Stable
 
-Beta
+* * *
 
-For releases, including the
+##### [Getting Started](/docs/languages/go/getting-started/)
 
-latest release
-
-, see
-
-Releases
-
-.
-
-More
-
-Contrib repository
-
-Getting Started
-
-Instrumentation
+##### [Instrumentation](/docs/languages/go/instrumentation/)
 
 Manual instrumentation for OpenTelemetry Go
 
-Using instrumentation libraries
+##### [Using instrumentation libraries](/docs/languages/go/libraries/)
 
-Exporters
+##### [Exporters](/docs/languages/go/exporters/)
 
-Resources
+##### [Resources](/docs/languages/go/resources/)
 
-Sampling
+##### [Sampling](/docs/languages/go/sampling/)
 
-API reference
+##### [API reference](/docs/languages/go/api/)
 
-Examples
+##### [Examples](/docs/languages/go/examples/)
 
-Registry
+##### [Registry](/docs/languages/go/registry/)
 
 Instrumentation libraries, exporters and other useful components for OpenTelemetry Go
 
-Feedback
+## Feedback
 
 Was this page helpful?
 
-Yes
-
-No
+Yes No
 
 Thank you. Your feedback is appreciated!
 
-Please let us know
+Please let us know [how we can improve this page](https://github.com/open-telemetry/opentelemetry.io/issues/new?template=PAGE_FEEDBACK.yml&title=\[Page+feedback\]%3A+ADD+A+SUMMARY+OF+YOUR+FEEDBACK+HERE). Your feedback is appreciated!
 
-how we can improve this page
+  
 
-. Your feedback is appreciated!
 
-Last modified January 27, 2026:
-
-Update language docs weights while preserving order (#9027) (d8f5ed28)
+Last modified January 27, 2026: [Update language docs weights while preserving order (#9027) (d8f5ed28)](https://github.com/open-telemetry/opentelemetry.io/commit/d8f5ed285d009cc6baac6d7141bfde8d0956a756)
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

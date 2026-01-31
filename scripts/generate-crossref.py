@@ -16,6 +16,7 @@ from pathlib import Path
 
 import yaml
 
+
 # Project paths
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -64,15 +65,15 @@ def extract_packages_from_doc(doc_path: Path) -> set[str]:
     packages = set()
 
     # Match github.com/... package paths
-    github_pattern = r'github\.com/[\w\-]+/[\w\-]+(?:/[\w\-]+)*'
+    github_pattern = r"github\.com/[\w\-]+/[\w\-]+(?:/[\w\-]+)*"
     packages.update(re.findall(github_pattern, content))
 
     # Match golang.org/x/... packages
-    golang_pattern = r'golang\.org/x/\w+'
+    golang_pattern = r"golang\.org/x/\w+"
     packages.update(re.findall(golang_pattern, content))
 
     # Match go.uber.org/... packages
-    uber_pattern = r'go\.uber\.org/\w+'
+    uber_pattern = r"go\.uber\.org/\w+"
     packages.update(re.findall(uber_pattern, content))
 
     return packages
@@ -96,23 +97,27 @@ def generate_sources_index(config: dict, index: dict) -> str:
 
     # Summary statistics
     total = sum(len(s) for s in sources.values())
-    fetched = sum(1 for s in index_sources.values() if s.get("status") in ("success", "unchanged"))
+    fetched = sum(
+        1 for s in index_sources.values() if s.get("status") in ("success", "unchanged")
+    )
     failed = sum(1 for s in index_sources.values() if s.get("status") == "failed")
     skipped = sum(1 for s in index_sources.values() if s.get("status") == "skipped")
 
-    lines.extend([
-        "## Summary",
-        "",
-        f"| Metric | Count |",
-        f"|--------|-------|",
-        f"| Total Sources | {total} |",
-        f"| Fetched | {fetched} |",
-        f"| Failed | {failed} |",
-        f"| Skipped | {skipped} |",
-        "",
-        "---",
-        "",
-    ])
+    lines.extend(
+        [
+            "## Summary",
+            "",
+            "| Metric | Count |",
+            "|--------|-------|",
+            f"| Total Sources | {total} |",
+            f"| Fetched | {fetched} |",
+            f"| Failed | {failed} |",
+            f"| Skipped | {skipped} |",
+            "",
+            "---",
+            "",
+        ]
+    )
 
     # Sources by category
     for category, category_sources in sources.items():
@@ -145,7 +150,9 @@ def generate_sources_index(config: dict, index: dict) -> str:
             name_link = f"[{name}]({url})"
             output_link = f"[{output}]({output})" if output else "-"
 
-            lines.append(f"| `{source_id}` | {name_link} | {source_type} | {status_emoji} | {output_link} |")
+            lines.append(
+                f"| `{source_id}` | {name_link} | {source_type} | {status_emoji} | {output_link} |"
+            )
 
         lines.append("")
 
@@ -178,19 +185,36 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
 
             if url:
                 # Normalize URL for matching
-                normalized = url.replace("https://", "").replace("http://", "").rstrip("/")
-                url_to_source[normalized] = {"id": source_id, "name": name, "url": url, "category": category}
+                normalized = (
+                    url.replace("https://", "").replace("http://", "").rstrip("/")
+                )
+                url_to_source[normalized] = {
+                    "id": source_id,
+                    "name": name,
+                    "url": url,
+                    "category": category,
+                }
 
                 # Extract package path from pkg.go.dev or github URLs
                 if "pkg.go.dev/" in url:
                     pkg = url.split("pkg.go.dev/")[-1]
-                    package_to_source[pkg] = {"id": source_id, "name": name, "url": url, "category": category}
+                    package_to_source[pkg] = {
+                        "id": source_id,
+                        "name": name,
+                        "url": url,
+                        "category": category,
+                    }
                 elif "github.com/" in url:
                     # github.com/owner/repo -> owner/repo
                     parts = url.replace("https://github.com/", "").split("/")
                     if len(parts) >= 2:
                         pkg = f"github.com/{parts[0]}/{parts[1]}"
-                        package_to_source[pkg] = {"id": source_id, "name": name, "url": url, "category": category}
+                        package_to_source[pkg] = {
+                            "id": source_id,
+                            "name": name,
+                            "url": url,
+                            "category": category,
+                        }
 
     # Analyze each design doc
     doc_references = {}  # doc_path -> set of source IDs
@@ -229,12 +253,14 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
                 source_referenced_by[source_id].add(str(rel_path))
 
     # Output: Design docs by referenced sources
-    lines.extend([
-        "## Design Documents → Sources",
-        "",
-        "Which external sources are referenced by each design document.",
-        "",
-    ])
+    lines.extend(
+        [
+            "## Design Documents → Sources",
+            "",
+            "Which external sources are referenced by each design document.",
+            "",
+        ]
+    )
 
     for doc_path, source_ids in sorted(doc_references.items()):
         doc_name = Path(doc_path).stem
@@ -252,14 +278,16 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
         lines.append("")
 
     # Output: Sources by referencing docs
-    lines.extend([
-        "---",
-        "",
-        "## Sources → Design Documents",
-        "",
-        "Which design documents reference each external source.",
-        "",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Sources → Design Documents",
+            "",
+            "Which design documents reference each external source.",
+            "",
+        ]
+    )
 
     for source_id, doc_paths in sorted(source_referenced_by.items()):
         # Find source info
@@ -288,14 +316,16 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
 
     unreferenced = all_source_ids - set(source_referenced_by.keys())
     if unreferenced:
-        lines.extend([
-            "---",
-            "",
-            "## Unreferenced Sources",
-            "",
-            "Sources defined in SOURCES.yaml but not referenced in any design document.",
-            "",
-        ])
+        lines.extend(
+            [
+                "---",
+                "",
+                "## Unreferenced Sources",
+                "",
+                "Sources defined in SOURCES.yaml but not referenced in any design document.",
+                "",
+            ]
+        )
         for source_id in sorted(unreferenced):
             for category, category_sources in sources.items():
                 for source in category_sources:

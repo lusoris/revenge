@@ -15,8 +15,10 @@ Usage:
 
 import argparse
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
+
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -37,7 +39,7 @@ ALLOWED_ORPHANS = {
 }
 
 # Link pattern
-LINK_PATTERN = re.compile(r'\[([^\]]*)\]\(([^)]+\.md)\)')
+LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+\.md)\)")
 
 
 def find_all_markdown_files(directory: Path) -> list[Path]:
@@ -198,7 +200,11 @@ def main():
             print(f"  {dir_name}/")
             for f in sorted(files):
                 linked_count = len(link_graph.get(f, []))
-                status = f"(linked from {linked_count} docs)" if linked_count else "(no links)"
+                status = (
+                    f"(linked from {linked_count} docs)"
+                    if linked_count
+                    else "(no links)"
+                )
                 print(f"    - {f.name} {status}")
 
     if orphans_no_links:
@@ -218,16 +224,16 @@ def main():
     print("SUMMARY")
     print(f"{'=' * 60}")
     print(f"Total files: {len(all_files)}")
-    print(f"Linked from INDEX: {well_linked} ({100*well_linked//len(all_files)}%)")
+    print(f"Linked from INDEX: {well_linked} ({100 * well_linked // len(all_files)}%)")
     print(f"Not in any INDEX: {len(orphans_no_index)}")
     print(f"Completely orphaned: {len(orphans_no_links)}")
 
     if args.verbose:
-        print(f"\n## Link Statistics")
+        print("\n## Link Statistics")
         most_linked = sorted(
             [(f, len(sources)) for f, sources in link_graph.items()],
             key=lambda x: x[1],
-            reverse=True
+            reverse=True,
         )[:10]
 
         print("\nMost linked files:")
@@ -247,4 +253,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

@@ -16,9 +16,9 @@ Usage:
 """
 
 import argparse
-import shutil
 from datetime import datetime
 from pathlib import Path
+
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -89,7 +89,9 @@ def list_archives():
         print()
 
 
-def archive_document(doc_path: Path, reason: str = "Document deprecated", dry_run: bool = True):
+def archive_document(
+    doc_path: Path, reason: str = "Document deprecated", dry_run: bool = True
+):
     """Archive a document, leaving a redirect stub."""
     if not doc_path.exists():
         print(f"Error: {doc_path} does not exist")
@@ -200,7 +202,7 @@ def restore_document(doc_path: Path, dry_run: bool = True):
     if content.startswith("<!--"):
         end_comment = content.find("-->")
         if end_comment != -1:
-            content = content[end_comment + 3:].strip()
+            content = content[end_comment + 3 :].strip()
 
     # Determine restore path
     if original_path:
@@ -256,7 +258,7 @@ def main():
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # List command
-    list_parser = subparsers.add_parser("list", help="List archived files")
+    subparsers.add_parser("list", help="List archived files")
 
     # Archive command
     archive_parser = subparsers.add_parser("archive", help="Archive a document")
@@ -265,14 +267,22 @@ def main():
         "--reason", "-r", default="Document deprecated", help="Reason for archiving"
     )
     archive_parser.add_argument(
-        "--execute", "-x", action="store_true", help="Actually archive (default: dry run)"
+        "--execute",
+        "-x",
+        action="store_true",
+        help="Actually archive (default: dry run)",
     )
 
     # Restore command
     restore_parser = subparsers.add_parser("restore", help="Restore from archive")
-    restore_parser.add_argument("path", type=Path, help="Document or archive to restore")
     restore_parser.add_argument(
-        "--execute", "-x", action="store_true", help="Actually restore (default: dry run)"
+        "path", type=Path, help="Document or archive to restore"
+    )
+    restore_parser.add_argument(
+        "--execute",
+        "-x",
+        action="store_true",
+        help="Actually restore (default: dry run)",
     )
 
     # Cleanup command
@@ -281,7 +291,10 @@ def main():
         "--days", "-d", type=int, default=90, help="Remove archives older than N days"
     )
     cleanup_parser.add_argument(
-        "--execute", "-x", action="store_true", help="Actually remove (default: dry run)"
+        "--execute",
+        "-x",
+        action="store_true",
+        help="Actually remove (default: dry run)",
     )
 
     args = parser.parse_args()

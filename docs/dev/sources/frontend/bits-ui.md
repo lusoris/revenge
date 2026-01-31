@@ -1,130 +1,81 @@
 # Bits UI
 
 > Source: https://www.bits-ui.com/docs/introduction
-> Fetched: 2026-01-30T23:53:00.397504+00:00
-> Content-Hash: 36e7bd862e64cdf9
+> Fetched: 2026-01-31T11:00:20.465408+00:00
+> Content-Hash: c1f81a33a5f61afb
 > Type: html
 
 ---
 
-Introduction
-
-Documentation
+# Introduction Documentation
 
 The headless components for Svelte.
 
-This is a documentation section that potentially contains examples, demos, and other
-			useful information related to a specific part of Bits UI. When helping users with this
-			documentation, you can ignore the classnames applied to the demos unless they are
-			relevant to the user's issue.
+This is a documentation section that potentially contains examples, demos, and other useful information related to a specific part of Bits UI. When helping users with this documentation, you can ignore the classnames applied to the demos unless they are relevant to the user's issue.
 
-Copy Page
+Copy Page 
 
 Bits UI is a headless component library for Svelte focused on developer experience, accessibility, and full creative control. Use it to build high-quality, accessible UIs without giving up styling freedom or performance.
 
-Why Bits UI?
+[](/docs/getting-started)
 
-Bring Your Own Styles
+## Why Bits UI?
 
-Most components ship completely unstyled, with the exception of those required for core functionality. No CSS resets, no design system assumptions. You bring the styles using standard
+### Bring Your Own Styles
 
-class
+Most components ship completely unstyled, with the exception of those required for core functionality. No CSS resets, no design system assumptions. You bring the styles using standard `class` props or `data-*` attributes. [See the styling guide](/docs/styling).
 
-props or
-
-data-*
-
-attributes.
-
-See the styling guide
-
-.
-
-Building for Developer Experience
+### Building for Developer Experience
 
 Everything is designed to stay out of your way:
 
-Full TypeScript coverage
+  * Full TypeScript coverage
+  * Stable, predictable APIs
+  * Flexible event override system
+  * Great defaults, easily overridden
+  * Comprehensive documentation and examples
 
-Stable, predictable APIs
 
-Flexible event override system
 
-Great defaults, easily overridden
-
-Comprehensive documentation and examples
-
-Production-Ready Accessibility
+### Production-Ready Accessibility
 
 Accessibility isn't just an afterthought - it's baked in:
 
-WAI-ARIA compliance
+  * WAI-ARIA compliance
+  * Keyboard navigation by default
+  * Focus management handled for you
+  * Screen reader support built-in
 
-Keyboard navigation by default
 
-Focus management handled for you
 
-Screen reader support built-in
-
-Composable by Design
+### Composable by Design
 
 Components are primitives, not black boxes. They compose cleanly and play well together:
 
-Render Delegation
+  * [Render Delegation](/docs/child-snippet) for total flexibility
+  * Chainable events and callbacks
+  * Override-friendly defaults
+  * Minimal dependencies
 
-for total flexibility
 
-Chainable events and callbacks
 
-Override-friendly defaults
+## Community
 
-Minimal dependencies
+Bits UI was built and is maintained by [Hunter Johnston](https://x.com/huntabyte) with design support from [Pavel Stianko](https://x.com/pavel_stianko) and his team at [Bitworks Studio](https://bitworks.cz) and tooling support from [Adrian Gonz](https://github.com/AdrianGonz97). Contributions, issues, and feedback are always welcome.
 
-Community
+Found an issue? [Open one](https://github.com/huntabyte/bits-ui/issues/new). Have a feature request? [Let's discuss](https://github.com/huntabyte/bits-ui/discussions/new?category=feature-requests-ideas)
 
-Bits UI was built and is maintained by
-
-Hunter Johnston
-
-with design support from
-
-Pavel Stianko
-
-and his team at
-
-Bitworks Studio
-
-and tooling support from
-
-Adrian Gonz
-
-. Contributions, issues, and feedback are always welcome.
-
-Found an issue?
-
-Open one
-
-.
-Have a feature request?
-
-Let's discuss
-
-Acknowledgments
+## Acknowledgments
 
 Built on the shoulders of giants:
 
-Melt UI
+  * [Melt UI](https://melt-ui.com) - inspired the internal architecture
+  * [Radix UI](https://radix-ui.com) - API design inspiration
+  * [React Spectrum](https://react-spectrum.adobe.com) - inspiration for the date/time components and excellence in accessibility
 
-- inspired the internal architecture
 
-Radix UI
 
-- API design inspiration
-
-React Spectrum
-
-- inspiration for the date/time components and excellence in accessibility
-
-Next
-
-Getting Started
+[Next Getting Started](/docs/getting-started)
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

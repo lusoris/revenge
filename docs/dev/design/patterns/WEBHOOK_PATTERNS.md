@@ -1,5 +1,10 @@
 # Webhook Patterns
 
+<!-- SOURCES: river -->
+
+<!-- DESIGN: patterns, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Patterns for processing webhooks and handling events
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -17,7 +22,6 @@
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
 | Integration Testing | 🔴 |  |
-
 ---
 
 ## Overview

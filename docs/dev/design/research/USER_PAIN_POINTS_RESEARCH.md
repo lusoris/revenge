@@ -1,7 +1,11 @@
 # User Pain Points Research - Existing Media Servers
 
-> Analysis of what users most complain about (and love) in Plex, Jellyfin, Emby
+<!-- SOURCES: authelia, authentik, ffmpeg, ffmpeg-codecs, ffmpeg-formats, go-astiav, go-astiav-docs, gohlslib, keycloak, pgx, postgresql-arrays, postgresql-json, river -->
 
+<!-- DESIGN: research, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
+> Analysis of what users most complain about (and love) in Plex, Jellyfin, Emby
 
 
 <!-- TOC-START -->
@@ -46,16 +50,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | 🔴 |  |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | 🔴 |
+| Sources | 🔴 |
+| Instructions | 🔴 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Research Sources
@@ -317,63 +320,6 @@
 6. ❌ **Overwrite manual metadata** (Plex/Jellyfin problem)
 7. ❌ **Complex permissions** (Emby granularity overload)
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../sources/security/authelia.md) |
-| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../sources/security/authentik.md) |
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
-| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../sources/security/keycloak.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
-| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Research](INDEX.md)
-
-### In This Section
-
-- [UX/UI Design & Frontend Resources](UX_UI_RESOURCES.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

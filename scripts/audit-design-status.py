@@ -17,6 +17,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+
 # Project paths
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -29,14 +30,16 @@ def check_design_status(content: str) -> str:
     """Check if document has design content (schemas, tables, code examples)."""
     indicators = [
         r"```sql",  # SQL schemas
-        r"```go",   # Go code
+        r"```go",  # Go code
         r"## (Database|Schema|Architecture|Implementation|API|Features)",
         r"\| .+ \| .+ \|",  # Tables (at least 2 columns)
         r"CREATE TABLE",
         r"type \w+ struct",
     ]
 
-    score = sum(1 for pattern in indicators if re.search(pattern, content, re.IGNORECASE))
+    score = sum(
+        1 for pattern in indicators if re.search(pattern, content, re.IGNORECASE)
+    )
 
     if score >= 3:
         return "✅"
@@ -47,38 +50,23 @@ def check_design_status(content: str) -> str:
 
 def check_sources_status(content: str) -> str:
     """Check if document has external sources/references."""
-    indicators = [
-        r"## Developer Resources",
-        r"## Sources",
-        r"\| Source \|",
-        r"\[.+\]\(https://",  # External links
-        r"pkg\.go\.dev",
-        r"github\.com",
-    ]
 
     # Count external links
-    external_links = len(re.findall(r'\[.+\]\(https?://', content))
+    external_links = len(re.findall(r"\[.+\]\(https?://", content))
 
-    has_resources_section = bool(re.search(r"## (Developer Resources|Sources)", content))
+    has_resources_section = bool(
+        re.search(r"## (Developer Resources|Sources)", content)
+    )
 
     if has_resources_section and external_links >= 3:
         return "✅"
-    elif external_links >= 2:
-        return "🟡"
-    elif external_links >= 1:
+    elif external_links >= 2 or external_links >= 1:
         return "🟡"
     return "🔴"
 
 
 def check_instructions_status(content: str) -> str:
     """Check if document has implementation instructions."""
-    indicators = [
-        r"## Implementation (Checklist|Guide|Steps)",
-        r"- \[ \]",  # Unchecked checkboxes
-        r"- \[x\]",  # Checked checkboxes
-        r"### (Backend|Frontend|Database|API|Testing)",
-        r"## (Setup|Getting Started|Prerequisites)",
-    ]
 
     has_checklist = bool(re.search(r"## Implementation", content))
     checkbox_count = len(re.findall(r"- \[[ x]\]", content))
@@ -142,8 +130,12 @@ def generate_status_section(category: str, docs: list[dict]) -> list[str]:
     display_name = category.replace("/", " - ").replace("_", " ").title()
     lines.append(f"## {display_name}")
     lines.append("")
-    lines.append("| Document | Design | Sources | Instructions | Code | Linting | Unit | Integration |")
-    lines.append("|----------|--------|---------|--------------|------|---------|------|-------------|")
+    lines.append(
+        "| Document | Design | Sources | Instructions | Code | Linting | Unit | Integration |"
+    )
+    lines.append(
+        "|----------|--------|---------|--------------|------|---------|------|-------------|"
+    )
 
     design_ok = 0
     sources_ok = 0
@@ -168,7 +160,9 @@ def generate_status_section(category: str, docs: list[dict]) -> list[str]:
 
     total = len(docs)
     lines.append("")
-    lines.append(f"**Summary**: {design_ok}/{total} Design ✅ | {sources_ok}/{total} Sources ✅ | {instructions_ok}/{total} Instructions ✅")
+    lines.append(
+        f"**Summary**: {design_ok}/{total} Design ✅ | {sources_ok}/{total} Sources ✅ | {instructions_ok}/{total} Instructions ✅"
+    )
     lines.append("")
     lines.append("---")
     lines.append("")
@@ -183,7 +177,7 @@ def generate_status_file(all_audits: dict[str, list[dict]]) -> str:
         "",
         "> Auto-generated overview of design document completeness",
         "",
-        f"**Last Updated**: Auto-generated",
+        "**Last Updated**: Auto-generated",
         "",
         "---",
         "",
@@ -219,48 +213,54 @@ def generate_status_file(all_audits: dict[str, list[dict]]) -> str:
 
         display_name = category.replace("/", " - ").replace("_", " ").title()
         summary_rows.append(
-            f"| {display_name} | {len(docs)} | {design_ok} ({100*design_ok//len(docs)}%) | "
-            f"{sources_ok} ({100*sources_ok//len(docs)}%) | {instructions_ok} ({100*instructions_ok//len(docs)}%) |"
+            f"| {display_name} | {len(docs)} | {design_ok} ({100 * design_ok // len(docs)}%) | "
+            f"{sources_ok} ({100 * sources_ok // len(docs)}%) | {instructions_ok} ({100 * instructions_ok // len(docs)}%) |"
         )
 
-    lines.extend([
-        "## Overall Summary",
-        "",
-        f"**Total Documents**: {total_docs}",
-        "",
-        "| Category | Total | Design ✅ | Sources ✅ | Instructions ✅ |",
-        "|----------|-------|-----------|------------|-----------------|",
-    ])
+    lines.extend(
+        [
+            "## Overall Summary",
+            "",
+            f"**Total Documents**: {total_docs}",
+            "",
+            "| Category | Total | Design ✅ | Sources ✅ | Instructions ✅ |",
+            "|----------|-------|-----------|------------|-----------------|",
+        ]
+    )
     lines.extend(summary_rows)
-    lines.extend([
-        f"| **TOTAL** | **{total_docs}** | **{total_design} ({100*total_design//total_docs}%)** | "
-        f"**{total_sources} ({100*total_sources//total_docs}%)** | **{total_instructions} ({100*total_instructions//total_docs}%)** |",
-        "",
-        "---",
-        "",
-    ])
+    lines.extend(
+        [
+            f"| **TOTAL** | **{total_docs}** | **{total_design} ({100 * total_design // total_docs}%)** | "
+            f"**{total_sources} ({100 * total_sources // total_docs}%)** | **{total_instructions} ({100 * total_instructions // total_docs}%)** |",
+            "",
+            "---",
+            "",
+        ]
+    )
 
     # Category sections
     for category, docs in sorted(all_audits.items()):
         lines.extend(generate_status_section(category, docs))
 
     # Notes
-    lines.extend([
-        "## Notes",
-        "",
-        "- **Code/Linting/Unit/Integration**: All 🔴 as codebase is at template stage",
-        "- **Design**: Schemas, tables, architecture diagrams, Go code examples",
-        "- **Sources**: Developer Resources section with external documentation links",
-        "- **Instructions**: Implementation Checklist with actionable items",
-        "",
-        "---",
-        "",
-        "## Regenerate",
-        "",
-        "```bash",
-        "python scripts/audit-design-status.py --update",
-        "```",
-    ])
+    lines.extend(
+        [
+            "## Notes",
+            "",
+            "- **Code/Linting/Unit/Integration**: All 🔴 as codebase is at template stage",
+            "- **Design**: Schemas, tables, architecture diagrams, Go code examples",
+            "- **Sources**: Developer Resources section with external documentation links",
+            "- **Instructions**: Implementation Checklist with actionable items",
+            "",
+            "---",
+            "",
+            "## Regenerate",
+            "",
+            "```bash",
+            "python scripts/audit-design-status.py --update",
+            "```",
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -345,7 +345,9 @@ def main():
         design_ok = sum(1 for d in audits if d["design"] == "✅")
         sources_ok = sum(1 for d in audits if d["sources"] == "✅")
         instructions_ok = sum(1 for d in audits if d["instructions"] == "✅")
-        print(f"  {category}: {len(docs)} docs | D:{design_ok} S:{sources_ok} I:{instructions_ok}")
+        print(
+            f"  {category}: {len(docs)} docs | D:{design_ok} S:{sources_ok} I:{instructions_ok}"
+        )
 
     total_docs = sum(len(docs) for docs in all_audits.values())
     print(f"\nTotal: {total_docs} documents audited")

@@ -1,6 +1,8 @@
-# Services
+# Services Documentation
 
 ← Back to [Design Docs](../)
+
+> Internal service specifications
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
@@ -28,18 +30,12 @@
 
 ---
 
-<!-- SOURCE-BREADCRUMBS-START -->
+**Sources**: [External Sources Index](../../sources/SOURCES.md)
 
-## Sources & Cross-References
+## Related
 
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-<!-- SOURCE-BREADCRUMBS-END -->
+- [Architecture Documentation](../architecture/)
+- [Technical Documentation](../technical/)
 
 ---
 

@@ -19,9 +19,9 @@ Options:
 
 import argparse
 import re
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+
 
 # Project paths
 SCRIPT_DIR = Path(__file__).parent
@@ -31,7 +31,7 @@ SOURCES_DIR = PROJECT_ROOT / "docs" / "dev" / "sources"
 DOCS_DIR = PROJECT_ROOT / "docs" / "dev"
 
 # Link pattern: [text](path)
-LINK_PATTERN = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
+LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
 # Known file locations for auto-fixing
 KNOWN_LOCATIONS = {
@@ -42,14 +42,12 @@ KNOWN_LOCATIONS = {
     "CONFIGURATION.md": "technical/CONFIGURATION.md",
     "AUDIO_STREAMING.md": "technical/AUDIO_STREAMING.md",
     "OFFLOADING.md": "technical/OFFLOADING.md",
-
     # architecture/
     "01_ARCHITECTURE.md": "architecture/01_ARCHITECTURE.md",
     "02_DESIGN_PRINCIPLES.md": "architecture/02_DESIGN_PRINCIPLES.md",
     "03_METADATA_SYSTEM.md": "architecture/03_METADATA_SYSTEM.md",
     "04_PLAYER_ARCHITECTURE.md": "architecture/04_PLAYER_ARCHITECTURE.md",
     "05_PLUGIN_ARCHITECTURE_DECISION.md": "architecture/05_PLUGIN_ARCHITECTURE_DECISION.md",
-
     # services/
     "AUTH.md": "services/AUTH.md",
     "USER.md": "services/USER.md",
@@ -66,7 +64,6 @@ KNOWN_LOCATIONS = {
     "SEARCH.md": "services/SEARCH.md",
     "ANALYTICS.md": "services/ANALYTICS.md",
     "NOTIFICATION.md": "services/NOTIFICATION.md",
-
     # operations/
     "SETUP.md": "operations/SETUP.md",
     "DEVELOPMENT.md": "operations/DEVELOPMENT.md",
@@ -75,7 +72,6 @@ KNOWN_LOCATIONS = {
     "REVERSE_PROXY.md": "operations/REVERSE_PROXY.md",
     "BRANCH_PROTECTION.md": "operations/BRANCH_PROTECTION.md",
     "DATABASE_AUTO_HEALING.md": "operations/DATABASE_AUTO_HEALING.md",
-
     # Root design docs
     "00_SOURCE_OF_TRUTH.md": "00_SOURCE_OF_TRUTH.md",
 }
@@ -83,15 +79,15 @@ KNOWN_LOCATIONS = {
 # Patterns that indicate relative path issues
 FIX_PATTERNS = [
     # Missing ../ for going up from features/* to integrations/*
-    (r'^\(integrations/', lambda m, depth: f"({'../' * depth}integrations/"),
+    (r"^\(integrations/", lambda m, depth: f"({'../' * depth}integrations/"),
     # Missing ../ for going up from features/* to services/*
-    (r'^\(services/', lambda m, depth: f"({'../' * depth}services/"),
+    (r"^\(services/", lambda m, depth: f"({'../' * depth}services/"),
     # Missing ../ for going up from features/* to technical/*
-    (r'^\(technical/', lambda m, depth: f"({'../' * depth}technical/"),
+    (r"^\(technical/", lambda m, depth: f"({'../' * depth}technical/"),
     # Missing ../ for going up from features/* to architecture/*
-    (r'^\(architecture/', lambda m, depth: f"({'../' * depth}architecture/"),
+    (r"^\(architecture/", lambda m, depth: f"({'../' * depth}architecture/"),
     # Missing ../ for going up from integrations/* to features/*
-    (r'^\(features/', lambda m, depth: f"({'../' * depth}features/"),
+    (r"^\(features/", lambda m, depth: f"({'../' * depth}features/"),
 ]
 
 
@@ -106,15 +102,13 @@ def get_depth_from_design(filepath: Path) -> int:
 
 def is_internal_link(link: str) -> bool:
     """Check if a link is internal (not URL, not anchor-only)."""
-    if link.startswith(('http://', 'https://', 'mailto:', '#')):
-        return False
-    return True
+    return not link.startswith(("http://", "https://", "mailto:", "#"))
 
 
 def resolve_link(source_file: Path, link: str) -> Path:
     """Resolve a relative link to an absolute path."""
     # Remove anchor
-    link_path = link.split('#')[0]
+    link_path = link.split("#")[0]
     if not link_path:
         return source_file  # Anchor-only link
 
@@ -168,7 +162,7 @@ def find_correct_path(filename: str, source_file: Path) -> str | None:
 def analyze_file(filepath: Path) -> dict:
     """Analyze a markdown file for broken links."""
     try:
-        content = filepath.read_text(encoding='utf-8')
+        content = filepath.read_text(encoding="utf-8")
     except Exception as e:
         return {"error": str(e), "links": []}
 
@@ -179,7 +173,7 @@ def analyze_file(filepath: Path) -> dict:
         text = match.group(1)
         link = match.group(2)
         start = match.start()
-        line_num = content[:start].count('\n') + 1
+        line_num = content[:start].count("\n") + 1
 
         if not is_internal_link(link):
             continue
@@ -199,12 +193,14 @@ def analyze_file(filepath: Path) -> dict:
 
         if not exists:
             # Try to find correct path
-            filename = Path(link.split('#')[0]).name
+            filename = Path(link.split("#")[0]).name
             if filename:
                 suggestion = find_correct_path(filename, filepath)
                 if suggestion:
                     link_info["suggestion"] = suggestion
-                    link_info["confidence"] = "high" if filename in KNOWN_LOCATIONS else "medium"
+                    link_info["confidence"] = (
+                        "high" if filename in KNOWN_LOCATIONS else "medium"
+                    )
 
         links.append(link_info)
 
@@ -214,7 +210,9 @@ def analyze_file(filepath: Path) -> dict:
         "links": links,
         "total": len(links),
         "broken": len([l for l in links if not l["exists"]]),
-        "fixable": len([l for l in links if l["suggestion"] and l["confidence"] == "high"]),
+        "fixable": len(
+            [l for l in links if l["suggestion"] and l["confidence"] == "high"]
+        ),
     }
 
 
@@ -223,8 +221,7 @@ def fix_file(filepath: Path, analysis: dict, dry_run: bool = True) -> list:
     fixes = []
 
     try:
-        content = filepath.read_text(encoding='utf-8')
-        original = content
+        content = filepath.read_text(encoding="utf-8")
     except Exception:
         return fixes
 
@@ -237,8 +234,8 @@ def fix_file(filepath: Path, analysis: dict, dry_run: bool = True) -> list:
             new_link = link_info["suggestion"]
 
             # Preserve anchor
-            if '#' in old_link:
-                anchor = '#' + old_link.split('#')[1]
+            if "#" in old_link:
+                anchor = "#" + old_link.split("#")[1]
                 new_link = new_link + anchor
 
             # Replace in content
@@ -246,15 +243,17 @@ def fix_file(filepath: Path, analysis: dict, dry_run: bool = True) -> list:
             new_pattern = f"]({new_link})"
             content = content.replace(old_pattern, new_pattern)
 
-            fixes.append({
-                "line": link_info["line"],
-                "old": old_link,
-                "new": new_link,
-                "text": link_info["text"],
-            })
+            fixes.append(
+                {
+                    "line": link_info["line"],
+                    "old": old_link,
+                    "new": new_link,
+                    "text": link_info["text"],
+                }
+            )
 
     if fixes and not dry_run:
-        filepath.write_text(content, encoding='utf-8')
+        filepath.write_text(content, encoding="utf-8")
 
     return fixes
 
@@ -277,36 +276,42 @@ def generate_report(results: list) -> str:
     fixable_links = sum(r["fixable"] for r in results)
     files_with_broken = len([r for r in results if r["broken"] > 0])
 
-    lines.extend([
-        f"- **Total internal links**: {total_links}",
-        f"- **Broken links**: {broken_links}",
-        f"- **Auto-fixable (high confidence)**: {fixable_links}",
-        f"- **Files with broken links**: {files_with_broken}",
-        "",
-        "---",
-        "",
-        "## Broken Links by File",
-        "",
-    ])
+    lines.extend(
+        [
+            f"- **Total internal links**: {total_links}",
+            f"- **Broken links**: {broken_links}",
+            f"- **Auto-fixable (high confidence)**: {fixable_links}",
+            f"- **Files with broken links**: {files_with_broken}",
+            "",
+            "---",
+            "",
+            "## Broken Links by File",
+            "",
+        ]
+    )
 
     for result in sorted(results, key=lambda x: -x["broken"]):
         if result["broken"] == 0:
             continue
 
         rel_path = result["filepath"].relative_to(PROJECT_ROOT)
-        lines.extend([
-            f"### {rel_path}",
-            "",
-            "| Line | Link | Status | Suggestion |",
-            "|------|------|--------|------------|",
-        ])
+        lines.extend(
+            [
+                f"### {rel_path}",
+                "",
+                "| Line | Link | Status | Suggestion |",
+                "|------|------|--------|------------|",
+            ]
+        )
 
         for link in result["links"]:
             if link["exists"]:
                 continue
 
-            status = "Auto-fix" if link["confidence"] == "high" else (
-                "Review" if link["suggestion"] else "Manual"
+            status = (
+                "Auto-fix"
+                if link["confidence"] == "high"
+                else ("Review" if link["suggestion"] else "Manual")
             )
             suggestion = link["suggestion"] or "-"
 
@@ -317,14 +322,16 @@ def generate_report(results: list) -> str:
         lines.append("")
 
     # Manual review section
-    lines.extend([
-        "---",
-        "",
-        "## Manual Review Required",
-        "",
-        "These links need manual investigation:",
-        "",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Manual Review Required",
+            "",
+            "These links need manual investigation:",
+            "",
+        ]
+    )
 
     manual_count = 0
     for result in results:
@@ -337,12 +344,14 @@ def generate_report(results: list) -> str:
     if manual_count == 0:
         lines.append("*None - all broken links have suggestions*")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "*Report generated by `scripts/fix-links.py`*",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "*Report generated by `scripts/fix-links.py`*",
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -352,25 +361,22 @@ def main():
         description="Hybrid link fixer for design documentation"
     )
     parser.add_argument(
-        "--fix",
-        action="store_true",
-        help="Apply auto-fixes (default: dry-run)"
+        "--fix", action="store_true", help="Apply auto-fixes (default: dry-run)"
     )
     parser.add_argument(
-        "--report",
-        action="store_true",
-        help="Generate detailed report file"
+        "--report", action="store_true", help="Generate detailed report file"
     )
     parser.add_argument(
-        "--verbose", "-v",
+        "--verbose",
+        "-v",
         action="store_true",
-        help="Show all links, not just broken ones"
+        help="Show all links, not just broken ones",
     )
     parser.add_argument(
         "--path",
         type=Path,
         default=DESIGN_DIR,
-        help="Path to scan (default: docs/dev/design)"
+        help="Path to scan (default: docs/dev/design)",
     )
 
     args = parser.parse_args()
@@ -439,9 +445,16 @@ def main():
     # Generate report if requested
     if args.report:
         report = generate_report(results)
-        report_path = PROJECT_ROOT / "docs" / "dev" / "design" / ".analysis" / "LINK_FIXES_REPORT.md"
+        report_path = (
+            PROJECT_ROOT
+            / "docs"
+            / "dev"
+            / "design"
+            / ".analysis"
+            / "LINK_FIXES_REPORT.md"
+        )
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        report_path.write_text(report, encoding='utf-8')
+        report_path.write_text(report, encoding="utf-8")
         print(f"\nReport saved to: {report_path}")
 
 

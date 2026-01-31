@@ -16,18 +16,7 @@
 
 ---
 
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-<!-- SOURCE-BREADCRUMBS-END -->
+**Sources**: [External Sources Index](../../../sources/SOURCES.md)
 
 ## Related
 

@@ -15,7 +15,9 @@ Usage:
 
 import argparse
 import re
+import sys
 from pathlib import Path
+
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -47,12 +49,11 @@ SKIP_FILES = {
 
 # Status table pattern
 STATUS_TABLE_PATTERN = re.compile(
-    r'\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n((?:\|.*?\n)+)',
-    re.MULTILINE
+    r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n((?:\|.*?\n)+)", re.MULTILINE
 )
 
 # Row pattern
-ROW_PATTERN = re.compile(r'\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|(?:\s*([^|]*)\s*\|)?')
+ROW_PATTERN = re.compile(r"\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|(?:\s*([^|]*)\s*\|)?")
 
 
 def parse_status_table(content: str) -> list[dict] | None:
@@ -69,11 +70,13 @@ def parse_status_table(content: str) -> list[dict] | None:
             status = row_match.group(2).strip()
             notes = row_match.group(3).strip() if row_match.group(3) else ""
 
-            rows.append({
-                "dimension": dimension,
-                "status": status,
-                "notes": notes,
-            })
+            rows.append(
+                {
+                    "dimension": dimension,
+                    "status": status,
+                    "notes": notes,
+                }
+            )
 
     return rows
 
@@ -131,21 +134,22 @@ def fix_status_table(content: str) -> tuple[str, bool]:
 
     # Find the full table including header
     full_pattern = re.compile(
-        r'\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n(?:\|.*?\n)+',
-        re.MULTILINE
+        r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n(?:\|.*?\n)+", re.MULTILINE
     )
 
     full_match = full_pattern.search(content)
     if not full_match:
         return content, False
 
-    old_table = full_match.group(0).rstrip("\n")
-    new_content = content[:full_match.start()] + new_table + content[full_match.end():]
+    full_match.group(0).rstrip("\n")
+    new_content = (
+        content[: full_match.start()] + new_table + content[full_match.end() :]
+    )
 
     return new_content, new_content != content
 
 
-def find_design_docs(category: str = None) -> list[Path]:
+def find_design_docs(category: str | None = None) -> list[Path]:
     """Find design documents."""
     docs = []
     for md_file in sorted(DESIGN_DIR.rglob("*.md")):
@@ -181,7 +185,11 @@ def ensure_status_table(content: str) -> tuple[str, bool]:
         {"dimension": "Integration Testing", "status": "🔴", "notes": ""},
     ]
 
-    new_table = "## Status\n\n" + generate_status_table(default_rows, include_notes=True) + "\n\n---"
+    new_table = (
+        "## Status\n\n"
+        + generate_status_table(default_rows, include_notes=True)
+        + "\n\n---"
+    )
 
     # Find insertion point (after title and description)
     lines = content.split("\n")
@@ -203,24 +211,22 @@ def ensure_status_table(content: str) -> tuple[str, bool]:
         if insert_pos > 0:
             break
 
-    new_lines = lines[:insert_pos] + ["", new_table, ""] + lines[insert_pos:]
+    new_lines = [*lines[:insert_pos], "", new_table, "", *lines[insert_pos:]]
     return "\n".join(new_lines), True
 
 
 def main():
     parser = argparse.ArgumentParser(description="Sync status tables")
-    parser.add_argument(
-        "--category", "-c", help="Only check specific category"
-    )
+    parser.add_argument("--category", "-c", help="Only check specific category")
     parser.add_argument(
         "--fix", "-f", action="store_true", help="Fix formatting issues"
     )
     parser.add_argument(
-        "--add-missing", action="store_true", help="Add status tables to docs without one"
+        "--add-missing",
+        action="store_true",
+        help="Add status tables to docs without one",
     )
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Show details"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show details")
     args = parser.parse_args()
 
     docs = find_design_docs(args.category)
@@ -294,4 +300,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

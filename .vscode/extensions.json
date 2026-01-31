@@ -3,6 +3,15 @@
     // Go Development
     "golang.go",
 
+    // Python Development
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "charliermarsh.ruff",
+
+    // Svelte/TypeScript Development
+    "svelte.svelte-vscode",
+    "esbenp.prettier-vscode",
+
     // Docker
     "ms-azuretools.vscode-docker",
 

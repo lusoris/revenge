@@ -1,65 +1,63 @@
 # Servarr Wiki
 
 > Source: https://wiki.servarr.com/
-> Type: stub
-> Status: Placeholder - needs content fetch
+> Fetched: 2026-01-31T10:59:06.086947+00:00
+> Content-Hash: 417d9e83cd3df67f
+> Type: html
 
 ---
 
-## Overview
+Welcome to the consolidated wiki for Lidarr, Prowlarr, Radarr, Readarr, Sonarr, and Whisparr. Collectively they are referred to as "*Arr", "*Arrs", "Starr", or "Starrs". They are designed to automatically grab, sort, organize, and monitor your Music, Movie, E-Book, or TV Show collections for Lidarr, Radarr, Readarr, Sonarr, and Whisparr; and to manage your indexers and keep them in sync with the aforementioned apps for Prowlarr.
 
-The Servarr Wiki provides documentation for the *arr stack: Radarr, Sonarr, Lidarr, Readarr, Prowlarr, and related applications.
+Contributions are welcome via Pull Requests on our [repository](https://github.com/Servarr/Wiki).
 
-## Common API Patterns
+At times, one may be able to edit on the Wiki directly, just authenticate with Github first.
 
-All *arr applications share common API patterns:
+# ¶ Applications
 
-### Authentication
+## ¶ Media Automation
 
-API key header:
-```
-X-Api-Key: {api_key}
-```
+  * [ Lidarr _Music_](/lidarr)
+  * [ Radarr _Movies_](/radarr)
+  * [ Readarr _Books_](/readarr)
+  * [ Sonarr _TV_](/sonarr)
+  * [ Whisparr _Adult Videos_](/whisparr)
 
-### Base Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /api/v3/system/status` | System status |
-| `GET /api/v3/health` | Health check |
-| `GET /api/v3/queue` | Download queue |
-| `GET /api/v3/history` | Activity history |
 
-### Webhooks
+## ¶ Indexer Management
 
-All *arr apps support webhooks for events:
-- `Grab` - Item grabbed
-- `Download` - Download complete
-- `Rename` - Files renamed
-- `Delete` - Item deleted
-- `Health` - Health status change
+  * [ Prowlarr _Indexers_](/prowlarr)
 
-### Common Data Structures
 
-```json
-{
-  "id": 123,
-  "title": "...",
-  "path": "/media/...",
-  "qualityProfileId": 1,
-  "monitored": true,
-  "added": "2024-01-01T00:00:00Z"
-}
-```
 
-## Resources
+# ¶ Other
 
-- [Radarr Wiki](https://wiki.servarr.com/radarr)
-- [Sonarr Wiki](https://wiki.servarr.com/sonarr)
-- [Lidarr Wiki](https://wiki.servarr.com/lidarr)
-- [Readarr Wiki](https://wiki.servarr.com/readarr)
+## ¶ General Troubleshooting
 
-## Related
+  * [__General Permissions & Network Troubleshooting](/permissions-and-networking)
+  * [__VPN Guide _When and how to use VPNs properly_](/vpn)
 
-- [Arr Integration Pattern](../../design/patterns/ARR_INTEGRATION.md)
-- [Servarr Integrations](../../design/integrations/servarr/)
+
+
+## ¶ Docker
+
+  * [__Docker Guide](/docker-guide)
+  * [__Installing Docker on an ARM-based Synology NAS](/docker-arm-synology)
+
+
+
+## ¶ XEM
+
+  * [__XEM Moderation Guide _Guide for how to map various scenarios in XEM_](/sonarr/xem-guide)
+
+
+
+## ¶ Guides & Tools
+
+  * [__Useful Tools _Servarr list of related apps and tools_](/useful-tools)
+  * [__TRaSH's Guides _Tutorials and Guides for Radarr, Sonarr, Docker, and Download Clients_](https://trash-guides.info/)
+  * [__Lidarr Community Guide _Davo's TRaSH Guide for Lidarr_](/lidarr/community-guide)
+  * [ Community *Arr Install Script _Unofficial Community Script for Servarr Apps_](/install-script)
+
+

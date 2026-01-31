@@ -1,5 +1,10 @@
 # Tracearr Analytics Service
 
+<!-- SOURCES: casbin, fx, go-io, pgx, postgresql-arrays, postgresql-json, river, rueidis, rueidis-docs, sqlc, sqlc-config, svelte-runes, svelte5, sveltekit -->
+
+<!-- DESIGN: features/shared, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Real-time monitoring, analytics, and account sharing detection for Revenge
 
 
@@ -75,8 +80,7 @@
 | Code | 🔴 |  |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-**Based On**: Tracearr (https://github.com/connorgallopo/Tracearr)
+| Integration Testing | 🔴 |  |**Based On**: Tracearr (https://github.com/connorgallopo/Tracearr)
 **Priority**: 🟡 HIGH (Phase 9 - External Services)
 **License**: AGPL-3.0 (rebuild required to avoid copyleft in Revenge)
 **Location**: `internal/service/analytics/`
@@ -538,71 +542,6 @@ POST /api/v1/analytics/bulk/delete-sessions # Bulk delete sessions
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
-| [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Shared](INDEX.md)
-
-### In This Section
-
-- [Time-Based Access Controls](ACCESS_CONTROLS.md)
-- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
-- [Content Rating System](CONTENT_RATING.md)
-- [Revenge - Internationalization (i18n)](I18N.md)
-- [Library Types](LIBRARY_TYPES.md)
-- [News System](NEWS_SYSTEM.md)
-- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
-- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related
 

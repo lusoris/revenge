@@ -1,5 +1,10 @@
 # Metadata Enrichment Pattern
 
+<!-- SOURCES: river, rueidis -->
+
+<!-- DESIGN: patterns, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Patterns for enriching content metadata from external providers
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -17,7 +22,6 @@
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
 | Integration Testing | 🔴 |  |
-
 ---
 
 ## Overview

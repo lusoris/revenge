@@ -1,5 +1,10 @@
 # Revenge - Architecture v2
 
+<!-- SOURCES: dragonfly, ffmpeg, ffmpeg-codecs, ffmpeg-formats, fx, go-astiav, go-astiav-docs, go-blurhash, gohlslib, koanf, lastfm-api, m3u8, ogen, pgx, postgresql-arrays, postgresql-json, river, rueidis, rueidis-docs, shadcn-svelte, sqlc, sqlc-config, svelte-runes, svelte5, sveltekit, tanstack-query, typesense, typesense-go -->
+
+<!-- DESIGN: architecture, ADULT_CONTENT_SYSTEM, ADULT_METADATA, DATA_RECONCILIATION -->
+
+
 > Complete modular architecture for a next-generation media server.
 > Ground-up design with full module isolation, no shared content tables.
 
@@ -108,8 +113,7 @@
 | Code | 🔴 | Reset to template |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-**Priority**: 🔴 HIGH
+| Integration Testing | 🔴 |  |**Priority**: 🔴 HIGH
 **Module**: Core architecture
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
@@ -1199,80 +1203,6 @@ volumes:
 |----------|-------------|
 | [API.md](../technical/API.md) | API design guidelines |
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
-| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../sources/apis/lastfm.md) |
-| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../sources/protocols/m3u8.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
-| [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) | [Local](../../sources/frontend/tanstack-query.md) |
-| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
-| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
-| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../sources/media/go-blurhash.md) |
-| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
-| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
-| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
-| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
-| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Architecture](INDEX.md)
-
-### In This Section
-
-- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
-- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
-- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
-- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
-
-### Related Topics
-
-- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
-- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
-- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
-- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
-- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

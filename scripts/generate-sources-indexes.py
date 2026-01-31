@@ -17,6 +17,7 @@ from pathlib import Path
 
 import yaml
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 SOURCES_DIR = PROJECT_ROOT / "docs" / "dev" / "sources"
@@ -176,10 +177,13 @@ def generate_index(directory: Path, files: list[Path], index_data: dict) -> str:
     rel_dir = directory.relative_to(SOURCES_DIR)
     dir_key = str(rel_dir).replace("\\", "/")
 
-    meta = CATEGORY_META.get(dir_key, {
-        "title": directory.name.replace("_", " ").replace("-", " ").title(),
-        "desc": "",
-    })
+    meta = CATEGORY_META.get(
+        dir_key,
+        {
+            "title": directory.name.replace("_", " ").replace("-", " ").title(),
+            "desc": "",
+        },
+    )
 
     # Calculate parent path
     depth = len(rel_dir.parts)
@@ -195,14 +199,16 @@ def generate_index(directory: Path, files: list[Path], index_data: dict) -> str:
     if meta.get("desc"):
         lines.extend([f"> {meta['desc']}", ""])
 
-    lines.extend([
-        "---",
-        "",
-        "## Documents",
-        "",
-        "| Document | Status | Last Fetched |",
-        "|----------|--------|--------------|",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Documents",
+            "",
+            "| Document | Status | Last Fetched |",
+            "|----------|--------|--------------|",
+        ]
+    )
 
     for file_path in files:
         info = get_file_info(file_path, index_data)
@@ -226,21 +232,23 @@ def generate_index(directory: Path, files: list[Path], index_data: dict) -> str:
 
         lines.append(f"| {icon} [{name}]({rel_path}) | {status} | {fetched} |")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## Legend",
-        "",
-        "- ✅ Auto = Fetched automatically by `fetch-sources.py`",
-        "- 📝 Manual = Manually maintained document",
-        "- 📄 Markdown | 📋 JSON/OpenAPI | 🔷 GraphQL",
-        "",
-        "---",
-        "",
-        f"*See [SOURCES.yaml]({parent_path}SOURCES.yaml) for fetch configuration*",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Legend",
+            "",
+            "- ✅ Auto = Fetched automatically by `fetch-sources.py`",
+            "- 📝 Manual = Manually maintained document",
+            "- 📄 Markdown | 📋 JSON/OpenAPI | 🔷 GraphQL",
+            "",
+            "---",
+            "",
+            f"*See [SOURCES.yaml]({parent_path}SOURCES.yaml) for fetch configuration*",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -253,7 +261,7 @@ def main():
     args = parser.parse_args()
 
     print("Loading configuration...")
-    config = load_sources_config()
+    load_sources_config()
     index_data = load_index()
     print(f"  {len(index_data.get('sources', {}))} sources in index")
 
@@ -289,7 +297,7 @@ def main():
             print(f"  {rel_path} - would update")
         updated += 1
 
-    print(f"\n=== SUMMARY ===")
+    print("\n=== SUMMARY ===")
     print(f"{'Updated' if args.update else 'Would update'}: {updated}")
     print(f"Unchanged: {unchanged}")
 

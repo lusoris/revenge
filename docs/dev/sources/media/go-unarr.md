@@ -1,540 +1,199 @@
 # gen2brain/go-unarr
 
 > Source: https://pkg.go.dev/github.com/gen2brain/go-unarr
-> Fetched: 2026-01-30T23:54:18.670728+00:00
-> Content-Hash: 29c8d19a0896602b
+> Fetched: 2026-01-31T11:01:36.663116+00:00
+> Content-Hash: 8fe6d9382cb4bae5
 > Type: html
 
 ---
 
-Overview
+### Overview ¶
 
-¶
+Package unarr is a decompression library for RAR, TAR, ZIP and 7z archives. 
 
-Package unarr is a decompression library for RAR, TAR, ZIP and 7z archives.
+### Index ¶
 
-Index
+  * Variables
+  * type Archive
+  *     * func NewArchive(path string) (a *Archive, err error)
+    * func NewArchiveFromMemory(b []byte) (a *Archive, err error)
+    * func NewArchiveFromReader(r io.Reader) (a *Archive, err error)
+  *     * func (a *Archive) Close() (err error)
+    * func (a *Archive) Entry() error
+    * func (a *Archive) EntryAt(off int64) error
+    * func (a *Archive) EntryFor(name string) error
+    * func (a *Archive) Extract(path string) (contents []string, err error)
+    * func (a *Archive) List() (contents []string, err error)
+    * func (a *Archive) ModTime() time.Time
+    * func (a *Archive) Name() string
+    * func (a *Archive) Offset() int64
+    * func (a *Archive) RawName() string
+    * func (a *Archive) Read(b []byte) (n int, err error)
+    * func (a *Archive) ReadAll() ([]byte, error)
+    * func (a *Archive) Seek(offset int64, whence int) (int64, error)
+    * func (a *Archive) Size() int
 
-¶
 
-Variables
 
-type Archive
-
-func NewArchive(path string) (a *Archive, err error)
-
-func NewArchiveFromMemory(b []byte) (a *Archive, err error)
-
-func NewArchiveFromReader(r io.Reader) (a *Archive, err error)
-
-func (a *Archive) Close() (err error)
-
-func (a *Archive) Entry() error
-
-func (a *Archive) EntryAt(off int64) error
-
-func (a *Archive) EntryFor(name string) error
-
-func (a *Archive) Extract(path string) (contents []string, err error)
-
-func (a *Archive) List() (contents []string, err error)
-
-func (a *Archive) ModTime() time.Time
-
-func (a *Archive) Name() string
-
-func (a *Archive) Offset() int64
-
-func (a *Archive) RawName() string
-
-func (a *Archive) Read(b []byte) (n int, err error)
-
-func (a *Archive) ReadAll() ([]byte, error)
-
-func (a *Archive) Seek(offset int64, whence int) (int64, error)
-
-func (a *Archive) Size() int
-
-Constants
-
-¶
+### Constants ¶
 
 This section is empty.
 
-Variables
+### Variables ¶
 
-¶
+[View Source](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L16)
+    
+    
+    var (
+    	ErrOpenFile    = [errors](/errors).[New](/errors#New)("unarr: open file failed")
+    	ErrOpenMemory  = [errors](/errors).[New](/errors#New)("unarr: open memory failed")
+    	ErrOpenArchive = [errors](/errors).[New](/errors#New)("unarr: no valid RAR, ZIP, 7Z or TAR archive")
+    	ErrEntry       = [errors](/errors).[New](/errors#New)("unarr: failed to parse entry")
+    	ErrEntryAt     = [errors](/errors).[New](/errors#New)("unarr: failed to parse entry at")
+    	ErrEntryFor    = [errors](/errors).[New](/errors#New)("unarr: failed to parse entry for")
+    	ErrSeek        = [errors](/errors).[New](/errors#New)("unarr: seek failed")
+    	ErrRead        = [errors](/errors).[New](/errors#New)("unarr: read failure")
+    )
 
-View Source
-
-var (
-
-ErrOpenFile    =
-
-errors
-
-.
-
-New
-
-("unarr: open file failed")
-
-ErrOpenMemory  =
-
-errors
-
-.
-
-New
-
-("unarr: open memory failed")
-
-ErrOpenArchive =
-
-errors
-
-.
-
-New
-
-("unarr: no valid RAR, ZIP, 7Z or TAR archive")
-
-ErrEntry       =
-
-errors
-
-.
-
-New
-
-("unarr: failed to parse entry")
-
-ErrEntryAt     =
-
-errors
-
-.
-
-New
-
-("unarr: failed to parse entry at")
-
-ErrEntryFor    =
-
-errors
-
-.
-
-New
-
-("unarr: failed to parse entry for")
-
-ErrSeek        =
-
-errors
-
-.
-
-New
-
-("unarr: seek failed")
-
-ErrRead        =
-
-errors
-
-.
-
-New
-
-("unarr: read failure")
-
-)
-
-Functions
-
-¶
+### Functions ¶
 
 This section is empty.
 
-Types
+### Types ¶
 
-¶
+####  type [Archive](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L28) ¶
+    
+    
+    type Archive struct {
+    	// contains filtered or unexported fields
+    }
 
-type
+Archive represents unarr archive 
 
-Archive
+####  func [NewArchive](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L36) ¶
+    
+    
+    func NewArchive(path [string](/builtin#string)) (a *Archive, err [error](/builtin#error))
 
-¶
+NewArchive returns new unarr Archive 
 
-type Archive struct {
+####  func [NewArchiveFromMemory](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L51) ¶
+    
+    
+    func NewArchiveFromMemory(b [][byte](/builtin#byte)) (a *Archive, err [error](/builtin#error))
 
-// contains filtered or unexported fields
+NewArchiveFromMemory returns new unarr Archive from byte slice 
 
-}
+####  func [NewArchiveFromReader](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L66) ¶
+    
+    
+    func NewArchiveFromReader(r [io](/io).[Reader](/io#Reader)) (a *Archive, err [error](/builtin#error))
 
-Archive represents unarr archive
+NewArchiveFromReader returns new unarr Archive from io.Reader 
 
-func
+####  func (*Archive) [Close](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L164) ¶
+    
+    
+    func (a *Archive) Close() (err [error](/builtin#error))
 
-NewArchive
+Close closes the underlying unarr archive 
 
-¶
+####  func (*Archive) [Entry](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L103) ¶
+    
+    
+    func (a *Archive) Entry() [error](/builtin#error)
 
-func NewArchive(path
+Entry reads the next archive entry. 
 
-string
+io.EOF is returned when there is no more to be read from the archive. 
 
-) (a *
+####  func (*Archive) [EntryAt](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L118) ¶
+    
+    
+    func (a *Archive) EntryAt(off [int64](/builtin#int64)) [error](/builtin#error)
 
-Archive
+EntryAt reads the archive entry at the given offset 
 
-, err
+####  func (*Archive) [EntryFor](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L128) ¶
+    
+    
+    func (a *Archive) EntryFor(name [string](/builtin#string)) [error](/builtin#error)
 
-error
+EntryFor reads the (first) archive entry associated with the given name 
 
-)
+####  func (*Archive) [Extract](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L224) ¶
+    
+    
+    func (a *Archive) Extract(path [string](/builtin#string)) (contents [][string](/builtin#string), err [error](/builtin#error))
 
-NewArchive returns new unarr Archive
+Extract extracts archive to destination path 
 
-func
+####  func (*Archive) [List](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L258) ¶
+    
+    
+    func (a *Archive) List() (contents [][string](/builtin#string), err [error](/builtin#error))
 
-NewArchiveFromMemory
+List lists the contents of archive 
 
-¶
+####  func (*Archive) [ModTime](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L192) ¶
+    
+    
+    func (a *Archive) ModTime() [time](/time).[Time](/time#Time)
 
-func NewArchiveFromMemory(b []
+ModTime returns the stored modification time of the current entry 
 
-byte
+####  func (*Archive) [Name](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L182) ¶
+    
+    
+    func (a *Archive) Name() [string](/builtin#string)
 
-) (a *
+Name returns the name of the current entry as UTF-8 string 
 
-Archive
+####  func (*Archive) [Offset](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L177) ¶
+    
+    
+    func (a *Archive) Offset() [int64](/builtin#int64)
 
-, err
+Offset returns the stream offset of the current entry, for use with EntryAt 
 
-error
+####  func (*Archive) [RawName](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L187) ¶ added in v0.1.2
+    
+    
+    func (a *Archive) RawName() [string](/builtin#string)
 
-)
+RawName returns the name of the current entry as raw string 
 
-NewArchiveFromMemory returns new unarr Archive from byte slice
+####  func (*Archive) [Read](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L140) ¶
+    
+    
+    func (a *Archive) Read(b [][byte](/builtin#byte)) (n [int](/builtin#int), err [error](/builtin#error))
 
-func
+Read tries to read 'b' bytes into buffer, advancing the read offset pointer. 
 
-NewArchiveFromReader
+Returns the actual number of bytes read. 
 
-¶
+####  func (*Archive) [ReadAll](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L198) ¶
+    
+    
+    func (a *Archive) ReadAll() ([][byte](/builtin#byte), [error](/builtin#error))
 
-func NewArchiveFromReader(r
+ReadAll reads current entry and returns data 
 
-io
+####  func (*Archive) [Seek](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L154) ¶
+    
+    
+    func (a *Archive) Seek(offset [int64](/builtin#int64), whence [int](/builtin#int)) ([int64](/builtin#int64), [error](/builtin#error))
 
-.
+Seek moves the read offset pointer interpreted according to whence. 
 
-Reader
+Returns the new offset. 
 
-) (a *
+####  func (*Archive) [Size](https://github.com/gen2brain/go-unarr/blob/v0.2.4/unarr.go#L172) ¶
+    
+    
+    func (a *Archive) Size() [int](/builtin#int)
 
-Archive
-
-, err
-
-error
-
-)
-
-NewArchiveFromReader returns new unarr Archive from io.Reader
-
-func (*Archive)
-
-Close
-
-¶
-
-func (a *
-
-Archive
-
-) Close() (err
-
-error
-
-)
-
-Close closes the underlying unarr archive
-
-func (*Archive)
-
-Entry
-
-¶
-
-func (a *
-
-Archive
-
-) Entry()
-
-error
-
-Entry reads the next archive entry.
-
-io.EOF is returned when there is no more to be read from the archive.
-
-func (*Archive)
-
-EntryAt
-
-¶
-
-func (a *
-
-Archive
-
-) EntryAt(off
-
-int64
-
-)
-
-error
-
-EntryAt reads the archive entry at the given offset
-
-func (*Archive)
-
-EntryFor
-
-¶
-
-func (a *
-
-Archive
-
-) EntryFor(name
-
-string
-
-)
-
-error
-
-EntryFor reads the (first) archive entry associated with the given name
-
-func (*Archive)
-
-Extract
-
-¶
-
-func (a *
-
-Archive
-
-) Extract(path
-
-string
-
-) (contents []
-
-string
-
-, err
-
-error
-
-)
-
-Extract extracts archive to destination path
-
-func (*Archive)
-
-List
-
-¶
-
-func (a *
-
-Archive
-
-) List() (contents []
-
-string
-
-, err
-
-error
-
-)
-
-List lists the contents of archive
-
-func (*Archive)
-
-ModTime
-
-¶
-
-func (a *
-
-Archive
-
-) ModTime()
-
-time
-
-.
-
-Time
-
-ModTime returns the stored modification time of the current entry
-
-func (*Archive)
-
-Name
-
-¶
-
-func (a *
-
-Archive
-
-) Name()
-
-string
-
-Name returns the name of the current entry as UTF-8 string
-
-func (*Archive)
-
-Offset
-
-¶
-
-func (a *
-
-Archive
-
-) Offset()
-
-int64
-
-Offset returns the stream offset of the current entry, for use with EntryAt
-
-func (*Archive)
-
-RawName
-
-¶
-
-added in
-
-v0.1.2
-
-func (a *
-
-Archive
-
-) RawName()
-
-string
-
-RawName returns the name of the current entry as raw string
-
-func (*Archive)
-
-Read
-
-¶
-
-func (a *
-
-Archive
-
-) Read(b []
-
-byte
-
-) (n
-
-int
-
-, err
-
-error
-
-)
-
-Read tries to read 'b' bytes into buffer, advancing the read offset pointer.
-
-Returns the actual number of bytes read.
-
-func (*Archive)
-
-ReadAll
-
-¶
-
-func (a *
-
-Archive
-
-) ReadAll() ([]
-
-byte
-
-,
-
-error
-
-)
-
-ReadAll reads current entry and returns data
-
-func (*Archive)
-
-Seek
-
-¶
-
-func (a *
-
-Archive
-
-) Seek(offset
-
-int64
-
-, whence
-
-int
-
-) (
-
-int64
-
-,
-
-error
-
-)
-
-Seek moves the read offset pointer interpreted according to whence.
-
-Returns the new offset.
-
-func (*Archive)
-
-Size
-
-¶
-
-func (a *
-
-Archive
-
-) Size()
-
-int
-
-Size returns the total size of uncompressed data of the current entry
+Size returns the total size of uncompressed data of the current entry 
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

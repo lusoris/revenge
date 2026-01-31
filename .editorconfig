@@ -1,51 +1,156 @@
-# EditorConfig is awesome: https://EditorConfig.org
+# EditorConfig - Universal Editor Settings
+# https://editorconfig.org
+#
+# This file defines coding styles enforced across ALL editors
+# Supports: VS Code, Zed, JetBrains, Vim, Emacs, Sublime, and more
 
-# top-most EditorConfig file
 root = true
 
-# Unix-style newlines with a newline ending every file
+# ==============================================================================
+# ALL FILES - Universal Settings
+# ==============================================================================
+
 [*]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Go files
+# ==============================================================================
+# GO - Backend Language
+# ==============================================================================
+
 [*.go]
 indent_style = tab
 indent_size = 4
+# Go uses hard tabs, gofmt enforces this
 
-# YAML files
-[*.{yml,yaml}]
-indent_style = space
-indent_size = 2
-
-# JSON files
-[*.json]
-indent_style = space
-indent_size = 2
-
-# Markdown files
-[*.md]
-trim_trailing_whitespace = false
-indent_style = space
-indent_size = 2
-
-# Makefile
-[Makefile]
+[go.{mod,sum}]
 indent_style = tab
+indent_size = 4
 
-# Shell scripts
+# ==============================================================================
+# TYPESCRIPT & JAVASCRIPT - Frontend
+# ==============================================================================
+
+[*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# ==============================================================================
+# SVELTE - Frontend Framework
+# ==============================================================================
+
+[*.svelte]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# ==============================================================================
+# CSS & STYLING
+# ==============================================================================
+
+[*.{css,scss,sass,less,pcss}]
+indent_style = space
+indent_size = 2
+
+# ==============================================================================
+# PYTHON - Scripts & Automation
+# ==============================================================================
+
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+# 88 matches ruff/black default
+
+# ==============================================================================
+# CONFIGURATION FILES
+# ==============================================================================
+
+[*.{json,jsonc}]
+indent_style = space
+indent_size = 2
+
+[*.{yaml,yml}]
+indent_style = space
+indent_size = 2
+
+[*.toml]
+indent_style = space
+indent_size = 2
+
+# ==============================================================================
+# SHELL SCRIPTS
+# ==============================================================================
+
 [*.sh]
 indent_style = space
 indent_size = 2
 
-# SQL files
+# ==============================================================================
+# MARKDOWN & DOCUMENTATION
+# ==============================================================================
+
+[*.{md,mdx}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+# Markdown uses trailing spaces for line breaks
+max_line_length = 120
+
+# ==============================================================================
+# TERRAFORM (Coder Template)
+# ==============================================================================
+
+[*.{tf,tfvars,hcl}]
+indent_style = space
+indent_size = 2
+
+# ==============================================================================
+# DOCKER
+# ==============================================================================
+
+[Dockerfile*]
+indent_style = space
+indent_size = 2
+
+[docker-compose*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# ==============================================================================
+# MAKEFILES
+# ==============================================================================
+
+[Makefile]
+indent_style = tab
+# Makefiles MUST use tabs
+
+[*.mk]
+indent_style = tab
+
+# ==============================================================================
+# SQL
+# ==============================================================================
+
 [*.sql]
 indent_style = space
 indent_size = 2
 
-# Docker files
-[Dockerfile*]
+# ==============================================================================
+# HTML & TEMPLATES
+# ==============================================================================
+
+[*.{html,htm,tmpl,tpl}]
+indent_style = space
+indent_size = 2
+
+# ==============================================================================
+# GRAPHQL
+# ==============================================================================
+
+[*.{graphql,gql}]
 indent_style = space
 indent_size = 2

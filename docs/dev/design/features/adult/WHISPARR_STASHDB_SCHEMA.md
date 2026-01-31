@@ -1,5 +1,10 @@
 # Whisparr v3 & StashDB Schema Integration
 
+<!-- SOURCES: ffmpeg, ffmpeg-codecs, ffmpeg-formats, go-astiav, go-astiav-docs, pgx, postgresql-arrays, postgresql-json, river, shadcn-svelte, stashdb, svelte-runes, svelte5, sveltekit, whisparr -->
+
+<!-- DESIGN: features/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Custom UI/UX approach for adult content scenes using Whisparr cache
 
 
@@ -61,8 +66,7 @@
 | Code | 🔴 |
 | Linting | 🔴 |
 | Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
-**Last Updated**: 2026-01-28
+| Integration Testing | 🔴 |**Last Updated**: 2026-01-28
 **Dependencies**: Whisparr v3 ("eros" branch), StashDB API, PostgreSQL schema `qar`
 
 ---
@@ -537,68 +541,6 @@ func (s *FingerprintService) generatePHash(filePath string) (string, error) {
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
-| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
-| [Whisparr OpenAPI Spec](https://raw.githubusercontent.com/Whisparr/Whisparr/develop/src/Whisparr.Api.V3/openapi.json) | [Local](../../../sources/apis/whisparr-openapi.json) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../../sources/frontend/shadcn-svelte.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Adult](INDEX.md)
-
-### In This Section
-
-- [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md)
-- [Revenge - Adult Content Metadata System](ADULT_METADATA.md)
-- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
-- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

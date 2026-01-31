@@ -1,5 +1,10 @@
 # Trickplay (Timeline Thumbnails)
 
+<!-- SOURCES: bif-spec, ffmpeg, ffmpeg-codecs, ffmpeg-formats, go-astiav, go-astiav-docs, jellyfin-trickplay, river, webvtt -->
+
+<!-- DESIGN: features/playback, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Thumbnail previews on video seek bar
 
 
@@ -47,8 +52,7 @@
 | Code | 🔴 |
 | Linting | 🔴 |
 | Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
-**Priority**: 🟢 HIGH (Critical Gap - All competitors have this)
+| Integration Testing | 🔴 |**Priority**: 🟢 HIGH (Critical Gap - All competitors have this)
 **Inspired By**: Jellyfin Trickplay, Plex Timeline Preview
 **Location**: `internal/feature/trickplay/`
 
@@ -414,63 +418,6 @@ Content is prioritized for trickplay generation:
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
-| [Jellyfin Trickplay](https://jellyfin.org/docs/general/server/media/trickplay/) | [Local](../../../sources/apis/jellyfin-trickplay.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
-| [Roku BIF Format](https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md) | [Local](../../../sources/protocols/bif.md) |
-| [WebVTT Specification](https://www.w3.org/TR/webvtt1/) | [Local](../../../sources/protocols/webvtt.md) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Playback](INDEX.md)
-
-### In This Section
-
-- [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md)
-- [Release Calendar System](RELEASE_CALENDAR.md)
-- [Skip Intro / Credits Detection](SKIP_INTRO.md)
-- [SyncPlay (Watch Together)](SYNCPLAY.md)
-- [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

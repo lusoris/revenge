@@ -19,7 +19,6 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-import yaml
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -206,7 +205,7 @@ def get_relative_path(from_dir: Path, to_path: Path) -> str:
         parts_from = from_dir.parts
         parts_to = to_path.parts
         common = 0
-        for a, b in zip(parts_from, parts_to):
+        for a, b in zip(parts_from, parts_to, strict=False):
             if a == b:
                 common += 1
             else:
@@ -220,19 +219,19 @@ def extract_doc_info(doc_path: Path) -> dict[str, Any]:
     content = doc_path.read_text(encoding="utf-8")
 
     # Get title from first heading
-    title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+    title_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
     title = title_match.group(1) if title_match else doc_path.stem.replace("_", " ")
 
     # Get description from first paragraph or blockquote
-    desc_match = re.search(r'^>\s*(.+)$', content, re.MULTILINE)
+    desc_match = re.search(r"^>\s*(.+)$", content, re.MULTILINE)
     desc = desc_match.group(1) if desc_match else ""
 
     # Detect status indicators
-    has_schema = bool(re.search(r'```sql|CREATE TABLE', content, re.IGNORECASE))
-    has_code = bool(re.search(r'```go|type \w+ struct', content))
-    has_checklist = bool(re.search(r'## Implementation', content))
-    checkbox_count = len(re.findall(r'- \[[ x]\]', content))
-    external_links = len(re.findall(r'\[.+\]\(https?://', content))
+    has_schema = bool(re.search(r"```sql|CREATE TABLE", content, re.IGNORECASE))
+    has_code = bool(re.search(r"```go|type \w+ struct", content))
+    has_checklist = bool(re.search(r"## Implementation", content))
+    checkbox_count = len(re.findall(r"- \[[ x]\]", content))
+    external_links = len(re.findall(r"\[.+\]\(https?://", content))
 
     # Estimate status
     if has_schema or has_code:
@@ -288,11 +287,14 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
     abs_dir = DESIGN_DIR / dir_path
 
     # Get metadata for this category
-    meta = CATEGORY_META.get(dir_path, {
-        "title": dir_path.replace("/", " - ").replace("_", " ").title(),
-        "desc": "",
-        "related": [],
-    })
+    meta = CATEGORY_META.get(
+        dir_path,
+        {
+            "title": dir_path.replace("/", " - ").replace("_", " ").title(),
+            "desc": "",
+            "related": [],
+        },
+    )
 
     # Calculate paths
     sot_rel = get_sot_path(abs_dir)
@@ -310,12 +312,14 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
     if meta.get("desc"):
         lines.extend([f"> {meta['desc']}", ""])
 
-    lines.extend([
-        f"**Source of Truth**: [{sot_rel.split('/')[-1]}]({sot_rel})",
-        "",
-        "---",
-        "",
-    ])
+    lines.extend(
+        [
+            f"**Source of Truth**: [{sot_rel.split('/')[-1]}]({sot_rel})",
+            "",
+            "---",
+            "",
+        ]
+    )
 
     # Check for subdirectories with their own indexes
     subdirs = []
@@ -351,28 +355,34 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
             info = extract_doc_info(doc)
             rel_path = doc.name
             title = info["title"]
-            desc = info["desc"][:60] + "..." if len(info.get("desc", "")) > 60 else info.get("desc", "")
+            desc = (
+                info["desc"][:60] + "..."
+                if len(info.get("desc", "")) > 60
+                else info.get("desc", "")
+            )
             status = info["status"]
             lines.append(f"| [{title}]({rel_path}) | {desc} | {status} |")
 
         lines.extend(["", "---", ""])
 
     # Add source breadcrumbs section
-    lines.extend([
-        "<!-- SOURCE-BREADCRUMBS-START -->",
-        "",
-        "## Sources & Cross-References",
-        "",
-        "> Auto-generated section linking to external documentation sources",
-        "",
-        "### Cross-Reference Indexes",
-        "",
-        f"- [All Sources Index]({sources_index_rel}) - Complete list of external documentation",
-        f"- [Design ↔ Sources Map]({design_crossref_rel}) - Which docs reference which sources",
-        "",
-        "<!-- SOURCE-BREADCRUMBS-END -->",
-        "",
-    ])
+    lines.extend(
+        [
+            "<!-- SOURCE-BREADCRUMBS-START -->",
+            "",
+            "## Sources & Cross-References",
+            "",
+            "> Auto-generated section linking to external documentation sources",
+            "",
+            "### Cross-Reference Indexes",
+            "",
+            f"- [All Sources Index]({sources_index_rel}) - Complete list of external documentation",
+            f"- [Design ↔ Sources Map]({design_crossref_rel}) - Which docs reference which sources",
+            "",
+            "<!-- SOURCE-BREADCRUMBS-END -->",
+            "",
+        ]
+    )
 
     # Related documentation
     if meta.get("related"):
@@ -386,16 +396,18 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
         lines.append("")
 
     # Status legend footer
-    lines.extend([
-        "---",
-        "",
-        "## Status Legend",
-        "",
-        f"> See [{sot_rel.split('/')[-1]}]({sot_rel}#status-system) for full status definitions",
-        "",
-        "Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A",
-        "",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Status Legend",
+            "",
+            f"> See [{sot_rel.split('/')[-1]}]({sot_rel}#status-system) for full status definitions",
+            "",
+            "Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 

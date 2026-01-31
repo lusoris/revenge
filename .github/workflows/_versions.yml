@@ -1,0 +1,87 @@
+name: Extract Versions from SOURCE_OF_TRUTH
+
+on:
+  workflow_call:
+    outputs:
+      go-version:
+        description: "Go version from SOURCE_OF_TRUTH"
+        value: ${{ jobs.extract.outputs.go }}
+      go-matrix:
+        description: "Go version matrix for testing (current + previous)"
+        value: ${{ jobs.extract.outputs.go-matrix }}
+      python-version:
+        description: "Python version from SOURCE_OF_TRUTH"
+        value: ${{ jobs.extract.outputs.python }}
+      node-version:
+        description: "Node.js version from SOURCE_OF_TRUTH"
+        value: ${{ jobs.extract.outputs.node }}
+      postgres-version:
+        description: "PostgreSQL version from SOURCE_OF_TRUTH"
+        value: ${{ jobs.extract.outputs.postgres }}
+      goexperiment:
+        description: "GOEXPERIMENT flags from SOURCE_OF_TRUTH"
+        value: ${{ jobs.extract.outputs.goexperiment }}
+
+jobs:
+  extract:
+    name: Extract versions
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.versions.outputs.go }}
+      go-matrix: ${{ steps.versions.outputs.go-matrix }}
+      python: ${{ steps.versions.outputs.python }}
+      node: ${{ steps.versions.outputs.node }}
+      postgres: ${{ steps.versions.outputs.postgres }}
+      goexperiment: ${{ steps.versions.outputs.goexperiment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract versions from SOURCE_OF_TRUTH
+        id: versions
+        run: |
+          SOT_FILE="docs/dev/design/00_SOURCE_OF_TRUTH.md"
+
+          # Extract Go version
+          GO_VERSION=$(grep "^\*\*Go Version\*\*:" "$SOT_FILE" | sed 's/.*: //')
+          echo "go=${GO_VERSION}" >> $GITHUB_OUTPUT
+          echo "✓ Go version: ${GO_VERSION}"
+
+          # Create Go test matrix (current + previous minor version)
+          GO_MAJOR=$(echo "$GO_VERSION" | cut -d. -f1,2)
+          GO_MINOR=$(echo "$GO_VERSION" | cut -d. -f2)
+          PREV_MINOR=$((GO_MINOR - 1))
+          GO_PREV="${GO_MAJOR%.*}.$PREV_MINOR"
+          GO_MATRIX="[\"${GO_MAJOR}\", \"${GO_PREV}\"]"
+          echo "go-matrix=${GO_MATRIX}" >> $GITHUB_OUTPUT
+          echo "✓ Go matrix: ${GO_MATRIX}"
+
+          # Extract GOEXPERIMENT
+          GOEXPERIMENT=$(grep "^\*\*Build Command\*\*:" "$SOT_FILE" | sed -n 's/.*GOEXPERIMENT=\([^ ]*\).*/\1/p')
+          echo "goexperiment=${GOEXPERIMENT}" >> $GITHUB_OUTPUT
+          echo "✓ GOEXPERIMENT: ${GOEXPERIMENT}"
+
+          # Extract PostgreSQL version
+          POSTGRES_VERSION=$(grep "^\*\*PostgreSQL\*\*:" "$SOT_FILE" | sed 's/.*: //;s/ .*//')
+          echo "postgres=${POSTGRES_VERSION}" >> $GITHUB_OUTPUT
+          echo "✓ PostgreSQL version: ${POSTGRES_VERSION}"
+
+          # Extract Python version
+          PYTHON_VERSION=$(grep "^\*\*Python\*\*:" "$SOT_FILE" | sed 's/.*: //')
+          echo "python=${PYTHON_VERSION}" >> $GITHUB_OUTPUT
+          echo "✓ Python version: ${PYTHON_VERSION}"
+
+          # Extract Node.js version
+          NODE_VERSION=$(grep "^\*\*Node\.js\*\*:" "$SOT_FILE" | sed 's/.*: //;s/ .*//')
+          echo "node=${NODE_VERSION}" >> $GITHUB_OUTPUT
+          echo "✓ Node.js version: ${NODE_VERSION}"
+
+      - name: Verify extracted versions
+        run: |
+          echo "📋 Extracted Versions from SOURCE_OF_TRUTH:"
+          echo "  Go: ${{ steps.versions.outputs.go }}"
+          echo "  Go Matrix: ${{ steps.versions.outputs.go-matrix }}"
+          echo "  GOEXPERIMENT: ${{ steps.versions.outputs.goexperiment }}"
+          echo "  PostgreSQL: ${{ steps.versions.outputs.postgres }}"
+          echo "  Python: ${{ steps.versions.outputs.python }}"
+          echo "  Node.js: ${{ steps.versions.outputs.node }}"

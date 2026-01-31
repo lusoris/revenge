@@ -15,26 +15,28 @@ Usage:
 
 import argparse
 import re
+import sys
 from pathlib import Path
+
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DOCS_DIR = PROJECT_ROOT / "docs"
 
 # Link pattern: [text](url)
-LINK_PATTERN = re.compile(r'\[([^\]]*)\]\(([^)]+)\)')
+LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 
 # Heading pattern for anchor validation
-HEADING_PATTERN = re.compile(r'^#{1,6}\s+(.+)$', re.MULTILINE)
+HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+)$", re.MULTILINE)
 
 
 def slugify(text: str) -> str:
     """Convert heading text to anchor slug."""
     # GitHub-style slugification
     slug = text.lower()
-    slug = re.sub(r'[^\w\s-]', '', slug)
-    slug = re.sub(r'[\s_]+', '-', slug)
-    slug = slug.strip('-')
+    slug = re.sub(r"[^\w\s-]", "", slug)
+    slug = re.sub(r"[\s_]+", "-", slug)
+    slug = slug.strip("-")
     return slug
 
 
@@ -44,9 +46,9 @@ def extract_headings(content: str) -> set[str]:
     for match in HEADING_PATTERN.finditer(content):
         heading_text = match.group(1).strip()
         # Remove markdown formatting
-        heading_text = re.sub(r'\*\*([^*]+)\*\*', r'\1', heading_text)
-        heading_text = re.sub(r'\*([^*]+)\*', r'\1', heading_text)
-        heading_text = re.sub(r'`([^`]+)`', r'\1', heading_text)
+        heading_text = re.sub(r"\*\*([^*]+)\*\*", r"\1", heading_text)
+        heading_text = re.sub(r"\*([^*]+)\*", r"\1", heading_text)
+        heading_text = re.sub(r"`([^`]+)`", r"\1", heading_text)
         headings.add(slugify(heading_text))
     return headings
 
@@ -157,12 +159,14 @@ def validate_file(
             )
 
             if not is_valid:
-                errors.append({
-                    "line": line_num,
-                    "text": link_text,
-                    "url": link_url,
-                    "error": error,
-                })
+                errors.append(
+                    {
+                        "line": line_num,
+                        "text": link_text,
+                        "url": link_url,
+                        "error": error,
+                    }
+                )
 
     return errors
 
@@ -192,10 +196,7 @@ def main():
         print(f"Error: {target} does not exist")
         return 1
 
-    if target.is_file():
-        files = [target]
-    else:
-        files = find_markdown_files(target)
+    files = [target] if target.is_file() else find_markdown_files(target)
 
     print(f"Checking {len(files)} markdown files...")
 
@@ -224,7 +225,7 @@ def main():
                 rel_path = file_path
             print(f"  ✓ {rel_path}")
 
-    print(f"\n=== SUMMARY ===")
+    print("\n=== SUMMARY ===")
     print(f"Files checked: {len(files)}")
     print(f"Files with errors: {files_with_errors}")
     print(f"Total errors: {total_errors}")
@@ -238,4 +239,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

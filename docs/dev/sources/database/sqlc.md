@@ -1,37 +1,35 @@
 # sqlc
 
 > Source: https://docs.sqlc.dev/en/stable/
-> Fetched: 2026-01-30T23:49:59.167181+00:00
-> Content-Hash: adfadf7ec1a8da98
+> Fetched: 2026-01-31T10:57:19.486562+00:00
+> Content-Hash: 1cbef34dc51a65f7
 > Type: html
 
 ---
 
-sqlc Documentation
+  *   * sqlc Documentation
+  * [ View page source](_sources/index.rst.txt)
 
-View page source
 
-sqlc Documentation
 
-
+* * *
 
-And lo, the Great One looked down upon the people and proclaimed:
+# sqlc Documentation
 
-“SQL is actually pretty great”
+> And lo, the Great One looked down upon the people and proclaimed:
+>     
+> 
+> “SQL is actually pretty great”
 
-sqlc generates
+sqlc generates **fully type-safe idiomatic Go code** from SQL. Here’s how it works:
 
-fully type-safe idiomatic Go code
+  1. You write SQL queries
 
-from SQL. Here’s how it
-works:
+  2. You run sqlc to generate Go code that presents type-safe interfaces to those queries
 
-You write SQL queries
+  3. You write application code that calls the methods sqlc generated
 
-You run sqlc to generate Go code that presents type-safe interfaces to those
-queries
 
-You write application code that calls the methods sqlc generated
 
-Seriously, it’s that easy. You don’t have to write any boilerplate SQL querying
-code ever again.
+
+Seriously, it’s that easy. You don’t have to write any boilerplate SQL querying code ever again.

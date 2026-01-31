@@ -15,6 +15,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
@@ -72,17 +73,17 @@ def get_doc_info(doc_path: Path) -> dict:
     rel_path = doc_path.relative_to(DESIGN_DIR)
 
     # Get title
-    title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+    title_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
     title = title_match.group(1) if title_match else doc_path.stem.replace("_", " ")
 
     # Get description
-    desc_match = re.search(r'^>\s*(.+)$', content, re.MULTILINE)
+    desc_match = re.search(r"^>\s*(.+)$", content, re.MULTILINE)
     desc = desc_match.group(1) if desc_match else ""
 
     # Find internal links to other design docs
     internal_links = set()
     # Match markdown links like [text](path.md) or [text](../path.md)
-    link_pattern = r'\[([^\]]+)\]\(([^)]+\.md)\)'
+    link_pattern = r"\[([^\]]+)\]\(([^)]+\.md)\)"
     for match in re.finditer(link_pattern, content):
         link_path = match.group(2)
         # Skip external links and source links
@@ -94,7 +95,9 @@ def get_doc_info(doc_path: Path) -> dict:
                 resolved = (doc_path.parent / link_path).resolve()
             else:
                 resolved = (doc_path.parent / link_path).resolve()
-            if resolved.exists() and DESIGN_DIR in resolved.parents or resolved.parent == DESIGN_DIR:
+            if (
+                resolved.exists() and DESIGN_DIR in resolved.parents
+            ) or resolved.parent == DESIGN_DIR:
                 internal_links.add(str(resolved.relative_to(DESIGN_DIR)))
         except (ValueError, OSError):
             pass
@@ -108,10 +111,7 @@ def get_doc_info(doc_path: Path) -> dict:
 
     # Get category from path
     parts = rel_path.parts
-    if len(parts) > 1:
-        category = "/".join(parts[:-1])
-    else:
-        category = "root"
+    category = "/".join(parts[:-1]) if len(parts) > 1 else "root"
 
     return {
         "path": str(rel_path),
@@ -198,12 +198,14 @@ def generate_index(docs: dict[str, dict], topics: dict, categories: dict) -> str
         lines.append("")
 
     # Topic index
-    lines.extend([
-        "---",
-        "",
-        "## By Topic",
-        "",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## By Topic",
+            "",
+        ]
+    )
 
     for topic in sorted(topics.keys()):
         doc_paths = topics[topic]
@@ -215,22 +217,24 @@ def generate_index(docs: dict[str, dict], topics: dict, categories: dict) -> str
         lines.append("")
 
     # Cross-reference graph (documents with most connections)
-    lines.extend([
-        "---",
-        "",
-        "## Most Connected Documents",
-        "",
-        "> Documents with the most internal cross-references",
-        "",
-        "| Document | Links To | Linked From | Total |",
-        "|----------|----------|-------------|-------|",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Most Connected Documents",
+            "",
+            "> Documents with the most internal cross-references",
+            "",
+            "| Document | Links To | Linked From | Total |",
+            "|----------|----------|-------------|-------|",
+        ]
+    )
 
     # Sort by total connections
     sorted_docs = sorted(
         docs.items(),
         key=lambda x: len(x[1]["links_to"]) + len(x[1]["linked_from"]),
-        reverse=True
+        reverse=True,
     )[:20]
 
     for doc_path, info in sorted_docs:
@@ -238,36 +242,43 @@ def generate_index(docs: dict[str, dict], topics: dict, categories: dict) -> str
         linked_from = len(info["linked_from"])
         total = links_to + linked_from
         if total > 0:
-            lines.append(f"| [{info['title']}]({doc_path}) | {links_to} | {linked_from} | {total} |")
+            lines.append(
+                f"| [{info['title']}]({doc_path}) | {links_to} | {linked_from} | {total} |"
+            )
 
     lines.append("")
 
     # Orphan documents (no connections)
     orphans = [
-        (path, info) for path, info in docs.items()
+        (path, info)
+        for path, info in docs.items()
         if not info["links_to"] and not info["linked_from"]
     ]
 
     if orphans:
-        lines.extend([
-            "---",
-            "",
-            "## Orphan Documents",
-            "",
-            "> Documents with no internal cross-references (may need linking)",
-            "",
-        ])
+        lines.extend(
+            [
+                "---",
+                "",
+                "## Orphan Documents",
+                "",
+                "> Documents with no internal cross-references (may need linking)",
+                "",
+            ]
+        )
         for doc_path, info in sorted(orphans, key=lambda x: x[0]):
             lines.append(f"- [{info['title']}]({doc_path})")
         lines.append("")
 
     # Footer
-    lines.extend([
-        "---",
-        "",
-        "*Generated by `scripts/generate-design-crossref.py`*",
-        "",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "*Generated by `scripts/generate-design-crossref.py`*",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 

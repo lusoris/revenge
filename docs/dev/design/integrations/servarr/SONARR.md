@@ -1,5 +1,10 @@
 # Sonarr Integration
 
+<!-- SOURCES: fx, pgx, postgresql-arrays, postgresql-json, river, servarr-wiki, sonarr-docs, typesense, typesense-go -->
+
+<!-- DESIGN: integrations/servarr, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > TV show management automation
 
 
@@ -49,8 +54,7 @@
 | Code | 🔴 |
 | Linting | 🔴 |
 | Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
-**Priority**: 🔴 CRITICAL (Phase 3 - TV Show Module)
+| Integration Testing | 🔴 |**Priority**: 🔴 CRITICAL (Phase 3 - TV Show Module)
 **Type**: Webhook listener + API client for metadata sync
 
 ---
@@ -240,62 +244,6 @@ func (c *SonarrClient) GetEpisodes(ctx context.Context, seriesID int) ([]Episode
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
-| [Sonarr API Docs](https://sonarr.tv/docs/api/) | [Local](../../../sources/apis/sonarr-docs.md) |
-| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
-| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Servarr](INDEX.md)
-
-### In This Section
-
-- [Chaptarr Integration](CHAPTARR.md)
-- [Lidarr Integration](LIDARR.md)
-- [Radarr Integration](RADARR.md)
-- [Whisparr v3 Integration](WHISPARR.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

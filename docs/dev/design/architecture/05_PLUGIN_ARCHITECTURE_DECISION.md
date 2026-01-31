@@ -1,5 +1,10 @@
 # Plugin Architecture Decision
 
+<!-- SOURCES: dragonfly, pgx, postgresql-arrays, postgresql-json, river, rueidis, rueidis-docs, typesense, typesense-go -->
+
+<!-- DESIGN: architecture, ADULT_CONTENT_SYSTEM, ADULT_METADATA, DATA_RECONCILIATION -->
+
+
 > Should Revenge use plugins or native integration?
 
 
@@ -50,8 +55,7 @@
 | Code | ⚪ | N/A - decision doc |
 | Linting | ⚪ | N/A |
 | Unit Testing | ⚪ | N/A |
-| Integration Testing | ⚪ | N/A |
-**Priority**: ✅ COMPLETE (Decision made: Native Integration)
+| Integration Testing | ⚪ | N/A |**Priority**: ✅ COMPLETE (Decision made: Native Integration)
 **Module**: N/A - Architecture Decision Record
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
@@ -436,61 +440,6 @@ If third-party extensions become critical:
 - [Go plugin package](https://pkg.go.dev/plugin) (experimental, not recommended)
 - [wazero WASM runtime](https://github.com/tetratelabs/wazero)
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
-| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
-| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
-| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Architecture](INDEX.md)
-
-### In This Section
-
-- [Revenge - Architecture v2](01_ARCHITECTURE.md)
-- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
-- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
-- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
-
-### Related Topics
-
-- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
-- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
-- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
-- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
-- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

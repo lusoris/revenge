@@ -1,727 +1,564 @@
 # Longhorn Storage
 
 > Source: https://longhorn.io/docs/
-> Fetched: 2026-01-30T23:56:16.885701+00:00
-> Content-Hash: e099644f20c4f814
+> Fetched: 2026-01-31T11:03:36.166356+00:00
+> Content-Hash: 273f22683d604fff
 > Type: html
 
 ---
 
-The Longhorn Documentation
+[The Longhorn Documentation](/docs/1.11.0/)
 
-What is Longhorn?
+  * [What is Longhorn?](/docs/1.11.0/what-is-longhorn/)
+  * [Architecture and Concepts](/docs/1.11.0/concepts/)
+  * [Terminology](/docs/1.11.0/terminology/)
+  * [Best Practices](/docs/1.11.0/best-practices/)
+  * [Document Conventions](/docs/1.11.0/document-conventions/)
+  * [Contributing](/docs/1.11.0/contributing/)
 
-Architecture and Concepts
 
-Terminology
 
-Best Practices
+[Important Notes](/docs/1.11.0/important-notes/)
 
-Document Conventions
+[Installation and Setup](/docs/1.11.0/deploy/)
 
-Contributing
+[Quick Installation](/docs/1.11.0/deploy/install/)
 
-Important Notes
+  * [Install as a Rancher Apps & Marketplace](/docs/1.11.0/deploy/install/install-with-rancher/)
+  * [Install with Kubectl](/docs/1.11.0/deploy/install/install-with-kubectl/)
+  * [Install with Helm](/docs/1.11.0/deploy/install/install-with-helm/)
+  * [Install with Helm Controller](/docs/1.11.0/deploy/install/install-with-helm-controller/)
+  * [Install with Fleet](/docs/1.11.0/deploy/install/install-with-fleet/)
+  * [Install with Flux](/docs/1.11.0/deploy/install/install-with-flux/)
+  * [Install with ArgoCD](/docs/1.11.0/deploy/install/install-with-argocd/)
+  * [Air Gap Installation](/docs/1.11.0/deploy/install/airgap/)
 
-Installation and Setup
+[Accessing the UI](/docs/1.11.0/deploy/accessing-the-ui/)
 
-Quick Installation
+  * [Create an Ingress with Basic Authentication (nginx)](/docs/1.11.0/deploy/accessing-the-ui/longhorn-ingress/)
+  * [Create an HTTPRoute with Gateway API](/docs/1.11.0/deploy/accessing-the-ui/longhorn-httproute/)
 
-Install as a Rancher Apps & Marketplace
+[Upgrade](/docs/1.11.0/deploy/upgrade/)
 
-Install with Kubectl
+  * [Upgrading Longhorn Manager](/docs/1.11.0/deploy/upgrade/longhorn-manager/)
+  * [Manually Upgrading Longhorn Engine](/docs/1.11.0/deploy/upgrade/upgrade-engine/)
+  * [Automatically Upgrading Longhorn Engine](/docs/1.11.0/deploy/upgrade/auto-upgrade-engine/)
+  * [Instance Manager Pods During Upgrade](/docs/1.11.0/deploy/upgrade/instance-manager-pods-during-upgrade/)
 
-Install with Helm
+[Uninstall Longhorn](/docs/1.11.0/deploy/uninstall/)
 
-Install with Helm Controller
+[Maintenance and Upgrade](/docs/1.11.0/maintenance/)
 
-Install with Fleet
+  * [Node Maintenance and Kubernetes Upgrade Guide](/docs/1.11.0/maintenance/maintenance/)
 
-Install with Flux
 
-Install with ArgoCD
 
-Air Gap Installation
+[Nodes and Volumes](/docs/1.11.0/nodes-and-volumes/)
 
-Accessing the UI
+[Nodes](/docs/1.11.0/nodes-and-volumes/nodes/)
 
-Create an Ingress with Basic Authentication (nginx)
+  * [Node Space Usage](/docs/1.11.0/nodes-and-volumes/nodes/node-space-usage/)
+  * [Storage Tags](/docs/1.11.0/nodes-and-volumes/nodes/storage-tags/)
+  * [Configuring Defaults for Nodes and Disks](/docs/1.11.0/nodes-and-volumes/nodes/default-disk-and-node-config/)
+  * [Multiple Disk Support](/docs/1.11.0/nodes-and-volumes/nodes/multidisk/)
+  * [Scheduling](/docs/1.11.0/nodes-and-volumes/nodes/scheduling/)
+  * [Evicting Replicas on Disabled Disks or Nodes](/docs/1.11.0/nodes-and-volumes/nodes/disks-or-nodes-eviction/)
+  * [Node Conditions](/docs/1.11.0/nodes-and-volumes/nodes/node-conditions/)
 
-Create an HTTPRoute with Gateway API
+[Volumes](/docs/1.11.0/nodes-and-volumes/volumes/)
 
-Upgrade
+  * [Create Longhorn Volumes](/docs/1.11.0/nodes-and-volumes/volumes/create-volumes/)
+  * [Longhorn PVC Ownership and Permission](/docs/1.11.0/nodes-and-volumes/volumes/pvc-ownership-and-permission/)
+  * [Delete Longhorn Volumes](/docs/1.11.0/nodes-and-volumes/volumes/delete-volumes/)
+  * [Detach Longhorn Volumes](/docs/1.11.0/nodes-and-volumes/volumes/detaching-volumes/)
+  * [ReadWriteMany (RWX) Volume](/docs/1.11.0/nodes-and-volumes/volumes/rwx-volumes/)
+  * [Use Longhorn Volume as an iSCSI Target](/docs/1.11.0/nodes-and-volumes/volumes/iscsi/)
+  * [Volume Size](/docs/1.11.0/nodes-and-volumes/volumes/volume-size/)
+  * [Viewing Workloads that Use a Volume](/docs/1.11.0/nodes-and-volumes/volumes/workload-identification/)
+  * [Volume Expansion](/docs/1.11.0/nodes-and-volumes/volumes/expansion/)
+  * [Trim Filesystem](/docs/1.11.0/nodes-and-volumes/volumes/trim-filesystem/)
+  * [Volume Conditions](/docs/1.11.0/nodes-and-volumes/volumes/volume-conditions/)
 
-Upgrading Longhorn Manager
 
-Manually Upgrading Longhorn Engine
 
-Automatically Upgrading Longhorn Engine
+[High Availability](/docs/1.11.0/high-availability/)
 
-Instance Manager Pods During Upgrade
+  * [Auto Balance Replicas](/docs/1.11.0/high-availability/auto-balance-replicas/)
+  * [Data Locality](/docs/1.11.0/high-availability/data-locality/)
+  * [Kubernetes Cluster Autoscaler Support (Experimental)](/docs/1.11.0/high-availability/k8s-cluster-autoscaler/)
+  * [RWX Volume Fast Failover (Experimental)](/docs/1.11.0/high-availability/rwx-volume-fast-failover/)
+  * [Volume Recovery](/docs/1.11.0/high-availability/recover-volume/)
+  * [Node Failure Handling with Longhorn](/docs/1.11.0/high-availability/node-failure/)
 
-Uninstall Longhorn
 
-Maintenance and Upgrade
 
-Node Maintenance and Kubernetes Upgrade Guide
+[Backup and Restore](/docs/1.11.0/snapshots-and-backups/)
 
-Nodes and Volumes
+  * [Create a Snapshot](/docs/1.11.0/snapshots-and-backups/setup-a-snapshot/)
+  * [Snapshot Space Management](/docs/1.11.0/snapshots-and-backups/snapshot-space-management/)
+  * [Recurring Snapshots and Backups](/docs/1.11.0/snapshots-and-backups/scheduling-backups-and-snapshots/)
+  * [Volume Clone Support](/docs/1.11.0/snapshots-and-backups/csi-volume-clone/)
+  * [Disaster Recovery (DR) Volumes](/docs/1.11.0/snapshots-and-backups/setup-disaster-recovery-volumes/)
 
-Nodes
 
-Node Space Usage
 
-Storage Tags
+[Backup and Restore](/docs/1.11.0/snapshots-and-backups/backup-and-restore/)
 
-Configuring Defaults for Nodes and Disks
+  * [Setting a Backup Target](/docs/1.11.0/snapshots-and-backups/backup-and-restore/set-backup-target/)
+  * [Configure The Block Size Of Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/configure-backup-block-size/)
+  * [Create a Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/create-a-backup/)
+  * [Restore from a Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/restore-from-a-backup/)
+  * [Restoring Volumes for Kubernetes StatefulSets](/docs/1.11.0/snapshots-and-backups/backup-and-restore/restore-statefulset/)
+  * [Restore Volume Recurring Jobs from a Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/restore-recurring-jobs-from-a-backup/)
+  * [Synchronize Backup Volumes Manually](/docs/1.11.0/snapshots-and-backups/backup-and-restore/synchronize_backup_volumes_manually/)
 
-Multiple Disk Support
+[CSI Snapshot Support](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/)
 
-Scheduling
+  * [Enable CSI Snapshot Support on a Cluster](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/enable-csi-snapshot-support/)
+  * [CSI VolumeSnapshot Associated with Longhorn BackingImage](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backing-image/)
+  * [CSI VolumeSnapshot Associated with Longhorn Snapshot](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-snapshot/)
+  * [CSI VolumeSnapshot Associated with Longhorn Backup](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backup/)
 
-Evicting Replicas on Disabled Disks or Nodes
 
-Node Conditions
 
-Volumes
+[Monitoring](/docs/1.11.0/monitoring/)
 
-Create Longhorn Volumes
+  * [Setting up Prometheus and Grafana to monitor Longhorn](/docs/1.11.0/monitoring/prometheus-and-grafana-setup/)
+  * [Integrating Longhorn metrics into the Rancher monitoring system](/docs/1.11.0/monitoring/integrating-with-rancher-monitoring/)
+  * [Longhorn Metrics for Monitoring](/docs/1.11.0/monitoring/metrics/)
+  * [Disk Health Monitoring](/docs/1.11.0/monitoring/disk-heath/)
+  * [Kubelet Volume Metrics Support](/docs/1.11.0/monitoring/kubelet-volume-metrics/)
+  * [Longhorn Alert Rule Examples](/docs/1.11.0/monitoring/alert-rules-example/)
 
-Longhorn PVC Ownership and Permission
 
-Delete Longhorn Volumes
 
-Detach Longhorn Volumes
+[Advanced Resources](/docs/1.11.0/advanced-resources/)
 
-ReadWriteMany (RWX) Volume
+  * [Longhorn VolumeAttachment](/docs/1.11.0/advanced-resources/volumeattachment/)
 
-Use Longhorn Volume as an iSCSI Target
 
-Volume Size
 
-Viewing Workloads that Use a Volume
+[Deploy](/docs/1.11.0/advanced-resources/deploy/)
 
-Volume Expansion
+  * [Customizing Default Settings](/docs/1.11.0/advanced-resources/deploy/customizing-default-settings/)
+  * [Taints and Tolerations](/docs/1.11.0/advanced-resources/deploy/taint-toleration/)
+  * [Node Selector](/docs/1.11.0/advanced-resources/deploy/node-selector/)
+  * [CSI Component Pod Anti-Affinity](/docs/1.11.0/advanced-resources/deploy/csi-pod-antiaffinity-preset/)
+  * [Rancher Windows Cluster](/docs/1.11.0/advanced-resources/deploy/rancher_windows_cluster/)
+  * [Priority Class](/docs/1.11.0/advanced-resources/deploy/priority-class/)
+  * [Revision Counter](/docs/1.11.0/advanced-resources/deploy/revision_counter/)
+  * [Storage Network](/docs/1.11.0/advanced-resources/deploy/storage-network/)
 
-Trim Filesystem
+[OS/Distro Specific Configuration](/docs/1.11.0/advanced-resources/os-distro-specific/)
 
-Volume Conditions
+  * [Longhorn CSI on K3s](/docs/1.11.0/advanced-resources/os-distro-specific/csi-on-k3s/)
+  * [Longhorn CSI on RKE and CoreOS](/docs/1.11.0/advanced-resources/os-distro-specific/csi-on-rke-and-coreos/)
+  * [Longhorn CSI on GKE](/docs/1.11.0/advanced-resources/os-distro-specific/csi-on-gke/)
+  * [OCP/OKD Support](/docs/1.11.0/advanced-resources/os-distro-specific/okd-support/)
+  * [Container-Optimized OS (COS) Support](/docs/1.11.0/advanced-resources/os-distro-specific/container-optimized-os-support/)
+  * [Talos Linux Support](/docs/1.11.0/advanced-resources/os-distro-specific/talos-linux-support/)
 
-High Availability
+[Support Managed Kubernetes Service](/docs/1.11.0/advanced-resources/support-managed-k8s-service/)
 
-Auto Balance Replicas
+  * [Manage Node-Group on AWS EKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/manage-node-group-on-eks/)
+  * [Manage Node-Group on Azure AKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/manage-node-group-on-aks/)
+  * [Manage Node-Group on GCP GKE](/docs/1.11.0/advanced-resources/support-managed-k8s-service/manage-node-group-on-gke/)
+  * [Upgrade Kubernetes on AWS EKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/upgrade-k8s-on-eks/)
+  * [Upgrade Kubernetes on Azure AKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/upgrade-k8s-on-aks/)
+  * [Upgrade Kubernetes on GCP GKE](/docs/1.11.0/advanced-resources/support-managed-k8s-service/upgrade-k8s-on-gke/)
 
-Data Locality
+[Data Integrity](/docs/1.11.0/advanced-resources/data-integrity/)
 
-Kubernetes Cluster Autoscaler Support (Experimental)
+  * [Snapshot Data Integrity Check](/docs/1.11.0/advanced-resources/data-integrity/snapshot-data-integrity-check/)
 
-RWX Volume Fast Failover (Experimental)
+[Data Cleanup](/docs/1.11.0/advanced-resources/data-cleanup/)
 
-Volume Recovery
+  * [Orphaned Data Cleanup](/docs/1.11.0/advanced-resources/data-cleanup/orphaned-data-cleanup/)
+  * [Orphaned Instance Cleanup](/docs/1.11.0/advanced-resources/data-cleanup/orphaned-instance-cleanup/)
 
-Node Failure Handling with Longhorn
+[Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/)
 
-Backup and Restore
+  * [Fast Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/fast-replica-rebuilding/)
+  * [Offline Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/offline-replica-rebuilding/)
+  * [Scale Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/scale-replica-rebuilding/)
 
-Create a Snapshot
+[Backing Image](/docs/1.11.0/advanced-resources/backing-image/)
 
-Snapshot Space Management
+  * [Backing Image](/docs/1.11.0/advanced-resources/backing-image/backing-image/)
+  * [Backing Image Backup](/docs/1.11.0/advanced-resources/backing-image/backing-image-backup/)
+  * [Backing Image Encryption](/docs/1.11.0/advanced-resources/backing-image/backing-image-encryption/)
 
-Recurring Snapshots and Backups
+[Security](/docs/1.11.0/advanced-resources/security/)
 
-Volume Clone Support
+  * [Volume Encryption](/docs/1.11.0/advanced-resources/security/volume-encryption/)
+  * [MTLS Support](/docs/1.11.0/advanced-resources/security/mtls-support/)
 
-Disaster Recovery (DR) Volumes
+[Command Line Tool (longhornctl)](/docs/1.11.0/advanced-resources/longhornctl/)
 
-Backup and Restore
+  * [Install longhornctl](/docs/1.11.0/advanced-resources/longhornctl/install-longhornctl/)
 
-Setting a Backup Target
+[Containerized Data Importer (CDI)](/docs/1.11.0/advanced-resources/containerized-data-importer/)
 
-Configure The Block Size Of Backup
+  * [Longhorn with CDI Imports](/docs/1.11.0/advanced-resources/containerized-data-importer/containerized-data-importer/)
 
-Create a Backup
+[Longhorn System Backup And Restore](/docs/1.11.0/advanced-resources/system-backup-restore/)
 
-Restore from a Backup
+  * [Backup Longhorn System](/docs/1.11.0/advanced-resources/system-backup-restore/backup-longhorn-system/)
+  * [Restore Longhorn System](/docs/1.11.0/advanced-resources/system-backup-restore/restore-longhorn-system/)
+  * [Restore to a cluster contains data using Rancher snapshot](/docs/1.11.0/advanced-resources/system-backup-restore/restore-to-a-cluster-contains-data-using-rancher-snapshot/)
+  * [Restore to a new cluster using Velero](/docs/1.11.0/advanced-resources/system-backup-restore/restore-to-a-new-cluster-using-velero/)
 
-Restoring Volumes for Kubernetes StatefulSets
+[Cluster Restore](/docs/1.11.0/advanced-resources/cluster-restore/)
 
-Restore Volume Recurring Jobs from a Backup
+  * [Restore cluster with a Rancher snapshot](/docs/1.11.0/advanced-resources/cluster-restore/rancher-cluster-restore/)
 
-Synchronize Backup Volumes Manually
+[Data Recovery](/docs/1.11.0/advanced-resources/data-recovery/)
 
-CSI Snapshot Support
+  * [Identifying and Recovering from Data Errors](/docs/1.11.0/advanced-resources/data-recovery/data-error/)
+  * [Exporting a Volume from a Single Replica](/docs/1.11.0/advanced-resources/data-recovery/export-from-replica/)
+  * [Identifying Corrupted Replicas](/docs/1.11.0/advanced-resources/data-recovery/corrupted-replica/)
+  * [Recovering from a Full Disk](/docs/1.11.0/advanced-resources/data-recovery/full-disk/)
+  * [Recovering from a Longhorn Backup without System Installed](/docs/1.11.0/advanced-resources/data-recovery/recover-without-system/)
 
-Enable CSI Snapshot Support on a Cluster
+[CSI Driver Migration](/docs/1.11.0/advanced-resources/driver-migration/)
 
-CSI VolumeSnapshot Associated with Longhorn BackingImage
+  * [Migrating from the Flexvolume Driver to CSI](/docs/1.11.0/advanced-resources/driver-migration/migrating-flexvolume/)
 
-CSI VolumeSnapshot Associated with Longhorn Snapshot
 
-CSI VolumeSnapshot Associated with Longhorn Backup
 
-Monitoring
+[References](/docs/1.11.0/references/)
 
-Setting up Prometheus and Grafana to monitor Longhorn
+  * [Settings](/docs/1.11.0/references/settings/)
+  * [Storage Class Parameters](/docs/1.11.0/references/storage-class-parameters/)
+  * [Python Client](/docs/1.11.0/references/longhorn-client-python/)
+  * [Reference Setup, Performance, Scalability, and Sizing Guidelines](/docs/1.11.0/references/reference-setup-performance-scalability-and-sizing-guidelines/)
+  * [Longhorn Networking](/docs/1.11.0/references/networking/)
+  * [Examples](/docs/1.11.0/references/examples/)
+  * [Helm Values](/docs/1.11.0/references/helm-values/)
 
-Integrating Longhorn metrics into the Rancher monitoring system
 
-Longhorn Metrics for Monitoring
 
-Disk Health Monitoring
+[Troubleshoot](/docs/1.11.0/troubleshoot/)
 
-Kubelet Volume Metrics Support
+  * [Troubleshooting Problems](/docs/1.11.0/troubleshoot/troubleshooting/)
+  * [Support Bundle](/docs/1.11.0/troubleshoot/support-bundle/)
 
-Longhorn Alert Rule Examples
 
-Advanced Resources
 
-Longhorn VolumeAttachment
+[V2 Data Engine (Technical Preview)](/docs/1.11.0/v2-data-engine/)
 
-Deploy
+  * [Prerequisites](/docs/1.11.0/v2-data-engine/prerequisites/)
+  * [Quick Start](/docs/1.11.0/v2-data-engine/quick-start/)
+  * [Performance](/docs/1.11.0/v2-data-engine/performance/)
+  * [Troubleshooting](/docs/1.11.0/v2-data-engine/troubleshooting/)
 
-Customizing Default Settings
 
-Taints and Tolerations
 
-Node Selector
+[Features](/docs/1.11.0/v2-data-engine/features/)
 
-CSI Component Pod Anti-Affinity
+  * [V2 Volume Clone Support](/docs/1.11.0/v2-data-engine/features/volume-clone/)
+  * [Replica Rebuild QoS](/docs/1.11.0/v2-data-engine/features/replica-rebuild-qos/)
+  * [Configurable CPU Cores](/docs/1.11.0/v2-data-engine/features/configurable-cpu-cores/)
+  * [Interrupt Mode Support](/docs/1.11.0/v2-data-engine/features/interrupt-mode/)
+  * [Node Disk Support](/docs/1.11.0/v2-data-engine/features/node-disk-support/)
+  * [Selective V2 Data Engine Activation](/docs/1.11.0/v2-data-engine/features/selective-v2-data-engine-activation/)
+  * [UBLK Frontend Support](/docs/1.11.0/v2-data-engine/features/ublk-frontend-support/)
+  * [V2 Volume Expansion](/docs/1.11.0/v2-data-engine/features/volume-expansion/)
 
-Rancher Windows Cluster
 
-Priority Class
-
-Revision Counter
-
-Storage Network
-
-OS/Distro Specific Configuration
-
-Longhorn CSI on K3s
-
-Longhorn CSI on RKE and CoreOS
-
-Longhorn CSI on GKE
-
-OCP/OKD Support
-
-Container-Optimized OS (COS) Support
-
-Talos Linux Support
-
-Support Managed Kubernetes Service
-
-Manage Node-Group on AWS EKS
-
-Manage Node-Group on Azure AKS
-
-Manage Node-Group on GCP GKE
-
-Upgrade Kubernetes on AWS EKS
-
-Upgrade Kubernetes on Azure AKS
-
-Upgrade Kubernetes on GCP GKE
-
-Data Integrity
-
-Snapshot Data Integrity Check
-
-Data Cleanup
-
-Orphaned Data Cleanup
-
-Orphaned Instance Cleanup
-
-Replica Rebuilding
-
-Fast Replica Rebuilding
-
-Offline Replica Rebuilding
-
-Scale Replica Rebuilding
-
-Backing Image
-
-Backing Image
-
-Backing Image Backup
-
-Backing Image Encryption
-
-Security
-
-Volume Encryption
-
-MTLS Support
-
-Command Line Tool (longhornctl)
-
-Install longhornctl
-
-Containerized Data Importer (CDI)
-
-Longhorn with CDI Imports
-
-Longhorn System Backup And Restore
-
-Backup Longhorn System
-
-Restore Longhorn System
-
-Restore to a cluster contains data using Rancher snapshot
-
-Restore to a new cluster using Velero
-
-Cluster Restore
-
-Restore cluster with a Rancher snapshot
-
-Data Recovery
-
-Identifying and Recovering from Data Errors
-
-Exporting a Volume from a Single Replica
-
-Identifying Corrupted Replicas
-
-Recovering from a Full Disk
-
-Recovering from a Longhorn Backup without System Installed
-
-CSI Driver Migration
-
-Migrating from the Flexvolume Driver to CSI
-
-References
-
-Settings
-
-Storage Class Parameters
-
-Python Client
-
-Reference Setup, Performance, Scalability, and Sizing Guidelines
-
-Longhorn Networking
-
-Examples
-
-Helm Values
-
-Troubleshoot
-
-Troubleshooting Problems
-
-Support Bundle
-
-V2 Data Engine (Technical Preview)
-
-Prerequisites
-
-Quick Start
-
-Performance
-
-Troubleshooting
-
-Features
-
-V2 Volume Clone Support
-
-Replica Rebuild QoS
-
-Configurable CPU Cores
-
-Interrupt Mode Support
-
-Node Disk Support
-
-Selective V2 Data Engine Activation
-
-UBLK Frontend Support
-
-V2 Volume Expansion
 
 The Longhorn Documentation
 
 Cloud native distributed block storage for Kubernetes
 
-Edit this page
+[Edit this page](https://github.com/longhorn/website/edit/master/content/docs/1.11.0/_index.md)
 
-Longhorn
-
-is a lightweight, reliable, and powerful distributed
-
-block storage
-
-system for Kubernetes.
+**Longhorn** is a lightweight, reliable, and powerful distributed [block storage](https://cloudacademy.com/blog/object-storage-block-storage/) system for Kubernetes.
 
 Longhorn implements distributed block storage using containers and microservices. Longhorn creates a dedicated storage controller for each block device volume and synchronously replicates the volume across multiple replicas stored on multiple nodes. The storage controller and replicas are themselves orchestrated using Kubernetes.
 
-Features
+## Features
 
-Enterprise-grade distributed block storage with no single point of failure
+  * Enterprise-grade distributed block storage with no single point of failure
+  * Incremental snapshot of block storage
+  * Backup to secondary storage ([NFS](https://www.extrahop.com/resources/protocols/nfs/) or [S3](https://aws.amazon.com/s3/)-compatible object storage) built on efficient change block detection
+  * Recurring snapshots and backups
+  * Automated, non-disruptive upgrades. You can upgrade the entire Longhorn software stack without disrupting running storage volumes.
+  * An intuitive GUI dashboard
 
-Incremental snapshot of block storage
 
-Backup to secondary storage (
 
-NFS
-
-or
-
-S3
-
--compatible object storage) built on efficient change block detection
-
-Recurring snapshots and backups
-
-Automated, non-disruptive upgrades. You can upgrade the entire Longhorn software stack without disrupting running storage volumes.
-
-An intuitive GUI dashboard
+* * *
 
 © 2019-2026 Longhorn Authors | Documentation Distributed under CC-BY-4.0
 
-© 2026 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation,
-please see our
+  
 
-Trademark Usage
 
-page.
+© 2026 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our [Trademark Usage](https://www.linuxfoundation.org/trademark-usage/) page.
 
-The Longhorn Documentation
+  
+[](https://k3s.io/) [](https://harvesterhci.io/)
 
-What is Longhorn?
+[The Longhorn Documentation](/docs/1.11.0/)
 
-Architecture and Concepts
+  * [What is Longhorn?](/docs/1.11.0/what-is-longhorn/)
+  * [Architecture and Concepts](/docs/1.11.0/concepts/)
+  * [Terminology](/docs/1.11.0/terminology/)
+  * [Best Practices](/docs/1.11.0/best-practices/)
+  * [Document Conventions](/docs/1.11.0/document-conventions/)
+  * [Contributing](/docs/1.11.0/contributing/)
 
-Terminology
 
-Best Practices
 
-Document Conventions
+[Important Notes](/docs/1.11.0/important-notes/)
 
-Contributing
+[Installation and Setup](/docs/1.11.0/deploy/)
 
-Important Notes
+[Quick Installation](/docs/1.11.0/deploy/install/)
 
-Installation and Setup
+  * [Install as a Rancher Apps & Marketplace](/docs/1.11.0/deploy/install/install-with-rancher/)
+  * [Install with Kubectl](/docs/1.11.0/deploy/install/install-with-kubectl/)
+  * [Install with Helm](/docs/1.11.0/deploy/install/install-with-helm/)
+  * [Install with Helm Controller](/docs/1.11.0/deploy/install/install-with-helm-controller/)
+  * [Install with Fleet](/docs/1.11.0/deploy/install/install-with-fleet/)
+  * [Install with Flux](/docs/1.11.0/deploy/install/install-with-flux/)
+  * [Install with ArgoCD](/docs/1.11.0/deploy/install/install-with-argocd/)
+  * [Air Gap Installation](/docs/1.11.0/deploy/install/airgap/)
 
-Quick Installation
+[Accessing the UI](/docs/1.11.0/deploy/accessing-the-ui/)
 
-Install as a Rancher Apps & Marketplace
+  * [Create an Ingress with Basic Authentication (nginx)](/docs/1.11.0/deploy/accessing-the-ui/longhorn-ingress/)
+  * [Create an HTTPRoute with Gateway API](/docs/1.11.0/deploy/accessing-the-ui/longhorn-httproute/)
 
-Install with Kubectl
+[Upgrade](/docs/1.11.0/deploy/upgrade/)
 
-Install with Helm
+  * [Upgrading Longhorn Manager](/docs/1.11.0/deploy/upgrade/longhorn-manager/)
+  * [Manually Upgrading Longhorn Engine](/docs/1.11.0/deploy/upgrade/upgrade-engine/)
+  * [Automatically Upgrading Longhorn Engine](/docs/1.11.0/deploy/upgrade/auto-upgrade-engine/)
+  * [Instance Manager Pods During Upgrade](/docs/1.11.0/deploy/upgrade/instance-manager-pods-during-upgrade/)
 
-Install with Helm Controller
+[Uninstall Longhorn](/docs/1.11.0/deploy/uninstall/)
 
-Install with Fleet
+[Maintenance and Upgrade](/docs/1.11.0/maintenance/)
 
-Install with Flux
+  * [Node Maintenance and Kubernetes Upgrade Guide](/docs/1.11.0/maintenance/maintenance/)
 
-Install with ArgoCD
 
-Air Gap Installation
 
-Accessing the UI
+[Nodes and Volumes](/docs/1.11.0/nodes-and-volumes/)
 
-Create an Ingress with Basic Authentication (nginx)
+[Nodes](/docs/1.11.0/nodes-and-volumes/nodes/)
 
-Create an HTTPRoute with Gateway API
+  * [Node Space Usage](/docs/1.11.0/nodes-and-volumes/nodes/node-space-usage/)
+  * [Storage Tags](/docs/1.11.0/nodes-and-volumes/nodes/storage-tags/)
+  * [Configuring Defaults for Nodes and Disks](/docs/1.11.0/nodes-and-volumes/nodes/default-disk-and-node-config/)
+  * [Multiple Disk Support](/docs/1.11.0/nodes-and-volumes/nodes/multidisk/)
+  * [Scheduling](/docs/1.11.0/nodes-and-volumes/nodes/scheduling/)
+  * [Evicting Replicas on Disabled Disks or Nodes](/docs/1.11.0/nodes-and-volumes/nodes/disks-or-nodes-eviction/)
+  * [Node Conditions](/docs/1.11.0/nodes-and-volumes/nodes/node-conditions/)
 
-Upgrade
+[Volumes](/docs/1.11.0/nodes-and-volumes/volumes/)
 
-Upgrading Longhorn Manager
+  * [Create Longhorn Volumes](/docs/1.11.0/nodes-and-volumes/volumes/create-volumes/)
+  * [Longhorn PVC Ownership and Permission](/docs/1.11.0/nodes-and-volumes/volumes/pvc-ownership-and-permission/)
+  * [Delete Longhorn Volumes](/docs/1.11.0/nodes-and-volumes/volumes/delete-volumes/)
+  * [Detach Longhorn Volumes](/docs/1.11.0/nodes-and-volumes/volumes/detaching-volumes/)
+  * [ReadWriteMany (RWX) Volume](/docs/1.11.0/nodes-and-volumes/volumes/rwx-volumes/)
+  * [Use Longhorn Volume as an iSCSI Target](/docs/1.11.0/nodes-and-volumes/volumes/iscsi/)
+  * [Volume Size](/docs/1.11.0/nodes-and-volumes/volumes/volume-size/)
+  * [Viewing Workloads that Use a Volume](/docs/1.11.0/nodes-and-volumes/volumes/workload-identification/)
+  * [Volume Expansion](/docs/1.11.0/nodes-and-volumes/volumes/expansion/)
+  * [Trim Filesystem](/docs/1.11.0/nodes-and-volumes/volumes/trim-filesystem/)
+  * [Volume Conditions](/docs/1.11.0/nodes-and-volumes/volumes/volume-conditions/)
 
-Manually Upgrading Longhorn Engine
 
-Automatically Upgrading Longhorn Engine
 
-Instance Manager Pods During Upgrade
+[High Availability](/docs/1.11.0/high-availability/)
 
-Uninstall Longhorn
+  * [Auto Balance Replicas](/docs/1.11.0/high-availability/auto-balance-replicas/)
+  * [Data Locality](/docs/1.11.0/high-availability/data-locality/)
+  * [Kubernetes Cluster Autoscaler Support (Experimental)](/docs/1.11.0/high-availability/k8s-cluster-autoscaler/)
+  * [RWX Volume Fast Failover (Experimental)](/docs/1.11.0/high-availability/rwx-volume-fast-failover/)
+  * [Volume Recovery](/docs/1.11.0/high-availability/recover-volume/)
+  * [Node Failure Handling with Longhorn](/docs/1.11.0/high-availability/node-failure/)
 
-Maintenance and Upgrade
 
-Node Maintenance and Kubernetes Upgrade Guide
 
-Nodes and Volumes
+[Backup and Restore](/docs/1.11.0/snapshots-and-backups/)
 
-Nodes
+  * [Create a Snapshot](/docs/1.11.0/snapshots-and-backups/setup-a-snapshot/)
+  * [Snapshot Space Management](/docs/1.11.0/snapshots-and-backups/snapshot-space-management/)
+  * [Recurring Snapshots and Backups](/docs/1.11.0/snapshots-and-backups/scheduling-backups-and-snapshots/)
+  * [Volume Clone Support](/docs/1.11.0/snapshots-and-backups/csi-volume-clone/)
+  * [Disaster Recovery (DR) Volumes](/docs/1.11.0/snapshots-and-backups/setup-disaster-recovery-volumes/)
 
-Node Space Usage
 
-Storage Tags
 
-Configuring Defaults for Nodes and Disks
+[Backup and Restore](/docs/1.11.0/snapshots-and-backups/backup-and-restore/)
 
-Multiple Disk Support
+  * [Setting a Backup Target](/docs/1.11.0/snapshots-and-backups/backup-and-restore/set-backup-target/)
+  * [Configure The Block Size Of Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/configure-backup-block-size/)
+  * [Create a Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/create-a-backup/)
+  * [Restore from a Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/restore-from-a-backup/)
+  * [Restoring Volumes for Kubernetes StatefulSets](/docs/1.11.0/snapshots-and-backups/backup-and-restore/restore-statefulset/)
+  * [Restore Volume Recurring Jobs from a Backup](/docs/1.11.0/snapshots-and-backups/backup-and-restore/restore-recurring-jobs-from-a-backup/)
+  * [Synchronize Backup Volumes Manually](/docs/1.11.0/snapshots-and-backups/backup-and-restore/synchronize_backup_volumes_manually/)
 
-Scheduling
+[CSI Snapshot Support](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/)
 
-Evicting Replicas on Disabled Disks or Nodes
+  * [Enable CSI Snapshot Support on a Cluster](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/enable-csi-snapshot-support/)
+  * [CSI VolumeSnapshot Associated with Longhorn BackingImage](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backing-image/)
+  * [CSI VolumeSnapshot Associated with Longhorn Snapshot](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-snapshot/)
+  * [CSI VolumeSnapshot Associated with Longhorn Backup](/docs/1.11.0/snapshots-and-backups/csi-snapshot-support/csi-volume-snapshot-associated-with-longhorn-backup/)
 
-Node Conditions
 
-Volumes
 
-Create Longhorn Volumes
+[Monitoring](/docs/1.11.0/monitoring/)
 
-Longhorn PVC Ownership and Permission
+  * [Setting up Prometheus and Grafana to monitor Longhorn](/docs/1.11.0/monitoring/prometheus-and-grafana-setup/)
+  * [Integrating Longhorn metrics into the Rancher monitoring system](/docs/1.11.0/monitoring/integrating-with-rancher-monitoring/)
+  * [Longhorn Metrics for Monitoring](/docs/1.11.0/monitoring/metrics/)
+  * [Disk Health Monitoring](/docs/1.11.0/monitoring/disk-heath/)
+  * [Kubelet Volume Metrics Support](/docs/1.11.0/monitoring/kubelet-volume-metrics/)
+  * [Longhorn Alert Rule Examples](/docs/1.11.0/monitoring/alert-rules-example/)
 
-Delete Longhorn Volumes
 
-Detach Longhorn Volumes
 
-ReadWriteMany (RWX) Volume
+[Advanced Resources](/docs/1.11.0/advanced-resources/)
 
-Use Longhorn Volume as an iSCSI Target
+  * [Longhorn VolumeAttachment](/docs/1.11.0/advanced-resources/volumeattachment/)
 
-Volume Size
 
-Viewing Workloads that Use a Volume
 
-Volume Expansion
+[Deploy](/docs/1.11.0/advanced-resources/deploy/)
 
-Trim Filesystem
+  * [Customizing Default Settings](/docs/1.11.0/advanced-resources/deploy/customizing-default-settings/)
+  * [Taints and Tolerations](/docs/1.11.0/advanced-resources/deploy/taint-toleration/)
+  * [Node Selector](/docs/1.11.0/advanced-resources/deploy/node-selector/)
+  * [CSI Component Pod Anti-Affinity](/docs/1.11.0/advanced-resources/deploy/csi-pod-antiaffinity-preset/)
+  * [Rancher Windows Cluster](/docs/1.11.0/advanced-resources/deploy/rancher_windows_cluster/)
+  * [Priority Class](/docs/1.11.0/advanced-resources/deploy/priority-class/)
+  * [Revision Counter](/docs/1.11.0/advanced-resources/deploy/revision_counter/)
+  * [Storage Network](/docs/1.11.0/advanced-resources/deploy/storage-network/)
 
-Volume Conditions
+[OS/Distro Specific Configuration](/docs/1.11.0/advanced-resources/os-distro-specific/)
 
-High Availability
+  * [Longhorn CSI on K3s](/docs/1.11.0/advanced-resources/os-distro-specific/csi-on-k3s/)
+  * [Longhorn CSI on RKE and CoreOS](/docs/1.11.0/advanced-resources/os-distro-specific/csi-on-rke-and-coreos/)
+  * [Longhorn CSI on GKE](/docs/1.11.0/advanced-resources/os-distro-specific/csi-on-gke/)
+  * [OCP/OKD Support](/docs/1.11.0/advanced-resources/os-distro-specific/okd-support/)
+  * [Container-Optimized OS (COS) Support](/docs/1.11.0/advanced-resources/os-distro-specific/container-optimized-os-support/)
+  * [Talos Linux Support](/docs/1.11.0/advanced-resources/os-distro-specific/talos-linux-support/)
 
-Auto Balance Replicas
+[Support Managed Kubernetes Service](/docs/1.11.0/advanced-resources/support-managed-k8s-service/)
 
-Data Locality
+  * [Manage Node-Group on AWS EKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/manage-node-group-on-eks/)
+  * [Manage Node-Group on Azure AKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/manage-node-group-on-aks/)
+  * [Manage Node-Group on GCP GKE](/docs/1.11.0/advanced-resources/support-managed-k8s-service/manage-node-group-on-gke/)
+  * [Upgrade Kubernetes on AWS EKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/upgrade-k8s-on-eks/)
+  * [Upgrade Kubernetes on Azure AKS](/docs/1.11.0/advanced-resources/support-managed-k8s-service/upgrade-k8s-on-aks/)
+  * [Upgrade Kubernetes on GCP GKE](/docs/1.11.0/advanced-resources/support-managed-k8s-service/upgrade-k8s-on-gke/)
 
-Kubernetes Cluster Autoscaler Support (Experimental)
+[Data Integrity](/docs/1.11.0/advanced-resources/data-integrity/)
 
-RWX Volume Fast Failover (Experimental)
+  * [Snapshot Data Integrity Check](/docs/1.11.0/advanced-resources/data-integrity/snapshot-data-integrity-check/)
 
-Volume Recovery
+[Data Cleanup](/docs/1.11.0/advanced-resources/data-cleanup/)
 
-Node Failure Handling with Longhorn
+  * [Orphaned Data Cleanup](/docs/1.11.0/advanced-resources/data-cleanup/orphaned-data-cleanup/)
+  * [Orphaned Instance Cleanup](/docs/1.11.0/advanced-resources/data-cleanup/orphaned-instance-cleanup/)
 
-Backup and Restore
+[Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/)
 
-Create a Snapshot
+  * [Fast Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/fast-replica-rebuilding/)
+  * [Offline Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/offline-replica-rebuilding/)
+  * [Scale Replica Rebuilding](/docs/1.11.0/advanced-resources/rebuilding/scale-replica-rebuilding/)
 
-Snapshot Space Management
+[Backing Image](/docs/1.11.0/advanced-resources/backing-image/)
 
-Recurring Snapshots and Backups
+  * [Backing Image](/docs/1.11.0/advanced-resources/backing-image/backing-image/)
+  * [Backing Image Backup](/docs/1.11.0/advanced-resources/backing-image/backing-image-backup/)
+  * [Backing Image Encryption](/docs/1.11.0/advanced-resources/backing-image/backing-image-encryption/)
 
-Volume Clone Support
+[Security](/docs/1.11.0/advanced-resources/security/)
 
-Disaster Recovery (DR) Volumes
+  * [Volume Encryption](/docs/1.11.0/advanced-resources/security/volume-encryption/)
+  * [MTLS Support](/docs/1.11.0/advanced-resources/security/mtls-support/)
 
-Backup and Restore
+[Command Line Tool (longhornctl)](/docs/1.11.0/advanced-resources/longhornctl/)
 
-Setting a Backup Target
+  * [Install longhornctl](/docs/1.11.0/advanced-resources/longhornctl/install-longhornctl/)
 
-Configure The Block Size Of Backup
+[Containerized Data Importer (CDI)](/docs/1.11.0/advanced-resources/containerized-data-importer/)
 
-Create a Backup
+  * [Longhorn with CDI Imports](/docs/1.11.0/advanced-resources/containerized-data-importer/containerized-data-importer/)
 
-Restore from a Backup
+[Longhorn System Backup And Restore](/docs/1.11.0/advanced-resources/system-backup-restore/)
 
-Restoring Volumes for Kubernetes StatefulSets
+  * [Backup Longhorn System](/docs/1.11.0/advanced-resources/system-backup-restore/backup-longhorn-system/)
+  * [Restore Longhorn System](/docs/1.11.0/advanced-resources/system-backup-restore/restore-longhorn-system/)
+  * [Restore to a cluster contains data using Rancher snapshot](/docs/1.11.0/advanced-resources/system-backup-restore/restore-to-a-cluster-contains-data-using-rancher-snapshot/)
+  * [Restore to a new cluster using Velero](/docs/1.11.0/advanced-resources/system-backup-restore/restore-to-a-new-cluster-using-velero/)
 
-Restore Volume Recurring Jobs from a Backup
+[Cluster Restore](/docs/1.11.0/advanced-resources/cluster-restore/)
 
-Synchronize Backup Volumes Manually
+  * [Restore cluster with a Rancher snapshot](/docs/1.11.0/advanced-resources/cluster-restore/rancher-cluster-restore/)
 
-CSI Snapshot Support
+[Data Recovery](/docs/1.11.0/advanced-resources/data-recovery/)
 
-Enable CSI Snapshot Support on a Cluster
+  * [Identifying and Recovering from Data Errors](/docs/1.11.0/advanced-resources/data-recovery/data-error/)
+  * [Exporting a Volume from a Single Replica](/docs/1.11.0/advanced-resources/data-recovery/export-from-replica/)
+  * [Identifying Corrupted Replicas](/docs/1.11.0/advanced-resources/data-recovery/corrupted-replica/)
+  * [Recovering from a Full Disk](/docs/1.11.0/advanced-resources/data-recovery/full-disk/)
+  * [Recovering from a Longhorn Backup without System Installed](/docs/1.11.0/advanced-resources/data-recovery/recover-without-system/)
 
-CSI VolumeSnapshot Associated with Longhorn BackingImage
+[CSI Driver Migration](/docs/1.11.0/advanced-resources/driver-migration/)
 
-CSI VolumeSnapshot Associated with Longhorn Snapshot
+  * [Migrating from the Flexvolume Driver to CSI](/docs/1.11.0/advanced-resources/driver-migration/migrating-flexvolume/)
 
-CSI VolumeSnapshot Associated with Longhorn Backup
 
-Monitoring
 
-Setting up Prometheus and Grafana to monitor Longhorn
+[References](/docs/1.11.0/references/)
 
-Integrating Longhorn metrics into the Rancher monitoring system
+  * [Settings](/docs/1.11.0/references/settings/)
+  * [Storage Class Parameters](/docs/1.11.0/references/storage-class-parameters/)
+  * [Python Client](/docs/1.11.0/references/longhorn-client-python/)
+  * [Reference Setup, Performance, Scalability, and Sizing Guidelines](/docs/1.11.0/references/reference-setup-performance-scalability-and-sizing-guidelines/)
+  * [Longhorn Networking](/docs/1.11.0/references/networking/)
+  * [Examples](/docs/1.11.0/references/examples/)
+  * [Helm Values](/docs/1.11.0/references/helm-values/)
 
-Longhorn Metrics for Monitoring
 
-Disk Health Monitoring
 
-Kubelet Volume Metrics Support
+[Troubleshoot](/docs/1.11.0/troubleshoot/)
 
-Longhorn Alert Rule Examples
+  * [Troubleshooting Problems](/docs/1.11.0/troubleshoot/troubleshooting/)
+  * [Support Bundle](/docs/1.11.0/troubleshoot/support-bundle/)
 
-Advanced Resources
 
-Longhorn VolumeAttachment
 
-Deploy
+[V2 Data Engine (Technical Preview)](/docs/1.11.0/v2-data-engine/)
 
-Customizing Default Settings
+  * [Prerequisites](/docs/1.11.0/v2-data-engine/prerequisites/)
+  * [Quick Start](/docs/1.11.0/v2-data-engine/quick-start/)
+  * [Performance](/docs/1.11.0/v2-data-engine/performance/)
+  * [Troubleshooting](/docs/1.11.0/v2-data-engine/troubleshooting/)
 
-Taints and Tolerations
 
-Node Selector
 
-CSI Component Pod Anti-Affinity
+[Features](/docs/1.11.0/v2-data-engine/features/)
 
-Rancher Windows Cluster
+  * [V2 Volume Clone Support](/docs/1.11.0/v2-data-engine/features/volume-clone/)
+  * [Replica Rebuild QoS](/docs/1.11.0/v2-data-engine/features/replica-rebuild-qos/)
+  * [Configurable CPU Cores](/docs/1.11.0/v2-data-engine/features/configurable-cpu-cores/)
+  * [Interrupt Mode Support](/docs/1.11.0/v2-data-engine/features/interrupt-mode/)
+  * [Node Disk Support](/docs/1.11.0/v2-data-engine/features/node-disk-support/)
+  * [Selective V2 Data Engine Activation](/docs/1.11.0/v2-data-engine/features/selective-v2-data-engine-activation/)
+  * [UBLK Frontend Support](/docs/1.11.0/v2-data-engine/features/ublk-frontend-support/)
+  * [V2 Volume Expansion](/docs/1.11.0/v2-data-engine/features/volume-expansion/)
 
-Priority Class
 
-Revision Counter
-
-Storage Network
-
-OS/Distro Specific Configuration
-
-Longhorn CSI on K3s
-
-Longhorn CSI on RKE and CoreOS
-
-Longhorn CSI on GKE
-
-OCP/OKD Support
-
-Container-Optimized OS (COS) Support
-
-Talos Linux Support
-
-Support Managed Kubernetes Service
-
-Manage Node-Group on AWS EKS
-
-Manage Node-Group on Azure AKS
-
-Manage Node-Group on GCP GKE
-
-Upgrade Kubernetes on AWS EKS
-
-Upgrade Kubernetes on Azure AKS
-
-Upgrade Kubernetes on GCP GKE
-
-Data Integrity
-
-Snapshot Data Integrity Check
-
-Data Cleanup
-
-Orphaned Data Cleanup
-
-Orphaned Instance Cleanup
-
-Replica Rebuilding
-
-Fast Replica Rebuilding
-
-Offline Replica Rebuilding
-
-Scale Replica Rebuilding
-
-Backing Image
-
-Backing Image
-
-Backing Image Backup
-
-Backing Image Encryption
-
-Security
-
-Volume Encryption
-
-MTLS Support
-
-Command Line Tool (longhornctl)
-
-Install longhornctl
-
-Containerized Data Importer (CDI)
-
-Longhorn with CDI Imports
-
-Longhorn System Backup And Restore
-
-Backup Longhorn System
-
-Restore Longhorn System
-
-Restore to a cluster contains data using Rancher snapshot
-
-Restore to a new cluster using Velero
-
-Cluster Restore
-
-Restore cluster with a Rancher snapshot
-
-Data Recovery
-
-Identifying and Recovering from Data Errors
-
-Exporting a Volume from a Single Replica
-
-Identifying Corrupted Replicas
-
-Recovering from a Full Disk
-
-Recovering from a Longhorn Backup without System Installed
-
-CSI Driver Migration
-
-Migrating from the Flexvolume Driver to CSI
-
-References
-
-Settings
-
-Storage Class Parameters
-
-Python Client
-
-Reference Setup, Performance, Scalability, and Sizing Guidelines
-
-Longhorn Networking
-
-Examples
-
-Helm Values
-
-Troubleshoot
-
-Troubleshooting Problems
-
-Support Bundle
-
-V2 Data Engine (Technical Preview)
-
-Prerequisites
-
-Quick Start
-
-Performance
-
-Troubleshooting
-
-Features
-
-V2 Volume Clone Support
-
-Replica Rebuild QoS
-
-Configurable CPU Cores
-
-Interrupt Mode Support
-
-Node Disk Support
-
-Selective V2 Data Engine Activation
-
-UBLK Frontend Support
-
-V2 Volume Expansion
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

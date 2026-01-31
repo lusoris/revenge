@@ -1,105 +1,44 @@
 # testcontainers-go
 
 > Source: https://golang.testcontainers.org/
-> Fetched: 2026-01-30T23:54:53.195382+00:00
-> Content-Hash: 015248a1d025b9a7
+> Fetched: 2026-01-31T11:02:11.271022+00:00
+> Content-Hash: bb1dd47b9c2554ba
 > Type: html
 
 ---
 
-Welcome to Testcontainers for Go!
+# Welcome to Testcontainers for Go!¶
 
-¶
+**Not using Go? Here are other supported languages!**
 
-Not using Go? Here are other supported languages!
+[Java](https://java.testcontainers.org) Go [.NET](https://dotnet.testcontainers.org/) [Node.js](https://node.testcontainers.org/) [Python](https://testcontainers-python.readthedocs.io/en/latest/) [Rust](https://docs.rs/testcontainers/latest/testcontainers/) [Haskell](https://github.com/testcontainers/testcontainers-hs) [Ruby](https://github.com/testcontainers/testcontainers-ruby/)
 
-Java
+## About Testcontainers for Go¶
 
-Go
+_Testcontainers for Go_ is a Go package that makes it simple to create and clean up container-based dependencies for automated integration/smoke tests. The clean, easy-to-use API enables developers to programmatically define containers that should be run as part of a test and clean up those resources when the test is done.
 
-.NET
+To start using _Testcontainers for Go_ please read our [quickstart guide](quickstart/).
 
-Node.js
+## GoDoc¶
 
-Python
+Inline documentation and docs where the code live is crucial for us. Go has nice support for them and we provide examples as well. Check it out at [pkg.go.dev/github.com/testcontainers/testcontainers-go](https://pkg.go.dev/github.com/testcontainers/testcontainers-go).
 
-Rust
+## Who is using Testcontainers Go?¶
 
-Haskell
+  * [Elastic](https://www.elastic.co) - Testing of the APM Server, and E2E testing for Beats
+  * [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) - Integration testing the plugin-driven server agent for collecting & reporting metrics
+  * [Intel](https://intel.com/) - Reference implementation design E2E testing for microservice-based solutions
+  * [OpenTelemetry](https://opentelemetry.io/) - Integration testing of the OpenTelemetry Collector receivers
 
-Ruby
 
-About Testcontainers for Go
 
-¶
+## License¶
 
-Testcontainers for Go
+This project is opensource and you can have a look at the code on [GitHub](https://github.com/testcontainers/testcontainers-go). See [LICENSE](https://github.com/testcontainers/testcontainers-go/blob/main/LICENSE).
 
-is a Go package that makes it simple to create and clean up container-based dependencies for
-automated integration/smoke tests. The clean, easy-to-use API enables developers to programmatically define containers
-that should be run as part of a test and clean up those resources when the test is done.
+## Copyright¶
 
-To start using
-
-Testcontainers for Go
-
-please read our
-
-quickstart guide
-
-.
-
-GoDoc
-
-¶
-
-Inline documentation and docs where the code live is crucial for us. Go has nice support for them and we provide
-examples as well. Check it out at
-
-pkg.go.dev/github.com/testcontainers/testcontainers-go
-
-.
-
-Who is using Testcontainers Go?
-
-¶
-
-Elastic
-
-- Testing of the APM Server, and E2E testing for Beats
-
-Telegraf
-
-- Integration testing the plugin-driven server agent for collecting & reporting metrics
-
-Intel
-
-- Reference implementation design E2E testing for microservice-based solutions
-
-OpenTelemetry
-
-- Integration testing of the OpenTelemetry Collector receivers
-
-License
-
-¶
-
-This project is opensource and you can have a look at the code on
-
-GitHub
-
-. See
-
-LICENSE
-
-.
-
-Copyright
-
-¶
-
-Copyright (c) 2018-present Gianluca Arbezzano and other authors. Check out our
-
-lovely contributors
-
-.
+Copyright (c) 2018-present Gianluca Arbezzano and other authors. Check out our [lovely contributors](https://github.com/testcontainers/testcontainers-go/graphs/contributors).
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

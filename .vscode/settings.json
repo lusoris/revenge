@@ -82,6 +82,42 @@
         "editor.tabSize": 2,
         "editor.insertSpaces": true
     },
+
+    // Python settings
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "python.analysis.typeCheckingMode": "basic",
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": ["tests"],
+
+    // Ruff settings
+    "ruff.format.args": [],
+    "ruff.lint.args": [],
+    "ruff.organizeImports": true,
+
+    // TypeScript settings
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+
+    // Svelte settings
+    "[svelte]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.defaultFormatter": "svelte.svelte-vscode"
+    },
+
     "chat.tools.terminal.autoApprove": {
         "go": true
     }

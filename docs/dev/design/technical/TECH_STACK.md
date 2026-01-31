@@ -1,5 +1,8 @@
 # Revenge - Technology Stack
 
+<!-- SOURCES: dragonfly, fx, go-slog, gohlslib, koanf, ogen, ogen-docs, pgx, postgresql-arrays, postgresql-json, river, river-docs, rueidis, rueidis-docs, shadcn-svelte, sqlc, sqlc-config, svelte-runes, svelte5, sveltekit, tanstack-query, typesense, typesense-go -->
+
+<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
 
 <!-- TOC-START -->
@@ -68,16 +71,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | 🔴 |  |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | 🔴 |
+| Sources | 🔴 |
+| Instructions | 🔴 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## 🚀 Modern Go Setup (2025)
@@ -344,77 +346,6 @@ type TranscodeProfile struct {
 | 15-25 Mbps | `hevc_1080p` |
 | > 25 Mbps | Use device default |
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
-| [Go log/slog](https://pkg.go.dev/log/slog) | [Local](../../sources/go/stdlib/slog.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
-| [River Documentation](https://riverqueue.com/docs) | [Local](../../sources/tooling/river-guide.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
-| [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) | [Local](../../sources/frontend/tanstack-query.md) |
-| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
-| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
-| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
-| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
-| [ogen Documentation](https://ogen.dev/docs/intro) | [Local](../../sources/tooling/ogen-guide.md) |
-| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
-| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
-| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Technical](INDEX.md)
-
-### In This Section
-
-- [API Reference](API.md)
-- [Revenge - Audio Streaming & Progress Tracking](AUDIO_STREAMING.md)
-- [Configuration Reference](CONFIGURATION.md)
-- [Revenge - Frontend Architecture](FRONTEND.md)
-- [Revenge - Advanced Offloading Architecture](OFFLOADING.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

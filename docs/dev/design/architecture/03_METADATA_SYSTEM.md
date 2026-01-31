@@ -1,5 +1,10 @@
 # Revenge - Metadata System
 
+<!-- SOURCES: dragonfly, go-blurhash, lastfm-api, pgx, postgresql-arrays, postgresql-json, river, rueidis, rueidis-docs -->
+
+<!-- DESIGN: architecture, ADULT_CONTENT_SYSTEM, ADULT_METADATA, DATA_RECONCILIATION -->
+
+
 > Servarr-first metadata with intelligent fallback and multi-language support.
 
 
@@ -76,8 +81,7 @@
 | Code | 🔴 | Reset to template |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-**Priority**: 🔴 HIGH
+| Integration Testing | 🔴 |  |**Priority**: 🔴 HIGH
 **Module**: `internal/service/metadata`
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
@@ -927,62 +931,6 @@ paths:
 | Sync Method | Webhooks (real-time) + Polling (backup) |
 | Job Queue | River for all background fetching |
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
-| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../sources/apis/lastfm.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
-| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../sources/media/go-blurhash.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
-| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Architecture](INDEX.md)
-
-### In This Section
-
-- [Revenge - Architecture v2](01_ARCHITECTURE.md)
-- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
-- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
-- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
-
-### Related Topics
-
-- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
-- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
-- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
-- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
-- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

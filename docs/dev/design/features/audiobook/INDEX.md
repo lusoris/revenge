@@ -1,8 +1,6 @@
-# Audiobook Features
+# Features - Audiobook
 
-← Back to [Features](../)
-
-> Audiobook content module documentation
+← Back to [Design Docs](..)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -12,30 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [AUDIOBOOK_MODULE.md](AUDIOBOOK_MODULE.md) | Audiobook content management with Audnexus/OpenLibrary metadata | 🟡 Scaffold |
+| [Audiobook Module](AUDIOBOOK_MODULE.md) | Audiobook content management with metadata enrichment from A... | ✅ Designed |
 
 ---
 
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
----
-
-## Related
-
-- [Chaptarr Integration](../../integrations/servarr/CHAPTARR.md)
-- [Audible Metadata](../../integrations/metadata/books/AUDIBLE.md)
-- [OpenLibrary Metadata](../../integrations/metadata/books/OPENLIBRARY.md)
+**Sources**: [External Sources Index](../../../sources/SOURCES.md)
 
 ---
 

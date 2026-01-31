@@ -18,7 +18,9 @@ Usage:
 
 import argparse
 import re
+import sys
 from pathlib import Path
+
 
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -36,22 +38,22 @@ SKIP_FILES = {
 # Required elements with their patterns
 REQUIRED_ELEMENTS = {
     "title": {
-        "pattern": r'^#\s+.+$',
+        "pattern": r"^#\s+.+$",
         "description": "Document title (# heading)",
         "severity": "error",
     },
     "description": {
-        "pattern": r'^>\s+.+$',
+        "pattern": r"^>\s+.+$",
         "description": "Description blockquote (> text)",
         "severity": "warning",
     },
     "status_table": {
-        "pattern": r'\|\s*Dimension\s*\|\s*Status\s*\|',
+        "pattern": r"\|\s*Dimension\s*\|\s*Status\s*\|",
         "description": "Status table with Dimension/Status columns",
         "severity": "warning",
     },
     "sot_reference": {
-        "pattern": r'00_SOURCE_OF_TRUTH\.md',
+        "pattern": r"00_SOURCE_OF_TRUTH\.md",
         "description": "Reference to Source of Truth",
         "severity": "warning",
     },
@@ -60,19 +62,19 @@ REQUIRED_ELEMENTS = {
 # Optional but recommended elements
 RECOMMENDED_ELEMENTS = {
     "overview": {
-        "pattern": r'^##\s+Overview',
+        "pattern": r"^##\s+Overview",
         "description": "Overview section",
     },
     "source_breadcrumbs": {
-        "pattern": r'SOURCE-BREADCRUMBS-START',
+        "pattern": r"SOURCE-BREADCRUMBS-START",
         "description": "Source breadcrumbs section",
     },
     "design_breadcrumbs": {
-        "pattern": r'DESIGN-BREADCRUMBS-START',
+        "pattern": r"DESIGN-BREADCRUMBS-START",
         "description": "Design breadcrumbs section",
     },
     "horizontal_rules": {
-        "pattern": r'^---$',
+        "pattern": r"^---$",
         "description": "Section dividers (---)",
     },
 }
@@ -81,26 +83,26 @@ RECOMMENDED_ELEMENTS = {
 CATEGORY_REQUIREMENTS = {
     "services": {
         "module_path": {
-            "pattern": r'\*\*Module\*\*:\s*`internal/service/',
+            "pattern": r"\*\*Module\*\*:\s*`internal/service/",
             "description": "Module path declaration",
             "severity": "warning",
         },
         "dependencies": {
-            "pattern": r'^##\s+Dependencies',
+            "pattern": r"^##\s+Dependencies",
             "description": "Dependencies section",
             "severity": "info",
         },
     },
     "integrations": {
         "api_reference": {
-            "pattern": r'API|api|endpoint|URL',
+            "pattern": r"API|api|endpoint|URL",
             "description": "API/endpoint reference",
             "severity": "info",
         },
     },
     "features": {
         "implementation": {
-            "pattern": r'^##\s+Implementation|^##\s+Design',
+            "pattern": r"^##\s+Implementation|^##\s+Design",
             "description": "Implementation or Design section",
             "severity": "info",
         },
@@ -108,7 +110,7 @@ CATEGORY_REQUIREMENTS = {
 }
 
 
-def find_design_docs(category: str = None) -> list[Path]:
+def find_design_docs(category: str | None = None) -> list[Path]:
     """Find design documents, optionally filtered by category."""
     docs = []
     for md_file in sorted(DESIGN_DIR.rglob("*.md")):
@@ -142,18 +144,17 @@ def validate_document(doc_path: Path) -> dict:
     }
 
     # Check required elements
-    for name, spec in REQUIRED_ELEMENTS.items():
+    for _name, spec in REQUIRED_ELEMENTS.items():
         pattern = re.compile(spec["pattern"], re.MULTILINE)
         if pattern.search(content):
             results["passed"].append(spec["description"])
+        elif spec["severity"] == "error":
+            results["errors"].append(f"Missing: {spec['description']}")
         else:
-            if spec["severity"] == "error":
-                results["errors"].append(f"Missing: {spec['description']}")
-            else:
-                results["warnings"].append(f"Missing: {spec['description']}")
+            results["warnings"].append(f"Missing: {spec['description']}")
 
     # Check recommended elements
-    for name, spec in RECOMMENDED_ELEMENTS.items():
+    for _name, spec in RECOMMENDED_ELEMENTS.items():
         pattern = re.compile(spec["pattern"], re.MULTILINE)
         if pattern.search(content):
             results["passed"].append(spec["description"])
@@ -165,7 +166,7 @@ def validate_document(doc_path: Path) -> dict:
     if parts:
         category = parts[0]
         if category in CATEGORY_REQUIREMENTS:
-            for name, spec in CATEGORY_REQUIREMENTS[category].items():
+            for _name, spec in CATEGORY_REQUIREMENTS[category].items():
                 pattern = re.compile(spec["pattern"], re.MULTILINE)
                 if pattern.search(content):
                     results["passed"].append(spec["description"])
@@ -187,15 +188,17 @@ def validate_document(doc_path: Path) -> dict:
         results["warnings"].append("Document is very short (< 20 lines)")
 
     # Check for TODO/FIXME markers
-    if re.search(r'\bTODO\b|\bFIXME\b|\bXXX\b', content):
+    if re.search(r"\bTODO\b|\bFIXME\b|\bXXX\b", content):
         results["info"].append("Contains TODO/FIXME markers")
 
     # Check for placeholder content
-    if re.search(r'\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum', content, re.I):
+    if re.search(r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.I):
         results["warnings"].append("Contains placeholder content")
 
     # Check line length (markdown readability)
-    long_lines = sum(1 for line in lines if len(line) > 200 and not line.startswith("|"))
+    long_lines = sum(
+        1 for line in lines if len(line) > 200 and not line.startswith("|")
+    )
     if long_lines > 5:
         results["info"].append(f"{long_lines} lines exceed 200 characters")
 
@@ -210,12 +213,8 @@ def main():
     parser.add_argument(
         "--strict", "-s", action="store_true", help="Treat warnings as errors"
     )
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Show all details"
-    )
-    parser.add_argument(
-        "--quiet", "-q", action="store_true", help="Only show summary"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show all details")
+    parser.add_argument("--quiet", "-q", action="store_true", help="Only show summary")
     args = parser.parse_args()
 
     print("Finding design documents...")
@@ -268,7 +267,7 @@ def main():
 
     # Category breakdown
     if not args.category:
-        print(f"\nBy Category:")
+        print("\nBy Category:")
         category_stats = {}
         for result in all_results:
             parts = Path(result["path"]).parts
@@ -281,7 +280,9 @@ def main():
 
         for cat, stats in sorted(category_stats.items()):
             status = "✓" if stats["errors"] == 0 and stats["warnings"] == 0 else "!"
-            print(f"  {status} {cat}: {stats['docs']} docs, {stats['errors']}E/{stats['warnings']}W")
+            print(
+                f"  {status} {cat}: {stats['docs']} docs, {stats['errors']}E/{stats['warnings']}W"
+            )
 
     # Exit code
     if args.strict:
@@ -298,4 +299,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

@@ -1,5 +1,10 @@
 # Email System
 
+<!-- SOURCES: go-mail-docs -->
+
+<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Transactional email for notifications and account management
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -17,7 +22,6 @@
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
 | Integration Testing | 🔴 |  |
-
 ---
 
 ## Overview

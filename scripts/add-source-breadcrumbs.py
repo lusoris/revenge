@@ -18,6 +18,7 @@ from pathlib import Path
 
 import yaml
 
+
 # Project paths
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
@@ -49,7 +50,6 @@ KEYWORD_SOURCE_MAP = {
     "spotify": ["spotify-api"],
     "discogs": ["discogs-api"],
     "omdb": ["omdb-api"],
-
     # Auth providers
     "keycloak": ["keycloak"],
     "authelia": ["authelia"],
@@ -57,53 +57,44 @@ KEYWORD_SOURCE_MAP = {
     "oidc": ["oidc-core"],
     "oauth": ["oauth2-rfc"],
     "jwt": ["jwt-rfc"],
-
     # Servarr stack
     "radarr": ["radarr-openapi"],
     "sonarr": ["sonarr-openapi"],
     "lidarr": ["lidarr-openapi"],
     "whisparr": ["whisparr-openapi"],
     "readarr": ["readarr-openapi"],
-
     # Database
     "postgresql": ["pgx", "postgresql-json", "postgresql-arrays"],
     "postgres": ["pgx", "postgresql-json"],
     "sqlc": ["sqlc", "sqlc-config"],
-
     # Caching
     "dragonfly": ["dragonfly"],
     "redis": ["rueidis", "rueidis-guide"],
     "typesense": ["typesense", "typesense-go"],
-
     # Frontend
     "svelte": ["svelte5", "svelte-runes", "sveltekit"],
     "sveltekit": ["sveltekit"],
     "shadcn": ["shadcn-svelte"],
     "vidstack": ["vidstack"],
     "tanstack": ["tanstack-query"],
-
     # Protocols
     "hls": ["hls-rfc", "gohlslib"],
     "webrtc": ["webrtc", "pion-webrtc"],
     "xmltv": ["xmltv", "xmltv-format"],
     "m3u": ["m3u8"],
-
     # Media processing
     "ffmpeg": ["ffmpeg", "ffmpeg-codecs", "ffmpeg-formats", "go-astiav"],
     "blurhash": ["go-blurhash"],
     "vips": ["govips-guide"],
-
     # Observability
     "prometheus": ["prometheus", "prometheus-metrics"],
     "opentelemetry": ["opentelemetry"],
     "grafana": ["grafana", "grafana-dashboards"],
     "jaeger": ["jaeger", "jaeger-go"],
-
     # Testing
     "testcontainers": ["testcontainers"],
     "testify": ["testify"],
     "mockery": ["mockery", "mockery-guide"],
-
     # Go tooling
     "fx": ["fx", "fx-guide"],
     "koanf": ["koanf"],
@@ -142,7 +133,9 @@ def build_source_index(config: dict) -> dict:
 
             if url:
                 # Normalize URL
-                normalized = url.replace("https://", "").replace("http://", "").rstrip("/")
+                normalized = (
+                    url.replace("https://", "").replace("http://", "").rstrip("/")
+                )
                 url_index[normalized] = info
 
                 # Extract package path
@@ -168,20 +161,25 @@ def extract_references(content: str, source_index: dict) -> list[dict]:
     urls = set(re.findall(url_pattern, content))
 
     for url in urls:
-        normalized = url.replace("https://", "").replace("http://", "").rstrip("/").rstrip(".,;:)")
+        normalized = (
+            url.replace("https://", "")
+            .replace("http://", "")
+            .rstrip("/")
+            .rstrip(".,;:)")
+        )
         for source_url, info in source_index["urls"].items():
             if source_url in normalized or normalized in source_url:
                 found[info["id"]] = info
                 break
 
     # Extract package references
-    github_pattern = r'github\.com/[\w\-]+/[\w\-]+(?:/[\w\-]+)*'
+    github_pattern = r"github\.com/[\w\-]+/[\w\-]+(?:/[\w\-]+)*"
     packages = set(re.findall(github_pattern, content))
 
-    golang_pattern = r'golang\.org/x/\w+'
+    golang_pattern = r"golang\.org/x/\w+"
     packages.update(re.findall(golang_pattern, content))
 
-    uber_pattern = r'go\.uber\.org/\w+'
+    uber_pattern = r"go\.uber\.org/\w+"
     packages.update(re.findall(uber_pattern, content))
 
     for pkg in packages:
@@ -245,24 +243,30 @@ def generate_breadcrumb_section(doc_path: Path, references: list[dict]) -> str:
     ]
 
     # Calculate relative paths to indexes
-    sources_index_rel = calculate_relative_path(doc_path, SOURCES_DIR / "SOURCES_INDEX.md")
+    sources_index_rel = calculate_relative_path(
+        doc_path, SOURCES_DIR / "SOURCES_INDEX.md"
+    )
     crossref_rel = calculate_relative_path(doc_path, SOURCES_DIR / "DESIGN_CROSSREF.md")
 
-    lines.extend([
-        "### Cross-Reference Indexes",
-        "",
-        f"- [All Sources Index]({sources_index_rel}) - Complete list of external documentation",
-        f"- [Design ↔ Sources Map]({crossref_rel}) - Which docs reference which sources",
-        "",
-    ])
+    lines.extend(
+        [
+            "### Cross-Reference Indexes",
+            "",
+            f"- [All Sources Index]({sources_index_rel}) - Complete list of external documentation",
+            f"- [Design ↔ Sources Map]({crossref_rel}) - Which docs reference which sources",
+            "",
+        ]
+    )
 
     if references:
-        lines.extend([
-            "### Referenced Sources",
-            "",
-            "| Source | Documentation |",
-            "|--------|---------------|",
-        ])
+        lines.extend(
+            [
+                "### Referenced Sources",
+                "",
+                "| Source | Documentation |",
+                "|--------|---------------|",
+            ]
+        )
 
         for ref in sorted(references, key=lambda x: x["name"]):
             name = ref["name"]
@@ -301,7 +305,9 @@ def find_insertion_point(content: str) -> tuple[int, str]:
 
     # Look for "Related Documentation" section (insert before it)
     for i, line in enumerate(lines):
-        if line.strip().startswith("## Related") or line.strip().startswith("## See Also"):
+        if line.strip().startswith("## Related") or line.strip().startswith(
+            "## See Also"
+        ):
             return i, "insert"
 
     # Look for last "---" separator before end
@@ -342,11 +348,11 @@ def update_document(doc_path: Path, source_index: dict, dry_run: bool = False) -
         if end_idx is None:
             end_idx = insert_idx + 1
 
-        new_lines = lines[:insert_idx] + [breadcrumbs] + lines[end_idx + 1:]
+        new_lines = [*lines[:insert_idx], breadcrumbs, *lines[end_idx + 1:]]
     elif action == "insert":
-        new_lines = lines[:insert_idx] + ["", breadcrumbs, ""] + lines[insert_idx:]
+        new_lines = [*lines[:insert_idx], "", breadcrumbs, "", *lines[insert_idx:]]
     else:  # append
-        new_lines = lines + ["", "---", "", breadcrumbs]
+        new_lines = [*lines, "", "---", "", breadcrumbs]
 
     new_content = "\n".join(new_lines)
 
@@ -384,13 +390,13 @@ def find_design_docs(specific_file: str | None = None) -> list[Path]:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Add source breadcrumbs to design docs")
+    parser = argparse.ArgumentParser(
+        description="Add source breadcrumbs to design docs"
+    )
     parser.add_argument(
         "--dry-run", "-n", action="store_true", help="Preview changes without writing"
     )
-    parser.add_argument(
-        "--file", "-f", help="Update specific file only"
-    )
+    parser.add_argument("--file", "-f", help="Update specific file only")
     args = parser.parse_args()
 
     print("Loading sources configuration...")
@@ -417,7 +423,7 @@ def main():
         else:
             unchanged += 1
 
-    print(f"\n=== SUMMARY ===")
+    print("\n=== SUMMARY ===")
     print(f"{'Would update' if args.dry_run else 'Updated'}: {updated}")
     print(f"Unchanged: {unchanged}")
 

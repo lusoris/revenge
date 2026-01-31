@@ -19,22 +19,11 @@
 | [GitFlow Workflow Guide](GITFLOW.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
 | [Revenge - Reverse Proxy & Deployment Best Practices](REVERSE_PROXY.md) | Production deployment with nginx, Caddy, Traefik, and Docker... | ✅ Designed |
 | [revenge - Setup Guide](SETUP.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
-| [Versioning Strategy](VERSIONING.md) | Semantic versioning, release process, and changelog management | ✅ Designed |
+| [Versioning Strategy](VERSIONING.md) | Auto-generated section linking to external documentation sou... | ✅ Designed |
 
 ---
 
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-<!-- SOURCE-BREADCRUMBS-END -->
+**Sources**: [External Sources Index](../../sources/SOURCES.md)
 
 ## Related
 

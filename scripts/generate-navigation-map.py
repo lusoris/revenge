@@ -17,9 +17,9 @@ an alternative entry point to the documentation.
 
 import argparse
 import re
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+
 
 # Project paths
 SCRIPT_DIR = Path(__file__).parent
@@ -84,7 +84,7 @@ STATUS_EMOJI = {
 def extract_status(content: str) -> str:
     """Extract status from document content."""
     # Look for status table
-    status_match = re.search(r'\|\s*Design\s*\|\s*([✅🟡🔴⚪])', content)
+    status_match = re.search(r"\|\s*Design\s*\|\s*([✅🟡🔴⚪])", content)
     if status_match:
         emoji = status_match.group(1)
         return emoji
@@ -100,17 +100,17 @@ def extract_status(content: str) -> str:
 def extract_title(content: str, filepath: Path) -> str:
     """Extract title from markdown file."""
     # Look for H1
-    match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+    match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
     if match:
         return match.group(1).strip()
 
     # Fallback to filename
-    return filepath.stem.replace('_', ' ').replace('-', ' ').title()
+    return filepath.stem.replace("_", " ").replace("-", " ").title()
 
 
 def extract_description(content: str) -> str:
     """Extract description (blockquote after title)."""
-    match = re.search(r'^#\s+.+\n+>\s*(.+)$', content, re.MULTILINE)
+    match = re.search(r"^#\s+.+\n+>\s*(.+)$", content, re.MULTILINE)
     if match:
         return match.group(1).strip()
     return ""
@@ -133,27 +133,29 @@ def get_category_docs(category_dir: Path) -> list:
         depth = len(parts) - 2  # Subtract category and filename
 
         try:
-            content = md_file.read_text(encoding='utf-8')
+            content = md_file.read_text(encoding="utf-8")
             title = extract_title(content, md_file)
             status = extract_status(content)
             description = extract_description(content)
         except Exception:
-            title = md_file.stem.replace('_', ' ').title()
+            title = md_file.stem.replace("_", " ").title()
             status = "⚪"
             description = ""
 
         # Determine subcategory
         subcategory = parts[1] if len(parts) > 2 else None
 
-        docs.append({
-            "path": rel_path,
-            "title": title,
-            "status": status,
-            "description": description,
-            "depth": depth,
-            "subcategory": subcategory,
-            "filename": md_file.name,
-        })
+        docs.append(
+            {
+                "path": rel_path,
+                "title": title,
+                "status": status,
+                "description": description,
+                "depth": depth,
+                "subcategory": subcategory,
+                "filename": md_file.name,
+            }
+        )
 
     return docs
 
@@ -162,24 +164,26 @@ def get_subcategories(category_dir: Path) -> list:
     """Get subcategories (subdirectories) in a category."""
     subcats = []
     for subdir in sorted(category_dir.iterdir()):
-        if subdir.is_dir() and not subdir.name.startswith('.'):
+        if subdir.is_dir() and not subdir.name.startswith("."):
             index_file = subdir / "INDEX.md"
             if index_file.exists():
                 try:
-                    content = index_file.read_text(encoding='utf-8')
+                    content = index_file.read_text(encoding="utf-8")
                     title = extract_title(content, index_file)
                 except Exception:
-                    title = subdir.name.replace('_', ' ').title()
+                    title = subdir.name.replace("_", " ").title()
             else:
-                title = subdir.name.replace('_', ' ').title()
+                title = subdir.name.replace("_", " ").title()
 
             doc_count = len(list(subdir.glob("*.md")))
-            subcats.append({
-                "name": subdir.name,
-                "title": title,
-                "doc_count": doc_count,
-                "path": subdir.relative_to(DESIGN_DIR),
-            })
+            subcats.append(
+                {
+                    "name": subdir.name,
+                    "title": title,
+                    "doc_count": doc_count,
+                    "path": subdir.relative_to(DESIGN_DIR),
+                }
+            )
 
     return subcats
 
@@ -213,18 +217,17 @@ def generate_navigation_map() -> str:
     ]
 
     # Sort categories by priority
-    sorted_categories = sorted(
-        CATEGORY_INFO.items(),
-        key=lambda x: x[1]["priority"]
-    )
+    sorted_categories = sorted(CATEGORY_INFO.items(), key=lambda x: x[1]["priority"])
 
     # Category overview table
-    lines.extend([
-        "## Categories Overview",
-        "",
-        "| Category | Description | Docs |",
-        "|----------|-------------|------|",
-    ])
+    lines.extend(
+        [
+            "## Categories Overview",
+            "",
+            "| Category | Description | Docs |",
+            "|----------|-------------|------|",
+        ]
+    )
 
     for cat_name, cat_info in sorted_categories:
         cat_dir = DESIGN_DIR / cat_name
@@ -251,25 +254,29 @@ def generate_navigation_map() -> str:
         icon = cat_info["icon"]
         desc = cat_info["description"]
 
-        lines.extend([
-            f"## {icon} {cat_name.title()}",
-            "",
-            f"> {desc}",
-            "",
-            f"**Index**: [{cat_name}/INDEX.md]({cat_name}/INDEX.md)",
-            "",
-        ])
+        lines.extend(
+            [
+                f"## {icon} {cat_name.title()}",
+                "",
+                f"> {desc}",
+                "",
+                f"**Index**: [{cat_name}/INDEX.md]({cat_name}/INDEX.md)",
+                "",
+            ]
+        )
 
         # Get subcategories
         subcats = get_subcategories(cat_dir)
 
         if subcats:
-            lines.extend([
-                "### Subcategories",
-                "",
-                "| Subcategory | Documents |",
-                "|-------------|-----------|",
-            ])
+            lines.extend(
+                [
+                    "### Subcategories",
+                    "",
+                    "| Subcategory | Documents |",
+                    "|-------------|-----------|",
+                ]
+            )
 
             for subcat in subcats:
                 lines.append(
@@ -283,17 +290,23 @@ def generate_navigation_map() -> str:
         direct_docs = [d for d in docs if d["depth"] == 0]
 
         if direct_docs:
-            lines.extend([
-                "### Documents",
-                "",
-                "| Document | Status | Description |",
-                "|----------|--------|-------------|",
-            ])
+            lines.extend(
+                [
+                    "### Documents",
+                    "",
+                    "| Document | Status | Description |",
+                    "|----------|--------|-------------|",
+                ]
+            )
 
             for doc in sorted(direct_docs, key=lambda x: x["title"]):
                 title = doc["title"]
                 status = doc["status"]
-                desc = doc["description"][:60] + "..." if len(doc["description"]) > 60 else doc["description"]
+                desc = (
+                    doc["description"][:60] + "..."
+                    if len(doc["description"]) > 60
+                    else doc["description"]
+                )
                 path = doc["path"]
 
                 lines.append(f"| [{title}]({path}) | {status} | {desc} |")
@@ -303,14 +316,16 @@ def generate_navigation_map() -> str:
         lines.extend(["---", ""])
 
     # Deep links section for Q16 - shortcuts to deep directories
-    lines.extend([
-        "## Deep Directory Shortcuts",
-        "",
-        "> Direct links to deeply nested documentation (depth 3+)",
-        "",
-        "| Path | Description |",
-        "|------|-------------|",
-    ])
+    lines.extend(
+        [
+            "## Deep Directory Shortcuts",
+            "",
+            "> Direct links to deeply nested documentation (depth 3+)",
+            "",
+            "| Path | Description |",
+            "|------|-------------|",
+        ]
+    )
 
     deep_dirs = [
         ("integrations/metadata/adult/", "Adult metadata providers (StashDB, TPDB)"),
@@ -327,24 +342,26 @@ def generate_navigation_map() -> str:
         if full_path.exists():
             lines.append(f"| [{path}]({path}INDEX.md) | {desc} |")
 
-    lines.extend([
-        "",
-        "---",
-        "",
-        "## Cross-References",
-        "",
-        "| Resource | Description |",
-        "|----------|-------------|",
-        "| [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md) | Package versions, module status, config keys |",
-        "| [DESIGN_INDEX.md](../sources/DESIGN_INDEX.md) | Auto-generated index of all design docs |",
-        "| [SOURCES_INDEX.md](../sources/SOURCES_INDEX.md) | Index of external documentation sources |",
-        "| [DESIGN_CROSSREF.md](../sources/DESIGN_CROSSREF.md) | Design ↔ Sources cross-reference map |",
-        "",
-        "---",
-        "",
-        "*This file is auto-generated by `scripts/generate-navigation-map.py`*",
-        "",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Cross-References",
+            "",
+            "| Resource | Description |",
+            "|----------|-------------|",
+            "| [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md) | Package versions, module status, config keys |",
+            "| [DESIGN_INDEX.md](../sources/DESIGN_INDEX.md) | Auto-generated index of all design docs |",
+            "| [SOURCES_INDEX.md](../sources/SOURCES_INDEX.md) | Index of external documentation sources |",
+            "| [DESIGN_CROSSREF.md](../sources/DESIGN_CROSSREF.md) | Design ↔ Sources cross-reference map |",
+            "",
+            "---",
+            "",
+            "*This file is auto-generated by `scripts/generate-navigation-map.py`*",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -354,15 +371,10 @@ def main():
         description="Generate NAVIGATION.md for design documentation"
     )
     parser.add_argument(
-        "--output", "-o",
-        type=Path,
-        default=DEFAULT_OUTPUT,
-        help="Output file path"
+        "--output", "-o", type=Path, default=DEFAULT_OUTPUT, help="Output file path"
     )
     parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Print to stdout instead of writing file"
+        "--dry-run", action="store_true", help="Print to stdout instead of writing file"
     )
 
     args = parser.parse_args()
@@ -372,11 +384,17 @@ def main():
     if args.dry_run:
         print(content)
     else:
-        args.output.write_text(content, encoding='utf-8')
+        args.output.write_text(content, encoding="utf-8")
         print(f"Generated: {args.output}")
 
         # Count stats
-        cat_count = len([d for d in DESIGN_DIR.iterdir() if d.is_dir() and not d.name.startswith('.')])
+        cat_count = len(
+            [
+                d
+                for d in DESIGN_DIR.iterdir()
+                if d.is_dir() and not d.name.startswith(".")
+            ]
+        )
         doc_count = len(list(DESIGN_DIR.rglob("*.md")))
         print(f"  Categories: {cat_count}")
         print(f"  Documents: {doc_count}")

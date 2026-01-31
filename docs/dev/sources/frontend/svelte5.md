@@ -1,194 +1,61 @@
 # Svelte 5 Documentation
 
 > Source: https://svelte.dev/docs/svelte/overview
-> Fetched: 2026-01-30T23:52:51.723008+00:00
-> Content-Hash: 2fdbb448a3647bc4
+> Fetched: 2026-01-31T11:00:11.336927+00:00
+> Content-Hash: 8c9aa9785dbfd9e0
 > Type: html
 
 ---
 
-On this page
+### On this page
 
 Svelte is a framework for building user interfaces on the web. It uses a compiler to turn declarative components written in HTML, CSS and JavaScript...
 
 App
-
-<
-
-script
-
->
-
-function
-
-greet
-
-() {
-
-alert
-
-(
-
-'Welcome to Svelte!'
-
-);
-
-}
-
-</
-
-script
-
->
-
-<
-
-button
-
-onclick
-
-=
-
-{greet}>click me</
-
-button
-
->
-
-<
-
-style
-
->
-
-button
-
-{
-
-font-size
-
-:
-
-2
-
-em
-
-;
-
-}
-
-</
-
-style
-
->
-
-<
-
-script
-
-lang
-
-=
-
-"ts"
-
->
-
-function
-
-greet
-
-() {
-
-alert
-
-(
-
-'Welcome to Svelte!'
-
-);
-
-}
-
-</
-
-script
-
->
-
-<
-
-button
-
-onclick
-
-=
-
-{greet}>click me</
-
-button
-
->
-
-<
-
-style
-
->
-
-button
-
-{
-
-font-size
-
-:
-
-2
-
-em
-
-;
-
-}
-
-</
-
-style
-
->
+    
+    
+    <script>
+    	function greet() {
+    		alert('Welcome to Svelte!');
+    	}
+    </script>
+    
+    <button onclick={greet}>click me</button>
+    
+    <style>
+    	button {
+    		font-size: 2em;
+    	}
+    </style>
+    
+    
+    <script lang="ts">
+    	function greet() {
+    		alert('Welcome to Svelte!');
+    	}
+    </script>
+    
+    <button onclick={greet}>click me</button>
+    
+    <style>
+    	button {
+    		font-size: 2em;
+    	}
+    </style>
 
 ...into lean, tightly optimized JavaScript.
 
-You can use it to build anything on the web, from standalone components to ambitious full stack apps (using Svelte’s companion application framework,
+You can use it to build anything on the web, from standalone components to ambitious full stack apps (using Svelte’s companion application framework, [SvelteKit](../kit)) and everything in between.
 
-SvelteKit
+These pages serve as reference documentation. If you’re new to Svelte, we recommend starting with the [interactive tutorial](/tutorial) and coming back here when you have questions.
 
-) and everything in between.
+You can also try Svelte online in the [playground](/playground) or, if you need a more fully-featured environment, on [StackBlitz](https://sveltekit.new).
 
-These pages serve as reference documentation. If you’re new to Svelte, we recommend starting with the
+[ Edit this page on GitHub](https://github.com/sveltejs/svelte/edit/main/documentation/docs/01-introduction/01-overview.md) [ llms.txt](/docs/svelte/overview/llms.txt)
 
-interactive tutorial
+previous next
 
-and coming back here when you have questions.
-
-You can also try Svelte online in the
-
-playground
-
-or, if you need a more fully-featured environment, on
-
-StackBlitz
-
-.
-
-Edit this page on GitHub
-
-llms.txt
-
-previous
-
-next
-
-Getting started
+[Getting started](/docs/svelte/getting-started)
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

@@ -16,6 +16,7 @@ import argparse
 import re
 from pathlib import Path
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
@@ -34,20 +35,20 @@ SKIP_FILES = {
 }
 
 # Heading pattern
-HEADING_PATTERN = re.compile(r'^(#{2,4})\s+(.+)$', re.MULTILINE)
+HEADING_PATTERN = re.compile(r"^(#{2,4})\s+(.+)$", re.MULTILINE)
 
 
 def slugify(text: str) -> str:
     """Convert heading text to anchor slug."""
     slug = text.lower()
     # Remove markdown formatting
-    slug = re.sub(r'\*\*([^*]+)\*\*', r'\1', slug)
-    slug = re.sub(r'\*([^*]+)\*', r'\1', slug)
-    slug = re.sub(r'`([^`]+)`', r'\1', slug)
+    slug = re.sub(r"\*\*([^*]+)\*\*", r"\1", slug)
+    slug = re.sub(r"\*([^*]+)\*", r"\1", slug)
+    slug = re.sub(r"`([^`]+)`", r"\1", slug)
     # Remove special characters
-    slug = re.sub(r'[^\w\s-]', '', slug)
-    slug = re.sub(r'[\s_]+', '-', slug)
-    slug = slug.strip('-')
+    slug = re.sub(r"[^\w\s-]", "", slug)
+    slug = re.sub(r"[\s_]+", "-", slug)
+    slug = slug.strip("-")
     return slug
 
 
@@ -56,22 +57,24 @@ def extract_headings(content: str) -> list[dict]:
     headings = []
 
     # Skip content inside code blocks
-    code_block_pattern = re.compile(r'```[\s\S]*?```', re.MULTILINE)
-    clean_content = code_block_pattern.sub('', content)
+    code_block_pattern = re.compile(r"```[\s\S]*?```", re.MULTILINE)
+    clean_content = code_block_pattern.sub("", content)
 
     for match in HEADING_PATTERN.finditer(clean_content):
         level = len(match.group(1))
         text = match.group(2).strip()
 
         # Skip certain headings
-        if text.lower() in ['table of contents', 'contents', 'toc']:
+        if text.lower() in ["table of contents", "contents", "toc"]:
             continue
 
-        headings.append({
-            "level": level,
-            "text": text,
-            "slug": slugify(text),
-        })
+        headings.append(
+            {
+                "level": level,
+                "text": text,
+                "slug": slugify(text),
+            }
+        )
 
     return headings
 
@@ -94,10 +97,12 @@ def generate_toc(headings: list[dict], min_level: int = 2) -> str:
         indent = "  " * (level - min_level)
         lines.append(f"{indent}- [{text}](#{slug})")
 
-    lines.extend([
-        "",
-        TOC_END,
-    ])
+    lines.extend(
+        [
+            "",
+            TOC_END,
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -105,7 +110,7 @@ def generate_toc(headings: list[dict], min_level: int = 2) -> str:
 def needs_toc(content: str, min_headings: int, min_lines: int) -> bool:
     """Determine if document needs a TOC."""
     headings = extract_headings(content)
-    lines = content.count('\n')
+    lines = content.count("\n")
 
     # Already has TOC
     if TOC_START in content:
@@ -121,8 +126,7 @@ def update_toc(content: str, headings: list[dict]) -> tuple[str, bool]:
 
     # Check if TOC already exists
     toc_pattern = re.compile(
-        rf'{re.escape(TOC_START)}.*?{re.escape(TOC_END)}',
-        re.DOTALL
+        rf"{re.escape(TOC_START)}.*?{re.escape(TOC_END)}", re.DOTALL
     )
 
     if toc_pattern.search(content):
@@ -132,12 +136,12 @@ def update_toc(content: str, headings: list[dict]) -> tuple[str, bool]:
 
     # Insert TOC after first heading and description
     # Find position after title and optional blockquote
-    lines = content.split('\n')
+    lines = content.split("\n")
     insert_pos = 0
 
     for i, line in enumerate(lines):
         # Skip title
-        if line.startswith('# '):
+        if line.startswith("# "):
             insert_pos = i + 1
             continue
         # Skip empty lines after title
@@ -145,7 +149,7 @@ def update_toc(content: str, headings: list[dict]) -> tuple[str, bool]:
             insert_pos = i + 1
             continue
         # Skip blockquote description
-        if insert_pos > 0 and line.startswith('>'):
+        if insert_pos > 0 and line.startswith(">"):
             insert_pos = i + 1
             continue
         # Skip empty line after blockquote
@@ -157,8 +161,8 @@ def update_toc(content: str, headings: list[dict]) -> tuple[str, bool]:
             break
 
     # Insert TOC
-    new_lines = lines[:insert_pos] + ['', new_toc, ''] + lines[insert_pos:]
-    new_content = '\n'.join(new_lines)
+    new_lines = [*lines[:insert_pos], "", new_toc, "", *lines[insert_pos:]]
+    new_content = "\n".join(new_lines)
 
     return new_content, True
 
@@ -180,14 +184,18 @@ def main():
     parser.add_argument(
         "--update", "-u", action="store_true", help="Write changes (default: dry run)"
     )
+    parser.add_argument("--file", "-f", type=Path, help="Process single file")
     parser.add_argument(
-        "--file", "-f", type=Path, help="Process single file"
+        "--min-headings",
+        type=int,
+        default=5,
+        help="Minimum headings to trigger TOC (default: 5)",
     )
     parser.add_argument(
-        "--min-headings", type=int, default=5, help="Minimum headings to trigger TOC (default: 5)"
-    )
-    parser.add_argument(
-        "--min-lines", type=int, default=150, help="Minimum lines to trigger TOC (default: 150)"
+        "--min-lines",
+        type=int,
+        default=150,
+        help="Minimum lines to trigger TOC (default: 150)",
     )
     parser.add_argument(
         "--force", action="store_true", help="Generate TOC even for small docs"
@@ -197,10 +205,7 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.file:
-        docs = [args.file]
-    else:
-        docs = find_documents(DESIGN_DIR)
+    docs = [args.file] if args.file else find_documents(DESIGN_DIR)
 
     print(f"Checking {len(docs)} documents...")
 
@@ -216,10 +221,9 @@ def main():
         if args.remove:
             if TOC_START in content:
                 toc_pattern = re.compile(
-                    rf'{re.escape(TOC_START)}.*?{re.escape(TOC_END)}\n*',
-                    re.DOTALL
+                    rf"{re.escape(TOC_START)}.*?{re.escape(TOC_END)}\n*", re.DOTALL
                 )
-                new_content = toc_pattern.sub('', content)
+                new_content = toc_pattern.sub("", content)
                 if new_content != content:
                     rel_path = doc_path.relative_to(PROJECT_ROOT)
                     if args.update:
@@ -254,7 +258,7 @@ def main():
         else:
             skipped += 1
 
-    print(f"\n=== SUMMARY ===")
+    print("\n=== SUMMARY ===")
     if args.remove:
         print(f"{'Removed' if args.update else 'Would remove'}: {removed}")
     else:

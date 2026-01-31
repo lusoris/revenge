@@ -1,14135 +1,7826 @@
 # FFmpeg Codecs
 
 > Source: https://ffmpeg.org/ffmpeg-codecs.html
-> Fetched: 2026-01-30T23:53:33.386213+00:00
-> Content-Hash: 2a5494c6316cb40a
+> Fetched: 2026-01-31T11:00:53.126845+00:00
+> Content-Hash: 1bf779e306142881
 > Type: html
 
 ---
 
-Table of Contents
+## Table of Contents
+
+  * 1 Description
+  * 2 Codec Options
+  * 3 Decoders
+  * 4 Video Decoders
+    * 4.1 av1
+      * 4.1.1 Options
+    * 4.2 hevc
+      * 4.2.1 Options
+    * 4.3 rawvideo
+      * 4.3.1 Options
+    * 4.4 libdav1d
+      * 4.4.1 Options
+    * 4.5 libdavs2
+    * 4.6 libuavs3d
+      * 4.6.1 Options
+    * 4.7 libxevd
+      * 4.7.1 Options
+    * 4.8 QSV Decoders
+      * 4.8.1 Common Options
+      * 4.8.2 HEVC Options
+    * 4.9 v210
+      * 4.9.1 Options
+  * 5 Audio Decoders
+    * 5.1 ac3
+      * 5.1.1 AC-3 Decoder Options
+    * 5.2 flac
+      * 5.2.1 FLAC Decoder options
+    * 5.3 ffwavesynth
+    * 5.4 libcelt
+    * 5.5 libgsm
+    * 5.6 libilbc
+      * 5.6.1 Options
+    * 5.7 libmpeghdec
+    * 5.8 libopencore-amrnb
+    * 5.9 libopencore-amrwb
+    * 5.10 libopus
+  * 6 Subtitles Decoders
+    * 6.1 libaribb24
+      * 6.1.1 libaribb24 Decoder Options
+    * 6.2 libaribcaption
+      * 6.2.1 libaribcaption Decoder Options
+      * 6.2.2 libaribcaption decoder usage examples
+    * 6.3 dvbsub
+      * 6.3.1 Options
+    * 6.4 dvdsub
+      * 6.4.1 Options
+    * 6.5 libzvbi-teletext
+      * 6.5.1 Options
+  * 7 Encoders
+  * 8 Audio Encoders
+    * 8.1 aac
+      * 8.1.1 Options
+    * 8.2 ac3 and ac3_fixed
+      * 8.2.1 AC-3 Metadata
+        * 8.2.1.1 Metadata Control Options
+        * 8.2.1.2 Downmix Levels
+        * 8.2.1.3 Audio Production Information
+        * 8.2.1.4 Other Metadata Options
+      * 8.2.2 Extended Bitstream Information
+        * 8.2.2.1 Extended Bitstream Information - Part 1
+        * 8.2.2.2 Extended Bitstream Information - Part 2
+      * 8.2.3 Other AC-3 Encoding Options
+      * 8.2.4 Floating-Point-Only AC-3 Encoding Options
+    * 8.3 flac
+      * 8.3.1 Options
+    * 8.4 opus
+      * 8.4.1 Options
+    * 8.5 libfdk_aac
+      * 8.5.1 Options
+      * 8.5.2 Examples
+    * 8.6 liblc3
+      * 8.6.1 Options
+    * 8.7 libmp3lame
+      * 8.7.1 Options
+    * 8.8 libopencore-amrnb
+      * 8.8.1 Options
+    * 8.9 libopus
+      * 8.9.1 Option Mapping
+    * 8.10 libshine
+      * 8.10.1 Options
+    * 8.11 libtwolame
+      * 8.11.1 Options
+    * 8.12 libvo-amrwbenc
+      * 8.12.1 Options
+    * 8.13 libvorbis
+      * 8.13.1 Options
+    * 8.14 mjpeg
+      * 8.14.1 Options
+    * 8.15 wavpack
+      * 8.15.1 Options
+        * 8.15.1.1 Shared options
+        * 8.15.1.2 Private options
+  * 9 Video Encoders
+    * 9.1 a64_multi, a64_multi5
+    * 9.2 Cinepak
+      * 9.2.1 Options
+    * 9.3 ffv1
+      * 9.3.1 Options
+    * 9.4 GIF
+      * 9.4.1 Options
+    * 9.5 Hap
+      * 9.5.1 Options
+    * 9.6 jpeg2000
+      * 9.6.1 Options
+    * 9.7 librav1e
+      * 9.7.1 Options
+    * 9.8 libaom-av1
+      * 9.8.1 Options
+    * 9.9 liboapv
+      * 9.9.1 Options
+    * 9.10 libsvtav1
+      * 9.10.1 Options
+    * 9.11 libsvtjpegxs
+      * 9.11.1 Options
+    * 9.12 libjxl
+      * 9.12.1 Options
+    * 9.13 libkvazaar
+      * 9.13.1 Options
+    * 9.14 libopenh264
+      * 9.14.1 Options
+    * 9.15 libtheora
+      * 9.15.1 Options
+      * 9.15.2 Examples
+    * 9.16 libvpx
+      * 9.16.1 Options
+    * 9.17 libvvenc
+      * 9.17.1 Supported Pixel Formats
+      * 9.17.2 Options
+    * 9.18 libwebp
+      * 9.18.1 Pixel Format
+      * 9.18.2 Options
+    * 9.19 libx264, libx264rgb
+      * 9.19.1 Supported Pixel Formats
+      * 9.19.2 Options
+    * 9.20 libx265
+      * 9.20.1 Options
+    * 9.21 libxavs2
+      * 9.21.1 Options
+    * 9.22 libxeve
+      * 9.22.1 Options
+    * 9.23 libxvid
+      * 9.23.1 Options
+    * 9.24 MediaCodec
+    * 9.25 MediaFoundation
+      * 9.25.1 Options
+      * 9.25.2 Examples
+    * 9.26 Microsoft RLE
+      * 9.26.1 Options
+    * 9.27 mpeg2
+      * 9.27.1 Options
+    * 9.28 png
+      * 9.28.1 Options
+      * 9.28.2 Private options
+    * 9.29 ProRes
+      * 9.29.1 Private Options for prores-ks
+      * 9.29.2 Speed considerations
+    * 9.30 QSV Encoders
+      * 9.30.1 Ratecontrol Method
+      * 9.30.2 Global Options -> MSDK Options
+      * 9.30.3 Common Options
+      * 9.30.4 Runtime Options
+      * 9.30.5 H264 options
+      * 9.30.6 HEVC Options
+      * 9.30.7 MPEG2 Options
+      * 9.30.8 VP9 Options
+      * 9.30.9 AV1 Options
+    * 9.31 snow
+      * 9.31.1 Options
+    * 9.32 VAAPI encoders
+    * 9.33 vbn
+      * 9.33.1 Options
+    * 9.34 vc2
+      * 9.34.1 Options
+  * 10 Subtitles Encoders
+    * 10.1 dvbsub
+      * 10.1.1 Options
+    * 10.2 dvdsub
+      * 10.2.1 Options
+    * 10.3 lrc
+      * 10.3.1 Options
+  * 11 See Also
+  * 12 Authors
+
+
+
+## 1 Description
+
+This document describes the codecs (decoders and encoders) provided by the libavcodec library. 
+
+## 2 Codec Options
+
+libavcodec provides some generic global options, which can be set on all the encoders and decoders. In addition, each codec may support so-called private options, which are specific for a given codec. 
+
+Sometimes, a global option may only affect a specific kind of codec, and may be nonsensical or ignored by another, so you need to be aware of the meaning of the specified options. Also some options are meant only for decoding or encoding. 
+
+Options may be set by specifying -option value in the FFmpeg tools, or by setting the value explicitly in the `AVCodecContext` options or using the libavutil/opt.h API for programmatic use. 
+
+The list of supported options follow: 
+
+b integer (_encoding,audio,video_)
+    
 
-1 Description
+Set bitrate in bits/s. Default value is 200K. 
+
+ab integer (_encoding,audio_)
+    
 
-2 Codec Options
+Set audio bitrate (in bits/s). Default value is 128K. 
 
-3 Decoders
+bt integer (_encoding,video_)
+    
 
-4 Video Decoders
+Set video bitrate tolerance (in bits/s). In 1-pass mode, bitrate tolerance specifies how far ratecontrol is willing to deviate from the target average bitrate value. This is not related to min/max bitrate. Lowering tolerance too much has an adverse effect on quality. 
 
-4.1 av1
+flags flags (_decoding/encoding,audio,video,subtitles_)
+    
 
-4.1.1 Options
+Set generic flags. 
 
-4.2 hevc
+Possible values: 
 
-4.2.1 Options
+‘mv4’
+    
 
-4.3 rawvideo
+Use four motion vector by macroblock (mpeg4). 
 
-4.3.1 Options
+‘qpel’
+    
 
-4.4 libdav1d
+Use 1/4 pel motion compensation. 
 
-4.4.1 Options
+‘loop’
+    
 
-4.5 libdavs2
+Use loop filter. 
 
-4.6 libuavs3d
+‘qscale’
+    
 
-4.6.1 Options
+Use fixed qscale. 
 
-4.7 libxevd
+‘pass1’
+    
 
-4.7.1 Options
+Use internal 2pass ratecontrol in first pass mode. 
 
-4.8 QSV Decoders
+‘pass2’
+    
 
-4.8.1 Common Options
+Use internal 2pass ratecontrol in second pass mode. 
 
-4.8.2 HEVC Options
+‘gray’
+    
 
-4.9 v210
+Only decode/encode grayscale. 
 
-4.9.1 Options
+‘psnr’
+    
 
-5 Audio Decoders
+Set error[?] variables during encoding. 
 
-5.1 ac3
+‘truncated’
+    
 
-5.1.1 AC-3 Decoder Options
+Input bitstream might be randomly truncated. 
 
-5.2 flac
+‘drop_changed’
+    
 
-5.2.1 FLAC Decoder options
+Don’t output frames whose parameters differ from first decoded frame in stream. Error AVERROR_INPUT_CHANGED is returned when a frame is dropped. 
 
-5.3 ffwavesynth
+‘ildct’
+    
 
-5.4 libcelt
+Use interlaced DCT. 
 
-5.5 libgsm
+‘low_delay’
+    
 
-5.6 libilbc
+Force low delay. 
 
-5.6.1 Options
+‘global_header’
+    
 
-5.7 libmpeghdec
+Place global headers in extradata instead of every keyframe. 
 
-5.8 libopencore-amrnb
+‘bitexact’
+    
 
-5.9 libopencore-amrwb
+Only write platform-, build- and time-independent data. (except (I)DCT). This ensures that file and data checksums are reproducible and match between platforms. Its primary use is for regression testing. 
 
-5.10 libopus
+‘aic’
+    
 
-6 Subtitles Decoders
+Apply H263 advanced intra coding / mpeg4 ac prediction. 
 
-6.1 libaribb24
+‘ilme’
+    
 
-6.1.1 libaribb24 Decoder Options
+Apply interlaced motion estimation. 
 
-6.2 libaribcaption
+‘cgop’
+    
 
-6.2.1 libaribcaption Decoder Options
+Use closed gop. 
 
-6.2.2 libaribcaption decoder usage examples
+‘output_corrupt’
+    
 
-6.3 dvbsub
+Output even potentially corrupted frames. 
 
-6.3.1 Options
+time_base rational number
+    
 
-6.4 dvdsub
+Set codec time base. 
 
-6.4.1 Options
+It is the fundamental unit of time (in seconds) in terms of which frame timestamps are represented. For fixed-fps content, timebase should be `1 / frame_rate` and timestamp increments should be identically 1. 
 
-6.5 libzvbi-teletext
+g integer (_encoding,video_)
+    
 
-6.5.1 Options
+Set the group of picture (GOP) size. Default value is 12. 
 
-7 Encoders
+ar integer (_decoding/encoding,audio_)
+    
 
-8 Audio Encoders
+Set audio sampling rate (in Hz). 
 
-8.1 aac
+ac integer (_decoding/encoding,audio_)
+    
 
-8.1.1 Options
+Set number of audio channels. 
 
-8.2 ac3 and ac3_fixed
+cutoff integer (_encoding,audio_)
+    
 
-8.2.1 AC-3 Metadata
+Set cutoff bandwidth. (Supported only by selected encoders, see their respective documentation sections.) 
 
-8.2.1.1 Metadata Control Options
+frame_size integer (_encoding,audio_)
+    
 
-8.2.1.2 Downmix Levels
+Set audio frame size. 
 
-8.2.1.3 Audio Production Information
+Each submitted frame except the last must contain exactly frame_size samples per channel. May be 0 when the codec has CODEC_CAP_VARIABLE_FRAME_SIZE set, in that case the frame size is not restricted. It is set by some decoders to indicate constant frame size. 
 
-8.2.1.4 Other Metadata Options
+frame_number integer
+    
 
-8.2.2 Extended Bitstream Information
+Set the frame number. 
 
-8.2.2.1 Extended Bitstream Information - Part 1
+delay integer
+qcomp float (_encoding,video_)
+    
 
-8.2.2.2 Extended Bitstream Information - Part 2
+Set video quantizer scale compression (VBR). It is used as a constant in the ratecontrol equation. Recommended range for default rc_eq: 0.0-1.0. 
 
-8.2.3 Other AC-3 Encoding Options
+qblur float (_encoding,video_)
+    
 
-8.2.4 Floating-Point-Only AC-3 Encoding Options
+Set video quantizer scale blur (VBR). 
 
-8.3 flac
+qmin integer (_encoding,video_)
+    
 
-8.3.1 Options
+Set min video quantizer scale (VBR). Must be included between -1 and 69, default value is 2. 
 
-8.4 opus
+qmax integer (_encoding,video_)
+    
 
-8.4.1 Options
+Set max video quantizer scale (VBR). Must be included between -1 and 1024, default value is 31. 
 
-8.5 libfdk_aac
+qdiff integer (_encoding,video_)
+    
 
-8.5.1 Options
+Set max difference between the quantizer scale (VBR). 
 
-8.5.2 Examples
+bf integer (_encoding,video_)
+    
 
-8.6 liblc3
+Set max number of B frames between non-B-frames. 
 
-8.6.1 Options
+Must be an integer between -1 and 16. 0 means that B-frames are disabled. If a value of -1 is used, it will choose an automatic value depending on the encoder. 
 
-8.7 libmp3lame
+Default value is 0. 
 
-8.7.1 Options
+b_qfactor float (_encoding,video_)
+    
 
-8.8 libopencore-amrnb
+Set qp factor between P and B frames. 
 
-8.8.1 Options
+codec_tag integer
+bug flags (_decoding,video_)
+    
 
-8.9 libopus
+Workaround not auto detected encoder bugs. 
 
-8.9.1 Option Mapping
+Possible values: 
 
-8.10 libshine
+‘autodetect’
+‘xvid_ilace’
+    
 
-8.10.1 Options
+Xvid interlacing bug (autodetected if fourcc==XVIX) 
 
-8.11 libtwolame
+‘ump4’
+    
 
-8.11.1 Options
+(autodetected if fourcc==UMP4) 
 
-8.12 libvo-amrwbenc
+‘no_padding’
+    
 
-8.12.1 Options
+padding bug (autodetected) 
 
-8.13 libvorbis
+‘amv’
+‘qpel_chroma’
+‘std_qpel’
+    
 
-8.13.1 Options
+old standard qpel (autodetected per fourcc/version) 
 
-8.14 mjpeg
+‘qpel_chroma2’
+‘direct_blocksize’
+    
 
-8.14.1 Options
+direct-qpel-blocksize bug (autodetected per fourcc/version) 
 
-8.15 wavpack
+‘edge’
+    
 
-8.15.1 Options
+edge padding bug (autodetected per fourcc/version) 
 
-8.15.1.1 Shared options
+‘hpel_chroma’
+‘dc_clip’
+‘ms’
+    
 
-8.15.1.2 Private options
+Workaround various bugs in microsoft broken decoders. 
 
-9 Video Encoders
+‘trunc’
+    
 
-9.1 a64_multi, a64_multi5
+trancated frames 
 
-9.2 Cinepak
+strict integer (_decoding/encoding,audio,video_)
+    
 
-9.2.1 Options
+Specify how strictly to follow the standards. 
 
-9.3 ffv1
+Possible values: 
 
-9.3.1 Options
+‘very’
+    
 
-9.4 GIF
+strictly conform to an older more strict version of the spec or reference software 
 
-9.4.1 Options
+‘strict’
+    
 
-9.5 Hap
+strictly conform to all the things in the spec no matter what consequences 
 
-9.5.1 Options
+‘normal’
+‘unofficial’
+    
 
-9.6 jpeg2000
+allow unofficial extensions 
 
-9.6.1 Options
+‘experimental’
+    
 
-9.7 librav1e
+allow non standardized experimental things, experimental (unfinished/work in progress/not well tested) decoders and encoders. Note: experimental decoders can pose a security risk, do not use this for decoding untrusted input. 
 
-9.7.1 Options
+b_qoffset float (_encoding,video_)
+    
 
-9.8 libaom-av1
+Set QP offset between P and B frames. 
 
-9.8.1 Options
+err_detect flags (_decoding,audio,video_)
+    
 
-9.9 liboapv
+Set error detection flags. 
 
-9.9.1 Options
+Possible values: 
 
-9.10 libsvtav1
+‘crccheck’
+    
 
-9.10.1 Options
+verify embedded CRCs 
 
-9.11 libsvtjpegxs
+‘bitstream’
+    
 
-9.11.1 Options
+detect bitstream specification deviations 
 
-9.12 libjxl
+‘buffer’
+    
 
-9.12.1 Options
+detect improper bitstream length 
 
-9.13 libkvazaar
+‘explode’
+    
 
-9.13.1 Options
+abort decoding on minor error detection 
 
-9.14 libopenh264
+‘ignore_err’
+    
 
-9.14.1 Options
+ignore decoding errors, and continue decoding. This is useful if you want to analyze the content of a video and thus want everything to be decoded no matter what. This option will not result in a video that is pleasing to watch in case of errors. 
 
-9.15 libtheora
+‘careful’
+    
 
-9.15.1 Options
+consider things that violate the spec and have not been seen in the wild as errors 
 
-9.15.2 Examples
+‘compliant’
+    
 
-9.16 libvpx
+consider all spec non compliancies as errors 
 
-9.16.1 Options
+‘aggressive’
+    
 
-9.17 libvvenc
+consider things that a sane encoder should not do as an error 
 
-9.17.1 Supported Pixel Formats
+has_b_frames integer
+block_align integer
+rc_override_count integer
+maxrate integer (_encoding,audio,video_)
+    
 
-9.17.2 Options
+Set max bitrate tolerance (in bits/s). Requires bufsize to be set. 
 
-9.18 libwebp
+minrate integer (_encoding,audio,video_)
+    
 
-9.18.1 Pixel Format
+Set min bitrate tolerance (in bits/s). Most useful in setting up a CBR encode. It is of little use elsewise. 
 
-9.18.2 Options
+bufsize integer (_encoding,audio,video_)
+    
 
-9.19 libx264, libx264rgb
+Set ratecontrol buffer size (in bits). 
 
-9.19.1 Supported Pixel Formats
+i_qfactor float (_encoding,video_)
+    
 
-9.19.2 Options
+Set QP factor between P and I frames. 
 
-9.20 libx265
+i_qoffset float (_encoding,video_)
+    
 
-9.20.1 Options
+Set QP offset between P and I frames. 
 
-9.21 libxavs2
+dct integer (_encoding,video_)
+    
 
-9.21.1 Options
+Set DCT algorithm. 
 
-9.22 libxeve
+Possible values: 
 
-9.22.1 Options
+‘auto’
+    
 
-9.23 libxvid
+autoselect a good one (default) 
 
-9.23.1 Options
+‘fastint’
+    
 
-9.24 MediaCodec
+fast integer 
 
-9.25 MediaFoundation
+‘int’
+    
 
-9.25.1 Options
+accurate integer 
 
-9.25.2 Examples
+‘mmx’
+‘altivec’
+‘faan’
+    
 
-9.26 Microsoft RLE
+floating point AAN DCT 
 
-9.26.1 Options
+lumi_mask float (_encoding,video_)
+    
 
-9.27 mpeg2
+Compress bright areas stronger than medium ones. 
 
-9.27.1 Options
+tcplx_mask float (_encoding,video_)
+    
 
-9.28 png
+Set temporal complexity masking. 
 
-9.28.1 Options
+scplx_mask float (_encoding,video_)
+    
 
-9.28.2 Private options
+Set spatial complexity masking. 
 
-9.29 ProRes
+p_mask float (_encoding,video_)
+    
 
-9.29.1 Private Options for prores-ks
+Set inter masking. 
 
-9.29.2 Speed considerations
+dark_mask float (_encoding,video_)
+    
 
-9.30 QSV Encoders
+Compress dark areas stronger than medium ones. 
 
-9.30.1 Ratecontrol Method
+idct integer (_decoding/encoding,video_)
+    
 
-9.30.2 Global Options -> MSDK Options
+Select IDCT implementation. 
 
-9.30.3 Common Options
+Possible values: 
 
-9.30.4 Runtime Options
+‘auto’
+‘int’
+‘simple’
+‘simplemmx’
+‘simpleauto’
+    
 
-9.30.5 H264 options
+Automatically pick a IDCT compatible with the simple one 
 
-9.30.6 HEVC Options
+‘arm’
+‘altivec’
+‘sh4’
+‘simplearm’
+‘simplearmv5te’
+‘simplearmv6’
+‘simpleneon’
+‘xvid’
+‘faani’
+    
 
-9.30.7 MPEG2 Options
+floating point AAN IDCT 
 
-9.30.8 VP9 Options
+slice_count integer
+ec flags (_decoding,video_)
+    
 
-9.30.9 AV1 Options
+Set error concealment strategy. 
 
-9.31 snow
+Possible values: 
 
-9.31.1 Options
+‘guess_mvs’
+    
 
-9.32 VAAPI encoders
+iterative motion vector (MV) search (slow) 
 
-9.33 vbn
+‘deblock’
+    
 
-9.33.1 Options
+use strong deblock filter for damaged MBs 
 
-9.34 vc2
+‘favor_inter’
+    
 
-9.34.1 Options
+favor predicting from the previous frame instead of the current 
 
-10 Subtitles Encoders
+bits_per_coded_sample integer
+aspect rational number (_encoding,video_)
+    
 
-10.1 dvbsub
+Set sample aspect ratio. 
 
-10.1.1 Options
+sar rational number (_encoding,video_)
+    
 
-10.2 dvdsub
+Set sample aspect ratio. Alias to aspect. 
 
-10.2.1 Options
+debug flags (_decoding/encoding,audio,video,subtitles_)
+    
 
-10.3 lrc
+Print specific debug info. 
 
-10.3.1 Options
+Possible values: 
 
-11 See Also
+‘pict’
+    
 
-12 Authors
+picture info 
 
-1 Description
+‘rc’
+    
 
-This document describes the codecs (decoders and encoders) provided by
-the libavcodec library.
+rate control 
 
-2 Codec Options
+‘bitstream’
+‘mb_type’
+    
 
-libavcodec provides some generic global options, which can be set on
-all the encoders and decoders. In addition, each codec may support
-so-called private options, which are specific for a given codec.
+macroblock (MB) type 
 
-Sometimes, a global option may only affect a specific kind of codec,
-and may be nonsensical or ignored by another, so you need to be aware
-of the meaning of the specified options. Also some options are
-meant only for decoding or encoding.
+‘qp’
+    
 
-Options may be set by specifying -
+per-block quantization parameter (QP) 
 
-option
+‘dct_coeff’
+‘green_metadata’
+    
 
-value
+display complexity metadata for the upcoming frame, GoP or for a given duration. 
 
-in the
-FFmpeg tools, or by setting the value explicitly in the
+‘skip’
+‘startcode’
+‘er’
+    
 
-AVCodecContext
+error recognition 
 
-options or using the
+‘mmco’
+    
 
-libavutil/opt.h
+memory management control operations (H.264) 
 
-API
-for programmatic use.
+‘bugs’
+‘buffers’
+    
 
-The list of supported options follow:
+picture buffer allocations 
 
-b
+‘thread_ops’
+    
 
-integer
+threading operations 
 
-(
+‘nomc’
+    
 
-encoding,audio,video
+skip motion compensation 
 
-)
+cmp integer (_encoding,video_)
+    
 
-Set bitrate in bits/s. Default value is 200K.
+Set full pel me compare function. 
 
-ab
+Possible values: 
 
-integer
+‘sad’
+    
 
-(
+sum of absolute differences, fast (default) 
 
-encoding,audio
+‘sse’
+    
 
-)
+sum of squared errors 
 
-Set audio bitrate (in bits/s). Default value is 128K.
+‘satd’
+    
 
-bt
+sum of absolute Hadamard transformed differences 
 
-integer
+‘dct’
+    
 
-(
+sum of absolute DCT transformed differences 
 
-encoding,video
+‘psnr’
+    
 
-)
+sum of squared quantization errors (avoid, low quality) 
 
-Set video bitrate tolerance (in bits/s). In 1-pass mode, bitrate
-tolerance specifies how far ratecontrol is willing to deviate from the
-target average bitrate value. This is not related to min/max
-bitrate. Lowering tolerance too much has an adverse effect on quality.
+‘bit’
+    
 
-flags
+number of bits needed for the block 
 
-flags
+‘rd’
+    
 
-(
+rate distortion optimal, slow 
 
-decoding/encoding,audio,video,subtitles
+‘zero’
+    
 
-)
+0 
 
-Set generic flags.
+‘vsad’
+    
 
-Possible values:
+sum of absolute vertical differences 
 
-‘
+‘vsse’
+    
 
-mv4
+sum of squared vertical differences 
 
-’
+‘nsse’
+    
 
-Use four motion vector by macroblock (mpeg4).
+noise preserving sum of squared differences 
 
-‘
+‘w53’
+    
 
-qpel
+5/3 wavelet, only used in snow 
 
-’
+‘w97’
+    
 
-Use 1/4 pel motion compensation.
+9/7 wavelet, only used in snow 
 
-‘
+‘dctmax’
+‘chroma’
+subcmp integer (_encoding,video_)
+    
 
-loop
+Set sub pel me compare function. 
 
-’
+Possible values: 
 
-Use loop filter.
+‘sad’
+    
 
-‘
+sum of absolute differences, fast (default) 
 
-qscale
+‘sse’
+    
 
-’
+sum of squared errors 
 
-Use fixed qscale.
+‘satd’
+    
 
-‘
+sum of absolute Hadamard transformed differences 
 
-pass1
+‘dct’
+    
 
-’
+sum of absolute DCT transformed differences 
 
-Use internal 2pass ratecontrol in first pass mode.
+‘psnr’
+    
 
-‘
+sum of squared quantization errors (avoid, low quality) 
 
-pass2
+‘bit’
+    
 
-’
+number of bits needed for the block 
 
-Use internal 2pass ratecontrol in second pass mode.
+‘rd’
+    
 
-‘
+rate distortion optimal, slow 
 
-gray
+‘zero’
+    
 
-’
+0 
 
-Only decode/encode grayscale.
+‘vsad’
+    
 
-‘
+sum of absolute vertical differences 
 
-psnr
+‘vsse’
+    
 
-’
+sum of squared vertical differences 
 
-Set error[?] variables during encoding.
+‘nsse’
+    
 
-‘
+noise preserving sum of squared differences 
 
-truncated
+‘w53’
+    
 
-’
+5/3 wavelet, only used in snow 
 
-Input bitstream might be randomly truncated.
+‘w97’
+    
 
-‘
+9/7 wavelet, only used in snow 
 
-drop_changed
+‘dctmax’
+‘chroma’
+mbcmp integer (_encoding,video_)
+    
 
-’
+Set macroblock compare function. 
 
-Don’t output frames whose parameters differ from first decoded frame in stream.
-Error AVERROR_INPUT_CHANGED is returned when a frame is dropped.
+Possible values: 
 
-‘
+‘sad’
+    
 
-ildct
+sum of absolute differences, fast (default) 
 
-’
+‘sse’
+    
 
-Use interlaced DCT.
+sum of squared errors 
 
-‘
+‘satd’
+    
 
-low_delay
+sum of absolute Hadamard transformed differences 
 
-’
+‘dct’
+    
 
-Force low delay.
+sum of absolute DCT transformed differences 
 
-‘
+‘psnr’
+    
 
-global_header
+sum of squared quantization errors (avoid, low quality) 
 
-’
+‘bit’
+    
 
-Place global headers in extradata instead of every keyframe.
+number of bits needed for the block 
 
-‘
+‘rd’
+    
 
-bitexact
+rate distortion optimal, slow 
 
-’
+‘zero’
+    
 
-Only write platform-, build- and time-independent data. (except (I)DCT).
-This ensures that file and data checksums are reproducible and match between
-platforms. Its primary use is for regression testing.
+0 
 
-‘
+‘vsad’
+    
 
-aic
+sum of absolute vertical differences 
 
-’
+‘vsse’
+    
 
-Apply H263 advanced intra coding / mpeg4 ac prediction.
+sum of squared vertical differences 
 
-‘
+‘nsse’
+    
 
-ilme
+noise preserving sum of squared differences 
 
-’
+‘w53’
+    
 
-Apply interlaced motion estimation.
+5/3 wavelet, only used in snow 
 
-‘
+‘w97’
+    
 
-cgop
+9/7 wavelet, only used in snow 
 
-’
+‘dctmax’
+‘chroma’
+ildctcmp integer (_encoding,video_)
+    
 
-Use closed gop.
+Set interlaced dct compare function. 
 
-‘
+Possible values: 
 
-output_corrupt
+‘sad’
+    
 
-’
+sum of absolute differences, fast (default) 
 
-Output even potentially corrupted frames.
+‘sse’
+    
 
-time_base
+sum of squared errors 
 
-rational number
+‘satd’
+    
 
-Set codec time base.
+sum of absolute Hadamard transformed differences 
 
-It is the fundamental unit of time (in seconds) in terms of which
-frame timestamps are represented. For fixed-fps content, timebase
-should be
+‘dct’
+    
 
-1 / frame_rate
+sum of absolute DCT transformed differences 
 
-and timestamp increments should be
-identically 1.
+‘psnr’
+    
 
-g
+sum of squared quantization errors (avoid, low quality) 
 
-integer
+‘bit’
+    
 
-(
+number of bits needed for the block 
 
-encoding,video
+‘rd’
+    
 
-)
+rate distortion optimal, slow 
 
-Set the group of picture (GOP) size. Default value is 12.
+‘zero’
+    
 
-ar
+0 
 
-integer
+‘vsad’
+    
 
-(
+sum of absolute vertical differences 
 
-decoding/encoding,audio
+‘vsse’
+    
 
-)
+sum of squared vertical differences 
 
-Set audio sampling rate (in Hz).
+‘nsse’
+    
 
-ac
+noise preserving sum of squared differences 
 
-integer
+‘w53’
+    
 
-(
+5/3 wavelet, only used in snow 
 
-decoding/encoding,audio
+‘w97’
+    
 
-)
+9/7 wavelet, only used in snow 
 
-Set number of audio channels.
+‘dctmax’
+‘chroma’
+dia_size integer (_encoding,video_)
+    
 
-cutoff
+Set diamond type & size for motion estimation. 
 
-integer
+‘(1024, INT_MAX)’
+    
 
-(
+full motion estimation(slowest) 
 
-encoding,audio
+‘(768, 1024]’
+    
 
-)
+umh motion estimation 
 
-Set cutoff bandwidth. (Supported only by selected encoders, see
-their respective documentation sections.)
+‘(512, 768]’
+    
 
-frame_size
+hex motion estimation 
 
-integer
+‘(256, 512]’
+    
 
-(
+l2s diamond motion estimation 
 
-encoding,audio
+‘[2,256]’
+    
 
-)
+var diamond motion estimation 
 
-Set audio frame size.
+‘(-1, 2)’
+    
 
-Each submitted frame except the last must contain exactly frame_size
-samples per channel. May be 0 when the codec has
-CODEC_CAP_VARIABLE_FRAME_SIZE set, in that case the frame size is not
-restricted. It is set by some decoders to indicate constant frame
-size.
+small diamond motion estimation 
 
-frame_number
+‘-1’
+    
 
-integer
+funny diamond motion estimation 
 
-Set the frame number.
+‘(INT_MIN, -1)’
+    
 
-delay
+sab diamond motion estimation 
 
-integer
+last_pred integer (_encoding,video_)
+    
 
-qcomp
+Set amount of motion predictors from the previous frame. 
 
-float
+precmp integer (_encoding,video_)
+    
 
-(
+Set pre motion estimation compare function. 
 
-encoding,video
+Possible values: 
 
-)
+‘sad’
+    
 
-Set video quantizer scale compression (VBR). It is used as a constant
-in the ratecontrol equation. Recommended range for default rc_eq:
-0.0-1.0.
+sum of absolute differences, fast (default) 
 
-qblur
+‘sse’
+    
 
-float
+sum of squared errors 
 
-(
+‘satd’
+    
 
-encoding,video
+sum of absolute Hadamard transformed differences 
 
-)
+‘dct’
+    
 
-Set video quantizer scale blur (VBR).
+sum of absolute DCT transformed differences 
 
-qmin
+‘psnr’
+    
 
-integer
+sum of squared quantization errors (avoid, low quality) 
 
-(
+‘bit’
+    
 
-encoding,video
+number of bits needed for the block 
 
-)
+‘rd’
+    
 
-Set min video quantizer scale (VBR). Must be included between -1 and
-69, default value is 2.
+rate distortion optimal, slow 
 
-qmax
+‘zero’
+    
 
-integer
+0 
 
-(
+‘vsad’
+    
 
-encoding,video
+sum of absolute vertical differences 
 
-)
+‘vsse’
+    
 
-Set max video quantizer scale (VBR). Must be included between -1 and
-1024, default value is 31.
+sum of squared vertical differences 
 
-qdiff
+‘nsse’
+    
 
-integer
+noise preserving sum of squared differences 
 
-(
+‘w53’
+    
 
-encoding,video
+5/3 wavelet, only used in snow 
 
-)
+‘w97’
+    
 
-Set max difference between the quantizer scale (VBR).
+9/7 wavelet, only used in snow 
 
-bf
+‘dctmax’
+‘chroma’
+pre_dia_size integer (_encoding,video_)
+    
 
-integer
+Set diamond type & size for motion estimation pre-pass. 
 
-(
+subq integer (_encoding,video_)
+    
 
-encoding,video
+Set sub pel motion estimation quality. 
 
-)
+me_range integer (_encoding,video_)
+    
 
-Set max number of B frames between non-B-frames.
+Set limit motion vectors range (1023 for DivX player). 
 
-Must be an integer between -1 and 16. 0 means that B-frames are
-disabled. If a value of -1 is used, it will choose an automatic value
-depending on the encoder.
+global_quality integer (_encoding,audio,video_)
+slice_flags integer
+mbd integer (_encoding,video_)
+    
 
-Default value is 0.
+Set macroblock decision algorithm (high quality mode). 
 
-b_qfactor
+Possible values: 
 
-float
+‘simple’
+    
 
-(
+use mbcmp (default) 
 
-encoding,video
+‘bits’
+    
 
-)
+use fewest bits 
 
-Set qp factor between P and B frames.
+‘rd’
+    
 
-codec_tag
+use best rate distortion 
 
-integer
+rc_init_occupancy integer (_encoding,video_)
+    
 
-bug
+Set number of bits which should be loaded into the rc buffer before decoding starts. 
 
-flags
+flags2 flags (_decoding/encoding,audio,video,subtitles_)
+    
 
-(
+Possible values: 
 
-decoding,video
+‘fast’
+    
 
-)
+Allow non spec compliant speedup tricks. 
 
-Workaround not auto detected encoder bugs.
+‘noout’
+    
 
-Possible values:
+Skip bitstream encoding. 
 
-‘
+‘ignorecrop’
+    
 
-autodetect
+Ignore cropping information from sps. 
 
-’
+‘local_header’
+    
 
-‘
+Place global headers at every keyframe instead of in extradata. 
 
-xvid_ilace
+‘chunks’
+    
 
-’
+Frame data might be split into multiple chunks. 
 
-Xvid interlacing bug (autodetected if fourcc==XVIX)
+‘showall’
+    
 
-‘
+Show all frames before the first keyframe. 
 
-ump4
+‘export_mvs’
+    
 
-’
+Export motion vectors into frame side-data (see `AV_FRAME_DATA_MOTION_VECTORS`) for codecs that support it. See also doc/examples/export_mvs.c. 
 
-(autodetected if fourcc==UMP4)
+‘skip_manual’
+    
 
-‘
+Do not skip samples and export skip information as frame side data. 
 
-no_padding
+‘ass_ro_flush_noop’
+    
 
-’
+Do not reset ASS ReadOrder field on flush. 
 
-padding bug (autodetected)
+‘icc_profiles’
+    
 
-‘
+Generate/parse embedded ICC profiles from/to colorimetry tags. 
 
-amv
+export_side_data flags (_decoding/encoding,audio,video,subtitles_)
+    
 
-’
+Possible values: 
 
-‘
+‘mvs’
+    
 
-qpel_chroma
+Export motion vectors into frame side-data (see `AV_FRAME_DATA_MOTION_VECTORS`) for codecs that support it. See also doc/examples/export_mvs.c. 
 
-’
+‘prft’
+    
 
-‘
+Export encoder Producer Reference Time into packet side-data (see `AV_PKT_DATA_PRFT`) for codecs that support it. 
 
-std_qpel
+‘venc_params’
+    
 
-’
+Export video encoding parameters through frame side data (see `AV_FRAME_DATA_VIDEO_ENC_PARAMS`) for codecs that support it. At present, those are H.264 and VP9. 
 
-old standard qpel (autodetected per fourcc/version)
+‘film_grain’
+    
 
-‘
+Export film grain parameters through frame side data (see `AV_FRAME_DATA_FILM_GRAIN_PARAMS`). Supported at present by AV1 decoders. 
 
-qpel_chroma2
+‘enhancements’
+    
 
-’
+Export picture enhancement metadata through frame side data, e.g. LCEVC (see `AV_FRAME_DATA_LCEVC`). 
 
-‘
+threads integer (_decoding/encoding,video_)
+    
 
-direct_blocksize
+Set the number of threads to be used, in case the selected codec implementation supports multi-threading. 
 
-’
+Possible values: 
 
-direct-qpel-blocksize bug (autodetected per fourcc/version)
+‘auto, 0’
+    
 
-‘
+automatically select the number of threads to set 
 
-edge
+Default value is ‘auto’. 
 
-’
+dc integer (_encoding,video_)
+    
 
-edge padding bug (autodetected per fourcc/version)
+Set intra_dc_precision. 
 
-‘
+nssew integer (_encoding,video_)
+    
 
-hpel_chroma
+Set nsse weight. 
 
-’
+skip_top integer (_decoding,video_)
+    
 
-‘
+Set number of macroblock rows at the top which are skipped. 
 
-dc_clip
+skip_bottom integer (_decoding,video_)
+    
 
-’
+Set number of macroblock rows at the bottom which are skipped. 
 
-‘
+profile integer (_encoding,audio,video_)
+    
 
-ms
+Set encoder codec profile. Default value is ‘unknown’. Encoder specific profiles are documented in the relevant encoder documentation. 
 
-’
+level integer (_encoding,audio,video_)
+    
 
-Workaround various bugs in microsoft broken decoders.
+Set the encoder level. This level depends on the specific codec, and might correspond to the profile level. It is set by default to ‘unknown’. 
 
-‘
+Possible values: 
 
-trunc
+‘unknown’
+lowres integer (_decoding,audio,video_)
+    
 
-’
+Decode at 1= 1/2, 2=1/4, 3=1/8 resolutions. 
 
-trancated frames
+mblmin integer (_encoding,video_)
+    
 
-strict
+Set min macroblock lagrange factor (VBR). 
 
-integer
+mblmax integer (_encoding,video_)
+    
 
-(
+Set max macroblock lagrange factor (VBR). 
 
-decoding/encoding,audio,video
+skip_loop_filter integer (_decoding,video_)
+skip_idct integer (_decoding,video_)
+skip_frame integer (_decoding,video_)
+    
 
-)
+Make decoder discard processing depending on the frame type selected by the option value. 
 
-Specify how strictly to follow the standards.
+skip_loop_filter skips frame loop filtering, skip_idct skips frame IDCT/dequantization, skip_frame skips decoding. 
 
-Possible values:
+Possible values: 
 
-‘
+‘none’
+    
 
-very
+Discard no frame. 
 
-’
+‘default’
+    
 
-strictly conform to an older more strict version of the spec or reference software
+Discard useless frames like 0-sized frames. 
 
-‘
+‘noref’
+    
 
-strict
+Discard all non-reference frames. 
 
-’
+‘bidir’
+    
 
-strictly conform to all the things in the spec no matter what consequences
+Discard all bidirectional frames. 
 
-‘
+‘nokey’
+    
 
-normal
+Discard all frames excepts keyframes. 
 
-’
+‘nointra’
+    
 
-‘
+Discard all frames except I frames. 
 
-unofficial
+‘all’
+    
 
-’
+Discard all frames. 
 
-allow unofficial extensions
+Default value is ‘default’. 
 
-‘
+bidir_refine integer (_encoding,video_)
+    
 
-experimental
+Refine the two motion vectors used in bidirectional macroblocks. 
 
-’
+keyint_min integer (_encoding,video_)
+    
 
-allow non standardized experimental things, experimental
-(unfinished/work in progress/not well tested) decoders and encoders.
-Note: experimental decoders can pose a security risk, do not use this for
-decoding untrusted input.
+Set minimum interval between IDR-frames. 
 
-b_qoffset
+refs integer (_encoding,video_)
+    
 
-float
+Set reference frames to consider for motion compensation. 
 
-(
+trellis integer (_encoding,audio,video_)
+    
 
-encoding,video
+Set rate-distortion optimal quantization. 
 
-)
+mv0_threshold integer (_encoding,video_)
+compression_level integer (_encoding,audio,video_)
+bits_per_raw_sample integer
+channel_layout integer (_decoding/encoding,audio_)
+    
 
-Set QP offset between P and B frames.
+See [(ffmpeg-utils)the Channel Layout section in the ffmpeg-utils(1) manual](ffmpeg-utils.html#channel-layout-syntax) for the required syntax. 
 
-err_detect
+rc_max_vbv_use float (_encoding,video_)
+rc_min_vbv_use float (_encoding,video_)
+color_primaries integer (_decoding/encoding,video_)
+    
 
-flags
+Possible values: 
 
-(
+‘bt709’
+    
 
-decoding,audio,video
+BT.709 
 
-)
+‘bt470m’
+    
 
-Set error detection flags.
+BT.470 M 
 
-Possible values:
+‘bt470bg’
+    
 
-‘
+BT.470 BG 
 
-crccheck
+‘smpte170m’
+    
 
-’
+SMPTE 170 M 
 
-verify embedded CRCs
+‘smpte240m’
+    
 
-‘
+SMPTE 240 M 
 
-bitstream
+‘film’
+    
 
-’
+Film 
 
-detect bitstream specification deviations
+‘bt2020’
+    
 
-‘
+BT.2020 
 
-buffer
+‘smpte428’
+‘smpte428_1’
+    
 
-’
+SMPTE ST 428-1 
 
-detect improper bitstream length
+‘smpte431’
+    
 
-‘
+SMPTE 431-2 
 
-explode
+‘smpte432’
+    
 
-’
+SMPTE 432-1 
 
-abort decoding on minor error detection
+‘jedec-p22’
+    
 
-‘
+JEDEC P22 
 
-ignore_err
+color_trc integer (_decoding/encoding,video_)
+    
 
-’
+Possible values: 
 
-ignore decoding errors, and continue decoding.
-This is useful if you want to analyze the content of a video and thus want
-everything to be decoded no matter what. This option will not result in a video
-that is pleasing to watch in case of errors.
+‘bt709’
+    
 
-‘
+BT.709 
 
-careful
+‘gamma22’
+    
 
-’
+BT.470 M 
 
-consider things that violate the spec and have not been seen in the wild as errors
+‘gamma28’
+    
 
-‘
+BT.470 BG 
 
-compliant
+‘smpte170m’
+    
 
-’
+SMPTE 170 M 
 
-consider all spec non compliancies as errors
+‘smpte240m’
+    
 
-‘
+SMPTE 240 M 
 
-aggressive
+‘linear’
+    
 
-’
+Linear 
 
-consider things that a sane encoder should not do as an error
+‘log’
+‘log100’
+    
 
-has_b_frames
+Log 
 
-integer
+‘log_sqrt’
+‘log316’
+    
 
-block_align
+Log square root 
 
-integer
+‘iec61966_2_4’
+‘iec61966-2-4’
+    
 
-rc_override_count
+IEC 61966-2-4 
 
-integer
+‘bt1361’
+‘bt1361e’
+    
 
-maxrate
+BT.1361 
 
-integer
+‘iec61966_2_1’
+‘iec61966-2-1’
+    
 
-(
+IEC 61966-2-1 
 
-encoding,audio,video
+‘bt2020_10’
+‘bt2020_10bit’
+    
 
-)
+BT.2020 - 10 bit 
 
-Set max bitrate tolerance (in bits/s). Requires bufsize to be set.
+‘bt2020_12’
+‘bt2020_12bit’
+    
 
-minrate
+BT.2020 - 12 bit 
 
-integer
+‘smpte2084’
+    
 
-(
+SMPTE ST 2084 
 
-encoding,audio,video
+‘smpte428’
+‘smpte428_1’
+    
 
-)
+SMPTE ST 428-1 
 
-Set min bitrate tolerance (in bits/s). Most useful in setting up a CBR
-encode. It is of little use elsewise.
+‘arib-std-b67’
+    
 
-bufsize
+ARIB STD-B67 
 
-integer
+colorspace integer (_decoding/encoding,video_)
+    
 
-(
+Possible values: 
 
-encoding,audio,video
+‘rgb’
+    
 
-)
+RGB 
 
-Set ratecontrol buffer size (in bits).
+‘bt709’
+    
 
-i_qfactor
+BT.709 
 
-float
+‘fcc’
+    
 
-(
+FCC 
 
-encoding,video
+‘bt470bg’
+    
 
-)
+BT.470 BG 
 
-Set QP factor between P and I frames.
+‘smpte170m’
+    
 
-i_qoffset
+SMPTE 170 M 
 
-float
+‘smpte240m’
+    
 
-(
+SMPTE 240 M 
 
-encoding,video
+‘ycocg’
+    
 
-)
+YCOCG 
 
-Set QP offset between P and I frames.
+‘bt2020nc’
+‘bt2020_ncl’
+    
 
-dct
+BT.2020 NCL 
 
-integer
+‘bt2020c’
+‘bt2020_cl’
+    
 
-(
+BT.2020 CL 
 
-encoding,video
+‘smpte2085’
+    
 
-)
+SMPTE 2085 
 
-Set DCT algorithm.
+‘chroma-derived-nc’
+    
 
-Possible values:
+Chroma-derived NCL 
 
-‘
+‘chroma-derived-c’
+    
 
-auto
+Chroma-derived CL 
 
-’
+‘ictcp’
+    
 
-autoselect a good one (default)
+ICtCp 
 
-‘
+color_range integer (_decoding/encoding,video_)
+    
 
-fastint
+If used as input parameter, it serves as a hint to the decoder, which color_range the input has. Possible values: 
 
-’
+‘tv’
+‘mpeg’
+‘limited’
+    
 
-fast integer
+MPEG (219*2^(n-8)) 
 
-‘
+‘pc’
+‘jpeg’
+‘full’
+    
 
-int
+JPEG (2^n-1) 
 
-’
+chroma_sample_location integer (_decoding/encoding,video_)
+    
 
-accurate integer
+Possible values: 
 
-‘
+‘left’
+‘center’
+‘topleft’
+‘top’
+‘bottomleft’
+‘bottom’
+alpha_mode integer (_decoding/encoding,video_)
+    
 
-mmx
+Possible values: 
 
-’
+‘premultiplied’
+‘straight’
+log_level_offset integer
+    
 
-‘
+Set the log level offset. 
 
-altivec
+slices integer (_encoding,video_)
+    
 
-’
+Number of slices, used in parallelized encoding. 
 
-‘
+thread_type flags (_decoding/encoding,video_)
+    
 
-faan
+Select which multithreading methods to use. 
 
-’
+Use of ‘frame’ will increase decoding delay by one frame per thread, so clients which cannot provide future frames should not use it. 
 
-floating point AAN DCT
+Possible values: 
 
-lumi_mask
+‘slice’
+    
 
-float
+Decode more than one part of a single frame at once. 
 
-(
+Multithreading using slices works only when the video was encoded with slices. 
 
-encoding,video
+‘frame’
+    
 
-)
+Decode more than one frame at once. 
 
-Compress bright areas stronger than medium ones.
+Default value is ‘slice+frame’. 
 
-tcplx_mask
+audio_service_type integer (_encoding,audio_)
+    
 
-float
+Set audio service type. 
 
-(
+Possible values: 
 
-encoding,video
+‘ma’
+    
 
-)
+Main Audio Service 
 
-Set temporal complexity masking.
+‘ef’
+    
 
-scplx_mask
+Effects 
 
-float
+‘vi’
+    
 
-(
+Visually Impaired 
 
-encoding,video
+‘hi’
+    
 
-)
+Hearing Impaired 
 
-Set spatial complexity masking.
+‘di’
+    
 
-p_mask
+Dialogue 
 
-float
+‘co’
+    
 
-(
+Commentary 
 
-encoding,video
+‘em’
+    
 
-)
+Emergency 
 
-Set inter masking.
+‘vo’
+    
 
-dark_mask
+Voice Over 
 
-float
+‘ka’
+    
 
-(
+Karaoke 
 
-encoding,video
+request_sample_fmt sample_fmt (_decoding,audio_)
+    
 
-)
+Set sample format audio decoders should prefer. Default value is `none`. 
 
-Compress dark areas stronger than medium ones.
+pkt_timebase rational number
+sub_charenc encoding (_decoding,subtitles_)
+    
 
-idct
+Set the input subtitles character encoding. 
 
-integer
+field_order field_order (_video_)
+    
 
-(
+Set/override the field order of the video. Possible values: 
 
-decoding/encoding,video
+‘progressive’
+    
 
-)
+Progressive video 
 
-Select IDCT implementation.
+‘tt’
+    
 
-Possible values:
+Interlaced video, top field coded and displayed first 
 
-‘
+‘bb’
+    
 
-auto
+Interlaced video, bottom field coded and displayed first 
 
-’
+‘tb’
+    
 
-‘
+Interlaced video, top coded first, bottom displayed first 
 
-int
+‘bt’
+    
 
-’
+Interlaced video, bottom coded first, top displayed first 
 
-‘
+skip_alpha bool (_decoding,video_)
+    
 
-simple
+Set to 1 to disable processing alpha (transparency). This works like the ‘gray’ flag in the flags option which skips chroma information instead of alpha. Default is 0. 
 
-’
+codec_whitelist list (_input_)
+    
 
-‘
+"," separated list of allowed decoders. By default all are allowed. 
 
-simplemmx
+dump_separator string (_input_)
+    
 
-’
+Separator used to separate the fields printed on the command line about the Stream parameters. For example, to separate the fields with newlines and indentation: 
+    
+    
+    ffprobe -dump_separator "
+                              "  -i ~/videos/matrixbench_mpeg2.mpg
+    
 
-‘
+max_pixels integer (_decoding/encoding,video_)
+    
 
-simpleauto
+Maximum number of pixels per image. This value can be used to avoid out of memory failures due to large images. 
 
-’
+apply_cropping bool (_decoding,video_)
+    
 
-Automatically pick a IDCT compatible with the simple one
+Enable cropping if cropping parameters are multiples of the required alignment for the left and top parameters. If the alignment is not met the cropping will be partially applied to maintain alignment. Default is 1 (enabled). Note: The required alignment depends on if `AV_CODEC_FLAG_UNALIGNED` is set and the CPU. `AV_CODEC_FLAG_UNALIGNED` cannot be changed from the command line. Also hardware decoders will not apply left/top Cropping. 
 
-‘
+## 3 Decoders
 
-arm
+Decoders are configured elements in FFmpeg which allow the decoding of multimedia streams. 
 
-’
+When you configure your FFmpeg build, all the supported native decoders are enabled by default. Decoders requiring an external library must be enabled manually via the corresponding `\--enable-lib` option. You can list all available decoders using the configure option `\--list-decoders`. 
 
-‘
+You can disable all the decoders with the configure option `\--disable-decoders` and selectively enable / disable single decoders with the options `\--enable-decoder=DECODER` / `\--disable-decoder=DECODER`. 
 
-altivec
+The option `-decoders` of the ff* tools will display the list of enabled decoders. 
 
-’
+## 4 Video Decoders
 
-‘
+A description of some of the currently available video decoders follows. 
 
-sh4
+### 4.1 av1
 
-’
+AOMedia Video 1 (AV1) decoder. 
 
-‘
-
-simplearm
-
-’
-
-‘
-
-simplearmv5te
-
-’
-
-‘
-
-simplearmv6
-
-’
-
-‘
-
-simpleneon
-
-’
-
-‘
-
-xvid
-
-’
-
-‘
-
-faani
-
-’
-
-floating point AAN IDCT
-
-slice_count
-
-integer
-
-ec
-
-flags
-
-(
-
-decoding,video
-
-)
-
-Set error concealment strategy.
-
-Possible values:
-
-‘
-
-guess_mvs
-
-’
-
-iterative motion vector (MV) search (slow)
-
-‘
-
-deblock
-
-’
-
-use strong deblock filter for damaged MBs
-
-‘
-
-favor_inter
-
-’
-
-favor predicting from the previous frame instead of the current
-
-bits_per_coded_sample
-
-integer
-
-aspect
-
-rational number
-
-(
-
-encoding,video
-
-)
-
-Set sample aspect ratio.
-
-sar
-
-rational number
-
-(
-
-encoding,video
-
-)
-
-Set sample aspect ratio. Alias to
-
-aspect
-
-.
-
-debug
-
-flags
-
-(
-
-decoding/encoding,audio,video,subtitles
-
-)
-
-Print specific debug info.
-
-Possible values:
-
-‘
-
-pict
-
-’
-
-picture info
-
-‘
-
-rc
-
-’
-
-rate control
-
-‘
-
-bitstream
-
-’
-
-‘
-
-mb_type
-
-’
-
-macroblock (MB) type
-
-‘
-
-qp
-
-’
-
-per-block quantization parameter (QP)
-
-‘
-
-dct_coeff
-
-’
-
-‘
-
-green_metadata
-
-’
-
-display complexity metadata for the upcoming frame, GoP or for a given duration.
-
-‘
-
-skip
-
-’
-
-‘
-
-startcode
-
-’
-
-‘
-
-er
-
-’
-
-error recognition
-
-‘
-
-mmco
-
-’
-
-memory management control operations (H.264)
-
-‘
-
-bugs
-
-’
-
-‘
-
-buffers
-
-’
-
-picture buffer allocations
-
-‘
-
-thread_ops
-
-’
-
-threading operations
-
-‘
-
-nomc
-
-’
-
-skip motion compensation
-
-cmp
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set full pel me compare function.
-
-Possible values:
-
-‘
-
-sad
-
-’
-
-sum of absolute differences, fast (default)
-
-‘
-
-sse
-
-’
-
-sum of squared errors
-
-‘
-
-satd
-
-’
-
-sum of absolute Hadamard transformed differences
-
-‘
-
-dct
-
-’
-
-sum of absolute DCT transformed differences
-
-‘
-
-psnr
-
-’
-
-sum of squared quantization errors (avoid, low quality)
-
-‘
-
-bit
-
-’
-
-number of bits needed for the block
-
-‘
-
-rd
-
-’
-
-rate distortion optimal, slow
-
-‘
-
-zero
-
-’
-
-0
-
-‘
-
-vsad
-
-’
-
-sum of absolute vertical differences
-
-‘
-
-vsse
-
-’
-
-sum of squared vertical differences
-
-‘
-
-nsse
-
-’
-
-noise preserving sum of squared differences
-
-‘
-
-w53
-
-’
-
-5/3 wavelet, only used in snow
-
-‘
-
-w97
-
-’
-
-9/7 wavelet, only used in snow
-
-‘
-
-dctmax
-
-’
-
-‘
-
-chroma
-
-’
-
-subcmp
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set sub pel me compare function.
-
-Possible values:
-
-‘
-
-sad
-
-’
-
-sum of absolute differences, fast (default)
-
-‘
-
-sse
-
-’
-
-sum of squared errors
-
-‘
-
-satd
-
-’
-
-sum of absolute Hadamard transformed differences
-
-‘
-
-dct
-
-’
-
-sum of absolute DCT transformed differences
-
-‘
-
-psnr
-
-’
-
-sum of squared quantization errors (avoid, low quality)
-
-‘
-
-bit
-
-’
-
-number of bits needed for the block
-
-‘
-
-rd
-
-’
-
-rate distortion optimal, slow
-
-‘
-
-zero
-
-’
-
-0
-
-‘
-
-vsad
-
-’
-
-sum of absolute vertical differences
-
-‘
-
-vsse
-
-’
-
-sum of squared vertical differences
-
-‘
-
-nsse
-
-’
-
-noise preserving sum of squared differences
-
-‘
-
-w53
-
-’
-
-5/3 wavelet, only used in snow
-
-‘
-
-w97
-
-’
-
-9/7 wavelet, only used in snow
-
-‘
-
-dctmax
-
-’
-
-‘
-
-chroma
-
-’
-
-mbcmp
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set macroblock compare function.
-
-Possible values:
-
-‘
-
-sad
-
-’
-
-sum of absolute differences, fast (default)
-
-‘
-
-sse
-
-’
-
-sum of squared errors
-
-‘
-
-satd
-
-’
-
-sum of absolute Hadamard transformed differences
-
-‘
-
-dct
-
-’
-
-sum of absolute DCT transformed differences
-
-‘
-
-psnr
-
-’
-
-sum of squared quantization errors (avoid, low quality)
-
-‘
-
-bit
-
-’
-
-number of bits needed for the block
-
-‘
-
-rd
-
-’
-
-rate distortion optimal, slow
-
-‘
-
-zero
-
-’
-
-0
-
-‘
-
-vsad
-
-’
-
-sum of absolute vertical differences
-
-‘
-
-vsse
-
-’
-
-sum of squared vertical differences
-
-‘
-
-nsse
-
-’
-
-noise preserving sum of squared differences
-
-‘
-
-w53
-
-’
-
-5/3 wavelet, only used in snow
-
-‘
-
-w97
-
-’
-
-9/7 wavelet, only used in snow
-
-‘
-
-dctmax
-
-’
-
-‘
-
-chroma
-
-’
-
-ildctcmp
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set interlaced dct compare function.
-
-Possible values:
-
-‘
-
-sad
-
-’
-
-sum of absolute differences, fast (default)
-
-‘
-
-sse
-
-’
-
-sum of squared errors
-
-‘
-
-satd
-
-’
-
-sum of absolute Hadamard transformed differences
-
-‘
-
-dct
-
-’
-
-sum of absolute DCT transformed differences
-
-‘
-
-psnr
-
-’
-
-sum of squared quantization errors (avoid, low quality)
-
-‘
-
-bit
-
-’
-
-number of bits needed for the block
-
-‘
-
-rd
-
-’
-
-rate distortion optimal, slow
-
-‘
-
-zero
-
-’
-
-0
-
-‘
-
-vsad
-
-’
-
-sum of absolute vertical differences
-
-‘
-
-vsse
-
-’
-
-sum of squared vertical differences
-
-‘
-
-nsse
-
-’
-
-noise preserving sum of squared differences
-
-‘
-
-w53
-
-’
-
-5/3 wavelet, only used in snow
-
-‘
-
-w97
-
-’
-
-9/7 wavelet, only used in snow
-
-‘
-
-dctmax
-
-’
-
-‘
-
-chroma
-
-’
-
-dia_size
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set diamond type & size for motion estimation.
-
-‘
-
-(1024, INT_MAX)
-
-’
-
-full motion estimation(slowest)
-
-‘
-
-(768, 1024]
-
-’
-
-umh motion estimation
-
-‘
-
-(512, 768]
-
-’
-
-hex motion estimation
-
-‘
-
-(256, 512]
-
-’
-
-l2s diamond motion estimation
-
-‘
-
-[2,256]
-
-’
-
-var diamond motion estimation
-
-‘
-
-(-1,  2)
-
-’
-
-small diamond motion estimation
-
-‘
-
--1
-
-’
-
-funny diamond motion estimation
-
-‘
-
-(INT_MIN, -1)
-
-’
-
-sab diamond motion estimation
-
-last_pred
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set amount of motion predictors from the previous frame.
-
-precmp
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set pre motion estimation compare function.
-
-Possible values:
-
-‘
-
-sad
-
-’
-
-sum of absolute differences, fast (default)
-
-‘
-
-sse
-
-’
-
-sum of squared errors
-
-‘
-
-satd
-
-’
-
-sum of absolute Hadamard transformed differences
-
-‘
-
-dct
-
-’
-
-sum of absolute DCT transformed differences
-
-‘
-
-psnr
-
-’
-
-sum of squared quantization errors (avoid, low quality)
-
-‘
-
-bit
-
-’
-
-number of bits needed for the block
-
-‘
-
-rd
-
-’
-
-rate distortion optimal, slow
-
-‘
-
-zero
-
-’
-
-0
-
-‘
-
-vsad
-
-’
-
-sum of absolute vertical differences
-
-‘
-
-vsse
-
-’
-
-sum of squared vertical differences
-
-‘
-
-nsse
-
-’
-
-noise preserving sum of squared differences
-
-‘
-
-w53
-
-’
-
-5/3 wavelet, only used in snow
-
-‘
-
-w97
-
-’
-
-9/7 wavelet, only used in snow
-
-‘
-
-dctmax
-
-’
-
-‘
-
-chroma
-
-’
-
-pre_dia_size
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set diamond type & size for motion estimation pre-pass.
-
-subq
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set sub pel motion estimation quality.
-
-me_range
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set limit motion vectors range (1023 for DivX player).
-
-global_quality
-
-integer
-
-(
-
-encoding,audio,video
-
-)
-
-slice_flags
-
-integer
-
-mbd
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set macroblock decision algorithm (high quality mode).
-
-Possible values:
-
-‘
-
-simple
-
-’
-
-use mbcmp (default)
-
-‘
-
-bits
-
-’
-
-use fewest bits
-
-‘
-
-rd
-
-’
-
-use best rate distortion
-
-rc_init_occupancy
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set number of bits which should be loaded into the rc buffer before
-decoding starts.
-
-flags2
-
-flags
-
-(
-
-decoding/encoding,audio,video,subtitles
-
-)
-
-Possible values:
-
-‘
-
-fast
-
-’
-
-Allow non spec compliant speedup tricks.
-
-‘
-
-noout
-
-’
-
-Skip bitstream encoding.
-
-‘
-
-ignorecrop
-
-’
-
-Ignore cropping information from sps.
-
-‘
-
-local_header
-
-’
-
-Place global headers at every keyframe instead of in extradata.
-
-‘
-
-chunks
-
-’
-
-Frame data might be split into multiple chunks.
-
-‘
-
-showall
-
-’
-
-Show all frames before the first keyframe.
-
-‘
-
-export_mvs
-
-’
-
-Export motion vectors into frame side-data (see
-
-AV_FRAME_DATA_MOTION_VECTORS
-
-)
-for codecs that support it. See also
-
-doc/examples/export_mvs.c
-
-.
-
-‘
-
-skip_manual
-
-’
-
-Do not skip samples and export skip information as frame side data.
-
-‘
-
-ass_ro_flush_noop
-
-’
-
-Do not reset ASS ReadOrder field on flush.
-
-‘
-
-icc_profiles
-
-’
-
-Generate/parse embedded ICC profiles from/to colorimetry tags.
-
-export_side_data
-
-flags
-
-(
-
-decoding/encoding,audio,video,subtitles
-
-)
-
-Possible values:
-
-‘
-
-mvs
-
-’
-
-Export motion vectors into frame side-data (see
-
-AV_FRAME_DATA_MOTION_VECTORS
-
-)
-for codecs that support it. See also
-
-doc/examples/export_mvs.c
-
-.
-
-‘
-
-prft
-
-’
-
-Export encoder Producer Reference Time into packet side-data (see
-
-AV_PKT_DATA_PRFT
-
-)
-for codecs that support it.
-
-‘
-
-venc_params
-
-’
-
-Export video encoding parameters through frame side data (see
-
-AV_FRAME_DATA_VIDEO_ENC_PARAMS
-
-)
-for codecs that support it. At present, those are H.264 and VP9.
-
-‘
-
-film_grain
-
-’
-
-Export film grain parameters through frame side data (see
-
-AV_FRAME_DATA_FILM_GRAIN_PARAMS
-
-).
-Supported at present by AV1 decoders.
-
-‘
-
-enhancements
-
-’
-
-Export picture enhancement metadata through frame side data, e.g. LCEVC (see
-
-AV_FRAME_DATA_LCEVC
-
-).
-
-threads
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Set the number of threads to be used, in case the selected codec
-implementation supports multi-threading.
-
-Possible values:
-
-‘
-
-auto, 0
-
-’
-
-automatically select the number of threads to set
-
-Default value is ‘
-
-auto
-
-’.
-
-dc
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set intra_dc_precision.
-
-nssew
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set nsse weight.
-
-skip_top
-
-integer
-
-(
-
-decoding,video
-
-)
-
-Set number of macroblock rows at the top which are skipped.
-
-skip_bottom
-
-integer
-
-(
-
-decoding,video
-
-)
-
-Set number of macroblock rows at the bottom which are skipped.
-
-profile
-
-integer
-
-(
-
-encoding,audio,video
-
-)
-
-Set encoder codec profile. Default value is ‘
-
-unknown
-
-’. Encoder specific
-profiles are documented in the relevant encoder documentation.
-
-level
-
-integer
-
-(
-
-encoding,audio,video
-
-)
-
-Set the encoder level. This level depends on the specific codec, and
-might correspond to the profile level. It is set by default to
-‘
-
-unknown
-
-’.
-
-Possible values:
-
-‘
-
-unknown
-
-’
-
-lowres
-
-integer
-
-(
-
-decoding,audio,video
-
-)
-
-Decode at 1= 1/2, 2=1/4, 3=1/8 resolutions.
-
-mblmin
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set min macroblock lagrange factor (VBR).
-
-mblmax
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set max macroblock lagrange factor (VBR).
-
-skip_loop_filter
-
-integer
-
-(
-
-decoding,video
-
-)
-
-skip_idct
-
-integer
-
-(
-
-decoding,video
-
-)
-
-skip_frame
-
-integer
-
-(
-
-decoding,video
-
-)
-
-Make decoder discard processing depending on the frame type selected
-by the option value.
-
-skip_loop_filter
-
-skips frame loop filtering,
-
-skip_idct
-
-skips frame IDCT/dequantization,
-
-skip_frame
-
-skips decoding.
-
-Possible values:
-
-‘
-
-none
-
-’
-
-Discard no frame.
-
-‘
-
-default
-
-’
-
-Discard useless frames like 0-sized frames.
-
-‘
-
-noref
-
-’
-
-Discard all non-reference frames.
-
-‘
-
-bidir
-
-’
-
-Discard all bidirectional frames.
-
-‘
-
-nokey
-
-’
-
-Discard all frames excepts keyframes.
-
-‘
-
-nointra
-
-’
-
-Discard all frames except I frames.
-
-‘
-
-all
-
-’
-
-Discard all frames.
-
-Default value is ‘
-
-default
-
-’.
-
-bidir_refine
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Refine the two motion vectors used in bidirectional macroblocks.
-
-keyint_min
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set minimum interval between IDR-frames.
-
-refs
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Set reference frames to consider for motion compensation.
-
-trellis
-
-integer
-
-(
-
-encoding,audio,video
-
-)
-
-Set rate-distortion optimal quantization.
-
-mv0_threshold
-
-integer
-
-(
-
-encoding,video
-
-)
-
-compression_level
-
-integer
-
-(
-
-encoding,audio,video
-
-)
-
-bits_per_raw_sample
-
-integer
-
-channel_layout
-
-integer
-
-(
-
-decoding/encoding,audio
-
-)
-
-See
-
-(ffmpeg-utils)the Channel Layout section in the ffmpeg-utils(1) manual
-
-for the required syntax.
-
-rc_max_vbv_use
-
-float
-
-(
-
-encoding,video
-
-)
-
-rc_min_vbv_use
-
-float
-
-(
-
-encoding,video
-
-)
-
-color_primaries
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Possible values:
-
-‘
-
-bt709
-
-’
-
-BT.709
-
-‘
-
-bt470m
-
-’
-
-BT.470 M
-
-‘
-
-bt470bg
-
-’
-
-BT.470 BG
-
-‘
-
-smpte170m
-
-’
-
-SMPTE 170 M
-
-‘
-
-smpte240m
-
-’
-
-SMPTE 240 M
-
-‘
-
-film
-
-’
-
-Film
-
-‘
-
-bt2020
-
-’
-
-BT.2020
-
-‘
-
-smpte428
-
-’
-
-‘
-
-smpte428_1
-
-’
-
-SMPTE ST 428-1
-
-‘
-
-smpte431
-
-’
-
-SMPTE 431-2
-
-‘
-
-smpte432
-
-’
-
-SMPTE 432-1
-
-‘
-
-jedec-p22
-
-’
-
-JEDEC P22
-
-color_trc
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Possible values:
-
-‘
-
-bt709
-
-’
-
-BT.709
-
-‘
-
-gamma22
-
-’
-
-BT.470 M
-
-‘
-
-gamma28
-
-’
-
-BT.470 BG
-
-‘
-
-smpte170m
-
-’
-
-SMPTE 170 M
-
-‘
-
-smpte240m
-
-’
-
-SMPTE 240 M
-
-‘
-
-linear
-
-’
-
-Linear
-
-‘
-
-log
-
-’
-
-‘
-
-log100
-
-’
-
-Log
-
-‘
-
-log_sqrt
-
-’
-
-‘
-
-log316
-
-’
-
-Log square root
-
-‘
-
-iec61966_2_4
-
-’
-
-‘
-
-iec61966-2-4
-
-’
-
-IEC 61966-2-4
-
-‘
-
-bt1361
-
-’
-
-‘
-
-bt1361e
-
-’
-
-BT.1361
-
-‘
-
-iec61966_2_1
-
-’
-
-‘
-
-iec61966-2-1
-
-’
-
-IEC 61966-2-1
-
-‘
-
-bt2020_10
-
-’
-
-‘
-
-bt2020_10bit
-
-’
-
-BT.2020 - 10 bit
-
-‘
-
-bt2020_12
-
-’
-
-‘
-
-bt2020_12bit
-
-’
-
-BT.2020 - 12 bit
-
-‘
-
-smpte2084
-
-’
-
-SMPTE ST 2084
-
-‘
-
-smpte428
-
-’
-
-‘
-
-smpte428_1
-
-’
-
-SMPTE ST 428-1
-
-‘
-
-arib-std-b67
-
-’
-
-ARIB STD-B67
-
-colorspace
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Possible values:
-
-‘
-
-rgb
-
-’
-
-RGB
-
-‘
-
-bt709
-
-’
-
-BT.709
-
-‘
-
-fcc
-
-’
-
-FCC
-
-‘
-
-bt470bg
-
-’
-
-BT.470 BG
-
-‘
-
-smpte170m
-
-’
-
-SMPTE 170 M
-
-‘
-
-smpte240m
-
-’
-
-SMPTE 240 M
-
-‘
-
-ycocg
-
-’
-
-YCOCG
-
-‘
-
-bt2020nc
-
-’
-
-‘
-
-bt2020_ncl
-
-’
-
-BT.2020 NCL
-
-‘
-
-bt2020c
-
-’
-
-‘
-
-bt2020_cl
-
-’
-
-BT.2020 CL
-
-‘
-
-smpte2085
-
-’
-
-SMPTE 2085
-
-‘
-
-chroma-derived-nc
-
-’
-
-Chroma-derived NCL
-
-‘
-
-chroma-derived-c
-
-’
-
-Chroma-derived CL
-
-‘
-
-ictcp
-
-’
-
-ICtCp
-
-color_range
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-If used as input parameter, it serves as a hint to the decoder, which
-color_range the input has.
-Possible values:
-
-‘
-
-tv
-
-’
-
-‘
-
-mpeg
-
-’
-
-‘
-
-limited
-
-’
-
-MPEG (219*2^(n-8))
-
-‘
-
-pc
-
-’
-
-‘
-
-jpeg
-
-’
-
-‘
-
-full
-
-’
-
-JPEG (2^n-1)
-
-chroma_sample_location
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Possible values:
-
-‘
-
-left
-
-’
-
-‘
-
-center
-
-’
-
-‘
-
-topleft
-
-’
-
-‘
-
-top
-
-’
-
-‘
-
-bottomleft
-
-’
-
-‘
-
-bottom
-
-’
-
-alpha_mode
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Possible values:
-
-‘
-
-premultiplied
-
-’
-
-‘
-
-straight
-
-’
-
-log_level_offset
-
-integer
-
-Set the log level offset.
-
-slices
-
-integer
-
-(
-
-encoding,video
-
-)
-
-Number of slices, used in parallelized encoding.
-
-thread_type
-
-flags
-
-(
-
-decoding/encoding,video
-
-)
-
-Select which multithreading methods to use.
-
-Use of ‘
-
-frame
-
-’ will increase decoding delay by one frame per
-thread, so clients which cannot provide future frames should not use
-it.
-
-Possible values:
-
-‘
-
-slice
-
-’
-
-Decode more than one part of a single frame at once.
-
-Multithreading using slices works only when the video was encoded with
-slices.
-
-‘
-
-frame
-
-’
-
-Decode more than one frame at once.
-
-Default value is ‘
-
-slice+frame
-
-’.
-
-audio_service_type
-
-integer
-
-(
-
-encoding,audio
-
-)
-
-Set audio service type.
-
-Possible values:
-
-‘
-
-ma
-
-’
-
-Main Audio Service
-
-‘
-
-ef
-
-’
-
-Effects
-
-‘
-
-vi
-
-’
-
-Visually Impaired
-
-‘
-
-hi
-
-’
-
-Hearing Impaired
-
-‘
-
-di
-
-’
-
-Dialogue
-
-‘
-
-co
-
-’
-
-Commentary
-
-‘
-
-em
-
-’
-
-Emergency
-
-‘
-
-vo
-
-’
-
-Voice Over
-
-‘
-
-ka
-
-’
-
-Karaoke
-
-request_sample_fmt
-
-sample_fmt
-
-(
-
-decoding,audio
-
-)
-
-Set sample format audio decoders should prefer. Default value is
-
-none
-
-.
-
-pkt_timebase
-
-rational number
-
-sub_charenc
-
-encoding
-
-(
-
-decoding,subtitles
-
-)
-
-Set the input subtitles character encoding.
-
-field_order
-
-field_order
-
-(
-
-video
-
-)
-
-Set/override the field order of the video.
-Possible values:
-
-‘
-
-progressive
-
-’
-
-Progressive video
-
-‘
-
-tt
-
-’
-
-Interlaced video, top field coded and displayed first
-
-‘
-
-bb
-
-’
-
-Interlaced video, bottom field coded and displayed first
-
-‘
-
-tb
-
-’
-
-Interlaced video, top coded first, bottom displayed first
-
-‘
-
-bt
-
-’
-
-Interlaced video, bottom coded first, top displayed first
-
-skip_alpha
-
-bool
-
-(
-
-decoding,video
-
-)
-
-Set to 1 to disable processing alpha (transparency). This works like the
-‘
-
-gray
-
-’ flag in the
-
-flags
-
-option which skips chroma information
-instead of alpha. Default is 0.
-
-codec_whitelist
-
-list
-
-(
-
-input
-
-)
-
-"," separated list of allowed decoders. By default all are allowed.
-
-dump_separator
-
-string
-
-(
-
-input
-
-)
-
-Separator used to separate the fields printed on the command line about the
-Stream parameters.
-For example, to separate the fields with newlines and indentation:
-
-ffprobe -dump_separator "
-                          "  -i ~/videos/matrixbench_mpeg2.mpg
-
-max_pixels
-
-integer
-
-(
-
-decoding/encoding,video
-
-)
-
-Maximum number of pixels per image. This value can be used to avoid out of
-memory failures due to large images.
-
-apply_cropping
-
-bool
-
-(
-
-decoding,video
-
-)
-
-Enable cropping if cropping parameters are multiples of the required
-alignment for the left and top parameters. If the alignment is not met the
-cropping will be partially applied to maintain alignment.
-Default is 1 (enabled).
-Note: The required alignment depends on if
-
-AV_CODEC_FLAG_UNALIGNED
-
-is set and the
-CPU.
-
-AV_CODEC_FLAG_UNALIGNED
-
-cannot be changed from the command line. Also hardware
-decoders will not apply left/top Cropping.
-
-3 Decoders
-
-Decoders are configured elements in FFmpeg which allow the decoding of
-multimedia streams.
-
-When you configure your FFmpeg build, all the supported native decoders
-are enabled by default. Decoders requiring an external library must be enabled
-manually via the corresponding
-
---enable-lib
-
-option. You can list all
-available decoders using the configure option
-
---list-decoders
-
-.
-
-You can disable all the decoders with the configure option
-
---disable-decoders
-
-and selectively enable / disable single decoders
-with the options
-
---enable-decoder=
-
-DECODER
-
-/
-
---disable-decoder=
-
-DECODER
-
-.
-
-The option
-
--decoders
-
-of the ff* tools will display the list of
-enabled decoders.
-
-4 Video Decoders
-
-A description of some of the currently available video decoders
-follows.
-
-4.1 av1
-
-AOMedia Video 1 (AV1) decoder.
-
-4.1.1 Options
+#### 4.1.1 Options
 
 operating_point
+    
 
-Select an operating point of a scalable AV1 bitstream (0 - 31). Default is 0.
+Select an operating point of a scalable AV1 bitstream (0 - 31). Default is 0. 
 
-4.2 hevc
+### 4.2 hevc
 
-HEVC (AKA ITU-T H.265 or ISO/IEC 23008-2) decoder.
+HEVC (AKA ITU-T H.265 or ISO/IEC 23008-2) decoder. 
 
-The decoder supports MV-HEVC multiview streams with at most two views. Views to
-be output are selected by supplying a list of view IDs to the decoder (the
+The decoder supports MV-HEVC multiview streams with at most two views. Views to be output are selected by supplying a list of view IDs to the decoder (the view_ids option). This option may be set either statically before decoder init, or from the `get_format()` callback - useful for the case when the view count or IDs change dynamically during decoding. 
 
-view_ids
+Only the base layer is decoded by default. 
 
-option). This option may be set either statically before
-decoder init, or from the
+Note that if you are using the `ffmpeg` CLI tool, you should be using view specifiers as documented in its manual, rather than the options documented here. 
 
-get_format()
-
-callback - useful for the case
-when the view count or IDs change dynamically during decoding.
-
-Only the base layer is decoded by default.
-
-Note that if you are using the
-
-ffmpeg
-
-CLI tool, you should be using view
-specifiers as documented in its manual, rather than the options documented here.
-
-4.2.1 Options
+#### 4.2.1 Options
 
 view_ids (MV-HEVC)
+    
 
-Specify a list of view IDs that should be output. This option can also be set to
-a single ’-1’, which will cause all views defined in the VPS to be decoded and
-output.
+Specify a list of view IDs that should be output. This option can also be set to a single ’-1’, which will cause all views defined in the VPS to be decoded and output. 
 
 view_ids_available (MV-HEVC)
+    
 
-This option may be read by the caller to retrieve an array of view IDs available
-in the active VPS. The array is empty for single-layer video.
+This option may be read by the caller to retrieve an array of view IDs available in the active VPS. The array is empty for single-layer video. 
 
-The value of this option is guaranteed to be accurate when read from the
-
-get_format()
-
-callback. It may also be set at other times (e.g. after
-opening the decoder), but the value is informational only and may be incorrect
-(e.g. when the stream contains multiple distinct VPS NALUs).
+The value of this option is guaranteed to be accurate when read from the `get_format()` callback. It may also be set at other times (e.g. after opening the decoder), but the value is informational only and may be incorrect (e.g. when the stream contains multiple distinct VPS NALUs). 
 
 view_pos_available (MV-HEVC)
+    
 
-This option may be read by the caller to retrieve an array of view positions
-(left, right, or unspecified) available in the active VPS, as
+This option may be read by the caller to retrieve an array of view positions (left, right, or unspecified) available in the active VPS, as `AVStereo3DView` values. When the array is available, its elements apply to the corresponding elements of view_ids_available, i.e. `view_pos_available[i]` contains the position of view with ID `view_ids_available[i]`. 
 
-AVStereo3DView
+Same validity restrictions as for view_ids_available apply to this option. 
 
-values. When the array is available, its elements apply to
-the corresponding elements of
+### 4.3 rawvideo
 
-view_ids_available
+Raw video decoder. 
 
-, i.e.
+This decoder decodes rawvideo streams. 
 
-view_pos_available[i]
+#### 4.3.1 Options
 
-contains the position of view with ID
+top top_field_first
+    
 
-view_ids_available[i]
-
-.
-
-Same validity restrictions as for
-
-view_ids_available
-
-apply to
-this option.
-
-4.3 rawvideo
-
-Raw video decoder.
-
-This decoder decodes rawvideo streams.
-
-4.3.1 Options
-
-top
-
-top_field_first
-
-Specify the assumed field type of the input video.
+Specify the assumed field type of the input video. 
 
 -1
+    
 
-the video is assumed to be progressive (default)
+the video is assumed to be progressive (default) 
 
 0
+    
 
-bottom-field-first is assumed
+bottom-field-first is assumed 
 
 1
+    
 
-top-field-first is assumed
+top-field-first is assumed 
 
-4.4 libdav1d
+### 4.4 libdav1d
 
-dav1d AV1 decoder.
+dav1d AV1 decoder. 
 
-libdav1d allows libavcodec to decode the AOMedia Video 1 (AV1) codec.
-Requires the presence of the libdav1d headers and library during configuration.
-You need to explicitly configure the build with
+libdav1d allows libavcodec to decode the AOMedia Video 1 (AV1) codec. Requires the presence of the libdav1d headers and library during configuration. You need to explicitly configure the build with `\--enable-libdav1d`. 
 
---enable-libdav1d
+#### 4.4.1 Options
 
-.
-
-4.4.1 Options
-
-The following options are supported by the libdav1d wrapper.
+The following options are supported by the libdav1d wrapper. 
 
 max_frame_delay
+    
 
-Set max amount of frames the decoder may buffer internally. The default value is 0
-(autodetect).
+Set max amount of frames the decoder may buffer internally. The default value is 0 (autodetect). 
 
 filmgrain
+    
 
-Apply film grain to the decoded video if present in the bitstream. Defaults to the
-internal default of the library.
-This option is deprecated and will be removed in the future. See the global option
-
-export_side_data
-
-to export Film Grain parameters instead of applying it.
+Apply film grain to the decoded video if present in the bitstream. Defaults to the internal default of the library. This option is deprecated and will be removed in the future. See the global option `export_side_data` to export Film Grain parameters instead of applying it. 
 
 oppoint
+    
 
-Select an operating point of a scalable AV1 bitstream (0 - 31). Defaults to the
-internal default of the library.
+Select an operating point of a scalable AV1 bitstream (0 - 31). Defaults to the internal default of the library. 
 
 alllayers
+    
 
-Output all spatial layers of a scalable AV1 bitstream. The default value is false.
+Output all spatial layers of a scalable AV1 bitstream. The default value is false. 
 
-4.5 libdavs2
+### 4.5 libdavs2
 
-AVS2-P2/IEEE1857.4 video decoder wrapper.
+AVS2-P2/IEEE1857.4 video decoder wrapper. 
 
-This decoder allows libavcodec to decode AVS2 streams with davs2 library.
+This decoder allows libavcodec to decode AVS2 streams with davs2 library. 
 
-4.6 libuavs3d
+### 4.6 libuavs3d
 
-AVS3-P2/IEEE1857.10 video decoder.
+AVS3-P2/IEEE1857.10 video decoder. 
 
-libuavs3d allows libavcodec to decode AVS3 streams.
-Requires the presence of the libuavs3d headers and library during configuration.
-You need to explicitly configure the build with
+libuavs3d allows libavcodec to decode AVS3 streams. Requires the presence of the libuavs3d headers and library during configuration. You need to explicitly configure the build with `\--enable-libuavs3d`. 
 
---enable-libuavs3d
+#### 4.6.1 Options
 
-.
-
-4.6.1 Options
-
-The following option is supported by the libuavs3d wrapper.
+The following option is supported by the libuavs3d wrapper. 
 
 frame_threads
+    
 
-Set amount of frame threads to use during decoding. The default value is 0 (autodetect).
+Set amount of frame threads to use during decoding. The default value is 0 (autodetect). 
 
-4.7 libxevd
+### 4.7 libxevd
 
-eXtra-fast Essential Video Decoder (XEVD) MPEG-5 EVC decoder wrapper.
+eXtra-fast Essential Video Decoder (XEVD) MPEG-5 EVC decoder wrapper. 
 
-This decoder requires the presence of the libxevd headers and library
-during configuration. You need to explicitly configure the build with
+This decoder requires the presence of the libxevd headers and library during configuration. You need to explicitly configure the build with --enable-libxevd. 
 
---enable-libxevd
+The xevd project website is at <https://github.com/mpeg5/xevd>. 
 
-.
+#### 4.7.1 Options
 
-The xevd project website is at
+The following options are supported by the libxevd wrapper. The xevd-equivalent options or values are listed in parentheses for easy migration. 
 
-https://github.com/mpeg5/xevd
+To get a more accurate and extensive documentation of the libxevd options, invoke the command `xevd_app --help` or consult the libxevd documentation. 
 
-.
+threads (_threads_)
+    
 
-4.7.1 Options
+Force to use a specific number of threads 
 
-The following options are supported by the libxevd wrapper.
-The xevd-equivalent options or values are listed in parentheses for easy migration.
+### 4.8 QSV Decoders
 
-To get a more accurate and extensive documentation of the libxevd options,
-invoke the command
+The family of Intel QuickSync Video decoders (VC1, MPEG-2, H.264, HEVC, JPEG/MJPEG, VP8, VP9, AV1, VVC). 
 
-xevd_app --help
+#### 4.8.1 Common Options
 
-or consult the libxevd documentation.
-
-threads (
-
-threads
-
-)
-
-Force to use a specific number of threads
-
-4.8 QSV Decoders
-
-The family of Intel QuickSync Video decoders (VC1, MPEG-2, H.264, HEVC,
-JPEG/MJPEG, VP8, VP9, AV1, VVC).
-
-4.8.1 Common Options
-
-The following options are supported by all qsv decoders.
+The following options are supported by all qsv decoders. 
 
 async_depth
+    
 
-Internal parallelization depth, the higher the value the higher the latency.
+Internal parallelization depth, the higher the value the higher the latency. 
 
 gpu_copy
+    
 
-A GPU-accelerated copy between video and system memory
+A GPU-accelerated copy between video and system memory 
 
-‘
+‘default’
+‘on’
+‘off’
 
-default
+#### 4.8.2 HEVC Options
 
-’
-
-‘
-
-on
-
-’
-
-‘
-
-off
-
-’
-
-4.8.2 HEVC Options
-
-Extra options for hevc_qsv.
+Extra options for hevc_qsv. 
 
 load_plugin
+    
 
-A user plugin to load in an internal session
+A user plugin to load in an internal session 
 
-‘
-
-none
-
-’
-
-‘
-
-hevc_sw
-
-’
-
-‘
-
-hevc_hw
-
-’
-
+‘none’
+‘hevc_sw’
+‘hevc_hw’
 load_plugins
+    
 
-A :-separate list of hexadecimal plugin UIDs to load in an internal session
+A :-separate list of hexadecimal plugin UIDs to load in an internal session 
 
-4.9 v210
+### 4.9 v210
 
-Uncompressed 4:2:2 10-bit decoder.
+Uncompressed 4:2:2 10-bit decoder. 
 
-4.9.1 Options
+#### 4.9.1 Options
 
 custom_stride
+    
 
-Set the line size of the v210 data in bytes. The default value is 0
-(autodetect). You can use the special -1 value for a strideless v210 as seen in
-BOXX files.
+Set the line size of the v210 data in bytes. The default value is 0 (autodetect). You can use the special -1 value for a strideless v210 as seen in BOXX files. 
 
-5 Audio Decoders
+## 5 Audio Decoders
 
-A description of some of the currently available audio decoders
-follows.
+A description of some of the currently available audio decoders follows. 
 
-5.1 ac3
+### 5.1 ac3
 
-AC-3 audio decoder.
+AC-3 audio decoder. 
 
-This decoder implements part of ATSC A/52:2010 and ETSI TS 102 366, as well as
-the undocumented RealAudio 3 (a.k.a. dnet).
+This decoder implements part of ATSC A/52:2010 and ETSI TS 102 366, as well as the undocumented RealAudio 3 (a.k.a. dnet). 
 
-5.1.1 AC-3 Decoder Options
+#### 5.1.1 AC-3 Decoder Options
 
--drc_scale
+-drc_scale value
+    
 
-value
-
-Dynamic Range Scale Factor. The factor to apply to dynamic range values
-from the AC-3 stream. This factor is applied exponentially. The default value is 1.
-There are 3 notable scale factor ranges:
+Dynamic Range Scale Factor. The factor to apply to dynamic range values from the AC-3 stream. This factor is applied exponentially. The default value is 1. There are 3 notable scale factor ranges: 
 
 drc_scale == 0
+    
 
-DRC disabled. Produces full range audio.
+DRC disabled. Produces full range audio. 
 
 0 < drc_scale <= 1
+    
 
-DRC enabled.  Applies a fraction of the stream DRC value.
-Audio reproduction is between full range and full compression.
+DRC enabled. Applies a fraction of the stream DRC value. Audio reproduction is between full range and full compression. 
 
 drc_scale > 1
+    
 
-DRC enabled. Applies drc_scale asymmetrically.
-Loud sounds are fully compressed.  Soft sounds are enhanced.
+DRC enabled. Applies drc_scale asymmetrically. Loud sounds are fully compressed. Soft sounds are enhanced. 
 
-5.2 flac
+### 5.2 flac
 
-FLAC audio decoder.
+FLAC audio decoder. 
 
-This decoder aims to implement the complete FLAC specification from Xiph.
+This decoder aims to implement the complete FLAC specification from Xiph. 
 
-5.2.1 FLAC Decoder options
+#### 5.2.1 FLAC Decoder options
 
 -use_buggy_lpc
+    
 
-The lavc FLAC encoder used to produce buggy streams with high lpc values
-(like the default value). This option makes it possible to decode such streams
-correctly by using lavc’s old buggy lpc logic for decoding.
+The lavc FLAC encoder used to produce buggy streams with high lpc values (like the default value). This option makes it possible to decode such streams correctly by using lavc’s old buggy lpc logic for decoding. 
 
-5.3 ffwavesynth
+### 5.3 ffwavesynth
 
-Internal wave synthesizer.
+Internal wave synthesizer. 
 
-This decoder generates wave patterns according to predefined sequences. Its
-use is purely internal and the format of the data it accepts is not publicly
-documented.
+This decoder generates wave patterns according to predefined sequences. Its use is purely internal and the format of the data it accepts is not publicly documented. 
 
-5.4 libcelt
+### 5.4 libcelt
 
-libcelt decoder wrapper.
+libcelt decoder wrapper. 
 
-libcelt allows libavcodec to decode the Xiph CELT ultra-low delay audio codec.
-Requires the presence of the libcelt headers and library during configuration.
-You need to explicitly configure the build with
+libcelt allows libavcodec to decode the Xiph CELT ultra-low delay audio codec. Requires the presence of the libcelt headers and library during configuration. You need to explicitly configure the build with `\--enable-libcelt`. 
 
---enable-libcelt
+### 5.5 libgsm
 
-.
+libgsm decoder wrapper. 
 
-5.5 libgsm
+libgsm allows libavcodec to decode the GSM full rate audio codec. Requires the presence of the libgsm headers and library during configuration. You need to explicitly configure the build with `\--enable-libgsm`. 
 
-libgsm decoder wrapper.
+This decoder supports both the ordinary GSM and the Microsoft variant. 
 
-libgsm allows libavcodec to decode the GSM full rate audio codec. Requires
-the presence of the libgsm headers and library during configuration. You need
-to explicitly configure the build with
+### 5.6 libilbc
 
---enable-libgsm
+libilbc decoder wrapper. 
 
-.
+libilbc allows libavcodec to decode the Internet Low Bitrate Codec (iLBC) audio codec. Requires the presence of the libilbc headers and library during configuration. You need to explicitly configure the build with `\--enable-libilbc`. 
 
-This decoder supports both the ordinary GSM and the Microsoft variant.
+#### 5.6.1 Options
 
-5.6 libilbc
-
-libilbc decoder wrapper.
-
-libilbc allows libavcodec to decode the Internet Low Bitrate Codec (iLBC)
-audio codec. Requires the presence of the libilbc headers and library during
-configuration. You need to explicitly configure the build with
-
---enable-libilbc
-
-.
-
-5.6.1 Options
-
-The following option is supported by the libilbc wrapper.
+The following option is supported by the libilbc wrapper. 
 
 enhance
+    
 
-Enable the enhancement of the decoded audio when set to 1. The default
-value is 0 (disabled).
+Enable the enhancement of the decoded audio when set to 1. The default value is 0 (disabled). 
 
-5.7 libmpeghdec
+### 5.7 libmpeghdec
 
-libmpeghdec decoder wrapper.
+libmpeghdec decoder wrapper. 
 
-libmpeghdec allows libmpeghdec to decode the MPEG-H 3D audio codec.
-Requires the presence of the libmpeghdec headers and library during
-configuration. You need to explicitly configure the build with
+libmpeghdec allows libmpeghdec to decode the MPEG-H 3D audio codec. Requires the presence of the libmpeghdec headers and library during configuration. You need to explicitly configure the build with `\--enable-libmpeghdec --enable-nonfree`. 
 
---enable-libmpeghdec --enable-nonfree
+### 5.8 libopencore-amrnb
 
-.
+libopencore-amrnb decoder wrapper. 
 
-5.8 libopencore-amrnb
+libopencore-amrnb allows libavcodec to decode the Adaptive Multi-Rate Narrowband audio codec. Using it requires the presence of the libopencore-amrnb headers and library during configuration. You need to explicitly configure the build with `\--enable-libopencore-amrnb`. 
 
-libopencore-amrnb decoder wrapper.
+An FFmpeg native decoder for AMR-NB exists, so users can decode AMR-NB without this library. 
 
-libopencore-amrnb allows libavcodec to decode the Adaptive Multi-Rate
-Narrowband audio codec. Using it requires the presence of the
-libopencore-amrnb headers and library during configuration. You need to
-explicitly configure the build with
+### 5.9 libopencore-amrwb
 
---enable-libopencore-amrnb
+libopencore-amrwb decoder wrapper. 
 
-.
+libopencore-amrwb allows libavcodec to decode the Adaptive Multi-Rate Wideband audio codec. Using it requires the presence of the libopencore-amrwb headers and library during configuration. You need to explicitly configure the build with `\--enable-libopencore-amrwb`. 
 
-An FFmpeg native decoder for AMR-NB exists, so users can decode AMR-NB
-without this library.
+An FFmpeg native decoder for AMR-WB exists, so users can decode AMR-WB without this library. 
 
-5.9 libopencore-amrwb
+### 5.10 libopus
 
-libopencore-amrwb decoder wrapper.
+libopus decoder wrapper. 
 
-libopencore-amrwb allows libavcodec to decode the Adaptive Multi-Rate
-Wideband audio codec. Using it requires the presence of the
-libopencore-amrwb headers and library during configuration. You need to
-explicitly configure the build with
+libopus allows libavcodec to decode the Opus Interactive Audio Codec. Requires the presence of the libopus headers and library during configuration. You need to explicitly configure the build with `\--enable-libopus`. 
 
---enable-libopencore-amrwb
+An FFmpeg native decoder for Opus exists, so users can decode Opus without this library. 
 
-.
+## 6 Subtitles Decoders
 
-An FFmpeg native decoder for AMR-WB exists, so users can decode AMR-WB
-without this library.
+### 6.1 libaribb24
 
-5.10 libopus
+ARIB STD-B24 caption decoder. 
 
-libopus decoder wrapper.
+Implements profiles A and C of the ARIB STD-B24 standard. 
 
-libopus allows libavcodec to decode the Opus Interactive Audio Codec.
-Requires the presence of the libopus headers and library during
-configuration. You need to explicitly configure the build with
+#### 6.1.1 libaribb24 Decoder Options
 
---enable-libopus
+-aribb24-base-path path
+    
 
-.
+Sets the base path for the libaribb24 library. This is utilized for reading of configuration files (for custom unicode conversions), and for dumping of non-text symbols as images under that location. 
 
-An FFmpeg native decoder for Opus exists, so users can decode Opus
-without this library.
+Unset by default. 
 
-6 Subtitles Decoders
+-aribb24-skip-ruby-text boolean
+    
 
-6.1 libaribb24
+Tells the decoder wrapper to skip text blocks that contain half-height ruby text. 
 
-ARIB STD-B24 caption decoder.
+Enabled by default. 
 
-Implements profiles A and C of the ARIB STD-B24 standard.
+### 6.2 libaribcaption
 
-6.1.1 libaribb24 Decoder Options
+Yet another ARIB STD-B24 caption decoder using external _libaribcaption_ library. 
 
--aribb24-base-path
+Implements profiles A and C of the Japanese ARIB STD-B24 standard, Brazilian ABNT NBR 15606-1, and Philippines version of ISDB-T. 
 
-path
+Requires the presence of the libaribcaption headers and library (<https://github.com/xqq/libaribcaption>) during configuration. You need to explicitly configure the build with `\--enable-libaribcaption`. If both _libaribb24_ and _libaribcaption_ are enabled, _libaribcaption_ decoder precedes. 
 
-Sets the base path for the libaribb24 library. This is utilized for reading of
-configuration files (for custom unicode conversions), and for dumping of
-non-text symbols as images under that location.
+#### 6.2.1 libaribcaption Decoder Options
 
-Unset by default.
+-sub_type subtitle_type
+    
 
--aribb24-skip-ruby-text
+Specifies the format of the decoded subtitles. 
 
-boolean
+‘bitmap’
+    
 
-Tells the decoder wrapper to skip text blocks that contain half-height ruby
-text.
+Graphical image. 
 
-Enabled by default.
+‘ass’
+    
 
-6.2 libaribcaption
+ASS formatted text. 
 
-Yet another ARIB STD-B24 caption decoder using external
+‘text’
+    
 
-libaribcaption
+Simple text based output without formatting. 
 
-library.
+The default is _ass_ as same as _libaribb24_ decoder. Some present players (e.g., _mpv_) expect ASS format for ARIB caption. 
 
-Implements profiles A and C of the Japanese ARIB STD-B24 standard,
-Brazilian ABNT NBR 15606-1, and Philippines version of ISDB-T.
+-caption_encoding encoding_scheme
+    
 
-Requires the presence of the libaribcaption headers and library
-(
+Specifies the encoding scheme of input subtitle text. 
 
-https://github.com/xqq/libaribcaption
+‘auto’
+    
 
-) during configuration.
-You need to explicitly configure the build with
+Automatically detect text encoding (default). 
 
---enable-libaribcaption
+‘jis’
+    
 
-.
-If both
+8bit-char JIS encoding defined in ARIB STD B24. This encoding used in Japan for ISDB captions. 
 
-libaribb24
+‘utf8’
+    
 
-and
+UTF-8 encoding defined in ARIB STD B24. This encoding is used in Philippines for ISDB-T captions. 
 
-libaribcaption
+‘latin’
+    
 
-are enabled,
+Latin character encoding defined in ABNT NBR 15606-1. This encoding is used in South America for SBTVD / ISDB-Tb captions. 
 
-libaribcaption
+-font font_name[,font_name2,...]
+    
 
-decoder precedes.
+Specify comma-separated list of font family names to be used for _bitmap_ or _ass_ type subtitle rendering. Only first font name is used for _ass_ type subtitle. 
 
-6.2.1 libaribcaption Decoder Options
+If not specified, use internally defined default font family. 
 
--sub_type
+-ass_single_rect boolean
+    
 
-subtitle_type
+ARIB STD-B24 specifies that some captions may be displayed at different positions at a time (multi-rectangle subtitle). Since some players (e.g., old _mpv_) can’t handle multiple ASS rectangles in a single AVSubtitle, or multiple ASS rectangles of indeterminate duration with the same start timestamp, this option can change the behavior so that all the texts are displayed in a single ASS rectangle. 
 
-Specifies the format of the decoded subtitles.
+The default is false. 
 
-‘
+If your player cannot handle AVSubtitles with multiple ASS rectangles properly, set this option to true or define `ASS_SINGLE_RECT=1` to change default behavior at compilation. 
 
-bitmap
+-force_outline_text boolean
+    
 
-’
+Specify whether always render outline text for all characters regardless of the indication by character style. 
 
-Graphical image.
+The default is false. 
 
-‘
+-outline_width number (0.0 - 3.0)
+    
 
-ass
+Specify width for outline text, in dots (relative). 
 
-’
+The default is 1.5. 
 
-ASS formatted text.
+-ignore_background boolean
+    
 
-‘
+Specify whether to ignore background color rendering. 
 
-text
+The default is false. 
 
-’
+-ignore_ruby boolean
+    
 
-Simple text based output without formatting.
+Specify whether to ignore rendering for ruby-like (furigana) characters. 
 
-The default is
+The default is false. 
 
-ass
+-replace_drcs boolean
+    
 
-as same as
+Specify whether to render replaced DRCS characters as Unicode characters. 
 
-libaribb24
+The default is true. 
 
-decoder.
-Some present players (e.g.,
+-replace_msz_ascii boolean
+    
 
-mpv
+Specify whether to replace MSZ (Middle Size; half width) fullwidth alphanumerics with halfwidth alphanumerics. 
 
-) expect ASS format for ARIB caption.
+The default is true. 
 
--caption_encoding
+-replace_msz_japanese boolean
+    
 
-encoding_scheme
+Specify whether to replace some MSZ (Middle Size; half width) fullwidth japanese special characters with halfwidth ones. 
 
-Specifies the encoding scheme of input subtitle text.
+The default is true. 
 
-‘
+-replace_msz_glyph boolean
+    
 
-auto
+Specify whether to replace MSZ (Middle Size; half width) characters with halfwidth glyphs if the fonts supports it. This option works under FreeType or DirectWrite renderer with Adobe-Japan1 compliant fonts. e.g., IBM Plex Sans JP, Morisawa BIZ UDGothic, Morisawa BIZ UDMincho, Yu Gothic, Yu Mincho, and Meiryo. 
 
-’
+The default is true. 
 
-Automatically detect text encoding (default).
+-canvas_size image_size
+    
 
-‘
+Specify the resolution of the canvas to render subtitles to; usually, this should be frame size of input video. This only applies when `-subtitle_type` is set to bitmap. 
 
-jis
+The libaribcaption decoder assumes input frame size for bitmap rendering as below: 
 
-’
+  1. PROFILE_A : 1440 x 1080 with SAR (PAR) 4:3 
+  2. PROFILE_C : 320 x 180 with SAR (PAR) 1:1 
 
-8bit-char JIS encoding defined in ARIB STD B24.
-This encoding used in Japan for ISDB captions.
 
-‘
 
-utf8
+If actual frame size of input video does not match above assumption, the rendered captions may be distorted. To make the captions undistorted, add `-canvas_size` option to specify actual input video size. 
 
-’
+Note that the `-canvas_size` option is not required for video with different size but same aspect ratio. In such cases, the caption will be stretched or shrunk to actual video size if `-canvas_size` option is not specified. If `-canvas_size` option is specified with different size, the caption will be stretched or shrunk as specified size with calculated SAR. 
 
-UTF-8 encoding defined in ARIB STD B24.
-This encoding is used in Philippines for ISDB-T captions.
+#### 6.2.2 libaribcaption decoder usage examples
 
-‘
+Display MPEG-TS file with ARIB subtitle by `ffplay` tool: 
+    
+    
+    ffplay -sub_type bitmap MPEG.TS
+    
 
-latin
+Display MPEG-TS file with input frame size 1920x1080 by `ffplay` tool: 
+    
+    
+    ffplay -sub_type bitmap -canvas_size 1920x1080 MPEG.TS
+    
 
-’
+Embed ARIB subtitle in transcoded video: 
+    
+    
+    ffmpeg -sub_type bitmap -i src.m2t -filter_complex "[0:v][0:s]overlay" -vcodec h264 dest.mp4
+    
 
-Latin character encoding defined in ABNT NBR 15606-1.
-This encoding is used in South America for SBTVD / ISDB-Tb captions.
+### 6.3 dvbsub
 
--font
-
-font_name[,font_name2,...]
-
-Specify comma-separated list of font family names to be used for
-
-bitmap
-
-or
-
-ass
-
-type subtitle rendering.
-Only first font name is used for
-
-ass
-
-type subtitle.
-
-If not specified, use internally defined default font family.
-
--ass_single_rect
-
-boolean
-
-ARIB STD-B24 specifies that some captions may be displayed at different
-positions at a time (multi-rectangle subtitle).
-Since some players (e.g., old
-
-mpv
-
-) can’t handle multiple ASS rectangles
-in a single AVSubtitle, or multiple ASS rectangles of indeterminate duration
-with the same start timestamp, this option can change the behavior so that
-all the texts are displayed in a single ASS rectangle.
-
-The default is
-
-false
-
-.
-
-If your player cannot handle AVSubtitles with multiple ASS rectangles properly,
-set this option to
-
-true
-
-or define
-
-ASS_SINGLE_RECT=1
-
-to change
-default behavior at compilation.
-
--force_outline_text
-
-boolean
-
-Specify whether always render outline text for all characters regardless of
-the indication by character style.
-
-The default is
-
-false
-
-.
-
--outline_width
-
-number
-
-(0.0 - 3.0)
-
-Specify width for outline text, in dots (relative).
-
-The default is
-
-1.5
-
-.
-
--ignore_background
-
-boolean
-
-Specify whether to ignore background color rendering.
-
-The default is
-
-false
-
-.
-
--ignore_ruby
-
-boolean
-
-Specify whether to ignore rendering for ruby-like (furigana) characters.
-
-The default is
-
-false
-
-.
-
--replace_drcs
-
-boolean
-
-Specify whether to render replaced DRCS characters as Unicode characters.
-
-The default is
-
-true
-
-.
-
--replace_msz_ascii
-
-boolean
-
-Specify whether to replace MSZ (Middle Size; half width) fullwidth
-alphanumerics with halfwidth alphanumerics.
-
-The default is
-
-true
-
-.
-
--replace_msz_japanese
-
-boolean
-
-Specify whether to replace some MSZ (Middle Size; half width) fullwidth
-japanese special characters with halfwidth ones.
-
-The default is
-
-true
-
-.
-
--replace_msz_glyph
-
-boolean
-
-Specify whether to replace MSZ (Middle Size; half width) characters
-with halfwidth glyphs if the fonts supports it.
-This option works under FreeType or DirectWrite renderer
-with Adobe-Japan1 compliant fonts.
-e.g., IBM Plex Sans JP, Morisawa BIZ UDGothic, Morisawa BIZ UDMincho,
-Yu Gothic, Yu Mincho, and Meiryo.
-
-The default is
-
-true
-
-.
-
--canvas_size
-
-image_size
-
-Specify the resolution of the canvas to render subtitles to; usually, this
-should be frame size of input video.
-This only applies when
-
--subtitle_type
-
-is set to
-
-bitmap
-
-.
-
-The libaribcaption decoder assumes input frame size for bitmap rendering as below:
-
-PROFILE_A : 1440 x 1080 with SAR (PAR) 4:3
-
-PROFILE_C : 320 x 180 with SAR (PAR) 1:1
-
-If actual frame size of input video does not match above assumption,
-the rendered captions may be distorted.
-To make the captions undistorted, add
-
--canvas_size
-
-option to specify
-actual input video size.
-
-Note that the
-
--canvas_size
-
-option is not required for video with
-different size but same aspect ratio.
-In such cases, the caption will be stretched or shrunk to actual video size
-if
-
--canvas_size
-
-option is not specified.
-If
-
--canvas_size
-
-option is specified with different size,
-the caption will be stretched or shrunk as specified size with calculated SAR.
-
-6.2.2 libaribcaption decoder usage examples
-
-Display MPEG-TS file with ARIB subtitle by
-
-ffplay
-
-tool:
-
-ffplay -sub_type bitmap MPEG.TS
-
-Display MPEG-TS file with input frame size 1920x1080 by
-
-ffplay
-
-tool:
-
-ffplay -sub_type bitmap -canvas_size 1920x1080 MPEG.TS
-
-Embed ARIB subtitle in transcoded video:
-
-ffmpeg -sub_type bitmap -i src.m2t -filter_complex "[0:v][0:s]overlay" -vcodec h264 dest.mp4
-
-6.3 dvbsub
-
-6.3.1 Options
+#### 6.3.1 Options
 
 compute_clut
+    
 
 -2
+    
 
-Compute clut once if no matching CLUT is in the stream.
+Compute clut once if no matching CLUT is in the stream. 
 
 -1
+    
 
-Compute clut if no matching CLUT is in the stream.
+Compute clut if no matching CLUT is in the stream. 
 
 0
+    
 
-Never compute CLUT
+Never compute CLUT 
 
 1
+    
 
-Always compute CLUT and override the one provided in the stream.
+Always compute CLUT and override the one provided in the stream. 
 
 dvb_substream
+    
 
-Selects the dvb substream, or all substreams if -1 which is default.
+Selects the dvb substream, or all substreams if -1 which is default. 
 
-6.4 dvdsub
+### 6.4 dvdsub
 
-This codec decodes the bitmap subtitles used in DVDs; the same subtitles can
-also be found in VobSub file pairs and in some Matroska files.
+This codec decodes the bitmap subtitles used in DVDs; the same subtitles can also be found in VobSub file pairs and in some Matroska files. 
 
-6.4.1 Options
+#### 6.4.1 Options
 
 palette
+    
 
-Specify the global palette used by the bitmaps. When stored in VobSub, the
-palette is normally specified in the index file; in Matroska, the palette is
-stored in the codec extra-data in the same format as in VobSub. In DVDs, the
-palette is stored in the IFO file, and therefore not available when reading
-from dumped VOB files.
+Specify the global palette used by the bitmaps. When stored in VobSub, the palette is normally specified in the index file; in Matroska, the palette is stored in the codec extra-data in the same format as in VobSub. In DVDs, the palette is stored in the IFO file, and therefore not available when reading from dumped VOB files. 
 
-The format for this option is a string containing 16 24-bits hexadecimal
-numbers (without 0x prefix) separated by commas, for example
-
-0d00ee,
-ee450d, 101010, eaeaea, 0ce60b, ec14ed, ebff0b, 0d617a, 7b7b7b, d1d1d1,
-7b2a0e, 0d950c, 0f007b, cf0dec, cfa80c, 7c127b
-
-.
+The format for this option is a string containing 16 24-bits hexadecimal numbers (without 0x prefix) separated by commas, for example `0d00ee, ee450d, 101010, eaeaea, 0ce60b, ec14ed, ebff0b, 0d617a, 7b7b7b, d1d1d1, 7b2a0e, 0d950c, 0f007b, cf0dec, cfa80c, 7c127b`. 
 
 ifo_palette
+    
 
-Specify the IFO file from which the global palette is obtained.
-(experimental)
+Specify the IFO file from which the global palette is obtained. (experimental) 
 
 forced_subs_only
+    
 
-Only decode subtitle entries marked as forced. Some titles have forced
-and non-forced subtitles in the same track. Setting this flag to
+Only decode subtitle entries marked as forced. Some titles have forced and non-forced subtitles in the same track. Setting this flag to `1` will only keep the forced subtitles. Default value is `0`. 
 
-1
+### 6.5 libzvbi-teletext
 
-will only keep the forced subtitles. Default value is
+Libzvbi allows libavcodec to decode DVB teletext pages and DVB teletext subtitles. Requires the presence of the libzvbi headers and library during configuration. You need to explicitly configure the build with `\--enable-libzvbi`. 
 
-0
-
-.
-
-6.5 libzvbi-teletext
-
-Libzvbi allows libavcodec to decode DVB teletext pages and DVB teletext
-subtitles. Requires the presence of the libzvbi headers and library during
-configuration. You need to explicitly configure the build with
-
---enable-libzvbi
-
-.
-
-6.5.1 Options
+#### 6.5.1 Options
 
 txt_page
+    
 
-List of teletext page numbers to decode. Pages that do not match the specified
-list are dropped. You may use the special
-
-*
-
-string to match all pages,
-or
-
-subtitle
-
-to match all subtitle pages.
-Default value is *.
+List of teletext page numbers to decode. Pages that do not match the specified list are dropped. You may use the special `*` string to match all pages, or `subtitle` to match all subtitle pages. Default value is *. 
 
 txt_default_region
+    
 
-Set default character set used for decoding, a value between 0 and 87 (see
-ETS 300 706, Section 15, Table 32). Default value is -1, which does not
-override the libzvbi default. This option is needed for some legacy level 1.0
-transmissions which cannot signal the proper charset.
+Set default character set used for decoding, a value between 0 and 87 (see ETS 300 706, Section 15, Table 32). Default value is -1, which does not override the libzvbi default. This option is needed for some legacy level 1.0 transmissions which cannot signal the proper charset. 
 
 txt_chop_top
+    
 
-Discards the top teletext line. Default value is 1.
+Discards the top teletext line. Default value is 1. 
 
 txt_format
+    
 
-Specifies the format of the decoded subtitles.
+Specifies the format of the decoded subtitles. 
 
 bitmap
+    
 
-The default format, you should use this for teletext pages, because certain
-graphics and colors cannot be expressed in simple text or even ASS.
+The default format, you should use this for teletext pages, because certain graphics and colors cannot be expressed in simple text or even ASS. 
 
 text
+    
 
-Simple text based output without formatting.
+Simple text based output without formatting. 
 
 ass
+    
 
-Formatted ASS output, subtitle pages and teletext pages are returned in
-different styles, subtitle pages are stripped down to text, but an effort is
-made to keep the text alignment and the formatting.
+Formatted ASS output, subtitle pages and teletext pages are returned in different styles, subtitle pages are stripped down to text, but an effort is made to keep the text alignment and the formatting. 
 
 txt_left
+    
 
-X offset of generated bitmaps, default is 0.
+X offset of generated bitmaps, default is 0. 
 
 txt_top
+    
 
-Y offset of generated bitmaps, default is 0.
+Y offset of generated bitmaps, default is 0. 
 
 txt_chop_spaces
+    
 
-Chops leading and trailing spaces and removes empty lines from the generated
-text. This option is useful for teletext based subtitles where empty spaces may
-be present at the start or at the end of the lines or empty lines may be
-present between the subtitle lines because of double-sized teletext characters.
-Default value is 1.
+Chops leading and trailing spaces and removes empty lines from the generated text. This option is useful for teletext based subtitles where empty spaces may be present at the start or at the end of the lines or empty lines may be present between the subtitle lines because of double-sized teletext characters. Default value is 1. 
 
 txt_duration
+    
 
-Sets the display duration of the decoded teletext pages or subtitles in
-milliseconds. Default value is -1 which means infinity or until the next
-subtitle event comes.
+Sets the display duration of the decoded teletext pages or subtitles in milliseconds. Default value is -1 which means infinity or until the next subtitle event comes. 
 
 txt_transparent
+    
 
-Force transparent background of the generated teletext bitmaps. Default value
-is 0 which means an opaque background.
+Force transparent background of the generated teletext bitmaps. Default value is 0 which means an opaque background. 
 
 txt_opacity
+    
 
-Sets the opacity (0-255) of the teletext background. If
+Sets the opacity (0-255) of the teletext background. If txt_transparent is not set, it only affects characters between a start box and an end box, typically subtitles. Default value is 0 if txt_transparent is set, 255 otherwise. 
 
-txt_transparent
+## 7 Encoders
 
-is not set, it only affects characters between a start
-box and an end box, typically subtitles. Default value is 0 if
+Encoders are configured elements in FFmpeg which allow the encoding of multimedia streams. 
 
-txt_transparent
+When you configure your FFmpeg build, all the supported native encoders are enabled by default. Encoders requiring an external library must be enabled manually via the corresponding `\--enable-lib` option. You can list all available encoders using the configure option `\--list-encoders`. 
 
-is set, 255 otherwise.
+You can disable all the encoders with the configure option `\--disable-encoders` and selectively enable / disable single encoders with the options `\--enable-encoder=ENCODER` / `\--disable-encoder=ENCODER`. 
 
-7 Encoders
+The option `-encoders` of the ff* tools will display the list of enabled encoders. 
 
-Encoders are configured elements in FFmpeg which allow the encoding of
-multimedia streams.
+## 8 Audio Encoders
 
-When you configure your FFmpeg build, all the supported native encoders
-are enabled by default. Encoders requiring an external library must be enabled
-manually via the corresponding
+A description of some of the currently available audio encoders follows. 
 
---enable-lib
+### 8.1 aac
 
-option. You can list all
-available encoders using the configure option
+Advanced Audio Coding (AAC) encoder. 
 
---list-encoders
+This encoder is the default AAC encoder, natively implemented into FFmpeg. 
 
-.
-
-You can disable all the encoders with the configure option
-
---disable-encoders
-
-and selectively enable / disable single encoders
-with the options
-
---enable-encoder=
-
-ENCODER
-
-/
-
---disable-encoder=
-
-ENCODER
-
-.
-
-The option
-
--encoders
-
-of the ff* tools will display the list of
-enabled encoders.
-
-8 Audio Encoders
-
-A description of some of the currently available audio encoders
-follows.
-
-8.1 aac
-
-Advanced Audio Coding (AAC) encoder.
-
-This encoder is the default AAC encoder, natively implemented into FFmpeg.
-
-8.1.1 Options
+#### 8.1.1 Options
 
 b
+    
 
-Set bit rate in bits/s. Setting this automatically activates constant bit rate
-(CBR) mode. If this option is unspecified it is set to 128kbps.
+Set bit rate in bits/s. Setting this automatically activates constant bit rate (CBR) mode. If this option is unspecified it is set to 128kbps. 
 
 q
+    
 
-Set quality for variable bit rate (VBR) mode. This option is valid only using
-the
-
-ffmpeg
-
-command-line tool. For library interface users, use
-
-global_quality
-
-.
+Set quality for variable bit rate (VBR) mode. This option is valid only using the `ffmpeg` command-line tool. For library interface users, use global_quality. 
 
 cutoff
+    
 
-Set cutoff frequency. If unspecified will allow the encoder to dynamically
-adjust the cutoff to improve clarity on low bitrates.
+Set cutoff frequency. If unspecified will allow the encoder to dynamically adjust the cutoff to improve clarity on low bitrates. 
 
 aac_coder
+    
 
-Set AAC encoder coding method. Possible values:
+Set AAC encoder coding method. Possible values: 
 
-‘
+‘twoloop’
+    
 
-twoloop
+Two loop searching (TLS) method. This is the default method. 
 
-’
+This method first sets quantizers depending on band thresholds and then tries to find an optimal combination by adding or subtracting a specific value from all quantizers and adjusting some individual quantizer a little. Will tune itself based on whether aac_is, aac_ms and aac_pns are enabled. 
 
-Two loop searching (TLS) method. This is the default method.
+‘anmr’
+    
 
-This method first sets quantizers depending on band thresholds and then tries
-to find an optimal combination by adding or subtracting a specific value from
-all quantizers and adjusting some individual quantizer a little.  Will tune
-itself based on whether
+Average noise to mask ratio (ANMR) trellis-based solution. 
 
-aac_is
+This is an experimental coder which currently produces a lower quality, is more unstable and is slower than the default twoloop coder but has potential. Currently has no support for the aac_is or aac_pns options. Not currently recommended. 
 
-,
+‘fast’
+    
 
-aac_ms
+Constant quantizer method. 
 
-and
-
-aac_pns
-
-are enabled.
-
-‘
-
-anmr
-
-’
-
-Average noise to mask ratio (ANMR) trellis-based solution.
-
-This is an experimental coder which currently produces a lower quality, is more
-unstable and is slower than the default twoloop coder but has potential.
-Currently has no support for the
-
-aac_is
-
-or
-
-aac_pns
-
-options.
-Not currently recommended.
-
-‘
-
-fast
-
-’
-
-Constant quantizer method.
-
-Uses a cheaper version of twoloop algorithm that doesn’t try to do as many
-clever adjustments. Worse with low bitrates (less than 64kbps), but is better
-and much faster at higher bitrates.
+Uses a cheaper version of twoloop algorithm that doesn’t try to do as many clever adjustments. Worse with low bitrates (less than 64kbps), but is better and much faster at higher bitrates. 
 
 aac_ms
+    
 
-Sets mid/side coding mode. The default value of "auto" will automatically use
-M/S with bands which will benefit from such coding. Can be forced for all bands
-using the value "enable", which is mainly useful for debugging or disabled using
-"disable".
+Sets mid/side coding mode. The default value of "auto" will automatically use M/S with bands which will benefit from such coding. Can be forced for all bands using the value "enable", which is mainly useful for debugging or disabled using "disable". 
 
 aac_is
+    
 
-Sets intensity stereo coding tool usage. By default, it’s enabled and will
-automatically toggle IS for similar pairs of stereo bands if it’s beneficial.
-Can be disabled for debugging by setting the value to "disable".
+Sets intensity stereo coding tool usage. By default, it’s enabled and will automatically toggle IS for similar pairs of stereo bands if it’s beneficial. Can be disabled for debugging by setting the value to "disable". 
 
 aac_pns
+    
 
-Uses perceptual noise substitution to replace low entropy high frequency bands
-with imperceptible white noise during the decoding process. By default, it’s
-enabled, but can be disabled for debugging purposes by using "disable".
+Uses perceptual noise substitution to replace low entropy high frequency bands with imperceptible white noise during the decoding process. By default, it’s enabled, but can be disabled for debugging purposes by using "disable". 
 
 aac_tns
+    
 
-Enables the use of a multitap FIR filter which spans through the high frequency
-bands to hide quantization noise during the encoding process and is reverted
-by the decoder. As well as decreasing unpleasant artifacts in the high range
-this also reduces the entropy in the high bands and allows for more bits to
-be used by the mid-low bands. By default it’s enabled but can be disabled for
-debugging by setting the option to "disable".
+Enables the use of a multitap FIR filter which spans through the high frequency bands to hide quantization noise during the encoding process and is reverted by the decoder. As well as decreasing unpleasant artifacts in the high range this also reduces the entropy in the high bands and allows for more bits to be used by the mid-low bands. By default it’s enabled but can be disabled for debugging by setting the option to "disable". 
 
 aac_ltp
+    
 
-Enables the use of the long term prediction extension which increases coding
-efficiency in very low bandwidth situations such as encoding of voice or
-solo piano music by extending constant harmonic peaks in bands throughout
-frames. This option is implied by profile:a aac_low.
-Use in conjunction with
-
--ar
-
-to decrease the samplerate.
+Enables the use of the long term prediction extension which increases coding efficiency in very low bandwidth situations such as encoding of voice or solo piano music by extending constant harmonic peaks in bands throughout frames. This option is implied by profile:a aac_low. Use in conjunction with -ar to decrease the samplerate. 
 
 profile
+    
 
-Sets the encoding profile, possible values:
+Sets the encoding profile, possible values: 
 
-‘
+‘aac_low’
+    
 
-aac_low
+The default, AAC "Low-complexity" profile. Is the most compatible and produces decent quality. 
 
-’
+‘mpeg2_aac_low’
+    
 
-The default, AAC "Low-complexity" profile. Is the most compatible and produces
-decent quality.
+Equivalent to `-profile:a aac_low -aac_pns 0`. PNS was introduced with the MPEG4 specifications. 
 
-‘
+‘aac_ltp’
+    
 
-mpeg2_aac_low
+Long term prediction profile, is enabled by and will enable the aac_ltp option. Introduced in MPEG4. 
 
-’
+If this option is unspecified it is set to ‘aac_low’. 
 
-Equivalent to
+### 8.2 ac3 and ac3_fixed
 
--profile:a aac_low -aac_pns 0
+AC-3 audio encoders. 
 
-. PNS was introduced with the
-MPEG4 specifications.
+These encoders implement part of ATSC A/52:2010 and ETSI TS 102 366. 
 
-‘
+The ac3 encoder uses floating-point math, while the ac3_fixed encoder only uses fixed-point integer math. This does not mean that one is always faster, just that one or the other may be better suited to a particular system. The ac3_fixed encoder is not the default codec for any of the output formats, so it must be specified explicitly using the option `-acodec ac3_fixed` in order to use it. 
 
-aac_ltp
+#### 8.2.1 AC-3 Metadata
 
-’
+The AC-3 metadata options are used to set parameters that describe the audio, but in most cases do not affect the audio encoding itself. Some of the options do directly affect or influence the decoding and playback of the resulting bitstream, while others are just for informational purposes. A few of the options will add bits to the output stream that could otherwise be used for audio data, and will thus affect the quality of the output. Those will be indicated accordingly with a note in the option list below. 
 
-Long term prediction profile, is enabled by and will enable the
+These parameters are described in detail in several publicly-available documents. 
 
-aac_ltp
+  * [A/52:2010 - Digital Audio Compression (AC-3) (E-AC-3) Standard](http://www.atsc.org/cms/standards/a_52-2010.pdf)
+  * [A/54 - Guide to the Use of the ATSC Digital Television Standard](http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf)
+  * [Dolby Metadata Guide](http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf)
+  * [Dolby Digital Professional Encoding Guidelines](http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf)
 
-option. Introduced in MPEG4.
 
-If this option is unspecified it is set to ‘
 
-aac_low
+#### 8.2.1.1 Metadata Control Options
 
-’.
+-per_frame_metadata boolean
+    
 
-8.2 ac3 and ac3_fixed
-
-AC-3 audio encoders.
-
-These encoders implement part of ATSC A/52:2010 and ETSI TS 102 366.
-
-The
-
-ac3
-
-encoder uses floating-point math, while the
-
-ac3_fixed
-
-encoder only uses fixed-point integer math. This does not mean that one is
-always faster, just that one or the other may be better suited to a
-particular system. The
-
-ac3_fixed
-
-encoder is not the default codec for
-any of the output formats, so it must be specified explicitly using the option
-
--acodec ac3_fixed
-
-in order to use it.
-
-8.2.1 AC-3 Metadata
-
-The AC-3 metadata options are used to set parameters that describe the audio,
-but in most cases do not affect the audio encoding itself. Some of the options
-do directly affect or influence the decoding and playback of the resulting
-bitstream, while others are just for informational purposes. A few of the
-options will add bits to the output stream that could otherwise be used for
-audio data, and will thus affect the quality of the output. Those will be
-indicated accordingly with a note in the option list below.
-
-These parameters are described in detail in several publicly-available
-documents.
-
-A/52:2010 - Digital Audio Compression (AC-3) (E-AC-3) Standard
-
-A/54 - Guide to the Use of the ATSC Digital Television Standard
-
-Dolby Metadata Guide
-
-Dolby Digital Professional Encoding Guidelines
-
-8.2.1.1 Metadata Control Options
-
--per_frame_metadata
-
-boolean
-
-Allow Per-Frame Metadata. Specifies if the encoder should check for changing
-metadata for each frame.
+Allow Per-Frame Metadata. Specifies if the encoder should check for changing metadata for each frame. 
 
 0
+    
 
-The metadata values set at initialization will be used for every frame in the
-stream. (default)
+The metadata values set at initialization will be used for every frame in the stream. (default) 
 
 1
+    
 
-Metadata values can be changed before encoding each frame.
+Metadata values can be changed before encoding each frame. 
 
-8.2.1.2 Downmix Levels
+#### 8.2.1.2 Downmix Levels
 
--center_mixlev
+-center_mixlev level
+    
 
-level
-
-Center Mix Level. The amount of gain the decoder should apply to the center
-channel when downmixing to stereo. This field will only be written to the
-bitstream if a center channel is present. The value is specified as a scale
-factor. There are 3 valid values:
+Center Mix Level. The amount of gain the decoder should apply to the center channel when downmixing to stereo. This field will only be written to the bitstream if a center channel is present. The value is specified as a scale factor. There are 3 valid values: 
 
 0.707
+    
 
-Apply -3dB gain
+Apply -3dB gain 
 
 0.595
+    
 
-Apply -4.5dB gain (default)
+Apply -4.5dB gain (default) 
 
 0.500
+    
 
-Apply -6dB gain
+Apply -6dB gain 
 
--surround_mixlev
+-surround_mixlev level
+    
 
-level
-
-Surround Mix Level. The amount of gain the decoder should apply to the surround
-channel(s) when downmixing to stereo. This field will only be written to the
-bitstream if one or more surround channels are present. The value is specified
-as a scale factor.  There are 3 valid values:
+Surround Mix Level. The amount of gain the decoder should apply to the surround channel(s) when downmixing to stereo. This field will only be written to the bitstream if one or more surround channels are present. The value is specified as a scale factor. There are 3 valid values: 
 
 0.707
+    
 
-Apply -3dB gain
+Apply -3dB gain 
 
 0.500
+    
 
-Apply -6dB gain (default)
+Apply -6dB gain (default) 
 
 0.000
+    
 
-Silence Surround Channel(s)
+Silence Surround Channel(s) 
 
-8.2.1.3 Audio Production Information
+#### 8.2.1.3 Audio Production Information
 
-Audio Production Information is optional information describing the mixing
-environment.  Either none or both of the fields are written to the bitstream.
+Audio Production Information is optional information describing the mixing environment. Either none or both of the fields are written to the bitstream. 
 
--mixing_level
+-mixing_level number
+    
 
-number
+Mixing Level. Specifies peak sound pressure level (SPL) in the production environment when the mix was mastered. Valid values are 80 to 111, or -1 for unknown or not indicated. The default value is -1, but that value cannot be used if the Audio Production Information is written to the bitstream. Therefore, if the `room_type` option is not the default value, the `mixing_level` option must not be -1. 
 
-Mixing Level. Specifies peak sound pressure level (SPL) in the production
-environment when the mix was mastered. Valid values are 80 to 111, or -1 for
-unknown or not indicated. The default value is -1, but that value cannot be
-used if the Audio Production Information is written to the bitstream. Therefore,
-if the
+-room_type type
+    
 
-room_type
-
-option is not the default value, the
-
-mixing_level
-
-option must not be -1.
-
--room_type
-
-type
-
-Room Type. Describes the equalization used during the final mixing session at
-the studio or on the dubbing stage. A large room is a dubbing stage with the
-industry standard X-curve equalization; a small room has flat equalization.
-This field will not be written to the bitstream if both the
-
-mixing_level
-
-option and the
-
-room_type
-
-option have the default values.
+Room Type. Describes the equalization used during the final mixing session at the studio or on the dubbing stage. A large room is a dubbing stage with the industry standard X-curve equalization; a small room has flat equalization. This field will not be written to the bitstream if both the `mixing_level` option and the `room_type` option have the default values. 
 
 0
-
 notindicated
+    
 
-Not Indicated (default)
+Not Indicated (default) 
 
 1
-
 large
+    
 
-Large Room
+Large Room 
 
 2
-
 small
+    
 
-Small Room
+Small Room 
 
-8.2.1.4 Other Metadata Options
+#### 8.2.1.4 Other Metadata Options
 
--copyright
+-copyright boolean
+    
 
-boolean
-
-Copyright Indicator. Specifies whether a copyright exists for this audio.
+Copyright Indicator. Specifies whether a copyright exists for this audio. 
 
 0
-
 off
+    
 
-No Copyright Exists (default)
+No Copyright Exists (default) 
 
 1
-
 on
+    
 
-Copyright Exists
+Copyright Exists 
 
--dialnorm
+-dialnorm value
+    
 
-value
+Dialogue Normalization. Indicates how far the average dialogue level of the program is below digital 100% full scale (0 dBFS). This parameter determines a level shift during audio reproduction that sets the average volume of the dialogue to a preset level. The goal is to match volume level between program sources. A value of -31dB will result in no volume level change, relative to the source volume, during audio reproduction. Valid values are whole numbers in the range -31 to -1, with -31 being the default. 
 
-Dialogue Normalization. Indicates how far the average dialogue level of the
-program is below digital 100% full scale (0 dBFS). This parameter determines a
-level shift during audio reproduction that sets the average volume of the
-dialogue to a preset level. The goal is to match volume level between program
-sources. A value of -31dB will result in no volume level change, relative to
-the source volume, during audio reproduction. Valid values are whole numbers in
-the range -31 to -1, with -31 being the default.
+-dsur_mode mode
+    
 
--dsur_mode
-
-mode
-
-Dolby Surround Mode. Specifies whether the stereo signal uses Dolby Surround
-(Pro Logic). This field will only be written to the bitstream if the audio
-stream is stereo. Using this option does
-
-NOT
-
-mean the encoder will actually
-apply Dolby Surround processing.
+Dolby Surround Mode. Specifies whether the stereo signal uses Dolby Surround (Pro Logic). This field will only be written to the bitstream if the audio stream is stereo. Using this option does **NOT** mean the encoder will actually apply Dolby Surround processing. 
 
 0
-
 notindicated
+    
 
-Not Indicated (default)
+Not Indicated (default) 
 
 1
-
 off
+    
 
-Not Dolby Surround Encoded
+Not Dolby Surround Encoded 
 
 2
-
 on
+    
 
-Dolby Surround Encoded
+Dolby Surround Encoded 
 
--original
+-original boolean
+    
 
-boolean
-
-Original Bit Stream Indicator. Specifies whether this audio is from the
-original source and not a copy.
+Original Bit Stream Indicator. Specifies whether this audio is from the original source and not a copy. 
 
 0
-
 off
+    
 
-Not Original Source
+Not Original Source 
 
 1
-
 on
+    
 
-Original Source (default)
+Original Source (default) 
 
-8.2.2 Extended Bitstream Information
+#### 8.2.2 Extended Bitstream Information
 
-The extended bitstream options are part of the Alternate Bit Stream Syntax as
-specified in Annex D of the A/52:2010 standard. It is grouped into 2 parts.
-If any one parameter in a group is specified, all values in that group will be
-written to the bitstream.  Default values are used for those that are written
-but have not been specified.  If the mixing levels are written, the decoder
-will use these values instead of the ones specified in the
+The extended bitstream options are part of the Alternate Bit Stream Syntax as specified in Annex D of the A/52:2010 standard. It is grouped into 2 parts. If any one parameter in a group is specified, all values in that group will be written to the bitstream. Default values are used for those that are written but have not been specified. If the mixing levels are written, the decoder will use these values instead of the ones specified in the `center_mixlev` and `surround_mixlev` options if it supports the Alternate Bit Stream Syntax. 
 
-center_mixlev
+#### 8.2.2.1 Extended Bitstream Information - Part 1
 
-and
+-dmix_mode mode
+    
 
-surround_mixlev
-
-options if it supports the Alternate Bit Stream
-Syntax.
-
-8.2.2.1 Extended Bitstream Information - Part 1
-
--dmix_mode
-
-mode
-
-Preferred Stereo Downmix Mode. Allows the user to select either Lt/Rt
-(Dolby Surround) or Lo/Ro (normal stereo) as the preferred stereo downmix mode.
+Preferred Stereo Downmix Mode. Allows the user to select either Lt/Rt (Dolby Surround) or Lo/Ro (normal stereo) as the preferred stereo downmix mode. 
 
 0
-
 notindicated
+    
 
-Not Indicated (default)
+Not Indicated (default) 
 
 1
-
 ltrt
+    
 
-Lt/Rt Downmix Preferred
+Lt/Rt Downmix Preferred 
 
 2
-
 loro
+    
 
-Lo/Ro Downmix Preferred
+Lo/Ro Downmix Preferred 
 
--ltrt_cmixlev
+-ltrt_cmixlev level
+    
 
-level
-
-Lt/Rt Center Mix Level. The amount of gain the decoder should apply to the
-center channel when downmixing to stereo in Lt/Rt mode.
-
-1.414
-
-Apply +3dB gain
-
-1.189
-
-Apply +1.5dB gain
-
-1.000
-
-Apply 0dB gain
-
-0.841
-
-Apply -1.5dB gain
-
-0.707
-
-Apply -3.0dB gain
-
-0.595
-
-Apply -4.5dB gain (default)
-
-0.500
-
-Apply -6.0dB gain
-
-0.000
-
-Silence Center Channel
-
--ltrt_surmixlev
-
-level
-
-Lt/Rt Surround Mix Level. The amount of gain the decoder should apply to the
-surround channel(s) when downmixing to stereo in Lt/Rt mode.
-
-0.841
-
-Apply -1.5dB gain
-
-0.707
-
-Apply -3.0dB gain
-
-0.595
-
-Apply -4.5dB gain
-
-0.500
-
-Apply -6.0dB gain (default)
-
-0.000
-
-Silence Surround Channel(s)
-
--loro_cmixlev
-
-level
-
-Lo/Ro Center Mix Level. The amount of gain the decoder should apply to the
-center channel when downmixing to stereo in Lo/Ro mode.
+Lt/Rt Center Mix Level. The amount of gain the decoder should apply to the center channel when downmixing to stereo in Lt/Rt mode. 
 
 1.414
+    
 
-Apply +3dB gain
+Apply +3dB gain 
 
 1.189
+    
 
-Apply +1.5dB gain
+Apply +1.5dB gain 
 
 1.000
+    
 
-Apply 0dB gain
-
-0.841
-
-Apply -1.5dB gain
-
-0.707
-
-Apply -3.0dB gain
-
-0.595
-
-Apply -4.5dB gain (default)
-
-0.500
-
-Apply -6.0dB gain
-
-0.000
-
-Silence Center Channel
-
--loro_surmixlev
-
-level
-
-Lo/Ro Surround Mix Level. The amount of gain the decoder should apply to the
-surround channel(s) when downmixing to stereo in Lo/Ro mode.
+Apply 0dB gain 
 
 0.841
+    
 
-Apply -1.5dB gain
+Apply -1.5dB gain 
 
 0.707
+    
 
-Apply -3.0dB gain
+Apply -3.0dB gain 
 
 0.595
+    
 
-Apply -4.5dB gain
+Apply -4.5dB gain (default) 
 
 0.500
+    
 
-Apply -6.0dB gain (default)
+Apply -6.0dB gain 
 
 0.000
+    
 
-Silence Surround Channel(s)
+Silence Center Channel 
 
-8.2.2.2 Extended Bitstream Information - Part 2
+-ltrt_surmixlev level
+    
 
--dsurex_mode
+Lt/Rt Surround Mix Level. The amount of gain the decoder should apply to the surround channel(s) when downmixing to stereo in Lt/Rt mode. 
 
-mode
+0.841
+    
 
-Dolby Surround EX Mode. Indicates whether the stream uses Dolby Surround EX
-(7.1 matrixed to 5.1). Using this option does
+Apply -1.5dB gain 
 
-NOT
+0.707
+    
 
-mean the encoder will actually
-apply Dolby Surround EX processing.
+Apply -3.0dB gain 
+
+0.595
+    
+
+Apply -4.5dB gain 
+
+0.500
+    
+
+Apply -6.0dB gain (default) 
+
+0.000
+    
+
+Silence Surround Channel(s) 
+
+-loro_cmixlev level
+    
+
+Lo/Ro Center Mix Level. The amount of gain the decoder should apply to the center channel when downmixing to stereo in Lo/Ro mode. 
+
+1.414
+    
+
+Apply +3dB gain 
+
+1.189
+    
+
+Apply +1.5dB gain 
+
+1.000
+    
+
+Apply 0dB gain 
+
+0.841
+    
+
+Apply -1.5dB gain 
+
+0.707
+    
+
+Apply -3.0dB gain 
+
+0.595
+    
+
+Apply -4.5dB gain (default) 
+
+0.500
+    
+
+Apply -6.0dB gain 
+
+0.000
+    
+
+Silence Center Channel 
+
+-loro_surmixlev level
+    
+
+Lo/Ro Surround Mix Level. The amount of gain the decoder should apply to the surround channel(s) when downmixing to stereo in Lo/Ro mode. 
+
+0.841
+    
+
+Apply -1.5dB gain 
+
+0.707
+    
+
+Apply -3.0dB gain 
+
+0.595
+    
+
+Apply -4.5dB gain 
+
+0.500
+    
+
+Apply -6.0dB gain (default) 
+
+0.000
+    
+
+Silence Surround Channel(s) 
+
+#### 8.2.2.2 Extended Bitstream Information - Part 2
+
+-dsurex_mode mode
+    
+
+Dolby Surround EX Mode. Indicates whether the stream uses Dolby Surround EX (7.1 matrixed to 5.1). Using this option does **NOT** mean the encoder will actually apply Dolby Surround EX processing. 
 
 0
-
 notindicated
+    
 
-Not Indicated (default)
+Not Indicated (default) 
 
 1
-
 on
+    
 
-Dolby Surround EX Off
+Dolby Surround EX Off 
 
 2
-
 off
+    
 
-Dolby Surround EX On
+Dolby Surround EX On 
 
--dheadphone_mode
+-dheadphone_mode mode
+    
 
-mode
-
-Dolby Headphone Mode. Indicates whether the stream uses Dolby Headphone
-encoding (multi-channel matrixed to 2.0 for use with headphones). Using this
-option does
-
-NOT
-
-mean the encoder will actually apply Dolby Headphone
-processing.
+Dolby Headphone Mode. Indicates whether the stream uses Dolby Headphone encoding (multi-channel matrixed to 2.0 for use with headphones). Using this option does **NOT** mean the encoder will actually apply Dolby Headphone processing. 
 
 0
-
 notindicated
+    
 
-Not Indicated (default)
+Not Indicated (default) 
 
 1
-
 on
+    
 
-Dolby Headphone Off
+Dolby Headphone Off 
 
 2
-
 off
+    
 
-Dolby Headphone On
+Dolby Headphone On 
 
--ad_conv_type
+-ad_conv_type type
+    
 
-type
-
-A/D Converter Type. Indicates whether the audio has passed through HDCD A/D
-conversion.
+A/D Converter Type. Indicates whether the audio has passed through HDCD A/D conversion. 
 
 0
-
 standard
+    
 
-Standard A/D Converter (default)
+Standard A/D Converter (default) 
 
 1
-
 hdcd
+    
 
-HDCD A/D Converter
+HDCD A/D Converter 
 
-8.2.3 Other AC-3 Encoding Options
+#### 8.2.3 Other AC-3 Encoding Options
 
--stereo_rematrixing
+-stereo_rematrixing boolean
+    
 
-boolean
+Stereo Rematrixing. Enables/Disables use of rematrixing for stereo input. This is an optional AC-3 feature that increases quality by selectively encoding the left/right channels as mid/side. This option is enabled by default, and it is highly recommended that it be left as enabled except for testing purposes. 
 
-Stereo Rematrixing. Enables/Disables use of rematrixing for stereo input. This
-is an optional AC-3 feature that increases quality by selectively encoding
-the left/right channels as mid/side. This option is enabled by default, and it
-is highly recommended that it be left as enabled except for testing purposes.
+cutoff frequency
+    
 
-cutoff
+Set lowpass cutoff frequency. If unspecified, the encoder selects a default determined by various other encoding parameters. 
 
-frequency
+#### 8.2.4 Floating-Point-Only AC-3 Encoding Options
 
-Set lowpass cutoff frequency. If unspecified, the encoder selects a default
-determined by various other encoding parameters.
+These options are only valid for the floating-point encoder and do not exist for the fixed-point encoder due to the corresponding features not being implemented in fixed-point. 
 
-8.2.4 Floating-Point-Only AC-3 Encoding Options
+-channel_coupling boolean
+    
 
-These options are only valid for the floating-point encoder and do not exist
-for the fixed-point encoder due to the corresponding features not being
-implemented in fixed-point.
-
--channel_coupling
-
-boolean
-
-Enables/Disables use of channel coupling, which is an optional AC-3 feature
-that increases quality by combining high frequency information from multiple
-channels into a single channel. The per-channel high frequency information is
-sent with less accuracy in both the frequency and time domains. This allows
-more bits to be used for lower frequencies while preserving enough information
-to reconstruct the high frequencies. This option is enabled by default for the
-floating-point encoder and should generally be left as enabled except for
-testing purposes or to increase encoding speed.
+Enables/Disables use of channel coupling, which is an optional AC-3 feature that increases quality by combining high frequency information from multiple channels into a single channel. The per-channel high frequency information is sent with less accuracy in both the frequency and time domains. This allows more bits to be used for lower frequencies while preserving enough information to reconstruct the high frequencies. This option is enabled by default for the floating-point encoder and should generally be left as enabled except for testing purposes or to increase encoding speed. 
 
 -1
-
 auto
+    
 
-Selected by Encoder (default)
+Selected by Encoder (default) 
 
 0
-
 off
+    
 
-Disable Channel Coupling
+Disable Channel Coupling 
 
 1
-
 on
+    
 
-Enable Channel Coupling
+Enable Channel Coupling 
 
--cpl_start_band
+-cpl_start_band number
+    
 
-number
-
-Coupling Start Band. Sets the channel coupling start band, from 1 to 15. If a
-value higher than the bandwidth is used, it will be reduced to 1 less than the
-coupling end band. If
-
-auto
-
-is used, the start band will be determined by
-the encoder based on the bit rate, sample rate, and channel layout. This option
-has no effect if channel coupling is disabled.
+Coupling Start Band. Sets the channel coupling start band, from 1 to 15. If a value higher than the bandwidth is used, it will be reduced to 1 less than the coupling end band. If auto is used, the start band will be determined by the encoder based on the bit rate, sample rate, and channel layout. This option has no effect if channel coupling is disabled. 
 
 -1
-
 auto
+    
 
-Selected by Encoder (default)
+Selected by Encoder (default) 
 
-8.3 flac
+### 8.3 flac
 
-FLAC (Free Lossless Audio Codec) Encoder
+FLAC (Free Lossless Audio Codec) Encoder 
 
-8.3.1 Options
+#### 8.3.1 Options
 
-The following options are supported by FFmpeg’s flac encoder.
+The following options are supported by FFmpeg’s flac encoder. 
 
 compression_level
+    
 
-Sets the compression level, which chooses defaults for many other options
-if they are not set explicitly. Valid values are from 0 to 12, 5 is the
-default.
+Sets the compression level, which chooses defaults for many other options if they are not set explicitly. Valid values are from 0 to 12, 5 is the default. 
 
 frame_size
+    
 
-Sets the size of the frames in samples per channel.
+Sets the size of the frames in samples per channel. 
 
 lpc_coeff_precision
+    
 
-Sets the LPC coefficient precision, valid values are from 1 to 15, 15 is the
-default.
+Sets the LPC coefficient precision, valid values are from 1 to 15, 15 is the default. 
 
 lpc_type
+    
 
-Sets the first stage LPC algorithm
+Sets the first stage LPC algorithm 
 
-‘
+‘none’
+    
 
-none
+LPC is not used 
 
-’
+‘fixed’
+    
 
-LPC is not used
+fixed LPC coefficients 
 
-‘
-
-fixed
-
-’
-
-fixed LPC coefficients
-
-‘
-
-levinson
-
-’
-
-‘
-
-cholesky
-
-’
-
+‘levinson’
+‘cholesky’
 lpc_passes
+    
 
-Number of passes to use for Cholesky factorization during LPC analysis
+Number of passes to use for Cholesky factorization during LPC analysis 
 
 min_partition_order
+    
 
-The minimum partition order
+The minimum partition order 
 
 max_partition_order
+    
 
-The maximum partition order
+The maximum partition order 
 
 prediction_order_method
+    
 
-‘
+‘estimation’
+‘2level’
+‘4level’
+‘8level’
+‘search’
+    
 
-estimation
+Bruteforce search 
 
-’
-
-‘
-
-2level
-
-’
-
-‘
-
-4level
-
-’
-
-‘
-
-8level
-
-’
-
-‘
-
-search
-
-’
-
-Bruteforce search
-
-‘
-
-log
-
-’
-
+‘log’
 ch_mode
+    
 
-Channel mode
+Channel mode 
 
-‘
+‘auto’
+    
 
-auto
+The mode is chosen automatically for each frame 
 
-’
+‘indep’
+    
 
-The mode is chosen automatically for each frame
+Channels are independently coded 
 
-‘
-
-indep
-
-’
-
-Channels are independently coded
-
-‘
-
-left_side
-
-’
-
-‘
-
-right_side
-
-’
-
-‘
-
-mid_side
-
-’
-
+‘left_side’
+‘right_side’
+‘mid_side’
 exact_rice_parameters
+    
 
-Chooses if rice parameters are calculated exactly or approximately.
-if set to 1 then they are chosen exactly, which slows the code down slightly and
-improves compression slightly.
+Chooses if rice parameters are calculated exactly or approximately. if set to 1 then they are chosen exactly, which slows the code down slightly and improves compression slightly. 
 
 multi_dim_quant
+    
 
-Multi Dimensional Quantization. If set to 1 then a 2nd stage LPC algorithm is
-applied after the first stage to finetune the coefficients. This is quite slow
-and slightly improves compression.
+Multi Dimensional Quantization. If set to 1 then a 2nd stage LPC algorithm is applied after the first stage to finetune the coefficients. This is quite slow and slightly improves compression. 
 
-8.4 opus
+### 8.4 opus
 
-Opus encoder.
+Opus encoder. 
 
-This is a native FFmpeg encoder for the Opus format. Currently, it’s in development and
-only implements the CELT part of the codec. Its quality is usually worse and at best
-is equal to the libopus encoder.
+This is a native FFmpeg encoder for the Opus format. Currently, it’s in development and only implements the CELT part of the codec. Its quality is usually worse and at best is equal to the libopus encoder. 
 
-8.4.1 Options
+#### 8.4.1 Options
 
 b
+    
 
-Set bit rate in bits/s. If unspecified it uses the number of channels and the layout
-to make a good guess.
+Set bit rate in bits/s. If unspecified it uses the number of channels and the layout to make a good guess. 
 
 opus_delay
+    
 
-Sets the maximum delay in milliseconds. Lower delays than 20ms will very quickly
-decrease quality.
+Sets the maximum delay in milliseconds. Lower delays than 20ms will very quickly decrease quality. 
 
-8.5 libfdk_aac
+### 8.5 libfdk_aac
 
-libfdk-aac AAC (Advanced Audio Coding) encoder wrapper.
+libfdk-aac AAC (Advanced Audio Coding) encoder wrapper. 
 
-The libfdk-aac library is based on the Fraunhofer FDK AAC code from
-the Android project.
+The libfdk-aac library is based on the Fraunhofer FDK AAC code from the Android project. 
 
-Requires the presence of the libfdk-aac headers and library during
-configuration. You need to explicitly configure the build with
+Requires the presence of the libfdk-aac headers and library during configuration. You need to explicitly configure the build with `\--enable-libfdk-aac`. The library is also incompatible with GPL, so if you allow the use of GPL, you should configure with `\--enable-gpl --enable-nonfree --enable-libfdk-aac`. 
 
---enable-libfdk-aac
+This encoder has support for the AAC-HE profiles. 
 
-. The library is also incompatible with GPL,
-so if you allow the use of GPL, you should configure with
+VBR encoding, enabled through the vbr or flags +qscale options, is experimental and only works with some combinations of parameters. 
 
---enable-gpl --enable-nonfree --enable-libfdk-aac
+Support for encoding 7.1 audio is only available with libfdk-aac 0.1.3 or higher. 
 
-.
+For more information see the fdk-aac project at <http://sourceforge.net/p/opencore-amr/fdk-aac/>. 
 
-This encoder has support for the AAC-HE profiles.
+#### 8.5.1 Options
 
-VBR encoding, enabled through the
-
-vbr
-
-or
-
-flags
-+qscale
-
-options, is experimental and only works with some
-combinations of parameters.
-
-Support for encoding 7.1 audio is only available with libfdk-aac 0.1.3 or
-higher.
-
-For more information see the fdk-aac project at
-
-http://sourceforge.net/p/opencore-amr/fdk-aac/
-
-.
-
-8.5.1 Options
-
-The following options are mapped on the shared FFmpeg codec options.
+The following options are mapped on the shared FFmpeg codec options. 
 
 b
+    
 
-Set bit rate in bits/s. If the bitrate is not explicitly specified, it
-is automatically set to a suitable value depending on the selected
-profile.
+Set bit rate in bits/s. If the bitrate is not explicitly specified, it is automatically set to a suitable value depending on the selected profile. 
 
-In case VBR mode is enabled the option is ignored.
+In case VBR mode is enabled the option is ignored. 
 
 ar
+    
 
-Set audio sampling rate (in Hz).
+Set audio sampling rate (in Hz). 
 
 channels
+    
 
-Set the number of audio channels.
+Set the number of audio channels. 
 
 flags +qscale
+    
 
-Enable fixed quality, VBR (Variable Bit Rate) mode.
-Note that VBR is implicitly enabled when the
-
-vbr
-
-value is
-positive.
+Enable fixed quality, VBR (Variable Bit Rate) mode. Note that VBR is implicitly enabled when the vbr value is positive. 
 
 cutoff
+    
 
-Set cutoff frequency. If not specified (or explicitly set to 0) it
-will use a value automatically computed by the library. Default value
-is 0.
+Set cutoff frequency. If not specified (or explicitly set to 0) it will use a value automatically computed by the library. Default value is 0. 
 
 profile
+    
 
-Set audio profile.
+Set audio profile. 
 
-The following profiles are recognized:
+The following profiles are recognized: 
 
-‘
+‘aac_low’
+    
 
-aac_low
+Low Complexity AAC (LC) 
 
-’
+‘aac_he’
+    
 
-Low Complexity AAC (LC)
+High Efficiency AAC (HE-AAC) 
 
-‘
+‘aac_he_v2’
+    
 
-aac_he
+High Efficiency AAC version 2 (HE-AACv2) 
 
-’
+‘aac_ld’
+    
 
-High Efficiency AAC (HE-AAC)
+Low Delay AAC (LD) 
 
-‘
+‘aac_eld’
+    
 
-aac_he_v2
+Enhanced Low Delay AAC (ELD) 
 
-’
+If not specified it is set to ‘aac_low’. 
 
-High Efficiency AAC version 2 (HE-AACv2)
-
-‘
-
-aac_ld
-
-’
-
-Low Delay AAC (LD)
-
-‘
-
-aac_eld
-
-’
-
-Enhanced Low Delay AAC (ELD)
-
-If not specified it is set to ‘
-
-aac_low
-
-’.
-
-The following are private options of the libfdk_aac encoder.
+The following are private options of the libfdk_aac encoder. 
 
 afterburner
+    
 
-Enable afterburner feature if set to 1, disabled if set to 0. This
-improves the quality but also the required processing power.
+Enable afterburner feature if set to 1, disabled if set to 0. This improves the quality but also the required processing power. 
 
-Default value is 1.
+Default value is 1. 
 
 eld_sbr
+    
 
-Enable SBR (Spectral Band Replication) for ELD if set to 1, disabled
-if set to 0.
+Enable SBR (Spectral Band Replication) for ELD if set to 1, disabled if set to 0. 
 
-Default value is 0.
+Default value is 0. 
 
 eld_v2
+    
 
-Enable ELDv2 (LD-MPS extension for ELD stereo signals) for ELDv2 if set to 1,
-disabled if set to 0.
+Enable ELDv2 (LD-MPS extension for ELD stereo signals) for ELDv2 if set to 1, disabled if set to 0. 
 
-Note that option is available when fdk-aac version (AACENCODER_LIB_VL0.AACENCODER_LIB_VL1.AACENCODER_LIB_VL2) > (4.0.0).
+Note that option is available when fdk-aac version (AACENCODER_LIB_VL0.AACENCODER_LIB_VL1.AACENCODER_LIB_VL2) > (4.0.0). 
 
-Default value is 0.
+Default value is 0. 
 
 signaling
+    
 
-Set SBR/PS signaling style.
+Set SBR/PS signaling style. 
 
-It can assume one of the following values:
+It can assume one of the following values: 
 
-‘
+‘default’
+    
 
-default
+choose signaling implicitly (explicit hierarchical by default, implicit if global header is disabled) 
 
-’
+‘implicit’
+    
 
-choose signaling implicitly (explicit hierarchical by default,
-implicit if global header is disabled)
+implicit backwards compatible signaling 
 
-‘
+‘explicit_sbr’
+    
 
-implicit
+explicit SBR, implicit PS signaling 
 
-’
+‘explicit_hierarchical’
+    
 
-implicit backwards compatible signaling
+explicit hierarchical signaling 
 
-‘
-
-explicit_sbr
-
-’
-
-explicit SBR, implicit PS signaling
-
-‘
-
-explicit_hierarchical
-
-’
-
-explicit hierarchical signaling
-
-Default value is ‘
-
-default
-
-’.
+Default value is ‘default’. 
 
 latm
+    
 
-Output LATM/LOAS encapsulated data if set to 1, disabled if set to 0.
+Output LATM/LOAS encapsulated data if set to 1, disabled if set to 0. 
 
-Default value is 0.
+Default value is 0. 
 
 header_period
+    
 
-Set StreamMuxConfig and PCE repetition period (in frames) for sending
-in-band configuration buffers within LATM/LOAS transport layer.
+Set StreamMuxConfig and PCE repetition period (in frames) for sending in-band configuration buffers within LATM/LOAS transport layer. 
 
-Must be a 16-bits non-negative integer.
+Must be a 16-bits non-negative integer. 
 
-Default value is 0.
+Default value is 0. 
 
 vbr
+    
 
-Set VBR mode, from 1 to 5. 1 is lowest quality (though still pretty
-good) and 5 is highest quality. A value of 0 will disable VBR, and CBR
-(Constant Bit Rate) is enabled.
+Set VBR mode, from 1 to 5. 1 is lowest quality (though still pretty good) and 5 is highest quality. A value of 0 will disable VBR, and CBR (Constant Bit Rate) is enabled. 
 
-Currently only the ‘
+Currently only the ‘aac_low’ profile supports VBR encoding. 
 
-aac_low
+VBR modes 1-5 correspond to roughly the following average bit rates: 
 
-’ profile supports VBR encoding.
+‘1’
+    
 
-VBR modes 1-5 correspond to roughly the following average bit rates:
+32 kbps/channel 
 
-‘
+‘2’
+    
 
-1
+40 kbps/channel 
 
-’
+‘3’
+    
 
-32 kbps/channel
+48-56 kbps/channel 
 
-‘
+‘4’
+    
 
-2
+64 kbps/channel 
 
-’
+‘5’
+    
 
-40 kbps/channel
+about 80-96 kbps/channel 
 
-‘
-
-3
-
-’
-
-48-56 kbps/channel
-
-‘
-
-4
-
-’
-
-64 kbps/channel
-
-‘
-
-5
-
-’
-
-about 80-96 kbps/channel
-
-Default value is 0.
+Default value is 0. 
 
 frame_length
+    
 
-Set the audio frame length in samples. Default value is the internal
-default of the library. Refer to the library’s documentation for information
-about supported values.
+Set the audio frame length in samples. Default value is the internal default of the library. Refer to the library’s documentation for information about supported values. 
 
-8.5.2 Examples
+#### 8.5.2 Examples
 
-Use
+  * Use `ffmpeg` to convert an audio file to VBR AAC in an M4A (MP4) container: 
+        
+        ffmpeg -i input.wav -codec:a libfdk_aac -vbr 3 output.m4a
+        
 
-ffmpeg
+  * Use `ffmpeg` to convert an audio file to CBR 64k kbps AAC, using the High-Efficiency AAC profile: 
+        
+        ffmpeg -i input.wav -c:a libfdk_aac -profile:a aac_he -b:a 64k output.m4a
+        
 
-to convert an audio file to VBR AAC in an M4A (MP4)
-container:
 
-ffmpeg -i input.wav -codec:a libfdk_aac -vbr 3 output.m4a
 
-Use
 
-ffmpeg
+### 8.6 liblc3
 
-to convert an audio file to CBR 64k kbps AAC, using the
-High-Efficiency AAC profile:
+liblc3 LC3 (Low Complexity Communication Codec) encoder wrapper. 
 
-ffmpeg -i input.wav -c:a libfdk_aac -profile:a aac_he -b:a 64k output.m4a
+Requires the presence of the liblc3 headers and library during configuration. You need to explicitly configure the build with `\--enable-liblc3`. 
 
-8.6 liblc3
+This encoder has support for the Bluetooth SIG LC3 codec for the LE Audio protocol, and the following features of LC3plus: 
 
-liblc3 LC3 (Low Complexity Communication Codec) encoder wrapper.
+  * Frame duration of 2.5 and 5ms. 
+  * High-Resolution mode, 48 KHz, and 96 kHz sampling rates. 
 
-Requires the presence of the liblc3 headers and library during configuration.
-You need to explicitly configure the build with
 
---enable-liblc3
 
-.
+For more information see the liblc3 project at <https://github.com/google/liblc3>. 
 
-This encoder has support for the Bluetooth SIG LC3 codec for the LE Audio
-protocol, and the following features of LC3plus:
+#### 8.6.1 Options
 
-Frame duration of 2.5 and 5ms.
+The following options are mapped on the shared FFmpeg codec options. 
 
-High-Resolution mode, 48 KHz, and 96 kHz sampling rates.
+b bitrate
+    
 
-For more information see the liblc3 project at
+Set the bit rate in bits/s. This will determine the fixed size of the encoded frames, for a selected frame duration. 
 
-https://github.com/google/liblc3
+ar frequency
+    
 
-.
-
-8.6.1 Options
-
-The following options are mapped on the shared FFmpeg codec options.
-
-b
-
-bitrate
-
-Set the bit rate in bits/s. This will determine the fixed size of the encoded
-frames, for a selected frame duration.
-
-ar
-
-frequency
-
-Set the audio sampling rate (in Hz).
+Set the audio sampling rate (in Hz). 
 
 channels
+    
 
-Set the number of audio channels.
+Set the number of audio channels. 
 
 frame_duration
+    
 
-Set the audio frame duration in milliseconds. Default value is 10ms.
-Allowed frame durations are 2.5ms, 5ms, 7.5ms and 10ms.
-LC3 (Bluetooth LE Audio), allows 7.5ms and 10ms; and LC3plus 2.5ms, 5ms
-and 10ms.
+Set the audio frame duration in milliseconds. Default value is 10ms. Allowed frame durations are 2.5ms, 5ms, 7.5ms and 10ms. LC3 (Bluetooth LE Audio), allows 7.5ms and 10ms; and LC3plus 2.5ms, 5ms and 10ms. 
 
-The 10ms frame duration is available in LC3 and LC3 plus standard.
-In this mode, the produced bitstream can be referenced either as LC3 or LC3plus.
+The 10ms frame duration is available in LC3 and LC3 plus standard. In this mode, the produced bitstream can be referenced either as LC3 or LC3plus. 
 
-high_resolution
+high_resolution boolean
+    
 
-boolean
+Enable the high-resolution mode if set to 1. The high-resolution mode is available with all LC3plus frame durations and for a sampling rate of 48 KHz, and 96 KHz. 
 
-Enable the high-resolution mode if set to 1. The high-resolution mode is
-available with all LC3plus frame durations and for a sampling rate of 48 KHz,
-and 96 KHz.
+The encoder automatically turns off this mode at lower sampling rates and activates it at 96 KHz. 
 
-The encoder automatically turns off this mode at lower sampling rates and
-activates it at 96 KHz.
+This mode should be preferred at high bitrates. In this mode, the audio bandwidth is always up to the Nyquist frequency, compared to LC3 at 48 KHz, which limits the bandwidth to 20 KHz. 
 
-This mode should be preferred at high bitrates. In this mode, the audio
-bandwidth is always up to the Nyquist frequency, compared to LC3 at 48 KHz,
-which limits the bandwidth to 20 KHz.
+### 8.7 libmp3lame
 
-8.7 libmp3lame
+LAME (Lame Ain’t an MP3 Encoder) MP3 encoder wrapper. 
 
-LAME (Lame Ain’t an MP3 Encoder) MP3 encoder wrapper.
+Requires the presence of the libmp3lame headers and library during configuration. You need to explicitly configure the build with `\--enable-libmp3lame`. 
 
-Requires the presence of the libmp3lame headers and library during
-configuration. You need to explicitly configure the build with
+See libshine for a fixed-point MP3 encoder, although with a lower quality. 
 
---enable-libmp3lame
+#### 8.7.1 Options
 
-.
+The following options are supported by the libmp3lame wrapper. The `lame`-equivalent of the options are listed in parentheses. 
 
-See
+b (_-b_)
+    
 
-libshine
+Set bitrate expressed in bits/s for CBR or ABR. LAME `bitrate` is expressed in kilobits/s. 
 
-for a fixed-point MP3 encoder, although with a
-lower quality.
+q (_-V_)
+    
 
-8.7.1 Options
+Set constant quality setting for VBR. This option is valid only using the `ffmpeg` command-line tool. For library interface users, use global_quality. 
 
-The following options are supported by the libmp3lame wrapper. The
+compression_level (_-q_)
+    
 
-lame
+Set algorithm quality. Valid arguments are integers in the 0-9 range, with 0 meaning highest quality but slowest, and 9 meaning fastest while producing the worst quality. 
 
--equivalent of the options are listed in parentheses.
+cutoff (_--lowpass_)
+    
 
-b (
-
--b
-
-)
-
-Set bitrate expressed in bits/s for CBR or ABR. LAME
-
-bitrate
-
-is
-expressed in kilobits/s.
-
-q (
-
--V
-
-)
-
-Set constant quality setting for VBR. This option is valid only
-using the
-
-ffmpeg
-
-command-line tool. For library interface
-users, use
-
-global_quality
-
-.
-
-compression_level (
-
--q
-
-)
-
-Set algorithm quality. Valid arguments are integers in the 0-9 range,
-with 0 meaning highest quality but slowest, and 9 meaning fastest
-while producing the worst quality.
-
-cutoff (
-
---lowpass
-
-)
-
-Set lowpass cutoff frequency. If unspecified, the encoder dynamically
-adjusts the cutoff.
+Set lowpass cutoff frequency. If unspecified, the encoder dynamically adjusts the cutoff. 
 
 reservoir
+    
 
-Enable use of bit reservoir when set to 1. Default value is 1. LAME
-has this enabled by default, but can be overridden by use
+Enable use of bit reservoir when set to 1. Default value is 1. LAME has this enabled by default, but can be overridden by use --nores option. 
 
---nores
+joint_stereo (_-m j_)
+    
 
-option.
+Enable the encoder to use (on a frame by frame basis) either L/R stereo or mid/side stereo. Default value is 1. 
 
-joint_stereo (
+abr (_--abr_)
+    
 
--m j
+Enable the encoder to use ABR when set to 1. The `lame` --abr sets the target bitrate, while this options only tells FFmpeg to use ABR still relies on b to set bitrate. 
 
-)
+copyright (_-c_)
+    
 
-Enable the encoder to use (on a frame by frame basis) either L/R
-stereo or mid/side stereo. Default value is 1.
+Set MPEG audio copyright flag when set to 1. The default value is 0 (disabled). 
 
-abr (
+original (_-o_)
+    
 
---abr
+Set MPEG audio original flag when set to 1. The default value is 1 (enabled). 
 
-)
+### 8.8 libopencore-amrnb
 
-Enable the encoder to use ABR when set to 1. The
+OpenCORE Adaptive Multi-Rate Narrowband encoder. 
 
-lame
+Requires the presence of the libopencore-amrnb headers and library during configuration. You need to explicitly configure the build with `\--enable-libopencore-amrnb --enable-version3`. 
 
---abr
+This is a mono-only encoder. Officially it only supports 8000Hz sample rate, but you can override it by setting strict to ‘unofficial’ or lower. 
 
-sets the target bitrate, while this options only
-tells FFmpeg to use ABR still relies on
-
-b
-
-to set bitrate.
-
-copyright (
-
--c
-
-)
-
-Set MPEG audio copyright flag when set to 1. The default value is 0
-(disabled).
-
-original (
-
--o
-
-)
-
-Set MPEG audio original flag when set to 1. The default value is 1
-(enabled).
-
-8.8 libopencore-amrnb
-
-OpenCORE Adaptive Multi-Rate Narrowband encoder.
-
-Requires the presence of the libopencore-amrnb headers and library during
-configuration. You need to explicitly configure the build with
-
---enable-libopencore-amrnb --enable-version3
-
-.
-
-This is a mono-only encoder. Officially it only supports 8000Hz sample rate,
-but you can override it by setting
-
-strict
-
-to ‘
-
-unofficial
-
-’ or
-lower.
-
-8.8.1 Options
+#### 8.8.1 Options
 
 b
+    
 
-Set bitrate in bits per second. Only the following bitrates are supported,
-otherwise libavcodec will round to the nearest valid bitrate.
+Set bitrate in bits per second. Only the following bitrates are supported, otherwise libavcodec will round to the nearest valid bitrate. 
 
 4750
-
 5150
-
 5900
-
 6700
-
 7400
-
 7950
-
 10200
-
 12200
-
 dtx
+    
 
-Allow discontinuous transmission (generate comfort noise) when set to 1. The
-default value is 0 (disabled).
+Allow discontinuous transmission (generate comfort noise) when set to 1. The default value is 0 (disabled). 
 
-8.9 libopus
+### 8.9 libopus
 
-libopus Opus Interactive Audio Codec encoder wrapper.
+libopus Opus Interactive Audio Codec encoder wrapper. 
 
-Requires the presence of the libopus headers and library during
-configuration. You need to explicitly configure the build with
+Requires the presence of the libopus headers and library during configuration. You need to explicitly configure the build with `\--enable-libopus`. 
 
---enable-libopus
+#### 8.9.1 Option Mapping
 
-.
+Most libopus options are modelled after the `opusenc` utility from opus-tools. The following is an option mapping chart describing options supported by the libopus wrapper, and their `opusenc`-equivalent in parentheses. 
 
-8.9.1 Option Mapping
+b (_bitrate_)
+    
 
-Most libopus options are modelled after the
+Set the bit rate in bits/s. FFmpeg’s b option is expressed in bits/s, while `opusenc`’s bitrate in kilobits/s. 
 
-opusenc
+vbr (_vbr_ , _hard-cbr_ , and _cvbr_)
+    
 
-utility from
-opus-tools. The following is an option mapping chart describing options
-supported by the libopus wrapper, and their
+Set VBR mode. The FFmpeg vbr option has the following valid arguments, with the `opusenc` equivalent options in parentheses: 
 
-opusenc
+‘off (_hard-cbr_)’
+    
 
--equivalent
-in parentheses.
+Use constant bit rate encoding. 
 
-b (
+‘on (_vbr_)’
+    
 
-bitrate
+Use variable bit rate encoding (the default). 
 
-)
+‘constrained (_cvbr_)’
+    
 
-Set the bit rate in bits/s.  FFmpeg’s
+Use constrained variable bit rate encoding. 
 
-b
+compression_level (_comp_)
+    
 
-option is
-expressed in bits/s, while
+Set encoding algorithm complexity. Valid options are integers in the 0-10 range. 0 gives the fastest encodes but lower quality, while 10 gives the highest quality but slowest encoding. The default is 10. 
 
-opusenc
+frame_duration (_framesize_)
+    
 
-’s
+Set maximum frame size, or duration of a frame in milliseconds. The argument must be exactly the following: 2.5, 5, 10, 20, 40, 60. Smaller frame sizes achieve lower latency but less quality at a given bitrate. Sizes greater than 20ms are only interesting at fairly low bitrates. The default is 20ms. 
 
-bitrate
+packet_loss (_expect-loss_)
+    
 
-in
-kilobits/s.
+Set expected packet loss percentage. The default is 0. 
 
-vbr (
+fec (_n/a_)
+    
 
-vbr
-
-,
-
-hard-cbr
-
-, and
-
-cvbr
-
-)
-
-Set VBR mode. The FFmpeg
-
-vbr
-
-option has the following
-valid arguments, with the
-
-opusenc
-
-equivalent options
-in parentheses:
-
-‘
-
-off (
-
-hard-cbr
-
-)
-
-’
-
-Use constant bit rate encoding.
-
-‘
-
-on (
-
-vbr
-
-)
-
-’
-
-Use variable bit rate encoding (the default).
-
-‘
-
-constrained (
-
-cvbr
-
-)
-
-’
-
-Use constrained variable bit rate encoding.
-
-compression_level (
-
-comp
-
-)
-
-Set encoding algorithm complexity. Valid options are integers in
-the 0-10 range. 0 gives the fastest encodes but lower quality, while 10
-gives the highest quality but slowest encoding. The default is 10.
-
-frame_duration (
-
-framesize
-
-)
-
-Set maximum frame size, or duration of a frame in milliseconds. The
-argument must be exactly the following: 2.5, 5, 10, 20, 40, 60. Smaller
-frame sizes achieve lower latency but less quality at a given bitrate.
-Sizes greater than 20ms are only interesting at fairly low bitrates.
-The default is 20ms.
-
-packet_loss (
-
-expect-loss
-
-)
-
-Set expected packet loss percentage. The default is 0.
-
-fec (
-
-n/a
-
-)
-
-Enable inband forward error correction.
-
-packet_loss
-
-must be non-zero
-to take advantage - frequency of FEC ’side-data’ is proportional to expected packet loss.
-Default is disabled.
+Enable inband forward error correction. packet_loss must be non-zero to take advantage - frequency of FEC ’side-data’ is proportional to expected packet loss. Default is disabled. 
 
 application (N.A.)
+    
 
-Set intended application type. Valid options are listed below:
+Set intended application type. Valid options are listed below: 
 
-‘
+‘voip’
+    
 
-voip
+Favor improved speech intelligibility. 
 
-’
+‘audio’
+    
 
-Favor improved speech intelligibility.
+Favor faithfulness to the input (the default). 
 
-‘
+‘lowdelay’
+    
 
-audio
-
-’
-
-Favor faithfulness to the input (the default).
-
-‘
-
-lowdelay
-
-’
-
-Restrict to only the lowest delay modes by disabling voice-optimized
-modes.
+Restrict to only the lowest delay modes by disabling voice-optimized modes. 
 
 cutoff (N.A.)
+    
 
-Set cutoff bandwidth in Hz. The argument must be exactly one of the
-following: 4000, 6000, 8000, 12000, or 20000, corresponding to
-narrowband, mediumband, wideband, super wideband, and fullband
-respectively. The default is 0 (cutoff disabled). Note that libopus
-forces a wideband cutoff for bitrates < 15 kbps, unless CELT-only
-(
+Set cutoff bandwidth in Hz. The argument must be exactly one of the following: 4000, 6000, 8000, 12000, or 20000, corresponding to narrowband, mediumband, wideband, super wideband, and fullband respectively. The default is 0 (cutoff disabled). Note that libopus forces a wideband cutoff for bitrates < 15 kbps, unless CELT-only (application set to ‘lowdelay’) mode is used. 
 
-application
+mapping_family (_mapping_family_)
+    
 
-set to ‘
+Set channel mapping family to be used by the encoder. The default value of -1 uses mapping family 0 for mono and stereo inputs, and mapping family 1 otherwise. The default also disables the surround masking and LFE bandwidth optimizations in libopus, and requires that the input contains 8 channels or fewer. 
 
-lowdelay
-
-’) mode is used.
-
-mapping_family (
-
-mapping_family
-
-)
-
-Set channel mapping family to be used by the encoder. The default value of -1
-uses mapping family 0 for mono and stereo inputs, and mapping family 1
-otherwise. The default also disables the surround masking and LFE bandwidth
-optimizations in libopus, and requires that the input contains 8 channels or
-fewer.
-
-Other values include 0 for mono and stereo, 1 for surround sound with masking
-and LFE bandwidth optimizations, and 255 for independent streams with an
-unspecified channel layout.
+Other values include 0 for mono and stereo, 1 for surround sound with masking and LFE bandwidth optimizations, and 255 for independent streams with an unspecified channel layout. 
 
 apply_phase_inv (N.A.) (requires libopus >= 1.2)
+    
 
-If set to 0, disables the use of phase inversion for intensity stereo,
-improving the quality of mono downmixes, but slightly reducing normal stereo
-quality. The default is 1 (phase inversion enabled).
+If set to 0, disables the use of phase inversion for intensity stereo, improving the quality of mono downmixes, but slightly reducing normal stereo quality. The default is 1 (phase inversion enabled). 
 
-8.10 libshine
+### 8.10 libshine
 
-Shine Fixed-Point MP3 encoder wrapper.
+Shine Fixed-Point MP3 encoder wrapper. 
 
-Shine is a fixed-point MP3 encoder. It has a far better performance on
-platforms without an FPU, e.g. armel CPUs, and some phones and tablets.
-However, as it is more targeted on performance than quality, it is not on par
-with LAME and other production-grade encoders quality-wise. Also, according to
-the project’s homepage, this encoder may not be free of bugs as the code was
-written a long time ago and the project was dead for at least 5 years.
+Shine is a fixed-point MP3 encoder. It has a far better performance on platforms without an FPU, e.g. armel CPUs, and some phones and tablets. However, as it is more targeted on performance than quality, it is not on par with LAME and other production-grade encoders quality-wise. Also, according to the project’s homepage, this encoder may not be free of bugs as the code was written a long time ago and the project was dead for at least 5 years. 
 
-This encoder only supports stereo and mono input. This is also CBR-only.
+This encoder only supports stereo and mono input. This is also CBR-only. 
 
-The original project (last updated in early 2007) is at
+The original project (last updated in early 2007) is at <http://sourceforge.net/projects/libshine-fxp/>. We only support the updated fork by the Savonet/Liquidsoap project at <https://github.com/savonet/shine>. 
 
-http://sourceforge.net/projects/libshine-fxp/
+Requires the presence of the libshine headers and library during configuration. You need to explicitly configure the build with `\--enable-libshine`. 
 
-. We only support the
-updated fork by the Savonet/Liquidsoap project at
+See also libmp3lame. 
 
-https://github.com/savonet/shine
+#### 8.10.1 Options
 
-.
+The following options are supported by the libshine wrapper. The `shineenc`-equivalent of the options are listed in parentheses. 
 
-Requires the presence of the libshine headers and library during
-configuration. You need to explicitly configure the build with
+b (_-b_)
+    
 
---enable-libshine
+Set bitrate expressed in bits/s for CBR. `shineenc` -b option is expressed in kilobits/s. 
 
-.
+### 8.11 libtwolame
 
-See also
+TwoLAME MP2 encoder wrapper. 
 
-libmp3lame
+Requires the presence of the libtwolame headers and library during configuration. You need to explicitly configure the build with `\--enable-libtwolame`. 
 
-.
+#### 8.11.1 Options
 
-8.10.1 Options
+The following options are supported by the libtwolame wrapper. The `twolame`-equivalent options follow the FFmpeg ones and are in parentheses. 
 
-The following options are supported by the libshine wrapper. The
+b (_-b_)
+    
 
-shineenc
+Set bitrate expressed in bits/s for CBR. `twolame` b option is expressed in kilobits/s. Default value is 128k. 
 
--equivalent of the options are listed in parentheses.
+q (_-V_)
+    
 
-b (
+Set quality for experimental VBR support. Maximum value range is from -50 to 50, useful range is from -10 to 10. The higher the value, the better the quality. This option is valid only using the `ffmpeg` command-line tool. For library interface users, use global_quality. 
 
--b
+mode (_--mode_)
+    
 
-)
+Set the mode of the resulting audio. Possible values: 
 
-Set bitrate expressed in bits/s for CBR.
+‘auto’
+    
 
-shineenc
+Choose mode automatically based on the input. This is the default. 
 
--b
+‘stereo’
+    
 
-option
-is expressed in kilobits/s.
+Stereo 
 
-8.11 libtwolame
+‘joint_stereo’
+    
 
-TwoLAME MP2 encoder wrapper.
+Joint stereo 
 
-Requires the presence of the libtwolame headers and library during
-configuration. You need to explicitly configure the build with
+‘dual_channel’
+    
 
---enable-libtwolame
+Dual channel 
 
-.
+‘mono’
+    
 
-8.11.1 Options
+Mono 
 
-The following options are supported by the libtwolame wrapper. The
+psymodel (_--psyc-mode_)
+    
 
-twolame
+Set psychoacoustic model to use in encoding. The argument must be an integer between -1 and 4, inclusive. The higher the value, the better the quality. The default value is 3. 
 
--equivalent options follow the FFmpeg ones and are in
-parentheses.
+energy_levels (_--energy_)
+    
 
-b (
+Enable energy levels extensions when set to 1. The default value is 0 (disabled). 
 
--b
+error_protection (_--protect_)
+    
 
-)
+Enable CRC error protection when set to 1. The default value is 0 (disabled). 
 
-Set bitrate expressed in bits/s for CBR.
+copyright (_--copyright_)
+    
 
-twolame
+Set MPEG audio copyright flag when set to 1. The default value is 0 (disabled). 
+
+original (_--original_)
+    
+
+Set MPEG audio original flag when set to 1. The default value is 0 (disabled). 
+
+### 8.12 libvo-amrwbenc
+
+VisualOn Adaptive Multi-Rate Wideband encoder. 
+
+Requires the presence of the libvo-amrwbenc headers and library during configuration. You need to explicitly configure the build with `\--enable-libvo-amrwbenc --enable-version3`. 
+
+This is a mono-only encoder. Officially it only supports 16000Hz sample rate, but you can override it by setting strict to ‘unofficial’ or lower. 
+
+#### 8.12.1 Options
 
 b
-
-option is expressed in kilobits/s. Default value is 128k.
-
-q (
-
--V
-
-)
-
-Set quality for experimental VBR support. Maximum value range is
-from -50 to 50, useful range is from -10 to 10. The higher the
-value, the better the quality. This option is valid only using the
-
-ffmpeg
-
-command-line tool. For library interface users,
-use
-
-global_quality
-
-.
-
-mode (
-
---mode
-
-)
-
-Set the mode of the resulting audio. Possible values:
-
-‘
-
-auto
-
-’
-
-Choose mode automatically based on the input. This is the default.
-
-‘
-
-stereo
-
-’
-
-Stereo
-
-‘
-
-joint_stereo
-
-’
-
-Joint stereo
-
-‘
-
-dual_channel
-
-’
-
-Dual channel
-
-‘
-
-mono
-
-’
-
-Mono
-
-psymodel (
-
---psyc-mode
-
-)
-
-Set psychoacoustic model to use in encoding. The argument must be
-an integer between -1 and 4, inclusive. The higher the value, the
-better the quality. The default value is 3.
-
-energy_levels (
-
---energy
-
-)
-
-Enable energy levels extensions when set to 1. The default value is
-0 (disabled).
-
-error_protection (
-
---protect
-
-)
-
-Enable CRC error protection when set to 1. The default value is 0
-(disabled).
-
-copyright (
-
---copyright
-
-)
-
-Set MPEG audio copyright flag when set to 1. The default value is 0
-(disabled).
-
-original (
-
---original
-
-)
-
-Set MPEG audio original flag when set to 1. The default value is 0
-(disabled).
-
-8.12 libvo-amrwbenc
-
-VisualOn Adaptive Multi-Rate Wideband encoder.
-
-Requires the presence of the libvo-amrwbenc headers and library during
-configuration. You need to explicitly configure the build with
-
---enable-libvo-amrwbenc --enable-version3
-
-.
-
-This is a mono-only encoder. Officially it only supports 16000Hz sample
-rate, but you can override it by setting
-
-strict
-
-to
-‘
-
-unofficial
-
-’ or lower.
-
-8.12.1 Options
-
-b
-
-Set bitrate in bits/s. Only the following bitrates are supported, otherwise
-libavcodec will round to the nearest valid bitrate.
-
-‘
-
-6600
-
-’
-
-‘
-
-8850
-
-’
-
-‘
-
-12650
-
-’
-
-‘
-
-14250
-
-’
-
-‘
-
-15850
-
-’
-
-‘
-
-18250
-
-’
-
-‘
-
-19850
-
-’
-
-‘
-
-23050
-
-’
-
-‘
-
-23850
-
-’
-
+    
+
+Set bitrate in bits/s. Only the following bitrates are supported, otherwise libavcodec will round to the nearest valid bitrate. 
+
+‘6600’
+‘8850’
+‘12650’
+‘14250’
+‘15850’
+‘18250’
+‘19850’
+‘23050’
+‘23850’
 dtx
+    
 
-Allow discontinuous transmission (generate comfort noise) when set to 1. The
-default value is 0 (disabled).
+Allow discontinuous transmission (generate comfort noise) when set to 1. The default value is 0 (disabled). 
 
-8.13 libvorbis
+### 8.13 libvorbis
 
-libvorbis encoder wrapper.
+libvorbis encoder wrapper. 
 
-Requires the presence of the libvorbisenc headers and library during
-configuration. You need to explicitly configure the build with
+Requires the presence of the libvorbisenc headers and library during configuration. You need to explicitly configure the build with `\--enable-libvorbis`. 
 
---enable-libvorbis
+#### 8.13.1 Options
 
-.
+The following options are supported by the libvorbis wrapper. The `oggenc`-equivalent of the options are listed in parentheses. 
 
-8.13.1 Options
+To get a more accurate and extensive documentation of the libvorbis options, consult the libvorbisenc’s and `oggenc`’s documentations. See <http://xiph.org/vorbis/>, <http://wiki.xiph.org/Vorbis-tools>, and oggenc(1). 
 
-The following options are supported by the libvorbis wrapper. The
+b (_-b_)
+    
 
-oggenc
+Set bitrate expressed in bits/s for ABR. `oggenc` -b is expressed in kilobits/s. 
 
--equivalent of the options are listed in parentheses.
+q (_-q_)
+    
 
-To get a more accurate and extensive documentation of the libvorbis
-options, consult the libvorbisenc’s and
+Set constant quality setting for VBR. The value should be a float number in the range of -1.0 to 10.0. The higher the value, the better the quality. The default value is ‘3.0’. 
 
-oggenc
+This option is valid only using the `ffmpeg` command-line tool. For library interface users, use global_quality. 
 
-’s documentations.
-See
+cutoff (_--advanced-encode-option lowpass_frequency=N_)
+    
 
-http://xiph.org/vorbis/
+Set cutoff bandwidth in Hz, a value of 0 disables cutoff. `oggenc`’s related option is expressed in kHz. The default value is ‘0’ (cutoff disabled). 
 
-,
+minrate (_-m_)
+    
 
-http://wiki.xiph.org/Vorbis-tools
+Set minimum bitrate expressed in bits/s. `oggenc` -m is expressed in kilobits/s. 
 
-, and oggenc(1).
+maxrate (_-M_)
+    
 
-b (
+Set maximum bitrate expressed in bits/s. `oggenc` -M is expressed in kilobits/s. This only has effect on ABR mode. 
 
--b
+iblock (_--advanced-encode-option impulse_noisetune=N_)
+    
 
-)
+Set noise floor bias for impulse blocks. The value is a float number from -15.0 to 0.0. A negative bias instructs the encoder to pay special attention to the crispness of transients in the encoded audio. The tradeoff for better transient response is a higher bitrate. 
 
-Set bitrate expressed in bits/s for ABR.
+### 8.14 mjpeg
 
-oggenc
+Motion JPEG encoder. 
 
--b
-
-is
-expressed in kilobits/s.
-
-q (
-
--q
-
-)
-
-Set constant quality setting for VBR. The value should be a float
-number in the range of -1.0 to 10.0. The higher the value, the better
-the quality. The default value is ‘
-
-3.0
-
-’.
-
-This option is valid only using the
-
-ffmpeg
-
-command-line tool.
-For library interface users, use
-
-global_quality
-
-.
-
-cutoff (
-
---advanced-encode-option lowpass_frequency=N
-
-)
-
-Set cutoff bandwidth in Hz, a value of 0 disables cutoff.
-
-oggenc
-
-’s
-related option is expressed in kHz. The default value is ‘
-
-0
-
-’ (cutoff
-disabled).
-
-minrate (
-
--m
-
-)
-
-Set minimum bitrate expressed in bits/s.
-
-oggenc
-
--m
-
-is
-expressed in kilobits/s.
-
-maxrate (
-
--M
-
-)
-
-Set maximum bitrate expressed in bits/s.
-
-oggenc
-
--M
-
-is
-expressed in kilobits/s. This only has effect on ABR mode.
-
-iblock (
-
---advanced-encode-option impulse_noisetune=N
-
-)
-
-Set noise floor bias for impulse blocks. The value is a float number from
--15.0 to 0.0. A negative bias instructs the encoder to pay special attention
-to the crispness of transients in the encoded audio. The tradeoff for better
-transient response is a higher bitrate.
-
-8.14 mjpeg
-
-Motion JPEG encoder.
-
-8.14.1 Options
+#### 8.14.1 Options
 
 huffman
+    
 
-Set the huffman encoding strategy. Possible values:
+Set the huffman encoding strategy. Possible values: 
 
-‘
+‘default’
+    
 
-default
+Use the default huffman tables. This is the default strategy. 
 
-’
+‘optimal’
+    
 
-Use the default huffman tables. This is the default strategy.
+Compute and use optimal huffman tables. 
 
-‘
+### 8.15 wavpack
 
-optimal
+WavPack lossless audio encoder. 
 
-’
+#### 8.15.1 Options
 
-Compute and use optimal huffman tables.
+The equivalent options for `wavpack` command line utility are listed in parentheses. 
 
-8.15 wavpack
+#### 8.15.1.1 Shared options
 
-WavPack lossless audio encoder.
+The following shared options are effective for this encoder. Only special notes about this particular encoder will be documented here. For the general meaning of the options, see the Codec Options chapter. 
 
-8.15.1 Options
+frame_size (_--blocksize_)
+    
 
-The equivalent options for
+For this encoder, the range for this option is between 128 and 131072. Default is automatically decided based on sample rate and number of channel. 
 
-wavpack
+For the complete formula of calculating default, see libavcodec/wavpackenc.c. 
 
-command line utility are listed in
-parentheses.
+compression_level (_-f_ , _-h_ , _-hh_ , and _-x_)
 
-8.15.1.1 Shared options
+#### 8.15.1.2 Private options
 
-The following shared options are effective for this encoder. Only special notes
-about this particular encoder will be documented here. For the general meaning
-of the options, see
+joint_stereo (_-j_)
+    
 
-the Codec Options chapter
+Set whether to enable joint stereo. Valid values are: 
 
-.
+‘on (_1_)’
+    
 
-frame_size (
+Force mid/side audio encoding. 
 
---blocksize
+‘off (_0_)’
+    
 
-)
+Force left/right audio encoding. 
 
-For this encoder, the range for this option is between 128 and 131072. Default
-is automatically decided based on sample rate and number of channel.
+‘auto’
+    
 
-For the complete formula of calculating default, see
-
-libavcodec/wavpackenc.c
-
-.
-
-compression_level (
-
--f
-
-,
-
--h
-
-,
-
--hh
-
-, and
-
--x
-
-)
-
-8.15.1.2 Private options
-
-joint_stereo (
-
--j
-
-)
-
-Set whether to enable joint stereo. Valid values are:
-
-‘
-
-on (
-
-1
-
-)
-
-’
-
-Force mid/side audio encoding.
-
-‘
-
-off (
-
-0
-
-)
-
-’
-
-Force left/right audio encoding.
-
-‘
-
-auto
-
-’
-
-Let the encoder decide automatically.
+Let the encoder decide automatically. 
 
 optimize_mono
+    
 
-Set whether to enable optimization for mono. This option is only effective for
-non-mono streams. Available values:
+Set whether to enable optimization for mono. This option is only effective for non-mono streams. Available values: 
 
-‘
+‘on’
+    
 
-on
+enabled 
 
-’
+‘off’
+    
 
-enabled
+disabled 
 
-‘
+## 9 Video Encoders
 
-off
+A description of some of the currently available video encoders follows. 
 
-’
+### 9.1 a64_multi, a64_multi5
 
-disabled
+A64 / Commodore 64 multicolor charset encoder. `a64_multi5` is extended with 5th color (colram). 
 
-9 Video Encoders
+### 9.2 Cinepak
 
-A description of some of the currently available video encoders
-follows.
+Cinepak aka CVID encoder. Compatible with Windows 3.1 and vintage MacOS. 
 
-9.1 a64_multi, a64_multi5
+#### 9.2.1 Options
 
-A64 / Commodore 64 multicolor charset encoder.
+g integer
+    
 
-a64_multi5
+Keyframe interval. A keyframe is inserted at least every `-g` frames, sometimes sooner. 
 
-is extended with 5th color (colram).
+q:v integer
+    
 
-9.2 Cinepak
+Quality factor. Lower is better. Higher gives lower bitrate. The following table lists bitrates when encoding akiyo_cif.y4m for various values of `-q:v` with `-g 100`: 
 
-Cinepak aka CVID encoder.
-Compatible with Windows 3.1 and vintage MacOS.
+`-q:v 1` 1918 kb/s
+`-q:v 2` 1735 kb/s
+`-q:v 4` 1500 kb/s
+`-q:v 10` 1041 kb/s
+`-q:v 20` 826 kb/s
+`-q:v 40` 553 kb/s
+`-q:v 100` 394 kb/s
+`-q:v 200` 312 kb/s
+`-q:v 400` 266 kb/s
+`-q:v 1000` 237 kb/s
+max_extra_cb_iterations integer
+    
 
-9.2.1 Options
+Max extra codebook recalculation passes, more is better and slower. 
 
-g
+skip_empty_cb boolean
+    
 
-integer
+Avoid wasting bytes, ignore vintage MacOS decoder. 
 
-Keyframe interval.
-A keyframe is inserted at least every
+max_strips integer
+min_strips integer
+    
 
--g
+The minimum and maximum number of strips to use. Wider range sometimes improves quality. More strips is generally better quality but costs more bits. Fewer strips tend to yield more keyframes. Vintage compatible is 1..3. 
 
-frames, sometimes sooner.
+strip_number_adaptivity integer
+    
 
-q:v
+How much number of strips is allowed to change between frames. Higher is better but slower. 
 
-integer
+### 9.3 ffv1
 
-Quality factor. Lower is better. Higher gives lower bitrate.
-The following table lists bitrates when encoding akiyo_cif.y4m for various values of
+FFv1 Encoder 
 
--q:v
+#### 9.3.1 Options
 
-with
-
--g 100
-
-:
-
--q:v 1
-
-1918 kb/s
-
--q:v 2
-
-1735 kb/s
-
--q:v 4
-
-1500 kb/s
-
--q:v 10
-
-1041 kb/s
-
--q:v 20
-
-826 kb/s
-
--q:v 40
-
-553 kb/s
-
--q:v 100
-
-394 kb/s
-
--q:v 200
-
-312 kb/s
-
--q:v 400
-
-266 kb/s
-
--q:v 1000
-
-237 kb/s
-
-max_extra_cb_iterations
-
-integer
-
-Max extra codebook recalculation passes, more is better and slower.
-
-skip_empty_cb
-
-boolean
-
-Avoid wasting bytes, ignore vintage MacOS decoder.
-
-max_strips
-
-integer
-
-min_strips
-
-integer
-
-The minimum and maximum number of strips to use.
-Wider range sometimes improves quality.
-More strips is generally better quality but costs more bits.
-Fewer strips tend to yield more keyframes.
-Vintage compatible is 1..3.
-
-strip_number_adaptivity
-
-integer
-
-How much number of strips is allowed to change between frames.
-Higher is better but slower.
-
-9.3 ffv1
-
-FFv1 Encoder
-
-9.3.1 Options
-
-The following options are supported by FFmpeg’s FFv1 encoder.
+The following options are supported by FFmpeg’s FFv1 encoder. 
 
 context
+    
 
-Sets the context size, 0 (default) is small, 1 is big.
+Sets the context size, 0 (default) is small, 1 is big. 
 
 coder
+    
 
-Set the coder,
+Set the coder, 
 
-‘
+‘rice’
+    
 
-rice
+Golomb rice coder 
 
-’
+‘range_def’
+    
 
-Golomb rice coder
+Range coder with default table 
 
-‘
+‘range_tab’
+    
 
-range_def
-
-’
-
-Range coder with default table
-
-‘
-
-range_tab
-
-’
-
-Range coder with custom table
+Range coder with custom table 
 
 slicecrc
+    
 
--1 (default, automatic), 1 use crc with zero initial and final state, 2 use crc with non zero initial and final state
+-1 (default, automatic), 1 use crc with zero initial and final state, 2 use crc with non zero initial and final state 
 
 qtable
+    
 
-‘
+‘default’
+    
 
-default
+default, automatic 
 
-’
+‘8bit’
+    
 
-default, automatic
+use 8bit default 
 
-‘
+‘greater8bit’
+    
 
-8bit
-
-’
-
-use 8bit default
-
-‘
-
-greater8bit
-
-’
-
-use >8bit default
+use >8bit default 
 
 remap_optimizer
+    
 
-0 - 5, default 3, how much effort the encoder puts into optimizing the remap table.
+0 - 5, default 3, how much effort the encoder puts into optimizing the remap table. 
 
-9.4 GIF
+### 9.4 GIF
 
-GIF image/animation encoder.
+GIF image/animation encoder. 
 
-9.4.1 Options
+#### 9.4.1 Options
 
-gifflags
+gifflags integer
+    
 
-integer
-
-Sets the flags used for GIF encoding.
+Sets the flags used for GIF encoding. 
 
 offsetting
+    
 
-Enables picture offsetting.
+Enables picture offsetting. 
 
-Default is enabled.
+Default is enabled. 
 
 transdiff
+    
 
-Enables transparency detection between frames.
+Enables transparency detection between frames. 
 
-Default is enabled.
+Default is enabled. 
 
-gifimage
+gifimage integer
+    
 
-integer
+Enables encoding one full GIF image per frame, rather than an animated GIF. 
 
-Enables encoding one full GIF image per frame, rather than an animated GIF.
+Default value is 0. 
 
-Default value is
+global_palette integer
+    
 
-0
+Writes a palette to the global GIF header where feasible. 
 
-.
+If disabled, every frame will always have a palette written, even if there is a global palette supplied. 
 
-global_palette
+Default value is 1. 
 
-integer
+### 9.5 Hap
 
-Writes a palette to the global GIF header where feasible.
+Vidvox Hap video encoder. 
 
-If disabled, every frame will always have a palette written, even if there
-is a global palette supplied.
+#### 9.5.1 Options
 
-Default value is
+format integer
+    
 
-1
-
-.
-
-9.5 Hap
-
-Vidvox Hap video encoder.
-
-9.5.1 Options
-
-format
-
-integer
-
-Specifies the Hap format to encode.
+Specifies the Hap format to encode. 
 
 hap
-
 hap_alpha
-
 hap_q
 
-Default value is
+Default value is hap. 
 
-hap
+chunks integer
+    
 
-.
+Specifies the number of chunks to split frames into, between 1 and 64. This permits multithreaded decoding of large frames, potentially at the cost of data-rate. The encoder may modify this value to divide frames evenly. 
 
-chunks
+Default value is 1. 
 
-integer
+compressor integer
+    
 
-Specifies the number of chunks to split frames into, between 1 and 64. This
-permits multithreaded decoding of large frames, potentially at the cost of
-data-rate. The encoder may modify this value to divide frames evenly.
-
-Default value is
-
-1
-
-.
-
-compressor
-
-integer
-
-Specifies the second-stage compressor to use. If set to
+Specifies the second-stage compressor to use. If set to none, chunks will be limited to 1, as chunked uncompressed frames offer no benefit. 
 
 none
-
-,
-
-chunks
-
-will be limited to 1, as chunked uncompressed frames offer no
-benefit.
-
-none
-
 snappy
 
-Default value is
+Default value is snappy. 
 
-snappy
+### 9.6 jpeg2000
 
-.
+The native jpeg 2000 encoder is lossy by default, the `-q:v` option can be used to set the encoding quality. Lossless encoding can be selected with `-pred 1`. 
 
-9.6 jpeg2000
+#### 9.6.1 Options
 
-The native jpeg 2000 encoder is lossy by default, the
+format integer
+    
 
--q:v
+Can be set to either `j2k` or `jp2` (the default) that makes it possible to store non-rgb pix_fmts. 
 
-option can be used to set the encoding quality. Lossless encoding
-can be selected with
+tile_width integer
+    
 
--pred 1
+Sets tile width. Range is 1 to 1073741824. Default is 256. 
 
-.
+tile_height integer
+    
 
-9.6.1 Options
+Sets tile height. Range is 1 to 1073741824. Default is 256. 
 
-format
+pred integer
+    
 
-integer
-
-Can be set to either
-
-j2k
-
-or
-
-jp2
-
-(the default) that
-makes it possible to store non-rgb pix_fmts.
-
-tile_width
-
-integer
-
-Sets tile width. Range is 1 to 1073741824. Default is 256.
-
-tile_height
-
-integer
-
-Sets tile height. Range is 1 to 1073741824. Default is 256.
-
-pred
-
-integer
-
-Allows setting the discrete wavelet transform (DWT) type
+Allows setting the discrete wavelet transform (DWT) type 
 
 dwt97int (Lossy)
-
 dwt53 (Lossless)
 
-Default is
+Default is `dwt97int`
 
-dwt97int
+sop boolean
+    
 
-sop
+Enable this to add SOP marker at the start of each packet. Disabled by default. 
 
-boolean
+eph boolean
+    
 
-Enable this to add SOP marker at the start of each packet. Disabled by default.
+Enable this to add EPH marker at the end of each packet header. Disabled by default. 
 
-eph
+prog integer
+    
 
-boolean
-
-Enable this to add EPH marker at the end of each packet header. Disabled by default.
-
-prog
-
-integer
-
-Sets the progression order to be used by the encoder.
-Possible values are:
+Sets the progression order to be used by the encoder. Possible values are: 
 
 lrcp
-
 rlcp
-
 rpcl
-
 pcrl
-
 cprl
 
-Set to
+Set to `lrcp` by default. 
 
-lrcp
+layer_rates string
+    
 
-by default.
+By default, when this option is not used, compression is done using the quality metric. This option allows for compression using compression ratio. The compression ratio for each level could be specified. The compression ratio of a layer `l` species the what ratio of total file size is contained in the first `l` layers. 
 
-layer_rates
+Example usage: 
+    
+    
+    ffmpeg -i input.bmp -c:v jpeg2000 -layer_rates "100,10,1" output.j2k
+    
 
-string
+This would compress the image to contain 3 layers, where the data contained in the first layer would be compressed by 1000 times, compressed by 100 in the first two layers, and shall contain all data while using all 3 layers. 
 
-By default, when this option is not used, compression is done using the quality metric.
-This option allows for compression using compression ratio. The compression ratio for each
-level could be specified. The compression ratio of a layer
+### 9.7 librav1e
 
-l
+rav1e AV1 encoder wrapper. 
 
-species the what ratio of
-total file size is contained in the first
+Requires the presence of the rav1e headers and library during configuration. You need to explicitly configure the build with `\--enable-librav1e`. 
 
-l
-
-layers.
-
-Example usage:
-
-ffmpeg -i input.bmp -c:v jpeg2000 -layer_rates "100,10,1" output.j2k
-
-This would compress the image to contain 3 layers, where the data contained in the
-first layer would be compressed by 1000 times, compressed by 100 in the first two layers,
-and shall contain all data while using all 3 layers.
-
-9.7 librav1e
-
-rav1e AV1 encoder wrapper.
-
-Requires the presence of the rav1e headers and library during configuration.
-You need to explicitly configure the build with
-
---enable-librav1e
-
-.
-
-9.7.1 Options
+#### 9.7.1 Options
 
 qmax
+    
 
-Sets the maximum quantizer to use when using bitrate mode.
+Sets the maximum quantizer to use when using bitrate mode. 
 
 qmin
+    
 
-Sets the minimum quantizer to use when using bitrate mode.
+Sets the minimum quantizer to use when using bitrate mode. 
 
 qp
+    
 
-Uses quantizer mode to encode at the given quantizer (0-255).
+Uses quantizer mode to encode at the given quantizer (0-255). 
 
 speed
+    
 
-Selects the speed preset (0-10) to encode with.
+Selects the speed preset (0-10) to encode with. 
 
 tiles
+    
 
-Selects how many tiles to encode with.
+Selects how many tiles to encode with. 
 
 tile-rows
+    
 
-Selects how many rows of tiles to encode with.
+Selects how many rows of tiles to encode with. 
 
 tile-columns
+    
 
-Selects how many columns of tiles to encode with.
+Selects how many columns of tiles to encode with. 
 
 rav1e-params
+    
 
-Set rav1e options using a list of
+Set rav1e options using a list of key=value pairs separated by ":". See `rav1e --help` for a list of options. 
 
-key
+For example to specify librav1e encoding options with -rav1e-params: 
+    
+    
+    ffmpeg -i input -c:v librav1e -b:v 500K -rav1e-params speed=5:low_latency=true output.mp4
+    
 
-=
+### 9.8 libaom-av1
 
-value
+libaom AV1 encoder wrapper. 
 
-pairs separated
-by ":". See
+Requires the presence of the libaom headers and library during configuration. You need to explicitly configure the build with `\--enable-libaom`. 
 
-rav1e --help
+#### 9.8.1 Options
 
-for a list of options.
-
-For example to specify librav1e encoding options with
-
--rav1e-params
-
-:
-
-ffmpeg -i input -c:v librav1e -b:v 500K -rav1e-params speed=5:low_latency=true output.mp4
-
-9.8 libaom-av1
-
-libaom AV1 encoder wrapper.
-
-Requires the presence of the libaom headers and library during
-configuration.  You need to explicitly configure the build with
-
---enable-libaom
-
-.
-
-9.8.1 Options
-
-The wrapper supports the following standard libavcodec options:
+The wrapper supports the following standard libavcodec options: 
 
 b
+    
 
-Set bitrate target in bits/second.  By default this will use
-variable-bitrate mode.  If
-
-maxrate
-
-and
-
-minrate
-
-are
-also set to the same value then it will use constant-bitrate mode,
-otherwise if
-
-crf
-
-is set as well then it will use
-constrained-quality mode.
+Set bitrate target in bits/second. By default this will use variable-bitrate mode. If maxrate and minrate are also set to the same value then it will use constant-bitrate mode, otherwise if crf is set as well then it will use constrained-quality mode. 
 
 g keyint_min
+    
 
-Set key frame placement.  The GOP size sets the maximum distance between
-key frames; if zero the output stream will be intra-only.  The minimum
-distance is ignored unless it is the same as the GOP size, in which case
-key frames will always appear at a fixed interval.  Not set by default,
-so without this option the library has completely free choice about
-where to place key frames.
+Set key frame placement. The GOP size sets the maximum distance between key frames; if zero the output stream will be intra-only. The minimum distance is ignored unless it is the same as the GOP size, in which case key frames will always appear at a fixed interval. Not set by default, so without this option the library has completely free choice about where to place key frames. 
 
 qmin qmax
+    
 
-Set minimum/maximum quantisation values.  Valid range is from 0 to 63
-(warning: this does not match the quantiser values actually used by AV1
-- divide by four to map real quantiser values to this range).  Defaults
-to min/max (no constraint).
+Set minimum/maximum quantisation values. Valid range is from 0 to 63 (warning: this does not match the quantiser values actually used by AV1 - divide by four to map real quantiser values to this range). Defaults to min/max (no constraint). 
 
 minrate maxrate bufsize rc_init_occupancy
+    
 
-Set rate control buffering parameters.  Not used if not set - defaults
-to unconstrained variable bitrate.
+Set rate control buffering parameters. Not used if not set - defaults to unconstrained variable bitrate. 
 
 threads
+    
 
-Set the number of threads to use while encoding.  This may require the
-
-tiles
-
-or
-
-row-mt
-
-options to also be set to actually
-use the specified number of threads fully. Defaults to the number of
-hardware threads supported by the host machine.
+Set the number of threads to use while encoding. This may require the tiles or row-mt options to also be set to actually use the specified number of threads fully. Defaults to the number of hardware threads supported by the host machine. 
 
 profile
+    
 
-Set the encoding profile.  Defaults to using the profile which matches
-the bit depth and chroma subsampling of the input.
+Set the encoding profile. Defaults to using the profile which matches the bit depth and chroma subsampling of the input. 
 
-The wrapper also has some specific options:
+The wrapper also has some specific options: 
 
 cpu-used
+    
 
-Set the quality/encoding speed tradeoff.  Valid range is from 0 to 8,
-higher numbers indicating greater speed and lower quality.  The default
-value is 1, which will be slow and high quality.
+Set the quality/encoding speed tradeoff. Valid range is from 0 to 8, higher numbers indicating greater speed and lower quality. The default value is 1, which will be slow and high quality. 
 
 auto-alt-ref
+    
 
-Enable use of alternate reference frames.  Defaults to the internal
-default of the library.
+Enable use of alternate reference frames. Defaults to the internal default of the library. 
 
-arnr-max-frames (
+arnr-max-frames (_frames_)
+    
 
-frames
+Set altref noise reduction max frame count. Default is -1. 
 
-)
+arnr-strength (_strength_)
+    
 
-Set altref noise reduction max frame count. Default is -1.
+Set altref noise reduction filter strength. Range is -1 to 6. Default is -1. 
 
-arnr-strength (
+aq-mode (_aq-mode_)
+    
 
-strength
+Set adaptive quantization mode. Possible values: 
 
-)
+‘none (_0_)’
+    
 
-Set altref noise reduction filter strength. Range is -1 to 6. Default is -1.
+Disabled. 
 
-aq-mode (
+‘variance (_1_)’
+    
 
-aq-mode
+Variance-based. 
 
-)
+‘complexity (_2_)’
+    
 
-Set adaptive quantization mode. Possible values:
+Complexity-based. 
 
-‘
+‘cyclic (_3_)’
+    
 
-none (
+Cyclic refresh. 
 
-0
+tune (_tune_)
+    
 
-)
+Set the distortion metric the encoder is tuned with. Default is `psnr`. 
 
-’
-
-Disabled.
-
-‘
-
-variance (
-
-1
-
-)
-
-’
-
-Variance-based.
-
-‘
-
-complexity (
-
-2
-
-)
-
-’
-
-Complexity-based.
-
-‘
-
-cyclic (
-
-3
-
-)
-
-’
-
-Cyclic refresh.
-
-tune (
-
-tune
-
-)
-
-Set the distortion metric the encoder is tuned with. Default is
-
-psnr
-
-.
-
-‘
-
-psnr (
-
-0
-
-)
-
-’
-
-‘
-
-ssim (
-
-1
-
-)
-
-’
-
+‘psnr (_0_)’
+‘ssim (_1_)’
 lag-in-frames
+    
 
-Set the maximum number of frames which the encoder may keep in flight
-at any one time for lookahead purposes.  Defaults to the internal
-default of the library.
+Set the maximum number of frames which the encoder may keep in flight at any one time for lookahead purposes. Defaults to the internal default of the library. 
 
 error-resilience
+    
 
-Enable error resilience features:
+Enable error resilience features: 
 
 default
+    
 
-Improve resilience against losses of whole frames.
+Improve resilience against losses of whole frames. 
 
-Not enabled by default.
+Not enabled by default. 
 
 crf
+    
 
-Set the quality/size tradeoff for constant-quality (no bitrate target)
-and constrained-quality (with maximum bitrate target) modes. Valid
-range is 0 to 63, higher numbers indicating lower quality and smaller
-output size.  Only used if set; by default only the bitrate target is
-used.
+Set the quality/size tradeoff for constant-quality (no bitrate target) and constrained-quality (with maximum bitrate target) modes. Valid range is 0 to 63, higher numbers indicating lower quality and smaller output size. Only used if set; by default only the bitrate target is used. 
 
 static-thresh
+    
 
-Set a change threshold on blocks below which they will be skipped by
-the encoder.  Defined in arbitrary units as a nonnegative integer,
-defaulting to zero (no blocks are skipped).
+Set a change threshold on blocks below which they will be skipped by the encoder. Defined in arbitrary units as a nonnegative integer, defaulting to zero (no blocks are skipped). 
 
 drop-threshold
+    
 
-Set a threshold for dropping frames when close to rate control bounds.
-Defined as a percentage of the target buffer - when the rate control
-buffer falls below this percentage, frames will be dropped until it
-has refilled above the threshold.  Defaults to zero (no frames are
-dropped).
+Set a threshold for dropping frames when close to rate control bounds. Defined as a percentage of the target buffer - when the rate control buffer falls below this percentage, frames will be dropped until it has refilled above the threshold. Defaults to zero (no frames are dropped). 
 
-denoise-noise-level (
+denoise-noise-level (_level_)
+    
 
-level
+Amount of noise to be removed for grain synthesis. Grain synthesis is disabled if this option is not set or set to 0. 
 
-)
+denoise-block-size (_pixels_)
+    
 
-Amount of noise to be removed for grain synthesis. Grain synthesis is disabled if
-this option is not set or set to 0.
+Block size used for denoising for grain synthesis. If not set, AV1 codec uses the default value of 32. 
 
-denoise-block-size (
+undershoot-pct (_pct_)
+    
 
-pixels
+Set datarate undershoot (min) percentage of the target bitrate. Range is -1 to 100. Default is -1. 
 
-)
+overshoot-pct (_pct_)
+    
 
-Block size used for denoising for grain synthesis. If not set, AV1 codec
-uses the default value of 32.
+Set datarate overshoot (max) percentage of the target bitrate. Range is -1 to 1000. Default is -1. 
 
-undershoot-pct (
+minsection-pct (_pct_)
+    
 
-pct
+Minimum percentage variation of the GOP bitrate from the target bitrate. If minsection-pct is not set, the libaomenc wrapper computes it as follows: `(minrate * 100 / bitrate)`. Range is -1 to 100. Default is -1 (unset). 
 
-)
+maxsection-pct (_pct_)
+    
 
-Set datarate undershoot (min) percentage of the target bitrate. Range is -1 to 100.
-Default is -1.
+Maximum percentage variation of the GOP bitrate from the target bitrate. If maxsection-pct is not set, the libaomenc wrapper computes it as follows: `(maxrate * 100 / bitrate)`. Range is -1 to 5000. Default is -1 (unset). 
 
-overshoot-pct (
+frame-parallel (_boolean_)
+    
 
-pct
-
-)
-
-Set datarate overshoot (max) percentage of the target bitrate. Range is -1 to 1000.
-Default is -1.
-
-minsection-pct (
-
-pct
-
-)
-
-Minimum percentage variation of the GOP bitrate from the target bitrate. If minsection-pct
-is not set, the libaomenc wrapper computes it as follows:
-
-(minrate * 100 / bitrate)
-
-.
-Range is -1 to 100. Default is -1 (unset).
-
-maxsection-pct (
-
-pct
-
-)
-
-Maximum percentage variation of the GOP bitrate from the target bitrate. If maxsection-pct
-is not set, the libaomenc wrapper computes it as follows:
-
-(maxrate * 100 / bitrate)
-
-.
-Range is -1 to 5000. Default is -1 (unset).
-
-frame-parallel (
-
-boolean
-
-)
-
-Enable frame parallel decodability features. Default is true.
+Enable frame parallel decodability features. Default is true. 
 
 tiles
+    
 
-Set the number of tiles to encode the input video with, as columns x
-rows.  Larger numbers allow greater parallelism in both encoding and
-decoding, but may decrease coding efficiency.  Defaults to the minimum
-number of tiles required by the size of the input video (this is 1x1
-(that is, a single tile) for sizes up to and including 4K).
+Set the number of tiles to encode the input video with, as columns x rows. Larger numbers allow greater parallelism in both encoding and decoding, but may decrease coding efficiency. Defaults to the minimum number of tiles required by the size of the input video (this is 1x1 (that is, a single tile) for sizes up to and including 4K). 
 
 tile-columns tile-rows
+    
 
-Set the number of tiles as log2 of the number of tile rows and columns.
-Provided for compatibility with libvpx/VP9.
+Set the number of tiles as log2 of the number of tile rows and columns. Provided for compatibility with libvpx/VP9. 
 
 row-mt (Requires libaom >= 1.0.0-759-g90a15f4f2)
+    
 
-Enable row based multi-threading. Disabled by default.
+Enable row based multi-threading. Disabled by default. 
 
-enable-cdef (
+enable-cdef (_boolean_)
+    
 
-boolean
+Enable Constrained Directional Enhancement Filter. The libaom-av1 encoder enables CDEF by default. 
 
-)
+enable-restoration (_boolean_)
+    
 
-Enable Constrained Directional Enhancement Filter. The libaom-av1
-encoder enables CDEF by default.
+Enable Loop Restoration Filter. Default is true for libaom-av1. 
 
-enable-restoration (
+enable-global-motion (_boolean_)
+    
 
-boolean
+Enable the use of global motion for block prediction. Default is true. 
 
-)
+enable-intrabc (_boolean_)
+    
 
-Enable Loop Restoration Filter. Default is true for libaom-av1.
+Enable block copy mode for intra block prediction. This mode is useful for screen content. Default is true. 
 
-enable-global-motion (
+enable-rect-partitions (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable rectangular partitions. Default is true. 
 
-)
+enable-1to4-partitions (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable the use of global motion for block prediction. Default is true.
+Enable 1:4/4:1 partitions. Default is true. 
 
-enable-intrabc (
+enable-ab-partitions (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable AB shape partitions. Default is true. 
 
-)
+enable-angle-delta (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable block copy mode for intra block prediction. This mode is
-useful for screen content. Default is true.
+Enable angle delta intra prediction. Default is true. 
 
-enable-rect-partitions (
+enable-cfl-intra (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable chroma predicted from luma intra prediction. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-filter-intra (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable rectangular partitions. Default is true.
+Enable filter intra predictor. Default is true. 
 
-enable-1to4-partitions (
+enable-intra-edge-filter (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable intra edge filter. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-smooth-intra (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable 1:4/4:1 partitions. Default is true.
+Enable smooth intra prediction mode. Default is true. 
 
-enable-ab-partitions (
+enable-paeth-intra (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable paeth predictor in intra prediction. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-palette (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable AB shape partitions. Default is true.
+Enable palette prediction mode. Default is true. 
 
-enable-angle-delta (
+enable-flip-idtx (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable extended transform type, including FLIPADST_DCT, DCT_FLIPADST, FLIPADST_FLIPADST, ADST_FLIPADST, FLIPADST_ADST, IDTX, V_DCT, H_DCT, V_ADST, H_ADST, V_FLIPADST, H_FLIPADST. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-tx64 (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable angle delta intra prediction. Default is true.
+Enable 64-pt transform. Default is true. 
 
-enable-cfl-intra (
+reduced-tx-type-set (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Use reduced set of transform types. Default is false. 
 
-) (Requires libaom >= v2.0.0)
+use-intra-dct-only (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable chroma predicted from luma intra prediction. Default is true.
+Use DCT only for INTRA modes. Default is false. 
 
-enable-filter-intra (
+use-inter-dct-only (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Use DCT only for INTER modes. Default is false. 
 
-) (Requires libaom >= v2.0.0)
+use-intra-default-tx-only (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable filter intra predictor. Default is true.
+Use Default-transform only for INTRA modes. Default is false. 
 
-enable-intra-edge-filter (
+enable-ref-frame-mvs (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable temporal mv prediction. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-reduced-reference-set (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable intra edge filter. Default is true.
+Use reduced set of single and compound references. Default is false. 
 
-enable-smooth-intra (
+enable-obmc (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable obmc. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-dual-filter (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable smooth intra prediction mode. Default is true.
+Enable dual filter. Default is true. 
 
-enable-paeth-intra (
+enable-diff-wtd-comp (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable difference-weighted compound. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-dist-wtd-comp (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable paeth predictor in intra prediction. Default is true.
+Enable distance-weighted compound. Default is true. 
 
-enable-palette (
+enable-onesided-comp (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable one sided compound. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-interinter-wedge (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable palette prediction mode. Default is true.
+Enable interinter wedge compound. Default is true. 
 
-enable-flip-idtx (
+enable-interintra-wedge (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable interintra wedge compound. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-masked-comp (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable extended transform type, including FLIPADST_DCT, DCT_FLIPADST,
-FLIPADST_FLIPADST, ADST_FLIPADST, FLIPADST_ADST, IDTX, V_DCT, H_DCT,
-V_ADST, H_ADST, V_FLIPADST, H_FLIPADST. Default is true.
+Enable masked compound. Default is true. 
 
-enable-tx64 (
+enable-interintra-comp (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-boolean
+Enable interintra compound. Default is true. 
 
-) (Requires libaom >= v2.0.0)
+enable-smooth-interintra (_boolean_) (Requires libaom >= v2.0.0)
+    
 
-Enable 64-pt transform. Default is true.
-
-reduced-tx-type-set (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Use reduced set of transform types. Default is false.
-
-use-intra-dct-only (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Use DCT only for INTRA modes. Default is false.
-
-use-inter-dct-only (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Use DCT only for INTER modes. Default is false.
-
-use-intra-default-tx-only (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Use Default-transform only for INTRA modes. Default is false.
-
-enable-ref-frame-mvs (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable temporal mv prediction. Default is true.
-
-enable-reduced-reference-set (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Use reduced set of single and compound references. Default is false.
-
-enable-obmc (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable obmc. Default is true.
-
-enable-dual-filter (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable dual filter. Default is true.
-
-enable-diff-wtd-comp (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable difference-weighted compound. Default is true.
-
-enable-dist-wtd-comp (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable distance-weighted compound. Default is true.
-
-enable-onesided-comp (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable one sided compound. Default is true.
-
-enable-interinter-wedge (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable interinter wedge compound. Default is true.
-
-enable-interintra-wedge (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable interintra wedge compound. Default is true.
-
-enable-masked-comp (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable masked compound. Default is true.
-
-enable-interintra-comp (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable interintra compound. Default is true.
-
-enable-smooth-interintra (
-
-boolean
-
-) (Requires libaom >= v2.0.0)
-
-Enable smooth interintra mode. Default is true.
+Enable smooth interintra mode. Default is true. 
 
 aom-params
+    
 
-Set libaom options using a list of
+Set libaom options using a list of key=value pairs separated by ":". For a list of supported options, see `aomenc --help` under the section "AV1 Specific Options". 
 
-key
+For example to specify libaom encoding options with -aom-params: 
+    
+    
+    ffmpeg -i input -c:v libaom-av1 -b:v 500K -aom-params tune=psnr:enable-tpl-model=1 output.mp4
+    
 
-=
+### 9.9 liboapv
 
-value
+Advanced Professional Video codec encoder wrapper. 
 
-pairs separated
-by ":". For a list of supported options, see
+This encoder requires the presence of the liboapv headers and library during configuration. You need to explicitly configure the build with --enable-liboapv. 
 
-aomenc --help
+Many liboapv encoder options are mapped to FFmpeg global codec options, while unique encoder options are provided through private options. 
 
-under the
-section "AV1 Specific Options".
+The apv project website is at <https://github.com/AcademySoftwareFoundation/openapv>. 
 
-For example to specify libaom encoding options with
+#### 9.9.1 Options
 
--aom-params
+The following options are supported by the liboapv wrapper. 
 
-:
-
-ffmpeg -i input -c:v libaom-av1 -b:v 500K -aom-params tune=psnr:enable-tpl-model=1 output.mp4
-
-9.9 liboapv
-
-Advanced Professional Video codec encoder wrapper.
-
-This encoder requires the presence of the liboapv headers and library
-during configuration. You need to explicitly configure the build with
-
---enable-liboapv
-
-.
-
-Many liboapv encoder options are mapped to FFmpeg global codec options,
-while unique encoder options are provided through private options.
-
-The apv project website is at
-
-https://github.com/AcademySoftwareFoundation/openapv
-
-.
-
-9.9.1 Options
-
-The following options are supported by the liboapv wrapper.
-
-To get a more extensive documentation of the liboapv options, consult the
-liboapv documentation.
+To get a more extensive documentation of the liboapv options, consult the liboapv documentation. 
 
 preset
+    
 
-Set the quality-speed tradeoff [fastest, fast, medium, slow, placebo, default]
+Set the quality-speed tradeoff [fastest, fast, medium, slow, placebo, default] 
 
 qp
+    
 
-Set the quantization parameter value for CQP rate control mode.
+Set the quantization parameter value for CQP rate control mode. 
 
-oapv-params (
+oapv-params (_parse_apv_params_)
+    
 
-parse_apv_params
+Set liboapvenc options using a list of key=value pairs separated by ":". See the liboapv encoder user guide for a list of accepted parameters. 
 
-)
+### 9.10 libsvtav1
 
-Set liboapvenc options using a list of
+SVT-AV1 encoder wrapper. 
 
-key
+Requires the presence of the SVT-AV1 headers and library during configuration. You need to explicitly configure the build with `\--enable-libsvtav1`. 
 
-=
-
-value
-
-pairs separated
-by ":". See the liboapv encoder user guide for a list of accepted parameters.
-
-9.10 libsvtav1
-
-SVT-AV1 encoder wrapper.
-
-Requires the presence of the SVT-AV1 headers and library during configuration.
-You need to explicitly configure the build with
-
---enable-libsvtav1
-
-.
-
-9.10.1 Options
+#### 9.10.1 Options
 
 profile
+    
 
-Set the encoding profile.
+Set the encoding profile. 
 
-‘
-
-main
-
-’
-
-‘
-
-high
-
-’
-
-‘
-
-professional
-
-’
-
+‘main’
+‘high’
+‘professional’
 level
+    
 
-Set the operating point level. For example: ’4.0’
+Set the operating point level. For example: ’4.0’ 
 
 hielevel
+    
 
-Set the Hierarchical prediction levels.
+Set the Hierarchical prediction levels. 
 
-‘
+‘3level’
+‘4level’
+    
 
-3level
-
-’
-
-‘
-
-4level
-
-’
-
-This is the default.
+This is the default. 
 
 tier
+    
 
-Set the operating point tier.
+Set the operating point tier. 
 
-‘
+‘main’
+    
 
-main
+This is the default. 
 
-’
-
-This is the default.
-
-‘
-
-high
-
-’
-
+‘high’
 qmax
+    
 
-Set the maximum quantizer to use when using a bitrate mode.
+Set the maximum quantizer to use when using a bitrate mode. 
 
 qmin
+    
 
-Set the minimum quantizer to use when using a bitrate mode.
+Set the minimum quantizer to use when using a bitrate mode. 
 
 crf
+    
 
-Constant rate factor value used in crf rate control mode (0-63).
+Constant rate factor value used in crf rate control mode (0-63). 
 
 qp
+    
 
-Set the quantizer used in cqp rate control mode (0-63).
+Set the quantizer used in cqp rate control mode (0-63). 
 
 sc_detection
+    
 
-Enable scene change detection.
+Enable scene change detection. 
 
 la_depth
+    
 
-Set number of frames to look ahead (0-120).
+Set number of frames to look ahead (0-120). 
 
 preset
+    
 
-Set the quality-speed tradeoff, in the range 0 to 13.  Higher values are
-faster but lower quality.
+Set the quality-speed tradeoff, in the range 0 to 13. Higher values are faster but lower quality. 
 
 tile_rows
+    
 
-Set log2 of the number of rows of tiles to use (0-6).
+Set log2 of the number of rows of tiles to use (0-6). 
 
 tile_columns
+    
 
-Set log2 of the number of columns of tiles to use (0-4).
+Set log2 of the number of columns of tiles to use (0-4). 
 
 svtav1-params
+    
 
-Set SVT-AV1 options using a list of
+Set SVT-AV1 options using a list of key=value pairs separated by ":". See the SVT-AV1 encoder user guide for a list of accepted parameters. 
 
-key
+### 9.11 libsvtjpegxs
 
-=
+SVT-JPEG-XS encoder wrapper. 
 
-value
+Requires the presence of the SVT-JPEG-XS headers and library during configuration. You need to explicitly configure the build with `\--enable-libsvtjpegxs`. 
 
-pairs separated
-by ":". See the SVT-AV1 encoder user guide for a list of accepted parameters.
-
-9.11 libsvtjpegxs
-
-SVT-JPEG-XS encoder wrapper.
-
-Requires the presence of the SVT-JPEG-XS headers and library during configuration.
-You need to explicitly configure the build with
-
---enable-libsvtjpegxs
-
-.
-
-9.11.1 Options
+#### 9.11.1 Options
 
 decomp_v
+    
 
-Set vertical decomposition level
+Set vertical decomposition level 
 
 decomp_h
+    
 
-Set horizontal decomposition level
+Set horizontal decomposition level 
 
 quantization
+    
 
-Set the quantization algorithm.
+Set the quantization algorithm. 
 
-‘
-
-deadzone
-
-’
-
-‘
-
-uniform
-
-’
-
+‘deadzone’
+‘uniform’
 coding-signs
+    
 
-Enable Signs handling strategy
+Enable Signs handling strategy 
 
-‘
-
-disable
-
-’
-
-‘
-
-fast
-
-’
-
-‘
-
-full
-
-’
-
+‘disable’
+‘fast’
+‘full’
 coding-sigf
+    
 
-Enable Significance coding
+Enable Significance coding 
 
 coding-vpred
+    
 
-Enable Vertical Prediction coding
+Enable Vertical Prediction coding 
 
-‘
+‘disable’
+‘no_residuals’
+‘no_coeffs’
 
-disable
+### 9.12 libjxl
 
-’
+libjxl JPEG XL encoder wrapper. 
 
-‘
+Requires the presence of the libjxl headers and library during configuration. You need to explicitly configure the build with `\--enable-libjxl`. 
 
-no_residuals
+#### 9.12.1 Options
 
-’
-
-‘
-
-no_coeffs
-
-’
-
-9.12 libjxl
-
-libjxl JPEG XL encoder wrapper.
-
-Requires the presence of the libjxl headers and library during
-configuration. You need to explicitly configure the build with
-
---enable-libjxl
-
-.
-
-9.12.1 Options
-
-The libjxl wrapper supports the following options:
+The libjxl wrapper supports the following options: 
 
 distance
+    
 
-Set the target Butteraugli distance. This is a quality setting: lower
-distance yields higher quality, with distance=1.0 roughly comparable to
-libjpeg Quality 90 for photographic content. Setting distance=0.0 yields
-true lossless encoding. Valid values range between 0.0 and 15.0, and sane
-values rarely exceed 5.0. Setting distance=0.1 usually attains
-transparency for most input. The default is 1.0.
+Set the target Butteraugli distance. This is a quality setting: lower distance yields higher quality, with distance=1.0 roughly comparable to libjpeg Quality 90 for photographic content. Setting distance=0.0 yields true lossless encoding. Valid values range between 0.0 and 15.0, and sane values rarely exceed 5.0. Setting distance=0.1 usually attains transparency for most input. The default is 1.0. 
 
 effort
+    
 
-Set the encoding effort used. Higher effort values produce more consistent
-quality and usually produces a better quality/bpp curve, at the cost of
-more CPU time required. Valid values range from 1 to 9, and the default is 7.
+Set the encoding effort used. Higher effort values produce more consistent quality and usually produces a better quality/bpp curve, at the cost of more CPU time required. Valid values range from 1 to 9, and the default is 7. 
 
 modular
+    
 
-Force the encoder to use Modular mode instead of choosing automatically. The
-default is to use VarDCT for lossy encoding and Modular for lossless. VarDCT
-is generally superior to Modular for lossy encoding but does not support
-lossless encoding.
+Force the encoder to use Modular mode instead of choosing automatically. The default is to use VarDCT for lossy encoding and Modular for lossless. VarDCT is generally superior to Modular for lossy encoding but does not support lossless encoding. 
 
-9.13 libkvazaar
+### 9.13 libkvazaar
 
-Kvazaar H.265/HEVC encoder.
+Kvazaar H.265/HEVC encoder. 
 
-Requires the presence of the libkvazaar headers and library during
-configuration. You need to explicitly configure the build with
+Requires the presence of the libkvazaar headers and library during configuration. You need to explicitly configure the build with --enable-libkvazaar. 
 
---enable-libkvazaar
-
-.
-
-9.13.1 Options
+#### 9.13.1 Options
 
 b
+    
 
-Set target video bitrate in bit/s and enable rate control.
+Set target video bitrate in bit/s and enable rate control. 
 
 kvazaar-params
+    
 
-Set kvazaar parameters as a list of
+Set kvazaar parameters as a list of name=value pairs separated by commas (,). See kvazaar documentation for a list of options. 
 
-name
+### 9.14 libopenh264
 
-=
+Cisco libopenh264 H.264/MPEG-4 AVC encoder wrapper. 
 
-value
+This encoder requires the presence of the libopenh264 headers and library during configuration. You need to explicitly configure the build with `\--enable-libopenh264`. The library is detected using `pkg-config`. 
 
-pairs separated
-by commas (,). See kvazaar documentation for a list of options.
+For more information about the library see <http://www.openh264.org>. 
 
-9.14 libopenh264
+#### 9.14.1 Options
 
-Cisco libopenh264 H.264/MPEG-4 AVC encoder wrapper.
-
-This encoder requires the presence of the libopenh264 headers and
-library during configuration. You need to explicitly configure the
-build with
-
---enable-libopenh264
-
-. The library is detected using
-
-pkg-config
-
-.
-
-For more information about the library see
-
-http://www.openh264.org
-
-.
-
-9.14.1 Options
-
-The following FFmpeg global options affect the configurations of the
-libopenh264 encoder.
+The following FFmpeg global options affect the configurations of the libopenh264 encoder. 
 
 b
+    
 
-Set the bitrate (as a number of bits per second).
+Set the bitrate (as a number of bits per second). 
 
 g
+    
 
-Set the GOP size.
+Set the GOP size. 
 
 maxrate
+    
 
-Set the max bitrate (as a number of bits per second).
+Set the max bitrate (as a number of bits per second). 
 
 flags +global_header
+    
 
-Set global header in the bitstream.
+Set global header in the bitstream. 
 
 slices
+    
 
-Set the number of slices, used in parallelized encoding. Default value
-is 0. This is only used when
-
-slice_mode
-
-is set to
-‘
-
-fixed
-
-’.
+Set the number of slices, used in parallelized encoding. Default value is 0. This is only used when slice_mode is set to ‘fixed’. 
 
 loopfilter
+    
 
-Enable loop filter, if set to 1 (automatically enabled). To disable
-set a value of 0.
+Enable loop filter, if set to 1 (automatically enabled). To disable set a value of 0. 
 
 profile
+    
 
-Set profile restrictions. If set to the value of ‘
-
-main
-
-’ enable
-CABAC (set the
-
-SEncParamExt.iEntropyCodingModeFlag
-
-flag to 1).
+Set profile restrictions. If set to the value of ‘main’ enable CABAC (set the `SEncParamExt.iEntropyCodingModeFlag` flag to 1). 
 
 max_nal_size
+    
 
-Set maximum NAL size in bytes.
+Set maximum NAL size in bytes. 
 
 allow_skip_frames
+    
 
-Allow skipping frames to hit the target bitrate if set to 1.
+Allow skipping frames to hit the target bitrate if set to 1. 
 
-9.15 libtheora
+### 9.15 libtheora
 
-libtheora Theora encoder wrapper.
+libtheora Theora encoder wrapper. 
 
-Requires the presence of the libtheora headers and library during
-configuration. You need to explicitly configure the build with
+Requires the presence of the libtheora headers and library during configuration. You need to explicitly configure the build with `\--enable-libtheora`. 
 
---enable-libtheora
+For more information about the libtheora project see <http://www.theora.org/>. 
 
-.
+#### 9.15.1 Options
 
-For more information about the libtheora project see
-
-http://www.theora.org/
-
-.
-
-9.15.1 Options
-
-The following global options are mapped to internal libtheora options
-which affect the quality and the bitrate of the encoded stream.
+The following global options are mapped to internal libtheora options which affect the quality and the bitrate of the encoded stream. 
 
 b
+    
 
-Set the video bitrate in bit/s for CBR (Constant Bit Rate) mode.  In
-case VBR (Variable Bit Rate) mode is enabled this option is ignored.
+Set the video bitrate in bit/s for CBR (Constant Bit Rate) mode. In case VBR (Variable Bit Rate) mode is enabled this option is ignored. 
 
 flags
+    
 
-Used to enable constant quality mode (VBR) encoding through the
-
-qscale
-
-flag, and to enable the
-
-pass1
-
-and
-
-pass2
-
-modes.
+Used to enable constant quality mode (VBR) encoding through the qscale flag, and to enable the `pass1` and `pass2` modes. 
 
 g
+    
 
-Set the GOP size.
+Set the GOP size. 
 
 global_quality
+    
 
-Set the global quality as an integer in lambda units.
+Set the global quality as an integer in lambda units. 
 
-Only relevant when VBR mode is enabled with
-
-flags +qscale
-
-. The
-value is converted to QP units by dividing it by
-
-FF_QP2LAMBDA
-
-,
-clipped in the [0 - 10] range, and then multiplied by 6.3 to get a
-value in the native libtheora range [0-63]. A higher value corresponds
-to a higher quality.
+Only relevant when VBR mode is enabled with `flags +qscale`. The value is converted to QP units by dividing it by `FF_QP2LAMBDA`, clipped in the [0 - 10] range, and then multiplied by 6.3 to get a value in the native libtheora range [0-63]. A higher value corresponds to a higher quality. 
 
 q
+    
 
-Enable VBR mode when set to a non-negative value, and set constant
-quality value as a double floating point value in QP units.
+Enable VBR mode when set to a non-negative value, and set constant quality value as a double floating point value in QP units. 
 
-The value is clipped in the [0-10] range, and then multiplied by 6.3
-to get a value in the native libtheora range [0-63].
+The value is clipped in the [0-10] range, and then multiplied by 6.3 to get a value in the native libtheora range [0-63]. 
 
-This option is valid only using the
+This option is valid only using the `ffmpeg` command-line tool. For library interface users, use global_quality. 
 
-ffmpeg
+#### 9.15.2 Examples
 
-command-line
-tool. For library interface users, use
+  * Set maximum constant quality (VBR) encoding with `ffmpeg`: 
+        
+        ffmpeg -i INPUT -codec:v libtheora -q:v 10 OUTPUT.ogg
+        
 
-global_quality
+  * Use `ffmpeg` to convert a CBR 1000 kbps Theora video stream: 
+        
+        ffmpeg -i INPUT -codec:v libtheora -b:v 1000k OUTPUT.ogg
+        
 
-.
 
-9.15.2 Examples
 
-Set maximum constant quality (VBR) encoding with
 
-ffmpeg
+### 9.16 libvpx
 
-:
+VP8/VP9 format supported through libvpx. 
 
-ffmpeg -i INPUT -codec:v libtheora -q:v 10 OUTPUT.ogg
+Requires the presence of the libvpx headers and library during configuration. You need to explicitly configure the build with `\--enable-libvpx`. 
 
-Use
+#### 9.16.1 Options
 
-ffmpeg
+The following options are supported by the libvpx wrapper. The `vpxenc`-equivalent options or values are listed in parentheses for easy migration. 
 
-to convert a CBR 1000 kbps Theora video stream:
+To reduce the duplication of documentation, only the private options and some others requiring special attention are documented here. For the documentation of the undocumented generic options, see the Codec Options chapter. 
 
-ffmpeg -i INPUT -codec:v libtheora -b:v 1000k OUTPUT.ogg
+To get more documentation of the libvpx options, invoke the command `ffmpeg -h encoder=libvpx`, `ffmpeg -h encoder=libvpx-vp9` or `vpxenc --help`. Further information is available in the libvpx API documentation. 
 
-9.16 libvpx
+b (_target-bitrate_)
+    
 
-VP8/VP9 format supported through libvpx.
+Set bitrate in bits/s. Note that FFmpeg’s b option is expressed in bits/s, while `vpxenc`’s target-bitrate is in kilobits/s. 
 
-Requires the presence of the libvpx headers and library during configuration.
-You need to explicitly configure the build with
+g (_kf-max-dist_)
+keyint_min (_kf-min-dist_)
+qmin (_min-q_)
+    
 
---enable-libvpx
+Minimum (Best Quality) Quantizer. 
 
-.
+qmax (_max-q_)
+    
 
-9.16.1 Options
+Maximum (Worst Quality) Quantizer. Can be changed per-frame. 
 
-The following options are supported by the libvpx wrapper. The
+bufsize (_buf-sz_ , _buf-optimal-sz_)
+    
 
-vpxenc
+Set ratecontrol buffer size (in bits). Note `vpxenc`’s options are specified in milliseconds, the libvpx wrapper converts this value as follows: `buf-sz = bufsize * 1000 / bitrate`, `buf-optimal-sz = bufsize * 1000 / bitrate * 5 / 6`. 
 
--equivalent options or values are listed in parentheses
-for easy migration.
+rc_init_occupancy (_buf-initial-sz_)
+    
 
-To reduce the duplication of documentation, only the private options
-and some others requiring special attention are documented here. For
-the documentation of the undocumented generic options, see
-
-the Codec Options chapter
-
-.
-
-To get more documentation of the libvpx options, invoke the command
-
-ffmpeg -h encoder=libvpx
-
-,
-
-ffmpeg -h encoder=libvpx-vp9
-
-or
-
-vpxenc --help
-
-. Further information is available in the libvpx API
-documentation.
-
-b (
-
-target-bitrate
-
-)
-
-Set bitrate in bits/s. Note that FFmpeg’s
-
-b
-
-option is
-expressed in bits/s, while
-
-vpxenc
-
-’s
-
-target-bitrate
-
-is in
-kilobits/s.
-
-g (
-
-kf-max-dist
-
-)
-
-keyint_min (
-
-kf-min-dist
-
-)
-
-qmin (
-
-min-q
-
-)
-
-Minimum (Best Quality) Quantizer.
-
-qmax (
-
-max-q
-
-)
-
-Maximum (Worst Quality) Quantizer.
-Can be changed per-frame.
-
-bufsize (
-
-buf-sz
-
-,
-
-buf-optimal-sz
-
-)
-
-Set ratecontrol buffer size (in bits). Note
-
-vpxenc
-
-’s options are
-specified in milliseconds, the libvpx wrapper converts this value as follows:
-
-buf-sz = bufsize * 1000 / bitrate
-
-,
-
-buf-optimal-sz = bufsize * 1000 / bitrate * 5 / 6
-
-.
-
-rc_init_occupancy (
-
-buf-initial-sz
-
-)
-
-Set number of bits which should be loaded into the rc buffer before decoding
-starts. Note
-
-vpxenc
-
-’s option is specified in milliseconds, the libvpx
-wrapper converts this value as follows:
-
-rc_init_occupancy * 1000 / bitrate
-
-.
+Set number of bits which should be loaded into the rc buffer before decoding starts. Note `vpxenc`’s option is specified in milliseconds, the libvpx wrapper converts this value as follows: `rc_init_occupancy * 1000 / bitrate`. 
 
 undershoot-pct
+    
 
-Set datarate undershoot (min) percentage of the target bitrate.
+Set datarate undershoot (min) percentage of the target bitrate. 
 
 overshoot-pct
+    
 
-Set datarate overshoot (max) percentage of the target bitrate.
+Set datarate overshoot (max) percentage of the target bitrate. 
 
-skip_threshold (
+skip_threshold (_drop-frame_)
+qcomp (_bias-pct_)
+maxrate (_maxsection-pct_)
+    
 
-drop-frame
+Set GOP max bitrate in bits/s. Note `vpxenc`’s option is specified as a percentage of the target bitrate, the libvpx wrapper converts this value as follows: `(maxrate * 100 / bitrate)`. 
 
-)
+minrate (_minsection-pct_)
+    
 
-qcomp (
+Set GOP min bitrate in bits/s. Note `vpxenc`’s option is specified as a percentage of the target bitrate, the libvpx wrapper converts this value as follows: `(minrate * 100 / bitrate)`. 
 
-bias-pct
+minrate, maxrate, b _end-usage=cbr_
+    
 
-)
+`(minrate == maxrate == bitrate)`. 
 
-maxrate (
+crf (_end-usage=cq_ , _cq-level_)
+tune (_tune_)
+    
 
-maxsection-pct
+‘psnr (_psnr_)’
+‘ssim (_ssim_)’
+quality, deadline (_deadline_)
+    
 
-)
+‘best’
+    
 
-Set GOP max bitrate in bits/s. Note
+Use best quality deadline. Poorly named and quite slow, this option should be avoided as it may give worse quality output than good. 
 
-vpxenc
+‘good’
+    
 
-’s option is specified as a
-percentage of the target bitrate, the libvpx wrapper converts this value as
-follows:
+Use good quality deadline. This is a good trade-off between speed and quality when used with the cpu-used option. 
 
-(maxrate * 100 / bitrate)
+‘realtime’
+    
 
-.
+Use realtime quality deadline. 
 
-minrate (
+speed, cpu-used (_cpu-used_)
+    
 
-minsection-pct
+Set quality/speed ratio modifier. Higher values speed up the encode at the cost of quality. 
 
-)
-
-Set GOP min bitrate in bits/s. Note
-
-vpxenc
-
-’s option is specified as a
-percentage of the target bitrate, the libvpx wrapper converts this value as
-follows:
-
-(minrate * 100 / bitrate)
-
-.
-
-minrate, maxrate, b
-
-end-usage=cbr
-
-(minrate == maxrate == bitrate)
-
-.
-
-crf (
-
-end-usage=cq
-
-,
-
-cq-level
-
-)
-
-tune (
-
-tune
-
-)
-
-‘
-
-psnr (
-
-psnr
-
-)
-
-’
-
-‘
-
-ssim (
-
-ssim
-
-)
-
-’
-
-quality, deadline (
-
-deadline
-
-)
-
-‘
-
-best
-
-’
-
-Use best quality deadline. Poorly named and quite slow, this option should be
-avoided as it may give worse quality output than good.
-
-‘
-
-good
-
-’
-
-Use good quality deadline. This is a good trade-off between speed and quality
-when used with the
-
-cpu-used
-
-option.
-
-‘
-
-realtime
-
-’
-
-Use realtime quality deadline.
-
-speed, cpu-used (
-
-cpu-used
-
-)
-
-Set quality/speed ratio modifier. Higher values speed up the encode at the cost
-of quality.
-
-nr (
-
-noise-sensitivity
-
-)
-
+nr (_noise-sensitivity_)
 static-thresh
+    
 
-Set a change threshold on blocks below which they will be skipped by the
-encoder.
+Set a change threshold on blocks below which they will be skipped by the encoder. 
 
-slices (
+slices (_token-parts_)
+    
 
-token-parts
-
-)
-
-Note that FFmpeg’s
-
-slices
-
-option gives the total number of partitions,
-while
-
-vpxenc
-
-’s
-
-token-parts
-
-is given as
-
-log2(partitions)
-
-.
+Note that FFmpeg’s slices option gives the total number of partitions, while `vpxenc`’s token-parts is given as `log2(partitions)`. 
 
 max-intra-rate
+    
 
-Set maximum I-frame bitrate as a percentage of the target bitrate. A value of 0
-means unlimited.
+Set maximum I-frame bitrate as a percentage of the target bitrate. A value of 0 means unlimited. 
 
 force_key_frames
+    
 
-VPX_EFLAG_FORCE_KF
+`VPX_EFLAG_FORCE_KF`
 
 Alternate reference frame related
+    
 
 auto-alt-ref
+    
 
-Enable use of alternate reference frames (2-pass only).
-Values greater than 1 enable multi-layer alternate reference frames (VP9 only).
+Enable use of alternate reference frames (2-pass only). Values greater than 1 enable multi-layer alternate reference frames (VP9 only). 
 
 arnr-maxframes
+    
 
-Set altref noise reduction max frame count.
+Set altref noise reduction max frame count. 
 
 arnr-type
+    
 
-Set altref noise reduction filter type: backward, forward, centered.
+Set altref noise reduction filter type: backward, forward, centered. 
 
 arnr-strength
+    
 
-Set altref noise reduction filter strength.
+Set altref noise reduction filter strength. 
 
-rc-lookahead, lag-in-frames (
+rc-lookahead, lag-in-frames (_lag-in-frames_)
+    
 
-lag-in-frames
-
-)
-
-Set number of frames to look ahead for frametype and ratecontrol.
+Set number of frames to look ahead for frametype and ratecontrol. 
 
 min-gf-interval
+    
 
-Set minimum golden/alternate reference frame interval (VP9 only).
+Set minimum golden/alternate reference frame interval (VP9 only). 
 
 error-resilient
+    
 
-Enable error resiliency features.
+Enable error resiliency features. 
 
-sharpness
+sharpness integer
+    
 
-integer
-
-Increase sharpness at the expense of lower PSNR.
-The valid range is [0, 7].
+Increase sharpness at the expense of lower PSNR. The valid range is [0, 7]. 
 
 ts-parameters
+    
 
-Sets the temporal scalability configuration using a :-separated list of
-key=value pairs. For example, to specify temporal scalability parameters
-with
+Sets the temporal scalability configuration using a :-separated list of key=value pairs. For example, to specify temporal scalability parameters with `ffmpeg`: 
+    
+    
+    ffmpeg -i INPUT -c:v libvpx -ts-parameters ts_number_layers=3:\
+    ts_target_bitrate=250,500,1000:ts_rate_decimator=4,2,1:\
+    ts_periodicity=4:ts_layer_id=0,2,1,2:ts_layering_mode=3 OUTPUT
+    
 
-ffmpeg
-
-:
-
-ffmpeg -i INPUT -c:v libvpx -ts-parameters ts_number_layers=3:\
-ts_target_bitrate=250,500,1000:ts_rate_decimator=4,2,1:\
-ts_periodicity=4:ts_layer_id=0,2,1,2:ts_layering_mode=3 OUTPUT
-
-Below is a brief explanation of each of the parameters, please
-refer to
-
-struct vpx_codec_enc_cfg
-
-in
-
-vpx/vpx_encoder.h
-
-for more
-details.
+Below is a brief explanation of each of the parameters, please refer to `struct vpx_codec_enc_cfg` in `vpx/vpx_encoder.h` for more details. 
 
 ts_number_layers
+    
 
-Number of temporal coding layers.
+Number of temporal coding layers. 
 
 ts_target_bitrate
+    
 
-Target bitrate for each temporal layer (in kbps).
-(bitrate should be inclusive of the lower temporal layer).
+Target bitrate for each temporal layer (in kbps). (bitrate should be inclusive of the lower temporal layer). 
 
 ts_rate_decimator
+    
 
-Frame rate decimation factor for each temporal layer.
+Frame rate decimation factor for each temporal layer. 
 
 ts_periodicity
+    
 
-Length of the sequence defining frame temporal layer membership.
+Length of the sequence defining frame temporal layer membership. 
 
 ts_layer_id
+    
 
-Template defining the membership of frames to temporal layers.
+Template defining the membership of frames to temporal layers. 
 
 ts_layering_mode
+    
 
-(optional) Selecting the temporal structure from a set of pre-defined temporal layering modes.
-Currently supports the following options.
+(optional) Selecting the temporal structure from a set of pre-defined temporal layering modes. Currently supports the following options. 
 
 0
+    
 
-No temporal layering flags are provided internally,
-relies on flags being passed in using
-
-metadata
-
-field in
-
-AVFrame
-
-with following keys.
+No temporal layering flags are provided internally, relies on flags being passed in using `metadata` field in `AVFrame` with following keys. 
 
 vp8-flags
+    
 
-Sets the flags passed into the encoder to indicate the referencing scheme for
-the current frame.
-Refer to function
-
-vpx_codec_encode
-
-in
-
-vpx/vpx_encoder.h
-
-for more
-details.
+Sets the flags passed into the encoder to indicate the referencing scheme for the current frame. Refer to function `vpx_codec_encode` in `vpx/vpx_encoder.h` for more details. 
 
 temporal_id
+    
 
-Explicitly sets the temporal id of the current frame to encode.
+Explicitly sets the temporal id of the current frame to encode. 
 
 2
+    
 
-Two temporal layers. 0-1...
+Two temporal layers. 0-1... 
 
 3
+    
 
-Three temporal layers. 0-2-1-2...; with single reference frame.
+Three temporal layers. 0-2-1-2...; with single reference frame. 
 
 4
+    
 
-Same as option "3", except there is a dependency between
-the two temporal layer 2 frames within the temporal period.
+Same as option "3", except there is a dependency between the two temporal layer 2 frames within the temporal period. 
 
 VP8-specific options
+    
 
 screen-content-mode
+    
 
-Screen content mode, one of: 0 (off), 1 (screen), 2 (screen with more aggressive rate control).
+Screen content mode, one of: 0 (off), 1 (screen), 2 (screen with more aggressive rate control). 
 
 VP9-specific options
+    
 
 lossless
+    
 
-Enable lossless mode.
-
-tile-columns
-
-Set number of tile columns to use. Note this is given as
-
-log2(tile_columns)
-
-. For example, 8 tile columns would be requested by
-setting the
+Enable lossless mode. 
 
 tile-columns
+    
 
-option to 3.
-
-tile-rows
-
-Set number of tile rows to use. Note this is given as
-
-log2(tile_rows)
-
-.
-For example, 4 tile rows would be requested by setting the
+Set number of tile columns to use. Note this is given as `log2(tile_columns)`. For example, 8 tile columns would be requested by setting the tile-columns option to 3. 
 
 tile-rows
+    
 
-option to 2.
+Set number of tile rows to use. Note this is given as `log2(tile_rows)`. For example, 4 tile rows would be requested by setting the tile-rows option to 2. 
 
 frame-parallel
+    
 
-Enable frame parallel decodability features.
+Enable frame parallel decodability features. 
 
 aq-mode
+    
 
-Set adaptive quantization mode (0: off (default), 1: variance 2: complexity, 3:
-cyclic refresh, 4: equator360).
+Set adaptive quantization mode (0: off (default), 1: variance 2: complexity, 3: cyclic refresh, 4: equator360). 
 
-colorspace
+colorspace _color-space_
+    
 
-color-space
+Set input color space. The VP9 bitstream supports signaling the following colorspaces: 
 
-Set input color space. The VP9 bitstream supports signaling the following
-colorspaces:
+‘rgb’ _sRGB_
+‘bt709’ _bt709_
+‘unspecified’ _unknown_
+‘bt470bg’ _bt601_
+‘smpte170m’ _smpte170_
+‘smpte240m’ _smpte240_
+‘bt2020_ncl’ _bt2020_
+row-mt boolean
+    
 
-‘
-
-rgb
-
-’
-
-sRGB
-
-‘
-
-bt709
-
-’
-
-bt709
-
-‘
-
-unspecified
-
-’
-
-unknown
-
-‘
-
-bt470bg
-
-’
-
-bt601
-
-‘
-
-smpte170m
-
-’
-
-smpte170
-
-‘
-
-smpte240m
-
-’
-
-smpte240
-
-‘
-
-bt2020_ncl
-
-’
-
-bt2020
-
-row-mt
-
-boolean
-
-Enable row based multi-threading.
+Enable row based multi-threading. 
 
 tune-content
+    
 
-Set content type: default (0), screen (1), film (2).
+Set content type: default (0), screen (1), film (2). 
 
 corpus-complexity
+    
 
-Corpus VBR mode is a variant of standard VBR where the complexity distribution
-midpoint is passed in rather than calculated for a specific clip or chunk.
+Corpus VBR mode is a variant of standard VBR where the complexity distribution midpoint is passed in rather than calculated for a specific clip or chunk. 
 
-The valid range is [0, 10000]. 0 (default) uses standard VBR.
+The valid range is [0, 10000]. 0 (default) uses standard VBR. 
 
-enable-tpl
+enable-tpl boolean
+    
 
-boolean
-
-Enable temporal dependency model.
+Enable temporal dependency model. 
 
 ref-frame-config
+    
 
-Using per-frame metadata, set members of the structure
-
-vpx_svc_ref_frame_config_t
-
-in
-
-vpx/vp8cx.h
-
-to fine-control referencing schemes and frame buffer management.
-
-Use a :-separated list of key=value pairs.
-For example,
-
-av_dict_set(&av_frame->metadata, "ref-frame-config", \
-"rfc_update_buffer_slot=7:rfc_lst_fb_idx=0:rfc_gld_fb_idx=1:rfc_alt_fb_idx=2:rfc_reference_last=0:rfc_reference_golden=0:rfc_reference_alt_ref=0");
+Using per-frame metadata, set members of the structure `vpx_svc_ref_frame_config_t` in `vpx/vp8cx.h` to fine-control referencing schemes and frame buffer management.   
+Use a :-separated list of key=value pairs. For example, 
+    
+    
+    av_dict_set(&av_frame->metadata, "ref-frame-config", \
+    "rfc_update_buffer_slot=7:rfc_lst_fb_idx=0:rfc_gld_fb_idx=1:rfc_alt_fb_idx=2:rfc_reference_last=0:rfc_reference_golden=0:rfc_reference_alt_ref=0");
+    
 
 rfc_update_buffer_slot
+    
 
-Indicates the buffer slot number to update
+Indicates the buffer slot number to update 
 
 rfc_update_last
+    
 
-Indicates whether to update the LAST frame
+Indicates whether to update the LAST frame 
 
 rfc_update_golden
+    
 
-Indicates whether to update GOLDEN frame
+Indicates whether to update GOLDEN frame 
 
 rfc_update_alt_ref
+    
 
-Indicates whether to update ALT_REF frame
+Indicates whether to update ALT_REF frame 
 
 rfc_lst_fb_idx
+    
 
-LAST frame buffer index
+LAST frame buffer index 
 
 rfc_gld_fb_idx
+    
 
-GOLDEN frame buffer index
+GOLDEN frame buffer index 
 
 rfc_alt_fb_idx
+    
 
-ALT_REF frame buffer index
+ALT_REF frame buffer index 
 
 rfc_reference_last
+    
 
-Indicates whether to reference LAST frame
+Indicates whether to reference LAST frame 
 
 rfc_reference_golden
+    
 
-Indicates whether to reference GOLDEN frame
+Indicates whether to reference GOLDEN frame 
 
 rfc_reference_alt_ref
+    
 
-Indicates whether to reference ALT_REF frame
+Indicates whether to reference ALT_REF frame 
 
 rfc_reference_duration
+    
 
-Indicates frame duration
+Indicates frame duration 
 
-For more information about libvpx see:
+For more information about libvpx see: <http://www.webmproject.org/>
 
-http://www.webmproject.org/
+### 9.17 libvvenc
 
-9.17 libvvenc
+VVenC H.266/VVC encoder wrapper. 
 
-VVenC H.266/VVC encoder wrapper.
+This encoder requires the presence of the libvvenc headers and library during configuration. You need to explicitly configure the build with --enable-libvvenc. 
 
-This encoder requires the presence of the libvvenc headers and library
-during configuration. You need to explicitly configure the build with
+The VVenC project website is at <https://github.com/fraunhoferhhi/vvenc>. 
 
---enable-libvvenc
+#### 9.17.1 Supported Pixel Formats
 
-.
+VVenC supports only 10-bit color spaces as input. But the internal (encoded) bit depth can be set to 8-bit or 10-bit at runtime. 
 
-The VVenC project website is at
-
-https://github.com/fraunhoferhhi/vvenc
-
-.
-
-9.17.1 Supported Pixel Formats
-
-VVenC supports only 10-bit color spaces as input. But the internal (encoded)
-bit depth can be set to 8-bit or 10-bit at runtime.
-
-9.17.2 Options
+#### 9.17.2 Options
 
 b
+    
 
-Sets target video bitrate.
+Sets target video bitrate. 
 
 g
+    
 
-Set the GOP size. Currently support for g=1 (Intra only) or default.
+Set the GOP size. Currently support for g=1 (Intra only) or default. 
 
 preset
+    
 
-Set the VVenC preset.
+Set the VVenC preset. 
 
 levelidc
+    
 
-Set level idc.
+Set level idc. 
 
 tier
+    
 
-Set vvc tier.
+Set vvc tier. 
 
 qp
+    
 
-Set constant quantization parameter.
+Set constant quantization parameter. 
 
-subopt
+subopt boolean
+    
 
-boolean
+Set subjective (perceptually motivated) optimization. Default is 1 (on). 
 
-Set subjective (perceptually motivated) optimization. Default is 1 (on).
+bitdepth8 boolean
+    
 
-bitdepth8
-
-boolean
-
-Set 8bit coding mode instead of using 10bit. Default is 0 (off).
+Set 8bit coding mode instead of using 10bit. Default is 0 (off). 
 
 period
+    
 
-set (intra) refresh period in seconds.
+set (intra) refresh period in seconds. 
 
 vvenc-params
+    
 
-Set vvenc options using a list of
+Set vvenc options using a list of key=value couples separated by ":". See `vvencapp --fullhelp` or `vvencFFapp --fullhelp` for a list of options. 
 
-key
+For example, the options might be provided as: 
+    
+    
+    intraperiod=64:decodingrefreshtype=idr:poc0idr=1:internalbitdepth=8
+    
 
-=
+For example the encoding options might be provided with -vvenc-params: 
+    
+    
+    ffmpeg -i input -c:v libvvenc -b 1M -vvenc-params intraperiod=64:decodingrefreshtype=idr:poc0idr=1:internalbitdepth=8 output.mp4
+    
 
-value
+### 9.18 libwebp
 
-couples separated
-by ":". See
+libwebp WebP Image encoder wrapper 
 
-vvencapp --fullhelp
+libwebp is Google’s official encoder for WebP images. It can encode in either lossy or lossless mode. Lossy images are essentially a wrapper around a VP8 frame. Lossless images are a separate codec developed by Google. 
 
-or
+#### 9.18.1 Pixel Format
 
-vvencFFapp --fullhelp
+Currently, libwebp only supports YUV420 for lossy and RGB for lossless due to limitations of the format and libwebp. Alpha is supported for either mode. Because of API limitations, if RGB is passed in when encoding lossy or YUV is passed in for encoding lossless, the pixel format will automatically be converted using functions from libwebp. This is not ideal and is done only for convenience. 
 
-for a list of options.
+#### 9.18.2 Options
 
-For example, the options might be provided as:
+-lossless boolean
+    
 
-intraperiod=64:decodingrefreshtype=idr:poc0idr=1:internalbitdepth=8
+Enables/Disables use of lossless mode. Default is 0. 
 
-For example the encoding options might be provided with
+-compression_level integer
+    
 
--vvenc-params
+For lossy, this is a quality/speed tradeoff. Higher values give better quality for a given size at the cost of increased encoding time. For lossless, this is a size/speed tradeoff. Higher values give smaller size at the cost of increased encoding time. More specifically, it controls the number of extra algorithms and compression tools used, and varies the combination of these tools. This maps to the method option in libwebp. The valid range is 0 to 6. Default is 4. 
 
-:
+-quality float
+    
 
-ffmpeg -i input -c:v libvvenc -b 1M -vvenc-params intraperiod=64:decodingrefreshtype=idr:poc0idr=1:internalbitdepth=8 output.mp4
+For lossy encoding, this controls image quality. For lossless encoding, this controls the effort and time spent in compression. Range is 0 to 100. Default is 75. 
 
-9.18 libwebp
+-preset type
+    
 
-libwebp WebP Image encoder wrapper
-
-libwebp is Google’s official encoder for WebP images. It can encode in either
-lossy or lossless mode. Lossy images are essentially a wrapper around a VP8
-frame. Lossless images are a separate codec developed by Google.
-
-9.18.1 Pixel Format
-
-Currently, libwebp only supports YUV420 for lossy and RGB for lossless due
-to limitations of the format and libwebp. Alpha is supported for either mode.
-Because of API limitations, if RGB is passed in when encoding lossy or YUV is
-passed in for encoding lossless, the pixel format will automatically be
-converted using functions from libwebp. This is not ideal and is done only for
-convenience.
-
-9.18.2 Options
-
--lossless
-
-boolean
-
-Enables/Disables use of lossless mode. Default is 0.
-
--compression_level
-
-integer
-
-For lossy, this is a quality/speed tradeoff. Higher values give better quality
-for a given size at the cost of increased encoding time. For lossless, this is
-a size/speed tradeoff. Higher values give smaller size at the cost of increased
-encoding time. More specifically, it controls the number of extra algorithms
-and compression tools used, and varies the combination of these tools. This
-maps to the
-
-method
-
-option in libwebp. The valid range is 0 to 6.
-Default is 4.
-
--quality
-
-float
-
-For lossy encoding, this controls image quality. For lossless encoding, this
-controls the effort and time spent in compression.
-Range is 0 to 100. Default is 75.
-
--preset
-
-type
-
-Configuration preset. This does some automatic settings based on the general
-type of the image.
+Configuration preset. This does some automatic settings based on the general type of the image. 
 
 none
+    
 
-Do not use a preset.
+Do not use a preset. 
 
 default
+    
 
-Use the encoder default.
+Use the encoder default. 
 
 picture
+    
 
-Digital picture, like portrait, inner shot
+Digital picture, like portrait, inner shot 
 
 photo
+    
 
-Outdoor photograph, with natural lighting
+Outdoor photograph, with natural lighting 
 
 drawing
+    
 
-Hand or line drawing, with high-contrast details
+Hand or line drawing, with high-contrast details 
 
 icon
+    
 
-Small-sized colorful images
+Small-sized colorful images 
 
 text
+    
 
-Text-like
+Text-like 
 
-9.19 libx264, libx264rgb
+### 9.19 libx264, libx264rgb
 
-x264 H.264/MPEG-4 AVC encoder wrapper.
+x264 H.264/MPEG-4 AVC encoder wrapper. 
 
-This encoder requires the presence of the libx264 headers and library
-during configuration. You need to explicitly configure the build with
+This encoder requires the presence of the libx264 headers and library during configuration. You need to explicitly configure the build with `\--enable-libx264`. 
 
---enable-libx264
+libx264 supports an impressive number of features, including 8x8 and 4x4 adaptive spatial transform, adaptive B-frame placement, CAVLC/CABAC entropy coding, interlacing (MBAFF), lossless mode, psy optimizations for detail retention (adaptive quantization, psy-RD, psy-trellis). 
 
-.
+Many libx264 encoder options are mapped to FFmpeg global codec options, while unique encoder options are provided through private options. Additionally the x264opts and x264-params private options allows one to pass a list of key=value tuples as accepted by the libx264 `x264_param_parse` function. 
 
-libx264 supports an impressive number of features, including 8x8 and
-4x4 adaptive spatial transform, adaptive B-frame placement, CAVLC/CABAC
-entropy coding, interlacing (MBAFF), lossless mode, psy optimizations
-for detail retention (adaptive quantization, psy-RD, psy-trellis).
+The x264 project website is at <http://www.videolan.org/developers/x264.html>. 
 
-Many libx264 encoder options are mapped to FFmpeg global codec
-options, while unique encoder options are provided through private
-options. Additionally the
+The libx264rgb encoder is the same as libx264, except it accepts packed RGB pixel formats as input instead of YUV. 
 
-x264opts
+#### 9.19.1 Supported Pixel Formats
 
-and
+x264 supports 8- to 10-bit color spaces. The exact bit depth is controlled at x264’s configure time. 
 
-x264-params
+#### 9.19.2 Options
 
-private options allows one to pass a list of key=value tuples as accepted
-by the libx264
+The following options are supported by the libx264 wrapper. The `x264`-equivalent options or values are listed in parentheses for easy migration. 
 
-x264_param_parse
+To reduce the duplication of documentation, only the private options and some others requiring special attention are documented here. For the documentation of the undocumented generic options, see the Codec Options chapter. 
 
-function.
+To get a more accurate and extensive documentation of the libx264 options, invoke the command `x264 --fullhelp` or consult the libx264 documentation. 
 
-The x264 project website is at
+In the list below, note that the `x264` option name is shown in parentheses after the libavcodec corresponding name, in case there is a direct mapping. 
 
-http://www.videolan.org/developers/x264.html
+b (_bitrate_)
+    
 
-.
+Set bitrate in bits/s. Note that FFmpeg’s b option is expressed in bits/s, while `x264`’s bitrate is in kilobits/s. 
 
-The libx264rgb encoder is the same as libx264, except it accepts packed RGB
-pixel formats as input instead of YUV.
+bf (_bframes_)
+    
 
-9.19.1 Supported Pixel Formats
+Number of B-frames between I and P-frames 
 
-x264 supports 8- to 10-bit color spaces. The exact bit depth is controlled at
-x264’s configure time.
+g (_keyint_)
+    
 
-9.19.2 Options
+Maximum GOP size 
 
-The following options are supported by the libx264 wrapper. The
+qmin (_qpmin_)
+    
 
-x264
+Minimum quantizer scale 
 
--equivalent options or values are listed in parentheses
-for easy migration.
+qmax (_qpmax_)
+    
 
-To reduce the duplication of documentation, only the private options
-and some others requiring special attention are documented here. For
-the documentation of the undocumented generic options, see
+Maximum quantizer scale 
 
-the Codec Options chapter
+qdiff (_qpstep_)
+    
 
-.
+Maximum difference between quantizer scales 
 
-To get a more accurate and extensive documentation of the libx264
-options, invoke the command
+qblur (_qblur_)
+    
 
-x264 --fullhelp
+Quantizer curve blur 
 
-or consult
-the libx264 documentation.
+qcomp (_qcomp_)
+    
 
-In the list below, note that the
+Quantizer curve compression factor 
 
-x264
+refs (_ref_)
+    
 
-option name is shown
-in parentheses after the libavcodec corresponding name, in case there
-is a direct mapping.
+Number of reference frames each P-frame can use. The range is 0-16. 
 
-b (
+level (_level_)
+    
 
-bitrate
+Set the `x264_param_t.i_level_idc` value in case the value is positive, it is ignored otherwise. 
 
-)
+This value can be set using the `AVCodecContext` API (e.g. by setting the `AVCodecContext` value directly), and is specified as an integer mapped on a corresponding level (e.g. the value 31 maps to H.264 level IDC "3.1", as defined in the `x264_levels` table). It is ignored when set to a non positive value. 
 
-Set bitrate in bits/s. Note that FFmpeg’s
+Alternatively it can be set as a private option, overriding the value set in `AVCodecContext`, and in this case must be specified as the level IDC identifier (e.g. "3.1"), as defined by H.264 Annex A. 
 
-b
+sc_threshold (_scenecut_)
+    
 
-option is
-expressed in bits/s, while
+Sets the threshold for the scene change detection. 
 
-x264
+trellis (_trellis_)
+    
 
-’s
+Performs Trellis quantization to increase efficiency. Enabled by default. 
 
-bitrate
+nr (_nr_)
+    
 
-is in
-kilobits/s.
+Noise reduction 
 
-bf (
+me_range (_merange_)
+    
 
-bframes
+Maximum range of the motion search in pixels. 
 
-)
+me_method (_me_)
+    
 
-Number of B-frames between I and P-frames
+Set motion estimation method. Possible values in the decreasing order of speed: 
 
-g (
+‘dia (_dia_)’
+‘epzs (_dia_)’
+    
 
-keyint
+Diamond search with radius 1 (fastest). ‘epzs’ is an alias for ‘dia’. 
 
-)
+‘hex (_hex_)’
+    
 
-Maximum GOP size
+Hexagonal search with radius 2. 
 
-qmin (
+‘umh (_umh_)’
+    
 
-qpmin
+Uneven multi-hexagon search. 
 
-)
+‘esa (_esa_)’
+    
 
-Minimum quantizer scale
+Exhaustive search. 
 
-qmax (
+‘tesa (_tesa_)’
+    
 
-qpmax
-
-)
-
-Maximum quantizer scale
-
-qdiff (
-
-qpstep
-
-)
-
-Maximum difference between quantizer scales
-
-qblur (
-
-qblur
-
-)
-
-Quantizer curve blur
-
-qcomp (
-
-qcomp
-
-)
-
-Quantizer curve compression factor
-
-refs (
-
-ref
-
-)
-
-Number of reference frames each P-frame can use. The range is
-
-0-16
-
-.
-
-level (
-
-level
-
-)
-
-Set the
-
-x264_param_t.i_level_idc
-
-value in case the value is
-positive, it is ignored otherwise.
-
-This value can be set using the
-
-AVCodecContext
-
-API (e.g. by
-setting the
-
-AVCodecContext
-
-value directly), and is specified as
-an integer mapped on a corresponding level (e.g. the value 31 maps
-to H.264 level IDC "3.1", as defined in the
-
-x264_levels
-
-table). It is ignored when set to a non positive value.
-
-Alternatively it can be set as a private option, overriding the value
-set in
-
-AVCodecContext
-
-, and in this case must be specified as
-the level IDC identifier (e.g. "3.1"), as defined by H.264 Annex A.
-
-sc_threshold (
-
-scenecut
-
-)
-
-Sets the threshold for the scene change detection.
-
-trellis (
-
-trellis
-
-)
-
-Performs Trellis quantization to increase efficiency. Enabled by default.
-
-nr (
-
-nr
-
-)
-
-Noise reduction
-
-me_range (
-
-merange
-
-)
-
-Maximum range of the motion search in pixels.
-
-me_method (
-
-me
-
-)
-
-Set motion estimation method. Possible values in the decreasing order
-of speed:
-
-‘
-
-dia (
-
-dia
-
-)
-
-’
-
-‘
-
-epzs (
-
-dia
-
-)
-
-’
-
-Diamond search with radius 1 (fastest). ‘
-
-epzs
-
-’ is an alias for
-‘
-
-dia
-
-’.
-
-‘
-
-hex (
-
-hex
-
-)
-
-’
-
-Hexagonal search with radius 2.
-
-‘
-
-umh (
-
-umh
-
-)
-
-’
-
-Uneven multi-hexagon search.
-
-‘
-
-esa (
-
-esa
-
-)
-
-’
-
-Exhaustive search.
-
-‘
-
-tesa (
-
-tesa
-
-)
-
-’
-
-Hadamard exhaustive search (slowest).
+Hadamard exhaustive search (slowest). 
 
 forced-idr
+    
 
-Normally, when forcing a I-frame type, the encoder can select any type
-of I-frame. This option forces it to choose an IDR-frame.
+Normally, when forcing a I-frame type, the encoder can select any type of I-frame. This option forces it to choose an IDR-frame. 
 
-subq (
+subq (_subme_)
+    
 
-subme
+Sub-pixel motion estimation method. 
 
-)
+b_strategy (_b-adapt_)
+    
 
-Sub-pixel motion estimation method.
+Adaptive B-frame placement decision algorithm. Use only on first-pass. 
 
-b_strategy (
+keyint_min (_min-keyint_)
+    
 
-b-adapt
-
-)
-
-Adaptive B-frame placement decision algorithm. Use only on first-pass.
-
-keyint_min (
-
-min-keyint
-
-)
-
-Minimum GOP size.
+Minimum GOP size. 
 
 coder
+    
 
-Set entropy encoder. Possible values:
+Set entropy encoder. Possible values: 
 
-‘
+‘ac’
+    
 
-ac
+Enable CABAC. 
 
-’
+‘vlc’
+    
 
-Enable CABAC.
-
-‘
-
-vlc
-
-’
-
-Enable CAVLC and disable CABAC. It generates the same effect as
-
-x264
-
-’s
-
---no-cabac
-
-option.
+Enable CAVLC and disable CABAC. It generates the same effect as `x264`’s --no-cabac option. 
 
 cmp
+    
 
-Set full pixel motion estimation comparison algorithm. Possible values:
+Set full pixel motion estimation comparison algorithm. Possible values: 
 
-‘
+‘chroma’
+    
 
-chroma
+Enable chroma in motion estimation. 
 
-’
+‘sad’
+    
 
-Enable chroma in motion estimation.
+Ignore chroma in motion estimation. It generates the same effect as `x264`’s --no-chroma-me option. 
 
-‘
+threads (_threads_)
+    
 
-sad
-
-’
-
-Ignore chroma in motion estimation. It generates the same effect as
-
-x264
-
-’s
-
---no-chroma-me
-
-option.
-
-threads (
-
-threads
-
-)
-
-Number of encoding threads.
+Number of encoding threads. 
 
 thread_type
+    
 
-Set multithreading technique. Possible values:
+Set multithreading technique. Possible values: 
 
-‘
+‘slice’
+    
 
-slice
+Slice-based multithreading. It generates the same effect as `x264`’s --sliced-threads option. 
 
-’
+‘frame’
+    
 
-Slice-based multithreading. It generates the same effect as
-
-x264
-
-’s
-
---sliced-threads
-
-option.
-
-‘
-
-frame
-
-’
-
-Frame-based multithreading.
+Frame-based multithreading. 
 
 flags
+    
 
-Set encoding flags. It can be used to disable closed GOP and enable
-open GOP by setting it to
+Set encoding flags. It can be used to disable closed GOP and enable open GOP by setting it to `-cgop`. The result is similar to the behavior of `x264`’s --open-gop option. 
 
--cgop
+rc_init_occupancy (_vbv-init_)
+    
 
-. The result is similar to
-the behavior of
+Initial VBV buffer occupancy 
 
-x264
+preset (_preset_)
+    
 
-’s
+Set the encoding preset. 
 
---open-gop
+tune (_tune_)
+    
 
-option.
+Set tuning of the encoding params. 
 
-rc_init_occupancy (
+profile (_profile_)
+    
 
-vbv-init
-
-)
-
-Initial VBV buffer occupancy
-
-preset (
-
-preset
-
-)
-
-Set the encoding preset.
-
-tune (
-
-tune
-
-)
-
-Set tuning of the encoding params.
-
-profile (
-
-profile
-
-)
-
-Set profile restrictions.
+Set profile restrictions. 
 
 fastfirstpass
+    
 
-Enable fast settings when encoding first pass, when set to 1. When set
-to 0, it has the same effect of
+Enable fast settings when encoding first pass, when set to 1. When set to 0, it has the same effect of `x264`’s --slow-firstpass option. 
 
-x264
+crf (_crf_)
+    
 
-’s
+Set the quality for constant quality mode. 
 
---slow-firstpass
+crf_max (_crf-max_)
+    
 
-option.
+In CRF mode, prevents VBV from lowering quality beyond this point. 
 
-crf (
+qp (_qp_)
+    
 
-crf
+Set constant quantization rate control method parameter. 
 
-)
+aq-mode (_aq-mode_)
+    
 
-Set the quality for constant quality mode.
+Set AQ method. Possible values: 
 
-crf_max (
+‘none (_0_)’
+    
 
-crf-max
+Disabled. 
 
-)
+‘variance (_1_)’
+    
 
-In CRF mode, prevents VBV from lowering quality beyond this point.
+Variance AQ (complexity mask). 
 
-qp (
+‘autovariance (_2_)’
+    
 
-qp
+Auto-variance AQ (experimental). 
 
-)
+aq-strength (_aq-strength_)
+    
 
-Set constant quantization rate control method parameter.
-
-aq-mode (
-
-aq-mode
-
-)
-
-Set AQ method. Possible values:
-
-‘
-
-none (
-
-0
-
-)
-
-’
-
-Disabled.
-
-‘
-
-variance (
-
-1
-
-)
-
-’
-
-Variance AQ (complexity mask).
-
-‘
-
-autovariance (
-
-2
-
-)
-
-’
-
-Auto-variance AQ (experimental).
-
-aq-strength (
-
-aq-strength
-
-)
-
-Set AQ strength, reduce blocking and blurring in flat and textured areas.
+Set AQ strength, reduce blocking and blurring in flat and textured areas. 
 
 psy
+    
 
-Use psychovisual optimizations when set to 1. When set to 0, it has the
-same effect as
+Use psychovisual optimizations when set to 1. When set to 0, it has the same effect as `x264`’s --no-psy option. 
 
-x264
+psy-rd (_psy-rd_)
+    
 
-’s
+Set strength of psychovisual optimization, in psy-rd:psy-trellis format. 
 
---no-psy
+rc-lookahead (_rc-lookahead_)
+    
 
-option.
-
-psy-rd (
-
-psy-rd
-
-)
-
-Set strength of psychovisual optimization, in
-
-psy-rd
-
-:
-
-psy-trellis
-
-format.
-
-rc-lookahead (
-
-rc-lookahead
-
-)
-
-Set number of frames to look ahead for frametype and ratecontrol.
+Set number of frames to look ahead for frametype and ratecontrol. 
 
 weightb
+    
 
-Enable weighted prediction for B-frames when set to 1. When set to 0,
-it has the same effect as
+Enable weighted prediction for B-frames when set to 1. When set to 0, it has the same effect as `x264`’s --no-weightb option. 
 
-x264
+weightp (_weightp_)
+    
 
-’s
+Set weighted prediction method for P-frames. Possible values: 
 
---no-weightb
+‘none (_0_)’
+    
 
-option.
+Disabled 
 
-weightp (
+‘simple (_1_)’
+    
 
-weightp
+Enable only weighted refs 
 
-)
+‘smart (_2_)’
+    
 
-Set weighted prediction method for P-frames. Possible values:
+Enable both weighted refs and duplicates 
 
-‘
+ssim (_ssim_)
+    
 
-none (
+Enable calculation and printing SSIM stats after the encoding. 
 
-0
+intra-refresh (_intra-refresh_)
+    
 
-)
+Enable the use of Periodic Intra Refresh instead of IDR frames when set to 1. 
 
-’
+avcintra-class (_class_)
+    
 
-Disabled
+Configure the encoder to generate AVC-Intra. Valid values are 50, 100 and 200 
 
-‘
+bluray-compat (_bluray-compat_)
+    
 
-simple (
+Configure the encoder to be compatible with the bluray standard. It is a shorthand for setting "bluray-compat=1 force-cfr=1". 
 
-1
+b-bias (_b-bias_)
+    
 
-)
+Set the influence on how often B-frames are used. 
 
-’
+b-pyramid (_b-pyramid_)
+    
 
-Enable only weighted refs
+Set method for keeping of some B-frames as references. Possible values: 
 
-‘
+‘none (_none_)’
+    
 
-smart (
+Disabled. 
 
-2
+‘strict (_strict_)’
+    
 
-)
+Strictly hierarchical pyramid. 
 
-’
+‘normal (_normal_)’
+    
 
-Enable both weighted refs and duplicates
-
-ssim (
-
-ssim
-
-)
-
-Enable calculation and printing SSIM stats after the encoding.
-
-intra-refresh (
-
-intra-refresh
-
-)
-
-Enable the use of Periodic Intra Refresh instead of IDR frames when set
-to 1.
-
-avcintra-class (
-
-class
-
-)
-
-Configure the encoder to generate AVC-Intra.
-Valid values are 50, 100 and 200
-
-bluray-compat (
-
-bluray-compat
-
-)
-
-Configure the encoder to be compatible with the bluray standard.
-It is a shorthand for setting "bluray-compat=1 force-cfr=1".
-
-b-bias (
-
-b-bias
-
-)
-
-Set the influence on how often B-frames are used.
-
-b-pyramid (
-
-b-pyramid
-
-)
-
-Set method for keeping of some B-frames as references. Possible values:
-
-‘
-
-none (
-
-none
-
-)
-
-’
-
-Disabled.
-
-‘
-
-strict (
-
-strict
-
-)
-
-’
-
-Strictly hierarchical pyramid.
-
-‘
-
-normal (
-
-normal
-
-)
-
-’
-
-Non-strict (not Blu-ray compatible).
+Non-strict (not Blu-ray compatible). 
 
 mixed-refs
+    
 
-Enable the use of one reference per partition, as opposed to one
-reference per macroblock when set to 1. When set to 0, it has the
-same effect as
-
-x264
-
-’s
-
---no-mixed-refs
-
-option.
+Enable the use of one reference per partition, as opposed to one reference per macroblock when set to 1. When set to 0, it has the same effect as `x264`’s --no-mixed-refs option. 
 
 8x8dct
+    
 
-Enable adaptive spatial transform (high profile 8x8 transform)
-when set to 1. When set to 0, it has the same effect as
-
-x264
-
-’s
-
---no-8x8dct
-
-option.
+Enable adaptive spatial transform (high profile 8x8 transform) when set to 1. When set to 0, it has the same effect as `x264`’s --no-8x8dct option. 
 
 fast-pskip
+    
 
-Enable early SKIP detection on P-frames when set to 1. When set
-to 0, it has the same effect as
+Enable early SKIP detection on P-frames when set to 1. When set to 0, it has the same effect as `x264`’s --no-fast-pskip option. 
 
-x264
+aud (_aud_)
+    
 
-’s
-
---no-fast-pskip
-
-option.
-
-aud (
-
-aud
-
-)
-
-Enable use of access unit delimiters when set to 1.
+Enable use of access unit delimiters when set to 1. 
 
 mbtree
+    
 
-Enable use macroblock tree ratecontrol when set to 1. When set
-to 0, it has the same effect as
+Enable use macroblock tree ratecontrol when set to 1. When set to 0, it has the same effect as `x264`’s --no-mbtree option. 
 
-x264
+deblock (_deblock_)
+    
 
-’s
+Set loop filter parameters, in alpha:beta form. 
 
---no-mbtree
+cplxblur (_cplxblur_)
+    
 
-option.
+Set fluctuations reduction in QP (before curve compression). 
 
-deblock (
+partitions (_partitions_)
+    
 
-deblock
+Set partitions to consider as a comma-separated list of values. Possible values in the list: 
 
-)
+‘p8x8’
+    
 
-Set loop filter parameters, in
+8x8 P-frame partition. 
 
-alpha
+‘p4x4’
+    
 
-:
+4x4 P-frame partition. 
 
-beta
+‘b8x8’
+    
 
-form.
+4x4 B-frame partition. 
 
-cplxblur (
+‘i8x8’
+    
 
-cplxblur
+8x8 I-frame partition. 
 
-)
+‘i4x4’
+    
 
-Set fluctuations reduction in QP (before curve compression).
+4x4 I-frame partition. (Enabling ‘p4x4’ requires ‘p8x8’ to be enabled. Enabling ‘i8x8’ requires adaptive spatial transform (8x8dct option) to be enabled.) 
 
-partitions (
+‘none (_none_)’
+    
 
-partitions
+Do not consider any partitions. 
 
-)
+‘all (_all_)’
+    
 
-Set partitions to consider as a comma-separated list of values.
-Possible values in the list:
+Consider every partition. 
 
-‘
+direct-pred (_direct_)
+    
 
-p8x8
+Set direct MV prediction mode. Possible values: 
 
-’
+‘none (_none_)’
+    
 
-8x8 P-frame partition.
+Disable MV prediction. 
 
-‘
+‘spatial (_spatial_)’
+    
 
-p4x4
+Enable spatial predicting. 
 
-’
+‘temporal (_temporal_)’
+    
 
-4x4 P-frame partition.
+Enable temporal predicting. 
 
-‘
+‘auto (_auto_)’
+    
 
-b8x8
+Automatically decided. 
 
-’
+slice-max-size (_slice-max-size_)
+    
 
-4x4 B-frame partition.
+Set the limit of the size of each slice in bytes. If not specified but RTP payload size (ps) is specified, that is used. 
 
-‘
+stats (_stats_)
+    
 
-i8x8
+Set the file name for multi-pass stats. 
 
-’
+nal-hrd (_nal-hrd_)
+    
 
-8x8 I-frame partition.
+Set signal HRD information (requires vbv-bufsize to be set). Possible values: 
 
-‘
+‘none (_none_)’
+    
 
-i4x4
+Disable HRD information signaling. 
 
-’
+‘vbr (_vbr_)’
+    
 
-4x4 I-frame partition.
-(Enabling ‘
+Variable bit rate. 
 
-p4x4
+‘cbr (_cbr_)’
+    
 
-’ requires ‘
+Constant bit rate (not allowed in MP4 container). 
 
-p8x8
+x264opts opts
+x264-params opts
+    
 
-’ to be enabled. Enabling
-‘
+Override the x264 configuration using a :-separated list of key=value options. 
 
-i8x8
+The argument for both options is a list of key=value couples separated by ":". With x264opts the value can be omitted, and the value `1` is assumed in that case. 
 
-’ requires adaptive spatial transform (
+For filter and psy-rd options values that use ":" as a separator themselves, use "," instead. They accept it as well since long ago but this is kept undocumented for some reason. 
 
-8x8dct
+For example, the options might be provided as: 
+    
+    
+    level=30:bframes=0:weightp=0:cabac=0:ref=1:vbv-maxrate=768:vbv-bufsize=2000:analyse=all:me=umh:no-fast-pskip=1:subq=6:8x8dct=0:trellis=0
+    
 
-option) to be enabled.)
+For example to specify libx264 encoding options with `ffmpeg`: 
+    
+    
+    ffmpeg -i foo.mpg -c:v libx264 -x264opts keyint=123:min-keyint=20 -an out.mkv
+    
 
-‘
+To get the complete list of the libx264 options, invoke the command `x264 --fullhelp` or consult the libx264 documentation. 
 
-none (
+a53cc boolean
+    
 
-none
+Import closed captions (which must be ATSC compatible format) into output. Only the mpeg2 and h264 decoders provide these. Default is 1 (on). 
 
-)
+udu_sei boolean
+    
 
-’
+Import user data unregistered SEI if available into output. Default is 0 (off). 
 
-Do not consider any partitions.
+mb_info boolean
+    
 
-‘
+Set mb_info data through AVFrameSideData, only useful when used from the API. Default is 0 (off). 
 
-all (
+Encoding ffpresets for common usages are provided so they can be used with the general presets system (e.g. passing the pre option). 
 
-all
+### 9.20 libx265
 
-)
+x265 H.265/HEVC encoder wrapper. 
 
-’
+This encoder requires the presence of the libx265 headers and library during configuration. You need to explicitly configure the build with --enable-libx265. 
 
-Consider every partition.
-
-direct-pred (
-
-direct
-
-)
-
-Set direct MV prediction mode. Possible values:
-
-‘
-
-none (
-
-none
-
-)
-
-’
-
-Disable MV prediction.
-
-‘
-
-spatial (
-
-spatial
-
-)
-
-’
-
-Enable spatial predicting.
-
-‘
-
-temporal (
-
-temporal
-
-)
-
-’
-
-Enable temporal predicting.
-
-‘
-
-auto (
-
-auto
-
-)
-
-’
-
-Automatically decided.
-
-slice-max-size (
-
-slice-max-size
-
-)
-
-Set the limit of the size of each slice in bytes. If not specified
-but RTP payload size (
-
-ps
-
-) is specified, that is used.
-
-stats (
-
-stats
-
-)
-
-Set the file name for multi-pass stats.
-
-nal-hrd (
-
-nal-hrd
-
-)
-
-Set signal HRD information (requires
-
-vbv-bufsize
-
-to be set).
-Possible values:
-
-‘
-
-none (
-
-none
-
-)
-
-’
-
-Disable HRD information signaling.
-
-‘
-
-vbr (
-
-vbr
-
-)
-
-’
-
-Variable bit rate.
-
-‘
-
-cbr (
-
-cbr
-
-)
-
-’
-
-Constant bit rate (not allowed in MP4 container).
-
-x264opts
-
-opts
-
-x264-params
-
-opts
-
-Override the x264 configuration using a :-separated list of key=value
-options.
-
-The argument for both options is a list of
-
-key
-
-=
-
-value
-
-couples separated by ":". With
-
-x264opts
-
-the value can be
-omitted, and the value
-
-1
-
-is assumed in that case.
-
-For
-
-filter
-
-and
-
-psy-rd
-
-options values that use ":" as a
-separator themselves, use "," instead. They accept it as well since
-long ago but this is kept undocumented for some reason.
-
-For example, the options might be provided as:
-
-level=30:bframes=0:weightp=0:cabac=0:ref=1:vbv-maxrate=768:vbv-bufsize=2000:analyse=all:me=umh:no-fast-pskip=1:subq=6:8x8dct=0:trellis=0
-
-For example to specify libx264 encoding options with
-
-ffmpeg
-
-:
-
-ffmpeg -i foo.mpg -c:v libx264 -x264opts keyint=123:min-keyint=20 -an out.mkv
-
-To get the complete list of the libx264 options, invoke the command
-
-x264 --fullhelp
-
-or consult the libx264 documentation.
-
-a53cc
-
-boolean
-
-Import closed captions (which must be ATSC compatible format) into output.
-Only the mpeg2 and h264 decoders provide these. Default is 1 (on).
-
-udu_sei
-
-boolean
-
-Import user data unregistered SEI if available into output. Default is 0 (off).
-
-mb_info
-
-boolean
-
-Set mb_info data through AVFrameSideData, only useful when used from the
-API. Default is 0 (off).
-
-Encoding ffpresets for common usages are provided so they can be used with the
-general presets system (e.g. passing the
-
-pre
-
-option).
-
-9.20 libx265
-
-x265 H.265/HEVC encoder wrapper.
-
-This encoder requires the presence of the libx265 headers and library
-during configuration. You need to explicitly configure the build with
-
---enable-libx265
-
-.
-
-9.20.1 Options
+#### 9.20.1 Options
 
 b
+    
 
-Sets target video bitrate.
+Sets target video bitrate. 
 
 bf
-
 g
+    
 
-Set the GOP size.
+Set the GOP size. 
 
 keyint_min
+    
 
-Minimum GOP size.
+Minimum GOP size. 
 
 refs
+    
 
-Number of reference frames each P-frame can use. The range is from
-
-1-16
-
-.
+Number of reference frames each P-frame can use. The range is from 1-16. 
 
 preset
+    
 
-Set the x265 preset.
+Set the x265 preset. 
 
 tune
+    
 
-Set the x265 tune parameter.
+Set the x265 tune parameter. 
 
 profile
+    
 
-Set profile restrictions.
+Set profile restrictions. 
 
 crf
+    
 
-Set the quality for constant quality mode.
+Set the quality for constant quality mode. 
 
 qp
+    
 
-Set constant quantization rate control method parameter.
+Set constant quantization rate control method parameter. 
 
 qmin
+    
 
-Minimum quantizer scale.
+Minimum quantizer scale. 
 
 qmax
+    
 
-Maximum quantizer scale.
+Maximum quantizer scale. 
 
 qdiff
+    
 
-Maximum difference between quantizer scales.
+Maximum difference between quantizer scales. 
 
 qblur
+    
 
-Quantizer curve blur
+Quantizer curve blur 
 
 qcomp
+    
 
-Quantizer curve compression factor
+Quantizer curve compression factor 
 
 i_qfactor
-
 b_qfactor
-
 forced-idr
+    
 
-Normally, when forcing a I-frame type, the encoder can select any type
-of I-frame. This option forces it to choose an IDR-frame.
+Normally, when forcing a I-frame type, the encoder can select any type of I-frame. This option forces it to choose an IDR-frame. 
 
 x265-stats
+    
 
-Specify the file name for 2-pass stats. This is set automatically when using
-the
+Specify the file name for 2-pass stats. This is set automatically when using the -passlogfile option. 
 
--passlogfile
+udu_sei boolean
+    
 
-option.
-
-udu_sei
-
-boolean
-
-Import user data unregistered SEI if available into output. Default is 0 (off).
+Import user data unregistered SEI if available into output. Default is 0 (off). 
 
 x265-params
+    
 
-Set x265 options using a list of
+Set x265 options using a list of key=value couples separated by ":". See `x265 --help` for a list of options. 
 
-key
+For example to specify libx265 encoding options with -x265-params: 
+    
+    
+    ffmpeg -i input -c:v libx265 -x265-params crf=26:psy-rd=1 output.mp4
+    
 
-=
+### 9.21 libxavs2
 
-value
+xavs2 AVS2-P2/IEEE1857.4 encoder wrapper. 
 
-couples separated
-by ":". See
+This encoder requires the presence of the libxavs2 headers and library during configuration. You need to explicitly configure the build with --enable-libxavs2. 
 
-x265 --help
+The following standard libavcodec options are used: 
 
-for a list of options.
+  * b / bit_rate
+  * g / gop_size
+  * bf / max_b_frames
 
-For example to specify libx265 encoding options with
 
--x265-params
 
-:
+The encoder also has its own specific options: 
 
-ffmpeg -i input -c:v libx265 -x265-params crf=26:psy-rd=1 output.mp4
-
-9.21 libxavs2
-
-xavs2 AVS2-P2/IEEE1857.4 encoder wrapper.
-
-This encoder requires the presence of the libxavs2 headers and library
-during configuration. You need to explicitly configure the build with
-
---enable-libxavs2
-
-.
-
-The following standard libavcodec options are used:
-
-b
-
-/
-
-bit_rate
-
-g
-
-/
-
-gop_size
-
-bf
-
-/
-
-max_b_frames
-
-The encoder also has its own specific options:
-
-9.21.1 Options
+#### 9.21.1 Options
 
 lcu_row_threads
+    
 
-Set the number of parallel threads for rows from 1 to 8 (default 5).
+Set the number of parallel threads for rows from 1 to 8 (default 5). 
 
 initial_qp
+    
 
-Set the xavs2 quantization parameter from 1 to 63 (default 34). This is
-used to set the initial qp for the first frame.
+Set the xavs2 quantization parameter from 1 to 63 (default 34). This is used to set the initial qp for the first frame. 
 
 qp
+    
 
-Set the xavs2 quantization parameter from 1 to 63 (default 34). This is
-used to set the qp value under constant-QP mode.
+Set the xavs2 quantization parameter from 1 to 63 (default 34). This is used to set the qp value under constant-QP mode. 
 
 max_qp
+    
 
-Set the max qp for rate control from 1 to 63 (default 55).
+Set the max qp for rate control from 1 to 63 (default 55). 
 
 min_qp
+    
 
-Set the min qp for rate control from 1 to 63 (default 20).
+Set the min qp for rate control from 1 to 63 (default 20). 
 
 speed_level
+    
 
-Set the Speed level from 0 to 9 (default 0). Higher is better but slower.
+Set the Speed level from 0 to 9 (default 0). Higher is better but slower. 
 
 log_level
+    
 
-Set the log level from -1 to 3 (default 0). -1: none, 0: error,
-1: warning, 2: info, 3: debug.
+Set the log level from -1 to 3 (default 0). -1: none, 0: error, 1: warning, 2: info, 3: debug. 
 
 xavs2-params
+    
 
-Set xavs2 options using a list of
+Set xavs2 options using a list of key=value couples separated by ":". 
 
-key
+For example to specify libxavs2 encoding options with -xavs2-params: 
+    
+    
+    ffmpeg -i input -c:v libxavs2 -xavs2-params RdoqLevel=0 output.avs2
+    
 
-=
+### 9.22 libxeve
 
-value
+eXtra-fast Essential Video Encoder (XEVE) MPEG-5 EVC encoder wrapper. The xeve-equivalent options or values are listed in parentheses for easy migration. 
 
-couples separated
-by ":".
+This encoder requires the presence of the libxeve headers and library during configuration. You need to explicitly configure the build with --enable-libxeve. 
 
-For example to specify libxavs2 encoding options with
+Many libxeve encoder options are mapped to FFmpeg global codec options, while unique encoder options are provided through private options. Additionally the xeve-params private options allows one to pass a list of key=value tuples as accepted by the libxeve `parse_xeve_params` function. 
 
--xavs2-params
+The xeve project website is at <https://github.com/mpeg5/xeve>. 
 
-:
+#### 9.22.1 Options
 
-ffmpeg -i input -c:v libxavs2 -xavs2-params RdoqLevel=0 output.avs2
+The following options are supported by the libxeve wrapper. The xeve-equivalent options or values are listed in parentheses for easy migration. 
 
-9.22 libxeve
+To reduce the duplication of documentation, only the private options and some others requiring special attention are documented here. For the documentation of the undocumented generic options, see the Codec Options chapter. 
 
-eXtra-fast Essential Video Encoder (XEVE) MPEG-5 EVC encoder wrapper.
-The xeve-equivalent options or values are listed in parentheses for easy migration.
+To get a more accurate and extensive documentation of the libxeve options, invoke the command `xeve_app --help` or consult the libxeve documentation. 
 
-This encoder requires the presence of the libxeve headers and library
-during configuration. You need to explicitly configure the build with
+b (_bitrate_)
+    
 
---enable-libxeve
+Set target video bitrate in bits/s. Note that FFmpeg’s b option is expressed in bits/s, while xeve’s bitrate is in kilobits/s. 
 
-.
+bf (_bframes_)
+    
 
-Many libxeve encoder options are mapped to FFmpeg global codec options,
-while unique encoder options are provided through private options.
-Additionally the xeve-params private options allows one to pass a list
-of key=value tuples as accepted by the libxeve
+Set the maximum number of B frames (1,3,7,15). 
 
-parse_xeve_params
+g (_keyint_)
+    
 
-function.
+Set the GOP size (I-picture period). 
 
-The xeve project website is at
+preset (_preset_)
+    
 
-https://github.com/mpeg5/xeve
+Set the xeve preset. Set the encoder preset value to determine encoding speed [fast, medium, slow, placebo] 
 
-.
+tune (_tune_)
+    
 
-9.22.1 Options
+Set the encoder tune parameter [psnr, zerolatency] 
 
-The following options are supported by the libxeve wrapper.
-The xeve-equivalent options or values are listed in parentheses for easy migration.
+profile (_profile_)
+    
 
-To reduce the duplication of documentation, only the private options
-and some others requiring special attention are documented here. For
-the documentation of the undocumented generic options, see
+Set the encoder profile [0: baseline; 1: main] 
 
-the Codec Options chapter
+crf (_crf_)
+    
 
-.
+Set the quality for constant quality mode. Constant rate factor <10..49> [default: 32] 
 
-To get a more accurate and extensive documentation of the libxeve options,
-invoke the command
+qp (_qp_)
+    
 
-xeve_app --help
+Set constant quantization rate control method parameter. Quantization parameter qp <0..51> [default: 32] 
 
-or consult the libxeve documentation.
+threads (_threads_)
+    
 
-b (
+Force to use a specific number of threads 
 
-bitrate
+### 9.23 libxvid
 
-)
+Xvid MPEG-4 Part 2 encoder wrapper. 
 
-Set target video bitrate in bits/s.
-Note that FFmpeg’s b option is expressed in bits/s, while xeve’s bitrate is in kilobits/s.
+This encoder requires the presence of the libxvidcore headers and library during configuration. You need to explicitly configure the build with `\--enable-libxvid --enable-gpl`. 
 
-bf (
+The native `mpeg4` encoder supports the MPEG-4 Part 2 format, so users can encode to this format without this library. 
 
-bframes
+#### 9.23.1 Options
 
-)
-
-Set the maximum number of B frames (1,3,7,15).
-
-g (
-
-keyint
-
-)
-
-Set the GOP size (I-picture period).
-
-preset (
-
-preset
-
-)
-
-Set the xeve preset.
-Set the encoder preset value to determine encoding speed [fast, medium, slow, placebo]
-
-tune (
-
-tune
-
-)
-
-Set the encoder tune parameter [psnr, zerolatency]
-
-profile (
-
-profile
-
-)
-
-Set the encoder profile [0: baseline; 1: main]
-
-crf (
-
-crf
-
-)
-
-Set the quality for constant quality mode.
-Constant rate factor <10..49> [default: 32]
-
-qp (
-
-qp
-
-)
-
-Set constant quantization rate control method parameter.
-Quantization parameter qp <0..51> [default: 32]
-
-threads (
-
-threads
-
-)
-
-Force to use a specific number of threads
-
-9.23 libxvid
-
-Xvid MPEG-4 Part 2 encoder wrapper.
-
-This encoder requires the presence of the libxvidcore headers and library
-during configuration. You need to explicitly configure the build with
-
---enable-libxvid --enable-gpl
-
-.
-
-The native
-
-mpeg4
-
-encoder supports the MPEG-4 Part 2 format, so
-users can encode to this format without this library.
-
-9.23.1 Options
-
-The following options are supported by the libxvid wrapper. Some of
-the following options are listed but are not documented, and
-correspond to shared codec options. See
-
-the Codec
-Options chapter
-
-for their documentation. The other shared options
-which are not listed have no effect for the libxvid encoder.
+The following options are supported by the libxvid wrapper. Some of the following options are listed but are not documented, and correspond to shared codec options. See the Codec Options chapter for their documentation. The other shared options which are not listed have no effect for the libxvid encoder. 
 
 b
-
 g
-
 qmin
-
 qmax
-
 mpeg_quant
-
 threads
-
 bf
-
 b_qfactor
-
 b_qoffset
-
 flags
+    
 
-Set specific encoding flags. Possible values:
+Set specific encoding flags. Possible values: 
 
-‘
+‘mv4’
+    
 
-mv4
+Use four motion vector by macroblock. 
 
-’
+‘aic’
+    
 
-Use four motion vector by macroblock.
+Enable high quality AC prediction. 
 
-‘
+‘gray’
+    
 
-aic
+Only encode grayscale. 
 
-’
+‘qpel’
+    
 
-Enable high quality AC prediction.
+Enable quarter-pixel motion compensation. 
 
-‘
+‘cgop’
+    
 
-gray
+Enable closed GOP. 
 
-’
+‘global_header’
+    
 
-Only encode grayscale.
-
-‘
-
-qpel
-
-’
-
-Enable quarter-pixel motion compensation.
-
-‘
-
-cgop
-
-’
-
-Enable closed GOP.
-
-‘
-
-global_header
-
-’
-
-Place global headers in extradata instead of every keyframe.
+Place global headers in extradata instead of every keyframe. 
 
 gmc
+    
 
-Enable the use of global motion compensation (GMC).  Default is 0
-(disabled).
+Enable the use of global motion compensation (GMC). Default is 0 (disabled). 
 
 me_quality
+    
 
-Set motion estimation quality level. Possible values in decreasing order of
-speed and increasing order of quality:
+Set motion estimation quality level. Possible values in decreasing order of speed and increasing order of quality: 
 
-‘
+‘0’
+    
 
-0
+Use no motion estimation (default). 
 
-’
+‘1, 2’
+    
 
-Use no motion estimation (default).
+Enable advanced diamond zonal search for 16x16 blocks and half-pixel refinement for 16x16 blocks. 
 
-‘
+‘3, 4’
+    
 
-1, 2
+Enable all of the things described above, plus advanced diamond zonal search for 8x8 blocks and half-pixel refinement for 8x8 blocks, also enable motion estimation on chroma planes for P and B-frames. 
 
-’
+‘5, 6’
+    
 
-Enable advanced diamond zonal search for 16x16 blocks and half-pixel
-refinement for 16x16 blocks.
-
-‘
-
-3, 4
-
-’
-
-Enable all of the things described above, plus advanced diamond zonal
-search for 8x8 blocks and half-pixel refinement for 8x8 blocks, also
-enable motion estimation on chroma planes for P and B-frames.
-
-‘
-
-5, 6
-
-’
-
-Enable all of the things described above, plus extended 16x16 and 8x8
-blocks search.
+Enable all of the things described above, plus extended 16x16 and 8x8 blocks search. 
 
 mbd
+    
 
-Set macroblock decision algorithm. Possible values in the increasing
-order of quality:
+Set macroblock decision algorithm. Possible values in the increasing order of quality: 
 
-‘
+‘simple’
+    
 
-simple
+Use macroblock comparing function algorithm (default). 
 
-’
+‘bits’
+    
 
-Use macroblock comparing function algorithm (default).
+Enable rate distortion-based half pixel and quarter pixel refinement for 16x16 blocks. 
 
-‘
+‘rd’
+    
 
-bits
-
-’
-
-Enable rate distortion-based half pixel and quarter pixel refinement for
-16x16 blocks.
-
-‘
-
-rd
-
-’
-
-Enable all of the things described above, plus rate distortion-based
-half pixel and quarter pixel refinement for 8x8 blocks, and rate
-distortion-based search using square pattern.
+Enable all of the things described above, plus rate distortion-based half pixel and quarter pixel refinement for 8x8 blocks, and rate distortion-based search using square pattern. 
 
 lumi_aq
+    
 
-Enable lumi masking adaptive quantization when set to 1. Default is 0
-(disabled).
+Enable lumi masking adaptive quantization when set to 1. Default is 0 (disabled). 
 
 variance_aq
+    
 
-Enable variance adaptive quantization when set to 1. Default is 0
-(disabled).
+Enable variance adaptive quantization when set to 1. Default is 0 (disabled). 
 
-When combined with
-
-lumi_aq
-
-, the resulting quality will not
-be better than any of the two specified individually. In other
-words, the resulting quality will be the worse one of the two
-effects.
+When combined with lumi_aq, the resulting quality will not be better than any of the two specified individually. In other words, the resulting quality will be the worse one of the two effects. 
 
 trellis
+    
 
-Set rate-distortion optimal quantization.
+Set rate-distortion optimal quantization. 
 
 ssim
+    
 
-Set structural similarity (SSIM) displaying method. Possible values:
+Set structural similarity (SSIM) displaying method. Possible values: 
 
-‘
+‘off’
+    
 
-off
+Disable displaying of SSIM information. 
 
-’
+‘avg’
+    
 
-Disable displaying of SSIM information.
+Output average SSIM at the end of encoding to stdout. The format of showing the average SSIM is: 
+    
+    
+    Average SSIM: %f
+    
 
-‘
+For users who are not familiar with C, %f means a float number, or a decimal (e.g. 0.939232). 
 
-avg
+‘frame’
+    
 
-’
+Output both per-frame SSIM data during encoding and average SSIM at the end of encoding to stdout. The format of per-frame information is: 
+    
+    
+           SSIM: avg: %1.3f min: %1.3f max: %1.3f
+    
 
-Output average SSIM at the end of encoding to stdout. The format of
-showing the average SSIM is:
-
-Average SSIM: %f
-
-For users who are not familiar with C, %f means a float number, or
-a decimal (e.g. 0.939232).
-
-‘
-
-frame
-
-’
-
-Output both per-frame SSIM data during encoding and average SSIM at
-the end of encoding to stdout. The format of per-frame information
-is:
-
-SSIM: avg: %1.3f min: %1.3f max: %1.3f
-
-For users who are not familiar with C, %1.3f means a float number
-rounded to 3 digits after the dot (e.g. 0.932).
+For users who are not familiar with C, %1.3f means a float number rounded to 3 digits after the dot (e.g. 0.932). 
 
 ssim_acc
+    
 
-Set SSIM accuracy. Valid options are integers within the range of
-0-4, while 0 gives the most accurate result and 4 computes the
-fastest.
+Set SSIM accuracy. Valid options are integers within the range of 0-4, while 0 gives the most accurate result and 4 computes the fastest. 
 
-9.24 MediaCodec
+### 9.24 MediaCodec
 
-MediaCodec encoder wrapper enables hardware-accelerated video encoding on
-Android device. It supports H.264, H.265 (HEVC), VP8, VP9, MPEG-4, and AV1
-encoding (whether works or not is device dependent).
+MediaCodec encoder wrapper enables hardware-accelerated video encoding on Android device. It supports H.264, H.265 (HEVC), VP8, VP9, MPEG-4, and AV1 encoding (whether works or not is device dependent). 
 
-Android provides two sets of APIs: Java MediaCodec and NDK MediaCodec. The
-MediaCodec encoder wrapper supports both. Note that the NDK MediaCodec API
-operates without requiring JVM, but may fail to function outside the JVM
-environment due to dependencies on system framework services, particularly
-after Android 15.
+Android provides two sets of APIs: Java MediaCodec and NDK MediaCodec. The MediaCodec encoder wrapper supports both. Note that the NDK MediaCodec API operates without requiring JVM, but may fail to function outside the JVM environment due to dependencies on system framework services, particularly after Android 15. 
 
-ndk_codec
+ndk_codec boolean
+    
 
-boolean
+Use the NDK-based MediaCodec API instead of the Java API. Enabled by default if `av_jni_get_java_vm()` return NULL. 
 
-Use the NDK-based MediaCodec API instead of the Java API. Enabled by default
-if
+ndk_async boolean
+    
 
-av_jni_get_java_vm()
+Use NDK MediaCodec in async mode. Async mode has less overhead than poll in a loop in sync mode. The drawback of async mode is AV_CODEC_FLAG_GLOBAL_HEADER doesn’t work (use extract_extradata bsf when necessary). It doesn’t work and will be disabled automatically on devices below Android 8.0. 
 
-return NULL.
+codec_name string
+    
 
-ndk_async
+A codec type can have multiple implementations on a single device, this option specify which backend to use (via MediaCodec createCodecByName API). It’s NULL by default, and encoder is created by createEncoderByType. 
 
-boolean
+bitrate_mode integer
+    
 
-Use NDK MediaCodec in async mode. Async mode has less overhead than poll in a
-loop in sync mode. The drawback of async mode is AV_CODEC_FLAG_GLOBAL_HEADER
-doesn’t work (use extract_extradata bsf when necessary). It doesn’t work and
-will be disabled automatically on devices below Android 8.0.
+Possible values: 
 
-codec_name
+‘cq’
+    
 
-string
+Constant quality mode 
 
-A codec type can have multiple implementations on a single device, this option
-specify which backend to use (via MediaCodec createCodecByName API). It’s NULL
-by default, and encoder is created by createEncoderByType.
+‘vbr’
+    
 
-bitrate_mode
+Variable bitrate mode 
 
-integer
+‘cbr’
+    
 
-Possible values:
+Constant bitrate mode 
 
-‘
+‘cbr_fd’
+    
 
-cq
+Constant bitrate mode with frame drops 
 
-’
+pts_as_dts boolean
+    
 
-Constant quality mode
+Use PTS as DTS. This is a workaround since MediaCodec API doesn’t provide decoding timestamp. It is enabled automatically if B frame is 0. 
 
-‘
+operating_rate integer
+    
 
-vbr
+The desired operating rate that the codec will need to operate at, zero for unspecified. This is used for cases like high-speed/slow-motion video capture, where the video encoder format contains the target playback rate (e.g. 30fps), but the component must be able to handle the high operating capture rate (e.g. 240fps). This rate will be used by codec for resource planning and setting the operating points. 
 
-’
+qp_i_min integer
+    
 
-Variable bitrate mode
+Minimum quantization parameter for I frame. 
 
-‘
+qp_p_min integer
+    
 
-cbr
+Minimum quantization parameter for P frame. 
 
-’
+qp_b_min integer
+    
 
-Constant bitrate mode
+Minimum quantization parameter for B frame. 
 
-‘
+qp_i_max integer
+    
 
-cbr_fd
+Maximum quantization parameter for I frame. 
 
-’
+qp_p_max integer
+    
 
-Constant bitrate mode with frame drops
+Maximum quantization parameter for P frame. 
 
-pts_as_dts
+qp_b_max integer
+    
 
-boolean
+Maximum quantization parameter for B frame. 
 
-Use PTS as DTS. This is a workaround since MediaCodec API doesn’t provide
-decoding timestamp. It is enabled automatically if B frame is 0.
+### 9.25 MediaFoundation
 
-operating_rate
+The following wrappers for encoders in the MediaFoundation framework are available: 
 
-integer
+  * h264_mf 
+  * hevc_mf 
+  * av1_mf 
 
-The desired operating rate that the codec will need to operate at, zero for
-unspecified. This is used for cases like high-speed/slow-motion video capture,
-where the video encoder format contains the target playback rate (e.g. 30fps),
-but the component must be able to handle the high operating capture rate (e.g.
-240fps). This rate will be used by codec for resource planning and setting the
-operating points.
 
-qp_i_min
 
-integer
+These support both software and hardware encoding. 
 
-Minimum quantization parameter for I frame.
+Video encoders can take input in either of nv12 or yuv420p form (some encoders support both, some support only either - in practice, nv12 is the safer choice, especially among HW encoders). 
 
-qp_p_min
+Hardware-accelerated encoding requires D3D11, including hardware scaling capabilities through the scale_d3d11 filter. 
 
-integer
+To list all available options for the MediaFoundation encoders, use: `ffmpeg -h encoder=<encoder>` e.g. `ffmpeg -h encoder=h264_mf`
 
-Minimum quantization parameter for P frame.
-
-qp_b_min
-
-integer
-
-Minimum quantization parameter for B frame.
-
-qp_i_max
-
-integer
-
-Maximum quantization parameter for I frame.
-
-qp_p_max
-
-integer
-
-Maximum quantization parameter for P frame.
-
-qp_b_max
-
-integer
-
-Maximum quantization parameter for B frame.
-
-9.25 MediaFoundation
-
-The following wrappers for encoders in the MediaFoundation framework are
-available:
-
-h264_mf
-
-hevc_mf
-
-av1_mf
-
-These support both software and hardware encoding.
-
-Video encoders can take input in either of nv12 or yuv420p form
-(some encoders support both, some support only either - in practice,
-nv12 is the safer choice, especially among HW encoders).
-
-Hardware-accelerated encoding requires D3D11, including hardware
-scaling capabilities through the scale_d3d11 filter.
-
-To list all available options for the MediaFoundation encoders, use:
-
-ffmpeg -h encoder=<encoder>
-
-e.g.
-
-ffmpeg -h encoder=h264_mf
-
-9.25.1 Options
+#### 9.25.1 Options
 
 rate_control
+    
 
-Select rate control mode. Available modes:
+Select rate control mode. Available modes: 
 
-‘
+‘default’
+    
 
-default
+Default mode 
 
-’
+‘cbr’
+    
 
-Default mode
+CBR mode 
 
-‘
+‘pc_vbr’
+    
 
-cbr
+Peak constrained VBR mode 
 
-’
+‘u_vbr’
+    
 
-CBR mode
+Unconstrained VBR mode 
 
-‘
+‘quality’
+    
 
-pc_vbr
+Quality mode 
 
-’
+‘ld_vbr’
+    
 
-Peak constrained VBR mode
+Low delay VBR mode (requires Windows 8+) 
 
-‘
+‘g_vbr’
+    
 
-u_vbr
+Global VBR mode (requires Windows 8+) 
 
-’
+‘gld_vbr’
+    
 
-Unconstrained VBR mode
-
-‘
-
-quality
-
-’
-
-Quality mode
-
-‘
-
-ld_vbr
-
-’
-
-Low delay VBR mode (requires Windows 8+)
-
-‘
-
-g_vbr
-
-’
-
-Global VBR mode (requires Windows 8+)
-
-‘
-
-gld_vbr
-
-’
-
-Global low delay VBR mode (requires Windows 8+)
+Global low delay VBR mode (requires Windows 8+) 
 
 scenario
+    
 
-Select usage scenario. Available scenarios:
+Select usage scenario. Available scenarios: 
 
-‘
+‘default’
+    
 
-default
+Default scenario 
 
-’
+‘display_remoting’
+    
 
-Default scenario
+Display remoting scenario 
 
-‘
+‘video_conference’
+    
 
-display_remoting
+Video conference scenario 
 
-’
+‘archive’
+    
 
-Display remoting scenario
+Archive scenario 
 
-‘
+‘live_streaming’
+    
 
-video_conference
+Live streaming scenario 
 
-’
+‘camera_record’
+    
 
-Video conference scenario
+Camera record scenario 
 
-‘
+‘display_remoting_with_feature_map’
+    
 
-archive
-
-’
-
-Archive scenario
-
-‘
-
-live_streaming
-
-’
-
-Live streaming scenario
-
-‘
-
-camera_record
-
-’
-
-Camera record scenario
-
-‘
-
-display_remoting_with_feature_map
-
-’
-
-Display remoting with feature map scenario
+Display remoting with feature map scenario 
 
 quality
+    
 
-Set encoding quality (0-100). -1 means default quality.
+Set encoding quality (0-100). -1 means default quality. 
 
 hw_encoding
+    
 
-Force hardware encoding (0-1). Default is 0 (disabled).
+Force hardware encoding (0-1). Default is 0 (disabled). 
 
-9.25.2 Examples
+#### 9.25.2 Examples
 
-Hardware encoding:
+Hardware encoding: 
+    
+    
+    ffmpeg -i input.mp4 -c:v h264_mf -hw_encoding 1 output.mp4
+    
 
-ffmpeg -i input.mp4 -c:v h264_mf -hw_encoding 1 output.mp4
+Hardware-accelerated decoding with hardware encoding: 
+    
+    
+    ffmpeg -hwaccel d3d11va -i input.mp4 -c:v h264_mf -hw_encoding 1 output.mp4
+    
 
-Hardware-accelerated decoding with hardware encoding:
+Hardware-accelerated decoding, HW scaling and encoding with quality setting: 
+    
+    
+    ffmpeg -hwaccel d3d11va -hwaccel_output_format d3d11 -i input.mp4 -vf scale_d3d11=1920:1080 -c:v hevc_mf -hw_encoding 1 -quality 80 output.mp4
+    
 
-ffmpeg -hwaccel d3d11va -i input.mp4 -c:v h264_mf -hw_encoding 1 output.mp4
+### 9.26 Microsoft RLE
 
-Hardware-accelerated decoding, HW scaling and encoding with quality setting:
+Microsoft RLE aka MSRLE encoder. Only 8-bit palette mode supported. Compatible with Windows 3.1 and Windows 95. 
 
-ffmpeg -hwaccel d3d11va -hwaccel_output_format d3d11 -i input.mp4 -vf scale_d3d11=1920:1080 -c:v hevc_mf -hw_encoding 1 -quality 80 output.mp4
+#### 9.26.1 Options
 
-9.26 Microsoft RLE
+g integer
+    
 
-Microsoft RLE aka MSRLE encoder.
-Only 8-bit palette mode supported.
-Compatible with Windows 3.1 and Windows 95.
+Keyframe interval. A keyframe is inserted at least every `-g` frames, sometimes sooner. 
 
-9.26.1 Options
+### 9.27 mpeg2
 
-g
+MPEG-2 video encoder. 
 
-integer
-
-Keyframe interval.
-A keyframe is inserted at least every
-
--g
-
-frames, sometimes sooner.
-
-9.27 mpeg2
-
-MPEG-2 video encoder.
-
-9.27.1 Options
+#### 9.27.1 Options
 
 profile
+    
 
-Select the mpeg2 profile to encode:
+Select the mpeg2 profile to encode: 
 
-‘
+‘422’
+‘high’
+‘ss’
+    
 
-422
+Spatially Scalable 
 
-’
+‘snr’
+    
 
-‘
+SNR Scalable 
 
-high
-
-’
-
-‘
-
-ss
-
-’
-
-Spatially Scalable
-
-‘
-
-snr
-
-’
-
-SNR Scalable
-
-‘
-
-main
-
-’
-
-‘
-
-simple
-
-’
-
+‘main’
+‘simple’
 level
+    
 
-Select the mpeg2 level to encode:
+Select the mpeg2 level to encode: 
 
-‘
+‘high’
+‘high1440’
+‘main’
+‘low’
+seq_disp_ext integer
+    
 
-high
-
-’
-
-‘
-
-high1440
-
-’
-
-‘
-
-main
-
-’
-
-‘
-
-low
-
-’
-
-seq_disp_ext
-
-integer
-
-Specifies if the encoder should write a sequence_display_extension to the
-output.
+Specifies if the encoder should write a sequence_display_extension to the output. 
 
 -1
-
 auto
+    
 
-Decide automatically to write it or not (this is the default) by checking if
-the data to be written is different from the default or unspecified values.
+Decide automatically to write it or not (this is the default) by checking if the data to be written is different from the default or unspecified values. 
 
 0
-
 never
+    
 
-Never write it.
+Never write it. 
 
 1
-
 always
+    
 
-Always write it.
+Always write it. 
 
-video_format
+video_format integer
+    
 
-integer
+Specifies the video_format written into the sequence display extension indicating the source of the video pictures. The default is ‘unspecified’, can be ‘component’, ‘pal’, ‘ntsc’, ‘secam’ or ‘mac’. For maximum compatibility, use ‘component’. 
 
-Specifies the video_format written into the sequence display extension
-indicating the source of the video pictures. The default is ‘
+a53cc boolean
+    
 
-unspecified
+Import closed captions (which must be ATSC compatible format) into output. Default is 1 (on). 
 
-’,
-can be ‘
+### 9.28 png
 
-component
+PNG image encoder. 
 
-’, ‘
-
-pal
-
-’, ‘
-
-ntsc
-
-’, ‘
-
-secam
-
-’ or ‘
-
-mac
-
-’.
-For maximum compatibility, use ‘
-
-component
-
-’.
-
-a53cc
-
-boolean
-
-Import closed captions (which must be ATSC compatible format) into output.
-Default is 1 (on).
-
-9.28 png
-
-PNG image encoder.
-
-9.28.1 Options
+#### 9.28.1 Options
 
 compression_level
+    
 
-Sets the compression level, from 0 to 9(default)
+Sets the compression level, from 0 to 9(default) 
 
-9.28.2 Private options
+#### 9.28.2 Private options
 
-dpi
+dpi integer
+    
 
-integer
+Set physical density of pixels, in dots per inch, unset by default 
 
-Set physical density of pixels, in dots per inch, unset by default
+dpm integer
+    
 
-dpm
+Set physical density of pixels, in dots per meter, unset by default 
 
-integer
+pred method
+    
 
-Set physical density of pixels, in dots per meter, unset by default
+Set prediction method (none, sub, up, avg, paeth, mixed), default is paeth 
 
-pred
+### 9.29 ProRes
 
-method
+Apple ProRes encoder. 
 
-Set prediction method (none, sub, up, avg, paeth, mixed), default is paeth
+FFmpeg contains 2 ProRes encoders, the prores-aw and prores-ks encoder. The used encoder can be chosen with the `-vcodec` option. 
 
-9.29 ProRes
+#### 9.29.1 Private Options for prores-ks
 
-Apple ProRes encoder.
+profile integer
+    
 
-FFmpeg contains 2 ProRes encoders, the prores-aw and prores-ks encoder.
-The used encoder can be chosen with the
+Select the ProRes profile to encode 
 
--vcodec
+‘proxy’
+‘lt’
+‘standard’
+‘hq’
+‘4444’
+‘4444xq’
+quant_mat integer
+    
 
-option.
+Select quantization matrix. 
 
-9.29.1 Private Options for prores-ks
+‘auto’
+‘default’
+‘proxy’
+‘lt’
+‘standard’
+‘hq’
 
-profile
+If set to auto, the matrix matching the profile will be picked. If not set, the matrix providing the highest quality, default, will be picked. 
 
-integer
+bits_per_mb integer
+    
 
-Select the ProRes profile to encode
+How many bits to allot for coding one macroblock. Different profiles use between 200 and 2400 bits per macroblock, the maximum is 8000. 
 
-‘
+mbs_per_slice integer
+    
 
-proxy
+Number of macroblocks in each slice (1-8); the default value (8) should be good in almost all situations. 
 
-’
+vendor string
+    
 
-‘
+Override the 4-byte vendor ID. A custom vendor ID like apl0 would claim the stream was produced by the Apple encoder. 
 
-lt
+alpha_bits integer
+    
 
-’
+Specify number of bits for alpha component. Possible values are 0, 8 and 16. Use 0 to disable alpha plane coding. 
 
-‘
+#### 9.29.2 Speed considerations
 
-standard
+In the default mode of operation the encoder has to honor frame constraints (i.e. not produce frames with size bigger than requested) while still making output picture as good as possible. A frame containing a lot of small details is harder to compress and the encoder would spend more time searching for appropriate quantizers for each slice. 
 
-’
+Setting a higher bits_per_mb limit will improve the speed. 
 
-‘
+For the fastest encoding speed set the qscale parameter (4 is the recommended value) and do not set a size constraint. 
 
-hq
+### 9.30 QSV Encoders
 
-’
+The family of Intel QuickSync Video encoders (MPEG-2, H.264, HEVC, JPEG/MJPEG, VP9, AV1) 
 
-‘
+#### 9.30.1 Ratecontrol Method
 
-4444
+The ratecontrol method is selected as follows: 
 
-’
+  * When global_quality is specified, a quality-based mode is used. Specifically this means either 
+    * - CQP - constant quantizer scale, when the qscale codec flag is also set (the -qscale ffmpeg option). 
+    * - LA_ICQ - intelligent constant quality with lookahead, when the look_ahead option is also set. 
+    * - ICQ – intelligent constant quality otherwise. For the ICQ modes, global quality range is 1 to 51, with 1 being the best quality. 
+  * Otherwise when the desired average bitrate is specified with the b option, a bitrate-based mode is used. 
+    * - LA - VBR with lookahead, when the look_ahead option is specified. 
+    * - VCM - video conferencing mode, when the vcm option is set. 
+    * - CBR - constant bitrate, when maxrate is specified and equal to the average bitrate. 
+    * - VBR - variable bitrate, when maxrate is specified, but is higher than the average bitrate. 
+    * - AVBR - average VBR mode, when maxrate is not specified, both avbr_accuracy and avbr_convergence are set to non-zero. This mode is available for H264 and HEVC on Windows. 
+  * Otherwise the default ratecontrol method CQP is used. 
 
-‘
 
-4444xq
 
-’
+Note that depending on your system, a different mode than the one you specified may be selected by the encoder. Set the verbosity level to verbose or higher to see the actual settings used by the QSV runtime. 
 
-quant_mat
+#### 9.30.2 Global Options -> MSDK Options
 
-integer
+Additional libavcodec global options are mapped to MSDK options as follows: 
 
-Select quantization matrix.
+  * g/gop_size -> GopPicSize
+  * bf/max_b_frames+1 -> GopRefDist
+  * rc_init_occupancy/rc_initial_buffer_occupancy -> InitialDelayInKB
+  * slices -> NumSlice
+  * refs -> NumRefFrame
+  * b_strategy/b_frame_strategy -> BRefType
+  * cgop/CLOSED_GOP codec flag -> GopOptFlag
+  * For the CQP mode, the i_qfactor/i_qoffset and b_qfactor/b_qoffset set the difference between QPP and QPI, and QPP and QPB respectively. 
+  * Setting the coder option to the value vlc will make the H.264 encoder use CAVLC instead of CABAC. 
 
-‘
 
-auto
 
-’
+#### 9.30.3 Common Options
 
-‘
-
-default
-
-’
-
-‘
-
-proxy
-
-’
-
-‘
-
-lt
-
-’
-
-‘
-
-standard
-
-’
-
-‘
-
-hq
-
-’
-
-If set to
-
-auto
-
-, the matrix matching the profile will be picked.
-If not set, the matrix providing the highest quality,
-
-default
-
-, will be
-picked.
-
-bits_per_mb
-
-integer
-
-How many bits to allot for coding one macroblock. Different profiles use
-between 200 and 2400 bits per macroblock, the maximum is 8000.
-
-mbs_per_slice
-
-integer
-
-Number of macroblocks in each slice (1-8); the default value (8)
-should be good in almost all situations.
-
-vendor
-
-string
-
-Override the 4-byte vendor ID.
-A custom vendor ID like
-
-apl0
-
-would claim the stream was produced by
-the Apple encoder.
-
-alpha_bits
-
-integer
-
-Specify number of bits for alpha component.
-Possible values are
-
-0
-
-,
-
-8
-
-and
-
-16
-
-.
-Use
-
-0
-
-to disable alpha plane coding.
-
-9.29.2 Speed considerations
-
-In the default mode of operation the encoder has to honor frame constraints
-(i.e. not produce frames with size bigger than requested) while still making
-output picture as good as possible.
-A frame containing a lot of small details is harder to compress and the encoder
-would spend more time searching for appropriate quantizers for each slice.
-
-Setting a higher
-
-bits_per_mb
-
-limit will improve the speed.
-
-For the fastest encoding speed set the
-
-qscale
-
-parameter (4 is the
-recommended value) and do not set a size constraint.
-
-9.30 QSV Encoders
-
-The family of Intel QuickSync Video encoders (MPEG-2, H.264, HEVC, JPEG/MJPEG,
-VP9, AV1)
-
-9.30.1 Ratecontrol Method
-
-The ratecontrol method is selected as follows:
-
-When
-
-global_quality
-
-is specified, a quality-based mode is used.
-Specifically this means either
-
--
-
-CQP
-
-- constant quantizer scale, when the
-
-qscale
-
-codec flag is
-also set (the
-
--qscale
-
-ffmpeg option).
-
--
-
-LA_ICQ
-
-- intelligent constant quality with lookahead, when the
-
-look_ahead
-
-option is also set.
-
--
-
-ICQ
-
-– intelligent constant quality otherwise. For the ICQ modes, global
-quality range is 1 to 51, with 1 being the best quality.
-
-Otherwise when the desired average bitrate is specified with the
-
-b
-
-option, a bitrate-based mode is used.
-
--
-
-LA
-
-- VBR with lookahead, when the
-
-look_ahead
-
-option is specified.
-
--
-
-VCM
-
-- video conferencing mode, when the
-
-vcm
-
-option is set.
-
--
-
-CBR
-
-- constant bitrate, when
-
-maxrate
-
-is specified and equal to
-the average bitrate.
-
--
-
-VBR
-
-- variable bitrate, when
-
-maxrate
-
-is specified, but is higher
-than the average bitrate.
-
--
-
-AVBR
-
-- average VBR mode, when
-
-maxrate
-
-is not specified, both
-
-avbr_accuracy
-
-and
-
-avbr_convergence
-
-are set to non-zero. This
-mode is available for H264 and HEVC on Windows.
-
-Otherwise the default ratecontrol method
-
-CQP
-
-is used.
-
-Note that depending on your system, a different mode than the one you specified
-may be selected by the encoder. Set the verbosity level to
-
-verbose
-
-or
-higher to see the actual settings used by the QSV runtime.
-
-9.30.2 Global Options -> MSDK Options
-
-Additional libavcodec global options are mapped to MSDK options as follows:
-
-g/gop_size
-
-->
-
-GopPicSize
-
-bf/max_b_frames
-
-+1 ->
-
-GopRefDist
-
-rc_init_occupancy/rc_initial_buffer_occupancy
-
-->
-
-InitialDelayInKB
-
-slices
-
-->
-
-NumSlice
-
-refs
-
-->
-
-NumRefFrame
-
-b_strategy/b_frame_strategy
-
-->
-
-BRefType
-
-cgop/CLOSED_GOP
-
-codec flag ->
-
-GopOptFlag
-
-For the
-
-CQP
-
-mode, the
-
-i_qfactor/i_qoffset
-
-and
-
-b_qfactor/b_qoffset
-
-set the difference between
-
-QPP
-
-and
-
-QPI
-
-,
-and
-
-QPP
-
-and
-
-QPB
-
-respectively.
-
-Setting the
-
-coder
-
-option to the value
-
-vlc
-
-will make the H.264
-encoder use CAVLC instead of CABAC.
-
-9.30.3 Common Options
-
-Following options are used by all qsv encoders.
+Following options are used by all qsv encoders. 
 
 async_depth
+    
 
-Specifies how many asynchronous operations an application performs
-before the application explicitly synchronizes the result. If zero,
-the value is not specified.
+Specifies how many asynchronous operations an application performs before the application explicitly synchronizes the result. If zero, the value is not specified. 
 
 preset
+    
 
-This option itemizes a range of choices from veryfast (best speed) to veryslow
-(best quality).
+This option itemizes a range of choices from veryfast (best speed) to veryslow (best quality). 
 
-‘
-
-veryfast
-
-’
-
-‘
-
-faster
-
-’
-
-‘
-
-fast
-
-’
-
-‘
-
-medium
-
-’
-
-‘
-
-slow
-
-’
-
-‘
-
-slower
-
-’
-
-‘
-
-veryslow
-
-’
-
+‘veryfast’
+‘faster’
+‘fast’
+‘medium’
+‘slow’
+‘slower’
+‘veryslow’
 forced_idr
+    
 
-Forcing I frames as IDR frames.
+Forcing I frames as IDR frames. 
 
 low_power
+    
 
-For encoders set this flag to ON to reduce power consumption and GPU usage.
+For encoders set this flag to ON to reduce power consumption and GPU usage. 
 
-9.30.4 Runtime Options
+#### 9.30.4 Runtime Options
 
-Following options can be used during qsv encoding.
+Following options can be used during qsv encoding. 
 
 global_quality
-
 i_quant_factor
-
 i_quant_offset
-
 b_quant_factor
-
 b_quant_offset
+    
 
-Supported in h264_qsv and hevc_qsv.
-Change these value to reset qsv codec’s qp configuration.
+Supported in h264_qsv and hevc_qsv. Change these value to reset qsv codec’s qp configuration. 
 
 max_frame_size
+    
 
-Supported in h264_qsv and hevc_qsv.
-Change this value to reset qsv codec’s MaxFrameSize configuration.
+Supported in h264_qsv and hevc_qsv. Change this value to reset qsv codec’s MaxFrameSize configuration. 
 
 gop_size
+    
 
-Change this value to reset qsv codec’s gop configuration.
+Change this value to reset qsv codec’s gop configuration. 
 
 int_ref_type
-
 int_ref_cycle_size
-
 int_ref_qp_delta
-
 int_ref_cycle_dist
+    
 
-Supported in h264_qsv and hevc_qsv.
-Change these value to reset qsv codec’s Intra Refresh configuration.
+Supported in h264_qsv and hevc_qsv. Change these value to reset qsv codec’s Intra Refresh configuration. 
 
 qmax
-
 qmin
-
 max_qp_i
-
 min_qp_i
-
 max_qp_p
-
 min_qp_p
-
 max_qp_b
-
 min_qp_b
+    
 
-Supported in h264_qsv.
-Change these value to reset qsv codec’s max/min qp configuration.
+Supported in h264_qsv. Change these value to reset qsv codec’s max/min qp configuration. 
 
 low_delay_brc
+    
 
-Supported in h264_qsv, hevc_qsv and av1_qsv.
-Change this value to reset qsv codec’s low_delay_brc configuration.
+Supported in h264_qsv, hevc_qsv and av1_qsv. Change this value to reset qsv codec’s low_delay_brc configuration. 
 
 framerate
+    
 
-Change this value to reset qsv codec’s framerate configuration.
+Change this value to reset qsv codec’s framerate configuration. 
 
 bit_rate
-
 rc_buffer_size
-
 rc_initial_buffer_occupancy
-
 rc_max_rate
+    
 
-Change these value to reset qsv codec’s bitrate control configuration.
+Change these value to reset qsv codec’s bitrate control configuration. 
 
 pic_timing_sei
+    
 
-Supported in h264_qsv and hevc_qsv.
-Change this value to reset qsv codec’s pic_timing_sei configuration.
-
-qsv_params
-
-Set QSV encoder parameters as a colon-separated list of key-value pairs.
-
-The
+Supported in h264_qsv and hevc_qsv. Change this value to reset qsv codec’s pic_timing_sei configuration. 
 
 qsv_params
+    
 
-should be formatted as
+Set QSV encoder parameters as a colon-separated list of key-value pairs. 
 
-key1=value1:key2=value2:...
+The qsv_params should be formatted as `key1=value1:key2=value2:...`. 
 
-.
+These parameters are passed directly to the underlying Intel Quick Sync Video (QSV) encoder using the MFXSetParameter function. 
 
-These parameters are passed directly to the underlying Intel Quick Sync Video (QSV) encoder using the MFXSetParameter function.
+Example: 
+    
+    
+    ffmpeg -i input.mp4 -c:v h264_qsv -qsv_params "CodingOption1=1:CodingOption2=2" output.mp4
+    
 
-Example:
+This option allows fine-grained control over various encoder-specific settings provided by the QSV encoder. 
 
-ffmpeg -i input.mp4 -c:v h264_qsv -qsv_params "CodingOption1=1:CodingOption2=2" output.mp4
+#### 9.30.5 H264 options
 
-This option allows fine-grained control over various encoder-specific settings provided by the QSV encoder.
-
-9.30.5 H264 options
-
-These options are used by h264_qsv
+These options are used by h264_qsv 
 
 extbrc
+    
 
-Extended bitrate control.
+Extended bitrate control. 
 
 recovery_point_sei
+    
 
-Set this flag to insert the recovery point SEI message at the beginning of every
-intra refresh cycle.
+Set this flag to insert the recovery point SEI message at the beginning of every intra refresh cycle. 
 
 rdo
+    
 
-Enable rate distortion optimization.
+Enable rate distortion optimization. 
 
 max_frame_size
+    
 
-Maximum encoded frame size in bytes.
+Maximum encoded frame size in bytes. 
 
 max_frame_size_i
+    
 
-Maximum encoded frame size for I frames in bytes. If this value is set as larger
-than zero, then for I frames the value set by max_frame_size is ignored.
+Maximum encoded frame size for I frames in bytes. If this value is set as larger than zero, then for I frames the value set by max_frame_size is ignored. 
 
 max_frame_size_p
+    
 
-Maximum encoded frame size for P frames in bytes. If this value is set as larger
-than zero, then for P frames the value set by max_frame_size is ignored.
+Maximum encoded frame size for P frames in bytes. If this value is set as larger than zero, then for P frames the value set by max_frame_size is ignored. 
 
 max_slice_size
+    
 
-Maximum encoded slice size in bytes.
+Maximum encoded slice size in bytes. 
 
 bitrate_limit
+    
 
-Toggle bitrate limitations.
-Modifies bitrate to be in the range imposed by the QSV encoder. Setting this
-flag off may lead to violation of HRD conformance. Mind that specifying bitrate
-below the QSV encoder range might significantly affect quality. If on this
-option takes effect in non CQP modes: if bitrate is not in the range imposed
-by the QSV encoder, it will be changed to be in the range.
+Toggle bitrate limitations. Modifies bitrate to be in the range imposed by the QSV encoder. Setting this flag off may lead to violation of HRD conformance. Mind that specifying bitrate below the QSV encoder range might significantly affect quality. If on this option takes effect in non CQP modes: if bitrate is not in the range imposed by the QSV encoder, it will be changed to be in the range. 
 
 mbbrc
+    
 
-Setting this flag enables macroblock level bitrate control that generally
-improves subjective visual quality. Enabling this flag may have negative impact
-on performance and objective visual quality metric.
+Setting this flag enables macroblock level bitrate control that generally improves subjective visual quality. Enabling this flag may have negative impact on performance and objective visual quality metric. 
 
 low_delay_brc
+    
 
-Setting this flag turns on or off LowDelayBRC feature in qsv plugin, which provides
-more accurate bitrate control to minimize the variance of bitstream size frame
-by frame. Value: -1-default 0-off 1-on
+Setting this flag turns on or off LowDelayBRC feature in qsv plugin, which provides more accurate bitrate control to minimize the variance of bitstream size frame by frame. Value: -1-default 0-off 1-on 
 
 adaptive_i
+    
 
-This flag controls insertion of I frames by the QSV encoder. Turn ON this flag
-to allow changing of frame type from P and B to I.
+This flag controls insertion of I frames by the QSV encoder. Turn ON this flag to allow changing of frame type from P and B to I. 
 
 adaptive_b
+    
 
-This flag controls changing of frame type from B to P.
+This flag controls changing of frame type from B to P. 
 
 p_strategy
+    
 
-Enable P-pyramid: 0-default 1-simple 2-pyramid(bf need to be set to 0).
+Enable P-pyramid: 0-default 1-simple 2-pyramid(bf need to be set to 0). 
 
 b_strategy
+    
 
-This option controls usage of B frames as reference.
+This option controls usage of B frames as reference. 
 
 dblk_idc
+    
 
-This option disable deblocking. It has value in range 0~2.
+This option disable deblocking. It has value in range 0~2. 
 
 cavlc
+    
 
-If set, CAVLC is used; if unset, CABAC is used for encoding.
+If set, CAVLC is used; if unset, CABAC is used for encoding. 
 
 vcm
+    
 
-Video conferencing mode, please see ratecontrol method.
+Video conferencing mode, please see ratecontrol method. 
 
 idr_interval
+    
 
-Distance (in I-frames) between IDR frames.
+Distance (in I-frames) between IDR frames. 
 
 pic_timing_sei
+    
 
-Insert picture timing SEI with pic_struct_syntax element.
+Insert picture timing SEI with pic_struct_syntax element. 
 
 single_sei_nal_unit
+    
 
-Put all the SEI messages into one NALU.
+Put all the SEI messages into one NALU. 
 
 max_dec_frame_buffering
+    
 
-Maximum number of frames buffered in the DPB.
+Maximum number of frames buffered in the DPB. 
 
 look_ahead
+    
 
-Use VBR algorithm with look ahead.
+Use VBR algorithm with look ahead. 
 
 look_ahead_depth
+    
 
-Depth of look ahead in number frames.
+Depth of look ahead in number frames. 
 
 look_ahead_downsampling
+    
 
-Downscaling factor for the frames saved for the lookahead analysis.
+Downscaling factor for the frames saved for the lookahead analysis. 
 
-‘
-
-unknown
-
-’
-
-‘
-
-auto
-
-’
-
-‘
-
-off
-
-’
-
-‘
-
-2x
-
-’
-
-‘
-
-4x
-
-’
-
+‘unknown’
+‘auto’
+‘off’
+‘2x’
+‘4x’
 int_ref_type
+    
 
-Specifies intra refresh type. The major goal of intra refresh is improvement of
-error resilience without significant impact on encoded bitstream size caused by
-I frames. The SDK encoder achieves this by encoding part of each frame in
-refresh cycle using intra MBs.
-
-none
-
-means no refresh.
-
-vertical
-
-means
-vertical refresh, by column of MBs.
-
-horizontal
-
-means horizontal refresh,
-by rows of MBs.
-
-slice
-
-means horizontal refresh by slices without
-overlapping. In case of
-
-slice
-
-, in_ref_cycle_size is ignored. To enable
-intra refresh, B frame should be set to 0.
+Specifies intra refresh type. The major goal of intra refresh is improvement of error resilience without significant impact on encoded bitstream size caused by I frames. The SDK encoder achieves this by encoding part of each frame in refresh cycle using intra MBs. none means no refresh. vertical means vertical refresh, by column of MBs. horizontal means horizontal refresh, by rows of MBs. slice means horizontal refresh by slices without overlapping. In case of slice, in_ref_cycle_size is ignored. To enable intra refresh, B frame should be set to 0. 
 
 int_ref_cycle_size
+    
 
-Specifies number of pictures within refresh cycle starting from 2. 0 and 1 are
-invalid values.
+Specifies number of pictures within refresh cycle starting from 2. 0 and 1 are invalid values. 
 
 int_ref_qp_delta
+    
 
-Specifies QP difference for inserted intra MBs. This is signed value in
-[-51, 51] range if target encoding bit-depth for luma samples is 8 and this
-range is [-63, 63] for 10 bit-depth or [-75, 75] for 12 bit-depth respectively.
+Specifies QP difference for inserted intra MBs. This is signed value in [-51, 51] range if target encoding bit-depth for luma samples is 8 and this range is [-63, 63] for 10 bit-depth or [-75, 75] for 12 bit-depth respectively. 
 
 int_ref_cycle_dist
+    
 
-Distance between the beginnings of the intra-refresh cycles in frames.
+Distance between the beginnings of the intra-refresh cycles in frames. 
 
 profile
+    
 
-‘
-
-unknown
-
-’
-
-‘
-
-baseline
-
-’
-
-‘
-
-main
-
-’
-
-‘
-
-high
-
-’
-
+‘unknown’
+‘baseline’
+‘main’
+‘high’
 a53cc
+    
 
-Use A53 Closed Captions (if available).
+Use A53 Closed Captions (if available). 
 
 aud
+    
 
-Insert the Access Unit Delimiter NAL.
+Insert the Access Unit Delimiter NAL. 
 
 mfmode
+    
 
-Multi-Frame Mode.
+Multi-Frame Mode. 
 
-‘
-
-off
-
-’
-
-‘
-
-auto
-
-’
-
+‘off’
+‘auto’
 repeat_pps
+    
 
-Repeat pps for every frame.
+Repeat pps for every frame. 
 
 max_qp_i
+    
 
-Maximum video quantizer scale for I frame.
+Maximum video quantizer scale for I frame. 
 
 min_qp_i
+    
 
-Minimum video quantizer scale for I frame.
+Minimum video quantizer scale for I frame. 
 
 max_qp_p
+    
 
-Maximum video quantizer scale for P frame.
+Maximum video quantizer scale for P frame. 
 
 min_qp_p
+    
 
-Minimum video quantizer scale for P frame.
+Minimum video quantizer scale for P frame. 
 
 max_qp_b
+    
 
-Maximum video quantizer scale for B frame.
+Maximum video quantizer scale for B frame. 
 
 min_qp_b
+    
 
-Minimum video quantizer scale for B frame.
+Minimum video quantizer scale for B frame. 
 
 scenario
+    
 
-Provides a hint to encoder about the scenario for the encoding session.
+Provides a hint to encoder about the scenario for the encoding session. 
 
-‘
-
-unknown
-
-’
-
-‘
-
-displayremoting
-
-’
-
-‘
-
-videoconference
-
-’
-
-‘
-
-archive
-
-’
-
-‘
-
-livestreaming
-
-’
-
-‘
-
-cameracapture
-
-’
-
-‘
-
-videosurveillance
-
-’
-
-‘
-
-gamestreaming
-
-’
-
-‘
-
-remotegaming
-
-’
-
+‘unknown’
+‘displayremoting’
+‘videoconference’
+‘archive’
+‘livestreaming’
+‘cameracapture’
+‘videosurveillance’
+‘gamestreaming’
+‘remotegaming’
 avbr_accuracy
+    
 
-Accuracy of the AVBR ratecontrol (unit of tenth of percent).
+Accuracy of the AVBR ratecontrol (unit of tenth of percent). 
 
 avbr_convergence
+    
 
-Convergence of the AVBR ratecontrol (unit of 100 frames)
+Convergence of the AVBR ratecontrol (unit of 100 frames) 
 
-The parameters
-
-avbr_accuracy
-
-and
-
-avbr_convergence
-
-are for the
-average variable bitrate control (AVBR) algorithm.
-The algorithm focuses on overall encoding quality while meeting the specified
-bitrate,
-
-target_bitrate
-
-, within the accuracy range
-
-avbr_accuracy
-
-,
-after a
-
-avbr_Convergence
-
-period. This method does not follow HRD and the
-instant bitrate is not capped or padded.
+The parameters avbr_accuracy and avbr_convergence are for the average variable bitrate control (AVBR) algorithm. The algorithm focuses on overall encoding quality while meeting the specified bitrate, target_bitrate, within the accuracy range avbr_accuracy, after a avbr_Convergence period. This method does not follow HRD and the instant bitrate is not capped or padded. 
 
 skip_frame
+    
 
-Use per-frame metadata "qsv_skip_frame" to skip frame when encoding. This option
-defines the usage of this metadata.
+Use per-frame metadata "qsv_skip_frame" to skip frame when encoding. This option defines the usage of this metadata. 
 
-‘
+‘no_skip’
+    
 
-no_skip
+Frame skipping is disabled. 
 
-’
+‘insert_dummy’
+    
 
-Frame skipping is disabled.
+Encoder inserts into bitstream frame where all macroblocks are encoded as skipped. 
 
-‘
+‘insert_nothing’
+    
 
-insert_dummy
+Similar to insert_dummy, but encoder inserts nothing into bitstream. The skipped frames are still used in brc. For example, gop still include skipped frames, and the frames after skipped frames will be larger in size. 
 
-’
+‘brc_only’
+    
 
-Encoder inserts into bitstream frame where all macroblocks are encoded as
-skipped.
+skip_frame metadata indicates the number of missed frames before the current frame. 
 
-‘
+#### 9.30.6 HEVC Options
 
-insert_nothing
-
-’
-
-Similar to insert_dummy, but encoder inserts nothing into bitstream. The skipped
-frames are still used in brc. For example, gop still include skipped frames, and
-the frames after skipped frames will be larger in size.
-
-‘
-
-brc_only
-
-’
-
-skip_frame metadata indicates the number of missed frames before the current
-frame.
-
-9.30.6 HEVC Options
-
-These options are used by hevc_qsv
+These options are used by hevc_qsv 
 
 extbrc
+    
 
-Extended bitrate control.
+Extended bitrate control. 
 
 recovery_point_sei
+    
 
-Set this flag to insert the recovery point SEI message at the beginning of every
-intra refresh cycle.
+Set this flag to insert the recovery point SEI message at the beginning of every intra refresh cycle. 
 
 rdo
+    
 
-Enable rate distortion optimization.
+Enable rate distortion optimization. 
 
 max_frame_size
+    
 
-Maximum encoded frame size in bytes.
+Maximum encoded frame size in bytes. 
 
 max_frame_size_i
+    
 
-Maximum encoded frame size for I frames in bytes. If this value is set as larger
-than zero, then for I frames the value set by max_frame_size is ignored.
+Maximum encoded frame size for I frames in bytes. If this value is set as larger than zero, then for I frames the value set by max_frame_size is ignored. 
 
 max_frame_size_p
+    
 
-Maximum encoded frame size for P frames in bytes. If this value is set as larger
-than zero, then for P frames the value set by max_frame_size is ignored.
+Maximum encoded frame size for P frames in bytes. If this value is set as larger than zero, then for P frames the value set by max_frame_size is ignored. 
 
 max_slice_size
+    
 
-Maximum encoded slice size in bytes.
+Maximum encoded slice size in bytes. 
 
 mbbrc
+    
 
-Setting this flag enables macroblock level bitrate control that generally
-improves subjective visual quality. Enabling this flag may have negative impact
-on performance and objective visual quality metric.
+Setting this flag enables macroblock level bitrate control that generally improves subjective visual quality. Enabling this flag may have negative impact on performance and objective visual quality metric. 
 
 low_delay_brc
+    
 
-Setting this flag turns on or off LowDelayBRC feature in qsv plugin, which provides
-more accurate bitrate control to minimize the variance of bitstream size frame
-by frame. Value: -1-default 0-off 1-on
+Setting this flag turns on or off LowDelayBRC feature in qsv plugin, which provides more accurate bitrate control to minimize the variance of bitstream size frame by frame. Value: -1-default 0-off 1-on 
 
 adaptive_i
+    
 
-This flag controls insertion of I frames by the QSV encoder. Turn ON this flag
-to allow changing of frame type from P and B to I.
+This flag controls insertion of I frames by the QSV encoder. Turn ON this flag to allow changing of frame type from P and B to I. 
 
 adaptive_b
+    
 
-This flag controls changing of frame type from B to P.
+This flag controls changing of frame type from B to P. 
 
 p_strategy
+    
 
-Enable P-pyramid: 0-default 1-simple 2-pyramid(bf need to be set to 0).
+Enable P-pyramid: 0-default 1-simple 2-pyramid(bf need to be set to 0). 
 
 b_strategy
+    
 
-This option controls usage of B frames as reference.
+This option controls usage of B frames as reference. 
 
 dblk_idc
+    
 
-This option disable deblocking. It has value in range 0~2.
+This option disable deblocking. It has value in range 0~2. 
 
 idr_interval
+    
 
-Distance (in I-frames) between IDR frames.
+Distance (in I-frames) between IDR frames. 
 
-‘
+‘begin_only’
+    
 
-begin_only
-
-’
-
-Output an IDR-frame only at the beginning of the stream.
+Output an IDR-frame only at the beginning of the stream. 
 
 load_plugin
+    
 
-A user plugin to load in an internal session.
+A user plugin to load in an internal session. 
 
-‘
-
-none
-
-’
-
-‘
-
-hevc_sw
-
-’
-
-‘
-
-hevc_hw
-
-’
-
+‘none’
+‘hevc_sw’
+‘hevc_hw’
 load_plugins
+    
 
-A :-separate list of hexadecimal plugin UIDs to load in
-an internal session.
+A :-separate list of hexadecimal plugin UIDs to load in an internal session. 
 
 look_ahead_depth
+    
 
-Depth of look ahead in number frames, available when extbrc option is enabled.
+Depth of look ahead in number frames, available when extbrc option is enabled. 
 
 profile
+    
 
-Set the encoding profile (scc requires libmfx >= 1.32).
+Set the encoding profile (scc requires libmfx >= 1.32). 
 
-‘
-
-unknown
-
-’
-
-‘
-
-main
-
-’
-
-‘
-
-main10
-
-’
-
-‘
-
-mainsp
-
-’
-
-‘
-
-rext
-
-’
-
-‘
-
-scc
-
-’
-
+‘unknown’
+‘main’
+‘main10’
+‘mainsp’
+‘rext’
+‘scc’
 tier
+    
 
-Set the encoding tier (only level >= 4 can support high tier).
-This option only takes effect when the level option is specified.
+Set the encoding tier (only level >= 4 can support high tier). This option only takes effect when the level option is specified. 
 
-‘
-
-main
-
-’
-
-‘
-
-high
-
-’
-
+‘main’
+‘high’
 gpb
+    
 
-1: GPB (generalized P/B frame)
+1: GPB (generalized P/B frame) 
 
-0: regular P frame.
+0: regular P frame. 
 
 tile_cols
+    
 
-Number of columns for tiled encoding.
+Number of columns for tiled encoding. 
 
 tile_rows
+    
 
-Number of rows for tiled encoding.
+Number of rows for tiled encoding. 
 
 aud
+    
 
-Insert the Access Unit Delimiter NAL.
+Insert the Access Unit Delimiter NAL. 
 
 pic_timing_sei
+    
 
-Insert picture timing SEI with pic_struct_syntax element.
+Insert picture timing SEI with pic_struct_syntax element. 
 
 transform_skip
+    
 
-Turn this option ON to enable transformskip. It is supported on platform equal
-or newer than ICL.
+Turn this option ON to enable transformskip. It is supported on platform equal or newer than ICL. 
 
 int_ref_type
+    
 
-Specifies intra refresh type. The major goal of intra refresh is improvement of
-error resilience without significant impact on encoded bitstream size caused by
-I frames. The SDK encoder achieves this by encoding part of each frame in
-refresh cycle using intra MBs.
-
-none
-
-means no refresh.
-
-vertical
-
-means
-vertical refresh, by column of MBs.
-
-horizontal
-
-means horizontal refresh,
-by rows of MBs.
-
-slice
-
-means horizontal refresh by slices without
-overlapping. In case of
-
-slice
-
-, in_ref_cycle_size is ignored. To enable
-intra refresh, B frame should be set to 0.
+Specifies intra refresh type. The major goal of intra refresh is improvement of error resilience without significant impact on encoded bitstream size caused by I frames. The SDK encoder achieves this by encoding part of each frame in refresh cycle using intra MBs. none means no refresh. vertical means vertical refresh, by column of MBs. horizontal means horizontal refresh, by rows of MBs. slice means horizontal refresh by slices without overlapping. In case of slice, in_ref_cycle_size is ignored. To enable intra refresh, B frame should be set to 0. 
 
 int_ref_cycle_size
+    
 
-Specifies number of pictures within refresh cycle starting from 2. 0 and 1 are
-invalid values.
+Specifies number of pictures within refresh cycle starting from 2. 0 and 1 are invalid values. 
 
 int_ref_qp_delta
+    
 
-Specifies QP difference for inserted intra MBs. This is signed value in
-[-51, 51] range if target encoding bit-depth for luma samples is 8 and this
-range is [-63, 63] for 10 bit-depth or [-75, 75] for 12 bit-depth respectively.
+Specifies QP difference for inserted intra MBs. This is signed value in [-51, 51] range if target encoding bit-depth for luma samples is 8 and this range is [-63, 63] for 10 bit-depth or [-75, 75] for 12 bit-depth respectively. 
 
 int_ref_cycle_dist
+    
 
-Distance between the beginnings of the intra-refresh cycles in frames.
+Distance between the beginnings of the intra-refresh cycles in frames. 
 
 max_qp_i
+    
 
-Maximum video quantizer scale for I frame.
+Maximum video quantizer scale for I frame. 
 
 min_qp_i
+    
 
-Minimum video quantizer scale for I frame.
+Minimum video quantizer scale for I frame. 
 
 max_qp_p
+    
 
-Maximum video quantizer scale for P frame.
+Maximum video quantizer scale for P frame. 
 
 min_qp_p
+    
 
-Minimum video quantizer scale for P frame.
+Minimum video quantizer scale for P frame. 
 
 max_qp_b
+    
 
-Maximum video quantizer scale for B frame.
+Maximum video quantizer scale for B frame. 
 
 min_qp_b
+    
 
-Minimum video quantizer scale for B frame.
+Minimum video quantizer scale for B frame. 
 
 scenario
+    
 
-Provides a hint to encoder about the scenario for the encoding session.
+Provides a hint to encoder about the scenario for the encoding session. 
 
-‘
-
-unknown
-
-’
-
-‘
-
-displayremoting
-
-’
-
-‘
-
-videoconference
-
-’
-
-‘
-
-archive
-
-’
-
-‘
-
-livestreaming
-
-’
-
-‘
-
-cameracapture
-
-’
-
-‘
-
-videosurveillance
-
-’
-
-‘
-
-gamestreaming
-
-’
-
-‘
-
-remotegaming
-
-’
-
+‘unknown’
+‘displayremoting’
+‘videoconference’
+‘archive’
+‘livestreaming’
+‘cameracapture’
+‘videosurveillance’
+‘gamestreaming’
+‘remotegaming’
 avbr_accuracy
+    
 
-Accuracy of the AVBR ratecontrol (unit of tenth of percent).
+Accuracy of the AVBR ratecontrol (unit of tenth of percent). 
 
 avbr_convergence
+    
 
-Convergence of the AVBR ratecontrol (unit of 100 frames)
+Convergence of the AVBR ratecontrol (unit of 100 frames) 
 
-The parameters
-
-avbr_accuracy
-
-and
-
-avbr_convergence
-
-are for the
-average variable bitrate control (AVBR) algorithm.
-The algorithm focuses on overall encoding quality while meeting the specified
-bitrate,
-
-target_bitrate
-
-, within the accuracy range
-
-avbr_accuracy
-
-,
-after a
-
-avbr_Convergence
-
-period. This method does not follow HRD and the
-instant bitrate is not capped or padded.
+The parameters avbr_accuracy and avbr_convergence are for the average variable bitrate control (AVBR) algorithm. The algorithm focuses on overall encoding quality while meeting the specified bitrate, target_bitrate, within the accuracy range avbr_accuracy, after a avbr_Convergence period. This method does not follow HRD and the instant bitrate is not capped or padded. 
 
 skip_frame
+    
 
-Use per-frame metadata "qsv_skip_frame" to skip frame when encoding. This option
-defines the usage of this metadata.
+Use per-frame metadata "qsv_skip_frame" to skip frame when encoding. This option defines the usage of this metadata. 
 
-‘
+‘no_skip’
+    
 
-no_skip
+Frame skipping is disabled. 
 
-’
+‘insert_dummy’
+    
 
-Frame skipping is disabled.
+Encoder inserts into bitstream frame where all macroblocks are encoded as skipped. 
 
-‘
+‘insert_nothing’
+    
 
-insert_dummy
+Similar to insert_dummy, but encoder inserts nothing into bitstream. The skipped frames are still used in brc. For example, gop still include skipped frames, and the frames after skipped frames will be larger in size. 
 
-’
+‘brc_only’
+    
 
-Encoder inserts into bitstream frame where all macroblocks are encoded as
-skipped.
+skip_frame metadata indicates the number of missed frames before the current frame. 
 
-‘
+#### 9.30.7 MPEG2 Options
 
-insert_nothing
-
-’
-
-Similar to insert_dummy, but encoder inserts nothing into bitstream. The skipped
-frames are still used in brc. For example, gop still include skipped frames, and
-the frames after skipped frames will be larger in size.
-
-‘
-
-brc_only
-
-’
-
-skip_frame metadata indicates the number of missed frames before the current
-frame.
-
-9.30.7 MPEG2 Options
-
-These options are used by mpeg2_qsv
+These options are used by mpeg2_qsv 
 
 profile
+    
 
-‘
+‘unknown’
+‘simple’
+‘main’
+‘high’
 
-unknown
+#### 9.30.8 VP9 Options
 
-’
-
-‘
-
-simple
-
-’
-
-‘
-
-main
-
-’
-
-‘
-
-high
-
-’
-
-9.30.8 VP9 Options
-
-These options are used by vp9_qsv
+These options are used by vp9_qsv 
 
 profile
+    
 
-‘
-
-unknown
-
-’
-
-‘
-
-profile0
-
-’
-
-‘
-
-profile1
-
-’
-
-‘
-
-profile2
-
-’
-
-‘
-
-profile3
-
-’
-
+‘unknown’
+‘profile0’
+‘profile1’
+‘profile2’
+‘profile3’
 tile_cols
+    
 
-Number of columns for tiled encoding (requires libmfx >= 1.29).
+Number of columns for tiled encoding (requires libmfx >= 1.29). 
 
 tile_rows
+    
 
-Number of rows for tiled encoding (requires libmfx  >= 1.29).
+Number of rows for tiled encoding (requires libmfx >= 1.29). 
 
-9.30.9 AV1 Options
+#### 9.30.9 AV1 Options
 
-These options are used by av1_qsv (requires libvpl).
+These options are used by av1_qsv (requires libvpl). 
 
 profile
+    
 
-‘
-
-unknown
-
-’
-
-‘
-
-main
-
-’
-
+‘unknown’
+‘main’
 tile_cols
+    
 
-Number of columns for tiled encoding.
+Number of columns for tiled encoding. 
 
 tile_rows
+    
 
-Number of rows for tiled encoding.
+Number of rows for tiled encoding. 
 
 adaptive_i
+    
 
-This flag controls insertion of I frames by the QSV encoder. Turn ON this flag
-to allow changing of frame type from P and B to I.
+This flag controls insertion of I frames by the QSV encoder. Turn ON this flag to allow changing of frame type from P and B to I. 
 
 adaptive_b
+    
 
-This flag controls changing of frame type from B to P.
+This flag controls changing of frame type from B to P. 
 
 b_strategy
+    
 
-This option controls usage of B frames as reference.
+This option controls usage of B frames as reference. 
 
 extbrc
+    
 
-Extended bitrate control.
+Extended bitrate control. 
 
 look_ahead_depth
+    
 
-Depth of look ahead in number frames, available when extbrc option is enabled.
+Depth of look ahead in number frames, available when extbrc option is enabled. 
 
 low_delay_brc
+    
 
-Setting this flag turns on or off LowDelayBRC feature in qsv plugin, which provides
-more accurate bitrate control to minimize the variance of bitstream size frame
-by frame. Value: -1-default 0-off 1-on
+Setting this flag turns on or off LowDelayBRC feature in qsv plugin, which provides more accurate bitrate control to minimize the variance of bitstream size frame by frame. Value: -1-default 0-off 1-on 
 
 max_frame_size
+    
 
-Set the allowed max size in bytes for each frame. If the frame size exceeds
-the limitation, encoder will adjust the QP value to control the frame size.
-Invalid in CQP rate control mode.
+Set the allowed max size in bytes for each frame. If the frame size exceeds the limitation, encoder will adjust the QP value to control the frame size. Invalid in CQP rate control mode. 
 
 max_frame_size_i
+    
 
-Maximum encoded frame size for I frames in bytes. If this value is set as larger
-than zero, then for I frames the value set by max_frame_size is ignored.
+Maximum encoded frame size for I frames in bytes. If this value is set as larger than zero, then for I frames the value set by max_frame_size is ignored. 
 
 max_frame_size_p
+    
 
-Maximum encoded frame size for P frames in bytes. If this value is set as larger
-than zero, then for P frames the value set by max_frame_size is ignored.
+Maximum encoded frame size for P frames in bytes. If this value is set as larger than zero, then for P frames the value set by max_frame_size is ignored. 
 
-9.31 snow
+### 9.31 snow
 
-9.31.1 Options
+#### 9.31.1 Options
 
 iterative_dia_size
+    
 
-dia size for the iterative motion estimation
+dia size for the iterative motion estimation 
 
-9.32 VAAPI encoders
+### 9.32 VAAPI encoders
 
-Wrappers for hardware encoders accessible via VAAPI.
+Wrappers for hardware encoders accessible via VAAPI. 
 
-These encoders only accept input in VAAPI hardware surfaces.  If you have input
-in software frames, use the
+These encoders only accept input in VAAPI hardware surfaces. If you have input in software frames, use the hwupload filter to upload them to the GPU. 
 
-hwupload
+The following standard libavcodec options are used: 
 
-filter to upload them to the GPU.
+  * g / gop_size
+  * bf / max_b_frames
+  * profile
 
-The following standard libavcodec options are used:
+If not set, this will be determined automatically from the format of the input frames and the profiles supported by the driver. 
 
-g
+  * level
+  * b / bit_rate
+  * maxrate / rc_max_rate
+  * bufsize / rc_buffer_size
+  * rc_init_occupancy / rc_initial_buffer_occupancy
+  * compression_level
 
-/
+Speed / quality tradeoff: higher values are faster / worse quality. 
 
-gop_size
+  * q / global_quality
 
-bf
+Size / quality tradeoff: higher values are smaller / worse quality. 
 
-/
+  * qmin
+  * qmax
+  * i_qfactor / i_quant_factor
+  * i_qoffset / i_quant_offset
+  * b_qfactor / b_quant_factor
+  * b_qoffset / b_quant_offset
+  * slices
 
-max_b_frames
 
-profile
 
-If not set, this will be determined automatically from the format of the input
-frames and the profiles supported by the driver.
-
-level
-
-b
-
-/
-
-bit_rate
-
-maxrate
-
-/
-
-rc_max_rate
-
-bufsize
-
-/
-
-rc_buffer_size
-
-rc_init_occupancy
-
-/
-
-rc_initial_buffer_occupancy
-
-compression_level
-
-Speed / quality tradeoff: higher values are faster / worse quality.
-
-q
-
-/
-
-global_quality
-
-Size / quality tradeoff: higher values are smaller / worse quality.
-
-qmin
-
-qmax
-
-i_qfactor
-
-/
-
-i_quant_factor
-
-i_qoffset
-
-/
-
-i_quant_offset
-
-b_qfactor
-
-/
-
-b_quant_factor
-
-b_qoffset
-
-/
-
-b_quant_offset
-
-slices
-
-All encoders support the following options:
+All encoders support the following options: 
 
 low_power
+    
 
-Some drivers/platforms offer a second encoder for some codecs intended to use
-less power than the default encoder; setting this option will attempt to use
-that encoder.  Note that it may support a reduced feature set, so some other
-options may not be available in this mode.
+Some drivers/platforms offer a second encoder for some codecs intended to use less power than the default encoder; setting this option will attempt to use that encoder. Note that it may support a reduced feature set, so some other options may not be available in this mode. 
 
 idr_interval
+    
 
-Set the number of normal intra frames between full-refresh (IDR) frames in
-open-GOP mode.  The intra frames are still IRAPs, but will not include global
-headers and may have non-decodable leading pictures.
+Set the number of normal intra frames between full-refresh (IDR) frames in open-GOP mode. The intra frames are still IRAPs, but will not include global headers and may have non-decodable leading pictures. 
 
 b_depth
+    
 
-Set the B-frame reference depth.  When set to one (the default), all B-frames
-will refer only to P- or I-frames.  When set to greater values multiple layers
-of B-frames will be present, frames in each layer only referring to frames in
-higher layers.
+Set the B-frame reference depth. When set to one (the default), all B-frames will refer only to P- or I-frames. When set to greater values multiple layers of B-frames will be present, frames in each layer only referring to frames in higher layers. 
 
 async_depth
+    
 
-Maximum processing parallelism. Increase this to improve single channel
-performance. This option doesn’t work if driver doesn’t implement vaSyncBuffer
-function. Please make sure there are enough hw_frames allocated if a large
-number of async_depth is used.
+Maximum processing parallelism. Increase this to improve single channel performance. This option doesn’t work if driver doesn’t implement vaSyncBuffer function. Please make sure there are enough hw_frames allocated if a large number of async_depth is used. 
 
 max_frame_size
+    
 
-Set the allowed max size in bytes for each frame. If the frame size exceeds
-the limitation, encoder will adjust the QP value to control the frame size.
-Invalid in CQP rate control mode.
+Set the allowed max size in bytes for each frame. If the frame size exceeds the limitation, encoder will adjust the QP value to control the frame size. Invalid in CQP rate control mode. 
 
 rc_mode
+    
 
-Set the rate control mode to use.  A given driver may only support a subset of
-modes.
+Set the rate control mode to use. A given driver may only support a subset of modes. 
 
-Possible modes:
+Possible modes: 
 
 auto
+    
 
-Choose the mode automatically based on driver support and the other options.
-This is the default.
+Choose the mode automatically based on driver support and the other options. This is the default. 
 
 CQP
+    
 
-Constant-quality.
+Constant-quality. 
 
 CBR
+    
 
-Constant-bitrate.
+Constant-bitrate. 
 
 VBR
+    
 
-Variable-bitrate.
+Variable-bitrate. 
 
 ICQ
+    
 
-Intelligent constant-quality.
+Intelligent constant-quality. 
 
 QVBR
+    
 
-Quality-defined variable-bitrate.
+Quality-defined variable-bitrate. 
 
 AVBR
+    
 
-Average variable bitrate.
+Average variable bitrate. 
 
 blbrc
+    
 
-Enable block level rate control, which assigns different bitrate block by block.
-Invalid for CQP mode.
+Enable block level rate control, which assigns different bitrate block by block. Invalid for CQP mode. 
 
-Each encoder also has its own specific options:
+Each encoder also has its own specific options: 
 
 av1_vaapi
+    
 
-profile
-
-sets the value of
-
-seq_profile
-
-.
-
-tier
-
-sets the value of
-
-seq_tier
-
-.
-
-level
-
-sets the value of
-
-seq_level_idx
-
-.
+profile sets the value of _seq_profile_. tier sets the value of _seq_tier_. level sets the value of _seq_level_idx_. 
 
 tiles
+    
 
-Set the number of tiles to encode the input video with, as columns x rows.
-(default is auto, which means use minimal tile column/row number).
+Set the number of tiles to encode the input video with, as columns x rows. (default is auto, which means use minimal tile column/row number). 
 
 tile_groups
+    
 
-Set tile groups number. All the tiles will be distributed as evenly as possible to
-each tile group. (default is 1).
+Set tile groups number. All the tiles will be distributed as evenly as possible to each tile group. (default is 1). 
 
 h264_vaapi
+    
 
-profile
-
-sets the value of
-
-profile_idc
-
-and the
-
-constraint_set*_flag
-
-s.
-
-level
-
-sets the value of
-
-level_idc
-
-.
+profile sets the value of _profile_idc_ and the _constraint_set*_flag_ s. level sets the value of _level_idc_. 
 
 coder
+    
 
-Set entropy encoder (default is
+Set entropy encoder (default is _cabac_). Possible values: 
 
-cabac
+‘ac’
+‘cabac’
+    
 
-).  Possible values:
+Use CABAC. 
 
-‘
+‘vlc’
+‘cavlc’
+    
 
-ac
-
-’
-
-‘
-
-cabac
-
-’
-
-Use CABAC.
-
-‘
-
-vlc
-
-’
-
-‘
-
-cavlc
-
-’
-
-Use CAVLC.
+Use CAVLC. 
 
 aud
+    
 
-Include access unit delimiters in the stream (not included by default).
+Include access unit delimiters in the stream (not included by default). 
 
 sei
+    
 
-Set SEI message types to include.
-Some combination of the following values:
+Set SEI message types to include. Some combination of the following values: 
 
-‘
+‘identifier’
+    
 
-identifier
+Include a _user_data_unregistered_ message containing information about the encoder. 
 
-’
+‘timing’
+    
 
-Include a
+Include picture timing parameters (_buffering_period_ and _pic_timing_ messages). 
 
-user_data_unregistered
+‘recovery_point’
+    
 
-message containing information about
-the encoder.
-
-‘
-
-timing
-
-’
-
-Include picture timing parameters (
-
-buffering_period
-
-and
-
-pic_timing
-
-messages).
-
-‘
-
-recovery_point
-
-’
-
-Include recovery points where appropriate (
-
-recovery_point
-
-messages).
+Include recovery points where appropriate (_recovery_point_ messages). 
 
 hevc_vaapi
+    
 
-profile
-
-and
-
-level
-
-set the values of
-
-general_profile_idc
-
-and
-
-general_level_idc
-
-respectively.
+profile and level set the values of _general_profile_idc_ and _general_level_idc_ respectively. 
 
 aud
+    
 
-Include access unit delimiters in the stream (not included by default).
+Include access unit delimiters in the stream (not included by default). 
 
 tier
+    
 
-Set
-
-general_tier_flag
-
-.  This may affect the level chosen for the stream
-if it is not explicitly specified.
+Set _general_tier_flag_. This may affect the level chosen for the stream if it is not explicitly specified. 
 
 sei
+    
 
-Set SEI message types to include.
-Some combination of the following values:
+Set SEI message types to include. Some combination of the following values: 
 
-‘
+‘hdr’
+    
 
-hdr
-
-’
-
-Include HDR metadata if the input frames have it
-(
-
-mastering_display_colour_volume
-
-and
-
-content_light_level
-
-messages).
+Include HDR metadata if the input frames have it (_mastering_display_colour_volume_ and _content_light_level_ messages). 
 
 tiles
+    
 
-Set the number of tiles to encode the input video with, as columns x rows.
-Larger numbers allow greater parallelism in both encoding and decoding, but
-may decrease coding efficiency.
+Set the number of tiles to encode the input video with, as columns x rows. Larger numbers allow greater parallelism in both encoding and decoding, but may decrease coding efficiency. 
 
 mjpeg_vaapi
+    
 
-Only baseline DCT encoding is supported.  The encoder always uses the standard
-quantisation and huffman tables -
+Only baseline DCT encoding is supported. The encoder always uses the standard quantisation and huffman tables - global_quality scales the standard quantisation table (range 1-100). 
 
-global_quality
-
-scales the standard
-quantisation table (range 1-100).
-
-For YUV, 4:2:0, 4:2:2 and 4:4:4 subsampling modes are supported.  RGB is also
-supported, and will create an RGB JPEG.
+For YUV, 4:2:0, 4:2:2 and 4:4:4 subsampling modes are supported. RGB is also supported, and will create an RGB JPEG. 
 
 jfif
+    
 
-Include JFIF header in each frame (not included by default).
+Include JFIF header in each frame (not included by default). 
 
 huffman
+    
 
-Include standard huffman tables (on by default).  Turning this off will save
-a few hundred bytes in each output frame, but may lose compatibility with some
-JPEG decoders which don’t fully handle MJPEG.
+Include standard huffman tables (on by default). Turning this off will save a few hundred bytes in each output frame, but may lose compatibility with some JPEG decoders which don’t fully handle MJPEG. 
 
 mpeg2_vaapi
+    
 
-profile
-
-and
-
-level
-
-set the value of
-
-profile_and_level_indication
-
-.
+profile and level set the value of _profile_and_level_indication_. 
 
 vp8_vaapi
+    
 
-B-frames are not supported.
+B-frames are not supported. 
 
-global_quality
-
-sets the
-
-q_idx
-
-used for non-key frames (range 0-127).
+global_quality sets the _q_idx_ used for non-key frames (range 0-127). 
 
 loop_filter_level
-
 loop_filter_sharpness
+    
 
-Manually set the loop filter parameters.
+Manually set the loop filter parameters. 
 
 vp9_vaapi
+    
 
-global_quality
-
-sets the
-
-q_idx
-
-used for P-frames (range 0-255).
+global_quality sets the _q_idx_ used for P-frames (range 0-255). 
 
 loop_filter_level
-
 loop_filter_sharpness
+    
 
-Manually set the loop filter parameters.
+Manually set the loop filter parameters. 
 
-B-frames are supported, but the output stream is always in encode order rather than display
-order.  If B-frames are enabled, it may be necessary to use the
+B-frames are supported, but the output stream is always in encode order rather than display order. If B-frames are enabled, it may be necessary to use the vp9_raw_reorder bitstream filter to modify the output stream to display frames in the correct order. 
 
-vp9_raw_reorder
+Only normal frames are produced - the vp9_superframe bitstream filter may be required to produce a stream usable with all decoders. 
 
-bitstream filter to modify the output stream to display frames in the correct order.
+### 9.33 vbn
 
-Only normal frames are produced - the
+Vizrt Binary Image encoder. 
 
-vp9_superframe
+This format is used by the broadcast vendor Vizrt for quick texture streaming. Advanced features of the format such as LZW compression of texture data or generation of mipmaps are not supported. 
 
-bitstream filter may be
-required to produce a stream usable with all decoders.
+#### 9.33.1 Options
 
-9.33 vbn
+format string
+    
 
-Vizrt Binary Image encoder.
+Sets the texture compression used by the VBN file. Can be dxt1, dxt5 or raw. Default is dxt5. 
 
-This format is used by the broadcast vendor Vizrt for quick texture streaming.
-Advanced features of the format such as LZW compression of texture data or
-generation of mipmaps are not supported.
+### 9.34 vc2
 
-9.33.1 Options
+SMPTE VC-2 (previously BBC Dirac Pro). This codec was primarily aimed at professional broadcasting but since it supports yuv420, yuv422 and yuv444 at 8 (limited range or full range), 10 or 12 bits, this makes it suitable for other tasks which require low overhead and low compression (like screen recording). 
 
-format
-
-string
-
-Sets the texture compression used by the VBN file. Can be
-
-dxt1
-
-,
-
-dxt5
-
-or
-
-raw
-
-. Default is
-
-dxt5
-
-.
-
-9.34 vc2
-
-SMPTE VC-2 (previously BBC Dirac Pro). This codec was primarily aimed at
-professional broadcasting but since it supports yuv420, yuv422 and yuv444 at
-8 (limited range or full range), 10 or 12 bits, this makes it suitable for
-other tasks which require low overhead and low compression (like screen
-recording).
-
-9.34.1 Options
+#### 9.34.1 Options
 
 b
+    
 
-Sets target video bitrate. Usually that’s around 1:6 of the uncompressed
-video bitrate (e.g. for 1920x1080 50fps yuv422p10 that’s around 400Mbps). Higher
-values (close to the uncompressed bitrate) turn on lossless compression mode.
+Sets target video bitrate. Usually that’s around 1:6 of the uncompressed video bitrate (e.g. for 1920x1080 50fps yuv422p10 that’s around 400Mbps). Higher values (close to the uncompressed bitrate) turn on lossless compression mode. 
 
 field_order
+    
 
-Enables field coding when set (e.g. to tt - top field first) for interlaced
-inputs. Should increase compression with interlaced content as it splits the
-fields and encodes each separately.
-
-wavelet_depth
-
-Sets the total amount of wavelet transforms to apply, between 1 and 5 (default).
-Lower values reduce compression and quality. Less capable decoders may not be
-able to handle values of
+Enables field coding when set (e.g. to tt - top field first) for interlaced inputs. Should increase compression with interlaced content as it splits the fields and encodes each separately. 
 
 wavelet_depth
+    
 
-over 3.
+Sets the total amount of wavelet transforms to apply, between 1 and 5 (default). Lower values reduce compression and quality. Less capable decoders may not be able to handle values of wavelet_depth over 3. 
 
 wavelet_type
+    
 
-Sets the transform type. Currently only
-
-5_3
-
-(LeGall) and
-
-9_7
-
-(Deslauriers-Dubuc)
-are implemented, with 9_7 being the one with better compression and thus
-is the default.
+Sets the transform type. Currently only 5_3 (LeGall) and 9_7 (Deslauriers-Dubuc) are implemented, with 9_7 being the one with better compression and thus is the default. 
 
 slice_width
-
 slice_height
+    
 
-Sets the slice size for each slice. Larger values result in better compression.
-For compatibility with other more limited decoders use
-
-slice_width
-
-of
-32 and
-
-slice_height
-
-of 8.
+Sets the slice size for each slice. Larger values result in better compression. For compatibility with other more limited decoders use slice_width of 32 and slice_height of 8. 
 
 tolerance
+    
 
-Sets the undershoot tolerance of the rate control system in percent. This is
-to prevent an expensive search from being run.
+Sets the undershoot tolerance of the rate control system in percent. This is to prevent an expensive search from being run. 
 
 qm
+    
 
-Sets the quantization matrix preset to use by default or when
+Sets the quantization matrix preset to use by default or when wavelet_depth is set to 5 
 
-wavelet_depth
+  * - default Uses the default quantization matrix from the specifications, extended with values for the fifth level. This provides a good balance between keeping detail and omitting artifacts. 
+  * - flat Use a completely zeroed out quantization matrix. This increases PSNR but might reduce perception. Use in bogus benchmarks. 
+  * - color Reduces detail but attempts to preserve color at extremely low bitrates. 
 
-is set to 5
 
--
 
-default
+## 10 Subtitles Encoders
 
-Uses the default quantization matrix from the specifications, extended with
-values for the fifth level. This provides a good balance between keeping detail
-and omitting artifacts.
+### 10.1 dvbsub
 
--
+This codec encodes the bitmap subtitle format that is used in DVB broadcasts and recordings. The bitmaps are typically embedded in a container such as MPEG-TS as a separate stream. 
 
-flat
+#### 10.1.1 Options
 
-Use a completely zeroed out quantization matrix. This increases PSNR but might
-reduce perception. Use in bogus benchmarks.
+min_bpp integer (2, 4, or 8)
+    
 
--
+Set a minimum bits-per-pixel value for the subtitle color lookup tables. 
 
-color
+DVB supports 2, 4, and 8 bits-per-pixel color lookup tables. This option enables forcing a particular bits-per-pixel value regardless of the number of colors. Since not all players support or properly support 2 bits-per-pixel, this value defaults to 4. 
 
-Reduces detail but attempts to preserve color at extremely low bitrates.
+### 10.2 dvdsub
 
-10 Subtitles Encoders
+This codec encodes the bitmap subtitle format that is used in DVDs. Typically they are stored in VOBSUB file pairs (*.idx + *.sub), and they can also be used in Matroska files. 
 
-10.1 dvbsub
-
-This codec encodes the bitmap subtitle format that is used in DVB
-broadcasts and recordings. The bitmaps are typically embedded in a
-container such as MPEG-TS as a separate stream.
-
-10.1.1 Options
-
-min_bpp
-
-integer (2, 4, or 8)
-
-Set a minimum bits-per-pixel value for the subtitle color lookup tables.
-
-DVB supports 2, 4, and 8 bits-per-pixel color lookup tables.  This
-option enables forcing a particular bits-per-pixel value regardless of
-the number of colors.  Since not all players support or properly
-support 2 bits-per-pixel, this value defaults to 4.
-
-10.2 dvdsub
-
-This codec encodes the bitmap subtitle format that is used in DVDs.
-Typically they are stored in VOBSUB file pairs (*.idx + *.sub),
-and they can also be used in Matroska files.
-
-10.2.1 Options
+#### 10.2.1 Options
 
 palette
+    
 
-Specify the global palette used by the bitmaps.
+Specify the global palette used by the bitmaps. 
 
-The format for this option is a string containing 16 24-bits hexadecimal
-numbers (without 0x prefix) separated by commas, for example
-
-0d00ee,
-ee450d, 101010, eaeaea, 0ce60b, ec14ed, ebff0b, 0d617a, 7b7b7b, d1d1d1,
-7b2a0e, 0d950c, 0f007b, cf0dec, cfa80c, 7c127b
-
-.
+The format for this option is a string containing 16 24-bits hexadecimal numbers (without 0x prefix) separated by commas, for example `0d00ee, ee450d, 101010, eaeaea, 0ce60b, ec14ed, ebff0b, 0d617a, 7b7b7b, d1d1d1, 7b2a0e, 0d950c, 0f007b, cf0dec, cfa80c, 7c127b`. 
 
 even_rows_fix
+    
 
-When set to 1, enable a work-around that makes the number of pixel rows
-even in all subtitles.  This fixes a problem with some players that
-cut off the bottom row if the number is odd.  The work-around just adds
-a fully transparent row if needed.  The overhead is low, typically
-one byte per subtitle on average.
+When set to 1, enable a work-around that makes the number of pixel rows even in all subtitles. This fixes a problem with some players that cut off the bottom row if the number is odd. The work-around just adds a fully transparent row if needed. The overhead is low, typically one byte per subtitle on average. 
 
-By default, this work-around is disabled.
+By default, this work-around is disabled. 
 
-10.3 lrc
+### 10.3 lrc
 
-This codec encodes the LRC lyrics format.
+This codec encodes the LRC lyrics format. 
 
-10.3.1 Options
+#### 10.3.1 Options
 
 precision
+    
 
-Specify the precision of the fractional part of the timestamp. Time base is
-determined based on this value.
+Specify the precision of the fractional part of the timestamp. Time base is determined based on this value. 
 
-Defaults to 2 for centiseconds.
+Defaults to 2 for centiseconds. 
 
-11 See Also
+## 11 See Also
 
-ffmpeg
+[ffmpeg](ffmpeg.html), [ffplay](ffplay.html), [ffprobe](ffprobe.html), [libavcodec](libavcodec.html)
 
-,
+## 12 Authors
 
-ffplay
+The FFmpeg developers. 
 
-,
+For details about the authorship, see the Git history of the project (https://git.ffmpeg.org/ffmpeg), e.g. by typing the command `git log` in the FFmpeg source directory, or browsing the online repository at <https://git.ffmpeg.org/ffmpeg>. 
 
-ffprobe
+Maintainers for the specific components are listed in the file MAINTAINERS in the source code tree. 
 
-,
+This document was generated on _January 30, 2026_ using [_makeinfo_](http://www.gnu.org/software/texinfo/). 
 
-libavcodec
-
-12 Authors
-
-The FFmpeg developers.
-
-For details about the authorship, see the Git history of the project
-(https://git.ffmpeg.org/ffmpeg), e.g. by typing the command
-
-git log
-
-in the FFmpeg source directory, or browsing the
-online repository at
-
-https://git.ffmpeg.org/ffmpeg
-
-.
-
-Maintainers for the specific components are listed in the file
-
-MAINTAINERS
-
-in the source code tree.
-
-This document was generated on
-
-January 30, 2026
-
-using
-
-makeinfo
-
-.
-
-Hosting provided by
-
-telepoint.bg
+Hosting provided by [telepoint.bg](https://telepoint.bg)
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

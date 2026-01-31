@@ -1,5 +1,10 @@
 # Revenge - Client Support & Device Capabilities
 
+<!-- SOURCES: casbin, fx, gohlslib, ogen, pgx, postgresql-arrays, postgresql-json, river, svelte-runes, svelte5, sveltekit -->
+
+<!-- DESIGN: features/shared, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Multi-platform client support with intelligent capability detection.
 
 
@@ -55,8 +60,7 @@
 | Code | 🔴 |  |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-**Last Updated**: 2026-01-30
+| Integration Testing | 🔴 |  |**Last Updated**: 2026-01-30
 **Location**: `internal/clients/`
 
 ---
@@ -760,68 +764,6 @@ clients:
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
-| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
-| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Shared](INDEX.md)
-
-### In This Section
-
-- [Time-Based Access Controls](ACCESS_CONTROLS.md)
-- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
-- [Content Rating System](CONTENT_RATING.md)
-- [Revenge - Internationalization (i18n)](I18N.md)
-- [Library Types](LIBRARY_TYPES.md)
-- [News System](NEWS_SYSTEM.md)
-- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
-- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related
 

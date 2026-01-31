@@ -1,5 +1,7 @@
 # Design Documentation Status
 
+<!-- SOURCES: authelia, authentik, casbin, dragonfly, keycloak, lastfm-api, pgx, postgresql-arrays, postgresql-json, river, typesense, typesense-go -->
+
 > Auto-generated overview of design document completeness
 
 
@@ -449,36 +451,6 @@
 - **Sources**: Developer Resources section with external documentation links
 - **Instructions**: Implementation Checklist with actionable items
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../sources/security/authelia.md) |
-| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../sources/security/authentik.md) |
-| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../sources/security/casbin.md) |
-| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../sources/infrastructure/dragonfly.md) |
-| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../sources/security/keycloak.md) |
-| [Last.fm API](https://www.last.fm/api/intro) | [Local](../sources/apis/lastfm.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
-| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../sources/infrastructure/typesense.md) |
-| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../sources/infrastructure/typesense-go.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../sources/database/pgx.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
 
 ---
 

@@ -15,25 +15,25 @@ import argparse
 import re
 from pathlib import Path
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
 SOT_FILE = DESIGN_DIR / "00_SOURCE_OF_TRUTH.md"
 
 # Version pattern: matches "vX.Y.Z" or "X.Y.Z"
-VERSION_PATTERN = re.compile(r'v?(\d+\.\d+(?:\.\d+)?(?:-\w+)?)')
+VERSION_PATTERN = re.compile(r"v?(\d+\.\d+(?:\.\d+)?(?:-\w+)?)")
 
 
 def extract_sot_versions() -> dict:
     """Extract package versions from SOT."""
-    content = SOT_FILE.read_text(encoding='utf-8')
+    content = SOT_FILE.read_text(encoding="utf-8")
     versions = {}
 
     # Pattern for table rows with package and version
     # | `package/path` | vX.Y.Z | description |
     table_pattern = re.compile(
-        r'\|\s*`([^`]+)`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?(?:-\w+)?)\s*\|',
-        re.MULTILINE
+        r"\|\s*`([^`]+)`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?(?:-\w+)?)\s*\|", re.MULTILINE
     )
 
     for match in table_pattern.finditer(content):
@@ -42,8 +42,8 @@ def extract_sot_versions() -> dict:
         versions[package] = version
 
     # Also extract from inline mentions like "Package: vX.Y.Z"
-    inline_pattern = re.compile(
-        r'(?:go\.uber\.org|github\.com|golang\.org)/[\w\-/]+[`\s]+[`]?(v?\d+\.\d+(?:\.\d+)?)',
+    re.compile(
+        r"(?:go\.uber\.org|github\.com|golang\.org)/[\w\-/]+[`\s]+[`]?(v?\d+\.\d+(?:\.\d+)?)",
     )
 
     return versions
@@ -51,7 +51,7 @@ def extract_sot_versions() -> dict:
 
 def find_version_mentions(filepath: Path, sot_versions: dict) -> list:
     """Find version mentions in a file that may need updating."""
-    content = filepath.read_text(encoding='utf-8')
+    content = filepath.read_text(encoding="utf-8")
     mentions = []
 
     for package, sot_version in sot_versions.items():
@@ -62,25 +62,27 @@ def find_version_mentions(filepath: Path, sot_versions: dict) -> list:
         # Try different patterns
         patterns = [
             # `package` | vX.Y.Z |
-            rf'`{pkg_escaped}`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?)',
+            rf"`{pkg_escaped}`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?)",
             # package vX.Y.Z
-            rf'{pkg_escaped}\s+(v?\d+\.\d+(?:\.\d+)?)',
+            rf"{pkg_escaped}\s+(v?\d+\.\d+(?:\.\d+)?)",
             # package: vX.Y.Z
-            rf'{pkg_escaped}:\s*(v?\d+\.\d+(?:\.\d+)?)',
+            rf"{pkg_escaped}:\s*(v?\d+\.\d+(?:\.\d+)?)",
         ]
 
         for pattern in patterns:
             for match in re.finditer(pattern, content):
                 found_version = match.group(1)
                 if found_version != sot_version:
-                    line_num = content[:match.start()].count('\n') + 1
-                    mentions.append({
-                        "package": package,
-                        "line": line_num,
-                        "found": found_version,
-                        "expected": sot_version,
-                        "match": match.group(0),
-                    })
+                    line_num = content[: match.start()].count("\n") + 1
+                    mentions.append(
+                        {
+                            "package": package,
+                            "line": line_num,
+                            "found": found_version,
+                            "expected": sot_version,
+                            "match": match.group(0),
+                        }
+                    )
 
     return mentions
 
@@ -90,7 +92,7 @@ def fix_versions(filepath: Path, mentions: list) -> bool:
     if not mentions:
         return False
 
-    content = filepath.read_text(encoding='utf-8')
+    content = filepath.read_text(encoding="utf-8")
     original = content
 
     for mention in mentions:
@@ -99,7 +101,7 @@ def fix_versions(filepath: Path, mentions: list) -> bool:
         content = content.replace(old, new, 1)
 
     if content != original:
-        filepath.write_text(content, encoding='utf-8')
+        filepath.write_text(content, encoding="utf-8")
         return True
     return False
 
@@ -147,11 +149,12 @@ def main():
                     print(f"  Line {m['line']}: {m['package']}")
                     print(f"    Found: {m['found']} → Expected: {m['expected']}")
 
-            if args.fix:
-                if fix_versions(filepath, mentions):
-                    print(f"  Fixed {len(mentions)} version(s) in {rel_path}")
+            if args.fix and fix_versions(filepath, mentions):
+                print(f"  Fixed {len(mentions)} version(s) in {rel_path}")
 
-    print(f"\n{'Fixed' if args.fix else 'Found'} {total_drift} version drift(s) in {files_with_drift} file(s)")
+    print(
+        f"\n{'Fixed' if args.fix else 'Found'} {total_drift} version drift(s) in {files_with_drift} file(s)"
+    )
 
     if args.report:
         report_path = DESIGN_DIR / ".analysis" / "VERSION_DRIFT_REPORT.md"
@@ -167,9 +170,11 @@ def main():
         ]
 
         for m in all_mentions:
-            lines.append(f"| {m['file']} | {m['line']} | `{m['package']}` | {m['found']} | {m['expected']} |")
+            lines.append(
+                f"| {m['file']} | {m['line']} | `{m['package']}` | {m['found']} | {m['expected']} |"
+            )
 
-        report_path.write_text("\n".join(lines), encoding='utf-8')
+        report_path.write_text("\n".join(lines), encoding="utf-8")
         print(f"\nReport saved to: {report_path}")
 
     if not args.fix and total_drift > 0:

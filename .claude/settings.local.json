@@ -24,7 +24,21 @@
       "Bash(fi)",
       "Bash(done)",
       "Bash(for dir in audiobook book comics livetv movie music photo podcast qar shared tvshow)",
-      "Bash(if [ -d \"c:\\\\Users\\\\ms\\\\dev\\\\revenge\\\\internal\\\\content$dir\" ])"
+      "Bash(if [ -d \"c:\\\\Users\\\\ms\\\\dev\\\\revenge\\\\internal\\\\content$dir\" ])",
+      "Bash(grep:*)",
+      "Bash(for status in \"🟢 IMPLEMENTED\" \"🟡 IN PROGRESS\" \"🔵 PLANNED\" \"⚪ DRAFT\" \"🟡 DESIGN\" \"🔴 PLANNING\" \"🟡 PLANNED\" \"🟡 Designed\" \"🟡 Partial\")",
+      "Bash(do echo \"Status: $status\")",
+      "Bash(chmod:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -m pip install:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:thetvdb.github.io)",
+      "WebFetch(domain:api-docs.letterboxd.com)",
+      "WebFetch(domain:theporndb.net)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:coder.com)",
+      "WebFetch(domain:zed.dev)"
     ]
   }
 }

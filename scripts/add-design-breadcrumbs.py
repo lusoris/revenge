@@ -20,6 +20,7 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
@@ -36,9 +37,36 @@ SKIP_FILES = {
 
 # Topic keywords for finding related docs
 TOPIC_KEYWORDS = {
-    "authentication": ["auth", "oidc", "oauth", "jwt", "sso", "login", "session", "rbac", "casbin"],
-    "metadata": ["metadata", "provider", "tmdb", "tvdb", "musicbrainz", "stashdb", "omdb"],
-    "playback": ["player", "stream", "hls", "transcode", "playback", "media", "trickplay", "skip"],
+    "authentication": [
+        "auth",
+        "oidc",
+        "oauth",
+        "jwt",
+        "sso",
+        "login",
+        "session",
+        "rbac",
+        "casbin",
+    ],
+    "metadata": [
+        "metadata",
+        "provider",
+        "tmdb",
+        "tvdb",
+        "musicbrainz",
+        "stashdb",
+        "omdb",
+    ],
+    "playback": [
+        "player",
+        "stream",
+        "hls",
+        "transcode",
+        "playback",
+        "media",
+        "trickplay",
+        "skip",
+    ],
     "search": ["search", "typesense", "index", "query", "filter"],
     "database": ["postgresql", "database", "schema", "migration", "sqlc"],
     "caching": ["cache", "dragonfly", "redis", "otter", "sturdyc"],
@@ -104,7 +132,9 @@ def get_category_docs(doc_path: Path, all_docs: list[Path]) -> list[Path]:
     return [d for d in all_docs if d.parent == doc_dir and d != doc_path]
 
 
-def get_related_docs(doc_path: Path, all_docs: list[Path], topic_index: dict) -> list[Path]:
+def get_related_docs(
+    doc_path: Path, all_docs: list[Path], topic_index: dict
+) -> list[Path]:
     """Get related documents from other categories based on shared topics."""
     content = doc_path.read_text(encoding="utf-8")
     doc_topics = get_doc_topics(content)
@@ -130,7 +160,7 @@ def get_relative_path(from_path: Path, to_path: Path) -> str:
         from_parts = from_dir.parts
         to_parts = to_path.parts
         common = 0
-        for a, b in zip(from_parts, to_parts):
+        for a, b in zip(from_parts, to_parts, strict=False):
             if a == b:
                 common += 1
             else:
@@ -143,7 +173,7 @@ def get_relative_path(from_path: Path, to_path: Path) -> str:
 def get_doc_title(doc_path: Path) -> str:
     """Extract title from document."""
     content = doc_path.read_text(encoding="utf-8")
-    match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+    match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
     return match.group(1) if match else doc_path.stem.replace("_", " ")
 
 
@@ -166,10 +196,12 @@ def generate_breadcrumb_section(
     parent_index = doc_path.parent / "INDEX.md"
     if parent_index.exists():
         cat_name = doc_path.parent.name.replace("_", " ").title()
-        lines.extend([
-            f"**Category**: [{cat_name}](INDEX.md)",
-            "",
-        ])
+        lines.extend(
+            [
+                f"**Category**: [{cat_name}](INDEX.md)",
+                "",
+            ]
+        )
 
     # Same category docs
     if category_docs:
@@ -195,14 +227,16 @@ def generate_breadcrumb_section(
     design_index_path = get_relative_path(doc_path, DESIGN_DIR / "DESIGN_INDEX.md")
     sot_path = get_relative_path(doc_path, DESIGN_DIR / SOT_FILE)
 
-    lines.extend([
-        "### Indexes",
-        "",
-        f"- [Design Index]({design_index_path}) - All design docs by category/topic",
-        f"- [Source of Truth]({sot_path}) - Package versions and status",
-        "",
-        BREADCRUMB_END,
-    ])
+    lines.extend(
+        [
+            "### Indexes",
+            "",
+            f"- [Design Index]({design_index_path}) - All design docs by category/topic",
+            f"- [Source of Truth]({sot_path}) - Package versions and status",
+            "",
+            BREADCRUMB_END,
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -221,27 +255,25 @@ def update_doc_breadcrumbs(
 
     # Check if section already exists
     pattern = re.compile(
-        rf'{re.escape(BREADCRUMB_START)}.*?{re.escape(BREADCRUMB_END)}',
-        re.DOTALL
+        rf"{re.escape(BREADCRUMB_START)}.*?{re.escape(BREADCRUMB_END)}", re.DOTALL
     )
 
     if pattern.search(content):
         # Replace existing section
         new_content = pattern.sub(new_section, content)
-    else:
-        # Add section before first --- or at end
-        # Try to add before "## Related" or at end
-        if "\n## Related" in content:
-            new_content = content.replace("\n## Related", f"\n{new_section}\n\n## Related")
-        elif "\n---\n" in content:
-            # Add before last ---
-            parts = content.rsplit("\n---\n", 1)
-            if len(parts) == 2:
-                new_content = parts[0] + f"\n{new_section}\n\n---\n" + parts[1]
-            else:
-                new_content = content + f"\n\n{new_section}\n"
+    # Add section before first --- or at end
+    # Try to add before "## Related" or at end
+    elif "\n## Related" in content:
+        new_content = content.replace("\n## Related", f"\n{new_section}\n\n## Related")
+    elif "\n---\n" in content:
+        # Add before last ---
+        parts = content.rsplit("\n---\n", 1)
+        if len(parts) == 2:
+            new_content = parts[0] + f"\n{new_section}\n\n---\n" + parts[1]
         else:
             new_content = content + f"\n\n{new_section}\n"
+    else:
+        new_content = content + f"\n\n{new_section}\n"
 
     if new_content == content:
         return False
@@ -276,10 +308,7 @@ def main():
         related_docs = get_related_docs(doc_path, docs, topic_index)
 
         changed = update_doc_breadcrumbs(
-            doc_path,
-            category_docs,
-            related_docs,
-            dry_run=not args.update
+            doc_path, category_docs, related_docs, dry_run=not args.update
         )
 
         rel_path = doc_path.relative_to(DESIGN_DIR)
@@ -290,7 +319,7 @@ def main():
         else:
             unchanged += 1
 
-    print(f"\n=== SUMMARY ===")
+    print("\n=== SUMMARY ===")
     print(f"{'Updated' if args.update else 'Would update'}: {updated}")
     print(f"Unchanged: {unchanged}")
     print(f"Skipped: {SOT_FILE} (protected)")

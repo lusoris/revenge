@@ -1,5 +1,10 @@
 # Audiobook Module
 
+<!-- SOURCES: audnexus, fx, ogen, openlibrary, pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config -->
+
+<!-- DESIGN: features/audiobook, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Audiobook content management with metadata enrichment from Audnexus and OpenLibrary
 
 
@@ -40,8 +45,7 @@
 | Code | 🔴 |  |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-**Location**: `internal/content/audiobook/`
+| Integration Testing | 🔴 |  |**Location**: `internal/content/audiobook/`
 
 ---
 
@@ -267,34 +271,6 @@ Tables in `public` schema:
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Audnexus API](https://api.audnex.us/) | [Local](../../../sources/apis/audnexus.md) |
-| [Open Library API](https://openlibrary.org/developers/api) | [Local](../../../sources/apis/openlibrary.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
-| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
 
 ## Related Documents
 

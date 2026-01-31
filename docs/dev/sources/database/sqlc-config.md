@@ -1,2296 +1,717 @@
 # sqlc Configuration
 
 > Source: https://docs.sqlc.dev/en/stable/reference/config.html
-> Fetched: 2026-01-30T23:50:01.667935+00:00
-> Content-Hash: 8e28008d32be64b6
+> Fetched: 2026-01-31T10:57:21.959877+00:00
+> Content-Hash: 9bd8f9e22dd922d5
 > Type: html
 
 ---
 
-Configuration
+  * [](../index.html)
+  * Configuration
+  * [ View page source](../_sources/reference/config.md.txt)
 
-View page source
 
-Configuration
 
-
+* * *
 
-The
+# Configuration
 
-sqlc
+The `sqlc` tool is configured via a `sqlc.(yaml|yml)` or `sqlc.json` file. This file must be in the directory where the `sqlc` command is run.
 
-tool is configured via a
+## Version 2
+    
+    
+    version: "2"
+    cloud:
+      project: "<PROJECT_ID>"
+    sql:
+    - schema: "postgresql/schema.sql"
+      queries: "postgresql/query.sql"
+      engine: "postgresql"
+      gen:
+        go: 
+          package: "authors"
+          out: "postgresql"
+      database:
+        managed: true
+      rules:
+        - sqlc/db-prepare
+    - schema: "mysql/schema.sql"
+      queries: "mysql/query.sql"
+      engine: "mysql"
+      gen:
+        go:
+          package: "authors"
+          out: "mysql"
+    
 
-sqlc.(yaml|yml)
+### sql
 
-or
+Each mapping in the `sql` collection has the following keys:
 
-sqlc.json
+  * `name`:
 
-file. This
-file must be in the directory where the
+    * An human-friendly identifier for this query set. Optional.
 
-sqlc
+  * `engine`:
 
-command is run.
+    * One of `postgresql`, `mysql` or `sqlite`.
 
-Version 2
+  * `schema`:
 
-
+    * Directory of SQL migrations or path to single SQL file; or a list of paths.
 
-version
+  * `queries`:
 
-:
+    * Directory of SQL queries or path to single SQL file; or a list of paths.
 
-"2"
+  * `codegen`:
 
-cloud
+    * A collection of mappings to configure code generators. See codegen for the supported keys.
 
-:
+  * `gen`:
 
-project
+    * A mapping to configure built-in code generators. See gen for the supported keys.
 
-:
+  * `database`:
 
-"<PROJECT_ID>"
+    * A mapping to configure database connections. See database for the supported keys.
 
-sql
+  * `rules`:
 
-:
+    * A collection of rule names to run via `sqlc vet`. See rules for configuration options.
 
--
+  * `analyzer`:
 
-schema
+    * A mapping to configure query analysis. See analyzer for the supported keys.
 
-:
+  * `strict_function_checks`
 
-"postgresql/schema.sql"
+    * If true, return an error if a called SQL function does not exist. Defaults to `false`.
 
-queries
+  * `strict_order_by`
 
-:
+    * If true, return an error if a order by column is ambiguous. Defaults to `true`.
 
-"postgresql/query.sql"
 
-engine
 
-:
 
-"postgresql"
+### codegen
 
-gen
+The `codegen` mapping supports the following keys:
 
-:
+  * `out`:
 
-go
+    * Output directory for generated code.
 
-:
+  * `plugin`:
 
-package
+    * The name of the plugin. Must be defined in the `plugins` collection.
 
-:
+  * `options`:
 
-"authors"
+    * A mapping of plugin-specific options.
 
-out
 
-:
 
-"postgresql"
+    
+    
+    version: '2'
+    plugins:
+    - name: py
+      wasm:
+        url: https://github.com/sqlc-dev/sqlc-gen-python/releases/download/v0.16.0-alpha/sqlc-gen-python.wasm
+        sha256: 428476c7408fd4c032da4ec74e8a7344f4fa75e0f98a5a3302f238283b9b95f2
+    sql:
+    - schema: "schema.sql"
+      queries: "query.sql"
+      engine: postgresql
+      codegen:
+      - out: src/authors
+        plugin: py
+        options:
+          package: authors
+          emit_sync_querier: true
+          emit_async_querier: true
+          query_parameter_limit: 5
+    
 
-database
+### database
 
-:
+The `database` mapping supports the following keys:
 
-managed
+  * `managed`:
 
-:
+    * If true, connect to a [managed database](../howto/managed-databases.html). Defaults to `false`.
 
-true
+  * `uri`:
 
-rules
+    * Database connection URI
 
-:
 
--
 
-sqlc/db-prepare
 
--
+The `uri` string can contain references to environment variables using the `${...}` syntax. In the following example, the connection string will have the value of the `PG_PASSWORD` environment variable set as its password.
+    
+    
+    version: '2'
+    sql:
+    - schema: schema.sql
+      queries: query.sql
+      engine: postgresql
+      database:
+        uri: postgresql://postgres:${PG_PASSWORD}@localhost:5432/authors
+      gen:
+        go:
+          package: authors
+          out: postgresql
+    
 
-schema
+### analyzer
 
-:
+The `analyzer` mapping supports the following keys:
 
-"mysql/schema.sql"
+  * `database`:
 
-queries
+    * If false, do not use the configured database for query analysis. Defaults to `true`.
 
-:
 
-"mysql/query.sql"
 
-engine
 
-:
+### gen
 
-"mysql"
+The `gen` mapping supports the following keys:
 
-gen
+#### go
 
-:
+  * `package`:
 
-go
+    * The package name to use for the generated code. Defaults to `out` basename.
 
-:
+  * `out`:
 
-package
+    * Output directory for generated code.
 
-:
+  * `sql_package`:
 
-"authors"
+    * Either `pgx/v4`, `pgx/v5` or `database/sql`. Defaults to `database/sql`.
 
-out
+  * `sql_driver`:
 
-:
+    * Either `github.com/jackc/pgx/v4`, `github.com/jackc/pgx/v5`, `github.com/lib/pq` or `github.com/go-sql-driver/mysql`. No defaults. Required if query annotation `:copyfrom` is used.
 
-"mysql"
+  * `emit_db_tags`:
 
-sql
+    * If true, add DB tags to generated structs. Defaults to `false`.
 
-
+  * `emit_prepared_queries`:
 
-Each mapping in the
+    * If true, include support for prepared queries. Defaults to `false`.
 
-sql
+  * `emit_interface`:
 
-collection has the following keys:
+    * If true, output a `Querier` interface in the generated package. Defaults to `false`.
 
-name
+  * `emit_exact_table_names`:
 
-:
+    * If true, struct names will mirror table names. Otherwise, sqlc attempts to singularize plural table names. Defaults to `false`.
 
-An human-friendly identifier for this query set. Optional.
+  * `emit_empty_slices`:
 
-engine
+    * If true, slices returned by `:many` queries will be empty instead of `nil`. Defaults to `false`.
 
-:
+  * `emit_exported_queries`:
 
-One of
+    * If true, autogenerated SQL statement can be exported to be accessed by another package.
 
-postgresql
+  * `emit_json_tags`:
 
-,
+    * If true, add JSON tags to generated structs. Defaults to `false`.
 
-mysql
+  * `emit_result_struct_pointers`:
 
-or
+    * If true, query results are returned as pointers to structs. Queries returning multiple results are returned as slices of pointers. Defaults to `false`.
 
-sqlite
+  * `emit_params_struct_pointers`:
 
-.
+    * If true, parameters are passed as pointers to structs. Defaults to `false`.
 
-schema
+  * `emit_methods_with_db_argument`:
 
-:
+    * If true, generated methods will accept a DBTX argument instead of storing a DBTX on the `*Queries` struct. Defaults to `false`.
 
-Directory of SQL migrations or path to single SQL file; or a list of paths.
+  * `emit_pointers_for_null_types`:
 
-queries
+    * If true, generated types for nullable columns are emitted as pointers (ie. `*string`) instead of `database/sql` null types (ie. `NullString`). Currently only supported for PostgreSQL if `sql_package` is `pgx/v4` or `pgx/v5`, and for SQLite. Defaults to `false`.
 
-:
+  * `emit_enum_valid_method`:
 
-Directory of SQL queries or path to single SQL file; or a list of paths.
+    * If true, generate a Valid method on enum types, indicating whether a string is a valid enum value.
 
-codegen
+  * `emit_all_enum_values`:
 
-:
+    * If true, emit a function per enum type that returns all valid enum values.
 
-A collection of mappings to configure code generators. See
+  * `emit_sql_as_comment`:
 
-codegen
+    * If true, emits the SQL statement as a code-block comment above the generated function, appending to any existing comments. Defaults to `false`.
 
-for the supported keys.
+  * `build_tags`:
 
-gen
+    * If set, add a `//go:build <build_tags>` directive at the beginning of each generated Go file.
 
-:
+  * `initialisms`:
 
-A mapping to configure built-in code generators. See
+    * An array of [initialisms](https://google.github.io/styleguide/go/decisions.html#initialisms) to upper-case. For example, `app_id` becomes `AppID`. Defaults to `["id"]`.
 
-gen
+  * `json_tags_id_uppercase`:
 
-for the supported keys.
+    * If true, “Id” in json tags will be uppercase. If false, will be camelcase. Defaults to `false`
 
-database
+  * `json_tags_case_style`:
 
-:
+    * `camel` for camelCase, `pascal` for PascalCase, `snake` for snake_case or `none` to use the column name in the DB. Defaults to `none`.
 
-A mapping to configure database connections. See
+  * `omit_unused_structs`:
 
-database
+    * If `true`, sqlc won’t generate table and enum structs that aren’t used in queries for a given package. Defaults to `false`.
 
-for the supported keys.
+  * `output_batch_file_name`:
 
-rules
+    * Customize the name of the batch file. Defaults to `batch.go`.
 
-:
+  * `output_db_file_name`:
 
-A collection of rule names to run via
+    * Customize the name of the db file. Defaults to `db.go`.
 
-sqlc
+  * `output_models_file_name`:
 
-vet
+    * Customize the name of the models file. Defaults to `models.go`.
 
-. See
+  * `output_querier_file_name`:
 
-rules
+    * Customize the name of the querier file. Defaults to `querier.go`.
 
-for configuration options.
+  * `output_copyfrom_file_name`:
 
-analyzer
+    * Customize the name of the copyfrom file. Defaults to `copyfrom.go`.
 
-:
+  * `output_files_suffix`:
 
-A mapping to configure query analysis. See
+    * If specified the suffix will be added to the name of the generated files.
 
-analyzer
+  * `query_parameter_limit`:
 
-for the supported keys.
+    * The number of positional arguments that will be generated for Go functions. To always emit a parameter struct, set this to `0`. Defaults to `1`.
 
-strict_function_checks
+  * `rename`:
 
-If true, return an error if a called SQL function does not exist. Defaults to
+    * Customize the name of generated struct fields. See [Renaming fields](../howto/rename.html) for usage information.
 
-false
+  * `overrides`:
 
-.
+    * A collection of configurations to override sqlc’s default Go type choices. See [Overriding types](../howto/overrides.html) for usage information.
 
-strict_order_by
 
-If true, return an error if a order by column is ambiguous. Defaults to
 
-true
 
-.
+##### overrides
 
-codegen
+See [Overriding types](../howto/overrides.html) for an in-depth guide to using type overrides.
 
-
+#### kotlin
 
-The
+> Removed in v1.17.0 and replaced by the [sqlc-gen-kotlin](https://github.com/sqlc-dev/sqlc-gen-kotlin) plugin. Follow the [migration guide](../guides/migrating-to-sqlc-gen-kotlin.html) to switch.
 
-codegen
+  * `package`:
 
-mapping supports the following keys:
+    * The package name to use for the generated code.
 
-out
+  * `out`:
 
-:
+    * Output directory for generated code.
 
-Output directory for generated code.
+  * `emit_exact_table_names`:
 
-plugin
+    * If true, use the exact table name for generated models. Otherwise, guess a singular form. Defaults to `false`.
 
-:
 
-The name of the plugin. Must be defined in the
 
-plugins
 
-collection.
+#### python
 
-options
+> Removed in v1.17.0 and replaced by the [sqlc-gen-python](https://github.com/sqlc-dev/sqlc-gen-python) plugin. Follow the [migration guide](../guides/migrating-to-sqlc-gen-python.html) to switch.
 
-:
+  * `package`:
 
-A mapping of plugin-specific options.
+    * The package name to use for the generated code.
 
-version
+  * `out`:
 
-:
+    * Output directory for generated code.
 
-'2'
+  * `emit_exact_table_names`:
 
-plugins
+    * If true, use the exact table name for generated models. Otherwise, guess a singular form. Defaults to `false`.
 
-:
+  * `emit_sync_querier`:
 
--
+    * If true, generate a class with synchronous methods. Defaults to `false`.
 
-name
+  * `emit_async_querier`:
 
-:
+    * If true, generate a class with asynchronous methods. Defaults to `false`.
 
-py
+  * `emit_pydantic_models`:
 
-wasm
+    * If true, generate classes that inherit from `pydantic.BaseModel`. Otherwise, define classes using the `dataclass` decorator. Defaults to `false`.
 
-:
 
-url
 
-:
 
-https://github.com/sqlc-dev/sqlc-gen-python/releases/download/v0.16.0-alpha/sqlc-gen-python.wasm
+#### json
 
-sha256
+  * `out`:
 
-:
+    * Output directory for the generated JSON.
 
-428476c7408fd4c032da4ec74e8a7344f4fa75e0f98a5a3302f238283b9b95f2
+  * `filename`:
 
-sql
+    * Filename for the generated JSON document. Defaults to `codegen_request.json`.
 
-:
+  * `indent`:
 
--
+    * Indent string to use in the JSON document. Defaults to ` `.
 
-schema
 
-:
 
-"schema.sql"
 
-queries
+### plugins
 
-:
+Each mapping in the `plugins` collection has the following keys:
 
-"query.sql"
+  * `name`:
 
-engine
+    * The name of this plugin. Required
 
-:
+  * `env`
 
-postgresql
+    * A list of environment variables to pass to the plugin. By default, no environment variables are passed.
 
-codegen
+  * `process`: A mapping with a single `cmd` key
 
-:
+    * `cmd`:
 
--
+      * The executable to call when using this plugin
 
-out
+    * `format`:
 
-:
+      * The format expected. Supports `json` and `protobuf` formats. Defaults to `protobuf`.
 
-src/authors
+  * `wasm`: A mapping with a two keys `url` and `sha256`
 
-plugin
+    * `url`:
 
-:
+      * The URL to fetch the WASM file. Supports the `https://` or `file://` schemes.
 
-py
+    * `sha256`
 
-options
+      * The SHA256 checksum for the downloaded file.
 
-:
 
-package
 
-:
+    
+    
+    version: "2"
+    plugins:
+    - name: "py"
+      wasm: 
+        url: "https://github.com/sqlc-dev/sqlc-gen-python/releases/download/v0.16.0-alpha/sqlc-gen-python.wasm"
+        sha256: "428476c7408fd4c032da4ec74e8a7344f4fa75e0f98a5a3302f238283b9b95f2"
+    - name: "js"
+      env:
+      - PATH
+      process: 
+        cmd: "sqlc-gen-json"
+    
 
-authors
+### rules
 
-emit_sync_querier
+Each mapping in the `rules` collection has the following keys:
 
-:
+  * `name`:
 
-true
+    * The name of this rule. Required
 
-emit_async_querier
+  * `rule`:
 
-:
+    * A [Common Expression Language (CEL)](https://github.com/google/cel-spec) expression. Required.
 
-true
+  * `message`:
 
-query_parameter_limit
+    * An optional message shown when this rule evaluates to `true`.
 
-:
 
-5
 
-database
 
-
+See the [vet](../howto/vet.html) documentation for a list of built-in rules and help writing custom rules.
+    
+    
+    version: "2"
+    sql:
+      - schema: "query.sql"
+        queries: "query.sql"
+        engine: "postgresql"
+        gen:
+          go:
+            package: "authors"
+            out: "db"
+        rules:
+          - no-pg
+          - no-delete
+          - only-one-param
+          - no-exec
+    rules:
+      - name: no-pg
+        message: "invalid engine: postgresql"
+        rule: |
+          config.engine == "postgresql"
+      - name: no-delete
+        message: "don't use delete statements"
+        rule: |
+          query.sql.contains("DELETE")
+      - name: only-one-param
+        message: "too many parameters"
+        rule: |
+          query.params.size() > 1
+      - name: no-exec
+        message: "don't use exec"
+        rule: |
+          query.cmd == "exec"
+    
 
-The
+### Global overrides
 
-database
+Sometimes, the same configuration must be done across various specifications of code generation. Then a global definition for type overriding and field renaming can be done using the `overrides` mapping the following manner:
+    
+    
+    version: "2"
+    overrides:
+      go:
+        rename:
+          id: "Identifier"
+        overrides:
+          - db_type: "pg_catalog.timestamptz"
+            nullable: true
+            engine: "postgresql"
+            go_type:
+              import: "gopkg.in/guregu/null.v4"
+              package: "null"
+              type: "Time"
+    sql:
+    - schema: "postgresql/schema.sql"
+      queries: "postgresql/query.sql"
+      engine: "postgresql"
+      gen:
+        go:
+          package: "authors"
+          out: "postgresql"
+    - schema: "mysql/schema.sql"
+      queries: "mysql/query.sql"
+      engine: "mysql"
+      gen:
+        go:
+          package: "authors"
+          out: "mysql"
+    
 
-mapping supports the following keys:
+With the previous configuration, whenever a struct field is generated from a table column that is called `id`, it will generated as `Identifier`.
 
-managed
+Also, whenever there is a nullable `timestamp with time zone` column in a Postgres table, it will be generated as `null.Time`. Note that the mapping for global type overrides has a field called `engine` that is absent in the regular type overrides. This field is only used when there are multiple definitions using multiple engines. Otherwise, the value of the `engine` key defaults to the engine that is currently being used.
 
-:
+Currently, type overrides and field renaming, both global and regular, are only fully supported in Go.
 
-If true, connect to a
+## Version 1
+    
+    
+    version: "1"
+    packages:
+      - name: "db"
+        path: "internal/db"
+        queries: "./sql/query/"
+        schema: "./sql/schema/"
+        engine: "postgresql"
+        emit_db_tags: false
+        emit_prepared_queries: true
+        emit_interface: false
+        emit_exact_table_names: false
+        emit_empty_slices: false
+        emit_exported_queries: false
+        emit_json_tags: true
+        emit_result_struct_pointers: false
+        emit_params_struct_pointers: false
+        emit_methods_with_db_argument: false
+        emit_pointers_for_null_types: false
+        emit_enum_valid_method: false
+        emit_all_enum_values: false
+        build_tags: "some_tag"
+        json_tags_case_style: "camel"
+        omit_unused_structs: false
+        output_batch_file_name: "batch.go"
+        output_db_file_name: "db.go"
+        output_models_file_name: "models.go"
+        output_querier_file_name: "querier.go"
+        output_copyfrom_file_name: "copyfrom.go"
+        query_parameter_limit: 1
+    
 
-managed database
+### packages
 
-. Defaults to
+Each mapping in the `packages` collection has the following keys:
 
-false
+  * `name`:
 
-.
+    * The package name to use for the generated code. Defaults to `path` basename.
 
-uri
+  * `path`:
 
-:
+    * Output directory for generated code.
 
-Database connection URI
+  * `queries`:
 
-The
+    * Directory of SQL queries or path to single SQL file; or a list of paths.
 
-uri
+  * `schema`:
 
-string can contain references to environment variables using the
+    * Directory of SQL migrations or path to single SQL file; or a list of paths.
 
-${...}
+  * `engine`:
 
-syntax. In the following example, the connection string will have the value of
-the
+    * Either `postgresql` or `mysql`. Defaults to `postgresql`.
 
-PG_PASSWORD
+  * `sql_package`:
 
-environment variable set as its password.
+    * Either `pgx/v4`, `pgx/v5` or `database/sql`. Defaults to `database/sql`.
 
-version
+  * `overrides`:
 
-:
+    * A list of type override configurations. See the [Overriding types](../howto/overrides.html) guide for details.
 
-'2'
+  * `emit_db_tags`:
 
-sql
+    * If true, add DB tags to generated structs. Defaults to `false`.
 
-:
+  * `emit_prepared_queries`:
 
--
+    * If true, include support for prepared queries. Defaults to `false`.
 
-schema
+  * `emit_interface`:
 
-:
+    * If true, output a `Querier` interface in the generated package. Defaults to `false`.
 
-schema.sql
+  * `emit_exact_table_names`:
 
-queries
+    * If true, struct names will mirror table names. Otherwise, sqlc attempts to singularize plural table names. Defaults to `false`.
 
-:
+  * `emit_empty_slices`:
 
-query.sql
+    * If true, slices returned by `:many` queries will be empty instead of `nil`. Defaults to `false`.
 
-engine
+  * `emit_exported_queries`:
 
-:
+    * If true, autogenerated SQL statement can be exported to be accessed by another package.
 
-postgresql
+  * `emit_json_tags`:
 
-database
+    * If true, add JSON tags to generated structs. Defaults to `false`.
 
-:
+  * `emit_result_struct_pointers`:
 
-uri
+    * If true, query results are returned as pointers to structs. Queries returning multiple results are returned as slices of pointers. Defaults to `false`.
 
-:
+  * `emit_params_struct_pointers`:
 
-postgresql://postgres:${PG_PASSWORD}@localhost:5432/authors
+    * If true, parameters are passed as pointers to structs. Defaults to `false`.
 
-gen
+  * `emit_methods_with_db_argument`:
 
-:
+    * If true, generated methods will accept a DBTX argument instead of storing a DBTX on the `*Queries` struct. Defaults to `false`.
 
-go
+  * `emit_pointers_for_null_types`:
 
-:
+    * If true and `sql_package` is set to `pgx/v4` or `pgx/v5`, generated types for nullable columns are emitted as pointers (ie. `*string`) instead of `database/sql` null types (ie. `NullString`). Defaults to `false`.
 
-package
+  * `emit_enum_valid_method`:
 
-:
+    * If true, generate a Valid method on enum types, indicating whether a string is a valid enum value.
 
-authors
+  * `emit_all_enum_values`:
 
-out
+    * If true, emit a function per enum type that returns all valid enum values.
 
-:
+  * `build_tags`:
 
-postgresql
+    * If set, add a `//go:build <build_tags>` directive at the beginning of each generated Go file.
 
-analyzer
+  * `json_tags_case_style`:
 
-
+    * `camel` for camelCase, `pascal` for PascalCase, `snake` for snake_case or `none` to use the column name in the DB. Defaults to `none`.
 
-The
+  * `omit_unused_structs`:
 
-analyzer
+    * If `true`, sqlc won’t generate table and enum structs that aren’t used in queries for a given package. Defaults to `false`.
 
-mapping supports the following keys:
+  * `output_batch_file_name`:
 
-database
+    * Customize the name of the batch file. Defaults to `batch.go`.
 
-:
+  * `output_db_file_name`:
 
-If false, do not use the configured database for query analysis. Defaults to
+    * Customize the name of the db file. Defaults to `db.go`.
 
-true
+  * `output_models_file_name`:
 
-.
+    * Customize the name of the models file. Defaults to `models.go`.
 
-gen
+  * `output_querier_file_name`:
 
-
+    * Customize the name of the querier file. Defaults to `querier.go`.
 
-The
+  * `output_copyfrom_file_name`:
 
-gen
+    * Customize the name of the copyfrom file. Defaults to `copyfrom.go`.
 
-mapping supports the following keys:
+  * `output_files_suffix`:
 
-go
+    * If specified the suffix will be added to the name of the generated files.
 
-
+  * `query_parameter_limit`:
 
-package
+    * Positional arguments that will be generated in Go functions (`>= 0`). To always emit a parameter struct, you would need to set it to `0`. Defaults to `1`.
 
-:
 
-The package name to use for the generated code. Defaults to
 
-out
 
-basename.
+### overrides
 
-out
+See the version 1 configuration section of the [Overriding types](../howto/overrides.html#version-1-configuration) guide for details.
 
-:
+### rename
 
-Output directory for generated code.
+Struct field names are generated from column names using a simple algorithm: split the column name on underscores and capitalize the first letter of each part.
+    
+    
+    account     -> Account
+    spotify_url -> SpotifyUrl
+    app_id      -> AppID
+    
 
-sql_package
-
-:
-
-Either
-
-pgx/v4
-
-,
-
-pgx/v5
-
-or
-
-database/sql
-
-. Defaults to
-
-database/sql
-
-.
-
-sql_driver
-
-:
-
-Either
-
-github.com/jackc/pgx/v4
-
-,
-
-github.com/jackc/pgx/v5
-
-,
-
-github.com/lib/pq
-
-or
-
-github.com/go-sql-driver/mysql
-
-. No defaults. Required if query annotation
-
-:copyfrom
-
-is used.
-
-emit_db_tags
-
-:
-
-If true, add DB tags to generated structs. Defaults to
-
-false
-
-.
-
-emit_prepared_queries
-
-:
-
-If true, include support for prepared queries. Defaults to
-
-false
-
-.
-
-emit_interface
-
-:
-
-If true, output a
-
-Querier
-
-interface in the generated package. Defaults to
-
-false
-
-.
-
-emit_exact_table_names
-
-:
-
-If true, struct names will mirror table names. Otherwise, sqlc attempts to singularize plural table names. Defaults to
-
-false
-
-.
-
-emit_empty_slices
-
-:
-
-If true, slices returned by
-
-:many
-
-queries will be empty instead of
-
-nil
-
-. Defaults to
-
-false
-
-.
-
-emit_exported_queries
-
-:
-
-If true, autogenerated SQL statement can be exported to be accessed by another package.
-
-emit_json_tags
-
-:
-
-If true, add JSON tags to generated structs. Defaults to
-
-false
-
-.
-
-emit_result_struct_pointers
-
-:
-
-If true, query results are returned as pointers to structs. Queries returning multiple results are returned as slices of pointers. Defaults to
-
-false
-
-.
-
-emit_params_struct_pointers
-
-:
-
-If true, parameters are passed as pointers to structs. Defaults to
-
-false
-
-.
-
-emit_methods_with_db_argument
-
-:
-
-If true, generated methods will accept a DBTX argument instead of storing a DBTX on the
-
-*Queries
-
-struct. Defaults to
-
-false
-
-.
-
-emit_pointers_for_null_types
-
-:
-
-If true, generated types for nullable columns are emitted as pointers (ie.
-
-*string
-
-) instead of
-
-database/sql
-
-null types (ie.
-
-NullString
-
-). Currently only supported for PostgreSQL if
-
-sql_package
-
-is
-
-pgx/v4
-
-or
-
-pgx/v5
-
-, and for SQLite. Defaults to
-
-false
-
-.
-
-emit_enum_valid_method
-
-:
-
-If true, generate a Valid method on enum types,
-indicating whether a string is a valid enum value.
-
-emit_all_enum_values
-
-:
-
-If true, emit a function per enum type
-that returns all valid enum values.
-
-emit_sql_as_comment
-
-:
-
-If true, emits the SQL statement as a code-block comment above the generated function, appending to any existing comments. Defaults to
-
-false
-
-.
-
-build_tags
-
-:
-
-If set, add a
-
-//go:build
-
-<build_tags>
-
-directive at the beginning of each generated Go file.
-
-initialisms
-
-:
-
-An array of
-
-initialisms
-
-to upper-case. For example,
-
-app_id
-
-becomes
-
-AppID
-
-. Defaults to
-
-["id"]
-
-.
-
-json_tags_id_uppercase
-
-:
-
-If true, “Id” in json tags will be uppercase. If false, will be camelcase. Defaults to
-
-false
-
-json_tags_case_style
-
-:
-
-camel
-
-for camelCase,
-
-pascal
-
-for PascalCase,
-
-snake
-
-for snake_case or
-
-none
-
-to use the column name in the DB. Defaults to
-
-none
-
-.
-
-omit_unused_structs
-
-:
-
-If
-
-true
-
-, sqlc won’t generate table and enum structs that aren’t used in queries for a given package. Defaults to
-
-false
-
-.
-
-output_batch_file_name
-
-:
-
-Customize the name of the batch file. Defaults to
-
-batch.go
-
-.
-
-output_db_file_name
-
-:
-
-Customize the name of the db file. Defaults to
-
-db.go
-
-.
-
-output_models_file_name
-
-:
-
-Customize the name of the models file. Defaults to
-
-models.go
-
-.
-
-output_querier_file_name
-
-:
-
-Customize the name of the querier file. Defaults to
-
-querier.go
-
-.
-
-output_copyfrom_file_name
-
-:
-
-Customize the name of the copyfrom file. Defaults to
-
-copyfrom.go
-
-.
-
-output_files_suffix
-
-:
-
-If specified the suffix will be added to the name of the generated files.
-
-query_parameter_limit
-
-:
-
-The number of positional arguments that will be generated for Go functions. To always emit a parameter struct, set this to
-
-0
-
-. Defaults to
-
-1
-
-.
-
-rename
-
-:
-
-Customize the name of generated struct fields. See
-
-Renaming fields
-
-for usage information.
-
-overrides
-
-:
-
-A collection of configurations to override sqlc’s default Go type choices. See
-
-Overriding types
-
-for usage information.
-
-overrides
-
-
-
-See
-
-Overriding types
-
-for an in-depth guide to using type overrides.
-
-kotlin
-
-
-
-Removed in v1.17.0 and replaced by the
-
-sqlc-gen-kotlin
-
-plugin. Follow the
-
-migration guide
-
-to switch.
-
-package
-
-:
-
-The package name to use for the generated code.
-
-out
-
-:
-
-Output directory for generated code.
-
-emit_exact_table_names
-
-:
-
-If true, use the exact table name for generated models. Otherwise, guess a singular form. Defaults to
-
-false
-
-.
-
-python
-
-
-
-Removed in v1.17.0 and replaced by the
-
-sqlc-gen-python
-
-plugin. Follow the
-
-migration guide
-
-to switch.
-
-package
-
-:
-
-The package name to use for the generated code.
-
-out
-
-:
-
-Output directory for generated code.
-
-emit_exact_table_names
-
-:
-
-If true, use the exact table name for generated models. Otherwise, guess a singular form. Defaults to
-
-false
-
-.
-
-emit_sync_querier
-
-:
-
-If true, generate a class with synchronous methods. Defaults to
-
-false
-
-.
-
-emit_async_querier
-
-:
-
-If true, generate a class with asynchronous methods. Defaults to
-
-false
-
-.
-
-emit_pydantic_models
-
-:
-
-If true, generate classes that inherit from
-
-pydantic.BaseModel
-
-. Otherwise, define classes using the
-
-dataclass
-
-decorator. Defaults to
-
-false
-
-.
-
-json
-
-
-
-out
-
-:
-
-Output directory for the generated JSON.
-
-filename
-
-:
-
-Filename for the generated JSON document. Defaults to
-
-codegen_request.json
-
-.
-
-indent
-
-:
-
-Indent string to use in the JSON document. Defaults to
-
-.
-
-plugins
-
-
-
-Each mapping in the
-
-plugins
-
-collection has the following keys:
-
-name
-
-:
-
-The name of this plugin. Required
-
-env
-
-A list of environment variables to pass to the plugin. By default, no environment variables are passed.
-
-process
-
-: A mapping with a single
-
-cmd
-
-key
-
-cmd
-
-:
-
-The executable to call when using this plugin
-
-format
-
-:
-
-The format expected. Supports
-
-json
-
-and
-
-protobuf
-
-formats. Defaults to
-
-protobuf
-
-.
-
-wasm
-
-: A mapping with a two keys
-
-url
-
-and
-
-sha256
-
-url
-
-:
-
-The URL to fetch the WASM file. Supports the
-
-https://
-
-or
-
-file://
-
-schemes.
-
-sha256
-
-The SHA256 checksum for the downloaded file.
-
-version
-
-:
-
-"2"
-
-plugins
-
-:
-
--
-
-name
-
-:
-
-"py"
-
-wasm
-
-:
-
-url
-
-:
-
-"https://github.com/sqlc-dev/sqlc-gen-python/releases/download/v0.16.0-alpha/sqlc-gen-python.wasm"
-
-sha256
-
-:
-
-"428476c7408fd4c032da4ec74e8a7344f4fa75e0f98a5a3302f238283b9b95f2"
-
--
-
-name
-
-:
-
-"js"
-
-env
-
-:
-
--
-
-PATH
-
-process
-
-:
-
-cmd
-
-:
-
-"sqlc-gen-json"
-
-rules
-
-
-
-Each mapping in the
-
-rules
-
-collection has the following keys:
-
-name
-
-:
-
-The name of this rule. Required
-
-rule
-
-:
-
-A
-
-Common Expression Language (CEL)
-
-expression. Required.
-
-message
-
-:
-
-An optional message shown when this rule evaluates to
-
-true
-
-.
-
-See the
-
-vet
-
-documentation for a list of built-in rules and
-help writing custom rules.
-
-version
-
-:
-
-"2"
-
-sql
-
-:
-
--
-
-schema
-
-:
-
-"query.sql"
-
-queries
-
-:
-
-"query.sql"
-
-engine
-
-:
-
-"postgresql"
-
-gen
-
-:
-
-go
-
-:
-
-package
-
-:
-
-"authors"
-
-out
-
-:
-
-"db"
-
-rules
-
-:
-
--
-
-no-pg
-
--
-
-no-delete
-
--
-
-only-one-param
-
--
-
-no-exec
-
-rules
-
-:
-
--
-
-name
-
-:
-
-no-pg
-
-message
-
-:
-
-"invalid
-
-engine:
-
-postgresql"
-
-rule
-
-:
-
-|
-
-config.engine == "postgresql"
-
--
-
-name
-
-:
-
-no-delete
-
-message
-
-:
-
-"don't
-
-use
-
-delete
-
-statements"
-
-rule
-
-:
-
-|
-
-query.sql.contains("DELETE")
-
--
-
-name
-
-:
-
-only-one-param
-
-message
-
-:
-
-"too
-
-many
-
-parameters"
-
-rule
-
-:
-
-|
-
-query.params.size() > 1
-
--
-
-name
-
-:
-
-no-exec
-
-message
-
-:
-
-"don't
-
-use
-
-exec"
-
-rule
-
-:
-
-|
-
-query.cmd == "exec"
-
-Global overrides
-
-
-
-Sometimes, the same configuration must be done across various specifications of
-code generation.  Then a global definition for type overriding and field
-renaming can be done using the
-
-overrides
-
-mapping the following manner:
-
-version
-
-:
-
-"2"
-
-overrides
-
-:
-
-go
-
-:
-
-rename
-
-:
-
-id
-
-:
-
-"Identifier"
-
-overrides
-
-:
-
--
-
-db_type
-
-:
-
-"pg_catalog.timestamptz"
-
-nullable
-
-:
-
-true
-
-engine
-
-:
-
-"postgresql"
-
-go_type
-
-:
-
-import
-
-:
-
-"gopkg.in/guregu/null.v4"
-
-package
-
-:
-
-"null"
-
-type
-
-:
-
-"Time"
-
-sql
-
-:
-
--
-
-schema
-
-:
-
-"postgresql/schema.sql"
-
-queries
-
-:
-
-"postgresql/query.sql"
-
-engine
-
-:
-
-"postgresql"
-
-gen
-
-:
-
-go
-
-:
-
-package
-
-:
-
-"authors"
-
-out
-
-:
-
-"postgresql"
-
--
-
-schema
-
-:
-
-"mysql/schema.sql"
-
-queries
-
-:
-
-"mysql/query.sql"
-
-engine
-
-:
-
-"mysql"
-
-gen
-
-:
-
-go
-
-:
-
-package
-
-:
-
-"authors"
-
-out
-
-:
-
-"mysql"
-
-With the previous configuration, whenever a struct field is generated from a
-table column that is called
-
-id
-
-, it will generated as
-
-Identifier
-
-.
-
-Also, whenever there is a nullable
-
-timestamp
-
-with
-
-time
-
-zone
-
-column in a
-Postgres table, it will be generated as
-
-null.Time
-
-.  Note that the mapping for
-global type overrides has a field called
-
-engine
-
-that is absent in the regular
-type overrides. This field is only used when there are multiple definitions
-using multiple engines. Otherwise, the value of the
-
-engine
-
-key
-defaults to the engine that is currently being used.
-
-Currently, type overrides and field renaming, both global and regular, are only
-fully supported in Go.
-
-Version 1
-
-
-
-version
-
-:
-
-"1"
-
-packages
-
-:
-
--
-
-name
-
-:
-
-"db"
-
-path
-
-:
-
-"internal/db"
-
-queries
-
-:
-
-"./sql/query/"
-
-schema
-
-:
-
-"./sql/schema/"
-
-engine
-
-:
-
-"postgresql"
-
-emit_db_tags
-
-:
-
-false
-
-emit_prepared_queries
-
-:
-
-true
-
-emit_interface
-
-:
-
-false
-
-emit_exact_table_names
-
-:
-
-false
-
-emit_empty_slices
-
-:
-
-false
-
-emit_exported_queries
-
-:
-
-false
-
-emit_json_tags
-
-:
-
-true
-
-emit_result_struct_pointers
-
-:
-
-false
-
-emit_params_struct_pointers
-
-:
-
-false
-
-emit_methods_with_db_argument
-
-:
-
-false
-
-emit_pointers_for_null_types
-
-:
-
-false
-
-emit_enum_valid_method
-
-:
-
-false
-
-emit_all_enum_values
-
-:
-
-false
-
-build_tags
-
-:
-
-"some_tag"
-
-json_tags_case_style
-
-:
-
-"camel"
-
-omit_unused_structs
-
-:
-
-false
-
-output_batch_file_name
-
-:
-
-"batch.go"
-
-output_db_file_name
-
-:
-
-"db.go"
-
-output_models_file_name
-
-:
-
-"models.go"
-
-output_querier_file_name
-
-:
-
-"querier.go"
-
-output_copyfrom_file_name
-
-:
-
-"copyfrom.go"
-
-query_parameter_limit
-
-:
-
-1
-
-packages
-
-
-
-Each mapping in the
-
-packages
-
-collection has the following keys:
-
-name
-
-:
-
-The package name to use for the generated code. Defaults to
-
-path
-
-basename.
-
-path
-
-:
-
-Output directory for generated code.
-
-queries
-
-:
-
-Directory of SQL queries or path to single SQL file; or a list of paths.
-
-schema
-
-:
-
-Directory of SQL migrations or path to single SQL file; or a list of paths.
-
-engine
-
-:
-
-Either
-
-postgresql
-
-or
-
-mysql
-
-. Defaults to
-
-postgresql
-
-.
-
-sql_package
-
-:
-
-Either
-
-pgx/v4
-
-,
-
-pgx/v5
-
-or
-
-database/sql
-
-. Defaults to
-
-database/sql
-
-.
-
-overrides
-
-:
-
-A list of type override configurations. See the
-
-Overriding types
-
-guide for details.
-
-emit_db_tags
-
-:
-
-If true, add DB tags to generated structs. Defaults to
-
-false
-
-.
-
-emit_prepared_queries
-
-:
-
-If true, include support for prepared queries. Defaults to
-
-false
-
-.
-
-emit_interface
-
-:
-
-If true, output a
-
-Querier
-
-interface in the generated package. Defaults to
-
-false
-
-.
-
-emit_exact_table_names
-
-:
-
-If true, struct names will mirror table names. Otherwise, sqlc attempts to singularize plural table names. Defaults to
-
-false
-
-.
-
-emit_empty_slices
-
-:
-
-If true, slices returned by
-
-:many
-
-queries will be empty instead of
-
-nil
-
-. Defaults to
-
-false
-
-.
-
-emit_exported_queries
-
-:
-
-If true, autogenerated SQL statement can be exported to be accessed by another package.
-
-emit_json_tags
-
-:
-
-If true, add JSON tags to generated structs. Defaults to
-
-false
-
-.
-
-emit_result_struct_pointers
-
-:
-
-If true, query results are returned as pointers to structs. Queries returning multiple results are returned as slices of pointers. Defaults to
-
-false
-
-.
-
-emit_params_struct_pointers
-
-:
-
-If true, parameters are passed as pointers to structs. Defaults to
-
-false
-
-.
-
-emit_methods_with_db_argument
-
-:
-
-If true, generated methods will accept a DBTX argument instead of storing a DBTX on the
-
-*Queries
-
-struct. Defaults to
-
-false
-
-.
-
-emit_pointers_for_null_types
-
-:
-
-If true and
-
-sql_package
-
-is set to
-
-pgx/v4
-
-or
-
-pgx/v5
-
-, generated types for nullable columns are emitted as pointers (ie.
-
-*string
-
-) instead of
-
-database/sql
-
-null types (ie.
-
-NullString
-
-). Defaults to
-
-false
-
-.
-
-emit_enum_valid_method
-
-:
-
-If true, generate a Valid method on enum types,
-indicating whether a string is a valid enum value.
-
-emit_all_enum_values
-
-:
-
-If true, emit a function per enum type
-that returns all valid enum values.
-
-build_tags
-
-:
-
-If set, add a
-
-//go:build
-
-<build_tags>
-
-directive at the beginning of each generated Go file.
-
-json_tags_case_style
-
-:
-
-camel
-
-for camelCase,
-
-pascal
-
-for PascalCase,
-
-snake
-
-for snake_case or
-
-none
-
-to use the column name in the DB. Defaults to
-
-none
-
-.
-
-omit_unused_structs
-
-:
-
-If
-
-true
-
-, sqlc won’t generate table and enum structs that aren’t used in queries for a given package. Defaults to
-
-false
-
-.
-
-output_batch_file_name
-
-:
-
-Customize the name of the batch file. Defaults to
-
-batch.go
-
-.
-
-output_db_file_name
-
-:
-
-Customize the name of the db file. Defaults to
-
-db.go
-
-.
-
-output_models_file_name
-
-:
-
-Customize the name of the models file. Defaults to
-
-models.go
-
-.
-
-output_querier_file_name
-
-:
-
-Customize the name of the querier file. Defaults to
-
-querier.go
-
-.
-
-output_copyfrom_file_name
-
-:
-
-Customize the name of the copyfrom file. Defaults to
-
-copyfrom.go
-
-.
-
-output_files_suffix
-
-:
-
-If specified the suffix will be added to the name of the generated files.
-
-query_parameter_limit
-
-:
-
-Positional arguments that will be generated in Go functions (
-
->=
-
-0
-
-). To always emit a parameter struct, you would need to set it to
-
-0
-
-. Defaults to
-
-1
-
-.
-
-overrides
-
-
-
-See the version 1 configuration section of the
-
-Overriding types
-
-guide for details.
-
-rename
-
-
-
-Struct field names are generated from column names using a simple algorithm:
-split the column name on underscores and capitalize the first letter of each
-part.
-
-account
-
-->
-
-Account
-
-spotify_url
-
-->
-
-SpotifyUrl
-
-app_id
-
-->
-
-AppID
-
-If you’re not happy with a field’s generated name, use the
-
-rename
-
-mapping
-to pick a new name. The keys are column names and the values are the struct
-field name to use.
-
-version
-
-:
-
-"1"
-
-packages
-
-:
-
-[
-
-...
-
-]
-
-rename
-
-:
-
-spotify_url
-
-:
-
-"SpotifyURL"
+If you’re not happy with a field’s generated name, use the `rename` mapping to pick a new name. The keys are column names and the values are the struct field name to use.
+    
+    
+    version: "1"
+    packages: [...]
+    rename:
+      spotify_url: "SpotifyURL"
+    

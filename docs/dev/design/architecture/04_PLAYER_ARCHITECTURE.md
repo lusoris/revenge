@@ -1,5 +1,10 @@
 # Revenge - Player Architecture
 
+<!-- SOURCES: ffmpeg, ffmpeg-codecs, ffmpeg-formats, go-astiav, go-astiav-docs, gohlslib, m3u8, svelte-runes, svelte5, sveltekit -->
+
+<!-- DESIGN: architecture, ADULT_CONTENT_SYSTEM, ADULT_METADATA, DATA_RECONCILIATION -->
+
+
 > Unified web player for video and audio with native streaming and transcode fallback.
 
 
@@ -80,8 +85,7 @@
 | Code | 🔴 | Reset to template |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-**Priority**: 🟡 MEDIUM
+| Integration Testing | 🔴 |  |**Priority**: 🟡 MEDIUM
 **Module**: `web/src/lib/player`
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
@@ -1407,63 +1411,6 @@ Player Architecture:
 5. **Testing** - Browser compatibility matrix
 6. **Documentation** - Client integration guide for Jellyfin/etc.
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
-| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../sources/protocols/m3u8.md) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
-| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Architecture](INDEX.md)
-
-### In This Section
-
-- [Revenge - Architecture v2](01_ARCHITECTURE.md)
-- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
-- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
-- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
-
-### Related Topics
-
-- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
-- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
-- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
-- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
-- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

@@ -1,5 +1,10 @@
 # Revenge - Adult Content Metadata System
 
+<!-- SOURCES: ffmpeg, ffmpeg-codecs, ffmpeg-formats, go-astiav, go-astiav-docs, pgx, postgresql-arrays, postgresql-json, river, stashdb, theporndb -->
+
+<!-- DESIGN: features/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > ⚠️ **DEPRECATED**: This document has been merged into [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md).
 > See that document for the complete adult content architecture including metadata, privacy, API endpoints, and database schema.
 > This file is kept for reference during migration only.
@@ -50,8 +55,7 @@
 | Code | 🔴 |  |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Integration Testing | 🔴 |  |---
 
 > Complete metadata integration for adult content modules using Whisparr, Stash, and StashDB.
 
@@ -1055,63 +1059,6 @@ adult:
     generate_md5: false  # Slow, optional
 ```
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
-| [ThePornDB API](https://api.theporndb.net/docs) | [Local](../../../sources/apis/theporndb.md) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Adult](INDEX.md)
-
-### In This Section
-
-- [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md)
-- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
-- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
-- [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

@@ -1,100 +1,17 @@
 # Helm Documentation
 
 > Source: https://helm.sh/docs/
-> Fetched: 2026-01-30T23:56:07.525568+00:00
-> Content-Hash: f4a84924e3f007b7
+> Fetched: 2026-01-31T11:03:27.061276+00:00
+> Content-Hash: a654347e6da8c30a
 > Type: html
 
 ---
 
 Version: 4.0.0
 
-Welcome to the
+Welcome to the [Helm](https://helm.sh/) documentation. Helm is the package manager for Kubernetes, and you can read detailed background information in the [CNCF Helm Project Journey report](https://www.cncf.io/cncf-helm-project-journey/).
 
-Helm
-
-documentation. Helm is the package
-manager for Kubernetes, and you can read detailed background information in the
-
-CNCF Helm Project Journey
-report
-
-.
-
-📄️
-
-Docs Home
-
-Everything you need to know about how the documentation is organized.
-
-📄️
-
-Helm 4 Overview
-
-Helm v4 represents a significant evolution from v3, introducing breaking changes, new architectural patterns, and enhanced functionality while maintaining backwards compatibility for charts.
-
-📄️
-
-Full Changelog
-
-Scope: 290 PRs from (v4.0.0-rc.1) compared to v3.19.0
-
-🗃️
-
-Introduction
-
-4 items
-
-🗃️
-
-How-to
-
-3 items
-
-🗃️
-
-Topics
-
-16 items
-
-🗃️
-
-Best Practices
-
-8 items
-
-🗃️
-
-Chart Template Guide
-
-16 items
-
-🗃️
-
-Plugins
-
-3 items
-
-🗃️
-
-Helm Commands
-
-59 items
-
-🗃️
-
-Go SDK
-
-2 items
-
-🗃️
-
-Frequently Asked Questions
-
-2 items
-
-📄️
-
-Glossary
-
-Terms used to describe components of Helm's architecture.
+## [📄️ Docs HomeEverything you need to know about how the documentation is organized.](/docs/)## [📄️ Helm 4 OverviewHelm v4 represents a significant evolution from v3, introducing breaking changes, new architectural patterns, and enhanced functionality while maintaining backwards compatibility for charts.](/docs/overview)## [📄️ Full ChangelogScope: 290 PRs from (v4.0.0-rc.1) compared to v3.19.0](/docs/changelog)## [🗃️ Introduction4 items](/docs/intro/)## [🗃️ How-to3 items](/docs/howto/)## [🗃️ Topics16 items](/docs/topics/)## [🗃️ Best Practices8 items](/docs/chart_best_practices/)## [🗃️ Chart Template Guide16 items](/docs/chart_template_guide/)## [🗃️ Plugins3 items](/docs/plugins/)## [🗃️ Helm Commands59 items](/docs/helm/)## [🗃️ Go SDK2 items](/docs/sdk/)## [🗃️ Frequently Asked Questions2 items](/docs/faq/)## [📄️ GlossaryTerms used to describe components of Helm's architecture.](/docs/glossary/)
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

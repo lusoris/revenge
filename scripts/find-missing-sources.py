@@ -9,6 +9,7 @@ from pathlib import Path
 
 import yaml
 
+
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 DESIGN_DIR = PROJECT_ROOT / "docs" / "dev" / "design"
@@ -22,12 +23,14 @@ def load_sources() -> set[str]:
         config = yaml.safe_load(f)
 
     urls = set()
-    for category, sources in config.get("sources", {}).items():
+    for _category, sources in config.get("sources", {}).items():
         for source in sources:
             url = source.get("url", "")
             if url:
                 # Normalize
-                normalized = url.replace("https://", "").replace("http://", "").rstrip("/")
+                normalized = (
+                    url.replace("https://", "").replace("http://", "").rstrip("/")
+                )
                 urls.add(normalized)
                 # Also add domain
                 domain = normalized.split("/")[0]

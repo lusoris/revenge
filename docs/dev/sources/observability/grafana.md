@@ -1,40 +1,29 @@
 # Grafana Documentation
 
 > Source: https://grafana.com/docs/grafana/latest/
-> Fetched: 2026-01-30T23:55:15.139318+00:00
-> Content-Hash: 702f041d19c7286d
+> Fetched: 2026-01-31T11:02:32.761296+00:00
+> Content-Hash: d8c6ed202064a2bc
 > Type: html
 
 ---
 
-Documentation
+[Documentation](/docs/) Grafana documentation
 
-Grafana documentation
+Enterprise  Open source 
 
-Enterprise
-
-Open source
-
-Grafana OSS and Enterprise
+# Grafana OSS and Enterprise
 
 Query, visualize, alert on, and explore your metrics, logs, and traces wherever they are stored.
 
-Overview
+* * *
 
-Grafana Open Source Software (OSS)
+## Overview
 
-enables you to query, visualize, alert on, and explore your metrics, logs, and traces wherever they’re stored. Grafana data source plugins enable you to query data sources including time series databases like Prometheus and CloudWatch, logging tools like Loki and Elasticsearch, NoSQL/SQL databases like Postgres, CI/CD tooling like GitHub, and many more. Grafana OSS provides you with tools to display that data on live dashboards with insightful graphs and visualizations.
+ _Grafana Open Source Software (OSS)_ enables you to query, visualize, alert on, and explore your metrics, logs, and traces wherever they’re stored. Grafana data source plugins enable you to query data sources including time series databases like Prometheus and CloudWatch, logging tools like Loki and Elasticsearch, NoSQL/SQL databases like Postgres, CI/CD tooling like GitHub, and many more. Grafana OSS provides you with tools to display that data on live dashboards with insightful graphs and visualizations.
 
-Grafana Enterprise
+_Grafana Enterprise_ is a commercial edition of Grafana that includes exclusive data source plugins and additional features not found in the open source version. You also get 24x7x365 support and training from the core Grafana team. To learn more about these features, refer to [Enterprise features](/docs/grafana/latest/introduction/grafana-enterprise/#enterprise-features-in-grafana-cloud).
 
-is a commercial edition of Grafana that includes exclusive data source plugins and additional features not found in the open source version. You also get 24x7x365 support and training from the core Grafana team.
-To learn more about these features, refer to
-
-Enterprise features
-
-.
-
-Guidance and help
+## Guidance and help
 
 Which Grafana is right for you?
 
@@ -44,98 +33,43 @@ Start guide
 
 Back
 
-Learn
+How do you want to monitor Kubernetes?
 
-What's new
+Answer a few questions to get started.
 
-Browse release highlights, deprecations, and breaking changes in Grafana releases.
+Get Started
 
-Introduction
+Docs Grafana PlayTitle
 
-Learn about observability topics in general and some of the products included in Grafana.
+Get started
 
-Set up
+Next Start over
 
-Get up and running with Grafana.
+## Learn
 
-Data sources
+[What's newBrowse release highlights, deprecations, and breaking changes in Grafana releases.](./whatsnew/)[IntroductionLearn about observability topics in general and some of the products included in Grafana.](./fundamentals/)[Set upGet up and running with Grafana.](./setup-grafana/)[Data sourcesManage data sources and how to configure or query the built-in data sources.](./datasources/)[DashboardsQuery, transform, visualize, and understand your data no matter where it’s stored.](./dashboards/)[Panels and VisualizationsEasily collect, correlate, and visualize data to make informed decisions in real-time.](./panels-visualizations/)[ExploreExplore your data using a query instead of creating a dashboard.](./explore/)[AlertingLearn about problems in your systems moments after they occur.](./alerting/)[AdministrationPerform administrative tasks such as configuring user management and roles and permissions.](./administration/)[TroubleshootingTroubleshoot common Grafana issues.](./troubleshooting/)[UpgradeUpgrade Grafana to stay current with the latest fixes and enhancements.](./upgrade-guide/)
 
-Manage data sources and how to configure or query the built-in data sources.
+## Was this page helpful?
 
-Dashboards
+Yes No
 
-Query, transform, visualize, and understand your data no matter where it’s stored.
+[Suggest an edit in GitHub ](https://github.com/grafana/grafana/edit/main/docs/sources/_index.md)[Create a GitHub issue ](https://github.com/grafana/grafana/issues/new?title=Documentation%20feedback:%20/docs/sources/_index.md)[Email docs@grafana.com ](mailto:docs@grafana.com)[Help and support ](/help/)[Community](/community/)
 
-Panels and Visualizations
-
-Easily collect, correlate, and visualize data to make informed decisions in real-time.
-
-Explore
-
-Explore your data using a query instead of creating a dashboard.
-
-Alerting
-
-Learn about problems in your systems moments after they occur.
-
-Administration
-
-Perform administrative tasks such as configuring user management and roles and permissions.
-
-Troubleshooting
-
-Troubleshoot common Grafana issues.
-
-Upgrade
-
-Upgrade Grafana to stay current with the latest fixes and enhancements.
-
-Was this page helpful?
-
-Yes
-
-No
-
-Suggest an edit in GitHub
-
-Create a GitHub issue
-
-Email docs@grafana.com
-
-Help and support
-
-Community
-
-Related resources from Grafana Labs
+## Related resources from Grafana Labs
 
 Additional helpful documentation, links, and articles:
 
-Video
-
-Getting started with managing your metrics, logs, and traces using Grafana
-
-In this webinar, weâll demo how to get started using the LGTM Stack: Loki for logs, Grafana for visualization, Tempo for traces, and Mimir for metrics.
-
-Video
-
-Getting started with Grafana dashboard design
-
-In this webinar, you'll learn how to design stylish and easily accessible Grafana dashboards that tell a story.
-
-Video
-
-Building advanced Grafana dashboards
-
-In this webinar, weâll demo how to build and format Grafana dashboards.
+[VideoGetting started with managing your metrics, logs, and traces using GrafanaIn this webinar, weâll demo how to get started using the LGTM Stack: Loki for logs, Grafana for visualization, Tempo for traces, and Mimir for metrics.](/go/webinar/getting-started-with-grafana-lgtm-stack/)[VideoGetting started with Grafana dashboard designIn this webinar, you'll learn how to design stylish and easily accessible Grafana dashboards that tell a story.](/go/webinar/getting-started-with-grafana-dashboard-design/)[VideoBuilding advanced Grafana dashboardsIn this webinar, weâll demo how to build and format Grafana dashboards.](/go/webinar/building-advanced-grafana-dashboards/)
 
 Select page language
 
 Is this page helpful?
 
-Yes
-
-No
+Yes No
 
 On this page
 
 Scroll for more
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

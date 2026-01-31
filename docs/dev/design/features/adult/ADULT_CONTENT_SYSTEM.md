@@ -1,5 +1,10 @@
 # Revenge - Adult Content System
 
+<!-- SOURCES: pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config, stashdb -->
+
+<!-- DESIGN: features/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Complete adult content management with Stash ecosystem integration.
 > All adult content isolated in PostgreSQL schema `qar` with "Queen Anne's Revenge" themed obfuscation.
 
@@ -78,8 +83,7 @@
 | Code | 🔴 |
 | Linting | 🔴 |
 | Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
-## Design Principles
+| Integration Testing | 🔴 |## Design Principles
 
 1. **Complete Isolation** - Separate schema, namespace, and storage
 2. **Whisparr as Proxy** - Whisparr-v3 for acquisition, local metadata enrichment
@@ -1551,61 +1555,6 @@ func (SyncStashAppArgs) Kind() string { return "adult.sync_stash_app" }
 - [ ] Create migration guide for fresh installs
 - [ ] Document obfuscation terminology mapping
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
-| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Adult](INDEX.md)
-
-### In This Section
-
-- [Revenge - Adult Content Metadata System](ADULT_METADATA.md)
-- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
-- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
-- [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

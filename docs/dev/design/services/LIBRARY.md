@@ -1,5 +1,10 @@
 # Library Service
 
+<!-- SOURCES: casbin, fx, ogen, pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config -->
+
+<!-- DESIGN: services, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Library management and access control
 
 
@@ -63,8 +68,7 @@
 | Code | 🔴 |
 | Linting | 🔴 |
 | Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
----
+| Integration Testing | 🔴 |---
 
 ## Overview
 
@@ -261,67 +265,6 @@ Access rules:
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../sources/security/casbin.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
-| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Services](INDEX.md)
-
-### In This Section
-
-- [Activity Service](ACTIVITY.md)
-- [Analytics Service](ANALYTICS.md)
-- [API Keys Service](APIKEYS.md)
-- [Auth Service](AUTH.md)
-- [Fingerprint Service](FINGERPRINT.md)
-- [Grants Service](GRANTS.md)
-- [Metadata Service](METADATA.md)
-- [Notification Service](NOTIFICATION.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documents
 

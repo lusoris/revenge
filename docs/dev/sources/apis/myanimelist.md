@@ -1,488 +1,216 @@
 # MyAnimeList API
 
 > Source: https://myanimelist.net/apiconfig/references/api/v2
-> Fetched: 2026-01-30T23:50:53.572111+00:00
-> Content-Hash: 148d6b564434c22c
+> Fetched: 2026-01-31T10:58:14.452882+00:00
+> Content-Hash: a38de9c011d9d658
 > Type: html
 
 ---
 
-Versioning
+  * Versioning
+  * Common formats
+  * Common parameters
+  * Common status codes
+  * Authentication
+  * anime
+    * getGet anime list
+    * getGet anime details
+    * getGet anime ranking
+    * getGet seasonal anime
+    * getGet suggested anime
+  * user animelist
+    * patchUpdate my anime list status
+    * delDelete my anime list item.
+    * getGet user anime list
+  * forum
+    * getGet forum boards
+    * getGet forum topic detail
+    * getGet forum topics
+  * manga
+    * getGet manga list
+    * getGet manga details
+    * getGet manga ranking
+  * user mangalist
+    * patchUpdate my manga list status
+    * delDelete my manga list item.
+    * getGet user manga list
+  * user
+    * getGet my user information
 
-Common formats
 
-Common parameters
 
-Common status codes
+[Documentation Powered by ReDoc](https://github.com/Redocly/redoc)
 
-Authentication
-
-anime
-
-get
-
-Get anime list
-
-get
-
-Get anime details
-
-get
-
-Get anime ranking
-
-get
-
-Get seasonal anime
-
-get
-
-Get suggested anime
-
-user animelist
-
-patch
-
-Update my anime list status
-
-del
-
-Delete my anime list item.
-
-get
-
-Get user anime list
-
-forum
-
-get
-
-Get forum boards
-
-get
-
-Get forum topic detail
-
-get
-
-Get forum topics
-
-manga
-
-get
-
-Get manga list
-
-get
-
-Get manga details
-
-get
-
-Get manga ranking
-
-user mangalist
-
-patch
-
-Update my manga list status
-
-del
-
-Delete my manga list item.
-
-get
-
-Get user manga list
-
-user
-
-get
-
-Get my user information
-
-Documentation Powered by ReDoc
-
-MyAnimeList API (beta ver.)
-
-(
-
-2
-
-)
+# MyAnimeList API (beta ver.) (2)
 
 MyAnimeList.net is the property of MyAnimeList Co., Ltd. All Rights Reserved.
 
-Versioning
+## Versioning
 
-There are multiple versions of the API.
-You can specify a version by including it in the request uri:
+There are multiple versions of the API. You can specify a version by including it in the request uri:
 
 (During closed beta, version starts with '0.')
 
-https://api.myanimelist.net/v2
+`https://api.myanimelist.net/v2`
 
 The version is incremented if any backwards incompatible changes are introduced to the API.
 
 Examples of backwards incompatible changes are belows:
 
-Removing existing endpoints.
+  * Removing existing endpoints.
+  * Removing existing fields of API responses.
+  * Changing mean of the existing fields.
 
-Removing existing fields of API responses.
 
-Changing mean of the existing fields.
 
 On the other hand, belows are examples of backwards compatible changes:
 
-Adding new endpoints.
-
-Adding new optional request parameters.
-
-Adding new fields to existing API responses.
-
-Changing the order of fields in existing API responses.
-
-Changing the contents of fields that suffixed by
-
-_formatted
-
-.
-
-Common formats
-
-List / Pagination
-
-{
-
-"data"
-
-:
-
-[
-
-{
-
-...
-
-}
-
-,
-
-{
-
-...
-
-}
-
-,
-
-...
-
-]
-
-,
-
-"paging"
-
-:
-
-{
-
-"previous"
-
-:
-
-"https://xxx"
-
-,
-
-"next"
-
-:
-
-"https://xxx"
-
-}
-
-}
-
-Date / Time format
-
-Format
-
-Type
-
-Sample
-
-Description
-
-date-time
-
-string
-
-"2015-03-02T06:03:11+00:00"
-
-ISO 8601
-
-date
-
-string
-
-"2017-10-23" or
-
-"2017-10" or
-
-"2017"
-
-time
-
-string
-
-"01:35"
-
-Error format
-
-{
-
-"error"
-
-:
-
-"invalid_token"
-
-"message"
-
-:
-
-"token is invalid"
-
-,
-
-}
-
-Common parameters
-
-Parameters for endpoints that return a list
-
-Name
-
-Description
-
-limit
-
-offset
-
-Choosing fields
+  * Adding new endpoints.
+  * Adding new optional request parameters.
+  * Adding new fields to existing API responses.
+  * Changing the order of fields in existing API responses.
+  * Changing the contents of fields that suffixed by `_formatted`.
+
+
+
+## Common formats
+
+### List / Pagination
+    
+    
+    {
+      "data": [
+        {...},
+        {...},
+        ...
+      ],
+      "paging": {
+        "previous": "https://xxx",
+        "next": "https://xxx"
+      }
+    }
+
+### Date / Time format
+
+Format | Type | Sample | Description   
+---|---|---|---  
+date-time | string | "2015-03-02T06:03:11+00:00" | ISO 8601   
+date | string | "2017-10-23" or   
+"2017-10" or   
+"2017" |   
+time | string | "01:35" |   
+  
+### Error format
+    
+    
+    {
+      "error": "invalid_token"
+      "message": "token is invalid",
+    }
+
+## Common parameters
+
+### Parameters for endpoints that return a list
+
+Name | Description  
+---|---  
+limit |   
+offset |   
+  
+### Choosing fields
 
 By default, the API doesn’t return all fields.
 
-You can choose the fields that you want returned with the
-
-fields
-
-parameter.
+You can choose the fields that you want returned with the `fields` parameter.
 
 Example:
+    
+    
+    fields=synopsis,my_list_status{priority,comments}
 
-fields
-
-=
-
-synopsis
-
-,
-
-my_list_status
-
-{
-
-priority
-
-,
-
-comments
-
-}
-
-Not Safe For Work
+### Not Safe For Work
 
 By default, some APIs don’t return nsfw content.
 
-You can control this behavior with the
+You can control this behavior with the `nsfw` parameter.
 
-nsfw
+Name | Description  
+---|---  
+nsfw | `true` or `false`  
+  
+## Common status codes
 
-parameter.
+Status code | Error code | Description  
+---|---|---  
+400 Bad Request | - | Invalid Parameters  
+401 Unauthorized | invalid_token | Expired access tokens, Invalid access tokens, etc.  
+403 Forbidden | - | DoS detected etc.  
+404 Not Found | - |   
+  
+# Authentication
 
-Name
+## main_auth
 
-Description
+Security Scheme Type |  OAuth2  
+---|---  
+implicit OAuth Flow | **Authorization URL:** https://myanimelist.net/v1/oauth2/authorize**Scopes:**
 
-nsfw
+  * `write:users` \- The API client can see and modify basic profile information and users' list data, post information to MyAnimelist on behalf of users.
 
-true
-
-or
-
-false
-
-Common status codes
-
-Status code
-
-Error code
-
-Description
-
-400 Bad Request
-
--
-
-Invalid Parameters
-
-401 Unauthorized
-
-invalid_token
-
-Expired access tokens, Invalid access tokens, etc.
-
-403 Forbidden
-
--
-
-DoS detected etc.
-
-404 Not Found
-
--
-
-Authentication
-
-main_auth
-
-Security Scheme Type
-
-OAuth2
-
-implicit
-
-OAuth Flow
-
-Authorization URL:
-
-https://myanimelist.net/v1/oauth2/authorize
-
-Scopes:
-
-write:users
-
--
-
-The API client can see and modify basic profile information and users' list data, post information to MyAnimelist on behalf of users.
-
-client_auth
+  
+  
+## client_auth
 
 When user login is not required, the X-MAL-CLIENT-ID request header can be used to authenticate the client by setting your API client ID.
 
-Security Scheme Type
+Security Scheme Type |  API Key  
+---|---  
+Header parameter name:|  X-MAL-CLIENT-ID  
+  
+# anime
 
-API Key
+## Get anime list
 
-Header
+##### Authorizations: 
 
-parameter name:
+main_auth (`write:users`) client_auth (`-`) 
 
-X-MAL-CLIENT-ID
+##### query Parameters
 
-anime
+q| string Search.  
+---|---  
+limit| integer Default: 100 The maximum value is 100.  
+offset| integer Default: 0  
+fields| string  
+  
+### Responses
 
-Get anime list
-
-Authorizations:
-
-main_auth
-
-(
-
-write:users
-
-)
-
-client_auth
-
-(
-
--
-
-)
-
-query
-
-Parameters
-
-q
-
-string
-
-Search.
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 100.
-
-offset
-
-integer
-
-Default:
-
-0
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/anime
 
-/anime
+https://api.myanimelist.net/v2/anime
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime?q=one&limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime?q=one&limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -494,79 +222,50 @@ application/json
 
 No sample
 
-Get anime details
+## Get anime details
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) client_auth (`-`) 
 
-(
+##### path Parameters
 
-write:users
+anime_id required | integer  
+---|---  
+  
+##### query Parameters
 
-)
+fields| string  
+---|---  
+  
+### Responses
 
-client_auth
-
-(
-
--
-
-)
-
-path
-
-Parameters
-
-anime_id
-
-required
-
-integer
-
-query
-
-Parameters
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/anime/{anime_id}
 
-/anime/{anime_id}
+https://api.myanimelist.net/v2/anime/{anime_id}
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime/{anime_id}
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime/30230?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime/30230?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -578,137 +277,60 @@ application/json
 
 No sample
 
-Get anime ranking
+## Get anime ranking
 
-The returned anime contains the
+The returned anime contains the `ranking` field.
 
-ranking
+##### Authorizations: 
 
-field.
+main_auth (`write:users`) client_auth (`-`) 
 
-Authorizations:
+##### query Parameters
 
-main_auth
+ranking_type required | string | value |   
+---|---  
+all | Top Anime Series  
+airing | Top Airing Anime  
+upcoming | Top Upcoming Anime  
+tv | Top Anime TV Series  
+ova | Top Anime OVA Series  
+movie | Top Anime Movies  
+special | Top Anime Specials  
+bypopularity | Top Anime by Popularity  
+favorite | Top Favorited Anime  
+  
+limit| integer Default: 100 The maximum value is 500.  
+offset| integer Default: 0  
+fields| string  
+  
+### Responses
 
-(
-
-write:users
-
-)
-
-client_auth
-
-(
-
--
-
-)
-
-query
-
-Parameters
-
-ranking_type
-
-required
-
-string
-
-value
-
-all
-
-Top Anime Series
-
-airing
-
-Top Airing Anime
-
-upcoming
-
-Top Upcoming Anime
-
-tv
-
-Top Anime TV Series
-
-ova
-
-Top Anime OVA Series
-
-movie
-
-Top Anime Movies
-
-special
-
-Top Anime Specials
-
-bypopularity
-
-Top Anime by Popularity
-
-favorite
-
-Top Favorited Anime
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 500.
-
-offset
-
-integer
-
-Default:
-
-0
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/anime/ranking
 
-/anime/ranking
+https://api.myanimelist.net/v2/anime/ranking
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime/ranking
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -720,143 +342,66 @@ application/json
 
 No sample
 
-Get seasonal anime
+## Get seasonal anime
 
 Get seasonal anime.
 
-Season name
+Season name | Months  
+---|---  
+winter | January, February, March  
+spring | April, May, June  
+summer | July, August, September  
+fall | October, November, December  
+  
+##### Authorizations: 
 
-Months
+main_auth (`write:users`) client_auth (`-`) 
 
-winter
+##### path Parameters
 
-January, February, March
+year required | integer  
+---|---  
+season required | string  
+  
+##### query Parameters
 
-spring
+sort| string Valid values: | Value | Order  
+---|---  
+`anime_score` | Descending  
+`anime_num_list_users` | Descending  
+  
+limit| integer Default: 100 The maximum value is 500.  
+offset| integer Default: 0  
+fields| string  
+  
+### Responses
 
-April, May, June
-
-summer
-
-July, August, September
-
-fall
-
-October, November, December
-
-Authorizations:
-
-main_auth
-
-(
-
-write:users
-
-)
-
-client_auth
-
-(
-
--
-
-)
-
-path
-
-Parameters
-
-year
-
-required
-
-integer
-
-season
-
-required
-
-string
-
-query
-
-Parameters
-
-sort
-
-string
-
-Valid values:
-
-Value
-
-Order
-
-anime_score
-
-Descending
-
-anime_num_list_users
-
-Descending
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 500.
-
-offset
-
-integer
-
-Default:
-
-0
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/anime/season/{year}/{season}
 
-/anime/season/{year}/{season}
+https://api.myanimelist.net/v2/anime/season/{year}/{season}
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime/season/{year}/{season}
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime/season/2017/summer?limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime/season/2017/summer?limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -868,83 +413,51 @@ application/json
 
 No sample
 
-Get suggested anime
+## Get suggested anime
 
 Returns suggested anime for the authorized user.
 
 If the user is new comer, this endpoint returns an empty list.
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) 
 
-(
+##### query Parameters
 
-write:users
+limit| integer Default: 100 The maximum value is 100.  
+---|---  
+offset| integer Default: 0  
+fields| string  
+  
+### Responses
 
-)
-
-query
-
-Parameters
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 100.
-
-offset
-
-integer
-
-Default:
-
-0
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK.
 
-get
+get/anime/suggestions
 
-/anime/suggestions
+https://api.myanimelist.net/v2/anime/suggestions
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime/suggestions
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime/suggestions?limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime/suggestions?limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -956,9 +469,9 @@ application/json
 
 No sample
 
-user animelist
+# user animelist
 
-Update my anime list status
+## Update my anime list status
 
 Add specified anime to my anime list.
 
@@ -966,149 +479,68 @@ If specified anime already exists, update its status.
 
 This endpoint updates only values specified by the parameter.
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) 
 
-(
+##### path Parameters
 
-write:users
+anime_id required | integer  
+---|---  
+  
+##### Request Body schema: application/x-www-form-urlencoded
 
-)
+status| string
 
-path
+  * watching
+  * completed
+  * on_hold
+  * dropped
+  * plan_to_watch
 
-Parameters
+  
+---|---  
+is_rewatching| boolean  
+score| integer 0-10  
+num_watched_episodes| integer  
+priority| integer 0-2  
+num_times_rewatched| integer  
+rewatch_value| integer 0-5  
+tags| string  
+comments| string  
+  
+### Responses
 
-anime_id
-
-required
-
-integer
-
-Request Body schema:
-
-application/x-www-form-urlencoded
-
-status
-
-string
-
-watching
-
-completed
-
-on_hold
-
-dropped
-
-plan_to_watch
-
-is_rewatching
-
-boolean
-
-score
-
-integer
-
-0-10
-
-num_watched_episodes
-
-integer
-
-priority
-
-integer
-
-0-2
-
-num_times_rewatched
-
-integer
-
-rewatch_value
-
-integer
-
-0-5
-
-tags
-
-string
-
-comments
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-patch
+patch/anime/{anime_id}/my_list_status
 
-/anime/{anime_id}/my_list_status
+https://api.myanimelist.net/v2/anime/{anime_id}/my_list_status
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime/{anime_id}/my_list_status
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime/17074/my_list_status' \
+    -X PUT \
+    -d status=completed \
+    -d score=8 \
+    -d num_watched_episodes=3 \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime/17074/my_list_status'
+  * 200
 
-\
 
--
-
-X PUT \
-
--
-
-d status
-
-=
-
-completed \
-
--
-
-d score
-
-=
-
-8
-
-\
-
--
-
-d num_watched_episodes
-
-=
-
-3
-
-\
-
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1120,82 +552,55 @@ application/json
 
 No sample
 
-Delete my anime list item.
+## Delete my anime list item.
 
-If the specified anime does not exist in user's anime list, this endpoint does nothing
-and returns
-
-404 Not Found
-
-.
+If the specified anime does not exist in user's anime list, this endpoint does nothing and returns `404 Not Found`.
 
 So be careful when retrying.
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) 
 
-(
+##### path Parameters
 
-write:users
+anime_id required | integer  
+---|---  
+  
+### Responses
 
-)
-
-path
-
-Parameters
-
-anime_id
-
-required
-
-integer
-
-Responses
-
-200
+**200 **
 
 OK
 
-404
+**404 **
 
 Not Found
 
-delete
+delete/anime/{anime_id}/my_list_status
 
-/anime/{anime_id}/my_list_status
+https://api.myanimelist.net/v2/anime/{anime_id}/my_list_status
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/anime/{anime_id}/my_list_status
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/anime/21/my_list_status' \
+    -X DELETE \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/anime/21/my_list_status'
+  * 200
+  * 404
 
-\
 
--
-
-X DELETE \
-
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
-
-404
 
 Content type
 
@@ -1203,157 +608,72 @@ application/json
 
 Copy
 
-Expand all
+Expand all  Collapse all 
 
-Collapse all
+`null`
 
-null
+## Get user anime list
 
-Get user anime list
+##### Authorizations: 
 
-Authorizations:
+main_auth (`write:users`) client_auth (`-`) 
 
-main_auth
+##### path Parameters
 
-(
+user_name required | string User name or `@me`.  
+---|---  
+  
+##### query Parameters
 
-write:users
+status| string Filters returned anime list by these statuses. To return all anime, don't specify this field. Valid values:
 
-)
+  * watching
+  * completed
+  * on_hold
+  * dropped
+  * plan_to_watch
 
-client_auth
+  
+---|---  
+sort| string Valid values: | Value | Order  
+---|---  
+`list_score` | Descending  
+`list_updated_at` | Descending  
+`anime_title` | Ascending  
+`anime_start_date` | Descending  
+`anime_id` (Under Development) | Ascending  
+  
+limit| integer Default: 100 The maximum value is 1000.  
+offset| integer Default: 0  
+  
+### Responses
 
-(
-
--
-
-)
-
-path
-
-Parameters
-
-user_name
-
-required
-
-string
-
-User name or
-
-@me
-
-.
-
-query
-
-Parameters
-
-status
-
-string
-
-Filters returned anime list by these statuses.
-
-To return all anime, don't specify this field.
-
-Valid values:
-
-watching
-
-completed
-
-on_hold
-
-dropped
-
-plan_to_watch
-
-sort
-
-string
-
-Valid values:
-
-Value
-
-Order
-
-list_score
-
-Descending
-
-list_updated_at
-
-Descending
-
-anime_title
-
-Ascending
-
-anime_start_date
-
-Descending
-
-anime_id
-
-(Under Development)
-
-Ascending
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 1000.
-
-offset
-
-integer
-
-Default:
-
-0
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/users/{user_name}/animelist
 
-/users/{user_name}/animelist
+https://api.myanimelist.net/v2/users/{user_name}/animelist
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/users/{user_name}/animelist
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/users/@me/animelist?fields=list_status&limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1365,63 +685,42 @@ application/json
 
 No sample
 
-forum
+# forum
 
-Get forum boards
+## Get forum boards
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) client_auth (`-`) 
 
-(
+### Responses
 
-write:users
-
-)
-
-client_auth
-
-(
-
--
-
-)
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/forum/boards
 
-/forum/boards
+https://api.myanimelist.net/v2/forum/boards
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/forum/boards
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/forum/boards' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/forum/boards'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1433,93 +732,51 @@ application/json
 
 No sample
 
-Get forum topic detail
+## Get forum topic detail
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) client_auth (`-`) 
 
-(
+##### path Parameters
 
-write:users
+topic_id required | integer  
+---|---  
+  
+##### query Parameters
 
-)
+limit| integer <= 100 Default: 100  
+---|---  
+offset| integer Default: 0  
+  
+### Responses
 
-client_auth
-
-(
-
--
-
-)
-
-path
-
-Parameters
-
-topic_id
-
-required
-
-integer
-
-query
-
-Parameters
-
-limit
-
-integer
-
-<= 100
-
-Default:
-
-100
-
-offset
-
-integer
-
-Default:
-
-0
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/forum/topic/{topic_id}
 
-/forum/topic/{topic_id}
+https://api.myanimelist.net/v2/forum/topic/{topic_id}
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/forum/topic/{topic_id}
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/forum/topic/481' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/forum/topic/481'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1531,113 +788,52 @@ application/json
 
 No sample
 
-Get forum topics
+## Get forum topics
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) client_auth (`-`) 
 
-(
+##### query Parameters
 
-write:users
+board_id| integer  
+---|---  
+subboard_id| integer  
+limit| integer <= 100 Default: 100  
+offset| integer Default: 0  
+sort| string Default: "recent" Currently, only "recent" can be set.  
+q| string  
+topic_user_name| string  
+user_name| string  
+  
+### Responses
 
-)
-
-client_auth
-
-(
-
--
-
-)
-
-query
-
-Parameters
-
-board_id
-
-integer
-
-subboard_id
-
-integer
-
-limit
-
-integer
-
-<= 100
-
-Default:
-
-100
-
-offset
-
-integer
-
-Default:
-
-0
-
-sort
-
-string
-
-Default:
-
-"recent"
-
-Currently, only "recent" can be set.
-
-q
-
-string
-
-topic_user_name
-
-string
-
-user_name
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/forum/topics
 
-/forum/topics
+https://api.myanimelist.net/v2/forum/topics
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/forum/topics
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/forum/topics?q=love&subboard_id=2&limit=10' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/forum/topics?q=love&subboard_id=2&limit=10'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1649,95 +845,50 @@ application/json
 
 No sample
 
-manga
+# manga
 
-Get manga list
+## Get manga list
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) client_auth (`-`) 
 
-(
+##### query Parameters
 
-write:users
+q| string Search.  
+---|---  
+limit| integer Default: 100 The maximum value is 100.  
+offset| integer Default: 0  
+fields| string  
+  
+### Responses
 
-)
-
-client_auth
-
-(
-
--
-
-)
-
-query
-
-Parameters
-
-q
-
-string
-
-Search.
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 100.
-
-offset
-
-integer
-
-Default:
-
-0
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/manga
 
-/manga
+https://api.myanimelist.net/v2/manga
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/manga
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/manga?q=berserk' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/manga?q=berserk'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1749,79 +900,50 @@ application/json
 
 No sample
 
-Get manga details
+## Get manga details
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) client_auth (`-`) 
 
-(
+##### path Parameters
 
-write:users
+manga_id required | integer  
+---|---  
+  
+##### query Parameters
 
-)
+fields| string  
+---|---  
+  
+### Responses
 
-client_auth
-
-(
-
--
-
-)
-
-path
-
-Parameters
-
-manga_id
-
-required
-
-integer
-
-query
-
-Parameters
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/manga/{manga_id}
 
-/manga/{manga_id}
+https://api.myanimelist.net/v2/manga/{manga_id}
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/manga/{manga_id}
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/manga/2?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors{first_name,last_name},pictures,background,related_anime,related_manga,recommendations,serialization{name}' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/manga/2?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors{first_name,last_name},pictures,background,related_anime,related_manga,recommendations,serialization{name}'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1833,137 +955,60 @@ application/json
 
 No sample
 
-Get manga ranking
+## Get manga ranking
 
-The returned manga contains the
+The returned manga contains the `ranking` field.
 
-ranking
+##### Authorizations: 
 
-field.
+main_auth (`write:users`) client_auth (`-`) 
 
-Authorizations:
+##### query Parameters
 
-main_auth
+ranking_type required | string | value |   
+---|---  
+all | All  
+manga | Top Manga  
+novels | Top Novels  
+oneshots | Top One-shots  
+doujin | Top Doujinshi  
+manhwa | Top Manhwa  
+manhua | Top Manhua  
+bypopularity | Most Popular  
+favorite | Most Favorited  
+  
+limit| integer Default: 100 The maximum value is 500.  
+offset| integer Default: 0  
+fields| string  
+  
+### Responses
 
-(
-
-write:users
-
-)
-
-client_auth
-
-(
-
--
-
-)
-
-query
-
-Parameters
-
-ranking_type
-
-required
-
-string
-
-value
-
-all
-
-All
-
-manga
-
-Top Manga
-
-novels
-
-Top Novels
-
-oneshots
-
-Top One-shots
-
-doujin
-
-Top Doujinshi
-
-manhwa
-
-Top Manhwa
-
-manhua
-
-Top Manhua
-
-bypopularity
-
-Most Popular
-
-favorite
-
-Most Favorited
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 500.
-
-offset
-
-integer
-
-Default:
-
-0
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/manga/ranking
 
-/manga/ranking
+https://api.myanimelist.net/v2/manga/ranking
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/manga/ranking
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/manga/ranking?ranking_type=all&limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/manga/ranking?ranking_type=all&limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -1975,9 +1020,9 @@ application/json
 
 No sample
 
-user mangalist
+# user mangalist
 
-Update my manga list status
+## Update my manga list status
 
 Add specified manga to my manga list.
 
@@ -1985,143 +1030,68 @@ If specified manga already exists, update its status.
 
 This endpoint updates only values specified by the parameter.
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) 
 
-(
+##### path Parameters
 
-write:users
+manga_id required | integer  
+---|---  
+  
+##### Request Body schema: application/x-www-form-urlencoded
 
-)
+status| string
 
-path
+  * reading
+  * completed
+  * on_hold
+  * dropped
+  * plan_to_read
 
-Parameters
+  
+---|---  
+is_rereading| boolean  
+score| integer 0-10  
+num_volumes_read| integer  
+num_chapters_read| integer  
+priority| integer 0-2  
+num_times_reread| integer  
+reread_value| integer 0-5  
+tags| string  
+comments| string  
+  
+### Responses
 
-manga_id
-
-required
-
-integer
-
-Request Body schema:
-
-application/x-www-form-urlencoded
-
-status
-
-string
-
-reading
-
-completed
-
-on_hold
-
-dropped
-
-plan_to_read
-
-is_rereading
-
-boolean
-
-score
-
-integer
-
-0-10
-
-num_volumes_read
-
-integer
-
-num_chapters_read
-
-integer
-
-priority
-
-integer
-
-0-2
-
-num_times_reread
-
-integer
-
-reread_value
-
-integer
-
-0-5
-
-tags
-
-string
-
-comments
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-patch
+patch/manga/{manga_id}/my_list_status
 
-/manga/{manga_id}/my_list_status
+https://api.myanimelist.net/v2/manga/{manga_id}/my_list_status
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/manga/{manga_id}/my_list_status
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/manga/2/my_list_status' \
+    -X PUT \
+    -d status=completed \
+    -d score=8 \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/manga/2/my_list_status'
+  * 200
 
-\
 
--
-
-X PUT \
-
--
-
-d status
-
-=
-
-completed \
-
--
-
-d score
-
-=
-
-8
-
-\
-
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -2133,82 +1103,55 @@ application/json
 
 No sample
 
-Delete my manga list item.
+## Delete my manga list item.
 
-If the specified manga does not exist in user's manga list, this endpoint does nothing
-and returns
-
-404 Not Found
-
-.
+If the specified manga does not exist in user's manga list, this endpoint does nothing and returns `404 Not Found`.
 
 So be careful when retrying.
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) 
 
-(
+##### path Parameters
 
-write:users
+manga_id required | integer  
+---|---  
+  
+### Responses
 
-)
-
-path
-
-Parameters
-
-manga_id
-
-required
-
-integer
-
-Responses
-
-200
+**200 **
 
 OK
 
-404
+**404 **
 
 Not Found
 
-delete
+delete/manga/{manga_id}/my_list_status
 
-/manga/{manga_id}/my_list_status
+https://api.myanimelist.net/v2/manga/{manga_id}/my_list_status
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/manga/{manga_id}/my_list_status
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/manga/2/my_list_status' \
+    -X DELETE \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/manga/2/my_list_status'
+  * 200
+  * 404
 
-\
 
--
-
-X DELETE \
-
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
-
-404
 
 Content type
 
@@ -2216,157 +1159,72 @@ application/json
 
 Copy
 
-Expand all
+Expand all  Collapse all 
 
-Collapse all
+`null`
 
-null
+## Get user manga list
 
-Get user manga list
+##### Authorizations: 
 
-Authorizations:
+main_auth (`write:users`) client_auth (`-`) 
 
-main_auth
+##### path Parameters
 
-(
+user_name required | string User name or `@me`.  
+---|---  
+  
+##### query Parameters
 
-write:users
+status| string Filters returned manga list by these statuses. To return all manga, don't specify this field. Valid values:
 
-)
+  * reading
+  * completed
+  * on_hold
+  * dropped
+  * plan_to_read
 
-client_auth
+  
+---|---  
+sort| string Valid values: | Value | Order  
+---|---  
+`list_score` | Descending  
+`list_updated_at` | Descending  
+`manga_title` | Ascending  
+`manga_start_date` | Descending  
+`manga_id` (Under Development) | Ascending  
+  
+limit| integer Default: 100 The maximum value is 1000.  
+offset| integer Default: 0  
+  
+### Responses
 
-(
-
--
-
-)
-
-path
-
-Parameters
-
-user_name
-
-required
-
-string
-
-User name or
-
-@me
-
-.
-
-query
-
-Parameters
-
-status
-
-string
-
-Filters returned manga list by these statuses.
-
-To return all manga, don't specify this field.
-
-Valid values:
-
-reading
-
-completed
-
-on_hold
-
-dropped
-
-plan_to_read
-
-sort
-
-string
-
-Valid values:
-
-Value
-
-Order
-
-list_score
-
-Descending
-
-list_updated_at
-
-Descending
-
-manga_title
-
-Ascending
-
-manga_start_date
-
-Descending
-
-manga_id
-
-(Under Development)
-
-Ascending
-
-limit
-
-integer
-
-Default:
-
-100
-
-The maximum value is 1000.
-
-offset
-
-integer
-
-Default:
-
-0
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/users/{user_name}/mangalist
 
-/users/{user_name}/mangalist
+https://api.myanimelist.net/v2/users/{user_name}/mangalist
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/users/{user_name}/mangalist
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/users/@me/mangalist?fields=list_status&limit=4' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/users/@me/mangalist?fields=list_status&limit=4'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 
@@ -2378,79 +1236,52 @@ application/json
 
 No sample
 
-user
+# user
 
-Get my user information
+## Get my user information
 
-Authorizations:
+##### Authorizations: 
 
-main_auth
+main_auth (`write:users`) 
 
-(
+##### path Parameters
 
-write:users
+user_id required | string You can only specify `@me`.  
+---|---  
+  
+##### query Parameters
 
-)
+fields| string  
+---|---  
+  
+### Responses
 
-path
-
-Parameters
-
-user_id
-
-required
-
-string
-
-You can only specify
-
-@me
-
-.
-
-query
-
-Parameters
-
-fields
-
-string
-
-Responses
-
-200
+**200 **
 
 OK
 
-get
+get/users/{user_name}
 
-/users/{user_name}
+https://api.myanimelist.net/v2/users/{user_name}
 
-https://api.myanimelist.net/v2
+###  Request samples
 
-/users/{user_name}
+  * curl
 
-Request samples
 
-curl
 
 Copy
+    
+    
+    curl 'https://api.myanimelist.net/v2/users/@me?fields=anime_statistics' \
+    -H 'Authorization: Bearer YOUR_TOKEN'
+    
 
-curl
+###  Response samples
 
-'https://api.myanimelist.net/v2/users/@me?fields=anime_statistics'
+  * 200
 
-\
 
--
-
-H
-
-'Authorization: Bearer YOUR_TOKEN'
-
-Response samples
-
-200
 
 Content type
 

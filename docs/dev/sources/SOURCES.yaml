@@ -1564,6 +1564,521 @@ sources:
       output: "standards/chromaprint.md"
       note: "Audio fingerprinting for intro detection"
 
+  # ============================================================================
+  # IDES - Integrated Development Environments
+  # ============================================================================
+  ides:
+    # VS Code
+    - id: vscode-docs
+      name: "VS Code Documentation"
+      url: "https://code.visualstudio.com/docs"
+      type: html
+      output: "ides/vscode/main.md"
+
+    - id: vscode-settings
+      name: "VS Code Settings Reference"
+      url: "https://code.visualstudio.com/docs/getstarted/settings"
+      type: html
+      output: "ides/vscode/settings.md"
+
+    - id: vscode-tasks
+      name: "VS Code Tasks"
+      url: "https://code.visualstudio.com/docs/editor/tasks"
+      type: html
+      output: "ides/vscode/tasks.md"
+
+    - id: vscode-debugging
+      name: "VS Code Debugging"
+      url: "https://code.visualstudio.com/docs/editor/debugging"
+      type: html
+      output: "ides/vscode/debugging.md"
+
+    - id: vscode-extensions
+      name: "VS Code Extension API"
+      url: "https://code.visualstudio.com/api"
+      type: html
+      output: "ides/vscode/extensions.md"
+
+    - id: vscode-remote
+      name: "VS Code Remote Development"
+      url: "https://code.visualstudio.com/docs/remote/remote-overview"
+      type: html
+      output: "ides/vscode/remote.md"
+
+    - id: vscode-go
+      name: "VS Code Go Extension"
+      url: "https://github.com/golang/vscode-go/wiki"
+      type: html
+      output: "ides/vscode/go-extension.md"
+
+    - id: vscode-svelte
+      name: "VS Code Svelte Extension"
+      url: "https://github.com/sveltejs/language-tools/blob/master/docs/README.md"
+      type: html
+      output: "ides/vscode/svelte-extension.md"
+
+    # Zed Editor
+    - id: zed-docs
+      name: "Zed Documentation"
+      url: "https://zed.dev/docs"
+      type: html
+      output: "ides/zed/main.md"
+      note: "Modern, fast IDE built in Rust"
+
+    - id: zed-configuration
+      name: "Zed Configuration"
+      url: "https://zed.dev/docs/configuration"
+      type: html
+      output: "ides/zed/configuration.md"
+
+    - id: zed-keybindings
+      name: "Zed Keybindings"
+      url: "https://zed.dev/docs/keybindings"
+      type: html
+      output: "ides/zed/keybindings.md"
+
+    - id: zed-languages
+      name: "Zed Language Support"
+      url: "https://zed.dev/docs/languages"
+      type: html
+      output: "ides/zed/languages.md"
+
+    - id: zed-collaboration
+      name: "Zed Collaboration"
+      url: "https://zed.dev/docs/collaboration"
+      type: html
+      output: "ides/zed/collaboration.md"
+
+    - id: zed-extensions
+      name: "Zed Extensions"
+      url: "https://zed.dev/docs/extensions"
+      type: html
+      output: "ides/zed/extensions.md"
+
+    # JetBrains
+    - id: goland-docs
+      name: "GoLand Documentation"
+      url: "https://www.jetbrains.com/help/go/"
+      type: html
+      output: "ides/jetbrains/goland.md"
+
+    - id: intellij-go
+      name: "IntelliJ IDEA Go Plugin"
+      url: "https://plugins.jetbrains.com/plugin/9568-go"
+      type: html
+      output: "ides/jetbrains/intellij-go.md"
+
+    - id: jetbrains-gateway
+      name: "JetBrains Gateway"
+      url: "https://www.jetbrains.com/help/idea/remote-development-overview.html"
+      type: html
+      output: "ides/jetbrains/gateway.md"
+
+  # ============================================================================
+  # DEVOPS - CI/CD, Remote Development, Containers
+  # ============================================================================
+  devops:
+    # GitHub Actions
+    - id: github-actions-docs
+      name: "GitHub Actions Documentation"
+      url: "https://docs.github.com/en/actions"
+      type: html
+      output: "devops/github-actions/main.md"
+
+    - id: github-actions-syntax
+      name: "GitHub Actions Workflow Syntax"
+      url: "https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions"
+      type: html
+      output: "devops/github-actions/syntax.md"
+
+    - id: github-actions-contexts
+      name: "GitHub Actions Contexts"
+      url: "https://docs.github.com/en/actions/learn-github-actions/contexts"
+      type: html
+      output: "devops/github-actions/contexts.md"
+
+    - id: github-actions-variables
+      name: "GitHub Actions Variables"
+      url: "https://docs.github.com/en/actions/learn-github-actions/variables"
+      type: html
+      output: "devops/github-actions/variables.md"
+
+    - id: github-actions-secrets
+      name: "GitHub Actions Encrypted Secrets"
+      url: "https://docs.github.com/en/actions/security-guides/encrypted-secrets"
+      type: html
+      output: "devops/github-actions/secrets.md"
+
+    - id: github-actions-caching
+      name: "GitHub Actions Caching"
+      url: "https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows"
+      type: html
+      output: "devops/github-actions/caching.md"
+
+    - id: github-actions-matrix
+      name: "GitHub Actions Matrix Builds"
+      url: "https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs"
+      type: html
+      output: "devops/github-actions/matrix.md"
+
+    - id: github-actions-security
+      name: "GitHub Actions Security Best Practices"
+      url: "https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions"
+      type: html
+      output: "devops/github-actions/security.md"
+
+    # Dependabot
+    - id: dependabot-docs
+      name: "Dependabot Documentation"
+      url: "https://docs.github.com/en/code-security/dependabot"
+      type: html
+      output: "devops/dependabot/main.md"
+
+    - id: dependabot-config
+      name: "Dependabot Configuration"
+      url: "https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file"
+      type: html
+      output: "devops/dependabot/config.md"
+
+    # Coder (Remote Development)
+    - id: coder-docs
+      name: "Coder Documentation"
+      url: "https://coder.com/docs"
+      type: html
+      output: "devops/coder/main.md"
+
+    - id: coder-templates
+      name: "Coder Templates"
+      url: "https://coder.com/docs/templates"
+      type: html
+      output: "devops/coder/templates.md"
+
+    - id: coder-cli
+      name: "Coder CLI"
+      url: "https://coder.com/docs/cli"
+      type: html
+      output: "devops/coder/cli.md"
+
+    - id: coder-workspaces
+      name: "Coder Workspaces"
+      url: "https://coder.com/docs/workspaces"
+      type: html
+      output: "devops/coder/workspaces.md"
+
+    - id: coder-ides
+      name: "Coder IDEs"
+      url: "https://coder.com/docs/ides"
+      type: html
+      output: "devops/coder/ides.md"
+
+    - id: coder-docker
+      name: "Coder Docker"
+      url: "https://coder.com/docs/platforms/docker"
+      type: html
+      output: "devops/coder/docker.md"
+
+    - id: coder-kubernetes
+      name: "Coder Kubernetes"
+      url: "https://coder.com/docs/platforms/kubernetes"
+      type: html
+      output: "devops/coder/kubernetes.md"
+
+    # Docker
+    - id: docker-docs
+      name: "Docker Documentation"
+      url: "https://docs.docker.com/"
+      type: html
+      output: "devops/docker/main.md"
+
+    - id: docker-compose
+      name: "Docker Compose"
+      url: "https://docs.docker.com/compose/"
+      type: html
+      output: "devops/docker/compose.md"
+
+    - id: docker-compose-file
+      name: "Docker Compose File Reference"
+      url: "https://docs.docker.com/compose/compose-file/"
+      type: html
+      output: "devops/docker/compose-file.md"
+
+    - id: docker-multistage
+      name: "Docker Multi-stage Builds"
+      url: "https://docs.docker.com/build/building/multi-stage/"
+      type: html
+      output: "devops/docker/multistage.md"
+
+    - id: dockerfile-best-practices
+      name: "Dockerfile Best Practices"
+      url: "https://docs.docker.com/develop/develop-images/dockerfile_best-practices/"
+      type: html
+      output: "devops/docker/best-practices.md"
+
+  # ============================================================================
+  # GO_DEV_TOOLS - Go Development Tools
+  # ============================================================================
+  go_dev_tools:
+    # gopls (Go Language Server)
+    - id: gopls-docs
+      name: "gopls Documentation"
+      url: "https://github.com/golang/tools/blob/master/gopls/README.md"
+      type: html
+      output: "go_dev_tools/gopls/main.md"
+
+    - id: gopls-settings
+      name: "gopls Settings"
+      url: "https://github.com/golang/tools/blob/master/gopls/doc/settings.md"
+      type: html
+      output: "go_dev_tools/gopls/settings.md"
+
+    - id: gopls-commands
+      name: "gopls Commands"
+      url: "https://github.com/golang/tools/blob/master/gopls/doc/commands.md"
+      type: html
+      output: "go_dev_tools/gopls/commands.md"
+
+    # golangci-lint
+    - id: golangci-lint-docs
+      name: "golangci-lint Documentation"
+      url: "https://golangci-lint.run/"
+      type: html
+      output: "go_dev_tools/golangci-lint/main.md"
+
+    - id: golangci-lint-linters
+      name: "golangci-lint Linters"
+      url: "https://golangci-lint.run/usage/linters/"
+      type: html
+      output: "go_dev_tools/golangci-lint/linters.md"
+
+    - id: golangci-lint-config
+      name: "golangci-lint Configuration"
+      url: "https://golangci-lint.run/usage/configuration/"
+      type: html
+      output: "go_dev_tools/golangci-lint/config.md"
+
+    # Air (Hot Reload)
+    - id: air-docs
+      name: "Air Live Reload"
+      url: "https://github.com/air-verse/air"
+      type: github_readme
+      output: "go_dev_tools/air/main.md"
+
+    - id: air-config
+      name: "Air Configuration"
+      url: "https://github.com/air-verse/air/blob/master/air_example.toml"
+      type: html
+      output: "go_dev_tools/air/config.md"
+
+    # Delve (Debugger)
+    - id: delve-docs
+      name: "Delve Debugger"
+      url: "https://github.com/go-delve/delve"
+      type: github_readme
+      output: "go_dev_tools/delve/main.md"
+
+    - id: delve-cli
+      name: "Delve CLI Documentation"
+      url: "https://github.com/go-delve/delve/tree/master/Documentation/cli"
+      type: html
+      output: "go_dev_tools/delve/cli.md"
+
+    - id: delve-api
+      name: "Delve API"
+      url: "https://github.com/go-delve/delve/tree/master/Documentation/api"
+      type: html
+      output: "go_dev_tools/delve/api.md"
+
+    # govulncheck (Security)
+    - id: govulncheck-docs
+      name: "govulncheck"
+      url: "https://go.dev/blog/vuln"
+      type: html
+      output: "go_dev_tools/govulncheck/main.md"
+
+    - id: govulncheck-tutorial
+      name: "govulncheck Tutorial"
+      url: "https://go.dev/doc/tutorial/govulncheck"
+      type: html
+      output: "go_dev_tools/govulncheck/tutorial.md"
+
+    # goimports
+    - id: goimports-docs
+      name: "goimports"
+      url: "https://pkg.go.dev/golang.org/x/tools/cmd/goimports"
+      type: html
+      selectors: [".Documentation"]
+      output: "go_dev_tools/goimports.md"
+
+    # staticcheck
+    - id: staticcheck-docs
+      name: "staticcheck"
+      url: "https://staticcheck.io/docs/"
+      type: html
+      output: "go_dev_tools/staticcheck/main.md"
+
+    - id: staticcheck-checks
+      name: "staticcheck Checks"
+      url: "https://staticcheck.io/docs/checks/"
+      type: html
+      output: "go_dev_tools/staticcheck/checks.md"
+
+  # ============================================================================
+  # PYTHON_TOOLS - Python Development Tools
+  # ============================================================================
+  python_tools:
+    # Ruff (Linter/Formatter)
+    - id: ruff-docs
+      name: "Ruff Documentation"
+      url: "https://docs.astral.sh/ruff/"
+      type: html
+      output: "python_tools/ruff/main.md"
+
+    - id: ruff-rules
+      name: "Ruff Rules"
+      url: "https://docs.astral.sh/ruff/rules/"
+      type: html
+      output: "python_tools/ruff/rules.md"
+
+    - id: ruff-configuration
+      name: "Ruff Configuration"
+      url: "https://docs.astral.sh/ruff/configuration/"
+      type: html
+      output: "python_tools/ruff/config.md"
+
+    - id: ruff-formatter
+      name: "Ruff Formatter"
+      url: "https://docs.astral.sh/ruff/formatter/"
+      type: html
+      output: "python_tools/ruff/formatter.md"
+
+    - id: ruff-lsp
+      name: "ruff-lsp"
+      url: "https://github.com/astral-sh/ruff-lsp"
+      type: github_readme
+      output: "python_tools/ruff/lsp.md"
+
+    # pytest
+    - id: pytest-docs
+      name: "pytest Documentation"
+      url: "https://docs.pytest.org/en/stable/"
+      type: html
+      output: "python_tools/pytest/main.md"
+
+    - id: pytest-fixtures
+      name: "pytest Fixtures"
+      url: "https://docs.pytest.org/en/stable/fixture.html"
+      type: html
+      output: "python_tools/pytest/fixtures.md"
+
+    - id: pytest-plugins
+      name: "pytest Plugins"
+      url: "https://docs.pytest.org/en/stable/plugins.html"
+      type: html
+      output: "python_tools/pytest/plugins.md"
+
+    - id: pytest-coverage
+      name: "pytest-cov"
+      url: "https://pytest-cov.readthedocs.io/en/latest/"
+      type: html
+      output: "python_tools/pytest/coverage.md"
+
+    # mypy (Type Checking)
+    - id: mypy-docs
+      name: "mypy Documentation"
+      url: "https://mypy.readthedocs.io/en/stable/"
+      type: html
+      output: "python_tools/mypy/main.md"
+
+    - id: mypy-config
+      name: "mypy Configuration"
+      url: "https://mypy.readthedocs.io/en/stable/config_file.html"
+      type: html
+      output: "python_tools/mypy/config.md"
+
+    # Black (Formatter - if needed)
+    - id: black-docs
+      name: "Black Formatter"
+      url: "https://black.readthedocs.io/en/stable/"
+      type: html
+      output: "python_tools/black/main.md"
+      note: "Prefer Ruff formatter, but Black still widely used"
+
+  # ============================================================================
+  # GIT_TOOLS - Git & Version Control
+  # ============================================================================
+  git_tools:
+    # Git
+    - id: git-docs
+      name: "Git Documentation"
+      url: "https://git-scm.com/doc"
+      type: html
+      output: "git_tools/git/main.md"
+
+    - id: git-book
+      name: "Pro Git Book"
+      url: "https://git-scm.com/book/en/v2"
+      type: html
+      output: "git_tools/git/book.md"
+
+    # Git Hooks
+    - id: git-hooks
+      name: "Git Hooks Documentation"
+      url: "https://git-scm.com/docs/githooks"
+      type: html
+      output: "git_tools/git/hooks.md"
+
+    - id: git-hooks-book
+      name: "Pro Git: Git Hooks"
+      url: "https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks"
+      type: html
+      output: "git_tools/git/hooks-guide.md"
+
+    # pre-commit
+    - id: pre-commit-docs
+      name: "pre-commit Framework"
+      url: "https://pre-commit.com/"
+      type: html
+      output: "git_tools/pre-commit/main.md"
+
+    - id: pre-commit-hooks
+      name: "pre-commit Hooks"
+      url: "https://pre-commit.com/hooks.html"
+      type: html
+      output: "git_tools/pre-commit/hooks.md"
+
+    # GitHub CLI
+    - id: gh-cli-docs
+      name: "GitHub CLI"
+      url: "https://cli.github.com/manual/"
+      type: html
+      output: "git_tools/gh/main.md"
+
+    - id: gh-cli-manual
+      name: "GitHub CLI Manual"
+      url: "https://cli.github.com/manual/gh"
+      type: html
+      output: "git_tools/gh/manual.md"
+
+    # Commitizen
+    - id: commitizen-docs
+      name: "Commitizen"
+      url: "https://commitizen-tools.github.io/commitizen/"
+      type: html
+      output: "git_tools/commitizen/main.md"
+
+    # release-please
+    - id: release-please-docs
+      name: "release-please"
+      url: "https://github.com/googleapis/release-please"
+      type: github_readme
+      output: "git_tools/release-please/main.md"
+
+    - id: release-please-action
+      name: "release-please GitHub Action"
+      url: "https://github.com/google-github-actions/release-please-action"
+      type: github_readme
+      output: "git_tools/release-please/action.md"
+
 # ============================================================================
 # FETCH STATUS TRACKING
 # ============================================================================

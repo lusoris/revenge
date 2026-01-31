@@ -1,5 +1,10 @@
 # Marvel API Integration
 
+<!-- SOURCES: pgx, postgresql-arrays, postgresql-json, river -->
+
+<!-- DESIGN: integrations/metadata/comics, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > Official Marvel Comics metadata (Marvel Universe content only)
 
 
@@ -54,8 +59,7 @@
 | Code | 🔴 |  |
 | Linting | 🔴 |  |
 | Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Integration Testing | 🔴 |  |---
 
 ## Overview
 
@@ -338,56 +342,6 @@ func (c *MarvelAPIClient) checkRateLimit() error {
 
 ---
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Comics](INDEX.md)
-
-### In This Section
-
-- [ComicVine API Integration](COMICVINE.md)
-- [Grand Comics Database (GCD) Integration](GRAND_COMICS_DATABASE.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../../../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../../../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../../../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../../../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

@@ -1,624 +1,162 @@
 # Vite Configuration
 
 > Source: https://vite.dev/config/
-> Fetched: 2026-01-30T23:53:10.389719+00:00
-> Content-Hash: cb5ef36a3eb62a1c
+> Fetched: 2026-01-31T11:00:30.193233+00:00
+> Content-Hash: 529578fc08cbab39
 > Type: html
 
 ---
 
 Are you an LLM? You can read better optimized documentation at /config.md for this page in Markdown format
 
-Configuring Vite
+# Configuring Vite ​
 
-​
-
-When running
-
-vite
-
-from the command line, Vite will automatically try to resolve a config file named
-
-vite.config.js
-
-inside
-
-project root
-
-(other JS and TS extensions are also supported).
+When running `vite` from the command line, Vite will automatically try to resolve a config file named `vite.config.js` inside [project root](/guide/#index-html-and-project-root) (other JS and TS extensions are also supported).
 
 The most basic config file looks like this:
 
 vite.config.js
 
 js
+    
+    
+    export default {
+      // config options
+    }
 
-export
+Note Vite supports using ES modules syntax in the config file even if the project is not using native Node ESM, e.g. `"type": "module"` in `package.json`. In this case, the config file is auto pre-processed before load.
 
-default
-
-{
-
-// config options
-
-}
-
-Note Vite supports using ES modules syntax in the config file even if the project is not using native Node ESM, e.g.
-
-"type": "module"
-
-in
-
-package.json
-
-. In this case, the config file is auto pre-processed before load.
-
-You can also explicitly specify a config file to use with the
-
---config
-
-CLI option (resolved relative to
-
-cwd
-
-):
+You can also explicitly specify a config file to use with the `\--config` CLI option (resolved relative to `cwd`):
 
 bash
-
-vite
-
---config
-
-my-config.js
+    
+    
+    vite --config my-config.js
 
 CONFIG LOADING
 
-By default, Vite uses
+By default, Vite uses `esbuild` to bundle the config into a temporary file and load it. This may cause issues when importing TypeScript files in a monorepo. If you encounter any issues with this approach, you can specify `\--configLoader runner` to use the [module runner](/guide/api-environment-runtimes#modulerunner) instead, which will not create a temporary config and will transform any files on the fly. Note that module runner doesn't support CJS in config files, but external CJS packages should work as usual.
 
-esbuild
+Alternatively, if you're using an environment that supports TypeScript (e.g. `node --experimental-strip-types`), or if you're only writing plain JavaScript, you can specify `\--configLoader native` to use the environment's native runtime to load the config file. Note that updates to modules imported by the config file are not detected and hence would not auto-restart the Vite server.
 
-to bundle the config into a temporary file and load it. This may cause issues when importing TypeScript files in a monorepo. If you encounter any issues with this approach, you can specify
-
---configLoader runner
-
-to use the
-
-module runner
-
-instead, which will not create a temporary config and will transform any files on the fly. Note that module runner doesn't support CJS in config files, but external CJS packages should work as usual.
-
-Alternatively, if you're using an environment that supports TypeScript (e.g.
-
-node --experimental-strip-types
-
-), or if you're only writing plain JavaScript, you can specify
-
---configLoader native
-
-to use the environment's native runtime to load the config file. Note that updates to modules imported by the config file are not detected and hence would not auto-restart the Vite server.
-
-Config Intellisense
-
-​
+## Config Intellisense ​
 
 Since Vite ships with TypeScript typings, you can leverage your IDE's intellisense with jsdoc type hints:
 
 js
+    
+    
+    /** @type {import('vite').UserConfig} */
+    export default {
+      // ...
+    }
 
-/**
-
-@type
-
-{import('vite').UserConfig}
-
-*/
-
-export
-
-default
-
-{
-
-// ...
-
-}
-
-Alternatively, you can use the
-
-defineConfig
-
-helper which should provide intellisense without the need for jsdoc annotations:
+Alternatively, you can use the `defineConfig` helper which should provide intellisense without the need for jsdoc annotations:
 
 js
+    
+    
+    import { defineConfig } from 'vite'
+    
+    export default defineConfig({
+      // ...
+    })
 
-import
-
-{ defineConfig }
-
-from
-
-'vite'
-
-export
-
-default
-
-defineConfig
-
-({
-
-// ...
-
-})
-
-Vite also supports TypeScript config files. You can use
-
-vite.config.ts
-
-with the
-
-defineConfig
-
-helper function above, or with the
-
-satisfies
-
-operator:
+Vite also supports TypeScript config files. You can use `vite.config.ts` with the `defineConfig` helper function above, or with the `satisfies` operator:
 
 ts
+    
+    
+    import type { UserConfig } from 'vite'
+    
+    export default {
+      // ...
+    } satisfies UserConfig
 
-import
+## Conditional Config ​
 
-type
-
-{ UserConfig }
-
-from
-
-'vite'
-
-export
-
-default
-
-{
-
-// ...
-
-}
-
-satisfies
-
-UserConfig
-
-Conditional Config
-
-​
-
-If the config needs to conditionally determine options based on the command (
-
-serve
-
-or
-
-build
-
-), the
-
-mode
-
-being used, if it's an SSR build (
-
-isSsrBuild
-
-), or is previewing the build (
-
-isPreview
-
-), it can export a function instead:
+If the config needs to conditionally determine options based on the command (`serve` or `build`), the [mode](/guide/env-and-mode#modes) being used, if it's an SSR build (`isSsrBuild`), or is previewing the build (`isPreview`), it can export a function instead:
 
 js
+    
+    
+    export default (({ , , ,  }) => {
+      if ( === 'serve') {
+        return {
+          // dev specific config
+        }
+      } else {
+        // command === 'build'
+        return {
+          // build specific config
+        }
+      }
+    })
 
-export
+It is important to note that in Vite's API the `command` value is `serve` during dev (in the cli [`vite`](/guide/cli#vite), `vite dev`, and `vite serve` are aliases), and `build` when building for production ([`vite build`](/guide/cli#vite-build)).
 
-default
+`isSsrBuild` and `isPreview` are additional optional flags to differentiate the kind of `build` and `serve` commands respectively. Some tools that load the Vite config may not support these flags and will pass `undefined` instead. Hence, it's recommended to use explicit comparison against `true` and `false`.
 
-(({
+## Async Config ​
 
-,
-
-,
-
-,
-
-})
-
-=>
-
-{
-
-if
-
-(
-
-===
-
-'serve'
-
-) {
-
-return
-
-{
-
-// dev specific config
-
-}
-
-}
-
-else
-
-{
-
-// command === 'build'
-
-return
-
-{
-
-// build specific config
-
-}
-
-}
-
-})
-
-It is important to note that in Vite's API the
-
-command
-
-value is
-
-serve
-
-during dev (in the cli
-
-vite
-
-,
-
-vite dev
-
-, and
-
-vite serve
-
-are aliases), and
-
-build
-
-when building for production (
-
-vite build
-
-).
-
-isSsrBuild
-
-and
-
-isPreview
-
-are additional optional flags to differentiate the kind of
-
-build
-
-and
-
-serve
-
-commands respectively. Some tools that load the Vite config may not support these flags and will pass
-
-undefined
-
-instead. Hence, it's recommended to use explicit comparison against
-
-true
-
-and
-
-false
-
-.
-
-Async Config
-
-​
-
-If the config needs to call async functions, it can export an async function instead. And this async function can also be passed through
-
-defineConfig
-
-for improved intellisense support:
+If the config needs to call async functions, it can export an async function instead. And this async function can also be passed through `defineConfig` for improved intellisense support:
 
 js
+    
+    
+    export default (async ({ ,  }) => {
+      const  = await asyncFunction()
+      return {
+        // vite config
+      }
+    })
 
-export
+## Using Environment Variables in Config ​
 
-default
+Environment variables available while the config itself is being evaluated are only those that already exist in the current process environment (`process.env`). Vite deliberately defers loading any `.env*` files until _after_ the user config has been resolved because the set of files to load depends on config options like [`root`](/guide/#index-html-and-project-root) and [`envDir`](/config/shared-options#envdir), and also on the final `mode`.
 
-(
+This means: variables defined in `.env`, `.env.local`, `.env.[mode]`, or `.env.[mode].local` are **not** automatically injected into `process.env` while your `vite.config.*` is running. They _are_ automatically loaded later and exposed to application code via `import.meta.env` (with the default `VITE_` prefix filter) exactly as documented in [Env Variables and Modes](/guide/env-and-mode). So if you only need to pass values from `.env*` files to the app, you don't need to call anything in the config.
 
-async
-
-({
-
-,
-
-})
-
-=>
-
-{
-
-const
-
-=
-
-await
-
-asyncFunction
-
-()
-
-return
-
-{
-
-// vite config
-
-}
-
-})
-
-Using Environment Variables in Config
-
-​
-
-Environment variables available while the config itself is being evaluated are only those that already exist in the current process environment (
-
-process.env
-
-). Vite deliberately defers loading any
-
-.env*
-
-files until
-
-after
-
-the user config has been resolved because the set of files to load depends on config options like
-
-root
-
-and
-
-envDir
-
-, and also on the final
-
-mode
-
-.
-
-This means: variables defined in
-
-.env
-
-,
-
-.env.local
-
-,
-
-.env.[mode]
-
-, or
-
-.env.[mode].local
-
-are
-
-not
-
-automatically injected into
-
-process.env
-
-while your
-
-vite.config.*
-
-is running. They
-
-are
-
-automatically loaded later and exposed to application code via
-
-import.meta.env
-
-(with the default
-
-VITE_
-
-prefix filter) exactly as documented in
-
-Env Variables and Modes
-
-. So if you only need to pass values from
-
-.env*
-
-files to the app, you don't need to call anything in the config.
-
-If, however, values from
-
-.env*
-
-files must influence the config itself (for example to set
-
-server.port
-
-, conditionally enable plugins, or compute
-
-define
-
-replacements), you can load them manually using the exported
-
-loadEnv
-
-helper.
+If, however, values from `.env*` files must influence the config itself (for example to set `server.port`, conditionally enable plugins, or compute `define` replacements), you can load them manually using the exported [`loadEnv`](/guide/api-javascript#loadenv) helper.
 
 js
+    
+    
+    import { ,  } from 'vite'
+    
+    export default (({  }) => {
+      // Load env file based on `mode` in the current working directory.
+      // Set the third parameter to '' to load all env regardless of the
+      // `VITE_` prefix.
+      const  = (, .(), '')
+      return {
+        : {
+          // Provide an explicit app-level constant derived from an env var.
+          : .(.),
+        },
+        // Example: use an env var to set the dev server port conditionally.
+        : {
+          : . ? (.) : 5173,
+        },
+      }
+    })
 
-import
+## Debugging the Config File on VS Code ​
 
-{
-
-,
-
-}
-
-from
-
-'vite'
-
-export
-
-default
-
-(({
-
-})
-
-=>
-
-{
-
-// Load env file based on `mode` in the current working directory.
-
-// Set the third parameter to '' to load all env regardless of the
-
-// `VITE_` prefix.
-
-const
-
-=
-
-(
-
-,
-
-.
-
-(),
-
-''
-
-)
-
-return
-
-{
-
-: {
-
-// Provide an explicit app-level constant derived from an env var.
-
-:
-
-.
-
-(
-
-.
-
-),
-
-},
-
-// Example: use an env var to set the dev server port conditionally.
-
-: {
-
-:
-
-.
-
-?
-
-(
-
-.
-
-)
-
-:
-
-5173
-
-,
-
-},
-
-}
-
-})
-
-Debugging the Config File on VS Code
-
-​
-
-With the default
-
---configLoader bundle
-
-behavior, Vite writes the generated temporary configuration file to the
-
-node_modules/.vite-temp
-
-folder and a file not found error will occur when setting breakpoint debugging in the Vite config file. To fix the issue, add the following configuration to
-
-.vscode/settings.json
-
-:
+With the default `\--configLoader bundle` behavior, Vite writes the generated temporary configuration file to the `node_modules/.vite-temp` folder and a file not found error will occur when setting breakpoint debugging in the Vite config file. To fix the issue, add the following configuration to `.vscode/settings.json`:
 
 json
-
-{
-
-"debug.javascript.terminalOptions"
-
-: {
-
-"resolveSourceMapLocations"
-
-: [
-
-"${workspaceFolder}/**"
-
-,
-
-"!**/node_modules/**"
-
-,
-
-"**/node_modules/.vite-temp/**"
-
-]
-
-}
-
-}
+    
+    
+    {
+      "debug.javascript.terminalOptions": {
+        "resolveSourceMapLocations": [
+          "${workspaceFolder}/**",
+          "!**/node_modules/**",
+          "**/node_modules/.vite-temp/**"
+        ]
+      }
+    }
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

@@ -1,48 +1,32 @@
 # TMDb API
 
 > Source: https://developer.themoviedb.org/reference/intro/getting-started
-> Fetched: 2026-01-30T23:50:21.417208+00:00
-> Content-Hash: 55296ea21d055474
+> Fetched: 2026-01-31T10:57:43.164922+00:00
+> Content-Hash: d0e1fd130d1e2606
 > Type: html
 
 ---
 
-1
+### 1Pick a language
 
-Pick a language
+ __Shell __Node __Ruby __PHP __Python __Java __C#
 
-Shell
+###  2Credentials
 
-Node
+[Get API Key __](/login?redirect_uri=/reference/intro/getting-started)
 
-Ruby
+* * *
 
-PHP
+[Log in to use your API keys](/login?redirect_uri=/reference/intro/getting-started)
 
-Python
+###  3Try It!
 
-Java
+Click `Try It!` to start a request and see the response here!
 
-C#
-
-2
-
-Credentials
-
-Get API Key
-
-Log in to use your API keys
-
-3
-
-Try It!
-
-Click
-
-Try It!
-
-to start a request and see the response here!
-
-Loading
-
-Loading…
+LoadingLoading…  
+---  
+| |   
+| |   
+| |   
+  
+* * *

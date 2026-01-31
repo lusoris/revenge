@@ -1,9 +1,13 @@
 # Source of Truth
 
+<!-- SOURCES: air, casbin, casbin-pgx-adapter, dragonfly, embedded-postgres, embedded-postgres-docs, ffmpeg, ffmpeg-codecs, ffmpeg-formats, fx, genqlient, genqlient-docs, go-astiav, go-astiav-docs, go-blurhash, go-faster-errors, go-faster-jx, go-faster-yaml, go-fcm, go-fcm-docs, go-io, go-mail, go-mail-docs, gobreaker, gofeed, gofeed-docs, gohlslib, goimagehash, goimagehash-docs, golang-migrate, golang-x-crypto, google-uuid, gorilla-feeds, gorilla-feeds-docs, govips, hashicorp-raft, hashicorp-raft-docs, koanf, lastfm-api, m3u8, mockery, ogen, opa, otter, pgx, postgresql-arrays, postgresql-json, prometheus, prometheus-metrics, raft-boltdb, resty, river, rueidis, rueidis-docs, shadcn-svelte, sqlc, sqlc-config, sturdyc, sturdyc-docs, svelte-runes, svelte5, sveltekit, testcontainers, testify, tint, typesense, typesense-go, validator, xmltv, zap -->
+
 > Single-page reference for all modules, packages, integrations, and versions
 
-**Last Updated**: 2026-01-30
+**Last Updated**: 2026-01-31
 **Go Version**: 1.25.6
+**Node.js**: 20.x (LTS)
+**Python**: 3.12
 **PostgreSQL**: 18.1 (ONLY - no SQLite support)
 **Build Command**: `GOEXPERIMENT=greenteagc,jsonv2 go build ./...`
 
@@ -1282,94 +1286,6 @@ See [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md) for current package versions.
 
 Instead of duplicating version tables.
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../sources/security/casbin.md) |
-| [Casbin pgx Adapter](https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3) | [Local](../sources/security/casbin-pgx.md) |
-| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../sources/infrastructure/dragonfly.md) |
-| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../sources/media/ffmpeg-codecs.md) |
-| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../sources/media/ffmpeg.md) |
-| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../sources/media/ffmpeg-formats.md) |
-| [Go io](https://pkg.go.dev/io) | [Local](../sources/go/stdlib/io.md) |
-| [HashiCorp Raft](https://pkg.go.dev/github.com/hashicorp/raft) | [Local](../sources/distributed/hashicorp-raft.md) |
-| [HashiCorp Raft GitHub](https://github.com/hashicorp/raft) | [Local](../sources/distributed/hashicorp-raft-guide.md) |
-| [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) | [Local](../sources/tooling/genqlient.md) |
-| [Last.fm API](https://www.last.fm/api/intro) | [Local](../sources/apis/lastfm.md) |
-| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../sources/protocols/m3u8.md) |
-| [Open Policy Agent](https://pkg.go.dev/github.com/open-policy-agent/opa) | [Local](../sources/security/opa.md) |
-| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../sources/database/postgresql-arrays.md) |
-| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../sources/database/postgresql-json.md) |
-| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../sources/observability/prometheus.md) |
-| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../sources/observability/prometheus-metrics.md) |
-| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../sources/frontend/sveltekit.md) |
-| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../sources/infrastructure/typesense.md) |
-| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../sources/infrastructure/typesense-go.md) |
-| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../sources/tooling/fx.md) |
-| [XMLTV Format](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) | [Local](../sources/protocols/xmltv.md) |
-| [air (hot reload)](https://github.com/air-verse/air) | [Local](../sources/tooling/air.md) |
-| [appleboy/go-fcm](https://pkg.go.dev/github.com/appleboy/go-fcm) | [Local](../sources/tooling/go-fcm.md) |
-| [corona10/goimagehash](https://pkg.go.dev/github.com/corona10/goimagehash) | [Local](../sources/media/goimagehash.md) |
-| [davidbyttow/govips](https://pkg.go.dev/github.com/davidbyttow/govips/v2) | [Local](../sources/media/govips.md) |
-| [embedded-postgres](https://pkg.go.dev/github.com/fergusstrange/embedded-postgres) | [Local](../sources/testing/embedded-postgres.md) |
-| [embedded-postgres GitHub README](https://github.com/fergusstrange/embedded-postgres) | [Local](../sources/testing/embedded-postgres-guide.md) |
-| [genqlient GitHub README](https://github.com/Khan/genqlient) | [Local](../sources/tooling/genqlient-guide.md) |
-| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../sources/media/go-astiav.md) |
-| [go-astiav GitHub README](https://github.com/asticode/go-astiav) | [Local](../sources/media/go-astiav-guide.md) |
-| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../sources/media/go-blurhash.md) |
-| [go-faster/errors](https://pkg.go.dev/github.com/go-faster/errors) | [Local](../sources/tooling/go-faster-errors.md) |
-| [go-faster/jx (JSON)](https://pkg.go.dev/github.com/go-faster/jx) | [Local](../sources/tooling/go-faster-jx.md) |
-| [go-faster/yaml](https://pkg.go.dev/github.com/go-faster/yaml) | [Local](../sources/tooling/go-faster-yaml.md) |
-| [go-fcm GitHub README](https://github.com/appleboy/go-fcm) | [Local](../sources/tooling/go-fcm-guide.md) |
-| [go-mail GitHub README](https://github.com/wneessen/go-mail) | [Local](../sources/tooling/go-mail-guide.md) |
-| [go-playground/validator](https://pkg.go.dev/github.com/go-playground/validator/v10) | [Local](../sources/tooling/validator.md) |
-| [gofeed GitHub README](https://github.com/mmcdole/gofeed) | [Local](../sources/tooling/gofeed-guide.md) |
-| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../sources/media/gohlslib.md) |
-| [goimagehash GitHub](https://github.com/corona10/goimagehash) | [Local](../sources/media/goimagehash-guide.md) |
-| [golang-migrate](https://github.com/golang-migrate/migrate) | [Local](../sources/database/migrations.md) |
-| [golang.org/x/crypto](https://pkg.go.dev/golang.org/x/crypto) | [Local](../sources/go/x/crypto.md) |
-| [google/uuid](https://pkg.go.dev/github.com/google/uuid) | [Local](../sources/tooling/uuid.md) |
-| [gorilla/feeds](https://pkg.go.dev/github.com/gorilla/feeds) | [Local](../sources/tooling/gorilla-feeds.md) |
-| [gorilla/feeds GitHub README](https://github.com/gorilla/feeds) | [Local](../sources/tooling/gorilla-feeds-guide.md) |
-| [hashicorp/raft-boltdb](https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2) | [Local](../sources/distributed/raft-boltdb.md) |
-| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../sources/tooling/koanf.md) |
-| [lmittmann/tint](https://pkg.go.dev/github.com/lmittmann/tint) | [Local](../sources/tooling/tint.md) |
-| [mmcdole/gofeed](https://pkg.go.dev/github.com/mmcdole/gofeed) | [Local](../sources/tooling/gofeed.md) |
-| [mockery](https://pkg.go.dev/github.com/vektra/mockery/v3) | [Local](../sources/testing/mockery.md) |
-| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../sources/tooling/ogen.md) |
-| [otter Cache](https://pkg.go.dev/github.com/maypok86/otter/v2) | [Local](../sources/tooling/otter.md) |
-| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../sources/database/pgx.md) |
-| [resty HTTP Client](https://pkg.go.dev/github.com/go-resty/resty/v2) | [Local](../sources/tooling/resty.md) |
-| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../sources/tooling/rueidis.md) |
-| [rueidis GitHub README](https://github.com/redis/rueidis) | [Local](../sources/tooling/rueidis-guide.md) |
-| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../sources/frontend/shadcn-svelte.md) |
-| [sony/gobreaker](https://pkg.go.dev/github.com/sony/gobreaker) | [Local](../sources/tooling/gobreaker.md) |
-| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../sources/database/sqlc.md) |
-| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../sources/database/sqlc-config.md) |
-| [sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc) | [Local](../sources/tooling/sturdyc.md) |
-| [sturdyc GitHub README](https://github.com/viccon/sturdyc) | [Local](../sources/tooling/sturdyc-guide.md) |
-| [testcontainers-go](https://golang.testcontainers.org/) | [Local](../sources/testing/testcontainers.md) |
-| [testify](https://pkg.go.dev/github.com/stretchr/testify) | [Local](../sources/testing/testify.md) |
-| [uber-go/zap](https://pkg.go.dev/go.uber.org/zap) | [Local](../sources/tooling/zap.md) |
-| [wneessen/go-mail](https://pkg.go.dev/github.com/wneessen/go-mail) | [Local](../sources/tooling/go-mail.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
 
 ---
 

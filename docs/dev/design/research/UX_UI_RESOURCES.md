@@ -1,9 +1,13 @@
 # UX/UI Design & Frontend Resources
 
+<!-- SOURCES: shadcn-svelte, svelte-runes, svelte5, sveltekit -->
+
+<!-- DESIGN: research, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+
+
 > **Status**: ✅ ALL 14 SOURCES FETCHED (2026-01-28)
 >
 > These authoritative sources inform frontend instruction files, component design, and user experience patterns for Revenge.
-
 
 
 <!-- TOC-START -->
@@ -45,16 +49,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | 🔴 |  |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | 🔴 |
+| Sources | 🔴 |
+| Instructions | 🔴 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ---
@@ -333,55 +336,6 @@
 | **Smashing** | Infinite scroll, design patterns, accessibility |
 | **web.dev** | Responsive layouts, theming, PWA, file handling, animation |
 
-
-<!-- SOURCE-BREADCRUMBS-START -->
-
-## Sources & Cross-References
-
-> Auto-generated section linking to external documentation sources
-
-### Cross-Reference Indexes
-
-- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
-- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
-
-### Referenced Sources
-
-| Source | Documentation |
-|--------|---------------|
-| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
-| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
-| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
-| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
-
-<!-- SOURCE-BREADCRUMBS-END -->
-
-<!-- DESIGN-BREADCRUMBS-START -->
-
-## Related Design Docs
-
-> Auto-generated cross-references to related design documentation
-
-**Category**: [Research](INDEX.md)
-
-### In This Section
-
-- [User Pain Points Research - Existing Media Servers](USER_PAIN_POINTS_RESEARCH.md)
-
-### Related Topics
-
-- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
-- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
-- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
-- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
-- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
-
-### Indexes
-
-- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
-- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
-
-<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

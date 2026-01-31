@@ -1,169 +1,108 @@
 # Docker Swarm Documentation
 
 > Source: https://docs.docker.com/engine/swarm/
-> Fetched: 2026-01-30T23:56:11.999376+00:00
-> Content-Hash: c977457090eb1af2
+> Fetched: 2026-01-31T11:03:31.519671+00:00
+> Content-Hash: 675797b036fee8dd
 > Type: html
 
 ---
 
 Back
 
-Manuals
+[Manuals](https://docs.docker.com/manuals/)
 
-Get started
+  * [Get started](/get-started/)
+  * [Guides](/guides/)
+  * [Reference](/reference/)
 
-Guides
 
-Reference
 
-Swarm mode
+# Swarm mode
 
 Copy as Markdown
 
-Open Markdown
-
-Ask Docs AI
-
-Claude
-
-Open in Claude
+Open Markdown Ask Docs AI Claude Open in Claude
 
 Table of contents
 
-Note
+* * *
 
-Swarm mode is an advanced feature for managing a cluster of Docker daemons.
+> Note
+> 
+> Swarm mode is an advanced feature for managing a cluster of Docker daemons.
+> 
+> Use Swarm mode if you intend to use Swarm as a production runtime environment.
+> 
+> If you're not planning on deploying with Swarm, use [Docker Compose](/compose/) instead. If you're developing for a Kubernetes deployment, consider using the [integrated Kubernetes feature](https://docs.docker.com/desktop/use-desktop/kubernetes/) in Docker Desktop.
 
-Use Swarm mode if you intend to use Swarm as a production runtime environment.
+Current versions of Docker include Swarm mode for natively managing a cluster of Docker Engines called a swarm. Use the Docker CLI to create a swarm, deploy application services to a swarm, and manage swarm behavior.
 
-If you're not planning on deploying with Swarm, use
+Docker Swarm mode is built into the Docker Engine. Do not confuse Docker Swarm mode with [Docker Classic Swarm](https://github.com/docker/classicswarm) which is no longer actively developed.
 
-Docker Compose
+## Feature highlights
 
-instead.
-If you're developing for a Kubernetes deployment, consider using the
+### Cluster management integrated with Docker Engine
 
-integrated Kubernetes feature
+Use the Docker Engine CLI to create a swarm of Docker Engines where you can deploy application services. You don't need additional orchestration software to create or manage a swarm.
 
-in Docker Desktop.
+### Decentralized design
 
-Current versions of Docker include Swarm mode for natively managing a cluster
-of Docker Engines called a swarm. Use the Docker CLI to create a swarm, deploy
-application services to a swarm, and manage swarm behavior.
+Instead of handling differentiation between node roles at deployment time, the Docker Engine handles any specialization at runtime. You can deploy both kinds of nodes, managers and workers, using the Docker Engine. This means you can build an entire swarm from a single disk image.
 
-Docker Swarm mode is built into the Docker Engine. Do not confuse Docker Swarm mode
-with
+### Declarative service model
 
-Docker Classic Swarm
+Docker Engine uses a declarative approach to let you define the desired state of the various services in your application stack. For example, you might describe an application comprised of a web front end service with message queueing services and a database backend.
 
-which is no longer actively developed.
+### Scaling
 
-Feature highlights
+For each service, you can declare the number of tasks you want to run. When you scale up or down, the swarm manager automatically adapts by adding or removing tasks to maintain the desired state.
 
-Cluster management integrated with Docker Engine
+### Desired state reconciliation
 
-Use the Docker Engine CLI to create a swarm of Docker Engines where you can deploy application
-services. You don't need additional orchestration software to create or manage
-a swarm.
+The swarm manager node constantly monitors the cluster state and reconciles any differences between the actual state and your expressed desired state. For example, if you set up a service to run 10 replicas of a container, and a worker machine hosting two of those replicas crashes, the manager creates two new replicas to replace the replicas that crashed. The swarm manager assigns the new replicas to workers that are running and available.
 
-Decentralized design
+### Multi-host networking
 
-Instead of handling differentiation between node roles at deployment time, the Docker Engine handles any specialization at runtime. You can deploy both kinds of nodes, managers and workers, using the
-Docker Engine. This means you can build an entire swarm from a single disk
-image.
+You can specify an overlay network for your services. The swarm manager automatically assigns addresses to the containers on the overlay network when it initializes or updates the application.
 
-Declarative service model
+### Service discovery
 
-Docker Engine uses a declarative approach to
-let you define the desired state of the various services in your application
-stack. For example, you might describe an application comprised of a web front
-end service with message queueing services and a database backend.
+Swarm manager nodes assign each service in the swarm a unique DNS name and load balance running containers. You can query every container running in the swarm through a DNS server embedded in the swarm.
 
-Scaling
+### Load balancing
 
-For each service, you can declare the number of tasks you want to
-run. When you scale up or down, the swarm manager automatically adapts by
-adding or removing tasks to maintain the desired state.
+You can expose the ports for services to an external load balancer. Internally, the swarm lets you specify how to distribute service containers between nodes.
 
-Desired state reconciliation
+### Secure by default
 
-The swarm manager node constantly monitors
-the cluster state and reconciles any differences between the actual state and your
-expressed desired state. For example, if you set up a service to run 10
-replicas of a container, and a worker machine hosting two of those replicas
-crashes, the manager creates two new replicas to replace the replicas that
-crashed. The swarm manager assigns the new replicas to workers that are
-running and available.
+Each node in the swarm enforces TLS mutual authentication and encryption to secure communications between itself and all other nodes. You have the option to use self-signed root certificates or certificates from a custom root CA.
 
-Multi-host networking
+### Rolling updates
 
-You can specify an overlay network for your
-services. The swarm manager automatically assigns addresses to the containers
-on the overlay network when it initializes or updates the application.
+At rollout time you can apply service updates to nodes incrementally. The swarm manager lets you control the delay between service deployment to different sets of nodes. If anything goes wrong, you can roll back to a previous version of the service.
 
-Service discovery
+## What's next?
 
-Swarm manager nodes assign each service in the swarm a
-unique DNS name and load balance running containers. You can query every
-container running in the swarm through a DNS server embedded in the swarm.
+  * Learn Swarm mode [key concepts](https://docs.docker.com/engine/swarm/key-concepts/).
+  * Get started with the [Swarm mode tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/).
+  * Explore Swarm mode CLI commands
+    * [swarm init](https://docs.docker.com/reference/cli/docker/swarm/init/)
+    * [swarm join](https://docs.docker.com/reference/cli/docker/swarm/join/)
+    * [service create](https://docs.docker.com/reference/cli/docker/service/create/)
+    * [service inspect](https://docs.docker.com/reference/cli/docker/service/inspect/)
+    * [service ls](https://docs.docker.com/reference/cli/docker/service/ls/)
+    * [service rm](https://docs.docker.com/reference/cli/docker/service/rm/)
+    * [service scale](https://docs.docker.com/reference/cli/docker/service/scale/)
+    * [service ps](https://docs.docker.com/reference/cli/docker/service/ps/)
+    * [service update](https://docs.docker.com/reference/cli/docker/service/update/)
 
-Load balancing
 
-You can expose the ports for services to an
-external load balancer. Internally, the swarm lets you specify how to distribute
-service containers between nodes.
 
-Secure by default
+[Edit this page](https://github.com/docker/docs/edit/main/content/manuals/engine/swarm/_index.md)
 
-Each node in the swarm enforces TLS mutual
-authentication and encryption to secure communications between itself and all
-other nodes. You have the option to use self-signed root certificates or
-certificates from a custom root CA.
-
-Rolling updates
-
-At rollout time you can apply service updates to nodes
-incrementally. The swarm manager lets you control the delay between service
-deployment to different sets of nodes. If anything goes wrong, you can
-roll back to a previous version of the service.
-
-What's next?
-
-Learn Swarm mode
-
-key concepts
-
-.
-
-Get started with the
-
-Swarm mode tutorial
-
-.
-
-Explore Swarm mode CLI commands
-
-swarm init
-
-swarm join
-
-service create
-
-service inspect
-
-service ls
-
-service rm
-
-service scale
-
-service ps
-
-service update
-
-Edit this page
-
-Request changes
+[Request changes](https://github.com/docker/docs/issues/new?template=doc_issue.yml&location=https%3a%2f%2fdocs.docker.com%2fengine%2fswarm%2f&labels=status%2Ftriage)
 
 Table of contents
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

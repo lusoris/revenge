@@ -18,10 +18,9 @@ Usage:
 import argparse
 import hashlib
 import json
-import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -29,9 +28,11 @@ import requests
 import yaml
 from bs4 import BeautifulSoup
 
+
 # Optional html2text - fall back to simple text extraction
 try:
     import html2text
+
     HAS_HTML2TEXT = True
 except ImportError:
     HAS_HTML2TEXT = False
@@ -53,9 +54,7 @@ class SourceFetcher:
         self.delay = self.fetch_config.get("delay_between_requests", 2)
         self.timeout = self.fetch_config.get("timeout", 30)
         self.retry_count = self.fetch_config.get("retry_count", 3)
-        self.user_agent = self.fetch_config.get(
-            "user_agent", "Revenge-DocFetcher/1.0"
-        )
+        self.user_agent = self.fetch_config.get("user_agent", "Revenge-DocFetcher/1.0")
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": self.user_agent})
         if HAS_HTML2TEXT:
@@ -140,7 +139,9 @@ class SourceFetcher:
             parts = url.replace("https://github.com/", "").split("/")
             if len(parts) >= 2:
                 owner, repo = parts[0], parts[1]
-                raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/HEAD/README.md"
+                raw_url = (
+                    f"https://raw.githubusercontent.com/{owner}/{repo}/HEAD/README.md"
+                )
                 response = self.fetch_url(raw_url)
                 if response:
                     return response.text
@@ -211,7 +212,9 @@ class SourceFetcher:
             result["content_hash"] = content_hash
 
             # Check if content changed
-            if not self.force_update and not self._content_changed(source_id, content_hash):
+            if not self.force_update and not self._content_changed(
+                source_id, content_hash
+            ):
                 # Get previous fetch time from existing index
                 existing = self.existing_index.get("sources", {}).get(source_id, {})
                 result["status"] = "unchanged"
@@ -220,7 +223,7 @@ class SourceFetcher:
                 return result
 
             # Add header with source info
-            now = datetime.now(timezone.utc).isoformat()
+            now = datetime.now(UTC).isoformat()
             header = f"""# {name}
 
 > Source: {url}
@@ -244,7 +247,7 @@ class SourceFetcher:
         else:
             result["status"] = "failed"
             result["error"] = "Failed to fetch content"
-            print(f"    Failed to fetch")
+            print("    Failed to fetch")
 
         return result
 
@@ -295,7 +298,7 @@ class SourceFetcher:
             index = {}
 
         # Update with new results
-        index["last_updated"] = datetime.now(timezone.utc).isoformat()
+        index["last_updated"] = datetime.now(UTC).isoformat()
         index["total_sources"] = len(self.results)
         index["successful"] = sum(1 for r in self.results if r["status"] == "success")
         index["unchanged"] = sum(1 for r in self.results if r["status"] == "unchanged")
@@ -322,9 +325,11 @@ class SourceFetcher:
 
         # Save index
         with open(INDEX_YAML, "w", encoding="utf-8") as f:
-            yaml.dump(index, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+            yaml.dump(
+                index, f, default_flow_style=False, allow_unicode=True, sort_keys=False
+            )
 
-        print(f"\n=== SUMMARY ===")
+        print("\n=== SUMMARY ===")
         print(f"Total: {index['total_sources']}")
         print(f"Updated: {index['successful']}")
         print(f"Unchanged: {index['unchanged']}")
