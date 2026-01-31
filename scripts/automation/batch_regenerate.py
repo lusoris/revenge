@@ -201,7 +201,7 @@ class BatchRegenerator:
                 stats["by_category"][category] = (
                     stats["by_category"].get(category, 0) + 1
                 )
-            except:
+            except Exception:
                 pass
 
             print()
@@ -229,15 +229,61 @@ class BatchRegenerator:
 
 def main():
     """Main entry point."""
-    repo_root = Path(__file__).parent.parent.parent
+    import argparse
 
-    # Parse flags
-    preview = "--preview" in sys.argv or "--live" not in sys.argv
-    backup = "--backup" in sys.argv
+    parser = argparse.ArgumentParser(
+        description="Batch regenerate documentation from YAML data files",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Preview mode (safe - outputs to preview directories)
+  python batch_regenerate.py
+  python batch_regenerate.py --preview
+
+  # Live mode (writes to actual docs/ directories)
+  python batch_regenerate.py --live
+
+  # Live mode with backups
+  python batch_regenerate.py --live --backup
+
+  # Apply mode (alias for --live)
+  python batch_regenerate.py --apply
+        """,
+    )
+
+    parser.add_argument(
+        "--live",
+        action="store_true",
+        help="Write to actual docs/ directories (default: preview mode)",
+    )
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Alias for --live (write to actual directories)",
+    )
+    parser.add_argument(
+        "--preview",
+        action="store_true",
+        help="Preview mode - output to preview directories (default)",
+    )
+    parser.add_argument(
+        "--backup",
+        action="store_true",
+        help="Backup existing files before overwriting (use with --live)",
+    )
+
+    args = parser.parse_args()
+
+    # Determine mode (default to preview for safety)
+    preview_mode = not (args.apply or args.live)
+
+    repo_root = Path(__file__).parent.parent.parent
 
     # Initialize regenerator
     regenerator = BatchRegenerator(
-        repo_root, preview_mode=preview, backup_originals=backup,
+        repo_root,
+        preview_mode=preview_mode,
+        backup_originals=args.backup,
     )
 
     # Run regeneration

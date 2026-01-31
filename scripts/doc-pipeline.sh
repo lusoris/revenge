@@ -3,6 +3,7 @@
 # Doc Pipeline Runner
 #
 # Runs the documentation pipeline in the correct order:
+# 0. Regenerate docs from YAML data (Claude + Wiki)
 # 1. Generate INDEX.md files
 # 2. Add design breadcrumbs
 # 3. Sync status tables
@@ -11,8 +12,9 @@
 # 6. Generate meta files (DESIGN_INDEX.md)
 #
 # Usage:
-#   ./scripts/doc-pipeline.sh              # Dry run
-#   ./scripts/doc-pipeline.sh --apply      # Actually run
+#   ./scripts/doc-pipeline.sh              # Dry run (preview mode)
+#   ./scripts/doc-pipeline.sh --apply      # Actually run (writes files)
+#   ./scripts/doc-pipeline.sh --step 0     # Run only step 0 (regenerate)
 #   ./scripts/doc-pipeline.sh --step 1     # Run only step 1
 #   ./scripts/doc-pipeline.sh --validate   # Only run validation (no changes)
 #
@@ -144,6 +146,15 @@ if [[ -n "$VALIDATE_ONLY" ]]; then
     python3 "$SCRIPT_DIR/doc-pipeline/04-validate.py"
     exit $?
 fi
+
+# Step 0: Regenerate docs from YAML data
+REGEN_ARGS=()
+if [[ -n "$APPLY" ]]; then
+    REGEN_ARGS+=("--apply")
+else
+    REGEN_ARGS+=("--preview")
+fi
+run_step 0 "Regenerate Docs from YAML" "automation/batch_regenerate.py" "${REGEN_ARGS[@]}"
 
 # Step 1: Generate INDEX.md files
 INDEX_ARGS=()
