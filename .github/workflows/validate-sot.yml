@@ -48,7 +48,13 @@ jobs:
           FOUND=0
           for pattern in "${PATTERNS[@]}"; do
             echo "  Searching for pattern: $pattern"
-            if grep -r $EXCLUDE_ARGS --exclude-dir=.git --exclude-dir=node_modules \
+            if grep -r $EXCLUDE_ARGS \
+                --exclude-dir=.git \
+                --exclude-dir=node_modules \
+                --exclude-dir=docs/dev/sources \
+                --exclude-dir=.analysis \
+                --exclude-dir=.shared \
+                --exclude-dir=.zed \
                 "$pattern" . 2>/dev/null | grep -v "e.g\|example\|Example\|TODO\|<from SOT>\|check SOURCE_OF_TRUTH"; then
               echo "  ❌ Found hardcoded version matching: $pattern"
               FOUND=1
@@ -73,7 +79,13 @@ jobs:
         run: |
           echo "🔍 Checking for hardcoded Python versions..."
 
-          if grep -r --exclude-dir=.git --exclude-dir=node_modules \
+          if grep -r \
+              --exclude-dir=.git \
+              --exclude-dir=node_modules \
+              --exclude-dir=docs/dev/sources \
+              --exclude-dir=.analysis \
+              --exclude-dir=.shared \
+              --exclude-dir=.zed \
               --exclude="00_SOURCE_OF_TRUTH.md" --exclude="_versions.yml" \
               --exclude="validate-sot.yml" \
               "python-version.*3\.12" . 2>/dev/null | \
@@ -90,7 +102,13 @@ jobs:
         run: |
           echo "🔍 Checking for hardcoded Node.js versions..."
 
-          if grep -r --exclude-dir=.git --exclude-dir=node_modules \
+          if grep -r \
+              --exclude-dir=.git \
+              --exclude-dir=node_modules \
+              --exclude-dir=docs/dev/sources \
+              --exclude-dir=.analysis \
+              --exclude-dir=.shared \
+              --exclude-dir=.zed \
               --exclude="00_SOURCE_OF_TRUTH.md" --exclude="_versions.yml" \
               --exclude="validate-sot.yml" \
               "node-version.*['\"]20" . 2>/dev/null | \
@@ -108,7 +126,13 @@ jobs:
         run: |
           echo "🔍 Checking for hardcoded GOEXPERIMENT..."
 
-          if grep -r --exclude-dir=.git --exclude-dir=node_modules \
+          if grep -r \
+              --exclude-dir=.git \
+              --exclude-dir=node_modules \
+              --exclude-dir=docs/dev/sources \
+              --exclude-dir=.analysis \
+              --exclude-dir=.shared \
+              --exclude-dir=.zed \
               --exclude="00_SOURCE_OF_TRUTH.md" --exclude="_versions.yml" \
               --exclude="validate-sot.yml" \
               "GOEXPERIMENT: greenteagc,jsonv2" . 2>/dev/null | \

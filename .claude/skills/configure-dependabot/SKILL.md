@@ -207,7 +207,7 @@ updates:
     - "dependencies"
     - "go"
   commit-message:
-    prefix: "chore(deps)"
+    prefix: "chore"
     include: "scope"
   groups:
     go-dependencies:
@@ -241,7 +241,7 @@ updates:
     - "dependencies"
     - "frontend"
   commit-message:
-    prefix: "chore(deps)"
+    prefix: "chore"
     include: "scope"
 ```
 
