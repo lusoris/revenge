@@ -24,8 +24,12 @@
 
 {{ technical_summary }}
 
+{%- if api_base_url | default('') %}
 **API Base URL**: `{{ api_base_url }}`
+{%- endif %}
+{%- if auth_method | default('') %}
 **Authentication**: {{ auth_method }}
+{%- endif %}
 {%- elif wiki %}
 # {{ integration_name }}
 
@@ -57,7 +61,7 @@ internal/integration/{{ integration_id }}/
 ### Provides
 
 This integration provides:
-{%- if provides_data %}
+{%- if provides_data | default([]) %}
 {%- for data_type in provides_data %}
 - **{{ data_type.name }}**: {{ data_type.description }}
 {%- endfor %}
@@ -67,7 +71,7 @@ This integration provides:
 {%- elif wiki %}
 ## How It Works
 
-{{ wiki_how_it_works }}
+{{ wiki_how_it_works | default('<!-- How it works -->') }}
 {%- endif %}
 {%- endblock %}
 
@@ -81,7 +85,7 @@ This integration provides:
 
 ### Configuration
 
-{%- if auth_config %}
+{%- if auth_config | default('') %}
 ```yaml
 {{ auth_config }}
 ```
@@ -96,7 +100,7 @@ This integration provides:
 {%- endblock %}
 
 {% block rate_limiting -%}
-{%- if claude and rate_limits %}
+{%- if claude and (rate_limits | default({})) %}
 ## Rate Limiting
 
 {%- if rate_limits.requests_per_second %}
@@ -121,7 +125,7 @@ This integration provides:
 
 ### Supported Endpoints
 
-{%- if api_endpoints %}
+{%- if api_endpoints | default([]) %}
 {%- for endpoint in api_endpoints %}
 #### {{ endpoint.name }}
 
@@ -159,7 +163,7 @@ This integration provides:
 
 ### Cache Duration
 
-{%- if cache_ttl %}
+{%- if cache_ttl | default({}) %}
 - Metadata: {{ cache_ttl.metadata | default('24h') }}
 - Images: {{ cache_ttl.images | default('7d') }}
 - Search results: {{ cache_ttl.search | default('1h') }}
@@ -193,7 +197,7 @@ This integration provides:
 
 ### Prerequisites
 
-{%- if prerequisites %}
+{%- if prerequisites | default([]) %}
 {%- for prereq in prerequisites %}
 - {{ prereq }}
 {%- endfor %}

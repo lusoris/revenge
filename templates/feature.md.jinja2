@@ -19,7 +19,7 @@
 
 {% block overview -%}
 {%- if claude %}
-> Content module for {{ content_types | join(', ') }}{% if metadata_providers is defined and metadata_providers %} with {{ metadata_providers | map(attribute='name') | join(', ') }} integration{% endif %}
+> Content module for {{ (content_types | default([])) | join(', ') }}{% if metadata_providers is defined and metadata_providers %} with {{ metadata_providers | map(attribute='name') | join(', ') }} integration{% endif %}
 
 {{ technical_summary }}
 {%- elif wiki %}

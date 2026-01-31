@@ -51,7 +51,7 @@
 
 ### Dependencies
 
-{%- if dependencies %}
+{%- if dependencies | default([]) %}
 This service depends on:
 {%- for dep in dependencies %}
 - **{{ dep.name }}**: {{ dep.purpose }}
@@ -62,7 +62,7 @@ No external service dependencies.
 
 ### Provides
 
-{%- if provides %}
+{%- if provides | default([]) %}
 This service provides:
 {%- for provided in provides %}
 - **{{ provided.name }}**: {{ provided.description }}
@@ -77,7 +77,7 @@ This service provides:
 {%- elif wiki %}
 ## How It Works
 
-{{ wiki_how_it_works }}
+{{ wiki_how_it_works | default('<!-- How it works -->') }}
 {%- endif %}
 {%- endblock %}
 
