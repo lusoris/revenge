@@ -2,9 +2,31 @@
 
 > Photo organization, viewing, and management
 
-**Status**: 🔴 PLANNING
-**Priority**: 🟢 HIGH (Critical Gap - Jellyfin/Plex/Emby have this)
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Comprehensive spec with architecture, schema, jobs |
+| Sources | ✅ | Developer resources with package URLs |
+| Instructions | ✅ | Implementation checklist provided |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: HIGH (Critical Gap - Jellyfin/Plex/Emby have this)
 **Inspired By**: Plex Photos, Google Photos, Apple Photos
+
+**Location**: `internal/content/photos/`
+
+---
+
+## Developer Resources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| libvips | [libvips.github.io/libvips](https://libvips.github.io/libvips/) | Image processing library |
+| Nominatim | [nominatim.org/release-docs/latest/api](https://nominatim.org/release-docs/latest/api/) | Reverse geocoding |
 
 ---
 
@@ -50,7 +72,7 @@ Photos Library provides organization, viewing, and management of photo collectio
 │  Photo File ──► EXIF Extract ──► Thumbnail ──► Face Detect     │
 │                                                                 │
 │  ┌───────────┐   ┌───────────┐   ┌───────────┐   ┌──────────┐ │
-│  │  Scanner  │──►│   EXIF    │──►│   bimg    │──►│  GoFace  │ │
+│  │  Scanner  │──►│   EXIF    │──►│  govips   │──►│  GoFace  │ │
 │  │           │   │  Parser   │   │  Resize   │   │ (optional)│ │
 │  └───────────┘   └───────────┘   └───────────┘   └──────────┘ │
 │                                                                 │
@@ -66,13 +88,14 @@ Photos Library provides organization, viewing, and management of photo collectio
 
 ## Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **h2non/bimg** | Thumbnail generation | github.com/h2non/bimg |
-| **rwcarlsen/goexif** | EXIF metadata parsing | github.com/rwcarlsen/goexif |
-| **bbrks/go-blurhash** | Placeholder images | github.com/bbrks/go-blurhash |
-| **Kagami/go-face** | Face recognition (optional) | github.com/Kagami/go-face |
-| **golang/image** | Image processing | golang.org/x/image |
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-media-processing--planned) for package versions.
+
+Key packages used:
+- **govips** - Thumbnail generation
+- **goexif** - EXIF metadata parsing
+- **go-blurhash** - Placeholder images
+- **go-face** - Face recognition (optional)
+- **golang.org/x/image** - Image processing
 
 ---
 
@@ -245,18 +268,18 @@ type PhotoProcessor struct {
 
 func (p *PhotoProcessor) Process(ctx context.Context, photoPath string) (*ProcessResult, error) {
     // Read image
-    data, err := os.ReadFile(photoPath)
+    img, err := vips.NewImageFromFile(photoPath)
     if err != nil {
         return nil, err
     }
-
-    img := bimg.NewImage(data)
+    defer img.Close()
 
     // Extract EXIF
+    data, _ := os.ReadFile(photoPath)
     exif, _ := p.extractEXIF(data)
 
     // Generate thumbnail
-    thumbnail, _ := img.Thumbnail(p.thumbWidth)
+    thumbnail, _ := img.Thumbnail(p.thumbWidth, p.thumbHeight, vips.InterestingAttention)
 
     // Generate blurhash
     blurhash, _ := p.generateBlurhash(thumbnail)
@@ -406,8 +429,100 @@ photos:
 
 ---
 
-## Related Documentation
+## Implementation Checklist
 
-- [Library Types](LIBRARY_TYPES.md)
-- [Go Packages](../architecture/GO_PACKAGES.md)
-- [Client Support](CLIENT_SUPPORT.md)
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/content/photos/` package structure
+- [ ] Define `entity.go` with Photo, Album, Face, Person structs
+- [ ] Create `repository.go` interface definition
+- [ ] Implement `repository_pg.go` with sqlc queries
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Database
+- [ ] Create migration `000XXX_create_photos_schema.up.sql`
+- [ ] Create `photos` table with EXIF columns
+- [ ] Create `photo_albums` and `photo_album_items` tables
+- [ ] Create `photo_faces` and `photo_people` tables (optional)
+- [ ] Add spatial index for GPS coordinates
+- [ ] Add indexes (library_id, taken_at, file_hash)
+- [ ] Write sqlc queries in `queries/photos/`
+
+### Phase 3: Image Processing
+- [ ] Implement thumbnail generation (govips)
+- [ ] Implement blurhash generation
+- [ ] Implement EXIF extraction
+- [ ] Add RAW format support (cr2, nef, arw)
+- [ ] Implement duplicate detection (file hash)
+
+### Phase 4: Service Layer
+- [ ] Implement `service.go` with otter caching
+- [ ] Add Photo operations (Get, List, Update, Delete)
+- [ ] Add Album operations (Create, Update, Delete, AddPhotos)
+- [ ] Add Timeline grouping (by date)
+- [ ] Implement cache invalidation
+
+### Phase 5: Optional Features
+- [ ] Implement face detection (go-face + dlib)
+- [ ] Implement face clustering
+- [ ] Implement reverse geocoding
+- [ ] Add smart albums (rules-based)
+
+### Phase 6: Background Jobs
+- [ ] Create River job definitions in `jobs.go`
+- [ ] Implement `ScanPhotosJob`
+- [ ] Implement `ProcessPhotoJob` (thumbnail, blurhash, EXIF)
+- [ ] Implement `DetectFacesJob` (optional)
+- [ ] Implement `ClusterFacesJob` (optional)
+- [ ] Implement `ReverseGeocodeJob`
+
+### Phase 7: API Integration
+- [ ] Define OpenAPI endpoints for photos
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service layer
+- [ ] Add image serving endpoints (full, thumbnail)
+- [ ] Add album sharing endpoints
+- [ ] Add authentication/authorization checks
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Photos](INDEX.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Library Service](../../services/LIBRARY.md) - Library management
+- [User Experience Features](../shared/USER_EXPERIENCE_FEATURES.md) - Slideshows

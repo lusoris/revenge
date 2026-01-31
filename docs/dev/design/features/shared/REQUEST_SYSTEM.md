@@ -2,7 +2,18 @@
 
 > Content request management for all modules - replaces Overseerr/Jellyseerr
 
-**Status**: 🔴 DESIGN PHASE
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with DB schema, automation rules, polls system |
+| Sources | 🟡 | Replaces Overseerr/Jellyseerr |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🟡 HIGH (Phase 9 - External Services)
 **Replaces**: Overseerr, Jellyseerr (NO integration - native only)
 
@@ -1115,7 +1126,159 @@ func (s *RequestService) ApprovePodcastRequest(ctx context.Context, requestID uu
 
 ---
 
-## Related Documentation
+## Implementation Checklist
+
+**Location**: `internal/service/requests/`
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/requests/`
+- [ ] Create modules directory `internal/service/requests/modules/`
+- [ ] Define entities: `Request`, `RequestVote`, `RequestComment`, `RequestQuota`, `RequestRule`
+- [ ] Define poll entities: `RequestPoll`, `PollOption`, `PollVote`
+- [ ] Create repository interface `RequestRepository`
+- [ ] Implement fx module `requests.Module`
+- [ ] Add configuration struct for request settings
+
+### Phase 2: Database
+- [ ] Create migration `xxx_request_system.up.sql`
+- [ ] Create `requests` table with status, priority, integration fields
+- [ ] Create `request_votes` table for upvoting
+- [ ] Create `request_comments` table for discussions
+- [ ] Create `request_quotas` table with storage limits per content type
+- [ ] Create `global_storage_quotas` table for server-wide limits
+- [ ] Create `request_rules` table for auto-approval logic
+- [ ] Create `request_polls` table for community voting
+- [ ] Create `request_poll_options` table for poll choices
+- [ ] Create `request_poll_votes` table for user votes
+- [ ] Create QAR schema tables: `qar.requests`, `qar.request_votes`, etc.
+- [ ] Create QAR poll tables in `qar` schema
+- [ ] Add indexes for status, content_type, priority, created_at
+- [ ] Generate sqlc queries for all CRUD operations
+
+### Phase 3: Service Layer - Core
+- [ ] Implement `RequestService` (create, approve, decline, on_hold)
+- [ ] Implement quota enforcement (request limits + storage quotas)
+- [ ] Implement `RuleEngine` for condition matching and priority sorting
+- [ ] Implement storage tracking (real-time disk usage)
+- [ ] Implement vote aggregation and priority calculation
+- [ ] Add caching for frequently accessed requests
+
+### Phase 4: Content Search Modules
+- [ ] Implement `movie.go` with TMDb search integration
+- [ ] Implement `tvshow.go` with TheTVDB search + season selection
+- [ ] Implement `music.go` with MusicBrainz search (artist/album)
+- [ ] Implement `audiobook.go` with Audible search
+- [ ] Implement `book.go` with Goodreads search
+- [ ] Implement `podcast.go` with RSS feed lookup
+- [ ] Implement `comic.go` with ComicVine search
+- [ ] Create adult module in `internal/content/c/requests/adult.go` (isolated)
+- [ ] Implement StashDB search (scene/studio/performer/tag)
+
+### Phase 5: Arr Integration
+- [ ] Implement Radarr client for movie additions
+- [ ] Implement Sonarr client for TV show additions (with season config)
+- [ ] Implement Lidarr client for music additions
+- [ ] Implement Chaptarr client for book additions
+- [ ] Implement Whisparr client for adult content (in c/ module)
+- [ ] Add webhook handlers for arr status updates
+- [ ] Update request status when content becomes available
+
+### Phase 6: Audiobookshelf Integration
+- [ ] Implement Audiobookshelf client for podcast additions
+- [ ] Implement RSS feed addition via Audiobookshelf API
+- [ ] Handle audiobook manual workflow OR automated script
+
+### Phase 7: Background Jobs - Automation
+- [ ] Create `RequestApprovalWorker` for auto-approval rule processing
+- [ ] Create `QuotaResetWorker` for daily/weekly/monthly quota resets
+- [ ] Create `StorageSyncWorker` for disk usage tracking
+- [ ] Create `SeasonAutomationWorker` for S1 completed -> request S2
+- [ ] Create `ContentLifecycleWorker` for auto-delete unwatched content
+- [ ] Create `PollClosingWorker` for closing polls and auto-approving winners
+- [ ] Configure River periodic jobs for automation triggers
+
+### Phase 8: Polls System
+- [ ] Implement `PollService` for poll CRUD operations
+- [ ] Implement voting logic (single, ranked, multi_select)
+- [ ] Implement rule-based poll generation
+- [ ] Implement tie-breaker poll creation
+- [ ] Implement auto-approve winner on poll close
+- [ ] Add poll notifications (open/close events)
+
+### Phase 9: Notifications
+- [ ] Integrate with notification service for request events
+- [ ] Implement email notifications (approved/available/declined)
+- [ ] Implement Discord webhook notifications
+- [ ] Implement Telegram notifications
+- [ ] Implement in-app notifications
+
+### Phase 10: API Integration
+- [ ] Define OpenAPI spec for request endpoints
+- [ ] Generate ogen handlers for user and admin APIs
+- [ ] Implement `GET /api/v1/requests/search` - content search
+- [ ] Implement `POST /api/v1/requests` - submit request
+- [ ] Implement `GET /api/v1/requests` - list user requests
+- [ ] Implement `GET /api/v1/requests/:id` - request detail
+- [ ] Implement `POST /api/v1/requests/:id/vote` - upvote
+- [ ] Implement `POST /api/v1/requests/:id/comments` - add comment
+- [ ] Implement admin approval endpoints (approve, decline, priority, batch)
+- [ ] Implement quota management endpoints
+- [ ] Implement rule management endpoints
+- [ ] Implement poll endpoints (create, vote, results)
+- [ ] Add adult content endpoints under `/api/v1/legacy/requests/`
+- [ ] Add RBAC permission checks for all operations
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [Radarr Integration](../../integrations/servarr/RADARR.md)
 - [Sonarr Integration](../../integrations/servarr/SONARR.md)

@@ -1,197 +1,45 @@
 # Adult Metadata Providers
 
-> Adult content metadata (isolated in `qar` schema)
+← Back to [Design Docs](..)
 
-**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `qar` (Queen Anne's Revenge).
-API namespace: `/api/v1/qar/`
+> StashDB, TPDB, FreeOnes
 
----
-
-## Overview
-
-Adult metadata providers supply information for:
-- Scene metadata
-- Performer profiles
-- Studio information
-- Tags and categories
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Providers
+## Documents
 
-### Scene Metadata
-
-| Provider | Type | API | Status |
-|----------|------|-----|--------|
-| Whisparr v3 (eros) | Scenes | REST | 🟢 **Primary** (Servarr) |
-| [Stash App](STASH.md) | Scenes | GraphQL | 🟡 Fallback (if connected) |
-| [StashDB.org](STASHDB.md) | Scenes | GraphQL | 🟡 External Primary |
-| [TPDB](THEPORNDB.md) | Scenes | REST | 🟡 External Fallback |
-
-### Performer Metadata
-
-| Provider | Type | API | Status |
-|----------|------|-----|--------|
-| Whisparr v3 (eros) | Performers | REST | 🟢 **Primary** (cached) |
-| [Stash App](STASH.md) | Performers | GraphQL | 🟡 Fallback (if connected) |
-| [StashDB.org](STASHDB.md) | Performers | GraphQL | 🟡 External Primary |
-| [FreeOnes](../../external/adult/FREEONES.md) | Performers | REST | 🟡 Enrichment |
-| [Babepedia](../../wiki/adult/BABEPEDIA.md) | Performers | Scraping | 🟡 Enrichment |
-| [Boobpedia](../../wiki/adult/BOOBPEDIA.md) | Performers | MediaWiki | 🟡 Enrichment |
-| [IAFD](../../wiki/adult/IAFD.md) | Performers | Scraping | 🟡 Enrichment |
-| [TheNude](../../external/adult/THENUDE.md) | Performers | REST | 🟡 Enrichment |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Stash Integration](STASH.md) | Self-hosted adult media organizer with GraphQL API | 🟡 Partial |
+| [StashDB Integration](STASHDB.md) | Adult metadata database for performers, studios, and scenes | 🟡 Partial |
+| [ThePornDB Integration](THEPORNDB.md) | Alternative adult metadata provider with scene/performer/stu... | 🟡 Partial |
+| [Whisparr v3 (eros) - Adult Content Structure Analysis](WHISPARR_V3_ANALYSIS.md) | Analysis of Whisparr v3 (eros) codebase for adult movie/scen... | ✅ Designed |
 
 ---
 
-## Provider Details
+<!-- SOURCE-BREADCRUMBS-START -->
 
-### Whisparr v3 (eros branch)
-**Primary source - Servarr with cached metadata**
+## Sources & Cross-References
 
-- ✅ Scene and performer metadata (cached from StashDB/TPDB)
-- ✅ Studio information
-- ✅ Automatic monitoring and downloads
-- ✅ REST API (Servarr standard)
-- ✅ Already curated and deduplicated
+> Auto-generated section linking to external documentation sources
 
-> **Servarr-First Principle**: Whisparr caches metadata from StashDB/TPDB. Use Whisparr as primary source to avoid redundant API calls. If user has Stash app connected, use as fallback/enrichment. External sources (StashDB.org first, then others) are for enrichment via background River jobs.
+### Cross-Reference Indexes
 
-### Stash App
-**Local fallback - user's personal library**
+- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-- ✅ Scene metadata from user's Stash instance
-- ✅ Performer data (user curated)
-- ✅ Fingerprint matching (phash)
-- ✅ GraphQL API
-- ⚠️ Requires user to have Stash app running
-- ⚠️ Must be explicitly connected via API
+<!-- SOURCE-BREADCRUMBS-END -->
 
-### StashDB.org
-**External Primary - community maintained**
+## Related
 
-- ✅ Scene fingerprinting (phash)
-- ✅ Performer profiles
-- ✅ Studio metadata
-- ✅ Free, community-driven
-- ✅ GraphQL API
-- ✅ First priority among external sources
-
-### TPDB (The Porn Database)
-**Secondary scene database**
-
-- ✅ Scene metadata
-- ✅ DVD/series info (mapped to scene releases)
-- ✅ REST API
-- ⚠️ API key required
-
-### FreeOnes
-**Primary performer database**
-
-- ✅ Performer biographies
-- ✅ Physical attributes
-- ✅ Career info
-- ✅ Social links
-- ⚠️ API key required
+- [Adult Content Module](../../../features/adult/)
 
 ---
 
-## Data Isolation
+## Status Legend
 
-All adult content is isolated:
+> See [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
-```sql
--- Separate PostgreSQL schema (Queen Anne's Revenge)
-CREATE SCHEMA IF NOT EXISTS qar;
-
--- All tables use obfuscated names
-qar.voyages      -- scenes
-qar.crew         -- performers
-qar.ports        -- studios
-qar.voyage_crew  -- scene_performers
-```
-
-API namespace separation:
-```
-/api/v1/qar/voyages
-/api/v1/qar/crew
-/api/v1/qar/ports
-```
-
----
-
-## Data Flow
-
-```
-Scan Library
-    ↓
-Check Whisparr cache (PRIMARY)
-    ↓
-Fallback to Stash App (if connected)
-    ↓
-Generate scene fingerprint (phash)
-    ↓
-Match via StashDB.org (external primary)
-    ↓
-Fallback to TPDB
-    ↓
-Enrich performer data (FreeOnes, Babepedia, etc.)
-    ↓
-Store in 'qar' schema
-```
-
-> **Note**: Stash app integration requires user configuration. StashDB.org is always the first external source when Servarr/Stash don't have the data.
-
----
-
-## Configuration
-
-```yaml
-# Adult content must be explicitly enabled
-modules:
-  adult:
-    enabled: false  # Default disabled
-
-metadata:
-  adult:
-    # Priority chain: Whisparr → Stash App → External Sources
-    scene:
-      primary: whisparr        # Servarr (cached metadata)
-      fallback: stash_app      # Local Stash instance (if connected)
-      external_primary: stashdb  # First among external sources
-      external_fallback: tpdb
-    performer:
-      primary: whisparr
-      fallback: stash_app
-      external_primary: stashdb
-      enrichment:
-        - freeones
-        - babepedia
-        - boobpedia
-        - iafd
-
-# Stash App connection (optional)
-integrations:
-  stash:
-    enabled: false
-    url: "http://localhost:9999"
-    api_key: "${STASH_API_KEY}"
-```
-
----
-
-## Privacy Considerations
-
-- All data isolated in `qar` schema
-- Separate API namespace `/api/v1/qar/`
-- Can be completely disabled
-- Separate user permissions
-- No cross-referencing with regular content
-
----
-
-## Related Documentation
-
-- [Metadata Overview](../INDEX.md)
-- [Adult Content System](../../../features/adult/ADULT_CONTENT_SYSTEM.md)
-- [Whisparr Integration](../../servarr/WHISPARR.md)
-- [Social Links](../../external/adult/INDEX.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

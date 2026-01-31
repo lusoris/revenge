@@ -1,113 +1,42 @@
 # Transcoding Services
 
-> External media transcoding
+← Back to [Design Docs](..)
+
+> External transcoding (Blackbeard)
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Overview
+## Documents
 
-Revenge delegates transcoding to external services:
-- No internal transcoding (by design)
-- Hardware acceleration offloaded
-- Scalable architecture
-- Separation of concerns
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Blackbeard Integration](BLACKBEARD.md) | External transcoding service for Revenge | ✅ Designed |
 
 ---
 
-## Services
+<!-- SOURCE-BREADCRUMBS-START -->
 
-| Service | Type | Status |
-|---------|------|--------|
-| [Blackbeard](BLACKBEARD.md) | gRPC Transcoder | 🟡 Planned |
+## Sources & Cross-References
 
----
+> Auto-generated section linking to external documentation sources
 
-## Why External Transcoding?
+### Cross-Reference Indexes
 
-**Design Decision**: Revenge does not transcode internally.
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-| Internal Transcoding | External Transcoding |
-|---------------------|---------------------|
-| ❌ High CPU/GPU usage | ✅ Offloaded |
-| ❌ Complex FFmpeg management | ✅ Specialized service |
-| ❌ Hardware detection | ✅ Pre-configured |
-| ❌ Single point of failure | ✅ Scalable |
-| ❌ Resource contention | ✅ Isolated |
+<!-- SOURCE-BREADCRUMBS-END -->
+
+## Related
+
+- [Playback Features](../../features/playback/)
 
 ---
 
-## Architecture
+## Status Legend
 
-```
-Client requests playback
-    ↓
-Revenge checks client capabilities
-    ↓
-Direct stream? → Serve file directly
-    ↓
-Transcode needed? → Request from Blackbeard
-    ↓
-Blackbeard transcodes (HW accel)
-    ↓
-Stream to client
-```
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
----
-
-## Blackbeard Service
-
-**Purpose-built transcoding service for Revenge**
-
-- gRPC API for low latency
-- Hardware acceleration (NVENC, QSV, VAAPI)
-- Adaptive bitrate streaming
-- Session management
-- Subtitle burning
-
----
-
-## Configuration
-
-```yaml
-playback:
-  # Prefer direct play
-  direct_play:
-    enabled: true
-
-  # Transcoding via Blackbeard
-  transcoding:
-    enabled: true
-    service: blackbeard
-
-    blackbeard:
-      url: "grpc://blackbeard:50051"
-
-      # Quality profiles
-      profiles:
-        - name: "1080p"
-          max_bitrate: 8000
-          max_width: 1920
-          max_height: 1080
-
-        - name: "720p"
-          max_bitrate: 4000
-          max_width: 1280
-          max_height: 720
-```
-
----
-
-## Direct Play Priority
-
-Revenge prioritizes direct play:
-
-1. **Direct Play** - Native playback, no processing
-2. **Direct Stream** - Remux only (container change)
-3. **Transcode** - Full transcoding via Blackbeard
-
----
-
-## Related Documentation
-
-- [Playback Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md)
-- [Client Support](../../features/CLIENT_SUPPORT.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

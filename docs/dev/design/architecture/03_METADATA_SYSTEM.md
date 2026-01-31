@@ -2,7 +2,55 @@
 
 > Servarr-first metadata with intelligent fallback and multi-language support.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Complete metadata system specification |
+| Sources | 🟡 | API docs partially fetched |
+| Instructions | 🔴 | |
+| Code | 🔴 | Reset to template |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: 🔴 HIGH
+**Module**: `internal/service/metadata`
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Provider Framework
+- [ ] Define provider interface (TMDb, TheTVDB, MusicBrainz, etc.)
+- [ ] Implement provider registry with priority-based selection
+- [ ] Add rate limiting and circuit breaker patterns
+- [ ] Set up provider client initialization
+
+### Phase 2: Servarr Integration
+- [ ] Implement Radarr provider (movies)
+- [ ] Implement Sonarr provider (TV shows)
+- [ ] Implement Lidarr provider (music)
+- [ ] Set up webhook listeners for real-time updates
+
+### Phase 3: Fallback Providers
+- [ ] Implement TMDb provider with translation support
+- [ ] Implement TheTVDB provider
+- [ ] Implement MusicBrainz provider
+- [ ] Set up OMDb and Fanart.tv providers
+
+### Phase 4: Service Layer
+- [ ] Create unified metadata service
+- [ ] Implement caching layer (PostgreSQL → Dragonfly → Memory)
+- [ ] Implement background translation jobs (River)
+- [ ] Add image processing and blurhash generation
+
+---
+
 ## Design Philosophy
+
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-priority-chain) for the authoritative metadata priority chain.
 
 1. **Local Sources First** - Servarr suite provides curated, cached metadata
 2. **Native Audio Content** - Audiobooks/Podcasts managed natively with metadata providers
@@ -815,3 +863,58 @@ paths:
 | Image Processing | Blurhash placeholders, local caching |
 | Sync Method | Webhooks (real-time) + Polling (backup) |
 | Job Queue | River for all background fetching |
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Architecture](INDEX.md)
+
+### In This Section
+
+- [Revenge - Architecture v2](01_ARCHITECTURE.md)
+- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
+- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
+- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
+
+### Related Topics
+
+- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
+- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
+- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
+- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
+- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+---
+
+## Cross-References
+
+| Related Document | Relationship |
+|------------------|--------------|
+| [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) | Metadata priority chain, provider list |
+| [01_ARCHITECTURE.md](01_ARCHITECTURE.md) | System architecture context |
+| [02_DESIGN_PRINCIPLES.md](02_DESIGN_PRINCIPLES.md) | Performance-first principles |
+| [04_PLAYER_ARCHITECTURE.md](04_PLAYER_ARCHITECTURE.md) | Playback metadata needs |

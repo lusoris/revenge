@@ -1,50 +1,57 @@
-# Shared Features Documentation
+# Shared Features
 
-> Features that apply across all content modules
+← Back to [Design Docs](..)
+
+> Features that apply across all modules
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
 ## Documents
 
-### Access & Permissions
-| Document | Description |
-|----------|-------------|
-| [RBAC_CASBIN.md](RBAC_CASBIN.md) | Role-based access control with Casbin |
-| [ACCESS_CONTROLS.md](ACCESS_CONTROLS.md) | Permission system design |
-| [NSFW_TOGGLE.md](NSFW_TOGGLE.md) | Adult content visibility toggle |
-
-### Content & Libraries
-| Document | Description |
-|----------|-------------|
-| [LIBRARY_TYPES.md](LIBRARY_TYPES.md) | Per-module library architecture |
-| [CONTENT_RATING.md](CONTENT_RATING.md) | Rating systems (MPAA/BBFC/PEGI) |
-| [REQUEST_SYSTEM.md](REQUEST_SYSTEM.md) | Content request system |
-
-### User Experience
-| Document | Description |
-|----------|-------------|
-| [USER_EXPERIENCE_FEATURES.md](USER_EXPERIENCE_FEATURES.md) | UX enhancements |
-| [CLIENT_SUPPORT.md](CLIENT_SUPPORT.md) | Client compatibility |
-| [VOICE_CONTROL.md](VOICE_CONTROL.md) | Voice command support |
-| [I18N.md](I18N.md) | Internationalization |
-
-### Integrations
-| Document | Description |
-|----------|-------------|
-| [SCROBBLING.md](SCROBBLING.md) | Trakt/Last.fm/ListenBrainz sync |
-| [ANALYTICS_SERVICE.md](ANALYTICS_SERVICE.md) | Usage analytics |
-
-### Communication
-| Document | Description |
-|----------|-------------|
-| [NEWS_SYSTEM.md](NEWS_SYSTEM.md) | News and announcements |
-| [WIKI_SYSTEM.md](WIKI_SYSTEM.md) | Wiki integration |
-| [TICKETING_SYSTEM.md](TICKETING_SYSTEM.md) | Support ticketing |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Time-Based Access Controls](ACCESS_CONTROLS.md) | User access restrictions based on time, limits, and schedule... | ✅ Designed |
+| [Tracearr Analytics Service](ANALYTICS_SERVICE.md) | Real-time monitoring, analytics, and account sharing detecti... | ✅ Designed |
+| [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md) | Multi-platform client support with intelligent capability de... | ✅ Designed |
+| [Content Rating System](CONTENT_RATING.md) | Universal age restriction and content rating system for reve... | ✅ Designed |
+| [Revenge - Internationalization (i18n)](I18N.md) | Complete multi-language support for UI, metadata, and conten... | ✅ Designed |
+| [Library Types](LIBRARY_TYPES.md) | Per-module library architecture and supported content types | ✅ Designed |
+| [News System](NEWS_SYSTEM.md) | External news aggregation and internal announcements | ✅ Designed |
+| [Revenge - NSFW Toggle](NSFW_TOGGLE.md) | User preference component for adult content visibility. | ✅ Designed |
+| [Dynamic RBAC with Casbin](RBAC_CASBIN.md) | Role-Based Access Control using Casbin for dynamic permissio... | ✅ Designed |
+| [Native Request System](REQUEST_SYSTEM.md) | Content request management for all modules - replaces Overse... | ✅ Designed |
+| [Revenge - External Scrobbling & Sync](SCROBBLING.md) | Sync playback data to external services like Trakt, Last.fm,... | ✅ Designed |
+| [Ticketing System](TICKETING_SYSTEM.md) | User portal for bug reports, feature requests, and support t... | ✅ Designed |
+| [Revenge - User Experience Features](USER_EXPERIENCE_FEATURES.md) | User-facing features inspired by modern streaming services. | ✅ Designed |
+| [Voice Control](VOICE_CONTROL.md) | Voice assistant integration (Alexa, Google Assistant) | ✅ Designed |
+| [Internal Wiki System](WIKI_SYSTEM.md) | Modern, integrated knowledge base for users, mods, admins, a... | ✅ Designed |
 
 ---
 
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
 ## Related
 
-- [Playback Features](../playback/)
-- [Integrations: Scrobbling](../../integrations/scrobbling/)
-- [Integrations: Auth](../../integrations/auth/)
+- [Features Documentation](../)
+- [Architecture Documentation](../../architecture/)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

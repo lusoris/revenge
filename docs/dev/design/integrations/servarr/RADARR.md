@@ -2,7 +2,18 @@
 
 > Movie management automation and metadata synchronization
 
-**Status**: ✅ Researched | API v3 | Self-hosted
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🔴 CRITICAL (Phase 2 - Movie Module)
 **Authentication**: API Key (`X-Api-Key` header)
 
@@ -110,14 +121,25 @@ Radarr sends webhooks for:
 
 ## Implementation Checklist
 
-- [ ] Create API client: `internal/service/metadata/provider_radarr.go`
-- [ ] Implement webhook handler: `internal/api/handlers/webhook_radarr.go`
-- [ ] Metadata sync (title, overview, posters, cast, crew)
-- [ ] Quality profile mapping
-- [ ] Root folder management
-- [ ] Event processing (import, upgrade, rename, delete)
-- [ ] Error handling and retries
-- [ ] Rate limiting (if needed for external instances)
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client with resty
+- [ ] Add API key authentication
+- [ ] Implement rate limiting
+
+### Phase 2: API Implementation
+- [ ] Implement core API methods
+- [ ] Add response type definitions
+- [ ] Implement error handling
+
+### Phase 3: Service Integration
+- [ ] Create service wrapper
+- [ ] Add caching layer
+- [ ] Implement fx module wiring
+
+### Phase 4: Testing
+- [ ] Add unit tests with mocks
+- [ ] Add integration tests
 
 ---
 
@@ -163,6 +185,58 @@ func (c *RadarrClient) GetMovie(ctx context.Context, id int) (*Movie, error) {
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Go context](https://pkg.go.dev/context) | [Local](../../../sources/go/stdlib/context.md) |
+| [Radarr API Docs](https://radarr.video/docs/api/) | [Local](../../../sources/apis/radarr-docs.md) |
+| [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Servarr](INDEX.md)
+
+### In This Section
+
+- [Chaptarr Integration](CHAPTARR.md)
+- [Lidarr Integration](LIDARR.md)
+- [Sonarr Integration](SONARR.md)
+- [Whisparr v3 Integration](WHISPARR.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

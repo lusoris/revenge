@@ -2,9 +2,31 @@
 
 > Automatic intro and credits detection with one-click skip
 
-**Status**: 🔴 PLANNING
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 **Priority**: 🟢 HIGH (Critical Gap - Plex/Jellyfin have this)
 **Inspired By**: Plex Skip Intro, Jellyfin Intro Skipper plugin
+**Location**: `internal/feature/skipintro/`
+
+---
+
+## Developer Resources
+
+| Source                 | URL                                                                                                     | Purpose                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Chromaprint            | [acoustid.org/chromaprint](https://acoustid.org/chromaprint)                                            | Audio fingerprinting library  |
+| FFmpeg Filters         | [ffmpeg.org/ffmpeg-filters.html](https://ffmpeg.org/ffmpeg-filters.html)                                | Silence/black frame detection |
+| Jellyfin Intro Skipper | [github.com/ConfusedPolarBear/intro-skipper](https://github.com/ConfusedPolarBear/intro-skipper)        | Reference implementation      |
 
 ---
 
@@ -95,11 +117,13 @@ Detect credit roll patterns:
 
 ## Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **u2takey/ffmpeg-go** | Audio extraction, frame analysis | github.com/u2takey/ffmpeg-go |
-| **chromaprint** | Audio fingerprinting (via FFmpeg) | - |
-| **imaging** | Frame analysis | github.com/disintegration/imaging |
+> Package versions: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+
+| Package | Purpose |
+|---------|---------|
+| go-astiav | Audio extraction, frame analysis (FFmpeg bindings) |
+| chromaprint | Audio fingerprinting (via FFmpeg) |
+| imaging | Frame analysis |
 
 ---
 
@@ -396,6 +420,57 @@ skip_detection:
 | `segments.detect` | Trigger detection |
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Chromaprint/AcoustID](https://acoustid.org/chromaprint) | [Local](../../../sources/standards/chromaprint.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Playback](INDEX.md)
+
+### In This Section
+
+- [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md)
+- [Release Calendar System](RELEASE_CALENDAR.md)
+- [SyncPlay (Watch Together)](SYNCPLAY.md)
+- [Trickplay (Timeline Thumbnails)](TRICKPLAY.md)
+- [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

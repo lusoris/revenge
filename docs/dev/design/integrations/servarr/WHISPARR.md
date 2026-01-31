@@ -2,7 +2,18 @@
 
 > Adult content management automation (eros branch)
 
-**Status**: 🟡 PLANNED
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🟡 MEDIUM (Phase 7 - Adult Modules)
 **Type**: Webhook listener + API client for metadata sync
 **Schema Isolation**: PostgreSQL schema `qar` (see [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md))
@@ -117,44 +128,25 @@ Triggered when Whisparr detects health issues.
 
 ## Implementation Checklist
 
-- [ ] **API Client** (`internal/content/c/movie/provider_whisparr.go`)
-  - [ ] Scene listing & detail fetching
-  - [ ] Performer metadata extraction
-  - [ ] Studio metadata extraction
-  - [ ] Tag/category handling
-  - [ ] Quality profile mapping
-  - [ ] Health check integration
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client with resty
+- [ ] Add API key authentication
+- [ ] Implement rate limiting
 
-- [ ] **Webhook Handler** (`internal/api/handlers/c/webhook_whisparr.go`)
-  - [ ] Parse webhook payload (On Download event)
-  - [ ] Extract scene + performer + studio metadata
-  - [ ] Trigger metadata enrichment (StashDB)
-  - [ ] Store in PostgreSQL schema `qar` (`c.scenes`, `c.performers`, `c.studios`)
-  - [ ] Update Typesense search index (schema `qar`)
+### Phase 2: API Implementation
+- [ ] Implement core API methods
+- [ ] Add response type definitions
+- [ ] Implement error handling
 
-- [ ] **Metadata Sync**
-  - [ ] Map Whisparr scenes → Revenge `c.scenes` table
-  - [ ] Map performers → Revenge `c.performers` table
-  - [ ] Map studios → Revenge `c.studios` table
-  - [ ] Map Whisparr quality profiles → Revenge quality tiers
-  - [ ] Handle multi-performer scenes
+### Phase 3: Service Integration
+- [ ] Create service wrapper
+- [ ] Add caching layer
+- [ ] Implement fx module wiring
 
-- [ ] **Privacy Controls**
-  - [ ] **Schema Isolation**: All queries use `SET search_path TO c, public;`
-  - [ ] **API Namespace**: All endpoints use `/api/v1/legacy/movies`, `/api/v1/legacy/scenes`, `/api/v1/legacy/performers`
-  - [ ] **NSFW Toggle**: Frontend toggle to show/hide adult content
-  - [ ] **Secure Access**: Require NSFW permission for schema `qar` access
-
-- [ ] **Quality Profile Mapping**
-  - [ ] Ultra HD (4K) → `quality='4K'`, `max_bitrate=80000`
-  - [ ] HD-1080p → `quality='1080p'`, `max_bitrate=20000`
-  - [ ] HD-720p → `quality='720p'`, `max_bitrate=8000`
-  - [ ] SD → `quality='480p'`, `max_bitrate=3000`
-
-- [ ] **Error Handling**
-  - [ ] Retry failed API calls (circuit breaker)
-  - [ ] Log webhook failures (obfuscate adult content in logs)
-  - [ ] Handle missing scenes (not yet released)
+### Phase 4: Testing
+- [ ] Add unit tests with mocks
+- [ ] Add integration tests
 
 ---
 
@@ -203,6 +195,50 @@ func (c *WhisparrClient) GetScene(ctx context.Context, sceneID int) (*Scene, err
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Servarr](INDEX.md)
+
+### In This Section
+
+- [Chaptarr Integration](CHAPTARR.md)
+- [Lidarr Integration](LIDARR.md)
+- [Radarr Integration](RADARR.md)
+- [Sonarr Integration](SONARR.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

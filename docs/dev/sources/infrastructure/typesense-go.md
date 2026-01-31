@@ -1,8 +1,9 @@
 # Typesense Go Client
 
-> Auto-fetched from [https://github.com/typesense/typesense-go](https://github.com/typesense/typesense-go)
-> Raw source: [https://raw.githubusercontent.com/typesense/typesense-go/HEAD/README.md](https://raw.githubusercontent.com/typesense/typesense-go/HEAD/README.md)
-> Last Updated: 2026-01-29T20:15:36.481003+00:00
+> Source: https://github.com/typesense/typesense-go
+> Fetched: 2026-01-30T23:55:36.624658+00:00
+> Content-Hash: f098e769d2166a64
+> Type: github_readme
 
 ---
 

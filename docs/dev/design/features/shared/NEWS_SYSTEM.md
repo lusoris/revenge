@@ -2,6 +2,18 @@
 
 > External news aggregation and internal announcements
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with RSS aggregation, announcements, SSE |
+| Sources | ✅ | gofeed, gorilla/feeds, r3labs/sse documented |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 ---
 
 ## Overview
@@ -35,10 +47,12 @@ The News System provides two distinct functionalities:
 
 ### Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **gofeed** | RSS/Atom/JSON feed parsing | github.com/mmcdole/gofeed |
-| **gorilla/feeds** | Feed generation | github.com/gorilla/feeds |
+> Package versions: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+
+| Package | Purpose |
+|---------|---------|
+| gofeed | RSS/Atom/JSON feed parsing |
+| gorilla/feeds | Feed generation |
 
 ### Feed Categories
 
@@ -218,7 +232,7 @@ CREATE TABLE c.announcements (
 
 | Package | Purpose |
 |---------|---------|
-| **gorilla/websocket** | WebSocket connections |
+| **gobwas/ws** | WebSocket connections |
 | **r3labs/sse/v2** | Server-Sent Events |
 
 ### SSE for Announcements
@@ -313,7 +327,125 @@ GET  /api/v1/news/stream             # SSE endpoint
 
 ---
 
-## Related Documentation
+## Implementation Checklist
+
+**Location**: `internal/service/news/`
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/news/`
+- [ ] Define entities: `Feed`, `Article`, `Announcement`, `AnnouncementRead`
+- [ ] Create repository interface `NewsRepository`
+- [ ] Implement fx module `news.Module`
+- [ ] Add configuration struct for news settings
+
+### Phase 2: Database
+- [ ] Create migration `xxx_news_system.up.sql`
+- [ ] Create `news.feeds` table with feed metadata
+- [ ] Create `news.articles` table with article content
+- [ ] Create `announcements` table with types and targeting
+- [ ] Create `announcement_reads` table for read tracking
+- [ ] Create `c.news_feeds` and `c.news_articles` for adult content isolation
+- [ ] Create `c.announcements` for adult content announcements
+- [ ] Add indexes for feed fetching and article queries
+- [ ] Generate sqlc queries for CRUD operations
+
+### Phase 3: Service Layer
+- [ ] Implement `FeedService` with gofeed parser integration
+- [ ] Implement RSS/Atom/JSON feed parsing with `github.com/mmcdole/gofeed`
+- [ ] Implement `AnnouncementService` for internal news
+- [ ] Add caching layer for frequently accessed articles
+- [ ] Implement content sanitization for feed content
+- [ ] Add markdown rendering for announcements (`content_html`)
+- [ ] Implement role-based announcement targeting
+
+### Phase 4: Background Jobs
+- [ ] Create `FetchFeedWorker` for individual feed fetching
+- [ ] Create `FetchAllFeedsWorker` for periodic batch fetching
+- [ ] Create `CleanupOldArticlesWorker` for retention policy
+- [ ] Configure River periodic jobs (hourly fetch, daily cleanup)
+- [ ] Implement retry logic for failed feed fetches
+- [ ] Add feed health monitoring (track consecutive failures)
+
+### Phase 5: Real-Time Notifications
+- [ ] Implement SSE endpoint using `github.com/r3labs/sse/v2`
+- [ ] Create `NotificationService` for announcement broadcasts
+- [ ] Add SSE channel management for authenticated users
+- [ ] Implement announcement push on publish
+
+### Phase 6: API Integration
+- [ ] Define OpenAPI spec for news endpoints
+- [ ] Generate ogen handlers for feed management
+- [ ] Implement `GET /api/v1/news/feeds` - list feeds
+- [ ] Implement `POST /api/v1/news/feeds` - add feed (admin)
+- [ ] Implement `GET /api/v1/news/articles` - list articles
+- [ ] Implement `GET /api/v1/news/articles/:id` - get article
+- [ ] Implement `GET /api/v1/announcements` - list announcements
+- [ ] Implement `POST /api/v1/announcements` - create (admin/mod)
+- [ ] Implement `PUT /api/v1/announcements/:id` - update
+- [ ] Implement `POST /api/v1/announcements/:id/read` - mark as read
+- [ ] Implement `GET /api/v1/announcements/unread` - unread count
+- [ ] Implement `GET /api/v1/news/stream` - SSE endpoint
+- [ ] Add RBAC permission checks for admin operations
+- [ ] Implement adult content endpoints under `/api/v1/legacy/news/`
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [gofeed GitHub README](https://github.com/mmcdole/gofeed) | [Local](../../../sources/tooling/gofeed-guide.md) |
+| [mmcdole/gofeed](https://pkg.go.dev/github.com/mmcdole/gofeed) | [Local](../../../sources/tooling/gofeed.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [Notification System](NOTIFICATIONS.md)
 - [RBAC Permissions](RBAC_CASBIN.md)

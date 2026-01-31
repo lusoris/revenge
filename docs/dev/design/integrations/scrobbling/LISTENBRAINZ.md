@@ -6,7 +6,18 @@
 **API**: REST API with user token authentication
 **Category**: Scrobbling / Music
 **Priority**: 🟡 MEDIUM (Open-source Last.fm alternative)
-**Status**: 🔴 DESIGN PHASE
+
+## Status
+
+| Dimension | Status | Notes |
+| --------- | ------ | ----- |
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -177,39 +188,25 @@ Body:
 
 ## Implementation Checklist
 
-### Phase 1: Token Authentication Setup
-- [ ] User token input (settings page)
-- [ ] Token storage (encrypt in database)
-- [ ] Token validation (validate token on first use)
-- [ ] Authorization header (add to all API requests)
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client
+- [ ] Add token authentication (user token input, storage, validation)
+- [ ] Implement rate limiting (10 req/sec)
 
-### Phase 2: Scrobbling (Real-time)
-- [ ] **Submit playing now** (POST /1/submit-listens with listen_type="playing_now")
-- [ ] **Submit listen** (POST /1/submit-listens with listen_type="single" when track finishes)
-- [ ] MusicBrainz ID mapping (send recording_mbid, artist_mbids, release_mbid)
-- [ ] Timestamp tracking (Unix timestamp when track started)
-- [ ] Duration tracking (track length in milliseconds)
-- [ ] Real-time sync (sync on playback events)
+### Phase 2: API Implementation
+- [ ] Implement scrobble submission (playing now + single)
+- [ ] Add history sync (import/export with pagination)
+- [ ] Implement error handling (401, 429, 500 responses)
 
-### Phase 3: Listening History Sync
-- [ ] **Export to ListenBrainz** (POST /1/submit-listens with listen_type="import")
-- [ ] **Import from ListenBrainz** (GET /1/user/{username}/listens)
-- [ ] Bi-directional sync (merge listen histories)
-- [ ] Pagination (fetch all listens with max_ts/min_ts)
-- [ ] Deduplication (handle duplicate listens)
+### Phase 3: Service Integration
+- [ ] Create ListenBrainz service wrapper
+- [ ] Add user preference storage (enable/disable)
+- [ ] Implement playback event hooks (submit on playback)
 
-### Phase 4: Statistics Display
-- [ ] **Top artists** (GET /1/stats/user/{username}/artists)
-- [ ] **Top releases** (GET /1/stats/user/{username}/releases)
-- [ ] **Top recordings** (GET /1/stats/user/{username}/recordings)
-- [ ] Time range selection (week, month, year, all_time)
-- [ ] Display in Revenge UI (statistics page)
-
-### Phase 5: Background Jobs (River)
-- [ ] **Job**: `scrobble.listenbrainz.sync_history` (periodic history sync)
-- [ ] **Job**: `scrobble.listenbrainz.sync_statistics` (periodic stats refresh)
-- [ ] Rate limiting (10 req/sec)
-- [ ] Retry logic (exponential backoff)
+### Phase 4: Testing
+- [ ] Add unit tests (token validation, API mapping)
+- [ ] Add integration tests (full scrobbling flow)
 
 ---
 
@@ -282,6 +279,50 @@ Ongoing sync:
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Scrobbling](INDEX.md)
+
+### In This Section
+
+- [Last.fm Scrobbling Integration](LASTFM_SCROBBLE.md)
+- [Letterboxd Integration](LETTERBOXD.md)
+- [Simkl Integration](SIMKL.md)
+- [Trakt Integration](TRAKT.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

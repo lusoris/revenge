@@ -1,6 +1,10 @@
 # Features Documentation
 
+← Back to [Design Docs](../)
+
 > Content modules and feature specifications
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
 
@@ -86,7 +90,7 @@ Features related to media playback and streaming.
 |---------|----------|--------|
 | Comics Module | [comics/COMICS_MODULE.md](comics/COMICS_MODULE.md) | 🔴 0% |
 
-### Adult (Isolated in `c` schema)
+### Adult (Isolated in `qar` schema)
 
 | Feature | Document | Status |
 |---------|----------|--------|
@@ -97,13 +101,11 @@ Features related to media playback and streaming.
 
 ---
 
-## Feature Status Legend
+## Status Legend
 
-| Status | Meaning |
-|--------|---------|
-| ✅ | Complete or code exists |
-| 🟡 | Designed / Partial implementation |
-| 🔴 | Not started |
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A
 
 ---
 

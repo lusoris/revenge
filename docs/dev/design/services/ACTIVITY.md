@@ -2,7 +2,23 @@
 
 > Audit logging and event tracking
 
-**Location**: `internal/service/activity/`
+**Module**: `internal/service/activity`
+
+## Developer Resources
+
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#backend-services) for service inventory and status.
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | ✅ | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -120,7 +136,85 @@ s.Log(ctx, LogParams{
 
 ---
 
-## Related
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/service/activity/` package structure
+- [ ] Define activity event types in `entity.go`
+- [ ] Create repository interface
+- [ ] Add fx module wiring
+
+### Phase 2: Database
+- [ ] Create migration for `activity_events` table
+- [ ] Add partitioning by date for performance
+- [ ] Add indexes (user_id, event_type, created_at)
+- [ ] Write sqlc queries
+
+### Phase 3: Service Layer
+- [ ] Implement event recording
+- [ ] Implement event querying with filters
+- [ ] Add event aggregation
+- [ ] Implement retention cleanup
+
+### Phase 4: API Integration
+- [ ] Define OpenAPI endpoints
+- [ ] Generate ogen handlers
+- [ ] Add admin-only endpoints
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Services](INDEX.md)
+
+### In This Section
+
+- [Analytics Service](ANALYTICS.md)
+- [API Keys Service](APIKEYS.md)
+- [Auth Service](AUTH.md)
+- [Fingerprint Service](FINGERPRINT.md)
+- [Grants Service](GRANTS.md)
+- [Library Service](LIBRARY.md)
+- [Metadata Service](METADATA.md)
+- [Notification Service](NOTIFICATION.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related Documents
 
 - [Auth Service](AUTH.md) - Login/logout events
 - [Library Service](LIBRARY.md) - Library events
+- [User Service](USER.md) - User CRUD events
+- [Session Service](SESSION.md) - Session activity tracking
+- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory

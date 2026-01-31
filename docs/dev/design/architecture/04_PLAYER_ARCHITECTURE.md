@@ -2,6 +2,54 @@
 
 > Unified web player for video and audio with native streaming and transcode fallback.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Complete player architecture specification |
+| Sources | ⚪ | N/A - internal design doc |
+| Instructions | 🔴 | |
+| Code | 🔴 | Reset to template |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: 🟡 MEDIUM
+**Module**: `web/src/lib/player`
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Playback Core
+- [ ] Define playback session types (video, audio, live)
+- [ ] Implement session management and state tracking
+- [ ] Add progress tracking and history recording
+- [ ] Set up capability detection (codecs, containers, features)
+
+### Phase 2: Streaming Protocol Support
+- [ ] Implement direct play detection
+- [ ] Add direct stream support (remuxing)
+- [ ] Implement HLS playback (hls.js + Safari native)
+- [ ] Implement DASH playback (Shaka Player)
+- [ ] Set up protocol fallover (HLS → DASH → Progressive)
+
+### Phase 3: Audio Features
+- [ ] Implement Web Audio API integration
+- [ ] Add gapless playback (30s prefetch)
+- [ ] Implement true crossfade (overlapping gain nodes)
+- [ ] Add synced lyrics (LRC format)
+- [ ] Implement audio visualization (Canvas + fanart)
+
+### Phase 4: Video Features
+- [ ] Add subtitle support (WebVTT + container extraction)
+- [ ] Implement quality switching (seamless via WebSocket)
+- [ ] Add fullscreen support
+- [ ] Implement iOS graceful degradation
+
+---
+
 ## Overview
 
 Revenge's WebUI uses a custom-built unified player that handles:
@@ -1291,3 +1339,58 @@ Player Architecture:
 4. **Blackbeard Integration** - WebSocket quality switching
 5. **Testing** - Browser compatibility matrix
 6. **Documentation** - Client integration guide for Jellyfin/etc.
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Architecture](INDEX.md)
+
+### In This Section
+
+- [Revenge - Architecture v2](01_ARCHITECTURE.md)
+- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
+- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
+- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
+
+### Related Topics
+
+- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
+- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
+- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
+- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
+- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+---
+
+## Cross-References
+
+| Related Document | Relationship |
+|------------------|--------------|
+| [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) | Frontend stack, package versions |
+| [01_ARCHITECTURE.md](01_ARCHITECTURE.md) | Blackbeard transcoding integration |
+| [02_DESIGN_PRINCIPLES.md](02_DESIGN_PRINCIPLES.md) | WebUI player principles |
+| [03_METADATA_SYSTEM.md](03_METADATA_SYSTEM.md) | Metadata for player display |

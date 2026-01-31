@@ -2,9 +2,31 @@
 
 > Intelligent playback continuation and recommendation system
 
-**Status**: 🟡 DESIGN
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 **Priority**: 🔴 HIGH (Core UX Feature)
 **Related**: [METADATA_SYSTEM.md](../architecture/03_METADATA_SYSTEM.md), [SCROBBLING.md](SCROBBLING.md)
+**Location**: `internal/feature/watchnext/`
+
+---
+
+## Developer Resources
+
+| Source       | URL                                                                   | Purpose                    |
+| ------------ | --------------------------------------------------------------------- | -------------------------- |
+| Jellyfin API | [api.jellyfin.org](https://api.jellyfin.org/)                         | Continue watching patterns |
+| TMDb API     | [developers.themoviedb.org/3](https://developers.themoviedb.org/3)    | Next episode metadata      |
+| Trakt API    | [trakt.docs.apiary.io](https://trakt.docs.apiary.io/)                 | Watch history sync         |
 
 ---
 
@@ -435,6 +457,57 @@ func OnPlaybackStop(ctx context.Context, userID uuid.UUID, contentID uuid.UUID, 
   - [ ] Auto-play countdown
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Jellyfin API](https://api.jellyfin.org/) | [Local](../../../sources/apis/jellyfin.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Playback](INDEX.md)
+
+### In This Section
+
+- [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md)
+- [Release Calendar System](RELEASE_CALENDAR.md)
+- [Skip Intro / Credits Detection](SKIP_INTRO.md)
+- [SyncPlay (Watch Together)](SYNCPLAY.md)
+- [Trickplay (Timeline Thumbnails)](TRICKPLAY.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

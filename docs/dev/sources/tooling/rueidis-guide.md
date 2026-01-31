@@ -1,8 +1,9 @@
 # rueidis GitHub README
 
-> Auto-fetched from [https://github.com/redis/rueidis](https://github.com/redis/rueidis)
-> Raw source: [https://raw.githubusercontent.com/redis/rueidis/HEAD/README.md](https://raw.githubusercontent.com/redis/rueidis/HEAD/README.md)
-> Last Updated: 2026-01-29T20:11:40.506149+00:00
+> Source: https://github.com/redis/rueidis
+> Fetched: 2026-01-30T23:48:41.820001+00:00
+> Content-Hash: a99a390d85d528cb
+> Type: github_readme
 
 ---
 

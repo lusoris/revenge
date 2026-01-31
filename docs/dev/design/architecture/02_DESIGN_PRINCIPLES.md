@@ -2,6 +2,24 @@
 
 > Non-negotiable architecture principles for the entire project.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Complete principles specification |
+| Sources | ⚪ | N/A - internal design doc |
+| Instructions | 🔴 | |
+| Code | 🔴 | Reset to template |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: 🔴 HIGH
+**Module**: Core design principles
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
+
+---
+
 ## Core Principles
 
 ### 1. Performance First
@@ -92,27 +110,18 @@ CREATE TABLE user_activity (
 
 **Latest stable versions, no experiments in production.**
 
-| Component | Version Policy | Current |
-|-----------|---------------|---------|
-| Go | Latest stable | 1.25 |
-| PostgreSQL | Latest stable | 18+ || Frontend | SvelteKit (latest stable) | 2 |
-| UI Library | Tailwind CSS (latest stable) | 4 |
-| Search | Typesense (latest stable) | 0.25+ || Dependencies | Latest stable, actively maintained | See go.mod |
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for current package versions.
+
+**Version Policy:**
+- Use newest STABLE version for all components
+- Never use alpha/beta releases in production
+- Monitor via Dependabot (1 minor behind policy)
 
 **Forbidden:**
 - Alpha/Beta releases in production
 - Deprecated packages
 - Unmaintained dependencies (>1 year no commits)
 - Packages with known CVEs
-
-```go
-// go.mod - Only stable, maintained packages
-require (
-    github.com/jackc/pgx/v5 v5.7.0      // Active, stable
-    github.com/riverqueue/river v0.15.0  // Active, stable
-    go.uber.org/fx v1.24.0               // Active, stable
-)
-```
 
 ### 5. Optional ML Integration
 
@@ -357,3 +366,59 @@ Client → Revenge (Auth, Session, Proxy) → Blackbeard (Transcode) → Storage
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Architecture](INDEX.md)
+
+### In This Section
+
+- [Revenge - Architecture v2](01_ARCHITECTURE.md)
+- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
+- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
+- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
+
+### Related Topics
+
+- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
+- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
+- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
+- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
+- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+---
+
+## Cross-References
+
+| Related Document | Relationship |
+|------------------|--------------|
+| [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) | Package versions, design patterns |
+| [01_ARCHITECTURE.md](01_ARCHITECTURE.md) | System architecture implementation |
+| [03_METADATA_SYSTEM.md](03_METADATA_SYSTEM.md) | Metadata provider priorities |
+| [04_PLAYER_ARCHITECTURE.md](04_PLAYER_ARCHITECTURE.md) | WebUI player principles |
+| [05_PLUGIN_ARCHITECTURE_DECISION.md](05_PLUGIN_ARCHITECTURE_DECISION.md) | Native integration decision |

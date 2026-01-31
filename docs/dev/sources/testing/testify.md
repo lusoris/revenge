@@ -1,30 +1,53 @@
 # testify
 
-> Auto-fetched from [https://pkg.go.dev/github.com/stretchr/testify](https://pkg.go.dev/github.com/stretchr/testify)
-> Last Updated: 2026-01-29T20:15:14.949822+00:00
+> Source: https://pkg.go.dev/github.com/stretchr/testify
+> Fetched: 2026-01-30T23:54:50.523703+00:00
+> Content-Hash: 4178383f69588d53
+> Type: html
 
 ---
 
 Overview
+
 ¶
+
 Module testify is a set of packages that provide many tools for testifying that your code will behave as you intend.
+
 Testify contains the following packages:
+
 The
+
 github.com/stretchr/testify/assert
+
 package provides a comprehensive set of assertion functions that tie in to
+
 the Go testing system
+
 .
 The
+
 github.com/stretchr/testify/require
+
 package provides the same assertions but as fatal checks.
+
 The
+
 github.com/stretchr/testify/mock
+
 package provides a system by which it is possible to mock your objects and verify calls are happening as expected.
+
 The
+
 github.com/stretchr/testify/suite
+
 package provides a basic structure for using structs as testing suites, and methods on those structs as tests.  It includes setup/teardown functionality in the way of interfaces.
+
 A
+
 golangci-lint
+
 compatible linter for testify is available called
+
 testifylint
+
 .

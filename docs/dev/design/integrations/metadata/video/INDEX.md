@@ -1,98 +1,45 @@
 # Video Metadata Providers
 
-> Movies and TV shows metadata
+← Back to [Design Docs](..)
+
+> TMDB, TVDB, OMDB, Fanart.tv
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Overview
+## Documents
 
-Video metadata providers supply information for movies and TV shows:
-- Titles and translations
-- Plot summaries
-- Cast & crew
-- Artwork (posters, backdrops, logos)
-- Ratings and reviews
-- Release information
-
----
-
-## Providers
-
-| Provider | Type | API | Status |
-|----------|------|-----|--------|
-| [TMDB](TMDB.md) | Movies, TV | REST | 🟢 Primary |
-| [TVDB](THETVDB.md) | TV Shows | REST v4 | 🟡 Secondary |
-| [OMDB](OMDB.md) | Movies | REST | 🟡 Fallback |
-| [ThePosterDB](THEPOSTERDB.md) | Artwork | Scraping | 🟡 Supplementary |
-| Fanart.tv | Artwork | REST | 🟡 Planned |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [OMDb (Open Movie Database) Integration](OMDB.md) | Fallback metadata provider + IMDb ratings | ✅ Designed |
+| [ThePosterDB Integration](THEPOSTERDB.md) | Curated high-quality posters for movies and TV shows | ✅ Designed |
+| [TheTVDB Integration](THETVDB.md) | Primary metadata provider for TV shows | ✅ Designed |
+| [TMDb (The Movie Database) Integration](TMDB.md) | Primary metadata provider for movies and TV shows | ✅ Designed |
 
 ---
 
-## Provider Details
+<!-- SOURCE-BREADCRUMBS-START -->
 
-### TMDB (The Movie Database)
-**Primary provider for all video content**
+## Sources & Cross-References
 
-- ✅ Movies - Comprehensive coverage
-- ✅ TV Shows - Good coverage
-- ✅ People - Cast & crew profiles
-- ✅ Images - High quality artwork
-- ✅ Free API with generous limits
+> Auto-generated section linking to external documentation sources
 
-### TVDB
-**Secondary provider for TV-specific data**
+### Cross-Reference Indexes
 
-- ✅ TV Shows - Episode-level detail
-- ✅ Airdate tracking
-- ✅ Series status
-- ⚠️ Paid API subscription required
+- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-### OMDB
-**Fallback for IMDb ratings**
+<!-- SOURCE-BREADCRUMBS-END -->
 
-- ✅ IMDb ratings
-- ✅ Rotten Tomatoes scores
-- ✅ Basic movie info
-- ⚠️ Limited free tier
+## Related
 
-### Fanart.tv
-**Supplementary artwork source**
-
-- ✅ HD Clearlogos
-- ✅ Character art
-- ✅ Season/disc art
-- ✅ Unique artwork not on TMDB
+- [Video Module](../../../features/video/)
 
 ---
 
-## Priority Chain
+## Status Legend
 
-```
-Movie: TMDB → OMDB → Fanart.tv
-TV Show: TMDB → TVDB → Fanart.tv
-```
+> See [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
----
-
-## Configuration
-
-```yaml
-metadata:
-  video:
-    movie:
-      primary: tmdb
-      fallback: [omdb]
-      artwork: [tmdb, fanart]
-    tvshow:
-      primary: tmdb
-      fallback: [tvdb]
-      artwork: [tmdb, tvdb, fanart]
-```
-
----
-
-## Related Documentation
-
-- [Metadata Overview](../INDEX.md)
-- [Anime Providers](../../anime/INDEX.md)
-- [Servarr Integration](../../servarr/INDEX.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

@@ -2,9 +2,32 @@
 
 > RSS podcast subscription and playback
 
-**Status**: 🔴 PLANNING
-**Priority**: 🔵 LOW (Nice to have - Plex has this)
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Comprehensive spec with features, schema, jobs |
+| Sources | ✅ | Go package URLs listed (gofeed, gorilla/feeds) |
+| Instructions | ✅ | Code examples exist, no explicit checklist |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: LOW (Nice to have - Plex has this)
 **Inspired By**: Plex Podcasts, Apple Podcasts
+**Location**: `internal/content/podcasts/`
+
+---
+
+## Developer Resources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| RSS 2.0 Spec | [cyber.harvard.edu/rss/rss.html](https://cyber.harvard.edu/rss/rss.html) | RSS feed format |
+| Podcast RSS | [podcasters.apple.com/support/823](https://podcasters.apple.com/support/823-podcast-requirements) | Apple podcast RSS extensions |
+| OPML Spec | [opml.org/spec2.opml](http://opml.org/spec2.opml) | Subscription import/export format |
+| iTunes Search | [developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI](https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/) | Podcast directory search |
 
 ---
 
@@ -31,10 +54,11 @@ Podcast support through RSS feed subscription, allowing users to subscribe, down
 
 ## Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **mmcdole/gofeed** | RSS feed parsing | github.com/mmcdole/gofeed |
-| **gorilla/feeds** | Feed generation (for OPML export) | github.com/gorilla/feeds |
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-media-processing--planned) for package versions.
+
+Key packages used:
+- **gofeed** - RSS feed parsing
+- **gorilla/feeds** - Feed generation (for OPML export)
 
 ---
 
@@ -370,8 +394,102 @@ podcasts:
 
 ---
 
-## Related Documentation
+## Implementation Checklist
 
-- [News System](NEWS_SYSTEM.md)
-- [Go Packages](../architecture/GO_PACKAGES.md)
-- [Scrobbling](SCROBBLING.md)
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/content/podcasts/` package structure
+- [ ] Define `entity.go` with Podcast, Episode, Subscription structs
+- [ ] Create `repository.go` interface definition
+- [ ] Implement `repository_pg.go` with sqlc queries
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Database
+- [ ] Create migration `000XXX_create_podcasts_schema.up.sql`
+- [ ] Create `podcasts` table
+- [ ] Create `podcast_episodes` table
+- [ ] Create `podcast_subscriptions` table
+- [ ] Create `podcast_episode_state` table
+- [ ] Create `podcast_queue` table
+- [ ] Add indexes (feed_url, published_at, user subscriptions)
+- [ ] Write sqlc queries in `queries/podcasts/`
+
+### Phase 3: Feed Parsing
+- [ ] Implement RSS feed parser (gofeed)
+- [ ] Extract podcast metadata (title, author, image)
+- [ ] Extract episode metadata (audio URL, duration)
+- [ ] Handle feed variations (RSS 2.0, Atom, iTunes extensions)
+- [ ] Implement OPML import/export
+
+### Phase 4: Service Layer
+- [ ] Implement `service.go` with otter caching
+- [ ] Add Podcast operations (Get, List, Search)
+- [ ] Add Subscription operations (Subscribe, Unsubscribe, Update)
+- [ ] Add Episode operations (Get, List, UpdateState)
+- [ ] Add Queue operations (Add, Remove, Reorder)
+- [ ] Implement cache invalidation
+
+### Phase 5: Download Management
+- [ ] Implement episode download
+- [ ] Add download progress tracking
+- [ ] Implement auto-download for subscriptions
+- [ ] Add download cleanup (keep N episodes)
+
+### Phase 6: Background Jobs
+- [ ] Create River job definitions in `jobs.go`
+- [ ] Implement `RefreshPodcastJob`
+- [ ] Implement `RefreshAllPodcastsJob`
+- [ ] Implement `DownloadEpisodeJob`
+- [ ] Implement `CleanupDownloadsJob`
+
+### Phase 7: API Integration
+- [ ] Define OpenAPI endpoints for podcasts
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service layer
+- [ ] Add audio streaming endpoint
+- [ ] Add OPML import/export endpoints
+- [ ] Add authentication/authorization checks
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Podcasts](INDEX.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Music Module](../audio/MUSIC_MODULE.md) - Audio playback patterns
+- [Scrobbling](../shared/SCROBBLING.md) - Playback tracking
+- [News System](../shared/NEWS_SYSTEM.md) - Similar RSS patterns

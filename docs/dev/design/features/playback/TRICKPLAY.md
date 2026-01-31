@@ -2,9 +2,32 @@
 
 > Thumbnail previews on video seek bar
 
-**Status**: 🔴 PLANNING
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 **Priority**: 🟢 HIGH (Critical Gap - All competitors have this)
 **Inspired By**: Jellyfin Trickplay, Plex Timeline Preview
+**Location**: `internal/feature/trickplay/`
+
+---
+
+## Developer Resources
+
+| Source             | URL                                                                                                                                                     | Purpose                           |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| FFmpeg             | [ffmpeg.org/documentation.html](https://ffmpeg.org/documentation.html)                                                                                  | Thumbnail extraction              |
+| BIF Spec           | [sdkdocs.roku.com/display/sdkdoc/Trick+Mode+Support](https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md) | Roku BIF format specification     |
+| WebVTT             | [w3.org/TR/webvtt1](https://www.w3.org/TR/webvtt1/)                                                                                                     | Chapter/thumbnail metadata format |
+| Jellyfin Trickplay | [jellyfin.org/docs/general/server/media/trickplay](https://jellyfin.org/docs/general/server/media/trickplay/)                                           | Reference implementation          |
 
 ---
 
@@ -82,7 +105,7 @@ thumbnails/sprite.jpg#xywh=320,0,320,180
 │  Video File ──► FFmpeg ──► Frames ──► Sprite Sheet ──► Storage │
 │                                                                 │
 │  ┌───────────┐    ┌───────────┐    ┌───────────┐              │
-│  │  River    │───►│  FFmpeg   │───►│  bimg     │              │
+│  │  River    │───►│  FFmpeg   │───►│  govips   │              │
 │  │  Job      │    │  Extract  │    │  Sprite   │              │
 │  └───────────┘    └───────────┘    └───────────┘              │
 │        │                                   │                    │
@@ -100,11 +123,13 @@ thumbnails/sprite.jpg#xywh=320,0,320,180
 
 ## Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **u2takey/ffmpeg-go** | FFmpeg bindings | github.com/u2takey/ffmpeg-go |
-| **h2non/bimg** | Image processing (sprite sheets) | github.com/h2non/bimg |
-| **disintegration/imaging** | Pure Go imaging (fallback) | github.com/disintegration/imaging |
+> Package versions: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+
+| Package | Purpose |
+|---------|---------|
+| go-astiav | FFmpeg bindings |
+| govips | Image processing (sprite sheets) |
+| imaging | Pure Go imaging (fallback) |
 
 ---
 
@@ -211,16 +236,16 @@ func (g *Generator) ExtractFrames(ctx context.Context, videoPath string, interva
 }
 
 func (g *Generator) CreateSpriteSheet(frames []string, columns int) (string, error) {
-    // Use bimg to combine frames into sprite sheet
+    // Use govips to combine frames into sprite sheet
     // Each row has `columns` thumbnails
 
-    images := make([]*bimg.Image, len(frames))
+    images := make([]*vips.ImageRef, len(frames))
     for i, frame := range frames {
-        data, err := os.ReadFile(frame)
+        img, err := vips.NewImageFromFile(frame)
         if err != nil {
             return "", err
         }
-        images[i] = bimg.NewImage(data)
+        images[i] = img
     }
 
     // Calculate dimensions
@@ -354,6 +379,59 @@ Content is prioritized for trickplay generation:
 4. **Remainder** - Background generation
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Jellyfin Trickplay](https://jellyfin.org/docs/general/server/media/trickplay/) | [Local](../../../sources/apis/jellyfin-trickplay.md) |
+| [Roku BIF Format](https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md) | [Local](../../../sources/protocols/bif.md) |
+| [WebVTT Specification](https://www.w3.org/TR/webvtt1/) | [Local](../../../sources/protocols/webvtt.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Playback](INDEX.md)
+
+### In This Section
+
+- [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md)
+- [Release Calendar System](RELEASE_CALENDAR.md)
+- [Skip Intro / Credits Detection](SKIP_INTRO.md)
+- [SyncPlay (Watch Together)](SYNCPLAY.md)
+- [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

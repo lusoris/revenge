@@ -181,6 +181,14 @@ This applies to ALL data types across all modules.
 | `github.com/wtolson/go-taglib` | latest | Audio metadata | CGo, Read+Write ALL formats |
 | `github.com/mmcdole/gofeed` | latest | RSS/Atom parsing | Podcast feeds |
 
+## Go Dependencies (Notifications)
+
+| Package | Version | Purpose | Notes |
+|---------|---------|---------|-------|
+| `github.com/wneessen/go-mail` | v0.6.2 | SMTP email | Modern, secure, replaces gomail |
+| `github.com/appleboy/go-fcm` | v0.2.1 | Firebase Cloud Messaging | Push notifications |
+| `github.com/gorilla/feeds` | v1.2.0 | RSS/Atom generation | News feed output |
+
 ## Go Dependencies (Development)
 
 | Package | Version | Purpose | Notes |
@@ -248,6 +256,30 @@ This applies to ALL data types across all modules.
 | `public` | Main content | movies, tv_shows, music_*, etc. | All authenticated |
 | `shared` | Shared services | users, sessions, settings, etc. | All authenticated |
 | `qar` | Adult content | crew, voyages, expeditions, etc. | `legacy:read` scope |
+
+### Migration File Naming Convention
+
+```
+{version}_{description}.{direction}.sql
+
+Examples:
+000001_create_users_table.up.sql
+000001_create_users_table.down.sql
+000002_add_user_email_index.up.sql
+000002_add_user_email_index.down.sql
+```
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Version | 6-digit zero-padded | `000001`, `000042` |
+| Description | snake_case | `create_users_table` |
+| Direction | `up` or `down` | `up.sql`, `down.sql` |
+
+**Rules:**
+- Sequential versioning (no gaps)
+- One migration per logical change
+- Always provide both `up` and `down`
+- Use schema prefix for non-public: `CREATE TABLE qar.crew`
 
 ---
 
@@ -1018,15 +1050,49 @@ initContainers:
 
 ---
 
-## Status Legend
+## Status System
 
-| Status | Meaning |
-|--------|---------|
-| ✅ Complete | Fully implemented and tested |
-| 🟡 Scaffold | Structure exists, stubs return "not implemented" |
-| 🟡 Partial | Some features implemented |
-| 🔴 Planned | Designed but not yet implemented |
-| ❌ Deprecated | Scheduled for removal |
+### Status Values
+
+| Emoji | Meaning |
+|-------|---------|
+| ✅ | Complete |
+| 🟡 | Partial |
+| 🔴 | Not Started |
+| ⚪ | N/A |
+
+### Status Dimensions
+
+Each module/service/integration tracks progress across 7 dimensions:
+
+| Dimension | Description |
+|-----------|-------------|
+| **Design** | Feature spec, architecture, DB schema, API endpoints documented |
+| **Sources** | External docs fetched (API specs, GraphQL schemas, best practices) |
+| **Instructions** | Claude Code instructions for implementation |
+| **Code** | Go implementation |
+| **Linting** | golangci-lint rules, formatting |
+| **Unit Testing** | Unit tests with embedded-postgres |
+| **Integration Testing** | Integration tests with testcontainers |
+
+### Status Format in Design Docs
+
+```markdown
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | 🟡 | API docs fetched, GraphQL schema missing |
+| Instructions | 🔴 | |
+| Code | 🔴 | Reset to template |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+```
+
+### Current Reality (2026-01-30)
+
+> **Code was reset to Go template** - All code status is 🔴 NOT STARTED
+> Design docs are the focus of M1 milestone
 
 ---
 
@@ -1177,6 +1243,74 @@ See [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md) for current package versions.
 
 Instead of duplicating version tables.
 
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../sources/security/casbin.md) |
+| [Casbin pgx Adapter](https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3) | [Local](../sources/security/casbin-pgx.md) |
+| [Go io](https://pkg.go.dev/io) | [Local](../sources/go/stdlib/io.md) |
+| [HashiCorp Raft](https://pkg.go.dev/github.com/hashicorp/raft) | [Local](../sources/distributed/hashicorp-raft.md) |
+| [HashiCorp Raft GitHub](https://github.com/hashicorp/raft) | [Local](../sources/distributed/hashicorp-raft-guide.md) |
+| [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) | [Local](../sources/tooling/genqlient.md) |
+| [Open Policy Agent](https://pkg.go.dev/github.com/open-policy-agent/opa) | [Local](../sources/security/opa.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../sources/tooling/fx.md) |
+| [air (hot reload)](https://github.com/air-verse/air) | [Local](../sources/tooling/air.md) |
+| [appleboy/go-fcm](https://pkg.go.dev/github.com/appleboy/go-fcm) | [Local](../sources/tooling/go-fcm.md) |
+| [corona10/goimagehash](https://pkg.go.dev/github.com/corona10/goimagehash) | [Local](../sources/media/goimagehash.md) |
+| [davidbyttow/govips](https://pkg.go.dev/github.com/davidbyttow/govips/v2) | [Local](../sources/media/govips.md) |
+| [embedded-postgres](https://pkg.go.dev/github.com/fergusstrange/embedded-postgres) | [Local](../sources/testing/embedded-postgres.md) |
+| [embedded-postgres GitHub README](https://github.com/fergusstrange/embedded-postgres) | [Local](../sources/testing/embedded-postgres-guide.md) |
+| [genqlient GitHub README](https://github.com/Khan/genqlient) | [Local](../sources/tooling/genqlient-guide.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../sources/media/go-astiav.md) |
+| [go-astiav GitHub README](https://github.com/asticode/go-astiav) | [Local](../sources/media/go-astiav-guide.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../sources/media/go-blurhash.md) |
+| [go-faster/errors](https://pkg.go.dev/github.com/go-faster/errors) | [Local](../sources/tooling/go-faster-errors.md) |
+| [go-faster/jx (JSON)](https://pkg.go.dev/github.com/go-faster/jx) | [Local](../sources/tooling/go-faster-jx.md) |
+| [go-faster/yaml](https://pkg.go.dev/github.com/go-faster/yaml) | [Local](../sources/tooling/go-faster-yaml.md) |
+| [go-fcm GitHub README](https://github.com/appleboy/go-fcm) | [Local](../sources/tooling/go-fcm-guide.md) |
+| [go-mail GitHub README](https://github.com/wneessen/go-mail) | [Local](../sources/tooling/go-mail-guide.md) |
+| [go-playground/validator](https://pkg.go.dev/github.com/go-playground/validator/v10) | [Local](../sources/tooling/validator.md) |
+| [gofeed GitHub README](https://github.com/mmcdole/gofeed) | [Local](../sources/tooling/gofeed-guide.md) |
+| [goimagehash GitHub](https://github.com/corona10/goimagehash) | [Local](../sources/media/goimagehash-guide.md) |
+| [golang-migrate](https://github.com/golang-migrate/migrate) | [Local](../sources/database/migrations.md) |
+| [golang.org/x/crypto](https://pkg.go.dev/golang.org/x/crypto) | [Local](../sources/go/x/crypto.md) |
+| [google/uuid](https://pkg.go.dev/github.com/google/uuid) | [Local](../sources/tooling/uuid.md) |
+| [gorilla/feeds](https://pkg.go.dev/github.com/gorilla/feeds) | [Local](../sources/tooling/gorilla-feeds.md) |
+| [gorilla/feeds GitHub README](https://github.com/gorilla/feeds) | [Local](../sources/tooling/gorilla-feeds-guide.md) |
+| [hashicorp/raft-boltdb](https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2) | [Local](../sources/distributed/raft-boltdb.md) |
+| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../sources/tooling/koanf.md) |
+| [lmittmann/tint](https://pkg.go.dev/github.com/lmittmann/tint) | [Local](../sources/tooling/tint.md) |
+| [mmcdole/gofeed](https://pkg.go.dev/github.com/mmcdole/gofeed) | [Local](../sources/tooling/gofeed.md) |
+| [mockery](https://pkg.go.dev/github.com/vektra/mockery/v3) | [Local](../sources/testing/mockery.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../sources/tooling/ogen.md) |
+| [otter Cache](https://pkg.go.dev/github.com/maypok86/otter/v2) | [Local](../sources/tooling/otter.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../sources/database/pgx.md) |
+| [resty HTTP Client](https://pkg.go.dev/github.com/go-resty/resty/v2) | [Local](../sources/tooling/resty.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../sources/tooling/rueidis.md) |
+| [rueidis GitHub README](https://github.com/redis/rueidis) | [Local](../sources/tooling/rueidis-guide.md) |
+| [sony/gobreaker](https://pkg.go.dev/github.com/sony/gobreaker) | [Local](../sources/tooling/gobreaker.md) |
+| [sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc) | [Local](../sources/tooling/sturdyc.md) |
+| [sturdyc GitHub README](https://github.com/viccon/sturdyc) | [Local](../sources/tooling/sturdyc-guide.md) |
+| [testify](https://pkg.go.dev/github.com/stretchr/testify) | [Local](../sources/testing/testify.md) |
+| [uber-go/zap](https://pkg.go.dev/go.uber.org/zap) | [Local](../sources/tooling/zap.md) |
+| [wneessen/go-mail](https://pkg.go.dev/github.com/wneessen/go-mail) | [Local](../sources/tooling/go-mail.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
 ---
 
 ## External Sources Cross-Reference
@@ -1189,6 +1323,8 @@ Instead of duplicating version tables.
 |----------|-------------------|---------|
 | All Sources | [SOURCES.yaml](../sources/SOURCES.yaml) | Auto-fetch registry |
 | Fetch Status | [INDEX.yaml](../sources/INDEX.yaml) | Last fetch timestamps |
+| Sources Index | [SOURCES_INDEX.md](../sources/SOURCES_INDEX.md) | Browsable source list |
+| Design ↔ Sources | [DESIGN_CROSSREF.md](../sources/DESIGN_CROSSREF.md) | Doc-to-source mapping |
 
 ### Category → Source Mapping
 

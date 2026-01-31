@@ -2,7 +2,32 @@
 
 > TV series, seasons, and episodes management
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Comprehensive spec with architecture, entities, operations |
+| Sources | ✅ | TMDb, TheTVDB, Sonarr API docs linked |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Location**: `internal/content/tvshow/`
+
+---
+
+## Developer Resources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| TMDb API | [developers.themoviedb.org](https://developers.themoviedb.org/3) | Primary TV metadata |
+| TheTVDB API | [thetvdb.github.io/v4-api](https://thetvdb.github.io/v4-api/) | Secondary TV metadata, episode ordering |
+| Sonarr API | [sonarr.tv/docs/api](https://sonarr.tv/docs/api/) | Servarr integration |
+| TMDb Design Doc | [integrations/metadata/video/TMDB.md](../../integrations/metadata/video/TMDB.md) | TMDb integration spec |
+| TheTVDB Design Doc | [integrations/metadata/video/THETVDB.md](../../integrations/metadata/video/THETVDB.md) | TheTVDB integration spec |
+| Sonarr Design Doc | [integrations/servarr/SONARR.md](../../integrations/servarr/SONARR.md) | Sonarr integration spec |
 
 ---
 
@@ -232,10 +257,18 @@ Calculated from episode watch history:
 
 ---
 
-## Metadata Provider
+## Metadata Flow
 
-Primary: **Sonarr** (Servarr-first principle)
-Fallback: **TMDb** / **TheTVDB** (via background jobs)
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#metadata-priority-chain) for full priority chain
+
+**Priority Order:**
+1. **LOCAL CACHE** → otter cache, instant display
+2. **ARR SERVICE** → Sonarr (cached TMDb/TheTVDB metadata)
+3. **EXTERNAL** → Direct TMDb/TheTVDB API (if Sonarr unavailable)
+4. **ENRICHMENT** → Background jobs for additional data
+
+**Primary Metadata Sources:** TMDb, TheTVDB
+**Arr Integration:** Sonarr
 
 ```go
 type MetadataProvider interface {
@@ -319,6 +352,102 @@ CREATE TABLE tvshow.episodes (
 ```
 
 ---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/content/tvshow/` package structure
+- [ ] Define `entity.go` with Series, Season, Episode structs
+- [ ] Create `repository.go` interface definition
+- [ ] Implement `repository_pg.go` with sqlc queries
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Database
+- [ ] Create migration `000XXX_create_tvshow_schema.up.sql`
+- [ ] Create `tvshow.series` table with all columns
+- [ ] Create `tvshow.seasons` table with series FK
+- [ ] Create `tvshow.episodes` table with series/season FKs
+- [ ] Create cast, crew, genres junction tables
+- [ ] Add indexes (library_id, tmdb_id, tvdb_id, series hierarchy)
+- [ ] Write sqlc queries in `queries/tvshow/`
+
+### Phase 3: Service Layer
+- [ ] Implement `service.go` with otter caching
+- [ ] Add Series operations (Get, GetWithSeasons, List, Create, Update, Delete)
+- [ ] Add Season operations (Get, GetWithEpisodes, List)
+- [ ] Add Episode operations (Get, List, GetNextEpisode)
+- [ ] Implement cache invalidation on mutations
+
+### Phase 4: User Data
+- [ ] Implement `repository_pg_user_data.go`
+- [ ] Add episode watch history tracking
+- [ ] Add series-level progress aggregation
+- [ ] Add GetNextEpisode logic (continue watching)
+- [ ] Add favorites and user ratings
+
+### Phase 5: Background Jobs
+- [ ] Create River job definitions in `jobs.go`
+- [ ] Implement `SeriesMetadataRefreshJob`
+- [ ] Implement `SeasonMetadataRefreshJob`
+- [ ] Implement `EpisodeMetadataRefreshJob`
+- [ ] Implement `SeriesImageDownloadJob`
+- [ ] Implement `NewEpisodeCheckJob`
+
+### Phase 6: API Integration
+- [ ] Define OpenAPI endpoints for series/seasons/episodes
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service layer
+- [ ] Add authentication/authorization checks
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Sonarr API Docs](https://sonarr.tv/docs/api/) | [Local](../../../sources/apis/sonarr-docs.md) |
+| [TheTVDB API](https://thetvdb.github.io/v4-api/) | [Local](../../../sources/apis/thetvdb.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Video](INDEX.md)
+
+### In This Section
+
+- [Movie Module](MOVIE_MODULE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related
 

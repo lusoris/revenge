@@ -2,8 +2,20 @@
 
 > Per-module library architecture and supported content types
 
-**Status**: 🟡 DESIGNED (needs migration update)
-**Current Migration**: `shared/000005_libraries.up.sql` ⚠️ **TO BE SPLIT**
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with per-module tables, polymorphic permissions |
+| Sources | 🟡 | Architecture references |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Location**: `internal/module/` (per-module library implementations)
+**Current Migration**: `shared/000005_libraries.up.sql` - **TO BE SPLIT**
 
 ---
 
@@ -322,8 +334,130 @@ See: [MODULE_IMPLEMENTATION_TODO.md](../../planning/MODULE_IMPLEMENTATION_TODO.m
 
 ---
 
-## See Also
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/module/` for module interfaces
+- [ ] Define `LibraryProvider` interface with standard methods
+- [ ] Define `LibraryInfo` common struct for cross-module listing
+- [ ] Define per-module library entities:
+  - [ ] `MovieLibrary` with TMDB/IMDB settings
+  - [ ] `TVLibrary` with series-specific settings
+  - [ ] `MusicLibrary` with Lidarr/MusicBrainz settings
+  - [ ] `AudiobookLibrary` with chapter detection settings
+  - [ ] `BookLibrary` with metadata settings
+  - [ ] `PodcastLibrary` with RSS feed settings
+  - [ ] `PhotoLibrary` with album settings
+  - [ ] `LiveTVSource` with EPG settings
+  - [ ] `ComicLibrary` with ComicVine settings
+  - [ ] `qar.Fleet` for adult content (isolated schema)
+- [ ] Create repository interfaces for each module library
+
+### Phase 2: Database
+- [ ] Create migration `movie/000005_movie_libraries.up.sql`
+- [ ] Create migration `tvshow/000005_tv_libraries.up.sql`
+- [ ] Create migration `music/000001_music_libraries.up.sql`
+- [ ] Create migration `audiobook/000001_audiobook_libraries.up.sql`
+- [ ] Create migration `book/000001_book_libraries.up.sql`
+- [ ] Create migration `podcast/000001_podcast_libraries.up.sql`
+- [ ] Create migration `photo/000001_photo_libraries.up.sql`
+- [ ] Create migration `livetv/000001_livetv_sources.up.sql`
+- [ ] Create migration `comics/000001_comic_libraries.up.sql`
+- [ ] Create migration `qar/000001_fleets.up.sql` (adult, isolated schema)
+- [ ] Update content table FKs to reference per-module library tables
+- [ ] Create `shared/000020_deprecate_libraries.up.sql` data migration
+- [ ] Create polymorphic `permissions` table for cross-module access
+- [ ] Add indexes on owner_user_id, paths for efficient queries
+- [ ] Generate sqlc queries for each module library CRUD
+
+### Phase 3: Service Layer
+- [ ] Implement `MovieModule.LibraryProvider` interface
+- [ ] Implement `TVShowModule.LibraryProvider` interface
+- [ ] Implement `MusicModule.LibraryProvider` interface
+- [ ] Implement remaining module LibraryProvider interfaces
+- [ ] Implement `LibraryService.ListAllLibraries()` with parallel module queries
+- [ ] Implement permission checking with polymorphic grants
+- [ ] Add caching for library metadata (Redis)
+- [ ] Implement library scan triggering per module
+
+### Phase 4: Background Jobs
+- [ ] Create River job per module for library scanning
+- [ ] Create River job for library metadata refresh
+- [ ] Create job for storage usage calculation
+- [ ] Create job for stale content detection
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI schema for unified library endpoints
+- [ ] Implement `GET /api/v1/libraries` (unified listing across modules)
+- [ ] Implement `GET /api/v1/libraries/:module/:id` (module-specific detail)
+- [ ] Implement `POST /api/v1/libraries/:module` (create library)
+- [ ] Implement `PUT /api/v1/libraries/:module/:id` (update library)
+- [ ] Implement `DELETE /api/v1/libraries/:module/:id` (delete library)
+- [ ] Implement `POST /api/v1/libraries/:module/:id/scan` (trigger scan)
+- [ ] Add authentication and authorization (owner + permission grants)
+- [ ] Add RBAC permissions (`library.create`, `library.manage`, `library.scan`)
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [CONTENT_RATING.md](CONTENT_RATING.md) - Age restriction and rating systems
 - [Adult Content System](../adult/ADULT_CONTENT_SYSTEM.md) - Adult module isolation
 - [Architecture](../../architecture/01_ARCHITECTURE.md) - System architecture
+- [RBAC with Casbin](RBAC_CASBIN.md) - Permission system

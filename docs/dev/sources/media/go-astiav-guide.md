@@ -1,8 +1,9 @@
 # go-astiav GitHub README
 
-> Auto-fetched from [https://github.com/asticode/go-astiav](https://github.com/asticode/go-astiav)
-> Raw source: [https://raw.githubusercontent.com/asticode/go-astiav/HEAD/README.md](https://raw.githubusercontent.com/asticode/go-astiav/HEAD/README.md)
-> Last Updated: 2026-01-29T20:14:33.513330+00:00
+> Source: https://github.com/asticode/go-astiav
+> Fetched: 2026-01-30T23:53:44.078192+00:00
+> Content-Hash: f11b1f83bfecc42c
+> Type: github_readme
 
 ---
 

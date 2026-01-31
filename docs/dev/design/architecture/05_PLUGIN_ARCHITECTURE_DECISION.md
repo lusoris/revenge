@@ -2,6 +2,24 @@
 
 > Should Revenge use plugins or native integration?
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Decision documented |
+| Sources | ⚪ | N/A - architecture decision record |
+| Instructions | ⚪ | N/A - decision doc |
+| Code | ⚪ | N/A - decision doc |
+| Linting | ⚪ | N/A |
+| Unit Testing | ⚪ | N/A |
+| Integration Testing | ⚪ | N/A |
+
+**Priority**: ✅ COMPLETE (Decision made: Native Integration)
+**Module**: N/A - Architecture Decision Record
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
+
+---
+
 ## Context
 
 User requirement: "Should we create a plugin system at all, or integrate most features natively?"
@@ -381,3 +399,56 @@ If third-party extensions become critical:
 - [Go plugin package](https://pkg.go.dev/plugin) (experimental, not recommended)
 - [wazero WASM runtime](https://github.com/tetratelabs/wazero)
 
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Architecture](INDEX.md)
+
+### In This Section
+
+- [Revenge - Architecture v2](01_ARCHITECTURE.md)
+- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
+- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
+- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
+
+### Related Topics
+
+- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
+- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
+- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
+- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
+- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+---
+
+## Cross-References
+
+| Related Document | Relationship |
+|------------------|--------------|
+| [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) | Module structure, package decisions |
+| [01_ARCHITECTURE.md](01_ARCHITECTURE.md) | Native modular architecture |
+| [02_DESIGN_PRINCIPLES.md](02_DESIGN_PRINCIPLES.md) | Design philosophy alignment |

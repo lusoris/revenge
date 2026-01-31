@@ -6,7 +6,18 @@
 **API**: GraphQL API (https://stashdb.org/graphql)
 **Category**: Metadata Provider (Adult Content)
 **Priority**: 🟡 HIGH (Adult module core metadata)
-**Status**: 🔴 DESIGN PHASE
+
+## Status
+
+| Dimension | Status | Notes |
+| --------- | ------ | ----- |
+| Design | ✅ | Comprehensive GraphQL API spec, fingerprinting, data mapping |
+| Sources | ✅ | GraphQL schema, playground, API docs, GitHub linked |
+| Instructions | ✅ | Phased implementation checklist with fingerprinting |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -445,6 +456,57 @@ StashDB has no hard rate limit, but avoid abuse:
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) | [Local](../../../../sources/tooling/genqlient.md) |
+| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../../sources/apis/stashdb-schema.graphql) |
+| [genqlient GitHub README](https://github.com/Khan/genqlient) | [Local](../../../../sources/tooling/genqlient-guide.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Adult](INDEX.md)
+
+### In This Section
+
+- [Stash Integration](STASH.md)
+- [ThePornDB Integration](THEPORNDB.md)
+- [Whisparr v3 (eros) - Adult Content Structure Analysis](WHISPARR_V3_ANALYSIS.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

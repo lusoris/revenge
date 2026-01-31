@@ -398,6 +398,50 @@ sources:
       type: github_readme
       output: "tooling/gofeed-guide.md"
 
+    # RSS/Atom Feed Generation
+    - id: gorilla-feeds
+      name: "gorilla/feeds"
+      url: "https://pkg.go.dev/github.com/gorilla/feeds"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/gorilla-feeds.md"
+
+    - id: gorilla-feeds-docs
+      name: "gorilla/feeds GitHub README"
+      url: "https://github.com/gorilla/feeds"
+      type: github_readme
+      output: "tooling/gorilla-feeds-guide.md"
+
+    # Email
+    - id: go-mail
+      name: "wneessen/go-mail"
+      url: "https://pkg.go.dev/github.com/wneessen/go-mail"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/go-mail.md"
+      note: "Modern SMTP client, replaces deprecated gomail"
+
+    - id: go-mail-docs
+      name: "go-mail GitHub README"
+      url: "https://github.com/wneessen/go-mail"
+      type: github_readme
+      output: "tooling/go-mail-guide.md"
+
+    # Push Notifications
+    - id: go-fcm
+      name: "appleboy/go-fcm"
+      url: "https://pkg.go.dev/github.com/appleboy/go-fcm"
+      type: html
+      selectors: [".Documentation"]
+      output: "tooling/go-fcm.md"
+      note: "Firebase Cloud Messaging for push notifications"
+
+    - id: go-fcm-docs
+      name: "go-fcm GitHub README"
+      url: "https://github.com/appleboy/go-fcm"
+      type: github_readme
+      output: "tooling/go-fcm-guide.md"
+
   # ============================================================================
   # DATABASE - Database Documentation
   # ============================================================================
@@ -659,6 +703,52 @@ sources:
       output: "apis/whisparr-openapi.json"
       note: "Adult content - eros theme"
 
+    # Servarr Human Docs
+    - id: radarr-docs
+      name: "Radarr API Docs"
+      url: "https://radarr.video/docs/api/"
+      type: html
+      output: "apis/radarr-docs.md"
+
+    - id: sonarr-docs
+      name: "Sonarr API Docs"
+      url: "https://sonarr.tv/docs/api/"
+      type: html
+      output: "apis/sonarr-docs.md"
+
+    - id: lidarr-docs
+      name: "Lidarr API Docs"
+      url: "https://lidarr.audio/docs/api/"
+      type: html
+      output: "apis/lidarr-docs.md"
+
+    - id: servarr-wiki
+      name: "Servarr Wiki"
+      url: "https://wiki.servarr.com/"
+      type: html
+      output: "apis/servarr-wiki.md"
+      note: "Community wiki for all *arr apps"
+
+    # Jellyfin Reference
+    - id: jellyfin-api
+      name: "Jellyfin API"
+      url: "https://api.jellyfin.org/"
+      type: html
+      output: "apis/jellyfin.md"
+      note: "Reference implementation for media server API"
+
+    - id: jellyfin-trickplay
+      name: "Jellyfin Trickplay"
+      url: "https://jellyfin.org/docs/general/server/media/trickplay/"
+      type: html
+      output: "apis/jellyfin-trickplay.md"
+
+    - id: jellyfin-syncplay
+      name: "Jellyfin SyncPlay"
+      url: "https://jellyfin.org/docs/general/server/syncplay/"
+      type: html
+      output: "apis/jellyfin-syncplay.md"
+
     # Books
     - id: hardcover
       name: "Hardcover API"
@@ -720,6 +810,22 @@ sources:
       type: html
       output: "protocols/m3u8.md"
       note: "Same as HLS - M3U8 is HLS playlist format"
+
+    # WebVTT (Subtitles/Chapters)
+    - id: webvtt
+      name: "WebVTT Specification"
+      url: "https://www.w3.org/TR/webvtt1/"
+      type: html
+      output: "protocols/webvtt.md"
+      note: "W3C standard for subtitles and chapter metadata"
+
+    # BIF (Trickplay)
+    - id: bif-spec
+      name: "Roku BIF Format"
+      url: "https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md"
+      type: html
+      output: "protocols/bif.md"
+      note: "Base Index Frames for timeline thumbnails"
 
     # XMLTV (EPG format)
     - id: xmltv
@@ -944,12 +1050,7 @@ sources:
       selectors: [".Documentation"]
       output: "media/mp4ff.md"
 
-    - id: bimg
-      name: "bimg (libvips)"
-      url: "https://pkg.go.dev/github.com/h2non/bimg"
-      type: html
-      selectors: [".Documentation"]
-      output: "media/bimg.md"
+    # bimg removed - deprecated, use govips instead
 
     - id: go-astisub
       name: "go-astisub (subtitles)"
@@ -1423,6 +1524,45 @@ sources:
       url: "https://en.wikipedia.org/w/api.php?action=help&modules=query"
       type: html
       output: "wiki/wikipedia.md"
+
+    - id: mediawiki-api
+      name: "MediaWiki API"
+      url: "https://www.mediawiki.org/wiki/API:Main_page"
+      type: html
+      output: "wiki/mediawiki.md"
+      note: "Generic MediaWiki API docs"
+
+  # ============================================================================
+  # STANDARDS - Versioning, Commits, Best Practices
+  # ============================================================================
+  standards:
+    - id: semver
+      name: "Semantic Versioning"
+      url: "https://semver.org/"
+      type: html
+      output: "standards/semver.md"
+      note: "SemVer 2.0.0 specification"
+
+    - id: conventional-commits
+      name: "Conventional Commits"
+      url: "https://www.conventionalcommits.org/"
+      type: html
+      output: "standards/conventional-commits.md"
+      note: "Commit message specification"
+
+    - id: gitflow
+      name: "Git Flow"
+      url: "https://nvie.com/posts/a-successful-git-branching-model/"
+      type: html
+      output: "standards/gitflow.md"
+      note: "Original Git branching model"
+
+    - id: chromaprint-acoustid
+      name: "Chromaprint/AcoustID"
+      url: "https://acoustid.org/chromaprint"
+      type: html
+      output: "standards/chromaprint.md"
+      note: "Audio fingerprinting for intro detection"
 
 # ============================================================================
 # FETCH STATUS TRACKING

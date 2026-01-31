@@ -1,6 +1,10 @@
 # External Integrations
 
+← Back to [Design Docs](../)
+
 > Third-party services and APIs
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
 
@@ -128,13 +132,11 @@ Core stack components.
 
 ---
 
-## Integration Status
+## Status Legend
 
-| Status | Meaning |
-|--------|---------|
-| 🟢 | Active / Supported |
-| 🟡 | Planned / In Progress |
-| 🔴 | Low Priority |
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A
 
 ---
 

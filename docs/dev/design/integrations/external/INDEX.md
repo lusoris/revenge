@@ -1,6 +1,10 @@
 # External Services
 
+← Back to [Integrations](../)
+
 > Third-party integrations and data sources
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 

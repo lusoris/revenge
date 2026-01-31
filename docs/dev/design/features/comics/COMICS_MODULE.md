@@ -2,6 +2,35 @@
 
 > Digital comics/manga/graphic novel support with metadata from ComicVine, Marvel API, GCD
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Comprehensive spec with schema, file formats, metadata sources |
+| Sources | ✅ | ComicVine, Marvel API, GCD, AniList, MyAnimeList documented |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Location**: `internal/content/comics/`
+
+---
+
+## Developer Resources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| ComicVine API | [comicvine.gamespot.com/api](https://comicvine.gamespot.com/api/) | Primary comics metadata |
+| Marvel API | [developer.marvel.com](https://developer.marvel.com/) | Marvel Comics metadata |
+| Grand Comics Database | [comics.org](https://www.comics.org/) | Community comics database |
+| AniList GraphQL | [anilist.gitbook.io](https://anilist.gitbook.io/anilist-apiv2-docs/) | Manga metadata |
+| MyAnimeList API | [myanimelist.net/apiconfig](https://myanimelist.net/apiconfig/references/api/v2) | Manga fallback |
+| ComicInfo.xml Spec | [anansi-project.github.io](https://anansi-project.github.io/docs/comicinfo/documentation) | CBZ metadata format |
+
+---
+
 ## Overview
 
 Comics module provides cataloging, reading, and metadata management for digital comics (CBZ, CBR, CB7, PDF).
@@ -558,15 +587,16 @@ type GenerateComicThumbnailsArgs struct {
 
 ---
 
-## Dependencies (Go Packages)
+## Go Packages
 
-| Package | Purpose |
-|---------|---------|
-| `archive/zip` | CBZ extraction (stdlib) |
-| `github.com/nwaples/rardecode` | CBR extraction (RAR) |
-| `github.com/bodgit/sevenzip` | CB7 extraction (7z) |
-| `github.com/pdfcpu/pdfcpu` | PDF page extraction |
-| `github.com/disintegration/imaging` | Image resizing (thumbnails) |
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for package versions.
+
+Key packages used:
+- **archive/zip** - CBZ extraction (stdlib)
+- **rardecode** - CBR extraction (RAR)
+- **sevenzip** - CB7 extraction (7z)
+- **pdfcpu** - PDF page extraction
+- **imaging** - Image resizing (thumbnails)
 
 ---
 
@@ -584,4 +614,114 @@ type GenerateComicThumbnailsArgs struct {
 | **Background Jobs** | Library scan, metadata fetch, page extraction, thumbnail generation |
 
 **Development Priority**: ⚠️ **Medium** (after core video/music modules, before Live TV)
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/content/comics/` package structure
+- [ ] Define `entity.go` with Comic, Publisher, Creator structs
+- [ ] Create `repository.go` interface definition
+- [ ] Implement `repository_pg.go` with sqlc queries
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Database
+- [ ] Create migration `000XXX_create_comics_schema.up.sql`
+- [ ] Create `comics` table with all columns
+- [ ] Create `comic_publishers` table
+- [ ] Create `comic_creators` and `comic_creator_roles` tables
+- [ ] Create `comic_genres` and `comic_tags` tables
+- [ ] Add user data tables (ratings, read_history, favorites)
+- [ ] Add indexes (series_name, publisher_id, release_date, search_vector)
+- [ ] Write sqlc queries in `queries/comics/`
+
+### Phase 3: File Processing
+- [ ] Implement CBZ extraction (archive/zip)
+- [ ] Implement CBR extraction (rardecode)
+- [ ] Implement CB7 extraction (sevenzip)
+- [ ] Implement PDF page extraction (pdfcpu)
+- [ ] Parse ComicInfo.xml metadata
+- [ ] Extract cover images for thumbnails
+
+### Phase 4: Service Layer
+- [ ] Implement `service.go` with otter caching
+- [ ] Add Comic operations (Get, List, Create, Update, Delete)
+- [ ] Add Series operations (List by series, group by volume)
+- [ ] Add reading progress tracking
+- [ ] Implement cache invalidation on mutations
+
+### Phase 5: Metadata Integration
+- [ ] Implement ComicVine provider
+- [ ] Implement Marvel API provider (optional)
+- [ ] Implement AniList provider for manga
+- [ ] Add metadata matching logic (title + issue → external ID)
+- [ ] Implement image download and caching
+
+### Phase 6: Background Jobs
+- [ ] Create River job definitions in `jobs.go`
+- [ ] Implement `ScanComicsLibraryJob`
+- [ ] Implement `FetchComicMetadataJob`
+- [ ] Implement `ExtractComicPagesJob`
+- [ ] Implement `GenerateComicThumbnailsJob`
+
+### Phase 7: API Integration
+- [ ] Define OpenAPI endpoints for comics
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service layer
+- [ ] Add page streaming endpoint
+- [ ] Add authentication/authorization checks
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [AniList GraphQL API](https://anilist.gitbook.io/anilist-apiv2-docs) | [Local](../../../sources/apis/anilist.md) |
+| [ComicVine API](https://comicvine.gamespot.com/api/documentation) | [Local](../../../sources/apis/comicvine.md) |
+| [MyAnimeList API](https://myanimelist.net/apiconfig/references/api/v2) | [Local](../../../sources/apis/myanimelist.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Comics](INDEX.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Library Service](../../services/LIBRARY.md) - Library management
+- [Movie Module](../video/MOVIE_MODULE.md) - Cross-module adaptations
+- [Metadata Service](../../services/METADATA.md) - Provider patterns
 

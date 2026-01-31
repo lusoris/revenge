@@ -1,34 +1,49 @@
 # Operations Documentation
 
-> Setup, deployment, and operational guides
+← Back to [Design Docs](../)
+
+> Deployment, setup, and operational guides
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
 
 ## Documents
 
-| Document | Description |
-|----------|-------------|
-| [SETUP.md](SETUP.md) | Initial setup instructions |
-| [DEVELOPMENT.md](DEVELOPMENT.md) | Development workflow |
-| [BEST_PRACTICES.md](BEST_PRACTICES.md) | Coding standards and patterns |
-| [DATABASE_AUTO_HEALING.md](DATABASE_AUTO_HEALING.md) | PostgreSQL corruption detection/repair |
-| [REVERSE_PROXY.md](REVERSE_PROXY.md) | Nginx/Caddy configuration |
-| [GITFLOW.md](GITFLOW.md) | Git branch strategy |
-| [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md) | Repository protection rules |
-| [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md) | Syncing with upstream |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Advanced Patterns & Best Practices](BEST_PRACTICES.md) | Comprehensive guide for professional-grade implementations i... | ✅ Designed |
+| [Branch Protection Rules](BRANCH_PROTECTION.md) | **Status**: ✅ Branch protection is **ACTIVE** on `main` and ... | 🟡 Planned |
+| [Database Auto-Healing & Consistency Restoration](DATABASE_AUTO_HEALING.md) | Automatic recovery strategies for PostgreSQL database corrup... | ✅ Designed |
+| [Clone repository](DEVELOPMENT.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
+| [GitFlow Workflow Guide](GITFLOW.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
+| [Revenge - Reverse Proxy & Deployment Best Practices](REVERSE_PROXY.md) | Production deployment with nginx, Caddy, Traefik, and Docker... | ✅ Designed |
+| [revenge - Setup Guide](SETUP.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
 
 ---
 
-## Quick Links
+<!-- SOURCE-BREADCRUMBS-START -->
 
-- **Getting Started**: [SETUP.md](SETUP.md) → [DEVELOPMENT.md](DEVELOPMENT.md)
-- **Production**: [REVERSE_PROXY.md](REVERSE_PROXY.md) → [DATABASE_AUTO_HEALING.md](DATABASE_AUTO_HEALING.md)
-- **Git**: [GITFLOW.md](GITFLOW.md) → [BRANCH_PROTECTION.md](BRANCH_PROTECTION.md)
+## Sources & Cross-References
 
----
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ## Related
 
-- [Architecture](../architecture/) - System design
-- [Technical](../technical/) - API specs
-- [Planning](../planning/) - Roadmaps
+- [Architecture Documentation](../architecture/)
+- [Infrastructure Components](../integrations/infrastructure/)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

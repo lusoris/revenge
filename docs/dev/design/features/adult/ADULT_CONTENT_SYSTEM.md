@@ -3,6 +3,18 @@
 > Complete adult content management with Stash ecosystem integration.
 > All adult content isolated in PostgreSQL schema `qar` with "Queen Anne's Revenge" themed obfuscation.
 
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 ## Design Principles
 
 1. **Complete Isolation** - Separate schema, namespace, and storage
@@ -15,121 +27,16 @@
 
 ## Queen Anne's Revenge Obfuscation
 
-All adult content uses pirate ship terminology themed after Blackbeard's famous vessel.
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) for complete QAR terminology reference.
 
-### Schema & API Namespace
+All adult content uses pirate ship terminology themed after Blackbeard's famous vessel. The obfuscation covers:
 
-| Real Concept | Internal (DB) | External (API) | Reason |
-|--------------|---------------|----------------|--------|
-| Adult schema | `qar` | - | Queen Anne's Revenge (internal only) |
-| API namespace | - | `/api/v1/legacy/` | Looks like deprecated/old content |
-| Storage path | `/data/qar/` | - | Internal path only |
-| Config section | `legacy` | - | Config key in YAML |
+- **Schema & API Namespace**: `qar` schema internally, `/api/v1/legacy/` externally
+- **Entity Obfuscation**: Performers → Crew, Scenes → Voyages, Movies → Expeditions, etc.
+- **Field Obfuscation**: birth_date → christening, tattoos → markings, etc.
+- **URL Obfuscation**: External URLs never reveal content type
 
-**URL Obfuscation Strategy**: The API uses `/legacy/` externally - this looks like deprecated API endpoints or archived content. Network inspection reveals nothing suspicious. The internal `qar` schema name is never exposed in URLs.
-
-```
-External URL:  /api/v1/legacy/crew/123
-Internal:      qar.crew WHERE id = '123'
-Storage:       /data/qar/crew/123/
-```
-
-### Entity Obfuscation
-
-| Real Entity | Obfuscated | Database Table | API Endpoint |
-|-------------|------------|----------------|--------------|
-| Performers | **Crew** | `qar.crew` | `/qar/crew` |
-| Scenes | **Voyages** | `qar.voyages` | `/qar/voyages` |
-| Movies | **Expeditions** | `qar.expeditions` | `/qar/expeditions` |
-| Studios | **Ports** | `qar.ports` | `/qar/ports` |
-| Tags | **Flags** | `qar.flags` | `/qar/flags` |
-| Categories | **Waters** | `qar.waters` | `/qar/waters` |
-| Galleries/Images | **Treasures** | `qar.treasures` | `/qar/treasures` |
-| Libraries | **Fleets** | `qar.fleets` | `/qar/fleets` |
-
-### Field Obfuscation
-
-#### Crew (Performer) Fields
-
-| Real Field | Obfuscated | Type | Description |
-|------------|------------|------|-------------|
-| name | `title` | VARCHAR | Primary name |
-| aliases | `names` | TEXT[] | All known names |
-| disambiguation | `callsign` | VARCHAR | Unique identifier suffix |
-| birth_date | `christening` | DATE | Birth date |
-| death_date | `scuttled` | DATE | Death date (null = active) |
-| ethnicity | `origin` | VARCHAR | Ethnic background |
-| country | `homeland` | VARCHAR | Country of origin |
-| height_cm | `mast` | INT | Height in centimeters |
-| weight_kg | `ballast` | INT | Weight in kilograms |
-| measurements | `cargo` | VARCHAR | Body measurements (e.g., "34D-24-34") |
-| cup_size | `hold_size` | VARCHAR | Cup size |
-| fake_tits | `rigged` | BOOLEAN | Breast augmentation (true = augmented) |
-| hair_color | `rigging` | VARCHAR | Hair color |
-| eye_color | `compass` | VARCHAR | Eye color |
-| tattoos | `markings` | TEXT | Tattoo descriptions |
-| piercings | `anchors` | TEXT | Piercing descriptions |
-| career_start | `maiden_voyage` | INT | Career start year |
-| career_end | `last_port` | INT | Career end year (null = active) |
-| scene_count | `voyage_count` | INT | Total scene count |
-| image_count | `portrait_count` | INT | Total image count |
-| gallery_count | `chest_count` | INT | Total gallery count |
-| stashdb_id | `charter` | VARCHAR | StashDB performer ID |
-| tpdb_id | `registry` | VARCHAR | ThePornDB performer ID |
-| freeones_id | `manifest` | VARCHAR | FreeOnes performer ID |
-| gallery | `chest` | TEXT | Primary gallery path |
-| bio | `logbook` | TEXT | Biography/details |
-| urls | `ports_of_call` | TEXT[] | Social/website URLs |
-| ignore_autotag | `ghost_flag` | BOOLEAN | Exclude from auto-tagging |
-
-#### Crew (Male/Trans-Specific) Fields
-
-| Real Field | Obfuscated | Type | Description |
-|------------|------------|------|-------------|
-| penis_length | `cutlass` | VARCHAR | Penis size category |
-| circumcised | `trimmed` | BOOLEAN | Circumcision status |
-| has_breasts | `figurehead` | BOOLEAN | Has breasts (trans) |
-| genitalia_type | `keel` | VARCHAR | male/female/both (trans) |
-| surgical_status | `refit` | VARCHAR | pre-op/post-op/non-op |
-
-#### User Interaction Fields
-
-| Real Field | Obfuscated | Type | Description |
-|------------|------------|------|-------------|
-| rating | `bounty` | INT | User rating (0-100) |
-| favorite | `prized` | BOOLEAN | User favorite status |
-| play_count | `boarding_count` | INT | Times watched |
-| o_counter | `plunder_count` | INT | User completion counter |
-| position_seconds | `bearing` | INT | Playback position |
-| completed | `docked` | BOOLEAN | Watched to completion |
-
-#### Voyage (Scene) / Expedition (Movie) Fields
-
-| Real Field | Obfuscated | Type | Description |
-|------------|------------|------|-------------|
-| title | `title` | VARCHAR | Scene/movie title |
-| duration_seconds | `distance` | INT | Duration in seconds |
-| release_date | `launch_date` | DATE | Release date |
-| rating | `bounty` | DECIMAL | Average rating |
-| phash | `coordinates` | VARCHAR | Perceptual hash |
-| oshash | `bearing_hash` | VARCHAR | OpenSubtitles hash |
-| studio_id | `port_id` | UUID | Studio reference |
-| tags | `flags` | UUID[] | Tag references |
-| description | `manifest` | TEXT | Scene description |
-| code | `serial` | VARCHAR | Scene code (e.g., "BZ-123") |
-| director | `captain` | VARCHAR | Director name |
-| interactive | `rigged_voyage` | BOOLEAN | Has funscript |
-
-#### Entity Reference Fields (All Entities)
-
-| Real Field | Obfuscated | Type | Description |
-|------------|------------|------|-------------|
-| stashdb_id | `charter` | VARCHAR | StashDB ID |
-| tpdb_id | `registry` | VARCHAR | ThePornDB ID |
-| whisparr_id | `dock_id` | INT | Whisparr ID |
-| stash_id | `berth_id` | VARCHAR | Local Stash ID |
-
-### Example API Responses
+### Example API Response
 
 ```json
 // GET /api/v1/legacy/crew/123
@@ -140,76 +47,10 @@ Storage:       /data/qar/crew/123/
   "names": ["Anne Bonny", "Anne Cormac"],
   "callsign": "pirate-queen",
   "christening": "1697-03-08",
-  "scuttled": null,
-  "origin": "Irish",
-  "homeland": "Ireland",
-  "mast": 165,
-  "ballast": 54,
-  "cargo": "34D-24-35",
-  "hold_size": "D",
-  "rigged": false,
-  "rigging": "red",
-  "compass": "green",
-  "markings": "anchor on shoulder",
-  "anchors": "ears, navel",
-  "maiden_voyage": 1719,
-  "last_port": null,
   "voyage_count": 142,
-  "portrait_count": 87,
-  "chest_count": 5,
-  "logbook": "Famous female pirate...",
-  "charter": "stashdb-uuid-here",
-  "ports_of_call": ["https://twitter.com/example"]
-}
-
-// GET /api/v1/legacy/voyages/456
-{
-  "id": "456",
-  "title": "Caribbean Adventure",
-  "port": {"id": "789", "title": "Port Royal Productions"},
-  "crew": [
-    {"id": "123", "title": "Anne Bonny", "is_primary": true}
-  ],
-  "flags": [
-    {"id": "f1", "name": "adventure"},
-    {"id": "f2", "name": "caribbean"}
-  ],
-  "distance": 1847,
-  "launch_date": "2024-03-15",
-  "bounty": 4.5,
-  "coordinates": "phash:abc123def456",
-  "bearing_hash": "oshash:def789",
-  "serial": "PRP-2024-042",
-  "captain": "Edward Teach",
-  "rigged_voyage": false,
-  "manifest": "Two pirates embark on a Caribbean adventure..."
-}
-
-// GET /api/v1/legacy/expeditions/789
-{
-  "id": "789",
-  "title": "Pirates of the Caribbean Collection",
-  "port": {"id": "456", "title": "Sea Dog Studios"},
-  "launch_date": "2024-01-01",
-  "distance": 7200,
-  "bounty": 4.8,
-  "voyage_count": 4,
-  "charter": "stashdb-movie-uuid"
+  "charter": "stashdb-uuid-here"
 }
 ```
-
-### URL Mapping (External → Internal)
-
-| External URL | Internal Query |
-|--------------|----------------|
-| `GET /api/v1/legacy/crew` | `SELECT * FROM qar.crew` |
-| `GET /api/v1/legacy/crew/:id` | `SELECT * FROM qar.crew WHERE id = :id` |
-| `GET /api/v1/legacy/voyages` | `SELECT * FROM qar.voyages` |
-| `GET /api/v1/legacy/expeditions` | `SELECT * FROM qar.expeditions` |
-| `GET /api/v1/legacy/ports` | `SELECT * FROM qar.ports` |
-| `GET /api/v1/legacy/flags` | `SELECT * FROM qar.flags` |
-| `GET /api/v1/legacy/treasures` | `SELECT * FROM qar.treasures` |
-| `GET /api/v1/legacy/fleets` | `SELECT * FROM qar.fleets` |
 
 ### Database Schema Example
 
@@ -1536,6 +1377,165 @@ type SyncStashAppArgs struct {
 
 func (SyncStashAppArgs) Kind() string { return "adult.sync_stash_app" }
 ```
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Schema & Database Setup
+- [ ] Create `qar` schema in PostgreSQL
+- [ ] Create migration files for all tables:
+  - [ ] `qar.fleets` (libraries)
+  - [ ] `qar.crew` (performers) with aliases and images
+  - [ ] `qar.crew_aliases` and `qar.crew_images`
+  - [ ] `qar.ports` (studios)
+  - [ ] `qar.flags` (tags)
+  - [ ] `qar.expeditions` (movies)
+  - [ ] `qar.expedition_crew` and `qar.expedition_flags`
+  - [ ] `qar.expedition_images`
+  - [ ] `qar.voyages` (scenes)
+  - [ ] `qar.voyage_crew` and `qar.voyage_flags`
+  - [ ] `qar.voyage_markers` (timestamped chapters)
+  - [ ] `qar.treasures` (galleries) and `qar.doubloons` (images)
+  - [ ] `qar.user_bounties`, `qar.user_favorites`, `qar.ship_log` (user data)
+  - [ ] `qar.plunder_queue` (download queue)
+- [ ] Create all indexes
+- [ ] Implement Row-Level Security (RLS) policies
+- [ ] Create `sqlc` queries file `queries/qar/adult.sql`
+
+### Phase 2: Core Repository & Service Layer
+- [ ] Implement `internal/content/qar/repository.go` interface
+- [ ] Implement `internal/content/qar/repository_pg.go` using sqlc
+- [ ] Implement `internal/content/qar/service.go` with business logic
+- [ ] Implement entity structs in `internal/content/qar/entity.go`
+- [ ] Create mapping layer for QAR terminology
+
+### Phase 3: Whisparr Integration (Acquisition)
+- [ ] Create `internal/integrations/whisparr/client.go`
+- [ ] Implement movie sync from Whisparr v3 API
+- [ ] Implement webhook handler for real-time updates (Download, Rename, Delete)
+- [ ] Queue fingerprinting jobs after import
+- [ ] Handle metadata mapping (studio, performers, genres)
+
+### Phase 4: Fingerprinting & Identification
+- [ ] Implement `internal/content/qar/fingerprint/service.go`
+- [ ] Implement OSHASH generation (file-based)
+- [ ] Implement pHash generation (perceptual hash)
+- [ ] Implement MD5 hash generation
+- [ ] Create River jobs for fingerprinting pipeline
+- [ ] Integrate StashDB matching
+
+### Phase 5: StashDB Enrichment
+- [ ] Create `internal/integrations/stashdb/client.go` (GraphQL)
+- [ ] Implement performer lookup by fingerprint
+- [ ] Implement scene data enrichment
+- [ ] Implement performer detail fetching
+- [ ] Create River jobs for enrichment pipeline
+- [ ] Cache StashDB responses
+
+### Phase 6: Stash-App Integration (Optional/Private)
+- [ ] Create `internal/integrations/stash/client.go` (GraphQL)
+- [ ] Implement scene/marker sync from local Stash instance
+- [ ] Implement performer data sync
+- [ ] Implement scene marker → chapter conversion
+
+### Phase 7: TPDB Fallback
+- [ ] Create `internal/integrations/tpdb/client.go`
+- [ ] Implement scene search by title/performers
+- [ ] Implement performer search
+- [ ] Use as fallback when StashDB has no results
+
+### Phase 8: Access Control & Security
+- [ ] Create RBAC scopes: `legacy:read`, `legacy:write`, `legacy:admin`
+- [ ] Implement LegacyAuthMiddleware with scope + opt-in checks
+- [ ] Implement PIN protection if configured
+- [ ] Implement session timeout and auto-lock
+- [ ] Create separate connection pool for QAR queries
+- [ ] Implement audit logging to `qar.ship_log`
+
+### Phase 9: API Endpoints
+- [ ] Create OpenAPI spec `api/openapi/qar_adult.yaml`
+- [ ] Implement expedition endpoints (`/api/v1/legacy/expeditions/*`)
+- [ ] Implement voyage endpoints (`/api/v1/legacy/voyages/*`)
+- [ ] Implement crew endpoints (`/api/v1/legacy/crew/*`)
+- [ ] Implement port endpoints (`/api/v1/legacy/ports/*`)
+- [ ] Implement flag endpoints (`/api/v1/legacy/flags/*`)
+- [ ] Implement fleet endpoints (`/api/v1/legacy/fleets/*`)
+- [ ] Implement user data endpoints (logbook, favorites, ratings)
+- [ ] Implement fingerprint matching endpoint `/api/v1/legacy/match`
+
+### Phase 10: River Jobs & Background Processing
+- [ ] Implement job handlers for fingerprinting
+- [ ] Implement job handlers for StashDB enrichment
+- [ ] Implement job handlers for Stash-App sync
+- [ ] Implement job handlers for TPDB fallback
+- [ ] Create job scheduling for periodic reconciliation
+
+### Phase 11: Testing & Validation
+- [ ] Write unit tests for repository layer
+- [ ] Write unit tests for service layer
+- [ ] Write integration tests for Whisparr client
+- [ ] Write integration tests for StashDB client
+- [ ] Write API tests for all endpoints
+- [ ] Test RLS policies with different user roles
+- [ ] Test audit logging
+
+### Phase 12: Deployment & Documentation
+- [ ] Create environment variable documentation
+- [ ] Document Whisparr webhook configuration
+- [ ] Document StashDB API key setup
+- [ ] Create migration guide for fresh installs
+- [ ] Document obfuscation terminology mapping
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Adult](INDEX.md)
+
+### In This Section
+
+- [Revenge - Adult Content Metadata System](ADULT_METADATA.md)
+- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
+- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
+- [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

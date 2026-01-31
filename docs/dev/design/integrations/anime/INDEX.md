@@ -1,132 +1,45 @@
-# Anime Providers
+# Anime Integration
+
+← Back to [Design Docs](..)
 
 > Anime-specific metadata and tracking
 
----
-
-## Overview
-
-Anime providers supply specialized metadata for:
-- Anime series and films
-- Airing schedules
-- Watch order (including OVAs, specials)
-- Japanese titles and romanization
-- Anime-specific ratings
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Providers
+## Documents
 
-| Provider | Type | API | Status |
-|----------|------|-----|--------|
-| [AniList](ANILIST.md) | Metadata + Tracking | GraphQL | 🟢 Primary |
-| [MyAnimeList](MYANIMELIST.md) | Metadata + Tracking | REST/OAuth | 🟡 Secondary |
-| [Kitsu](KITSU.md) | Metadata + Tracking | JSON:API | 🟡 Alternative |
-
----
-
-## Provider Details
-
-### AniList
-**Modern anime database**
-
-- ✅ Comprehensive anime/manga data
-- ✅ Watch list tracking
-- ✅ GraphQL API (flexible queries)
-- ✅ User ratings sync
-- ✅ Free, generous rate limits
-
-### MyAnimeList (MAL)
-**Original anime database**
-
-- ✅ Largest user base
-- ✅ Historical data
-- ✅ Community reviews
-- ✅ OAuth authentication
-- ⚠️ API requires approval
-
-### Kitsu
-**Social anime platform**
-
-- ✅ Good API design (JSON:API)
-- ✅ Streaming links
-- ✅ Social features
-- ✅ Free, no approval needed
+| Document | Description | Status |
+|----------|-------------|--------|
+| [AniList Integration](ANILIST.md) | Primary metadata and tracking provider for anime and manga | ✅ Designed |
+| [Kitsu Integration](KITSU.md) | Modern anime tracking platform with social features | ✅ Designed |
+| [MyAnimeList (MAL) Integration](MYANIMELIST.md) | Legacy anime tracking platform with extensive database | ✅ Designed |
 
 ---
 
-## Why Separate from TMDB/TVDB?
+<!-- SOURCE-BREADCRUMBS-START -->
 
-Anime has unique requirements:
+## Sources & Cross-References
 
-| Feature | TMDB/TVDB | Anime Providers |
-|---------|-----------|-----------------|
-| Episode numbering | Western style | Absolute + seasonal |
-| Specials/OVAs | Limited | Comprehensive |
-| Airing info | Basic | Detailed schedules |
-| Watch order | None | Recommended order |
-| Japanese titles | Sometimes | Always |
+> Auto-generated section linking to external documentation sources
 
----
+### Cross-Reference Indexes
 
-## Data Flow
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-```
-Scan Library (anime folder)
-    ↓
-Identify via filename/AniDB hash
-    ↓
-Fetch metadata from AniList
-    ↓
-Fallback to MAL/Kitsu
-    ↓
-Map episodes (absolute ↔ seasonal)
-    ↓
-Sync watch progress (if enabled)
-```
+<!-- SOURCE-BREADCRUMBS-END -->
+
+## Related
+
+- [Video Module](../../features/video/)
+- [Scrobbling Services](../scrobbling/)
 
 ---
 
-## Configuration
+## Status Legend
 
-```yaml
-metadata:
-  anime:
-    enabled: true
-    primary: anilist
-    fallback: [mal, kitsu]
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
-    # Episode mapping
-    episode_mapping:
-      absolute_to_seasonal: true
-      use_tvdb_mapping: false
-
-    # Tracking sync
-    tracking:
-      anilist:
-        enabled: true
-      mal:
-        enabled: false
-```
-
----
-
-## Episode Mapping
-
-Anime often has different numbering systems:
-
-```
-AniList: Episode 25 (S1E25)
-TVDB:    S1E25 or S2E01
-File:    Episode 25 (absolute)
-```
-
-Revenge maintains mapping tables for consistent display.
-
----
-
-## Related Documentation
-
-- [Video Metadata](../metadata/video/INDEX.md)
-- [Scrobbling Services](../scrobbling/INDEX.md)
-- [Simkl (Anime tracking)](../scrobbling/SIMKL.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

@@ -1,26 +1,42 @@
-# Podcasts Documentation
+# Podcasts Module
 
-> RSS podcast support
+← Back to [Design Docs](..)
+
+> Podcast management features
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
 ## Documents
 
-| Document | Description |
-|----------|-------------|
-| [PODCASTS.md](PODCASTS.md) | Podcast module design |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Podcasts](PODCASTS.md) | RSS podcast subscription and playback | ✅ Designed |
 
 ---
 
-## Key Concepts
+<!-- SOURCE-BREADCRUMBS-START -->
 
-- **Source**: RSS feeds
-- **Features**: Download, stream, playlists
-- **Sync**: Podcast index, episode tracking
+## Sources & Cross-References
 
----
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ## Related
 
-- [Technical: Audio Streaming](../../technical/AUDIO_STREAMING.md)
-- [Playback: Watch Next](../playback/WATCH_NEXT_CONTINUE_WATCHING.md)
+- [Audiobook & Podcast Integration](../../integrations/audiobook/)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

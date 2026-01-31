@@ -2,6 +2,20 @@
 
 > Role-Based Access Control using Casbin for dynamic permission management.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with Casbin model, DB schema, audit logging |
+| Sources | ✅ | casbin/casbin, pckhoi/casbin-pgx-adapter documented |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+---
+
 ## Overview
 
 Revenge uses [Casbin](https://casbin.org/) for dynamic Role-Based Access Control (RBAC). This allows administrators to:
@@ -622,7 +636,146 @@ func (s *MovieModule) DeleteLibrary(ctx context.Context, libraryID uuid.UUID) er
 
 ---
 
-## Related Documents
+## Implementation Checklist
+
+**Location**: `internal/service/rbac/`
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/rbac/`
+- [ ] Define entities: `Role`, `PermissionDefinition`, `ResourceGrant`, `AuditEntry`
+- [ ] Create Casbin model file `model.conf` with RBAC rules
+- [ ] Create repository interface `RBACRepository`
+- [ ] Implement fx module `rbac.Module`
+- [ ] Define permission constants (e.g., `PermContentDelete`, `PermSystemSettingsWrite`)
+
+### Phase 2: Database
+- [ ] Create migration `xxx_dynamic_rbac.up.sql`
+- [ ] Create `roles` table with system role flag
+- [ ] Create `permission_definitions` table for UI reference
+- [ ] Create `resource_grants` table for polymorphic grants
+- [ ] Create `activity_log` table with monthly partitioning
+- [ ] Add `role_id` column to `users` table
+- [ ] Seed system roles (admin, moderator, user, guest)
+- [ ] Seed permission definitions for all categories
+- [ ] Generate sqlc queries for role and permission CRUD
+- [ ] Configure `casbin_rules` table (auto-created by adapter)
+
+### Phase 3: Casbin Integration
+- [ ] Install `github.com/casbin/casbin/v2`
+- [ ] Install `github.com/pckhoi/casbin-pgx-adapter/v3`
+- [ ] Initialize Casbin enforcer with PostgreSQL adapter
+- [ ] Load model configuration on startup
+- [ ] Implement policy caching for performance
+- [ ] Add thread-safe read-write mutex for policy updates
+- [ ] Seed default policies on first startup
+
+### Phase 4: Service Layer
+- [ ] Implement `CasbinService` with permission checks
+- [ ] Implement `RequirePermission(ctx, userID, permission)` method
+- [ ] Implement `HasPermission(ctx, userID, permission)` method
+- [ ] Implement `CreateRole(ctx, params)` for custom roles
+- [ ] Implement `SetRolePermissions(ctx, roleName, permissions)` method
+- [ ] Implement `DeleteRole(ctx, roleName)` (block system roles)
+- [ ] Implement `AssignRoleToUser(ctx, userID, roleName)` method
+- [ ] Add role validation (prevent deleting system roles)
+
+### Phase 5: Resource Grants
+- [ ] Implement `GrantsService` for polymorphic resource access
+- [ ] Implement `CreateGrant(ctx, params)` for sharing resources
+- [ ] Implement `HasGrant(ctx, userID, resourceType, resourceID, grantType)` check
+- [ ] Implement `DeleteByResource(ctx, resourceType, resourceID)` for cleanup
+- [ ] Implement grant expiration handling
+- [ ] Add grant type hierarchy (owner > manage > edit > view)
+
+### Phase 6: Audit Logging
+- [ ] Implement `AuditService` with async River job writes
+- [ ] Create `AuditLogWorker` for processing audit entries
+- [ ] Create `AuditCleanupWorker` for retention policy (drop old partitions)
+- [ ] Implement `LogAction(ctx, entry)` fire-and-forget method
+- [ ] Implement `GetEntityHistory(ctx, params)` for viewing edit history
+- [ ] Implement `RevertChange(ctx, params)` for rollback support
+- [ ] Configure daily cleanup job (default: 90 day retention)
+
+### Phase 7: Metadata Locking
+- [ ] Implement `MetadataLockService` for editor protections
+- [ ] Implement `LockMetadata(ctx, params)` method
+- [ ] Implement `UnlockMetadata(ctx, params)` method
+- [ ] Implement `IsLocked(ctx, entityType, entityID)` check
+- [ ] Update metadata refresh jobs to skip locked items
+
+### Phase 8: Middleware & API Integration
+- [ ] Implement `RBACMiddleware` for HTTP routes
+- [ ] Implement `RequirePermission(permission)` middleware
+- [ ] Implement `RequireAnyPermission(permissions...)` middleware
+- [ ] Implement `RequireRole(roles...)` middleware (backwards compat)
+- [ ] Define OpenAPI spec for role management endpoints
+- [ ] Generate ogen handlers for RBAC admin API
+- [ ] Implement `GET /api/v1/admin/roles` - list roles
+- [ ] Implement `POST /api/v1/admin/roles` - create role
+- [ ] Implement `PUT /api/v1/admin/roles/:id` - update role permissions
+- [ ] Implement `DELETE /api/v1/admin/roles/:id` - delete custom role
+- [ ] Implement `GET /api/v1/admin/permissions` - list permission definitions
+- [ ] Add RBAC checks to all admin handlers
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [Casbin Documentation](https://casbin.org/docs/overview) | [Local](../../../sources/security/casbin-guide.md) |
+| [Casbin pgx Adapter](https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3) | [Local](../../../sources/security/casbin-pgx.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [ARCHITECTURE.md](../../architecture/01_ARCHITECTURE.md) - Overall architecture
 - [DESIGN_PRINCIPLES.md](../../architecture/02_DESIGN_PRINCIPLES.md) - Design principles

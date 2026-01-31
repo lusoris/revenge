@@ -2,6 +2,20 @@
 
 > Sync playback data to external services like Trakt, Last.fm, ListenBrainz, etc.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with Trakt, Last.fm, ListenBrainz integrations |
+| Sources | ✅ | OAuth flows, API clients, River jobs documented |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+---
+
 ## Overview
 
 Revenge supports scrobbling (reporting playback) to various external services:
@@ -970,3 +984,147 @@ paths:
 | Rate Limiting | Per-service limits respected |
 | Sync | Bidirectional, incremental |
 | Storage | user_external_services table |
+
+---
+
+## Implementation Checklist
+
+**Location**: `internal/service/scrobbling/`
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/scrobbling/`
+- [ ] Create clients directory `internal/service/scrobbling/clients/`
+- [ ] Define entities: `ExternalServiceConnection`, `ScrobbleEvent`
+- [ ] Create repository interface `ExternalServiceRepository`
+- [ ] Implement fx module `scrobbling.Module`
+- [ ] Add configuration struct for service credentials (Trakt, Last.fm, etc.)
+
+### Phase 2: Database
+- [ ] Create migration `xxx_external_services.up.sql`
+- [ ] Create `user_external_services` table with OAuth tokens
+- [ ] Add columns for service-specific settings (sync_history, sync_ratings, sync_watchlist)
+- [ ] Add indexes on `user_id` and `service`
+- [ ] Generate sqlc queries for service connection CRUD
+- [ ] Generate queries for token refresh operations
+
+### Phase 3: OAuth & Authentication Clients
+- [ ] Implement `TraktClient` with OAuth2 flow
+- [ ] Implement Trakt auth URL generation and code exchange
+- [ ] Implement Trakt token refresh logic
+- [ ] Implement `LastFMClient` with session key authentication
+- [ ] Implement Last.fm request signing (MD5 api_sig)
+- [ ] Implement `ListenBrainzClient` with user token auth
+- [ ] Implement `SimklClient` with OAuth2 flow (optional)
+
+### Phase 4: Scrobble Service Layer
+- [ ] Implement `ScrobbleService` for event triggering
+- [ ] Implement scrobble threshold checking (50% music, 80% video)
+- [ ] Implement `handleVideoProgress` for movies/episodes
+- [ ] Implement `handleMusicProgress` for tracks
+- [ ] Implement scrobble timestamp calculation (playback start time)
+- [ ] Add rate limiting per service (Last.fm: 5/sec)
+
+### Phase 5: External Service Clients - Scrobbling
+- [ ] Implement `TraktClient.ScrobbleMovie` (start, pause, stop)
+- [ ] Implement `TraktClient.ScrobbleEpisode` (start, pause, stop)
+- [ ] Implement `LastFMClient.Scrobble` with proper signing
+- [ ] Implement `LastFMClient.UpdateNowPlaying`
+- [ ] Implement `ListenBrainzClient.SubmitListen`
+- [ ] Implement `ListenBrainzClient.NowPlaying`
+
+### Phase 6: Background Jobs - Scrobbling
+- [ ] Create `VideoScrobbleWorker` for Trakt/Simkl
+- [ ] Create `MusicScrobbleWorker` for Last.fm/ListenBrainz
+- [ ] Implement multi-service fan-out (scrobble to all connected services)
+- [ ] Add retry logic with exponential backoff
+- [ ] Handle rate limit errors gracefully (River snooze)
+- [ ] Log scrobble failures for debugging
+
+### Phase 7: History Sync
+- [ ] Implement `TraktClient.SyncHistory` for importing watch history
+- [ ] Implement `TraktClient.AddToHistory` for exporting local history
+- [ ] Create `HistorySyncWorker` for bidirectional sync
+- [ ] Implement incremental sync (track last_sync_at)
+- [ ] Match external IDs (TMDB, TVDB, IMDB) to local library items
+- [ ] Handle missing items gracefully (content not in library)
+
+### Phase 8: Connection Management Service
+- [ ] Implement `ExternalServiceService` for connection lifecycle
+- [ ] Implement `Connect(ctx, userID, service, code)` method
+- [ ] Implement `Disconnect(ctx, userID, service)` method
+- [ ] Implement `RefreshToken(ctx, userID, service)` for OAuth refresh
+- [ ] Store tokens securely (encrypted at rest if needed)
+- [ ] Validate tokens on service operations
+
+### Phase 9: API Integration
+- [ ] Define OpenAPI spec for external service endpoints
+- [ ] Generate ogen handlers for service management
+- [ ] Implement `GET /api/v1/user/services` - list connected services
+- [ ] Implement `GET /api/v1/user/services/:service/connect` - get OAuth URL
+- [ ] Implement `POST /api/v1/user/services/:service/connect` - complete OAuth
+- [ ] Implement `POST /api/v1/user/services/:service/disconnect` - disconnect
+- [ ] Implement `POST /api/v1/user/services/:service/sync` - trigger manual sync
+- [ ] Implement `PATCH /api/v1/user/services/:service/settings` - update settings
+- [ ] Add auth middleware to all endpoints
+
+### Phase 10: Progress Integration
+- [ ] Hook into playback progress events
+- [ ] Call `ScrobbleService.OnProgressUpdate` on progress changes
+- [ ] Extract external IDs (TMDB, TVDB, MBID) from content metadata
+- [ ] Ensure scrobble events include all required metadata
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Playback & Progress](PLAYBACK_PROGRESS.md)
+- [User Preferences](NSFW_TOGGLE.md)
+- [River Job Queue Patterns](../../00_SOURCE_OF_TRUTH.md#river-job-queue-patterns)

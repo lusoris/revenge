@@ -1,3 +1,12 @@
+# Radarr OpenAPI Spec
+
+> Source: https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json
+> Fetched: 2026-01-30T23:51:27.593616+00:00
+> Content-Hash: b55154bbfaff3fa4
+> Type: json
+
+---
+
 {
   "openapi": "3.0.4",
   "info": {
@@ -8952,7 +8961,7 @@
             "type": "array",
             "items": {
               "type": "object",
-              "additionalProperties": { }
+              "additionalProperties": {}
             },
             "nullable": true
           }
@@ -12834,10 +12843,10 @@
   },
   "security": [
     {
-      "X-Api-Key": [ ]
+      "X-Api-Key": []
     },
     {
-      "apikey": [ ]
+      "apikey": []
     }
   ]
 }

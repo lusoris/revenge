@@ -2,7 +2,30 @@
 
 > Movie content management with metadata enrichment
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Comprehensive spec with architecture, entities, operations |
+| Sources | ✅ | TMDb, Radarr API docs linked |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Location**: `internal/content/movie/`
+
+---
+
+## Developer Resources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| TMDb API | [developers.themoviedb.org](https://developers.themoviedb.org/3) | Primary movie metadata |
+| Radarr API | [radarr.video/docs/api](https://radarr.video/docs/api/) | Servarr integration (Radarr-first) |
+| TMDb Design Doc | [integrations/metadata/video/TMDB.md](../../integrations/metadata/video/TMDB.md) | TMDb integration spec |
+| Radarr Design Doc | [integrations/servarr/RADARR.md](../../integrations/servarr/RADARR.md) | Radarr integration spec |
 
 ---
 
@@ -205,10 +228,18 @@ type UserRating struct {
 
 ---
 
-## Metadata Provider
+## Metadata Flow
 
-Primary: **Radarr** (Servarr-first principle)
-Fallback: **TMDb** (via background jobs)
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#metadata-priority-chain) for full priority chain
+
+**Priority Order:**
+1. **LOCAL CACHE** → otter cache, instant display
+2. **ARR SERVICE** → Radarr (cached TMDb metadata)
+3. **EXTERNAL** → Direct TMDb API (if Radarr unavailable)
+4. **ENRICHMENT** → Background jobs for additional data
+
+**Primary Metadata Source:** TMDb
+**Arr Integration:** Radarr
 
 ```go
 type MetadataProvider interface {
@@ -263,6 +294,99 @@ CREATE TABLE movie.movies (
 ```
 
 ---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/content/movie/` package structure
+- [ ] Define `entity.go` with Movie, Collection, Cast, Crew structs
+- [ ] Create `repository.go` interface definition
+- [ ] Implement `repository_pg.go` with sqlc queries
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Database
+- [ ] Create migration `000XXX_create_movie_schema.up.sql`
+- [ ] Create `movie.movies` table with all columns
+- [ ] Create `movie.collections` table
+- [ ] Create `movie.cast` and `movie.crew` junction tables
+- [ ] Create `movie.genres` and `movie.studios` tables
+- [ ] Add indexes (library_id, tmdb_id, imdb_id, title search)
+- [ ] Write sqlc queries in `queries/movie/`
+
+### Phase 3: Service Layer
+- [ ] Implement `service.go` with otter caching
+- [ ] Add GetMovie, ListMovies, CreateMovie, UpdateMovie, DeleteMovie
+- [ ] Implement cache invalidation on mutations
+- [ ] Add resilience patterns (circuit breaker, retries)
+
+### Phase 4: User Data
+- [ ] Implement `repository_pg_user_data.go`
+- [ ] Add favorites (add, remove, list, check)
+- [ ] Add watch history tracking
+- [ ] Add user ratings and reviews
+- [ ] Implement watch progress persistence
+
+### Phase 5: Background Jobs
+- [ ] Create River job definitions in `jobs.go`
+- [ ] Implement `MovieMetadataRefreshJob`
+- [ ] Implement `MovieImageDownloadJob`
+- [ ] Implement `MovieCollectionSyncJob`
+- [ ] Add job scheduling and retry logic
+
+### Phase 6: API Integration
+- [ ] Define OpenAPI endpoints for movies
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service layer
+- [ ] Add authentication/authorization checks
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Radarr API Docs](https://radarr.video/docs/api/) | [Local](../../../sources/apis/radarr-docs.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Video](INDEX.md)
+
+### In This Section
+
+- [TV Show Module](TVSHOW_MODULE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related
 

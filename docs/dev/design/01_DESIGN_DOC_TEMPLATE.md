@@ -15,7 +15,18 @@ Every design doc should follow this structure for consistency and actionability:
 
 > One-line description
 
-**Status**: 🟢 IMPLEMENTED | 🟡 IN PROGRESS | 🔵 PLANNED | ⚪ DRAFT
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 | |
+| Sources | 🔴 | |
+| Instructions | 🔴 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🔴 HIGH | 🟡 MEDIUM | 🟢 LOW
 **Module**: `internal/content/{module}` or `internal/infra/{component}`
 **Dependencies**: [Link to related docs]
@@ -121,6 +132,20 @@ How to upgrade from current state (if applicable).
 
 ---
 
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
 ## Related Documents
 - [Link to related doc](path/to/doc.md)
 ```
@@ -158,11 +183,24 @@ Documents should guide implementation sequence:
 5. API Handlers → Tests
 
 ### 4. Status Tracking
-Use consistent status indicators:
-- 🟢 IMPLEMENTED - Fully working
-- 🟡 IN PROGRESS - Partially done
-- 🔵 PLANNED - Designed, not started
-- ⚪ DRAFT - Still being designed
+
+Use the multi-dimensional status table (see [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md#status-system)):
+
+| Emoji | Meaning |
+|-------|---------|
+| ✅ | Complete |
+| 🟡 | Partial |
+| 🔴 | Not Started |
+| ⚪ | N/A |
+
+**Dimensions tracked:**
+- **Design** - Feature spec, architecture, DB schema, API endpoints
+- **Sources** - External docs fetched (API specs, GraphQL schemas)
+- **Instructions** - Claude Code implementation instructions
+- **Code** - Go implementation
+- **Linting** - golangci-lint rules
+- **Unit Testing** - Unit tests with embedded-postgres
+- **Integration Testing** - Integration tests with testcontainers
 
 ### 5. Dependency Links
 Always link to:
@@ -179,7 +217,18 @@ Always link to:
 
 > Allow users to mark content as favorites
 
-**Status**: 🔵 PLANNED
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Schema, API, Repository defined |
+| Sources | ⚪ | N/A - internal feature |
+| Instructions | 🔴 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Module**: `internal/content/movie`, `internal/content/tvshow`
 
 ---

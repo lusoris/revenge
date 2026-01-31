@@ -2,8 +2,20 @@
 
 > User portal for bug reports, feature requests, and support tickets
 
-**Status**: 🔴 Design Phase
-**Last Updated**: 2026-01-28
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with DB schema, API endpoints, GitHub sync |
+| Sources | 🟡 | |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Last Updated**: 2026-01-30
+**Location**: `internal/ticketing/`
 **Dependencies**: User authentication, email notifications, webhook triggers
 
 ---
@@ -395,15 +407,6 @@ revenge_url: https://revenge.local/support/tickets/1234
 
 ---
 
-## Related Documentation
-
-- [Auditing System](AUDITING_SYSTEM.md) - Error logs, metadata conflicts, moderation (pending)
-- [User Management](../operations/USER_MANAGEMENT.md) - User roles & permissions (pending)
-- [Email Notifications](../technical/EMAIL.md) - SMTP configuration (pending)
-- [Webhook Configuration](../technical/WEBHOOKS.md) - Webhook setup (pending)
-
----
-
 ## Implementation Phases
 
 ### Phase 1: Backend (Week 1)
@@ -432,3 +435,132 @@ revenge_url: https://revenge.local/support/tickets/1234
 - [ ] Metadata embedding
 
 **Total Estimated Time**: 4-5 weeks
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure at `internal/ticketing/`
+- [ ] Define ticket entity (`entity.go`)
+- [ ] Define comment entity
+- [ ] Define attachment entity
+- [ ] Define label entity
+- [ ] Create repository interface (`repository.go`)
+- [ ] Implement PostgreSQL repository (`postgres_repository.go`)
+- [ ] Create fx module (`module.go`)
+- [ ] Add configuration structs
+
+### Phase 2: Database
+- [ ] Create migration for `tickets` table
+- [ ] Create migration for `ticket_comments` table
+- [ ] Create migration for `ticket_attachments` table
+- [ ] Create migration for `ticket_labels` table
+- [ ] Create migration for `ticket_label_assignments` table
+- [ ] Create migration for `ticket_status_history` table
+- [ ] Add indexes for user_id, assigned_admin_id, status, priority, created_at
+- [ ] Write sqlc queries for ticket CRUD
+- [ ] Write sqlc queries for comment operations
+- [ ] Write sqlc queries for attachment operations
+- [ ] Write sqlc queries for label management
+- [ ] Write sqlc queries for status history tracking
+
+### Phase 3: Service Layer
+- [ ] Implement TicketService (`service.go`)
+- [ ] Add ticket creation logic with validation
+- [ ] Add ticket update logic (status, priority, assignment)
+- [ ] Add comment management (public/internal)
+- [ ] Add label assignment logic
+- [ ] Add attachment upload/delete logic
+- [ ] Implement status transition validation
+- [ ] Add caching for ticket lists (Redis)
+- [ ] Implement bulk actions (assign, priority, status, close)
+- [ ] Add ticket search/filter functionality
+
+### Phase 4: Background Jobs
+- [ ] Create River job for escalation alerts (Critical tickets >4h)
+- [ ] Create River job for auto-close stale resolved tickets
+- [ ] Create River job for attachment cleanup
+- [ ] Create River job for GitHub sync (if enabled)
+- [ ] Register jobs in fx module
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI spec for user ticket endpoints
+- [ ] Add OpenAPI spec for admin ticket endpoints
+- [ ] Generate ogen handlers
+- [ ] Implement user endpoints:
+  - [ ] POST /api/v1/support/tickets (create)
+  - [ ] GET /api/v1/support/tickets (list own)
+  - [ ] GET /api/v1/support/tickets/{id} (detail)
+  - [ ] POST /api/v1/support/tickets/{id}/comments (add comment)
+  - [ ] PUT /api/v1/support/tickets/{id}/resolve (mark resolved)
+- [ ] Implement admin endpoints:
+  - [ ] GET /api/v1/admin/support/tickets (list all)
+  - [ ] PUT /api/v1/admin/support/tickets/{id}/assign
+  - [ ] PUT /api/v1/admin/support/tickets/{id}/status
+  - [ ] PUT /api/v1/admin/support/tickets/{id}/priority
+  - [ ] POST /api/v1/admin/support/tickets/{id}/labels
+  - [ ] POST /api/v1/admin/support/tickets/{id}/comments (internal)
+  - [ ] PUT /api/v1/admin/support/tickets/{id}/close
+  - [ ] POST /api/v1/admin/support/tickets/bulk
+- [ ] Add authentication middleware
+- [ ] Add RBAC permission checks
+- [ ] Integrate email notifications
+- [ ] Integrate webhook triggers
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Auditing System](AUDITING_SYSTEM.md) - Error logs, metadata conflicts, moderation
+- [User Management](../operations/USER_MANAGEMENT.md) - User roles & permissions
+- [Email Notifications](../technical/EMAIL.md) - SMTP configuration
+- [Webhook Configuration](../technical/WEBHOOKS.md) - Webhook setup

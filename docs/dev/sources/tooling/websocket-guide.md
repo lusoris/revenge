@@ -1,8 +1,9 @@
 # coder/websocket GitHub README
 
-> Auto-fetched from [https://github.com/coder/websocket](https://github.com/coder/websocket)
-> Raw source: [https://raw.githubusercontent.com/coder/websocket/HEAD/README.md](https://raw.githubusercontent.com/coder/websocket/HEAD/README.md)
-> Last Updated: 2026-01-29T20:11:54.640999+00:00
+> Source: https://github.com/coder/websocket
+> Fetched: 2026-01-30T23:48:55.572400+00:00
+> Content-Hash: ec92620d532c4ee4
+> Type: github_readme
 
 ---
 

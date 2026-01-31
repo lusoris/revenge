@@ -3,6 +3,20 @@
 > User preference component for adult content visibility.
 > Referenced by [WHISPARR_STASHDB_SCHEMA.md](WHISPARR_STASHDB_SCHEMA.md) and [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md).
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with DB schema, middleware, Svelte components |
+| Sources | 🟡 | |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+---
+
 ## Overview
 
 The NSFW toggle controls visibility and access to adult content modules (`adult_movie`, `adult_scene`) stored in PostgreSQL schema `qar`.
@@ -653,7 +667,113 @@ paths:
 
 ---
 
-## Related Documents
+## Implementation Checklist
+
+**Location**: `internal/service/preferences/`
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/preferences/`
+- [ ] Define entities: `UserPreferences`, `NSFWAuditEntry`
+- [ ] Create repository interface `PreferencesRepository`
+- [ ] Implement fx module `preferences.Module`
+- [ ] Add configuration struct for NSFW settings (timeout defaults)
+
+### Phase 2: Database
+- [ ] Create migration `xxx_nsfw_toggle.up.sql`
+- [ ] Create `user_preferences` table with NSFW fields
+- [ ] Create `nsfw_toggle_audit` table for compliance logging
+- [ ] Add index on `nsfw_toggle_audit(user_id, timestamp DESC)`
+- [ ] Generate sqlc queries for preference CRUD
+- [ ] Generate sqlc queries for audit log insertion
+
+### Phase 3: Service Layer
+- [ ] Implement `PreferencesService` for NSFW state management
+- [ ] Implement PIN hashing with `bcrypt` (never store plain text)
+- [ ] Implement PIN verification with timing-safe comparison
+- [ ] Add Dragonfly cache layer for fast middleware checks (`user:{id}:nsfw`)
+- [ ] Implement cache invalidation on preference changes
+- [ ] Add audit logging for all toggle actions (enabled, disabled, pin_set, pin_verified)
+- [ ] Implement auto-lock timeout logic with activity tracking
+
+### Phase 4: Background Jobs
+- [ ] Create `NSFWAutoLockWorker` for inactivity timeout
+- [ ] Implement activity tracking via cache (`user:{id}:last_activity`)
+- [ ] Configure River job snoozing for active users
+- [ ] Add job scheduling on NSFW enable (when timeout configured)
+
+### Phase 5: Middleware
+- [ ] Implement `NSFWMiddleware` for `/api/v1/qar/*` route protection
+- [ ] Return 404 (not 403) to obscure adult content existence
+- [ ] Implement `ActivityMiddleware` for tracking user activity
+- [ ] Integrate middleware into router chain
+
+### Phase 6: API Integration
+- [ ] Define OpenAPI spec for NSFW preference endpoints
+- [ ] Generate ogen handlers for preferences
+- [ ] Implement `GET /api/v1/user/preferences/nsfw` - get status
+- [ ] Implement `PUT /api/v1/user/preferences/nsfw` - update enabled state
+- [ ] Implement `POST /api/v1/user/preferences/nsfw/pin` - set/update PIN
+- [ ] Implement `DELETE /api/v1/user/preferences/nsfw/pin` - remove PIN
+- [ ] Implement `POST /api/v1/user/preferences/nsfw/verify` - verify PIN
+- [ ] Add auth middleware to all endpoints
+- [ ] Implement rate limiting on PIN verification (prevent brute force)
+
+### Phase 7: Search Integration
+- [ ] Update `SearchService` to check NSFW state before including adult results
+- [ ] Filter adult modules (`AdultMovies`, `AdultScenes`) based on user preference
+- [ ] Ensure search respects middleware protection
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md) - Full adult content architecture
 - [WHISPARR_STASHDB_SCHEMA.md](WHISPARR_STASHDB_SCHEMA.md) - Adult content schema and metadata

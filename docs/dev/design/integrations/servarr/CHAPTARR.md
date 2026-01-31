@@ -2,7 +2,18 @@
 
 > Book & audiobook management automation (uses Readarr API)
 
-**Status**: 🟡 PLANNED
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🟡 MEDIUM (Phase 6 - Book Module)
 **Type**: Webhook listener + API client for metadata sync
 
@@ -123,50 +134,25 @@ Triggered when Readarr detects health issues.
 
 ## Implementation Checklist
 
-- [ ] **API Client** (`internal/service/metadata/provider_readarr.go`)
-  - [ ] Author listing & detail fetching
-  - [ ] Book listing & detail fetching
-  - [ ] Book file listing & detail fetching
-  - [ ] Quality profile mapping
-  - [ ] Metadata profile mapping
-  - [ ] Health check integration
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client with resty
+- [ ] Add API key authentication
+- [ ] Implement rate limiting
 
-- [ ] **Webhook Handler** (`internal/api/handlers/webhook_readarr.go`)
-  - [ ] Parse webhook payload (On Download event)
-  - [ ] Extract author + book + file metadata
-  - [ ] Detect audiobook vs ebook (based on file format OR `isAudiobook` flag)
-  - [ ] Route to appropriate module (audiobook OR book)
-  - [ ] Trigger metadata enrichment (Goodreads, Audible)
-  - [ ] Store in PostgreSQL (`book_authors`, `books` OR `audiobooks`)
-  - [ ] Update Typesense search index
+### Phase 2: API Implementation
+- [ ] Implement core API methods
+- [ ] Add response type definitions
+- [ ] Implement error handling
 
-- [ ] **Metadata Sync**
-  - [ ] Map Readarr authors → Revenge `book_authors` table
-  - [ ] Map Readarr books → Revenge `books` table (ebooks)
-  - [ ] Map Readarr audiobooks → Revenge `audiobooks` table
-  - [ ] Map Readarr quality profiles → Revenge quality tiers
-  - [ ] Handle book series (series title + position)
+### Phase 3: Service Integration
+- [ ] Create service wrapper
+- [ ] Add caching layer
+- [ ] Implement fx module wiring
 
-- [ ] **Audiobook vs Ebook Detection**
-  - [ ] Check file extension: `.mp3`, `.m4b`, `.m4a` → audiobook module
-  - [ ] Check file extension: `.epub`, `.pdf`, `.mobi`, `.azw3` → book module
-  - [ ] Fallback: Use Readarr `isAudiobook` flag (if available)
-
-- [ ] **Quality Profile Mapping**
-  - [ ] **Audiobooks**:
-    - [ ] High (320kbps MP3) → `quality='high'`, `bitrate=320`
-    - [ ] Medium (192kbps MP3) → `quality='medium'`, `bitrate=192`
-    - [ ] Low (128kbps MP3) → `quality='low'`, `bitrate=128`
-  - [ ] **Ebooks**:
-    - [ ] EPUB → `format='epub'`
-    - [ ] PDF → `format='pdf'`
-    - [ ] MOBI → `format='mobi'`
-    - [ ] AZW3 → `format='azw3'`
-
-- [ ] **Error Handling**
-  - [ ] Retry failed API calls (circuit breaker)
-  - [ ] Log webhook failures
-  - [ ] Handle missing books (not yet released)
+### Phase 4: Testing
+- [ ] Add unit tests with mocks
+- [ ] Add integration tests
 
 ---
 
@@ -255,6 +241,56 @@ func (c *ReadarrClient) GetBooksByAuthor(ctx context.Context, authorID int) ([]B
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Servarr](INDEX.md)
+
+### In This Section
+
+- [Lidarr Integration](LIDARR.md)
+- [Radarr Integration](RADARR.md)
+- [Sonarr Integration](SONARR.md)
+- [Whisparr v3 Integration](WHISPARR.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

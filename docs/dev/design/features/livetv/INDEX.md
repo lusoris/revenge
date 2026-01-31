@@ -1,26 +1,42 @@
-# Live TV Documentation
+# Live TV Module
 
-> Live television and DVR support
+← Back to [Design Docs](..)
+
+> Live TV and DVR features
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
 ## Documents
 
-| Document | Description |
-|----------|-------------|
-| [LIVE_TV_DVR.md](LIVE_TV_DVR.md) | Live TV / DVR feature design |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Live TV & DVR](LIVE_TV_DVR.md) | Live television streaming and digital video recording | ✅ Designed |
 
 ---
 
-## Key Concepts
+<!-- SOURCE-BREADCRUMBS-START -->
 
-- **Backends**: TVHeadend, NextPVR
-- **EPG**: Electronic Program Guide integration
-- **Recording**: Scheduled and manual DVR
+## Sources & Cross-References
 
----
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ## Related
 
-- [Integrations: TVHeadend](../../integrations/livetv/TVHEADEND.md)
-- [Integrations: NextPVR](../../integrations/livetv/NEXTPVR.md)
+- [Live TV Integration](../../integrations/livetv/)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

@@ -2,11 +2,40 @@
 
 > Image gallery management for adult content with performer links and Prowlarr integration
 
-**Status**: 🟡 PLANNED
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 **Priority**: 🟡 MEDIUM (Phase 7 - Adult Enhancements)
 **Schema**: `qar` (Queen Anne's Revenge isolated schema)
 **API Namespace**: `/api/v1/legacy/treasures` (obfuscated)
 **Dependencies**: Adult Content System, Prowlarr, Typesense
+
+---
+
+## Developer Resources
+
+> Package versions: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| Typesense | [typesense.org/docs](https://typesense.org/docs/) | Gallery search |
+| Prowlarr API | [wiki.servarr.com/prowlarr](https://wiki.servarr.com/prowlarr) | Download search |
+| SABnzbd API | [sabnzbd.org/wiki](https://sabnzbd.org/wiki/configuration/4.3/api) | Usenet download client |
+
+| Package | Purpose |
+|---------|---------|
+| goimagehash | pHash image deduplication |
+| govips | Thumbnail/WebP generation |
+| go-blurhash | Placeholder generation |
 
 ---
 
@@ -632,38 +661,42 @@ var TreasureCollectionSchema = map[string]interface{}{
 
 ## API Endpoints
 
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#api-namespaces) for API namespace conventions.
+
+All QAR endpoints use `/api/v1/legacy/` namespace externally (obfuscated).
+
 ```
 # Treasures (Galleries)
-GET    /api/v1/qar/treasures                    # List galleries
-POST   /api/v1/qar/treasures                    # Create gallery
-GET    /api/v1/qar/treasures/{id}               # Get gallery
-PUT    /api/v1/qar/treasures/{id}               # Update gallery
-DELETE /api/v1/qar/treasures/{id}               # Delete gallery
+GET    /api/v1/legacy/treasures                    # List galleries
+POST   /api/v1/legacy/treasures                    # Create gallery
+GET    /api/v1/legacy/treasures/{id}               # Get gallery
+PUT    /api/v1/legacy/treasures/{id}               # Update gallery
+DELETE /api/v1/legacy/treasures/{id}               # Delete gallery
 
 # Doubloons (Images)
-GET    /api/v1/qar/treasures/{id}/doubloons     # List gallery images
-POST   /api/v1/qar/treasures/{id}/doubloons     # Add images
-GET    /api/v1/qar/doubloons/{id}               # Get single image
-DELETE /api/v1/qar/doubloons/{id}               # Delete image
+GET    /api/v1/legacy/treasures/{id}/doubloons     # List gallery images
+POST   /api/v1/legacy/treasures/{id}/doubloons     # Add images
+GET    /api/v1/legacy/doubloons/{id}               # Get single image
+DELETE /api/v1/legacy/doubloons/{id}               # Delete image
 
 # Relationships
-GET    /api/v1/qar/crew/{id}/treasures          # Galleries for performer
-GET    /api/v1/qar/voyages/{id}/treasures       # Galleries for scene
-GET    /api/v1/qar/ports/{id}/treasures         # Galleries for studio
+GET    /api/v1/legacy/crew/{id}/treasures          # Galleries for performer
+GET    /api/v1/legacy/voyages/{id}/treasures       # Galleries for scene
+GET    /api/v1/legacy/ports/{id}/treasures         # Galleries for studio
 
 # Plunder (Downloads)
-GET    /api/v1/qar/plunder                      # List download queue
-POST   /api/v1/qar/plunder                      # Add to download queue
-GET    /api/v1/qar/plunder/{id}                 # Get download status
-DELETE /api/v1/qar/plunder/{id}                 # Cancel download
+GET    /api/v1/legacy/plunder                      # List download queue
+POST   /api/v1/legacy/plunder                      # Add to download queue
+GET    /api/v1/legacy/plunder/{id}                 # Get download status
+DELETE /api/v1/legacy/plunder/{id}                 # Cancel download
 
 # Search
-GET    /api/v1/qar/treasures/search?q=...       # Search galleries
+GET    /api/v1/legacy/treasures/search?q=...       # Search galleries
 
 # User actions
-POST   /api/v1/qar/treasures/{id}/favorite      # Add to favorites
-DELETE /api/v1/qar/treasures/{id}/favorite      # Remove from favorites
-POST   /api/v1/qar/treasures/{id}/rate          # Rate gallery
+POST   /api/v1/legacy/treasures/{id}/favorite      # Add to favorites
+DELETE /api/v1/legacy/treasures/{id}/favorite      # Remove from favorites
+POST   /api/v1/legacy/treasures/{id}/rate          # Rate gallery
 ```
 
 ---
@@ -703,6 +736,60 @@ POST   /api/v1/qar/treasures/{id}/rate          # Rate gallery
 - [ ] Add to router with QAR auth middleware
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [google/uuid](https://pkg.go.dev/github.com/google/uuid) | [Local](../../../sources/tooling/uuid.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Adult](INDEX.md)
+
+### In This Section
+
+- [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md)
+- [Revenge - Adult Content Metadata System](ADULT_METADATA.md)
+- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
+- [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

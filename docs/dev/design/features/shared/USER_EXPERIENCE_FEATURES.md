@@ -2,6 +2,23 @@
 
 > User-facing features inspired by modern streaming services.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with feature matrix, DB schemas, UI patterns |
+| Sources | ✅ | Netflix, Spotify, Disney+, YouTube features documented |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Last Updated**: 2026-01-30
+**Location**: `internal/ux/`
+
+---
+
 ## Overview
 
 This document catalogs **user experience features** for Revenge. Focus is on UI/UX - all transcoding is handled by Blackbeard.
@@ -796,3 +813,144 @@ CREATE TABLE parental_controls (
 | **Parental** | Kids mode, PIN, content filters |
 
 All streaming/transcoding is delegated to Blackbeard. Revenge focuses on the user experience layer.
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure at `internal/ux/`
+- [ ] Create sub-packages: `profiles/`, `playback/`, `preferences/`, `social/`
+- [ ] Define profile entity (`profiles/entity.go`)
+- [ ] Define user preferences entity
+- [ ] Define content marker entity (intro/outro)
+- [ ] Define collection entity (watchlist, favorites)
+- [ ] Create repository interfaces
+- [ ] Implement PostgreSQL repositories
+- [ ] Create fx module (`module.go`)
+- [ ] Add configuration structs for all features
+
+### Phase 2: Database
+- [ ] Create migration for `profiles` table
+- [ ] Create migration for `content_markers` table
+- [ ] Create migration for `track_lyrics` table
+- [ ] Create migration for `user_collections` table
+- [ ] Create migration for `user_collection_items` table
+- [ ] Create migration for `user_subtitle_preferences` table
+- [ ] Create migration for `parental_controls` table
+- [ ] Create migration for `activity_feed` table (encrypted)
+- [ ] Add indexes for profile lookups, collection queries
+- [ ] Write sqlc queries for profile CRUD
+- [ ] Write sqlc queries for preferences management
+- [ ] Write sqlc queries for collections
+- [ ] Write sqlc queries for activity feed
+
+### Phase 3: Service Layer
+- [ ] Implement ProfileService
+  - [ ] Profile CRUD operations
+  - [ ] Avatar handling (upload, Gravatar, DiceBear fallback)
+  - [ ] Kids mode restrictions
+  - [ ] Maturity rating enforcement
+- [ ] Implement PlaybackService
+  - [ ] Continue watching logic (5%-95% rules)
+  - [ ] Skip intro/outro detection and UI triggers
+  - [ ] Playback speed per content type
+  - [ ] Sleep timer functionality
+  - [ ] "Are you still watching?" prompts
+- [ ] Implement PreferencesService
+  - [ ] Subtitle customization
+  - [ ] Audio quality selection
+  - [ ] Autoplay settings
+  - [ ] Reduced motion / accessibility
+- [ ] Implement SocialService
+  - [ ] Watch party sync (WebSocket)
+  - [ ] Activity feed (with encryption)
+  - [ ] Year-in-review stats calculation
+- [ ] Add caching for frequently accessed preferences
+
+### Phase 4: Background Jobs
+- [ ] Create River job for content marker detection (audio fingerprinting)
+- [ ] Create River job for "continue watching" cleanup (30-day inactivity)
+- [ ] Create River job for year-in-review generation
+- [ ] Create River job for activity feed pruning
+- [ ] Create River job for smart download management
+- [ ] Register jobs in fx module
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI spec for profile endpoints
+- [ ] Add OpenAPI spec for playback preference endpoints
+- [ ] Add OpenAPI spec for collection endpoints
+- [ ] Add OpenAPI spec for social feature endpoints
+- [ ] Generate ogen handlers
+- [ ] Implement profile endpoints:
+  - [ ] GET/POST/PUT/DELETE /api/v1/profiles
+  - [ ] POST /api/v1/profiles/{id}/avatar
+- [ ] Implement playback endpoints:
+  - [ ] GET /api/v1/continue-watching
+  - [ ] PUT /api/v1/playback/progress
+  - [ ] GET /api/v1/content/{id}/markers
+- [ ] Implement collection endpoints:
+  - [ ] GET/POST /api/v1/collections
+  - [ ] POST/DELETE /api/v1/collections/{id}/items
+- [ ] Implement social endpoints:
+  - [ ] WebSocket /api/v1/watch-party/{id}
+  - [ ] GET /api/v1/activity-feed
+  - [ ] GET /api/v1/wrapped/{year}
+- [ ] Add authentication middleware
+- [ ] Add profile-based authorization
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Design Principles](DESIGN_PRINCIPLES.md) - Architectural decisions
+- [Client Support](CLIENT_SUPPORT.md) - Device capabilities and streaming
+- [Voice Control](VOICE_CONTROL.md) - Voice assistant integration

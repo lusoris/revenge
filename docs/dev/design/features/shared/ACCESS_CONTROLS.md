@@ -2,9 +2,21 @@
 
 > User access restrictions based on time, limits, and schedules
 
-**Status**: 🔴 PLANNING
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with DB schema, Go implementation, API endpoints |
+| Sources | 🟡 | Inspired by Emby Parental Controls |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🟡 MEDIUM (Emby has this)
 **Inspired By**: Emby Parental Controls
+**Location**: `internal/service/access/`
 
 ---
 
@@ -360,7 +372,104 @@ access_controls:
 
 ---
 
-## Related Documentation
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/access/`
+- [ ] Define `AccessRule` entity with all rule types (time_limit, schedule, bedtime, device_limit, expiry)
+- [ ] Define `DailyUsage` entity for tracking
+- [ ] Define `Violation` entity for violations log
+- [ ] Create repository interfaces for rules, usage, and violations
+- [ ] Register fx module `internal/service/access/module.go`
+
+### Phase 2: Database
+- [ ] Create migration `shared/000XXX_access_rules.up.sql`
+- [ ] Create `access_rules` table with schedule, bedtime, limit columns
+- [ ] Create `access_usage` table with daily/weekly tracking
+- [ ] Create `access_violations` table for audit log
+- [ ] Add indexes on user_id, date for efficient queries
+- [ ] Generate sqlc queries for CRUD operations
+- [ ] Generate queries for usage aggregation
+
+### Phase 3: Service Layer
+- [ ] Implement `AccessChecker` with rule evaluation logic
+- [ ] Implement schedule checking (weekday vs weekend hours)
+- [ ] Implement bedtime enforcement with warning minutes
+- [ ] Implement daily/weekly time limit tracking
+- [ ] Implement `GetRemainingTime()` for client warnings
+- [ ] Add caching for user rules (Redis with invalidation)
+- [ ] Implement concurrent stream limit checking
+
+### Phase 4: Background Jobs
+- [ ] Create River job for daily usage reset at `reset_time`
+- [ ] Create River job for weekly usage rollup
+- [ ] Create River job for expired account cleanup
+- [ ] Create notification job for limit warnings
+- [ ] Schedule periodic access check during active sessions
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI schema for access rules endpoints
+- [ ] Implement `GET /api/v1/access/rules` (admin view all)
+- [ ] Implement `GET /api/v1/access/users/:user_id/rules`
+- [ ] Implement `POST /api/v1/access/users/:user_id/rules`
+- [ ] Implement `PUT /api/v1/access/rules/:id`
+- [ ] Implement `DELETE /api/v1/access/rules/:id`
+- [ ] Implement `GET /api/v1/access/check` (current user access check)
+- [ ] Implement usage endpoints (today, week, history)
+- [ ] Add middleware for playback access enforcement
+- [ ] Add RBAC permissions (`access.rules.view`, `access.rules.manage`, `access.bypass`)
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [RBAC with Casbin](RBAC_CASBIN.md)
 - [User Experience Features](USER_EXPERIENCE_FEATURES.md)

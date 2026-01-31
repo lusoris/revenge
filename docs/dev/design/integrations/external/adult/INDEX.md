@@ -1,157 +1,47 @@
 # Adult External Services
 
-> Social media and supplementary services for adult content
+← Back to [Design Docs](..)
 
-**⚠️ Adult Content**: All data stored in isolated PostgreSQL schema `qar` (Queen Anne's Revenge).
-API namespace: `/api/v1/qar/`
+> Social media integration for adult content
 
----
-
-## Overview
-
-Adult external services provide:
-- Performer social media links
-- Supplementary metadata
-- Platform presence tracking
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Services
+## Documents
 
-### Social Media
-
-| Provider | Type | Status |
-|----------|------|--------|
-| [Twitter/X](TWITTER_X.md) | Social | 🔴 Planned |
-| [Instagram](INSTAGRAM.md) | Social | 🔴 Planned |
-| TikTok | Social | 🔴 Planned |
-| YouTube | Social | 🔴 Planned |
-| Reddit | Social | 🔴 Planned |
-
-### Amateur/Creator Platforms
-
-| Provider | Type | Status |
-|----------|------|--------|
-| [OnlyFans](ONLYFANS.md) | Creator | 🔴 Planned |
-| ManyVids | Creator | 🔴 Planned |
-| Clips4Sale | Creator | 🔴 Planned |
-| Fansly | Creator | 🔴 Planned |
-| LoyalFans | Creator | 🔴 Planned |
-| AVN Stars | Creator | 🔴 Planned |
-
-### Studio/Video Platforms
-
-| Provider | Type | Status |
-|----------|------|--------|
-| [Pornhub](PORNHUB.md) | Platform | 🔴 Planned |
-| Brazzers | Platform | 🔴 Planned |
-| Reality Kings | Platform | 🔴 Planned |
-| Bang Bros | Platform | 🔴 Planned |
-
-### External Databases
-
-| Provider | Type | API | Status |
-|----------|------|-----|--------|
-| [TheNude](THENUDE.md) | Metadata | REST | 🔴 Planned |
-| Data18 | Metadata | Scraping | 🔴 Planned |
-| Indexxx | Metadata | Scraping | 🔴 Planned |
-| EuroBabeIndexxx | Metadata | Scraping | 🔴 Planned |
-| Bgafd | UK Database | Scraping | 🔴 Planned |
-| Egafd | EU Database | Scraping | 🔴 Planned |
-| AdultDVDEmpire | DVD/VOD | REST | 🔴 Planned |
-| HotMovies | VOD | REST | 🔴 Planned |
-
-> **Note**: These external databases are linked from StashDB performer/studio/scene entries. Use as enrichment sources via background River jobs.
+| Document | Description | Status |
+|----------|-------------|--------|
+| [FreeOnes Integration](FREEONES.md) | Adult performer database with comprehensive profiles and lin... | ✅ Designed |
+| [Instagram Integration](INSTAGRAM.md) | Performer social media presence | ✅ Designed |
+| [OnlyFans Integration](ONLYFANS.md) | Adult content platform subscription service - profile link t... | ✅ Designed |
+| [Pornhub Integration](PORNHUB.md) | Adult content platform with performer pages and scene metada... | 🟡 Partial |
+| [TheNude Integration](THENUDE.md) | Adult performer database with aliases and measurements | 🟡 Partial |
+| [Twitter/X Integration](TWITTER_X.md) | Performer social media presence | ✅ Designed |
 
 ---
 
-## Service Details
+<!-- SOURCE-BREADCRUMBS-START -->
 
-### Twitter/X
-**Performer social presence**
+## Sources & Cross-References
 
-- Official accounts
-- Promotional links
-- Verification status
-- Limited API access (Free tier)
+> Auto-generated section linking to external documentation sources
 
-### Instagram
-**Performer social presence**
+### Cross-Reference Indexes
 
-- Profile links only
-- No API integration (deprecated)
-- Manual link management
+- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-### Pornhub
-**Platform metadata**
+<!-- SOURCE-BREADCRUMBS-END -->
 
-- Channel information
-- View statistics
-- ⚠️ Unofficial API
+## Related
 
-### OnlyFans
-**Creator platform**
-
-- Profile links
-- No API available
-- Manual entry only
-
-### TheNude
-**Performer metadata**
-
-- Biographical data
-- Career information
-- ⚠️ Web scraping required
+- [Adult Content Module](../../../features/adult/)
 
 ---
 
-## Data Isolation
+## Status Legend
 
-All data stored in `qar` schema:
+> See [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
-```sql
--- Crew social links (performer social links)
-qar.crew_social_links (
-    crew_id,
-    platform,
-    handle,
-    profile_url,
-    verified
-)
-```
-
----
-
-## Configuration
-
-```yaml
-integrations:
-  adult:
-    social:
-      twitter:
-        enabled: false
-      instagram:
-        enabled: false
-    metadata:
-      pornhub:
-        enabled: false
-      onlyfans:
-        enabled: false
-```
-
----
-
-## Privacy Notes
-
-- Only public profile URLs stored
-- No content scraping
-- User-provided links primarily
-- Performers can opt-out
-
----
-
-## Related Documentation
-
-- [External Overview](../INDEX.md)
-- [Adult Metadata](../../metadata/adult/INDEX.md)
-- [Adult Wiki](../../wiki/adult/INDEX.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

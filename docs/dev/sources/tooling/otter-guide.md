@@ -1,8 +1,9 @@
 # otter GitHub README
 
-> Auto-fetched from [https://github.com/maypok86/otter](https://github.com/maypok86/otter)
-> Raw source: [https://raw.githubusercontent.com/maypok86/otter/HEAD/README.md](https://raw.githubusercontent.com/maypok86/otter/HEAD/README.md)
-> Last Updated: 2026-01-29T20:11:45.090436+00:00
+> Source: https://github.com/maypok86/otter
+> Fetched: 2026-01-30T23:48:46.546656+00:00
+> Content-Hash: 1f078b69837235cb
+> Type: github_readme
 
 ---
 

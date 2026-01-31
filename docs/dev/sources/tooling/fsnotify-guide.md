@@ -1,8 +1,9 @@
 # fsnotify GitHub README
 
-> Auto-fetched from [https://github.com/fsnotify/fsnotify](https://github.com/fsnotify/fsnotify)
-> Raw source: [https://raw.githubusercontent.com/fsnotify/fsnotify/HEAD/README.md](https://raw.githubusercontent.com/fsnotify/fsnotify/HEAD/README.md)
-> Last Updated: 2026-01-29T20:12:04.059769+00:00
+> Source: https://github.com/fsnotify/fsnotify
+> Fetched: 2026-01-30T23:49:05.517653+00:00
+> Content-Hash: bf35d09bf58b2a63
+> Type: github_readme
 
 ---
 

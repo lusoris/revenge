@@ -2,9 +2,33 @@
 
 > Live television streaming and digital video recording
 
-**Status**: 🔴 PLANNING
-**Priority**: 🟢 HIGH (Critical Gap - All competitors have this)
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Comprehensive spec with architecture, schema, jobs |
+| Sources | ✅ | API docs linked for HDHomeRun, TVHeadend, XMLTV, M3U, Schedules Direct |
+| Instructions | ✅ | Implementation checklist added |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: HIGH (Critical Gap - All competitors have this)
 **Inspired By**: Jellyfin Live TV, Plex DVR, Emby Live TV
+**Location**: `internal/content/livetv/`
+
+---
+
+## Developer Resources
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| HDHomeRun API | [info.hdhomerun.com/info/http_api](https://info.hdhomerun.com/info/http_api) | HDHomeRun tuner integration |
+| TVHeadend API | [tvheadend.org/projects/tvheadend/wiki/API](https://tvheadend.org/projects/tvheadend/wiki/API) | TVHeadend server integration |
+| XMLTV Format | [wiki.xmltv.org/index.php/XMLTVFormat](https://wiki.xmltv.org/index.php/XMLTVFormat) | EPG data format |
+| M3U Playlist | [en.wikipedia.org/wiki/M3U](https://en.wikipedia.org/wiki/M3U) | IPTV playlist format |
+| Schedules Direct | [schedulesdirect.org/docs](https://schedulesdirect.org/docs) | EPG provider API |
 
 ---
 
@@ -100,12 +124,13 @@ Live TV & DVR provides live television streaming, electronic program guide (EPG)
 
 ## Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **gorilla/websocket** | Live updates | github.com/gorilla/websocket |
-| **u2takey/ffmpeg-go** | Stream transcoding | github.com/u2takey/ffmpeg-go |
-| **encoding/xml** | XMLTV parsing | stdlib |
-| **robfig/cron** | Recording scheduler | github.com/robfig/cron/v3 |
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for package versions.
+
+Key packages used:
+- **gobwas/ws** - Live updates
+- **go-astiav** - Stream transcoding (FFmpeg bindings)
+- **encoding/xml** - XMLTV parsing (stdlib)
+- **robfig/cron** - Recording scheduler
 
 ---
 
@@ -464,8 +489,112 @@ livetv:
 
 ---
 
-## Related Documentation
+## Implementation Checklist
 
-- [Integrations: Live TV](../integrations/livetv/INDEX.md)
-- [Transcoding](../integrations/transcoding/INDEX.md)
-- [Go Packages](../architecture/GO_PACKAGES.md)
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/content/livetv/` package structure
+- [ ] Define `entity.go` with Tuner, Channel, Program, Recording structs
+- [ ] Create `repository.go` interface definition
+- [ ] Implement `repository_pg.go` with sqlc queries
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Database
+- [ ] Create migration `000XXX_create_livetv_schema.up.sql`
+- [ ] Create `livetv_tuners` table
+- [ ] Create `livetv_channels` table
+- [ ] Create `livetv_epg_sources` table
+- [ ] Create `livetv_programs` table
+- [ ] Create `livetv_recordings` and `livetv_series_recordings` tables
+- [ ] Add indexes (channel, time ranges, status)
+- [ ] Write sqlc queries in `queries/livetv/`
+
+### Phase 3: Tuner Integration
+- [ ] Implement HDHomeRun client (discover, channels, stream URL)
+- [ ] Implement TVHeadend client
+- [ ] Implement M3U/IPTV parser
+- [ ] Add tuner health monitoring
+
+### Phase 4: EPG Management
+- [ ] Implement XMLTV parser
+- [ ] Implement EPG refresh scheduling
+- [ ] Add channel-to-EPG mapping
+- [ ] Implement program search
+
+### Phase 5: Service Layer
+- [ ] Implement `service.go` with otter caching
+- [ ] Add Tuner operations (Get, List, Scan, Add, Remove)
+- [ ] Add Channel operations (Get, List, Update, GetStreamURL)
+- [ ] Add Program operations (GetGuide, GetNowPlaying, Search)
+- [ ] Implement cache invalidation
+
+### Phase 6: DVR/Recording
+- [ ] Implement RecordingManager (start, stop, monitor)
+- [ ] Implement series recording rules
+- [ ] Add recording conflict detection
+- [ ] Implement post-processing pipeline (optional)
+
+### Phase 7: Background Jobs
+- [ ] Create River job definitions in `jobs.go`
+- [ ] Implement `RefreshEPGJob`
+- [ ] Implement `ScanTunersJob`
+- [ ] Implement `StartRecordingJob`
+- [ ] Implement `StopRecordingJob`
+- [ ] Implement `CleanupRecordingsJob`
+
+### Phase 8: API Integration
+- [ ] Define OpenAPI endpoints for live TV
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service layer
+- [ ] Add stream proxy endpoint
+- [ ] Add authentication/authorization checks
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [XMLTV Wiki](https://wiki.xmltv.org/index.php/XMLTVFormat) | [Local](../../../sources/protocols/xmltv-format.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Livetv](INDEX.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Integrations: HDHomeRun](../../integrations/livetv/HDHOMERUN.md) - HDHomeRun integration
+- [Integrations: TVHeadend](../../integrations/livetv/TVHEADEND.md) - TVHeadend integration
+- [Transcoding: Blackbeard](../../integrations/transcoding/BLACKBEARD.md) - Live transcoding

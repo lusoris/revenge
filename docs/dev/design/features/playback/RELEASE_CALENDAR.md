@@ -2,10 +2,33 @@
 
 > Upcoming releases and recent additions calendar via Servarr integration
 
-**Status**: 🔵 PLANNED
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 **Priority**: 🟡 MEDIUM
 **Module**: `internal/calendar`
 **Dependencies**: [Servarr Integration](../integrations/servarr/INDEX.md)
+**Location**: `internal/feature/calendar/`
+
+---
+
+## Developer Resources
+
+| Source          | URL                                                                                                        | Purpose                |
+| --------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------- |
+| TMDb Upcoming   | [developers.themoviedb.org/3/movies/get-upcoming](https://developers.themoviedb.org/3/movies/get-upcoming) | Movie release dates    |
+| Sonarr Calendar | [sonarr.tv/docs/api/#/Calendar](https://sonarr.tv/docs/api/#/Calendar)                                     | TV episode air dates   |
+| Radarr Calendar | [radarr.video/docs/api/#/Calendar](https://radarr.video/docs/api/#/Calendar)                               | Movie release dates    |
+| iCal Spec       | [icalendar.org/RFC-Specifications](https://icalendar.org/RFC-Specifications/iCalendar-RFC-5545/)           | Calendar export format |
 
 ---
 
@@ -424,6 +447,59 @@ calendar:
 - [ ] Content type filters
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Go context](https://pkg.go.dev/context) | [Local](../../../sources/go/stdlib/context.md) |
+| [Radarr API Docs](https://radarr.video/docs/api/) | [Local](../../../sources/apis/radarr-docs.md) |
+| [Sonarr API Docs](https://sonarr.tv/docs/api/) | [Local](../../../sources/apis/sonarr-docs.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Playback](INDEX.md)
+
+### In This Section
+
+- [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md)
+- [Skip Intro / Credits Detection](SKIP_INTRO.md)
+- [SyncPlay (Watch Together)](SYNCPLAY.md)
+- [Trickplay (Timeline Thumbnails)](TRICKPLAY.md)
+- [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

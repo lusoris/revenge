@@ -1,106 +1,41 @@
 # Book Metadata Providers
 
-> Books and literature metadata
+← Back to [Design Docs](..)
+
+> Open Library, Google Books, Goodreads
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Overview
+## Documents
 
-Book metadata providers supply information for:
-- Titles and authors
-- Cover artwork
-- ISBN/identifiers
-- Publication details
-- Descriptions and reviews
-- Series information
-
----
-
-## Providers
-
-| Provider | Type | API | Status |
-|----------|------|-----|--------|
-| [Open Library](OPENLIBRARY.md) | Books | REST | 🟢 Primary |
-| [Hardcover](HARDCOVER.md) | Books | GraphQL | 🟡 Secondary |
-| Google Books | Books | REST | 🟡 Planned |
-| [Goodreads](GOODREADS.md) | Reviews | Scraping | 🟡 Supplementary |
-| [Audible](AUDIBLE.md) | Audiobooks | API | 🟡 Supplementary |
-| ISBN DB | ISBN | REST | 🟡 Planned |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Audible Integration](AUDIBLE.md) | Audiobook metadata provider - primary source for audiobooks | ✅ Designed |
+| [Goodreads Integration](GOODREADS.md) | Book metadata and social reading platform - ratings, reviews... | ✅ Designed |
+| [Hardcover Integration](HARDCOVER.md) | Social reading platform - Goodreads alternative with API | ✅ Designed |
+| [OpenLibrary Integration](OPENLIBRARY.md) | Open book metadata database - primary metadata provider for ... | ✅ Designed |
 
 ---
 
-## Provider Details
+<!-- SOURCE-BREADCRUMBS-START -->
 
-### Open Library
-**Primary provider - open book database**
+## Sources & Cross-References
 
-- ✅ Comprehensive book data
-- ✅ Cover images
-- ✅ Author information
-- ✅ Edition tracking
-- ✅ Free, no API key required
-- ✅ Links to Internet Archive
+> Auto-generated section linking to external documentation sources
 
-### Google Books
-**Secondary for additional metadata**
+### Cross-Reference Indexes
 
-- ✅ Good search capabilities
-- ✅ Preview availability
-- ✅ Publisher information
-- ✅ High quality covers
-- ⚠️ API key required
+- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-### Goodreads
-**Supplementary for reviews and ratings**
-
-- ✅ User ratings
-- ✅ Review excerpts
-- ✅ Series information
-- ⚠️ No official API (deprecated)
-- ⚠️ Requires scraping
-
-### ISBN DB
-**Fallback for ISBN lookup**
-
-- ✅ ISBN-10/13 lookup
-- ✅ Barcode scanning support
-- ⚠️ Paid subscription
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ---
 
-## Data Flow
+## Status Legend
 
-```
-Scan Library
-    ↓
-Identify via ISBN/filename
-    ↓
-Fetch from Open Library
-    ↓
-Fallback to Google Books
-    ↓
-Enrich with Goodreads ratings
-    ↓
-Download cover artwork
-```
+> See [00_SOURCE_OF_TRUTH.md](../../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
----
-
-## Configuration
-
-```yaml
-metadata:
-  books:
-    primary: openlibrary
-    fallback: [googlebooks, isbndb]
-    enrichment:
-      - goodreads
-```
-
----
-
-## Related Documentation
-
-- [Metadata Overview](../INDEX.md)
-- [Audiobooks](../../audiobook/INDEX.md)
-- [Comics](../comics/INDEX.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

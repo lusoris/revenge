@@ -2,6 +2,21 @@
 
 > Modern, integrated knowledge base for users, mods, admins, and devs
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with DB schema, Goldmark rendering, search |
+| Sources | ✅ | goldmark, bleve, meilisearch-go documented |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Last Updated**: 2026-01-30
+**Location**: `internal/wiki/`
+
 ---
 
 ## Overview
@@ -37,14 +52,15 @@ A fully-integrated wiki/helpdesk system with:
 
 ## Go Packages
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **goldmark** | Markdown parsing (CommonMark) | github.com/yuin/goldmark |
-| **goldmark-wikilink** | [[wiki-style]] links | go.abhg.dev/goldmark/wikilink |
-| **goldmark-highlighting** | Syntax highlighting | github.com/yuin/goldmark-highlighting |
-| **goldmark-meta** | YAML frontmatter | github.com/yuin/goldmark-meta |
-| **bleve** | Full-text search (embedded) | github.com/blevesearch/bleve |
-| **meilisearch-go** | Full-text search (external) | github.com/meilisearch/meilisearch-go |
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for package versions.
+
+Key packages used:
+- **goldmark** - Markdown parsing (CommonMark)
+- **goldmark-wikilink** - [[wiki-style]] links
+- **goldmark-highlighting** - Syntax highlighting
+- **goldmark-meta** - YAML frontmatter
+- **bleve** - Full-text search (embedded)
+- **meilisearch-go** - Full-text search (external)
 
 ---
 
@@ -444,9 +460,152 @@ wiki:
 
 ---
 
-## Related Documentation
+## Implementation Checklist
 
+### Phase 1: Core Infrastructure
+- [ ] Create package structure at `internal/wiki/`
+- [ ] Create sub-packages: `spaces/`, `pages/`, `search/`, `enrichment/`
+- [ ] Define Space entity (`spaces/entity.go`)
+- [ ] Define Page entity (`pages/entity.go`)
+- [ ] Define PageVersion entity
+- [ ] Define PageLink entity (cross-references)
+- [ ] Define EnrichmentCache entity
+- [ ] Create repository interfaces
+- [ ] Implement PostgreSQL repositories
+- [ ] Create fx module (`module.go`)
+- [ ] Add configuration structs
+
+### Phase 2: Database
+- [ ] Create `wiki` schema
+- [ ] Create migration for `wiki.spaces` table
+- [ ] Create migration for `wiki.pages` table
+- [ ] Create migration for `wiki.page_versions` table
+- [ ] Create migration for `wiki.page_links` table
+- [ ] Create migration for `wiki.enrichment_cache` table
+- [ ] Create adult wiki tables in `c` schema (isolated)
+- [ ] Add GIN index on search_vector for full-text search
+- [ ] Add indexes for path lookups, space filtering
+- [ ] Write sqlc queries for space CRUD
+- [ ] Write sqlc queries for page CRUD
+- [ ] Write sqlc queries for version history
+- [ ] Write sqlc queries for link tracking
+
+### Phase 3: Service Layer
+- [ ] Implement SpaceService
+  - [ ] Space CRUD with RBAC
+  - [ ] Visibility filtering by role
+- [ ] Implement PageService
+  - [ ] Page CRUD with validation
+  - [ ] Path/breadcrumb computation
+  - [ ] Version creation on save
+  - [ ] Version restoration
+- [ ] Implement MarkdownService
+  - [ ] Configure Goldmark with extensions (GFM, footnotes, typographer)
+  - [ ] Add goldmark-meta for YAML frontmatter
+  - [ ] Add goldmark-highlighting for syntax highlighting
+  - [ ] Add goldmark-wikilink for [[wiki-style]] links
+  - [ ] Implement wiki link resolution
+  - [ ] Pre-render HTML on save
+- [ ] Implement SearchService
+  - [ ] Bleve index management (embedded option)
+  - [ ] Meilisearch client (external option)
+  - [ ] Index page on create/update
+  - [ ] Remove from index on delete
+  - [ ] Search with space filtering
+- [ ] Add caching for rendered pages
+
+### Phase 4: Background Jobs
+- [ ] Create River job for auto-enrichment (Wikipedia, Wikidata)
+- [ ] Create River job for enrichment cache refresh
+- [ ] Create River job for search index rebuild
+- [ ] Create River job for orphaned page detection
+- [ ] Create River job for version history pruning
+- [ ] Register jobs in fx module
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI spec for wiki endpoints
+- [ ] Generate ogen handlers
+- [ ] Implement space endpoints:
+  - [ ] GET /api/v1/wiki/spaces (list, filtered by role)
+  - [ ] GET /api/v1/wiki/spaces/{slug}
+- [ ] Implement page endpoints:
+  - [ ] GET /api/v1/wiki/pages (list)
+  - [ ] GET /api/v1/wiki/pages/{path} (by path)
+  - [ ] POST /api/v1/wiki/pages (create)
+  - [ ] PUT /api/v1/wiki/pages/{id} (update)
+  - [ ] DELETE /api/v1/wiki/pages/{id}
+- [ ] Implement version endpoints:
+  - [ ] GET /api/v1/wiki/pages/{id}/versions
+  - [ ] GET /api/v1/wiki/pages/{id}/versions/{v}
+  - [ ] POST /api/v1/wiki/pages/{id}/restore/{v}
+- [ ] Implement search endpoint:
+  - [ ] GET /api/v1/wiki/search?q=...
+- [ ] Implement adult wiki endpoints (isolated):
+  - [ ] GET /api/v1/legacy/wiki/spaces
+  - [ ] GET /api/v1/legacy/wiki/pages/{path}
+  - [ ] GET /api/v1/legacy/wiki/search?q=...
+- [ ] Add authentication middleware
+- [ ] Add RBAC permission checks (wiki.pages.view, create, edit, delete, publish)
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
 - [News System](NEWS_SYSTEM.md)
-- [RBAC Permissions](RBAC_CASBIN.md)
-- [Wiki Providers](../integrations/wiki/INDEX.md)
-- [UI/UX Guidelines](../architecture/UI_UX_GUIDELINES.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [News System](NEWS_SYSTEM.md) - Announcement system
+- [RBAC Permissions](RBAC_CASBIN.md) - Permission management
+- [Wiki Providers](../integrations/wiki/INDEX.md) - External wiki sources
+- [UI/UX Guidelines](../architecture/UI_UX_GUIDELINES.md) - Design patterns

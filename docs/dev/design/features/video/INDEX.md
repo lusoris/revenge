@@ -1,50 +1,44 @@
-# Video Module Documentation
+# Video Module
 
-> Movies and TV shows content management
+← Back to [Design Docs](..)
 
----
+> Movies and TV Shows features
 
-## Modules
-
-| Module | Location | Description |
-|--------|----------|-------------|
-| [Movie Module](MOVIE_MODULE.md) | `internal/content/movie/` | Movie library management |
-| [TV Show Module](TVSHOW_MODULE.md) | `internal/content/tvshow/` | Series, seasons, episodes |
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Architecture
+## Documents
 
-Both modules follow the same structure:
-
-```
-internal/content/{module}/
-├── entity.go              # Domain entities
-├── repository.go          # Repository interface
-├── repository_pg.go       # PostgreSQL implementation
-├── repository_pg_user_data.go   # User ratings, favorites
-├── repository_pg_relations.go   # Cast, crew, genres
-├── service.go             # Business logic + caching
-├── jobs.go                # River background jobs
-├── metadata_provider.go   # TMDb interface
-└── module.go              # fx DI module
-```
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Movie Module](MOVIE_MODULE.md) | Movie content management with metadata enrichment | ✅ Designed |
+| [TV Show Module](TVSHOW_MODULE.md) | TV series, seasons, and episodes management | ✅ Designed |
 
 ---
 
-## Metadata Sources
+<!-- SOURCE-BREADCRUMBS-START -->
 
-| Content | Primary | Fallback |
-|---------|---------|----------|
-| Movies | Radarr | TMDb |
-| TV Shows | Sonarr | TMDb, TheTVDB |
+## Sources & Cross-References
 
-**Servarr-First Principle**: Use Servarr (Radarr/Sonarr) as primary metadata source. External APIs (TMDb) are only for enrichment via background jobs.
+> Auto-generated section linking to external documentation sources
 
----
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ## Related
 
-- [Playback Features](../playback/) - Playback and streaming
-- [Library Service](../../services/LIBRARY.md) - Library management
-- [Metadata Service](../../services/METADATA.md) - Providers
+- [Video Metadata Providers](../../integrations/metadata/video/)
+- [Servarr Stack](../../integrations/servarr/)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

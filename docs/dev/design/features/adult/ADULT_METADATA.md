@@ -4,6 +4,18 @@
 > See that document for the complete adult content architecture including metadata, privacy, API endpoints, and database schema.
 > This file is kept for reference during migration only.
 
+## Status
+
+| Dimension           | Status | Notes                                        |
+| ------------------- | ------ | -------------------------------------------- |
+| Design              | ✅     | Deprecated, merged into ADULT_CONTENT_SYSTEM |
+| Sources             | ✅     |                                              |
+| Instructions        | ✅     | See ADULT_CONTENT_SYSTEM.md                  |
+| Code                | 🔴     |                                              |
+| Linting             | 🔴     |                                              |
+| Unit Testing        | 🔴     |                                              |
+| Integration Testing | 🔴     |                                              |
+
 ---
 
 > Complete metadata integration for adult content modules using Whisparr, Stash, and StashDB.
@@ -1007,6 +1019,57 @@ adult:
     generate_phash: true
     generate_md5: false  # Slow, optional
 ```
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+| [ThePornDB API](https://api.theporndb.net/docs) | [Local](../../../sources/apis/theporndb.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Adult](INDEX.md)
+
+### In This Section
+
+- [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md)
+- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
+- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
+- [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

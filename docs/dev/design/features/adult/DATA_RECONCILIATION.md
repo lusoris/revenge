@@ -4,6 +4,18 @@
 
 **⚠️ Adult Content**: All processing isolated in `qar` schema.
 
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | 🟡     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 ---
 
 ## Overview
@@ -409,15 +421,143 @@ reconciliation:
 
 ---
 
-## Go Packages
+## Implementation Checklist
 
-| Package | Purpose | URL |
-|---------|---------|-----|
-| **fuzzy** | Fuzzy string matching | github.com/lithammer/fuzzysearch |
-| **go-levenshtein** | Edit distance | github.com/agnivade/levenshtein |
-| **gofuzzy** | Fuzzy logic | github.com/donseba/gofuzzy |
+### Phase 1: Schema & Database
+- [ ] Create `qar.crew_reconciled` table for reconciled values
+- [ ] Create `qar.crew_source_data` table for raw source data
+- [ ] Create `qar.crew_overrides` table for admin overrides
+- [ ] Create indexes on `crew_id`, `source`, `field_name`
+- [ ] Implement sqlc queries for reconciliation data access
+
+### Phase 2: Core Reconciliation Engine
+- [ ] Implement `internal/content/qar/reconcile/entity.go` with types
+- [ ] Implement `internal/content/qar/reconcile/repository.go` interface
+- [ ] Implement `internal/content/qar/reconcile/repository_pg.go`
+- [ ] Implement `internal/content/qar/reconcile/service.go` base logic
+
+### Phase 3: Fuzzy Logic Rules
+- [ ] Implement measurement reconciliation (bust, waist, hips, height, weight)
+- [ ] Implement cup size normalization (US/UK/EU conversions)
+- [ ] Implement career status rules (recency weighting, majority voting)
+- [ ] Implement trust score calculation based on source reliability
+- [ ] Implement recency bonus/penalty modifiers
+- [ ] Implement confidence scoring calculation
+
+### Phase 4: Source Integration
+- [ ] Create `internal/integrations/freeones/client.go`
+- [ ] Create `internal/integrations/babepedia/client.go` (if applicable)
+- [ ] Create `internal/integrations/iafd/client.go` (if applicable)
+- [ ] Create `internal/integrations/stashdb/performer_sync.go` extension
+- [ ] Implement data fetching and normalization for each source
+- [ ] Store raw source data in `qar.crew_source_data`
+
+### Phase 5: Reconciliation Pipeline
+- [ ] Implement `internal/content/qar/reconcile/reconciler.go`
+- [ ] Implement measurement field reconciliation
+- [ ] Implement career status reconciliation
+- [ ] Implement demographic field reconciliation
+- [ ] Implement confidence calculation for each field
+- [ ] Create River job for reconciliation processing
+
+### Phase 6: Manual Override Support
+- [ ] Implement override repository methods
+- [ ] Implement RBAC permission check (`adult.metadata.override`)
+- [ ] Create River job for override processing
+- [ ] Implement audit logging for overrides
+- [ ] Implement API endpoints for admin overrides
+
+### Phase 7: UI Components
+- [ ] Create `internal/web/handlers/qar/performer_reconcile.go`
+- [ ] Implement performer profile endpoint with confidence indicators
+- [ ] Implement source comparison modal data endpoint
+- [ ] Implement "view all sources" functionality
+- [ ] Implement override UI (admin only)
+- [ ] Implement "report error" submission
+
+### Phase 8: Reconciliation Scheduling
+- [ ] Create cron job for monthly full reconciliation
+- [ ] Create River job triggered on new source data
+- [ ] Implement manual reconciliation trigger endpoint
+- [ ] Create re-reconciliation on source data update
+
+### Phase 9: Configuration
+- [ ] Add reconciliation section to config.yaml
+- [ ] Implement source trust score configuration
+- [ ] Implement recency weight configuration
+- [ ] Implement confidence threshold configuration
+- [ ] Implement schedule configuration
+
+### Phase 10: Testing
+- [ ] Write unit tests for fuzzy logic rules
+- [ ] Write unit tests for confidence scoring
+- [ ] Write integration tests for source clients
+- [ ] Write tests for edge cases (conflicting data, missing fields)
+- [ ] Write tests for override functionality
+- [ ] Test different tolerance ranges
+
+### Phase 11: Documentation
+- [ ] Document source trust scores
+- [ ] Document fuzzy logic rules
+- [ ] Document confidence scoring algorithm
+- [ ] Create performer metadata audit guide
+- [ ] Document override process for admins
 
 ---
+
+## Go Packages
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for package versions.
+
+Key packages used:
+- **fuzzy** - Fuzzy string matching (github.com/lithammer/fuzzysearch)
+- **go-levenshtein** - Edit distance (github.com/agnivade/levenshtein)
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Adult](INDEX.md)
+
+### In This Section
+
+- [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md)
+- [Revenge - Adult Content Metadata System](ADULT_METADATA.md)
+- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
+- [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

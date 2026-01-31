@@ -765,11 +765,68 @@ type PaginatedResponse[T any] struct {
 | `internal/infra/supervisor` | Service supervision, self-healing |
 | `internal/infra/graceful` | Graceful shutdown with hooks |
 | `github.com/knadh/koanf/v2` + `fsnotify` | Config hot reload |
-| `github.com/maypok86/otter` | L1 cache (W-TinyLFU, sub-ms) |
+| `github.com/maypok86/otter/v2` | L1 cache (W-TinyLFU, sub-ms) |
 | `github.com/viccon/sturdyc` | API response caching |
 | `github.com/redis/rueidis` | L2 cache (Dragonfly, <10ms) |
 | `go.opentelemetry.io/otel` | Metrics, tracing |
 | `internal/infra/health` | Health checks |
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
+| [otter Cache](https://pkg.go.dev/github.com/maypok86/otter/v2) | [Local](../../sources/tooling/otter.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
+| [rueidis GitHub README](https://github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis-guide.md) |
+| [sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc) | [Local](../../sources/tooling/sturdyc.md) |
+| [sturdyc GitHub README](https://github.com/viccon/sturdyc) | [Local](../../sources/tooling/sturdyc-guide.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Operations](INDEX.md)
+
+### In This Section
+
+- [Branch Protection Rules](BRANCH_PROTECTION.md)
+- [Database Auto-Healing & Consistency Restoration](DATABASE_AUTO_HEALING.md)
+- [Clone repository](DEVELOPMENT.md)
+- [GitFlow Workflow Guide](GITFLOW.md)
+- [Revenge - Reverse Proxy & Deployment Best Practices](REVERSE_PROXY.md)
+- [revenge - Setup Guide](SETUP.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

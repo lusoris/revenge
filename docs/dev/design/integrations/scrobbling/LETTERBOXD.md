@@ -6,7 +6,18 @@
 **API**: No official public API (web scraping OR unofficial API)
 **Category**: Scrobbling / Social (Movies Only)
 **Priority**: 🟡 LOW (No official API, niche audience)
-**Status**: 🔴 DESIGN PHASE
+
+## Status
+
+| Dimension | Status | Notes |
+| --------- | ------ | ----- |
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -143,31 +154,25 @@ HTML Structure (example):
 
 ## Implementation Checklist
 
-### Phase 1: Web Scraping (Read-Only)
-- [ ] HTML scraping setup (`goquery`)
-- [ ] User-Agent configuration (REQUIRED)
-- [ ] Profile parsing (username, stats)
-- [ ] Diary parsing (watch history with dates, ratings)
-- [ ] Ratings parsing (all rated movies)
-- [ ] Watchlist parsing (movies to watch)
-- [ ] Pagination (handle multiple pages)
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client with User-Agent
+- [ ] Add web scraping with goquery
+- [ ] Implement rate limiting (1 req/sec)
 
-### Phase 2: Data Import
-- [ ] **Import watch history** (scrape diary → import to Revenge)
-- [ ] **Import ratings** (scrape ratings → import to Revenge)
-- [ ] **Import watchlist** (scrape watchlist → import to Revenge)
-- [ ] TMDb/IMDb ID matching (match Letterboxd movies to Revenge movies)
-- [ ] Deduplication (avoid duplicate entries)
+### Phase 2: API Implementation
+- [ ] Implement profile scraping (stats)
+- [ ] Implement watch history scraping (diary with pagination)
+- [ ] Implement error handling (scraper failures)
 
-### Phase 3: UI Integration
-- [ ] Letterboxd profile link (display in Revenge user profile)
-- [ ] Letterboxd stats display (films watched, this year, etc.)
-- [ ] Import wizard (one-time import from Letterboxd)
+### Phase 3: Service Integration
+- [ ] Create Letterboxd scraper service wrapper
+- [ ] Add username storage (user preference)
+- [ ] Implement one-time import flow
 
-### Phase 4: Background Jobs (River)
-- [ ] **Job**: `scrobble.letterboxd.import_history` (one-time import)
-- [ ] Rate limiting (very conservative 1 req/sec)
-- [ ] Retry logic (exponential backoff)
+### Phase 4: Testing
+- [ ] Add unit tests (scraper parsing)
+- [ ] Add integration tests (full import flow)
 
 ---
 
@@ -208,6 +213,57 @@ Conversion: Direct 1:1 mapping (no conversion needed)
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
+| [Letterboxd API](https://api-docs.letterboxd.com/) | [Local](../../../sources/apis/letterboxd.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Scrobbling](INDEX.md)
+
+### In This Section
+
+- [Last.fm Scrobbling Integration](LASTFM_SCROBBLE.md)
+- [ListenBrainz Integration](LISTENBRAINZ.md)
+- [Simkl Integration](SIMKL.md)
+- [Trakt Integration](TRAKT.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

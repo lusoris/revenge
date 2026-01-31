@@ -3,6 +3,52 @@
 > Complete modular architecture for a next-generation media server.
 > Ground-up design with full module isolation, no shared content tables.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Complete architecture specification |
+| Sources | ⚪ | N/A - internal architecture doc |
+| Instructions | 🔴 | |
+| Code | 🔴 | Reset to template |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Priority**: 🔴 HIGH
+**Module**: Core architecture
+**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Project Foundation
+- [ ] Initialize Go module structure
+- [ ] Set up fx dependency injection framework
+- [ ] Configure structured logging (slog)
+- [ ] Set up configuration management (koanf)
+
+### Phase 2: Database Layer
+- [ ] Set up PostgreSQL with pgx driver
+- [ ] Initialize sqlc code generation
+- [ ] Create base migrations (extensions, shared schema)
+- [ ] Set up River job queue
+
+### Phase 3: API Layer
+- [ ] Set up ogen code generation from OpenAPI specs
+- [ ] Configure HTTP server with Go 1.22 routing
+- [ ] Add middleware (authentication, logging, CORS)
+- [ ] Set up WebSocket support
+
+### Phase 4: Infrastructure
+- [ ] Set up Typesense search client
+- [ ] Configure Dragonfly caching (Redis-compatible)
+- [ ] Add health check endpoints
+- [ ] Set up metrics/observability
+
+---
+
 ## Design Principles
 
 1. **Maximum Isolation** - Each content module is fully self-contained
@@ -475,6 +521,8 @@ go generate ./api/...
 ```
 
 > **Security:** `/legacy/` endpoints require `legacy:read` auth scope, are not listed in public API docs, have separate rate limiting, and all access is audit-logged.
+>
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#api-namespaces) for complete API namespace documentation.
 
 ---
 
@@ -1056,3 +1104,59 @@ volumes:
 | Document | Description |
 |----------|-------------|
 | [API.md](API.md) | API design guidelines |
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Architecture](INDEX.md)
+
+### In This Section
+
+- [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md)
+- [Revenge - Metadata System](03_METADATA_SYSTEM.md)
+- [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md)
+- [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md)
+
+### Related Topics
+
+- [Revenge - Adult Content System](../features/adult/ADULT_CONTENT_SYSTEM.md) _Adult_
+- [Revenge - Adult Content Metadata System](../features/adult/ADULT_METADATA.md) _Adult_
+- [Adult Data Reconciliation](../features/adult/DATA_RECONCILIATION.md) _Adult_
+- [Adult Gallery Module (QAR: Treasures)](../features/adult/GALLERY_MODULE.md) _Adult_
+- [Whisparr v3 & StashDB Schema Integration](../features/adult/WHISPARR_STASHDB_SCHEMA.md) _Adult_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+---
+
+## Cross-References
+
+| Related Document | Relationship |
+|------------------|--------------|
+| [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) | Package versions, module lists, config keys |
+| [02_DESIGN_PRINCIPLES.md](02_DESIGN_PRINCIPLES.md) | Core design philosophy |
+| [03_METADATA_SYSTEM.md](03_METADATA_SYSTEM.md) | Metadata flow and providers |
+| [04_PLAYER_ARCHITECTURE.md](04_PLAYER_ARCHITECTURE.md) | WebUI player implementation |
+| [05_PLUGIN_ARCHITECTURE_DECISION.md](05_PLUGIN_ARCHITECTURE_DECISION.md) | Plugin vs native decision |

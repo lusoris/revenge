@@ -2,6 +2,22 @@
 
 > Universal age restriction and content rating system for revenge.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with DB schema, Go filtering logic, per-module systems |
+| Sources | 🟡 | International rating systems documented |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Location**: `internal/service/rating/`
+
+---
+
 ## Overview
 
 revenge implements a comprehensive content rating system that:
@@ -453,7 +469,112 @@ ALTER TABLE users ADD COLUMN book_max_age_rating VARCHAR(20) DEFAULT 'adult';
 ALTER TABLE users ADD COLUMN comic_max_rating VARCHAR(20) DEFAULT 'teen_plus';
 ```
 
-## See Also
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/rating/`
+- [ ] Define `RatingSystem` entity (MPAA, FSK, BBFC, PEGI, etc.)
+- [ ] Define `Rating` entity with normalized_level field
+- [ ] Define `ContentRating` entity (polymorphic content reference)
+- [ ] Define `RatingEquivalent` for cross-system mapping
+- [ ] Define module-specific rating entities (music, book, comic)
+- [ ] Create repository interfaces for all rating types
+- [ ] Register fx module `internal/service/rating/module.go`
+
+### Phase 2: Database
+- [ ] Create migration `shared/000XXX_rating_systems.up.sql`
+- [ ] Create `rating_systems` table with country codes array
+- [ ] Create `ratings` table with normalized_level (0-100)
+- [ ] Create `rating_equivalents` cross-reference table
+- [ ] Create `content_ratings` polymorphic table
+- [ ] Seed international rating systems (MPAA, FSK, BBFC, PEGI, ACB, CERO, etc.)
+- [ ] Seed individual ratings with correct normalized levels
+- [ ] Create `music_ratings` table (explicit/clean system)
+- [ ] Create `book_ratings` table (age range system)
+- [ ] Create `comic_ratings` table (publisher rating system)
+- [ ] Add indexes on system_id, normalized_level, content lookups
+- [ ] Generate sqlc queries for rating lookups
+- [ ] Generate queries for content filtering by user level
+
+### Phase 3: Service Layer
+- [ ] Implement `RatingFilter` with `IsContentAllowed()` logic
+- [ ] Implement `GetDisplayRating()` with user preference fallback
+- [ ] Implement `EffectiveMaxLevel()` age calculation from birthdate
+- [ ] Implement `IsPersonVisible()` for actor/person filtering
+- [ ] Implement per-module filters (VideoRatingFilter, MusicRatingFilter, BookRatingFilter, ComicRatingFilter)
+- [ ] Add caching for rating systems (static, long TTL)
+- [ ] Add caching for user effective levels (Redis with invalidation)
+- [ ] Implement parental PIN verification
+
+### Phase 4: Background Jobs
+- [ ] Create River job for rating sync from metadata providers (TMDB certifications)
+- [ ] Create River job for missing rating detection
+- [ ] Create job for person visibility recalculation on content changes
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI schema for rating endpoints
+- [ ] Implement `GET /api/v1/ratings/systems` (list rating systems)
+- [ ] Implement `GET /api/v1/ratings/systems/:code` (get system with ratings)
+- [ ] Add rating filter middleware for all content endpoints
+- [ ] Add rating data to content responses
+- [ ] Implement user rating preference endpoints
+- [ ] Add parental PIN verification endpoint
+- [ ] Implement restricted content response format
+- [ ] Add RBAC permissions for rating management
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [LIBRARY_TYPES.md](LIBRARY_TYPES.md) - Extended library types including adult content
 - [PHASE1_CHECKLIST.md](PHASE1_CHECKLIST.md) - Implementation status

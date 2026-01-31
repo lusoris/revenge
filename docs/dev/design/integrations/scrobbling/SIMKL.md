@@ -6,7 +6,18 @@
 **API**: REST API with OAuth 2.0
 **Category**: Scrobbling / Social
 **Priority**: 🟡 MEDIUM (Alternative to Trakt)
-**Status**: 🔴 DESIGN PHASE
+
+## Status
+
+| Dimension | Status | Notes |
+| --------- | ------ | ----- |
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -216,40 +227,25 @@ Response:
 
 ## Implementation Checklist
 
-### Phase 1: OAuth 2.0 Setup
-- [ ] OAuth 2.0 client (authorization code flow)
-- [ ] Token storage (encrypt access tokens)
-- [ ] User authorization flow (redirect to Simkl → callback)
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client
+- [ ] Add OAuth 2.0 authentication (authorization code flow)
+- [ ] Implement rate limiting (1000 req/hour)
 
-### Phase 2: Scrobbling (Real-time)
-- [ ] **Check-in** (POST /checkin when playback starts)
-- [ ] **Scrobble** (POST /sync/history when playback finishes)
-- [ ] Progress tracking (send progress % to Simkl)
-- [ ] Real-time sync (sync on playback events)
+### Phase 2: API Implementation
+- [ ] Implement scrobble submission (check-in + history)
+- [ ] Add history sync (import/export with deduplication)
+- [ ] Implement error handling (401, 404, 429, 500 responses)
 
-### Phase 3: Watch History Sync
-- [ ] **Export to Simkl** (POST /sync/history - send Revenge watch history to Simkl)
-- [ ] **Import from Simkl** (GET /sync/all-items/movies, /sync/all-items/shows)
-- [ ] Bi-directional sync (merge watch histories)
-- [ ] Conflict resolution (handle duplicate entries)
+### Phase 3: Service Integration
+- [ ] Create Simkl service wrapper
+- [ ] Add user preference storage (enable/disable)
+- [ ] Implement playback event hooks (check-in on start, scrobble on finish)
 
-### Phase 4: Ratings Sync
-- [ ] **Export ratings to Simkl** (POST /sync/ratings)
-- [ ] **Import ratings from Simkl** (GET /sync/ratings/movies, /sync/ratings/shows)
-- [ ] Bi-directional sync (merge ratings)
-- [ ] Rating normalization (Simkl 1-10, Revenge 0-5)
-
-### Phase 5: Watchlist Sync
-- [ ] **Export watchlist to Simkl** (POST /sync/watchlist)
-- [ ] **Import watchlist from Simkl** (GET /sync/watchlist/movies, /sync/watchlist/shows)
-- [ ] Bi-directional sync (merge watchlists)
-
-### Phase 6: Background Jobs (River)
-- [ ] **Job**: `scrobble.simkl.sync_history` (periodic history sync)
-- [ ] **Job**: `scrobble.simkl.sync_ratings` (periodic ratings sync)
-- [ ] **Job**: `scrobble.simkl.sync_watchlist` (periodic watchlist sync)
-- [ ] Rate limiting (1000 req/hour)
-- [ ] Retry logic (exponential backoff)
+### Phase 4: Testing
+- [ ] Add unit tests (OAuth flow, rating normalization)
+- [ ] Add integration tests (full scrobbling and sync flow)
 
 ---
 
@@ -330,6 +326,56 @@ Simkl rating synced
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Simkl API](https://simkl.docs.apiary.io/) | [Local](../../../sources/apis/simkl.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Scrobbling](INDEX.md)
+
+### In This Section
+
+- [Last.fm Scrobbling Integration](LASTFM_SCROBBLE.md)
+- [Letterboxd Integration](LETTERBOXD.md)
+- [ListenBrainz Integration](LISTENBRAINZ.md)
+- [Trakt Integration](TRAKT.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

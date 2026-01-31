@@ -2,6 +2,23 @@
 
 > Multi-platform client support with intelligent capability detection.
 
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with capability model, DLNA, Chromecast |
+| Sources | 🟡 | |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Last Updated**: 2026-01-30
+**Location**: `internal/clients/`
+
+---
+
 ## Supported Clients Overview
 
 ### Native Clients (Planned)
@@ -628,3 +645,129 @@ clients:
 | Android App | ✅ | ✅ | Chromecast | ✅ |
 | Smart TV | ✅ | ✅ | N/A | ❌ |
 | DLNA | Transcode only | ✅ | N/A | ❌ |
+
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure at `internal/clients/`
+- [ ] Create sub-packages: `capabilities/`, `chromecast/`, `dlna/`, `subsonic/`, `session/`
+- [ ] Define ClientCapabilities struct (`capabilities/entity.go`)
+- [ ] Define PlaybackSession entity
+- [ ] Define device profile registry
+- [ ] Create repository interface for sessions
+- [ ] Implement PostgreSQL repository
+- [ ] Create fx module (`module.go`)
+- [ ] Add configuration structs
+
+### Phase 2: Client Capability Detection
+- [ ] Implement user-agent parser
+- [ ] Build device profile database (Chrome, Firefox, Safari, iOS, Android, TVs)
+- [ ] Implement capability merge logic (detected + client-reported)
+- [ ] Add video codec detection (h264, hevc, av1, vp9)
+- [ ] Add audio codec detection (aac, opus, flac, ac3, eac3, dts)
+- [ ] Add container format detection (mp4, mkv, webm, hls, dash)
+- [ ] Add HDR capability detection (HDR10, Dolby Vision)
+- [ ] Implement capability caching
+
+### Phase 3: Chromecast Integration
+- [ ] Implement Cast receiver configuration
+- [ ] Create Chromecast-optimized streaming endpoint
+- [ ] Implement media metadata formatting
+- [ ] Add resume position support
+- [ ] Implement cast session management
+- [ ] Add cast status WebSocket updates
+
+### Phase 4: DLNA/UPnP Support
+- [ ] Implement SSDP discovery server (UDP multicast)
+- [ ] Implement device description XML endpoint
+- [ ] Implement Content Directory Service
+- [ ] Implement Browse action (root, movies, music, TV)
+- [ ] Define DLNA transcoding profiles
+- [ ] Implement DLNA-compliant streaming URLs
+- [ ] Add DLNA device registration
+
+### Phase 5: Session Management & API
+- [ ] Implement session tracking service
+- [ ] Implement multi-device sync via WebSocket
+- [ ] Implement playback transfer between devices
+- [ ] Add bandwidth measurement endpoint
+- [ ] Implement adaptive bitrate recommendation
+- [ ] Add OpenAPI spec for client endpoints
+- [ ] Generate ogen handlers
+- [ ] Implement API endpoints:
+  - [ ] POST /api/v1/session/capabilities (report capabilities)
+  - [ ] GET /api/v1/session/devices (list active devices)
+  - [ ] POST /api/v1/session/transfer (transfer playback)
+  - [ ] GET /api/v1/bandwidth-test (bandwidth measurement)
+  - [ ] GET /api/v1/cast/stream/{id} (Chromecast stream)
+- [ ] Add authentication middleware
+
+### Phase 6: Subsonic API Compatibility
+- [ ] Implement Subsonic API authentication (password, token)
+- [ ] Implement ping endpoint
+- [ ] Implement getMusicFolders
+- [ ] Implement getIndexes / getArtists
+- [ ] Implement getAlbumList / getAlbumList2
+- [ ] Implement getSong / stream
+- [ ] Implement search2 / search3
+- [ ] Implement getPlaylists / getPlaylist
+- [ ] Implement scrobble
+- [ ] Add Subsonic response format (XML/JSON)
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Voice Control](VOICE_CONTROL.md) - Voice assistant integration
+- [User Experience Features](USER_EXPERIENCE_FEATURES.md) - Playback features
+- [Design Principles](DESIGN_PRINCIPLES.md) - Architectural decisions

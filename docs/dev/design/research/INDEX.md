@@ -1,19 +1,43 @@
 # Research Documentation
 
-> User research, analysis, and design resources
+← Back to [Design Docs](../)
+
+> Technology research and evaluations
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
 
 ## Documents
 
-| Document | Description |
-|----------|-------------|
-| [USER_PAIN_POINTS_RESEARCH.md](USER_PAIN_POINTS_RESEARCH.md) | Jellyfin/Plex/Emby user pain points analysis |
-| [UX_UI_RESOURCES.md](UX_UI_RESOURCES.md) | Design patterns and UX resources |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [User Pain Points Research - Existing Media Servers](USER_PAIN_POINTS_RESEARCH.md) | Analysis of what users most complain about (and love) in Ple... | 🟡 Planned |
+| [UX/UI Design & Frontend Resources](UX_UI_RESOURCES.md) | **Status**: ✅ ALL 14 SOURCES FETCHED (2026-01-28) | 🟡 Planned |
 
 ---
 
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
 ## Related
 
-- [Features](../features/) - Feature specifications
-- [Technical](../technical/) - Technical documentation
+- [Architecture Documentation](../architecture/)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

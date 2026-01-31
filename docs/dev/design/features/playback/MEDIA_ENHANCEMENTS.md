@@ -2,6 +2,33 @@
 
 > Advanced playback features: trailers, themes, intros, trickplay, cinema mode, and live TV.
 
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
+**Location**: `internal/feature/enhancements/`
+
+---
+
+## Developer Resources
+
+| Source       | URL                                                                            | Purpose                 |
+| ------------ | ------------------------------------------------------------------------------ | ----------------------- |
+| FFmpeg       | [ffmpeg.org/documentation.html](https://ffmpeg.org/documentation.html)         | Video/audio processing  |
+| HDR10+       | [hdr10plus.org](https://hdr10plus.org/)                                        | HDR metadata            |
+| Dolby Vision | [developer.dolby.com](https://developer.dolby.com/)                            | Dolby Vision support    |
+| LPCM Wiki    | [wiki.multimedia.cx/index.php/PCM](https://wiki.multimedia.cx/index.php/PCM)   | Audio formats reference |
+
+---
+
 ## Feature Overview
 
 | Feature | Description | Status |
@@ -1303,6 +1330,51 @@ media_enhancements:
         m3u_url: "http://iptv.example.com/playlist.m3u"
         epg_url: "http://iptv.example.com/epg.xml"
 ```
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Playback](INDEX.md)
+
+### In This Section
+
+- [Release Calendar System](RELEASE_CALENDAR.md)
+- [Skip Intro / Credits Detection](SKIP_INTRO.md)
+- [SyncPlay (Watch Together)](SYNCPLAY.md)
+- [Trickplay (Timeline Thumbnails)](TRICKPLAY.md)
+- [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ---
 

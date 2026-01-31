@@ -1,3 +1,12 @@
+# Sonarr OpenAPI Spec
+
+> Source: https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json
+> Fetched: 2026-01-30T23:51:29.733854+00:00
+> Content-Hash: a0e86cfd8146e6b4
+> Type: json
+
+---
+
 {
   "openapi": "3.0.1",
   "info": {
@@ -8138,7 +8147,7 @@
             "type": "array",
             "items": {
               "type": "object",
-              "additionalProperties": { }
+              "additionalProperties": {}
             },
             "nullable": true
           }
@@ -12474,10 +12483,10 @@
   },
   "security": [
     {
-      "X-Api-Key": [ ]
+      "X-Api-Key": []
     },
     {
-      "apikey": [ ]
+      "apikey": []
     }
   ]
 }

@@ -1,6 +1,10 @@
 # Audiobook & Podcast Module
 
+← Back to [Integrations](../)
+
 > Native audiobook and podcast management
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 

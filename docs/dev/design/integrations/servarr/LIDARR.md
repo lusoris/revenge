@@ -2,7 +2,18 @@
 
 > Music management automation
 
-**Status**: 🟡 PLANNED
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🟡 HIGH (Phase 4 - Music Module)
 **Type**: Webhook listener + API client for metadata sync
 
@@ -121,38 +132,25 @@ Triggered when Lidarr detects health issues.
 
 ## Implementation Checklist
 
-- [ ] **API Client** (`internal/service/metadata/provider_lidarr.go`)
-  - [ ] Artist listing & detail fetching
-  - [ ] Album listing & detail fetching
-  - [ ] Track listing & detail fetching
-  - [ ] Quality profile mapping
-  - [ ] Metadata profile mapping
-  - [ ] Health check integration
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client with resty
+- [ ] Add API key authentication
+- [ ] Implement rate limiting
 
-- [ ] **Webhook Handler** (`internal/api/handlers/webhook_lidarr.go`)
-  - [ ] Parse webhook payload (On Download event)
-  - [ ] Extract artist + album + track metadata
-  - [ ] Trigger metadata enrichment (MusicBrainz, Last.fm)
-  - [ ] Store in PostgreSQL (`music_artists`, `music_albums`, `music_tracks`)
-  - [ ] Update Typesense search index
+### Phase 2: API Implementation
+- [ ] Implement core API methods
+- [ ] Add response type definitions
+- [ ] Implement error handling
 
-- [ ] **Metadata Sync**
-  - [ ] Map Lidarr artists → Revenge `music_artists` table
-  - [ ] Map Lidarr albums → Revenge `music_albums` table
-  - [ ] Map Lidarr tracks → Revenge `music_tracks` table
-  - [ ] Map Lidarr quality profiles → Revenge audio quality tiers
-  - [ ] Handle multi-disc albums
+### Phase 3: Service Integration
+- [ ] Create service wrapper
+- [ ] Add caching layer
+- [ ] Implement fx module wiring
 
-- [ ] **Quality Profile Mapping**
-  - [ ] Lossless (FLAC) → `quality='lossless'`, `bitrate=variable`
-  - [ ] High (320kbps MP3) → `quality='high'`, `bitrate=320`
-  - [ ] Medium (192kbps MP3) → `quality='medium'`, `bitrate=192`
-  - [ ] Low (128kbps MP3) → `quality='low'`, `bitrate=128`
-
-- [ ] **Error Handling**
-  - [ ] Retry failed API calls (circuit breaker)
-  - [ ] Log webhook failures
-  - [ ] Handle missing tracks (not yet released)
+### Phase 4: Testing
+- [ ] Add unit tests with mocks
+- [ ] Add integration tests
 
 ---
 
@@ -219,6 +217,57 @@ func (c *LidarrClient) GetAlbumsByArtist(ctx context.Context, artistID int) ([]A
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Lidarr API Docs](https://lidarr.audio/docs/api/) | [Local](../../../sources/apis/lidarr-docs.md) |
+| [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Servarr](INDEX.md)
+
+### In This Section
+
+- [Chaptarr Integration](CHAPTARR.md)
+- [Radarr Integration](RADARR.md)
+- [Sonarr Integration](SONARR.md)
+- [Whisparr v3 Integration](WHISPARR.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

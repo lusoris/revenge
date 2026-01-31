@@ -2,10 +2,22 @@
 
 > Real-time monitoring, analytics, and account sharing detection for Revenge
 
-**Status**: 🔴 PLANNING - Build from scratch in Go
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with PostgreSQL schema, Go service structure, API endpoints |
+| Sources | ✅ | Based on Tracearr, extensive Go library references |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Based On**: Tracearr (https://github.com/connorgallopo/Tracearr)
 **Priority**: 🟡 HIGH (Phase 9 - External Services)
 **License**: AGPL-3.0 (rebuild required to avoid copyleft in Revenge)
+**Location**: `internal/service/analytics/`
 
 ---
 
@@ -400,7 +412,125 @@ POST /api/v1/analytics/bulk/delete-sessions # Bulk delete sessions
 
 ---
 
-## Related Documentation
+---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create package structure `internal/service/analytics/`
+- [ ] Define `Session` entity with all tracking fields
+- [ ] Define `SharingRule` entity with config JSONB
+- [ ] Define `SharingViolation` entity
+- [ ] Define `UserTrust` entity with score tracking
+- [ ] Define `LibraryStat` entity for aggregated data
+- [ ] Define `Engagement` entity for content metrics
+- [ ] Create repository interfaces for all entities
+- [ ] Register fx module `internal/service/analytics/module.go`
+
+### Phase 2: Database
+- [ ] Create migration `shared/000XXX_analytics_sessions.up.sql`
+- [ ] Create `analytics_sessions` table with geolocation columns
+- [ ] Create `analytics_sharing_rules` table with config JSONB
+- [ ] Create `analytics_sharing_violations` table
+- [ ] Create `analytics_user_trust` table with score constraints
+- [ ] Create `analytics_library_stats` table with date partitioning
+- [ ] Create `analytics_engagement` table with content metrics
+- [ ] Add indexes for user_id, started_at, ip_address, content lookups
+- [ ] Generate sqlc queries for session CRUD
+- [ ] Generate queries for violation detection (concurrent sessions, geo anomalies)
+- [ ] Generate queries for library stat aggregation
+
+### Phase 3: Service Layer
+- [ ] Implement `SessionTracker` for real-time session tracking
+- [ ] Implement `SharingDetector` with six rule types:
+  - [ ] Impossible travel detection
+  - [ ] Simultaneous locations detection
+  - [ ] Device velocity detection
+  - [ ] Concurrent streams detection
+  - [ ] Geo restriction enforcement
+  - [ ] Account inactivity detection
+- [ ] Implement `TrustScorer` with automatic score adjustments
+- [ ] Implement `LibraryAnalyzer` for stats aggregation
+- [ ] Implement `Geolocation` service (MaxMind GeoLite2 integration)
+- [ ] Add caching for active sessions (Redis)
+- [ ] Add caching for trust scores (Redis with TTL)
+
+### Phase 4: Background Jobs
+- [ ] Create River job `analytics.aggregate_library_stats` (daily)
+- [ ] Create River job `analytics.detect_sharing_violations` (every 5 minutes)
+- [ ] Create River job `analytics.cleanup_old_sessions` (daily with retention)
+- [ ] Create River job for trust score decay/recovery
+- [ ] Implement notification dispatch (Discord, email, Telegram webhooks)
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI schema for all analytics endpoints
+- [ ] Implement sessions endpoints (list, detail, active, delete, bulk-delete)
+- [ ] Implement violations endpoints (list, detail, acknowledge, bulk-acknowledge)
+- [ ] Implement trust score endpoints (list, detail, reset)
+- [ ] Implement library analytics endpoints (overview, quality, storage, watch)
+- [ ] Implement sharing rules CRUD endpoints
+- [ ] Implement stream map endpoint with geolocation data
+- [ ] Implement bulk actions endpoint
+- [ ] Add authentication for all endpoints
+- [ ] Add RBAC permissions (`analytics.sessions.view`, `analytics.rules.manage`, etc.)
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+- [Dynamic RBAC with Casbin](RBAC_CASBIN.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
 
 - [User Management](../../operations/USER_MANAGEMENT.md) - User roles & permissions (pending)
 - [Playback Service](../../architecture/04_PLAYER_ARCHITECTURE.md) - Session tracking integration point

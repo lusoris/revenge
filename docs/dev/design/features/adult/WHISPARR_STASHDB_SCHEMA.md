@@ -2,9 +2,37 @@
 
 > Custom UI/UX approach for adult content scenes using Whisparr cache
 
-**Status**: 🟡 Research Complete, Schema Design Pending
+## Status
+
+| Dimension           | Status | Notes |
+| ------------------- | ------ | ----- |
+| Design              | ✅     |       |
+| Sources             | ✅     |       |
+| Instructions        | ✅     |       |
+| Code                | 🔴     |       |
+| Linting             | 🔴     |       |
+| Unit Testing        | 🔴     |       |
+| Integration Testing | 🔴     |       |
+
 **Last Updated**: 2026-01-28
 **Dependencies**: Whisparr v3 ("eros" branch), StashDB API, PostgreSQL schema `qar`
+
+---
+
+## Developer Resources
+
+> Package versions: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+
+| Source | URL | Purpose |
+|--------|-----|---------|
+| StashDB GraphQL | [docs.stashapp.cc](https://docs.stashapp.cc/) | Adult metadata API |
+| Whisparr API | [whisparr.com](https://whisparr.com/) | Scene management |
+
+| Package | Purpose |
+|---------|---------|
+| genqlient | Type-safe GraphQL client |
+| goimagehash | pHash fingerprinting |
+| pgx | PostgreSQL driver |
 
 ---
 
@@ -461,6 +489,57 @@ func (s *FingerprintService) generatePHash(filePath string) (string, error) {
 
 ---
 
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+| [Whisparr OpenAPI Spec](https://raw.githubusercontent.com/Whisparr/Whisparr/develop/src/Whisparr.Api.V3/openapi.json) | [Local](../../../sources/apis/whisparr-openapi.json) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Adult](INDEX.md)
+
+### In This Section
+
+- [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md)
+- [Revenge - Adult Content Metadata System](ADULT_METADATA.md)
+- [Adult Data Reconciliation](DATA_RECONCILIATION.md)
+- [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
 ## Related Documentation
 
 - [Adult Content System](ADULT_CONTENT_SYSTEM.md) - Schema `qar` isolation
@@ -471,13 +550,42 @@ func (s *FingerprintService) generatePHash(filePath string) (string, error) {
 
 ---
 
-## Open Questions
+## Design Decisions (Resolved 2026-01-30)
 
-1. **Whisparr cache format**: SQLite? JSON? Custom binary?
-2. **Sync frequency**: Real-time webhooks OR periodic polling (hourly/daily)?
-3. **Folder structure**: How does Whisparr organize scene files on disk?
-4. **StashDB rate limits**: Are there API rate limits we need to respect?
-5. **Performer images**: StashDB-hosted OR external URLs?
-6. **Tag ontology**: StashDB tags OR custom Revenge taxonomy?
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Sync Method** | Periodic API Polling | Konsistent mit allen Arr-Services (Radarr, Sonarr, Lidarr) |
+| **Tag Ontology** | Mapping | StashDB Tags → eigene Revenge/QAR Kategorien mappen |
+| **Performer Images** | StashDB URLs | Keine lokale Kopie - direkt von StashDB referenzieren |
+| **Folder Structure** | Whisparr Managed | Wir lesen nur was Whisparr API uns gibt |
+| **Rate Limits** | Implement on demand | Bei Implementation rate limiting einbauen falls nötig |
 
-**Next Steps**: Install Whisparr v3, analyze cache, answer open questions.
+### Sync Architecture
+
+```
+┌─────────────┐    Polling     ┌─────────────┐
+│   Revenge   │ ────────────►  │  Whisparr   │
+│   (River)   │   every 15min  │   API v3    │
+└─────────────┘                └─────────────┘
+       │
+       │  On new content
+       ▼
+┌─────────────┐    GraphQL     ┌─────────────┐
+│  Metadata   │ ────────────►  │   StashDB   │
+│  Enrichment │                │             │
+└─────────────┘                └─────────────┘
+```
+
+### Tag Mapping Strategy
+
+StashDB Tags werden auf Revenge Flag-Kategorien (`waters`) gemappt:
+
+| StashDB Tag Category | QAR Flag `waters` | Example Tags |
+|---------------------|-------------------|--------------|
+| Genre | `genre` | Anal, Oral, Group |
+| Position | `position` | Cowgirl, Doggy, Missionary |
+| Action | `action` | Creampie, Facial, Swallow |
+| Attribute | `attribute` | Big Tits, Tattoo, Blonde |
+| Scene Type | `scene_type` | POV, VR, Gonzo |
+
+Unmapped tags werden als `waters = 'other'` importiert.

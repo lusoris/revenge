@@ -1,3 +1,12 @@
+# Lidarr OpenAPI Spec
+
+> Source: https://raw.githubusercontent.com/Lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json
+> Fetched: 2026-01-30T23:51:31.908105+00:00
+> Content-Hash: 119a98c1bc3bcdd0
+> Type: json
+
+---
+
 {
   "openapi": "3.0.4",
   "info": {
@@ -9360,7 +9369,7 @@
             "type": "array",
             "items": {
               "type": "object",
-              "additionalProperties": { }
+              "additionalProperties": {}
             },
             "nullable": true
           }
@@ -13093,10 +13102,10 @@
   },
   "security": [
     {
-      "X-Api-Key": [ ]
+      "X-Api-Key": []
     },
     {
-      "apikey": [ ]
+      "apikey": []
     }
   ]
 }

@@ -2,7 +2,18 @@
 
 > TV show management automation
 
-**Status**: 🟡 PLANNED
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | 🟡 | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
 **Priority**: 🔴 CRITICAL (Phase 3 - TV Show Module)
 **Type**: Webhook listener + API client for metadata sync
 
@@ -109,35 +120,25 @@ Triggered when Sonarr detects health issues.
 
 ## Implementation Checklist
 
-- [ ] **API Client** (`internal/service/metadata/provider_sonarr.go`)
-  - [ ] Series listing & detail fetching
-  - [ ] Episode listing & detail fetching
-  - [ ] Quality profile mapping
-  - [ ] Health check integration
+### Phase 1: Client Setup
+- [ ] Create client package structure
+- [ ] Implement HTTP client with resty
+- [ ] Add API key authentication
+- [ ] Implement rate limiting
 
-- [ ] **Webhook Handler** (`internal/api/handlers/webhook_sonarr.go`)
-  - [ ] Parse webhook payload (On Download event)
-  - [ ] Extract series + episode metadata
-  - [ ] Trigger metadata enrichment (TheTVDB)
-  - [ ] Store in PostgreSQL (`tvshows`, `tvshow_episodes`)
-  - [ ] Update Typesense search index
+### Phase 2: API Implementation
+- [ ] Implement core API methods
+- [ ] Add response type definitions
+- [ ] Implement error handling
 
-- [ ] **Metadata Sync**
-  - [ ] Map Sonarr series → Revenge `tvshows` table
-  - [ ] Map Sonarr episodes → Revenge `tvshow_episodes` table
-  - [ ] Map Sonarr quality profiles → Revenge quality tiers
-  - [ ] Handle season packs vs individual episodes
+### Phase 3: Service Integration
+- [ ] Create service wrapper
+- [ ] Add caching layer
+- [ ] Implement fx module wiring
 
-- [ ] **Quality Profile Mapping**
-  - [ ] Ultra HD (4K) → `quality='4K'`, `max_bitrate=80000`
-  - [ ] HD-1080p → `quality='1080p'`, `max_bitrate=20000`
-  - [ ] HD-720p → `quality='720p'`, `max_bitrate=8000`
-  - [ ] SD → `quality='480p'`, `max_bitrate=3000`
-
-- [ ] **Error Handling**
-  - [ ] Retry failed API calls (circuit breaker)
-  - [ ] Log webhook failures
-  - [ ] Handle missing episodes (not yet aired)
+### Phase 4: Testing
+- [ ] Add unit tests with mocks
+- [ ] Add integration tests
 
 ---
 
@@ -202,6 +203,57 @@ func (c *SonarrClient) GetEpisodes(ctx context.Context, seriesID int) ([]Episode
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+| [Sonarr API Docs](https://sonarr.tv/docs/api/) | [Local](../../../sources/apis/sonarr-docs.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Servarr](INDEX.md)
+
+### In This Section
+
+- [Chaptarr Integration](CHAPTARR.md)
+- [Lidarr Integration](LIDARR.md)
+- [Radarr Integration](RADARR.md)
+- [Whisparr v3 Integration](WHISPARR.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

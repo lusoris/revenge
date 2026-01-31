@@ -2,7 +2,20 @@
 
 > Voice assistant integration (Alexa, Google Assistant)
 
-**Status**: 🔴 PLANNING
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Full design with Alexa/Google intents, Lambda handler, DB schema |
+| Sources | 🟡 | Inspired by Emby Voice Control |
+| Instructions | ✅ | Implementation checklist complete |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+**Last Updated**: 2026-01-30
+**Location**: `internal/voice/`
 **Priority**: 🔵 LOW (Nice to have - Emby has this)
 **Inspired By**: Emby Voice Control
 
@@ -384,7 +397,121 @@ voice_control:
 
 ---
 
-## Related Documentation
+## Implementation Checklist
 
-- [Client Support](CLIENT_SUPPORT.md)
-- [Go Packages](../architecture/GO_PACKAGES.md)
+### Phase 1: Core Infrastructure
+- [ ] Create package structure at `internal/voice/`
+- [ ] Create sub-packages: `alexa/`, `google/`, `oauth/`
+- [ ] Define voice device entity (`entity.go`)
+- [ ] Define voice command entity (for logging)
+- [ ] Define intent types and slot structures
+- [ ] Create repository interface (`repository.go`)
+- [ ] Implement PostgreSQL repository (`postgres_repository.go`)
+- [ ] Create fx module (`module.go`)
+- [ ] Add configuration structs for Alexa/Google
+
+### Phase 2: Database
+- [ ] Create migration for `voice_devices` table
+- [ ] Create migration for `voice_commands` table
+- [ ] Add indexes for user_id lookups
+- [ ] Add unique constraint on (user_id, platform, device_id)
+- [ ] Write sqlc queries for device CRUD
+- [ ] Write sqlc queries for command logging
+- [ ] Write sqlc queries for token management
+
+### Phase 3: Service Layer
+- [ ] Implement VoiceService (`service.go`)
+- [ ] Implement intent parsing and routing
+- [ ] Implement command handlers:
+  - [ ] PlayMediaIntent - search and play content
+  - [ ] PauseIntent / ResumeIntent
+  - [ ] NextIntent / PreviousIntent
+  - [ ] ContinueWatchingIntent
+  - [ ] SearchIntent
+  - [ ] WhatsPlayingIntent
+- [ ] Implement device selection logic (prefer active, fallback to last)
+- [ ] Implement playback device communication
+- [ ] Add command logging for analytics
+- [ ] Add error response generation
+
+### Phase 4: OAuth & Account Linking
+- [ ] Implement OAuth 2.0 authorization endpoint
+- [ ] Implement OAuth 2.0 token endpoint
+- [ ] Implement token refresh logic
+- [ ] Implement device linking flow
+- [ ] Add token encryption/decryption
+- [ ] Implement device unlinking
+
+### Phase 5: API Integration
+- [ ] Add OpenAPI spec for voice endpoints
+- [ ] Generate ogen handlers
+- [ ] Implement device management endpoints:
+  - [ ] GET /api/v1/voice/devices (list linked)
+  - [ ] POST /api/v1/voice/devices/link
+  - [ ] DELETE /api/v1/voice/devices/{id}
+  - [ ] PUT /api/v1/voice/devices/{id}
+- [ ] Implement voice platform webhooks:
+  - [ ] POST /api/v1/voice/alexa (Alexa skill)
+  - [ ] POST /api/v1/voice/google (Google Actions)
+- [ ] Implement OAuth endpoints:
+  - [ ] GET /api/v1/voice/oauth/authorize
+  - [ ] POST /api/v1/voice/oauth/token
+- [ ] Add RBAC permission checks (voice.control, voice.link, voice.admin)
+- [ ] Implement Alexa skill validation (signature verification)
+- [ ] Implement Google Actions verification
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Shared](INDEX.md)
+
+### In This Section
+
+- [Time-Based Access Controls](ACCESS_CONTROLS.md)
+- [Tracearr Analytics Service](ANALYTICS_SERVICE.md)
+- [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md)
+- [Content Rating System](CONTENT_RATING.md)
+- [Revenge - Internationalization (i18n)](I18N.md)
+- [Library Types](LIBRARY_TYPES.md)
+- [News System](NEWS_SYSTEM.md)
+- [Revenge - NSFW Toggle](NSFW_TOGGLE.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related
+
+- [Client Support](CLIENT_SUPPORT.md) - Device capabilities
+- [Go Packages](../architecture/GO_PACKAGES.md) - Package dependencies
+- [User Experience Features](USER_EXPERIENCE_FEATURES.md) - Playback features

@@ -1,100 +1,50 @@
-# Wiki Providers
+# Wiki Integration
 
-> Supplementary information from wiki sources
+← Back to [Design Docs](..)
 
----
+> Supplementary information sources
 
-## Overview
-
-Wiki providers supply supplementary information for:
-- Detailed biographies
-- Plot summaries
-- Trivia and production notes
-- External links
-- Character information
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Providers
+## Subdirectories
 
-### Standard Wiki
-
-| Provider | Type | Status |
-|----------|------|--------|
-| [Wikipedia](WIKIPEDIA.md) | General | 🟢 Active |
-| Wikidata | Structured | 🟡 Planned |
-| [Fandom](FANDOM.md) | Fan Wikis | 🟡 Planned |
-| [TV Tropes](TVTROPES.md) | Tropes/Analysis | 🟡 Planned |
-
-### Adult Wiki (Isolated)
-
-| Provider | Type | Status |
-|----------|------|--------|
-| [IAFD](adult/IAFD.md) | Performer Wiki | 🟡 Planned |
-| AFDB | Adult Film DB | 🟡 Planned |
-| [Boobpedia](adult/BOOBPEDIA.md) | Performer Wiki | 🟡 Planned |
+- [Adult Wiki Integration](adult/INDEX.md) - Adult performer information sources
 
 ---
 
-## Provider Details
+## Documents
 
-### Wikipedia
-**General encyclopedia**
-
-- ✅ Movie/TV plot summaries
-- ✅ Actor biographies
-- ✅ Production information
-- ✅ Free, no API key
-- ✅ Multi-language support
-
-### Wikidata
-**Structured data**
-
-- ✅ Cross-references (IMDb, TMDB, etc.)
-- ✅ Relationships
-- ✅ Identifiers
-- ✅ Free, no API key
-
-### Fandom (Wikia)
-**Fan-maintained wikis**
-
-- ✅ Franchise-specific details
-- ✅ Character information
-- ✅ Episode guides
-- ⚠️ Quality varies by wiki
+| Document | Description | Status |
+|----------|-------------|--------|
+| [FANDOM Integration](FANDOM.md) | Fan-curated wikis for movies, TV shows, games, and more | 🟡 Partial |
+| [TVTropes Integration](TVTROPES.md) | Trope analysis and storytelling patterns | 🟡 Partial |
+| [Wikipedia Integration](WIKIPEDIA.md) | General encyclopedia information via Wikipedia API | 🟡 Partial |
 
 ---
 
-## Use Cases
+<!-- SOURCE-BREADCRUMBS-START -->
 
-Wiki data enriches primary metadata:
+## Sources & Cross-References
 
-| Content | Wiki Usage |
-|---------|------------|
-| Movies | Production trivia, box office |
-| TV Shows | Episode summaries, cast changes |
-| Music | Band history, album reception |
-| People | Extended biography |
+> Auto-generated section linking to external documentation sources
 
----
+### Cross-Reference Indexes
 
-## Configuration
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
-```yaml
-metadata:
-  wiki:
-    wikipedia:
-      enabled: true
-      languages: ["en", "de", "fr"]
-    wikidata:
-      enabled: true
-    fandom:
-      enabled: false  # Quality varies
-```
+<!-- SOURCE-BREADCRUMBS-END -->
+
+## Related
+
+- [Shared Features](../../features/shared/)
 
 ---
 
-## Related Documentation
+## Status Legend
 
-- [Metadata Providers](../metadata/INDEX.md)
-- [Adult Wiki](adult/INDEX.md)
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

@@ -1,8 +1,9 @@
 # sturdyc GitHub README
 
-> Auto-fetched from [https://github.com/viccon/sturdyc](https://github.com/viccon/sturdyc)
-> Raw source: [https://raw.githubusercontent.com/viccon/sturdyc/HEAD/README.md](https://raw.githubusercontent.com/viccon/sturdyc/HEAD/README.md)
-> Last Updated: 2026-01-29T20:11:50.209845+00:00
+> Source: https://github.com/viccon/sturdyc
+> Fetched: 2026-01-30T23:48:51.154652+00:00
+> Content-Hash: a67abb0acd96cd65
+> Type: github_readme
 
 ---
 

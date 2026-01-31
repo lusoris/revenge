@@ -1,113 +1,43 @@
 # Casting Protocols
 
-> Stream to external devices
+← Back to [Design Docs](..)
+
+> Chromecast, DLNA device casting
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
-## Overview
+## Documents
 
-Casting support enables playback on:
-- Smart TVs
-- Streaming devices (Chromecast, Fire TV)
-- Game consoles
-- DLNA-compatible devices
-
----
-
-## Protocols
-
-| Protocol | Type | Status |
-|----------|------|--------|
-| [Chromecast](CHROMECAST.md) | Google Cast | 🟡 Planned |
-| [DLNA](DLNA.md) | UPnP/DLNA | 🟡 Planned |
+| Document | Description | Status |
+|----------|-------------|--------|
+| [Chromecast Integration](CHROMECAST.md) | Google Cast protocol for streaming to Chromecast devices | ✅ Designed |
+| [DLNA/UPnP Integration](DLNA.md) | Universal Plug and Play streaming to compatible devices | ✅ Designed |
 
 ---
 
-## Protocol Details
+<!-- SOURCE-BREADCRUMBS-START -->
 
-### Chromecast (Google Cast)
-**Google's casting protocol**
+## Sources & Cross-References
 
-- ✅ Chromecast devices
-- ✅ Android TV
-- ✅ Google Home displays
-- ✅ Chrome browser casting
-- ⚠️ Requires Cast SDK
+> Auto-generated section linking to external documentation sources
 
-### DLNA/UPnP
-**Universal standard**
+### Cross-Reference Indexes
 
-- ✅ Smart TVs (Samsung, LG, Sony)
-- ✅ Game consoles (Xbox, PlayStation)
-- ✅ Media players
-- ✅ No proprietary SDK needed
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+## Related
+
+- [Playback Features](../../features/playback/)
 
 ---
 
-## Feature Comparison
+## Status Legend
 
-| Feature | Chromecast | DLNA |
-|---------|------------|------|
-| Discovery | mDNS/DIAL | SSDP |
-| Control | Sender/Receiver | UPnP AV |
-| Protocols | HTTP/HTTPS | HTTP |
-| Subtitles | WebVTT/TTML | SRT/WebVTT |
-| Transcoding | Often needed | Device-dependent |
-| Auth | OAuth | None |
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
 
----
-
-## Architecture
-
-```
-User selects device
-    ↓
-Protocol-specific discovery
-    ↓
-Revenge sends media URL to device
-    ↓
-Device requests media directly
-    ↓
-Revenge handles playback control
-```
-
----
-
-## Configuration
-
-```yaml
-casting:
-  enabled: true
-
-  chromecast:
-    enabled: true
-    app_id: "${CAST_APP_ID}"
-
-  dlna:
-    enabled: true
-    server_name: "Revenge Media Server"
-
-    # Auto-discovery
-    discovery:
-      enabled: true
-      interval: "30s"
-```
-
----
-
-## Transcoding Considerations
-
-Cast devices have limited codec support:
-
-| Device | Supported | May Need Transcode |
-|--------|-----------|-------------------|
-| Chromecast | H.264, VP8, AAC | HEVC, DTS |
-| DLNA TV | Varies | Check device |
-| Xbox | H.264, HEVC | AV1 |
-
----
-
-## Related Documentation
-
-- [Transcoding](../transcoding/INDEX.md)
-- [Client Support](../../features/CLIENT_SUPPORT.md)
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

@@ -1,8 +1,9 @@
 # resty GitHub README
 
-> Auto-fetched from [https://github.com/go-resty/resty](https://github.com/go-resty/resty)
-> Raw source: [https://raw.githubusercontent.com/go-resty/resty/HEAD/README.md](https://raw.githubusercontent.com/go-resty/resty/HEAD/README.md)
-> Last Updated: 2026-01-29T20:11:59.626707+00:00
+> Source: https://github.com/go-resty/resty
+> Fetched: 2026-01-30T23:49:01.054260+00:00
+> Content-Hash: 253a863ffc561e06
+> Type: github_readme
 
 ---
 

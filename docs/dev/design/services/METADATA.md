@@ -2,10 +2,32 @@
 
 > External metadata providers for media enrichment
 
-**Status**: 🟡 PARTIAL
-**Priority**: 🔴 HIGH
 **Module**: `internal/service/metadata/`
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-providers)
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | ✅ | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
+
+---
+
+## Developer Resources
+
+> Package versions: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+> External APIs: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-providers)
+
+| Package | Purpose |
+|---------|---------|
+| genqlient | Type-safe GraphQL client |
+| resty | HTTP client |
 
 ---
 
@@ -229,6 +251,97 @@ arr:
 ```
 
 ---
+
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+
+- [ ] Create `internal/service/metadata/` package structure
+- [ ] Define `provider.go` interface
+- [ ] Implement provider registry with priority ordering
+- [ ] Add fx module wiring in `module.go`
+
+### Phase 2: Video Providers
+
+- [ ] Implement TMDb provider
+- [ ] Implement TheTVDB provider
+- [ ] Add rate limiting with sturdyc
+- [ ] Implement Radarr/Sonarr providers (arr-first)
+
+### Phase 3: Audio Providers
+
+- [ ] Implement MusicBrainz provider
+- [ ] Implement Last.fm provider
+- [ ] Implement Lidarr provider
+
+### Phase 4: QAR Providers
+
+- [ ] Implement StashDB GraphQL provider
+- [ ] Implement ThePornDB provider
+- [ ] Implement Whisparr provider
+
+### Phase 5: Book Providers
+
+- [ ] Implement Audnexus provider
+- [ ] Implement OpenLibrary provider
+- [ ] Implement Readarr provider
+
+### Phase 6: Service Layer
+
+- [ ] Implement unified metadata service
+- [ ] Add priority-based provider selection
+- [ ] Implement caching layer (otter)
+- [ ] Add River jobs for background fetching
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Services](INDEX.md)
+
+### In This Section
+
+- [Activity Service](ACTIVITY.md)
+- [Analytics Service](ANALYTICS.md)
+- [API Keys Service](APIKEYS.md)
+- [Auth Service](AUTH.md)
+- [Fingerprint Service](FINGERPRINT.md)
+- [Grants Service](GRANTS.md)
+- [Library Service](LIBRARY.md)
+- [Notification Service](NOTIFICATION.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related
 

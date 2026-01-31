@@ -2,7 +2,23 @@
 
 > OpenID Connect / SSO provider management
 
-**Location**: `internal/service/oidc/`
+**Module**: `internal/service/oidc`
+
+## Developer Resources
+
+> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#backend-services) for service inventory and status.
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | |
+| Sources | ✅ | |
+| Instructions | ✅ | |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -129,8 +145,83 @@ func (s *Service) GetPublicProviders(ctx context.Context) ([]ProviderInfo, error
 
 ---
 
-## Related
+## Implementation Checklist
+
+### Phase 1: Core Infrastructure
+- [ ] Create `internal/service/oidc/` package structure
+- [ ] Define OIDC provider configuration
+- [ ] Add fx module wiring
+
+### Phase 2: Database
+- [ ] Create migration for `oidc_providers` table
+- [ ] Create `user_oidc_links` table
+- [ ] Write sqlc queries
+
+### Phase 3: Service Layer
+- [ ] Implement provider registration
+- [ ] Implement authorization URL generation
+- [ ] Implement callback handling
+- [ ] Implement user linking/creation
+
+### Phase 4: API Integration
+- [ ] Define OpenAPI endpoints for OIDC flow
+- [ ] Generate ogen handlers
+- [ ] Wire handlers to service
+
+---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Services](INDEX.md)
+
+### In This Section
+
+- [Activity Service](ACTIVITY.md)
+- [Analytics Service](ANALYTICS.md)
+- [API Keys Service](APIKEYS.md)
+- [Auth Service](AUTH.md)
+- [Fingerprint Service](FINGERPRINT.md)
+- [Grants Service](GRANTS.md)
+- [Library Service](LIBRARY.md)
+- [Metadata Service](METADATA.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
+## Related Documents
 
 - [Auth Service](AUTH.md) - Local authentication
 - [User Service](USER.md) - User management
+- [Session Service](SESSION.md) - Session token handling
 - [Integrations: Auth](../integrations/auth/) - Provider-specific docs
+- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory

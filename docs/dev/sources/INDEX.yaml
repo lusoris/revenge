@@ -3,95 +3,125 @@ last_run: '2026-01-29T20:15:36.483136+00:00'
 next_scheduled: null
 sources:
   go-context:
-    status: success
-    last_fetched: '2026-01-29T20:10:57.947300+00:00'
-    file_size: 20736
-    checksum: 7d21022cb900d07ee45cbf9a2867afa233501e58b2d39c827c11384851d30893
+    name: Go context
+    url: https://pkg.go.dev/context
+    output: go/stdlib/context.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:31:53.232536+00:00'
     error: null
+    content_hash: e45ae86776c930fd
   go-slog:
-    status: success
-    last_fetched: '2026-01-29T20:11:00.213576+00:00'
-    file_size: 59461
-    checksum: 65e6d4faa6cd2e898d477f5c37496d76ca673b1e8cc8a616c353bd2b33403605
+    name: Go log/slog
+    url: https://pkg.go.dev/log/slog
+    output: go/stdlib/slog.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:31:55.646556+00:00'
     error: null
+    content_hash: ee3d33fc34a4f959
   go-nethttp:
-    status: success
-    last_fetched: '2026-01-29T20:11:02.581047+00:00'
-    file_size: 143120
-    checksum: 93a803aa0498878bf9aeddee2cd67cd0672135c5a0bdf27405d283265e158683
+    name: Go net/http
+    url: https://pkg.go.dev/net/http
+    output: go/stdlib/nethttp.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:31:57.998888+00:00'
     error: null
+    content_hash: 90ff72977153d23a
   go-testing:
-    status: success
-    last_fetched: '2026-01-29T20:11:04.961299+00:00'
-    file_size: 56332
-    checksum: a1aa059e83007ac1222198507a22b942eddaea3b95839759881b688b58babe71
+    name: Go testing
+    url: https://pkg.go.dev/testing
+    output: go/stdlib/testing.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:32:00.259400+00:00'
     error: null
+    content_hash: b5237e9370e09b5b
   go-sync:
-    status: success
-    last_fetched: '2026-01-29T20:11:07.216320+00:00'
-    file_size: 23253
-    checksum: 8286f1755d93d4ef890a29a5ced24e0993f0d08f4832903477dec1309b6cc82c
+    name: Go sync
+    url: https://pkg.go.dev/sync
+    output: go/stdlib/sync.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:32:02.480795+00:00'
     error: null
+    content_hash: 3ff8ddcf65fe5182
   go-errors:
-    status: success
-    last_fetched: '2026-01-29T20:11:09.415424+00:00'
-    file_size: 7926
-    checksum: 58499cfd81ae359c0250511658df1859e3959a94846a09d61dd0097e789c64a4
+    name: Go errors
+    url: https://pkg.go.dev/errors
+    output: go/stdlib/errors.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:32:04.650632+00:00'
     error: null
+    content_hash: 3782fd09722de9ed
   go-io:
-    status: success
-    last_fetched: '2026-01-29T20:11:11.677011+00:00'
-    file_size: 28852
-    checksum: 3323b6d3c19eeae8b687605a026ffd5c7b3d4a4f9859598f31b731e9b3614115
+    name: Go io
+    url: https://pkg.go.dev/io
+    output: go/stdlib/io.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:32:06.880791+00:00'
     error: null
+    content_hash: 33ad1411c898e76e
   go-release-notes:
-    status: success
-    last_fetched: '2026-01-29T20:11:14.024077+00:00'
-    file_size: 56561
-    checksum: 89516151c54e2575902a3376afcf53028967638336907eff5cfb24de538a9147
+    name: Go Release Notes
+    url: https://go.dev/doc/devel/release
+    output: go/release-notes.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:32:09.167270+00:00'
     error: null
+    content_hash: fc66afee97c297e5
   fx:
+    name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    output: tooling/fx.md
     status: success
-    last_fetched: '2026-01-29T20:11:16.400845+00:00'
-    file_size: 61985
-    checksum: fd3e5acf0ef9102edc9e24178a551508c17541fa2c428fcf623bbd8c45c93445
+    fetched_at: '2026-01-30T23:48:21.671338+00:00'
     error: null
+    content_hash: 24e92f5448ab505e
   fx-docs:
+    name: fx Documentation
+    url: https://uber-go.github.io/fx/
+    output: tooling/fx-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:18.658900+00:00'
-    file_size: 1583
-    checksum: a4f8dcea0fce5ee6d6f976a25d177a0610de42d4b51d54e95c1a9d4d4acf2590
+    fetched_at: '2026-01-30T23:48:23.833766+00:00'
     error: null
+    content_hash: 5d7eefe701fe804e
   koanf:
+    name: koanf
+    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    output: tooling/koanf.md
     status: success
-    last_fetched: '2026-01-29T20:11:21.210635+00:00'
-    file_size: 19123
-    checksum: 5da2563b79775e0e924bdbae4bd10d3740dabd73d854ded060be88a40d5d4c3b
+    fetched_at: '2026-01-30T23:48:26.315949+00:00'
     error: null
+    content_hash: 443d35b721bd9751
   ogen:
+    name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    output: tooling/ogen.md
     status: success
-    last_fetched: '2026-01-29T20:11:23.817938+00:00'
-    file_size: 83132
-    checksum: b6643be1f6422727cb3c4e33d7c200df47d908bbf62a0e8c29cd5bee338765c6
+    fetched_at: '2026-01-30T23:48:29.138535+00:00'
     error: null
+    content_hash: fc2c9b30523560cc
   ogen-docs:
+    name: ogen Documentation
+    url: https://ogen.dev/docs/intro
+    output: tooling/ogen-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:26.172251+00:00'
-    file_size: 5402
-    checksum: ba4e55c2a623a08bf88c3987165091fed094f7c0749a5332ffc9edb3bb8e27fe
+    fetched_at: '2026-01-30T23:48:31.514922+00:00'
     error: null
+    content_hash: 4390b8eccb98d2d7
   river:
+    name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    output: tooling/river.md
     status: success
-    last_fetched: '2026-01-29T20:11:28.911932+00:00'
-    file_size: 188286
-    checksum: 96fcf3ad0086153e0ebeebdd1ab6047c4bae46f0f0f67e68adfe15c397a86e4c
+    fetched_at: '2026-01-30T23:48:34.590576+00:00'
     error: null
+    content_hash: dc5288afc3501964
   river-docs:
+    name: River Documentation
+    url: https://riverqueue.com/docs
+    output: tooling/river-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:31.145605+00:00'
-    file_size: 6039
-    checksum: 04e3de32b626d67824c3ebe2049e427c6bc71708f6b2bf2b658ed877e32e7c22
+    fetched_at: '2026-01-30T23:48:36.821628+00:00'
     error: null
+    content_hash: 80ec4bab414f27f6
   go-redis:
     status: success
     last_fetched: '2026-01-29T20:11:35.172486+00:00'
@@ -99,190 +129,253 @@ sources:
     checksum: d5ee973758917b58e851509c2662fa06a0d2d5c07a91f634718e3104a8f8f2ea
     error: null
   rueidis:
+    name: rueidis
+    url: https://pkg.go.dev/github.com/redis/rueidis
+    output: tooling/rueidis.md
     status: success
-    last_fetched: '2026-01-29T20:11:38.153347+00:00'
-    file_size: 76053
-    checksum: 9929b9b4d09d598ebbcf072214a4b466c4b5908850044de77cf78fafdcf3c808
+    fetched_at: '2026-01-30T23:48:39.661019+00:00'
     error: null
+    content_hash: 0ec0e5c3e6a58d64
   rueidis-docs:
+    name: rueidis GitHub README
+    url: https://github.com/redis/rueidis
+    output: tooling/rueidis-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:40.506435+00:00'
-    file_size: 31189
-    checksum: d1829b90ce99dfe3096f53e6eb88308a79b38a5a795c6007307e1c63cfd41927
+    fetched_at: '2026-01-30T23:48:41.820001+00:00'
     error: null
+    content_hash: a99a390d85d528cb
   otter:
+    name: otter Cache
+    url: https://pkg.go.dev/github.com/maypok86/otter/v2
+    output: tooling/otter.md
     status: success
-    last_fetched: '2026-01-29T20:11:42.883766+00:00'
-    file_size: 20598
-    checksum: 8a5f85ee6181e5d036dc1113b2b3182dd9cd3554edfcdd2ff4ca3c00d0813916
+    fetched_at: '2026-01-30T23:48:44.386233+00:00'
     error: null
+    content_hash: a1dc7fbc8e8991af
   otter-docs:
+    name: otter GitHub README
+    url: https://github.com/maypok86/otter
+    output: tooling/otter-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:45.091412+00:00'
-    file_size: 11063
-    checksum: 373e79c29948c1a0da7be11727cac08a075bffa84b9997ae4521e18307d1fb13
+    fetched_at: '2026-01-30T23:48:46.546656+00:00'
     error: null
+    content_hash: 1f078b69837235cb
   sturdyc:
+    name: sturdyc
+    url: https://pkg.go.dev/github.com/viccon/sturdyc
+    output: tooling/sturdyc.md
     status: success
-    last_fetched: '2026-01-29T20:11:47.993891+00:00'
-    file_size: 29569
-    checksum: afbe945373f3711cf47897b3a6ea927c7a603cff3014b9d9ac7717b91676a2c7
+    fetched_at: '2026-01-30T23:48:48.982305+00:00'
     error: null
+    content_hash: 9be98075996c3502
   sturdyc-docs:
+    name: sturdyc GitHub README
+    url: https://github.com/viccon/sturdyc
+    output: tooling/sturdyc-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:50.210836+00:00'
-    file_size: 70943
-    checksum: a016a3e82906c0fff4e37b82b0eda16b645f7d54643385c5243697b6413576da
+    fetched_at: '2026-01-30T23:48:51.154652+00:00'
     error: null
+    content_hash: a67abb0acd96cd65
   coder-websocket:
+    name: coder/websocket
+    url: https://pkg.go.dev/github.com/coder/websocket
+    output: tooling/websocket.md
     status: success
-    last_fetched: '2026-01-29T20:11:52.461691+00:00'
-    file_size: 23798
-    checksum: 87a4274d6bdb0ddcba9c95165d8453bf392139f9a5b62f6e545aa6ff3ff68cf5
+    fetched_at: '2026-01-30T23:48:53.412772+00:00'
     error: null
+    content_hash: 1c659c63f88d00fc
   coder-websocket-docs:
+    name: coder/websocket GitHub README
+    url: https://github.com/coder/websocket
+    output: tooling/websocket-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:54.641264+00:00'
-    file_size: 7300
-    checksum: b14a2cc7c07fd960ff39dc6aa764dce416b7af1174683832bc9f36280772b905
+    fetched_at: '2026-01-30T23:48:55.572400+00:00'
     error: null
+    content_hash: ec92620d532c4ee4
   resty:
+    name: resty HTTP Client
+    url: https://pkg.go.dev/github.com/go-resty/resty/v2
+    output: tooling/resty.md
     status: success
-    last_fetched: '2026-01-29T20:11:57.435074+00:00'
-    file_size: 140079
-    checksum: e8655a42fed71216ac39365e5345e38d404d98919a48911106daba2317454032
+    fetched_at: '2026-01-30T23:48:58.890341+00:00'
     error: null
+    content_hash: 89e436980462b908
   resty-docs:
+    name: resty GitHub README
+    url: https://github.com/go-resty/resty
+    output: tooling/resty-guide.md
     status: success
-    last_fetched: '2026-01-29T20:11:59.627662+00:00'
-    file_size: 3917
-    checksum: ceb4b2f8dd09148040c66b8cbe491a292cc26f3a02b47068493d816ba1dec9a5
+    fetched_at: '2026-01-30T23:49:01.054260+00:00'
     error: null
+    content_hash: 253a863ffc561e06
   fsnotify:
+    name: fsnotify
+    url: https://pkg.go.dev/github.com/fsnotify/fsnotify
+    output: tooling/fsnotify.md
     status: success
-    last_fetched: '2026-01-29T20:12:01.860860+00:00'
-    file_size: 12814
-    checksum: a471dc3560697803beafb914adfc653b50e59aa67222cd9e2090531bf8a52716
+    fetched_at: '2026-01-30T23:49:03.371313+00:00'
     error: null
+    content_hash: 7b4a3f225b951ef8
   fsnotify-docs:
+    name: fsnotify GitHub README
+    url: https://github.com/fsnotify/fsnotify
+    output: tooling/fsnotify-guide.md
     status: success
-    last_fetched: '2026-01-29T20:12:04.060764+00:00'
-    file_size: 7185
-    checksum: b3c9e8ee4cb5ef4dc6dc1324fa39e523641610c40bb06239dcc1f9aefd5f2dc8
+    fetched_at: '2026-01-30T23:49:05.517653+00:00'
     error: null
+    content_hash: bf35d09bf58b2a63
   google-uuid:
+    name: google/uuid
+    url: https://pkg.go.dev/github.com/google/uuid
+    output: tooling/uuid.md
     status: success
-    last_fetched: '2026-01-29T20:12:06.444938+00:00'
-    file_size: 19025
-    checksum: ab9396022b0fd3a65185912011c26c875751bb9a05e273d41a747554eb9ee2e1
+    fetched_at: '2026-01-30T23:49:08.039096+00:00'
     error: null
+    content_hash: a84a55c3481cc034
   validator:
+    name: go-playground/validator
+    url: https://pkg.go.dev/github.com/go-playground/validator/v10
+    output: tooling/validator.md
     status: success
-    last_fetched: '2026-01-29T20:12:08.757396+00:00'
-    file_size: 72811
-    checksum: dea6649bcbbae8f8fd894f606fdfc2e3e73a01eb52d6eb9937957f841dbd6f9f
+    fetched_at: '2026-01-30T23:49:10.302695+00:00'
     error: null
+    content_hash: 744faa8eb2ad744a
   sqlc:
+    name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    output: database/sqlc.md
     status: success
-    last_fetched: '2026-01-29T20:12:13.663420+00:00'
-    file_size: 1527
-    checksum: 19fdca0b67ff29697b7ac2b719932ba077a1711e677bb1438112a5aa4d598fe6
+    fetched_at: '2026-01-30T23:49:59.167181+00:00'
     error: null
+    content_hash: adfadf7ec1a8da98
   sqlc-config:
+    name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    output: database/sqlc-config.md
     status: success
-    last_fetched: '2026-01-29T20:12:15.811970+00:00'
-    file_size: 17257
-    checksum: ffb01fd38e5455cfe94a95ce2fa437c35d75ece642828ea312daeffd0f469528
+    fetched_at: '2026-01-30T23:50:01.667935+00:00'
     error: null
+    content_hash: 8e28008d32be64b6
   pgx:
+    name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    output: database/pgx.md
     status: success
-    last_fetched: '2026-01-29T20:12:23.011111+00:00'
-    file_size: 66485
-    checksum: 5f66a7a09ff81f23f7da8a67c99d396d5751c778d290bdc2f0892bab89f3615b
+    fetched_at: '2026-01-30T23:50:08.965736+00:00'
     error: null
+    content_hash: 8e5d3fcd74bd29d6
   pgxpool:
+    name: pgxpool Connection Pool
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool
+    output: database/pgxpool.md
     status: success
-    last_fetched: '2026-01-29T20:12:25.468106+00:00'
-    file_size: 24165
-    checksum: bc629b5e9f1de46d4a86eb315c775d1a1f1213caa3fbcea5f56463dc7b1546f3
+    fetched_at: '2026-01-30T23:50:11.235371+00:00'
     error: null
+    content_hash: db6cb2c6bcf0a9db
   postgresql-json:
+    name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    output: database/postgresql-json.md
     status: success
-    last_fetched: '2026-01-29T20:12:28.521950+00:00'
-    file_size: 73607
-    checksum: 301f437f648624920952caf9460952c6e18f9c00f44d48d07b8be667220439ee
+    fetched_at: '2026-01-30T23:50:14.571453+00:00'
     error: null
+    content_hash: 5164a03f32d49c80
   postgresql-fulltext:
+    name: PostgreSQL Full Text Search
+    url: https://www.postgresql.org/docs/current/textsearch.html
+    output: database/postgresql-fulltext.md
     status: success
-    last_fetched: '2026-01-29T20:12:31.134559+00:00'
-    file_size: 2022
-    checksum: 0ed137314876f74a2311c314f124bcd7be68b1237c697a8e50abdb36f0b57952
+    fetched_at: '2026-01-30T23:50:16.720990+00:00'
     error: null
+    content_hash: bb3fd3631c9d5bbf
   postgresql-arrays:
+    name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    output: database/postgresql-arrays.md
     status: success
-    last_fetched: '2026-01-29T20:12:33.872415+00:00'
-    file_size: 21006
-    checksum: 352033abd5000fcd8783ae71f44eea029b4b1b26c0dff100dc76b74d5f6d1da5
+    fetched_at: '2026-01-30T23:50:18.889119+00:00'
     error: null
+    content_hash: 1d46bc06d6ebf41e
   tmdb:
+    name: TMDb API
+    url: https://developer.themoviedb.org/reference/intro/getting-started
+    output: apis/tmdb.md
     status: success
-    last_fetched: '2026-01-29T20:12:37.227905+00:00'
-    file_size: 3392
-    checksum: 5025e8c467b1f61588821d665daa434daae3fedce7e037fa3ab89007aaf5145d
+    fetched_at: '2026-01-30T23:50:21.417208+00:00'
     error: null
+    content_hash: 55296ea21d055474
   thetvdb:
+    name: TheTVDB API
+    url: https://thetvdb.github.io/v4-api/
+    output: apis/thetvdb.md
     status: skipped
-    reason: manual type - requires manual download
-    note: MANUAL - JavaScript-heavy docs, requires manual extraction. API docs at
-      URL.
+    fetched_at: null
+    error: 'Manual source: MANUAL - JavaScript-heavy docs, requires manual extraction.
+      API docs at URL.'
   omdb:
+    name: OMDb API
+    url: https://www.omdbapi.com/
+    output: apis/omdb.md
     status: success
-    last_fetched: '2026-01-29T20:12:42.385059+00:00'
-    file_size: 4009
-    checksum: 4e2dc300ef8a078bd75ca319834b8151610f7359c45d9993dfb6b9a25b37805a
+    fetched_at: '2026-01-30T23:50:25.600729+00:00'
     error: null
+    content_hash: 8280137d3f64436c
   musicbrainz:
+    name: MusicBrainz API
+    url: https://musicbrainz.org/doc/MusicBrainz_API
+    output: apis/musicbrainz.md
     status: success
-    last_fetched: '2026-01-29T20:12:44.801577+00:00'
-    file_size: 30597
-    checksum: a66b3daa7460c19daf78437219e36c31554e8d6caef9ab65551ec8c1a632c305
+    fetched_at: '2026-01-30T23:50:27.829859+00:00'
     error: null
+    content_hash: 0727a369e8bcb8ab
   lastfm-api:
+    name: Last.fm API
+    url: https://www.last.fm/api/intro
+    output: apis/lastfm.md
     status: success
-    last_fetched: '2026-01-29T20:12:47.410292+00:00'
-    file_size: 2468
-    checksum: f09cf7664d7217317b285554e096f87f5bad1a328885f49f7467275c7219dfef
+    fetched_at: '2026-01-30T23:50:30.268982+00:00'
     error: null
+    content_hash: 512b0e0e6bd45d2c
   discogs:
-    status: failed
-    last_fetched: '2026-01-28T21:44:53.441520+00:00'
-    error: 'Request failed after 3 attempts: 403 Client Error: Forbidden for url:
-      https://www.discogs.com/developers'
-    attempted: '2026-01-29T20:12:59.413348+00:00'
+    name: Discogs API
+    url: https://www.discogs.com/developers
+    output: apis/discogs.md
+    status: success
+    fetched_at: '2026-01-30T23:50:35.259707+00:00'
+    error: null
+    content_hash: 1ccbd8444e897e24
   spotify:
+    name: Spotify Web API
+    url: https://developer.spotify.com/documentation/web-api
+    output: apis/spotify.md
     status: success
-    last_fetched: '2026-01-29T20:13:01.700149+00:00'
-    file_size: 2242
-    checksum: a83102015f263d77d112ee2a04cffe91752b951431e238dcb4d16fcbdd84bcc4
+    fetched_at: '2026-01-30T23:50:37.448514+00:00'
     error: null
+    content_hash: 8de7bbe0c987ea56
   openlibrary:
+    name: Open Library API
+    url: https://openlibrary.org/developers/api
+    output: apis/openlibrary.md
     status: success
-    last_fetched: '2026-01-29T20:13:04.479974+00:00'
-    file_size: 7984
-    checksum: a02faf923470a758041e132a20bc8bc53bd6a9bb849617e48863229554b02a50
+    fetched_at: '2026-01-30T23:50:40.394173+00:00'
     error: null
+    content_hash: 627177c6a1a4e763
   google-books:
+    name: Google Books API
+    url: https://developers.google.com/books/docs/v1/using
+    output: apis/google-books.md
     status: success
-    last_fetched: '2026-01-29T20:13:06.900397+00:00'
-    file_size: 37742
-    checksum: 760d6c039bdb5118af65fb87779a2a22fe7bcf83942f6a7fe99935fe7a28dbe3
+    fetched_at: '2026-01-30T23:50:42.837349+00:00'
     error: null
+    content_hash: 5a4ba743197762a0
   comicvine:
+    name: ComicVine API
+    url: https://comicvine.gamespot.com/api/documentation
+    output: apis/comicvine.md
     status: success
-    last_fetched: '2026-01-29T20:13:09.742077+00:00'
-    file_size: 54967
-    checksum: 1a4091b1f9633075757598050b7fd7057e7943e1c9913c1a72adf57951b18fb0
+    fetched_at: '2026-01-30T23:50:45.662609+00:00'
     error: null
+    content_hash: ab984404dcd7b060
   marvel-api:
     status: success
     last_fetched: '2026-01-29T20:13:12.265311+00:00'
@@ -290,23 +383,29 @@ sources:
     checksum: 6564dab694209e639dd2b161057ff167194bcffcbf82a7ea775240318873c5ba
     error: null
   anilist:
+    name: AniList GraphQL API
+    url: https://anilist.gitbook.io/anilist-apiv2-docs
+    output: apis/anilist.md
     status: success
-    last_fetched: '2026-01-29T20:13:15.986333+00:00'
-    file_size: 1225
-    checksum: 94dc2a499d5ba7853eae779b4e756354e100f920843d803072bb5c41184ccbe9
+    fetched_at: '2026-01-30T23:50:48.125768+00:00'
     error: null
+    content_hash: ad5d62e705e8d1d4
   anilist-graphql:
+    name: AniList GraphQL Schema
+    url: https://graphql.anilist.co
+    output: apis/anilist-schema.graphql
     status: success
-    last_fetched: '2026-01-29T20:13:19.828891+00:00'
-    file_size: 88304
-    checksum: 7b6f3a8303fdd7b39c66e7f26979bad7dc3610c964a517ac9189b4bc483ba8a5
+    fetched_at: '2026-01-30T23:50:50.126169+00:00'
     error: null
+    content_hash: 25e40b71395be3aa
   myanimelist:
+    name: MyAnimeList API
+    url: https://myanimelist.net/apiconfig/references/api/v2
+    output: apis/myanimelist.md
     status: success
-    last_fetched: '2026-01-29T20:13:22.507245+00:00'
-    file_size: 15570
-    checksum: 87dc4d0355dacaddee928e8f35d56ed56e464c00c89c696f1e830345ea79690a
+    fetched_at: '2026-01-30T23:50:53.572111+00:00'
     error: null
+    content_hash: 148d6b564434c22c
   kitsu:
     status: success
     last_fetched: '2026-01-29T20:13:24.721008+00:00'
@@ -314,286 +413,1275 @@ sources:
     checksum: 8697f5b032da67a53f11603085ba1a3f866042a9d9a74c1b70ba01c521aabecd
     error: null
   stashdb:
+    name: StashDB GraphQL API
+    url: https://stashdb.org/graphql
+    output: apis/stashdb-schema.graphql
     status: success
-    last_fetched: '2026-01-29T20:13:27.102049+00:00'
-    file_size: 31650
-    checksum: 5bbecb57192a03ea260b617665270d4014b51ae5efc57f7a3dc19861a70a7e71
+    fetched_at: '2026-01-30T23:50:55.572726+00:00'
     error: null
+    content_hash: e8e47143bac3afbf
   theporndb:
+    name: ThePornDB API
+    url: https://api.theporndb.net/docs
+    output: apis/theporndb.md
     status: skipped
-    reason: manual type - requires manual download
-    note: MANUAL - Swagger UI requires interaction. JSON spec not publicly available.
+    fetched_at: null
+    error: 'Manual source: MANUAL - Swagger UI requires interaction. JSON spec not
+      publicly available.'
   trakt:
+    name: Trakt API
+    url: https://trakt.tv/b/api-docs
+    output: apis/trakt.md
     status: success
-    last_fetched: '2026-01-29T20:13:35.529640+00:00'
-    file_size: 236
-    checksum: 1c72b64a862a29a2c1b8572cd8727ed4e5b938a27a5f531b75f66356657f0818
+    fetched_at: '2026-01-30T23:51:00.913094+00:00'
     error: null
+    content_hash: 17ccbbf613cdb01f
   listenbrainz:
+    name: ListenBrainz API
+    url: https://listenbrainz.readthedocs.io/en/latest/users/api/index.html
+    output: apis/listenbrainz.md
     status: success
-    last_fetched: '2026-01-29T20:13:37.951228+00:00'
-    file_size: 6288
-    checksum: 3b1de484af4139111363ae41533c3382bdd2f3a821bfda06e985fb6393d969d1
+    fetched_at: '2026-01-30T23:51:03.268156+00:00'
     error: null
+    content_hash: ae65def88d3adfb4
   simkl:
+    name: Simkl API
+    url: https://simkl.docs.apiary.io/
+    output: apis/simkl.md
     status: success
-    last_fetched: '2026-01-29T20:13:42.509464+00:00'
-    file_size: 7338
-    checksum: e010193e2482b3e8efdafa8896f8c13623161e68c5ec125048630bf53bcfea83
+    fetched_at: '2026-01-30T23:51:11.901635+00:00'
     error: null
+    content_hash: 17ccbbf613cdb01f
   radarr:
+    name: Radarr OpenAPI Spec
+    url: https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json
+    output: apis/radarr-openapi.json
     status: success
-    last_fetched: '2026-01-29T20:13:44.673510+00:00'
-    file_size: 309392
-    checksum: 95ea9062485118d6a8abed8250b9bfbf94e4de0f55e9c5611da6805864f9a26e
+    fetched_at: '2026-01-30T23:51:27.593616+00:00'
     error: null
+    content_hash: b55154bbfaff3fa4
   sonarr:
+    name: Sonarr OpenAPI Spec
+    url: https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json
+    output: apis/sonarr-openapi.json
     status: success
-    last_fetched: '2026-01-29T20:13:46.884045+00:00'
-    file_size: 297108
-    checksum: 3fd4c4f4385b1043c3568bd3b37fa6c3c0161135072962dffb611f4ff270e2b7
+    fetched_at: '2026-01-30T23:51:29.733854+00:00'
     error: null
+    content_hash: a0e86cfd8146e6b4
   lidarr:
+    name: Lidarr OpenAPI Spec
+    url: https://raw.githubusercontent.com/Lidarr/Lidarr/develop/src/Lidarr.Api.V1/openapi.json
+    output: apis/lidarr-openapi.json
     status: success
-    last_fetched: '2026-01-29T20:13:49.049324+00:00'
-    file_size: 316102
-    checksum: 4ae9e79e9662898ed4704ce80f091161587a9f0d664f9e518b11a038616e491f
+    fetched_at: '2026-01-30T23:51:31.908105+00:00'
     error: null
+    content_hash: 119a98c1bc3bcdd0
   hls:
+    name: HLS Specification
+    url: https://datatracker.ietf.org/doc/html/rfc8216
+    output: protocols/hls-rfc8216.md
     status: success
-    last_fetched: '2026-01-29T20:13:51.545122+00:00'
-    file_size: 117117
-    checksum: d004b07afdb2c0c77a81de05d8c556aadfd191b31523e7309e894d6717f625fb
+    fetched_at: '2026-01-30T23:52:19.723311+00:00'
     error: null
+    content_hash: e1ce98b70d16ed97
   dash:
+    name: DASH Overview
+    url: https://dashif.org/docs/DASH-IF-IOP-v4.3.pdf
+    output: protocols/dash-iop.md
     status: skipped
-    reason: manual type - requires manual download
-    note: PDF - MANUAL ONLY. Download and extract manually. Fetcher skips this.
+    fetched_at: null
+    error: 'Manual source: PDF - MANUAL ONLY. Download and extract manually. Fetcher
+      skips this.'
   http-range:
+    name: HTTP Range Requests
+    url: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
+    output: protocols/http-range.md
     status: success
-    last_fetched: '2026-01-29T20:13:55.992911+00:00'
-    file_size: 6078
-    checksum: eb299daa227d378bea0788fcaf072b6049c3f3daf439f9b134502861ec06c7bf
+    fetched_at: '2026-01-30T23:52:24.202758+00:00'
     error: null
+    content_hash: 235652875b3f40ae
   webrtc:
+    name: WebRTC API
+    url: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
+    output: protocols/webrtc.md
     status: success
-    last_fetched: '2026-01-29T20:13:58.522128+00:00'
-    file_size: 15439
-    checksum: 6635c5f77cdd8a2194c3d5c46331fdb8aacf8fee9db6b20798e9611ddd0837f4
+    fetched_at: '2026-01-30T23:52:41.901795+00:00'
     error: null
+    content_hash: 9d49d3ef971fe2e4
   svelte5:
+    name: Svelte 5 Documentation
+    url: https://svelte.dev/docs/svelte/overview
+    output: frontend/svelte5.md
     status: success
-    last_fetched: '2026-01-29T20:14:00.664544+00:00'
-    file_size: 2617
-    checksum: 9f38278af0f3646638b54744c4d8b349b9c3f9736f7fb954d8d2934c78d7b450
+    fetched_at: '2026-01-30T23:52:51.723008+00:00'
     error: null
+    content_hash: 2fdbb448a3647bc4
   svelte-runes:
+    name: Svelte 5 Runes
+    url: https://svelte.dev/docs/svelte/$state
+    output: frontend/svelte-runes.md
     status: success
-    last_fetched: '2026-01-29T20:14:02.828714+00:00'
-    file_size: 52400
-    checksum: 30b94739a334ff095e116d06ad0032df950e325e85056d4920a5e723424dba23
+    fetched_at: '2026-01-30T23:52:53.978816+00:00'
     error: null
+    content_hash: bb7a83d398367fd3
   sveltekit:
+    name: SvelteKit Documentation
+    url: https://svelte.dev/docs/kit/introduction
+    output: frontend/sveltekit.md
     status: success
-    last_fetched: '2026-01-29T20:14:04.898162+00:00'
-    file_size: 3669
-    checksum: 45e89e537eb75a0dd5e8f1d966ac0e087fbc764549dbe84e2d95fb6ca8764e82
+    fetched_at: '2026-01-30T23:52:56.012100+00:00'
     error: null
+    content_hash: 1c0d3a18fcca4ba0
   shadcn-svelte:
+    name: shadcn-svelte
+    url: https://www.shadcn-svelte.com/docs
+    output: frontend/shadcn-svelte.md
     status: success
-    last_fetched: '2026-01-29T20:14:08.641417+00:00'
-    file_size: 5352
-    checksum: 6ccbb752c839e4b4b5f702b2da9531a9ab58bab950e121a4af0479caf68f6a6c
+    fetched_at: '2026-01-30T23:52:58.200837+00:00'
     error: null
+    content_hash: f1b0cdbb483f9f34
   bits-ui:
+    name: Bits UI
+    url: https://www.bits-ui.com/docs/introduction
+    output: frontend/bits-ui.md
     status: success
-    last_fetched: '2026-01-29T20:14:11.735125+00:00'
-    file_size: 2234
-    checksum: 7faea0e1d7ce57c43e59d98bd794f3fdcf2751ab120ed92ca13759dcfa7a5ea7
+    fetched_at: '2026-01-30T23:53:00.397504+00:00'
     error: null
+    content_hash: 36e7bd862e64cdf9
   tanstack-query:
+    name: TanStack Query
+    url: https://tanstack.com/query/latest/docs/framework/svelte/overview
+    output: frontend/tanstack-query.md
     status: success
-    last_fetched: '2026-01-29T20:14:14.436795+00:00'
-    file_size: 4933
-    checksum: a3e30ac500be018ef71b5e718ee59172c486467f4eb8c3e24b134b54dffad52c
+    fetched_at: '2026-01-30T23:53:03.482766+00:00'
     error: null
+    content_hash: 297be9af32de6975
   vidstack:
+    name: Vidstack Player
+    url: https://www.vidstack.io/docs/player/getting-started/installation
+    output: frontend/vidstack.md
     status: success
-    last_fetched: '2026-01-29T20:14:17.779345+00:00'
-    file_size: 1416
-    checksum: 12dea6fab4bd34e4654811bc42aa32dd3f0270780cb0f432514617850cf0aa1e
+    fetched_at: '2026-01-30T23:53:06.017518+00:00'
     error: null
+    content_hash: 6dd2152ce0895fbb
   ffmpeg:
+    name: FFmpeg Documentation
+    url: https://ffmpeg.org/ffmpeg.html
+    output: media/ffmpeg.md
     status: success
-    last_fetched: '2026-01-29T20:14:20.084967+00:00'
-    file_size: 137344
-    checksum: 2ff3ffbb52bcc8a960567158c4af4d2e800dd2cedf7e753a77114b23193c3554
+    fetched_at: '2026-01-30T23:53:30.973128+00:00'
     error: null
+    content_hash: 1d6b32c7236d4a10
   ffmpeg-codecs:
+    name: FFmpeg Codecs
+    url: https://ffmpeg.org/ffmpeg-codecs.html
+    output: media/ffmpeg-codecs.md
     status: success
-    last_fetched: '2026-01-29T20:14:22.433034+00:00'
-    file_size: 164719
-    checksum: f0815691bc16fb2262c23c46143f1f35ab826c765b807a8c74b8a4444aa75305
+    fetched_at: '2026-01-30T23:53:33.386213+00:00'
     error: null
+    content_hash: 2a5494c6316cb40a
   ffmpeg-formats:
+    name: FFmpeg Formats
+    url: https://ffmpeg.org/ffmpeg-formats.html
+    output: media/ffmpeg-formats.md
     status: success
-    last_fetched: '2026-01-29T20:14:24.740100+00:00'
-    file_size: 176352
-    checksum: 01e9b2a003b8f9762ba302f20ca0ea55abca04f0b1cf1ba5c47914ed9eadbc05
+    fetched_at: '2026-01-30T23:53:35.640697+00:00'
     error: null
+    content_hash: bddc7f619f2c0c96
   mediainfo:
+    name: MediaInfo
+    url: https://mediaarea.net/en/MediaInfo
+    output: media/mediainfo.md
     status: success
-    last_fetched: '2026-01-29T20:14:26.913464+00:00'
-    file_size: 2461
-    checksum: 4f6713656f7c7f41c856d2f596a29156769a98ba9bd2153952ce8069a95d6217
+    fetched_at: '2026-01-30T23:53:37.829735+00:00'
     error: null
+    content_hash: 64bad54af79cc66f
   go-astiav:
+    name: go-astiav (FFmpeg bindings)
+    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    output: media/go-astiav.md
     status: success
-    last_fetched: '2026-01-29T20:14:31.299791+00:00'
-    file_size: 256892
-    checksum: 87282f8ad8094df31cea804ccc183e61cdd06db907740a564b1dbc529612e594
+    fetched_at: '2026-01-30T23:53:41.907434+00:00'
     error: null
+    content_hash: f0d386e0a74a2d66
   go-astiav-docs:
+    name: go-astiav GitHub README
+    url: https://github.com/asticode/go-astiav
+    output: media/go-astiav-guide.md
     status: success
-    last_fetched: '2026-01-29T20:14:33.514728+00:00'
-    file_size: 6269
-    checksum: 7ab7c480b9a49bc13115ac369efa4a4ba59c8a03ed5145e785a21e4c2dfdcf92
+    fetched_at: '2026-01-30T23:53:44.078192+00:00'
     error: null
+    content_hash: f11b1f83bfecc42c
   gortsplib:
+    name: gortsplib (RTSP)
+    url: https://pkg.go.dev/github.com/bluenviron/gortsplib/v4
+    output: media/gortsplib.md
     status: success
-    last_fetched: '2026-01-29T20:14:36.430417+00:00'
-    file_size: 39517
-    checksum: 4905387c9d628ca7cd638ef966244c70a8a300e80395682d7e8c60a8782a4c28
+    fetched_at: '2026-01-30T23:53:46.577024+00:00'
     error: null
+    content_hash: 04bfa724e52a6bba
   gohlslib:
+    name: gohlslib (HLS)
+    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    output: media/gohlslib.md
     status: success
-    last_fetched: '2026-01-29T20:14:38.874549+00:00'
-    file_size: 10306
-    checksum: 687d5f59a8ed714ba426123c9f72f8575f143b68c11ddc8d0ea825beb7567d22
+    fetched_at: '2026-01-30T23:53:48.937403+00:00'
     error: null
+    content_hash: cfd67ee29fc3fb71
   mp4ff:
+    name: mp4ff (MP4 parsing)
+    url: https://pkg.go.dev/github.com/Eyevinn/mp4ff
+    output: media/mp4ff.md
     status: success
-    last_fetched: '2026-01-29T20:14:41.395394+00:00'
-    file_size: 3494
-    checksum: bc8cdd85cfb76eb844fc96dc12cbf422c3c4520fa285c462a6d0ad01ad1fca6d
+    fetched_at: '2026-01-30T23:53:51.263472+00:00'
     error: null
-  bimg:
-    status: success
-    last_fetched: '2026-01-29T20:14:43.783058+00:00'
-    file_size: 25888
-    checksum: 47f15e5d536c613b4d1fa1e42a27a755cfe506ebe9ca76cf29f4f6a0a5378c6f
-    error: null
+    content_hash: bce8ff92fd918984
   go-astisub:
+    name: go-astisub (subtitles)
+    url: https://pkg.go.dev/github.com/asticode/go-astisub
+    output: media/go-astisub.md
     status: success
-    last_fetched: '2026-01-29T20:14:46.305590+00:00'
-    file_size: 24539
-    checksum: 068c7373e50dbab32ae3f96d07c7ba425b47466a46097176a85066b213ca941b
+    fetched_at: '2026-01-30T23:53:53.793039+00:00'
     error: null
+    content_hash: 072b6db5d188425f
   go-blurhash:
+    name: go-blurhash
+    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    output: media/go-blurhash.md
     status: success
-    last_fetched: '2026-01-29T20:14:48.595820+00:00'
-    file_size: 1504
-    checksum: 6d540415d896513ca9803bd9d25a238980c7026d5ca78a2a727afd94d3d9388b
+    fetched_at: '2026-01-30T23:53:56.156874+00:00'
     error: null
+    content_hash: 4dcfa80ecb6616b3
   dhowden-tag:
+    name: dhowden/tag (audio metadata)
+    url: https://pkg.go.dev/github.com/dhowden/tag
+    output: media/dhowden-tag.md
     status: success
-    last_fetched: '2026-01-29T20:14:51.117501+00:00'
-    file_size: 8995
-    checksum: 310473893477dec2bafd9df85f5dcf6fb581c36e2802ea3a3d8c33397a3470fa
+    fetched_at: '2026-01-30T23:53:58.416125+00:00'
     error: null
+    content_hash: 9bff770e5005bdcc
   bogem-id3v2:
+    name: bogem/id3v2
+    url: https://pkg.go.dev/github.com/bogem/id3v2/v2
+    output: media/bogem-id3v2.md
     status: success
-    last_fetched: '2026-01-29T20:14:53.611791+00:00'
-    file_size: 30794
-    checksum: 28329e4d84edb1d9c9546e9d2f378c1e460b36988e55d54e06f7eff6b737be54
+    fetched_at: '2026-01-30T23:54:00.988089+00:00'
     error: null
+    content_hash: ec4b274083e9b730
   oidc:
+    name: OpenID Connect Core
+    url: https://openid.net/specs/openid-connect-core-1_0.html
+    output: security/oidc-core.md
     status: success
-    last_fetched: '2026-01-29T20:14:55.964806+00:00'
-    file_size: 258004
-    checksum: 438abed6994e58fbedcf079419116b71dc454c3130f6ffdb7db7e25342e23f21
+    fetched_at: '2026-01-30T23:54:21.079078+00:00'
     error: null
+    content_hash: 088d64e8b9d64d28
   oauth2:
+    name: OAuth 2.0 RFC
+    url: https://datatracker.ietf.org/doc/html/rfc6749
+    output: security/oauth2-rfc6749.md
     status: success
-    last_fetched: '2026-01-29T20:15:00.578248+00:00'
-    file_size: 149577
-    checksum: 5aff3d86e2cea4d250347d2bb562b0736094f52648a3a325e1ed365c3bc3f284
+    fetched_at: '2026-01-30T23:54:23.308591+00:00'
     error: null
+    content_hash: 21ea86f0f7877bca
   pkce:
+    name: OAuth 2.0 PKCE
+    url: https://datatracker.ietf.org/doc/html/rfc7636
+    output: security/pkce-rfc7636.md
     status: success
-    last_fetched: '2026-01-29T20:15:03.855919+00:00'
-    file_size: 36080
-    checksum: 87d4c54d166e2098034441dc8c8ee83cd50828f0e852f30a5d55de5f73c81243
+    fetched_at: '2026-01-30T23:54:25.635618+00:00'
     error: null
+    content_hash: 49db783e32a92fd4
   jwt:
+    name: JWT RFC
+    url: https://datatracker.ietf.org/doc/html/rfc7519
+    output: security/jwt-rfc7519.md
     status: success
-    last_fetched: '2026-01-29T20:15:12.626787+00:00'
-    file_size: 58012
-    checksum: 595e6b1f1cb1e121740b41a9b1482f1ca675ef0b8b16f4d756bc4c283235eb16
+    fetched_at: '2026-01-30T23:54:27.800560+00:00'
     error: null
+    content_hash: ec4fd9d75e2bb9c2
   testify:
+    name: testify
+    url: https://pkg.go.dev/github.com/stretchr/testify
+    output: testing/testify.md
     status: success
-    last_fetched: '2026-01-29T20:15:14.950110+00:00'
-    file_size: 1036
-    checksum: b2cf2c06a0dfcffe8560197d374299377d86643da9395982609cb9d144516766
+    fetched_at: '2026-01-30T23:54:50.523703+00:00'
     error: null
+    content_hash: 4178383f69588d53
   testcontainers:
+    name: testcontainers-go
+    url: https://golang.testcontainers.org/
+    output: testing/testcontainers.md
     status: success
-    last_fetched: '2026-01-29T20:15:18.454192+00:00'
-    file_size: 3306
-    checksum: 90d4e6f611a6253efd4a4ac9755a9c0f454c4e7946b03fb7bc09b72b69b497b1
+    fetched_at: '2026-01-30T23:54:53.195382+00:00'
     error: null
+    content_hash: 015248a1d025b9a7
   go-test-patterns:
+    name: Go Testing Patterns
+    url: https://go.dev/doc/tutorial/add-a-test
+    output: testing/go-patterns.md
     status: success
-    last_fetched: '2026-01-29T20:15:20.655131+00:00'
-    file_size: 4725
-    checksum: ab3dd2f4de53931d4441cd33faf4e1ed2c3e1f936e320beea2fe9d3efcfd6f8d
+    fetched_at: '2026-01-30T23:54:55.415934+00:00'
     error: null
+    content_hash: b7c04b0188c1105d
   prometheus:
+    name: Prometheus Go Client
+    url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
+    output: observability/prometheus.md
     status: success
-    last_fetched: '2026-01-29T20:15:23.812291+00:00'
-    file_size: 162690
-    checksum: e6b57a0e1823c213a4187426f99e60b1082c3fc9c86232657d1c441d7a241d21
+    fetched_at: '2026-01-30T23:55:07.506263+00:00'
     error: null
+    content_hash: f357f213c0eda27a
   otel-go:
+    name: OpenTelemetry Go
+    url: https://opentelemetry.io/docs/languages/go/
+    output: observability/opentelemetry.md
     status: success
-    last_fetched: '2026-01-29T20:15:26.961223+00:00'
-    file_size: 1360
-    checksum: f68341276174bf063fa8337d5069c7f05d9be2d0ee43f360d3dda6917565b742
+    fetched_at: '2026-01-30T23:55:10.483703+00:00'
     error: null
+    content_hash: d7205f0d531f15fa
   prometheus-metrics:
+    name: Prometheus Metric Types
+    url: https://prometheus.io/docs/concepts/metric_types/
+    output: observability/prometheus-metrics.md
     status: success
-    last_fetched: '2026-01-29T20:15:29.789545+00:00'
-    file_size: 5873
-    checksum: 46ac868c320c7a104be799e5a5f6a46d99bc016554ea916c832ae7135cc67746
+    fetched_at: '2026-01-30T23:55:12.920468+00:00'
     error: null
+    content_hash: e75cb797fe2f16f6
   dragonfly:
+    name: Dragonfly Documentation
+    url: https://www.dragonflydb.io/docs
+    output: infrastructure/dragonfly.md
     status: success
-    last_fetched: '2026-01-29T20:15:32.029131+00:00'
-    file_size: 856
-    checksum: 3e0596282e65dfbb0690f6559e49e193b8cb756477dd1ed43b1ad63da76317cd
+    fetched_at: '2026-01-30T23:55:31.958171+00:00'
     error: null
+    content_hash: d0af10244418d0d4
   typesense:
+    name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    output: infrastructure/typesense.md
     status: success
-    last_fetched: '2026-01-29T20:15:34.272868+00:00'
-    file_size: 1957
-    checksum: b721cafbfd46c7900b45dc7fabaf9a6e9526c755123adeed1580899dece1f90d
+    fetched_at: '2026-01-30T23:55:34.394009+00:00'
     error: null
+    content_hash: b34555fbef880878
   typesense-go:
+    name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    output: infrastructure/typesense-go.md
     status: success
-    last_fetched: '2026-01-29T20:15:36.481972+00:00'
-    file_size: 12060
-    checksum: 70eff654d14c543b9557270c7666bf39288ab9352695878d6f9b9c82fdbb1dec
+    fetched_at: '2026-01-30T23:55:36.624658+00:00'
     error: null
+    content_hash: f098e769d2166a64
   golang-migrate-postgres:
+    name: golang-migrate PostgreSQL
+    url: https://pkg.go.dev/github.com/golang-migrate/migrate/v4/database/postgres
+    output: database/migrations-postgres.md
     status: success
-    last_fetched: '2026-01-29T20:12:20.333662+00:00'
-    file_size: 2532
-    checksum: 78b04027f695ed56997b449b4944fb469b0ad0de256404f17605d451981a3098
+    fetched_at: '2026-01-30T23:50:06.687032+00:00'
     error: null
+    content_hash: 44811f45ac85ae98
   golang-migrate:
+    name: golang-migrate
+    url: https://github.com/golang-migrate/migrate
+    output: database/migrations.md
     status: success
-    last_fetched: '2026-01-29T20:12:17.986842+00:00'
-    file_size: 8675
-    checksum: 5424fd6c44def5da7a277328f06b280348faaa5cd610362dc00f8e3369ef7d3c
+    fetched_at: '2026-01-30T23:50:03.819313+00:00'
     error: null
+    content_hash: 8a31b5349fae8061
+  golang-x-crypto:
+    name: golang.org/x/crypto
+    url: https://pkg.go.dev/golang.org/x/crypto
+    output: go/x/crypto.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  golang-x-sync:
+    name: golang.org/x/sync
+    url: https://pkg.go.dev/golang.org/x/sync
+    output: go/x/sync.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  golang-x-time:
+    name: golang.org/x/time
+    url: https://pkg.go.dev/golang.org/x/time
+    output: go/x/time.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  golang-x-net:
+    name: golang.org/x/net
+    url: https://pkg.go.dev/golang.org/x/net
+    output: go/x/net.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  golang-x-text:
+    name: golang.org/x/text
+    url: https://pkg.go.dev/golang.org/x/text
+    output: go/x/text.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:33:24.227057+00:00'
+    error: null
+    content_hash: e432f48b26db5fc6
+  golang-x-exp:
+    name: golang.org/x/exp
+    url: https://pkg.go.dev/golang.org/x/exp
+    output: go/x/exp.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  semver:
+    name: Semantic Versioning
+    url: https://semver.org/
+    output: standards/semver.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:46:36.046399+00:00'
+    error: null
+    content_hash: f7d9039459491acc
+  conventional-commits:
+    name: Conventional Commits
+    url: https://www.conventionalcommits.org/
+    output: standards/conventional-commits.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:46:38.333630+00:00'
+    error: null
+    content_hash: 1043d63cca179c90
+  gitflow:
+    name: Git Flow
+    url: https://nvie.com/posts/a-successful-git-branching-model/
+    output: standards/gitflow.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:46:40.420581+00:00'
+    error: null
+    content_hash: 9bf66990fc6dabd5
+  chromaprint-acoustid:
+    name: Chromaprint/AcoustID
+    url: https://acoustid.org/chromaprint
+    output: standards/chromaprint.md
+    status: unchanged
+    fetched_at: '2026-01-30T23:46:43.099557+00:00'
+    error: null
+    content_hash: a1ea340d38f20940
+  go-faster-jx:
+    name: go-faster/jx (JSON)
+    url: https://pkg.go.dev/github.com/go-faster/jx
+    output: tooling/go-faster-jx.md
+    status: success
+    fetched_at: '2026-01-30T23:49:12.861368+00:00'
+    error: null
+    content_hash: 0e4c6d9ad00b1e6d
+  go-faster-yaml:
+    name: go-faster/yaml
+    url: https://pkg.go.dev/github.com/go-faster/yaml
+    output: tooling/go-faster-yaml.md
+    status: success
+    fetched_at: '2026-01-30T23:49:15.067596+00:00'
+    error: null
+    content_hash: a1b05d845a59d7ec
+  go-faster-errors:
+    name: go-faster/errors
+    url: https://pkg.go.dev/github.com/go-faster/errors
+    output: tooling/go-faster-errors.md
+    status: success
+    fetched_at: '2026-01-30T23:49:17.337680+00:00'
+    error: null
+    content_hash: c7216c69628ac00b
+  genqlient:
+    name: Khan/genqlient
+    url: https://pkg.go.dev/github.com/Khan/genqlient
+    output: tooling/genqlient.md
+    status: success
+    fetched_at: '2026-01-30T23:49:19.590550+00:00'
+    error: null
+    content_hash: ab4bf8dbce7ea024
+  genqlient-docs:
+    name: genqlient GitHub README
+    url: https://github.com/Khan/genqlient
+    output: tooling/genqlient-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:49:21.774905+00:00'
+    error: null
+    content_hash: db412501ec5de7f7
+  air:
+    name: air (hot reload)
+    url: https://github.com/air-verse/air
+    output: tooling/air.md
+    status: success
+    fetched_at: '2026-01-30T23:49:23.957224+00:00'
+    error: null
+    content_hash: 6eef63860a5a6893
+  tint:
+    name: lmittmann/tint
+    url: https://pkg.go.dev/github.com/lmittmann/tint
+    output: tooling/tint.md
+    status: success
+    fetched_at: '2026-01-30T23:49:26.243277+00:00'
+    error: null
+    content_hash: ecdc1e641d1671ad
+  zap:
+    name: uber-go/zap
+    url: https://pkg.go.dev/go.uber.org/zap
+    output: tooling/zap.md
+    status: success
+    fetched_at: '2026-01-30T23:49:29.212075+00:00'
+    error: null
+    content_hash: 44d71d5bd7ca74f6
+  gobreaker:
+    name: sony/gobreaker
+    url: https://pkg.go.dev/github.com/sony/gobreaker
+    output: tooling/gobreaker.md
+    status: success
+    fetched_at: '2026-01-30T23:49:31.485369+00:00'
+    error: null
+    content_hash: 724048c08f245082
+  golang-rate:
+    name: golang.org/x/time/rate
+    url: https://pkg.go.dev/golang.org/x/time/rate
+    output: tooling/rate-limiter.md
+    status: success
+    fetched_at: '2026-01-30T23:49:33.665074+00:00'
+    error: null
+    content_hash: 2e884c5f5caaf61d
+  cenkalti-backoff:
+    name: cenkalti/backoff
+    url: https://pkg.go.dev/github.com/cenkalti/backoff/v4
+    output: tooling/backoff.md
+    status: success
+    fetched_at: '2026-01-30T23:49:35.960865+00:00'
+    error: null
+    content_hash: f73f1a6cb319256b
+  cenkalti-backoff-docs:
+    name: cenkalti/backoff GitHub
+    url: https://github.com/cenkalti/backoff
+    output: tooling/backoff-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:49:38.115905+00:00'
+    error: null
+    content_hash: dafa8e33e9a4ca1d
+  gofeed:
+    name: mmcdole/gofeed
+    url: https://pkg.go.dev/github.com/mmcdole/gofeed
+    output: tooling/gofeed.md
+    status: success
+    fetched_at: '2026-01-30T23:49:40.442797+00:00'
+    error: null
+    content_hash: 2bcbad7bb28ba649
+  gofeed-docs:
+    name: gofeed GitHub README
+    url: https://github.com/mmcdole/gofeed
+    output: tooling/gofeed-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:49:42.611341+00:00'
+    error: null
+    content_hash: aa69f9f7a894cede
+  gorilla-feeds:
+    name: gorilla/feeds
+    url: https://pkg.go.dev/github.com/gorilla/feeds
+    output: tooling/gorilla-feeds.md
+    status: success
+    fetched_at: '2026-01-30T23:49:44.989344+00:00'
+    error: null
+    content_hash: 6c7ad9b1147478ba
+  gorilla-feeds-docs:
+    name: gorilla/feeds GitHub README
+    url: https://github.com/gorilla/feeds
+    output: tooling/gorilla-feeds-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:49:47.142634+00:00'
+    error: null
+    content_hash: bdf06bd24fd28cfd
+  go-mail:
+    name: wneessen/go-mail
+    url: https://pkg.go.dev/github.com/wneessen/go-mail
+    output: tooling/go-mail.md
+    status: success
+    fetched_at: '2026-01-30T23:49:49.715659+00:00'
+    error: null
+    content_hash: b74da085bac12f1f
+  go-mail-docs:
+    name: go-mail GitHub README
+    url: https://github.com/wneessen/go-mail
+    output: tooling/go-mail-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:49:51.869145+00:00'
+    error: null
+    content_hash: f12968de27982da0
+  go-fcm:
+    name: appleboy/go-fcm
+    url: https://pkg.go.dev/github.com/appleboy/go-fcm
+    output: tooling/go-fcm.md
+    status: success
+    fetched_at: '2026-01-30T23:49:54.222180+00:00'
+    error: null
+    content_hash: f078de80a93c5c73
+  go-fcm-docs:
+    name: go-fcm GitHub README
+    url: https://github.com/appleboy/go-fcm
+    output: tooling/go-fcm-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:49:56.379605+00:00'
+    error: null
+    content_hash: 4a4070ec8a551d5b
+  letterboxd:
+    name: Letterboxd API
+    url: https://api-docs.letterboxd.com/
+    output: apis/letterboxd.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  immich:
+    name: Immich API
+    url: https://immich.app/docs/api
+    output: apis/immich.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  immich-openapi:
+    name: Immich OpenAPI Spec
+    url: https://raw.githubusercontent.com/immich-app/immich/main/open-api/immich-openapi-specs.json
+    output: apis/immich-openapi.json
+    status: success
+    fetched_at: '2026-01-30T23:51:20.826841+00:00'
+    error: null
+    content_hash: 09f88593471be6a4
+  photoprism:
+    name: PhotoPrism API
+    url: https://docs.photoprism.app/developer-guide/api/
+    output: apis/photoprism.md
+    status: success
+    fetched_at: '2026-01-30T23:51:23.217935+00:00'
+    error: null
+    content_hash: 4cbe105ff892aece
+  podcastindex:
+    name: Podcast Index API
+    url: https://podcastindex-org.github.io/docs-api/
+    output: apis/podcastindex.md
+    status: success
+    fetched_at: '2026-01-30T23:51:25.463496+00:00'
+    error: null
+    content_hash: 0164c5a171e160d6
+  readarr:
+    name: Readarr OpenAPI Spec
+    url: https://raw.githubusercontent.com/Readarr/Readarr/develop/src/Readarr.Api.V1/openapi.json
+    output: apis/readarr-openapi.json
+    status: success
+    fetched_at: '2026-01-30T23:51:34.091474+00:00'
+    error: null
+    content_hash: ac31cd3c2d0c076d
+  whisparr:
+    name: Whisparr OpenAPI Spec
+    url: https://raw.githubusercontent.com/Whisparr/Whisparr/develop/src/Whisparr.Api.V3/openapi.json
+    output: apis/whisparr-openapi.json
+    status: success
+    fetched_at: '2026-01-30T23:51:36.243616+00:00'
+    error: null
+    content_hash: b45eca756c7c2d17
+  radarr-docs:
+    name: Radarr API Docs
+    url: https://radarr.video/docs/api/
+    output: apis/radarr-docs.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  sonarr-docs:
+    name: Sonarr API Docs
+    url: https://sonarr.tv/docs/api/
+    output: apis/sonarr-docs.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  lidarr-docs:
+    name: Lidarr API Docs
+    url: https://lidarr.audio/docs/api/
+    output: apis/lidarr-docs.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  servarr-wiki:
+    name: Servarr Wiki
+    url: https://wiki.servarr.com/
+    output: apis/servarr-wiki.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  jellyfin-api:
+    name: Jellyfin API
+    url: https://api.jellyfin.org/
+    output: apis/jellyfin.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  jellyfin-trickplay:
+    name: Jellyfin Trickplay
+    url: https://jellyfin.org/docs/general/server/media/trickplay/
+    output: apis/jellyfin-trickplay.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  jellyfin-syncplay:
+    name: Jellyfin SyncPlay
+    url: https://jellyfin.org/docs/general/server/syncplay/
+    output: apis/jellyfin-syncplay.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  hardcover:
+    name: Hardcover API
+    url: https://hardcover.app/docs/api
+    output: apis/hardcover.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  audnexus:
+    name: Audnexus API
+    url: https://api.audnex.us/
+    output: apis/audnexus.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  theposterdb:
+    name: ThePosterDB API
+    url: https://theposterdb.com/api
+    output: apis/theposterdb.md
+    status: skipped
+    fetched_at: null
+    error: 'Manual source: MANUAL - Community poster art. API requires authentication.'
+  rtsp-rfc:
+    name: RTSP RFC 7826
+    url: https://datatracker.ietf.org/doc/html/rfc7826
+    output: protocols/rtsp-rfc7826.md
+    status: success
+    fetched_at: '2026-01-30T23:52:26.926851+00:00'
+    error: null
+    content_hash: 08dd5cc299e5509a
+  m3u8:
+    name: M3U8 Extended Format
+    url: https://datatracker.ietf.org/doc/html/rfc8216
+    output: protocols/m3u8.md
+    status: success
+    fetched_at: '2026-01-30T23:52:29.010967+00:00'
+    error: null
+    content_hash: e1ce98b70d16ed97
+  webvtt:
+    name: WebVTT Specification
+    url: https://www.w3.org/TR/webvtt1/
+    output: protocols/webvtt.md
+    status: success
+    fetched_at: '2026-01-30T23:52:31.449181+00:00'
+    error: null
+    content_hash: 669ae4c403e61eb1
+  bif-spec:
+    name: Roku BIF Format
+    url: https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md
+    output: protocols/bif.md
+    status: success
+    fetched_at: '2026-01-30T23:52:34.421831+00:00'
+    error: null
+    content_hash: 2c4595f311ec0783
+  xmltv:
+    name: XMLTV Format
+    url: https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd
+    output: protocols/xmltv.md
+    status: success
+    fetched_at: '2026-01-30T23:52:36.914318+00:00'
+    error: null
+    content_hash: de28fd50b68b048b
+  xmltv-wiki:
+    name: XMLTV Wiki
+    url: https://wiki.xmltv.org/index.php/XMLTVFormat
+    output: protocols/xmltv-format.md
+    status: success
+    fetched_at: '2026-01-30T23:52:39.619629+00:00'
+    error: null
+    content_hash: 411537ef50bcee7b
+  pion-webrtc:
+    name: Pion WebRTC (Go)
+    url: https://pkg.go.dev/github.com/pion/webrtc/v4
+    output: protocols/pion-webrtc.md
+    status: success
+    fetched_at: '2026-01-30T23:52:44.568350+00:00'
+    error: null
+    content_hash: 9df59176d00b5b41
+  pion-webrtc-docs:
+    name: Pion Examples
+    url: https://github.com/pion/webrtc
+    output: protocols/pion-webrtc-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:52:46.835998+00:00'
+    error: null
+    content_hash: 939c64f65579fde3
+  mpeg-ts:
+    name: MPEG Transport Stream
+    url: https://en.wikipedia.org/wiki/MPEG_transport_stream
+    output: protocols/mpeg-ts.md
+    status: success
+    fetched_at: '2026-01-30T23:52:49.543089+00:00'
+    error: null
+    content_hash: a442862878f7d4a8
+  vite:
+    name: Vite Documentation
+    url: https://vite.dev/guide/
+    output: frontend/vite.md
+    status: success
+    fetched_at: '2026-01-30T23:53:08.349852+00:00'
+    error: null
+    content_hash: da52cc78acc815c2
+  vite-config:
+    name: Vite Configuration
+    url: https://vite.dev/config/
+    output: frontend/vite-config.md
+    status: success
+    fetched_at: '2026-01-30T23:53:10.389719+00:00'
+    error: null
+    content_hash: cb5ef36a3eb62a1c
+  typescript:
+    name: TypeScript Documentation
+    url: https://www.typescriptlang.org/docs/
+    output: frontend/typescript.md
+    status: success
+    fetched_at: '2026-01-30T23:53:12.841517+00:00'
+    error: null
+    content_hash: c284437bf339b9a9
+  typescript-handbook:
+    name: TypeScript Handbook
+    url: https://www.typescriptlang.org/docs/handbook/intro.html
+    output: frontend/typescript-handbook.md
+    status: success
+    fetched_at: '2026-01-30T23:53:14.988495+00:00'
+    error: null
+    content_hash: 741e9aac03a48443
+  tailwindcss:
+    name: TailwindCSS Documentation
+    url: https://tailwindcss.com/docs
+    output: frontend/tailwindcss.md
+    status: success
+    fetched_at: '2026-01-30T23:53:17.157920+00:00'
+    error: null
+    content_hash: cbc2b85271172a14
+  tailwindcss-v4:
+    name: TailwindCSS v4
+    url: https://tailwindcss.com/blog/tailwindcss-v4
+    output: frontend/tailwindcss-v4.md
+    status: success
+    fetched_at: '2026-01-30T23:53:19.235650+00:00'
+    error: null
+    content_hash: 6bc338a774f5f827
+  zod:
+    name: Zod Documentation
+    url: https://zod.dev/
+    output: frontend/zod.md
+    status: success
+    fetched_at: '2026-01-30T23:53:21.550453+00:00'
+    error: null
+    content_hash: 5be2e0118a9d2de7
+  zod-github:
+    name: Zod GitHub
+    url: https://github.com/colinhacks/zod
+    output: frontend/zod-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:53:23.740454+00:00'
+    error: null
+    content_hash: 439c0c93c68f5dff
+  superforms:
+    name: SvelteKit Superforms
+    url: https://superforms.rocks/
+    output: frontend/superforms.md
+    status: success
+    fetched_at: '2026-01-30T23:53:26.272416+00:00'
+    error: null
+    content_hash: b73a6ea8c506ddc6
+  lucide-svelte:
+    name: Lucide Svelte
+    url: https://lucide.dev/guide/packages/lucide-svelte
+    output: frontend/lucide-svelte.md
+    status: success
+    fetched_at: '2026-01-30T23:53:28.480672+00:00'
+    error: null
+    content_hash: 26f25f1005ab6a76
+  govips:
+    name: davidbyttow/govips
+    url: https://pkg.go.dev/github.com/davidbyttow/govips/v2
+    output: media/govips.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  govips-docs:
+    name: govips GitHub README
+    url: https://github.com/davidbyttow/govips
+    output: media/govips-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:54:05.387834+00:00'
+    error: null
+    content_hash: daa8b385d7cd4f7c
+  goimagehash:
+    name: corona10/goimagehash
+    url: https://pkg.go.dev/github.com/corona10/goimagehash
+    output: media/goimagehash.md
+    status: success
+    fetched_at: '2026-01-30T23:54:07.849051+00:00'
+    error: null
+    content_hash: 7de82478ff8e3ca6
+  goimagehash-docs:
+    name: goimagehash GitHub
+    url: https://github.com/corona10/goimagehash
+    output: media/goimagehash-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:54:10.000717+00:00'
+    error: null
+    content_hash: ab4b588d1a549f96
+  chromaprint:
+    name: go-chromaprint
+    url: https://github.com/go-fingerprint/chromaprint
+    output: media/chromaprint.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  go-unarr:
+    name: gen2brain/go-unarr
+    url: https://pkg.go.dev/github.com/gen2brain/go-unarr
+    output: media/go-unarr.md
+    status: success
+    fetched_at: '2026-01-30T23:54:18.670728+00:00'
+    error: null
+    content_hash: 29c8d19a0896602b
+  authelia:
+    name: Authelia Documentation
+    url: https://www.authelia.com/overview/
+    output: security/authelia.md
+    status: success
+    fetched_at: '2026-01-30T23:54:30.047059+00:00'
+    error: null
+    content_hash: 189b429a1ab584bc
+  authentik:
+    name: Authentik Documentation
+    url: https://goauthentik.io/docs/
+    output: security/authentik.md
+    status: success
+    fetched_at: '2026-01-30T23:54:32.419897+00:00'
+    error: null
+    content_hash: 739175b2d9294bcb
+  keycloak:
+    name: Keycloak Documentation
+    url: https://www.keycloak.org/documentation
+    output: security/keycloak.md
+    status: success
+    fetched_at: '2026-01-30T23:54:34.646574+00:00'
+    error: null
+    content_hash: 05bf11f030a9003b
+  casbin:
+    name: Casbin
+    url: https://pkg.go.dev/github.com/casbin/casbin/v2
+    output: security/casbin.md
+    status: success
+    fetched_at: '2026-01-30T23:54:37.686834+00:00'
+    error: null
+    content_hash: fe2599881fd42305
+  casbin-docs:
+    name: Casbin Documentation
+    url: https://casbin.org/docs/overview
+    output: security/casbin-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:54:40.660852+00:00'
+    error: null
+    content_hash: 1d59bc2f66c75a10
+  casbin-pgx-adapter:
+    name: Casbin pgx Adapter
+    url: https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3
+    output: security/casbin-pgx.md
+    status: success
+    fetched_at: '2026-01-30T23:54:42.911232+00:00'
+    error: null
+    content_hash: e2da7930d66e03d2
+  opa:
+    name: Open Policy Agent
+    url: https://pkg.go.dev/github.com/open-policy-agent/opa
+    output: security/opa.md
+    status: success
+    fetched_at: '2026-01-30T23:54:45.326930+00:00'
+    error: null
+    content_hash: e510a732e93f9035
+  opa-docs:
+    name: OPA Documentation
+    url: https://www.openpolicyagent.org/docs/latest/
+    output: security/opa-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:54:47.978474+00:00'
+    error: null
+    content_hash: d957b8cfb0197803
+  mockery:
+    name: mockery
+    url: https://pkg.go.dev/github.com/vektra/mockery/v3
+    output: testing/mockery.md
+    status: success
+    fetched_at: '2026-01-30T23:54:57.835570+00:00'
+    error: null
+    content_hash: e510a732e93f9035
+  mockery-docs:
+    name: mockery Documentation
+    url: https://vektra.github.io/mockery/
+    output: testing/mockery-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:55:00.018189+00:00'
+    error: null
+    content_hash: 48af7f5097c300a6
+  embedded-postgres:
+    name: embedded-postgres
+    url: https://pkg.go.dev/github.com/fergusstrange/embedded-postgres
+    output: testing/embedded-postgres.md
+    status: success
+    fetched_at: '2026-01-30T23:55:02.389570+00:00'
+    error: null
+    content_hash: 2fb32dcee8508970
+  embedded-postgres-docs:
+    name: embedded-postgres GitHub README
+    url: https://github.com/fergusstrange/embedded-postgres
+    output: testing/embedded-postgres-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:55:04.581676+00:00'
+    error: null
+    content_hash: 7a4869897c0eb39a
+  grafana:
+    name: Grafana Documentation
+    url: https://grafana.com/docs/grafana/latest/
+    output: observability/grafana.md
+    status: success
+    fetched_at: '2026-01-30T23:55:15.139318+00:00'
+    error: null
+    content_hash: 702f041d19c7286d
+  grafana-dashboards:
+    name: Grafana Dashboard JSON
+    url: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/
+    output: observability/grafana-dashboards.md
+    status: success
+    fetched_at: '2026-01-30T23:55:17.352712+00:00'
+    error: null
+    content_hash: 6dc71b39dc6ef4b1
+  loki:
+    name: Grafana Loki
+    url: https://grafana.com/docs/loki/latest/
+    output: observability/loki.md
+    status: success
+    fetched_at: '2026-01-30T23:55:19.506529+00:00'
+    error: null
+    content_hash: af03fd14ca673705
+  loki-logql:
+    name: LogQL Query Language
+    url: https://grafana.com/docs/loki/latest/query/
+    output: observability/logql.md
+    status: success
+    fetched_at: '2026-01-30T23:55:21.668021+00:00'
+    error: null
+    content_hash: 9481aa74c2a0f530
+  jaeger:
+    name: Jaeger Documentation
+    url: https://www.jaegertracing.io/docs/
+    output: observability/jaeger.md
+    status: success
+    fetched_at: '2026-01-30T23:55:24.256153+00:00'
+    error: null
+    content_hash: 47c4afa59064e910
+  jaeger-client-go:
+    name: Jaeger Go Client
+    url: https://pkg.go.dev/github.com/jaegertracing/jaeger-client-go
+    output: observability/jaeger-go.md
+    status: success
+    fetched_at: '2026-01-30T23:55:26.936789+00:00'
+    error: null
+    content_hash: 1b39469ec59d4527
+  slog-multi:
+    name: slog-multi
+    url: https://pkg.go.dev/github.com/samber/slog-multi
+    output: observability/slog-multi.md
+    status: success
+    fetched_at: '2026-01-30T23:55:29.528599+00:00'
+    error: null
+    content_hash: 399d08e9a2a7a558
+  ersatztv:
+    name: ErsatzTV
+    url: https://github.com/ErsatzTV/ErsatzTV
+    output: livetv/ersatztv.md
+    status: success
+    fetched_at: '2026-01-30T23:55:38.806779+00:00'
+    error: null
+    content_hash: 4f9863101ed8db6d
+  ersatztv-docs:
+    name: ErsatzTV Documentation
+    url: https://ersatztv.org/docs/
+    output: livetv/ersatztv-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:55:41.146209+00:00'
+    error: null
+    content_hash: 460c0db34557190c
+  tvheadend:
+    name: TVHeadend API
+    url: https://tvheadend.org/d/5/api-description
+    output: livetv/tvheadend.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  nextpvr:
+    name: NextPVR Documentation
+    url: https://github.com/sub3/NextPVR
+    output: livetv/nextpvr.md
+    status: success
+    fetched_at: '2026-01-30T23:55:49.681190+00:00'
+    error: null
+    content_hash: 9fc0cbabb937d906
+  hashicorp-raft:
+    name: HashiCorp Raft
+    url: https://pkg.go.dev/github.com/hashicorp/raft
+    output: distributed/hashicorp-raft.md
+    status: success
+    fetched_at: '2026-01-30T23:55:52.609112+00:00'
+    error: null
+    content_hash: ca5d2dffa99690ae
+  hashicorp-raft-docs:
+    name: HashiCorp Raft GitHub
+    url: https://github.com/hashicorp/raft
+    output: distributed/hashicorp-raft-guide.md
+    status: success
+    fetched_at: '2026-01-30T23:55:54.766104+00:00'
+    error: null
+    content_hash: 63322805eddfd638
+  etcd-raft:
+    name: etcd Raft
+    url: https://pkg.go.dev/go.etcd.io/raft/v3
+    output: distributed/etcd-raft.md
+    status: success
+    fetched_at: '2026-01-30T23:55:57.366809+00:00'
+    error: null
+    content_hash: 3bbd64fe40b9dd53
+  raft-boltdb:
+    name: hashicorp/raft-boltdb
+    url: https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2
+    output: distributed/raft-boltdb.md
+    status: success
+    fetched_at: '2026-01-30T23:56:00.080794+00:00'
+    error: null
+    content_hash: 5a2db7dbbff45d8a
+  memberlist:
+    name: hashicorp/memberlist
+    url: https://pkg.go.dev/github.com/hashicorp/memberlist
+    output: distributed/memberlist.md
+    status: success
+    fetched_at: '2026-01-30T23:56:02.682511+00:00'
+    error: null
+    content_hash: 99cd58803c241e6c
+  kubernetes-docs:
+    name: Kubernetes Documentation
+    url: https://kubernetes.io/docs/home/
+    output: orchestration/kubernetes.md
+    status: success
+    fetched_at: '2026-01-30T23:56:05.033153+00:00'
+    error: null
+    content_hash: 716673c2ed7673f5
+  helm-docs:
+    name: Helm Documentation
+    url: https://helm.sh/docs/
+    output: orchestration/helm.md
+    status: success
+    fetched_at: '2026-01-30T23:56:07.525568+00:00'
+    error: null
+    content_hash: f4a84924e3f007b7
+  k3s-docs:
+    name: K3s Documentation
+    url: https://docs.k3s.io/
+    output: orchestration/k3s.md
+    status: success
+    fetched_at: '2026-01-30T23:56:09.753533+00:00'
+    error: null
+    content_hash: 48992a157691f528
+  docker-swarm:
+    name: Docker Swarm Documentation
+    url: https://docs.docker.com/engine/swarm/
+    output: orchestration/docker-swarm.md
+    status: success
+    fetched_at: '2026-01-30T23:56:11.999376+00:00'
+    error: null
+    content_hash: c977457090eb1af2
+  traefik-docs:
+    name: Traefik Documentation
+    url: https://doc.traefik.io/traefik/
+    output: orchestration/traefik.md
+    status: success
+    fetched_at: '2026-01-30T23:56:14.382202+00:00'
+    error: null
+    content_hash: 0dfe39f818e56671
+  longhorn-docs:
+    name: Longhorn Storage
+    url: https://longhorn.io/docs/
+    output: orchestration/longhorn.md
+    status: success
+    fetched_at: '2026-01-30T23:56:16.885701+00:00'
+    error: null
+    content_hash: e099644f20c4f814
+  client-go:
+    name: k8s.io/client-go
+    url: https://pkg.go.dev/k8s.io/client-go
+    output: orchestration/client-go.md
+    status: success
+    fetched_at: '2026-01-30T23:56:20.012579+00:00'
+    error: null
+    content_hash: 966579c2b725ed57
+  controller-runtime:
+    name: sigs.k8s.io/controller-runtime
+    url: https://pkg.go.dev/sigs.k8s.io/controller-runtime
+    output: orchestration/controller-runtime.md
+    status: success
+    fetched_at: '2026-01-30T23:56:22.415367+00:00'
+    error: null
+    content_hash: 2f9b97429df7b83e
+  kubebuilder:
+    name: Kubebuilder Book
+    url: https://book.kubebuilder.io/
+    output: orchestration/kubebuilder.md
+    status: success
+    fetched_at: '2026-01-30T23:56:24.679469+00:00'
+    error: null
+    content_hash: b90bdd3fe6b4eae3
+  upnp:
+    name: UPnP/DLNA Specification
+    url: https://openconnectivity.org/developer/specifications/upnp-resources/upnp/
+    output: casting/upnp.md
+    status: skipped
+    fetched_at: null
+    error: 'Manual source: MANUAL - PDF specs. UPnP AV is the relevant subset for
+      DLNA.'
+  go-chromecast:
+    name: go-chromecast
+    url: https://github.com/vishen/go-chromecast
+    output: casting/go-chromecast.md
+    status: success
+    fetched_at: '2026-01-30T23:56:28.843396+00:00'
+    error: null
+    content_hash: 86067b80672cbcf6
+  fandom:
+    name: Fandom API
+    url: https://community.fandom.com/wiki/Help:Nirvana
+    output: wiki/fandom.md
+    status: failed
+    fetched_at: null
+    error: Failed to fetch content
+  wikipedia:
+    name: Wikipedia API
+    url: https://en.wikipedia.org/w/api.php?action=help&modules=query
+    output: wiki/wikipedia.md
+    status: success
+    fetched_at: '2026-01-30T23:56:37.865700+00:00'
+    error: null
+    content_hash: 3efb3fcf2b7bde5d
+  mediawiki-api:
+    name: MediaWiki API
+    url: https://www.mediawiki.org/wiki/API:Main_page
+    output: wiki/mediawiki.md
+    status: success
+    fetched_at: '2026-01-30T23:56:40.208639+00:00'
+    error: null
+    content_hash: 4fe04c6f20bf2960
+last_updated: '2026-01-30T23:56:50.968480+00:00'
+total_sources: 210
+successful: 172
+failed: 20
+skipped: 5
+unchanged: 13

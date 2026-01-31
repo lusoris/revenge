@@ -2,9 +2,20 @@
 
 > Open-source historical comics database (Golden/Silver Age focus)
 
-**Status**: 🟡 PLANNED
 **Priority**: 🟢 LOW (Phase 7 - Comics Module, historical fallback)
 **Provider**: Grand Comics Database Project
+
+## Status
+
+| Dimension | Status | Notes |
+| --------- | ------ | ----- |
+| Design | ✅ | Comprehensive database import strategy, SQL examples |
+| Sources | ✅ | Website, database dumps, data license linked |
+| Instructions | ✅ | Phased implementation checklist with import strategy |
+| Code | 🔴 | |
+| Linting | 🔴 | |
+| Unit Testing | 🔴 | |
+| Integration Testing | 🔴 | |
 
 ---
 
@@ -242,6 +253,48 @@ ORDER BY st.sequence_number;
 ```
 
 ---
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Comics](INDEX.md)
+
+### In This Section
+
+- [ComicVine API Integration](COMICVINE.md)
+- [Marvel API Integration](MARVEL_API.md)
+
+### Related Topics
+
+- [Revenge - Architecture v2](../../../architecture/01_ARCHITECTURE.md) _Architecture_
+- [Revenge - Design Principles](../../../architecture/02_DESIGN_PRINCIPLES.md) _Architecture_
+- [Revenge - Metadata System](../../../architecture/03_METADATA_SYSTEM.md) _Architecture_
+- [Revenge - Player Architecture](../../../architecture/04_PLAYER_ARCHITECTURE.md) _Architecture_
+- [Plugin Architecture Decision](../../../architecture/05_PLUGIN_ARCHITECTURE_DECISION.md) _Architecture_
+
+### Indexes
+
+- [Design Index](../../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
 
 ## Related Documentation
 

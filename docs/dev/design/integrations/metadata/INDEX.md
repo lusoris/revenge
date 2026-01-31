@@ -1,6 +1,10 @@
 # Metadata Providers
 
+← Back to [Integrations](../)
+
 > External services for media metadata enrichment
+
+**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
 ---
 
@@ -58,7 +62,7 @@ Comics, manga, and graphic novels.
 | [Grand Comics DB](comics/GRAND_COMICS_DATABASE.md) | Archive | 🟡 Supplementary |
 
 ### 🔞 [Adult](adult/INDEX.md)
-Adult content metadata (isolated in `c` schema).
+Adult content metadata (isolated in `qar` schema).
 
 | Provider | Type | Status |
 |----------|------|--------|
