@@ -1,0 +1,47 @@
+doc_title: AniList Integration
+doc_category: integration
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: '-'
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: '-'
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: '> Primary metadata and tracking provider for anime and manga'
+wiki_tagline: '> Primary metadata and tracking provider for anime and manga'
+wiki_overview: 'PLACEHOLDER: User-friendly overview'
+sources:
+- name: AniList GraphQL API
+  url: https://anilist.gitbook.io/anilist-apiv2-docs
+  note: Auto-resolved from anilist
+- name: AniList GraphQL Schema
+  url: https://graphql.anilist.co
+  note: Auto-resolved from anilist-graphql
+- name: go-blurhash
+  url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+  note: Auto-resolved from go-blurhash
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+design_refs:
+- title: integrations/anime
+  path: integrations/anime.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+integration_name: AniList
+integration_id: anilist
+external_service: AniList
+auth_method: oauth

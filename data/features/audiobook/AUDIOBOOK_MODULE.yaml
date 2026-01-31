@@ -1,0 +1,267 @@
+doc_title: Audiobook Module
+doc_category: feature
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete audiobook module design
+status_sources: ✅
+status_sources_notes: All audiobook APIs documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Audiobook content management with metadata enrichment from Audnexus and OpenLibrary
+
+  Complete audiobook library:
+  - **Chaptarr Integration**: Automated audiobook management and metadata sync
+  - **Metadata Sources**: Audnexus (primary), OpenLibrary, Goodreads
+  - **Supported Formats**: M4B (with chapters), MP3 (multi-file), AAC
+  - **Chapter Navigation**: Jump to chapters, bookmarks, progress tracking
+  - **Playback**: Variable speed (0.5x-3x), sleep timer, per-user resume
+
+wiki_tagline: |-
+  > Your audiobook library with chapter navigation and progress sync
+
+wiki_overview: |-
+  The Audiobook Module provides a complete audiobook experience with support for chapter navigation, progress tracking, and multi-device synchronization. It integrates with Chaptarr for automated audiobook management and uses Audnexus for rich metadata including narrators, publishers, and book descriptions. Resume playback across devices and adjust playback speed to your preference.
+sources:
+- name: Audnexus API
+  url: https://api.audnex.us/
+  note: Auto-resolved from audnexus
+- name: Uber fx
+  url: https://pkg.go.dev/go.uber.org/fx
+  note: Auto-resolved from fx
+- name: ogen OpenAPI Generator
+  url: https://pkg.go.dev/github.com/ogen-go/ogen
+  note: Auto-resolved from ogen
+- name: Open Library API
+  url: https://openlibrary.org/developers/api
+  note: Auto-resolved from openlibrary
+- name: pgx PostgreSQL Driver
+  url: https://pkg.go.dev/github.com/jackc/pgx/v5
+  note: Auto-resolved from pgx
+- name: PostgreSQL Arrays
+  url: https://www.postgresql.org/docs/current/arrays.html
+  note: Auto-resolved from postgresql-arrays
+- name: PostgreSQL JSON Functions
+  url: https://www.postgresql.org/docs/current/functions-json.html
+  note: Auto-resolved from postgresql-json
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: sqlc
+  url: https://docs.sqlc.dev/en/stable/
+  note: Auto-resolved from sqlc
+- name: sqlc Configuration
+  url: https://docs.sqlc.dev/en/stable/reference/config.html
+  note: Auto-resolved from sqlc-config
+design_refs:
+- title: features/audiobook
+  path: features/audiobook.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+feature_name: Audiobook Module
+module_name: audiobook
+schema_name: public
+content_types:
+- Books
+- Authors
+- Series
+
+chaptarr_integration:
+  sync_direction: two-way
+  metadata_source: Audnexus (via Chaptarr)
+  webhook_events:
+    - BookAdded
+    - BookUpdated
+    - BookDeleted
+    - ChaptersUpdated
+  chapter_sync: Automatic chapter marker extraction
+  notes: Chaptarr provides Audnexus metadata and chapter information
+
+supported_formats:
+  - format: M4B
+    description: MPEG-4 audiobook format with embedded chapters
+    chapters: Native chapter support
+    streaming: Direct HLS streaming with chapter markers
+    preferred: true
+  - format: MP3
+    description: Multi-file MP3 audiobook (one file per chapter)
+    chapters: Inferred from file structure
+    streaming: HLS transcode with generated chapters
+  - format: AAC
+    description: Advanced Audio Coding files
+    chapters: M4B container for chapter support
+    streaming: Direct HLS streaming
+  - format: M4A
+    description: MPEG-4 Audio (Apple)
+    chapters: Can embed chapters like M4B
+    streaming: Direct HLS streaming
+
+metadata_sources:
+  - name: Chaptarr
+    purpose: Primary source for automated audiobook management
+    priority: 1
+    fields: All metadata via Audnexus integration
+  - name: Audnexus
+    purpose: Direct fallback for missing metadata
+    priority: 2
+    fields: Title, author, narrator, publisher, duration, cover art, description
+    api_url: https://api.audnex.us/
+  - name: OpenLibrary
+    purpose: Supplemental metadata for books
+    priority: 3
+    fields: ISBN, subjects, publication details
+    api_url: https://openlibrary.org/api/
+  - name: Goodreads
+    purpose: Ratings and reviews
+    priority: 4
+    fields: Average rating, review count, community reviews
+
+database_schema: |
+  ```sql
+  -- Audiobook Authors
+  CREATE TABLE audiobook_authors (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    biography TEXT,
+    image_url TEXT,
+    audnexus_id TEXT,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_audiobook_authors_name ON audiobook_authors USING GIN(to_tsvector('english', name));
+  CREATE INDEX idx_audiobook_authors_audnexus ON audiobook_authors(audnexus_id);
+
+  -- Audiobook Series
+  CREATE TABLE audiobook_series (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    description TEXT,
+    total_books INTEGER,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_audiobook_series_name ON audiobook_series USING GIN(to_tsvector('english', name));
+
+  -- Audiobooks
+  CREATE TABLE audiobooks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    author_id UUID REFERENCES audiobook_authors(id),
+    series_id UUID REFERENCES audiobook_series(id),
+    series_position NUMERIC,
+    narrator TEXT,
+    publisher TEXT,
+    publish_date DATE,
+    duration_seconds INTEGER,
+    description TEXT,
+    isbn TEXT,
+    asin TEXT,
+    audnexus_id TEXT,
+    chaptarr_id INTEGER,
+    cover_art_url TEXT,
+    file_path TEXT,
+    file_format TEXT, -- m4b, mp3, aac
+    genres TEXT[],
+    language TEXT DEFAULT 'en',
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_audiobooks_author ON audiobooks(author_id);
+  CREATE INDEX idx_audiobooks_series ON audiobooks(series_id);
+  CREATE INDEX idx_audiobooks_title ON audiobooks USING GIN(to_tsvector('english', title));
+  CREATE INDEX idx_audiobooks_chaptarr ON audiobooks(chaptarr_id);
+
+  -- Audiobook Chapters
+  CREATE TABLE audiobook_chapters (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    audiobook_id UUID REFERENCES audiobooks(id) ON DELETE CASCADE,
+    chapter_number INTEGER NOT NULL,
+    title TEXT,
+    start_time_seconds NUMERIC NOT NULL,
+    end_time_seconds NUMERIC NOT NULL,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_audiobook_chapters_audiobook ON audiobook_chapters(audiobook_id);
+  CREATE INDEX idx_audiobook_chapters_order ON audiobook_chapters(audiobook_id, chapter_number);
+
+  -- Audiobook Progress (per-user)
+  CREATE TABLE audiobook_progress (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    audiobook_id UUID REFERENCES audiobooks(id) ON DELETE CASCADE,
+    current_position_seconds NUMERIC NOT NULL DEFAULT 0,
+    completed BOOLEAN DEFAULT FALSE,
+    last_played_at TIMESTAMPTZ DEFAULT NOW(),
+    playback_speed NUMERIC DEFAULT 1.0, -- 0.5 to 3.0
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, audiobook_id)
+  );
+
+  CREATE INDEX idx_audiobook_progress_user ON audiobook_progress(user_id);
+  CREATE INDEX idx_audiobook_progress_last_played ON audiobook_progress(user_id, last_played_at DESC);
+  ```
+
+playback_features:
+  streaming_protocol: HLS (HTTP Live Streaming)
+  chapter_navigation: Jump to any chapter instantly
+  variable_speed: 0.5x, 0.75x, 1.0x, 1.25x, 1.5x, 1.75x, 2.0x, 2.5x, 3.0x
+  sleep_timer: 5, 10, 15, 30, 45, 60 minutes, end of chapter
+  bookmarks: User-created bookmarks with notes
+  progress_sync: Real-time sync across devices
+  offline_playback: Download for offline listening
+
+chapter_features:
+  extraction: Automatic from M4B files or file structure
+  navigation: Previous/next chapter, chapter list view
+  thumbnails: Chapter artwork if available
+  search: Search within chapter titles
+  resume: Auto-resume from last position within chapter
+
+progress_tracking:
+  granularity: Per-second accuracy
+  storage: Per-user, per-audiobook
+  sync_to_chaptarr: Optional sync back to Chaptarr
+  history: Playback history with timestamps
+  statistics: Total listening time, books completed
+
+api_endpoints:
+  - method: GET
+    path: /api/v1/audiobooks
+  - method: GET
+    path: /api/v1/audiobooks/:id
+  - method: GET
+    path: /api/v1/audiobooks/:id/chapters
+  - method: GET
+    path: /api/v1/audiobooks/:id/stream
+  - method: GET
+    path: /api/v1/audiobooks/:id/progress
+  - method: PUT
+    path: /api/v1/audiobooks/:id/progress
+  - method: POST
+    path: /api/v1/audiobooks/:id/bookmarks
+  - method: GET
+    path: /api/v1/audiobooks/authors
+  - method: GET
+    path: /api/v1/audiobooks/series

@@ -1,0 +1,52 @@
+doc_title: Semantic Versioning & Releases
+doc_category: operations
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete versioning guide
+status_sources: 🔴
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: "  > Semantic versioning (semver) and automated release process\n\
+  \n  Versioning strategy:\n  - **Format**: vMAJOR.MINOR.PATCH (e.g., v1.2.3)\n  -\
+  \ **MAJOR**: Breaking changes to API or behavior\n  - **MINOR**: New features, backwards\
+  \ compatible\n  - **PATCH**: Bug fixes, security patches\n  - **Automation**: Release\
+  \ Please for changelog and version bumps"
+wiki_tagline: '> How version numbers work and when releases happen'
+wiki_overview: 'Revenge follows Semantic Versioning (semver). Version numbers are formatted as vMAJOR.MINOR.PATCH. MAJOR bumps indicate breaking changes, MINOR adds new features without breaking existing functionality, and PATCH is for bug fixes. Releases are automated via Release Please - when commits merge to main, a release PR is created automatically with updated changelog. Pre-release versions (alpha, beta, rc) are used for testing before stable releases.'
+sources:
+- name: pgx PostgreSQL Driver
+  url: https://pkg.go.dev/github.com/jackc/pgx/v5
+  note: Auto-resolved from pgx
+- name: PostgreSQL Arrays
+  url: https://www.postgresql.org/docs/current/arrays.html
+  note: Auto-resolved from postgresql-arrays
+- name: PostgreSQL JSON Functions
+  url: https://www.postgresql.org/docs/current/functions-json.html
+  note: Auto-resolved from postgresql-json
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: Semantic Versioning
+  url: https://semver.org/
+  note: Auto-resolved from semver
+design_refs:
+- title: operations
+  path: operations/INDEX.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+semver: Strict semantic versioning
+changelog: Auto-generated from conventional commits

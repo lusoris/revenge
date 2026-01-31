@@ -1,0 +1,244 @@
+doc_title: Music Module
+doc_category: feature
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete music module design
+status_sources: ✅
+status_sources_notes: All music APIs documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Music content management with metadata enrichment from MusicBrainz and Last.fm
+
+  Complete music library management:
+  - **Lidarr Integration**: Two-way sync for music library automation
+  - **Metadata Sources**: MusicBrainz (primary), Last.fm (scrobbling, tags)
+  - **Supported Formats**: MP3, FLAC, AAC, OGG, ALAC, Opus
+  - **Playback**: HLS adaptive streaming with gapless playback
+  - **Features**: Playlists, smart collections, album art, lyrics
+
+wiki_tagline: |-
+  > Your complete music library with beautiful album art and metadata
+
+wiki_overview: |-
+  The Music Module provides a complete music library experience with support for artists, albums, and tracks. It integrates with Lidarr for automated music management and uses MusicBrainz and Last.fm for rich metadata. Stream your music in high quality with gapless playback, create playlists, and discover new music through smart collections.
+sources:
+- name: Uber fx
+  url: https://pkg.go.dev/go.uber.org/fx
+  note: Auto-resolved from fx
+- name: Last.fm API
+  url: https://www.last.fm/api/intro
+  note: Auto-resolved from lastfm-api
+- name: ogen OpenAPI Generator
+  url: https://pkg.go.dev/github.com/ogen-go/ogen
+  note: Auto-resolved from ogen
+- name: pgx PostgreSQL Driver
+  url: https://pkg.go.dev/github.com/jackc/pgx/v5
+  note: Auto-resolved from pgx
+- name: PostgreSQL Arrays
+  url: https://www.postgresql.org/docs/current/arrays.html
+  note: Auto-resolved from postgresql-arrays
+- name: PostgreSQL JSON Functions
+  url: https://www.postgresql.org/docs/current/functions-json.html
+  note: Auto-resolved from postgresql-json
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: sqlc
+  url: https://docs.sqlc.dev/en/stable/
+  note: Auto-resolved from sqlc
+- name: sqlc Configuration
+  url: https://docs.sqlc.dev/en/stable/reference/config.html
+  note: Auto-resolved from sqlc-config
+design_refs:
+- title: features/music
+  path: features/music.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+feature_name: Music Module
+module_name: music
+schema_name: public
+content_types:
+- Artists
+- Albums
+- Tracks
+
+lidarr_integration:
+  sync_direction: two-way
+  metadata_priority:
+    1: Lidarr (cached metadata from MusicBrainz)
+    2: MusicBrainz (direct API)
+    3: Last.fm (tags, scrobbles, similar artists)
+  webhook_events:
+    - AlbumDownload
+    - AlbumUpgrade
+    - TrackRetag
+    - ArtistDelete
+  notes: Lidarr provides pre-fetched MusicBrainz metadata, reducing API calls
+
+supported_formats:
+  - format: MP3
+    codec: MPEG-1/2 Audio Layer III
+    streaming: Direct playback or HLS transcode
+  - format: FLAC
+    codec: Free Lossless Audio Codec
+    streaming: Transcode to AAC/Opus for bandwidth savings
+  - format: AAC
+    codec: Advanced Audio Coding
+    streaming: Direct playback via HLS
+  - format: OGG
+    codec: Vorbis/Opus
+    streaming: Direct playback or transcode
+  - format: ALAC
+    codec: Apple Lossless
+    streaming: Transcode to AAC for web playback
+  - format: Opus
+    codec: Opus
+    streaming: Direct playback (best quality/bandwidth ratio)
+
+metadata_sources:
+  - name: Lidarr
+    purpose: Primary metadata source (cached from MusicBrainz)
+    priority: 1
+    fields: Artist, album, track, release date, genres, album art
+  - name: MusicBrainz
+    purpose: Fallback for missing metadata
+    priority: 2
+    fields: Complete discography, relationships, ISRCs
+    api_url: https://musicbrainz.org/ws/2/
+  - name: Last.fm
+    purpose: User scrobbles, tags, similar artists
+    priority: 3
+    fields: Play counts, user tags, artist bio, similar artists
+    api_url: https://www.last.fm/api
+
+database_schema: |
+  ```sql
+  -- Artists
+  CREATE TABLE artists (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    musicbrainz_id UUID,
+    lidarr_id INTEGER,
+    biography TEXT,
+    genres TEXT[],
+    image_url TEXT,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_artists_musicbrainz ON artists(musicbrainz_id);
+  CREATE INDEX idx_artists_lidarr ON artists(lidarr_id);
+  CREATE INDEX idx_artists_name ON artists USING GIN(to_tsvector('english', name));
+
+  -- Albums
+  CREATE TABLE albums (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    musicbrainz_release_id UUID,
+    lidarr_id INTEGER,
+    release_date DATE,
+    album_type TEXT, -- album, ep, single, compilation
+    genres TEXT[],
+    label TEXT,
+    cover_art_url TEXT,
+    track_count INTEGER,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_albums_artist ON albums(artist_id);
+  CREATE INDEX idx_albums_musicbrainz ON albums(musicbrainz_release_id);
+  CREATE INDEX idx_albums_lidarr ON albums(lidarr_id);
+  CREATE INDEX idx_albums_title ON albums USING GIN(to_tsvector('english', title));
+
+  -- Tracks
+  CREATE TABLE tracks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    album_id UUID REFERENCES albums(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    track_number INTEGER,
+    disc_number INTEGER DEFAULT 1,
+    duration_seconds INTEGER,
+    musicbrainz_recording_id UUID,
+    file_path TEXT,
+    file_format TEXT, -- mp3, flac, aac, etc.
+    bitrate INTEGER,
+    sample_rate INTEGER,
+    lyrics TEXT,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_tracks_album ON tracks(album_id);
+  CREATE INDEX idx_tracks_musicbrainz ON tracks(musicbrainz_recording_id);
+  CREATE INDEX idx_tracks_title ON tracks USING GIN(to_tsvector('english', title));
+  ```
+
+playback_features:
+  streaming_protocol: HLS (HTTP Live Streaming)
+  gapless_playback: true
+  crossfade: Configurable (0-12 seconds)
+  audio_normalization: ReplayGain support
+  lyrics_display: Synced lyrics (LRC format) if available
+  queue_management: Add to queue, play next, shuffle, repeat
+
+playlist_support:
+  types:
+    - Manual playlists (user-created)
+    - Smart playlists (filter-based)
+  features:
+    - Collaborative playlists
+    - Playlist sharing (public/private)
+    - Import from M3U/PLS
+    - Export to M3U/PLS
+  database_table: playlists (shared with other modules)
+
+scrobbling_integration:
+  services:
+    - Last.fm
+    - ListenBrainz
+    - Spotify (if configured)
+  scrobble_trigger: 50% played or 4 minutes (whichever comes first)
+  offline_queue: Queue scrobbles when offline, submit when online
+
+api_endpoints:
+  - method: GET
+    path: /api/v1/music/artists
+  - method: GET
+    path: /api/v1/music/artists/:id
+  - method: GET
+    path: /api/v1/music/artists/:id/albums
+  - method: GET
+    path: /api/v1/music/albums
+  - method: GET
+    path: /api/v1/music/albums/:id
+  - method: GET
+    path: /api/v1/music/albums/:id/tracks
+  - method: GET
+    path: /api/v1/music/tracks
+  - method: GET
+    path: /api/v1/music/tracks/:id
+  - method: GET
+    path: /api/v1/music/tracks/:id/stream
+  - method: POST
+    path: /api/v1/music/playlists
+  - method: GET
+    path: /api/v1/music/genres

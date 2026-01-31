@@ -1,0 +1,545 @@
+doc_title: WebSockets
+doc_category: technical
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete WebSocket system design
+status_sources: ✅
+status_sources_notes: coder/websocket documentation included
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Real-time bidirectional communication via WebSockets
+
+  Complete WebSocket infrastructure:
+  - **Library**: nhooyr.io/websocket (coder/websocket)
+  - **Channels**: Playback sync, notifications, live updates, transcoding progress
+  - **Authentication**: JWT token validation on connect
+  - **Protocol**: JSON message format with type-based routing
+  - **Features**: Automatic reconnection, heartbeat/ping, message acknowledgment
+
+wiki_tagline: |-
+  > Real-time updates for playback, notifications, and live server events
+
+wiki_overview: |-
+  The WebSocket System enables real-time bidirectional communication between the server and clients. Receive instant notifications, sync playback state across devices, monitor transcoding progress, and get live server updates. Built on the high-performance nhooyr.io/websocket library with automatic reconnection and heartbeat support for reliable connections.
+
+sources:
+- name: coder/websocket GitHub README
+  url: https://github.com/coder/websocket
+  note: Auto-resolved from coder-websocket-docs
+- name: nhooyr.io/websocket
+  url: https://pkg.go.dev/nhooyr.io/websocket
+  note: WebSocket library (coder/websocket)
+- name: Uber fx
+  url: https://pkg.go.dev/go.uber.org/fx
+  note: Auto-resolved from fx
+
+design_refs:
+- title: technical
+  path: technical.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: WEBSOCKETS (Syncplay)
+  path: features/playback/SYNCPLAY.md
+
+websocket_library:
+  name: nhooyr.io/websocket
+  repository: https://github.com/coder/websocket
+  advantages:
+    - Pure Go implementation
+    - High performance (no cgo)
+    - Context-aware APIs
+    - Automatic compression
+    - Proper backpressure handling
+    - Clean, modern API
+  standards_compliance: RFC 6455 (WebSocket Protocol)
+
+websocket_endpoints:
+  - endpoint: GET /api/v1/ws
+    description: Main WebSocket connection for all real-time events
+    authentication: JWT token (via query param or cookie)
+    protocol: JSON messages with type field
+
+  - endpoint: GET /api/v1/ws/playback/:session_id
+    description: Syncplay session for synchronized playback
+    authentication: Session invite token or user JWT
+    protocol: Syncplay-specific message format
+
+  - endpoint: GET /api/v1/ws/transcode/:job_id
+    description: Live transcoding progress updates
+    authentication: User JWT
+    protocol: Progress percentage and status updates
+
+websocket_authentication:
+  methods:
+    - method: JWT Query Parameter
+      usage: wss://revenge.example.com/api/v1/ws?token=eyJhbG...
+      recommended: For web clients
+    - method: JWT Cookie
+      usage: wss://revenge.example.com/api/v1/ws (cookie sent automatically)
+      recommended: For browser-based clients
+    - method: Authorization Header
+      usage: Not supported by WebSocket standard
+      alternative: Use query param or cookie
+
+  validation: |
+    ```go
+    func (h *WebSocketHandler) HandleConnection(w http.ResponseWriter, r *http.Request) {
+        // Extract token from query or cookie
+        token := r.URL.Query().Get("token")
+        if token == "" {
+            cookie, err := r.Cookie("auth_token")
+            if err == nil {
+                token = cookie.Value
+            }
+        }
+
+        // Validate JWT
+        claims, err := h.jwtService.ValidateToken(token)
+        if err != nil {
+            http.Error(w, "Unauthorized", http.StatusUnauthorized)
+            return
+        }
+
+        // Upgrade to WebSocket
+        conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+            CompressionMode: websocket.CompressionContextTakeover,
+        })
+        if err != nil {
+            return
+        }
+
+        // Handle connection with user context
+        h.handleWebSocket(r.Context(), conn, claims.UserID)
+    }
+    ```
+
+message_protocol:
+  format: JSON
+  structure: |
+    {
+      "type": "message_type",
+      "id": "unique-message-id",
+      "timestamp": "2026-01-31T12:00:00Z",
+      "data": { ... }
+    }
+
+  message_types:
+    client_to_server:
+      - type: subscribe
+        description: Subscribe to event channels
+        data:
+          channels: ["notifications", "playback", "transcoding"]
+        example: |
+          {
+            "type": "subscribe",
+            "id": "msg-123",
+            "data": {
+              "channels": ["notifications", "playback"]
+            }
+          }
+
+      - type: unsubscribe
+        description: Unsubscribe from channels
+        data:
+          channels: ["notifications"]
+
+      - type: ping
+        description: Heartbeat to keep connection alive
+        data: {}
+
+      - type: playback.update
+        description: Update playback state (for Syncplay)
+        data:
+          position: 123.45
+          state: "playing"
+          timestamp: "2026-01-31T12:00:00Z"
+
+    server_to_client:
+      - type: pong
+        description: Response to ping
+        data: {}
+
+      - type: notification
+        description: Push notification
+        data:
+          notification_type: "content.new_episode"
+          title: "New episode available"
+          body: "Breaking Bad S05E14"
+          content_id: "uuid-here"
+
+      - type: playback.sync
+        description: Sync playback state (Syncplay)
+        data:
+          position: 123.45
+          state: "playing"
+          leader_id: "user-uuid"
+
+      - type: transcode.progress
+        description: Transcoding job progress
+        data:
+          job_id: "uuid-here"
+          progress: 45.5
+          status: "encoding"
+          eta_seconds: 120
+
+      - type: server.event
+        description: Live server events
+        data:
+          event_type: "library.scan.started"
+          message: "Scanning Movies library"
+
+      - type: error
+        description: Error message
+        data:
+          code: "INVALID_MESSAGE"
+          message: "Unknown message type"
+
+connection_management:
+  connection_lifecycle: |
+    ```go
+    type WebSocketConnection struct {
+        conn       *websocket.Conn
+        userID     uuid.UUID
+        channels   map[string]bool
+        sendChan   chan Message
+        closeChan  chan struct{}
+        ctx        context.Context
+        cancel     context.CancelFunc
+    }
+
+    func (h *WebSocketHandler) handleWebSocket(ctx context.Context, conn *websocket.Conn, userID uuid.UUID) {
+        wsConn := &WebSocketConnection{
+            conn:      conn,
+            userID:    userID,
+            channels:  make(map[string]bool),
+            sendChan:  make(chan Message, 100),
+            closeChan: make(chan struct{}),
+        }
+        wsConn.ctx, wsConn.cancel = context.WithCancel(ctx)
+        defer wsConn.cancel()
+
+        // Register connection
+        h.registerConnection(wsConn)
+        defer h.unregisterConnection(wsConn)
+
+        // Start goroutines
+        go wsConn.writePump()
+        go wsConn.readPump()
+
+        // Wait for close
+        <-wsConn.closeChan
+    }
+
+    func (c *WebSocketConnection) readPump() {
+        defer close(c.closeChan)
+
+        for {
+            var msg Message
+            err := wsjson.Read(c.ctx, c.conn, &msg)
+            if err != nil {
+                return
+            }
+
+            // Handle message
+            c.handleMessage(msg)
+        }
+    }
+
+    func (c *WebSocketConnection) writePump() {
+        ticker := time.NewTicker(30 * time.Second)
+        defer ticker.Stop()
+
+        for {
+            select {
+            case msg := <-c.sendChan:
+                err := wsjson.Write(c.ctx, c.conn, msg)
+                if err != nil {
+                    return
+                }
+
+            case <-ticker.C:
+                // Send ping
+                c.sendChan <- Message{Type: "ping"}
+
+            case <-c.ctx.Done():
+                return
+            }
+        }
+    }
+    ```
+
+  heartbeat:
+    interval: 30 seconds
+    timeout: 90 seconds
+    mechanism: Client sends ping, server responds with pong
+
+  reconnection:
+    client_responsibility: true
+    exponential_backoff: 1s, 2s, 4s, 8s, 16s, 30s (max)
+    resume_subscriptions: Client resubscribes to channels on reconnect
+
+  connection_limits:
+    per_user: 10 concurrent connections
+    global: 10000 concurrent connections
+    idle_timeout: 5 minutes
+
+channels:
+  notifications:
+    description: Receive push notifications in real-time
+    messages:
+      - notification (new content, server alerts, etc.)
+    subscription: Auto-subscribe on connect
+
+  playback:
+    description: Syncplay synchronized playback
+    messages:
+      - playback.sync
+      - playback.pause
+      - playback.seek
+    subscription: Manual subscribe with session ID
+
+  transcoding:
+    description: Live transcoding progress
+    messages:
+      - transcode.progress
+      - transcode.complete
+      - transcode.error
+    subscription: Auto-subscribe when user starts transcode job
+
+  server:
+    description: Server events and status updates
+    messages:
+      - server.event
+      - library.scan.progress
+      - library.scan.complete
+    subscription: Admin users only
+
+  activity:
+    description: User activity feed
+    messages:
+      - activity.user_watching
+      - activity.friend_online
+    subscription: Manual subscribe
+
+broadcasting:
+  user_broadcast:
+    description: Send message to specific user
+    implementation: |
+      ```go
+      func (h *WebSocketHandler) BroadcastToUser(userID uuid.UUID, msg Message) {
+          h.mu.RLock()
+          defer h.mu.RUnlock()
+
+          conns := h.userConnections[userID]
+          for _, conn := range conns {
+              select {
+              case conn.sendChan <- msg:
+              default:
+                  // Buffer full, drop message
+                  slog.Warn("websocket send buffer full", "user_id", userID)
+              }
+          }
+      }
+      ```
+
+  channel_broadcast:
+    description: Send message to all subscribed to channel
+    implementation: |
+      ```go
+      func (h *WebSocketHandler) BroadcastToChannel(channel string, msg Message) {
+          h.mu.RLock()
+          defer h.mu.RUnlock()
+
+          for _, conn := range h.connections {
+              if conn.channels[channel] {
+                  select {
+                  case conn.sendChan <- msg:
+                  default:
+                      // Buffer full, drop message
+                  }
+              }
+          }
+      }
+      ```
+
+  global_broadcast:
+    description: Send message to all connected clients
+    use_case: Server shutdown announcement
+
+use_cases:
+  playback_sync:
+    description: Synchronized playback across multiple devices (Syncplay)
+    messages:
+      - Client sends playback.update when playing/pausing
+      - Server broadcasts playback.sync to all session participants
+      - Automatic leader election (first to join)
+    example_flow: |
+      1. User creates Syncplay session
+      2. Friend joins session via invite link
+      3. User presses play → sends playback.update
+      4. Server broadcasts playback.sync to friend
+      5. Friend's player syncs to same position
+
+  live_notifications:
+    description: Real-time push notifications
+    messages:
+      - Server sends notification when new content added
+      - Client displays toast/banner
+    example: "New episode: Breaking Bad S05E14"
+
+  transcoding_progress:
+    description: Live progress for transcoding jobs
+    messages:
+      - Server sends transcode.progress every 2 seconds
+      - Client updates progress bar
+    example: "Transcoding: 45% complete (2 minutes remaining)"
+
+  live_updates:
+    description: Real-time UI updates
+    messages:
+      - Library scan progress
+      - Download status
+      - Server health
+    example: "Scanning Movies: 1234 / 5000 files processed"
+
+error_handling:
+  connection_errors:
+    - error: Authentication failed
+      status: 401 Unauthorized
+      action: Reject WebSocket upgrade
+
+    - error: Rate limit exceeded
+      status: 429 Too Many Requests
+      action: Reject WebSocket upgrade
+
+    - error: Connection closed by client
+      action: Cleanup resources, unregister connection
+
+    - error: Send buffer full
+      action: Drop message, log warning
+
+  message_errors:
+    - error: Invalid JSON
+      response: {type: "error", data: {code: "INVALID_JSON"}}
+
+    - error: Unknown message type
+      response: {type: "error", data: {code: "UNKNOWN_TYPE"}}
+
+    - error: Unauthorized channel
+      response: {type: "error", data: {code: "UNAUTHORIZED"}}
+
+client_example:
+  javascript: |
+    ```javascript
+    class RevengeWebSocket {
+      constructor(token) {
+        this.token = token;
+        this.ws = null;
+        this.reconnectDelay = 1000;
+        this.connect();
+      }
+
+      connect() {
+        const url = `wss://revenge.example.com/api/v1/ws?token=${this.token}`;
+        this.ws = new WebSocket(url);
+
+        this.ws.onopen = () => {
+          console.log('WebSocket connected');
+          this.reconnectDelay = 1000;
+
+          // Subscribe to channels
+          this.send({
+            type: 'subscribe',
+            data: { channels: ['notifications', 'playback'] }
+          });
+        };
+
+        this.ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          this.handleMessage(msg);
+        };
+
+        this.ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
+
+        this.ws.onclose = () => {
+          console.log('WebSocket closed, reconnecting...');
+          setTimeout(() => this.connect(), this.reconnectDelay);
+          this.reconnectDelay = Math.min(this.reconnectDelay * 2, 30000);
+        };
+
+        // Heartbeat
+        setInterval(() => {
+          if (this.ws.readyState === WebSocket.OPEN) {
+            this.send({ type: 'ping' });
+          }
+        }, 30000);
+      }
+
+      send(message) {
+        message.id = crypto.randomUUID();
+        message.timestamp = new Date().toISOString();
+        this.ws.send(JSON.stringify(message));
+      }
+
+      handleMessage(msg) {
+        switch (msg.type) {
+          case 'pong':
+            // Heartbeat response
+            break;
+          case 'notification':
+            this.showNotification(msg.data);
+            break;
+          case 'playback.sync':
+            this.syncPlayback(msg.data);
+            break;
+          default:
+            console.log('Unknown message:', msg);
+        }
+      }
+    }
+    ```
+
+best_practices:
+  - practice: Authenticate on connection
+    reason: Verify user identity before accepting WebSocket
+
+  - practice: Use compression
+    reason: Reduce bandwidth for JSON messages
+
+  - practice: Implement heartbeat/ping
+    reason: Detect dead connections early
+
+  - practice: Buffer outgoing messages
+    reason: Handle slow clients gracefully
+
+  - practice: Limit message size
+    reason: Prevent memory exhaustion attacks
+
+  - practice: Rate limit connections
+    reason: Prevent DoS attacks
+
+  - practice: Clean up resources on disconnect
+    reason: Avoid memory leaks
+
+  - practice: Use channels for broadcasting
+    reason: Efficient message routing
+
+  - practice: Handle reconnection on client
+    reason: Resilient real-time experience
+
+  - practice: Log connection events
+    reason: Debugging and monitoring

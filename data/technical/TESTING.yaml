@@ -1,0 +1,656 @@
+doc_title: Testing Patterns and Practices
+doc_category: technical
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete testing patterns documentation
+status_sources: ✅
+status_sources_notes: All testing tools documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+
+technical_summary: |-
+  > Comprehensive testing strategy with unit, integration, and end-to-end tests
+
+  Testing approach:
+  - **Unit Tests**: Fast, isolated tests with mocks (testify + mockery)
+  - **Integration Tests**: Real dependencies via testcontainers
+  - **Table-Driven Tests**: Go testing pattern for multiple scenarios
+  - **Coverage**: Minimum 80% code coverage required
+  - **CI/CD**: Automated testing on every PR and commit
+  - **Best Practices**: Test-driven development, clear test names, arrange-act-assert
+
+wiki_tagline: |-
+  > Ensure code quality with comprehensive automated testing
+
+wiki_overview: |-
+  The Testing Strategy ensures code quality through multiple test layers. Unit tests run fast with mocked dependencies using testify and mockery. Integration tests use testcontainers to spin up real PostgreSQL, Dragonfly, and Typesense instances. Table-driven tests cover multiple scenarios efficiently. Code coverage tracked automatically with minimum 80% threshold. Tests run in CI/CD on every commit. Follow best practices like arrange-act-assert pattern, clear test names, and test-driven development.
+
+sources:
+  - name: Go Testing Package
+    url: https://pkg.go.dev/testing
+    note: Standard library testing
+  - name: testify
+    url: https://pkg.go.dev/github.com/stretchr/testify
+    note: Assertion and mocking toolkit
+  - name: mockery
+    url: https://vektra.github.io/mockery/
+    note: Mock generation from interfaces
+  - name: testcontainers-go
+    url: https://pkg.go.dev/github.com/testcontainers/testcontainers-go
+    note: Docker containers for integration tests
+  - name: embedded-postgres
+    url: https://pkg.go.dev/github.com/fergusstrange/embedded-postgres
+    note: Embedded PostgreSQL for testing
+
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: BEST_PRACTICES
+    path: operations/BEST_PRACTICES.md
+
+testing_pyramid:
+  unit_tests:
+    percentage: 70%
+    speed: Very fast (milliseconds)
+    scope: Individual functions and methods
+    dependencies: Mocked
+    tools: testing, testify, mockery
+    when_to_write: For all business logic and service layer
+
+  integration_tests:
+    percentage: 20%
+    speed: Moderate (seconds)
+    scope: Multiple components working together
+    dependencies: Real (PostgreSQL, Dragonfly, Typesense)
+    tools: testcontainers-go, embedded-postgres
+    when_to_write: For repository layer, API endpoints, external integrations
+
+  e2e_tests:
+    percentage: 10%
+    speed: Slow (minutes)
+    scope: Complete user workflows
+    dependencies: Full stack
+    tools: Playwright, Cypress
+    when_to_write: For critical user journeys
+
+unit_testing:
+  table_driven_tests: |-
+    ```go
+    package service_test
+
+    import (
+        "context"
+        "testing"
+        "github.com/stretchr/testify/assert"
+        "github.com/stretchr/testify/mock"
+        "revenge/internal/service/movie"
+        "revenge/internal/repository/mocks"
+    )
+
+    func TestMovieService_GetByID(t *testing.T) {
+        tests := []struct {
+            name          string
+            movieID       uuid.UUID
+            mockSetup     func(*mocks.MovieRepository)
+            expectedMovie *movie.Movie
+            expectedError error
+        }{
+            {
+                name:    "successful retrieval",
+                movieID: uuid.MustParse("550e8400-e29b-41d4-a716-446655440000"),
+                mockSetup: func(repo *mocks.MovieRepository) {
+                    repo.On("GetByID", mock.Anything, uuid.MustParse("550e8400-e29b-41d4-a716-446655440000")).
+                        Return(&movie.Movie{
+                            ID:    uuid.MustParse("550e8400-e29b-41d4-a716-446655440000"),
+                            Title: "Inception",
+                            Year:  2010,
+                        }, nil)
+                },
+                expectedMovie: &movie.Movie{
+                    ID:    uuid.MustParse("550e8400-e29b-41d4-a716-446655440000"),
+                    Title: "Inception",
+                    Year:  2010,
+                },
+                expectedError: nil,
+            },
+            {
+                name:    "movie not found",
+                movieID: uuid.MustParse("550e8400-e29b-41d4-a716-446655440001"),
+                mockSetup: func(repo *mocks.MovieRepository) {
+                    repo.On("GetByID", mock.Anything, uuid.MustParse("550e8400-e29b-41d4-a716-446655440001")).
+                        Return(nil, movie.ErrMovieNotFound)
+                },
+                expectedMovie: nil,
+                expectedError: movie.ErrMovieNotFound,
+            },
+        }
+
+        for _, tt := range tests {
+            t.Run(tt.name, func(t *testing.T) {
+                // Arrange
+                mockRepo := mocks.NewMovieRepository(t)
+                tt.mockSetup(mockRepo)
+                svc := movie.NewService(mockRepo)
+
+                // Act
+                result, err := svc.GetByID(context.Background(), tt.movieID)
+
+                // Assert
+                assert.Equal(t, tt.expectedError, err)
+                assert.Equal(t, tt.expectedMovie, result)
+                mockRepo.AssertExpectations(t)
+            })
+        }
+    }
+    ```
+
+  testify_assertions: |-
+    ```go
+    func TestMovieValidation(t *testing.T) {
+        movie := &Movie{
+            Title: "Inception",
+            Year:  2010,
+        }
+
+        // Basic assertions
+        assert.NotNil(t, movie)
+        assert.Equal(t, "Inception", movie.Title)
+        assert.Equal(t, 2010, movie.Year)
+        assert.True(t, movie.Year > 2000)
+        assert.Contains(t, movie.Title, "Inc")
+
+        // Error assertions
+        err := movie.Validate()
+        assert.NoError(t, err)
+
+        // Collection assertions
+        genres := []string{"Sci-Fi", "Action", "Thriller"}
+        assert.Len(t, genres, 3)
+        assert.ElementsMatch(t, genres, []string{"Action", "Sci-Fi", "Thriller"})
+    }
+    ```
+
+  mock_generation: |-
+    ```go
+    // Repository interface
+    package repository
+
+    type MovieRepository interface {
+        GetByID(ctx context.Context, id uuid.UUID) (*Movie, error)
+        Insert(ctx context.Context, movie *Movie) error
+        Update(ctx context.Context, movie *Movie) error
+        Delete(ctx context.Context, id uuid.UUID) error
+        List(ctx context.Context, filters Filters) ([]Movie, error)
+    }
+
+    // Generate mocks with mockery
+    // Command: mockery --name=MovieRepository --output=mocks --outpkg=mocks
+
+    // Use in tests
+    func TestMovieService_Create(t *testing.T) {
+        // Arrange
+        mockRepo := mocks.NewMovieRepository(t)
+        mockRepo.On("Insert", mock.Anything, mock.AnythingOfType("*repository.Movie")).
+            Return(nil)
+
+        svc := service.NewMovieService(mockRepo)
+
+        // Act
+        err := svc.Create(context.Background(), &CreateMovieRequest{
+            Title: "Inception",
+            Year:  2010,
+        })
+
+        // Assert
+        assert.NoError(t, err)
+        mockRepo.AssertExpectations(t)
+    }
+    ```
+
+  test_helpers: |-
+    ```go
+    package testutil
+
+    import (
+        "testing"
+        "github.com/stretchr/testify/require"
+    )
+
+    // Helper to create test movie
+    func NewTestMovie(t *testing.T, overrides ...func(*Movie)) *Movie {
+        t.Helper()
+        
+        movie := &Movie{
+            ID:    uuid.New(),
+            Title: "Test Movie",
+            Year:  2024,
+        }
+
+        for _, override := range overrides {
+            override(movie)
+        }
+
+        return movie
+    }
+
+    // Usage
+    func TestSomething(t *testing.T) {
+        movie := NewTestMovie(t, func(m *Movie) {
+            m.Title = "Custom Title"
+            m.Year = 2010
+        })
+
+        assert.Equal(t, "Custom Title", movie.Title)
+    }
+    ```
+
+integration_testing:
+  testcontainers_postgres: |-
+    ```go
+    package repository_test
+
+    import (
+        "context"
+        "testing"
+        "github.com/jackc/pgx/v5/pgxpool"
+        "github.com/testcontainers/testcontainers-go"
+        "github.com/testcontainers/testcontainers-go/wait"
+    )
+
+    func setupPostgres(t *testing.T) (*pgxpool.Pool, func()) {
+        t.Helper()
+
+        ctx := context.Background()
+
+        // Start PostgreSQL container
+        req := testcontainers.ContainerRequest{
+            Image:        "postgres:18-alpine",
+            ExposedPorts: []string{"5432/tcp"},
+            Env: map[string]string{
+                "POSTGRES_USER":     "test",
+                "POSTGRES_PASSWORD": "test",
+                "POSTGRES_DB":       "testdb",
+            },
+            WaitingFor: wait.ForLog("database system is ready to accept connections"),
+        }
+
+        container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+            ContainerRequest: req,
+            Started:          true,
+        })
+        if err != nil {
+            t.Fatalf("failed to start postgres container: %v", err)
+        }
+
+        // Get connection string
+        host, _ := container.Host(ctx)
+        port, _ := container.MappedPort(ctx, "5432")
+        connStr := fmt.Sprintf("postgres://test:test@%s:%s/testdb", host, port.Port())
+
+        // Connect to database
+        pool, err := pgxpool.New(ctx, connStr)
+        if err != nil {
+            container.Terminate(ctx)
+            t.Fatalf("failed to connect to postgres: %v", err)
+        }
+
+        // Run migrations
+        runMigrations(t, pool)
+
+        // Return cleanup function
+        cleanup := func() {
+            pool.Close()
+            container.Terminate(ctx)
+        }
+
+        return pool, cleanup
+    }
+
+    func TestMovieRepository_Integration(t *testing.T) {
+        pool, cleanup := setupPostgres(t)
+        defer cleanup()
+
+        repo := repository.NewMovieRepository(pool)
+
+        t.Run("insert and retrieve", func(t *testing.T) {
+            movie := &repository.Movie{
+                ID:    uuid.New(),
+                Title: "Inception",
+                Year:  2010,
+            }
+
+            err := repo.Insert(context.Background(), movie)
+            assert.NoError(t, err)
+
+            retrieved, err := repo.GetByID(context.Background(), movie.ID)
+            assert.NoError(t, err)
+            assert.Equal(t, movie.Title, retrieved.Title)
+            assert.Equal(t, movie.Year, retrieved.Year)
+        })
+    }
+    ```
+
+  testcontainers_dragonfly: |-
+    ```go
+    func setupDragonfly(t *testing.T) (rueidis.Client, func()) {
+        t.Helper()
+
+        ctx := context.Background()
+
+        req := testcontainers.ContainerRequest{
+            Image:        "docker.dragonflydb.io/dragonflydb/dragonfly:latest",
+            ExposedPorts: []string{"6379/tcp"},
+            WaitingFor:   wait.ForLog("accepting connections"),
+        }
+
+        container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+            ContainerRequest: req,
+            Started:          true,
+        })
+        if err != nil {
+            t.Fatalf("failed to start dragonfly: %v", err)
+        }
+
+        host, _ := container.Host(ctx)
+        port, _ := container.MappedPort(ctx, "6379")
+
+        client, err := rueidis.NewClient(rueidis.ClientOption{
+            InitAddress: []string{fmt.Sprintf("%s:%s", host, port.Port())},
+        })
+        if err != nil {
+            container.Terminate(ctx)
+            t.Fatalf("failed to connect to dragonfly: %v", err)
+        }
+
+        cleanup := func() {
+            client.Close()
+            container.Terminate(ctx)
+        }
+
+        return client, cleanup
+    }
+    ```
+
+  embedded_postgres: |-
+    ```go
+    package repository_test
+
+    import (
+        "testing"
+        embeddedpostgres "github.com/fergusstrange/embedded-postgres"
+    )
+
+    func setupEmbeddedPostgres(t *testing.T) (*pgxpool.Pool, func()) {
+        t.Helper()
+
+        // Start embedded PostgreSQL
+        postgres := embeddedpostgres.NewDatabase(embeddedpostgres.DefaultConfig().
+            Port(5433).
+            Username("test").
+            Password("test").
+            Database("testdb"))
+
+        if err := postgres.Start(); err != nil {
+            t.Fatalf("failed to start embedded postgres: %v", err)
+        }
+
+        // Connect
+        pool, err := pgxpool.New(context.Background(), "postgres://test:test@localhost:5433/testdb")
+        if err != nil {
+            postgres.Stop()
+            t.Fatalf("failed to connect: %v", err)
+        }
+
+        cleanup := func() {
+            pool.Close()
+            postgres.Stop()
+        }
+
+        return pool, cleanup
+    }
+    ```
+
+test_coverage:
+  running_coverage: |-
+    ```bash
+    # Run tests with coverage
+    go test -coverprofile=coverage.out ./...
+
+    # View coverage in terminal
+    go tool cover -func=coverage.out
+
+    # Generate HTML coverage report
+    go tool cover -html=coverage.out -o coverage.html
+
+    # Check coverage threshold (80%)
+    go test -coverprofile=coverage.out ./... && \
+    go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//' | \
+    awk '{if ($1 < 80) exit 1}'
+    ```
+
+  coverage_reports: |-
+    ```go
+    // Example output
+    revenge/internal/service/movie/service.go:23:    GetByID       95.0%
+    revenge/internal/service/movie/service.go:45:    Create        88.9%
+    revenge/internal/service/movie/service.go:67:    Update        92.3%
+    revenge/internal/service/movie/service.go:89:    Delete        100.0%
+    total:                                           (statements)  91.5%
+    ```
+
+  ci_integration: |-
+    ```yaml
+    # .github/workflows/test.yml
+    name: Tests
+
+    on: [push, pull_request]
+
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          
+          - name: Set up Go
+            uses: actions/setup-go@v5
+            with:
+              go-version: '1.25'
+          
+          - name: Run tests with coverage
+            run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
+          
+          - name: Check coverage threshold
+            run: |
+              coverage=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+              if (( $(echo "$coverage < 80" | bc -l) )); then
+                echo "Coverage $coverage% is below 80% threshold"
+                exit 1
+              fi
+          
+          - name: Upload coverage to Codecov
+            uses: codecov/codecov-action@v4
+            with:
+              file: ./coverage.out
+    ```
+
+test_organization:
+  file_structure: |-
+    ```
+    internal/
+      service/
+        movie/
+          service.go           # Implementation
+          service_test.go      # Unit tests
+      repository/
+        movie.go              # Repository implementation
+        movie_test.go         # Integration tests
+        mocks/                # Generated mocks
+          movie_repository.go
+      testutil/               # Test helpers
+        fixtures.go
+        helpers.go
+    ```
+
+  naming_conventions:
+    - pattern: TestFunctionName
+      description: Test for specific function
+      example: TestMovieService_GetByID
+
+    - pattern: TestFunctionName_Scenario
+      description: Specific scenario
+      example: TestMovieService_GetByID_NotFound
+
+    - pattern: TestFunctionName_StateUnderTest_ExpectedBehavior
+      description: Detailed test name
+      example: TestMovieService_Create_WithInvalidYear_ReturnsError
+
+best_practices:
+  - practice: Follow arrange-act-assert pattern
+    reason: Clear test structure
+    example: |-
+      ```go
+      func TestExample(t *testing.T) {
+          // Arrange
+          input := "test"
+          expected := "TEST"
+          
+          // Act
+          result := ToUpper(input)
+          
+          // Assert
+          assert.Equal(t, expected, result)
+      }
+      ```
+
+  - practice: Use table-driven tests
+    reason: Test multiple scenarios efficiently
+    benefit: Reduces duplication, easy to add cases
+
+  - practice: Test behavior, not implementation
+    reason: Tests should survive refactoring
+    example: Test public API, not internal state
+
+  - practice: Use descriptive test names
+    reason: Failing tests should explain what broke
+    example: TestMovieService_Create_WithDuplicateTitle_ReturnsError
+
+  - practice: Mock external dependencies
+    reason: Fast, isolated unit tests
+    tools: mockery, testify/mock
+
+  - practice: Use real dependencies for integration tests
+    reason: Catch real-world issues
+    tools: testcontainers-go
+
+  - practice: Avoid test interdependence
+    reason: Tests should run in any order
+    implementation: Use t.Parallel() where possible
+
+  - practice: Clean up resources in tests
+    reason: Prevent resource leaks
+    example: Use defer cleanup()
+
+  - practice: Use test helpers
+    reason: Reduce test boilerplate
+    benefit: More readable tests
+
+  - practice: Test error paths
+    reason: Errors are part of behavior
+    coverage: Aim for 100% error path coverage
+
+  - practice: Use sub-tests for grouping
+    reason: Better organization and isolation
+    example: |-
+      ```go
+      func TestMovieService(t *testing.T) {
+          t.Run("GetByID", func(t *testing.T) {
+              // Tests for GetByID
+          })
+          t.Run("Create", func(t *testing.T) {
+              // Tests for Create
+          })
+      }
+      ```
+
+  - practice: Maintain 80% minimum coverage
+    reason: Ensures code is well-tested
+    enforcement: CI/CD fails below threshold
+
+common_patterns:
+  testing_http_handlers: |-
+    ```go
+    func TestMovieHandler_Get(t *testing.T) {
+        mockService := mocks.NewMovieService(t)
+        mockService.On("GetByID", mock.Anything, uuid.MustParse("123")).
+            Return(&movie.Movie{Title: "Inception"}, nil)
+
+        handler := NewMovieHandler(mockService)
+
+        req := httptest.NewRequest("GET", "/api/v1/movies/123", nil)
+        w := httptest.NewRecorder()
+
+        handler.Get(w, req)
+
+        assert.Equal(t, http.StatusOK, w.Code)
+        assert.Contains(t, w.Body.String(), "Inception")
+    }
+    ```
+
+  testing_database_transactions: |-
+    ```go
+    func TestMovieRepository_Transaction(t *testing.T) {
+        pool, cleanup := setupPostgres(t)
+        defer cleanup()
+
+        repo := repository.NewMovieRepository(pool)
+
+        t.Run("rollback on error", func(t *testing.T) {
+            tx, _ := pool.Begin(context.Background())
+            defer tx.Rollback(context.Background())
+
+            movie := &repository.Movie{ID: uuid.New(), Title: "Test"}
+            repo.Insert(context.Background(), tx, movie)
+
+            // Trigger error (duplicate insert)
+            err := repo.Insert(context.Background(), tx, movie)
+            assert.Error(t, err)
+
+            tx.Rollback(context.Background())
+
+            // Verify movie was not inserted
+            _, err = repo.GetByID(context.Background(), movie.ID)
+            assert.Error(t, err)
+        })
+    }
+    ```
+
+  testing_concurrent_code: |-
+    ```go
+    func TestCacheService_Concurrent(t *testing.T) {
+        cache := NewCacheService()
+
+        var wg sync.WaitGroup
+        for i := 0; i < 100; i++ {
+            wg.Add(1)
+            go func(n int) {
+                defer wg.Done()
+                key := fmt.Sprintf("key-%d", n)
+                cache.Set(key, fmt.Sprintf("value-%d", n))
+                value, _ := cache.Get(key)
+                assert.Equal(t, fmt.Sprintf("value-%d", n), value)
+            }(i)
+        }
+        wg.Wait()
+    }
+    ```

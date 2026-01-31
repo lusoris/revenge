@@ -1,0 +1,660 @@
+doc_title: Observability - Metrics, Tracing, and Logging
+doc_category: technical
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete observability patterns
+status_sources: ✅
+status_sources_notes: All observability tools documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+
+technical_summary: |-
+  > Complete observability stack with metrics, distributed tracing, and structured logging
+
+  Three pillars of observability:
+  - **Metrics**: Prometheus for metrics collection and alerting
+  - **Tracing**: Jaeger + OpenTelemetry for distributed request tracing
+  - **Logging**: Loki for log aggregation, slog for structured logging
+  - **Dashboards**: Grafana for visualization and alerting
+  - **Instrumentation**: Automatic + manual instrumentation patterns
+
+wiki_tagline: |-
+  > Monitor, trace, and debug your Revenge instance with comprehensive observability
+
+wiki_overview: |-
+  The Observability Stack provides complete visibility into your Revenge server. Prometheus collects metrics like request rates and error counts. Jaeger with OpenTelemetry traces requests across services for debugging. Loki aggregates logs from all components with structured search. Grafana dashboards visualize metrics and logs in real-time. Pre-built dashboards for common scenarios included. Alert rules notify you of issues before users notice.
+
+sources:
+  - name: Prometheus Go Client
+    url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
+    note: Metrics instrumentation
+  - name: Prometheus Metric Types
+    url: https://prometheus.io/docs/concepts/metric_types/
+    note: Counter, Gauge, Histogram, Summary
+  - name: Jaeger Go Client
+    url: https://pkg.go.dev/github.com/jaegertracing/jaeger-client-go
+    note: Distributed tracing client
+  - name: OpenTelemetry Go
+    url: https://pkg.go.dev/go.opentelemetry.io/otel
+    note: Tracing and metrics SDK
+  - name: Loki
+    url: https://grafana.com/docs/loki/latest/
+    note: Log aggregation system
+  - name: Grafana
+    url: https://grafana.com/docs/grafana/latest/
+    note: Visualization and dashboards
+  - name: slog-multi
+    url: https://pkg.go.dev/github.com/samber/slog-multi
+    note: Multi-handler slog setup
+  - name: Go slog
+    url: https://pkg.go.dev/log/slog
+    note: Structured logging
+
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: OFFLOADING
+    path: technical/OFFLOADING.md
+
+observability_pillars:
+  metrics:
+    tool: Prometheus
+    purpose: Quantitative measurements over time
+    use_cases:
+      - Request rate (requests per second)
+      - Error rate (errors per second)
+      - Request duration (latency percentiles)
+      - Resource usage (CPU, memory, connections)
+      - Business metrics (active users, content items)
+    metric_types:
+      - Counter: Monotonically increasing value (total requests)
+      - Gauge: Value that can go up or down (active connections)
+      - Histogram: Distribution of values (request duration buckets)
+      - Summary: Similar to histogram with client-side percentiles
+
+  tracing:
+    tool: Jaeger + OpenTelemetry
+    purpose: Track requests across distributed systems
+    use_cases:
+      - Debugging slow requests
+      - Understanding service dependencies
+      - Identifying bottlenecks
+      - Root cause analysis
+    concepts:
+      - Trace: Complete journey of a request
+      - Span: Single operation within a trace
+      - Context propagation: Passing trace context across services
+
+  logging:
+    tool: Loki + slog
+    purpose: Detailed event records for debugging
+    use_cases:
+      - Error investigation
+      - Audit trails
+      - Debugging specific issues
+      - Compliance and security
+    log_levels:
+      - DEBUG: Verbose debugging information
+      - INFO: General informational messages
+      - WARN: Warning conditions
+      - ERROR: Error events
+
+metrics_implementation:
+  prometheus_setup: |-
+    ```go
+    package metrics
+
+    import (
+        "github.com/prometheus/client_golang/prometheus"
+        "github.com/prometheus/client_golang/prometheus/promauto"
+        "github.com/prometheus/client_golang/prometheus/promhttp"
+        "net/http"
+    )
+
+    var (
+        // HTTP metrics
+        HTTPRequestsTotal = promauto.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "revenge_http_requests_total",
+                Help: "Total number of HTTP requests",
+            },
+            []string{"method", "path", "status"},
+        )
+
+        HTTPRequestDuration = promauto.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "revenge_http_request_duration_seconds",
+                Help:    "HTTP request latency",
+                Buckets: []float64{.001, .005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5},
+            },
+            []string{"method", "path"},
+        )
+
+        // Database metrics
+        DBQueriesTotal = promauto.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "revenge_db_queries_total",
+                Help: "Total number of database queries",
+            },
+            []string{"query_type", "table"},
+        )
+
+        DBQueryDuration = promauto.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "revenge_db_query_duration_seconds",
+                Help:    "Database query duration",
+                Buckets: prometheus.DefBuckets,
+            },
+            []string{"query_type", "table"},
+        )
+
+        // Cache metrics
+        CacheHitsTotal = promauto.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "revenge_cache_hits_total",
+                Help: "Total cache hits",
+            },
+            []string{"cache_type", "operation"},
+        )
+
+        CacheMissesTotal = promauto.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "revenge_cache_misses_total",
+                Help: "Total cache misses",
+            },
+            []string{"cache_type", "operation"},
+        )
+
+        // Background job metrics
+        BackgroundJobsTotal = promauto.NewCounterVec(
+            prometheus.CounterOpts{
+                Name: "revenge_background_jobs_total",
+                Help: "Total background jobs processed",
+            },
+            []string{"job_type", "status"},
+        )
+
+        BackgroundJobDuration = promauto.NewHistogramVec(
+            prometheus.HistogramOpts{
+                Name:    "revenge_background_job_duration_seconds",
+                Help:    "Background job processing duration",
+                Buckets: []float64{1, 5, 10, 30, 60, 300, 600, 1800},
+            },
+            []string{"job_type"},
+        )
+
+        // Business metrics
+        ActiveUsers = promauto.NewGauge(
+            prometheus.GaugeOpts{
+                Name: "revenge_active_users",
+                Help: "Number of currently active users",
+            },
+        )
+
+        MediaItemsTotal = promauto.NewGaugeVec(
+            prometheus.GaugeOpts{
+                Name: "revenge_media_items_total",
+                Help: "Total media items by type",
+            },
+            []string{"media_type"},
+        )
+    )
+
+    // Expose metrics endpoint
+    func Handler() http.Handler {
+        return promhttp.Handler()
+    }
+    ```
+
+  middleware_instrumentation: |-
+    ```go
+    package middleware
+
+    import (
+        "net/http"
+        "strconv"
+        "time"
+        "revenge/internal/metrics"
+    )
+
+    type statusRecorder struct {
+        http.ResponseWriter
+        statusCode int
+    }
+
+    func (r *statusRecorder) WriteHeader(code int) {
+        r.statusCode = code
+        r.ResponseWriter.WriteHeader(code)
+    }
+
+    func PrometheusMiddleware(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            start := time.Now()
+            recorder := &statusRecorder{
+                ResponseWriter: w,
+                statusCode:     200,
+            }
+
+            next.ServeHTTP(recorder, r)
+
+            duration := time.Since(start).Seconds()
+            status := strconv.Itoa(recorder.statusCode)
+
+            metrics.HTTPRequestsTotal.WithLabelValues(r.Method, r.URL.Path, status).Inc()
+            metrics.HTTPRequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)
+        })
+    }
+    ```
+
+  custom_metrics: |-
+    ```go
+    // Recording a metric in business logic
+    func (s *MovieService) GetByID(ctx context.Context, id uuid.UUID) (*Movie, error) {
+        start := time.Now()
+        defer func() {
+            metrics.DBQueryDuration.WithLabelValues("select", "movies").Observe(time.Since(start).Seconds())
+        }()
+
+        movie, err := s.repo.GetByID(ctx, id)
+        if err != nil {
+            metrics.DBQueriesTotal.WithLabelValues("select", "movies").Inc()
+            return nil, err
+        }
+
+        metrics.DBQueriesTotal.WithLabelValues("select", "movies").Inc()
+        return movie, nil
+    }
+
+    // Cache hit/miss metrics
+    func (c *CacheService) Get(ctx context.Context, key string) (string, error) {
+        val, err := c.client.Do(ctx, c.client.B().Get().Key(key).Build()).ToString()
+        if err != nil {
+            metrics.CacheMissesTotal.WithLabelValues("dragonfly", "get").Inc()
+            return "", err
+        }
+
+        metrics.CacheHitsTotal.WithLabelValues("dragonfly", "get").Inc()
+        return val, nil
+    }
+    ```
+
+tracing_implementation:
+  opentelemetry_setup: |-
+    ```go
+    package tracing
+
+    import (
+        "context"
+        "go.opentelemetry.io/otel"
+        "go.opentelemetry.io/otel/exporters/jaeger"
+        "go.opentelemetry.io/otel/sdk/resource"
+        "go.opentelemetry.io/otel/sdk/trace"
+        semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+    )
+
+    func InitTracer(serviceName, jaegerEndpoint string) (*trace.TracerProvider, error) {
+        // Create Jaeger exporter
+        exporter, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(jaegerEndpoint)))
+        if err != nil {
+            return nil, err
+        }
+
+        // Create resource with service name
+        res, err := resource.New(context.Background(),
+            resource.WithAttributes(
+                semconv.ServiceNameKey.String(serviceName),
+                semconv.ServiceVersionKey.String("1.0.0"),
+            ),
+        )
+        if err != nil {
+            return nil, err
+        }
+
+        // Create tracer provider
+        tp := trace.NewTracerProvider(
+            trace.WithBatcher(exporter),
+            trace.WithResource(res),
+            trace.WithSampler(trace.AlwaysSample()),
+        )
+
+        otel.SetTracerProvider(tp)
+        return tp, nil
+    }
+    ```
+
+  tracing_spans: |-
+    ```go
+    package service
+
+    import (
+        "context"
+        "go.opentelemetry.io/otel"
+        "go.opentelemetry.io/otel/attribute"
+        "go.opentelemetry.io/otel/codes"
+    )
+
+    var tracer = otel.Tracer("revenge.movie-service")
+
+    func (s *MovieService) GetByID(ctx context.Context, id uuid.UUID) (*Movie, error) {
+        // Start span
+        ctx, span := tracer.Start(ctx, "MovieService.GetByID")
+        defer span.End()
+
+        // Add attributes
+        span.SetAttributes(
+            attribute.String("movie.id", id.String()),
+        )
+
+        // Call repository (child span created automatically if instrumented)
+        movie, err := s.repo.GetByID(ctx, id)
+        if err != nil {
+            span.RecordError(err)
+            span.SetStatus(codes.Error, "failed to get movie")
+            return nil, err
+        }
+
+        span.SetAttributes(
+            attribute.String("movie.title", movie.Title),
+            attribute.Int("movie.year", movie.Year),
+        )
+
+        // Fetch metadata (another child span)
+        ctx, metaSpan := tracer.Start(ctx, "fetch-metadata")
+        metadata, err := s.metadataService.FetchMetadata(ctx, movie.TMDBID)
+        metaSpan.End()
+        if err != nil {
+            // Log error but don't fail
+            span.AddEvent("metadata-fetch-failed", attribute.String("error", err.Error()))
+        } else {
+            movie.EnrichWithMetadata(metadata)
+        }
+
+        span.SetStatus(codes.Ok, "success")
+        return movie, nil
+    }
+    ```
+
+  context_propagation: |-
+    ```go
+    // Propagate trace context across HTTP requests
+    import (
+        "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+    )
+
+    func (s *MetadataService) FetchFromTMDB(ctx context.Context, tmdbID int) (*Metadata, error) {
+        ctx, span := tracer.Start(ctx, "MetadataService.FetchFromTMDB")
+        defer span.End()
+
+        // Use instrumented HTTP client (automatically propagates trace context)
+        client := &http.Client{
+            Transport: otelhttp.NewTransport(http.DefaultTransport),
+        }
+
+        req, _ := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("https://api.themoviedb.org/3/movie/%d", tmdbID), nil)
+        resp, err := client.Do(req)
+        if err != nil {
+            span.RecordError(err)
+            return nil, err
+        }
+        defer resp.Body.Close()
+
+        // Parse response...
+        return metadata, nil
+    }
+    ```
+
+logging_implementation:
+  slog_setup: |-
+    ```go
+    package logging
+
+    import (
+        "log/slog"
+        "os"
+        "github.com/samber/slog-multi"
+    )
+
+    func InitLogger(env string) *slog.Logger {
+        var handlers []slog.Handler
+
+        // Console handler for development
+        if env == "development" {
+            handlers = append(handlers, slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+                Level: slog.LevelDebug,
+            }))
+        }
+
+        // JSON handler for production (consumed by Loki)
+        if env == "production" {
+            handlers = append(handlers, slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+                Level: slog.LevelInfo,
+                ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+                    // Add custom attributes (e.g., service name)
+                    if a.Key == slog.SourceKey {
+                        source := a.Value.Any().(*slog.Source)
+                        a.Value = slog.StringValue(fmt.Sprintf("%s:%d", source.File, source.Line))
+                    }
+                    return a
+                },
+            }))
+        }
+
+        // Multi-handler (writes to all handlers)
+        logger := slog.New(slogmulti.Fanout(handlers...))
+        slog.SetDefault(logger)
+        return logger
+    }
+    ```
+
+  structured_logging: |-
+    ```go
+    package service
+
+    import "log/slog"
+
+    func (s *MovieService) Create(ctx context.Context, req *CreateMovieRequest) (*Movie, error) {
+        slog.InfoContext(ctx, "creating movie",
+            slog.String("title", req.Title),
+            slog.Int("year", req.Year),
+            slog.String("user_id", getUserID(ctx)),
+        )
+
+        movie, err := s.repo.Insert(ctx, req)
+        if err != nil {
+            slog.ErrorContext(ctx, "failed to create movie",
+                slog.String("title", req.Title),
+                slog.String("error", err.Error()),
+            )
+            return nil, err
+        }
+
+        slog.InfoContext(ctx, "movie created successfully",
+            slog.String("movie_id", movie.ID.String()),
+            slog.String("title", movie.Title),
+        )
+
+        return movie, nil
+    }
+    ```
+
+  log_context: |-
+    ```go
+    // Add request ID to all logs in a request
+    package middleware
+
+    import (
+        "context"
+        "log/slog"
+        "net/http"
+        "github.com/google/uuid"
+    )
+
+    type contextKey string
+
+    const requestIDKey contextKey = "request_id"
+
+    func RequestIDMiddleware(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            requestID := uuid.New().String()
+            ctx := context.WithValue(r.Context(), requestIDKey, requestID)
+
+            // Add request ID to all logs
+            logger := slog.With(slog.String("request_id", requestID))
+            ctx = context.WithValue(ctx, "logger", logger)
+
+            next.ServeHTTP(w, r.WithContext(ctx))
+        })
+    }
+
+    // Use in handlers
+    func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request) {
+        logger := r.Context().Value("logger").(*slog.Logger)
+        logger.Info("getting movie", slog.String("id", r.PathValue("id")))
+        // ...
+    }
+    ```
+
+grafana_dashboards:
+  http_dashboard:
+    title: HTTP Request Metrics
+    panels:
+      - panel: Request Rate
+        query: rate(revenge_http_requests_total[5m])
+        type: Graph
+        description: Requests per second by endpoint
+
+      - panel: Error Rate
+        query: rate(revenge_http_requests_total{status=~"5.."}[5m])
+        type: Graph
+        description: 5xx errors per second
+
+      - panel: Request Latency (p95)
+        query: histogram_quantile(0.95, revenge_http_request_duration_seconds_bucket)
+        type: Graph
+        description: 95th percentile request duration
+
+      - panel: Request Latency (p50)
+        query: histogram_quantile(0.50, revenge_http_request_duration_seconds_bucket)
+        type: Graph
+        description: Median request duration
+
+  database_dashboard:
+    title: Database Metrics
+    panels:
+      - panel: Query Rate
+        query: rate(revenge_db_queries_total[5m])
+        type: Graph
+
+      - panel: Query Duration
+        query: histogram_quantile(0.95, revenge_db_query_duration_seconds_bucket)
+        type: Graph
+
+      - panel: Connection Pool
+        query: revenge_db_connections{state="active"}
+        type: Gauge
+
+  cache_dashboard:
+    title: Cache Metrics
+    panels:
+      - panel: Cache Hit Rate
+        query: rate(revenge_cache_hits_total[5m]) / (rate(revenge_cache_hits_total[5m]) + rate(revenge_cache_misses_total[5m]))
+        type: Graph
+
+      - panel: Cache Operations
+        query: rate(revenge_cache_hits_total[5m])
+        type: Graph
+
+  background_jobs_dashboard:
+    title: Background Jobs
+    panels:
+      - panel: Job Processing Rate
+        query: rate(revenge_background_jobs_total{status="completed"}[5m])
+        type: Graph
+
+      - panel: Job Failures
+        query: rate(revenge_background_jobs_total{status="failed"}[5m])
+        type: Graph
+
+      - panel: Job Duration
+        query: histogram_quantile(0.95, revenge_background_job_duration_seconds_bucket)
+        type: Graph
+
+alerting_rules:
+  high_error_rate:
+    alert: HighHTTPErrorRate
+    expr: rate(revenge_http_requests_total{status=~"5.."}[5m]) > 0.05
+    duration: 5m
+    severity: critical
+    description: HTTP 5xx error rate above 5%
+
+  slow_requests:
+    alert: SlowHTTPRequests
+    expr: histogram_quantile(0.95, revenge_http_request_duration_seconds_bucket) > 2
+    duration: 10m
+    severity: warning
+    description: 95th percentile request latency above 2 seconds
+
+  database_slow_queries:
+    alert: SlowDatabaseQueries
+    expr: histogram_quantile(0.95, revenge_db_query_duration_seconds_bucket) > 1
+    duration: 5m
+    severity: warning
+    description: Database queries taking longer than 1 second
+
+  cache_low_hit_rate:
+    alert: LowCacheHitRate
+    expr: rate(revenge_cache_hits_total[5m]) / (rate(revenge_cache_hits_total[5m]) + rate(revenge_cache_misses_total[5m])) < 0.7
+    duration: 15m
+    severity: warning
+    description: Cache hit rate below 70%
+
+  background_job_failures:
+    alert: HighBackgroundJobFailures
+    expr: rate(revenge_background_jobs_total{status="failed"}[5m]) > 0.1
+    duration: 10m
+    severity: critical
+    description: Background job failure rate above 10%
+
+best_practices:
+  - practice: Use structured logging with slog
+    reason: Easy parsing and querying in Loki
+
+  - practice: Add context to all log messages
+    reason: Request ID, user ID for correlation
+
+  - practice: Instrument all HTTP handlers
+    reason: Track request rates and latencies
+
+  - practice: Trace slow operations
+    reason: Identify bottlenecks with distributed tracing
+
+  - practice: Use meaningful metric names
+    reason: Follow Prometheus naming conventions
+
+  - practice: Add labels sparingly
+    reason: High cardinality causes memory issues
+
+  - practice: Set appropriate histogram buckets
+    reason: Match expected latency distribution
+
+  - practice: Monitor cache hit rates
+    reason: Optimize caching strategy
+
+  - practice: Alert on error rates, not individual errors
+    reason: Reduce alert fatigue
+
+  - practice: Use Grafana dashboards for visualization
+    reason: Real-time monitoring and troubleshooting

@@ -1,0 +1,592 @@
+doc_title: Electronic Program Guide (EPG) Service
+doc_category: service
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete EPG service design
+status_sources: ✅
+status_sources_notes: XMLTV and Live TV sources documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+
+technical_summary: |-
+  > TV program schedule and guide data management service
+
+  EPG capabilities:
+  - **Format**: XMLTV standard for program data
+  - **Sources**: TVHeadend, NextPVR, ErsatzTV integration
+  - **Refresh**: Automatic scheduled updates every 6 hours
+  - **Search**: Full-text search via Typesense for programs
+  - **Cache**: Dragonfly cache for frequently accessed schedules
+  - **API**: RESTful endpoints for channel listings and program queries
+
+wiki_tagline: |-
+  > TV program schedules and guide data for Live TV and DVR
+
+wiki_overview: |-
+  The Electronic Program Guide (EPG) Service provides comprehensive TV program schedule information for Live TV and DVR functionality. Fetches guide data from multiple sources in XMLTV format, indexes programs for fast search, and delivers schedule information via REST API. Automatic refresh keeps guide data current. Supports filtering by channel, genre, time range, and full-text search across program titles and descriptions.
+
+sources:
+  - name: XMLTV Format
+    url: http://wiki.xmltv.org/index.php/XMLTVFormat
+    note: EPG data format standard
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Full-text search for programs
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Scheduled EPG refresh jobs
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Dependency injection
+
+design_refs:
+  - title: services
+    path: services.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: LIVE_TV_DVR
+    path: features/livetv/LIVE_TV_DVR.md
+  - title: TVHEADEND
+    path: integrations/livetv/TVHEADEND.md
+  - title: NEXTPVR
+    path: integrations/livetv/NEXTPVR.md
+  - title: ERSATZTV
+    path: integrations/livetv/ERSATZTV.md
+
+service_name: EPG Service
+package_path: internal/service/epg
+fx_module: epg.Module
+
+epg_sources:
+  tvheadend:
+    name: TVHeadend
+    endpoint: http://tvheadend:9981/xmltv
+    format: XMLTV
+    refresh_interval: 6 hours
+    supports:
+      - Channel listings
+      - Program schedules
+      - Episode metadata
+      - Series information
+    authentication: HTTP Basic Auth
+
+  nextpvr:
+    name: NextPVR
+    endpoint: http://nextpvr:8866/service
+    format: XMLTV via API
+    refresh_interval: 6 hours
+    supports:
+      - Channel guide
+      - Program metadata
+      - Recording schedules
+    authentication: API Key
+
+  ersatztv:
+    name: ErsatzTV
+    endpoint: http://ersatztv:8409/api/xmltv
+    format: XMLTV
+    refresh_interval: 12 hours
+    supports:
+      - Virtual channel lineups
+      - Custom schedules
+      - Program metadata
+    authentication: None (local)
+
+xmltv_format:
+  structure: |-
+    ```xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <tv generator-info-name="TVHeadend">
+      <channel id="channel-1">
+        <display-name>HBO</display-name>
+        <icon src="http://example.com/hbo.png"/>
+      </channel>
+      
+      <programme start="20260131180000 +0000" stop="20260131190000 +0000" channel="channel-1">
+        <title lang="en">Game of Thrones</title>
+        <sub-title lang="en">Winter Is Coming</sub-title>
+        <desc lang="en">Eddard Stark is torn between his family and an old friend...</desc>
+        <category lang="en">Drama</category>
+        <category lang="en">Fantasy</category>
+        <episode-num system="onscreen">S01E01</episode-num>
+        <episode-num system="xmltv_ns">0.0.0/1</episode-num>
+        <icon src="http://example.com/got-s01e01.jpg"/>
+        <rating system="MPAA">
+          <value>TV-MA</value>
+        </rating>
+      </programme>
+    </tv>
+    ```
+
+  fields:
+    - field: channel
+      description: Channel metadata (ID, display name, icon)
+      required: true
+    - field: programme
+      description: Program entry with schedule and metadata
+      required: true
+    - field: title
+      description: Program title
+      required: true
+    - field: sub-title
+      description: Episode title
+      required: false
+    - field: desc
+      description: Program description
+      required: false
+    - field: category
+      description: Genre classifications
+      required: false
+    - field: episode-num
+      description: Episode numbering (supports multiple systems)
+      required: false
+    - field: icon
+      description: Poster/thumbnail URL
+      required: false
+    - field: rating
+      description: Content rating
+      required: false
+
+database_schema: |-
+  ```sql
+  -- EPG channels
+  CREATE TABLE epg_channels (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    source VARCHAR(50) NOT NULL, -- 'tvheadend', 'nextpvr', 'ersatztv'
+    external_id VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    icon_url VARCHAR(500),
+    number INTEGER,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    CONSTRAINT epg_channels_source_external_unique UNIQUE(source, external_id)
+  );
+
+  -- EPG programs
+  CREATE TABLE epg_programs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    channel_id UUID NOT NULL REFERENCES epg_channels(id) ON DELETE CASCADE,
+    
+    title VARCHAR(500) NOT NULL,
+    subtitle VARCHAR(500),
+    description TEXT,
+    
+    start_time TIMESTAMPTZ NOT NULL,
+    stop_time TIMESTAMPTZ NOT NULL,
+    
+    -- Episode numbering
+    season_number INTEGER,
+    episode_number INTEGER,
+    episode_onscreen VARCHAR(50), -- "S01E01"
+    
+    -- Metadata
+    categories TEXT[], -- ['Drama', 'Fantasy']
+    poster_url VARCHAR(500),
+    rating VARCHAR(50), -- 'TV-MA', 'PG-13'
+    
+    -- Search optimization
+    search_vector tsvector GENERATED ALWAYS AS (
+      setweight(to_tsvector('english', coalesce(title, '')), 'A') ||
+      setweight(to_tsvector('english', coalesce(subtitle, '')), 'B') ||
+      setweight(to_tsvector('english', coalesce(description, '')), 'C')
+    ) STORED,
+    
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    CONSTRAINT epg_programs_channel_time_unique UNIQUE(channel_id, start_time)
+  );
+
+  -- Indexes
+  CREATE INDEX idx_epg_channels_source ON epg_channels(source);
+  CREATE INDEX idx_epg_programs_channel_id ON epg_programs(channel_id);
+  CREATE INDEX idx_epg_programs_time_range ON epg_programs(start_time, stop_time);
+  CREATE INDEX idx_epg_programs_search ON epg_programs USING GIN(search_vector);
+  CREATE INDEX idx_epg_programs_categories ON epg_programs USING GIN(categories);
+  ```
+
+epg_refresh_pipeline:
+  scheduled_job: |-
+    ```go
+    type RefreshEPGArgs struct {
+        Source string `json:"source"` // 'tvheadend', 'nextpvr', 'ersatztv'
+    }
+
+    func (s *EPGService) ScheduleRefresh(ctx context.Context) error {
+        sources := []string{"tvheadend", "nextpvr", "ersatztv"}
+        
+        for _, source := range sources {
+            _, err := s.riverClient.InsertMany(ctx, []river.InsertManyParams{
+                {
+                    Args: &RefreshEPGArgs{Source: source},
+                    ScheduledAt: time.Now().Add(s.getRefreshInterval(source)),
+                },
+            })
+            if err != nil {
+                return err
+            }
+        }
+        
+        return nil
+    }
+    ```
+
+  worker_implementation: |-
+    ```go
+    type RefreshEPGWorker struct {
+        river.WorkerDefaults[RefreshEPGArgs]
+        epgService *EPGService
+    }
+
+    func (w *RefreshEPGWorker) Work(ctx context.Context, job *river.Job[RefreshEPGArgs]) error {
+        slog.Info("refreshing EPG data", "source", job.Args.Source)
+        
+        // Fetch XMLTV data from source
+        xmltvData, err := w.epgService.FetchXMLTV(ctx, job.Args.Source)
+        if err != nil {
+            return fmt.Errorf("fetch xmltv: %w", err)
+        }
+        
+        // Parse XMLTV
+        guide, err := w.epgService.ParseXMLTV(xmltvData)
+        if err != nil {
+            return fmt.Errorf("parse xmltv: %w", err)
+        }
+        
+        // Update database
+        err = w.epgService.UpdateGuideData(ctx, job.Args.Source, guide)
+        if err != nil {
+            return fmt.Errorf("update guide data: %w", err)
+        }
+        
+        // Index in Typesense for search
+        err = w.epgService.IndexPrograms(ctx, guide.Programs)
+        if err != nil {
+            slog.Warn("failed to index programs", "error", err)
+            // Don't fail job if search indexing fails
+        }
+        
+        // Schedule next refresh
+        _, err = w.epgService.riverClient.Insert(ctx, &RefreshEPGArgs{
+            Source: job.Args.Source,
+        }, &river.InsertOpts{
+            ScheduledAt: time.Now().Add(w.epgService.getRefreshInterval(job.Args.Source)),
+        })
+        
+        return err
+    }
+    ```
+
+  xmltv_parsing: |-
+    ```go
+    type XMLTVGuide struct {
+        Channels []XMLTVChannel  `xml:"channel"`
+        Programs []XMLTVProgram  `xml:"programme"`
+    }
+
+    func (s *EPGService) ParseXMLTV(data []byte) (*XMLTVGuide, error) {
+        var guide XMLTVGuide
+        err := xml.Unmarshal(data, &guide)
+        if err != nil {
+            return nil, fmt.Errorf("unmarshal xmltv: %w", err)
+        }
+        
+        return &guide, nil
+    }
+
+    func (s *EPGService) UpdateGuideData(ctx context.Context, source string, guide *XMLTVGuide) error {
+        tx, err := s.db.Begin(ctx)
+        if err != nil {
+            return err
+        }
+        defer tx.Rollback(ctx)
+        
+        // Upsert channels
+        for _, channel := range guide.Channels {
+            _, err = s.repo.UpsertChannel(ctx, tx, source, &channel)
+            if err != nil {
+                return err
+            }
+        }
+        
+        // Delete old programs (older than 24 hours)
+        err = s.repo.DeleteOldPrograms(ctx, tx, time.Now().Add(-24*time.Hour))
+        if err != nil {
+            return err
+        }
+        
+        // Insert new programs
+        for _, program := range guide.Programs {
+            _, err = s.repo.InsertProgram(ctx, tx, &program)
+            if err != nil {
+                // Skip duplicates
+                if errors.Is(err, ErrProgramExists) {
+                    continue
+                }
+                return err
+            }
+        }
+        
+        return tx.Commit(ctx)
+    }
+    ```
+
+search_integration:
+  typesense_schema: |-
+    ```go
+    func (s *EPGService) CreateSearchSchema(ctx context.Context) error {
+        schema := &api.CollectionSchema{
+            Name: "epg_programs",
+            Fields: []api.Field{
+                {Name: "id", Type: "string"},
+                {Name: "channel_id", Type: "string"},
+                {Name: "channel_name", Type: "string", Facet: ptr.Bool(true)},
+                {Name: "title", Type: "string"},
+                {Name: "subtitle", Type: "string", Optional: ptr.Bool(true)},
+                {Name: "description", Type: "string", Optional: ptr.Bool(true)},
+                {Name: "categories", Type: "string[]", Facet: ptr.Bool(true)},
+                {Name: "start_time", Type: "int64"}, // Unix timestamp
+                {Name: "stop_time", Type: "int64"},
+                {Name: "rating", Type: "string", Facet: ptr.Bool(true), Optional: ptr.Bool(true)},
+            },
+            DefaultSortingField: ptr.String("start_time"),
+        }
+        
+        _, err := s.typesense.Collections().Create(schema)
+        return err
+    }
+    ```
+
+  search_query: |-
+    ```go
+    func (s *EPGService) SearchPrograms(ctx context.Context, query string, filters EPGFilters) ([]Program, error) {
+        searchParams := &api.SearchCollectionParams{
+            Q:       query,
+            QueryBy: "title,subtitle,description",
+            FilterBy: ptr.String(s.buildFilterString(filters)),
+            PerPage:  ptr.Int(50),
+            SortBy:   ptr.String("start_time:asc"),
+        }
+        
+        results, err := s.typesense.Collection("epg_programs").Documents().Search(searchParams)
+        if err != nil {
+            return nil, err
+        }
+        
+        return s.convertSearchResults(results), nil
+    }
+
+    func (s *EPGService) buildFilterString(filters EPGFilters) string {
+        var parts []string
+        
+        if filters.ChannelID != uuid.Nil {
+            parts = append(parts, fmt.Sprintf("channel_id:=%s", filters.ChannelID))
+        }
+        
+        if len(filters.Categories) > 0 {
+            categories := strings.Join(filters.Categories, ",")
+            parts = append(parts, fmt.Sprintf("categories:[%s]", categories))
+        }
+        
+        if !filters.StartAfter.IsZero() {
+            parts = append(parts, fmt.Sprintf("start_time:>=%d", filters.StartAfter.Unix()))
+        }
+        
+        if !filters.StopBefore.IsZero() {
+            parts = append(parts, fmt.Sprintf("stop_time:<=%d", filters.StopBefore.Unix()))
+        }
+        
+        return strings.Join(parts, " && ")
+    }
+    ```
+
+caching_strategy:
+  cache_keys:
+    - key: "epg:channel:{channel_id}:schedule:{date}"
+      description: Daily schedule for a specific channel
+      ttl: 1 hour
+    - key: "epg:program:{program_id}"
+      description: Individual program details
+      ttl: 6 hours
+    - key: "epg:channels:all"
+      description: List of all channels
+      ttl: 24 hours
+
+  cache_implementation: |-
+    ```go
+    func (s *EPGService) GetChannelSchedule(ctx context.Context, channelID uuid.UUID, date time.Time) ([]Program, error) {
+        cacheKey := fmt.Sprintf("epg:channel:%s:schedule:%s", channelID, date.Format("2006-01-02"))
+        
+        // Try cache first
+        cached, err := s.cache.Do(ctx, s.cache.B().Get().Key(cacheKey).Build()).ToString()
+        if err == nil {
+            var programs []Program
+            json.Unmarshal([]byte(cached), &programs)
+            return programs, nil
+        }
+        
+        // Cache miss, query database
+        startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+        endOfDay := startOfDay.Add(24 * time.Hour)
+        
+        programs, err := s.repo.GetProgramsByChannelAndTimeRange(ctx, channelID, startOfDay, endOfDay)
+        if err != nil {
+            return nil, err
+        }
+        
+        // Store in cache
+        data, _ := json.Marshal(programs)
+        s.cache.Do(ctx, s.cache.B().Set().Key(cacheKey).Value(string(data)).Ex(1*time.Hour).Build())
+        
+        return programs, nil
+    }
+    ```
+
+api_endpoints:
+  - method: GET
+    path: /api/v1/epg/channels
+    description: List all EPG channels
+    response: |-
+      {
+        "channels": [
+          {
+            "id": "uuid-123",
+            "display_name": "HBO",
+            "number": 501,
+            "icon_url": "http://example.com/hbo.png"
+          }
+        ]
+      }
+
+  - method: GET
+    path: /api/v1/epg/channels/{id}/schedule
+    description: Get channel schedule
+    query_params:
+      - "date (optional): Date for schedule (default: today)"
+      - "days (optional): Number of days (default: 1, max: 7)"
+    response: |-
+      {
+        "channel_id": "uuid-123",
+        "date": "2026-01-31",
+        "programs": [
+          {
+            "id": "uuid-456",
+            "title": "Game of Thrones",
+            "subtitle": "Winter Is Coming",
+            "start_time": "2026-01-31T18:00:00Z",
+            "stop_time": "2026-01-31T19:00:00Z",
+            "categories": ["Drama", "Fantasy"]
+          }
+        ]
+      }
+
+  - method: GET
+    path: /api/v1/epg/programs/{id}
+    description: Get program details
+    response: |-
+      {
+        "id": "uuid-456",
+        "title": "Game of Thrones",
+        "subtitle": "Winter Is Coming",
+        "description": "Eddard Stark is torn between...",
+        "start_time": "2026-01-31T18:00:00Z",
+        "stop_time": "2026-01-31T19:00:00Z",
+        "season_number": 1,
+        "episode_number": 1,
+        "categories": ["Drama", "Fantasy"],
+        "rating": "TV-MA",
+        "poster_url": "http://example.com/got.jpg"
+      }
+
+  - method: GET
+    path: /api/v1/epg/search
+    description: Search EPG programs
+    query_params:
+      - "q: Search query"
+      - "channel_id (optional): Filter by channel"
+      - "categories (optional): Comma-separated genre list"
+      - "start_after (optional): ISO 8601 timestamp"
+      - "stop_before (optional): ISO 8601 timestamp"
+    response: |-
+      {
+        "results": [
+          {
+            "id": "uuid-456",
+            "title": "Game of Thrones",
+            "channel_name": "HBO",
+            "start_time": "2026-01-31T18:00:00Z"
+          }
+        ],
+        "total": 1
+      }
+
+  - method: POST
+    path: /api/v1/epg/refresh
+    description: Trigger EPG refresh (admin only)
+    auth_required: true
+    request: |-
+      {
+        "source": "tvheadend"
+      }
+    response: |-
+      {
+        "job_id": "uuid-789",
+        "status": "queued"
+      }
+
+  - method: GET
+    path: /api/v1/epg/stats
+    description: Get EPG statistics
+    response: |-
+      {
+        "total_channels": 150,
+        "total_programs": 12543,
+        "oldest_program": "2026-01-30T00:00:00Z",
+        "newest_program": "2026-02-07T23:59:59Z",
+        "last_refresh": {
+          "tvheadend": "2026-01-31T12:00:00Z",
+          "nextpvr": "2026-01-31T11:30:00Z"
+        }
+      }
+
+best_practices:
+  - practice: Refresh EPG data regularly
+    reason: Keep program schedules up to date
+
+  - practice: Delete old programs (>24 hours past)
+    reason: Prevent database bloat with historical data
+
+  - practice: Cache daily schedules
+    reason: Reduce database load for frequent queries
+
+  - practice: Use Typesense for search
+    reason: Fast full-text search across programs
+
+  - practice: Index programs after refresh
+    reason: Ensure search results are current
+
+  - practice: Handle XMLTV parsing errors gracefully
+    reason: Don't fail entire refresh on one bad entry
+
+  - practice: Support multiple EPG sources
+    reason: Redundancy and coverage across providers
+
+  - practice: Validate channel/program uniqueness
+    reason: Avoid duplicate entries
+
+  - practice: Use PostgreSQL full-text search as fallback
+    reason: If Typesense unavailable
+
+  - practice: Monitor refresh job failures
+    reason: Alert when EPG data becomes stale

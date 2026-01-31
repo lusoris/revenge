@@ -1,0 +1,53 @@
+# Auto-generated YAML from docs/dev/design/03_DESIGN_DOCS_STATUS.md
+# Migration Date: 2026-01-31
+#
+# TODO: Complete the PLACEHOLDER fields below
+# TODO: Review auto-resolved sources and design_refs
+# TODO: Add feature/service/integration-specific fields as needed
+
+doc_title: Design Documentation Status
+doc_category: other
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: '-'
+technical_summary: 'PLACEHOLDER: Brief technical summary'
+wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
+wiki_overview: 'PLACEHOLDER: User-friendly overview'
+sources:
+- name: Authelia Documentation
+  url: https://www.authelia.com/overview/
+  note: Auto-resolved from authelia
+- name: Authentik Documentation
+  url: https://goauthentik.io/docs/
+  note: Auto-resolved from authentik
+- name: Casbin
+  url: https://pkg.go.dev/github.com/casbin/casbin/v2
+  note: Auto-resolved from casbin
+- name: Dragonfly Documentation
+  url: https://www.dragonflydb.io/docs
+  note: Auto-resolved from dragonfly
+- name: Keycloak Documentation
+  url: https://www.keycloak.org/documentation
+  note: Auto-resolved from keycloak
+- name: Last.fm API
+  url: https://www.last.fm/api/intro
+  note: Auto-resolved from lastfm-api
+- name: pgx PostgreSQL Driver
+  url: https://pkg.go.dev/github.com/jackc/pgx/v5
+  note: Auto-resolved from pgx
+- name: PostgreSQL Arrays
+  url: https://www.postgresql.org/docs/current/arrays.html
+  note: Auto-resolved from postgresql-arrays
+- name: PostgreSQL JSON Functions
+  url: https://www.postgresql.org/docs/current/functions-json.html
+  note: Auto-resolved from postgresql-json
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: Typesense API
+  url: https://typesense.org/docs/latest/api/
+  note: Auto-resolved from typesense
+- name: Typesense Go Client
+  url: https://github.com/typesense/typesense-go
+  note: Auto-resolved from typesense-go

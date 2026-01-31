@@ -1,0 +1,592 @@
+doc_title: Webhooks
+doc_category: technical
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete webhook system design
+status_sources: ✅
+status_sources_notes: All webhook tools documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Bidirectional webhook system for integrations and event notifications
+
+  Complete webhook infrastructure:
+  - **Incoming**: Receive events from Radarr, Sonarr, Lidarr, Whisparr, Stash
+  - **Outgoing**: Send events to Discord, Slack, custom endpoints
+  - **Security**: HMAC SHA-256 signature verification
+  - **Reliability**: Exponential backoff retries via River queue
+  - **Events**: 30+ event types for all content changes
+
+wiki_tagline: |-
+  > Real-time event integration with external services
+
+wiki_overview: |-
+  The Webhook System enables bidirectional event-driven integration. Receive webhooks from Arr services (Radarr, Sonarr, Lidarr, Whisparr) to automatically sync new downloads and metadata updates. Send webhooks to Discord, Slack, or custom endpoints for notifications and automation. All webhooks use HMAC signatures for security and are queued via River for reliable delivery with automatic retries.
+
+sources:
+- name: Radarr API Docs
+  url: https://radarr.video/docs/api/
+  note: Auto-resolved from radarr-docs
+- name: Sonarr API Docs
+  url: https://sonarr.tv/docs/api/
+  note: Auto-resolved from sonarr-docs
+- name: Lidarr API Docs
+  url: https://lidarr.audio/docs/api/
+  note: Auto-resolved from lidarr-docs
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: Uber fx
+  url: https://pkg.go.dev/go.uber.org/fx
+  note: Auto-resolved from fx
+
+design_refs:
+- title: technical
+  path: technical.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: WEBHOOK_PATTERNS
+  path: patterns/WEBHOOK_PATTERNS.md
+- title: ARR_INTEGRATION
+  path: patterns/ARR_INTEGRATION.md
+- title: NOTIFICATIONS
+  path: technical/NOTIFICATIONS.md
+
+webhook_types:
+  incoming:
+    description: Webhooks received from external services
+    sources:
+      - Radarr (movie downloads)
+      - Sonarr (TV episode downloads)
+      - Lidarr (album downloads)
+      - Whisparr (QAR content downloads)
+      - Stash-App (QAR metadata updates)
+    use_cases:
+      - Auto-import downloaded content
+      - Sync metadata updates
+      - Trigger background enrichment jobs
+      - Invalidate caches
+
+  outgoing:
+    description: Webhooks sent to external services
+    targets:
+      - Discord (via webhook URL)
+      - Slack (via webhook URL)
+      - Custom HTTP endpoints
+      - Automation platforms (n8n, Make, Zapier)
+    use_cases:
+      - Notify new content available
+      - Alert server errors
+      - Integration with home automation
+      - Custom workflows
+
+incoming_webhook_endpoints:
+  arr_webhooks:
+    - service: Radarr
+      endpoint: POST /api/v1/webhooks/radarr
+      events:
+        - Download
+        - Upgrade
+        - Rename
+        - MovieDelete
+        - Health
+      auth: Optional API key or webhook secret
+
+    - service: Sonarr
+      endpoint: POST /api/v1/webhooks/sonarr
+      events:
+        - Download
+        - Upgrade
+        - Rename
+        - SeriesDelete
+        - EpisodeFileDelete
+        - Health
+      auth: Optional API key or webhook secret
+
+    - service: Lidarr
+      endpoint: POST /api/v1/webhooks/lidarr
+      events:
+        - AlbumDownload
+        - AlbumUpgrade
+        - TrackRetag
+        - ArtistDelete
+        - Health
+      auth: Optional API key or webhook secret
+
+    - service: Whisparr
+      endpoint: POST /api/v1/webhooks/whisparr
+      events:
+        - Download
+        - Upgrade
+        - MovieDelete
+        - Health
+      auth: Optional API key or webhook secret
+
+  other_webhooks:
+    - service: Stash-App
+      endpoint: POST /api/v1/webhooks/stash
+      events:
+        - scene.created
+        - scene.updated
+        - performer.created
+        - performer.updated
+      auth: Webhook secret (HMAC)
+
+incoming_webhook_processing: |
+  **Standard Processing Pipeline**:
+
+  ```go
+  // Webhook handler pattern
+  func (h *WebhookHandler) HandleRadarrWebhook(ctx context.Context, req *RadarrWebhookRequest) error {
+      // 1. Validate signature (if configured)
+      if err := h.validateSignature(req); err != nil {
+          return ErrUnauthorized
+      }
+
+      // 2. Parse and validate payload
+      event, err := h.parseRadarrEvent(req.Body)
+      if err != nil {
+          return fmt.Errorf("parse event: %w", err)
+      }
+
+      // 3. Process synchronously (fast operations only)
+      switch event.EventType {
+      case "Download":
+          // Quick database insert
+          if err := h.movieRepo.Upsert(ctx, event.Movie); err != nil {
+              return err
+          }
+
+          // 4. Queue background jobs for slow operations
+          _, err = h.riverClient.Insert(ctx, &EnrichMovieMetadataArgs{
+              MovieID: event.Movie.ID,
+          }, nil)
+          if err != nil {
+              slog.Error("failed to queue enrichment", "error", err)
+              // Don't fail webhook on queue error
+          }
+
+          // 5. Invalidate caches
+          h.cache.Delete(ctx, fmt.Sprintf("movie:%s", event.Movie.ID))
+
+          // 6. Trigger outgoing webhooks
+          h.sendOutgoingWebhook(ctx, "content.new_movie", event.Movie)
+
+      case "MovieDelete":
+          if err := h.movieRepo.Delete(ctx, event.Movie.ID); err != nil {
+              return err
+          }
+          h.cache.Delete(ctx, fmt.Sprintf("movie:%s", event.Movie.ID))
+      }
+
+      return nil
+  }
+  ```
+
+outgoing_webhook_configuration:
+  database_schema: |
+    ```sql
+    CREATE TABLE webhooks (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      url TEXT NOT NULL,
+      secret TEXT NOT NULL, -- For HMAC signature
+      events TEXT[] NOT NULL, -- Array of event types to subscribe
+      enabled BOOLEAN DEFAULT TRUE,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE INDEX idx_webhooks_user ON webhooks(user_id);
+    CREATE INDEX idx_webhooks_enabled ON webhooks(enabled) WHERE enabled = TRUE;
+
+    -- Webhook delivery log
+    CREATE TABLE webhook_deliveries (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      webhook_id UUID REFERENCES webhooks(id) ON DELETE CASCADE,
+      event_type TEXT NOT NULL,
+      payload JSONB NOT NULL,
+      status_code INTEGER,
+      status TEXT NOT NULL, -- pending, success, failed, retrying
+      attempt INTEGER DEFAULT 1,
+      response_body TEXT,
+      delivered_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE INDEX idx_webhook_deliveries_webhook ON webhook_deliveries(webhook_id, created_at DESC);
+    CREATE INDEX idx_webhook_deliveries_status ON webhook_deliveries(status, created_at);
+    ```
+
+  management_api:
+    - method: GET
+      path: /api/v1/webhooks
+      description: List user's webhooks
+    - method: POST
+      path: /api/v1/webhooks
+      description: Create webhook
+      body: |
+        {
+          "name": "Discord Notifications",
+          "url": "https://discord.com/api/webhooks/...",
+          "secret": "randomly-generated-secret",
+          "events": ["content.new_movie", "content.new_episode"]
+        }
+    - method: PUT
+      path: /api/v1/webhooks/:id
+      description: Update webhook
+    - method: DELETE
+      path: /api/v1/webhooks/:id
+      description: Delete webhook
+    - method: POST
+      path: /api/v1/webhooks/:id/test
+      description: Send test webhook
+    - method: GET
+      path: /api/v1/webhooks/:id/deliveries
+      description: Get delivery history
+
+event_schema:
+  standard_format: |
+    ```json
+    {
+      "id": "uuid-here",
+      "event": "content.new_movie",
+      "timestamp": "2026-01-31T12:00:00Z",
+      "server": {
+        "name": "My Revenge Server",
+        "url": "https://revenge.example.com"
+      },
+      "data": {
+        "id": "movie-uuid",
+        "title": "The Matrix",
+        "year": 1999,
+        "tmdb_id": 603,
+        "added_at": "2026-01-31T12:00:00Z"
+      }
+    }
+    ```
+
+  event_types:
+    content_events:
+      - event: content.new_movie
+        description: New movie added to library
+        data_fields: [id, title, year, tmdb_id, added_at]
+      - event: content.new_episode
+        description: New TV episode added
+        data_fields: [id, series_id, season, episode, title, air_date]
+      - event: content.new_album
+        description: New music album added
+        data_fields: [id, artist, title, release_date]
+      - event: content.updated
+        description: Content metadata updated
+        data_fields: [id, content_type, updated_fields]
+      - event: content.deleted
+        description: Content removed from library
+        data_fields: [id, content_type, title]
+
+    user_events:
+      - event: user.registered
+        description: New user registered
+        data_fields: [id, username, email]
+      - event: user.login
+        description: User logged in
+        data_fields: [id, username, ip_address]
+      - event: user.password_changed
+        description: User changed password
+        data_fields: [id, username]
+
+    playback_events:
+      - event: playback.started
+        description: User started playback
+        data_fields: [user_id, content_id, content_type]
+      - event: playback.stopped
+        description: User stopped playback
+        data_fields: [user_id, content_id, position, duration]
+      - event: playback.completed
+        description: User finished content
+        data_fields: [user_id, content_id, watch_time]
+
+    server_events:
+      - event: server.started
+        description: Server started
+        data_fields: [version, uptime]
+      - event: server.error
+        description: Server error occurred
+        data_fields: [error_message, component, severity]
+      - event: server.storage_warning
+        description: Low disk space
+        data_fields: [used_percent, available_gb]
+
+    integration_events:
+      - event: integration.arr_download
+        description: Arr service downloaded content
+        data_fields: [arr_service, content_title, quality]
+      - event: integration.metadata_updated
+        description: Metadata refreshed from external source
+        data_fields: [content_id, source, updated_fields]
+
+security:
+  hmac_signatures:
+    algorithm: HMAC-SHA256
+    header_name: X-Revenge-Signature
+    format: sha256=<hex-encoded-hash>
+
+    generation: |
+      ```go
+      import (
+          "crypto/hmac"
+          "crypto/sha256"
+          "encoding/hex"
+      )
+
+      func generateSignature(payload []byte, secret string) string {
+          h := hmac.New(sha256.New, []byte(secret))
+          h.Write(payload)
+          return "sha256=" + hex.EncodeToString(h.Sum(nil))
+      }
+      ```
+
+    verification: |
+      ```go
+      func verifySignature(payload []byte, signature, secret string) bool {
+          expected := generateSignature(payload, secret)
+          return hmac.Equal([]byte(signature), []byte(expected))
+      }
+
+      // In webhook handler
+      func (h *WebhookHandler) HandleIncoming(ctx context.Context, req *http.Request) error {
+          body, _ := io.ReadAll(req.Body)
+          signature := req.Header.Get("X-Revenge-Signature")
+
+          if !verifySignature(body, signature, h.webhookSecret) {
+              return ErrInvalidSignature
+          }
+
+          // Process webhook...
+      }
+      ```
+
+  incoming_webhook_security:
+    - Validate webhook source (IP whitelist optional)
+    - Verify HMAC signature if secret configured
+    - Rate limit webhook endpoints
+    - Log all webhook attempts
+    - Reject malformed payloads
+
+  outgoing_webhook_security:
+    - Always send HMAC signature
+    - Use HTTPS for webhook URLs
+    - Redact sensitive data from payloads
+    - Respect user privacy preferences
+    - Don't expose internal IDs/paths
+
+delivery_reliability:
+  queue_system: River job queue
+
+  job_definition: |
+    ```go
+    type SendWebhookArgs struct {
+        WebhookID  uuid.UUID      `json:"webhook_id"`
+        EventType  string         `json:"event_type"`
+        Payload    map[string]any `json:"payload"`
+    }
+
+    type SendWebhookWorker struct {
+        river.WorkerDefaults[SendWebhookArgs]
+        webhookRepo WebhookRepository
+        httpClient  *http.Client
+    }
+
+    func (w *SendWebhookWorker) Work(ctx context.Context, job *river.Job[SendWebhookArgs]) error {
+        // Get webhook configuration
+        webhook, err := w.webhookRepo.GetByID(ctx, job.Args.WebhookID)
+        if err != nil {
+            return err
+        }
+
+        if !webhook.Enabled {
+            return river.JobCancel(fmt.Errorf("webhook disabled"))
+        }
+
+        // Build payload
+        payload := map[string]any{
+            "id":        uuid.New().String(),
+            "event":     job.Args.EventType,
+            "timestamp": time.Now().UTC().Format(time.RFC3339),
+            "data":      job.Args.Payload,
+        }
+
+        payloadBytes, _ := json.Marshal(payload)
+
+        // Generate signature
+        signature := generateSignature(payloadBytes, webhook.Secret)
+
+        // Send HTTP POST
+        req, _ := http.NewRequestWithContext(ctx, "POST", webhook.URL, bytes.NewReader(payloadBytes))
+        req.Header.Set("Content-Type", "application/json")
+        req.Header.Set("X-Revenge-Event", job.Args.EventType)
+        req.Header.Set("X-Revenge-Signature", signature)
+        req.Header.Set("X-Revenge-Delivery", uuid.New().String())
+        req.Header.Set("User-Agent", "Revenge-Webhook/1.0")
+
+        resp, err := w.httpClient.Do(req)
+        if err != nil {
+            return fmt.Errorf("http request: %w", err)
+        }
+        defer resp.Body.Close()
+
+        // Log delivery
+        w.logDelivery(ctx, webhook.ID, job.Args.EventType, resp.StatusCode, payload)
+
+        // Check response
+        if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+            return nil // Success
+        }
+
+        if resp.StatusCode >= 500 {
+            return fmt.Errorf("server error: %d", resp.StatusCode) // Retry
+        }
+
+        // 4xx errors are permanent, don't retry
+        return river.JobCancel(fmt.Errorf("client error: %d", resp.StatusCode))
+    }
+    ```
+
+  retry_configuration:
+    max_attempts: 5
+    backoff: Exponential with jitter
+    delays:
+      - attempt: 1
+        delay: 1 minute
+      - attempt: 2
+        delay: 5 minutes
+      - attempt: 3
+        delay: 15 minutes
+      - attempt: 4
+        delay: 1 hour
+      - attempt: 5
+        delay: 4 hours
+
+  timeout: 10 seconds per request
+
+  failure_handling:
+    strategy: Disable webhook after 10 consecutive failures
+    notification: Email webhook owner about failures
+    re_enable: Manual re-enable via API
+
+  status_codes:
+    2xx: Success, don't retry
+    4xx: Client error, don't retry (permanent failure)
+    5xx: Server error, retry with backoff
+    timeout: Network error, retry with backoff
+
+rate_limiting:
+  incoming_webhooks:
+    global: 1000 requests per minute
+    per_source: 100 requests per minute
+    per_ip: 50 requests per minute
+
+  outgoing_webhooks:
+    per_webhook: 100 requests per hour
+    per_user: 500 requests per hour
+    global: 5000 requests per minute
+
+integration_examples:
+  discord:
+    description: Send notifications to Discord channel
+    webhook_url: https://discord.com/api/webhooks/{id}/{token}
+    payload_format: |
+      ```json
+      {
+        "content": "New movie added: The Matrix (1999)",
+        "embeds": [{
+          "title": "The Matrix",
+          "description": "A computer hacker learns about the true nature of reality.",
+          "url": "https://revenge.example.com/movies/uuid",
+          "color": 3447003,
+          "thumbnail": {
+            "url": "https://image.tmdb.org/t/p/w500/poster.jpg"
+          },
+          "fields": [
+            {"name": "Year", "value": "1999", "inline": true},
+            {"name": "Rating", "value": "8.7/10", "inline": true}
+          ]
+        }]
+      }
+      ```
+
+  slack:
+    description: Send notifications to Slack channel
+    webhook_url: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXX
+    payload_format: |
+      ```json
+      {
+        "text": "New movie added: The Matrix (1999)",
+        "blocks": [{
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": "*The Matrix* (1999)\nA computer hacker learns about the true nature of reality."
+          },
+          "accessory": {
+            "type": "image",
+            "image_url": "https://image.tmdb.org/t/p/w500/poster.jpg",
+            "alt_text": "The Matrix poster"
+          }
+        }]
+      }
+      ```
+
+  custom_endpoint:
+    description: Generic webhook to any HTTP endpoint
+    method: POST
+    headers:
+      - Content-Type: application/json
+      - X-Revenge-Event: content.new_movie
+      - X-Revenge-Signature: sha256=abc123...
+    payload: Standard event schema (see above)
+
+best_practices:
+  incoming_webhooks:
+    - practice: Always verify signatures
+      reason: Prevent unauthorized webhook submissions
+    - practice: Return 200 OK immediately
+      reason: Don't timeout webhook sender
+    - practice: Process asynchronously
+      reason: Avoid blocking webhook endpoint
+    - practice: Validate payload schema
+      reason: Reject malformed webhooks early
+    - practice: Log all webhook attempts
+      reason: Debugging and security auditing
+    - practice: Implement idempotency
+      reason: Handle duplicate webhook deliveries
+
+  outgoing_webhooks:
+    - practice: Use HTTPS webhook URLs
+      reason: Encrypt webhook payloads in transit
+    - practice: Send HMAC signatures
+      reason: Allow receivers to verify authenticity
+    - practice: Respect rate limits
+      reason: Don't overwhelm webhook receivers
+    - practice: Queue with retries
+      reason: Reliable delivery despite transient failures
+    - practice: Disable after repeated failures
+      reason: Stop sending to broken endpoints
+    - practice: Redact sensitive data
+      reason: Don't leak passwords, tokens, etc.
+    - practice: Allow user event filtering
+      reason: Users choose which events to receive
+    - practice: Provide delivery history
+      reason: Users can debug webhook issues

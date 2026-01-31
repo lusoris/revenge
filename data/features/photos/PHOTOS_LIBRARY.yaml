@@ -1,0 +1,319 @@
+doc_title: Photos Library
+doc_category: feature
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: '-'
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: '-'
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Photo organization, viewing, and management
+
+  Complete photo library:
+  - **Supported Formats**: JPEG, PNG, WebP, HEIC, RAW (CR2, NEF, ARW, DNG)
+  - **EXIF Extraction**: GPS, camera, lens, settings metadata
+  - **Organization**: Albums, people/faces, places, events, tags
+  - **Image Processing**: Thumbnails, blurhash placeholders, format conversion
+  - **Viewing**: Lightbox gallery, slideshow, map view
+
+wiki_tagline: |-
+  > Your photo library organized by albums, people, and places
+
+wiki_overview: |-
+  The Photos Library provides comprehensive photo management with support for JPEG, PNG, HEIC, and RAW formats. Organize photos into albums, tag people and places, and view your memories on an interactive map. The system automatically extracts EXIF metadata including GPS coordinates, camera settings, and timestamps. Browse photos with a beautiful lightbox gallery or slideshow mode.
+sources:
+- name: Uber fx
+  url: https://pkg.go.dev/go.uber.org/fx
+  note: Auto-resolved from fx
+- name: go-blurhash
+  url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+  note: Auto-resolved from go-blurhash
+- name: ogen OpenAPI Generator
+  url: https://pkg.go.dev/github.com/ogen-go/ogen
+  note: Auto-resolved from ogen
+- name: pgx PostgreSQL Driver
+  url: https://pkg.go.dev/github.com/jackc/pgx/v5
+  note: Auto-resolved from pgx
+- name: PostgreSQL Arrays
+  url: https://www.postgresql.org/docs/current/arrays.html
+  note: Auto-resolved from postgresql-arrays
+- name: PostgreSQL JSON Functions
+  url: https://www.postgresql.org/docs/current/functions-json.html
+  note: Auto-resolved from postgresql-json
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: sqlc
+  url: https://docs.sqlc.dev/en/stable/
+  note: Auto-resolved from sqlc
+- name: sqlc Configuration
+  url: https://docs.sqlc.dev/en/stable/reference/config.html
+  note: Auto-resolved from sqlc-config
+design_refs:
+- title: features/photos
+  path: features/photos.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+feature_name: Photos Library
+module_name: photos_library
+schema_name: public
+content_types:
+- Albums
+- Photos
+
+supported_formats:
+  - format: JPEG/JPG
+    description: Standard photo format
+    processing: Thumbnail generation, EXIF extraction
+    preferred: true
+  - format: PNG
+    description: Lossless image format
+    processing: Thumbnail generation, transparency support
+  - format: WebP
+    description: Modern web image format
+    processing: Thumbnail generation, animation support
+  - format: HEIC/HEIF
+    description: High Efficiency Image Format (Apple)
+    processing: Convert to JPEG for web display
+    notes: Requires govips with libheif
+  - format: RAW
+    description: Camera RAW formats (CR2, NEF, ARW, DNG, RAF, ORF)
+    processing: Convert to JPEG with govips/libraw
+    notes: Read-only, preserve originals
+
+exif_metadata_extraction:
+  library: govips (libvips)
+  extracted_fields:
+    - GPS coordinates (latitude, longitude, altitude)
+    - Camera make and model
+    - Lens information
+    - Exposure settings (ISO, aperture, shutter speed)
+    - Focal length
+    - Flash fired
+    - Orientation
+    - Date/time taken
+    - Image dimensions
+    - Color space
+  privacy_options:
+    strip_location: Option to strip GPS on share
+    strip_camera: Option to strip camera metadata
+
+database_schema: |
+  ```sql
+  -- Photo Albums
+  CREATE TABLE photo_albums (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    cover_photo_id UUID,
+    photo_count INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_photo_albums_user ON photo_albums(user_id);
+
+  -- Photos
+  CREATE TABLE photos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    file_path TEXT NOT NULL,
+    file_format TEXT, -- jpeg, png, webp, heic, raw
+    file_size_bytes BIGINT,
+    width INTEGER,
+    height INTEGER,
+    orientation INTEGER, -- EXIF orientation
+    blurhash TEXT, -- Placeholder while loading
+    taken_at TIMESTAMPTZ,
+    latitude NUMERIC,
+    longitude NUMERIC,
+    altitude NUMERIC,
+    camera_make TEXT,
+    camera_model TEXT,
+    lens_model TEXT,
+    iso INTEGER,
+    aperture NUMERIC,
+    shutter_speed TEXT,
+    focal_length NUMERIC,
+    flash_fired BOOLEAN,
+    exif_data JSONB, -- Full EXIF blob
+    tags TEXT[],
+    favorite BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_photos_user ON photos(user_id);
+  CREATE INDEX idx_photos_taken_at ON photos(user_id, taken_at DESC NULLS LAST);
+  CREATE INDEX idx_photos_location ON photos USING GIST(ll_to_earth(latitude, longitude)) WHERE latitude IS NOT NULL;
+  CREATE INDEX idx_photos_tags ON photos USING GIN(tags);
+  CREATE INDEX idx_photos_favorite ON photos(user_id, favorite) WHERE favorite = TRUE;
+
+  -- Album Photos (M:N relationship)
+  CREATE TABLE album_photos (
+    album_id UUID REFERENCES photo_albums(id) ON DELETE CASCADE,
+    photo_id UUID REFERENCES photos(id) ON DELETE CASCADE,
+    position INTEGER, -- Order within album
+    added_at TIMESTAMPTZ DEFAULT NOW(),
+    PRIMARY KEY (album_id, photo_id)
+  );
+
+  CREATE INDEX idx_album_photos_album ON album_photos(album_id, position);
+
+  -- Photo People/Faces
+  CREATE TABLE photo_people (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL UNIQUE,
+    user_id UUID NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_photo_people_user ON photo_people(user_id);
+
+  -- Photo Face Tags
+  CREATE TABLE photo_face_tags (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    photo_id UUID REFERENCES photos(id) ON DELETE CASCADE,
+    person_id UUID REFERENCES photo_people(id) ON DELETE CASCADE,
+    bounding_box JSONB, -- {x, y, width, height}
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_photo_face_tags_photo ON photo_face_tags(photo_id);
+  CREATE INDEX idx_photo_face_tags_person ON photo_face_tags(person_id);
+
+  -- Photo Places (reverse geocoding)
+  CREATE TABLE photo_places (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    latitude NUMERIC NOT NULL,
+    longitude NUMERIC NOT NULL,
+    place_name TEXT, -- City, State, Country
+    address TEXT,
+    geocoded_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+  );
+
+  CREATE INDEX idx_photo_places_coords ON photo_places(latitude, longitude);
+  ```
+
+organization_features:
+  albums:
+    types:
+      - User-created albums
+      - Shared albums (read/write permissions)
+      - Smart albums (auto-populated by filters)
+    management:
+      - Add/remove photos
+      - Reorder photos (drag-and-drop)
+      - Set cover photo
+      - Album descriptions
+  people_tagging:
+    face_detection: Manual tagging (optional ML in future)
+    name_assignment: Tag faces with person names
+    browse_by_person: View all photos of a person
+  places:
+    gps_extraction: From EXIF GPS coordinates
+    reverse_geocoding: Optional reverse geocode to place names
+    map_view: View photos on interactive map (Leaflet/Mapbox)
+  tags:
+    user_tags: Custom tags per photo
+    autocomplete: Tag suggestions from existing tags
+    browse_by_tag: Filter photos by tag
+  favorites:
+    marking: Star favorite photos
+    quick_access: Favorites collection view
+  search:
+    fields: Title, tags, camera, location, date range
+    fulltext: PostgreSQL full-text search
+
+viewing_features:
+  lightbox_gallery:
+    library: PhotoSwipe or similar
+    features:
+      - Full-screen viewing
+      - Zoom and pan
+      - Swipe navigation
+      - Thumbnail strip
+      - Share button
+      - Download button
+  slideshow:
+    auto_play: Configurable interval (3-10 seconds)
+    transitions: Fade, slide, zoom
+    controls: Play/pause, previous/next
+  timeline_view:
+    grouping: Group photos by date (day/month/year)
+    scroll: Infinite scroll timeline
+  grid_view:
+    layouts: Justified grid, masonry, square grid
+    thumbnail_sizes: Small, medium, large
+  map_view:
+    markers: Photo clusters on map
+    popup: Photo preview on marker click
+
+image_processing:
+  thumbnail_generation:
+    library: govips (libvips for performance)
+    sizes:
+      - thumb: 200x200 (square crop)
+      - small: 400px width
+      - medium: 800px width
+      - large: 1600px width
+    format: WebP for web, JPEG for compatibility
+  blurhash:
+    library: go-blurhash
+    purpose: Low-quality placeholders while loading
+    generation: On upload
+  raw_conversion:
+    library: govips with libraw
+    output: JPEG for web viewing
+    preservation: Keep original RAW file
+
+api_endpoints:
+  - method: GET
+    path: /api/v1/photos
+  - method: GET
+    path: /api/v1/photos/:id
+  - method: POST
+    path: /api/v1/photos
+    description: Upload photo
+  - method: DELETE
+    path: /api/v1/photos/:id
+  - method: GET
+    path: /api/v1/photos/:id/download
+  - method: GET
+    path: /api/v1/photos/:id/thumbnail/:size
+  - method: PUT
+    path: /api/v1/photos/:id/tags
+  - method: PUT
+    path: /api/v1/photos/:id/favorite
+  - method: GET
+    path: /api/v1/photos/albums
+  - method: POST
+    path: /api/v1/photos/albums
+  - method: GET
+    path: /api/v1/photos/albums/:id
+  - method: POST
+    path: /api/v1/photos/albums/:id/photos
+  - method: GET
+    path: /api/v1/photos/people
+  - method: POST
+    path: /api/v1/photos/people
+  - method: GET
+    path: /api/v1/photos/timeline
+  - method: GET
+    path: /api/v1/photos/map

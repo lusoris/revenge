@@ -1,0 +1,39 @@
+doc_title: Twitter/X Integration
+doc_category: integration
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: '-'
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: '-'
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: '> Performer social media presence'
+wiki_tagline: '> Performer social media presence'
+wiki_overview: 'PLACEHOLDER: User-friendly overview'
+sources:
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+design_refs:
+- title: integrations/metadata/adult
+  path: integrations/metadata/adult.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+integration_name: Twitter/X
+integration_id: twitterx
+external_service: Twitter/X
+api_base_url: https://api.twitter.com/2/users/by/username
+auth_method: bearer

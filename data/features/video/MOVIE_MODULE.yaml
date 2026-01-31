@@ -1,0 +1,27 @@
+doc_title: Movie Module
+doc_category: feature
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅ Complete
+status_design_notes: '-'
+status_sources: ✅ Complete
+status_sources_notes: '-'
+status_instructions: 🟡 Partial
+status_instructions_notes: '-'
+status_code: 🔴 Not Started
+status_code_notes: '-'
+status_linting: 🔴 Not Started
+status_linting_notes: '-'
+status_unit_testing: 🔴 Not Started
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴 Not Started
+status_integration_testing_notes: '-'
+technical_summary: '> Movie content management with metadata enrichment'
+wiki_tagline: '> Movie content management with metadata enrichment'
+wiki_overview: 'PLACEHOLDER: User-friendly overview'
+feature_name: Movie Module
+module_name: movie
+schema_name: public
+content_types:
+- Movies
+- Collections

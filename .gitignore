@@ -54,9 +54,8 @@ go.work
 ehthumbs.db
 Thumbs.db
 
-# Application
-jellyfin-go
-/data/
+# Application runtime (not YAML sources in data/)
+revenge
 /logs/
 /config/
 /cache/

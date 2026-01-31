@@ -1,0 +1,333 @@
+doc_title: Metadata Enrichment Pattern
+doc_category: pattern
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete metadata enrichment pattern
+status_sources: ✅
+status_sources_notes: All enrichment tools documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Multi-tier metadata enrichment with caching and background jobs
+
+  Standardized metadata enrichment pattern:
+  - **Priority Chain**: Cache → Arr → Internal → External → Background
+  - **Multi-Tier Cache**: Otter (L1) + Rueidis (L2) + Sturdyc (coalescing)
+  - **Background Jobs**: Async enrichment via River queue
+  - **Request Coalescing**: De-duplicate concurrent requests
+  - **TTL Strategy**: Different TTLs per data type and source
+
+wiki_tagline: |-
+  > Fast, efficient metadata with intelligent caching and background enrichment
+
+wiki_overview: |-
+  The Metadata Enrichment Pattern ensures fast UI response times while maintaining rich, up-to-date metadata. The system uses a five-tier priority chain starting with local cache for instant results, falling back to Arr services (which cache upstream data), then internal sources, external APIs, and finally background enrichment jobs. Multi-tier caching with request coalescing prevents duplicate API calls and reduces external API quota consumption.
+sources:
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Background job processing
+  - name: rueidis
+    url: https://pkg.go.dev/github.com/redis/rueidis
+    note: Distributed cache (L2)
+  - name: Otter
+    url: https://pkg.go.dev/github.com/maypok86/otter
+    note: In-memory cache (L1)
+  - name: Sturdyc
+    url: https://github.com/viccon/sturdyc
+    note: Request coalescing cache
+
+design_refs:
+- title: patterns
+  path: patterns.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+
+pattern_name: Metadata Enrichment Pattern
+
+priority_chain:
+  tier_1_cache:
+    name: Local Cache (L1)
+    technology: Otter (in-memory)
+    latency: <1ms
+    hit_rate: 70-80%
+    ttl: 5-15 minutes
+    description: In-memory cache for hot data, fastest possible response
+    use_cases:
+      - Frequently accessed movies/albums
+      - User session data
+      - Recently viewed content
+
+  tier_2_cache:
+    name: Distributed Cache (L2)
+    technology: Rueidis (Dragonfly/Redis)
+    latency: 1-5ms
+    hit_rate: 85-95%
+    ttl: 1-24 hours (varies by data type)
+    description: Shared cache across all instances
+    use_cases:
+      - All metadata (movies, TV, music, etc.)
+      - Search results
+      - External API responses
+
+  tier_3_arr:
+    name: Arr Services
+    technology: Radarr, Sonarr, Lidarr, Whisparr
+    latency: 10-50ms
+    hit_rate: 40-60% (for managed content)
+    ttl: Refreshed on webhook events
+    description: Arr services cache metadata from TMDb, MusicBrainz, etc.
+    use_cases:
+      - Movies managed by Radarr
+      - TV shows managed by Sonarr
+      - Music managed by Lidarr
+
+  tier_4_internal:
+    name: Internal Services
+    technology: Stash-App (for QAR content)
+    latency: 20-100ms
+    hit_rate: 30-50%
+    ttl: N/A (direct database query)
+    description: Internal metadata sources
+    use_cases:
+      - Adult content (QAR module)
+      - User-generated metadata
+
+  tier_5_external:
+    name: External APIs
+    technology: TMDb, MusicBrainz, StashDB, etc.
+    latency: 100-1000ms
+    hit_rate: N/A (always fetches)
+    rate_limits: Varies (40 req/10s for TMDb)
+    description: Direct API calls as last resort
+    use_cases:
+      - Content not in Arr
+      - Missing metadata fields
+      - Fresh data required
+
+  tier_6_background:
+    name: Background Enrichment
+    technology: River job queue
+    latency: Async (seconds to minutes)
+    description: Non-blocking enrichment after initial response
+    use_cases:
+      - High-resolution images
+      - Cast and crew details
+      - User reviews and ratings
+      - Video codec analysis
+
+cache_strategy:
+  multi_tier_example: |
+    ```go
+    func (s *MovieService) GetByID(ctx context.Context, id uuid.UUID) (*Movie, error) {
+        // Tier 1: Check L1 cache (Otter)
+        if cached, ok := s.l1Cache.Get(id.String()); ok {
+            return cached.(*Movie), nil
+        }
+
+        // Tier 2: Check L2 cache (Rueidis + Sturdyc for coalescing)
+        movie, err := s.l2Cache.GetOrFetch(ctx, id.String(), func(ctx context.Context) (*Movie, error) {
+            // Tier 3: Check Arr service (Radarr)
+            if m, err := s.radarrClient.GetMovie(ctx, id); err == nil {
+                return m, nil
+            }
+
+            // Tier 4: Check internal sources (not applicable for movies)
+
+            // Tier 5: Fetch from external API (TMDb)
+            tmdbMovie, err := s.tmdbClient.GetMovie(ctx, id)
+            if err != nil {
+                return nil, err
+            }
+
+            // Convert to internal format
+            return s.convertTMDbMovie(tmdbMovie), nil
+        }, 1*time.Hour) // L2 TTL: 1 hour
+
+        if err != nil {
+            return nil, err
+        }
+
+        // Store in L1 cache
+        s.l1Cache.Set(id.String(), movie, 10*time.Minute)
+
+        // Tier 6: Queue background enrichment job
+        s.queueEnrichment(ctx, id)
+
+        return movie, nil
+    }
+    ```
+
+  ttl_guidelines:
+    movies_tv:
+      base_metadata: 24 hours
+      images: 7 days
+      cast_crew: 24 hours
+      release_dates: 1 hour (near release)
+    music:
+      artists: 7 days
+      albums: 24 hours
+      tracks: 24 hours
+      lyrics: 30 days
+    adult_qar:
+      performers: 7 days
+      scenes: 24 hours
+      studios: 30 days
+    search_results:
+      general: 15 minutes
+      trending: 5 minutes
+      recommendations: 1 hour
+
+request_coalescing:
+  problem: Multiple concurrent requests for same resource hit external API multiple times
+  solution: Sturdyc library coalesces concurrent requests into single backend call
+  example: |
+    ```go
+    // Sturdyc coalescing cache wrapper
+    cache := sturdyc.New[string, *Movie](1000, 10*time.Minute, 5)
+
+    // Multiple concurrent requests for same movie
+    // Only ONE external API call is made, all requesters get the same result
+    movie1, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc)
+    movie2, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc) // Waits for first call
+    movie3, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc) // Waits for first call
+
+    // All three get the same movie object from single API call
+    ```
+
+background_enrichment_jobs:
+  - job: EnrichMovieDetails
+    trigger: Movie accessed but missing extended metadata
+    priority: Low
+    actions:
+      - Fetch full cast and crew
+      - Download high-resolution poster/backdrop
+      - Fetch user reviews
+      - Get similar movies
+      - Extract video codec and quality info
+    implementation: |
+      ```go
+      type EnrichMovieDetailsArgs struct {
+          MovieID uuid.UUID `json:"movie_id"`
+      }
+
+      func (w *EnrichMovieDetailsWorker) Work(ctx context.Context, job *river.Job[EnrichMovieDetailsArgs]) error {
+          movie, err := w.repo.GetByID(ctx, job.Args.MovieID)
+          if err != nil {
+              return err
+          }
+
+          // Fetch extended details from TMDb
+          details, err := w.tmdbClient.GetMovieDetails(ctx, movie.TMDbID)
+          if err != nil {
+              return err
+          }
+
+          // Update database with enriched data
+          movie.Cast = details.Cast
+          movie.Crew = details.Crew
+          movie.BackdropURL = details.BackdropURL
+          movie.UserRating = details.UserRating
+
+          return w.repo.Update(ctx, movie)
+      }
+      ```
+
+  - job: EnrichAlbumArtwork
+    trigger: Album added but only has low-res cover art
+    priority: Medium
+    actions:
+      - Download high-resolution album art
+      - Fetch artist images
+      - Generate blurhash placeholders
+    rate_limit: 10 per minute (respect API limits)
+
+  - job: EnrichVideoAnalysis
+    trigger: Video file added
+    priority: Low
+    actions:
+      - Extract codec information (ffprobe)
+      - Generate preview thumbnails
+      - Detect intro/outro timestamps
+      - Calculate video fingerprint
+    resource_intensive: true
+
+cache_invalidation:
+  strategies:
+    - strategy: TTL Expiration
+      description: Automatic expiration based on configured TTL
+      use_case: Most metadata
+    - strategy: Event-Based
+      description: Invalidate on webhook events (Arr updates, deletions)
+      use_case: Arr-managed content
+    - strategy: Manual
+      description: User-triggered refresh (rare)
+      use_case: Stale data or API changes
+    - strategy: Lazy Invalidation
+      description: Fetch new data in background, serve stale while updating
+      use_case: High-traffic content
+
+  implementation_example: |
+    ```go
+    // Event-based cache invalidation on Arr webhook
+    func (h *WebhookHandler) handleMovieUpdate(ctx context.Context, event *RadarrEvent) error {
+        movieID := event.Movie.ID
+
+        // Invalidate both L1 and L2 cache
+        s.l1Cache.Delete(movieID.String())
+        s.l2Cache.Delete(ctx, movieID.String())
+
+        // Update database with new metadata
+        return s.repo.Update(ctx, event.Movie)
+    }
+    ```
+
+monitoring_and_metrics:
+  cache_metrics:
+    - "L1 hit rate (target: >70%)"
+    - "L2 hit rate (target: >85%)"
+    - "Cache miss latency (target: <500ms)"
+    - Background job queue depth
+    - External API call count
+    - External API rate limit errors
+
+  alerts:
+    - alert: Low cache hit rate
+      threshold: "L1 <60% or L2 <75%"
+      action: Investigate cache size or TTL configuration
+    - alert: High external API calls
+      threshold: ">1000 calls/minute"
+      action: Check for cache misses or coalescing failures
+    - alert: Background job queue growing
+      threshold: ">10000 pending jobs"
+      action: Scale workers or investigate stuck jobs
+
+best_practices:
+  - practice: Always cache external API responses
+    reason: Reduces API quota consumption and latency
+  - practice: Use request coalescing for hot data
+    reason: Prevents thundering herd on cache miss
+  - practice: Implement graceful degradation
+    reason: Serve stale cache if external API is down
+  - practice: Monitor cache hit rates
+    reason: Identify optimization opportunities
+  - practice: Use appropriate TTLs per data type
+    reason: Balance freshness vs API calls
+  - practice: Queue non-critical enrichment
+    reason: Fast initial response, rich data eventually
+  - practice: Implement cache warming
+    reason: Pre-populate cache for popular content
+  - practice: Use cache tags for bulk invalidation
+    reason: Invalidate related items efficiently

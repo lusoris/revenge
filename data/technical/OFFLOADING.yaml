@@ -1,0 +1,513 @@
+doc_title: Advanced Offloading Architecture
+doc_category: technical
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete offloading architecture
+status_sources: ✅
+status_sources_notes: All offloading tools documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Offload heavy operations to background workers and external services
+
+  Complete offloading strategy:
+  - **Background Jobs**: River queue for async tasks (transcoding, metadata enrichment)
+  - **Caching**: Dragonfly/Rueidis for session storage, rate limiting, API caching
+  - **Search**: Typesense for full-text search offloading
+  - **Metrics**: Prometheus for monitoring and alerting
+  - **Pattern**: Fast HTTP response, queue heavy work, notify on completion
+
+wiki_tagline: |-
+  > Keep your API fast by offloading heavy work to specialized services
+
+wiki_overview: |-
+  The Advanced Offloading Architecture ensures fast API response times by delegating heavy operations to background workers and specialized services. Transcoding, metadata enrichment, and image processing run asynchronously via River queue. Session storage and rate limiting use Dragonfly cache. Full-text search queries route to Typesense. Metrics collection offloads to Prometheus. The result is a responsive API that scales horizontally while handling resource-intensive tasks efficiently.
+
+sources:
+- name: Dragonfly Documentation
+  url: https://www.dragonflydb.io/docs
+  note: Auto-resolved from dragonfly
+- name: Uber fx
+  url: https://pkg.go.dev/go.uber.org/fx
+  note: Auto-resolved from fx
+- name: koanf
+  url: https://pkg.go.dev/github.com/knadh/koanf/v2
+  note: Auto-resolved from koanf
+- name: Prometheus Go Client
+  url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
+  note: Auto-resolved from prometheus
+- name: Prometheus Metric Types
+  url: https://prometheus.io/docs/concepts/metric_types/
+  note: Auto-resolved from prometheus-metrics
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: rueidis
+  url: https://pkg.go.dev/github.com/redis/rueidis
+  note: Auto-resolved from rueidis
+- name: rueidis GitHub README
+  url: https://github.com/redis/rueidis
+  note: Auto-resolved from rueidis-docs
+- name: Typesense API
+  url: https://typesense.org/docs/latest/api/
+  note: Auto-resolved from typesense
+- name: Typesense Go Client
+  url: https://github.com/typesense/typesense-go
+  note: Auto-resolved from typesense-go
+
+design_refs:
+- title: technical
+  path: technical.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: METADATA_ENRICHMENT
+  path: patterns/METADATA_ENRICHMENT.md
+
+offloading_principles:
+  - principle: Fast API responses
+    description: HTTP handlers return within 100ms
+    implementation: Queue heavy work, return 202 Accepted
+
+  - principle: Horizontal scalability
+    description: Stateless API servers, shared state in Dragonfly/PostgreSQL
+    implementation: Multiple API instances behind load balancer
+
+  - principle: Specialized services
+    description: Use best tool for each job
+    implementation: Typesense for search, River for jobs, Dragonfly for cache
+
+  - principle: Graceful degradation
+    description: Continue operating when external services fail
+    implementation: Cache fallbacks, skip optional enrichment
+
+  - principle: Resource isolation
+    description: Heavy tasks don't starve API requests
+    implementation: Separate worker pool for background jobs
+
+offloading_targets:
+  background_jobs:
+    service: River job queue
+    use_cases:
+      - Video transcoding
+      - Metadata enrichment
+      - Image thumbnail generation
+      - Email sending
+      - Webhook delivery
+      - Database cleanup
+      - Library scanning
+    pattern: |
+      ```go
+      // API handler queues job
+      func (h *Handler) UploadVideo(ctx context.Context, req *UploadVideoRequest) (*UploadVideoResponse, error) {
+          // Save video file metadata to database (fast)
+          video, err := h.repo.Insert(ctx, &Video{
+              Title:    req.Title,
+              FilePath: req.FilePath,
+          })
+          if err != nil {
+              return nil, err
+          }
+
+          // Queue transcoding job (async)
+          _, err = h.riverClient.Insert(ctx, &TranscodeVideoArgs{
+              VideoID: video.ID,
+          }, nil)
+
+          // Return immediately
+          return &UploadVideoResponse{
+              VideoID: video.ID,
+              Status:  "processing",
+          }, nil
+      }
+
+      // Worker processes job
+      type TranscodeVideoWorker struct {
+          river.WorkerDefaults[TranscodeVideoArgs]
+          transcoder *Transcoder
+      }
+
+      func (w *TranscodeVideoWorker) Work(ctx context.Context, job *river.Job[TranscodeVideoArgs]) error {
+          return w.transcoder.Transcode(ctx, job.Args.VideoID)
+      }
+      ```
+
+  distributed_cache:
+    service: Dragonfly (Redis-compatible)
+    library: rueidis
+    use_cases:
+      - Session storage
+      - API response caching
+      - Rate limiting
+      - Temporary data (OTP codes)
+      - Distributed locks
+      - Playback progress
+    pattern: |
+      ```go
+      // Session storage offloaded to Dragonfly
+      func (s *SessionService) Create(ctx context.Context, userID uuid.UUID) (*Session, error) {
+          session := &Session{
+              ID:     uuid.New(),
+              UserID: userID,
+              ExpiresAt: time.Now().Add(24 * time.Hour),
+          }
+
+          // Store in Dragonfly, not PostgreSQL
+          key := fmt.Sprintf("session:%s", session.ID)
+          data, _ := json.Marshal(session)
+          err := s.cache.Do(ctx, s.cache.B().Set().
+              Key(key).
+              Value(string(data)).
+              Ex(24 * time.Hour).
+              Build()).Error()
+
+          return session, err
+      }
+
+      // Rate limiting offloaded to Dragonfly
+      func (r *RateLimiter) Allow(ctx context.Context, userID uuid.UUID) (bool, error) {
+          key := fmt.Sprintf("ratelimit:%s:%s", userID, time.Now().Format("2006-01-02-15"))
+          count, err := r.cache.Do(ctx, r.cache.B().Incr().Key(key).Build()).AsInt64()
+          if err != nil {
+              return false, err
+          }
+
+          if count == 1 {
+              // Set TTL on first request
+              r.cache.Do(ctx, r.cache.B().Expire().Key(key).Seconds(3600).Build())
+          }
+
+          return count <= 100, nil // 100 requests per hour
+      }
+      ```
+
+  search_engine:
+    service: Typesense
+    use_cases:
+      - Full-text search across all content types
+      - Fuzzy search with typo tolerance
+      - Faceted filtering
+      - Real-time search as you type
+    pattern: |
+      ```go
+      // Search offloaded to Typesense
+      func (s *SearchService) Search(ctx context.Context, query string) ([]SearchResult, error) {
+          searchParams := &api.SearchCollectionParams{
+              Q:       query,
+              QueryBy: "title,description,tags",
+              PerPage: api.PtrInt(20),
+          }
+
+          // Query Typesense, not PostgreSQL full-text search
+          results, err := s.typesense.Collection("movies").Documents().Search(searchParams)
+          if err != nil {
+              return nil, err
+          }
+
+          return s.convertResults(results), nil
+      }
+
+      // Index updates sent to Typesense on content changes
+      func (s *SearchService) IndexMovie(ctx context.Context, movie *Movie) error {
+          doc := map[string]any{
+              "id":          movie.ID.String(),
+              "title":       movie.Title,
+              "description": movie.Overview,
+              "year":        movie.Year,
+              "tags":        movie.Genres,
+          }
+
+          _, err := s.typesense.Collection("movies").Documents().Create(doc)
+          return err
+      }
+      ```
+
+  metrics_collection:
+    service: Prometheus
+    use_cases:
+      - Request counts and latencies
+      - Background job metrics
+      - Cache hit rates
+      - Database connection pool stats
+    pattern: |
+      ```go
+      // Metrics offloaded to Prometheus (pull model)
+      var (
+          httpRequestsTotal = promauto.NewCounterVec(
+              prometheus.CounterOpts{
+                  Name: "http_requests_total",
+                  Help: "Total number of HTTP requests",
+              },
+              []string{"method", "path", "status"},
+          )
+
+          httpRequestDuration = promauto.NewHistogramVec(
+              prometheus.HistogramOpts{
+                  Name:    "http_request_duration_seconds",
+                  Help:    "HTTP request latency",
+                  Buckets: prometheus.DefBuckets,
+              },
+              []string{"method", "path"},
+          )
+      )
+
+      // Middleware records metrics (minimal overhead)
+      func MetricsMiddleware(next http.Handler) http.Handler {
+          return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+              start := time.Now()
+              rec := &statusRecorder{ResponseWriter: w, statusCode: 200}
+
+              next.ServeHTTP(rec, r)
+
+              duration := time.Since(start).Seconds()
+              httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path, strconv.Itoa(rec.statusCode)).Inc()
+              httpRequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)
+          })
+      }
+      ```
+
+offloading_patterns:
+  pattern_1_async_processing:
+    name: Async Background Processing
+    problem: Heavy operation blocks HTTP handler
+    solution: Queue job, return immediately, notify on completion
+    example: |
+      ```go
+      // BAD: Blocks for minutes
+      func (h *Handler) ScanLibrary(ctx context.Context) error {
+          files, _ := filepath.Glob("/media/**/*.mp4")
+          for _, file := range files {
+              h.processFile(file) // Takes 1-2 seconds per file
+          }
+          return nil
+      }
+
+      // GOOD: Returns immediately
+      func (h *Handler) ScanLibrary(ctx context.Context) (*ScanResponse, error) {
+          scanID := uuid.New()
+
+          _, err := h.riverClient.Insert(ctx, &ScanLibraryArgs{
+              ScanID: scanID,
+              Path:   "/media",
+          }, nil)
+
+          return &ScanResponse{
+              ScanID: scanID,
+              Status: "started",
+          }, err
+      }
+      ```
+
+  pattern_2_lazy_initialization:
+    name: Lazy Initialization
+    problem: Expensive operation on every request
+    solution: Cache result, initialize only once
+    example: |
+      ```go
+      // BAD: Loads config on every request
+      func (h *Handler) GetSettings(ctx context.Context) (*Settings, error) {
+          return h.loadSettingsFromDatabase(ctx) // Database query every time
+      }
+
+      // GOOD: Cache settings in Dragonfly
+      func (h *Handler) GetSettings(ctx context.Context) (*Settings, error) {
+          // Try cache first
+          cached, err := h.cache.Do(ctx, h.cache.B().Get().Key("settings").Build()).ToString()
+          if err == nil {
+              var settings Settings
+              json.Unmarshal([]byte(cached), &settings)
+              return &settings, nil
+          }
+
+          // Cache miss, load from database
+          settings, err := h.loadSettingsFromDatabase(ctx)
+          if err != nil {
+              return nil, err
+          }
+
+          // Store in cache for 5 minutes
+          data, _ := json.Marshal(settings)
+          h.cache.Do(ctx, h.cache.B().Set().Key("settings").Value(string(data)).Ex(5*time.Minute).Build())
+
+          return settings, nil
+      }
+      ```
+
+  pattern_3_request_coalescing:
+    name: Request Coalescing
+    problem: Multiple concurrent requests for same resource hit backend
+    solution: Use Sturdyc to coalesce requests into single backend call
+    example: |
+      ```go
+      // Using Sturdyc for request coalescing
+      cache := sturdyc.New[string, *Movie](1000, 10*time.Minute, 5)
+
+      func (s *MovieService) GetByID(ctx context.Context, id uuid.UUID) (*Movie, error) {
+          // Multiple concurrent requests for same movie coalesce into single DB query
+          return cache.GetOrFetch(ctx, id.String(), func(ctx context.Context) (*Movie, error) {
+              return s.repo.GetByID(ctx, id)
+          })
+      }
+      ```
+
+  pattern_4_pagination_offloading:
+    name: Pagination Offloading
+    problem: Large result sets loaded into memory
+    solution: Use database cursor-based pagination
+    example: |
+      ```go
+      // BAD: Loads all results
+      func (h *Handler) ListMovies(ctx context.Context) ([]Movie, error) {
+          return h.repo.GetAll(ctx) // 10000+ rows
+      }
+
+      // GOOD: Paginated with cursor
+      func (h *Handler) ListMovies(ctx context.Context, cursor string, limit int) (*MoviePage, error) {
+          movies, nextCursor, err := h.repo.GetPage(ctx, cursor, limit)
+          return &MoviePage{
+              Movies:     movies,
+              NextCursor: nextCursor,
+              HasMore:    nextCursor != "",
+          }, err
+      }
+      ```
+
+  pattern_5_compression_offloading:
+    name: Compression Offloading
+    problem: CPU-intensive compression in HTTP handler
+    solution: Use reverse proxy (Traefik/Caddy) for response compression
+    implementation: Enable gzip/brotli in Traefik, not in Go code
+
+  pattern_6_static_file_offloading:
+    name: Static File Offloading
+    problem: Go server serves static assets
+    solution: Use CDN or reverse proxy for static files
+    implementation: Traefik serves /static/* directly from filesystem
+
+offloading_benefits:
+  - benefit: Fast API response times
+    metric: P95 latency < 100ms
+    measurement: Prometheus histogram
+
+  - benefit: Horizontal scalability
+    metric: Linear scaling to 100+ API instances
+    measurement: Load test results
+
+  - benefit: Resource isolation
+    metric: Background jobs don't affect API latency
+    measurement: Separate CPU/memory quotas
+
+  - benefit: Improved reliability
+    metric: API stays up even if workers crash
+    measurement: Uptime monitoring
+
+  - benefit: Better user experience
+    metric: Users don't wait for slow operations
+    measurement: User surveys, session analytics
+
+offloading_anti_patterns:
+  - anti_pattern: Synchronous email sending
+    problem: SMTP timeout blocks HTTP handler
+    fix: Use River queue for async email sending
+
+  - anti_pattern: In-memory session storage
+    problem: Sessions lost on restart, can't scale horizontally
+    fix: Store sessions in Dragonfly
+
+  - anti_pattern: Database for rate limiting
+    problem: Too many writes, poor performance
+    fix: Use Dragonfly INCR command
+
+  - anti_pattern: PostgreSQL for full-text search
+    problem: Slow queries, poor relevance scoring
+    fix: Use Typesense for search
+
+  - anti_pattern: Inline transcoding
+    problem: HTTP request times out after 30 seconds
+    fix: Queue transcoding job via River
+
+  - anti_pattern: Polling for job status
+    problem: Wasteful, adds latency
+    fix: Use WebSocket for real-time updates
+
+monitoring_offloaded_work:
+  river_queue_metrics:
+    - metric: river_jobs_total{state="completed"}
+      description: Total completed jobs
+    - metric: river_jobs_total{state="failed"}
+      description: Total failed jobs
+    - metric: river_job_duration_seconds
+      description: Job processing time
+
+  dragonfly_metrics:
+    - metric: dragonfly_connected_clients
+      description: Active connections
+    - metric: dragonfly_keyspace_hits
+      description: Cache hits
+    - metric: dragonfly_keyspace_misses
+      description: Cache misses
+    - metric: dragonfly_used_memory_bytes
+      description: Memory usage
+
+  typesense_metrics:
+    - metric: typesense_search_requests_total
+      description: Search queries
+    - metric: typesense_search_latency_seconds
+      description: Search latency
+
+configuration:
+  river_workers:
+    pool_size: 10 workers per instance
+    max_concurrent_jobs: 50
+    priority_queues: true (critical, high, normal, low)
+
+  dragonfly_cache:
+    max_memory: 4GB
+    eviction_policy: allkeys-lru
+    persistence: Snapshot every 5 minutes
+
+  typesense_search:
+    nodes: 3 (HA cluster)
+    memory_per_node: 8GB
+    replication_factor: 2
+
+best_practices:
+  - practice: Return 202 Accepted for async operations
+    reason: Client knows operation is queued
+
+  - practice: Provide job status endpoint
+    reason: Client can poll or subscribe for updates
+
+  - practice: Use WebSocket for real-time updates
+    reason: Better UX than polling
+
+  - practice: Set realistic job timeouts
+    reason: Avoid zombie jobs consuming resources
+
+  - practice: Implement job retries with exponential backoff
+    reason: Handle transient failures gracefully
+
+  - practice: Monitor queue depth
+    reason: Detect backlog early, scale workers
+
+  - practice: Cache aggressively
+    reason: Reduce load on PostgreSQL and external APIs
+
+  - practice: Use Dragonfly for ephemeral data
+    reason: Don't pollute PostgreSQL with temporary data
+
+  - practice: Offload search to Typesense
+    reason: Better search experience, lower PostgreSQL load
+
+  - practice: Separate worker pools by priority
+    reason: Critical jobs not blocked by low-priority work

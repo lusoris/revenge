@@ -1,0 +1,66 @@
+doc_title: Revenge - Media Enhancement Features
+doc_category: feature
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: '-'
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: '-'
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: '> Advanced playback features: trailers, themes, intros, trickplay,
+  cinema mode, and live TV.'
+wiki_tagline: '> Advanced playback features: trailers, themes, intros, trickplay,
+  cinema mode, '
+wiki_overview: 'PLACEHOLDER: User-friendly overview'
+sources:
+- name: FFmpeg Documentation
+  url: https://ffmpeg.org/ffmpeg.html
+  note: Auto-resolved from ffmpeg
+- name: FFmpeg Codecs
+  url: https://ffmpeg.org/ffmpeg-codecs.html
+  note: Auto-resolved from ffmpeg-codecs
+- name: FFmpeg Formats
+  url: https://ffmpeg.org/ffmpeg-formats.html
+  note: Auto-resolved from ffmpeg-formats
+- name: go-astiav (FFmpeg bindings)
+  url: https://pkg.go.dev/github.com/asticode/go-astiav
+  note: Auto-resolved from go-astiav
+- name: go-astiav GitHub README
+  url: https://github.com/asticode/go-astiav
+  note: Auto-resolved from go-astiav-docs
+- name: M3U8 Extended Format
+  url: https://datatracker.ietf.org/doc/html/rfc8216
+  note: Auto-resolved from m3u8
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Auto-resolved from river
+- name: Svelte 5 Runes
+  url: https://svelte.dev/docs/svelte/$state
+  note: Auto-resolved from svelte-runes
+- name: Svelte 5 Documentation
+  url: https://svelte.dev/docs/svelte/overview
+  note: Auto-resolved from svelte5
+- name: SvelteKit Documentation
+  url: https://svelte.dev/docs/kit/introduction
+  note: Auto-resolved from sveltekit
+design_refs:
+- title: features/playback
+  path: features/playback.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+feature_name: Revenge - Media Enhancement Features
+module_name: revenge___media_enhancement_features
+schema_name: public

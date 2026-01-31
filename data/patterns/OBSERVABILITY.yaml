@@ -1,0 +1,254 @@
+doc_title: Observability Pattern
+doc_category: pattern
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: '-'
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: '> Metrics, tracing, and logging patterns with Prometheus, OpenTelemetry,
+  and structured logging
+
+
+  Three pillars of observability:
+
+  - **Metrics**: Prometheus for RED metrics (Rate, Errors, Duration)
+
+  - **Tracing**: OpenTelemetry for distributed traces (Jaeger export)
+
+  - **Logging**: Structured logging with slog (tint for dev, zap for prod)
+
+
+  All integrated via OpenTelemetry SDK for unified observability.
+
+  '
+wiki_tagline: '> Monitoring and debugging patterns for production systems
+
+  '
+wiki_overview: 'Revenge includes comprehensive monitoring and debugging capabilities out of the box. Metrics track request rates, errors, and response times via Prometheus. Distributed tracing with OpenTelemetry helps you follow requests across services and identify bottlenecks. Structured logging provides searchable, contextual logs for debugging. Health check endpoints let load balancers and orchestrators monitor service status. Pre-built Grafana dashboards visualize key metrics, and alert rules notify you of issues before users notice.
+
+  '
+sources:
+- name: Prometheus
+  url: https://prometheus.io/docs/introduction/overview/
+  note: Metrics collection
+- name: Prometheus Metrics Types
+  url: https://prometheus.io/docs/concepts/metric_types/
+  note: Counter, Gauge, Histogram, Summary
+- name: OpenTelemetry Go
+  url: https://opentelemetry.io/docs/languages/go/
+  note: Tracing SDK
+- name: slog
+  url: https://pkg.go.dev/log/slog
+  note: Structured logging
+- name: tint
+  url: https://github.com/lmittmann/tint
+  note: Colorized slog handler (dev)
+- name: zap
+  url: https://github.com/uber-go/zap
+  note: High-performance JSON logs (prod)
+- name: Jaeger
+  url: https://www.jaegertracing.io/docs/
+  note: Distributed tracing backend
+design_refs:
+- title: patterns
+  path: patterns/INDEX.md
+- title: TECH_STACK
+  path: technical/TECH_STACK.md
+- title: BEST_PRACTICES
+  path: operations/BEST_PRACTICES.md
+pattern_name: Observability Pattern
+metrics_prometheus:
+  endpoint: /metrics
+  port: 8080
+  scrape_interval: 15s
+  red_metrics:
+    name: RED (Rate, Errors, Duration)
+    description: Golden signals for services
+    metrics:
+    - name: http_requests_total
+      type: Counter
+      labels:
+      - method
+      - path
+      - status
+      description: Total HTTP requests
+    - name: http_request_duration_seconds
+      type: Histogram
+      labels:
+      - method
+      - path
+      buckets:
+      - 0.001
+      - 0.01
+      - 0.1
+      - 0.5
+      - 1.0
+      - 5.0
+      - 10.0
+      description: HTTP request duration
+    - name: http_errors_total
+      type: Counter
+      labels:
+      - method
+      - path
+      - status
+      description: HTTP errors (4xx, 5xx)
+  custom_metrics:
+  - name: db_pool_connections
+    type: Gauge
+    description: Active PostgreSQL connections
+  - name: cache_hit_ratio
+    type: Gauge
+    labels:
+    - cache_layer
+    description: Cache hit ratio (L1 otter, L2 rueidis)
+  - name: transcode_jobs_active
+    type: Gauge
+    description: Active transcoding jobs
+  - name: river_jobs_total
+    type: Counter
+    labels:
+    - queue
+    - status
+    description: River job queue stats
+  code_example: "```go\nimport (\n  \"github.com/prometheus/client_golang/prometheus\"\
+    \n  \"github.com/prometheus/client_golang/prometheus/promauto\"\n)\n\nvar (\n\
+    \  httpRequestsTotal = promauto.NewCounterVec(\n    prometheus.CounterOpts{\n\
+    \      Name: \"http_requests_total\",\n      Help: \"Total HTTP requests\",\n\
+    \    },\n    []string{\"method\", \"path\", \"status\"},\n  )\n\n  httpDuration\
+    \ = promauto.NewHistogramVec(\n    prometheus.HistogramOpts{\n      Name: \"http_request_duration_seconds\"\
+    ,\n      Help: \"HTTP request duration\",\n      Buckets: prometheus.DefBuckets,\n\
+    \    },\n    []string{\"method\", \"path\"},\n  )\n)\n\n// In HTTP middleware\n\
+    func MetricsMiddleware(next http.Handler) http.Handler {\n  return http.HandlerFunc(func(w\
+    \ http.ResponseWriter, r *http.Request) {\n    start := time.Now()\n\n    // Wrap\
+    \ response writer to capture status code\n    rw := &responseWriter{ResponseWriter:\
+    \ w, statusCode: 200}\n\n    next.ServeHTTP(rw, r)\n\n    duration := time.Since(start).Seconds()\n\
+    \n    httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path, strconv.Itoa(rw.statusCode)).Inc()\n\
+    \    httpDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)\n  })\n\
+    }\n```\n"
+tracing_opentelemetry:
+  exporter: Jaeger
+  jaeger_endpoint: http://jaeger:14268/api/traces
+  sampling_rate: 0.1
+  trace_context_propagation:
+  - W3C Trace Context (HTTP headers)
+  - Baggage for cross-service metadata
+  instrumentation:
+  - HTTP requests (automatic via middleware)
+  - Database queries (pgx integration)
+  - River jobs (job lifecycle)
+  - External API calls (resty integration)
+  code_example: "```go\nimport (\n  \"go.opentelemetry.io/otel\"\n  \"go.opentelemetry.io/otel/trace\"\
+    \n)\n\nvar tracer = otel.Tracer(\"revenge/service/movie\")\n\nfunc (s *MovieService)\
+    \ GetMovie(ctx context.Context, id uuid.UUID) (*Movie, error) {\n  ctx, span :=\
+    \ tracer.Start(ctx, \"GetMovie\")\n  defer span.End()\n\n  span.SetAttributes(\n\
+    \    attribute.String(\"movie.id\", id.String()),\n  )\n\n  // Query database\
+    \ (automatic span if pgx instrumented)\n  movie, err := s.repo.GetByID(ctx, id)\n\
+    \  if err != nil {\n    span.RecordError(err)\n    span.SetStatus(codes.Error,\
+    \ err.Error())\n    return nil, err\n  }\n\n  span.SetAttributes(\n    attribute.String(\"\
+    movie.title\", movie.Title),\n  )\n\n  return movie, nil\n}\n```\n"
+logging_structured:
+  dev_handler: tint (colorized)
+  prod_handler: zap (JSON)
+  log_levels:
+  - DEBUG: Verbose debugging (dev only)
+  - INFO: General informational messages
+  - WARN: Warning conditions (recoverable errors)
+  - ERROR: Error conditions (unrecoverable errors)
+  structured_fields:
+  - user_id: UUID of authenticated user
+  - request_id: Unique request ID (trace ID)
+  - module: Service/module name
+  - operation: Operation name
+  code_example: "```go\nimport (\n  \"log/slog\"\n  \"github.com/lmittmann/tint\"\n\
+    )\n\n// Dev environment (tint)\nlogger := slog.New(tint.NewHandler(os.Stdout,\
+    \ &tint.Options{\n  Level: slog.LevelDebug,\n  TimeFormat: time.Kitchen,\n}))\n\
+    \n// Production environment (zap via slog)\nlogger := slog.New(slog.NewJSONHandler(os.Stdout,\
+    \ &slog.HandlerOptions{\n  Level: slog.LevelInfo,\n}))\n\n// Usage\nlogger.Info(\"\
+    user authenticated\",\n  slog.String(\"user_id\", userID.String()),\n  slog.String(\"\
+    email\", user.Email),\n  slog.Duration(\"duration\", time.Since(start)),\n)\n\n\
+    logger.Error(\"database query failed\",\n  slog.String(\"query\", \"SELECT * FROM\
+    \ movies\"),\n  slog.Any(\"error\", err),\n)\n```\n"
+health_checks:
+  liveness_endpoint: /health/live
+  readiness_endpoint: /health/ready
+  startup_endpoint: /health/startup
+  dependencies_checked:
+  - PostgreSQL connection
+  - Dragonfly connection
+  - Typesense connection
+  - River worker pool
+  code_example: "```go\n// Readiness check\nfunc (h *HealthHandler) Readiness(w http.ResponseWriter,\
+    \ r *http.Request) {\n  checks := map[string]error{\n    \"database\": h.db.Ping(r.Context()),\n\
+    \    \"cache\":    h.cache.Ping(r.Context()),\n    \"search\":   h.search.Health(r.Context()),\n\
+    \  }\n\n  allHealthy := true\n  for _, err := range checks {\n    if err != nil\
+    \ {\n      allHealthy = false\n      break\n    }\n  }\n\n  if allHealthy {\n\
+    \    w.WriteHeader(http.StatusOK)\n    json.NewEncoder(w).Encode(map[string]string{\"\
+    status\": \"ready\"})\n  } else {\n    w.WriteHeader(http.StatusServiceUnavailable)\n\
+    \    json.NewEncoder(w).Encode(checks)\n  }\n}\n```\n"
+grafana_dashboards:
+  recommended_dashboards:
+  - name: Revenge Overview
+    metrics:
+    - HTTP request rate (requests/sec)
+    - HTTP error rate (%)
+    - HTTP latency (p50, p95, p99)
+    - Active users
+    - Database connections
+  - name: River Job Queue
+    metrics:
+    - Jobs queued (by queue)
+    - Jobs completed (by queue)
+    - Jobs failed (by queue)
+    - Job duration (by queue)
+  - name: Transcoding
+    metrics:
+    - Active transcode sessions
+    - Transcode duration
+    - Transcode errors
+alert_rules_prometheus:
+- name: HighErrorRate
+  expr: rate(http_errors_total[5m]) > 0.05
+  severity: warning
+  description: HTTP error rate > 5%
+- name: HighLatency
+  expr: histogram_quantile(0.99, http_request_duration_seconds) > 1.0
+  severity: warning
+  description: P99 latency > 1 second
+- name: DatabaseDown
+  expr: up{job="revenge", instance=~".*:5432"} == 0
+  severity: critical
+  description: PostgreSQL is down
+- name: CacheDown
+  expr: up{job="revenge", instance=~".*:6379"} == 0
+  severity: warning
+  description: Dragonfly cache is down
+correlation_patterns: '**Log Correlation with Traces**:
+
+  - Include `trace_id` in all log lines
+
+  - Link logs to traces in Jaeger UI
+
+  - Example: `logger.With(slog.String("trace_id", span.SpanContext().TraceID().String()))`
+
+
+  **Metrics Correlation with Traces**:
+
+  - Exemplars link Prometheus metrics to traces
+
+  - Click metric spike → see example trace
+
+  - Requires Prometheus + Jaeger integration
+
+  '

@@ -1,0 +1,44 @@
+doc_title: Branch Protection Rules
+doc_category: operations
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete branch protection guide
+status_sources: 🔴
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: "  > GitHub branch protection rules for main and develop\n\n  Protection\
+  \ rules:\n  - **Required Reviews**: 1 approval for PRs to main/develop\n  - **Status\
+  \ Checks**: CI must pass (tests, lint, coverage)\n  - **No Force Push**: Prevent\
+  \ history rewriting on protected branches\n  - **Linear History**: Require merge\
+  \ commits or squash\n  - **Up-to-date**: Branch must be current with base before\
+  \ merge"
+wiki_tagline: '> Rules that protect main and develop branches from accidental changes'
+wiki_overview: 'Branch protection rules prevent direct pushes to main and develop branches. All changes must go through pull requests with at least one approval. CI checks (tests, linting, coverage) must pass before merging. Force pushes are disabled to preserve commit history. These rules are configured in GitHub repository settings and ensure code quality and review for all changes.'
+sources:
+- name: Conventional Commits
+  url: https://www.conventionalcommits.org/
+  note: Auto-resolved from conventional-commits
+- name: Git Flow
+  url: https://nvie.com/posts/a-successful-git-branching-model/
+  note: Auto-resolved from gitflow
+design_refs:
+- title: operations
+  path: operations/INDEX.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+main: Strictest protection - production code
+develop: Require CI + 1 review

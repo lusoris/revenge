@@ -1,0 +1,309 @@
+doc_title: Arr Integration Pattern
+doc_category: pattern
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete Arr integration pattern
+status_sources: ✅
+status_sources_notes: All Arr tools documented
+status_instructions: ✅
+status_instructions_notes: Generated from design
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+technical_summary: |-
+  > Webhook-based integration pattern with Radarr, Sonarr, Lidarr, and Whisparr
+
+  Standard pattern for Arr stack integration:
+  - **Webhook Handlers**: Process Download, Upgrade, Rename, Delete events
+  - **Metadata Sync**: Two-way sync with conflict resolution
+  - **Priority Chain**: Arr metadata > Internal > External APIs
+  - **Background Jobs**: Async enrichment and validation
+  - **Error Handling**: Retry logic with exponential backoff
+
+wiki_tagline: |-
+  > Seamless integration with your Arr stack for automated media management
+
+wiki_overview: |-
+  The Arr Integration Pattern provides a consistent approach for integrating with Radarr, Sonarr, Lidarr, and Whisparr. Webhook events automatically sync new downloads, metadata updates, and deletions. The system prioritizes Arr metadata (which is already cached from upstream sources) to minimize external API calls, while background jobs enrich content with additional metadata when needed.
+sources:
+  - name: Radarr API Docs
+    url: https://radarr.video/docs/api/
+    note: Radarr webhook events
+  - name: Sonarr API Docs
+    url: https://sonarr.tv/docs/api/
+    note: Sonarr webhook events
+  - name: Lidarr API Docs
+    url: https://lidarr.audio/docs/api/
+    note: Lidarr webhook events
+  - name: Servarr Wiki
+    url: https://wiki.servarr.com/
+    note: Shared Arr stack documentation
+
+design_refs:
+- title: patterns
+  path: patterns.md
+- title: 01_ARCHITECTURE
+  path: architecture/01_ARCHITECTURE.md
+- title: 02_DESIGN_PRINCIPLES
+  path: architecture/02_DESIGN_PRINCIPLES.md
+- title: 03_METADATA_SYSTEM
+  path: architecture/03_METADATA_SYSTEM.md
+
+pattern_name: Arr Integration Pattern
+
+webhook_events:
+  radarr:
+    - event: Download
+      trigger: Movie file downloaded
+      payload_fields: movie, movieFile, release, downloadClient
+      action: Create/update movie record, trigger metadata enrichment
+    - event: Upgrade
+      trigger: Better quality file downloaded
+      payload_fields: movie, movieFile, deletedFiles
+      action: Update movie file path, remove old file reference
+    - event: Rename
+      trigger: File renamed by Radarr
+      payload_fields: movie, movieFile
+      action: Update file path in database
+    - event: MovieDelete
+      trigger: Movie deleted from Radarr
+      payload_fields: movie, deletedFiles
+      action: Mark as unavailable or delete from Revenge
+
+  sonarr:
+    - event: Download
+      trigger: Episode file downloaded
+      payload_fields: series, episodes, episodeFile, release
+      action: Create/update episode records
+    - event: Upgrade
+      trigger: Better quality file downloaded
+      payload_fields: series, episodes, episodeFile, deletedFiles
+      action: Update episode file path
+    - event: Rename
+      trigger: File renamed by Sonarr
+      payload_fields: series, episodeFile
+      action: Update file path in database
+    - event: SeriesDelete
+      trigger: Series deleted from Sonarr
+      payload_fields: series, deletedFiles
+      action: Mark series as unavailable
+
+  lidarr:
+    - event: AlbumDownload
+      trigger: Album downloaded
+      payload_fields: artist, album, tracks, release
+      action: Create/update album and track records
+    - event: AlbumUpgrade
+      trigger: Better quality album downloaded
+      payload_fields: artist, album, deletedFiles
+      action: Update album files
+    - event: TrackRetag
+      trigger: Metadata tags updated
+      payload_fields: artist, album, trackFile
+      action: Re-extract metadata from file
+    - event: ArtistDelete
+      trigger: Artist deleted from Lidarr
+      payload_fields: artist, deletedFiles
+      action: Mark artist as unavailable
+
+  whisparr:
+    - event: Download
+      trigger: Scene downloaded
+      payload_fields: movie, movieFile, release
+      action: Create/update QAR record (legacy module)
+    - event: Upgrade
+      trigger: Better quality file downloaded
+      payload_fields: movie, movieFile, deletedFiles
+      action: Update file path
+    - event: MovieDelete
+      trigger: Scene deleted from Whisparr
+      payload_fields: movie, deletedFiles
+      action: Mark as unavailable
+
+webhook_handler_pattern: |
+  **Standard Webhook Handler Implementation**:
+
+  ```go
+  // Webhook handler receives events from Arr services
+  func (h *ArrWebhookHandler) HandleRadarrEvent(ctx context.Context, event *RadarrEvent) error {
+      switch event.EventType {
+      case "Download":
+          return h.handleMovieDownload(ctx, event)
+      case "Upgrade":
+          return h.handleMovieUpgrade(ctx, event)
+      case "Rename":
+          return h.handleMovieRename(ctx, event)
+      case "MovieDelete":
+          return h.handleMovieDelete(ctx, event)
+      default:
+          return fmt.Errorf("unknown event type: %s", event.EventType)
+      }
+  }
+
+  func (h *ArrWebhookHandler) handleMovieDownload(ctx context.Context, event *RadarrEvent) error {
+      // 1. Extract metadata from webhook payload
+      movie := event.Movie
+
+      // 2. Check if movie already exists
+      existing, err := h.repo.GetByRadarrID(ctx, movie.ID)
+      if err != nil && !errors.Is(err, ErrNotFound) {
+          return fmt.Errorf("failed to check existing: %w", err)
+      }
+
+      // 3. Use Arr metadata (already enriched from TMDb)
+      movieRecord := &Movie{
+          RadarrID: movie.ID,
+          Title: movie.Title,
+          Year: movie.Year,
+          TMDbID: movie.TmdbId,
+          FilePath: event.MovieFile.RelativePath,
+          // Use metadata from Radarr (already fetched from TMDb)
+          Overview: movie.Overview,
+          PosterURL: movie.Images.FindPoster(),
+          Genres: movie.Genres,
+      }
+
+      // 4. Save or update
+      if existing != nil {
+          return h.repo.Update(ctx, movieRecord)
+      }
+      return h.repo.Insert(ctx, movieRecord)
+  }
+  ```
+
+metadata_sync_strategy:
+  priority_order:
+    1: Arr Service Metadata (Radarr, Sonarr, Lidarr, Whisparr)
+    2: Internal Metadata (Stash-App for adult content)
+    3: External API Direct (TMDb, MusicBrainz, StashDB)
+    4: Background Enrichment Jobs
+
+  rationale: |-
+    Arr services already fetch and cache metadata from upstream sources (TMDb, MusicBrainz, etc.).
+    Re-fetching the same data from external APIs wastes API quota and adds latency.
+    Use Arr metadata first, only enrich with additional details not provided by Arr.
+
+  conflict_resolution:
+    strategy: Arr metadata wins by default
+    user_override: Configurable per-library
+    example: |-
+      If Radarr provides a movie title "The Matrix (1999)" but TMDb returns "The Matrix",
+      use Radarr's title since it includes the year for disambiguation.
+
+      User can configure library to prefer TMDb metadata over Radarr if desired.
+
+background_enrichment:
+  trigger: After initial webhook processing
+  method: River background jobs
+  jobs:
+    - job: EnrichMovieMetadata
+      input: movie_id
+      actions:
+        - Fetch additional metadata not provided by Radarr (cast, crew, reviews)
+        - Download high-resolution poster/backdrop images
+        - Extract video codec and quality information
+        - Generate video preview thumbnails
+    - job: EnrichAlbumMetadata
+      input: album_id
+      actions:
+        - Fetch artist biography from Last.fm
+        - Get album reviews from external sources
+        - Download high-resolution album art
+        - Extract audio fingerprints for track matching
+
+validation_and_reconciliation:
+  validation_checks:
+    - File exists at provided path
+    - File is readable and not corrupted
+    - Metadata IDs are valid (TMDb ID, MusicBrainz ID, etc.)
+    - No duplicate entries created
+
+  reconciliation:
+    frequency: Daily background job
+    actions:
+      - Check Arr API for deleted items not reflected via webhooks
+      - Verify file paths still exist
+      - Update metadata for items modified in Arr
+      - Remove orphaned records
+
+error_handling:
+  retry_strategy:
+    method: Exponential backoff
+    max_retries: 5
+    initial_delay: 1s
+    max_delay: 60s
+
+  failure_scenarios:
+    - scenario: Webhook payload malformed
+      action: Log error, return 400 Bad Request
+    - scenario: Database connection failed
+      action: Retry with backoff, queue for later processing
+    - scenario: File path doesn't exist
+      action: Log warning, mark as unavailable, retry later
+    - scenario: External API rate limited
+      action: Skip external enrichment, use Arr metadata only
+
+implementation_example: |
+  **Complete Integration Example**:
+
+  ```go
+  // Module registration with fx
+  var Module = fx.Module(
+      "arr_integration",
+      fx.Provide(
+          NewRadarrWebhookHandler,
+          NewSonarrWebhookHandler,
+          NewLidarrWebhookHandler,
+          NewWhisparrWebhookHandler,
+      ),
+  )
+
+  // Webhook endpoint registration (ogen)
+  func (h *Handler) PostArrWebhook(ctx context.Context, req *ArrWebhookRequest) (*ArrWebhookResponse, error) {
+      // Validate webhook signature (if configured)
+      if err := h.validateWebhookSignature(req); err != nil {
+          return nil, ErrUnauthorized
+      }
+
+      // Route to appropriate handler based on source
+      switch req.Source {
+      case "radarr":
+          err = h.radarrHandler.HandleEvent(ctx, req.Payload)
+      case "sonarr":
+          err = h.sonarrHandler.HandleEvent(ctx, req.Payload)
+      case "lidarr":
+          err = h.lidarrHandler.HandleEvent(ctx, req.Payload)
+      case "whisparr":
+          err = h.whisparrHandler.HandleEvent(ctx, req.Payload)
+      default:
+          return nil, fmt.Errorf("unknown source: %s", req.Source)
+      }
+
+      if err != nil {
+          // Log error but return 200 to prevent Arr from retrying
+          slog.Error("webhook processing failed", "error", err, "source", req.Source)
+      }
+
+      return &ArrWebhookResponse{Success: true}, nil
+  }
+  ```
+
+best_practices:
+  - practice: Always return 200 OK to webhooks
+    reason: Prevents Arr services from retrying on transient errors
+  - practice: Process webhooks asynchronously
+    reason: Fast response time, avoid timeout issues
+  - practice: Use Arr metadata as source of truth
+    reason: Avoids duplicate API calls and quota waste
+  - practice: Validate file existence before updating database
+    reason: Prevents broken file path references
+  - practice: Implement idempotency
+    reason: Handle duplicate webhook deliveries gracefully
+  - practice: Log all webhook events
+    reason: Debugging and auditing
