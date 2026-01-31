@@ -95,10 +95,9 @@ class GitHubDiscussionsManager:
                 if has_discussions:
                     print("   ✓ Discussions already enabled")
                     return True
-                else:
-                    print("   ⚠️  Discussions not enabled")
-                    print("      Enable manually: Settings → Features → Discussions")
-                    return False
+                print("   ⚠️  Discussions not enabled")
+                print("      Enable manually: Settings → Features → Discussions")
+                return False
 
         except subprocess.CalledProcessError:
             print("   ⚠️  Could not check discussions status")

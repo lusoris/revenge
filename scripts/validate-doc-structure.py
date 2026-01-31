@@ -192,7 +192,7 @@ def validate_document(doc_path: Path) -> dict:
         results["info"].append("Contains TODO/FIXME markers")
 
     # Check for placeholder content
-    if re.search(r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.I):
+    if re.search(r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.IGNORECASE):
         results["warnings"].append("Contains placeholder content")
 
     # Check line length (markdown readability)
@@ -208,10 +208,10 @@ def validate_document(doc_path: Path) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Validate document structure")
     parser.add_argument(
-        "--category", "-c", help="Only check specific category (e.g., 'services')"
+        "--category", "-c", help="Only check specific category (e.g., 'services')",
     )
     parser.add_argument(
-        "--strict", "-s", action="store_true", help="Treat warnings as errors"
+        "--strict", "-s", action="store_true", help="Treat warnings as errors",
     )
     parser.add_argument("--verbose", "-v", action="store_true", help="Show all details")
     parser.add_argument("--quiet", "-q", action="store_true", help="Only show summary")
@@ -281,7 +281,7 @@ def main():
         for cat, stats in sorted(category_stats.items()):
             status = "✓" if stats["errors"] == 0 and stats["warnings"] == 0 else "!"
             print(
-                f"  {status} {cat}: {stats['docs']} docs, {stats['errors']}E/{stats['warnings']}W"
+                f"  {status} {cat}: {stats['docs']} docs, {stats['errors']}E/{stats['warnings']}W",
             )
 
     # Exit code

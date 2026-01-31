@@ -117,7 +117,7 @@ def compare_versions(
                     "source": "go.mod",
                     "actual": go_version,
                     "sot": sot_version,
-                }
+                },
             )
 
     # Check frontend packages
@@ -130,7 +130,7 @@ def compare_versions(
                     "source": "package.json",
                     "actual": pkg_version,
                     "sot": sot_version,
-                }
+                },
             )
 
     return discrepancies

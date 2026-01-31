@@ -174,7 +174,7 @@ class LinterRunner:
         return self.run_command(cmd)
 
     def run_all_linters(
-        self, linters: list[str] | None = None
+        self, linters: list[str] | None = None,
     ) -> dict[str, LintResult]:
         """Run all or selected linters in parallel.
 

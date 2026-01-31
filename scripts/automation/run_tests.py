@@ -76,7 +76,7 @@ class TestRunner:
         self.root = Path.cwd()
 
     def run_command(
-        self, cmd: list[str], cwd: Path | None = None
+        self, cmd: list[str], cwd: Path | None = None,
     ) -> subprocess.CompletedProcess:
         """Run command and return result.
 

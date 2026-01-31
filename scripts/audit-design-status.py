@@ -43,7 +43,7 @@ def check_design_status(content: str) -> str:
 
     if score >= 3:
         return "✅"
-    elif score >= 1:
+    if score >= 1:
         return "🟡"
     return "🔴"
 
@@ -55,12 +55,12 @@ def check_sources_status(content: str) -> str:
     external_links = len(re.findall(r"\[.+\]\(https?://", content))
 
     has_resources_section = bool(
-        re.search(r"## (Developer Resources|Sources)", content)
+        re.search(r"## (Developer Resources|Sources)", content),
     )
 
     if has_resources_section and external_links >= 3:
         return "✅"
-    elif external_links >= 2 or external_links >= 1:
+    if external_links >= 2 or external_links >= 1:
         return "🟡"
     return "🔴"
 
@@ -73,7 +73,7 @@ def check_instructions_status(content: str) -> str:
 
     if has_checklist and checkbox_count >= 5:
         return "✅"
-    elif has_checklist or checkbox_count >= 3:
+    if has_checklist or checkbox_count >= 3:
         return "🟡"
     return "🔴"
 
@@ -131,10 +131,10 @@ def generate_status_section(category: str, docs: list[dict]) -> list[str]:
     lines.append(f"## {display_name}")
     lines.append("")
     lines.append(
-        "| Document | Design | Sources | Instructions | Code | Linting | Unit | Integration |"
+        "| Document | Design | Sources | Instructions | Code | Linting | Unit | Integration |",
     )
     lines.append(
-        "|----------|--------|---------|--------------|------|---------|------|-------------|"
+        "|----------|--------|---------|--------------|------|---------|------|-------------|",
     )
 
     design_ok = 0
@@ -148,7 +148,7 @@ def generate_status_section(category: str, docs: list[dict]) -> list[str]:
         lines.append(
             f"| [{name}]({rel_path}) | {doc['design']} | {doc['sources']} | "
             f"{doc['instructions']} | {doc['code']} | {doc['linting']} | "
-            f"{doc['unit']} | {doc['integration']} |"
+            f"{doc['unit']} | {doc['integration']} |",
         )
 
         if doc["design"] == "✅":
@@ -161,7 +161,7 @@ def generate_status_section(category: str, docs: list[dict]) -> list[str]:
     total = len(docs)
     lines.append("")
     lines.append(
-        f"**Summary**: {design_ok}/{total} Design ✅ | {sources_ok}/{total} Sources ✅ | {instructions_ok}/{total} Instructions ✅"
+        f"**Summary**: {design_ok}/{total} Design ✅ | {sources_ok}/{total} Sources ✅ | {instructions_ok}/{total} Instructions ✅",
     )
     lines.append("")
     lines.append("---")
@@ -214,7 +214,7 @@ def generate_status_file(all_audits: dict[str, list[dict]]) -> str:
         display_name = category.replace("/", " - ").replace("_", " ").title()
         summary_rows.append(
             f"| {display_name} | {len(docs)} | {design_ok} ({100 * design_ok // len(docs)}%) | "
-            f"{sources_ok} ({100 * sources_ok // len(docs)}%) | {instructions_ok} ({100 * instructions_ok // len(docs)}%) |"
+            f"{sources_ok} ({100 * sources_ok // len(docs)}%) | {instructions_ok} ({100 * instructions_ok // len(docs)}%) |",
         )
 
     lines.extend(
@@ -225,7 +225,7 @@ def generate_status_file(all_audits: dict[str, list[dict]]) -> str:
             "",
             "| Category | Total | Design ✅ | Sources ✅ | Instructions ✅ |",
             "|----------|-------|-----------|------------|-----------------|",
-        ]
+        ],
     )
     lines.extend(summary_rows)
     lines.extend(
@@ -235,7 +235,7 @@ def generate_status_file(all_audits: dict[str, list[dict]]) -> str:
             "",
             "---",
             "",
-        ]
+        ],
     )
 
     # Category sections
@@ -259,7 +259,7 @@ def generate_status_file(all_audits: dict[str, list[dict]]) -> str:
             "```bash",
             "python scripts/audit-design-status.py --update",
             "```",
-        ]
+        ],
     )
 
     return "\n".join(lines)
@@ -328,7 +328,7 @@ All decisions documented in [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md):
 def main():
     parser = argparse.ArgumentParser(description="Audit design documentation status")
     parser.add_argument(
-        "--update", "-u", action="store_true", help="Update status and questions files"
+        "--update", "-u", action="store_true", help="Update status and questions files",
     )
     args = parser.parse_args()
 
@@ -346,7 +346,7 @@ def main():
         sources_ok = sum(1 for d in audits if d["sources"] == "✅")
         instructions_ok = sum(1 for d in audits if d["instructions"] == "✅")
         print(
-            f"  {category}: {len(docs)} docs | D:{design_ok} S:{sources_ok} I:{instructions_ok}"
+            f"  {category}: {len(docs)} docs | D:{design_ok} S:{sources_ok} I:{instructions_ok}",
         )
 
     total_docs = sum(len(docs) for docs in all_audits.values())

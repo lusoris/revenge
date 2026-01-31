@@ -103,7 +103,7 @@ class SourceFetcher:
         return None
 
     def process_html(
-        self, response: requests.Response, selectors: list[str] | None
+        self, response: requests.Response, selectors: list[str] | None,
     ) -> str:
         """Extract and convert HTML content to markdown."""
         soup = BeautifulSoup(response.text, "lxml")
@@ -127,10 +127,9 @@ class SourceFetcher:
 
         if self.html_converter:
             return self.html_converter.handle(html_content)
-        else:
-            # Fallback: simple text extraction without html2text
-            soup = BeautifulSoup(html_content, "lxml")
-            return soup.get_text(separator="\n\n", strip=True)
+        # Fallback: simple text extraction without html2text
+        soup = BeautifulSoup(html_content, "lxml")
+        return soup.get_text(separator="\n\n", strip=True)
 
     def process_github_readme(self, url: str) -> str | None:
         """Fetch GitHub README in raw markdown format."""
@@ -213,7 +212,7 @@ class SourceFetcher:
 
             # Check if content changed
             if not self.force_update and not self._content_changed(
-                source_id, content_hash
+                source_id, content_hash,
             ):
                 # Get previous fetch time from existing index
                 existing = self.existing_index.get("sources", {}).get(source_id, {})
@@ -326,7 +325,7 @@ class SourceFetcher:
         # Save index
         with open(INDEX_YAML, "w", encoding="utf-8") as f:
             yaml.dump(
-                index, f, default_flow_style=False, allow_unicode=True, sort_keys=False
+                index, f, default_flow_style=False, allow_unicode=True, sort_keys=False,
             )
 
         print("\n=== SUMMARY ===")
@@ -340,16 +339,16 @@ class SourceFetcher:
 def main():
     parser = argparse.ArgumentParser(description="Fetch external documentation sources")
     parser.add_argument(
-        "--category", "-c", help="Fetch only specific category", default=None
+        "--category", "-c", help="Fetch only specific category", default=None,
     )
     parser.add_argument(
-        "--id", "-i", help="Fetch only specific source by ID", default=None
+        "--id", "-i", help="Fetch only specific source by ID", default=None,
     )
     parser.add_argument(
-        "--dry-run", "-n", action="store_true", help="Preview without fetching"
+        "--dry-run", "-n", action="store_true", help="Preview without fetching",
     )
     parser.add_argument(
-        "--force", "-f", action="store_true", help="Force update even if unchanged"
+        "--force", "-f", action="store_true", help="Force update even if unchanged",
     )
     args = parser.parse_args()
 

@@ -311,7 +311,7 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
             "",
             "---",
             "",
-        ]
+        ],
     )
 
     # Subdirectories
@@ -360,7 +360,7 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
         [
             f"**Sources**: [External Sources Index]({sources_rel})",
             "",
-        ]
+        ],
     )
 
     # Related documentation
@@ -384,7 +384,7 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
             "",
             "Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A",
             "",
-        ]
+        ],
     )
 
     return "\n".join(lines)

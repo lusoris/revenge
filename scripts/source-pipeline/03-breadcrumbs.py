@@ -285,7 +285,7 @@ def find_design_docs(specific_file: str | None = None) -> list[Path]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Add minimal source breadcrumbs to design docs"
+        description="Add minimal source breadcrumbs to design docs",
     )
     parser.add_argument(
         "--apply",

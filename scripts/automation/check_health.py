@@ -499,9 +499,8 @@ class HealthChecker:
             if result.returncode == 0:
                 print("✅ GitHub issue created")
                 return True
-            else:
-                print(f"❌ Failed to create issue: {result.stderr}")
-                return False
+            print(f"❌ Failed to create issue: {result.stderr}")
+            return False
 
         except FileNotFoundError:
             print("❌ gh CLI not found, cannot create issue")

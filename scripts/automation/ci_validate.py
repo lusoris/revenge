@@ -121,12 +121,10 @@ class CIValidator:
                 if self.strict:
                     print("\n❌ STRICT MODE: Cannot have uncommitted changes")
                     return False, changed_files
-                else:
-                    print("\n⚠️  Warning: Uncommitted changes detected")
-                    return True, changed_files
-            else:
-                print("✅ No uncommitted changes")
-                return True, []
+                print("\n⚠️  Warning: Uncommitted changes detected")
+                return True, changed_files
+            print("✅ No uncommitted changes")
+            return True, []
 
         except Exception as e:
             print(f"⚠️  Error checking git status: {e}")

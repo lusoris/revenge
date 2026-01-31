@@ -191,7 +191,7 @@ def validate_document(doc_path: Path) -> dict:
     if re.search(r"\bTODO\b|\bFIXME\b|\bXXX\b", content):
         results["info"].append("Contains TODO/FIXME markers")
 
-    if re.search(r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.I):
+    if re.search(r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.IGNORECASE):
         results["warnings"].append("Contains placeholder content")
 
     long_lines = sum(
@@ -293,7 +293,7 @@ def main() -> int:
             status = "✓" if stats["errors"] == 0 and stats["warnings"] == 0 else "!"
             print(
                 f"  {status} {cat}: {stats['docs']} docs, "
-                f"{stats['errors']}E/{stats['warnings']}W"
+                f"{stats['errors']}E/{stats['warnings']}W",
             )
 
     if args.strict:

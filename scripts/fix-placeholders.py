@@ -60,7 +60,7 @@ def fix_file(filepath: Path, dry_run: bool = True) -> list:
                     "new": replacement.strip()
                     if not replacement.endswith(" ")
                     else replacement.strip() + " ...",
-                }
+                },
             )
 
         content = re.sub(pattern, replacement, content, flags=flag)
@@ -95,11 +95,11 @@ def main():
                 print(f"\n{rel_path}:")
                 for change in changes:
                     print(
-                        f"  Line {change['line']}: '{change['old']}' → '{change['new']}'"
+                        f"  Line {change['line']}: '{change['old']}' → '{change['new']}'",
                     )
 
     print(
-        f"\n{'Applied' if args.fix else 'Would apply'} {total_changes} changes in {files_changed} files"
+        f"\n{'Applied' if args.fix else 'Would apply'} {total_changes} changes in {files_changed} files",
     )
 
     if not args.fix and total_changes > 0:

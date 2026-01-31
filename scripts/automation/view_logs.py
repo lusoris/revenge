@@ -133,7 +133,7 @@ class LogViewer:
         return True
 
     def search_workflow_logs(
-        self, run_id: str, pattern: str, case_sensitive: bool = False
+        self, run_id: str, pattern: str, case_sensitive: bool = False,
     ) -> bool:
         """Search workflow logs for pattern.
 
@@ -205,7 +205,7 @@ class LogViewer:
         return True
 
     def view_docker_logs(
-        self, container: str, lines: int = 100, follow: bool = False
+        self, container: str, lines: int = 100, follow: bool = False,
     ) -> bool:
         """View Docker container logs.
 
@@ -243,7 +243,7 @@ class LogViewer:
             return True
 
     def view_local_logs(
-        self, log_file: str, lines: int | None = None, follow: bool = False
+        self, log_file: str, lines: int | None = None, follow: bool = False,
     ) -> bool:
         """View local log files.
 
@@ -288,7 +288,7 @@ class LogViewer:
             return True
 
     def search_local_logs(
-        self, pattern: str, directory: Path | None = None, case_sensitive: bool = False
+        self, pattern: str, directory: Path | None = None, case_sensitive: bool = False,
     ) -> bool:
         """Search local log files.
 
@@ -349,7 +349,7 @@ class LogViewer:
             return True
 
         log_files = list(self.logs_dir.rglob("*.log")) + list(
-            self.logs_dir.rglob("*.txt")
+            self.logs_dir.rglob("*.txt"),
         )
 
         if not log_files:
@@ -370,7 +370,7 @@ class LogViewer:
 
             print(
                 f"{log_file.relative_to(self.logs_dir)}  "
-                f"{size_str:>10}  {mtime.strftime('%Y-%m-%d %H:%M')}"
+                f"{size_str:>10}  {mtime.strftime('%Y-%m-%d %H:%M')}",
             )
 
         return True
@@ -479,7 +479,7 @@ def main():
         success = viewer.search_local_logs(args.search, case_sensitive=args.case_sensitive)
     elif args.docker:
         success = viewer.view_docker_logs(
-            args.docker, args.lines or 100, args.follow
+            args.docker, args.lines or 100, args.follow,
         )
     elif args.local:
         success = viewer.view_local_logs(args.local, args.lines, args.follow)

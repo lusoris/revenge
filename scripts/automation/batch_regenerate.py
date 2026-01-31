@@ -237,7 +237,7 @@ def main():
 
     # Initialize regenerator
     regenerator = BatchRegenerator(
-        repo_root, preview_mode=preview, backup_originals=backup
+        repo_root, preview_mode=preview, backup_originals=backup,
     )
 
     # Run regeneration

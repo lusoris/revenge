@@ -229,7 +229,7 @@ class EnhancedCompletionAssistant:
         return fields
 
     def suggest_completions(
-        self, yaml_file: Path, category: str
+        self, yaml_file: Path, category: str,
     ) -> dict | None:
         """Suggest completions for a YAML file.
 
@@ -258,15 +258,15 @@ class EnhancedCompletionAssistant:
         # Extract category-specific fields
         if category == "integration":
             return self.extract_integration_fields(md_content, doc_title)
-        elif category == "service":
+        if category == "service":
             return self.extract_service_fields(md_content, doc_title)
-        elif category == "feature":
+        if category == "feature":
             return self.extract_feature_fields(md_content, doc_title)
 
         return None
 
     def apply_suggestions(
-        self, yaml_file: Path, suggestions: dict, dry_run: bool = False
+        self, yaml_file: Path, suggestions: dict, dry_run: bool = False,
     ) -> bool:
         """Apply suggestions to YAML file.
 
@@ -301,13 +301,13 @@ class EnhancedCompletionAssistant:
         # Write updated YAML
         with open(yaml_file, "w") as f:
             yaml.safe_dump(
-                data, f, default_flow_style=False, allow_unicode=True, sort_keys=False
+                data, f, default_flow_style=False, allow_unicode=True, sort_keys=False,
             )
 
         return True
 
     def process_category(
-        self, category: str, auto_apply: bool = False, dry_run: bool = False
+        self, category: str, auto_apply: bool = False, dry_run: bool = False,
     ) -> dict:
         """Process all files in a category.
 

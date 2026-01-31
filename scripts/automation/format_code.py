@@ -186,7 +186,7 @@ class CodeFormatter:
         return self.run_command(cmd)
 
     def format_all_code(
-        self, formatters: list[str] | None = None
+        self, formatters: list[str] | None = None,
     ) -> dict[str, FormatResult]:
         """Format all or selected code.
 

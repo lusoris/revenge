@@ -180,10 +180,9 @@ class LicenseChecker:
 
         if normalized in self.ALLOWED_LICENSES:
             return "allowed"
-        elif normalized in self.DENIED_LICENSES:
+        if normalized in self.DENIED_LICENSES:
             return "denied"
-        else:
-            return "unknown"
+        return "unknown"
 
     def check_go_licenses(self) -> LicenseCheckResult:
         """Check Go module licenses.
@@ -404,7 +403,7 @@ class LicenseChecker:
         )
 
     def check_all_licenses(
-        self, ecosystems: list[str] | None = None
+        self, ecosystems: list[str] | None = None,
     ) -> dict[str, LicenseCheckResult]:
         """Check all or selected ecosystems.
 
@@ -478,13 +477,13 @@ class LicenseChecker:
             print(
                 f"{status:10} {ecosystem_name:10} "
                 f"A:{result.allowed:4} D:{result.denied:4} U:{result.unknown:4} "
-                f"Total:{result.total:4}"
+                f"Total:{result.total:4}",
             )
 
         print(f"\n{'='*70}")
         print(
             f"Overall: Allowed:{total_allowed} Denied:{total_denied} "
-            f"Unknown:{total_unknown} Total:{total_deps}"
+            f"Unknown:{total_unknown} Total:{total_deps}",
         )
 
         if total_denied > 0:
@@ -517,14 +516,12 @@ class LicenseChecker:
 
                 if result.denied_licenses:
                     f.write("### ❌ Denied Licenses\n\n")
-                    for lic in result.denied_licenses:
-                        f.write(f"- {lic.name}@{lic.version}: {lic.license}\n")
+                    f.writelines(f"- {lic.name}@{lic.version}: {lic.license}\n" for lic in result.denied_licenses)
                     f.write("\n")
 
                 if result.unknown_licenses:
                     f.write("### ⚠️ Unknown Licenses\n\n")
-                    for lic in result.unknown_licenses:
-                        f.write(f"- {lic.name}@{lic.version}: {lic.license}\n")
+                    f.writelines(f"- {lic.name}@{lic.version}: {lic.license}\n" for lic in result.unknown_licenses)
                     f.write("\n")
 
         print(f"📄 Report saved to: {output_file}")

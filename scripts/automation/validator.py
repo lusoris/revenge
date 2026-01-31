@@ -114,7 +114,7 @@ class YAMLValidator:
 
         # Find all YAML files
         yaml_files = list(directory.glob("**/*.yaml")) + list(
-            directory.glob("**/*.yml")
+            directory.glob("**/*.yml"),
         )
 
         print(f"\n📁 Scanning {directory.relative_to(self.repo_root)}")

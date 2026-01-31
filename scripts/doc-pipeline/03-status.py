@@ -73,7 +73,7 @@ def parse_status_table(content: str) -> list[dict] | None:
                     "dimension": dimension,
                     "status": status,
                     "notes": notes,
-                }
+                },
             )
 
     return rows

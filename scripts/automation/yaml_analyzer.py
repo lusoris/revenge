@@ -82,7 +82,7 @@ class YAMLAnalyzer:
         # Calculate completion score (0-100)
         total_fields = len(data)
         incomplete_fields = len(result["placeholders"]) + len(
-            result["missing_required"]
+            result["missing_required"],
         )
         result["completion_score"] = (
             int((total_fields - incomplete_fields) / total_fields * 100)
@@ -181,7 +181,7 @@ class YAMLAnalyzer:
             key=lambda x: (
                 priority_categories.index(x.get("category", "other")),
                 x.get("completion_score", 0),
-            )
+            ),
         )
 
         if priority_files:
@@ -192,7 +192,7 @@ class YAMLAnalyzer:
                     print(f"   Placeholders: {', '.join(result['placeholders'][:5])}")
                 if result["missing_required"]:
                     print(
-                        f"   Missing: {', '.join(result['missing_required'][:5])}"
+                        f"   Missing: {', '.join(result['missing_required'][:5])}",
                     )
                 print()
         else:

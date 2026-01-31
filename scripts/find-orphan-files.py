@@ -104,10 +104,10 @@ def find_index_files(directory: Path) -> list[Path]:
 def main():
     parser = argparse.ArgumentParser(description="Find orphan documentation files")
     parser.add_argument(
-        "--include-sources", action="store_true", help="Include sources/ directory"
+        "--include-sources", action="store_true", help="Include sources/ directory",
     )
     parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Show linking details"
+        "--verbose", "-v", action="store_true", help="Show linking details",
     )
     args = parser.parse_args()
 

@@ -244,7 +244,7 @@ def generate_breadcrumb_section(doc_path: Path, references: list[dict]) -> str:
 
     # Calculate relative paths to indexes
     sources_index_rel = calculate_relative_path(
-        doc_path, SOURCES_DIR / "SOURCES_INDEX.md"
+        doc_path, SOURCES_DIR / "SOURCES_INDEX.md",
     )
     crossref_rel = calculate_relative_path(doc_path, SOURCES_DIR / "DESIGN_CROSSREF.md")
 
@@ -255,7 +255,7 @@ def generate_breadcrumb_section(doc_path: Path, references: list[dict]) -> str:
             f"- [All Sources Index]({sources_index_rel}) - Complete list of external documentation",
             f"- [Design ↔ Sources Map]({crossref_rel}) - Which docs reference which sources",
             "",
-        ]
+        ],
     )
 
     if references:
@@ -265,7 +265,7 @@ def generate_breadcrumb_section(doc_path: Path, references: list[dict]) -> str:
                 "",
                 "| Source | Documentation |",
                 "|--------|---------------|",
-            ]
+            ],
         )
 
         for ref in sorted(references, key=lambda x: x["name"]):
@@ -306,7 +306,7 @@ def find_insertion_point(content: str) -> tuple[int, str]:
     # Look for "Related Documentation" section (insert before it)
     for i, line in enumerate(lines):
         if line.strip().startswith("## Related") or line.strip().startswith(
-            "## See Also"
+            "## See Also",
         ):
             return i, "insert"
 
@@ -391,10 +391,10 @@ def find_design_docs(specific_file: str | None = None) -> list[Path]:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Add source breadcrumbs to design docs"
+        description="Add source breadcrumbs to design docs",
     )
     parser.add_argument(
-        "--dry-run", "-n", action="store_true", help="Preview changes without writing"
+        "--dry-run", "-n", action="store_true", help="Preview changes without writing",
     )
     parser.add_argument("--file", "-f", help="Update specific file only")
     args = parser.parse_args()

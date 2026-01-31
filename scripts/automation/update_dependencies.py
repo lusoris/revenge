@@ -116,7 +116,7 @@ class DependencyUpdater:
                                 current=mod["Version"],
                                 available=mod["Update"]["Version"],
                                 ecosystem="go",
-                            )
+                            ),
                         )
                 except json.JSONDecodeError:
                     continue
@@ -148,7 +148,7 @@ class DependencyUpdater:
         try:
             # Get outdated packages
             output = self.run_command(
-                ["npm", "outdated", "--json"], cwd=frontend_dir
+                ["npm", "outdated", "--json"], cwd=frontend_dir,
             )
 
             if not output or self.dry_run:
@@ -165,7 +165,7 @@ class DependencyUpdater:
                         current=info["current"],
                         available=info["latest"],
                         ecosystem="npm",
-                    )
+                    ),
                 )
 
             if self.verbose:
@@ -195,7 +195,7 @@ class DependencyUpdater:
                                 current=info["current"],
                                 available=info["latest"],
                                 ecosystem="npm",
-                            )
+                            ),
                         )
                     if self.verbose:
                         print(f"   Found {len(outdated)} outdated npm packages")
@@ -234,7 +234,7 @@ class DependencyUpdater:
                         current=pkg["version"],
                         available=pkg["latest_version"],
                         ecosystem="python",
-                    )
+                    ),
                 )
 
             if self.verbose:
@@ -247,7 +247,7 @@ class DependencyUpdater:
             return []
 
     def check_all_dependencies(
-        self, ecosystem: str | None = None
+        self, ecosystem: str | None = None,
     ) -> dict[str, list[Dependency]]:
         """Check all dependencies or specific ecosystem.
 
@@ -329,7 +329,7 @@ class DependencyUpdater:
             for dep in deps:
                 print(f"   Updating {dep.name}: {dep.current} → {dep.available}")
                 self.run_command(
-                    ["npm", "update", dep.name], cwd=frontend_dir
+                    ["npm", "update", dep.name], cwd=frontend_dir,
                 )
 
             print("   ✓ npm dependencies updated")
@@ -363,7 +363,7 @@ class DependencyUpdater:
             for dep in deps:
                 print(f"   Updating {dep.name}: {dep.current} → {dep.available}")
                 self.run_command(
-                    ["pip", "install", "--upgrade", dep.name]
+                    ["pip", "install", "--upgrade", dep.name],
                 )
 
             # Update requirements.txt if it exists

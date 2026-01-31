@@ -125,14 +125,14 @@ def main() -> int:
     archive_parser = subparsers.add_parser("archive", help="Archive a file")
     archive_parser.add_argument("file", type=Path, help="File to archive")
     archive_parser.add_argument(
-        "--apply", action="store_true", help="Actually archive (default: dry-run)"
+        "--apply", action="store_true", help="Actually archive (default: dry-run)",
     )
 
     # Restore command
     restore_parser = subparsers.add_parser("restore", help="Restore an archived file")
     restore_parser.add_argument("file", type=Path, help="File to restore")
     restore_parser.add_argument(
-        "--apply", action="store_true", help="Actually restore (default: dry-run)"
+        "--apply", action="store_true", help="Actually restore (default: dry-run)",
     )
 
     args = parser.parse_args()
@@ -154,7 +154,7 @@ def main() -> int:
                 print(f"  {rel}")
         return 0
 
-    elif args.command == "archive":
+    if args.command == "archive":
         filepath = args.file
         if not filepath.is_absolute():
             filepath = DESIGN_DIR / filepath
@@ -164,7 +164,7 @@ def main() -> int:
         success = archive_file(filepath, dry_run=dry_run)
         return 0 if success else 1
 
-    elif args.command == "restore":
+    if args.command == "restore":
         filepath = args.file
         if not filepath.is_absolute():
             filepath = ARCHIVE_DIR / filepath

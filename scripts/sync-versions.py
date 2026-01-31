@@ -33,7 +33,7 @@ def extract_sot_versions() -> dict:
     # Pattern for table rows with package and version
     # | `package/path` | vX.Y.Z | description |
     table_pattern = re.compile(
-        r"\|\s*`([^`]+)`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?(?:-\w+)?)\s*\|", re.MULTILINE
+        r"\|\s*`([^`]+)`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?(?:-\w+)?)\s*\|", re.MULTILINE,
     )
 
     for match in table_pattern.finditer(content):
@@ -81,7 +81,7 @@ def find_version_mentions(filepath: Path, sot_versions: dict) -> list:
                             "found": found_version,
                             "expected": sot_version,
                             "match": match.group(0),
-                        }
+                        },
                     )
 
     return mentions
@@ -153,7 +153,7 @@ def main():
                 print(f"  Fixed {len(mentions)} version(s) in {rel_path}")
 
     print(
-        f"\n{'Fixed' if args.fix else 'Found'} {total_drift} version drift(s) in {files_with_drift} file(s)"
+        f"\n{'Fixed' if args.fix else 'Found'} {total_drift} version drift(s) in {files_with_drift} file(s)",
     )
 
     if args.report:
@@ -171,7 +171,7 @@ def main():
 
         for m in all_mentions:
             lines.append(
-                f"| {m['file']} | {m['line']} | `{m['package']}` | {m['found']} | {m['expected']} |"
+                f"| {m['file']} | {m['line']} | `{m['package']}` | {m['found']} | {m['expected']} |",
             )
 
         report_path.write_text("\n".join(lines), encoding="utf-8")

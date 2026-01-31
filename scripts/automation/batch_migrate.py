@@ -94,8 +94,7 @@ class BatchMigrator:
                     f.write(yaml_content)
 
                 return True, "✓ Migrated", output_path
-            else:
-                return True, "✓ Would migrate", output_path
+            return True, "✓ Would migrate", output_path
 
         except Exception as e:
             return False, f"✗ Error: {e}", None
@@ -147,7 +146,7 @@ class BatchMigrator:
                     "output": output_path.relative_to(self.repo_root)
                     if output_path
                     else None,
-                }
+                },
             )
 
         # Print results

@@ -103,7 +103,7 @@ class SourceFetcher:
         return None
 
     def process_html(
-        self, response: requests.Response, selectors: list[str] | None
+        self, response: requests.Response, selectors: list[str] | None,
     ) -> str:
         """Extract and convert HTML content to markdown."""
         soup = BeautifulSoup(response.text, "lxml")
@@ -218,7 +218,7 @@ class SourceFetcher:
             result["content_hash"] = content_hash
 
             if not self.force_update and not self._content_changed(
-                source_id, content_hash
+                source_id, content_hash,
             ):
                 existing = self.existing_index.get("sources", {}).get(source_id, {})
                 result["status"] = "unchanged"
@@ -323,7 +323,7 @@ class SourceFetcher:
 
         with open(INDEX_YAML, "w", encoding="utf-8") as f:
             yaml.dump(
-                index, f, default_flow_style=False, allow_unicode=True, sort_keys=False
+                index, f, default_flow_style=False, allow_unicode=True, sort_keys=False,
             )
 
         print("\n=== SUMMARY ===")

@@ -134,7 +134,7 @@ class DocGenerator:
         return generated_files
 
     def _merge_data(
-        self, shared: dict[str, Any], doc: dict[str, Any]
+        self, shared: dict[str, Any], doc: dict[str, Any],
     ) -> dict[str, Any]:
         """Merge shared data with doc-specific data.
 

@@ -76,7 +76,7 @@ class MarkdownParser:
 
         # Extract sources comment
         sources_match = re.search(
-            r"<!--\s*SOURCES:\s*(.+?)\s*-->", content, re.IGNORECASE
+            r"<!--\s*SOURCES:\s*(.+?)\s*-->", content, re.IGNORECASE,
         )
         if sources_match:
             source_ids = [s.strip() for s in sources_match.group(1).split(",")]
@@ -84,7 +84,7 @@ class MarkdownParser:
 
         # Extract design refs comment
         design_match = re.search(
-            r"<!--\s*DESIGN:\s*(.+?)\s*-->", content, re.IGNORECASE
+            r"<!--\s*DESIGN:\s*(.+?)\s*-->", content, re.IGNORECASE,
         )
         if design_match:
             design_ids = [d.strip() for d in design_match.group(1).split(",")]
@@ -116,7 +116,7 @@ class MarkdownParser:
             Dict with status_* fields or None if table not found
         """
         # Find status table (7 rows after header)
-        pattern = r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n" r"\|[-\s|]+\n" r"((?:\|.+\n){7})"
+        pattern = r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n((?:\|.+\n){7})"
 
         match = re.search(pattern, content, re.MULTILINE | re.DOTALL)
         if not match:
@@ -163,19 +163,19 @@ class MarkdownParser:
         # Check path-based categories
         if "/features/" in path_str:
             return "feature"
-        elif "/services/" in path_str:
+        if "/services/" in path_str:
             return "service"
-        elif "/integrations/" in path_str:
+        if "/integrations/" in path_str:
             return "integration"
-        elif "/architecture/" in path_str:
+        if "/architecture/" in path_str:
             return "architecture"
-        elif "/operations/" in path_str:
+        if "/operations/" in path_str:
             return "operations"
-        elif "/technical/" in path_str:
+        if "/technical/" in path_str:
             return "technical"
-        elif "/patterns/" in path_str:
+        if "/patterns/" in path_str:
             return "pattern"
-        elif "/research/" in path_str:
+        if "/research/" in path_str:
             return "research"
 
         return "other"
@@ -192,12 +192,11 @@ class MarkdownParser:
         # Common patterns for design doc IDs
         if design_id.upper() in ["OPERATIONS", "ARCHITECTURE", "SERVICES", "FEATURES"]:
             return f"{design_id.lower()}/INDEX.md"
-        elif re.match(r"^\d{2}_[A-Z_]+$", design_id):
+        if re.match(r"^\d{2}_[A-Z_]+$", design_id):
             # Numbered docs like 01_ARCHITECTURE
             return f"architecture/{design_id}.md"
-        else:
-            # Default: assume it's a relative path
-            return f"{design_id}.md"
+        # Default: assume it's a relative path
+        return f"{design_id}.md"
 
     def _extract_sections(self, content: str) -> list[dict]:
         """Extract major content sections from markdown.
@@ -286,7 +285,7 @@ class MarkdownParser:
                             "name": self.sources_index[source_id]["name"],
                             "url": self.sources_index[source_id]["url"],
                             "note": f"Auto-resolved from {source_id}",
-                        }
+                        },
                     )
                 else:
                     # Try partial match (e.g., "pgx" matches "go-pgx" or contains "pgx")
@@ -301,7 +300,7 @@ class MarkdownParser:
                                     "name": source_info["name"],
                                     "url": source_info["url"],
                                     "note": f"Auto-resolved from {source_id} → {full_id}",
-                                }
+                                },
                             )
                             matched = True
                             break
@@ -312,7 +311,7 @@ class MarkdownParser:
                                 "name": source_id,
                                 "url": "PLACEHOLDER_URL",
                                 "note": f"⚠️ Source '{source_id}' not found - needs manual resolution",
-                            }
+                            },
                         )
             if sources:
                 yaml_data["sources"] = sources
@@ -329,7 +328,7 @@ class MarkdownParser:
 
         # Convert to YAML
         yaml_str = yaml.dump(
-            yaml_data, default_flow_style=False, allow_unicode=True, sort_keys=False
+            yaml_data, default_flow_style=False, allow_unicode=True, sort_keys=False,
         )
 
         # Add header comment

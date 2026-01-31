@@ -90,7 +90,7 @@ class ConfigSync:
             new_content = re.sub(
                 r"golang \d+\.\d+(?:\.\d+)?",
                 f"golang {go_version}",
-                content
+                content,
             )
 
             if new_content != content:
@@ -150,7 +150,7 @@ class ConfigSync:
                 r"^go \d+\.\d+$",
                 f"go {go_version}",
                 content,
-                flags=re.MULTILINE
+                flags=re.MULTILINE,
             )
 
             if new_content != content:
@@ -212,7 +212,7 @@ class ConfigSync:
             new_content = re.sub(
                 r"(go-version:\s*['\"]?)(\d+\.\d+(?:\.\d+)?)",
                 rf"\g<1>{go_version}",
-                content
+                content,
             )
 
             if new_content != content:
@@ -266,7 +266,7 @@ class ConfigSync:
             new_content = re.sub(
                 r"FROM golang:\d+\.\d+(?:\.\d+)?",
                 f"FROM golang:{go_version}",
-                content
+                content,
             )
 
             if new_content != content:

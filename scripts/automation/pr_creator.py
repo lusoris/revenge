@@ -432,8 +432,7 @@ class PRCreator:
             # Create lock to prevent loops
             self.loop_prevention.create_lock()
             return True, result
-        else:
-            return False, result
+        return False, result
 
 
 def main():

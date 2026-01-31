@@ -155,9 +155,8 @@ class TOCGenerator:
             next_section = min(valid_positions)
             # Remove TOC section up to (but not including) the newline before next section
             return content[:toc_start] + content[next_section + 1:]
-        else:
-            # TOC is at the end
-            return content[:toc_start]
+        # TOC is at the end
+        return content[:toc_start]
 
     def add_toc(self, content: str) -> str:
         """Add TOC to markdown content.
@@ -187,8 +186,7 @@ class TOCGenerator:
         # Insert TOC after frontmatter
         if frontmatter:
             return f"{frontmatter}\n{toc}\n{body}"
-        else:
-            return f"{toc}\n{body}"
+        return f"{toc}\n{body}"
 
     def process_file(self, file_path: Path, dry_run: bool = False) -> bool:
         """Process a markdown file to add/update TOC.
@@ -219,7 +217,7 @@ class TOCGenerator:
         return True
 
     def process_directory(
-        self, directory: Path, pattern: str = "**/*.md", dry_run: bool = False
+        self, directory: Path, pattern: str = "**/*.md", dry_run: bool = False,
     ) -> dict:
         """Process all markdown files in directory.
 

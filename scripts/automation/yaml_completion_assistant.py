@@ -189,7 +189,7 @@ class CompletionAssistant:
         return suggestions
 
     def apply_suggestions(
-        self, yaml_file: Path, suggestions: dict, auto_apply: bool = False
+        self, yaml_file: Path, suggestions: dict, auto_apply: bool = False,
     ):
         """Apply suggestions to YAML file.
 
@@ -277,7 +277,7 @@ class CompletionAssistant:
                 if cont == "q":
                     print("\nStopped by user")
                     break
-                elif cont == "n":
+                if cont == "n":
                     continue
 
         print(f"\n{'='*70}")

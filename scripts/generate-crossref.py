@@ -116,7 +116,7 @@ def generate_sources_index(config: dict, index: dict) -> str:
             "",
             "---",
             "",
-        ]
+        ],
     )
 
     # Sources by category
@@ -151,7 +151,7 @@ def generate_sources_index(config: dict, index: dict) -> str:
             output_link = f"[{output}]({output})" if output else "-"
 
             lines.append(
-                f"| `{source_id}` | {name_link} | {source_type} | {status_emoji} | {output_link} |"
+                f"| `{source_id}` | {name_link} | {source_type} | {status_emoji} | {output_link} |",
             )
 
         lines.append("")
@@ -259,7 +259,7 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
             "",
             "Which external sources are referenced by each design document.",
             "",
-        ]
+        ],
     )
 
     for doc_path, source_ids in sorted(doc_references.items()):
@@ -286,7 +286,7 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
             "",
             "Which design documents reference each external source.",
             "",
-        ]
+        ],
     )
 
     for source_id, doc_paths in sorted(source_referenced_by.items()):
@@ -324,7 +324,7 @@ def generate_design_crossref(config: dict, design_docs: list[Path]) -> str:
                 "",
                 "Sources defined in SOURCES.yaml but not referenced in any design document.",
                 "",
-            ]
+            ],
         )
         for source_id in sorted(unreferenced):
             for category, category_sources in sources.items():
