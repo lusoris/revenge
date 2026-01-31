@@ -148,13 +148,7 @@ if [[ -n "$VALIDATE_ONLY" ]]; then
 fi
 
 # Step 0: Regenerate docs from YAML data
-REGEN_ARGS=()
-if [[ -n "$APPLY" ]]; then
-    REGEN_ARGS+=("--apply")
-else
-    REGEN_ARGS+=("--preview")
-fi
-run_step 0 "Regenerate Docs from YAML" "automation/batch_regenerate.py" "${REGEN_ARGS[@]}"
+run_step 0 "Regenerate Docs from YAML" "automation/batch_regenerate.py"
 
 # Step 1: Generate INDEX.md files
 INDEX_ARGS=()

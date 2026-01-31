@@ -29,32 +29,24 @@ class BatchRegenerator:
     def __init__(
         self,
         repo_root: Path,
-        preview_mode: bool = False,
         backup_originals: bool = False,
     ):
         """Initialize regenerator.
 
         Args:
             repo_root: Repository root path
-            preview_mode: If True, output to preview directories
             backup_originals: If True, backup existing files before overwriting
         """
         self.repo_root = repo_root
-        self.preview_mode = preview_mode
         self.backup_originals = backup_originals
         self.data_dir = repo_root / "data"
         self.generator = DocGenerator(repo_root)
 
         # Output directories
-        if preview_mode:
-            self.output_claude = repo_root / "docs" / "dev" / "design-preview"
-            self.output_wiki = repo_root / "docs" / "wiki-preview"
-            print("📋 PREVIEW MODE - Outputs to preview directories")
-        else:
-            self.output_claude = repo_root / "docs" / "dev" / "design"
-            self.output_wiki = repo_root / "docs" / "wiki"
-            if backup_originals:
-                print("💾 BACKUP MODE - Will backup existing files")
+        self.output_claude = repo_root / "docs" / "dev" / "design"
+        self.output_wiki = repo_root / "docs" / "wiki"
+        if backup_originals:
+            print("💾 BACKUP MODE - Will backup existing files")
 
     def find_yaml_files(self) -> list[Path]:
         """Find all YAML data files.
@@ -126,18 +118,11 @@ class BatchRegenerator:
             output_subpath = str(rel_path.parent)
 
             # Backup if needed
-            if self.backup_originals and not self.preview_mode:
+            if self.backup_originals:
                 claude_path = self.output_claude / rel_path.with_suffix(".md")
                 wiki_path = self.output_wiki / rel_path.with_suffix(".md")
                 self.backup_file(claude_path)
                 self.backup_file(wiki_path)
-
-            # Temporarily override output directories if preview mode
-            if self.preview_mode:
-                original_claude = self.generator.output_dir_claude
-                original_wiki = self.generator.output_dir_wiki
-                self.generator.output_dir_claude = self.output_claude
-                self.generator.output_dir_wiki = self.output_wiki
 
             # Generate docs
             generated = self.generator.generate_doc(
@@ -146,11 +131,6 @@ class BatchRegenerator:
                 output_subpath=output_subpath,
                 render_both=True,
             )
-
-            # Restore original output dirs if preview mode
-            if self.preview_mode:
-                self.generator.output_dir_claude = original_claude
-                self.generator.output_dir_wiki = original_wiki
 
             return True, "✓ Generated", generated
 
@@ -166,7 +146,7 @@ class BatchRegenerator:
         yaml_files = self.find_yaml_files()
 
         print(f"\n{'='*70}")
-        print(f"BATCH REGENERATION - {'PREVIEW' if self.preview_mode else 'LIVE'}")
+        print("BATCH REGENERATION")
         print(f"{'='*70}\n")
         print(f"Found {len(yaml_files)} YAML files to process\n")
 
@@ -218,12 +198,6 @@ class BatchRegenerator:
             print(f"  {category}: {count} files")
         print(f"{'='*70}\n")
 
-        if self.preview_mode:
-            print("📋 Preview outputs:")
-            print(f"   Claude: {self.output_claude.relative_to(self.repo_root)}")
-            print(f"   Wiki: {self.output_wiki.relative_to(self.repo_root)}")
-            print("\n⚠️  Review preview before running live regeneration\n")
-
         return stats
 
 
@@ -236,53 +210,27 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Preview mode (safe - outputs to preview directories)
+  # Regenerate all docs
   python batch_regenerate.py
-  python batch_regenerate.py --preview
 
-  # Live mode (writes to actual docs/ directories)
-  python batch_regenerate.py --live
-
-  # Live mode with backups
-  python batch_regenerate.py --live --backup
-
-  # Apply mode (alias for --live)
-  python batch_regenerate.py --apply
+  # Regenerate with backups
+  python batch_regenerate.py --backup
         """,
     )
 
     parser.add_argument(
-        "--live",
-        action="store_true",
-        help="Write to actual docs/ directories (default: preview mode)",
-    )
-    parser.add_argument(
-        "--apply",
-        action="store_true",
-        help="Alias for --live (write to actual directories)",
-    )
-    parser.add_argument(
-        "--preview",
-        action="store_true",
-        help="Preview mode - output to preview directories (default)",
-    )
-    parser.add_argument(
         "--backup",
         action="store_true",
-        help="Backup existing files before overwriting (use with --live)",
+        help="Backup existing files before overwriting",
     )
 
     args = parser.parse_args()
-
-    # Determine mode (default to preview for safety)
-    preview_mode = not (args.apply or args.live)
 
     repo_root = Path(__file__).parent.parent.parent
 
     # Initialize regenerator
     regenerator = BatchRegenerator(
         repo_root,
-        preview_mode=preview_mode,
         backup_originals=args.backup,
     )
 
