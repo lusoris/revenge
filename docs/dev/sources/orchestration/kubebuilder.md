@@ -1,8 +1,8 @@
 # Kubebuilder Book
 
 > Source: https://book.kubebuilder.io/
-> Fetched: 2026-01-31T11:03:43.402197+00:00
-> Content-Hash: 71f1034db36f4ac7
+> Fetched: 2026-01-31T16:03:36.801412+00:00
+> Content-Hash: 0ca7641ff3c1ed2c
 > Type: html
 
 ---
@@ -84,6 +84,7 @@ If you like to contribute to either this book or the code, please be so kind to 
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

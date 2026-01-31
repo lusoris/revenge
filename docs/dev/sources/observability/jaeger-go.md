@@ -1,8 +1,8 @@
 # Jaeger Go Client
 
 > Source: https://pkg.go.dev/github.com/jaegertracing/jaeger-client-go
-> Fetched: 2026-01-31T11:02:44.208810+00:00
-> Content-Hash: 510812d2236ecbd7
+> Fetched: 2026-01-31T16:02:41.859063+00:00
+> Content-Hash: 5768f484eeb1cf71
 > Type: html
 
 ---
@@ -2213,6 +2213,7 @@ NewUDPTransportWithParams creates a reporter that submits spans to jaeger-agent.
     }
 
 UDPTransportParams allows specifying options for initializing a UDPTransport. An instance of this struct should be passed to NewUDPTransportWithParams. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

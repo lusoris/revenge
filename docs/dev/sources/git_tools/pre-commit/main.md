@@ -1,8 +1,8 @@
 # pre-commit Framework
 
 > Source: https://pre-commit.com/
-> Fetched: 2026-01-31T11:07:02.372032+00:00
-> Content-Hash: fe4f19ebe093af8e
+> Fetched: 2026-01-31T16:08:21.729113+00:00
+> Content-Hash: fd22ecd222b963aa
 > Type: html
 
 ---
@@ -1618,6 +1618,7 @@ There are several ways to get help for pre-commit:
   * and users like you!
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

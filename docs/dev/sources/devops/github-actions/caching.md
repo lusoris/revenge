@@ -1,8 +1,8 @@
 # GitHub Actions Caching
 
 > Source: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
-> Fetched: 2026-01-31T11:05:08.211191+00:00
-> Content-Hash: e5da3c0d0060a9a4
+> Fetched: 2026-01-31T16:05:03.372384+00:00
+> Content-Hash: c4057ed38ddd89b2
 > Type: html
 
 ---
@@ -268,6 +268,7 @@ For more information, see:
 ## Next steps
 
 To manage your dependency caches, see [Managing caches](/en/actions/how-tos/managing-workflow-runs-and-deployments/managing-workflow-runs/manage-caches).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

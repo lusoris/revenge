@@ -1,8 +1,8 @@
 # GitHub Actions Workflow Syntax
 
 > Source: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
-> Fetched: 2026-01-31T11:04:58.939910+00:00
-> Content-Hash: 4007369d81d90eb1
+> Fetched: 2026-01-31T16:04:55.069323+00:00
+> Content-Hash: 87a80d091350cd01
 > Type: html
 
 ---
@@ -2819,6 +2819,7 @@ Pattern| Description of matches| Example matches
 `README.md`  
   
 `README.doc`
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

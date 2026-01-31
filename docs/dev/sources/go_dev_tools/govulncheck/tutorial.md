@@ -1,8 +1,8 @@
 # govulncheck Tutorial
 
 > Source: https://go.dev/doc/tutorial/govulncheck
-> Fetched: 2026-01-31T11:06:20.794077+00:00
-> Content-Hash: fa07afaeec97ab0a
+> Fetched: 2026-01-31T16:06:56.059516+00:00
+> Content-Hash: a7f18000061d9b9e
 > Type: html
 
 ---
@@ -257,6 +257,7 @@ You will now see this output:
 Finally, govulncheck confirms that there are no vulnerabilities found.
 
 By regularly scanning your dependencies with command govulncheck, you can safeguard your codebase by identifying, prioritizing, and addressing vulnerabilities.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

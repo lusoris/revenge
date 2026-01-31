@@ -1,0 +1,149 @@
+{#
+  Service Template
+
+  For backend services (Auth, User, Session, RBAC, etc.)
+  Extends base.md.jinja2 and adds service-specific sections.
+
+  Additional Variables:
+  - service_name: str - Service name (e.g., "Authentication Service")
+  - package_path: str - Go package path (e.g., "internal/service/auth")
+  - fx_module: str - fx module name (e.g., "auth.Module")
+  - dependencies: list - Service dependencies
+  - provides: list - What this service provides to other modules
+#}
+{% extends "base.md.jinja2" %}
+
+{% block title -%}
+# {{ service_name }}
+{%- endblock %}
+
+{% block overview -%}
+{%- if claude %}
+> {{ technical_summary }}
+
+**Package**: `{{ package_path }}`
+**fx Module**: `{{ fx_module }}`
+{%- elif wiki %}
+# {{ service_name }}
+
+{{ wiki_tagline }}
+
+{{ wiki_overview }}
+{%- endif %}
+{%- endblock %}
+
+{% block architecture -%}
+{%- if claude %}
+## Architecture
+
+### Service Structure
+
+```
+{{ package_path }}/
+├── module.go              # fx module definition
+├── service.go             # Service implementation
+├── repository.go          # Data access (if needed)
+├── handler.go             # HTTP handlers (if exposed)
+├── middleware.go          # Middleware (if needed)
+├── types.go               # Domain types
+└── service_test.go        # Tests
+```
+
+### Dependencies
+
+{%- if dependencies %}
+This service depends on:
+{%- for dep in dependencies %}
+- **{{ dep.name }}**: {{ dep.purpose }}
+{%- endfor %}
+{%- else %}
+No external service dependencies.
+{%- endif %}
+
+### Provides
+
+{%- if provides %}
+This service provides:
+{%- for provided in provides %}
+- **{{ provided.name }}**: {{ provided.description }}
+{%- endfor %}
+{%- else %}
+<!-- Service provides -->
+{%- endif %}
+
+### Component Diagram
+
+{{ component_diagram | default('<!-- Component diagram -->') }}
+{%- elif wiki %}
+## How It Works
+
+{{ wiki_how_it_works }}
+{%- endif %}
+{%- endblock %}
+
+{% block service_interface -%}
+{%- if claude %}
+## Service Interface
+
+### Public Methods
+
+{{ public_methods | default('<!-- Public methods documentation -->') }}
+
+### Events
+
+{%- if service_events %}
+This service emits the following events:
+{%- for event in service_events %}
+- **{{ event.name }}**: {{ event.description }}
+{%- endfor %}
+{%- else %}
+No events emitted.
+{%- endif %}
+{%- endif %}
+{%- endblock %}
+
+{% block database -%}
+{%- if claude and has_database %}
+## Database Schema
+
+### Tables
+
+{{ database_tables | default('<!-- Database tables -->') }}
+
+### Migrations
+
+{{ migration_notes | default('<!-- Migration notes -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block caching -%}
+{%- if claude and has_caching %}
+## Caching Strategy
+
+{{ caching_strategy | default('<!-- Caching strategy -->') }}
+
+### Cache Keys
+
+{{ cache_keys | default('<!-- Cache key patterns -->') }}
+
+### Invalidation
+
+{{ cache_invalidation | default('<!-- Cache invalidation strategy -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block security -%}
+{%- if claude %}
+## Security Considerations
+
+{{ security_notes | default('<!-- Security considerations -->') }}
+
+### Authorization
+
+{{ authorization_notes | default('<!-- Authorization requirements -->') }}
+
+### Audit Logging
+
+{{ audit_logging | default('<!-- Audit logging details -->') }}
+{%- endif %}
+{%- endblock %}

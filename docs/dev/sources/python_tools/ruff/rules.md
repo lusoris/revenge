@@ -1,8 +1,8 @@
 # Ruff Rules
 
 > Source: https://docs.astral.sh/ruff/rules/
-> Fetched: 2026-01-31T11:06:33.510188+00:00
-> Content-Hash: 359442ad7b2febc2
+> Fetched: 2026-01-31T16:07:30.287278+00:00
+> Content-Hash: a6b8df64d1c5d68e
 > Type: html
 
 ---
@@ -1447,6 +1447,7 @@ TRY400 | [error-instead-of-exception](error-instead-of-exception/) | Use `loggin
 TRY401 | [verbose-log-message](verbose-log-message/) | Redundant exception object included in `logging.exception` call |   
   
 Back to top 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

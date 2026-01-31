@@ -1,8 +1,8 @@
 # staticcheck
 
 > Source: https://staticcheck.io/docs/
-> Fetched: 2026-01-31T11:06:26.292525+00:00
-> Content-Hash: 7acca1164c528d76
+> Fetched: 2026-01-31T16:07:03.573010+00:00
+> Content-Hash: f21574486c0186ff
 > Type: html
 
 ---
@@ -40,6 +40,7 @@ Explanations for all checks in Staticcheck
 ##### [Frequently Asked Questions](/docs/faq/)
 
 ##### [Release notes](/changes/)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

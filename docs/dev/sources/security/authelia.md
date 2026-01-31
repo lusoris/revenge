@@ -1,8 +1,8 @@
 # Authelia Documentation
 
 > Source: https://www.authelia.com/overview/
-> Fetched: 2026-01-31T11:01:48.217873+00:00
-> Content-Hash: 7706d542cf9f864e
+> Fetched: 2026-01-31T16:01:45.294053+00:00
+> Content-Hash: 53d7ce839574f5e4
 > Type: html
 
 ---
@@ -44,6 +44,7 @@
 [Threat Model →](/overview/security/threat-model/)
 
 [Trusted Headers SSO →](/overview/authorization/trusted-headers/)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

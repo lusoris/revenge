@@ -1,0 +1,485 @@
+1# {{ feature_name }}
+
+{# Claude-optimized design documentation #}
+{% if claude %}
+<!-- BREADCRUMB: [Design Index](../DESIGN_INDEX.md) > [{{ category }}](../{{ category_path }}/INDEX.md) > {{ feature_name }} -->
+{% endif %}
+
+<!-- SOURCES: {{ sources_list }} -->
+
+<!-- DESIGN: {{ design_references }} -->
+
+{% if wiki %}
+> {{ wiki_tagline }}
+{% endif %}
+
+---
+
+## Status
+
+| Dimension | Status | {% if claude %}Notes{% endif %} |
+|-----------|--------|{% if claude %}-------{% endif %}|
+| Design | {{ status_design }} | {% if claude %}{{ status_design_notes }}{% endif %} |
+| Sources | {{ status_sources }} | {% if claude %}{{ status_sources_notes }}{% endif %} |
+| Instructions | {{ status_instructions }} | {% if claude %}{{ status_instructions_notes }}{% endif %} |
+| Code | {{ status_code }} | {% if claude %}{{ status_code_notes }}{% endif %} |
+| Linting | {{ status_linting }} | {% if claude %}{{ status_linting_notes }}{% endif %} |
+| Unit Testing | {{ status_unit_testing }} | {% if claude %}{{ status_unit_testing_notes }}{% endif %} |
+| Integration Testing | {{ status_integration_testing }} | {% if claude %}{{ status_integration_testing_notes }}{% endif %} |
+
+{% if claude %}
+**Location**: `{{ code_location }}`
+
+**Last Updated**: {{ last_updated }}
+{% endif %}
+
+---
+
+## Overview
+
+{% if wiki %}
+{{ wiki_overview }}
+
+**Key Features**:
+{% for feature in key_features %}
+- {{ feature }}
+{% endfor %}
+{% endif %}
+
+{% if claude %}
+{{ claude_overview }}
+
+**Purpose**: {{ technical_purpose }}
+
+**Architecture Pattern**: {{ architecture_pattern }}
+{% endif %}
+
+{% if wiki %}
+**Use Cases**:
+{% for use_case in use_cases %}
+- {{ use_case }}
+{% endfor %}
+{% endif %}
+
+---
+
+{% if claude %}
+## Architecture
+
+**Reference**: See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md) for versions and dependencies.
+
+### Component Structure
+
+```
+{{ architecture_diagram }}
+```
+
+### Key Components
+
+{% for component in components %}
+- **{{ component.name }}**: {{ component.description }}
+  - Location: `{{ component.file_path }}`
+  - Dependencies: {{ component.dependencies | join(', ') }}
+{% endfor %}
+
+### Design Patterns
+
+{% for pattern in design_patterns %}
+- **{{ pattern.name }}**: {{ pattern.description }}
+{% endfor %}
+
+### Data Flow
+
+```
+{{ data_flow_diagram }}
+```
+
+---
+
+## Database Schema
+
+**Reference**: All schemas defined in SOURCE_OF_TRUTH.md database section.
+
+### Tables
+
+{% for table in database_tables %}
+#### `{{ table.name }}`
+
+{{ table.description }}
+
+**Columns**:
+```sql
+{{ table.schema }}
+```
+
+**Indexes**:
+{% for index in table.indexes %}
+- `{{ index }}`
+{% endfor %}
+
+**Relationships**:
+{% for relation in table.relationships %}
+- {{ relation }}
+{% endfor %}
+{% endfor %}
+
+### Migrations
+
+**Location**: `internal/database/migrations/`
+
+**Migration Files**:
+{% for migration in migrations %}
+- `{{ migration.file }}` - {{ migration.description }}
+{% endfor %}
+
+---
+
+## API Endpoints
+
+**Reference**: All endpoints defined in OpenAPI specs (see API.md).
+
+**Namespace**: `{{ api_namespace }}`
+
+### Endpoints
+
+{% for endpoint in api_endpoints %}
+#### {{ endpoint.method }} `{{ endpoint.path }}`
+
+{{ endpoint.description }}
+
+**Request**:
+```json
+{{ endpoint.request_example }}
+```
+
+**Response**:
+```json
+{{ endpoint.response_example }}
+```
+
+**Authentication**: {{ endpoint.auth_required }}
+
+**RBAC Scope**: `{{ endpoint.rbac_scope }}`
+
+**Rate Limit**: {{ endpoint.rate_limit }}
+
+{% endfor %}
+
+---
+
+## External Integrations
+
+{% for integration in external_integrations %}
+### {{ integration.name }}
+
+**Purpose**: {{ integration.purpose }}
+
+**API Documentation**: See [{{ integration.design_doc }}]({{ integration.design_doc_path }})
+
+**Integration Points**:
+{% for point in integration.integration_points %}
+- {{ point }}
+{% endfor %}
+
+**Data Sync Strategy**: {{ integration.sync_strategy }}
+
+**Error Handling**: {{ integration.error_handling }}
+
+**Rate Limiting**: {{ integration.rate_limiting }}
+
+{% endfor %}
+
+---
+
+## Business Logic
+
+### Core Rules
+
+{% for rule in business_rules %}
+- {{ rule }}
+{% endfor %}
+
+### Validation
+
+{% for validation in validations %}
+- **{{ validation.field }}**: {{ validation.rule }}
+{% endfor %}
+
+### State Transitions
+
+```
+{{ state_diagram }}
+```
+
+---
+
+## Caching Strategy
+
+**L1 Cache** (otter - in-memory):
+- {{ l1_cache_strategy }}
+- TTL: {{ l1_cache_ttl }}
+
+**L2 Cache** (rueidis - distributed):
+- {{ l2_cache_strategy }}
+- TTL: {{ l2_cache_ttl }}
+
+**Cache Invalidation**:
+{% for invalidation in cache_invalidations %}
+- {{ invalidation }}
+{% endfor %}
+
+---
+
+## Testing Strategy
+
+**Coverage Target**: 80%+ (per SOURCE_OF_TRUTH.md standards)
+
+### Unit Tests
+
+**Location**: `{{ unit_test_location }}`
+
+**Test Cases**:
+{% for test in unit_tests %}
+- {{ test }}
+{% endfor %}
+
+**Mocking**:
+{% for mock in mocks %}
+- {{ mock }}
+{% endfor %}
+
+### Integration Tests
+
+**Location**: `{{ integration_test_location }}`
+
+**Test Scenarios**:
+{% for scenario in integration_test_scenarios %}
+- {{ scenario }}
+{% endfor %}
+
+**Dependencies**:
+{% for dep in test_dependencies %}
+- {{ dep }}
+{% endfor %}
+
+### E2E Tests
+
+{% if e2e_tests %}
+**Tool**: Playwright
+
+**Scenarios**:
+{% for scenario in e2e_test_scenarios %}
+- {{ scenario }}
+{% endfor %}
+{% endif %}
+
+---
+
+## Security Considerations
+
+**Authentication**: {{ auth_requirements }}
+
+**Authorization**: {{ authz_requirements }}
+
+**RBAC Scopes**:
+{% for scope in rbac_scopes %}
+- `{{ scope.name }}`: {{ scope.description }}
+{% endfor %}
+
+**Sensitive Data**:
+{% for data in sensitive_data %}
+- {{ data.field }}: {{ data.handling }}
+{% endfor %}
+
+**Input Validation**:
+{% for validation in input_validations %}
+- {{ validation }}
+{% endfor %}
+
+**Security Best Practices**:
+{% for practice in security_practices %}
+- {{ practice }}
+{% endfor %}
+
+---
+
+## Performance Considerations
+
+**Expected Load**: {{ expected_load }}
+
+**Query Optimization**:
+{% for optimization in query_optimizations %}
+- {{ optimization }}
+{% endfor %}
+
+**Monitoring Metrics**:
+{% for metric in monitoring_metrics %}
+- {{ metric.name }}: {{ metric.description }}
+{% endfor %}
+
+**Potential Bottlenecks**:
+{% for bottleneck in bottlenecks %}
+- {{ bottleneck.description }}: {{ bottleneck.mitigation }}
+{% endfor %}
+
+---
+
+## Implementation Checklist
+
+**Reference**: See SOURCE_OF_TRUTH.md for all dependency versions.
+
+### Phase 1: Core Implementation
+{% for task in phase1_tasks %}
+- [ ] {{ task }}
+{% endfor %}
+
+### Phase 2: Integration
+{% for task in phase2_tasks %}
+- [ ] {{ task }}
+{% endfor %}
+
+### Phase 3: Testing & Polish
+{% for task in phase3_tasks %}
+- [ ] {{ task }}
+{% endfor %}
+
+**Go Packages Required**:
+{% for package in go_packages %}
+- `{{ package.import_path }}` - {{ package.purpose }} (version: {{ package.version }} per SOT)
+{% endfor %}
+
+---
+
+## Dependencies
+
+**Depends on**:
+{% for dep in depends_on %}
+- [{{ dep.name }}]({{ dep.path }}) - {{ dep.reason }}
+{% endfor %}
+
+**Blocks**:
+{% for block in blocks %}
+- [{{ block.name }}]({{ block.path }}) - {{ block.reason }}
+{% endfor %}
+
+**Related to**:
+{% for related in related_docs %}
+- [{{ related.name }}]({{ related.path }})
+{% endfor %}
+
+---
+{% endif %}{# end claude #}
+
+{% if wiki %}
+## Getting Started
+
+{{ wiki_getting_started }}
+
+### Prerequisites
+
+{% for prereq in prerequisites %}
+- {{ prereq }}
+{% endfor %}
+
+### Installation
+
+```bash
+{{ installation_steps }}
+```
+
+### Configuration
+
+{{ wiki_configuration_guide }}
+
+### Usage Examples
+
+{% for example in usage_examples %}
+#### {{ example.title }}
+
+{{ example.description }}
+
+```
+{{ example.code }}
+```
+{% endfor %}
+
+---
+
+## Screenshots
+
+{% for screenshot in screenshots %}
+### {{ screenshot.title }}
+
+![{{ screenshot.alt }}]({{ screenshot.url }})
+
+{{ screenshot.description }}
+{% endfor %}
+
+---
+
+## Troubleshooting
+
+{% for issue in common_issues %}
+### {{ issue.problem }}
+
+**Symptoms**: {{ issue.symptoms }}
+
+**Solution**: {{ issue.solution }}
+{% endfor %}
+
+---
+
+## Community
+
+- **GitHub Issues**: {{ github_issues_url }}
+- **Discussions**: {{ github_discussions_url }}
+- **Documentation**: {{ wiki_url }}
+
+---
+{% endif %}{# end wiki #}
+
+{% if claude %}
+## Source Documentation
+
+**From `docs/dev/sources/`**:
+{% for source in source_docs %}
+- [{{ source.name }}]({{ source.path }}) - {{ source.description }}
+{% endfor %}
+
+---
+
+## Cross-References
+
+**Design Docs**:
+{% for doc in design_crossrefs %}
+- [{{ doc.name }}]({{ doc.path }})
+{% endfor %}
+
+**External Sources**:
+{% for source in external_sources %}
+- [{{ source.name }}]({{ source.url }})
+{% endfor %}
+
+---
+
+## Implementation Notes
+
+{% for note in implementation_notes %}
+### {{ note.title }}
+
+{{ note.content }}
+{% endfor %}
+
+---
+
+## Open Questions
+
+{% for question in open_questions %}
+- {{ question }}
+{% endfor %}
+
+---
+
+**Status**: {{ final_status }}
+**Next Step**: {{ next_step }}
+{% endif %}{# end claude #}

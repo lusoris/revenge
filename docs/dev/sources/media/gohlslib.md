@@ -1,8 +1,8 @@
 # gohlslib (HLS)
 
 > Source: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-> Fetched: 2026-01-31T11:01:07.831792+00:00
-> Content-Hash: 1a2d339e6ba9129d
+> Fetched: 2026-01-31T16:00:59.016387+00:00
+> Content-Hash: 4a8879e1124b1e59
 > Type: html
 
 ---
@@ -61,7 +61,7 @@ This section is empty.
 
 ### Variables ¶
 
-[View Source](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L25)
+[View Source](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L25)
     
     
     var ErrClientEOS = [errors](/errors).[New](/errors#New)("end of stream")
@@ -74,7 +74,7 @@ This section is empty.
 
 ### Types ¶
 
-####  type [Client](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L72) ¶
+####  type [Client](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L72) ¶
     
     
     type Client struct {
@@ -117,63 +117,63 @@ This section is empty.
 
 Client is a HLS client. 
 
-####  func (*Client) [AbsoluteTime](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L249) ¶
+####  func (*Client) [AbsoluteTime](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L249) ¶
     
     
     func (c *Client) AbsoluteTime(track *Track) ([time](/time).[Time](/time#Time), [bool](/builtin#bool))
 
 AbsoluteTime returns the absolute timestamp of the last sample. 
 
-####  func (*Client) [Close](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L187) ¶
+####  func (*Client) [Close](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L187) ¶
     
     
     func (c *Client) Close()
 
 Close closes all the Client resources and waits for them to exit. 
 
-####  func (*Client) [OnDataAV1](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L212) ¶
+####  func (*Client) [OnDataAV1](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L212) ¶
     
     
     func (c *Client) OnDataAV1(track *Track, cb ClientOnDataAV1Func)
 
 OnDataAV1 sets a callback that is called when data from an AV1 track is received. 
 
-####  func (*Client) [OnDataH26x](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L226) ¶
+####  func (*Client) [OnDataH26x](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L226) ¶
     
     
     func (c *Client) OnDataH26x(track *Track, cb ClientOnDataH26xFunc)
 
 OnDataH26x sets a callback that is called when data from an H26x track is received. 
 
-####  func (*Client) [OnDataMPEG4Audio](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L233) ¶
+####  func (*Client) [OnDataMPEG4Audio](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L233) ¶
     
     
     func (c *Client) OnDataMPEG4Audio(track *Track, cb ClientOnDataMPEG4AudioFunc)
 
 OnDataMPEG4Audio sets a callback that is called when data from a MPEG-4 Audio track is received. 
 
-####  func (*Client) [OnDataOpus](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L240) ¶
+####  func (*Client) [OnDataOpus](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L240) ¶
     
     
     func (c *Client) OnDataOpus(track *Track, cb ClientOnDataOpusFunc)
 
 OnDataOpus sets a callback that is called when data from an Opus track is received. 
 
-####  func (*Client) [OnDataVP9](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L219) ¶
+####  func (*Client) [OnDataVP9](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L219) ¶
     
     
     func (c *Client) OnDataVP9(track *Track, cb ClientOnDataVP9Func)
 
 OnDataVP9 sets a callback that is called when data from a VP9 track is received. 
 
-####  func (*Client) [Start](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L126) ¶
+####  func (*Client) [Start](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L126) ¶
     
     
     func (c *Client) Start() [error](/builtin#error)
 
 Start starts the client. 
 
-####  func (*Client) [Wait](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L195) deprecated
+####  func (*Client) [Wait](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L195) deprecated
     
     
     func (c *Client) Wait() chan [error](/builtin#error)
@@ -182,98 +182,98 @@ Wait waits for any error of the Client.
 
 Deprecated: replaced by Wait2. 
 
-####  func (*Client) [Wait2](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L206) ¶ added in v2.2.0
+####  func (*Client) [Wait2](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L206) ¶ added in v2.2.0
     
     
     func (c *Client) Wait2() [error](/builtin#error)
 
 Wait2 waits until all client resources are closed. This can happen when a fatal error occurs or when Close() is called. 
 
-####  type [ClientOnDataAV1Func](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L49) ¶
+####  type [ClientOnDataAV1Func](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L49) ¶
     
     
     type ClientOnDataAV1Func func(pts [int64](/builtin#int64), tu [][][byte](/builtin#byte))
 
 ClientOnDataAV1Func is the prototype of the function passed to OnDataAV1(). 
 
-####  type [ClientOnDataH26xFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L55) ¶
+####  type [ClientOnDataH26xFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L55) ¶
     
     
     type ClientOnDataH26xFunc func(pts [int64](/builtin#int64), dts [int64](/builtin#int64), au [][][byte](/builtin#byte))
 
 ClientOnDataH26xFunc is the prototype of the function passed to OnDataH26x(). 
 
-####  type [ClientOnDataMPEG4AudioFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L58) ¶
+####  type [ClientOnDataMPEG4AudioFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L58) ¶
     
     
     type ClientOnDataMPEG4AudioFunc func(pts [int64](/builtin#int64), aus [][][byte](/builtin#byte))
 
 ClientOnDataMPEG4AudioFunc is the prototype of the function passed to OnDataMPEG4Audio(). 
 
-####  type [ClientOnDataOpusFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L61) ¶
+####  type [ClientOnDataOpusFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L61) ¶
     
     
     type ClientOnDataOpusFunc func(pts [int64](/builtin#int64), packets [][][byte](/builtin#byte))
 
 ClientOnDataOpusFunc is the prototype of the function passed to OnDataOpus(). 
 
-####  type [ClientOnDataVP9Func](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L52) ¶
+####  type [ClientOnDataVP9Func](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L52) ¶
     
     
     type ClientOnDataVP9Func func(pts [int64](/builtin#int64), frame [][byte](/builtin#byte))
 
 ClientOnDataVP9Func is the prototype of the function passed to OnDataVP9(). 
 
-####  type [ClientOnDecodeErrorFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L40) ¶
+####  type [ClientOnDecodeErrorFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L40) ¶
     
     
     type ClientOnDecodeErrorFunc func(err [error](/builtin#error))
 
 ClientOnDecodeErrorFunc is the prototype of Client.OnDecodeError. 
 
-####  type [ClientOnDownloadPartFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L37) ¶
+####  type [ClientOnDownloadPartFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L37) ¶
     
     
     type ClientOnDownloadPartFunc func(url [string](/builtin#string))
 
 ClientOnDownloadPartFunc is the prototype of Client.OnDownloadPart. 
 
-####  type [ClientOnDownloadPrimaryPlaylistFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L28) ¶
+####  type [ClientOnDownloadPrimaryPlaylistFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L28) ¶
     
     
     type ClientOnDownloadPrimaryPlaylistFunc func(url [string](/builtin#string))
 
 ClientOnDownloadPrimaryPlaylistFunc is the prototype of Client.OnDownloadPrimaryPlaylist. 
 
-####  type [ClientOnDownloadSegmentFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L34) ¶
+####  type [ClientOnDownloadSegmentFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L34) ¶
     
     
     type ClientOnDownloadSegmentFunc func(url [string](/builtin#string))
 
 ClientOnDownloadSegmentFunc is the prototype of Client.OnDownloadSegment. 
 
-####  type [ClientOnDownloadStreamPlaylistFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L31) ¶
+####  type [ClientOnDownloadStreamPlaylistFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L31) ¶
     
     
     type ClientOnDownloadStreamPlaylistFunc func(url [string](/builtin#string))
 
 ClientOnDownloadStreamPlaylistFunc is the prototype of Client.OnDownloadStreamPlaylist. 
 
-####  type [ClientOnRequestFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L43) ¶
+####  type [ClientOnRequestFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L43) ¶
     
     
     type ClientOnRequestFunc func(*[http](/net/http).[Request](/net/http#Request))
 
 ClientOnRequestFunc is the prototype of the function passed to OnRequest(). 
 
-####  type [ClientOnTracksFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/client.go#L46) ¶
+####  type [ClientOnTracksFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/client.go#L46) ¶
     
     
     type ClientOnTracksFunc func([]*Track) [error](/builtin#error)
 
 ClientOnTracksFunc is the prototype of the function passed to OnTracks(). 
 
-####  type [Muxer](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L151) ¶
+####  type [Muxer](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L151) ¶
     
     
     type Muxer struct {
@@ -320,28 +320,28 @@ ClientOnTracksFunc is the prototype of the function passed to OnTracks().
 
 Muxer is a HLS muxer. 
 
-####  func (*Muxer) [Close](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L436) ¶
+####  func (*Muxer) [Close](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L436) ¶
     
     
     func (m *Muxer) Close()
 
 Close closes a Muxer. 
 
-####  func (*Muxer) [Handle](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L511) ¶
+####  func (*Muxer) [Handle](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L511) ¶
     
     
     func (m *Muxer) Handle(w [http](/net/http).[ResponseWriter](/net/http#ResponseWriter), r *[http](/net/http).[Request](/net/http#Request))
 
 Handle handles a HTTP request. 
 
-####  func (*Muxer) [Start](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L209) ¶
+####  func (*Muxer) [Start](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L209) ¶
     
     
     func (m *Muxer) Start() [error](/builtin#error)
 
 Start initializes the muxer. 
 
-####  func (*Muxer) [WriteAV1](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L451) ¶
+####  func (*Muxer) [WriteAV1](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L451) ¶
     
     
     func (m *Muxer) WriteAV1(
@@ -353,7 +353,7 @@ Start initializes the muxer.
 
 WriteAV1 writes an AV1 temporal unit. 
 
-####  func (*Muxer) [WriteH264](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L481) ¶
+####  func (*Muxer) [WriteH264](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L481) ¶
     
     
     func (m *Muxer) WriteH264(
@@ -365,7 +365,7 @@ WriteAV1 writes an AV1 temporal unit.
 
 WriteH264 writes an H264 access unit. 
 
-####  func (*Muxer) [WriteH265](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L471) ¶
+####  func (*Muxer) [WriteH265](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L471) ¶
     
     
     func (m *Muxer) WriteH265(
@@ -377,7 +377,7 @@ WriteH264 writes an H264 access unit.
 
 WriteH265 writes an H265 access unit. 
 
-####  func (*Muxer) [WriteMPEG4Audio](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L501) ¶
+####  func (*Muxer) [WriteMPEG4Audio](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L501) ¶
     
     
     func (m *Muxer) WriteMPEG4Audio(
@@ -389,7 +389,7 @@ WriteH265 writes an H265 access unit.
 
 WriteMPEG4Audio writes MPEG-4 Audio access units. 
 
-####  func (*Muxer) [WriteOpus](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L491) ¶
+####  func (*Muxer) [WriteOpus](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L491) ¶
     
     
     func (m *Muxer) WriteOpus(
@@ -401,7 +401,7 @@ WriteMPEG4Audio writes MPEG-4 Audio access units.
 
 WriteOpus writes Opus packets. 
 
-####  func (*Muxer) [WriteVP9](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L461) ¶
+####  func (*Muxer) [WriteVP9](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L461) ¶
     
     
     func (m *Muxer) WriteVP9(
@@ -413,14 +413,14 @@ WriteOpus writes Opus packets.
 
 WriteVP9 writes a VP9 frame. 
 
-####  type [MuxerOnEncodeErrorFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer.go#L148) ¶
+####  type [MuxerOnEncodeErrorFunc](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer.go#L148) ¶
     
     
     type MuxerOnEncodeErrorFunc func(err [error](/builtin#error))
 
 MuxerOnEncodeErrorFunc is the prototype of Muxer.OnEncodeError. 
 
-####  type [MuxerVariant](https://github.com/bluenviron/gohlslib/blob/v2.2.4/muxer_variant.go#L4) ¶
+####  type [MuxerVariant](https://github.com/bluenviron/gohlslib/blob/v2.2.5/muxer_variant.go#L4) ¶
     
     
     type MuxerVariant [int](/builtin#int)
@@ -436,12 +436,12 @@ MuxerVariant is a muxer variant.
 
 supported variants. 
 
-####  type [Track](https://github.com/bluenviron/gohlslib/blob/v2.2.4/track.go#L8) ¶
+####  type [Track](https://github.com/bluenviron/gohlslib/blob/v2.2.5/track.go#L8) ¶
     
     
     type Track struct {
     	// Codec
-    	Codec [codecs](/github.com/bluenviron/gohlslib/v2@v2.2.4/pkg/codecs).[Codec](/github.com/bluenviron/gohlslib/v2@v2.2.4/pkg/codecs#Codec)
+    	Codec [codecs](/github.com/bluenviron/gohlslib/v2@v2.2.5/pkg/codecs).[Codec](/github.com/bluenviron/gohlslib/v2@v2.2.5/pkg/codecs#Codec)
     
     	// Clock rate
     	ClockRate [int](/builtin#int)
@@ -460,6 +460,7 @@ supported variants.
     }
 
 Track is a HLS track. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # MediaInfo
 
 > Source: https://mediaarea.net/en/MediaInfo
-> Fetched: 2026-01-31T11:00:57.605756+00:00
-> Content-Hash: 52894a8fdaa25aa0
+> Fetched: 2026-01-31T16:00:47.715721+00:00
+> Content-Hash: 5c8128f9d01dcda8
 > Type: html
 
 ---
@@ -84,6 +84,7 @@ Please [donate](/SupportUs/Individual) to support further development
 ## License:
 
 It is [Open-Source](https://en.wikipedia.org/wiki/Open_source) software which means that end users and developers have freedom to study, to improve and to redistribute the program ([BSD-style license](/en/MediaInfo/License)).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

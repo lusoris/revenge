@@ -1,8 +1,8 @@
 # corona10/goimagehash
 
 > Source: https://pkg.go.dev/github.com/corona10/goimagehash
-> Fetched: 2026-01-31T11:01:26.001815+00:00
-> Content-Hash: f33f5aa3af0b5609
+> Fetched: 2026-01-31T16:01:23.567870+00:00
+> Content-Hash: b6375d2d2c0ee4d0
 > Type: html
 
 ---
@@ -263,6 +263,7 @@ Kind describes the kinds of hash.
     	// WHash is a enum value of the wavelet hash.
     	WHash
     )
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

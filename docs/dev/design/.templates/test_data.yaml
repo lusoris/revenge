@@ -1,0 +1,350 @@
+# Test Data for DESIGN_TEMPLATE.md.jinja2
+# Simplified example to verify template rendering
+
+# Metadata
+feature_name: "Example Feature"
+category: "Features - Example"
+category_path: "features/example"
+
+# Sources
+sources_list: "fx, pgx, sqlc"
+design_references: "01_ARCHITECTURE, 02_DESIGN_PRINCIPLES"
+
+# Status
+status_design: "🟡"
+status_design_notes: "Scaffold - needs completion"
+status_sources: "✅"
+status_sources_notes: "All sources documented"
+status_instructions: "🔴"
+status_instructions_notes: "Implementation checklist needed"
+status_code: "🔴"
+status_code_notes: "Not started"
+status_linting: "🔴"
+status_linting_notes: "N/A - no code yet"
+status_unit_testing: "🔴"
+status_unit_testing_notes: "N/A - no code yet"
+status_integration_testing: "🔴"
+status_integration_testing_notes: "N/A - no code yet"
+
+# Claude-specific
+code_location: "internal/example/"
+last_updated: "2026-01-31"
+claude_overview: "Technical example feature for testing template generation."
+technical_purpose: "Demonstrate template usage and validation"
+architecture_pattern: "Repository pattern with service layer"
+
+# Architecture
+architecture_diagram: |
+  ┌─────────────────────────────────┐
+  │        API Layer (ogen)         │
+  └───────────┬─────────────────────┘
+              │
+  ┌───────────▼─────────────────────┐
+  │    Example Service (cache)      │
+  └───────────┬─────────────────────┘
+              │
+  ┌───────────▼─────────────────────┐
+  │  Repository (PostgreSQL+sqlc)   │
+  └─────────────────────────────────┘
+
+components:
+  - name: "ExampleService"
+    description: "Main business logic"
+    file_path: "internal/example/service.go"
+    dependencies: ["Repository", "Cache"]
+  - name: "ExampleRepository"
+    description: "Data access layer"
+    file_path: "internal/example/repository.go"
+    dependencies: ["PostgreSQL"]
+
+design_patterns:
+  - name: "Repository Pattern"
+    description: "Separates business logic from data access"
+  - name: "Dependency Injection"
+    description: "Uses fx for DI"
+
+data_flow_diagram: |
+  User Request → API Handler → Service → Repository → Database
+
+# Database
+database_tables:
+  - name: "examples"
+    description: "Example entities"
+    schema: |
+      CREATE TABLE examples (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name TEXT NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    indexes:
+      - "idx_examples_name"
+    relationships:
+      - "No foreign keys (simple table)"
+
+migrations:
+  - file: "20260131000000_create_examples.sql"
+    description: "Create examples table"
+
+# API
+api_namespace: "/api/v1/examples"
+
+api_endpoints:
+  - method: "GET"
+    path: "/api/v1/examples"
+    description: "List all examples"
+    request_example: |
+      GET /api/v1/examples?limit=10
+    response_example: |
+      {
+        "examples": [
+          {"id": "uuid", "name": "Example 1"}
+        ]
+      }
+    auth_required: "Bearer token"
+    rbac_scope: "example:read"
+    rate_limit: "100 req/min"
+
+  - method: "POST"
+    path: "/api/v1/examples"
+    description: "Create new example"
+    request_example: |
+      {
+        "name": "New Example"
+      }
+    response_example: |
+      {
+        "id": "uuid",
+        "name": "New Example"
+      }
+    auth_required: "Bearer token"
+    rbac_scope: "example:write"
+    rate_limit: "10 req/min"
+
+# External Integrations
+external_integrations:
+  - name: "Example API"
+    purpose: "Fetch external data"
+    design_doc: "EXAMPLE_API.md"
+    design_doc_path: "../../integrations/example/EXAMPLE_API.md"
+    integration_points:
+      - "Webhook endpoint for updates"
+      - "REST API for data sync"
+    sync_strategy: "Real-time via webhooks"
+    error_handling: "Retry with exponential backoff"
+    rate_limiting: "100 req/min with token bucket"
+
+# Business Logic
+business_rules:
+  - "Example names must be unique"
+  - "Examples cannot be deleted if in use"
+
+validations:
+  - field: "name"
+    rule: "Required, max 255 chars"
+
+state_diagram: |
+  PENDING → ACTIVE → ARCHIVED
+
+# Caching
+l1_cache_strategy: "Cache full example entities by ID"
+l1_cache_ttl: "5m"
+l2_cache_strategy: "Cache list queries results"
+l2_cache_ttl: "1h"
+
+cache_invalidations:
+  - "On example create/update/delete"
+  - "On manual cache clear"
+
+# Testing
+unit_test_location: "internal/example/service_test.go"
+
+unit_tests:
+  - "TestExampleService_Create"
+  - "TestExampleService_Get"
+  - "TestExampleRepository_List"
+
+mocks:
+  - "Mock Repository for service tests"
+  - "Mock Database for repository tests"
+
+integration_test_location: "internal/example/integration_test.go"
+
+integration_test_scenarios:
+  - "Create example via API"
+  - "List examples with pagination"
+  - "Delete example cascades correctly"
+
+test_dependencies:
+  - "testcontainers/postgres:18"
+
+e2e_tests: false
+
+# Security
+auth_requirements: "Bearer token required for all endpoints"
+authz_requirements: "RBAC scopes: example:read, example:write, example:delete"
+
+rbac_scopes:
+  - name: "example:read"
+    description: "Read examples"
+  - name: "example:write"
+    description: "Create/update examples"
+  - name: "example:delete"
+    description: "Delete examples (admin only)"
+
+sensitive_data:
+  - field: "name"
+    handling: "Public field, no special handling"
+
+input_validations:
+  - "Name: max 255 chars, no special chars"
+  - "ID: valid UUID format"
+
+security_practices:
+  - "Always validate user input"
+  - "Use parameterized queries (sqlc)"
+  - "Rate limit all endpoints"
+
+# Performance
+expected_load: "1000 req/min peak"
+
+query_optimizations:
+  - "Index on name column for search"
+  - "Use LIMIT/OFFSET for pagination"
+
+monitoring_metrics:
+  - name: "example_requests_total"
+    description: "Total API requests"
+  - name: "example_cache_hit_ratio"
+    description: "L1/L2 cache effectiveness"
+
+bottlenecks:
+  - description: "Database queries for large lists"
+    mitigation: "Pagination + caching"
+
+# Implementation Phases
+phase1_tasks:
+  - "Define entity struct"
+  - "Create repository interface"
+  - "Implement PostgreSQL repository"
+  - "Create migrations"
+
+phase2_tasks:
+  - "Implement service layer"
+  - "Add caching (otter + rueidis)"
+  - "Create API handlers (ogen)"
+  - "Add RBAC middleware"
+
+phase3_tasks:
+  - "Write unit tests (80%+ coverage)"
+  - "Write integration tests"
+  - "Add monitoring metrics"
+  - "Document API in OpenAPI"
+
+# Go Packages (from SOURCE_OF_TRUTH)
+go_packages:
+  - import_path: "go.uber.org/fx"
+    purpose: "Dependency injection"
+    version: "v1.23.0"
+  - import_path: "github.com/jackc/pgx/v5"
+    purpose: "PostgreSQL driver"
+    version: "v5.7.2"
+
+# Dependencies
+depends_on:
+  - name: "Auth Service"
+    path: "../../services/AUTH.md"
+    reason: "Requires authentication"
+  - name: "Database"
+    path: "../../00_SOURCE_OF_TRUTH.md"
+    reason: "Uses PostgreSQL 18+"
+
+blocks: []
+
+related_docs:
+  - name: "Architecture"
+    path: "../../architecture/01_ARCHITECTURE.md"
+
+# Sources
+source_docs:
+  - name: "fx Documentation"
+    path: "../../../../sources/tooling/fx.md"
+    description: "Dependency injection patterns"
+  - name: "pgx Documentation"
+    path: "../../../../sources/database/pgx.md"
+    description: "PostgreSQL driver usage"
+
+# Cross-references
+design_crossrefs:
+  - name: "Repository Pattern"
+    path: "../../patterns/REPOSITORY_PATTERN.md"
+
+external_sources:
+  - name: "fx GitHub"
+    url: "https://github.com/uber-go/fx"
+
+# Implementation Notes
+implementation_notes:
+  - title: "Caching Strategy"
+    content: "Use otter for L1 (in-memory), rueidis for L2 (distributed). See SOURCE_OF_TRUTH for TTL values."
+  - title: "Testing Approach"
+    content: "Use testcontainers for integration tests. Mock repository for unit tests."
+
+# Open Questions
+open_questions:
+  - "Should we support bulk operations?"
+  - "What's the maximum pagination limit?"
+
+# Final Status
+final_status: "🟡 SCAFFOLD - Needs completion"
+next_step: "Complete database schema and API endpoints"
+
+# Wiki-specific
+wiki_tagline: "Example feature for testing documentation templates"
+
+wiki_overview: |
+  This is an example feature used to demonstrate how the Jinja2 template system
+  generates both Claude-optimized and Wiki documentation from a single source.
+
+key_features:
+  - "Template-based documentation"
+  - "Dual output (Claude + Wiki)"
+  - "SOURCE_OF_TRUTH integration"
+
+use_cases:
+  - "Test template rendering"
+  - "Validate documentation pipeline"
+  - "Example for new features"
+
+wiki_getting_started: |
+  This example feature is for documentation testing only.
+  In a real feature, this would contain step-by-step setup instructions.
+
+prerequisites:
+  - "Revenge server installed"
+  - "Database configured"
+
+installation_steps: |
+  # No installation needed for this example
+  # In real features, this would contain actual setup steps
+
+wiki_configuration_guide: |
+  No configuration needed for this example feature.
+
+usage_examples:
+  - title: "Create Example"
+    description: "How to create a new example"
+    code: |
+      curl -X POST http://localhost:8096/api/v1/examples \
+        -H "Authorization: Bearer $TOKEN" \
+        -d '{"name": "My Example"}'
+
+screenshots: []
+
+common_issues:
+  - problem: "Cannot create example"
+    symptoms: "403 Forbidden error"
+    solution: "Ensure you have example:write scope in your token"
+
+github_issues_url: "https://github.com/lusoris/revenge/issues"
+github_discussions_url: "https://github.com/lusoris/revenge/discussions"
+wiki_url: "https://github.com/lusoris/revenge/wiki"

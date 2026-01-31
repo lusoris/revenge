@@ -1,8 +1,8 @@
 # Delve CLI Documentation
 
 > Source: https://github.com/go-delve/delve/tree/master/Documentation/cli
-> Fetched: 2026-01-31T11:06:13.814323+00:00
-> Content-Hash: 7f77b0c7e8882f6b
+> Fetched: 2026-01-31T16:06:49.286240+00:00
+> Content-Hash: 3384657946aa16bc
 > Type: html
 
 ---
@@ -15,6 +15,7 @@
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

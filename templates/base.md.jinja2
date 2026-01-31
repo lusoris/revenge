@@ -1,0 +1,285 @@
+{#
+  Base Template for Design Documentation
+
+  This template provides the foundation for all design docs with block-based inheritance.
+  Child templates extend this and override blocks as needed.
+
+  Variables:
+  - claude: bool - If true, render Claude-optimized version
+  - wiki: bool - If true, render wiki user-friendly version
+  - doc_title: str - Document title
+  - doc_category: str - Category (feature, service, integration, etc.)
+  - status_*: str - Status for each dimension
+  - sources: list - External documentation sources
+  - design_refs: list - Cross-references to other design docs
+#}
+---
+{%- block frontmatter %}
+{%- if sources is defined and sources %}
+sources:
+{%- for source in sources %}
+  - name: {{ source.name }}
+    url: {{ source.url }}
+{%- if source.note %}
+    note: {{ source.note }}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+{%- if design_refs is defined and design_refs %}
+design_refs:
+{%- for ref in design_refs %}
+  - title: {{ ref.title }}
+    path: {{ ref.path }}
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+---
+
+{% block title -%}
+# {{ doc_title }}
+{%- endblock %}
+
+{% block metadata -%}
+{%- if claude %}
+**Created**: {{ created_date | default('2026-01-31') }}
+**Status**: {{ overall_status | default('🟡 In Progress') }}
+**Category**: {{ doc_category }}
+{%- endif %}
+{%- endblock %}
+
+{% block overview -%}
+{%- if claude %}
+> {{ technical_summary }}
+{%- elif wiki %}
+{{ wiki_tagline }}
+
+{{ wiki_overview }}
+{%- endif %}
+{%- endblock %}
+
+---
+
+{% block status_table -%}
+{%- if claude %}
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | {{ status_design | default('🔴 Not Started') }} | {{ status_design_notes | default('-') }} |
+| Sources | {{ status_sources | default('🔴 Not Started') }} | {{ status_sources_notes | default('-') }} |
+| Instructions | {{ status_instructions | default('🔴 Not Started') }} | {{ status_instructions_notes | default('-') }} |
+| Code | {{ status_code | default('🔴 Not Started') }} | {{ status_code_notes | default('-') }} |
+| Linting | {{ status_linting | default('🔴 Not Started') }} | {{ status_linting_notes | default('-') }} |
+| Unit Testing | {{ status_unit_testing | default('🔴 Not Started') }} | {{ status_unit_testing_notes | default('-') }} |
+| Integration Testing | {{ status_integration_testing | default('🔴 Not Started') }} | {{ status_integration_testing_notes | default('-') }} |
+
+**Overall**: {{ overall_status | default('🔴 Not Started') }}
+{%- endif %}
+{%- endblock %}
+
+{% block table_of_contents -%}
+{%- if wiki %}
+## Contents
+
+<!-- TOC will be auto-generated here by markdown-toc -->
+{%- endif %}
+{%- endblock %}
+
+---
+
+{% block architecture -%}
+{%- if claude %}
+## Architecture
+
+{{ architecture_diagram | default('<!-- Architecture diagram placeholder -->') }}
+
+### Components
+
+{{ component_description | default('<!-- Component description -->') }}
+{%- elif wiki %}
+## How It Works
+
+{{ wiki_how_it_works | default('<!-- User-friendly explanation -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block implementation -%}
+{%- if claude %}
+## Implementation
+
+### File Structure
+
+{{ file_structure | default('<!-- File structure -->') }}
+
+### Key Interfaces
+
+{{ key_interfaces | default('<!-- Interface definitions -->') }}
+
+### Dependencies
+
+{{ dependencies | default('<!-- Dependency list -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block features -%}
+{%- if wiki %}
+## Features
+
+{%- if feature_list is defined and feature_list %}
+{%- for feature in feature_list %}
+- **{{ feature.name }}**: {{ feature.description }}
+{%- endfor %}
+{%- else %}
+<!-- Feature list placeholder -->
+{%- endif %}
+{%- endif %}
+{%- endblock %}
+
+{% block screenshots -%}
+{%- if wiki and screenshots is defined and screenshots %}
+## Screenshots
+
+{%- for screenshot in screenshots %}
+### {{ screenshot.title }}
+
+![{{ screenshot.title }}]({{ screenshot.path }})
+
+*{{ screenshot.caption }}*
+
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block configuration -%}
+## Configuration
+
+{%- if claude %}
+### Environment Variables
+
+{{ env_vars | default('<!-- Environment variables -->') }}
+
+### Config Keys
+
+{{ config_keys | default('<!-- Configuration keys -->') }}
+{%- elif wiki %}
+{{ wiki_configuration | default('<!-- User-friendly configuration guide -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block api -%}
+{%- if claude and api_endpoints is defined and api_endpoints %}
+## API Endpoints
+
+{%- for endpoint in api_endpoints %}
+### {{ endpoint.method }} {{ endpoint.path }}
+
+{{ endpoint.description }}
+
+**Request**:
+```json
+{{ endpoint.request_example | default('{}') }}
+```
+
+**Response**:
+```json
+{{ endpoint.response_example | default('{}') }}
+```
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block testing -%}
+{%- if claude %}
+## Testing Strategy
+
+### Unit Tests
+
+{{ unit_tests_description | default('<!-- Unit test strategy -->') }}
+
+### Integration Tests
+
+{{ integration_tests_description | default('<!-- Integration test strategy -->') }}
+
+### Test Coverage
+
+Target: **80% minimum**
+
+{{ test_coverage_notes | default('') }}
+{%- endif %}
+{%- endblock %}
+
+{% block implementation_checklist -%}
+{%- if claude and implementation_phases is defined and implementation_phases %}
+## Implementation Checklist
+
+{%- for phase in implementation_phases %}
+### {{ phase.name }}
+
+{%- for task in phase.tasks %}
+- [ ] {{ task }}
+{%- endfor %}
+
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block troubleshooting -%}
+{%- if wiki and troubleshooting is defined and troubleshooting %}
+## Troubleshooting
+
+{%- for issue in troubleshooting %}
+### {{ issue.problem }}
+
+**Cause**: {{ issue.cause }}
+
+**Solution**: {{ issue.solution }}
+
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block related_docs -%}
+## Related Documentation
+
+{%- if claude %}
+### Design Documents
+
+{%- if design_refs is defined and design_refs %}
+{%- for ref in design_refs %}
+- [{{ ref.title }}]({{ ref.path }})
+{%- endfor %}
+{%- else %}
+<!-- Related design docs -->
+{%- endif %}
+
+### External Sources
+
+{%- if sources is defined and sources %}
+{%- for source in sources %}
+- [{{ source.name }}]({{ source.url }}){% if source.note %} - {{ source.note }}{% endif %}
+{%- endfor %}
+{%- else %}
+<!-- External documentation sources -->
+{%- endif %}
+{%- elif wiki %}
+### See Also
+
+{%- if related_wiki_pages is defined and related_wiki_pages %}
+{%- for page in related_wiki_pages %}
+- [{{ page.title }}]({{ page.path }})
+{%- endfor %}
+{%- else %}
+<!-- Related wiki pages -->
+{%- endif %}
+{%- endif %}
+{%- endblock %}
+
+{% block footer -%}
+{%- if wiki %}
+
+---
+
+**Need Help?** [Open an issue](https://github.com/{{ github_org | default('revenge-project') }}/{{ github_repo | default('revenge') }}/issues) or [Join the discussion](https://github.com/{{ github_org | default('revenge-project') }}/{{ github_repo | default('revenge') }}/discussions)
+
+{%- endif %}
+{%- endblock %}

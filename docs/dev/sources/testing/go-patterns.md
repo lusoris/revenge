@@ -1,8 +1,8 @@
 # Go Testing Patterns
 
 > Source: https://go.dev/doc/tutorial/add-a-test
-> Fetched: 2026-01-31T11:02:13.514287+00:00
-> Content-Hash: 28917ae67a27f922
+> Fetched: 2026-01-31T16:02:11.537005+00:00
+> Content-Hash: 98c6a175c01c4a8f
 > Type: html
 
 ---
@@ -118,6 +118,7 @@ This time, run `go test` without the `-v` flag. The output will include results 
 In the next (and last) topic, you'll see how to compile and install your code to run it locally. 
 
 [< Return greetings for multiple people](/doc/tutorial/greetings-multiple-people.html) [Compile and install the application >](/doc/tutorial/compile-install.html)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Coder Templates
 
 > Source: https://coder.com/docs/templates
-> Fetched: 2026-01-31T11:05:21.259477+00:00
-> Content-Hash: fe4f296eab551ef6
+> Fetched: 2026-01-31T16:05:16.260526+00:00
+> Content-Hash: 36ac6c178a15b080
 > Type: html
 
 ---
@@ -58,6 +58,7 @@ We recommend starting with a universal template that can be used for basic tasks
 ##### [Permissions & PoliciesLearn how to create templates with Terraform](/docs/admin/templates/template-permissions)
 
 ##### [Troubleshooting TemplatesLearn how to troubleshoot template issues](/docs/admin/templates/troubleshooting)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

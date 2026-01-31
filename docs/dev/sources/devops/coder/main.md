@@ -1,8 +1,8 @@
 # Coder Documentation
 
 > Source: https://coder.com/docs
-> Fetched: 2026-01-31T11:05:19.162595+00:00
-> Content-Hash: fbe5baf43030e91e
+> Fetched: 2026-01-31T16:05:13.990970+00:00
+> Content-Hash: 69d664e826cdcb18
 > Type: html
 
 ---
@@ -39,6 +39,7 @@
 ## Reference
 
 [API docs](/docs/reference/api)[CLI docs](/docs/reference/cli)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

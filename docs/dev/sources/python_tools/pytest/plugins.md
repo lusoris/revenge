@@ -1,8 +1,8 @@
 # pytest Plugins
 
 > Source: https://docs.pytest.org/en/stable/plugins.html
-> Fetched: 2026-01-31T11:06:46.817894+00:00
-> Content-Hash: 372df1d889b9b0b6
+> Fetched: 2026-01-31T16:07:44.111913+00:00
+> Content-Hash: 5ba3fc00e87ff1ac
 > Type: html
 
 ---
@@ -139,6 +139,7 @@ ini
     
 
 Added in version 8.4: The [`\--disable-plugin-autoload`](../reference/reference.html#cmdoption-disable-plugin-autoload) command-line flag.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

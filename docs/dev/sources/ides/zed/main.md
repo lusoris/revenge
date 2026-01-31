@@ -1,8 +1,8 @@
 # Zed Documentation
 
 > Source: https://zed.dev/docs
-> Fetched: 2026-01-31T11:04:28.920094+00:00
-> Content-Hash: 31174c56ef501241
+> Fetched: 2026-01-31T16:04:25.529815+00:00
+> Content-Hash: 806a82279b5ff9a4
 > Type: html
 
 ---
@@ -98,6 +98,7 @@ Zed is proudly open source, and we get better with every contribution. Join us o
 
 
 [ Installation __](installation.html "Installation")
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # OPA Documentation
 
 > Source: https://www.openpolicyagent.org/docs/latest/
-> Fetched: 2026-01-31T11:02:05.505275+00:00
-> Content-Hash: 17cda17e209285ff
+> Fetched: 2026-01-31T16:02:04.159807+00:00
+> Content-Hash: 6615edf506b4d6bd
 > Type: html
 
 ---
@@ -1147,6 +1147,7 @@ Don't forget to install the OPA (Rego) Plugin for your favorite [IDE or Text Edi
   * Next Steps
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

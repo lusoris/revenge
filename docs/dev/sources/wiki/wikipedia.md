@@ -1,8 +1,8 @@
 # Wikipedia API
 
 > Source: https://en.wikipedia.org/w/api.php?action=help&modules=query
-> Fetched: 2026-01-31T11:03:56.743340+00:00
-> Content-Hash: a7a6557582c713ab
+> Fetched: 2026-01-31T16:03:50.198166+00:00
+> Content-Hash: ce7bd2c677113ec4
 > Type: html
 
 ---
@@ -511,6 +511,7 @@ Fetch revisions of pages beginning with `API/`.
     [api.php?action=query&generator=allpages&gapprefix=API/&prop=revisions&continue=](/w/api.php?action=query&generator=allpages&gapprefix=API/&prop=revisions&continue=) [[open in sandbox]](/wiki/Special:ApiSandbox#action=query&generator=allpages&gapprefix=API/&prop=revisions&continue=)
 
 Retrieved from "<https://en.wikipedia.org/wiki/Special:ApiHelp>"
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

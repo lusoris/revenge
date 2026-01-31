@@ -249,6 +249,25 @@ This applies to ALL data types across all modules.
 | `github.com/testcontainers/testcontainers-go` | v0.37.0 | Integration tests | Real containers |
 | `github.com/fergusstrange/embedded-postgres` | v1.30.0 | Unit tests | Fast embedded PostgreSQL |
 
+## Development Tools
+
+Tools used for development, with exact versions synced to configs.
+
+| Tool | Version | Config Files | Notes |
+|------|---------|--------------|-------|
+| **Go** | 1.25.6 | `go.mod`, `.tool-versions`, `.github/workflows/_versions.yml` | Latest stable (2026-01-15) |
+| **Python** | 3.12+ | `.python-version`, `.tool-versions`, `scripts/requirements.txt` | 3.14.2 recommended |
+| **Node** | 20.x | `.nvmrc`, `.tool-versions`, `package.json` | LTS version |
+| **PostgreSQL** | 18.1 | `docker-compose.yml`, `.github/workflows/*.yml` | Latest stable |
+| **Docker** | 27+ | `.github/workflows/*.yml` | Docker Engine |
+| **Dragonfly** | v1.36.0 | `docker-compose.yml`, `.coder/template.tf` | Redis-compatible cache |
+| **Typesense** | v30.1 | `docker-compose.yml`, `.coder/template.tf` | Search engine |
+| **golangci-lint** | v1.61.0 | `.github/workflows/ci.yml`, `.golangci.yml` | Go linter |
+| **ruff** | 0.4+ | `scripts/requirements.txt`, `.github/workflows/*.yml`, `ruff.toml` | Python linter/formatter |
+| **Coder** | v2.17.2+ | `.coder/template.tf` | Dev environments |
+| **markdownlint** | 0.39+ | `.markdownlint.json`, `.github/workflows/*.yml` | Markdown linter |
+| **gitleaks** | 8.18+ | `.github/workflows/security.yml`, `.gitleaksignore` | Secret scanner |
+
 ---
 
 ## External Integrations

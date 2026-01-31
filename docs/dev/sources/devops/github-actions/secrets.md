@@ -1,8 +1,8 @@
 # GitHub Actions Encrypted Secrets
 
 > Source: https://docs.github.com/en/actions/security-guides/encrypted-secrets
-> Fetched: 2026-01-31T11:05:06.111222+00:00
-> Content-Hash: f3759c889cb8031c
+> Fetched: 2026-01-31T16:05:01.315767+00:00
+> Content-Hash: 6d9e0f550700a6d3
 > Type: html
 
 ---
@@ -365,6 +365,7 @@ On Linux, you could run:
 ## Next steps
 
 For reference information, see [Secrets reference](/en/actions/reference/secrets-reference).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Dependabot Documentation
 
 > Source: https://docs.github.com/en/code-security/dependabot
-> Fetched: 2026-01-31T11:05:14.570460+00:00
-> Content-Hash: 2a4014aab47de4dc
+> Fetched: 2026-01-31T16:05:09.566373+00:00
+> Content-Hash: 7df62bb26a35ca9f
 > Type: html
 
 ---
@@ -26,6 +26,7 @@ Get help with Dependabot and dependency detection.
 ## [Establishing provenance and integrity for your projects](/en/code-security/how-tos/secure-your-supply-chain/establish-provenance-and-integrity)
 
 Secure and audit your releases and artifacts.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

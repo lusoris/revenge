@@ -1,8 +1,8 @@
 # pre-commit Hooks
 
 > Source: https://pre-commit.com/hooks.html
-> Fetched: 2026-01-31T11:07:04.502952+00:00
-> Content-Hash: 16f00e02c9b17353
+> Fetched: 2026-01-31T16:08:24.167189+00:00
+> Content-Hash: 72f44770b9ce478c
 > Type: html
 
 ---
@@ -139,6 +139,7 @@ you may send [a pull request](https://github.com/pre-commit/pre-commit.com/blob/
   * the tool must operate on files
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

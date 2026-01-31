@@ -1,8 +1,8 @@
 # testcontainers-go
 
 > Source: https://golang.testcontainers.org/
-> Fetched: 2026-01-31T11:02:11.271022+00:00
-> Content-Hash: bb1dd47b9c2554ba
+> Fetched: 2026-01-31T16:02:09.234607+00:00
+> Content-Hash: d6512282892ff6cd
 > Type: html
 
 ---
@@ -39,6 +39,7 @@ This project is opensource and you can have a look at the code on [GitHub](https
 ## Copyright¶
 
 Copyright (c) 2018-present Gianluca Arbezzano and other authors. Check out our [lovely contributors](https://github.com/testcontainers/testcontainers-go/graphs/contributors).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

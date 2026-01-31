@@ -1,8 +1,8 @@
 # Docker Compose File Reference
 
 > Source: https://docs.docker.com/compose/compose-file/
-> Fetched: 2026-01-31T11:05:42.701225+00:00
-> Content-Hash: 24d4086189ac5bb7
+> Fetched: 2026-01-31T16:05:37.639056+00:00
+> Content-Hash: 03fb902e4b930ad5
 > Type: html
 
 ---
@@ -56,6 +56,7 @@ Use the following links to navigate key sections of the Compose Specification.
 [Edit this page](https://github.com/docker/docs/edit/main/content/reference/compose-file/_index.md)
 
 [Request changes](https://github.com/docker/docs/issues/new?template=doc_issue.yml&location=https%3a%2f%2fdocs.docker.com%2freference%2fcompose-file%2f&labels=status%2Ftriage)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

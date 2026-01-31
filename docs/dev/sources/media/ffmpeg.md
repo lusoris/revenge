@@ -1,8 +1,8 @@
 # FFmpeg Documentation
 
 > Source: https://ffmpeg.org/ffmpeg.html
-> Fetched: 2026-01-31T11:00:50.813344+00:00
-> Content-Hash: d890069d5c86919f
+> Fetched: 2026-01-31T16:00:40.970246+00:00
+> Content-Hash: c86c0cdf3dfa531a
 > Type: html
 
 ---
@@ -3522,6 +3522,7 @@ Maintainers for the specific components are listed in the file MAINTAINERS in th
 This document was generated on _January 30, 2026_ using [_makeinfo_](http://www.gnu.org/software/texinfo/). 
 
 Hosting provided by [telepoint.bg](https://telepoint.bg)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

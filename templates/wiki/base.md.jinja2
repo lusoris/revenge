@@ -1,0 +1,176 @@
+{#
+  Wiki Base Template
+
+  User-friendly documentation for end users.
+  Includes screenshot placeholders, simplified language, and step-by-step guides.
+
+  Variables:
+  - Same as base.md.jinja2, but optimized for non-technical users
+  - screenshots: list - Screenshot placeholders
+  - step_by_step: list - Step-by-step instructions
+  - faq: list - Frequently asked questions
+#}
+---
+{% block frontmatter -%}
+title: {{ doc_title }}
+description: {{ wiki_tagline }}
+{%- if category %}
+category: {{ category }}
+{%- endif %}
+{%- if tags %}
+tags: {{ tags | tojson }}
+{%- endif %}
+{%- endblock %}
+---
+
+{% block header -%}
+# {{ doc_title }}
+
+{{ wiki_tagline }}
+{%- endblock %}
+
+{% block overview -%}
+{{ wiki_overview }}
+{%- endblock %}
+
+---
+
+{% block table_of_contents -%}
+## Contents
+
+<!-- TOC will be auto-generated here -->
+{%- endblock %}
+
+---
+
+{% block screenshots -%}
+{%- if screenshots %}
+## Screenshots
+
+{%- for screenshot in screenshots %}
+### {{ screenshot.title }}
+
+![{{ screenshot.title }}]({{ screenshot.path }})
+
+*{{ screenshot.caption }}*
+
+{%- endfor %}
+{%- elif has_screenshots %}
+## Screenshots
+
+*Screenshots will be added when the UI is implemented (post-v1.0)*
+{%- endif %}
+{%- endblock %}
+
+{% block features -%}
+{%- if feature_list %}
+## Features
+
+{%- for feature in feature_list %}
+- **{{ feature.name }}**: {{ feature.description }}
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block getting_started -%}
+{%- if step_by_step %}
+## Getting Started
+
+{%- for step in step_by_step %}
+### Step {{ loop.index }}: {{ step.title }}
+
+{{ step.description }}
+
+{%- if step.screenshot %}
+![{{ step.title }}]({{ step.screenshot }})
+{%- endif %}
+
+{%- if step.code %}
+```{{ step.code_language | default('bash') }}
+{{ step.code }}
+```
+{%- endif %}
+
+{%- if step.notes %}
+💡 **Tip**: {{ step.notes }}
+{%- endif %}
+
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block how_it_works -%}
+{%- if wiki_how_it_works %}
+## How It Works
+
+{{ wiki_how_it_works }}
+{%- endif %}
+{%- endblock %}
+
+{% block configuration -%}
+{%- if wiki_configuration %}
+## Configuration
+
+{{ wiki_configuration }}
+{%- endif %}
+{%- endblock %}
+
+{% block faq -%}
+{%- if faq %}
+## Frequently Asked Questions
+
+{%- for item in faq %}
+### {{ item.question }}
+
+{{ item.answer }}
+
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block troubleshooting -%}
+{%- if troubleshooting %}
+## Troubleshooting
+
+{%- for issue in troubleshooting %}
+### {{ issue.problem }}
+
+**Symptoms**: {{ issue.symptoms }}
+
+**Solution**: {{ issue.solution }}
+
+{%- if issue.see_also %}
+**See also**: {{ issue.see_also }}
+{%- endif %}
+
+---
+
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block related -%}
+{%- if related_wiki_pages %}
+## Related Pages
+
+{%- for page in related_wiki_pages %}
+- [{{ page.title }}]({{ page.path }}){% if page.description %} - {{ page.description }}{% endif %}
+{%- endfor %}
+{%- endif %}
+{%- endblock %}
+
+{% block footer -%}
+
+---
+
+## Need Help?
+
+- 📖 [User Documentation](../../user/)
+- 💬 [Join the Discussion](https://github.com/{{ github_org | default('revenge') }}/{{ github_repo | default('revenge') }}/discussions)
+- 🐛 [Report a Bug](https://github.com/{{ github_org | default('revenge') }}/{{ github_repo | default('revenge') }}/issues)
+- 🎯 [Feature Requests](https://github.com/{{ github_org | default('revenge') }}/{{ github_repo | default('revenge') }}/discussions/categories/ideas)
+
+---
+
+*This documentation is for the wiki. For technical details, see the [design documentation](../../dev/design/).*
+{%- endblock %}

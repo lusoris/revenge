@@ -1,8 +1,8 @@
 # WebVTT Specification
 
 > Source: https://www.w3.org/TR/webvtt1/
-> Fetched: 2026-01-31T10:59:50.337473+00:00
-> Content-Hash: ccb4623c0abc951e
+> Fetched: 2026-01-31T15:59:34.846441+00:00
+> Content-Hash: fdb2b186978fc2a1
 > Type: html
 
 ---
@@ -3821,3 +3821,4 @@ Thanks to the SubRip community, including in particular Zuggy and ai4spam, for t
 Thanks to Ian Hickson and many others for their work on the HTML standard, where WebVTT was originally specified. [HTML51]
 
 Thanks to Addison Phillips, Alastor Wu, Andreas Tai, Anna Cavender, Anne van Kesteren, Benjamin Schaaf, Brian Quass, Caitlin Potter, Courtney Kennedy, Cyril Concolato, Dae Kim, David Singer, Eric Carlson, fantasai, Frank Olivier, Fredrik Söderquist, Giuseppe Pascale, Glenn Adams, Glenn Maynard, John Foliot, Kyle Huey, Lawrence Forooghian, Loretta Guarino Reid, Ms2ger, Nigel Megitt, Ralph Giles, Richard Ishida, Rick Eyre, Ronny Mennerich, Theresa O’Connor, and Victor Cărbune for their useful comments. 
+  *[↑]: Back to Top

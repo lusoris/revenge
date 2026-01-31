@@ -1,8 +1,8 @@
 # Semantic Versioning
 
 > Source: https://semver.org/
-> Fetched: 2026-01-31T11:04:01.321319+00:00
-> Content-Hash: e661ddec540b058c
+> Fetched: 2026-01-31T16:03:55.082494+00:00
+> Content-Hash: 51f6a809a27542ec
 > Type: html
 
 ---
@@ -278,6 +278,7 @@ If you’d like to leave feedback, please [open an issue on GitHub](https://gith
 ## License
 
 [Creative Commons ― CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

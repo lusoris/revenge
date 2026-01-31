@@ -1,8 +1,8 @@
 # Dragonfly Documentation
 
 > Source: https://www.dragonflydb.io/docs
-> Fetched: 2026-01-31T11:02:49.691301+00:00
-> Content-Hash: 3c7a4b1f5a25e0ef
+> Fetched: 2026-01-31T16:02:46.395440+00:00
+> Content-Hash: 53596a1ad58680ca
 > Type: html
 
 ---
@@ -22,6 +22,7 @@ Visit the [getting started section](/docs/getting-started) to explore deployment
   * About Dragonfly
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

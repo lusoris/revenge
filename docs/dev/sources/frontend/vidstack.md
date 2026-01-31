@@ -1,8 +1,8 @@
 # Vidstack Player
 
 > Source: https://www.vidstack.io/docs/player/getting-started/installation
-> Fetched: 2026-01-31T11:00:25.895253+00:00
-> Content-Hash: 0f195969a316e107
+> Fetched: 2026-01-31T16:00:10.203837+00:00
+> Content-Hash: b71783470c904c9c
 > Type: html
 
 ---
@@ -166,6 +166,7 @@ Previous
 Next
 
 [ Architecture ](/docs/player/getting-started/architecture)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # K3s Documentation
 
 > Source: https://docs.k3s.io/
-> Fetched: 2026-01-31T11:03:29.167759+00:00
-> Content-Hash: 61fdd4858b6863a6
+> Fetched: 2026-01-31T16:03:23.696795+00:00
+> Content-Hash: a5ecfe6f4e39ed2a
 > Type: html
 
 ---
@@ -47,6 +47,7 @@ K3s is a fully compliant Kubernetes distribution with the following enhancements
 # What's with the name?
 
 We wanted an installation of Kubernetes that was half the size in terms of memory footprint. Kubernetes is a 10-letter word stylized as K8s. So something half as big as Kubernetes would be a 5-letter word stylized as K3s. There is no long form of K3s and no official pronunciation.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # go-astisub (subtitles)
 
 > Source: https://pkg.go.dev/github.com/asticode/go-astisub
-> Fetched: 2026-01-31T11:01:12.483616+00:00
-> Content-Hash: 4b2ab1d515602f39
+> Fetched: 2026-01-31T16:01:04.232905+00:00
+> Content-Hash: 9a47a11349a26190
 > Type: html
 
 ---
@@ -1050,6 +1050,7 @@ WriteToTTMLWithIndentOption sets the indent option.
     }
 
 WriteToTTMLOptions represents TTML write options. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Ruff Formatter
 
 > Source: https://docs.astral.sh/ruff/formatter/
-> Fetched: 2026-01-31T11:06:37.719852+00:00
-> Content-Hash: 2ac3dbd0d2aff338
+> Fetched: 2026-01-31T16:07:34.525208+00:00
+> Content-Hash: 919b1d13c6954ce8
 > Type: html
 
 ---
@@ -470,6 +470,7 @@ Currently, the Ruff formatter does not sort imports. In order to both sort impor
 A unified command for both linting and formatting is [planned](https://github.com/astral-sh/ruff/issues/8232).
 
 Back to top 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

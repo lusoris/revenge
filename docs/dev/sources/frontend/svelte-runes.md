@@ -1,8 +1,8 @@
 # Svelte 5 Runes
 
 > Source: https://svelte.dev/docs/svelte/$state
-> Fetched: 2026-01-31T11:00:13.521010+00:00
-> Content-Hash: a291d7e4964d0860
+> Fetched: 2026-01-31T15:59:58.267776+00:00
+> Content-Hash: fcd0763ab3339330
 > Type: html
 
 ---
@@ -1973,6 +1973,7 @@ $state(0); export function `function getCount(): number`getCount() { return `let
 previous next
 
 [What are runes?](/docs/svelte/what-are-runes) [$derived](/docs/svelte/$derived)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # GitHub Actions Variables
 
 > Source: https://docs.github.com/en/actions/learn-github-actions/variables
-> Fetched: 2026-01-31T11:05:03.669983+00:00
-> Content-Hash: 28251f824986f17a
+> Fetched: 2026-01-31T16:04:59.244406+00:00
+> Content-Hash: 2a480cee1c5601a3
 > Type: html
 
 ---
@@ -257,6 +257,7 @@ If you want to pass a value from a step in one job in a workflow to a step in an
 ## Next steps
 
 For reference information, see [Variables reference](/en/actions/reference/variables-reference).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

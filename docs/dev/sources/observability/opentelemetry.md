@@ -1,8 +1,8 @@
 # OpenTelemetry Go
 
 > Source: https://opentelemetry.io/docs/languages/go/
-> Fetched: 2026-01-31T11:02:27.983375+00:00
-> Content-Hash: 14ef08c93b230877
+> Fetched: 2026-01-31T16:02:25.754504+00:00
+> Content-Hash: f5f2c9323d147d4d
 > Type: html
 
 ---
@@ -67,6 +67,7 @@ Please let us know [how we can improve this page](https://github.com/open-teleme
 
 
 Last modified January 27, 2026: [Update language docs weights while preserving order (#9027) (d8f5ed28)](https://github.com/open-telemetry/opentelemetry.io/commit/d8f5ed285d009cc6baac6d7141bfde8d0956a756)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

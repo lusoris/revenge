@@ -1,8 +1,8 @@
 # mypy Documentation
 
 > Source: https://mypy.readthedocs.io/en/stable/
-> Fetched: 2026-01-31T11:06:51.274740+00:00
-> Content-Hash: adb5fe047f200052
+> Fetched: 2026-01-31T16:07:48.611037+00:00
+> Content-Hash: 624740723183e97e
 > Type: html
 
 ---
@@ -415,6 +415,7 @@ Miscellaneous
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Coder Kubernetes
 
 > Source: https://coder.com/docs/platforms/kubernetes
-> Fetched: 2026-01-31T11:05:36.463312+00:00
-> Content-Hash: d39590f7b056fd7b
+> Fetched: 2026-01-31T16:05:31.367917+00:00
+> Content-Hash: 8a5332aa2894565c
 > Type: html
 
 ---
@@ -23,6 +23,7 @@ We publish an EC2 image with Coder pre-installed. Follow the tutorial here:
 Alternatively, install the [CLI binary](/docs/install/cli) on any Linux machine or follow our [Kubernetes](/docs/install/kubernetes) documentation to install Coder on an existing Kubernetes cluster.
 
 For EKS-specific installation guidance, see the [AWS section in Kubernetes installation docs](/docs/install/kubernetes#aws).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

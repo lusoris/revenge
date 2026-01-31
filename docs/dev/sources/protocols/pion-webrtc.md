@@ -1,8 +1,8 @@
 # Pion WebRTC (Go)
 
 > Source: https://pkg.go.dev/github.com/pion/webrtc/v4
-> Fetched: 2026-01-31T11:00:04.477773+00:00
-> Content-Hash: 9901f7aa19af134d
+> Fetched: 2026-01-31T15:59:49.292081+00:00
+> Content-Hash: 7011c90eb7f9ee48
 > Type: html
 
 ---
@@ -6912,3 +6912,4 @@ It appears in the stats as soon as the sender is added by either AddTrack or Add
     }
 
 VideoSourceStats represents a video track that is attached to one or more senders. 
+  *[↑]: Back to Top

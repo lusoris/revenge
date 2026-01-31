@@ -1,8 +1,8 @@
 # Casbin Documentation
 
 > Source: https://casbin.org/docs/overview
-> Fetched: 2026-01-31T11:01:58.374844+00:00
-> Content-Hash: 41724438c1feac73
+> Fetched: 2026-01-31T16:01:56.805825+00:00
+> Content-Hash: 04c7350b1bc6f2ab
 > Type: html
 
 ---
@@ -109,6 +109,7 @@ Most applications already manage their own user accounts, roles, and credentials
 How is this guide?
 
 GoodBad
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Commitizen
 
 > Source: https://commitizen-tools.github.io/commitizen/
-> Fetched: 2026-01-31T11:07:11.096127+00:00
-> Content-Hash: aa0f64c33e5d68fb
+> Fetched: 2026-01-31T16:08:30.685407+00:00
+> Content-Hash: 068747f020bc8aa7
 > Type: html
 
 ---
@@ -343,6 +343,7 @@ These are our cool sponsors!
 [](https://github.com/numberly)
 
 January 31, 2026
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

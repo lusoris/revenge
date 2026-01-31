@@ -1,8 +1,8 @@
 # WebRTC API
 
 > Source: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
-> Fetched: 2026-01-31T11:00:00.737681+00:00
-> Content-Hash: d37c0773ef25aaf6
+> Fetched: 2026-01-31T15:59:45.168524+00:00
+> Content-Hash: b1975205e41b4120
 > Type: html
 
 ---
@@ -434,3 +434,4 @@ Yes No
 This page was last modified on Jun 26, 2025 by [MDN contributors](/en-US/docs/Web/API/WebRTC_API/contributors.txt). 
 
 [View this page on GitHub](https://github.com/mdn/content/blob/main/files/en-us/web/api/webrtc_api/index.md?plain=1 "Folder: en-us/web/api/webrtc_api \(Opens in a new tab\)") â¢ [Report a problem with this content](https://github.com/mdn/content/issues/new?template=page-report.yml&mdn-url=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FAPI%2FWebRTC_API&metadata=%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EPage+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fweb%2Fapi%2Fwebrtc_api%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FAPI%2FWebRTC_API%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fweb%2Fapi%2Fwebrtc_api%2Findex.md%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Fd0ed4906719465102739e604bdb35213fb19f251%0A*+Document+last+modified%3A+2025-06-26T01%3A52%3A11.000Z%0A%0A%3C%2Fdetails%3E "This will take you to GitHub to file a new issue.")
+  *[↑]: Back to Top

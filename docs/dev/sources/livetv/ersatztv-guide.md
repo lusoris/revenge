@@ -1,8 +1,8 @@
 # ErsatzTV Documentation
 
 > Source: https://ersatztv.org/docs/
-> Fetched: 2026-01-31T11:02:58.513577+00:00
-> Content-Hash: 7a2400ef14346a3a
+> Fetched: 2026-01-31T16:02:55.078338+00:00
+> Content-Hash: ecfc493ed26b76df
 > Type: html
 
 ---
@@ -23,6 +23,7 @@ Want to say thanks? Consider [sponsorship on GitHub](https://github.com/sponsors
   6. [Configure Clients](/docs/clients)
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

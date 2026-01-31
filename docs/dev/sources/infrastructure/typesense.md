@@ -1,8 +1,8 @@
 # Typesense API
 
 > Source: https://typesense.org/docs/latest/api/
-> Fetched: 2026-01-31T11:02:51.806324+00:00
-> Content-Hash: 0630a1f18cfb6deb
+> Fetched: 2026-01-31T16:02:48.521915+00:00
+> Content-Hash: 4112224746f2c318
 > Type: html
 
 ---
@@ -68,6 +68,7 @@ But here are direct clickable links as well:
   * [ 0.11.2 ](/docs/0.11.2/)
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

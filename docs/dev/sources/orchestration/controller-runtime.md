@@ -1,8 +1,8 @@
 # sigs.k8s.io/controller-runtime
 
 > Source: https://pkg.go.dev/sigs.k8s.io/controller-runtime
-> Fetched: 2026-01-31T11:03:41.162408+00:00
-> Content-Hash: d0771ccf931fb5f9
+> Fetched: 2026-01-31T16:03:34.558031+00:00
+> Content-Hash: 28589d4bc1b4c8c4
 > Type: html
 
 ---
@@ -590,6 +590,7 @@ SchemeBuilder builds a new Scheme for mapping go types to Kubernetes GroupVersio
 TypeMeta describes an individual object in an API response or request with strings representing the type of the object and its API schema version. Structures that are versioned or persisted should inline TypeMeta. 
 
 +k8s:deepcopy-gen=false 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

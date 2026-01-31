@@ -1,8 +1,8 @@
 # Pro Git Book
 
 > Source: https://git-scm.com/book/en/v2
-> Fetched: 2026-01-31T11:06:59.809763+00:00
-> Content-Hash: 0206d9bee136acfb
+> Fetched: 2026-01-31T16:08:12.346091+00:00
+> Content-Hash: 4ded8af8b3bc0665
 > Type: html
 
 ---
@@ -148,6 +148,7 @@ The version found here has been updated with corrections and additions from [hun
      12. A3.12 [Plumbing Commands](/book/en/v2/Appendix-C:-Git-Commands-Plumbing-Commands)
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

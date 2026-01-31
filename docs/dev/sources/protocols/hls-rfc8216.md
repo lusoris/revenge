@@ -1,8 +1,8 @@
 # HLS Specification
 
 > Source: https://datatracker.ietf.org/doc/html/rfc8216
-> Fetched: 2026-01-31T10:59:39.205318+00:00
-> Content-Hash: 5919e39cf5a4423b
+> Fetched: 2026-01-31T15:59:23.591837+00:00
+> Content-Hash: eb8161b6df8699b1
 > Type: html
 
 ---
@@ -3619,3 +3619,4 @@ __Inline __Reference
 Citation links
 
 __Go to reference section __Go to linked document
+  *[↑]: Back to Top

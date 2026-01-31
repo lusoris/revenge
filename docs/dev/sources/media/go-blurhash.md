@@ -1,8 +1,8 @@
 # go-blurhash
 
 > Source: https://pkg.go.dev/github.com/bbrks/go-blurhash
-> Fetched: 2026-01-31T11:01:14.649437+00:00
-> Content-Hash: f1da029c6a14c4ff
+> Fetched: 2026-01-31T16:01:06.566900+00:00
+> Content-Hash: 6f35fec4f26d30a2
 > Type: html
 
 ---
@@ -142,6 +142,7 @@ NewEncoder creates a new reusable Encoder. Buffers are allocated lazily on first
     func (e *Encoder) Encode(xComponents, yComponents [int](/builtin#int), img [image](/image).[Image](/image#Image)) ([string](/builtin#string), [error](/builtin#error))
 
 Encode returns the blurhash for the given image. Internal buffers are reused across calls when possible. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

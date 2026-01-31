@@ -1,8 +1,8 @@
 # Grafana Loki
 
 > Source: https://grafana.com/docs/loki/latest/
-> Fetched: 2026-01-31T11:02:37.083549+00:00
-> Content-Hash: 0ae61b70dbc04fd6
+> Fetched: 2026-01-31T16:02:34.831612+00:00
+> Content-Hash: fa9cdd4b84777109
 > Type: html
 
 ---
@@ -46,6 +46,7 @@ Yes No
 On this page
 
 Scroll for more
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # GitHub Actions Documentation
 
 > Source: https://docs.github.com/en/actions
-> Fetched: 2026-01-31T11:04:56.481031+00:00
-> Content-Hash: 8aca116e6f7d1e81
+> Fetched: 2026-01-31T16:04:52.909158+00:00
+> Content-Hash: fb1f35da3a7e8348
 > Type: html
 
 ---
@@ -104,6 +104,7 @@
   * [Use Actions Runner Controller • 5 articles](/en/actions/tutorials/use-actions-runner-controller)
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

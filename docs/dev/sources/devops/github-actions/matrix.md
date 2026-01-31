@@ -1,8 +1,8 @@
 # GitHub Actions Matrix Builds
 
 > Source: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
-> Fetched: 2026-01-31T11:05:10.390191+00:00
-> Content-Hash: f07cf308f3844b60
+> Fetched: 2026-01-31T16:05:05.433961+00:00
+> Content-Hash: 2934014b4ed135d2
 > Type: html
 
 ---
@@ -252,6 +252,7 @@ For example, the following workflow will run a maximum of two jobs at a time, ev
     
 
 For reference information, see [Workflow syntax for GitHub Actions](/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # pytest Documentation
 
 > Source: https://docs.pytest.org/en/stable/
-> Fetched: 2026-01-31T11:06:42.093642+00:00
-> Content-Hash: 2d0a4b6282e351ee
+> Fetched: 2026-01-31T16:07:38.922451+00:00
+> Content-Hash: 5aadf1333fbda9a1
 > Type: html
 
 ---
@@ -114,6 +114,7 @@ The maintainers of pytest and thousands of other packages are working with Tidel
 ### Security¶
 
 pytest has never been associated with a security vulnerability, but in any case, to report a security vulnerability please use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

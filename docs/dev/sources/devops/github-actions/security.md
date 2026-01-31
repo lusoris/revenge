@@ -1,8 +1,8 @@
 # GitHub Actions Security Best Practices
 
 > Source: https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
-> Fetched: 2026-01-31T11:05:12.490976+00:00
-> Content-Hash: 78b23a1f5e3b88fd
+> Fetched: 2026-01-31T16:05:07.498447+00:00
+> Content-Hash: 51aa7663731cd3ce
 > Type: html
 
 ---
@@ -345,6 +345,7 @@ If you are someone who maintains an action that is used in other projects, you c
   * Use repository security advisories to create a security advisory, privately collaborate to fix the vulnerability in a temporary private fork, and publish a security advisory to alert your community of the vulnerability once a patch is released. For more information, see [Configuring private vulnerability reporting for a repository](/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository) and [Creating a repository security advisory](/en/code-security/security-advisories/working-with-repository-security-advisories/creating-a-repository-security-advisory).
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

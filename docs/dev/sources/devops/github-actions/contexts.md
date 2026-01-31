@@ -1,8 +1,8 @@
 # GitHub Actions Contexts
 
 > Source: https://docs.github.com/en/actions/learn-github-actions/contexts
-> Fetched: 2026-01-31T11:05:01.227725+00:00
-> Content-Hash: 059c1dff1f0e6640
+> Fetched: 2026-01-31T16:04:57.175559+00:00
+> Content-Hash: 4b049330aeae4487
 > Type: html
 
 ---
@@ -914,6 +914,7 @@ This example workflow triggered by a `workflow_dispatch` event uses the `inputs`
   * [Contexts](/en/actions/concepts/workflows-and-actions/contexts)
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

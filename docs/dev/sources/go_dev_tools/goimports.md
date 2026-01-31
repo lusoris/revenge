@@ -1,8 +1,8 @@
 # goimports
 
 > Source: https://pkg.go.dev/golang.org/x/tools/cmd/goimports
-> Fetched: 2026-01-31T11:06:23.266090+00:00
-> Content-Hash: 8884f46da6ab1356
+> Fetched: 2026-01-31T16:07:00.913614+00:00
+> Content-Hash: eb0cf02699287e36
 > Type: html
 
 ---
@@ -55,6 +55,7 @@ File bugs or feature requests at:
     
 
 Happy hacking! 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

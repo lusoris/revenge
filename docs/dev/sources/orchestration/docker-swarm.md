@@ -1,8 +1,8 @@
 # Docker Swarm Documentation
 
 > Source: https://docs.docker.com/engine/swarm/
-> Fetched: 2026-01-31T11:03:31.519671+00:00
-> Content-Hash: 675797b036fee8dd
+> Fetched: 2026-01-31T16:03:25.861099+00:00
+> Content-Hash: c00a2eec4ea62fb6
 > Type: html
 
 ---
@@ -103,6 +103,7 @@ At rollout time you can apply service updates to nodes incrementally. The swarm 
 [Request changes](https://github.com/docker/docs/issues/new?template=doc_issue.yml&location=https%3a%2f%2fdocs.docker.com%2fengine%2fswarm%2f&labels=status%2Ftriage)
 
 Table of contents
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

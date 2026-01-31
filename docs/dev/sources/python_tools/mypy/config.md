@@ -1,8 +1,8 @@
 # mypy Configuration
 
 > Source: https://mypy.readthedocs.io/en/stable/config_file.html
-> Fetched: 2026-01-31T11:06:53.474013+00:00
-> Content-Hash: 1d3b331e9b564556
+> Fetched: 2026-01-31T16:07:50.866875+00:00
+> Content-Hash: 57777fe3d90ebbaa
 > Type: html
 
 ---
@@ -1636,6 +1636,7 @@ Here is an example of a `pyproject.toml` file. To use this config file, place it
     ]
     ignore_missing_imports = true
     
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

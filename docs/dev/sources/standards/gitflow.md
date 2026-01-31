@@ -1,8 +1,8 @@
 # Git Flow
 
 > Source: https://nvie.com/posts/a-successful-git-branching-model/
-> Fetched: 2026-01-31T11:04:05.992604+00:00
-> Content-Hash: ea71aff6d7d20d8b
+> Fetched: 2026-01-31T16:03:59.680678+00:00
+> Content-Hash: 05d8b406deb498f0
 > Type: html
 
 ---
@@ -289,6 +289,7 @@ A high-quality PDF version of the figure is provided here. Go ahead and hang it 
 
 
 If you want to get in touch, I'm [@nvie](http://twitter.com/nvie) on Twitter.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # dhowden/tag (audio metadata)
 
 > Source: https://pkg.go.dev/github.com/dhowden/tag
-> Fetched: 2026-01-31T11:01:16.923084+00:00
-> Content-Hash: 7c2d3b13a231b7e6
+> Fetched: 2026-01-31T16:01:08.854772+00:00
+> Content-Hash: e59cb0b8c94e285a
 > Type: html
 
 ---
@@ -327,6 +327,7 @@ UFID is composed of a provider (frequently a URL and a binary identifier) The id
     
     
     func (u UFID) String() [string](/builtin#string)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

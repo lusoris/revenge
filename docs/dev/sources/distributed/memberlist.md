@@ -1,8 +1,8 @@
 # hashicorp/memberlist
 
 > Source: https://pkg.go.dev/github.com/hashicorp/memberlist
-> Fetched: 2026-01-31T11:03:22.403094+00:00
-> Content-Hash: 46965313debb6175
+> Fetched: 2026-01-31T16:03:16.705149+00:00
+> Content-Hash: 3dac1f6ac58ddba7
 > Type: html
 
 ---
@@ -1400,6 +1400,7 @@ Transport is used to abstract over communicating with other peers. The packet in
 UniqueBroadcast is an optional interface that indicates that each message is intrinsically unique and there is no need to scan the broadcast queue for duplicates. 
 
 You should ensure that Invalidates() always returns false if implementing this interface. Invalidates() isn't currently used for UniqueBroadcasts, but that may change in the future. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

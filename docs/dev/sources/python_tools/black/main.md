@@ -1,8 +1,8 @@
 # Black Formatter
 
 > Source: https://black.readthedocs.io/en/stable/
-> Fetched: 2026-01-31T11:06:55.576116+00:00
-> Content-Hash: bc7cac68a2b68918
+> Fetched: 2026-01-31T16:07:53.047579+00:00
+> Content-Hash: d2684f3677ee744b
 > Type: html
 
 ---
@@ -230,6 +230,7 @@ Development
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

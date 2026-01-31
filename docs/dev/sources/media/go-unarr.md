@@ -1,8 +1,8 @@
 # gen2brain/go-unarr
 
 > Source: https://pkg.go.dev/github.com/gen2brain/go-unarr
-> Fetched: 2026-01-31T11:01:36.663116+00:00
-> Content-Hash: 8fe6d9382cb4bae5
+> Fetched: 2026-01-31T16:01:34.110501+00:00
+> Content-Hash: db9ea4350650d346
 > Type: html
 
 ---
@@ -194,6 +194,7 @@ Returns the new offset.
     func (a *Archive) Size() [int](/builtin#int)
 
 Size returns the total size of uncompressed data of the current entry 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

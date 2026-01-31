@@ -1,8 +1,8 @@
 # gortsplib (RTSP)
 
 > Source: https://pkg.go.dev/github.com/bluenviron/gortsplib/v4
-> Fetched: 2026-01-31T11:01:05.397094+00:00
-> Content-Hash: 0142b1d687eb613e
+> Fetched: 2026-01-31T16:00:56.513292+00:00
+> Content-Hash: 3e8b3f8dd451f27f
 > Type: html
 
 ---
@@ -1532,6 +1532,7 @@ transport protocols.
     func (t Transport) String() [string](/builtin#string)
 
 String implements fmt.Stringer. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # VS Code Debugging
 
 > Source: https://code.visualstudio.com/docs/editor/debugging
-> Fetched: 2026-01-31T11:04:17.647179+00:00
-> Content-Hash: adf3b8214509bf78
+> Fetched: 2026-01-31T16:04:13.940734+00:00
+> Content-Hash: 606e9b12599cd730
 > Type: html
 
 ---
@@ -333,6 +333,7 @@ To write your own debugger extension, visit:
 Debugging of Node.js-based applications is supported on Linux, macOS, and Windows out of the box with VS Code. Many other scenarios are supported by [VS Code extensions](https://marketplace.visualstudio.com/vscode/Debuggers?sortBy=Installs) available in the Marketplace.
 
 01/08/2026
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

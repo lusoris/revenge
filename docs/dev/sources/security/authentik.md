@@ -1,8 +1,8 @@
 # Authentik Documentation
 
 > Source: https://goauthentik.io/docs/
-> Fetched: 2026-01-31T11:01:50.560808+00:00
-> Content-Hash: aaa60eb01ba1359d
+> Fetched: 2026-01-31T16:01:47.775983+00:00
+> Content-Hash: c3697ba8f54b9d99
 > Type: html
 
 ---
@@ -57,6 +57,7 @@ For more information about configuration, beta versions, and additional installa
   * Installation
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

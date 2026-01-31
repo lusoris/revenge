@@ -1,8 +1,8 @@
 # LogQL Query Language
 
 > Source: https://grafana.com/docs/loki/latest/query/
-> Fetched: 2026-01-31T11:02:39.266197+00:00
-> Content-Hash: 202933fab36365d6
+> Fetched: 2026-01-31T16:02:36.953921+00:00
+> Content-Hash: d511df286e5cf15c
 > Type: html
 
 ---
@@ -180,6 +180,7 @@ Yes No
 On this page
 
 Scroll for more
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

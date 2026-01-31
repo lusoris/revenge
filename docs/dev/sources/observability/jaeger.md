@@ -1,8 +1,8 @@
 # Jaeger Documentation
 
 > Source: https://www.jaegertracing.io/docs/
-> Fetched: 2026-01-31T11:02:41.721344+00:00
-> Content-Hash: a2de7099d9e6644a
+> Fetched: 2026-01-31T16:02:39.107511+00:00
+> Content-Hash: 1f64bc036aea5f85
 > Type: html
 
 ---
@@ -32,6 +32,7 @@ Available versions:
 
 
 Last modified November 10, 2025: [[docsy] Cherry-pick docsy branch commits at of 2025-11-10 onto main (#1016) (0d966c3)](https://github.com/jaegertracing/documentation/commit/0d966c36b7e6b174c32920c903e6e19a348c0533)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

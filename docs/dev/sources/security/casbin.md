@@ -1,8 +1,8 @@
 # Casbin
 
 > Source: https://pkg.go.dev/github.com/casbin/casbin/v2
-> Fetched: 2026-01-31T11:01:55.538791+00:00
-> Content-Hash: e9ee9b33fb33db50
+> Fetched: 2026-01-31T16:01:53.971891+00:00
+> Content-Hash: 7a9c49c862d92e05
 > Type: html
 
 ---
@@ -3556,6 +3556,7 @@ IsTransactionActive returns true if the transaction with the given ID is active.
     func (te *TransactionalEnforcer) WithTransaction(ctx [context](/context).[Context](/context#Context), fn func(*Transaction) [error](/builtin#error)) [error](/builtin#error)
 
 WithTransaction executes a function within a transaction. If the function returns an error, the transaction is rolled back. Otherwise, it's committed automatically. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

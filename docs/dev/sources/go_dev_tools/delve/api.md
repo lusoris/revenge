@@ -1,8 +1,8 @@
 # Delve API
 
 > Source: https://github.com/go-delve/delve/tree/master/Documentation/api
-> Fetched: 2026-01-31T11:06:16.398052+00:00
-> Content-Hash: 7f77b0c7e8882f6b
+> Fetched: 2026-01-31T16:06:51.636930+00:00
+> Content-Hash: 3384657946aa16bc
 > Type: html
 
 ---
@@ -15,6 +15,7 @@
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

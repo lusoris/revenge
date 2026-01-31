@@ -1,8 +1,8 @@
 # JWT RFC
 
 > Source: https://datatracker.ietf.org/doc/html/rfc7519
-> Fetched: 2026-01-31T11:01:45.786237+00:00
-> Content-Hash: bc7d2d1d3beadb4d
+> Fetched: 2026-01-31T16:01:42.820580+00:00
+> Content-Hash: 16264a3eb121b91c
 > Type: html
 
 ---
@@ -1866,6 +1866,7 @@ __Inline __Reference
 Citation links
 
 __Go to reference section __Go to linked document
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

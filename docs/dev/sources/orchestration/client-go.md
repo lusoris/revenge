@@ -1,8 +1,8 @@
 # k8s.io/client-go
 
 > Source: https://pkg.go.dev/k8s.io/client-go
-> Fetched: 2026-01-31T11:03:38.481893+00:00
-> Content-Hash: c9d3e62a61c5dde0
+> Fetched: 2026-01-31T16:03:32.359631+00:00
+> Content-Hash: 1a738e4bdb7baf20
 > Type: html
 
 ---
@@ -619,6 +619,7 @@ Example (UsingInformers) ¶
     
 
 Share Format Run
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

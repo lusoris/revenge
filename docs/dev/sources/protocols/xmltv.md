@@ -1,8 +1,8 @@
 # XMLTV Format
 
 > Source: https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd
-> Fetched: 2026-01-31T10:59:55.633429+00:00
-> Content-Hash: 49ebda93f1f039bf
+> Fetched: 2026-01-31T15:59:40.212285+00:00
+> Content-Hash: dcd4c2a353078f52
 > Type: html
 
 ---
@@ -15,3 +15,4 @@
 
 
 
+  *[↑]: Back to Top

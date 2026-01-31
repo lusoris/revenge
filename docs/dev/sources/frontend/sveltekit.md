@@ -1,8 +1,8 @@
 # SvelteKit Documentation
 
 > Source: https://svelte.dev/docs/kit/introduction
-> Fetched: 2026-01-31T11:00:15.598589+00:00
-> Content-Hash: 5d6b2dbc30a3a737
+> Fetched: 2026-01-31T16:00:00.305623+00:00
+> Content-Hash: 43369020da46740e
 > Type: html
 
 ---
@@ -38,6 +38,7 @@ It reflects changes to your code in the browser instantly to provide a lightning
 previous next
 
 [Creating a project](/docs/kit/creating-a-project)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Dependabot Configuration
 
 > Source: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-> Fetched: 2026-01-31T11:05:16.837162+00:00
-> Content-Hash: e22cc1863620f914
+> Fetched: 2026-01-31T16:05:11.654237+00:00
+> Content-Hash: a0906c0915077881
 > Type: html
 
 ---
@@ -972,6 +972,7 @@ If the account is a GitHub account, you can use a GitHub personal access token i
 ### `url` and `replaces-base`
 
 The `url` parameter defines where to access a registry. When the optional `replaces-base` parameter is enabled (`true`), Dependabot resolves dependencies using the value of `url` rather than the base URL of that specific ecosystem.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

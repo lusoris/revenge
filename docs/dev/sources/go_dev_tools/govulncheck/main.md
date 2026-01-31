@@ -1,8 +1,8 @@
 # govulncheck
 
 > Source: https://go.dev/blog/vuln
-> Fetched: 2026-01-31T11:06:18.632605+00:00
-> Content-Hash: d9aedf189d00c114
+> Fetched: 2026-01-31T16:06:53.882220+00:00
+> Content-Hash: 8fbd49e3d183fa64
 > Type: html
 
 ---
@@ -79,6 +79,7 @@ We are excited to work with you to build a better and more secure Go ecosystem.
 go.dev uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic. [Learn more.](https://policies.google.com/technologies/cookies)
 
 Okay
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

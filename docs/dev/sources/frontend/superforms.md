@@ -1,8 +1,8 @@
 # SvelteKit Superforms
 
 > Source: https://superforms.rocks/
-> Fetched: 2026-01-31T11:00:46.161054+00:00
-> Content-Hash: 0de9cc7e8d2684ad
+> Fetched: 2026-01-31T16:00:32.049035+00:00
+> Content-Hash: 575064e64dcd69c0
 > Type: html
 
 ---
@@ -33,6 +33,7 @@ Click [here to get started](/get-started) right away, or watch this video for an
 Browser testing by
 
 [](https://bugbug.io/)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

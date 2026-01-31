@@ -1,8 +1,8 @@
 # VS Code Svelte Extension
 
 > Source: https://github.com/sveltejs/language-tools/blob/master/docs/README.md
-> Fetched: 2026-01-31T11:04:26.741360+00:00
-> Content-Hash: 5e78e700e659b902
+> Fetched: 2026-01-31T16:04:23.086164+00:00
+> Content-Hash: bf662ba1ade51918
 > Type: html
 
 ---
@@ -19,6 +19,7 @@ There was an error while loading. [Please reload this page]().
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

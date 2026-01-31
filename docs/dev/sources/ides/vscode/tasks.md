@@ -1,8 +1,8 @@
 # VS Code Tasks
 
 > Source: https://code.visualstudio.com/docs/editor/tasks
-> Fetched: 2026-01-31T11:04:15.297403+00:00
-> Content-Hash: 313330d60d456b9c
+> Fetched: 2026-01-31T16:04:11.571806+00:00
+> Content-Hash: be24bf4d5ff9a795
 > Type: html
 
 ---
@@ -965,6 +965,7 @@ There are several ways to resolve this issue:
 The above `npm` task will run `bash` with a command (`-c`), just like the tasks system does by default. However, this task also runs `bash` as a login shell (`-l`).
 
 01/08/2026
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

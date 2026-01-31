@@ -1,8 +1,8 @@
 # Docker Multi-stage Builds
 
 > Source: https://docs.docker.com/build/building/multi-stage/
-> Fetched: 2026-01-31T11:05:44.806054+00:00
-> Content-Hash: 26467cc0ee15eb64
+> Fetched: 2026-01-31T16:05:39.724928+00:00
+> Content-Hash: 135a2a989cde495f
 > Type: html
 
 ---
@@ -201,6 +201,7 @@ The legacy builder processes `stage1`, even if `stage2` doesn't depend on it.
 [Request changes](https://github.com/docker/docs/issues/new?template=doc_issue.yml&location=https%3a%2f%2fdocs.docker.com%2fbuild%2fbuilding%2fmulti-stage%2f&labels=status%2Ftriage)
 
 Table of contents
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

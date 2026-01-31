@@ -1,8 +1,8 @@
 # Air Configuration
 
 > Source: https://github.com/air-verse/air/blob/master/air_example.toml
-> Fetched: 2026-01-31T11:06:09.233199+00:00
-> Content-Hash: 3f050597791c6679
+> Fetched: 2026-01-31T16:06:44.744551+00:00
+> Content-Hash: dea076b2627ca7f1
 > Type: html
 
 ---
@@ -19,6 +19,7 @@ There was an error while loading. [Please reload this page]().
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

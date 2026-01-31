@@ -1,8 +1,8 @@
 # VS Code Settings Reference
 
 > Source: https://code.visualstudio.com/docs/getstarted/settings
-> Fetched: 2026-01-31T11:04:12.983903+00:00
-> Content-Hash: 5802eed5e0dca4e6
+> Fetched: 2026-01-31T16:04:09.386319+00:00
+> Content-Hash: 17c27012a62dc307
 > Type: html
 
 ---
@@ -417,6 +417,7 @@ If you're using a workspace that needs custom settings but you don't want to app
 In general, VS Code extensions store their settings in your user or workspaces settings files and they are available through the Settings editor UI (**Preferences: Open Settings (UI)** command) or via IntelliSense in your `settings.json` file (**Preferences: Open User Settings (JSON)** command). Searching by the extension name (for example `gitlens` or `python`) can help filter down settings to just those contributed by an extension.
 
 01/08/2026
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

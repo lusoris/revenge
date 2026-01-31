@@ -1,8 +1,8 @@
 # pytest Fixtures
 
 > Source: https://docs.pytest.org/en/stable/fixture.html
-> Fetched: 2026-01-31T11:06:44.428420+00:00
-> Content-Hash: 9adf52ae3425c8e0
+> Fetched: 2026-01-31T16:07:41.629980+00:00
+> Content-Hash: fd215fd8c60779bb
 > Type: html
 
 ---
@@ -127,6 +127,7 @@ pytest does not do any special processing for [`SIGTERM`](https://docs.python.or
 The reason pytest does not handle those signals to perform fixture cleanup is that signal handlers are global, and changing them might interfere with the code under execution.
 
 If fixtures in your suite need special care regarding termination in those scenarios, see [this comment](https://github.com/pytest-dev/pytest/issues/5243#issuecomment-491522595) in the issue tracker for a possible workaround.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

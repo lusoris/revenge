@@ -1,8 +1,8 @@
 # go-astiav (FFmpeg bindings)
 
 > Source: https://pkg.go.dev/github.com/asticode/go-astiav
-> Fetched: 2026-01-31T11:01:00.796091+00:00
-> Content-Hash: 84c8a7c90806a4cc
+> Fetched: 2026-01-31T16:00:52.089566+00:00
+> Content-Hash: a10e55e5a89bcd97
 > Type: html
 
 ---
@@ -7543,6 +7543,7 @@ It's the developer's responsibility to handle frame's writability
     
     
     func (c *UnknownClasser) Class() *Class
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

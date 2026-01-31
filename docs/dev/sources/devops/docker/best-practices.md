@@ -1,8 +1,8 @@
 # Dockerfile Best Practices
 
 > Source: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-> Fetched: 2026-01-31T11:05:46.947690+00:00
-> Content-Hash: 9eb416eb74729083
+> Fetched: 2026-01-31T16:05:41.856990+00:00
+> Content-Hash: f116892c54ce617a
 > Type: html
 
 ---
@@ -583,6 +583,7 @@ For more information about `ONBUILD`, see [Dockerfile reference for the ONBUILD 
 Table of contents
 
 [ Best practices](https://docs.docker.com/tags/best-practices/)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Zod Documentation
 
 > Source: https://zod.dev/
-> Fetched: 2026-01-31T11:00:41.144114+00:00
-> Content-Hash: d73c01ec89cce887
+> Fetched: 2026-01-31T16:00:27.075547+00:00
+> Content-Hash: cae63534e213a1d8
 > Type: html
 
 ---
@@ -58,7 +58,7 @@ Zod 4 is now stable! Read the [release notes here](/v4).
 
 [](https://jazz.tools/?utm_source=zod)
 
-Interested in featuring? [Get in touch.](/cdn-cgi/l/email-protection#a8dbd8c7c6dbc7dadbc0c1d8e8cbc7c4c1c6c0c9cbc3db86cbc7c5)
+Interested in featuring? [Get in touch.](/cdn-cgi/l/email-protection#83f0f3ecedf0ecf1f0ebeaf3c3e0ecefeaedebe2e0e8f0ade0ecee)
 
 ## [Introduction](?id=introduction)
 
@@ -267,6 +267,7 @@ SDKs & Terraform providers for your API
 ### On this page
 
 IntroductionFeaturesInstallationRequirements`"strict"`EcosystemSponsorsPlatinumGoldSilverBronze
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

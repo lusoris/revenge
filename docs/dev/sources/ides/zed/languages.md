@@ -1,8 +1,8 @@
 # Zed Language Support
 
 > Source: https://zed.dev/docs/languages
-> Fetched: 2026-01-31T11:04:43.566486+00:00
-> Content-Hash: afb29b938ce74397
+> Fetched: 2026-01-31T16:04:40.237663+00:00
+> Content-Hash: 652db4f036d28d54
 > Type: html
 
 ---
@@ -181,6 +181,7 @@ Zed supports hundreds of programming languages and text formats. Some work out-o
 
 
 [ __Helix Mode](helix.html "Helix Mode") [ Configuring Languages __](configuring-languages.html "Configuring Languages")
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # bogem/id3v2
 
 > Source: https://pkg.go.dev/github.com/bogem/id3v2/v2
-> Fetched: 2026-01-31T11:01:19.269539+00:00
-> Content-Hash: 86029952b9dd62d8
+> Fetched: 2026-01-31T16:01:16.110096+00:00
+> Content-Hash: 68f108ceab998213
 > Type: html
 
 ---
@@ -1260,6 +1260,7 @@ UserDefinedTextFrame is used to work with TXXX frames. There can be many UserDef
     
     
     func (udtf UserDefinedTextFrame) WriteTo(w [io](/io).[Writer](/io#Writer)) (n [int64](/builtin#int64), err [error](/builtin#error))
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Git Hooks Documentation
 
 > Source: https://git-scm.com/docs/githooks
-> Fetched: 2026-01-31T12:46:34.848381+00:00
-> Content-Hash: a4498a9be8b927a0
+> Fetched: 2026-01-31T16:08:14.401850+00:00
+> Content-Hash: b791228f5c2a1dfb
 > Type: html
 
 ---
@@ -294,7 +294,7 @@ This hook is meant primarily for notification, and cannot affect the outcome of 
 
 ### pre-commit
 
-This hook is invoked by [git-commit[1]](/docs/git-commit), and can be bypassed with the `--no-verify` option. It takes no parameters, and is invoked before obtaining the proposed commit log message and making a commit. Exiting with a non-zero status from this script causes the `git` `commit` command to abort before creating a commit.
+This hook is invoked by [git-commit[1]](/docs/git-commit), and can be bypassed with the `\--no-verify` option. It takes no parameters, and is invoked before obtaining the proposed commit log message and making a commit. Exiting with a non-zero status from this script causes the `git` `commit` command to abort before creating a commit.
 
 The default _pre-commit_ hook, when enabled, catches introduction of lines with trailing whitespaces and aborts the commit when such a line is found.
 
@@ -304,7 +304,7 @@ The default _pre-commit_ hook, when enabled—​and with the `hooks.allownonasc
 
 ### pre-merge-commit
 
-This hook is invoked by [git-merge[1]](/docs/git-merge), and can be bypassed with the `--no-verify` option. It takes no parameters, and is invoked after the merge has been carried out successfully and before obtaining the proposed commit log message to make a commit. Exiting with a non-zero status from this script causes the `git` `merge` command to abort before creating a commit.
+This hook is invoked by [git-merge[1]](/docs/git-merge), and can be bypassed with the `\--no-verify` option. It takes no parameters, and is invoked after the merge has been carried out successfully and before obtaining the proposed commit log message to make a commit. Exiting with a non-zero status from this script causes the `git` `merge` command to abort before creating a commit.
 
 The default _pre-merge-commit_ hook, when enabled, runs the _pre-commit_ hook, if the latter is enabled.
 
@@ -316,17 +316,17 @@ If the merge cannot be carried out automatically, the conflicts need to be resol
 
 This hook is invoked by [git-commit[1]](/docs/git-commit) right after preparing the default log message, and before the editor is started.
 
-It takes one to three parameters. The first is the name of the file that contains the commit log message. The second is the source of the commit message, and can be: `message` (if a `-m` or `-F` option was given); `template` (if a `-t` option was given or the configuration option `commit.template` is set); `merge` (if the commit is a merge or a `.git/MERGE_MSG` file exists); `squash` (if a `.git/SQUASH_MSG` file exists); or `commit`, followed by a commit object name (if a `-c`, `-C` or `--amend` option was given).
+It takes one to three parameters. The first is the name of the file that contains the commit log message. The second is the source of the commit message, and can be: `message` (if a `-m` or `-F` option was given); `template` (if a `-t` option was given or the configuration option `commit.template` is set); `merge` (if the commit is a merge or a `.git/MERGE_MSG` file exists); `squash` (if a `.git/SQUASH_MSG` file exists); or `commit`, followed by a commit object name (if a `-c`, `-C` or `\--amend` option was given).
 
 If the exit status is non-zero, `git` `commit` will abort.
 
-The purpose of the hook is to edit the message file in place, and it is not suppressed by the `--no-verify` option. A non-zero exit means a failure of the hook and aborts the commit. It should not be used as a replacement for the pre-commit hook.
+The purpose of the hook is to edit the message file in place, and it is not suppressed by the `\--no-verify` option. A non-zero exit means a failure of the hook and aborts the commit. It should not be used as a replacement for the pre-commit hook.
 
 The sample `prepare-commit-msg` hook that comes with Git removes the help message found in the commented portion of the commit template.
 
 ### commit-msg
 
-This hook is invoked by [git-commit[1]](/docs/git-commit) and [git-merge[1]](/docs/git-merge), and can be bypassed with the `--no-verify` option. It takes a single parameter, the name of the file that holds the proposed commit log message. Exiting with a non-zero status causes the command to abort.
+This hook is invoked by [git-commit[1]](/docs/git-commit) and [git-merge[1]](/docs/git-merge), and can be bypassed with the `\--no-verify` option. It takes a single parameter, the name of the file that holds the proposed commit log message. Exiting with a non-zero status causes the command to abort.
 
 The hook is allowed to edit the message file in place, and can be used to normalize the message into some project standard format. It can also be used to refuse the commit after inspecting the message file.
 
@@ -346,7 +346,7 @@ This hook is called by [git-rebase[1]](/docs/git-rebase) and can be used to prev
 
 This hook is invoked when a [git-checkout[1]](/docs/git-checkout) or [git-switch[1]](/docs/git-switch) is run after having updated the worktree. The hook is given three parameters: the ref of the previous HEAD, the ref of the new HEAD (which may or may not have changed), and a flag indicating whether the checkout was a branch checkout (changing branches, flag=1) or a file checkout (retrieving a file from the index, flag=0). This hook cannot affect the outcome of `git` `switch` or `git` `checkout`, other than that the hook’s exit status becomes the exit status of these two commands.
 
-It is also run after [git-clone[1]](/docs/git-clone), unless the `--no-checkout` (`-n`) option is used. The first parameter given to the hook is the null-ref, the second the ref of the new HEAD and the flag is always 1. Likewise for `git` `worktree` `add` unless `--no-checkout` is used.
+It is also run after [git-clone[1]](/docs/git-clone), unless the `\--no-checkout` (`-n`) option is used. The first parameter given to the hook is the null-ref, the second the ref of the new HEAD and the flag is always 1. Likewise for `git` `worktree` `add` unless `\--no-checkout` is used.
 
 This hook can be used to perform repository validity checks, auto-display differences from the previous HEAD if different, or set working dir metadata properties.
 
@@ -389,7 +389,7 @@ If the hook exits with non-zero status, none of the refs will be updated. If the
 
 Both standard output and standard error output are forwarded to `git` `send-pack` on the other end, so you can simply `echo` messages for the user.
 
-The number of push options given on the command line of `git` `push` `--push-option=...` can be read from the environment variable `GIT_PUSH_OPTION_COUNT`, and the options themselves are found in `GIT_PUSH_OPTION_0`, `GIT_PUSH_OPTION_1`,…​ If it is negotiated to not use the push options phase, the environment variables will not be set. If the client selects to use push options, but doesn’t transmit any, the count variable will be set to zero, `GIT_PUSH_OPTION_COUNT=0`.
+The number of push options given on the command line of `git` `push` `\--push-option=...` can be read from the environment variable `GIT_PUSH_OPTION_COUNT`, and the options themselves are found in `GIT_PUSH_OPTION_0`, `GIT_PUSH_OPTION_1`,…​ If it is negotiated to not use the push options phase, the environment variables will not be set. If the client selects to use push options, but doesn’t transmit any, the count variable will be set to zero, `GIT_PUSH_OPTION_COUNT=0`.
 
 See the section on "Quarantine Environment" in [git-receive-pack[1]](/docs/git-receive-pack) for some caveats.
 
@@ -480,7 +480,7 @@ Both standard output and standard error output are forwarded to `git` `send-pack
 
 The default _post-receive_ hook is empty, but there is a sample script `post-receive-email` provided in the `contrib/hooks` directory in Git distribution, which implements sending commit emails.
 
-The number of push options given on the command line of `git` `push` `--push-option=...` can be read from the environment variable `GIT_PUSH_OPTION_COUNT`, and the options themselves are found in `GIT_PUSH_OPTION_0`, `GIT_PUSH_OPTION_1`,…​ If it is negotiated to not use the push options phase, the environment variables will not be set. If the client selects to use push options, but doesn’t transmit any, the count variable will be set to zero, `GIT_PUSH_OPTION_COUNT=0`.
+The number of push options given on the command line of `git` `push` `\--push-option=...` can be read from the environment variable `GIT_PUSH_OPTION_COUNT`, and the options themselves are found in `GIT_PUSH_OPTION_0`, `GIT_PUSH_OPTION_1`,…​ If it is negotiated to not use the push options phase, the environment variables will not be set. If the client selects to use push options, but doesn’t transmit any, the count variable will be set to zero, `GIT_PUSH_OPTION_COUNT=0`.
 
 See the "post-receive" section in [git-receive-pack[1]](/docs/git-receive-pack) for additional details.
 
@@ -534,11 +534,11 @@ For example, the hook can simply run `git` `read-tree` `-u` `-m` `HEAD` `"$1"` i
 
 ### pre-auto-gc
 
-This hook is invoked by `git` `gc` `--auto` (see [git-gc[1]](/docs/git-gc)). It takes no parameter, and exiting with non-zero status from this script causes the `git` `gc` `--auto` to abort.
+This hook is invoked by `git` `gc` `\--auto` (see [git-gc[1]](/docs/git-gc)). It takes no parameter, and exiting with non-zero status from this script causes the `git` `gc` `\--auto` to abort.
 
 ### post-rewrite
 
-This hook is invoked by commands that rewrite commits ([git-commit[1]](/docs/git-commit) when called with `--amend` and [git-rebase[1]](/docs/git-rebase); however, full-history (re)writing tools like [git-fast-import[1]](/docs/git-fast-import) or [git-filter-repo](https://github.com/newren/git-filter-repo) typically do not call it!). Its first argument denotes the command it was invoked by: currently one of `amend` or `rebase`. Further command-dependent arguments may be passed in the future.
+This hook is invoked by commands that rewrite commits ([git-commit[1]](/docs/git-commit) when called with `\--amend` and [git-rebase[1]](/docs/git-rebase); however, full-history (re)writing tools like [git-fast-import[1]](/docs/git-fast-import) or [git-filter-repo](https://github.com/newren/git-filter-repo) typically do not call it!). Its first argument denotes the command it was invoked by: currently one of `amend` or `rebase`. Further command-dependent arguments may be passed in the future.
 
 The hook receives a list of the rewritten commits on stdin, in the format
     
@@ -562,7 +562,7 @@ The commits are guaranteed to be listed in the order that they were processed by
 
 This hook is invoked by [git-send-email[1]](/docs/git-send-email).
 
-It takes these command line arguments. They are, 1\. the name of the file which holds the contents of the email to be sent. 2\. The name of the file which holds the SMTP headers of the email.
+It takes these command line arguments. They are, 1. the name of the file which holds the contents of the email to be sent. 2. The name of the file which holds the SMTP headers of the email.
 
 The SMTP headers are passed in the exact same way as they are passed to the user’s Mail Transport Agent (MTA). In effect, the email given to the user’s MTA, is the contents of $2 followed by the contents of $1.
 
@@ -617,11 +617,11 @@ The exit status determines whether git will use the data from the hook to limit 
 
 This hook is invoked by `git-p4` `submit`.
 
-The `p4-changelist` hook is executed after the changelist message has been edited by the user. It can be bypassed with the `--no-verify` option. It takes a single parameter, the name of the file that holds the proposed changelist text. Exiting with a non-zero status causes the command to abort.
+The `p4-changelist` hook is executed after the changelist message has been edited by the user. It can be bypassed with the `\--no-verify` option. It takes a single parameter, the name of the file that holds the proposed changelist text. Exiting with a non-zero status causes the command to abort.
 
 The hook is allowed to edit the changelist file and can be used to normalize the text into some project standard format. It can also be used to refuse the Submit after inspect the message file.
 
-Run `git-p4` `submit` `--help` for details.
+Run `git-p4` `submit` `\--help` for details.
 
 ### p4-prepare-changelist
 
@@ -629,9 +629,9 @@ This hook is invoked by `git-p4` `submit`.
 
 The `p4-prepare-changelist` hook is executed right after preparing the default changelist message and before the editor is started. It takes one parameter, the name of the file that contains the changelist text. Exiting with a non-zero status from the script will abort the process.
 
-The purpose of the hook is to edit the message file in place, and it is not suppressed by the `--no-verify` option. This hook is called even if `--prepare-p4-only` is set.
+The purpose of the hook is to edit the message file in place, and it is not suppressed by the `\--no-verify` option. This hook is called even if `\--prepare-p4-only` is set.
 
-Run `git-p4` `submit` `--help` for details.
+Run `git-p4` `submit` `\--help` for details.
 
 ### p4-post-changelist
 
@@ -639,11 +639,11 @@ This hook is invoked by `git-p4` `submit`.
 
 The `p4-post-changelist` hook is invoked after the submit has successfully occurred in P4. It takes no parameters and is meant primarily for notification and cannot affect the outcome of the git p4 submit action.
 
-Run `git-p4` `submit` `--help` for details.
+Run `git-p4` `submit` `\--help` for details.
 
 ### p4-pre-submit
 
-This hook is invoked by `git-p4` `submit`. It takes no parameters and nothing from standard input. Exiting with non-zero status from this script prevent `git-p4` `submit` from launching. It can be bypassed with the `--no-verify` command line option. Run `git-p4` `submit` `--help` for details.
+This hook is invoked by `git-p4` `submit`. It takes no parameters and nothing from standard input. Exiting with non-zero status from this script prevent `git-p4` `submit` from launching. It can be bypassed with the `\--no-verify` command line option. Run `git-p4` `submit` `\--help` for details.
 
 ### post-index-change
 
@@ -664,3 +664,7 @@ Only one parameter should be set to "1" when the hook runs. The hook running pas
 Part of the [git[1]](/docs/git) suite
 
 ### githooks
+  *[↑]: Back to Top
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

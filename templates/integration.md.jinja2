@@ -1,0 +1,212 @@
+{#
+  Integration Template
+
+  For external service integrations (TMDb, StashDB, Radarr, etc.)
+  Extends base.md.jinja2 and adds integration-specific sections.
+
+  Additional Variables:
+  - integration_name: str - Integration name (e.g., "TMDb Integration")
+  - external_service: str - External service name
+  - api_base_url: str - API base URL
+  - auth_method: str - Authentication method (API key, OAuth, etc.)
+  - rate_limits: dict - Rate limiting information
+  - provides_data: list - What data this integration provides
+#}
+{% extends "base.md.jinja2" %}
+
+{% block title -%}
+# {{ integration_name }}
+{%- endblock %}
+
+{% block overview -%}
+{%- if claude %}
+> Integration with {{ external_service }}
+
+{{ technical_summary }}
+
+**API Base URL**: `{{ api_base_url }}`
+**Authentication**: {{ auth_method }}
+{%- elif wiki %}
+# {{ integration_name }}
+
+{{ wiki_tagline }}
+
+{{ wiki_overview }}
+{%- endif %}
+{%- endblock %}
+
+{% block architecture -%}
+{%- if claude %}
+## Architecture
+
+### Integration Structure
+
+```
+internal/integration/{{ integration_id }}/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
+```
+
+### Data Flow
+
+{{ data_flow_diagram | default('<!-- Data flow diagram -->') }}
+
+### Provides
+
+This integration provides:
+{%- if provides_data %}
+{%- for data_type in provides_data %}
+- **{{ data_type.name }}**: {{ data_type.description }}
+{%- endfor %}
+{%- else %}
+<!-- Data provided by integration -->
+{%- endif %}
+{%- elif wiki %}
+## How It Works
+
+{{ wiki_how_it_works }}
+{%- endif %}
+{%- endblock %}
+
+{% block authentication -%}
+{%- if claude %}
+## Authentication
+
+### Method
+
+{{ auth_method_description | default('<!-- Authentication method description -->') }}
+
+### Configuration
+
+{%- if auth_config %}
+```yaml
+{{ auth_config }}
+```
+{%- else %}
+<!-- Authentication configuration -->
+{%- endif %}
+
+### Token Refresh
+
+{{ token_refresh_notes | default('N/A') }}
+{%- endif %}
+{%- endblock %}
+
+{% block rate_limiting -%}
+{%- if claude and rate_limits %}
+## Rate Limiting
+
+{%- if rate_limits.requests_per_second %}
+**Requests per second**: {{ rate_limits.requests_per_second }}
+{%- endif %}
+{%- if rate_limits.requests_per_day %}
+**Requests per day**: {{ rate_limits.requests_per_day }}
+{%- endif %}
+{%- if rate_limits.burst %}
+**Burst limit**: {{ rate_limits.burst }}
+{%- endif %}
+
+### Rate Limit Strategy
+
+{{ rate_limit_strategy | default('<!-- Rate limiting strategy -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block api_endpoints -%}
+{%- if claude %}
+## API Endpoints
+
+### Supported Endpoints
+
+{%- if api_endpoints %}
+{%- for endpoint in api_endpoints %}
+#### {{ endpoint.name }}
+
+**URL**: `{{ endpoint.method }} {{ endpoint.path }}`
+**Purpose**: {{ endpoint.purpose }}
+
+{%- if endpoint.parameters %}
+**Parameters**:
+{%- for param in endpoint.parameters %}
+- `{{ param.name }}` ({{ param.type }}): {{ param.description }}
+{%- endfor %}
+{%- endif %}
+
+{%- if endpoint.response_example %}
+**Response**:
+```json
+{{ endpoint.response_example }}
+```
+{%- endif %}
+
+---
+
+{%- endfor %}
+{%- else %}
+<!-- API endpoints -->
+{%- endif %}
+{%- endif %}
+{%- endblock %}
+
+{% block caching -%}
+{%- if claude %}
+## Caching Strategy
+
+{{ caching_strategy | default('<!-- Caching strategy -->') }}
+
+### Cache Duration
+
+{%- if cache_ttl %}
+- Metadata: {{ cache_ttl.metadata | default('24h') }}
+- Images: {{ cache_ttl.images | default('7d') }}
+- Search results: {{ cache_ttl.search | default('1h') }}
+{%- else %}
+<!-- Cache TTL configuration -->
+{%- endif %}
+{%- endif %}
+{%- endblock %}
+
+{% block error_handling -%}
+{%- if claude %}
+## Error Handling
+
+### HTTP Error Codes
+
+{{ error_handling | default('<!-- Error handling strategy -->') }}
+
+### Retry Strategy
+
+{{ retry_strategy | default('<!-- Retry strategy -->') }}
+
+### Fallback Behavior
+
+{{ fallback_behavior | default('<!-- Fallback behavior -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block setup_guide -%}
+{%- if wiki %}
+## Setup Guide
+
+### Prerequisites
+
+{%- if prerequisites %}
+{%- for prereq in prerequisites %}
+- {{ prereq }}
+{%- endfor %}
+{%- else %}
+<!-- Prerequisites -->
+{%- endif %}
+
+### Configuration Steps
+
+{{ setup_steps | default('<!-- Setup steps -->') }}
+
+### Testing
+
+{{ testing_guide | default('<!-- How to test the integration -->') }}
+{%- endif %}
+{%- endblock %}

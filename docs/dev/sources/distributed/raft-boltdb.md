@@ -1,8 +1,8 @@
 # hashicorp/raft-boltdb
 
 > Source: https://pkg.go.dev/github.com/hashicorp/raft-boltdb/v2
-> Fetched: 2026-01-31T11:03:19.745651+00:00
-> Content-Hash: 2b25ce418e3b748e
+> Fetched: 2026-01-31T16:03:13.940804+00:00
+> Content-Hash: b2144ee4a823d9d1
 > Type: html
 
 ---
@@ -203,6 +203,7 @@ Sync performs an fsync on the database file handle. This is not necessary under 
     }
 
 Options contains all the configuration used to open the Bbolt 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # shadcn-svelte
 
 > Source: https://www.shadcn-svelte.com/docs
-> Fetched: 2026-01-31T11:00:17.885104+00:00
-> Content-Hash: 451a3e767e4a7b9f
+> Fetched: 2026-01-31T16:00:02.517143+00:00
+> Content-Hash: fedef262b590935a
 > Type: html
 
 ---
@@ -217,6 +217,7 @@ The design of shadcn-svelte makes it easy for AI tools to work with your code. I
 _An AI model can learn how your components work and suggest improvements or even create new components that integrate with your existing design._
 
 [Installation ](/docs/installation)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

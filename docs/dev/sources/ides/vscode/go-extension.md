@@ -1,8 +1,8 @@
 # VS Code Go Extension
 
 > Source: https://github.com/golang/vscode-go/wiki
-> Fetched: 2026-01-31T11:04:24.332291+00:00
-> Content-Hash: 9564b009eed7ce9b
+> Fetched: 2026-01-31T16:04:20.716025+00:00
+> Content-Hash: 6888d86d48a84f27
 > Type: html
 
 ---
@@ -62,6 +62,7 @@ Welcome to the VSCode Go Wiki!
 Update [the source](https://github.com/golang/vscode-go/edit/master/docs/Home.md) and send a PR.
 
 ### Clone this wiki locally
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

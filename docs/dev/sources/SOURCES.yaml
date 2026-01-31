@@ -772,6 +772,28 @@ sources:
       output: "apis/theposterdb.md"
       note: "MANUAL - Community poster art. API requires authentication."
 
+    # API Documentation Standards
+    - id: openapi-spec
+      name: "OpenAPI 3.1 Specification"
+      url: "https://spec.openapis.org/oas/v3.1.0"
+      type: html
+      output: "apis/openapi-spec.md"
+      note: "OpenAPI standard for API reference docs"
+
+    - id: stoplight-api-guide
+      name: "Stoplight API Design Guide"
+      url: "https://stoplight.io/api-design-guide"
+      type: html
+      output: "apis/stoplight-guide.md"
+      note: "API design best practices"
+
+    - id: readme-api-docs
+      name: "API Documentation Best Practices"
+      url: "https://readme.com/blog/api-documentation-best-practices"
+      type: html
+      output: "apis/readme-api-docs.md"
+      note: "Industry best practices for API documentation"
+
   # ============================================================================
   # PROTOCOLS - Streaming & Media Protocols
   # ============================================================================
@@ -986,6 +1008,21 @@ sources:
       url: "https://lucide.dev/guide/packages/lucide-svelte"
       type: html
       output: "frontend/lucide-svelte.md"
+
+    # Diagrams
+    - id: mermaid-docs
+      name: "Mermaid.js Documentation"
+      url: "https://mermaid.js.org/intro/"
+      type: html
+      output: "frontend/mermaid.md"
+      note: "For diagram generation in wiki docs"
+
+    - id: mermaid-syntax
+      name: "Mermaid Syntax Reference"
+      url: "https://mermaid.js.org/syntax/flowchart.html"
+      type: html
+      output: "frontend/mermaid-syntax.md"
+      note: "Flowchart, sequence, class diagrams"
 
   # ============================================================================
   # MEDIA - Media Processing
@@ -1564,6 +1601,13 @@ sources:
       output: "standards/chromaprint.md"
       note: "Audio fingerprinting for intro detection"
 
+    - id: markdownlint-rules
+      name: "markdownlint Rules"
+      url: "https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md"
+      type: html
+      output: "standards/markdownlint-rules.md"
+      note: "Markdown linting rules for doc validation"
+
   # ============================================================================
   # IDES - Integrated Development Environments
   # ============================================================================
@@ -1814,6 +1858,147 @@ sources:
       type: html
       output: "devops/docker/best-practices.md"
 
+    # GitHub Wiki
+    - id: github-wiki-docs
+      name: "GitHub Wiki Documentation"
+      url: "https://docs.github.com/en/communities/documenting-your-project-with-wikis"
+      type: html
+      output: "devops/github-wiki/main.md"
+      note: "GitHub Wiki format and features"
+
+    - id: github-wiki-api
+      name: "GitHub REST API - Wikis"
+      url: "https://docs.github.com/en/rest/gists/gists"
+      type: html
+      output: "devops/github-wiki/api.md"
+      note: "GitHub Wiki API for auto-sync"
+
+    # GitHub Documentation (Project Files)
+    - id: github-readme-guide
+      name: "GitHub README Best Practices"
+      url: "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes"
+      type: html
+      output: "devops/github-docs/readme.md"
+      note: "For README.md template generation"
+
+    - id: github-contributing-guide
+      name: "GitHub CONTRIBUTING Guide"
+      url: "https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors"
+      type: html
+      output: "devops/github-docs/contributing.md"
+      note: "For CONTRIBUTING.md template generation"
+
+    - id: github-templates-guide
+      name: "GitHub Issue/PR Templates"
+      url: "https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests"
+      type: html
+      output: "devops/github-docs/templates.md"
+      note: "For issue/PR template generation"
+
+    - id: github-metadata-guide
+      name: "GitHub Repository Metadata"
+      url: "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-repository-languages"
+      type: html
+      output: "devops/github-docs/metadata.md"
+      note: "For repository settings configuration"
+
+    # GitHub Management
+    - id: github-issues-docs
+      name: "GitHub Issues Documentation"
+      url: "https://docs.github.com/en/issues"
+      type: html
+      output: "devops/github-management/issues.md"
+      note: "For issue management automation"
+
+    - id: github-projects-docs
+      name: "GitHub Projects Documentation"
+      url: "https://docs.github.com/en/issues/planning-and-tracking-with-projects"
+      type: html
+      output: "devops/github-management/projects.md"
+      note: "For setup-github-projects skill"
+
+    - id: github-discussions-docs
+      name: "GitHub Discussions Documentation"
+      url: "https://docs.github.com/en/discussions"
+      type: html
+      output: "devops/github-management/discussions.md"
+      note: "For setup-github-discussions skill"
+
+    - id: github-security-docs
+      name: "GitHub Advanced Security Documentation"
+      url: "https://docs.github.com/en/code-security"
+      type: html
+      output: "devops/github-management/security.md"
+      note: "For configure-branch-protection skill"
+
+    # GitHub REST API
+    - id: github-rest-api
+      name: "GitHub REST API Reference"
+      url: "https://docs.github.com/en/rest"
+      type: html
+      output: "devops/github-api/rest.md"
+      note: "For GitHub management skills (Projects, Issues, Labels, Milestones)"
+
+    # CodeQL
+    - id: codeql-docs
+      name: "CodeQL Documentation"
+      url: "https://codeql.github.com/docs/"
+      type: html
+      output: "devops/codeql/main.md"
+      note: "For setup-codeql skill"
+
+    - id: codeql-cli
+      name: "CodeQL CLI Reference"
+      url: "https://codeql.github.com/docs/codeql-cli/"
+      type: html
+      output: "devops/codeql/cli.md"
+      note: "CodeQL command-line interface"
+
+    # Documentation Style Guides
+    - id: google-style-guide
+      name: "Google Developer Documentation Style Guide"
+      url: "https://developers.google.com/style"
+      type: html
+      output: "devops/style-guides/google.md"
+      note: "Industry standard for technical documentation"
+
+    - id: writethedocs-guide
+      name: "Write the Docs Best Practices"
+      url: "https://www.writethedocs.org/guide/"
+      type: html
+      output: "devops/style-guides/writethedocs.md"
+      note: "Documentation community best practices"
+
+    - id: markdown-guide
+      name: "Markdown Guide"
+      url: "https://www.markdownguide.org/basic-syntax/"
+      type: html
+      output: "devops/style-guides/markdown-guide.md"
+      note: "Markdown syntax reference for doc generation"
+
+    # Validation Tools
+    - id: yamale-docs
+      name: "Yamale YAML Schema Validator"
+      url: "https://github.com/23andMe/Yamale"
+      type: github_readme
+      output: "devops/validation/yamale.md"
+      note: "YAML schema validation for validate-doc skill"
+
+    - id: markdown-link-check-docs
+      name: "markdown-link-check"
+      url: "https://github.com/tcort/markdown-link-check"
+      type: github_readme
+      output: "devops/validation/markdown-link-check.md"
+      note: "Link validation for validate-doc skill"
+
+    # Shields.io (Badge Generation)
+    - id: shields-io-api
+      name: "Shields.io Badge API"
+      url: "https://shields.io/"
+      type: html
+      output: "devops/shields-io/api.md"
+      note: "For generate-badges skill"
+
   # ============================================================================
   # GO_DEV_TOOLS - Go Development Tools
   # ============================================================================
@@ -1922,6 +2107,31 @@ sources:
       type: html
       output: "go_dev_tools/staticcheck/checks.md"
 
+    # Go AST (for code-status skill)
+    - id: go-ast
+      name: "Go AST Package"
+      url: "https://pkg.go.dev/go/ast"
+      type: html
+      selectors: [".Documentation"]
+      output: "go_dev_tools/go-ast.md"
+      note: "AST parsing for code verification"
+
+    - id: go-parser
+      name: "Go Parser Package"
+      url: "https://pkg.go.dev/go/parser"
+      type: html
+      selectors: [".Documentation"]
+      output: "go_dev_tools/go-parser.md"
+      note: "Go source code parsing"
+
+    - id: go-packages
+      name: "golang.org/x/tools/go/packages"
+      url: "https://pkg.go.dev/golang.org/x/tools/go/packages"
+      type: html
+      selectors: [".Documentation"]
+      output: "go_dev_tools/go-packages.md"
+      note: "Higher-level package loading"
+
   # ============================================================================
   # PYTHON_TOOLS - Python Development Tools
   # ============================================================================
@@ -2002,6 +2212,58 @@ sources:
       type: html
       output: "python_tools/black/main.md"
       note: "Prefer Ruff formatter, but Black still widely used"
+
+    # Jinja2 (Template Engine)
+    - id: jinja2-docs
+      name: "Jinja2 Documentation"
+      url: "https://jinja.palletsprojects.com/en/stable/"
+      type: html
+      output: "python_tools/jinja2/main.md"
+      note: "Template engine for doc generation"
+
+    - id: jinja2-templates
+      name: "Jinja2 Template Designer"
+      url: "https://jinja.palletsprojects.com/en/stable/templates/"
+      type: html
+      output: "python_tools/jinja2/templates.md"
+      note: "Template syntax and features"
+
+    - id: jinja2-api
+      name: "Jinja2 API"
+      url: "https://jinja.palletsprojects.com/en/stable/api/"
+      type: html
+      output: "python_tools/jinja2/api.md"
+      note: "Python API for template rendering"
+
+    # Pillow (Image Processing)
+    - id: pillow-docs
+      name: "Pillow (PIL Fork) Documentation"
+      url: "https://pillow.readthedocs.io/en/stable/"
+      type: html
+      output: "python_tools/pillow/main.md"
+      note: "For generate-placeholder-assets skill"
+
+    - id: pillow-handbook
+      name: "Pillow Handbook"
+      url: "https://pillow.readthedocs.io/en/stable/handbook/index.html"
+      type: html
+      output: "python_tools/pillow/handbook.md"
+      note: "Image processing tutorials and examples"
+
+    - id: pillow-reference
+      name: "Pillow API Reference"
+      url: "https://pillow.readthedocs.io/en/stable/reference/index.html"
+      type: html
+      output: "python_tools/pillow/reference.md"
+      note: "Complete API reference for image manipulation"
+
+    # CairoSVG (SVG Conversion)
+    - id: cairosvg-docs
+      name: "CairoSVG Documentation"
+      url: "https://cairosvg.org/"
+      type: html
+      output: "python_tools/cairosvg.md"
+      note: "SVG to PNG/PDF conversion for assets"
 
   # ============================================================================
   # GIT_TOOLS - Git & Version Control

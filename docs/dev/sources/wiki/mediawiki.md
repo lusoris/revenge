@@ -1,8 +1,8 @@
 # MediaWiki API
 
 > Source: https://www.mediawiki.org/wiki/API:Main_page
-> Fetched: 2026-01-31T11:03:59.092623+00:00
-> Content-Hash: 54a33d62168fb451
+> Fetched: 2026-01-31T16:03:52.579031+00:00
+> Content-Hash: c312e65eb5821c5d
 > Type: html
 
 ---
@@ -720,6 +720,7 @@ Retrieved from "[https://www.mediawiki.org/w/index.php?title=API:Action_API&oldi
   * [New contributors](/wiki/Category:New_contributors "Category:New contributors")
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

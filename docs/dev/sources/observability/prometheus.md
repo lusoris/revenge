@@ -1,8 +1,8 @@
 # Prometheus Go Client
 
 > Source: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
-> Fetched: 2026-01-31T11:02:25.347019+00:00
-> Content-Hash: 1d8e3c15cb921db4
+> Fetched: 2026-01-31T16:02:23.560489+00:00
+> Content-Hash: 7786cfbd3465d91a
 > Type: html
 
 ---
@@ -3971,6 +3971,7 @@ Possible values for the ValueType enum. Use UntypedValue to mark a metric with a
     
     
     func (v ValueType) ToDTO() *[dto](/github.com/prometheus/client_model/go).[MetricType](/github.com/prometheus/client_model/go#MetricType)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

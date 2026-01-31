@@ -1,8 +1,8 @@
 # testify
 
 > Source: https://pkg.go.dev/github.com/stretchr/testify
-> Fetched: 2026-01-31T11:02:07.863520+00:00
-> Content-Hash: 606a7045ca93b0b1
+> Fetched: 2026-01-31T16:02:06.562791+00:00
+> Content-Hash: 30bcf71587c8d7ac
 > Type: html
 
 ---
@@ -20,6 +20,7 @@ The [github.com/stretchr/testify/mock](/github.com/stretchr/testify@v1.11.1/mock
 The [github.com/stretchr/testify/suite](/github.com/stretchr/testify@v1.11.1/suite) package provides a basic structure for using structs as testing suites, and methods on those structs as tests. It includes setup/teardown functionality in the way of interfaces. 
 
 A [golangci-lint](https://golangci-lint.run/) compatible linter for testify is available called [testifylint](https://github.com/Antonboom/testifylint). 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Lucide Svelte
 
 > Source: https://lucide.dev/guide/packages/lucide-svelte
-> Fetched: 2026-01-31T11:00:48.395821+00:00
-> Content-Hash: 48197a4bef2e7cab
+> Fetched: 2026-01-31T16:00:34.334442+00:00
+> Content-Hash: b48b1cb6408f5f20
 > Type: html
 
 ---
@@ -369,6 +369,7 @@ svelte
     <Check aria-label="Task completed" />
 
 For best practices on accessibility, please see our [accessibility guide](./../advanced/accessibility).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

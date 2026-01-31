@@ -1,8 +1,8 @@
 # JetBrains Gateway
 
 > Source: https://www.jetbrains.com/help/idea/remote-development-overview.html
-> Fetched: 2026-01-31T11:04:54.379843+00:00
-> Content-Hash: f63f595ab8410b81
+> Fetched: 2026-01-31T16:04:50.797207+00:00
+> Content-Hash: d5924ba5748ab34b
 > Type: html
 
 ---
@@ -124,6 +124,7 @@ JetBrains Client is not designed to be extensible for the connection part. Howev
 17 October 2025
 
 [Remote development](remote.html)[System requirements for remote development](prerequisites.html)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

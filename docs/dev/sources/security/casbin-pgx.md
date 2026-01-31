@@ -1,8 +1,8 @@
 # Casbin pgx Adapter
 
 > Source: https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3
-> Fetched: 2026-01-31T11:02:00.619485+00:00
-> Content-Hash: 0d6216d6723538cc
+> Fetched: 2026-01-31T16:01:59.078244+00:00
+> Content-Hash: 136ff6db0df064d9
 > Type: html
 
 ---
@@ -214,6 +214,7 @@ WithTableName can be used to pass custom table name for Casbin rules
     func WithTimeout(timeout [time](/time).[Duration](/time#Duration)) Option
 
 WithTimeout can be used to pass a different timeout than DefaultTimeout for each request to Postgres 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

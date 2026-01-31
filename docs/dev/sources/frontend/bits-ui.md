@@ -1,8 +1,8 @@
 # Bits UI
 
 > Source: https://www.bits-ui.com/docs/introduction
-> Fetched: 2026-01-31T11:00:20.465408+00:00
-> Content-Hash: c1f81a33a5f61afb
+> Fetched: 2026-01-31T16:00:04.758618+00:00
+> Content-Hash: 497b2a8d7065a52e
 > Type: html
 
 ---
@@ -76,6 +76,7 @@ Built on the shoulders of giants:
 
 
 [Next Getting Started](/docs/getting-started)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

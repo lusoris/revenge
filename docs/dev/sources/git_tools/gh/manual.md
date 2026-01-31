@@ -1,8 +1,8 @@
 # GitHub CLI Manual
 
 > Source: https://cli.github.com/manual/gh
-> Fetched: 2026-01-31T11:07:08.797279+00:00
-> Content-Hash: 4506786bafac3ffc
+> Fetched: 2026-01-31T16:08:28.470700+00:00
+> Content-Hash: 9f91387a47be52cf
 > Type: html
 
 ---
@@ -67,6 +67,7 @@ Work seamlessly with GitHub from the command line.
     $ gh issue create
     $ gh repo clone cli/cli
     $ gh pr checkout 321
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

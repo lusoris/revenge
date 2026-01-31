@@ -1,8 +1,8 @@
 # VS Code Documentation
 
 > Source: https://code.visualstudio.com/docs
-> Fetched: 2026-01-31T11:04:10.748190+00:00
-> Content-Hash: 8ee44d2c9ea6ad05
+> Fetched: 2026-01-31T16:04:07.112294+00:00
+> Content-Hash: de8116955935b03b
 > Type: html
 
 ---
@@ -42,6 +42,7 @@ By default, VS Code auto-updates to new versions, and collects usage data and cr
 [How do I disable crash reporting?](/docs/supporting/faq#_how-to-disable-crash-reporting)
 
 [How do I disable usage reporting?](/docs/supporting/faq#_how-to-disable-telemetry-reporting)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

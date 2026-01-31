@@ -1,15 +1,15 @@
 # Pro Git: Git Hooks
 
 > Source: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
-> Fetched: 2026-01-31T12:46:43.196879+00:00
-> Content-Hash: a211a3fd16f55222
+> Fetched: 2026-01-31T16:08:16.459134+00:00
+> Content-Hash: 5954da67f5a5cc98
 > Type: html
 
 ---
 
 Chapters ▾
 
-  1. ## 1\. [Getting Started](/book/en/v2/Getting-Started-About-Version-Control)
+  1. ## 1. [Getting Started](/book/en/v2/Getting-Started-About-Version-Control)
 
      1. 1.1 [About Version Control](/book/en/v2/Getting-Started-About-Version-Control)
      2. 1.2 [A Short History of Git](/book/en/v2/Getting-Started-A-Short-History-of-Git)
@@ -19,7 +19,7 @@ Chapters ▾
      6. 1.6 [First-Time Git Setup](/book/en/v2/Getting-Started-First-Time-Git-Setup)
      7. 1.7 [Getting Help](/book/en/v2/Getting-Started-Getting-Help)
      8. 1.8 [Summary](/book/en/v2/Getting-Started-Summary)
-  2. ## 2\. [Git Basics](/book/en/v2/Git-Basics-Getting-a-Git-Repository)
+  2. ## 2. [Git Basics](/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 
      1. 2.1 [Getting a Git Repository](/book/en/v2/Git-Basics-Getting-a-Git-Repository)
      2. 2.2 [Recording Changes to the Repository](/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
@@ -29,7 +29,7 @@ Chapters ▾
      6. 2.6 [Tagging](/book/en/v2/Git-Basics-Tagging)
      7. 2.7 [Git Aliases](/book/en/v2/Git-Basics-Git-Aliases)
      8. 2.8 [Summary](/book/en/v2/Git-Basics-Summary)
-  3. ## 3\. [Git Branching](/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
+  3. ## 3. [Git Branching](/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 
      1. 3.1 [Branches in a Nutshell](/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
      2. 3.2 [Basic Branching and Merging](/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
@@ -38,7 +38,7 @@ Chapters ▾
      5. 3.5 [Remote Branches](/book/en/v2/Git-Branching-Remote-Branches)
      6. 3.6 [Rebasing](/book/en/v2/Git-Branching-Rebasing)
      7. 3.7 [Summary](/book/en/v2/Git-Branching-Summary)
-  4. ## 4\. [Git on the Server](/book/en/v2/Git-on-the-Server-The-Protocols)
+  4. ## 4. [Git on the Server](/book/en/v2/Git-on-the-Server-The-Protocols)
 
      1. 4.1 [The Protocols](/book/en/v2/Git-on-the-Server-The-Protocols)
      2. 4.2 [Getting Git on a Server](/book/en/v2/Git-on-the-Server-Getting-Git-on-a-Server)
@@ -50,7 +50,7 @@ Chapters ▾
      8. 4.8 [GitLab](/book/en/v2/Git-on-the-Server-GitLab)
      9. 4.9 [Third Party Hosted Options](/book/en/v2/Git-on-the-Server-Third-Party-Hosted-Options)
      10. 4.10 [Summary](/book/en/v2/Git-on-the-Server-Summary)
-  5. ## 5\. [Distributed Git](/book/en/v2/Distributed-Git-Distributed-Workflows)
+  5. ## 5. [Distributed Git](/book/en/v2/Distributed-Git-Distributed-Workflows)
 
      1. 5.1 [Distributed Workflows](/book/en/v2/Distributed-Git-Distributed-Workflows)
      2. 5.2 [Contributing to a Project](/book/en/v2/Distributed-Git-Contributing-to-a-Project)
@@ -59,7 +59,7 @@ Chapters ▾
 
 
 
-  1. ## 6\. [GitHub](/book/en/v2/GitHub-Account-Setup-and-Configuration)
+  1. ## 6. [GitHub](/book/en/v2/GitHub-Account-Setup-and-Configuration)
 
      1. 6.1 [Account Setup and Configuration](/book/en/v2/GitHub-Account-Setup-and-Configuration)
      2. 6.2 [Contributing to a Project](/book/en/v2/GitHub-Contributing-to-a-Project)
@@ -67,7 +67,7 @@ Chapters ▾
      4. 6.4 [Managing an organization](/book/en/v2/GitHub-Managing-an-organization)
      5. 6.5 [Scripting GitHub](/book/en/v2/GitHub-Scripting-GitHub)
      6. 6.6 [Summary](/book/en/v2/GitHub-Summary)
-  2. ## 7\. [Git Tools](/book/en/v2/Git-Tools-Revision-Selection)
+  2. ## 7. [Git Tools](/book/en/v2/Git-Tools-Revision-Selection)
 
      1. 7.1 [Revision Selection](/book/en/v2/Git-Tools-Revision-Selection)
      2. 7.2 [Interactive Staging](/book/en/v2/Git-Tools-Interactive-Staging)
@@ -84,19 +84,19 @@ Chapters ▾
      13. 7.13 [Replace](/book/en/v2/Git-Tools-Replace)
      14. 7.14 [Credential Storage](/book/en/v2/Git-Tools-Credential-Storage)
      15. 7.15 [Summary](/book/en/v2/Git-Tools-Summary)
-  3. ## 8\. [Customizing Git](/book/en/v2/Customizing-Git-Git-Configuration)
+  3. ## 8. [Customizing Git](/book/en/v2/Customizing-Git-Git-Configuration)
 
      1. 8.1 [Git Configuration](/book/en/v2/Customizing-Git-Git-Configuration)
      2. 8.2 [Git Attributes](/book/en/v2/Customizing-Git-Git-Attributes)
      3. 8.3 [Git Hooks](/book/en/v2/Customizing-Git-Git-Hooks)
      4. 8.4 [An Example Git-Enforced Policy](/book/en/v2/Customizing-Git-An-Example-Git-Enforced-Policy)
      5. 8.5 [Summary](/book/en/v2/Customizing-Git-Summary)
-  4. ## 9\. [Git and Other Systems](/book/en/v2/Git-and-Other-Systems-Git-as-a-Client)
+  4. ## 9. [Git and Other Systems](/book/en/v2/Git-and-Other-Systems-Git-as-a-Client)
 
      1. 9.1 [Git as a Client](/book/en/v2/Git-and-Other-Systems-Git-as-a-Client)
      2. 9.2 [Migrating to Git](/book/en/v2/Git-and-Other-Systems-Migrating-to-Git)
      3. 9.3 [Summary](/book/en/v2/Git-and-Other-Systems-Summary)
-  5. ## 10\. [Git Internals](/book/en/v2/Git-Internals-Plumbing-and-Porcelain)
+  5. ## 10. [Git Internals](/book/en/v2/Git-Internals-Plumbing-and-Porcelain)
 
      1. 10.1 [Plumbing and Porcelain](/book/en/v2/Git-Internals-Plumbing-and-Porcelain)
      2. 10.2 [Git Objects](/book/en/v2/Git-Internals-Git-Objects)
@@ -222,3 +222,7 @@ Tip |  If you’re writing a script/hook that others will need to read, prefer t
 ---|---  
   
 [prev](/book/en/v2/Customizing-Git-Git-Attributes) | [next](/book/en/v2/Customizing-Git-An-Example-Git-Enforced-Policy)
+  *[↑]: Back to Top
+  *[v]: View this template
+  *[t]: Discuss this template
+  *[e]: Edit this template

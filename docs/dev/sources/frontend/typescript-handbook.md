@@ -1,8 +1,8 @@
 # TypeScript Handbook
 
 > Source: https://www.typescriptlang.org/docs/handbook/intro.html
-> Fetched: 2026-01-31T11:00:34.592590+00:00
-> Content-Hash: 6093730980726bc1
+> Fetched: 2026-01-31T16:00:18.774588+00:00
+> Content-Hash: 710dfd1fe1adec1a
 > Type: html
 
 ---
@@ -89,6 +89,7 @@ N
 Last updated: Jan 27, 2026  
   
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

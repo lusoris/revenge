@@ -1,8 +1,8 @@
 # OpenID Connect Core
 
 > Source: https://openid.net/specs/openid-connect-core-1_0.html
-> Fetched: 2026-01-31T11:01:39.241127+00:00
-> Content-Hash: aa539c0c9b00db95
+> Fetched: 2026-01-31T16:01:36.400708+00:00
+> Content-Hash: f6457a1d8fff57c6
 > Type: html
 
 ---
@@ -5053,6 +5053,7 @@ URI:  | <https://stackoverflow.com/users/311376/breno>
 | Disney  
 Email:  | [charliemortimore@gmail.com](mailto:charliemortimore@gmail.com)  
 URI:  | <https://twitter.com/cmort>
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

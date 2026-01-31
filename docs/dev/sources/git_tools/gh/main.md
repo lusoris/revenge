@@ -1,8 +1,8 @@
 # GitHub CLI
 
 > Source: https://cli.github.com/manual/
-> Fetched: 2026-01-31T11:07:06.755831+00:00
-> Content-Hash: 6d4e78d8a7f8f055
+> Fetched: 2026-01-31T16:08:26.343188+00:00
+> Content-Hash: 4bcdcf915e099295
 > Type: html
 
 ---
@@ -63,6 +63,7 @@ Finally, to authenticate commands in scripting mode or automation, set the GH_EN
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

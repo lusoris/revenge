@@ -1,8 +1,8 @@
 # Ruff Documentation
 
 > Source: https://docs.astral.sh/ruff/
-> Fetched: 2026-01-31T11:06:31.177009+00:00
-> Content-Hash: 85e7b8d0a4d6cd6c
+> Fetched: 2026-01-31T16:07:27.962742+00:00
+> Content-Hash: 2c150a3712495081
 > Type: html
 
 ---
@@ -74,6 +74,7 @@ Read the [launch post](https://astral.sh/blog/announcing-astral-the-company-behi
 > This is just ridiculously fast... `ruff` is amazing.
 
 Back to top 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

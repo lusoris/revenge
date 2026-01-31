@@ -1,8 +1,8 @@
 # TailwindCSS v4
 
 > Source: https://tailwindcss.com/blog/tailwindcss-v4
-> Fetched: 2026-01-31T11:00:38.874275+00:00
-> Content-Hash: a14a07b41374bc84
+> Fetched: 2026-01-31T16:00:23.202669+00:00
+> Content-Hash: f07623f5b4d9acca
 > Type: html
 
 ---
@@ -369,6 +369,7 @@ Check out the relevant documentation for all of these features to learn more.
 Check it out, play with it, maybe even break it, and definitely let us know what you think.
 
 Just no bug reports until tomorrow please — let us at least enjoy one celebratory team dinner and maybe relax in the hot tub at this hotel for a bit believing that somehow we really did ship flawless software.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

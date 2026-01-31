@@ -1,8 +1,8 @@
 # etcd Raft
 
 > Source: https://pkg.go.dev/go.etcd.io/raft/v3
-> Fetched: 2026-01-31T11:03:17.376567+00:00
-> Content-Hash: 1d1f602a9b8f8eec
+> Fetched: 2026-01-31T16:03:11.575049+00:00
+> Content-Hash: 4e8473d5951d18e6
 > Type: html
 
 ---
@@ -1602,6 +1602,7 @@ If any Storage method returns an error, the raft instance will become inoperable
     
     
     type TracingEvent struct{}
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

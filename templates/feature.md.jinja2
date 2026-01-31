@@ -1,0 +1,160 @@
+{#
+  Feature Module Template
+
+  For content modules (Movie, TV Show, Music, etc.)
+  Extends base.md.jinja2 and adds feature-specific sections.
+
+  Additional Variables:
+  - feature_name: str - Feature name (e.g., "Movie Module")
+  - metadata_providers: list - Metadata provider integrations
+  - arr_integration: str - Arr service integration (e.g., "Radarr")
+  - schema_name: str - Database schema (e.g., "public" or "qar")
+  - content_types: list - Types of content (e.g., ["Movies", "Collections"])
+#}
+{% extends "base.md.jinja2" %}
+
+{% block title -%}
+# {{ feature_name }}
+{%- endblock %}
+
+{% block overview -%}
+{%- if claude %}
+> Content module for {{ content_types | join(', ') }}{% if metadata_providers is defined and metadata_providers %} with {{ metadata_providers | map(attribute='name') | join(', ') }} integration{% endif %}
+
+{{ technical_summary }}
+{%- elif wiki %}
+# {{ feature_name }}
+
+{{ wiki_tagline }}
+
+{{ wiki_overview }}
+{%- endif %}
+{%- endblock %}
+
+{% block architecture -%}
+{%- if claude %}
+## Architecture
+
+### Database Schema
+
+**Schema**: `{{ schema_name }}`
+
+{{ schema_diagram | default('<!-- Schema diagram -->') }}
+
+### Module Structure
+
+```
+internal/content/{{ module_name }}/
+├── module.go              # fx module definition
+├── repository.go          # Database operations
+├── service.go             # Business logic
+├── handler.go             # HTTP handlers (ogen)
+├── types.go               # Domain types
+└── {{ module_name }}_test.go
+```
+
+### Component Interaction
+
+{{ component_diagram | default('<!-- Component interaction diagram -->') }}
+{%- elif wiki %}
+## How It Works
+
+{{ wiki_how_it_works | default('<!-- Wiki how it works description pending -->') }}
+
+### Content Flow
+
+1. **Add Content**: Import{% if arr_integration is defined %} from {{ arr_integration }}{% endif %} or add manually
+2. **Metadata**: Automatically fetched{% if metadata_providers is defined and metadata_providers %} from {{ metadata_providers | map(attribute='name') | join(', ') }}{% endif %}
+3. **Library**: Organized by {{ organization_method | default('folder structure') }}
+4. **Playback**: Stream directly or use external player
+{%- endif %}
+{%- endblock %}
+
+{% block metadata_integration -%}
+{%- if claude %}
+## Metadata Integration
+
+### Providers
+
+{%- if metadata_providers is defined and metadata_providers %}
+{%- for provider in metadata_providers %}
+- **{{ provider.name }}**: {{ provider.purpose }}
+  - Priority: {{ provider.priority }}
+  - Fields: {{ provider.fields | join(', ') }}
+{%- endfor %}
+{%- else %}
+<!-- Metadata providers configuration pending -->
+{%- endif %}
+
+### Enrichment Pipeline
+
+{{ enrichment_pipeline | default('<!-- Enrichment pipeline description -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block arr_integration -%}
+{%- if claude and arr_integration is defined %}
+## {{ arr_integration }} Integration
+
+### Webhook Events
+
+{{ webhook_events | default('<!-- Webhook event handling -->') }}
+
+### Sync Strategy
+
+{{ sync_strategy | default('<!-- Sync strategy description -->') }}
+{%- endif %}
+{%- endblock %}
+
+{% block api -%}
+{%- if claude %}
+## API Endpoints
+
+### Content Management
+
+{%- if api_endpoints is defined and api_endpoints %}
+{%- for endpoint in api_endpoints %}
+#### {{ endpoint.method }} {{ endpoint.path }}
+
+{{ endpoint.description }}
+
+{%- if endpoint.request_example %}
+**Request**:
+```json
+{{ endpoint.request_example }}
+```
+{%- endif %}
+
+{%- if endpoint.response_example %}
+**Response**:
+```json
+{{ endpoint.response_example }}
+```
+{%- endif %}
+
+---
+
+{%- endfor %}
+{%- else %}
+<!-- API endpoints placeholder -->
+{%- endif %}
+{%- endif %}
+{%- endblock %}
+
+{% block playback -%}
+{%- if wiki %}
+## Playback
+
+{{ playback_description | default('<!-- Playback features -->') }}
+
+### Supported Formats
+
+{%- if supported_formats is defined and supported_formats %}
+{%- for format in supported_formats %}
+- {{ format }}
+{%- endfor %}
+{%- else %}
+- All common video formats supported
+{%- endif %}
+{%- endif %}
+{%- endblock %}

@@ -1,8 +1,8 @@
 # Ruff Configuration
 
 > Source: https://docs.astral.sh/ruff/configuration/
-> Fetched: 2026-01-31T11:06:35.619888+00:00
-> Content-Hash: 371278f1949d9ad8
+> Fetched: 2026-01-31T16:07:32.413746+00:00
+> Content-Hash: 20ab5a2c1a4103e2
 > Type: html
 
 ---
@@ -717,6 +717,7 @@ As an example: to enable autocompletion for Zsh, run `ruff generate-shell-comple
     
 
 Back to top 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

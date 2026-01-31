@@ -1,8 +1,8 @@
 # Docker Compose
 
 > Source: https://docs.docker.com/compose/
-> Fetched: 2026-01-31T11:05:40.585367+00:00
-> Content-Hash: 615ab58937d2e3d4
+> Fetched: 2026-01-31T16:05:35.533490+00:00
+> Content-Hash: 9493e0c1a3c0f1c2
 > Type: html
 
 ---
@@ -57,6 +57,7 @@ Compose works in all environments - production, staging, development, testing, a
 [Edit this page](https://github.com/docker/docs/edit/main/content/manuals/compose/_index.md)
 
 [Request changes](https://github.com/docker/docs/issues/new?template=doc_issue.yml&location=https%3a%2f%2fdocs.docker.com%2fcompose%2f&labels=status%2Ftriage)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

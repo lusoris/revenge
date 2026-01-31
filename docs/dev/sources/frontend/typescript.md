@@ -1,8 +1,8 @@
 # TypeScript Documentation
 
 > Source: https://www.typescriptlang.org/docs/
-> Fetched: 2026-01-31T11:00:32.471852+00:00
-> Content-Hash: 350a9621ad642d23
+> Fetched: 2026-01-31T16:00:16.629645+00:00
+> Content-Hash: b498c669ea2b6d63
 > Type: html
 
 ---
@@ -195,6 +195,7 @@ Downloadable syntax reference pages for different parts of everyday TypeScript c
   * [React & Webpack](/docs/handbook/react-&-webpack.html)
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

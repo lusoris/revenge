@@ -1,8 +1,8 @@
 # gopls Documentation
 
 > Source: https://github.com/golang/tools/blob/master/gopls/README.md
-> Fetched: 2026-01-31T11:05:49.444100+00:00
-> Content-Hash: 5da381b7399702fa
+> Fetched: 2026-01-31T16:06:24.832656+00:00
+> Content-Hash: fac95fbfec515edc
 > Type: html
 
 ---
@@ -15,6 +15,7 @@
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

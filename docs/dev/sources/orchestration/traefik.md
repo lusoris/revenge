@@ -1,8 +1,8 @@
 # Traefik Documentation
 
 > Source: https://doc.traefik.io/traefik/
-> Fetched: 2026-01-31T11:03:33.880233+00:00
-> Content-Hash: f0c5a583fd9584c2
+> Fetched: 2026-01-31T16:03:28.020321+00:00
+> Content-Hash: e3ddde7b0e7bda06
 > Type: html
 
 ---
@@ -72,6 +72,7 @@ Have a question? Join our [Community Forum](https://community.traefik.io "Link t
 Using Traefik OSS in production? Consider upgrading to our API gateway ([watch demo video](https://info.traefik.io/watch-traefik-api-gw-demo)) for better security, control, and 24/7 support.
 
 Just need support? Explore our [24/7/365 support for Traefik OSS](https://info.traefik.io/request-commercial-support?cta=doc).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

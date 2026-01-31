@@ -1,8 +1,8 @@
 # Keycloak Documentation
 
 > Source: https://www.keycloak.org/documentation
-> Fetched: 2026-01-31T11:01:52.801896+00:00
-> Content-Hash: 6d22337202d12ade
+> Fetched: 2026-01-31T16:01:50.848781+00:00
+> Content-Hash: b93740bbe3770681
 > Type: html
 
 ---
@@ -29,6 +29,7 @@
 [ Administration REST API ](https://www.keycloak.org/docs-api/latest/rest-api/index.html) |  Documentation for the Adminstration RESTful API   
   
 [Archived releases](documentation-archive.html)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

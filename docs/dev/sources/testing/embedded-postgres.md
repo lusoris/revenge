@@ -1,8 +1,8 @@
 # embedded-postgres
 
 > Source: https://pkg.go.dev/github.com/fergusstrange/embedded-postgres
-> Fetched: 2026-01-31T11:02:20.872726+00:00
-> Content-Hash: 9a5b12ecdb8364a5
+> Fetched: 2026-01-31T16:02:18.585624+00:00
+> Content-Hash: 7753283058197def
 > Type: html
 
 ---
@@ -265,6 +265,7 @@ RemoteFetchStrategy provides a strategy to fetch a Postgres binary so that it is
     type VersionStrategy func() (operatingSystem [string](/builtin#string), architecture [string](/builtin#string), postgresVersion PostgresVersion)
 
 VersionStrategy provides a strategy that can be used to determine which version of Postgres should be used based on the operating system, architecture and desired Postgres version. 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

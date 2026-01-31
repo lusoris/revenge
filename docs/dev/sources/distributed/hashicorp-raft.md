@@ -1,8 +1,8 @@
 # HashiCorp Raft
 
 > Source: https://pkg.go.dev/github.com/hashicorp/raft
-> Fetched: 2026-01-31T11:03:11.496556+00:00
-> Content-Hash: 09417b869cdf46c4
+> Fetched: 2026-01-31T16:03:06.219622+00:00
+> Content-Hash: 4bb2a8c152983d76
 > Type: html
 
 ---
@@ -3066,6 +3066,7 @@ WithRPCHeader is an interface that exposes the RPC header.
     }
 
 NOTE: This is exposed for middleware testing purposes and is not a stable API 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

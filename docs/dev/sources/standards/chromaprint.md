@@ -1,8 +1,8 @@
 # Chromaprint/AcoustID
 
 > Source: https://acoustid.org/chromaprint
-> Fetched: 2026-01-31T11:04:08.503021+00:00
-> Content-Hash: 3413d21e582cdea7
+> Fetched: 2026-01-31T16:04:02.391978+00:00
+> Content-Hash: 8b4cac6e789bf17c
 > Type: html
 
 ---
@@ -57,6 +57,7 @@ See the [README](https://github.com/acoustid/chromaprint/blob/master/README.md) 
 Software created by [Lukáš Lalinský](https://oxygene.sk/), hosted by [AcoustID OÜ](https://acoustid.biz), data crowd-sourced by [thousands of contributors](/stats).
 
 [Contact](/contact) | [Blog](https://blog.acoustid.org/) | [Twitter](https://twitter.com/acoustid) | [Facebook](https://www.facebook.com/acoustid)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

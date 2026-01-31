@@ -1,8 +1,8 @@
 # Svelte 5 Documentation
 
 > Source: https://svelte.dev/docs/svelte/overview
-> Fetched: 2026-01-31T11:00:11.336927+00:00
-> Content-Hash: 8c9aa9785dbfd9e0
+> Fetched: 2026-01-31T15:59:56.049150+00:00
+> Content-Hash: 5be0490595f1f5b7
 > Type: html
 
 ---
@@ -56,6 +56,7 @@ You can also try Svelte online in the [playground](/playground) or, if you need 
 previous next
 
 [Getting started](/docs/svelte/getting-started)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

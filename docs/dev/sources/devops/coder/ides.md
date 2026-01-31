@@ -1,8 +1,8 @@
 # Coder IDEs
 
 > Source: https://coder.com/docs/ides
-> Fetched: 2026-01-31T11:05:31.934747+00:00
-> Content-Hash: 6ec3996787ad0df6
+> Fetched: 2026-01-31T16:05:27.043019+00:00
+> Content-Hash: f47620e87ffcc5ef
 > Type: html
 
 ---
@@ -124,6 +124,7 @@ You can also [share ports](/docs/user-guides/workspace-access/port-forwarding#sh
 ## Remote Desktops
 
 Coder also supports connecting with an RDP solution, see our [RDP guide](/docs/user-guides/workspace-access/remote-desktops) for details.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

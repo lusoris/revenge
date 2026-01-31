@@ -1,8 +1,8 @@
 # TailwindCSS Documentation
 
 > Source: https://tailwindcss.com/docs
-> Fetched: 2026-01-31T11:00:36.795584+00:00
-> Content-Hash: af7d8372e58323a6
+> Fetched: 2026-01-31T16:00:21.043544+00:00
+> Content-Hash: cf4cb808a2007fb3
 > Type: html
 
 ---
@@ -114,6 +114,7 @@ HTML
 [Explore our framework guides](/docs/installation/framework-guides)
 
 Copyright © 2026 Tailwind Labs Inc.·[Trademark Policy](/brand)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

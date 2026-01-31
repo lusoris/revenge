@@ -1,8 +1,8 @@
 # Kubernetes Documentation
 
 > Source: https://kubernetes.io/docs/home/
-> Fetched: 2026-01-31T11:03:24.646608+00:00
-> Content-Hash: 21e8eaf4f0605287
+> Fetched: 2026-01-31T16:03:18.855210+00:00
+> Content-Hash: 4d05748907a80e25
 > Type: html
 
 ---
@@ -114,6 +114,7 @@ This website contains documentation for the current and previous 4 versions of K
 See available versions
 
 Last modified August 07, 2025 at 9:34 PM PST: [Prepare docs home page for Docsy (710d15e99b)](https://github.com/kubernetes/website/commit/710d15e99b77f6b837d12439e4b3110c27332c7a)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Coder Workspaces
 
 > Source: https://coder.com/docs/workspaces
-> Fetched: 2026-01-31T11:05:29.852052+00:00
-> Content-Hash: 114219aba6a17322
+> Fetched: 2026-01-31T16:05:24.809599+00:00
+> Content-Hash: c440f7d349926f16
 > Type: html
 
 ---
@@ -133,6 +133,7 @@ Agent| `/tmp/coder-agent.log`
 Note
 
 Logs are truncated once they reach 5MB in size.
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

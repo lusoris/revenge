@@ -1,8 +1,8 @@
 # VS Code Remote Development
 
 > Source: https://code.visualstudio.com/docs/remote/remote-overview
-> Fetched: 2026-01-31T11:04:21.905445+00:00
-> Content-Hash: b1c90d85c79896e9
+> Fetched: 2026-01-31T16:04:18.215934+00:00
+> Content-Hash: 031e100ff6573c15
 > Type: html
 
 ---
@@ -62,6 +62,7 @@ Tutorial | Description
 
 
 01/08/2026
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

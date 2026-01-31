@@ -1,8 +1,8 @@
 # pytest-cov
 
 > Source: https://pytest-cov.readthedocs.io/en/latest/
-> Fetched: 2026-01-31T11:06:49.112711+00:00
-> Content-Hash: f3856e33048516c4
+> Fetched: 2026-01-31T16:07:46.416118+00:00
+> Content-Hash: a6abcf3326d792e2
 > Type: html
 
 ---
@@ -89,6 +89,7 @@ Contents:
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

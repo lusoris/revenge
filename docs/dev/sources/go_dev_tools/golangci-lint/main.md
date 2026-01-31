@@ -1,8 +1,8 @@
 # golangci-lint Documentation
 
 > Source: https://golangci-lint.run/
-> Fetched: 2026-01-31T11:06:00.462926+00:00
-> Content-Hash: 6ca00cab3bcc601e
+> Fetched: 2026-01-31T16:06:35.998018+00:00
+> Content-Hash: 170d411c92c2bd4e
 > Type: html
 
 ---
@@ -88,6 +88,7 @@ integrates with all major IDEs, and includes over a hundred linters.
 [Get Started](docs)
 
 ### [ FastRuns linters in parallel, reuses Go build cache and caches analysis results.](/docs/)### [ IntegrationsIntegrations with VS Code, Sublime Text, GoLand, GNU Emacs, Vim, GitHub Actions.](/docs/welcome/integrations)### [ Nice outputsText with colors and source code lines, JSON, tab, HTML, Checkstyle, Code-Climate, JUnit-XML, TeamCity, SARIF.](/docs/configuration/file/#output-configuration)### [ Minimum number of false positivesTuned default settings.](/docs/linters/false-positives)### [ A lot of lintersNo need to install them.](/docs/linters)### [ YAML-based configurationEasy to read and maintain.](/docs/configuration/file)
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

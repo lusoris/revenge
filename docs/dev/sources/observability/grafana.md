@@ -1,8 +1,8 @@
 # Grafana Documentation
 
 > Source: https://grafana.com/docs/grafana/latest/
-> Fetched: 2026-01-31T11:02:32.761296+00:00
-> Content-Hash: d8c6ed202064a2bc
+> Fetched: 2026-01-31T16:02:30.522762+00:00
+> Content-Hash: 73e4da00e5ba80a6
 > Type: html
 
 ---
@@ -70,6 +70,7 @@ Yes No
 On this page
 
 Scroll for more
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

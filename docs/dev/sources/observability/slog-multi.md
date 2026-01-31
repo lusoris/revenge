@@ -1,8 +1,8 @@
 # slog-multi
 
 > Source: https://pkg.go.dev/github.com/samber/slog-multi
-> Fetched: 2026-01-31T11:02:47.410231+00:00
-> Content-Hash: f0e745219473fd6d
+> Fetched: 2026-01-31T16:02:44.230320+00:00
+> Content-Hash: 021cb35255f8e0ce
 > Type: html
 
 ---
@@ -1386,6 +1386,7 @@ Implements slog.Handler
     func (h *WithGroupInlineMiddleware) WithGroup(name [string](/builtin#string)) [slog](/log/slog).[Handler](/log/slog#Handler)
 
 Implements slog.Handler 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

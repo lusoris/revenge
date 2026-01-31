@@ -1,8 +1,8 @@
 # Prometheus Metric Types
 
 > Source: https://prometheus.io/docs/concepts/metric_types/
-> Fetched: 2026-01-31T11:02:30.465502+00:00
-> Content-Hash: 2478b6192427ed65
+> Fetched: 2026-01-31T16:02:28.307525+00:00
+> Content-Hash: 2bec0c99178c16ae
 > Type: html
 
 ---
@@ -103,6 +103,7 @@ Client library usage documentation for summaries:
 
 
 On this page
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

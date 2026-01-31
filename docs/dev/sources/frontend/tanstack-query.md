@@ -1,8 +1,8 @@
 # TanStack Query
 
 > Source: https://tanstack.com/query/latest/docs/framework/svelte/overview
-> Fetched: 2026-01-31T11:00:23.272159+00:00
-> Content-Hash: 676c2295021c911c
+> Fetched: 2026-01-31T16:00:07.723797+00:00
+> Content-Hash: 74a8357096e42e36
 > Type: html
 
 ---
@@ -414,6 +414,7 @@ Learn More](https://query.gg?s=tanstack)
 
 
 
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

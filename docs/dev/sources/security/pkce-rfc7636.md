@@ -1,8 +1,8 @@
 # OAuth 2.0 PKCE
 
 > Source: https://datatracker.ietf.org/doc/html/rfc7636
-> Fetched: 2026-01-31T11:01:43.600445+00:00
-> Content-Hash: 0759ad419e19f627
+> Fetched: 2026-01-31T16:01:40.705857+00:00
+> Content-Hash: 0d4739e984109084
 > Type: html
 
 ---
@@ -1259,6 +1259,7 @@ __Inline __Reference
 Citation links
 
 __Go to reference section __Go to linked document
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

@@ -1,8 +1,8 @@
 # Vite Documentation
 
 > Source: https://vite.dev/guide/
-> Fetched: 2026-01-31T11:00:28.068244+00:00
-> Content-Hash: 0af2e7c8de6e13aa
+> Fetched: 2026-01-31T16:00:12.415450+00:00
+> Content-Hash: 3eb111b8c4165268
 > Type: html
 
 ---
@@ -296,6 +296,7 @@ To replace the Vite version used by dependencies transitively, you should use [n
 ## Community ​
 
 If you have questions or need help, reach out to the community at [Discord](https://chat.vite.dev) and [GitHub Discussions](https://github.com/vitejs/vite/discussions).
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

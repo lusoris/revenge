@@ -1,8 +1,8 @@
 # Grafana Dashboard JSON
 
 > Source: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/
-> Fetched: 2026-01-31T11:02:34.934958+00:00
-> Content-Hash: 3dac223d6f99df30
+> Fetched: 2026-01-31T16:02:32.698071+00:00
+> Content-Hash: 2b3412ce62560e9b
 > Type: html
 
 ---
@@ -290,6 +290,7 @@ Yes No
 On this page
 
 Scroll for more
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template

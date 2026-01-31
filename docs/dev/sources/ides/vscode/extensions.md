@@ -1,8 +1,8 @@
 # VS Code Extension API
 
 > Source: https://code.visualstudio.com/api
-> Fetched: 2026-01-31T11:04:19.790304+00:00
-> Content-Hash: 4e1876092eaaa210
+> Fetched: 2026-01-31T16:04:16.085507+00:00
+> Content-Hash: e2cc24f00a99994c
 > Type: html
 
 ---
@@ -77,6 +77,7 @@ If you have questions for extension development, try asking on:
 To provide feedback on the documentation, create new issues at [Microsoft/vscode-docs](https://github.com/microsoft/vscode-docs/issues). If you have extension questions that you cannot find an answer for, or issues with the VS Code Extension API, please open new issues at [Microsoft/vscode](https://github.com/microsoft/vscode/issues).
 
 01/08/2026
+  *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template
   *[e]: Edit this template
