@@ -7,7 +7,7 @@ on:
         description: "Go version from SOURCE_OF_TRUTH"
         value: ${{ jobs.extract.outputs.go }}
       go-matrix:
-        description: "Go version matrix for testing (current + previous)"
+        description: "Go version matrix for testing (current version only)"
         value: ${{ jobs.extract.outputs.go-matrix }}
       python-version:
         description: "Python version from SOURCE_OF_TRUTH"
@@ -47,12 +47,9 @@ jobs:
           echo "go=${GO_VERSION}" >> $GITHUB_OUTPUT
           echo "✓ Go version: ${GO_VERSION}"
 
-          # Create Go test matrix (current + previous minor version)
+          # Create Go test matrix (only current version - using Go 1.25+ features)
           GO_MAJOR=$(echo "$GO_VERSION" | cut -d. -f1,2)
-          GO_MINOR=$(echo "$GO_VERSION" | cut -d. -f2)
-          PREV_MINOR=$((GO_MINOR - 1))
-          GO_PREV="${GO_MAJOR%.*}.$PREV_MINOR"
-          GO_MATRIX="[\"${GO_MAJOR}\", \"${GO_PREV}\"]"
+          GO_MATRIX="[\"${GO_MAJOR}\"]"
           echo "go-matrix=${GO_MATRIX}" >> $GITHUB_OUTPUT
           echo "✓ Go matrix: ${GO_MATRIX}"
 
