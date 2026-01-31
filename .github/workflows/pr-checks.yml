@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check for linked issues
-        uses: hmarr/auto-approve-action@v3
+        uses: hmarr/auto-approve-action@v4
         if: false  # Disabled, just placeholder
         # Consider using: https://github.com/nearform-actions/github-action-check-linked-issues
 
