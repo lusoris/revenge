@@ -115,3 +115,7 @@ config.local.*
 __pycache__/
 .pytest_cache/
 node_modules/
+
+# Documentation temp/analysis files
+.analysis/
+*-preview/
