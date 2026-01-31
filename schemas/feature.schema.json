@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/revenge/schemas/feature.schema.json",
+  "title": "Feature Module Documentation Schema",
+  "description": "Schema for content module (feature) YAML data files",
+  "type": "object",
+  "required": ["doc_title", "doc_category", "feature_name", "module_name", "schema_name"],
+  "properties": {
+    "doc_title": {
+      "type": "string",
+      "description": "Document title",
+      "minLength": 1
+    },
+    "doc_category": {
+      "type": "string",
+      "enum": ["feature"],
+      "description": "Document category"
+    },
+    "feature_name": {
+      "type": "string",
+      "description": "Feature name (e.g., 'Movie Module')",
+      "minLength": 1
+    },
+    "module_name": {
+      "type": "string",
+      "description": "Module name for file paths (e.g., 'movie')",
+      "pattern": "^[a-z][a-z0-9_\\s\\(\\)&/:,-]*$"
+    },
+    "schema_name": {
+      "type": "string",
+      "enum": ["public", "qar"],
+      "description": "Database schema name"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Document creation date (YYYY-MM-DD)"
+    },
+    "overall_status": {
+      "type": "string",
+      "pattern": "^[🔴🟡✅🔵].+",
+      "description": "Overall status with emoji"
+    },
+    "status_design": {
+      "type": "string",
+      "description": "Design dimension status"
+    },
+    "status_design_notes": {
+      "type": "string",
+      "description": "Design status notes"
+    },
+    "status_sources": {
+      "type": "string",
+      "description": "Sources dimension status"
+    },
+    "status_sources_notes": {
+      "type": "string",
+      "description": "Sources status notes"
+    },
+    "status_instructions": {
+      "type": "string",
+      "description": "Instructions dimension status"
+    },
+    "status_instructions_notes": {
+      "type": "string",
+      "description": "Instructions status notes"
+    },
+    "status_code": {
+      "type": "string",
+      "description": "Code dimension status"
+    },
+    "status_code_notes": {
+      "type": "string",
+      "description": "Code status notes"
+    },
+    "status_linting": {
+      "type": "string",
+      "description": "Linting dimension status"
+    },
+    "status_linting_notes": {
+      "type": "string",
+      "description": "Linting status notes"
+    },
+    "status_unit_testing": {
+      "type": "string",
+      "description": "Unit testing dimension status"
+    },
+    "status_unit_testing_notes": {
+      "type": "string",
+      "description": "Unit testing status notes"
+    },
+    "status_integration_testing": {
+      "type": "string",
+      "description": "Integration testing dimension status"
+    },
+    "status_integration_testing_notes": {
+      "type": "string",
+      "description": "Integration testing status notes"
+    },
+    "technical_summary": {
+      "type": "string",
+      "description": "Technical summary for Claude docs"
+    },
+    "wiki_tagline": {
+      "type": "string",
+      "description": "User-friendly tagline for wiki"
+    },
+    "wiki_overview": {
+      "type": "string",
+      "description": "User-friendly overview for wiki"
+    },
+    "wiki_how_it_works": {
+      "type": "string",
+      "description": "User-friendly explanation of how it works"
+    },
+    "content_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Types of content (e.g., ['Movies', 'Collections'])"
+    },
+    "metadata_providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Metadata provider integrations"
+    },
+    "arr_integration": {
+      "type": "string",
+      "description": "Arr service integration (e.g., 'Radarr', 'Sonarr')"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "url"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "External documentation sources"
+    },
+    "design_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "path"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Cross-references to other design docs"
+    },
+    "screenshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "path", "caption"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Screenshot placeholders for wiki"
+    },
+    "implementation_phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "tasks"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Implementation checklist phases"
+    },
+    "api_endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["method", "path", "description"],
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+          },
+          "path": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "request_example": {
+            "type": "string"
+          },
+          "response_example": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "API endpoints"
+    }
+  },
+  "additionalProperties": true
+}

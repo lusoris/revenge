@@ -1,8 +1,9 @@
 ---
 name: check-sources
 description: Check external documentation sources and cross-references
-argument-hint: [category|id]
+argument-hint: "[category|id]"
 disable-model-invocation: true
+allowed-tools: Bash(*), Read(*), Write(*)
 ---
 
 # Check Sources

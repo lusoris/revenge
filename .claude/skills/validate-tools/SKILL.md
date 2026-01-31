@@ -1,7 +1,7 @@
 ---
 name: validate-tools
 description: Validate all required development tools are installed and at correct versions
-argument-hint: [local|remote]
+argument-hint: "[local|remote]"
 disable-model-invocation: false
 allowed-tools: Bash(*), Read(*)
 ---

@@ -110,3 +110,8 @@ config.local.*
 
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md
+.backup/
+*.pyc
+__pycache__/
+.pytest_cache/
+node_modules/

@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/revenge/schemas/generic.schema.json",
+  "title": "Generic Documentation Schema",
+  "description": "Schema for architecture, operations, technical, pattern, and research YAML data files",
+  "type": "object",
+  "required": ["doc_title", "doc_category"],
+  "properties": {
+    "doc_title": {
+      "type": "string",
+      "description": "Document title",
+      "minLength": 1
+    },
+    "doc_category": {
+      "type": "string",
+      "enum": ["architecture", "operations", "technical", "pattern", "research", "other"],
+      "description": "Document category"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Document creation date (YYYY-MM-DD)"
+    },
+    "overall_status": {
+      "type": "string",
+      "pattern": "^[🔴🟡✅🔵].+",
+      "description": "Overall status with emoji"
+    },
+    "status_design": {
+      "type": "string",
+      "description": "Design dimension status"
+    },
+    "status_design_notes": {
+      "type": "string",
+      "description": "Design status notes"
+    },
+    "status_sources": {
+      "type": "string",
+      "description": "Sources dimension status"
+    },
+    "status_sources_notes": {
+      "type": "string",
+      "description": "Sources status notes"
+    },
+    "status_instructions": {
+      "type": "string",
+      "description": "Instructions dimension status"
+    },
+    "status_instructions_notes": {
+      "type": "string",
+      "description": "Instructions status notes"
+    },
+    "status_code": {
+      "type": "string",
+      "description": "Code dimension status"
+    },
+    "status_code_notes": {
+      "type": "string",
+      "description": "Code status notes"
+    },
+    "status_linting": {
+      "type": "string",
+      "description": "Linting dimension status"
+    },
+    "status_linting_notes": {
+      "type": "string",
+      "description": "Linting status notes"
+    },
+    "status_unit_testing": {
+      "type": "string",
+      "description": "Unit testing dimension status"
+    },
+    "status_unit_testing_notes": {
+      "type": "string",
+      "description": "Unit testing status notes"
+    },
+    "status_integration_testing": {
+      "type": "string",
+      "description": "Integration testing dimension status"
+    },
+    "status_integration_testing_notes": {
+      "type": "string",
+      "description": "Integration testing status notes"
+    },
+    "technical_summary": {
+      "type": "string",
+      "description": "Technical summary for Claude docs"
+    },
+    "wiki_tagline": {
+      "type": "string",
+      "description": "User-friendly tagline for wiki"
+    },
+    "wiki_overview": {
+      "type": "string",
+      "description": "User-friendly overview for wiki"
+    },
+    "wiki_how_it_works": {
+      "type": "string",
+      "description": "User-friendly explanation of how it works"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "url"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "External documentation sources"
+    },
+    "design_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "path"],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Cross-references to other design docs"
+    },
+    "implementation_phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "tasks"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Implementation checklist phases"
+    }
+  },
+  "additionalProperties": true
+}

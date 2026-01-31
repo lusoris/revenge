@@ -1,7 +1,7 @@
 ---
 name: coder-workspace
 description: Manage Coder workspaces on coder.ancilla.lol
-argument-hint: <list|start|stop|logs> [workspace-name]
+argument-hint: "<list|start|stop|logs> [workspace-name]"
 disable-model-invocation: true
 allowed-tools: Bash(coder *)
 ---

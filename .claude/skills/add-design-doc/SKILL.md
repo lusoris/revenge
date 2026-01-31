@@ -1,8 +1,9 @@
 ---
 name: add-design-doc
 description: Create a new design document following project conventions
-argument-hint: <category/name>
+argument-hint: "<category/name>"
 disable-model-invocation: true
+allowed-tools: Bash(*), Read(*), Write(*)
 ---
 
 # Add Design Document
@@ -20,6 +21,12 @@ Create a new design document in the specified category following project convent
 ## Arguments
 
 - `$ARGUMENTS`: The path for the new document (e.g., `services/AUTH` or `features/adult/GALLERIES`)
+
+## Prerequisites
+
+- Access to `docs/dev/design/` directory
+- `01_DESIGN_DOC_TEMPLATE.md` exists
+- Doc pipeline scripts available
 
 ## Task
 
@@ -59,9 +66,38 @@ Create a new design document at `docs/dev/design/$ARGUMENTS.md` with:
 
 See `docs/dev/design/01_DESIGN_DOC_TEMPLATE.md` for the full template.
 
-## After Creation
+## Examples
 
-Run the doc pipeline to update indexes:
+**Create a service doc**:
+```
+/add-design-doc services/NOTIFICATIONS
+```
+
+**Create a feature doc**:
+```
+/add-design-doc features/video/TRAILER_SUPPORT
+```
+
+**Create an integration doc**:
+```
+/add-design-doc integrations/metadata/comics/MANGA_API
+```
+
+**After creation**, run the doc pipeline to update indexes:
 ```bash
 ./scripts/doc-pipeline.sh --apply
 ```
+
+## Troubleshooting
+
+**"Directory not found"**:
+- Ensure you're in the project root
+- Check that `docs/dev/design/` exists
+
+**"Template not found"**:
+- Verify `docs/dev/design/01_DESIGN_DOC_TEMPLATE.md` exists
+- Run doc pipeline to regenerate templates
+
+**"Permission denied"**:
+- Check file permissions on docs/ directory
+- Ensure you have write access

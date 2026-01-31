@@ -1,0 +1,48 @@
+# CODEOWNERS - Auto-assign reviewers
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @kilian
+
+# Backend (Go code)
+/cmd/ @kilian
+/internal/ @kilian
+/pkg/ @kilian
+*.go @kilian
+go.mod @kilian
+go.sum @kilian
+
+# Frontend (SvelteKit/Svelte)
+/web/ @kilian
+*.svelte @kilian
+*.ts @kilian
+
+# Documentation
+/docs/ @kilian
+*.md @kilian
+
+# Infrastructure
+/.github/ @kilian
+/.coder/ @kilian
+/docker-compose.yml @kilian
+/Dockerfile @kilian
+
+# Automation scripts
+/scripts/ @kilian
+*.py @kilian
+
+# Configuration
+/.vscode/ @kilian
+/.zed/ @kilian
+/.editorconfig @kilian
+/ruff.toml @kilian
+/.markdownlint* @kilian
+
+# Database
+/migrations/ @kilian
+*.sql @kilian
+
+# Templates & Schemas
+/templates/ @kilian
+/schemas/ @kilian
+/data/ @kilian

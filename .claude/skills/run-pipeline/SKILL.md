@@ -1,7 +1,7 @@
 ---
 name: run-pipeline
 description: Run documentation pipelines (source or doc)
-argument-hint: <source|doc|all> [--apply]
+argument-hint: "<source|doc|all> [--apply]"
 disable-model-invocation: true
 allowed-tools: Bash(./scripts/*.sh *)
 ---
@@ -24,6 +24,10 @@ Run the documentation pipelines to update indexes, breadcrumbs, and cross-refere
 
 - `$0`: Pipeline to run (`source`, `doc`, or `all`)
 - `$1`: Optional `--apply` to write changes (default: dry-run)
+
+## Task
+
+Run the specified documentation pipeline to update and validate documentation.
 
 ## Pipelines
 

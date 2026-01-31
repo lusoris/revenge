@@ -1,9 +1,9 @@
 ---
 name: coder-template
 description: Manage and deploy Coder templates
-argument-hint: <push|pull|test|versions> [template-name]
+argument-hint: "<push|pull|test|versions> [template-name]"
 disable-model-invocation: true
-allowed-tools: Bash(coder *), Read, Glob
+allowed-tools: Bash(coder *), Read(*), Glob(*)
 ---
 
 # Coder Template Management

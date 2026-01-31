@@ -1,7 +1,7 @@
 ---
 name: run-all-tests
 description: Run all test suites (Go, frontend, Python) with comprehensive reporting
-argument-hint: [--coverage|--race|--quick|--watch]
+argument-hint: "[--coverage|--race|--quick|--watch]"
 disable-model-invocation: false
 allowed-tools: Bash(*), Read(*), Write(*)
 ---

@@ -1,7 +1,7 @@
 ---
 name: setup-workspace
 description: Set up complete development environment (local or Coder workspace)
-argument-hint: [local|remote] [--full|--minimal]
+argument-hint: "[local|remote] [--full|--minimal]"
 disable-model-invocation: false
 allowed-tools: Bash(*), Read(*), Write(*), Edit(*)
 ---

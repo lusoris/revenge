@@ -1,8 +1,9 @@
 ---
 name: update-status
 description: Update status tables in design documents
-argument-hint: [category]
+argument-hint: "[category]"
 disable-model-invocation: true
+allowed-tools: Bash(*), Read(*), Write(*), Edit(*)
 ---
 
 # Update Status
