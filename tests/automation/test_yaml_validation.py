@@ -140,6 +140,171 @@ class TestCategorySpecificFields:
             print(f"Warning: {len(errors)} integration files missing some fields")
 
 
+class TestPlaceholderContent:
+    """Test that wiki fields don't contain PLACEHOLDER content.
+
+    Note: These tests use a threshold to allow gradual PLACEHOLDER replacement.
+    When all PLACEHOLDERs are filled, set MAX_ALLOWED_PLACEHOLDERS to 0.
+    """
+
+    # Allow up to this many PLACEHOLDERs (decrease as docs are completed)
+    # Set to 0 for strict mode when all docs should be complete
+    MAX_ALLOWED_WIKI_OVERVIEW_PLACEHOLDERS = 120  # Currently ~113, allow some buffer
+    MAX_ALLOWED_WIKI_TAGLINE_PLACEHOLDERS = 15  # Currently ~11, allow some buffer
+
+    def test_no_placeholder_in_wiki_overview(self):
+        """wiki_overview must not contain PLACEHOLDER marker.
+
+        Enforces that PLACEHOLDER count stays below threshold.
+        This prevents new PLACEHOLDERs from being added while allowing
+        gradual replacement of existing ones.
+        """
+        data_dir = Path("data")
+        yaml_files = list(data_dir.rglob("*.yaml"))
+        yaml_files = [f for f in yaml_files if ".templates" not in str(f) and "shared-sot.yaml" not in str(f)]
+
+        errors = []
+        for yaml_file in yaml_files:
+            with open(yaml_file, encoding="utf-8") as f:
+                try:
+                    data = yaml.safe_load(f)
+                except Exception:
+                    continue
+
+            if not data:
+                continue
+
+            wiki_overview = data.get("wiki_overview", "")
+            if wiki_overview and "PLACEHOLDER" in str(wiki_overview).upper():
+                errors.append(f"{yaml_file.relative_to(data_dir)}")
+
+        if len(errors) > self.MAX_ALLOWED_WIKI_OVERVIEW_PLACEHOLDERS:
+            pytest.fail(
+                f"Too many PLACEHOLDER wiki_overview fields: {len(errors)} > {self.MAX_ALLOWED_WIKI_OVERVIEW_PLACEHOLDERS}\n"
+                f"Files:\n" + "\n".join(errors[:20])
+            )
+        elif errors:
+            print(f"\nInfo: {len(errors)} wiki_overview PLACEHOLDERs remaining (max: {self.MAX_ALLOWED_WIKI_OVERVIEW_PLACEHOLDERS})")
+
+    def test_no_placeholder_in_wiki_tagline(self):
+        """wiki_tagline must not contain PLACEHOLDER marker.
+
+        Enforces that PLACEHOLDER count stays below threshold.
+        """
+        data_dir = Path("data")
+        yaml_files = list(data_dir.rglob("*.yaml"))
+        yaml_files = [f for f in yaml_files if ".templates" not in str(f) and "shared-sot.yaml" not in str(f)]
+
+        errors = []
+        for yaml_file in yaml_files:
+            with open(yaml_file, encoding="utf-8") as f:
+                try:
+                    data = yaml.safe_load(f)
+                except Exception:
+                    continue
+
+            if not data:
+                continue
+
+            wiki_tagline = data.get("wiki_tagline", "")
+            if wiki_tagline and "PLACEHOLDER" in str(wiki_tagline).upper():
+                errors.append(f"{yaml_file.relative_to(data_dir)}")
+
+        if len(errors) > self.MAX_ALLOWED_WIKI_TAGLINE_PLACEHOLDERS:
+            pytest.fail(
+                f"Too many PLACEHOLDER wiki_tagline fields: {len(errors)} > {self.MAX_ALLOWED_WIKI_TAGLINE_PLACEHOLDERS}\n"
+                f"Files:\n" + "\n".join(errors[:20])
+            )
+        elif errors:
+            print(f"\nInfo: {len(errors)} wiki_tagline PLACEHOLDERs remaining (max: {self.MAX_ALLOWED_WIKI_TAGLINE_PLACEHOLDERS})")
+
+    def test_priority_docs_have_no_placeholders(self):
+        """Priority 1-2 docs (operations, technical critical) must have no PLACEHOLDERs.
+
+        These are critical for contributor onboarding and deployment.
+        """
+        data_dir = Path("data")
+
+        # Priority docs that must be complete
+        priority_patterns = [
+            "operations/*.yaml",
+            "technical/API.yaml",
+            "technical/CONFIGURATION.yaml",
+            "technical/FRONTEND.yaml",
+        ]
+
+        errors = []
+        for pattern in priority_patterns:
+            for yaml_file in data_dir.glob(pattern):
+                with open(yaml_file, encoding="utf-8") as f:
+                    try:
+                        data = yaml.safe_load(f)
+                    except Exception:
+                        continue
+
+                if not data:
+                    continue
+
+                for field in ["wiki_overview", "wiki_tagline"]:
+                    value = data.get(field, "")
+                    if value and "PLACEHOLDER" in str(value).upper():
+                        errors.append(f"{yaml_file.relative_to(data_dir)}: {field}")
+
+        if errors:
+            pytest.fail(
+                f"Priority docs must not have PLACEHOLDERs:\n" + "\n".join(errors)
+            )
+
+
+class TestYAMLListFormatting:
+    """Test YAML list items are properly formatted."""
+
+    def test_list_items_with_colons_are_quoted(self):
+        """List items containing colons should be quoted to avoid YAML parsing issues.
+
+        This catches issues like:
+        query_params:
+          - date (optional): Date for schedule  # BAD - colon in unquoted string
+          - "date (optional): Date for schedule"  # GOOD - quoted
+        """
+        data_dir = Path("data")
+        yaml_files = list(data_dir.rglob("*.yaml"))
+        yaml_files = [f for f in yaml_files if ".templates" not in str(f)]
+
+        errors = []
+        for yaml_file in yaml_files:
+            with open(yaml_file, encoding="utf-8") as f:
+                content = f.read()
+
+            # Check for list items that have colons and might cause issues
+            # Look for patterns like "  - something: something" without quotes
+            import re
+            # Match list items that have a colon but aren't quoted
+            # This is a simplified check - YAML parsing will catch actual errors
+            lines = content.split("\n")
+            for i, line in enumerate(lines, 1):
+                # Skip if line is already properly parsed (no syntax error)
+                # Focus on common problematic patterns
+                if re.match(r"^\s+-\s+[^\"'][^:]+:\s+[^\"']", line):
+                    # This looks like an unquoted list item with colon
+                    # Try parsing just this structure to see if it's valid
+                    test_yaml = f"test:\n{line}"
+                    try:
+                        parsed = yaml.safe_load(test_yaml)
+                        # If parsed as dict, it means colon was interpreted as key separator
+                        if isinstance(parsed.get("test"), list) and isinstance(parsed["test"][0], dict):
+                            # This is actually valid YAML dict in list - ignore
+                            pass
+                    except yaml.YAMLError:
+                        errors.append(f"{yaml_file.relative_to(data_dir)}:{i}: {line.strip()}")
+
+        # This test is informational - actual YAML errors are caught by syntax test
+        if errors:
+            print(f"\nWarning: {len(errors)} potential unquoted colon issues found")
+            for error in errors[:5]:
+                print(f"  {error}")
+
+
 class TestDocGeneration:
     """Test that all YAML files can generate docs without errors."""
 
