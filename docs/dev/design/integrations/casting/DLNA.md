@@ -1,395 +1,154 @@
-# DLNA/UPnP Integration
+## Table of Contents
 
-<!-- DESIGN: integrations/casting, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+- [DLNA/UPnP](#dlnaupnp)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
+
+
+---
+design_refs:
+  - title: integrations/casting
+    path: integrations/casting.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# DLNA/UPnP
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with DLNA/UPnP
 
 > Universal Plug and Play streaming to compatible devices
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [Technical Details](#technical-details)
-  - [DLNA Device Classes](#dlna-device-classes)
-  - [UPnP Services](#upnp-services)
-  - [Discovery (SSDP)](#discovery-ssdp)
-- [Implementation Checklist](#implementation-checklist)
-  - [DLNA Server (DMS)](#dlna-server-dms)
-  - [DLNA Control Point (DMC)](#dlna-control-point-dmc)
-- [Configuration](#configuration)
-  - [DLNA Transcode Profile](#dlna-transcode-profile)
-- [Database Schema](#database-schema)
-- [ContentDirectory Structure](#contentdirectory-structure)
-- [DIDL-Lite Response](#didl-lite-response)
-- [DLNA.ORG Headers](#dlnaorg-headers)
-  - [DLNA Flags](#dlna-flags)
-- [Casting Flow](#casting-flow)
-- [Supported DLNA Devices](#supported-dlna-devices)
-- [Error Handling](#error-handling)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-
-<!-- TOC-END -->
-
-**Priority**: 🟢 LOW (Phase 6 - Casting)
-**Type**: UPnP/DLNA server + control point
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive UPnP protocol spec, DIDL-Lite, database schema |
-| Sources | ✅ | UPnP spec, DLNA guidelines, Go libraries linked |
-| Instructions | ✅ | Detailed implementation checklist for DMS and DMC |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-DLNA (Digital Living Network Alliance) integration enables streaming to TVs, game consoles, and media players that support UPnP/DLNA. Revenge acts as both:
-- **Media Server (DMS)**: Expose media library to DLNA clients
-- **Control Point (DMC)**: Control DLNA renderers for casting
 
-**Integration Points**:
-- **SSDP Discovery**: Find DLNA devices on network
-- **ContentDirectory**: Expose media library structure
-- **AVTransport**: Control playback on renderers
-- **ConnectionManager**: Media format negotiation
 
 ---
 
-## Developer Resources
 
-- 📚 **UPnP Spec**: http://www.upnp.org/specs/av/UPnP-av-AVArchitecture-v1.pdf
-- 🔗 **DLNA Guidelines**: https://spirespark.com/dlna/guidelines
-- 🔗 **Go Library**: `github.com/anacrolix/dms`
-- 🔗 **Go UPnP**: `github.com/huin/goupnp`
+## Architecture
 
----
+### Integration Structure
 
-## Technical Details
-
-### DLNA Device Classes
-
-| Class | Code | Description |
-|-------|------|-------------|
-| Digital Media Server | DMS | Serves content (Revenge) |
-| Digital Media Player | DMP | Plays content (clients) |
-| Digital Media Renderer | DMR | Receives/plays pushed content |
-| Digital Media Controller | DMC | Controls DMR devices (Revenge) |
-
-### UPnP Services
-
-| Service | Purpose |
-|---------|---------|
-| `ContentDirectory:1` | Browse/search media library |
-| `ConnectionManager:1` | Connection/protocol negotiation |
-| `AVTransport:1` | Playback control |
-| `RenderingControl:1` | Volume, mute, etc. |
-
-### Discovery (SSDP)
-
-Multicast address: `239.255.255.250:1900`
-
-```http
-M-SEARCH * HTTP/1.1
-HOST: 239.255.255.250:1900
-MAN: "ssdp:discover"
-MX: 3
-ST: urn:schemas-upnp-org:device:MediaRenderer:1
+```
+internal/integration/dlnaupnp/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
----
+### Data Flow
 
-## Implementation Checklist
+<!-- Data flow diagram -->
 
-### DLNA Server (DMS)
+### Provides
 
-- [ ] **SSDP Announcements** (`internal/service/dlna/ssdp.go`)
-  - [ ] Device announcement
-  - [ ] Service announcement
-  - [ ] Response to M-SEARCH
-  - [ ] Periodic alive broadcasts
+This integration provides:
+<!-- Data provided by integration -->
 
-- [ ] **ContentDirectory** (`internal/service/dlna/content_directory.go`)
-  - [ ] Browse action
-  - [ ] Search action
-  - [ ] Object metadata (DIDL-Lite)
-  - [ ] Container hierarchy (movies, TV, music)
-  - [ ] Pagination support
 
-- [ ] **ConnectionManager** (`internal/service/dlna/connection_manager.go`)
-  - [ ] GetProtocolInfo
-  - [ ] PrepareForConnection
-  - [ ] ConnectionComplete
+## Implementation
 
-- [ ] **HTTP Streaming** (`internal/service/dlna/streaming.go`)
-  - [ ] Range request support
-  - [ ] DLNA.ORG headers
-  - [ ] Time-seek support
-  - [ ] Transcoding on-the-fly
+### File Structure
 
-### DLNA Control Point (DMC)
+<!-- File structure -->
 
-- [ ] **Device Discovery** (`internal/service/dlna/discovery.go`)
-  - [ ] SSDP search
-  - [ ] Device description parsing
-  - [ ] Service URL extraction
-  - [ ] Device caching
+### Key Interfaces
 
-- [ ] **AVTransport Control** (`internal/service/dlna/av_transport.go`)
-  - [ ] SetAVTransportURI
-  - [ ] Play, Pause, Stop
-  - [ ] Seek
-  - [ ] GetPositionInfo
-  - [ ] GetTransportInfo
+<!-- Interface definitions -->
 
-- [ ] **RenderingControl** (`internal/service/dlna/rendering_control.go`)
-  - [ ] GetVolume, SetVolume
-  - [ ] GetMute, SetMute
+### Dependencies
 
----
+<!-- Dependency list -->
+
+
+
+
 
 ## Configuration
+### Environment Variables
 
-```yaml
-# configs/config.yaml
-integrations:
-  dlna:
-    enabled: true
+<!-- Environment variables -->
 
-    server:
-      enabled: true
-      friendly_name: "Revenge Media Server"
-      uuid: ""  # Auto-generated if empty
-      port: 1900
+### Config Keys
 
-      # Transcoding for DLNA clients
-      transcoding:
-        enabled: true
-        profile: "dlna"
+<!-- Configuration keys -->
 
-    control_point:
-      enabled: true
-      discovery_interval: "60s"
 
-    # Network settings
-    network:
-      interfaces: []  # Empty = all interfaces
-      bind_address: ""
-```
 
-### DLNA Transcode Profile
 
-```yaml
-profiles:
-  dlna:
-    video:
-      codec: "h264"
-      profile: "main"
-      level: "4.0"
-      max_width: 1920
-      max_height: 1080
-    audio:
-      codec: "aac"
-      channels: 2
-      sample_rate: 48000
-    container: "mpegts"  # Or mp4
-```
+## Testing Strategy
 
----
+### Unit Tests
 
-## Database Schema
+<!-- Unit test strategy -->
 
-```sql
--- Discovered DLNA devices
-CREATE TABLE dlna_devices (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    udn VARCHAR(100) NOT NULL UNIQUE,  -- Unique Device Name
-    friendly_name VARCHAR(255) NOT NULL,
-    device_type VARCHAR(100) NOT NULL,  -- MediaRenderer, etc.
-    manufacturer VARCHAR(255),
-    model_name VARCHAR(255),
-    location_url TEXT NOT NULL,  -- Device description URL
-    services JSONB NOT NULL DEFAULT '[]',
-    capabilities JSONB,
-    last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+### Integration Tests
 
-CREATE INDEX idx_dlna_devices_type ON dlna_devices(device_type);
-CREATE INDEX idx_dlna_devices_seen ON dlna_devices(last_seen_at);
+<!-- Integration test strategy -->
 
--- Active DLNA sessions
-CREATE TABLE dlna_sessions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    device_id UUID NOT NULL REFERENCES dlna_devices(id),
-    user_id UUID NOT NULL REFERENCES users(id),
-    media_item_id UUID NOT NULL,
-    media_item_type VARCHAR(20) NOT NULL,
-    transport_state VARCHAR(20) DEFAULT 'STOPPED',
-    current_time_seconds INTEGER DEFAULT 0,
-    duration_seconds INTEGER,
-    volume INTEGER DEFAULT 100,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-```
+### Test Coverage
 
----
+Target: **80% minimum**
 
-## ContentDirectory Structure
 
-DLNA clients browse a tree structure:
 
-```
-Root (0)
-├── Movies
-│   ├── Recently Added
-│   ├── By Genre
-│   │   ├── Action
-│   │   ├── Comedy
-│   │   └── ...
-│   └── All Movies
-├── TV Shows
-│   ├── Show Name
-│   │   ├── Season 1
-│   │   │   ├── Episode 1
-│   │   │   └── ...
-│   │   └── ...
-│   └── ...
-├── Music
-│   ├── Artists
-│   ├── Albums
-│   └── Playlists
-└── Photos
-```
 
----
 
-## DIDL-Lite Response
-
-Content is described using DIDL-Lite XML:
-
-```xml
-<DIDL-Lite xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
-           xmlns:dc="http://purl.org/dc/elements/1.1/"
-           xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/">
-  <item id="movie-123" parentID="movies" restricted="1">
-    <dc:title>Movie Title</dc:title>
-    <dc:date>2024-01-01</dc:date>
-    <upnp:class>object.item.videoItem.movie</upnp:class>
-    <upnp:genre>Action</upnp:genre>
-    <res protocolInfo="http-get:*:video/mp4:DLNA.ORG_PN=AVC_MP4_MP_SD_AAC_MULT5"
-         duration="1:45:30.000"
-         resolution="1920x1080"
-         size="4500000000">
-      http://revenge:8096/dlna/stream/movie-123
-    </res>
-    <upnp:albumArtURI>http://revenge:8096/dlna/art/movie-123</upnp:albumArtURI>
-  </item>
-</DIDL-Lite>
-```
-
----
-
-## DLNA.ORG Headers
-
-Required HTTP headers for DLNA streaming:
-
-```http
-# Protocol info
-contentFeatures.dlna.org: DLNA.ORG_PN=AVC_MP4_MP_SD_AAC_MULT5;DLNA.ORG_OP=01;DLNA.ORG_FLAGS=01500000000000000000000000000000
-
-# Transfer mode
-transferMode.dlna.org: Streaming
-
-# Content type
-Content-Type: video/mp4
-```
-
-### DLNA Flags
-
-| Flag | Meaning |
-|------|---------|
-| `DLNA.ORG_OP=01` | Range seeking supported |
-| `DLNA.ORG_OP=10` | Time seeking supported |
-| `DLNA.ORG_OP=11` | Both seeking modes |
-| `DLNA.ORG_CI=0` | Not transcoded |
-| `DLNA.ORG_CI=1` | Transcoded |
-
----
-
-## Casting Flow
-
-```
-┌────────┐     ┌─────────┐     ┌──────────────┐
-│ Client │     │ Revenge │     │ DLNA Renderer│
-└───┬────┘     └────┬────┘     └──────┬───────┘
-    │               │                 │
-    │ Cast to device│                 │
-    │──────────────>│                 │
-    │               │                 │
-    │               │ SetAVTransportURI
-    │               │────────────────>│
-    │               │                 │
-    │               │ Play            │
-    │               │────────────────>│
-    │               │                 │
-    │               │ 200 OK          │
-    │               │<────────────────│
-    │               │                 │
-    │ Session info  │                 │
-    │<──────────────│                 │
-    │               │                 │
-    │               │ [Renderer fetches stream]
-    │               │<────────────────│
-    │               │                 │
-    │               │ Video data      │
-    │               │────────────────>│
-    │               │                 │
-```
-
----
-
-## Supported DLNA Devices
-
-| Device | Protocol Support | Notes |
-|--------|------------------|-------|
-| Samsung TVs | Good | DLNA+ extensions |
-| LG TVs | Good | WebOS has native support |
-| Sony TVs | Good | Standard DLNA |
-| Xbox | Limited | Requires specific profiles |
-| PlayStation | Limited | Strict format requirements |
-| Roku | None | Use Chromecast instead |
-
----
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Device not found | SSDP failed | Check firewall, multicast |
-| 401 Unauthorized | Device auth required | Add credentials if supported |
-| 501 Not Implemented | Unsupported action | Check device capabilities |
-| Playback failed | Format not supported | Transcode to compatible format |
-
----
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/casting](integrations/casting.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Chromecast Integration](CHROMECAST.md)
-- [Client Support](../../features/CLIENT_SUPPORT.md)
-- [Player Architecture](../../architecture/04_PLAYER_ARCHITECTURE.md)
+### External Sources
+<!-- External documentation sources -->
+

@@ -1,57 +1,124 @@
-# Questions & Gaps to Discuss
-
-> Active tracking of open items requiring resolution
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Open Items](#open-items)
-- [Resolved Items (Reference)](#resolved-items-reference)
-- [How to Add New Questions](#how-to-add-new-questions)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
+- [Questions & Gaps to Discuss](#questions-gaps-to-discuss)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Last Updated**: Auto-generated
 
 ---
+---
+
+# Questions & Gaps to Discuss
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: other
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
-All major design questions have been resolved. This file tracks any new questions that arise during implementation.
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 Not Started | - |
+| Sources | 🔴 Not Started | - |
+| Instructions | 🔴 Not Started | - |
+| Code | 🔴 Not Started | - |
+| Linting | 🔴 Not Started | - |
+| Unit Testing | 🔴 Not Started | - |
+| Integration Testing | 🔴 Not Started | - |
+
+**Overall**: 🔴 Not Started
+
+
 
 ---
 
-## Open Items
 
-*No open items at this time.*
+## Architecture
 
----
+<!-- Architecture diagram placeholder -->
 
-## Resolved Items (Reference)
+### Components
 
-All decisions documented in [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md):
+<!-- Component description -->
 
-- ✅ Package versions aligned to SOT
-- ✅ Namespace migration complete ('c' → 'qar')
-- ✅ All 23 Go package decisions finalized
-- ✅ Design patterns documented
-- ✅ External sources indexed in SOURCES.yaml
-- ✅ Cross-reference indexes generated
 
----
+## Implementation
 
-## How to Add New Questions
+### File Structure
 
-1. Add under "## Open Items" with clear description
-2. Include context and options if known
-3. Tag priority: 🔴 Critical | 🟡 Important | 🟢 Nice to have
-4. Link related design docs
-5. Once resolved, move to "Resolved Items" with decision
+<!-- File structure -->
 
----
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+<!-- Related design docs -->
+
+### External Sources
+<!-- External documentation sources -->
 

@@ -1,305 +1,180 @@
-# Configuration Reference
-
-<!-- SOURCES: dragonfly, fx, koanf, pgx, postgresql-arrays, postgresql-json, river, rueidis, rueidis-docs, typesense, typesense-go -->
-
-<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Complete configuration options for Revenge
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Configuration File](#configuration-file)
-- [Environment Variables](#environment-variables)
-- [Configuration Sections](#configuration-sections)
-  - [Server Configuration](#server-configuration)
-  - [Database Configuration](#database-configuration)
-  - [Cache Configuration](#cache-configuration)
-  - [Search Configuration](#search-configuration)
-  - [Auth Configuration](#auth-configuration)
-  - [Metadata Configuration](#metadata-configuration)
-  - [Modules Configuration](#modules-configuration)
-  - [Logging Configuration](#logging-configuration)
-- [Loading Order](#loading-order)
-- [fx Module](#fx-module)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related](#related)
+- [Configuration Reference](#configuration-reference)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Dragonfly Documentation
+    url: https://www.dragonflydb.io/docs
+    note: Auto-resolved from dragonfly
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: koanf
+    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    note: Auto-resolved from koanf
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: rueidis
+    url: https://pkg.go.dev/github.com/redis/rueidis
+    note: Auto-resolved from rueidis
+  - name: rueidis GitHub README
+    url: https://github.com/redis/rueidis
+    note: Auto-resolved from rueidis-docs
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Configuration Reference
+
+
+**Created**: 2026-01-31
+**Status**: 🔴 Not Started
+**Category**: technical
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | 🔴 |
-| Sources | 🔴 |
-| Instructions | 🔴 |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
----
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-**Location**: `internal/config/config.go`
+**Overall**: 🔴 Not Started
 
----
 
-## Overview
-
-Configuration is loaded via [koanf v2](https://github.com/knadh/koanf) from:
-
-1. **YAML file** (optional) - `config.yaml`, `configs/config.yaml`, or `/etc/revenge/config.yaml`
-2. **Environment variables** - `REVENGE_` prefix, overrides file settings
-
----
-
-## Configuration File
-
-```yaml
-# config.yaml
-server:
-  host: 0.0.0.0
-  port: 8096
-  base_url: /
-  read_timeout: 30s
-  write_timeout: 30s
-
-database:
-  host: localhost
-  port: 5432
-  user: revenge
-  password: changeme
-  name: revenge
-  sslmode: disable
-  max_conns: 25
-  min_conns: 5
-
-cache:
-  addr: localhost:6379
-  password: ""
-  db: 0
-  local_capacity: 10000
-  local_ttl: 300
-  api_capacity: 5000
-  api_ttl: 3600
-
-search:
-  host: localhost
-  port: 8108
-  api_key: xyz
-
-auth:
-  jwt_secret: your-secret-key
-  session_duration: 24
-
-metadata:
-  radarr:
-    base_url: http://localhost:7878
-    api_key: your-radarr-key
-  tmdb:
-    api_key: your-tmdb-key
-
-modules:
-  movie: true
-  tvshow: true
-  music: true
-  audiobook: false
-  book: false
-  podcast: false
-  photo: false
-  livetv: false
-  comics: false
-  adult: false
-
-logging:
-  level: info
-  format: json
-```
-
----
-
-## Environment Variables
-
-All settings can be set via environment variables with `REVENGE_` prefix.
-
-> **📋 Complete Environment Variable Reference**: See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#environment-variable-mapping) for the authoritative list of all environment variables with platform-specific mappings (Docker Compose, K8s, K3s, Swarm).
-
-The sections below document the **config structure and Go types**. For the complete env var list, always refer to SOURCE_OF_TRUTH.
-
----
-
-## Configuration Sections
-
-### Server Configuration
-
-```go
-type ServerConfig struct {
-    Host              string        // Listen address
-    Port              int           // Listen port
-    BaseURL           string        // Base URL path
-    ReadTimeout       time.Duration // HTTP read timeout
-    WriteTimeout      time.Duration // HTTP write timeout
-    IdleTimeout       time.Duration // HTTP idle timeout
-    ReadHeaderTimeout time.Duration // Header read timeout
-    MaxHeaderBytes    int           // Max header size
-}
-```
-
-**Defaults**:
-- `read_timeout`: 30s
-- `write_timeout`: 30s
-- `idle_timeout`: 60s
-- `read_header_timeout`: 5s
-- `max_header_bytes`: 1MB
-
-### Database Configuration
-
-```go
-type DatabaseConfig struct {
-    Host     string // PostgreSQL host
-    Port     int    // PostgreSQL port
-    User     string // Database user
-    Password string // Database password
-    Name     string // Database name
-    SSLMode  string // SSL mode
-    MaxConns int32  // Max connections
-    MinConns int32  // Min connections
-}
-```
-
-**Defaults**:
-- `max_conns`: 25
-- `min_conns`: 5
-- `sslmode`: disable
-
-### Cache Configuration
-
-```go
-type CacheConfig struct {
-    Addr     string // Redis/Dragonfly address
-    Password string // Cache password
-    DB       int    // Redis database number
-
-    // Local cache (otter)
-    LocalCapacity int // Max entries (default: 10000)
-    LocalTTL      int // TTL in seconds (default: 300)
-
-    // API cache (sturdyc)
-    APICapacity  int // Max entries (default: 5000)
-    APINumShards int // Number of shards (default: 10)
-    APITTL       int // TTL in seconds (default: 3600)
-}
-```
-
-### Search Configuration
-
-```go
-type SearchConfig struct {
-    Host   string // Typesense host
-    Port   int    // Typesense port
-    APIKey string // Typesense API key
-}
-```
-
-### Auth Configuration
-
-```go
-type AuthConfig struct {
-    JWTSecret       string // JWT signing secret
-    SessionDuration int    // Session duration in hours (default: 24)
-}
-```
-
-### Metadata Configuration
-
-```go
-type MetadataConfig struct {
-    Radarr RadarrConfig
-    TMDb   TMDbConfig
-}
-
-type RadarrConfig struct {
-    BaseURL string // Radarr base URL
-    APIKey  string // Radarr API key
-}
-
-type TMDbConfig struct {
-    APIKey     string // TMDb API key
-    BaseURL    string // API base URL
-    ImageURL   string // Image base URL
-    Timeout    int    // Request timeout (seconds)
-    CacheTTL   int    // Cache TTL (seconds)
-    CacheSize  int    // Max cache entries
-    RetryCount int    // Max retries
-}
-```
-
-### Modules Configuration
-
-```go
-type ModulesConfig struct {
-    Movie     bool // Movies (default: true)
-    TVShow    bool // TV Shows (default: true)
-    Music     bool // Music (default: true)
-    Audiobook bool // Audiobooks (default: false)
-    Book      bool // Books (default: false)
-    Podcast   bool // Podcasts (default: false)
-    Photo     bool // Photos (default: false)
-    LiveTV    bool // Live TV (default: false)
-    Comics    bool // Comics (default: false)
-    Adult     bool // Adult content (default: false, explicit opt-in)
-}
-```
-
-### Logging Configuration
-
-```go
-type LoggingConfig struct {
-    Level  string // Log level: debug, info, warn, error
-    Format string // Output format: json, text
-}
-```
-
----
-
-## Loading Order
-
-1. Load YAML file (if exists)
-2. Apply environment variables (override file values)
-3. Apply environment aliases (`REVENGE_DB_*` → `database.*`)
-4. Set defaults for missing values
-
----
-
-## fx Module
-
-Configuration is provided via fx dependency injection:
-
-```go
-import "github.com/lusoris/revenge/internal/config"
-
-fx.New(
-    config.Module,
-    // ... other modules
-)
-```
 
 ---
 
 
-## Related
+## Architecture
 
-- [Setup Guide](../operations/SETUP.md) - Production setup
-- [Development Guide](../operations/DEVELOPMENT.md) - Development environment
-- [koanf-configuration.instructions.md](../../../.github/instructions/koanf-configuration.instructions.md) - Configuration patterns
+<!-- Architecture diagram placeholder -->
+
+### Components
+
+<!-- Component description -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [technical](technical.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) - Auto-resolved from koanf
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [rueidis](https://pkg.go.dev/github.com/redis/rueidis) - Auto-resolved from rueidis
+- [rueidis GitHub README](https://github.com/redis/rueidis) - Auto-resolved from rueidis-docs
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+

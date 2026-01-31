@@ -1,290 +1,156 @@
+## Table of Contents
+
+- [Design Document Template](#design-document-template)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
+
+
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+  - name: testcontainers-go
+    url: https://golang.testcontainers.org/
+    note: Auto-resolved from testcontainers
+---
+
 # Design Document Template
 
-<!-- SOURCES: fx, pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config, testcontainers -->
 
-> Use this template for all feature and integration design documents.
+**Created**: 2026-01-31
+**Status**: 🔴 Not Started
+**Category**: other
 
-**Key Principle**: Never duplicate information from [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md). Reference it instead.
+
+> PLACEHOLDER: Brief technical summary
 
 ---
 
-## Document Structure
-
-Every design doc should follow this structure for consistency and actionability:
-
-```
-# Feature Name
-
-> One-line description
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | |
-| Sources | 🔴 | |
-| Instructions | 🔴 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
+| Design | 🔴 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-**Priority**: 🔴 HIGH | 🟡 MEDIUM | 🟢 LOW
-**Module**: `internal/content/{module}` or `internal/infra/{component}`
-**Dependencies**: [Link to related docs]
+**Overall**: 🔴 Not Started
 
----
 
-## Overview
-Brief explanation of what this feature does and why it exists.
-
-## Goals
-- Clear, measurable objectives
-- What success looks like
-
-## Non-Goals
-- Explicitly state what this feature does NOT do
-- Prevents scope creep
 
 ---
 
-## Technical Design
 
-### Database Schema
-```sql
--- Complete, runnable SQL
-CREATE TABLE ...
-```
+## Architecture
 
-### Repository Interface
-```go
-// Interface definition
-type Repository interface {
-    Method(ctx context.Context, ...) (Result, error)
-}
-```
+<!-- Architecture diagram placeholder -->
 
-### Service Layer
-```go
-// Service struct and key methods
-type Service struct { ... }
-func (s *Service) DoThing(ctx context.Context, ...) error { ... }
-```
+### Components
 
-### API Endpoints
-```
-METHOD /api/path
-Request: { ... }
-Response: { ... }
-```
+<!-- Component description -->
 
----
 
 ## Implementation
 
-### Files to Create/Modify
-| File | Action | Description |
-|------|--------|-------------|
-| `path/to/file.go` | CREATE | Service implementation |
-| `path/to/file.sql` | CREATE | Database migration |
+### File Structure
 
-### SQL Queries (sqlc)
-```sql
--- name: QueryName :one
-SELECT ... FROM ... WHERE ...
-```
+<!-- File structure -->
 
-### River Jobs (if applicable)
-```go
-type JobArgs struct { ... }
-func (JobArgs) Kind() string { return "module.job_name" }
-```
+### Key Interfaces
 
----
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
 
 ## Configuration
-```yaml
-feature:
-  enabled: true
-  option: value
-```
+### Environment Variables
 
----
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
-- Unit tests: ...
-- Integration tests: ...
-- E2E tests: ...
 
----
+### Unit Tests
 
-## Migration Path
-How to upgrade from current state (if applicable).
+<!-- Unit test strategy -->
 
----
+### Integration Tests
 
-## Checklist
-- [ ] Database migration created
-- [ ] sqlc queries written
-- [ ] Repository implemented
-- [ ] Service implemented
-- [ ] API handlers created
-- [ ] Tests written
-- [ ] Documentation updated
+<!-- Integration test strategy -->
 
----
+### Test Coverage
+
+Target: **80% minimum**
 
 
-## Related Documents
-- [Link to related doc](path/to/doc.md)
-```
 
----
 
-## Key Principles
 
-### 1. Code-First Examples
-Always provide runnable code, not pseudocode:
-- Complete SQL schemas with indexes
-- Full Go interface definitions
-- Real API request/response examples
 
-### 2. File Locations
-Explicitly state where code should go:
-```
-internal/
-  content/
-    {module}/
-      entity.go        # Domain types
-      repository.go    # Interface
-      repository_pg.go # PostgreSQL implementation
-      service.go       # Business logic
-      jobs.go          # River workers
-      module.go        # fx module
-```
 
-### 3. Implementation Order
-Documents should guide implementation sequence:
-1. Database schema → Migration
-2. sqlc queries → Repository
-3. Repository → Service
-4. Service → API Handlers
-5. API Handlers → Tests
+## Related Documentation
+### Design Documents
+<!-- Related design docs -->
 
-### 4. Status Tracking
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
+- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [testcontainers-go](https://golang.testcontainers.org/) - Auto-resolved from testcontainers
 
-Use the multi-dimensional status table (see [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md#status-system)):
-
-| Emoji | Meaning |
-|-------|---------|
-| ✅ | Complete |
-| 🟡 | Partial |
-| 🔴 | Not Started |
-| ⚪ | N/A |
-
-**Dimensions tracked:**
-- **Design** - Feature spec, architecture, DB schema, API endpoints
-- **Sources** - External docs fetched (API specs, GraphQL schemas)
-- **Instructions** - Claude Code implementation instructions
-- **Code** - Go implementation
-- **Linting** - golangci-lint rules
-- **Unit Testing** - Unit tests with embedded-postgres
-- **Integration Testing** - Integration tests with testcontainers
-
-### 5. Dependency Links
-Always link to:
-- Related feature docs
-- Relevant integration docs
-- Shared component docs
-
----
-
-## Example: Minimal Feature Doc
-
-```markdown
-# User Favorites
-
-> Allow users to mark content as favorites
-
-## Status
-
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | Schema, API, Repository defined |
-| Sources | ⚪ | N/A - internal feature |
-| Instructions | 🔴 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
-**Module**: `internal/content/movie`, `internal/content/tvshow`
-
----
-
-## Database
-
-```sql
-CREATE TABLE user_favorites (
-    user_id UUID NOT NULL REFERENCES users(id),
-    content_id UUID NOT NULL,
-    content_type VARCHAR(20) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (user_id, content_id, content_type)
-);
-```
-
-## Repository
-
-```go
-type FavoritesRepository interface {
-    IsFavorite(ctx context.Context, userID, contentID uuid.UUID, contentType string) (bool, error)
-    AddFavorite(ctx context.Context, userID, contentID uuid.UUID, contentType string) error
-    RemoveFavorite(ctx context.Context, userID, contentID uuid.UUID, contentType string) error
-    ListFavorites(ctx context.Context, userID uuid.UUID, contentType string, limit, offset int) ([]uuid.UUID, error)
-}
-```
-
-## API
-
-```
-POST /api/users/{userId}/favorites
-{ "content_id": "uuid", "content_type": "movie" }
-
-DELETE /api/users/{userId}/favorites/{contentId}
-
-GET /api/users/{userId}/favorites?type=movie&limit=20
-```
-
-## Checklist
-- [ ] Migration: `000X_user_favorites.sql`
-- [ ] sqlc: `queries/shared/favorites.sql`
-- [ ] Repository: per-module implementation
-- [ ] Service: per-module favorites methods
-- [ ] API: `/api/users/{userId}/favorites`
-```
-
----
-
-## Anti-Patterns to Avoid
-
-1. **Vague descriptions** - Be specific about behavior
-2. **Missing error handling** - Document error cases
-3. **No code examples** - Always provide runnable code
-4. **Orphan docs** - Always link to related docs
-5. **Stale status** - Update status as work progresses
-6. **No checklist** - Always include implementation checklist
-7. **Duplicating SOT** - Never copy package versions, module lists, or config keys from 00_SOURCE_OF_TRUTH.md - reference it instead
-
-## Deduplication Rules
-
-| Information Type | Where It Lives | In Design Docs |
-|-----------------|----------------|----------------|
-| Package versions | 00_SOURCE_OF_TRUTH.md | Link to SOT |
-| Module/service list | 00_SOURCE_OF_TRUTH.md | Link to SOT |
-| Config keys | 00_SOURCE_OF_TRUTH.md | Link to SOT |
-| API namespaces | 00_SOURCE_OF_TRUTH.md | Link to SOT |
-| QAR terminology | 00_SOURCE_OF_TRUTH.md | Link to SOT |
-| Design rationale | Design docs | Full detail |
-| Implementation patterns | Design docs | Full detail |
-| Business logic | Design docs | Full detail |

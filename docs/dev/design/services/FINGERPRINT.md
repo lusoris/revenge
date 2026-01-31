@@ -1,249 +1,199 @@
-# Fingerprint Service
-
-<!-- SOURCES: ffmpeg, ffmpeg-codecs, ffmpeg-formats, fx, go-astiav, go-astiav-docs, pgx, postgresql-arrays, postgresql-json, river -->
-
-<!-- DESIGN: services, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Media file identification via perceptual hashing and acoustic fingerprinting
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Developer Resources](#developer-resources)
-- [Overview](#overview)
-- [Goals](#goals)
-- [Non-Goals](#non-goals)
-- [Technical Design](#technical-design)
-  - [Fingerprint Types](#fingerprint-types)
-  - [Repository Interface](#repository-interface)
-  - [Service Layer](#service-layer)
-- [Database Schema](#database-schema)
-- [River Jobs](#river-jobs)
-- [Configuration](#configuration)
-- [Implementation Files](#implementation-files)
-- [Checklist](#checklist)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documents](#related-documents)
+- [Fingerprint Service](#fingerprint-service)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Service Structure](#service-structure)
+    - [Dependencies](#dependencies)
+    - [Provides](#provides)
+    - [Component Diagram](#component-diagram)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Module**: `internal/service/fingerprint`
-**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-media-processing)
+
+---
+sources:
+  - name: FFmpeg Documentation
+    url: https://ffmpeg.org/ffmpeg.html
+    note: Auto-resolved from ffmpeg
+  - name: FFmpeg Codecs
+    url: https://ffmpeg.org/ffmpeg-codecs.html
+    note: Auto-resolved from ffmpeg-codecs
+  - name: FFmpeg Formats
+    url: https://ffmpeg.org/ffmpeg-formats.html
+    note: Auto-resolved from ffmpeg-formats
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: go-astiav (FFmpeg bindings)
+    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    note: Auto-resolved from go-astiav
+  - name: go-astiav GitHub README
+    url: https://github.com/asticode/go-astiav
+    note: Auto-resolved from go-astiav-docs
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: services
+    path: services/INDEX.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Fingerprint Service
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: service
+
+
+> > Media file identification via perceptual hashing and acoustic fingerprinting
+
+**Package**: `internal/service/fingerprint`
+**fx Module**: `fingerprint.Module`
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | ✅ |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |## Developer Resources
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-> Package versions: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-media-processing--planned)
+**Overall**: ✅ Complete
 
-| Package | Purpose |
-|---------|---------|
-| goimagehash | Perceptual image hashing |
-| go-astiav | FFmpeg bindings |
-| Chromaprint | Audio fingerprinting |
-| AcoustID API | Audio matching service |
-| StashDB API | Video fingerprint matching |
+
 
 ---
 
-## Overview
 
-The Fingerprint service provides content identification through multiple hashing techniques:
-- **Perceptual hashing** (pHash) for images and video frames
-- **Acoustic fingerprinting** for audio content (Chromaprint/AcoustID)
-- **Video fingerprinting** for scene detection and matching
+## Architecture
 
-Primary use cases:
-- Matching local content against external databases (StashDB, AcoustID)
-- Duplicate detection within libraries
-- Scene/chapter detection for skip intro/credits
+### Service Structure
 
-## Goals
-
-- Generate fingerprints for all media types (video, audio, images)
-- Support external matching services (StashDB, AcoustID, MusicBrainz)
-- Enable duplicate detection across libraries
-- Provide scene boundary detection for playback features
-
-## Non-Goals
-
-- Real-time fingerprinting during playback
-- Fingerprint-based DRM or content protection
-- User-facing fingerprint data (internal service only)
-
----
-
-## Technical Design
-
-### Fingerprint Types
-
-| Type | Algorithm | Use Case | Package |
-|------|-----------|----------|---------|
-| Image pHash | Perceptual hash | Poster/artwork matching | `goimagehash` |
-| Video pHash | Frame sampling + pHash | Scene matching, StashDB | `goimagehash` + `go-astiav` |
-| Audio Chromaprint | Acoustic fingerprint | MusicBrainz/AcoustID | External CLI or CGo |
-
-### Repository Interface
-
-```go
-type FingerprintRepository interface {
-    // Store fingerprints
-    StoreImageHash(ctx context.Context, mediaID uuid.UUID, hash uint64, algorithm string) error
-    StoreVideoHash(ctx context.Context, mediaID uuid.UUID, hashes []FrameHash, algorithm string) error
-    StoreAudioFingerprint(ctx context.Context, mediaID uuid.UUID, fingerprint []byte, duration int) error
-
-    // Query by similarity
-    FindSimilarImages(ctx context.Context, hash uint64, threshold int) ([]Match, error)
-    FindSimilarVideos(ctx context.Context, hashes []FrameHash, threshold int) ([]Match, error)
-
-    // External matching
-    MatchStashDB(ctx context.Context, videoHashes []FrameHash) (*StashDBMatch, error)
-    MatchAcoustID(ctx context.Context, fingerprint []byte, duration int) (*AcoustIDMatch, error)
-}
-
-type FrameHash struct {
-    Offset   time.Duration
-    Hash     uint64
-    Algorithm string
-}
-
-type Match struct {
-    MediaID    uuid.UUID
-    Similarity float64
-    Source     string // "local", "stashdb", "acoustid"
-}
+```
+internal/service/fingerprint/
+├── module.go              # fx module definition
+├── service.go             # Service implementation
+├── repository.go          # Data access (if needed)
+├── handler.go             # HTTP handlers (if exposed)
+├── middleware.go          # Middleware (if needed)
+├── types.go               # Domain types
+└── service_test.go        # Tests
 ```
 
-### Service Layer
+### Dependencies
+No external service dependencies.
 
-```go
-type FingerprintService struct {
-    repo     FingerprintRepository
-    stashdb  *stashdb.Client
-    acoustid *acoustid.Client
-    ffmpeg   *astiav.Context
-}
+### Provides
+<!-- Service provides -->
 
-func (s *FingerprintService) GenerateImageHash(ctx context.Context, imagePath string) (uint64, error)
-func (s *FingerprintService) GenerateVideoHashes(ctx context.Context, videoPath string, sampleCount int) ([]FrameHash, error)
-func (s *FingerprintService) GenerateAudioFingerprint(ctx context.Context, audioPath string) ([]byte, int, error)
-func (s *FingerprintService) FindDuplicates(ctx context.Context, mediaID uuid.UUID) ([]Match, error)
-func (s *FingerprintService) MatchExternal(ctx context.Context, mediaID uuid.UUID) (*ExternalMatch, error)
-```
+### Component Diagram
 
----
+<!-- Component diagram -->
 
-## Database Schema
 
-```sql
--- Image/video perceptual hashes
-CREATE TABLE media_fingerprints (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    media_id UUID NOT NULL,
-    media_type VARCHAR(20) NOT NULL, -- 'image', 'video', 'audio'
-    algorithm VARCHAR(20) NOT NULL,  -- 'phash', 'ahash', 'dhash', 'chromaprint'
-    hash_value BYTEA NOT NULL,
-    frame_offset INTERVAL,           -- For video frame hashes
-    duration_ms INT,                 -- For audio fingerprints
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+## Implementation
 
-    UNIQUE(media_id, algorithm, frame_offset)
-);
+### File Structure
 
-CREATE INDEX idx_fingerprints_hash ON media_fingerprints USING hash (hash_value);
-CREATE INDEX idx_fingerprints_media ON media_fingerprints (media_id);
-```
+<!-- File structure -->
 
----
+### Key Interfaces
 
-## River Jobs
+<!-- Interface definitions -->
 
-```go
-type GenerateFingerprintArgs struct {
-    MediaID   uuid.UUID `json:"media_id"`
-    MediaType string    `json:"media_type"` // video, audio, image
-    FilePath  string    `json:"file_path"`
-}
+### Dependencies
 
-func (GenerateFingerprintArgs) Kind() string { return "fingerprint.generate" }
+<!-- Dependency list -->
 
-type MatchExternalArgs struct {
-    MediaID   uuid.UUID `json:"media_id"`
-    Services  []string  `json:"services"` // ["stashdb", "acoustid"]
-}
 
-func (MatchExternalArgs) Kind() string { return "fingerprint.match_external" }
-```
 
----
+
 
 ## Configuration
+### Environment Variables
 
-```yaml
-fingerprint:
-  enabled: true
-  video:
-    sample_count: 10        # Frames to sample per video
-    sample_interval: 60s    # Or sample every N seconds
-  audio:
-    chromaprint_path: ""    # Path to fpcalc binary (optional)
-  external:
-    stashdb_enabled: true
-    acoustid_enabled: true
-    acoustid_api_key: ""
-```
+<!-- Environment variables -->
 
----
+### Config Keys
 
-## Implementation Files
-
-| File | Action | Description |
-|------|--------|-------------|
-| `internal/service/fingerprint/service.go` | CREATE | Core fingerprint service |
-| `internal/service/fingerprint/repository.go` | CREATE | Repository interface |
-| `internal/service/fingerprint/repository_pg.go` | CREATE | PostgreSQL implementation |
-| `internal/service/fingerprint/jobs.go` | CREATE | River job workers |
-| `internal/service/fingerprint/module.go` | CREATE | fx module |
-| `migrations/shared/000XXX_fingerprints.up.sql` | CREATE | Database schema |
-
----
-
-## Checklist
-
-- [ ] Database migration created
-- [ ] Repository interface defined
-- [ ] PostgreSQL repository implemented
-- [ ] Service layer with hash generation
-- [ ] StashDB matching integration
-- [ ] AcoustID matching integration
-- [ ] River jobs for background processing
-- [ ] Tests written
-- [ ] Documentation updated
-
----
+<!-- Configuration keys -->
 
 
-## Related Documents
 
-- [Metadata Service](METADATA.md) - External metadata matching
-- [Library Service](LIBRARY.md) - Library scanning integration
-- [Search Service](SEARCH.md) - Duplicate detection queries
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [services](services/INDEX.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) - Auto-resolved from ffmpeg-formats
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](https://github.com/asticode/go-astiav) - Auto-resolved from go-astiav-docs
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+

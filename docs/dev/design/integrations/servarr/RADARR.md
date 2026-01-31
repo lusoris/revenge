@@ -1,260 +1,195 @@
-# Radarr Integration
-
-<!-- SOURCES: fx, go-context, pgx, postgresql-arrays, postgresql-json, radarr-docs, river, servarr-wiki, typesense, typesense-go -->
-
-<!-- DESIGN: integrations/servarr, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Movie management automation and metadata synchronization
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Base Configuration](#base-configuration)
-  - [Key Endpoints](#key-endpoints)
-    - [Movies](#movies)
-    - [Import Lists](#import-lists)
-    - [Metadata](#metadata)
-    - [Media Management](#media-management)
-    - [System](#system)
-- [Webhook Events](#webhook-events)
-  - [Webhook Payload Example](#webhook-payload-example)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Client Setup](#phase-1-client-setup)
-  - [Phase 2: API Implementation](#phase-2-api-implementation)
-  - [Phase 3: Service Integration](#phase-3-service-integration)
-  - [Phase 4: Testing](#phase-4-testing)
-- [Revenge Integration Pattern](#revenge-integration-pattern)
-  - [Metadata Flow](#metadata-flow)
-  - [Client Example](#client-example)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Quality Profile Mapping](#quality-profile-mapping)
-- [Notes](#notes)
+- [Radarr](#radarr)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: Go context
+    url: https://pkg.go.dev/context
+    note: Auto-resolved from go-context
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: Radarr API Docs
+    url: https://radarr.video/docs/api/
+    note: Auto-resolved from radarr-docs
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: Servarr Wiki
+    url: https://wiki.servarr.com/
+    note: Auto-resolved from servarr-wiki
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: integrations/servarr
+    path: integrations/servarr.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Radarr
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Radarr
+
+> Movie management automation and metadata synchronization
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | 🟡 |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |**Priority**: 🔴 CRITICAL (Phase 2 - Movie Module)
-**Authentication**: API Key (`X-Api-Key` header)
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | 🟡 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Overview
 
-**Purpose**: Automatic movie downloading, metadata management, library organization
+## Architecture
 
-**Integration Points**:
-- Webhook listener for import/download events
-- API client for metadata synchronization
-- Quality profile mapping
-- Root folder management
+### Integration Structure
 
----
-
-## Developer Resources
-
-- **API Documentation**: https://radarr.video/docs/api/
-- **OpenAPI Spec**: https://github.com/Radarr/Radarr/blob/develop/src/Radarr.Api.V3/openapi.json
-- **GitHub Repository**: https://github.com/Radarr/Radarr
-- **Wiki**: https://wiki.servarr.com/radarr
-
----
-
-## API Details
-
-### Base Configuration
-- **Base Path**: `/api/v3/`
-- **Authentication**: API Key header `X-Api-Key: {your_api_key}`
-- **Rate Limit**: None (self-hosted)
-- **Response Format**: JSON
-
-### Key Endpoints
-
-#### Movies
-```bash
-GET  /api/v3/movie              # List all movies
-GET  /api/v3/movie/{id}         # Get movie by ID
-POST /api/v3/movie              # Add new movie
-PUT  /api/v3/movie/{id}         # Update movie
-DELETE /api/v3/movie/{id}       # Delete movie
+```
+internal/integration/radarr/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-#### Import Lists
-```bash
-GET  /api/v3/importlist         # List import lists
-POST /api/v3/importlist         # Add import list
-```
+### Data Flow
 
-#### Metadata
-```bash
-GET  /api/v3/metadata           # List metadata providers
-```
+<!-- Data flow diagram -->
 
-#### Media Management
-```bash
-GET  /api/v3/mediamanagement    # Get media management config
-PUT  /api/v3/mediamanagement    # Update media management config
-```
+### Provides
 
-#### System
-```bash
-GET  /api/v3/system/status      # Get system status
-GET  /api/v3/health             # Get health check
-```
+This integration provides:
+<!-- Data provided by integration -->
 
----
 
-## Webhook Events
+## Implementation
 
-Radarr sends webhooks for:
-- **On Import**: Movie file imported
-- **On Upgrade**: Movie file upgraded
-- **On Rename**: Movie file renamed
-- **On Movie Added**: Movie added to library
-- **On Movie Delete**: Movie deleted from library
-- **On Movie File Delete**: Movie file deleted
-- **On Health Issue**: Health check issue
+### File Structure
 
-### Webhook Payload Example
-```json
-{
-  "eventType": "MovieAdded",
-  "movie": {
-    "id": 1,
-    "title": "The Matrix",
-    "year": 1999,
-    "tmdbId": 603,
-    "imdbId": "tt0133093",
-    "overview": "...",
-    "images": [
-      {
-        "coverType": "poster",
-        "url": "https://..."
-      }
-    ],
-    "folderPath": "/movies/The Matrix (1999)"
-  }
-}
-```
+<!-- File structure -->
 
----
+### Key Interfaces
 
-## Implementation Checklist
+<!-- Interface definitions -->
 
-### Phase 1: Client Setup
-- [ ] Create client package structure
-- [ ] Implement HTTP client with resty
-- [ ] Add API key authentication
-- [ ] Implement rate limiting
+### Dependencies
 
-### Phase 2: API Implementation
-- [ ] Implement core API methods
-- [ ] Add response type definitions
-- [ ] Implement error handling
+<!-- Dependency list -->
 
-### Phase 3: Service Integration
-- [ ] Create service wrapper
-- [ ] Add caching layer
-- [ ] Implement fx module wiring
 
-### Phase 4: Testing
-- [ ] Add unit tests with mocks
-- [ ] Add integration tests
 
----
 
-## Revenge Integration Pattern
 
-### Metadata Flow
-```
-Radarr (Add Movie) → Webhook → Revenge (Process Event)
-                                       ↓
-                               Store in PostgreSQL (movies table)
-                                       ↓
-                               Enrich with TMDb metadata
-                                       ↓
-                               Update search index (Typesense)
-```
+## Configuration
+### Environment Variables
 
-### Client Example
-```go
-type RadarrClient struct {
-    baseURL string
-    apiKey  string
-    client  *http.Client
-}
+<!-- Environment variables -->
 
-func (c *RadarrClient) GetMovie(ctx context.Context, id int) (*Movie, error) {
-    req, _ := http.NewRequestWithContext(ctx, "GET",
-        fmt.Sprintf("%s/api/v3/movie/%d", c.baseURL, id), nil)
-    req.Header.Set("X-Api-Key", c.apiKey)
+### Config Keys
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("radarr request failed: %w", err)
-    }
-    defer resp.Body.Close()
+<!-- Configuration keys -->
 
-    var movie Movie
-    if err := json.NewDecoder(resp.Body).Decode(&movie); err != nil {
-        return nil, fmt.Errorf("decode failed: %w", err)
-    }
 
-    return &movie, nil
-}
-```
 
----
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/servarr](integrations/servarr.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Sonarr Integration](SONARR.md) - TV show management
-- [Lidarr Integration](LIDARR.md) - Music management
-- [Movie Module](../../architecture/01_ARCHITECTURE.md#movie-module) - Revenge movie module design
-- [Arr Integration Pattern](../../patterns/ARR_INTEGRATION.md) - Common patterns for all *arr services
-- [Webhook Handling](../../patterns/WEBHOOK_PATTERNS.md) - Webhook processing patterns
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [Go context](https://pkg.go.dev/context) - Auto-resolved from go-context
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [Radarr API Docs](https://radarr.video/docs/api/) - Auto-resolved from radarr-docs
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Servarr Wiki](https://wiki.servarr.com/) - Auto-resolved from servarr-wiki
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
 
----
-
-## Quality Profile Mapping
-
-| Radarr Profile | Revenge Quality | Max Bitrate | Resolution |
-|----------------|-----------------|-------------|------------|
-| Ultra HD | ultra_hd | 80 Mbps | 2160p (4K) |
-| HD-1080p | hd_1080p | 15 Mbps | 1080p |
-| HD-720p | hd_720p | 8 Mbps | 720p |
-| SD | sd | 3 Mbps | 480p |
-| Any | any | Variable | Any |
-
----
-
-## Notes
-
-- Radarr uses TMDb as primary metadata source - Revenge should too for consistency
-- Radarr v3 API is stable, breaking changes unlikely
-- Self-hosted means no rate limits, but external instances may implement them
-- Quality profiles are customizable - mapping should be configurable
-- Root folders define library organization - respect Radarr's structure

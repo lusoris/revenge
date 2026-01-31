@@ -1,240 +1,163 @@
-# Goodreads Integration
-
-<!-- SOURCES: google-books, openlibrary -->
-
-<!-- DESIGN: integrations/metadata/books, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Book metadata and social reading platform - ratings, reviews, book lists
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [Migration Strategy](#migration-strategy)
-  - [Option 1: OpenLibrary (Recommended)](#option-1-openlibrary-recommended)
-  - [Option 2: Google Books API](#option-2-google-books-api)
-  - [Option 3: Web Scraping (NOT Recommended)](#option-3-web-scraping-not-recommended)
-- [Historical API Details (Archived)](#historical-api-details-archived)
-  - [Base URL (RETIRED)](#base-url-retired)
-  - [Authentication (RETIRED)](#authentication-retired)
-  - [Key Endpoints (RETIRED)](#key-endpoints-retired)
-- [Implementation Checklist](#implementation-checklist)
-  - [Migration to OpenLibrary](#migration-to-openlibrary)
-  - [Web Scraping Fallback (Optional, NOT Recommended)](#web-scraping-fallback-optional-not-recommended)
-  - [Google Books API Fallback (Optional)](#google-books-api-fallback-optional)
-- [Integration Pattern (Historical)](#integration-pattern-historical)
-  - [Book Metadata Workflow (Archived)](#book-metadata-workflow-archived)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [Goodreads](#goodreads)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Service**: Goodreads (Amazon)
-**Type**: Metadata Provider (Books)
-**API Version**: N/A (API retired 2020)
-**Website**: https://www.goodreads.com
-**Alternative**: Web scraping OR OpenLibrary
+
+---
+sources:
+  - name: Google Books API
+    url: https://developers.google.com/books/docs/v1/using
+    note: Auto-resolved from google-books
+  - name: Open Library API
+    url: https://openlibrary.org/developers/api
+    note: Auto-resolved from openlibrary
+design_refs:
+  - title: integrations/metadata/books
+    path: integrations/metadata/books.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Goodreads
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Goodreads
+
+> Book metadata and social reading platform - ratings, reviews, book lists
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Migration strategy documented, alternatives analyzed |
-| Sources | 🟡 | API retired, historical docs archived |
-| Instructions | ✅ | Migration checklist to OpenLibrary |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | 🟡 | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Goodreads** was the primary book metadata provider, but the **API was retired in December 2020**. Alternative approaches required.
 
-**Why Goodreads (historical)**:
-- Comprehensive book database
-- User ratings and reviews
-- Book lists and recommendations
-- Author information
-- Reading challenges
-
-**Current Status**:
-- ❌ **API retired** (December 2020)
-- ✅ **Web scraping** (legal gray area, fragile)
-- ✅ **OpenLibrary** (open alternative, recommended)
-
-**Use Cases**:
-- Book metadata (title, author, ISBN, publication date)
-- User ratings and reviews
-- Book covers
-- Author information
-- Book recommendations
 
 ---
 
-## Developer Resources
 
-**API Status**: RETIRED (December 2020)
-**Official Announcement**: https://www.goodreads.com/api
+## Architecture
 
-**Alternatives**:
-1. **OpenLibrary** (recommended): https://openlibrary.org/developers/api
-2. **Web scraping** (fragile, not recommended)
-3. **Google Books API**: https://developers.google.com/books
+### Integration Structure
 
----
-
-## Migration Strategy
-
-### Option 1: OpenLibrary (Recommended)
-Use **OpenLibrary** as primary book metadata source.
-
-**Advantages**:
-- Free and open API
-- Comprehensive book database (Open Library, Internet Archive)
-- Book covers available
-- No authentication required
-- Stable API
-
-**See**: [OPENLIBRARY.md](OPENLIBRARY.md)
-
-### Option 2: Google Books API
-Use **Google Books API** as fallback.
-
-**Advantages**:
-- Official Google API (stable)
-- Book metadata, covers, previews
-- Free tier (1000 requests/day)
-
-**Disadvantages**:
-- Limited to Google's catalog
-- Requires API key
-
-### Option 3: Web Scraping (NOT Recommended)
-Scrape Goodreads website for metadata.
-
-**Disadvantages**:
-- Legal gray area (ToS violation)
-- Fragile (breaks when HTML changes)
-- No official support
-- Rate limiting required (respect robots.txt)
-- CAPTCHA challenges
-
----
-
-## Historical API Details (Archived)
-
-### Base URL (RETIRED)
 ```
-https://www.goodreads.com/
+internal/integration/goodreads/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Authentication (RETIRED)
-- API Key (registration closed)
-- OAuth 1.0a (deprecated)
+### Data Flow
 
-### Key Endpoints (RETIRED)
-```bash
-# Search books (RETIRED)
-GET /search/index.xml?key={API_KEY}&q={QUERY}
+<!-- Data flow diagram -->
 
-# Get book (RETIRED)
-GET /book/show/{BOOK_ID}.xml?key={API_KEY}
+### Provides
 
-# Get author (RETIRED)
-GET /author/show/{AUTHOR_ID}.xml?key={API_KEY}
-```
+This integration provides:
+<!-- Data provided by integration -->
 
----
 
-## Implementation Checklist
+## Implementation
 
-### Migration to OpenLibrary
-- [ ] **REMOVE Goodreads API client** (API retired)
-- [ ] **Implement OpenLibrary client** (see [OPENLIBRARY.md](OPENLIBRARY.md))
-- [ ] Update book search to use OpenLibrary
-- [ ] Update book metadata fetching to use OpenLibrary
-- [ ] Migrate existing Goodreads IDs to ISBNs (cross-reference)
+### File Structure
 
-### Web Scraping Fallback (Optional, NOT Recommended)
-- [ ] Implement web scraper (BeautifulSoup, Playwright)
-- [ ] Respect robots.txt
-- [ ] Rate limiting (1 req/5s minimum)
-- [ ] User-Agent header
-- [ ] CAPTCHA handling (fail silently)
-- [ ] Graceful degradation (OpenLibrary fallback)
+<!-- File structure -->
 
-### Google Books API Fallback (Optional)
-- [ ] Implement Google Books API client
-- [ ] API Key configuration
-- [ ] Search books by ISBN, title, author
-- [ ] Fetch book metadata, covers
-- [ ] Rate limiting (1000 req/day)
+### Key Interfaces
 
----
+<!-- Interface definitions -->
 
-## Integration Pattern (Historical)
+### Dependencies
 
-### Book Metadata Workflow (Archived)
-```go
-// ARCHIVED: Goodreads API retired
-func (s *BookService) FetchBookMetadata(isbn string) error {
-    // OPTION 1: OpenLibrary (recommended)
-    book := s.openlibraryClient.GetBookByISBN(isbn)
-    if book != nil {
-        s.db.InsertBook(book)
-        return nil
-    }
+<!-- Dependency list -->
 
-    // OPTION 2: Google Books API (fallback)
-    book = s.googlebooksClient.GetBookByISBN(isbn)
-    if book != nil {
-        s.db.InsertBook(book)
-        return nil
-    }
 
-    // OPTION 3: Web scraping (NOT recommended)
-    // book = s.goodreadsScraper.GetBookByISBN(isbn)
 
-    return errors.New("book not found")
-}
-```
 
----
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/books](integrations/metadata/books.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **OpenLibrary Integration**: [OPENLIBRARY.md](OPENLIBRARY.md) (recommended alternative)
-- **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
-- **Hardcover Integration**: [HARDCOVER.md](HARDCOVER.md) (social reading platform)
+### External Sources
+- [Google Books API](https://developers.google.com/books/docs/v1/using) - Auto-resolved from google-books
+- [Open Library API](https://openlibrary.org/developers/api) - Auto-resolved from openlibrary
 
----
-
-## Notes
-
-- **API retired**: December 2020 (Amazon decision)
-- **No new API keys**: Registration closed
-- **Existing API keys**: Still work (for now, may be disabled in future)
-- **Migration required**: Use OpenLibrary OR Google Books API
-- **Web scraping**: Legal gray area, fragile, NOT recommended
-- **OpenLibrary recommended**: Free, open, stable API
-- **Goodreads IDs**: Store in `books.goodreads_id` (historical reference, cross-reference with ISBNs)
-- **User data migration**: Export Goodreads reading lists via CSV (user-initiated)
-- **Alternative platforms**: Hardcover, LibraryThing, StoryGraph (API availability varies)
-- **Amazon ownership**: Goodreads owned by Amazon (2013), API sunset likely strategic decision
-- **Community frustration**: Developers migrated to OpenLibrary, Hardcover, LibraryThing
-- **Future**: Monitor for API resurrection (unlikely), continue with OpenLibrary
-- **Recommendation**: **Use OpenLibrary as primary, Google Books as fallback**

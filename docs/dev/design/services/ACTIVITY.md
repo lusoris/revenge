@@ -1,208 +1,175 @@
-# Activity Service
-
-<!-- SOURCES: fx, ogen, sqlc, sqlc-config -->
-
-<!-- DESIGN: services, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Audit logging and event tracking
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Developer Resources](#developer-resources)
-- [Status](#status)
-- [Overview](#overview)
-- [Activity Types](#activity-types)
-- [Severity Levels](#severity-levels)
-- [Operations](#operations)
-  - [Log Activity](#log-activity)
-  - [Convenience Methods](#convenience-methods)
-  - [Query Activities](#query-activities)
-  - [Cleanup](#cleanup)
-- [Metadata](#metadata)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
-  - [Phase 2: Database](#phase-2-database)
-  - [Phase 3: Service Layer](#phase-3-service-layer)
-  - [Phase 4: API Integration](#phase-4-api-integration)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documents](#related-documents)
+- [Activity Service](#activity-service)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Service Structure](#service-structure)
+    - [Dependencies](#dependencies)
+    - [Provides](#provides)
+    - [Component Diagram](#component-diagram)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Module**: `internal/service/activity`
 
-## Developer Resources
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    note: Auto-resolved from ogen
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+design_refs:
+  - title: services
+    path: services/INDEX.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
 
-> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#backend-services) for service inventory and status.
+# Activity Service
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: service
+
+
+> > Audit logging and event tracking
+
+**Package**: `internal/service/activity`
+**fx Module**: `activity.Module`
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | ✅ |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |---
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-The Activity service provides comprehensive audit logging:
 
-- User actions (login, logout, settings changes)
-- Library events (created, updated, scanned)
-- Content events (played, rated)
-- Security events and API errors
-- Queryable activity history
-
----
-
-## Activity Types
-
-```go
-const (
-    TypeUserLogin       = "user_login"
-    TypeUserLogout      = "user_logout"
-    TypeUserCreated     = "user_created"
-    TypeUserUpdated     = "user_updated"
-    TypeUserDeleted     = "user_deleted"
-    TypePasswordChanged = "password_changed"
-    TypeSessionCreated  = "session_created"
-    TypeSessionExpired  = "session_expired"
-    TypeLibraryCreated  = "library_created"
-    TypeLibraryUpdated  = "library_updated"
-    TypeLibraryDeleted  = "library_deleted"
-    TypeLibraryScanned  = "library_scanned"
-    TypeContentPlayed   = "content_played"
-    TypeContentRated    = "content_rated"
-    TypeSettingsChanged = "settings_changed"
-    TypeAPIError        = "api_error"
-    TypeSecurityEvent   = "security_event"
-)
-```
-
-## Severity Levels
-
-```go
-const (
-    SeverityInfo     = "info"
-    SeverityWarning  = "warning"
-    SeverityError    = "error"
-    SeverityCritical = "critical"
-)
-```
-
----
-
-## Operations
-
-### Log Activity
-
-```go
-type LogParams struct {
-    UserID    *uuid.UUID
-    Type      string
-    Severity  string
-    Message   string
-    Metadata  map[string]any
-    IPAddress netip.Addr
-    UserAgent *string
-}
-
-func (s *Service) Log(ctx context.Context, params LogParams) (*db.ActivityLog, error)
-```
-
-### Convenience Methods
-
-```go
-func (s *Service) LogUserLogin(ctx context.Context, userID uuid.UUID, ip netip.Addr, userAgent *string) error
-func (s *Service) LogUserLogout(ctx context.Context, userID uuid.UUID) error
-func (s *Service) LogSecurityEvent(ctx context.Context, userID *uuid.UUID, message string, metadata map[string]any, ip netip.Addr) error
-func (s *Service) LogAPIError(ctx context.Context, userID *uuid.UUID, message string, metadata map[string]any) error
-```
-
-### Query Activities
-
-```go
-func (s *Service) ListByUser(ctx context.Context, userID uuid.UUID, limit, offset int32) ([]db.ActivityLog, error)
-func (s *Service) ListByType(ctx context.Context, activityType string, limit, offset int32) ([]db.ActivityLog, error)
-func (s *Service) ListBySeverity(ctx context.Context, severity string, limit, offset int32) ([]db.ActivityLog, error)
-func (s *Service) ListRecent(ctx context.Context, limit, offset int32) ([]db.ActivityLog, error)
-```
-
-### Cleanup
-
-```go
-func (s *Service) DeleteOlderThan(ctx context.Context, before time.Time) error
-```
-
----
-
-## Metadata
-
-Activities support arbitrary JSON metadata:
-
-```go
-s.Log(ctx, LogParams{
-    UserID:   &userID,
-    Type:     TypeLibraryScanned,
-    Severity: SeverityInfo,
-    Message:  "Library scan completed",
-    Metadata: map[string]any{
-        "library_id":  libraryID,
-        "files_added": 150,
-        "files_updated": 23,
-        "duration_ms": 4500,
-    },
-})
-```
-
----
-
-## Implementation Checklist
-
-### Phase 1: Core Infrastructure
-- [ ] Create `internal/service/activity/` package structure
-- [ ] Define activity event types in `entity.go`
-- [ ] Create repository interface
-- [ ] Add fx module wiring
-
-### Phase 2: Database
-- [ ] Create migration for `activity_events` table
-- [ ] Add partitioning by date for performance
-- [ ] Add indexes (user_id, event_type, created_at)
-- [ ] Write sqlc queries
-
-### Phase 3: Service Layer
-- [ ] Implement event recording
-- [ ] Implement event querying with filters
-- [ ] Add event aggregation
-- [ ] Implement retention cleanup
-
-### Phase 4: API Integration
-- [ ] Define OpenAPI endpoints
-- [ ] Generate ogen handlers
-- [ ] Add admin-only endpoints
 
 ---
 
 
-## Related Documents
+## Architecture
 
-- [Auth Service](AUTH.md) - Login/logout events
-- [Library Service](LIBRARY.md) - Library events
-- [User Service](USER.md) - User CRUD events
-- [Session Service](SESSION.md) - Session activity tracking
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory
+### Service Structure
+
+```
+internal/service/activity/
+├── module.go              # fx module definition
+├── service.go             # Service implementation
+├── repository.go          # Data access (if needed)
+├── handler.go             # HTTP handlers (if exposed)
+├── middleware.go          # Middleware (if needed)
+├── types.go               # Domain types
+└── service_test.go        # Tests
+```
+
+### Dependencies
+No external service dependencies.
+
+### Provides
+<!-- Service provides -->
+
+### Component Diagram
+
+<!-- Component diagram -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [services](services/INDEX.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
+- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
+- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+

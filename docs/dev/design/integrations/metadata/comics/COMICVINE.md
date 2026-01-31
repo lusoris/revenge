@@ -1,356 +1,176 @@
-# ComicVine API Integration
-
-<!-- SOURCES: comicvine, pgx, postgresql-arrays, postgresql-json, river -->
-
-<!-- DESIGN: integrations/metadata/comics, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Primary comics metadata provider (GameSpot's comprehensive comics database)
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Documentation](#api-documentation)
-  - [Key Features](#key-features)
-  - [Authentication](#authentication)
-- [API Details](#api-details)
-  - [Authentication](#authentication)
-  - [Core Endpoints](#core-endpoints)
-    - [1. Search Issues](#1-search-issues)
-    - [2. Get Issue Details](#2-get-issue-details)
-    - [3. Get Volume (Series) Details](#3-get-volume-series-details)
-    - [4. Get Publisher Details](#4-get-publisher-details)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Integration](#phase-1-core-integration)
-  - [Phase 2: Metadata Enrichment](#phase-2-metadata-enrichment)
-  - [Phase 3: Advanced Features](#phase-3-advanced-features)
-  - [Phase 4: Background Jobs (River)](#phase-4-background-jobs-river)
-- [Integration Pattern](#integration-pattern)
-  - [Metadata Fetch Flow](#metadata-fetch-flow)
-  - [Search Flow](#search-flow)
-  - [Rate Limiting Strategy](#rate-limiting-strategy)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [ComicVine API](#comicvine-api)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Priority**: 🟡 MEDIUM (Phase 7 - Comics Module)
-**Provider**: ComicVine (GameSpot)
+
+---
+sources:
+  - name: ComicVine API
+    url: https://comicvine.gamespot.com/api/documentation
+    note: Auto-resolved from comicvine
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/metadata/comics
+    path: integrations/metadata/comics.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# ComicVine API
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with ComicVine API
+
+> Primary comics metadata provider (GameSpot's comprehensive comics database)
+**API Base URL**: `https://comicvine.gamespot.com/api`
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive REST API endpoints, data mapping, rate limiting |
-| Sources | ✅ | Base URL, documentation, authentication details linked |
-| Instructions | ✅ | Phased implementation checklist with background jobs |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**ComicVine** is the primary metadata source for the Comics module, providing comprehensive data for Western comics (Marvel, DC, Image, etc.), graphic novels, and manga. Owned by GameSpot/Fandom, it offers one of the most complete comics databases available.
 
-**Why ComicVine**:
-- Largest Western comics database (1M+ issues, 100K+ series)
-- Publisher-agnostic (Marvel, DC, Image, Dark Horse, etc.)
-- Comprehensive metadata (writers, artists, colorists, inkers, letterers)
-- Cover images (high-resolution available)
-- Character/team/location/concept relationships
-- Story arcs and crossover events
-- Free API with generous rate limits
-- Used by Mylar3, ComicTagger, and other comics tools
-
-**Alternatives**:
-- **Marvel API**: Official Marvel Comics API (Marvel content only, limited to 3000 req/day)
-- **Grand Comics Database (GCD)**: Open-source database (historical focus, no official API)
-- **AniList**: Manga metadata (Japanese comics, better suited for manga module)
-
-**Use Case**: Primary metadata source for all Western comics and graphic novels.
 
 ---
 
-## Developer Resources
 
-### API Documentation
-- **Base URL**: `https://comicvine.gamespot.com/api/`
-- **Documentation**: https://comicvine.gamespot.com/api/documentation
-- **API Version**: v1 (stable)
-- **Authentication**: API Key (request via GameSpot account)
-- **Rate Limits**: 200 requests per resource per hour (resets every hour)
-- **Response Format**: JSON, XML (JSON recommended)
+## Architecture
 
-### Key Features
-- **Search**: Search for issues, volumes, characters, creators, publishers
-- **Detailed metadata**: Issue details (writers, artists, cover date, page count, description)
-- **Relationships**: Characters appearing in issues, story arcs, crossover events
-- **Cover images**: Multiple sizes (small, medium, super, original)
-- **Publisher data**: Publisher information, imprints
-- **Creator credits**: Writers, pencillers, inkers, colorists, letterers, cover artists
+### Integration Structure
 
-### Authentication
-```http
-GET /api/issues/?api_key=YOUR_API_KEY&format=json
+```
+internal/integration/comicvine_api/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-**API Key**: Required for all requests (obtain from https://comicvine.gamespot.com/api/)
+### Data Flow
 
----
+<!-- Data flow diagram -->
 
-## API Details
+### Provides
 
-### Authentication
-**Method**: API Key in query parameter
-**Header**: None required (User-Agent recommended for identification)
-**Rate Limit**: 200 requests per resource per hour
+This integration provides:
+<!-- Data provided by integration -->
 
-**Example Request**:
-```bash
-curl "https://comicvine.gamespot.com/api/issue/4000-140529/?api_key=YOUR_API_KEY&format=json&field_list=id,name,volume,issue_number,cover_date,image"
-```
 
-### Core Endpoints
+## Implementation
 
-#### 1. Search Issues
-```http
-GET /api/search/?api_key={key}&format=json&query={query}&resources=issue
-```
+### File Structure
 
-**Parameters**:
-- `query`: Search term (e.g., "Amazing Spider-Man")
-- `resources`: `issue` (search issues only)
-- `field_list`: Comma-separated list of fields to return (optional, reduces response size)
-- `limit`: Results per page (max 100, default 10)
-- `offset`: Pagination offset
+<!-- File structure -->
 
-**Response**:
-```json
-{
-  "status_code": 1,
-  "number_of_page_results": 10,
-  "number_of_total_results": 800,
-  "results": [
-    {
-      "id": 140529,
-      "name": "The Night Gwen Stacy Died",
-      "issue_number": "121",
-      "volume": {
-        "id": 2127,
-        "name": "The Amazing Spider-Man"
-      },
-      "cover_date": "1973-06-01",
-      "image": {
-        "super_url": "https://comicvine.gamespot.com/...",
-        "medium_url": "https://comicvine.gamespot.com/..."
-      }
-    }
-  ]
-}
-```
+### Key Interfaces
 
-#### 2. Get Issue Details
-```http
-GET /api/issue/4000-{issue_id}/?api_key={key}&format=json
-```
+<!-- Interface definitions -->
 
-**Response**:
-```json
-{
-  "status_code": 1,
-  "results": {
-    "id": 140529,
-    "name": "The Night Gwen Stacy Died",
-    "issue_number": "121",
-    "volume": {
-      "id": 2127,
-      "name": "The Amazing Spider-Man",
-      "publisher": {
-        "id": 31,
-        "name": "Marvel Comics"
-      }
-    },
-    "cover_date": "1973-06-01",
-    "store_date": null,
-    "description": "...",
-    "person_credits": [
-      {"id": 40439, "name": "Stan Lee", "role": "writer"},
-      {"id": 40440, "name": "Gil Kane", "role": "penciller"},
-      {"id": 40441, "name": "John Romita Sr.", "role": "inker"}
-    ],
-    "character_credits": [
-      {"id": 1443, "name": "Spider-Man"},
-      {"id": 41233, "name": "Green Goblin"}
-    ],
-    "story_arc_credits": [
-      {"id": 55654, "name": "The Death of Gwen Stacy"}
-    ],
-    "image": {
-      "super_url": "https://comicvine.gamespot.com/a/uploads/scale_large/12/124259/8235305-00.jpg",
-      "original_url": "https://comicvine.gamespot.com/a/uploads/original/12/124259/8235305-00.jpg"
-    }
-  }
-}
-```
+### Dependencies
 
-#### 3. Get Volume (Series) Details
-```http
-GET /api/volume/4050-{volume_id}/?api_key={key}&format=json
-```
+<!-- Dependency list -->
 
-**Response**:
-```json
-{
-  "status_code": 1,
-  "results": {
-    "id": 2127,
-    "name": "The Amazing Spider-Man",
-    "start_year": "1963",
-    "publisher": {
-      "id": 31,
-      "name": "Marvel Comics"
-    },
-    "count_of_issues": 801,
-    "description": "...",
-    "image": {
-      "super_url": "https://comicvine.gamespot.com/..."
-    }
-  }
-}
-```
 
-#### 4. Get Publisher Details
-```http
-GET /api/publisher/4010-{publisher_id}/?api_key={key}&format=json
-```
 
----
 
-## Implementation Checklist
 
-### Phase 1: Core Integration
-- [ ] Register for ComicVine API key (https://comicvine.gamespot.com/api/)
-- [ ] Implement API client with rate limiting (200 req/hour per resource)
-- [ ] Implement search functionality (issues, volumes, publishers)
-- [ ] Implement issue metadata fetching (title, number, cover date, description)
-- [ ] Store ComicVine IDs as `external_id` in `comics` table
-- [ ] Implement cover image download and caching
-- [ ] Handle 429 (rate limit exceeded) responses gracefully
+## Configuration
+### Environment Variables
 
-### Phase 2: Metadata Enrichment
-- [ ] Fetch creator credits (writers, artists, colorists, inkers, letterers)
-- [ ] Store creator data in `comic_creators` and `comic_creator_roles` tables
-- [ ] Fetch character appearances (link to characters database)
-- [ ] Fetch story arc information (crossover events)
-- [ ] Implement publisher metadata caching (reduce API calls)
-- [ ] Implement volume (series) metadata caching
+<!-- Environment variables -->
 
-### Phase 3: Advanced Features
-- [ ] Implement batch metadata fetching (queue system for new issues)
-- [ ] Implement automatic metadata refresh (weekly/monthly)
-- [ ] Use `field_list` parameter to reduce API payload size
-- [ ] Implement fallback to Marvel API for Marvel-specific content (optional)
-- [ ] Implement fallback to GCD for historical/public domain comics (optional)
-- [ ] Add ComicVine attribution (required by ToS)
+### Config Keys
 
-### Phase 4: Background Jobs (River)
-- [ ] Job: `FetchComicMetadataArgs` (fetch metadata for single issue)
-- [ ] Job: `RefreshComicsMetadataArgs` (batch refresh for series)
-- [ ] Job: `DownloadComicCoverArgs` (download and cache cover images)
-- [ ] Job: `SyncComicVinePublishersArgs` (sync publisher data)
+<!-- Configuration keys -->
 
----
 
-## Integration Pattern
 
-### Metadata Fetch Flow
-```
-User adds comic to library (CBZ file scanned)
-                ↓
-Extract ComicInfo.xml from CBZ (if present)
-                ↓
-Parse series name, volume, issue number
-                ↓
-Search ComicVine API for matching issue
-                ↓
-Fetch detailed metadata (creators, characters, story arcs)
-                ↓
-Download cover image (if not present in CBZ)
-                ↓
-Store metadata in PostgreSQL (comics table, metadata_json JSONB)
-                ↓
-Link creators (comic_creators, comic_creator_roles)
-```
 
-### Search Flow
-```
-User searches for "Amazing Spider-Man #121"
-                ↓
-Query ComicVine Search API (resources=issue)
-                ↓
-Parse results (match volume + issue number)
-                ↓
-Display results with covers (user selects)
-                ↓
-Fetch full metadata for selected issue
-                ↓
-Optionally: Add to download queue (Mylar3 integration)
-```
+## Testing Strategy
 
-### Rate Limiting Strategy
-```go
-// Rate limiter: 200 requests per hour per resource
-// Use separate buckets for different resources (issues, volumes, publishers)
+### Unit Tests
 
-type ComicVineClient struct {
-    issueRateLimiter    *rate.Limiter  // 200 per hour
-    volumeRateLimiter   *rate.Limiter  // 200 per hour
-    publisherRateLimiter *rate.Limiter // 200 per hour
-}
+<!-- Unit test strategy -->
 
-// Example: 200 requests per hour = ~3.33 requests per minute
-// Use token bucket: refill 1 token every 18 seconds
-limiter := rate.NewLimiter(rate.Every(18*time.Second), 200)
-```
+### Integration Tests
 
----
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/comics](integrations/metadata/comics.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **Comics Module**: `docs/features/COMICS_MODULE.md` (overall comics architecture)
-- **Marvel API Integration**: `docs/integrations/metadata/comics/MARVEL_API.md` (Marvel-specific metadata)
-- **Grand Comics Database**: `docs/integrations/metadata/comics/GRAND_COMICS_DATABASE.md` (historical fallback)
-- **Mylar3 Integration**: `docs/integrations/servarr/MYLAR3.md` (comics download automation - future)
+### External Sources
+- [ComicVine API](https://comicvine.gamespot.com/api/documentation) - Auto-resolved from comicvine
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Notes
-
-- **ComicVine API Key**: Free but requires GameSpot account registration
-- **Rate Limits**: 200 requests per resource per hour (strict enforcement)
-  - Use separate rate limiters for `issues`, `volumes`, `publishers` resources
-  - Cache metadata aggressively to minimize API calls
-- **Attribution Required**: ComicVine ToS requires attribution ("Powered by ComicVine API")
-- **Cover Images**: Use `super_url` (large) or `original_url` (full resolution)
-- **ComicInfo.xml**: Parse from CBZ files first (reduces API calls, instant metadata)
-- **Fallback Strategy**: ComicVine primary → Marvel API (Marvel only) → GCD (historical)
-- **Volume vs Issue**: Volume = Series (e.g., "The Amazing Spider-Man Vol. 1"), Issue = Single comic (#121)
-- **Store Date vs Cover Date**: `store_date` (actual release) often null, use `cover_date` instead
-- **Person Credits**: ComicVine uses `person_credits` array with roles (writer, penciller, inker, colorist, letterer, cover artist, editor)
-- **JSONB Storage**: Store full ComicVine response in `metadata_json` for flexibility (future-proofing)
-- **No Manga**: ComicVine has limited manga coverage, use AniList for Japanese comics
-- **Historical Comics**: GCD better for Golden/Silver Age comics (pre-1980), ComicVine better for modern comics

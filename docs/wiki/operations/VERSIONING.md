@@ -1,3 +1,13 @@
+## Table of Contents
+
+- [Versioning Strategy](#versioning-strategy)
+  - [Contents](#contents)
+  - [How It Works](#how-it-works)
+  - [Features](#features)
+  - [Configuration](#configuration)
+  - [Related Documentation](#related-documentation)
+    - [See Also](#see-also)
+
 
 
 ---

@@ -1,102 +1,140 @@
-# Email System
+## Table of Contents
 
-<!-- SOURCES: go-mail-docs -->
+- [Email System](#email-system)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
-
-> Transactional email for notifications and account management
-
-**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
+sources:
+  - name: go-mail GitHub README
+    url: https://github.com/wneessen/go-mail
+    note: Auto-resolved from go-mail-docs
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Email System
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: technical
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | Scaffold |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Design | 🟡 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: 🟡 In Progress
 
-Revenge uses email for:
-- Password reset
-- Account verification
-- Admin notifications
-- Scheduled reports
-- Invitation links
+
 
 ---
 
-## Email Types
 
-| Type | Trigger | Template |
-|------|---------|----------|
-| `password-reset` | User requests reset | Reset link, expiry |
-| `verify-email` | New registration | Verification link |
-| `invite` | Admin creates invite | Invite link, expiry |
-| `weekly-report` | Scheduled | Activity summary |
-| `admin-alert` | System event | Alert details |
+## Architecture
 
----
+<!-- Architecture diagram placeholder -->
 
-## Configuration
+### Components
 
-```yaml
-email:
-  enabled: true
-  from: "Revenge <noreply@example.com>"
-  smtp:
-    host: smtp.example.com
-    port: 587
-    username: ${SMTP_USER}
-    password: ${SMTP_PASS}
-    tls: starttls
-```
+<!-- Component description -->
 
----
 
 ## Implementation
 
-Using `github.com/wneessen/go-mail`:
+### File Structure
 
-```go
-func (s *EmailService) SendPasswordReset(to, token string) error {
-    m := mail.NewMsg()
-    m.From(s.config.From)
-    m.To(to)
-    m.Subject("Reset Your Password")
-    m.SetBodyString(mail.TypeTextHTML, s.renderTemplate("password-reset", map[string]any{
-        "Token":  token,
-        "Expiry": "1 hour",
-    }))
+<!-- File structure -->
 
-    return s.client.DialAndSend(m)
-}
-```
+### Key Interfaces
 
----
+<!-- Interface definitions -->
 
-## Templates
+### Dependencies
 
-HTML email templates with inline CSS for compatibility:
-- `templates/email/password-reset.html`
-- `templates/email/verify-email.html`
-- `templates/email/invite.html`
-- `templates/email/weekly-report.html`
+<!-- Dependency list -->
 
----
 
-## Related
 
-- [Notification Service](../services/NOTIFICATION.md)
-- [User Service](../services/USER.md)
-- [Auth Service](../services/AUTH.md)
-- [go-mail Source](../../sources/tooling/go-mail.md)
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [technical](technical.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [go-mail GitHub README](https://github.com/wneessen/go-mail) - Auto-resolved from go-mail-docs
+

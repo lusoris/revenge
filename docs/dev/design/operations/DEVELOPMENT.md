@@ -1,301 +1,184 @@
-## Development Quick Start
-
-### Prerequisites
-
-- Go 1.25+
-- Docker & Docker Compose (optional)
-- Git
-
-### Setup (Windows PowerShell)
-
-```powershell
-# Clone repository
-
-<!-- SOURCES: conventional-commits, dragonfly, koanf, ogen, pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config, typesense, typesense-go -->
-
-<!-- DESIGN: operations, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Development Quick Start](#development-quick-start)
-  - [Prerequisites](#prerequisites)
-  - [Setup (Windows PowerShell)](#setup-windows-powershell)
-  - [Setup (Linux/macOS)](#setup-linuxmacos)
-  - [Available Commands](#available-commands)
-    - [Using Make (recommended)](#using-make-recommended)
-    - [Using Scripts](#using-scripts)
-  - [First Run](#first-run)
-  - [Development with Docker](#development-with-docker)
-  - [Project Structure](#project-structure)
+- [Clone repository](#clone-repository)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
   - [Configuration](#configuration)
-  - [Testing](#testing)
-  - [Debugging](#debugging)
-  - [Code Quality](#code-quality)
-  - [Git Workflow](#git-workflow)
-  - [Commit Message Format](#commit-message-format)
-  - [Useful Resources](#useful-resources)
-  - [Troubleshooting](#troubleshooting)
-  - [Next Steps](#next-steps)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Conventional Commits
+    url: https://www.conventionalcommits.org/
+    note: Auto-resolved from conventional-commits
+  - name: Dragonfly Documentation
+    url: https://www.dragonflydb.io/docs
+    note: Auto-resolved from dragonfly
+  - name: koanf
+    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    note: Auto-resolved from koanf
+  - name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    note: Auto-resolved from ogen
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: operations
+    path: operations/INDEX.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Clone repository
+
+
+**Created**: 2026-01-31
+**Status**: 🔴 Not Started
+**Category**: operations
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | 🔴 |
-| Sources | 🔴 |
-| Instructions | 🔴 |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |
----
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-git clone https://github.com/lusoris/revenge.git
-cd revenge
+**Overall**: 🔴 Not Started
 
-# Run setup script
-.\scripts\dev.ps1 setup
-
-# Start development server
-.\scripts\dev.ps1 dev
-```
-
-### Setup (Linux/macOS)
-
-```bash
-# Clone repository
-git clone https://github.com/lusoris/revenge.git
-cd revenge
-
-# Make scripts executable
-chmod +x scripts/*.sh
-
-# Run setup script
-./scripts/dev.sh setup
-
-# Start development server
-./scripts/dev.sh dev
-```
-
-### Available Commands
-
-#### Using Make (recommended)
-
-```bash
-make help              # Show all available commands
-make deps              # Download dependencies
-make build             # Build binary
-make run               # Run application
-make test              # Run tests
-make lint              # Run linters
-make docker-build      # Build Docker image
-make docker-compose-up # Start with Docker Compose
-```
-
-#### Using Scripts
-
-**Windows:**
-```powershell
-.\scripts\dev.ps1 check         # Check requirements
-.\scripts\dev.ps1 install-tools # Install dev tools
-.\scripts\dev.ps1 test          # Run tests
-.\scripts\dev.ps1 lint          # Run linter
-.\scripts\dev.ps1 build         # Build binary
-.\scripts\dev.ps1 dev           # Hot reload dev server
-```
-
-**Linux/macOS:**
-```bash
-./scripts/dev.sh check         # Check requirements
-./scripts/dev.sh install-tools # Install dev tools
-./scripts/dev.sh test          # Run tests
-./scripts/dev.sh lint          # Run linter
-./scripts/dev.sh build         # Build binary
-./scripts/dev.sh dev           # Hot reload dev server
-```
-
-### First Run
-
-```bash
-# Download dependencies
-go mod download
-
-# Build and run
-go run ./cmd/revenge
-```
-
-The server will start at http://localhost:8096
-
-Test endpoints:
-- http://localhost:8096/health/live
-- http://localhost:8096/health/ready
-- http://localhost:8096/version
-
-### Development with Docker
-
-```bash
-# Development environment (PostgreSQL + Dragonfly + Typesense)
-docker-compose -f docker-compose.dev.yml up
-
-# Production-like environment
-docker-compose up
-```
-
-### Project Structure
-
-```
-revenge/
-├── api/               # OpenAPI specs, generated code (ogen)
-├── cmd/               # Application entry points
-├── internal/          # Private application code
-│   ├── content/       # Content modules (movie, tvshow, music, qar)
-│   └── infra/         # Infrastructure (database, cache, search)
-│       └── database/
-│           ├── migrations/  # Database migrations (golang-migrate)
-│           └── queries/     # sqlc queries
-├── pkg/               # Public libraries (resilience, etc.)
-├── configs/           # Configuration files (koanf)
-├── tests/             # Integration tests
-├── testdata/          # Test fixtures
-├── scripts/           # Helper scripts
-└── docs/              # Documentation
-```
-
-### Configuration
-
-Configuration can be set via:
-
-1. **Config file** (`configs/config.yaml`)
-2. **Environment variables** (prefixed with `REVENGE_`)
-3. **Command-line flags** (coming soon)
-
-Example environment variables:
-```bash
-export REVENGE_LOG_LEVEL=debug
-export REVENGE_DB_TYPE=postgres
-export REVENGE_DB_HOST=localhost
-```
-
-### Testing
-
-```bash
-# Run all tests
-go test ./...
-
-# Run tests with coverage
-go test -coverprofile=coverage.out ./...
-go tool cover -html=coverage.out
-
-# Run specific test
-go test -v ./internal/domain/...
-
-# Run with race detection
-go test -race ./...
-```
-
-### Debugging
-
-VS Code launch configurations are included:
-
-1. Press `F5` to start debugging
-2. Set breakpoints in your code
-3. Use the Debug Console
-
-Or use Delve directly:
-```bash
-dlv debug ./cmd/revenge
-```
-
-### Code Quality
-
-```bash
-# Format code
-go fmt ./...
-
-# Run linter
-golangci-lint run
-
-# Fix linting issues
-golangci-lint run --fix
-
-# Vet code
-go vet ./...
-```
-
-### Git Workflow
-
-1. Create feature branch: `git checkout -b feature/my-feature`
-2. Make changes and commit: `git commit -m "feat: add my feature"`
-3. Push branch: `git push origin feature/my-feature`
-4. Open Pull Request on GitHub
-
-### Commit Message Format
-
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat: add user authentication
-fix: resolve database connection issue
-docs: update API documentation
-test: add unit tests for media service
-chore: update dependencies
-```
-
-### Useful Resources
-
-- [Architecture Documentation](../architecture/01_ARCHITECTURE.md)
-- [Setup Guide](SETUP.md)
-- [Contributing Guidelines](../../../../CONTRIBUTING.md)
-
-### Troubleshooting
-
-**Port 8096 already in use:**
-```bash
-# Windows
-netstat -ano | findstr :8096
-taskkill /PID <PID> /F
-
-# Linux/macOS
-lsof -ti:8096 | xargs kill -9
-```
-
-**Database connection fails (PostgreSQL):**
-```bash
-# Check PostgreSQL is running
-docker-compose -f docker-compose.dev.yml ps
-
-# Check connection
-PGPASSWORD=password psql -h localhost -U revenge -d revenge -c "SELECT 1"
-
-# Restart PostgreSQL
-docker-compose -f docker-compose.dev.yml restart postgres
-```
-
-**Module download fails:**
-```bash
-# Clean module cache
-go clean -modcache
-go mod download
-```
-
-### Next Steps
-
-1. Review the [TODO.md](../../../../TODO.md) for current sprint tasks
-3. Pick a task and create a feature branch
-4. Implement, test, and submit a Pull Request
 
 
 ---
+
+
+## Architecture
+
+<!-- Architecture diagram placeholder -->
+
+### Components
+
+<!-- Component description -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [operations](operations/INDEX.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Conventional Commits](https://www.conventionalcommits.org/) - Auto-resolved from conventional-commits
+- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
+- [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) - Auto-resolved from koanf
+- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
+- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
 

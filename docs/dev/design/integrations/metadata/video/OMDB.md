@@ -1,280 +1,175 @@
-# OMDb (Open Movie Database) Integration
-
-<!-- SOURCES: omdb, pgx, postgresql-arrays, postgresql-json, river -->
-
-<!-- DESIGN: integrations/metadata/video, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Fallback metadata provider + IMDb ratings
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Query Parameters](#query-parameters)
-  - [Key Endpoints](#key-endpoints)
-- [Response Example](#response-example)
-- [Implementation Checklist](#implementation-checklist)
-- [Revenge Integration Pattern](#revenge-integration-pattern)
-  - [Go Client Example](#go-client-example)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Rating Sources](#rating-sources)
-- [Notes](#notes)
+- [OMDb (Open Movie Database)](#omdb-open-movie-database)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: OMDb API
+    url: https://www.omdbapi.com/
+    note: Auto-resolved from omdb
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/metadata/video
+    path: integrations/metadata/video.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# OMDb (Open Movie Database)
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with OMDb (Open Movie Database)
+
+> Fallback metadata provider + IMDb ratings
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive REST API spec, query parameters, response examples |
-| Sources | ✅ | API docs linked |
-| Instructions | ✅ | Detailed implementation checklist with ratings aggregation |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-OMDb is a lightweight metadata provider for movies and TV shows, primarily used for:
-- **IMDb ratings**: Authoritative ratings from IMDb
-- **Fallback metadata**: When TMDb/TheTVDB data is incomplete
-- **Basic movie info**: Title, year, director, plot
-- **Poster fallback**: Alternative poster source
 
-**Integration Points**:
-- **API client**: Query by IMDb ID or title
-- **IMDb ratings**: Primary source for IMDb ratings (not available via TMDb)
-- **Fallback metadata**: Use when TMDb API fails or returns incomplete data
 
 ---
 
-## Developer Resources
 
-- 📚 **API Docs**: https://www.omdbapi.com/
-- 🔗 **API**: http://www.omdbapi.com/
+## Architecture
 
----
-
-## API Details
-
-**Base URL**: `http://www.omdbapi.com/`
-**Authentication**: API Key query parameter `?apikey={key}`
-**Rate Limits**: 1,000 requests/day (free tier)
-**Free Tier**: Available (requires API key registration)
-
-### Query Parameters
-
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `i` | IMDb ID | `i=tt0133093` |
-| `t` | Movie/series title | `t=The Matrix` |
-| `y` | Year of release | `y=1999` |
-| `type` | Type (movie, series, episode) | `type=movie` |
-| `plot` | Plot length (short, full) | `plot=full` |
-| `apikey` | API key | `apikey=your-key` |
-
-### Key Endpoints
-
-| Endpoint | Purpose |
-|----------|---------|
-| `/?i={imdb_id}` | Get movie/series by IMDb ID |
-| `/?t={title}&y={year}` | Get movie/series by title & year |
-| `/?s={search}` | Search movies/series |
-
----
-
-## Response Example
-
-```json
-{
-  "Title": "The Matrix",
-  "Year": "1999",
-  "Rated": "R",
-  "Released": "31 Mar 1999",
-  "Runtime": "136 min",
-  "Genre": "Action, Sci-Fi",
-  "Director": "Lana Wachowski, Lilly Wachowski",
-  "Writer": "Lilly Wachowski, Lana Wachowski",
-  "Actors": "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss",
-  "Plot": "When a beautiful stranger leads computer hacker Neo to a forbidding underworld...",
-  "Language": "English",
-  "Country": "United States, Australia",
-  "Awards": "Won 4 Oscars. 42 wins & 51 nominations total",
-  "Poster": "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  "Ratings": [
-    {
-      "Source": "Internet Movie Database",
-      "Value": "8.7/10"
-    },
-    {
-      "Source": "Rotten Tomatoes",
-      "Value": "83%"
-    },
-    {
-      "Source": "Metacritic",
-      "Value": "73/100"
-    }
-  ],
-  "Metascore": "73",
-  "imdbRating": "8.7",
-  "imdbVotes": "1,958,348",
-  "imdbID": "tt0133093",
-  "Type": "movie",
-  "DVD": "21 Sep 1999",
-  "BoxOffice": "$172,076,928",
-  "Production": "N/A",
-  "Website": "N/A",
-  "Response": "True"
-}
-```
-
----
-
-## Implementation Checklist
-
-- [ ] **API Client** (`internal/service/metadata/provider_omdb.go`)
-  - [ ] Query by IMDb ID
-  - [ ] Query by title + year
-  - [ ] Search functionality
-  - [ ] Rate limiting (1,000 req/day)
-  - [ ] Error handling & retries
-
-- [ ] **IMDb Ratings**
-  - [ ] Extract `imdbRating` field
-  - [ ] Extract `imdbVotes` field
-  - [ ] Store in Revenge `movies` table (`imdb_rating`, `imdb_votes`)
-  - [ ] Display IMDb rating badge in UI
-
-- [ ] **Fallback Metadata**
-  - [ ] Use when TMDb API fails
-  - [ ] Use for missing fields (director, plot, etc.)
-  - [ ] Poster fallback (if TMDb poster unavailable)
-
-- [ ] **Ratings Aggregation**
-  - [ ] IMDb rating (primary)
-  - [ ] Rotten Tomatoes rating (secondary)
-  - [ ] Metacritic score (secondary)
-
----
-
-## Revenge Integration Pattern
+### Integration Structure
 
 ```
-Fetch movie metadata from TMDb
-           ↓
-TMDb returns metadata (without IMDb rating)
-           ↓
-Query OMDb by IMDb ID for rating
-           ↓
-OMDb returns IMDb rating (8.7/10)
-           ↓
-Store IMDb rating in PostgreSQL (movies.imdb_rating)
-           ↓
-Display IMDb rating in UI
+internal/integration/omdb_open_movie_database/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Go Client Example
+### Data Flow
 
-```go
-type OMDbClient struct {
-    baseURL string
-    apiKey  string
-    client  *http.Client
-    limiter *rate.Limiter  // 1,000 req/day
-}
+<!-- Data flow diagram -->
 
-func (c *OMDbClient) GetByIMDbID(ctx context.Context, imdbID string) (*Movie, error) {
-    c.limiter.Wait(ctx)  // Rate limiting
+### Provides
 
-    url := fmt.Sprintf("%s?i=%s&apikey=%s&plot=full", c.baseURL, imdbID, c.apiKey)
-    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+This integration provides:
+<!-- Data provided by integration -->
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get movie: %w", err)
-    }
-    defer resp.Body.Close()
 
-    var movie Movie
-    json.NewDecoder(resp.Body).Decode(&movie)
+## Implementation
 
-    if movie.Response == "False" {
-        return nil, fmt.Errorf("movie not found: %s", movie.Error)
-    }
+### File Structure
 
-    return &movie, nil
-}
+<!-- File structure -->
 
-func (c *OMDbClient) GetByTitle(ctx context.Context, title string, year int) (*Movie, error) {
-    c.limiter.Wait(ctx)
+### Key Interfaces
 
-    url := fmt.Sprintf("%s?t=%s&y=%d&apikey=%s&plot=full",
-        c.baseURL, url.QueryEscape(title), year, c.apiKey)
-    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+<!-- Interface definitions -->
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get movie: %w", err)
-    }
-    defer resp.Body.Close()
+### Dependencies
 
-    var movie Movie
-    json.NewDecoder(resp.Body).Decode(&movie)
-    return &movie, nil
-}
-```
+<!-- Dependency list -->
 
----
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/video](integrations/metadata/video.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Movie Module](../../features/video/MOVIE_MODULE.md)
-- [TMDb Integration](TMDB.md) - Primary movie metadata source
-- [Metadata Enrichment Pattern](../../patterns/METADATA_ENRICHMENT.md)
+### External Sources
+- [OMDb API](https://www.omdbapi.com/) - Auto-resolved from omdb
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Rating Sources
-
-OMDb aggregates ratings from multiple sources:
-
-| Source | Field | Format |
-|--------|-------|--------|
-| IMDb | `imdbRating` | `8.7/10` |
-| Rotten Tomatoes | `Ratings[1].Value` | `83%` |
-| Metacritic | `Metascore` | `73/100` |
-
-**Recommended**: Display IMDb rating prominently (most widely recognized).
-
----
-
-## Notes
-
-- **OMDb is lightweight** (simpler API than TMDb/TheTVDB)
-- **IMDb ratings are authoritative** (OMDb fetches from IMDb)
-- **Rate limit**: 1,000 requests/day (free tier) - use strategically for IMDb ratings only
-- **Paid tiers available**: Higher rate limits (http://www.omdbapi.com/apikey.aspx)
-- **Poster quality**: Lower resolution than TMDb (use TMDb posters when available)
-- **Plot field**: Use `plot=full` for complete plot summary
-- **Response validation**: Check `Response` field (`"True"` = success, `"False"` = error)
-- **Error handling**: OMDb returns `{"Response":"False","Error":"Movie not found!"}` on error
-- **No authentication complexity**: Simple API key (no JWT, no OAuth)
-- **Use case**: Primary use = IMDb ratings, fallback metadata when TMDb incomplete
-- **Rotten Tomatoes**: OMDb provides Rotten Tomatoes scores (not available via TMDb)
-- **Box office**: OMDb provides box office revenue (useful metric)
-- **Awards**: OMDb provides Oscar/award info (not available via TMDb)

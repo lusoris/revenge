@@ -1,335 +1,166 @@
-# TVTropes Integration
+## Table of Contents
 
-<!-- SOURCES: dragonfly, go-io, river -->
+- [TVTropes](#tvtropes)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: integrations/wiki, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
+
+---
+sources:
+  - name: Dragonfly Documentation
+    url: https://www.dragonflydb.io/docs
+    note: Auto-resolved from dragonfly
+  - name: Go io
+    url: https://pkg.go.dev/io
+    note: Auto-resolved from go-io
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/wiki
+    path: integrations/wiki.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# TVTropes
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with TVTropes
 
 > Trope analysis and storytelling patterns
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Documentation](#api-documentation)
-  - [Authentication](#authentication)
-  - [Data Coverage](#data-coverage)
-  - [Go Scraping Library](#go-scraping-library)
-- [Integration Approach](#integration-approach)
-  - [Web Scraping Strategy](#web-scraping-strategy)
-    - [Movie/TV Show Page Structure](#movietv-show-page-structure)
-    - [Trope Page Structure](#trope-page-structure)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Web Scraping (Low Priority)](#phase-1-web-scraping-low-priority)
-  - [Phase 2: Content Parsing](#phase-2-content-parsing)
-  - [Phase 3: Background Jobs (River) - Low Priority](#phase-3-background-jobs-river---low-priority)
-- [Integration Pattern](#integration-pattern)
-  - [Trope Scraping Flow](#trope-scraping-flow)
-  - [URL Mapping](#url-mapping)
-  - [Rate Limiting Strategy](#rate-limiting-strategy)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
-  - [No Official API (Web Scraping)](#no-official-api-web-scraping)
-  - [User-Agent Requirement](#user-agent-requirement)
-  - [Rate Limits (Conservative)](#rate-limits-conservative)
-  - [Content Licensing](#content-licensing)
-  - [URL Normalization](#url-normalization)
-  - [HTML Parsing Challenges](#html-parsing-challenges)
-  - [JSONB Storage](#jsonb-storage)
-  - [Caching Strategy](#caching-strategy)
-  - [Use Case: Niche Audience](#use-case-niche-audience)
-  - [Trope Display UI](#trope-display-ui)
-  - [Scraping Ethics](#scraping-ethics)
-  - [robots.txt Compliance](#robotstxt-compliance)
-  - [Maintenance Burden](#maintenance-burden)
-  - [Fallback Strategy](#fallback-strategy)
-
-<!-- TOC-END -->
-
-**Service**: TVTropes (https://tvtropes.org)
-**API**: None (web scraping required)
-**Category**: Wiki / Trope Analysis
-**Priority**: 🟡 LOW (Niche content for enthusiasts)
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive HTML structures, URL mapping, JSONB storage |
-| Sources | ✅ | Developer resources with scraping strategy |
-| Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**TVTropes** is a wiki dedicated to cataloging storytelling tropes, patterns, and conventions across all media (movies, TV, books, games, etc.). It analyzes narrative devices, character archetypes, plot structures, and cultural references.
 
-**Key Features**:
-- **Trope catalog**: 30,000+ documented tropes (narrative patterns)
-- **Analysis**: Detailed analysis of storytelling conventions
-- **Cross-media**: Covers movies, TV, books, games, anime, comics
-- **Community-driven**: Fan-curated content
-- **No official API**: Requires web scraping
-
-**Use Cases**:
-- Trope analysis for movies/TV shows
-- Storytelling pattern recognition
-- Character archetype identification
-- Cultural references and allusions
-- Fan engagement (niche audience)
-
-**Example Tropes**:
-- "The Hero's Journey" - Classic narrative structure
-- "Chekhov's Gun" - Foreshadowing device
-- "MacGuffin" - Plot device object
-- "Red Herring" - Misleading clue
-- "Deus Ex Machina" - Contrived plot resolution
 
 ---
 
-## Developer Resources
 
-### API Documentation
-- **API**: NONE (no official API)
-- **Web Scraping**: Required (parse HTML)
-- **Base URL**: https://tvtropes.org/pmwiki/pmwiki.php/Main/{TropeName}
-- **Rate Limits**: Undefined (use conservative scraping ~1 req/sec)
+## Architecture
 
-### Authentication
-- **Method**: None (public website)
-- **User-Agent**: REQUIRED (`User-Agent: Revenge/1.0 (contact@example.com)`)
-- **Rate Limits**: Conservative 1 req/sec (avoid overwhelming server)
+### Integration Structure
 
-### Data Coverage
-- **Tropes**: 30,000+ documented tropes
-- **Works**: Hundreds of thousands of analyzed works
-- **Languages**: Primarily English
-- **Updates**: Real-time (community-edited)
-
-### Go Scraping Library
-- **Recommended**: `github.com/PuerkitoBio/goquery` (jQuery-like HTML parsing)
-- **Alternative**: `github.com/gocolly/colly` (web scraping framework)
-
----
-
-## Integration Approach
-
-### Web Scraping Strategy
-
-**⚠️ CRITICAL: No Official API - Web Scraping Required**
-
-#### Movie/TV Show Page Structure
 ```
-URL: https://tvtropes.org/pmwiki/pmwiki.php/Film/TheMatrix
-
-HTML Structure:
-<div id="main-article">
-  <h1>The Matrix</h1>
-  <p>The Matrix is a 1999 science fiction action film...</p>
-
-  <h2>Tropes</h2>
-  <ul>
-    <li>
-      <a href="/pmwiki/pmwiki.php/Main/TheHerosJourney">The Hero's Journey</a>
-      - Neo follows the classic monomyth structure...
-    </li>
-    <li>
-      <a href="/pmwiki/pmwiki.php/Main/ChekhovsGun">Chekhov's Gun</a>
-      - The red pill introduced early, becomes crucial later...
-    </li>
-  </ul>
-</div>
+internal/integration/tvtropes/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-#### Trope Page Structure
-```
-URL: https://tvtropes.org/pmwiki/pmwiki.php/Main/TheHerosJourney
+### Data Flow
 
-HTML Structure:
-<div id="main-article">
-  <h1>The Hero's Journey</h1>
-  <p>Also known as the Monomyth, this narrative pattern...</p>
+<!-- Data flow diagram -->
 
-  <h2>Examples</h2>
-  <h3>Film</h3>
-  <ul>
-    <li><i>The Matrix</i>: Neo's journey from ordinary hacker to The One...</li>
-    <li><i>Star Wars</i>: Luke Skywalker's transformation...</li>
-  </ul>
-</div>
-```
+### Provides
 
----
+This integration provides:
+<!-- Data provided by integration -->
 
-## Implementation Checklist
 
-### Phase 1: Web Scraping (Low Priority)
-- [ ] HTML scraping setup (`goquery` OR `colly`)
-- [ ] User-Agent configuration (REQUIRED)
-- [ ] URL pattern mapping (Film/TheMatrix, Series/BreakingBad, etc.)
-- [ ] Trope list extraction (parse HTML `<ul>` lists)
-- [ ] Trope description extraction
-- [ ] JSONB storage (`metadata_json.tvtropes_data`)
+## Implementation
 
-### Phase 2: Content Parsing
-- [ ] Parse trope names (extract from links)
-- [ ] Parse trope descriptions (extract text)
-- [ ] Category detection (Film, Series, Western Animation, Anime, etc.)
-- [ ] Related tropes (cross-references)
+### File Structure
 
-### Phase 3: Background Jobs (River) - Low Priority
-- [ ] **Job**: `wiki.tvtropes.scrape_tropes` (scrape trope list)
-- [ ] **Job**: `wiki.tvtropes.refresh` (periodic refresh)
-- [ ] Rate limiting (conservative 1 req/sec, avoid server overload)
-- [ ] Retry logic (exponential backoff, respect 429/503 errors)
+<!-- File structure -->
 
----
+### Key Interfaces
 
-## Integration Pattern
+<!-- Interface definitions -->
 
-### Trope Scraping Flow
-```
-User views movie/TV show page (e.g., "The Matrix")
-        ↓
-Check if TVTropes data exists in cache
-        ↓
-        NO
-        ↓
-Construct TVTropes URL (https://tvtropes.org/pmwiki/pmwiki.php/Film/TheMatrix)
-        ↓
-Scrape HTML page (goquery)
-        ↓
-Parse trope list:
-  - Extract trope names (from <a> links)
-  - Extract trope descriptions (from <li> text)
-        ↓
-Store in metadata_json.tvtropes_data
-        ↓
-Display in UI (collapsible "TVTropes" section)
-        ↓
-User clicks trope? → Navigate to trope detail page (future feature)
-```
+### Dependencies
 
-### URL Mapping
-```
-Movies: /pmwiki/pmwiki.php/Film/{Title}
-TV Shows: /pmwiki/pmwiki.php/Series/{Title}
-Anime: /pmwiki/pmwiki.php/Anime/{Title}
-Western Animation: /pmwiki/pmwiki.php/WesternAnimation/{Title}
-```
+<!-- Dependency list -->
 
-### Rate Limiting Strategy
-```
-TVTropes scraping: 1 req/sec (very conservative)
-- Avoid overwhelming server
-- Cache scraped data for 30 days (reduce scraping frequency)
-- Background jobs: Use River queue (low priority)
-- Respect robots.txt (check if scraping allowed)
-```
 
----
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/wiki](integrations/wiki.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [WIKIPEDIA.md](./WIKIPEDIA.md) - General encyclopedia
-- [FANDOM.md](./FANDOM.md) - Fan wikis
-- [Wiki System](../../features/shared/WIKI_SYSTEM.md) - Built-in wiki system
+### External Sources
+- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
+- [Go io](https://pkg.go.dev/io) - Auto-resolved from go-io
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Notes
-
-### No Official API (Web Scraping)
-- **TVTropes has NO API**: All data retrieval requires web scraping
-- **Scraping risks**: HTML structure changes can break scraper
-- **Maintenance**: Regular scraper updates required
-- **Priority**: LOW (implement only if time permits)
-
-### User-Agent Requirement
-- **MUST set User-Agent**: Web scraping requires proper User-Agent
-- **Format**: `Revenge/1.0 (https://github.com/lusoris/revenge; contact@example.com)`
-- **Politeness**: Identify as scraper to avoid being blocked
-
-### Rate Limits (Conservative)
-- **No official limit**: TVTropes doesn't publish rate limits
-- **Conservative approach**: 1 req/sec (very conservative, respect server)
-- **Caching**: Cache scraped data for 30+ days (reduce scraping frequency)
-- **robots.txt**: Check `https://tvtropes.org/robots.txt` (respect directives)
-
-### Content Licensing
-- **License**: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
-- **Attribution**: MUST attribute TVTropes in UI ("Tropes from TVTropes.org")
-- **Non-commercial**: Revenge is FOSS (non-commercial OK)
-- **Link**: Include TVTropes page URL
-
-### URL Normalization
-- **Title normalization**: TVTropes uses CamelCase (e.g., "TheMatrix", not "The Matrix")
-- **Spaces removed**: Remove spaces from titles (e.g., "Breaking Bad" → "BreakingBad")
-- **Special characters**: Handle special characters (e.g., ":" → empty)
-
-### HTML Parsing Challenges
-- **Dynamic structure**: HTML structure can change without notice
-- **Inconsistent formatting**: Different pages have different structures
-- **Maintenance burden**: Scraper requires regular maintenance
-- **Fallback**: If scraping fails, skip TVTropes data (non-critical)
-
-### JSONB Storage
-- Store TVTropes data in `metadata_json.tvtropes_data`
-- Fields:
-  - `url`: TVTropes page URL
-  - `tropes`: Array of trope objects [{name, description, url}]
-  - `last_scraped`: Timestamp
-  - `scraper_version`: Scraper version (for maintenance tracking)
-
-### Caching Strategy
-- **Cache duration**: 30+ days (TVTropes content changes infrequently)
-- **Invalidation**: Manual refresh OR periodic background job
-- **Storage**: Store in `metadata_json` (JSONB) + Dragonfly cache
-
-### Use Case: Niche Audience
-- **Target audience**: Enthusiasts, film students, narrative analysis fans
-- **Priority**: LOW (most users won't use TVTropes data)
-- **Implementation**: Low priority (implement after core features complete)
-
-### Trope Display UI
-- **Collapsible section**: "Tropes (TVTropes)" in movie/TV show page
-- **List format**: Display trope names with descriptions
-- **Links**: Link to TVTropes pages (external links)
-- **Spoiler warning**: TVTropes often contains spoilers (display warning)
-
-### Scraping Ethics
-- **Respect server**: Use conservative rate limiting (1 req/sec)
-- **Cache aggressively**: Reduce scraping frequency (30+ day cache)
-- **User-Agent**: Identify as scraper (proper User-Agent)
-- **robots.txt**: Respect robots.txt directives
-- **Fallback**: If scraping fails, degrade gracefully (skip TVTropes data)
-
-### robots.txt Compliance
-- **Check robots.txt**: `https://tvtropes.org/robots.txt`
-- **Respect directives**: Follow robots.txt rules (User-agent, Disallow, Crawl-delay)
-- **Legal**: robots.txt is not legally binding, but ethical to respect
-
-### Maintenance Burden
-- **High maintenance**: Web scraping requires ongoing maintenance
-- **HTML changes**: TVTropes can change HTML structure anytime
-- **Breaking changes**: Scraper can break without notice
-- **Monitoring**: Implement scraper health checks (detect failures)
-
-### Fallback Strategy
-- **Order**: TMDb/TheTVDB (primary) → FANDOM (franchise-specific) → Wikipedia (general) → TVTropes (analysis, LOW priority)
-- **Optional**: TVTropes is entirely optional (non-critical feature)

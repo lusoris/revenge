@@ -1,214 +1,191 @@
-# Session Service
-
-<!-- SOURCES: fx, ogen, pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config -->
-
-<!-- DESIGN: services, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Session token management and device tracking
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Developer Resources](#developer-resources)
-- [Status](#status)
-- [Overview](#overview)
-- [Configuration](#configuration)
-- [Operations](#operations)
-  - [Create Session](#create-session)
-  - [Validate Token](#validate-token)
-  - [Deactivate Sessions](#deactivate-sessions)
-  - [Update Activity](#update-activity)
-- [Token Security](#token-security)
-- [Errors](#errors)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
-  - [Phase 2: Database](#phase-2-database)
-  - [Phase 3: Service Layer](#phase-3-service-layer)
-  - [Phase 4: API Integration](#phase-4-api-integration)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documents](#related-documents)
+- [Session Service](#session-service)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Service Structure](#service-structure)
+    - [Dependencies](#dependencies)
+    - [Provides](#provides)
+    - [Component Diagram](#component-diagram)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Module**: `internal/service/session`
 
-## Developer Resources
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    note: Auto-resolved from ogen
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+design_refs:
+  - title: services
+    path: services/INDEX.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
 
-> Package versions: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+# Session Service
 
-| Package | Purpose |
-|---------|---------|
-| crypto/rand | Secure token generation |
-| crypto/sha256 | Token hash storage |
-| netip | IP address handling |
-| pgx | PostgreSQL driver |
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: service
+
+
+> > Session token management and device tracking
+
+**Package**: `internal/service/session`
+**fx Module**: `session.Module`
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | ✅ |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |---
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-The Session service manages user sessions:
 
-- Token generation and validation
-- Device tracking (name, type, client info)
-- Session expiration
-- Activity updates
-- Session limits per user
 
 ---
+
+
+## Architecture
+
+### Service Structure
+
+```
+internal/service/session/
+├── module.go              # fx module definition
+├── service.go             # Service implementation
+├── repository.go          # Data access (if needed)
+├── handler.go             # HTTP handlers (if exposed)
+├── middleware.go          # Middleware (if needed)
+├── types.go               # Domain types
+└── service_test.go        # Tests
+```
+
+### Dependencies
+No external service dependencies.
+
+### Provides
+<!-- Service provides -->
+
+### Component Diagram
+
+<!-- Component diagram -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
 
 ## Configuration
+### Environment Variables
 
-```go
-type Service struct {
-    queries            *db.Queries
-    logger             *slog.Logger
-    sessionDuration    time.Duration  // Default: 24h
-    maxSessionsPerUser int            // 0 = unlimited
-}
+<!-- Environment variables -->
 
-func (s *Service) SetSessionDuration(d time.Duration)
-func (s *Service) SetMaxSessionsPerUser(maxSessions int)
-```
+### Config Keys
 
----
-
-## Operations
-
-### Create Session
-
-```go
-type CreateParams struct {
-    UserID        uuid.UUID
-    ProfileID     *uuid.UUID
-    DeviceName    *string
-    DeviceType    *string
-    ClientName    *string
-    ClientVersion *string
-    IPAddress     netip.Addr
-    UserAgent     *string
-}
-
-type CreateResult struct {
-    Session *db.Session
-    Token   string  // Raw token - only returned on creation
-}
-
-func (s *Service) Create(ctx context.Context, params CreateParams) (*CreateResult, error)
-```
-
-### Validate Token
-
-```go
-func (s *Service) ValidateToken(ctx context.Context, token string) (*db.Session, error)
-```
-
-Checks:
-1. Token hash exists in database
-2. Session is active
-3. Session not expired
-
-### Deactivate Sessions
-
-```go
-// Single session
-func (s *Service) Deactivate(ctx context.Context, sessionID uuid.UUID) error
-
-// All sessions for user
-func (s *Service) DeactivateAllForUser(ctx context.Context, userID uuid.UUID) error
-```
-
-### Update Activity
-
-```go
-func (s *Service) UpdateActivity(ctx context.Context, sessionID uuid.UUID, ipAddress *netip.Addr) error
-```
-
----
-
-## Token Security
-
-- **Generation**: 32 bytes random via `crypto/rand`
-- **Encoding**: Base64 URL-safe
-- **Storage**: SHA-256 hash only (raw token never stored)
-- **Lookup**: Hash-based lookup for O(1) validation
-
-```go
-// Token generation
-tokenBytes := make([]byte, 32)
-rand.Read(tokenBytes)
-token := base64.URLEncoding.EncodeToString(tokenBytes)
-
-// Storage: hash only
-hash := sha256.Sum256([]byte(token))
-tokenHash := base64.URLEncoding.EncodeToString(hash[:])
-```
-
----
-
-## Errors
-
-| Error | Description |
-|-------|-------------|
-| `ErrSessionNotFound` | Session not found or invalid token |
-| `ErrSessionExpired` | Session has expired |
-| `ErrSessionInactive` | Session was deactivated |
-| `ErrTooManySessions` | Max sessions per user exceeded |
-
----
-
-## Implementation Checklist
-
-### Phase 1: Core Infrastructure
-- [ ] Create `internal/service/session/` package structure
-- [ ] Define entity types in `entity.go`
-- [ ] Create repository interface
-- [ ] Add fx module wiring
-
-### Phase 2: Database
-- [ ] Create migration for `sessions` table
-- [ ] Add indexes (user_id, token_hash, expires_at)
-- [ ] Write sqlc queries
-
-### Phase 3: Service Layer
-- [ ] Implement token generation (32 bytes random)
-- [ ] Implement SHA-256 hash storage
-- [ ] Implement session validation
-- [ ] Add device tracking
-- [ ] Implement session limits per user
-
-### Phase 4: API Integration
-- [ ] Define OpenAPI endpoints
-- [ ] Generate ogen handlers
-- [ ] Wire handlers to service
-- [ ] Add activity update middleware
-
----
+<!-- Configuration keys -->
 
 
-## Related Documents
 
-- [Auth Service](AUTH.md) - Login/logout flows
-- [User Service](USER.md) - User accounts
-- [Activity Service](ACTIVITY.md) - Session activity logging
-- [API Keys Service](APIKEYS.md) - Alternative authentication
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [services](services/INDEX.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
+- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+

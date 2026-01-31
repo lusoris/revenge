@@ -1,278 +1,183 @@
-# Whisparr v3 Integration
-
-<!-- SOURCES: fx, pgx, postgresql-arrays, postgresql-json, river, typesense, typesense-go -->
-
-<!-- DESIGN: integrations/servarr, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Adult content management automation (eros branch)
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Key Endpoints (Assumed - Radarr-like)](#key-endpoints-assumed---radarr-like)
-- [Webhook Events (Assumed - Radarr-like)](#webhook-events-assumed---radarr-like)
-  - [On Import (Scene Downloaded & Imported)](#on-import-scene-downloaded-imported)
-  - [On Movie Added (New Scene Tracked)](#on-movie-added-new-scene-tracked)
-  - [On Movie Delete](#on-movie-delete)
-  - [On Movie File Delete](#on-movie-file-delete)
-  - [On Rename](#on-rename)
-  - [On Health Issue](#on-health-issue)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Client Setup](#phase-1-client-setup)
-  - [Phase 2: API Implementation](#phase-2-api-implementation)
-  - [Phase 3: Service Integration](#phase-3-service-integration)
-  - [Phase 4: Testing](#phase-4-testing)
-- [Revenge Integration Pattern](#revenge-integration-pattern)
-  - [Go Client Example](#go-client-example)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Quality Profile Mapping](#quality-profile-mapping)
-- [Notes](#notes)
+- [Whisparr v3](#whisparr-v3)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: integrations/servarr
+    path: integrations/servarr.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Whisparr v3
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Whisparr v3
+
+> Adult content management automation (eros branch)
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | 🟡 |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |**Priority**: 🟡 MEDIUM (Phase 7 - Adult Modules)
-**Type**: Webhook listener + API client for metadata sync
-**Schema Isolation**: PostgreSQL schema `qar` (see [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md))
-**Branch**: `eros` (Whisparr v3)
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | 🟡 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Overview
 
-Whisparr v3 (eros branch) is the adult content management automation tool. Revenge integrates with Whisparr to:
-- Receive webhook notifications when adult scenes are imported
-- Sync performer, studio, and scene metadata
-- Monitor Whisparr download/import status
-- Respect privacy isolation (schema `qar`, `/api/v1/legacy/` API namespace)
+## Architecture
 
-**Integration Points**:
-- **Webhook listener**: Process Whisparr events (On Import, On Scene Added, etc.)
-- **API client**: Query scenes, performers, studios
-- **Metadata sync**: Enrich Revenge metadata with Whisparr data + StashDB
-- **Privacy isolation**: All adult data stored in PostgreSQL schema `qar`, API namespace `/api/v1/legacy/`
-
-**⚠️ Important**: Whisparr uses Radarr codebase (fork) but treats "scenes" as individual videos (NOT series/episodes). Folder structure differs from TV shows. See [WHISPARR_STASHDB_SCHEMA.md](../../features/WHISPARR_STASHDB_SCHEMA.md) for details.
-
----
-
-## Developer Resources
-
-- 📚 **API Docs**: https://whisparr.com/docs/api/ (similar to Radarr v3)
-- 🔗 **GitHub**: https://github.com/Whisparr/Whisparr (branch: `eros`)
-- 🔗 **Based on**: Radarr v3 codebase (API structure similar)
-- 🔗 **Metadata**: StashDB integration (performer/studio data)
-- ℹ️ **Note**: Use `eros` branch for v3 features
-
----
-
-## API Details
-
-**Base Path**: `/api/v3/` (assumed, Radarr-based)
-**Authentication**: `X-Api-Key` header (API key from Whisparr settings)
-**Rate Limits**: None (self-hosted)
-
-### Key Endpoints (Assumed - Radarr-like)
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/movie` | GET | List all scenes (called "movies" in Whisparr) |
-| `/movie/{id}` | GET | Get specific scene details |
-| `/importlist` | GET | List configured import lists |
-| `/metadata` | GET | Get metadata settings |
-| `/qualityprofile` | GET | List quality profiles |
-| `/system/status` | GET | Get Whisparr version & status |
-| `/health` | GET | Check Whisparr health |
-
-**Note**: Whisparr API is not fully documented. Assume Radarr v3 API structure with adult-specific metadata fields (performers, studios).
-
----
-
-## Webhook Events (Assumed - Radarr-like)
-
-### On Import (Scene Downloaded & Imported)
-```json
-{
-  "eventType": "Download",
-  "movie": {
-    "id": 1,
-    "title": "Scene Title",
-    "year": 2024,
-    "stashdbId": "abc123",  // StashDB scene ID
-    "overview": "Scene description...",
-    "images": [
-      {
-        "coverType": "poster",
-        "url": "https://example.com/scene-poster.jpg"
-      }
-    ],
-    "path": "/media/Adult/Scene Title (2024)",
-    "performers": [
-      {"name": "Performer A", "stashdbId": "perf-123"},
-      {"name": "Performer B", "stashdbId": "perf-456"}
-    ],
-    "studio": {
-      "name": "Studio Name",
-      "stashdbId": "studio-789"
-    },
-    "tags": ["tag1", "tag2"],
-    "movieFile": {
-      "id": 456,
-      "relativePath": "Scene Title (2024).mkv",
-      "quality": "Bluray-1080p",
-      "size": 3221225472
-    }
-  }
-}
-```
-
-### On Movie Added (New Scene Tracked)
-Triggered when Whisparr starts monitoring a new scene.
-
-### On Movie Delete
-Triggered when scene is removed from Whisparr.
-
-### On Movie File Delete
-Triggered when scene file is deleted from Whisparr.
-
-### On Rename
-Triggered when scene files are renamed.
-
-### On Health Issue
-Triggered when Whisparr detects health issues.
-
----
-
-## Implementation Checklist
-
-### Phase 1: Client Setup
-- [ ] Create client package structure
-- [ ] Implement HTTP client with resty
-- [ ] Add API key authentication
-- [ ] Implement rate limiting
-
-### Phase 2: API Implementation
-- [ ] Implement core API methods
-- [ ] Add response type definitions
-- [ ] Implement error handling
-
-### Phase 3: Service Integration
-- [ ] Create service wrapper
-- [ ] Add caching layer
-- [ ] Implement fx module wiring
-
-### Phase 4: Testing
-- [ ] Add unit tests with mocks
-- [ ] Add integration tests
-
----
-
-## Revenge Integration Pattern
+### Integration Structure
 
 ```
-Whisparr imports scene
-           ↓
-Sends webhook to Revenge
-           ↓
-Revenge processes webhook
-           ↓
-Stores scene/performers/studio in PostgreSQL schema `qar`
-           ↓
-Enriches metadata from StashDB (performer bios, studio info)
-           ↓
-Updates Typesense search index (schema `qar`)
-           ↓
-Scene available for playback (requires NSFW permission)
+internal/integration/whisparr_v3/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Go Client Example
+### Data Flow
 
-```go
-type WhisparrClient struct {
-    baseURL string
-    apiKey  string
-    client  *http.Client
-}
+<!-- Data flow diagram -->
 
-func (c *WhisparrClient) GetScene(ctx context.Context, sceneID int) (*Scene, error) {
-    url := fmt.Sprintf("%s/api/v3/movie/%d", c.baseURL, sceneID)
-    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
-    req.Header.Set("X-Api-Key", c.apiKey)
+### Provides
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get scene: %w", err)
-    }
-    defer resp.Body.Close()
+This integration provides:
+<!-- Data provided by integration -->
 
-    var scene Scene
-    json.NewDecoder(resp.Body).Decode(&scene)
-    return &scene, nil
-}
-```
 
----
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/servarr](integrations/servarr.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md) - Schema `c` isolation
-- [Whisparr/StashDB Schema](../../features/WHISPARR_STASHDB_SCHEMA.md) - Database design
-- [StashDB Integration](../metadata/adult/STASHDB.md) - Performer/studio metadata
-- [Radarr Integration](RADARR.md) - Similar API structure
-- [Arr Integration Pattern](../../patterns/ARR_INTEGRATION.md)
-- [Webhook Handling](../../patterns/WEBHOOK_PATTERNS.md)
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
 
----
-
-## Quality Profile Mapping
-
-| Whisparr Quality | Revenge Quality | Max Bitrate | Resolution |
-|------------------|-----------------|-------------|------------|
-| WEB-2160p | `4K` | 80 Mbps | 3840x2160 |
-| Bluray-2160p | `4K` | 80 Mbps | 3840x2160 |
-| WEB-1080p | `1080p` | 20 Mbps | 1920x1080 |
-| Bluray-1080p | `1080p` | 20 Mbps | 1920x1080 |
-| WEB-720p | `720p` | 8 Mbps | 1280x720 |
-| HDTV-720p | `720p` | 8 Mbps | 1280x720 |
-| SDTV | `480p` | 3 Mbps | 720x480 |
-| Any | `auto` | Varies | Varies |
-
----
-
-## Notes
-
-- **Whisparr uses Radarr codebase** but treats "scenes" as individual videos (NOT series/episodes)
-- **Folder structure differs from TV shows** - Sonarr codebase NOT applicable
-- **StashDB is primary metadata source** for performer/studio data
-- Whisparr API v3 assumed (Radarr-based), NOT fully documented
-- Self-hosted = no rate limits (unlike cloud APIs)
-- Quality profiles are customizable in Whisparr (respect user settings)
-- **Privacy isolation CRITICAL**: PostgreSQL schema `qar`, API namespace `/api/v1/legacy/`, NSFW toggle required
-- **Logs must be obfuscated** - never log adult content titles/performers in plain text
-- **NSFW permission required** - users must explicitly enable adult content access
-- Scene metadata: Whisparr stores performer names, studio, tags, release date
-- Multi-performer scenes: Whisparr tracks performer order (primary performer first)

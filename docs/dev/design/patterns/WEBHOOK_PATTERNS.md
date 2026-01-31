@@ -1,120 +1,140 @@
-# Webhook Patterns
+## Table of Contents
 
-<!-- SOURCES: river -->
+- [Webhook Patterns](#webhook-patterns)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: patterns, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
-
-> Patterns for processing webhooks and handling events
-
-**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
+sources:
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: patterns
+    path: patterns.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Webhook Patterns
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: pattern
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | Scaffold |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Design | 🟡 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: 🟡 In Progress
 
-Revenge receives webhooks from external services (*arr stack, scrobbling services, etc.). This document defines patterns for:
 
-- Webhook registration
-- Payload validation
-- Event processing
-- Error handling
-- Retry logic
 
 ---
 
-## Webhook Handler Pattern
 
-### Router Setup
+## Architecture
 
-```go
-func SetupWebhookRoutes(r chi.Router, h *WebhookHandler) {
-    r.Route("/webhooks", func(r chi.Router) {
-        r.Post("/radarr", h.HandleRadarr)
-        r.Post("/sonarr", h.HandleSonarr)
-        r.Post("/lidarr", h.HandleLidarr)
-        r.Post("/whisparr", h.HandleWhisparr)
-        r.Post("/trakt", h.HandleTrakt)
-    })
-}
-```
+<!-- Architecture diagram placeholder -->
 
-### Validation Middleware
+### Components
 
-```go
-func ValidateWebhookSignature(secret string) func(http.Handler) http.Handler {
-    return func(next http.Handler) http.Handler {
-        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            signature := r.Header.Get("X-Webhook-Signature")
-            if !verifySignature(r.Body, signature, secret) {
-                http.Error(w, "Invalid signature", http.StatusUnauthorized)
-                return
-            }
-            next.ServeHTTP(w, r)
-        })
-    }
-}
-```
+<!-- Component description -->
 
----
 
-## Event Processing
+## Implementation
 
-### Async Processing with River
+### File Structure
 
-```go
-type WebhookEventArgs struct {
-    Source    string          `json:"source"`
-    EventType string          `json:"event_type"`
-    Payload   json.RawMessage `json:"payload"`
-}
+<!-- File structure -->
 
-func (w *WebhookWorker) Work(ctx context.Context, job *river.Job[WebhookEventArgs]) error {
-    switch job.Args.Source {
-    case "radarr":
-        return w.processRadarrEvent(ctx, job.Args)
-    case "sonarr":
-        return w.processSonarrEvent(ctx, job.Args)
-    }
-    return nil
-}
-```
+### Key Interfaces
 
----
+<!-- Interface definitions -->
 
-## Idempotency
+### Dependencies
 
-### Deduplication Pattern
+<!-- Dependency list -->
 
-```go
-func (h *WebhookHandler) isDuplicate(eventID string) bool {
-    key := fmt.Sprintf("webhook:event:%s", eventID)
-    exists, _ := h.cache.Exists(ctx, key)
-    if exists {
-        return true
-    }
-    h.cache.Set(ctx, key, "1", 24*time.Hour)
-    return false
-}
-```
 
----
 
-## Related
 
-- [Arr Integration Pattern](ARR_INTEGRATION.md)
-- [Servarr Integrations](../integrations/servarr/)
-- [Scrobbling](../features/shared/SCROBBLING.md)
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [patterns](patterns.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+

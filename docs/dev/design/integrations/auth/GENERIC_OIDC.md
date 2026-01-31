@@ -1,404 +1,172 @@
-# Generic OIDC Integration
-
-<!-- SOURCES: authelia, authentik, keycloak, oidc -->
-
-<!-- DESIGN: integrations/auth, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Support for any OpenID Connect compatible provider
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [OIDC Requirements](#oidc-requirements)
-  - [Required Claims](#required-claims)
-- [Configuration](#configuration)
-  - [Basic Configuration](#basic-configuration)
-  - [Advanced Configuration](#advanced-configuration)
-- [Implementation Checklist](#implementation-checklist)
-- [Claim Path Syntax](#claim-path-syntax)
-- [Provider-Specific Examples](#provider-specific-examples)
-  - [Auth0](#auth0)
-  - [Azure AD](#azure-ad)
-  - [Google](#google)
-  - [Okta](#okta)
-  - [AWS Cognito](#aws-cognito)
-  - [Dex](#dex)
-  - [Zitadel](#zitadel)
-- [Database Schema](#database-schema)
-- [Error Handling](#error-handling)
-- [Testing Configuration](#testing-configuration)
-- [Security Best Practices](#security-best-practices)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
+- [Generic OIDC](#generic-oidc)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Authelia Documentation
+    url: https://www.authelia.com/overview/
+    note: Auto-resolved from authelia
+  - name: Authentik Documentation
+    url: https://goauthentik.io/docs/
+    note: Auto-resolved from authentik
+  - name: Keycloak Documentation
+    url: https://www.keycloak.org/documentation
+    note: Auto-resolved from keycloak
+  - name: OpenID Connect Core
+    url: https://openid.net/specs/openid-connect-core-1_0.html
+    note: Auto-resolved from oidc
+design_refs:
+  - title: integrations/auth
+    path: integrations/auth.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Generic OIDC
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Generic OIDC
+
+> Support for any OpenID Connect compatible provider
+**API Base URL**: `https://revenge.example.com/api/v1/auth/oidc/callback`
+**Authentication**: oauth
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | ✅ |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |**Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
-**Type**: OIDC Identity Provider
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Overview
 
-Generic OIDC support allows Revenge to integrate with any OpenID Connect compliant identity provider not specifically documented. This includes:
-- Cloud providers (Auth0, Okta, Azure AD, Google)
-- Self-hosted solutions (Dex, Ory Hydra, Zitadel)
-- Custom OIDC implementations
+## Architecture
 
-**Integration Points**:
-- **OIDC Discovery**: Auto-configure from `.well-known/openid-configuration`
-- **Standard flows**: Authorization Code, PKCE
-- **Configurable claims**: Map any claims to Revenge user fields
-- **Flexible role mapping**: Support various group/role claim formats
+### Integration Structure
 
----
+```
+internal/integration/generic_oidc/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
+```
 
-## Developer Resources
+### Data Flow
 
-- 📚 **OIDC Spec**: https://openid.net/specs/openid-connect-core-1_0.html
-- 🔗 **Discovery Spec**: https://openid.net/specs/openid-connect-discovery-1_0.html
-- 🔗 **JWT.io**: https://jwt.io/ (token debugging)
-- 🔗 **OIDC Playground**: https://openidconnect.net/
+<!-- Data flow diagram -->
 
----
+### Provides
 
-## OIDC Requirements
+This integration provides:
+<!-- Data provided by integration -->
 
-Any provider must support:
 
-| Requirement | Description |
-|-------------|-------------|
-| Discovery | `.well-known/openid-configuration` endpoint |
-| Authorization Code Flow | Standard OAuth2 auth code grant |
-| PKCE (optional) | Proof Key for Code Exchange (S256) |
-| Token Endpoint | Exchange code for tokens |
-| UserInfo Endpoint | Fetch user claims |
-| JWKS | JSON Web Key Set for token validation |
+## Implementation
 
-### Required Claims
+### File Structure
 
-| Claim | Required | Description |
-|-------|----------|-------------|
-| `sub` | ✅ Yes | Unique user identifier |
-| `email` | 🟡 Recommended | User email address |
-| `preferred_username` | 🟡 Recommended | Display name |
-| `name` | 🟢 Optional | Full name |
-| `groups` | 🟢 Optional | Group membership |
+<!-- File structure -->
 
----
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
 
 ## Configuration
+### Environment Variables
 
-### Basic Configuration
+<!-- Environment variables -->
 
-```yaml
-# configs/config.yaml
-integrations:
-  oidc:
-    enabled: true
-    provider: "generic"
-    generic:
-      # Required: OIDC Discovery URL
-      issuer_url: "https://idp.example.com"
+### Config Keys
 
-      # Required: Client credentials
-      client_id: "${REVENGE_OIDC_CLIENT_ID}"
-      client_secret: "${REVENGE_OIDC_CLIENT_SECRET}"
+<!-- Configuration keys -->
 
-      # Required: Callback URL
-      redirect_uri: "https://revenge.example.com/api/v1/auth/oidc/callback"
 
-      # Scopes to request
-      scopes:
-        - openid
-        - profile
-        - email
-        # - groups  # If supported by provider
 
-      # Auto-create users on first login
-      auto_provision: true
-```
 
-### Advanced Configuration
+## Testing Strategy
 
-```yaml
-integrations:
-  oidc:
-    enabled: true
-    provider: "generic"
-    generic:
-      issuer_url: "https://idp.example.com"
-      client_id: "${REVENGE_OIDC_CLIENT_ID}"
-      client_secret: "${REVENGE_OIDC_CLIENT_SECRET}"
-      redirect_uri: "https://revenge.example.com/api/v1/auth/oidc/callback"
+### Unit Tests
 
-      scopes:
-        - openid
-        - profile
-        - email
-        - groups
+<!-- Unit test strategy -->
 
-      # Override discovery endpoints (if non-standard)
-      endpoints:
-        authorization: ""  # Empty = use discovery
-        token: ""
-        userinfo: ""
-        jwks: ""
-        logout: ""  # Optional: for single logout
+### Integration Tests
 
-      # Claim mapping
-      claims:
-        subject: "sub"                    # User identifier
-        username: "preferred_username"    # Falls back to email
-        email: "email"
-        name: "name"
-        groups: "groups"                  # Or "roles", "realm_access.roles", etc.
+<!-- Integration test strategy -->
 
-      # Role/group mapping
-      role_mappings:
-        admin: admin              # group "admin" → role "admin"
-        users: user               # group "users" → role "user"
-        limited: restricted       # group "limited" → role "restricted"
+### Test Coverage
 
-      # Default role if no mapping matches
-      default_role: "user"
+Target: **80% minimum**
 
-      # Security settings
-      pkce_enabled: true          # Use PKCE (recommended)
-      pkce_method: "S256"         # S256 or plain
-      token_validation:
-        verify_signature: true
-        verify_issuer: true
-        verify_audience: true
-        clock_skew_seconds: 60    # Allow for clock drift
 
-      # User provisioning
-      auto_provision: true
-      allow_registration: true
-      update_on_login: true       # Update user info on each login
-```
 
----
 
-## Implementation Checklist
 
-- [ ] **OIDC Client** (`internal/service/oidc/provider_generic.go`)
-  - [ ] Discovery document fetching and caching
-  - [ ] Endpoint extraction from discovery
-  - [ ] Authorization URL generation
-  - [ ] Code exchange
-  - [ ] Token validation (signature, issuer, audience, expiry)
-  - [ ] UserInfo fetching
-  - [ ] Token refresh
-
-- [ ] **Claim Mapping** (`internal/service/oidc/claims.go`)
-  - [ ] Configurable claim paths (dot notation)
-  - [ ] Fallback claims (e.g., username → email)
-  - [ ] Array claim handling (groups, roles)
-  - [ ] Nested claim extraction
-
-- [ ] **Role Mapping** (`internal/service/oidc/roles.go`)
-  - [ ] Direct mapping (group name → role)
-  - [ ] Prefix/suffix stripping
-  - [ ] Default role fallback
-  - [ ] Multiple role support
-
----
-
-## Claim Path Syntax
-
-Support dot notation for nested claims:
-
-```yaml
-claims:
-  # Simple claims
-  subject: "sub"
-  email: "email"
-
-  # Nested claims
-  groups: "realm_access.roles"        # Keycloak-style
-  groups: "resource_access.app.roles" # Client roles
-  groups: "cognito:groups"            # AWS Cognito
-
-  # Array indexing
-  primary_email: "emails[0].value"    # First email in array
-```
-
----
-
-## Provider-Specific Examples
-
-### Auth0
-
-```yaml
-generic:
-  issuer_url: "https://your-tenant.auth0.com"
-  scopes: [openid, profile, email]
-  claims:
-    groups: "https://your-app.com/roles"  # Custom claim
-```
-
-### Azure AD
-
-```yaml
-generic:
-  issuer_url: "https://login.microsoftonline.com/{tenant}/v2.0"
-  scopes: [openid, profile, email]
-  claims:
-    groups: "groups"  # Requires group claims in app registration
-    username: "preferred_username"
-```
-
-### Google
-
-```yaml
-generic:
-  issuer_url: "https://accounts.google.com"
-  scopes: [openid, profile, email]
-  claims:
-    username: "email"  # Google uses email as identifier
-  # Note: Google doesn't support groups
-```
-
-### Okta
-
-```yaml
-generic:
-  issuer_url: "https://your-org.okta.com"
-  scopes: [openid, profile, email, groups]
-  claims:
-    groups: "groups"
-```
-
-### AWS Cognito
-
-```yaml
-generic:
-  issuer_url: "https://cognito-idp.{region}.amazonaws.com/{pool-id}"
-  scopes: [openid, profile, email]
-  claims:
-    groups: "cognito:groups"
-    username: "cognito:username"
-```
-
-### Dex
-
-```yaml
-generic:
-  issuer_url: "https://dex.example.com"
-  scopes: [openid, profile, email, groups]
-  claims:
-    groups: "groups"
-```
-
-### Zitadel
-
-```yaml
-generic:
-  issuer_url: "https://your-instance.zitadel.cloud"
-  scopes: [openid, profile, email, "urn:zitadel:iam:org:project:roles"]
-  claims:
-    groups: "urn:zitadel:iam:org:project:roles"
-```
-
----
-
-## Database Schema
-
-Uses shared OIDC tables from [Authelia Integration](AUTHELIA.md#database-schema).
-
-Additional table for provider configuration:
-
-```sql
--- Allow multiple OIDC providers
-CREATE TABLE oidc_providers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL UNIQUE,           -- Display name
-    slug VARCHAR(50) NOT NULL UNIQUE,            -- URL-safe identifier
-    provider_type VARCHAR(50) NOT NULL,          -- generic, authelia, authentik, keycloak
-    issuer_url TEXT NOT NULL,
-    client_id VARCHAR(255) NOT NULL,
-    client_secret_encrypted BYTEA NOT NULL,
-    scopes TEXT[] NOT NULL DEFAULT ARRAY['openid', 'profile', 'email'],
-    config JSONB NOT NULL DEFAULT '{}',          -- Provider-specific config
-    enabled BOOLEAN NOT NULL DEFAULT true,
-    auto_provision BOOLEAN NOT NULL DEFAULT true,
-    icon_url TEXT,                               -- For login button
-    display_order INTEGER NOT NULL DEFAULT 0,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-```
-
----
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Discovery failed | Network error or invalid URL | Check issuer_url, verify connectivity |
-| Invalid token | Signature validation failed | Verify JWKS URL, check key rotation |
-| Missing claim | Provider doesn't include claim | Check scopes, add claim mapping |
-| Role mapping failed | No matching groups | Configure default_role |
-| PKCE error | Provider doesn't support PKCE | Set pkce_enabled: false |
-
----
-
-## Testing Configuration
-
-Validate OIDC configuration before deployment:
-
-```bash
-# Fetch discovery document
-curl https://idp.example.com/.well-known/openid-configuration | jq
-
-# Verify JWKS
-curl https://idp.example.com/.well-known/jwks.json | jq
-
-# Decode JWT token (after login)
-# Use https://jwt.io or:
-echo $TOKEN | cut -d. -f2 | base64 -d | jq
-```
-
----
-
-## Security Best Practices
-
-1. **Always use PKCE** when supported
-2. **Validate all tokens** (signature, issuer, audience, expiry)
-3. **Use state parameter** to prevent CSRF
-4. **Store secrets securely** (encrypted in database)
-5. **Rotate client secrets** periodically
-6. **Use HTTPS only** for all OIDC endpoints
-7. **Limit scopes** to what's needed
-
----
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/auth](integrations/auth.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Authelia Integration](AUTHELIA.md) - Recommended self-hosted
-- [Authentik Integration](AUTHENTIK.md) - Enterprise self-hosted
-- [Keycloak Integration](KEYCLOAK.md) - Enterprise with LDAP
+### External Sources
+- [Authelia Documentation](https://www.authelia.com/overview/) - Auto-resolved from authelia
+- [Authentik Documentation](https://goauthentik.io/docs/) - Auto-resolved from authentik
+- [Keycloak Documentation](https://www.keycloak.org/documentation) - Auto-resolved from keycloak
+- [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html) - Auto-resolved from oidc
+

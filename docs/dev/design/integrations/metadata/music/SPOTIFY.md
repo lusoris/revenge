@@ -1,341 +1,168 @@
-# Spotify Integration
-
-<!-- SOURCES: go-blurhash, lastfm-api, spotify -->
-
-<!-- DESIGN: integrations/metadata/music, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Music metadata and cover art provider - popularity scores, high-quality images
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Base URL](#base-url)
-  - [Authentication (Client Credentials Flow)](#authentication-client-credentials-flow)
-  - [Rate Limiting](#rate-limiting)
-  - [Key Endpoints](#key-endpoints)
-    - [Search Artists](#search-artists)
-    - [Get Artist](#get-artist)
-    - [Get Album](#get-album)
-    - [Get Track](#get-track)
-- [Implementation Checklist](#implementation-checklist)
-  - [API Client (`internal/infra/metadata/provider_spotify.go`)](#api-client-internalinframetadataprovider-spotifygo)
-  - [Token Management](#token-management)
-  - [Cover Art Fallback](#cover-art-fallback)
-  - [Popularity Scores](#popularity-scores)
-  - [Metadata Enrichment](#metadata-enrichment)
-  - [Error Handling](#error-handling)
-- [Integration Pattern](#integration-pattern)
-  - [Cover Art Fallback Workflow](#cover-art-fallback-workflow)
-  - [Popularity Scores Update](#popularity-scores-update)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [Spotify](#spotify)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Service**: Spotify
-**Type**: Metadata Provider (Music)
-**API Version**: Web API v1
-**Website**: https://www.spotify.com
-**API Docs**: https://developer.spotify.com/documentation/web-api
+
+---
+sources:
+  - name: go-blurhash
+    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    note: Auto-resolved from go-blurhash
+  - name: Last.fm API
+    url: https://www.last.fm/api/intro
+    note: Auto-resolved from lastfm-api
+  - name: Spotify Web API
+    url: https://developer.spotify.com/documentation/web-api
+    note: Auto-resolved from spotify
+design_refs:
+  - title: integrations/metadata/music
+    path: integrations/metadata/music.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Spotify
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Spotify
+
+> Music metadata and cover art provider - popularity scores, high-quality images
+**API Base URL**: `https://api.spotify.com/v1`
+**Authentication**: oauth
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive REST API endpoints, OAuth flow, token management |
-| Sources | ✅ | API docs, authentication, console linked |
-| Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Spotify** provides music metadata (artists, albums, tracks) and high-quality cover art. Used as **fallback** for cover art and **popularity scores**.
 
-**Why Spotify**:
-- High-quality cover art (640x640, 300x300)
-- Popularity scores (0-100)
-- Rich metadata (genres, release precision)
-- Free API (generous limits)
-- OAuth authentication
-
-**Use Cases**:
-- **Cover art fallback**: When Cover Art Archive fails
-- **Popularity scores**: Track/album/artist popularity (0-100)
-- **Metadata enrichment**: Genres, release precision
-- **Search**: Fallback search when MusicBrainz fails
-
-**NOT Used For**:
-- Streaming (requires Spotify Premium, separate integration)
-- Scrobbling (use Last.fm/ListenBrainz)
 
 ---
 
-## Developer Resources
 
-**API Documentation**: https://developer.spotify.com/documentation/web-api
-**Authentication**: https://developer.spotify.com/documentation/web-api/tutorials/getting-started
-**Console**: https://developer.spotify.com/console/
+## Architecture
 
-**Authentication**: OAuth 2.0 (Client Credentials for metadata)
-**Rate Limit**: 180 requests per minute (per app)
-**Free Tier**: Unlimited (API app required)
+### Integration Structure
 
----
-
-## API Details
-
-### Base URL
 ```
-https://api.spotify.com/v1/
+internal/integration/spotify/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Authentication (Client Credentials Flow)
-```bash
-# 1. Get access token
-POST https://accounts.spotify.com/api/token
-Content-Type: application/x-www-form-urlencoded
-Authorization: Basic {BASE64(CLIENT_ID:CLIENT_SECRET)}
+### Data Flow
 
-grant_type=client_credentials
+<!-- Data flow diagram -->
 
-# Response:
-{
-  "access_token": "NgCXRK...MzYjw",
-  "token_type": "Bearer",
-  "expires_in": 3600
-}
+### Provides
 
-# 2. Use token in requests
-Authorization: Bearer {ACCESS_TOKEN}
-```
+This integration provides:
+<!-- Data provided by integration -->
 
-### Rate Limiting
-- **180 requests per minute** (per app)
-- **429 Too Many Requests** (retry after `Retry-After` header)
 
-### Key Endpoints
+## Implementation
 
-#### Search Artists
-```bash
-GET /v1/search?q=radiohead&type=artist&limit=10
-Authorization: Bearer {ACCESS_TOKEN}
-```
+### File Structure
 
-**Response**:
-```json
-{
-  "artists": {
-    "items": [
-      {
-        "id": "4Z8W4fKeB5YxbusRsdQVPb",
-        "name": "Radiohead",
-        "genres": ["alternative rock", "art rock", "melancholia", "permanent wave", "rock"],
-        "popularity": 79,
-        "images": [
-          {"height": 640, "width": 640, "url": "https://i.scdn.co/image/..."}
-        ],
-        "external_urls": {"spotify": "https://open.spotify.com/artist/..."}
-      }
-    ]
-  }
-}
-```
+<!-- File structure -->
 
-#### Get Artist
-```bash
-GET /v1/artists/{id}
-```
+### Key Interfaces
 
-#### Get Album
-```bash
-GET /v1/albums/{id}
-```
+<!-- Interface definitions -->
 
-**Response**:
-```json
-{
-  "id": "6dVIqQ8qmQ5GBnJ9shOYGE",
-  "name": "OK Computer",
-  "release_date": "1997-05-21",
-  "release_date_precision": "day",
-  "total_tracks": 12,
-  "images": [
-    {"height": 640, "width": 640, "url": "https://i.scdn.co/image/..."},
-    {"height": 300, "width": 300, "url": "https://i.scdn.co/image/..."}
-  ],
-  "artists": [{"id": "4Z8W4fKeB5YxbusRsdQVPb", "name": "Radiohead"}],
-  "popularity": 76
-}
-```
+### Dependencies
 
-#### Get Track
-```bash
-GET /v1/tracks/{id}
-```
+<!-- Dependency list -->
 
-**Response**:
-```json
-{
-  "id": "6ORfhpZbYM8PDJ5CBAUphD",
-  "name": "Karma Police",
-  "duration_ms": 263000,
-  "popularity": 78,
-  "artists": [{"id": "4Z8W4fKeB5YxbusRsdQVPb", "name": "Radiohead"}],
-  "album": {
-    "id": "6dVIqQ8qmQ5GBnJ9shOYGE",
-    "name": "OK Computer",
-    "images": [{"height": 640, "width": 640, "url": "..."}]
-  }
-}
-```
 
----
 
-## Implementation Checklist
 
-### API Client (`internal/infra/metadata/provider_spotify.go`)
-- [ ] Base URL configuration
-- [ ] Client ID + Client Secret configuration
-- [ ] OAuth token management (Client Credentials flow)
-- [ ] Token refresh (expires after 3600s)
-- [ ] Rate limiting (180 req/min with token bucket)
-- [ ] Error handling (401: Token expired, 429: Rate limit exceeded)
-- [ ] Response parsing (JSON unmarshalling)
 
-### Token Management
-- [ ] Request access token on startup
-- [ ] Cache token in memory (3600s TTL)
-- [ ] Auto-refresh token (background job every 3500s)
-- [ ] Handle 401 (token expired - request new token)
+## Configuration
+### Environment Variables
 
-### Cover Art Fallback
-- [ ] Search album by artist + title (when Cover Art Archive fails)
-- [ ] Extract highest resolution image (640x640)
-- [ ] Download cover art
-- [ ] Generate Blurhash
-- [ ] Convert to WebP
-- [ ] Store locally (`data/music/covers/`)
+<!-- Environment variables -->
 
-### Popularity Scores
-- [ ] Fetch artist/album/track popularity (0-100)
-- [ ] Store in `music_artists.popularity`, `music_albums.popularity`, `music_tracks.popularity`
-- [ ] Update periodically (weekly background job)
+### Config Keys
 
-### Metadata Enrichment
-- [ ] Extract genres (artist-level)
-- [ ] Extract release precision (day, month, year)
-- [ ] Store in database
+<!-- Configuration keys -->
 
-### Error Handling
-- [ ] Handle 401 (Token expired - refresh token)
-- [ ] Handle 404 (Artist/album/track not found)
-- [ ] Handle 429 (Rate limit exceeded - retry after `Retry-After` seconds)
-- [ ] Log errors (no sensitive data)
 
----
 
-## Integration Pattern
 
-### Cover Art Fallback Workflow
-```go
-// Fetch cover art: Cover Art Archive → Spotify fallback
-func (s *MusicService) FetchAlbumCover(albumID uuid.UUID) (string, error) {
-    album := s.db.GetAlbum(albumID)
-    mbid := album.MusicBrainzID
+## Testing Strategy
 
-    // 1. Try Cover Art Archive first
-    coverURL := fmt.Sprintf("https://coverartarchive.org/release-group/%s/front-1200", mbid)
-    coverPath, err := s.downloadCover(coverURL)
-    if err == nil {
-        return coverPath, nil
-    }
+### Unit Tests
 
-    // 2. Fallback to Spotify
-    spotifyAlbum := s.spotifyClient.SearchAlbum(album.ArtistName, album.Title)
-    if spotifyAlbum == nil {
-        return "", errors.New("cover art not found")
-    }
+<!-- Unit test strategy -->
 
-    // 3. Download highest resolution image (640x640)
-    coverPath, err = s.downloadCover(spotifyAlbum.Images[0].URL)
-    if err != nil {
-        return "", err
-    }
+### Integration Tests
 
-    return coverPath, nil
-}
-```
+<!-- Integration test strategy -->
 
-### Popularity Scores Update
-```go
-// Background job: Update popularity scores (weekly)
-func (s *MusicService) UpdatePopularityScores(ctx context.Context) error {
-    albums := s.db.GetAlbumsWithoutPopularity()
+### Test Coverage
 
-    for _, album := range albums {
-        // Search Spotify by artist + album
-        spotifyAlbum := s.spotifyClient.SearchAlbum(album.ArtistName, album.Title)
-        if spotifyAlbum == nil {
-            continue
-        }
+Target: **80% minimum**
 
-        // Update popularity
-        s.db.UpdateAlbum(album.ID, map[string]interface{}{
-            "popularity":  spotifyAlbum.Popularity,
-            "spotify_id":  spotifyAlbum.ID,
-        })
 
-        time.Sleep(350 * time.Millisecond) // Rate limit: 180/min = ~333ms per request
-    }
 
-    return nil
-}
-```
 
----
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/music](integrations/metadata/music.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
-- **Cover Art Archive**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary cover art source)
-- **Last.fm Integration**: [LASTFM.md](LASTFM.md) (scrobbling + bio)
+### External Sources
+- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
+- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api) - Auto-resolved from spotify
 
----
-
-## Notes
-
-- **Client Credentials flow**: Metadata access only (no user-specific data)
-- **Token expires**: 3600s (refresh in background job every 3500s)
-- **Rate limit**: 180 req/min (use token bucket, ~333ms per request)
-- **Cover art quality**: 640x640 (high quality), 300x300 (medium), 64x64 (low)
-- **Popularity scores**: 0-100 (based on recent streams, updated frequently)
-- **Release precision**: `day` (1997-05-21), `month` (1997-05), `year` (1997)
-- **Genres**: Artist-level only (no album/track genres)
-- **Search syntax**: Simple query string (artist + album title)
-- **External IDs**: Spotify IDs (store in `music_albums.spotify_id`, `music_artists.spotify_id`)
-- **API stable**: v1 stable, no breaking changes expected
-- **NOT for streaming**: Metadata API only (streaming requires Spotify Premium + separate integration)
-- **Free tier**: Unlimited requests (respect rate limits)
-- **Error codes**: 401 (Token expired), 403 (Forbidden), 404 (Not found), 429 (Rate limit exceeded)
-- **Retry-After header**: Use for 429 errors (seconds to wait)
-- **Fallback strategy**: Cover Art Archive (free, primary) → Spotify (fallback)
-- **Privacy**: No user data collected (Client Credentials flow)
-- **Token storage**: In-memory cache (no persistent storage required)

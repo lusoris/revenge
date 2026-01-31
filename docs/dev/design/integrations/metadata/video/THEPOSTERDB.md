@@ -1,244 +1,178 @@
-# ThePosterDB Integration
+## Table of Contents
 
-<!-- SOURCES: go-blurhash, pgx, postgresql-arrays, postgresql-json, river, theposterdb -->
+- [ThePosterDB](#theposterdb)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: integrations/metadata/video, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
+
+---
+sources:
+  - name: go-blurhash
+    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    note: Auto-resolved from go-blurhash
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: ThePosterDB API
+    url: https://theposterdb.com/api
+    note: Auto-resolved from theposterdb
+design_refs:
+  - title: integrations/metadata/video
+    path: integrations/metadata/video.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# ThePosterDB
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with ThePosterDB
 
 > Curated high-quality posters for movies and TV shows
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [Integration Options](#integration-options)
-  - [Option 1: Community API (Recommended)](#option-1-community-api-recommended)
-  - [Option 2: Web Scraping (Fallback)](#option-2-web-scraping-fallback)
-- [Implementation Checklist](#implementation-checklist)
-- [Revenge Integration Pattern](#revenge-integration-pattern)
-  - [Go Client Example (Community API)](#go-client-example-community-api)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Poster Sets & Collections](#poster-sets-collections)
-- [Notes](#notes)
-
-<!-- TOC-END -->
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive integration options, scraping constraints, poster sets |
-| Sources | ✅ | Website, community API, robots.txt linked |
-| Instructions | ✅ | Detailed implementation checklist with fallback strategy |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-ThePosterDB is a community-driven platform for high-quality, curated movie and TV show posters. Unlike TMDb (which hosts user-uploaded posters), ThePosterDB focuses on:
-- **Professional-grade posters**: Textless, minimal designs
-- **Set collections**: 4K logos, IMAX editions, streaming service themes
-- **Consistent style**: Uniform aspect ratios and quality
 
-**Integration Points**:
-- **Web scraping**: No official API (use community API OR web scraping)
-- **Poster downloads**: High-resolution poster images
-- **Set collections**: Download entire poster sets (e.g., Marvel Cinematic Universe with matching style)
-
-**⚠️ Important**: ThePosterDB has NO official API. Use unofficial community API OR web scraping with strict rate limiting.
 
 ---
 
-## Developer Resources
 
-- 🔗 **Website**: https://theposterdb.com/
-- ❌ **No Official API**
-- 🔗 **Community API**: https://github.com/jarulsamy/ThePosterDB-API (unofficial, community-maintained)
-- 🔗 **robots.txt**: https://theposterdb.com/robots.txt (respect crawling rules)
+## Architecture
 
----
-
-## Integration Options
-
-### Option 1: Community API (Recommended)
-
-Use unofficial community-maintained API:
-
-**GitHub**: https://github.com/jarulsamy/ThePosterDB-API
-
-**Features**:
-- Search posters by title/IMDb ID
-- Download poster images
-- Browse sets/collections
-- User authentication (optional)
-
-**Limitations**:
-- Not officially supported by ThePosterDB
-- May break if website structure changes
-- Rate limiting required
-
-### Option 2: Web Scraping (Fallback)
-
-Scrape ThePosterDB website directly:
-
-**Constraints**:
-- Respect `robots.txt`
-- Aggressive rate limiting (1 request per 5-10 seconds)
-- User-Agent identification
-- Handle CAPTCHAs gracefully (fail silently)
-
----
-
-## Implementation Checklist
-
-- [ ] **Community API Client** (`internal/service/metadata/provider_posterdb.go`)
-  - [ ] Search posters by IMDb ID
-  - [ ] Search posters by title
-  - [ ] Download poster images
-  - [ ] Browse sets/collections
-  - [ ] Rate limiting (1 req/5s minimum)
-  - [ ] Error handling (graceful degradation)
-
-- [ ] **Poster Selection UI**
-  - [ ] Display ThePosterDB posters as alternatives
-  - [ ] Allow users to choose preferred poster
-  - [ ] Show poster sets (e.g., MCU collection)
-  - [ ] Filter by style (textless, minimal, etc.)
-
-- [ ] **Poster Storage**
-  - [ ] Download high-resolution posters
-  - [ ] Store locally (configurable path)
-  - [ ] Generate Blurhash for placeholders
-  - [ ] Image optimization (WebP conversion)
-
-- [ ] **Fallback Strategy**
-  - [ ] Use TMDb posters as default
-  - [ ] Offer ThePosterDB as alternative (optional upgrade)
-  - [ ] Graceful failure (if ThePosterDB unavailable)
-
----
-
-## Revenge Integration Pattern
+### Integration Structure
 
 ```
-User views movie details (The Matrix)
-           ↓
-Display TMDb poster (default)
-           ↓
-Show "Browse alternative posters" button
-           ↓
-User clicks button
-           ↓
-Query ThePosterDB (community API OR scraper)
-           ↓
-Display curated poster options
-           ↓
-User selects preferred poster
-           ↓
-Download poster from ThePosterDB
-           ↓
-Store locally + update PostgreSQL (movies.poster_path)
-           ↓
-Display new poster in UI
+internal/integration/theposterdb/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Go Client Example (Community API)
+### Data Flow
 
-```go
-type PosterDBClient struct {
-    baseURL string  // Community API base URL
-    client  *http.Client
-    limiter *rate.Limiter  // 1 req/5s
-}
+<!-- Data flow diagram -->
 
-func (c *PosterDBClient) SearchByIMDbID(ctx context.Context, imdbID string) ([]Poster, error) {
-    c.limiter.Wait(ctx)  // Rate limiting
+### Provides
 
-    url := fmt.Sprintf("%s/posters?imdb=%s", c.baseURL, imdbID)
-    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
-    req.Header.Set("User-Agent", "Revenge Media Server/1.0 (admin@example.com)")
+This integration provides:
+<!-- Data provided by integration -->
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("search failed: %w", err)
-    }
-    defer resp.Body.Close()
 
-    var posters []Poster
-    json.NewDecoder(resp.Body).Decode(&posters)
-    return posters, nil
-}
+## Implementation
 
-func (c *PosterDBClient) DownloadPoster(ctx context.Context, posterURL string) ([]byte, error) {
-    c.limiter.Wait(ctx)
+### File Structure
 
-    req, _ := http.NewRequestWithContext(ctx, "GET", posterURL, nil)
-    req.Header.Set("User-Agent", "Revenge Media Server/1.0 (admin@example.com)")
+<!-- File structure -->
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("download failed: %w", err)
-    }
-    defer resp.Body.Close()
+### Key Interfaces
 
-    return io.ReadAll(resp.Body)
-}
-```
+<!-- Interface definitions -->
 
----
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/video](integrations/metadata/video.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Movie Module](../../features/video/MOVIE_MODULE.md)
-- [TV Show Module](../../features/video/TVSHOW_MODULE.md)
-- [TMDb Integration](TMDB.md) - Default poster source
-- [Media Enhancements](../../features/MEDIA_ENHANCEMENTS.md)
+### External Sources
+- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [ThePosterDB API](https://theposterdb.com/api) - Auto-resolved from theposterdb
 
----
-
-## Poster Sets & Collections
-
-ThePosterDB offers curated poster sets with matching styles:
-
-| Set Type | Description |
-|----------|-------------|
-| **Textless** | Posters without text/logos |
-| **Minimal** | Clean, minimalist designs |
-| **4K** | 4K Ultra HD branding |
-| **IMAX** | IMAX edition branding |
-| **Streaming** | Netflix, Disney+, Prime Video themes |
-| **MCU** | Marvel Cinematic Universe (matching style) |
-| **DC** | DC Extended Universe (matching style) |
-| **Star Wars** | Star Wars saga (matching style) |
-
----
-
-## Notes
-
-- **NO official API** - use community API OR web scraping
-- **Community API is unofficial** - may break if ThePosterDB changes structure
-- **Rate limiting CRITICAL** - minimum 1 request per 5 seconds (avoid IP ban)
-- **Respect robots.txt** - https://theposterdb.com/robots.txt
-- **User-Agent required** - identify Revenge Media Server (include contact email)
-- **Graceful degradation** - use TMDb posters if ThePosterDB unavailable
-- **Optional feature** - ThePosterDB posters are enhancement, not requirement
-- **High resolution** - ThePosterDB posters are higher quality than TMDb user uploads
-- **Curated content** - ThePosterDB moderators approve posters (consistent quality)
-- **Set collections** - Download entire poster sets for consistency (e.g., MCU with matching style)
-- **CAPTCHA handling** - If CAPTCHA detected, fail silently and use TMDb fallback
-- **Legal considerations** - ThePosterDB allows personal use (check ToS for commercial use)
-- **Storage requirements** - High-resolution posters require more disk space (consider compression)

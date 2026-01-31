@@ -1,514 +1,194 @@
+## Table of Contents
+
+- [Voice Control](#voice-control)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Database Schema](#database-schema)
+    - [Module Structure](#module-structure)
+    - [Component Interaction](#component-interaction)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [Content Management](#content-management)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
+
+
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    note: Auto-resolved from ogen
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+design_refs:
+  - title: features/shared
+    path: features/shared.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
 # Voice Control
 
-<!-- SOURCES: fx, ogen, pgx, postgresql-arrays, postgresql-json, river, sqlc, sqlc-config -->
 
-<!-- DESIGN: features/shared, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: feature
 
+
+> Content module for 
 
 > Voice assistant integration (Alexa, Google Assistant)
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Overview](#overview)
-- [Supported Platforms](#supported-platforms)
-- [Features](#features)
-  - [Playback Control](#playback-control)
-  - [Content Navigation](#content-navigation)
-  - [Information](#information)
-- [Architecture](#architecture)
-- [Alexa Skill](#alexa-skill)
-  - [Skill Definition](#skill-definition)
-  - [Lambda Handler (Go)](#lambda-handler-go)
-- [Google Assistant](#google-assistant)
-  - [Actions Definition](#actions-definition)
-- [Database Schema](#database-schema)
-- [API Endpoints](#api-endpoints)
-- [Configuration](#configuration)
-- [Account Linking](#account-linking)
-  - [Alexa Account Linking Flow](#alexa-account-linking-flow)
-- [RBAC Permissions](#rbac-permissions)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
-  - [Phase 2: Database](#phase-2-database)
-  - [Phase 3: Service Layer](#phase-3-service-layer)
-  - [Phase 4: OAuth & Account Linking](#phase-4-oauth-account-linking)
-  - [Phase 5: API Integration](#phase-5-api-integration)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related](#related)
-
-<!-- TOC-END -->
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Full design with Alexa/Google intents, Lambda handler, DB schema |
-| Sources | 🟡 | Inspired by Emby Voice Control |
-| Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |**Last Updated**: 2026-01-30
-**Location**: `internal/voice/`
-**Priority**: 🔵 LOW (Nice to have - Emby has this)
-**Inspired By**: Emby Voice Control
+| Design | ✅ | - |
+| Sources | 🟡 | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Overview
-
-Voice control allows users to control playback and browse content using voice commands through Amazon Alexa and Google Assistant.
-
----
-
-## Supported Platforms
-
-| Platform | Integration Type | Status |
-|----------|-----------------|--------|
-| Amazon Alexa | Smart Home Skill | 🟡 Planned |
-| Google Assistant | Actions on Google | 🟡 Planned |
-| Apple Siri | HomeKit / Shortcuts | 🔴 Future |
-
----
-
-## Features
-
-### Playback Control
-
-| Command | Example |
-|---------|---------|
-| Play | "Play The Matrix" |
-| Pause | "Pause" |
-| Resume | "Resume" |
-| Stop | "Stop" |
-| Next | "Next episode" |
-| Previous | "Previous episode" |
-| Seek | "Skip forward 30 seconds" |
-
-### Content Navigation
-
-| Command | Example |
-|---------|---------|
-| Browse | "Show my movies" |
-| Search | "Search for action movies" |
-| Play Series | "Play Breaking Bad" |
-| Continue | "Continue watching" |
-| Recommendations | "What should I watch?" |
-
-### Information
-
-| Command | Example |
-|---------|---------|
-| What's Playing | "What's playing?" |
-| Episode Info | "What episode is this?" |
-| Duration | "How long is this movie?" |
-
----
 
 ## Architecture
 
+### Database Schema
+
+**Schema**: `public`
+
+<!-- Schema diagram -->
+
+### Module Structure
+
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Voice Control Flow                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│   User Voice ──► Alexa/Google ──► Revenge Skill ──► API        │
-│                                                                 │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐        │
-│  │   "Play     │───►│   Amazon    │───►│  Revenge    │        │
-│  │ The Matrix" │    │   Lambda    │    │   API       │        │
-│  └─────────────┘    └─────────────┘    └─────────────┘        │
-│                            │                  │                 │
-│                            │           ┌──────▼──────┐         │
-│                            │           │   Search    │         │
-│                            │           │   Service   │         │
-│                            │           └──────┬──────┘         │
-│                            │                  │                 │
-│                            │           ┌──────▼──────┐         │
-│                            └──────────►│   Device    │         │
-│                                        │  Playback   │         │
-│                                        └─────────────┘         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+internal/content/voice_control/
+├── module.go              # fx module definition
+├── repository.go          # Database operations
+├── service.go             # Business logic
+├── handler.go             # HTTP handlers (ogen)
+├── types.go               # Domain types
+└── voice_control_test.go
 ```
 
----
+### Component Interaction
 
-## Alexa Skill
+<!-- Component interaction diagram -->
 
-### Skill Definition
 
-```json
-{
-    "interactionModel": {
-        "languageModel": {
-            "invocationName": "revenge",
-            "intents": [
-                {
-                    "name": "PlayMediaIntent",
-                    "slots": [
-                        {
-                            "name": "title",
-                            "type": "AMAZON.VideoGame"
-                        }
-                    ],
-                    "samples": [
-                        "play {title}",
-                        "watch {title}",
-                        "start {title}"
-                    ]
-                },
-                {
-                    "name": "AMAZON.PauseIntent"
-                },
-                {
-                    "name": "AMAZON.ResumeIntent"
-                },
-                {
-                    "name": "AMAZON.NextIntent"
-                },
-                {
-                    "name": "AMAZON.PreviousIntent"
-                },
-                {
-                    "name": "ContinueWatchingIntent",
-                    "samples": [
-                        "continue watching",
-                        "resume my show",
-                        "what was I watching"
-                    ]
-                }
-            ]
-        }
-    }
-}
-```
+## Implementation
 
-### Lambda Handler (Go)
+### File Structure
 
-```go
-package main
+<!-- File structure -->
 
-import (
-    "context"
-    "github.com/aws/aws-lambda-go/lambda"
-    "github.com/revenge/voice/alexa"
-)
+### Key Interfaces
 
-type AlexaRequest struct {
-    Version string `json:"version"`
-    Request struct {
-        Type   string `json:"type"`
-        Intent struct {
-            Name  string `json:"name"`
-            Slots map[string]struct {
-                Value string `json:"value"`
-            } `json:"slots"`
-        } `json:"intent"`
-    } `json:"request"`
-}
+<!-- Interface definitions -->
 
-type AlexaResponse struct {
-    Version  string `json:"version"`
-    Response struct {
-        OutputSpeech struct {
-            Type string `json:"type"`
-            Text string `json:"text"`
-        } `json:"outputSpeech"`
-        ShouldEndSession bool `json:"shouldEndSession"`
-    } `json:"response"`
-}
+### Dependencies
 
-func handler(ctx context.Context, req AlexaRequest) (*AlexaResponse, error) {
-    switch req.Request.Intent.Name {
-    case "PlayMediaIntent":
-        title := req.Request.Intent.Slots["title"].Value
-        return handlePlayMedia(ctx, title)
-    case "AMAZON.PauseIntent":
-        return handlePause(ctx)
-    case "AMAZON.ResumeIntent":
-        return handleResume(ctx)
-    case "ContinueWatchingIntent":
-        return handleContinueWatching(ctx)
-    default:
-        return unknownIntent()
-    }
-}
+<!-- Dependency list -->
 
-func handlePlayMedia(ctx context.Context, title string) (*AlexaResponse, error) {
-    // Search for content
-    results, err := searchContent(ctx, title)
-    if err != nil || len(results) == 0 {
-        return speak("I couldn't find " + title), nil
-    }
 
-    // Send play command to active device
-    err = playOnDevice(ctx, results[0].ID)
-    if err != nil {
-        return speak("I had trouble starting playback"), nil
-    }
 
-    return speak("Now playing " + results[0].Title), nil
-}
 
-func speak(text string) *AlexaResponse {
-    return &AlexaResponse{
-        Version: "1.0",
-        Response: struct {
-            OutputSpeech struct {
-                Type string `json:"type"`
-                Text string `json:"text"`
-            } `json:"outputSpeech"`
-            ShouldEndSession bool `json:"shouldEndSession"`
-        }{
-            OutputSpeech: struct {
-                Type string `json:"type"`
-                Text string `json:"text"`
-            }{
-                Type: "PlainText",
-                Text: text,
-            },
-            ShouldEndSession: true,
-        },
-    }
-}
 
-func main() {
-    lambda.Start(handler)
-}
-```
+## Configuration
+### Environment Variables
 
----
+<!-- Environment variables -->
 
-## Google Assistant
+### Config Keys
 
-### Actions Definition
+<!-- Configuration keys -->
 
-```yaml
-# actions.yaml
-actions:
-  - name: actions.intent.PLAY_MEDIA
-    fulfillment:
-      conversationName: play_media
-  - name: actions.intent.MEDIA_PAUSE
-    fulfillment:
-      conversationName: media_control
-  - name: actions.intent.MEDIA_RESUME
-    fulfillment:
-      conversationName: media_control
-
-conversations:
-  play_media:
-    name: Play Media
-    url: https://revenge.example.com/api/v1/voice/google
-    fulfillmentApiVersion: 2
-
-  media_control:
-    name: Media Control
-    url: https://revenge.example.com/api/v1/voice/google
-    fulfillmentApiVersion: 2
-```
-
----
-
-## Database Schema
-
-```sql
--- Voice-linked devices
-CREATE TABLE voice_devices (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    platform VARCHAR(50) NOT NULL, -- alexa, google, siri
-    device_id VARCHAR(200) NOT NULL,
-    device_name VARCHAR(200),
-
-    -- Linked playback device
-    playback_device_id UUID REFERENCES devices(id) ON DELETE SET NULL,
-
-    -- Auth
-    access_token TEXT,
-    refresh_token TEXT,
-    token_expires_at TIMESTAMPTZ,
-
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-
-    UNIQUE(user_id, platform, device_id)
-);
-
--- Voice command logs
-CREATE TABLE voice_commands (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    voice_device_id UUID REFERENCES voice_devices(id) ON DELETE SET NULL,
-
-    platform VARCHAR(50) NOT NULL,
-    intent VARCHAR(100) NOT NULL,
-    raw_text TEXT,
-    slots JSONB,
-
-    -- Result
-    success BOOLEAN,
-    response_text TEXT,
-    action_taken TEXT,
-
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_voice_devices_user ON voice_devices(user_id);
-CREATE INDEX idx_voice_commands_user ON voice_commands(user_id);
-```
-
----
 
 ## API Endpoints
 
-```
-# Device linking
-GET  /api/v1/voice/devices              # List linked devices
-POST /api/v1/voice/devices/link         # Link new device
-DELETE /api/v1/voice/devices/:id        # Unlink device
-PUT  /api/v1/voice/devices/:id          # Update device settings
-
-# Voice handlers (called by Alexa/Google)
-POST /api/v1/voice/alexa                # Alexa skill webhook
-POST /api/v1/voice/google               # Google Actions webhook
-
-# OAuth endpoints (for account linking)
-GET  /api/v1/voice/oauth/authorize      # OAuth authorize
-POST /api/v1/voice/oauth/token          # OAuth token
-```
-
----
-
-## Configuration
-
-```yaml
-voice_control:
-  enabled: true
-
-  alexa:
-    enabled: true
-    skill_id: "amzn1.ask.skill.xxx"
-    client_id: "${ALEXA_CLIENT_ID}"
-    client_secret: "${ALEXA_CLIENT_SECRET}"
-
-  google:
-    enabled: true
-    project_id: "revenge-voice"
-    service_account_key: "/config/google-service-account.json"
-
-  # Default device selection
-  device_selection:
-    prefer_active: true  # Use currently active device
-    fallback_to_last: true  # Use last used device
-```
-
----
-
-## Account Linking
-
-### Alexa Account Linking Flow
-
-```
-1. User enables Revenge skill in Alexa app
-2. Redirected to Revenge OAuth authorize endpoint
-3. User logs in to Revenge
-4. Authorization code sent to Alexa
-5. Alexa exchanges code for tokens
-6. Skill linked to user account
-```
-
----
-
-## RBAC Permissions
-
-| Permission | Description |
-|------------|-------------|
-| `voice.control` | Use voice commands |
-| `voice.link` | Link voice devices |
-| `voice.admin` | View all voice devices |
-
----
-
-## Implementation Checklist
-
-### Phase 1: Core Infrastructure
-- [ ] Create package structure at `internal/voice/`
-- [ ] Create sub-packages: `alexa/`, `google/`, `oauth/`
-- [ ] Define voice device entity (`entity.go`)
-- [ ] Define voice command entity (for logging)
-- [ ] Define intent types and slot structures
-- [ ] Create repository interface (`repository.go`)
-- [ ] Implement PostgreSQL repository (`postgres_repository.go`)
-- [ ] Create fx module (`module.go`)
-- [ ] Add configuration structs for Alexa/Google
-
-### Phase 2: Database
-- [ ] Create migration for `voice_devices` table
-- [ ] Create migration for `voice_commands` table
-- [ ] Add indexes for user_id lookups
-- [ ] Add unique constraint on (user_id, platform, device_id)
-- [ ] Write sqlc queries for device CRUD
-- [ ] Write sqlc queries for command logging
-- [ ] Write sqlc queries for token management
-
-### Phase 3: Service Layer
-- [ ] Implement VoiceService (`service.go`)
-- [ ] Implement intent parsing and routing
-- [ ] Implement command handlers:
-  - [ ] PlayMediaIntent - search and play content
-  - [ ] PauseIntent / ResumeIntent
-  - [ ] NextIntent / PreviousIntent
-  - [ ] ContinueWatchingIntent
-  - [ ] SearchIntent
-  - [ ] WhatsPlayingIntent
-- [ ] Implement device selection logic (prefer active, fallback to last)
-- [ ] Implement playback device communication
-- [ ] Add command logging for analytics
-- [ ] Add error response generation
-
-### Phase 4: OAuth & Account Linking
-- [ ] Implement OAuth 2.0 authorization endpoint
-- [ ] Implement OAuth 2.0 token endpoint
-- [ ] Implement token refresh logic
-- [ ] Implement device linking flow
-- [ ] Add token encryption/decryption
-- [ ] Implement device unlinking
-
-### Phase 5: API Integration
-- [ ] Add OpenAPI spec for voice endpoints
-- [ ] Generate ogen handlers
-- [ ] Implement device management endpoints:
-  - [ ] GET /api/v1/voice/devices (list linked)
-  - [ ] POST /api/v1/voice/devices/link
-  - [ ] DELETE /api/v1/voice/devices/{id}
-  - [ ] PUT /api/v1/voice/devices/{id}
-- [ ] Implement voice platform webhooks:
-  - [ ] POST /api/v1/voice/alexa (Alexa skill)
-  - [ ] POST /api/v1/voice/google (Google Actions)
-- [ ] Implement OAuth endpoints:
-  - [ ] GET /api/v1/voice/oauth/authorize
-  - [ ] POST /api/v1/voice/oauth/token
-- [ ] Add RBAC permission checks (voice.control, voice.link, voice.admin)
-- [ ] Implement Alexa skill validation (signature verification)
-- [ ] Implement Google Actions verification
-
----
+### Content Management
+<!-- API endpoints placeholder -->
 
 
-## Related
+## Testing Strategy
 
-- [Client Support](CLIENT_SUPPORT.md) - Device capabilities
-- [Go Packages](../architecture/GO_PACKAGES.md) - Package dependencies
-- [User Experience Features](USER_EXPERIENCE_FEATURES.md) - Playback features
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [features/shared](features/shared.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
+- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+

@@ -1,610 +1,211 @@
-# StashDB Integration
-
-<!-- SOURCES: ffmpeg, ffmpeg-codecs, ffmpeg-formats, genqlient, genqlient-docs, go-astiav, go-astiav-docs, pgx, postgresql-arrays, postgresql-json, river, stashdb, typesense, typesense-go -->
-
-<!-- DESIGN: integrations/metadata/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Adult metadata database for performers, studios, and scenes
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Documentation](#api-documentation)
-  - [Authentication](#authentication)
-  - [Data Coverage](#data-coverage)
-  - [Go Client Library](#go-client-library)
-- [API Details](#api-details)
-  - [GraphQL Queries](#graphql-queries)
-    - [Search Scenes](#search-scenes)
-    - [Get Scene Details](#get-scene-details)
-    - [Search Performers](#search-performers)
-    - [Get Performer Details](#get-performer-details)
-    - [Search Studios](#search-studios)
-    - [Fingerprint Lookup (Scene Identification)](#fingerprint-lookup-scene-identification)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Integration](#phase-1-core-integration)
-  - [Phase 2: Fingerprinting & Auto-Identification](#phase-2-fingerprinting-auto-identification)
-  - [Phase 3: Performer & Studio Management](#phase-3-performer-studio-management)
-  - [Phase 4: Background Jobs (River)](#phase-4-background-jobs-river)
-- [Integration Pattern](#integration-pattern)
-  - [Scene Metadata Fetch Flow](#scene-metadata-fetch-flow)
-  - [Crew Search Flow](#crew-search-flow)
-  - [Rate Limiting Strategy](#rate-limiting-strategy)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
-  - [API Key (Free)](#api-key-free)
-  - [GraphQL vs REST](#graphql-vs-rest)
-  - [Data Quality](#data-quality)
-  - [Fingerprinting (Perceptual Hashing)](#fingerprinting-perceptual-hashing)
-  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
-  - [Tags & Categories](#tags-categories)
-  - [Parent/Subsidiary Studios](#parentsubsidiary-studios)
-  - [JSONB Storage](#jsonb-storage)
-  - [Image URLs](#image-urls)
-  - [Disambiguation](#disambiguation)
-  - [Community Contributions](#community-contributions)
-  - [Fallback Strategy](#fallback-strategy)
-  - [Use Case: Whisparr Integration](#use-case-whisparr-integration)
+- [StashDB](#stashdb)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Service**: StashDB (https://stashdb.org)
-**API**: GraphQL API (https://stashdb.org/graphql)
-**Category**: Metadata Provider (Adult Content)
-**Priority**: 🟡 HIGH (Adult module core metadata)
+
+---
+sources:
+  - name: FFmpeg Documentation
+    url: https://ffmpeg.org/ffmpeg.html
+    note: Auto-resolved from ffmpeg
+  - name: FFmpeg Codecs
+    url: https://ffmpeg.org/ffmpeg-codecs.html
+    note: Auto-resolved from ffmpeg-codecs
+  - name: FFmpeg Formats
+    url: https://ffmpeg.org/ffmpeg-formats.html
+    note: Auto-resolved from ffmpeg-formats
+  - name: Khan/genqlient
+    url: https://pkg.go.dev/github.com/Khan/genqlient
+    note: Auto-resolved from genqlient
+  - name: genqlient GitHub README
+    url: https://github.com/Khan/genqlient
+    note: Auto-resolved from genqlient-docs
+  - name: go-astiav (FFmpeg bindings)
+    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    note: Auto-resolved from go-astiav
+  - name: go-astiav GitHub README
+    url: https://github.com/asticode/go-astiav
+    note: Auto-resolved from go-astiav-docs
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: StashDB GraphQL API
+    url: https://stashdb.org/graphql
+    note: Auto-resolved from stashdb
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: integrations/metadata/adult
+    path: integrations/metadata/adult.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# StashDB
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with StashDB
+
+> Adult metadata database for performers, studios, and scenes
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive GraphQL API spec, fingerprinting, data mapping |
-| Sources | ✅ | GraphQL schema, playground, API docs, GitHub linked |
-| Instructions | ✅ | Phased implementation checklist with fingerprinting |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**StashDB** is a community-driven adult content metadata database with comprehensive information about performers, studios, and scenes. It is the primary metadata provider for Stash (self-hosted adult media organizer) and the de facto standard for adult content metadata.
 
-**Key Features**:
-- **Performers**: Names, aliases, measurements, tattoos, piercings, career start/end dates, images
-- **Studios**: Studio names, parent companies, logos, URLs
-- **Scenes**: Scene titles, release dates, performers, studios, tags, cover images, scene markers
-- **Community-driven**: User submissions with moderation workflow
-- **Free API**: GraphQL API with API Key authentication (free registration)
-- **Rich relationships**: Performer-scene, studio-scene, parent/subsidiary studios
-- **Fingerprinting**: Perceptual hashing (phash) for scene identification
-- **Tags**: Comprehensive tag system (positions, acts, settings, fetishes)
-
-**Use Cases**:
-- Primary adult content metadata source
-- Automatic scene identification via fingerprinting
-- Performer/studio metadata enrichment
-- Tag-based content organization
-- Duplicate scene detection
-
-**⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `qar` schema ONLY (`qar.expeditions`, `qar.voyages`, `qar.crew`, `qar.ports`)
-- **API namespace**: `/api/v1/qar/metadata/stashdb/*` (NOT `/api/v1/metadata/stashdb/*`)
-- **Module location**: `internal/content/qar/metadata/stashdb/` (NOT `internal/service/metadata/`)
-- **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
 ---
 
-## Developer Resources
 
-### API Documentation
-- **GraphQL Schema**: https://stashdb.org/graphql
-- **GraphQL Playground**: https://stashdb.org/graphql (interactive query editor)
-- **API Docs**: https://github.com/stashapp/stashdb/blob/develop/docs/API.md
-- **GitHub**: https://github.com/stashapp/stashdb
+## Architecture
 
-### Authentication
-- **Method**: API Key (header-based)
-- **Header**: `ApiKey: YOUR_API_KEY`
-- **Registration**: https://stashdb.org/register (free)
-- **Rate Limits**: Reasonable usage (no hard limit, but avoid abuse)
+### Integration Structure
 
-### Data Coverage
-- **Scenes**: 1M+ scenes (English-language focus, Western studios)
-- **Performers**: 200K+ performers (active + retired)
-- **Studios**: 10K+ studios (parent/subsidiary relationships)
-- **Tags**: 500+ tags (positions, acts, settings, fetishes)
-- **Updates**: Real-time (community submissions + moderation)
-
-### Go Client Library
-- **Official**: None (use standard GraphQL client)
-- **Recommended**: `github.com/machinebox/graphql` OR `github.com/Khan/genqlient`
-- **Alternative**: `net/http` + manual GraphQL JSON requests
-
----
-
-## API Details
-
-### GraphQL Queries
-
-#### Search Scenes
-```graphql
-query SearchScenes($query: String!, $page: Int) {
-  searchScene(term: $query, page: $page) {
-    count
-    scenes {
-      id
-      title
-      release_date
-      studio {
-        id
-        name
-        parent_studio {
-          id
-          name
-        }
-      }
-      performers {
-        performer {
-          id
-          name
-          disambiguation
-          gender
-        }
-        as
-      }
-      tags {
-        id
-        name
-        description
-      }
-      images {
-        url
-        width
-        height
-      }
-      fingerprints {
-        hash
-        algorithm
-        duration
-      }
-      duration
-      details
-      url
-    }
-  }
-}
+```
+internal/integration/stashdb/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-#### Get Scene Details
-```graphql
-query GetScene($id: ID!) {
-  findScene(id: $id) {
-    id
-    title
-    release_date
-    studio {
-      id
-      name
-      url
-      parent_studio {
-        id
-        name
-      }
-    }
-    performers {
-      performer {
-        id
-        name
-        disambiguation
-        gender
-        birthdate
-        ethnicity
-        country
-        eye_color
-        hair_color
-        height
-        measurements
-        tattoos {
-          location
-          description
-        }
-        piercings {
-          location
-          description
-        }
-        images {
-          url
-          width
-          height
-        }
-      }
-      as
-    }
-    tags {
-      id
-      name
-      description
-      category
-    }
-    images {
-      url
-      width
-      height
-    }
-    fingerprints {
-      hash
-      algorithm
-      duration
-    }
-    duration
-    director
-    details
-    url
-    code
-  }
-}
-```
+### Data Flow
 
-#### Search Performers
-```graphql
-query SearchPerformers($query: String!, $page: Int) {
-  searchPerformer(term: $query, page: $page) {
-    count
-    performers {
-      id
-      name
-      disambiguation
-      gender
-      birthdate
-      ethnicity
-      country
-      eye_color
-      hair_color
-      height
-      measurements
-      career_start_year
-      career_end_year
-      tattoos {
-        location
-        description
-      }
-      piercings {
-        location
-        description
-      }
-      images {
-        url
-        width
-        height
-      }
-      aliases
-    }
-  }
-}
-```
+<!-- Data flow diagram -->
 
-#### Get Performer Details
-```graphql
-query GetPerformer($id: ID!) {
-  findPerformer(id: $id) {
-    id
-    name
-    disambiguation
-    gender
-    birthdate
-    death_date
-    ethnicity
-    country
-    eye_color
-    hair_color
-    height
-    measurements
-    breast_type
-    career_start_year
-    career_end_year
-    tattoos {
-      location
-      description
-    }
-    piercings {
-      location
-      description
-    }
-    images {
-      url
-      width
-      height
-    }
-    aliases
-    urls {
-      url
-      site {
-        name
-        icon
-      }
-    }
-  }
-}
-```
+### Provides
 
-#### Search Studios
-```graphql
-query SearchStudios($query: String!, $page: Int) {
-  searchStudio(term: $query, page: $page) {
-    count
-    studios {
-      id
-      name
-      url
-      parent_studio {
-        id
-        name
-      }
-      child_studios {
-        id
-        name
-      }
-      images {
-        url
-        width
-        height
-      }
-    }
-  }
-}
-```
+This integration provides:
+<!-- Data provided by integration -->
 
-#### Fingerprint Lookup (Scene Identification)
-```graphql
-query FingerprintLookup($fingerprints: [FingerprintQueryInput!]!) {
-  queryFingerprints(fingerprints: $fingerprints) {
-    hash
-    duration
-    submissions {
-      id
-      title
-      release_date
-      studio {
-        name
-      }
-      performers {
-        performer {
-          name
-        }
-      }
-    }
-  }
-}
-```
 
----
+## Implementation
 
-## Implementation Checklist
+### File Structure
 
-### Phase 1: Core Integration
-- [ ] GraphQL client setup (`machinebox/graphql` OR `genqlient`)
-- [ ] API Key configuration (`configs/config.yaml` - `stashdb.api_key`)
-- [ ] **Adult schema**: `qar.crew`, `qar.ports`, `qar.voyages` tables (NOT public schema)
-- [ ] **API namespace**: `/api/v1/qar/metadata/stashdb/*` endpoints
-- [ ] **Module location**: `internal/content/qar/metadata/stashdb/` (isolated from public metadata)
-- [ ] Basic scene search (GraphQL `searchScene` query)
-- [ ] Scene details fetch (GraphQL `findScene` query)
-- [ ] Performer search (GraphQL `searchPerformer` query)
-- [ ] Performer details fetch (GraphQL `findPerformer` query)
-- [ ] Studio search (GraphQL `searchStudio` query)
-- [ ] Image downloads (performer images, scene covers, studio logos)
-- [ ] JSONB storage (`qar.expeditions.metadata_json.stashdb_data`)
+<!-- File structure -->
 
-### Phase 2: Fingerprinting & Auto-Identification
-- [ ] Perceptual hashing (phash) generation for video files
-- [ ] Fingerprint lookup API (GraphQL `queryFingerprints`)
-- [ ] Automatic scene identification (match video → StashDB scene)
-- [ ] Duplicate detection (same fingerprint = duplicate scene)
-- [ ] Match confidence scoring (duration match, fingerprint similarity)
-- [ ] Manual match override (user can correct mismatches)
+### Key Interfaces
 
-### Phase 3: Performer & Studio Management
-- [ ] Performer profiles (bio, measurements, tattoos, piercings, career dates)
-- [ ] Performer image galleries (headshots, body shots)
-- [ ] Performer aliases (stage names, alternate spellings)
-- [ ] Studio hierarchy (parent/subsidiary relationships)
-- [ ] Studio logos & branding
-- [ ] Tag management (positions, acts, settings, fetishes)
-- [ ] Performer scene filmography (all scenes with performer)
+<!-- Interface definitions -->
 
-### Phase 4: Background Jobs (River)
-- [ ] **Job**: `qar.metadata.stashdb.fetch_voyage` (fetch voyage/scene metadata)
-- [ ] **Job**: `qar.metadata.stashdb.fetch_crew` (fetch crew/performer metadata)
-- [ ] **Job**: `qar.metadata.stashdb.identify_voyages` (fingerprint-based identification)
-- [ ] **Job**: `qar.metadata.stashdb.refresh_metadata` (weekly refresh for active content)
-- [ ] Rate limiting (reasonable usage, avoid API abuse)
-- [ ] Retry logic (exponential backoff for failures)
+### Dependencies
 
----
+<!-- Dependency list -->
 
-## Integration Pattern
 
-### Scene Metadata Fetch Flow
-```
-User adds video file
-        ↓
-Generate perceptual hash (phash)
-        ↓
-StashDB fingerprint lookup (GraphQL queryFingerprints)
-        ↓
-Match found? → Fetch scene details (findScene)
-              ↓
-              Extract: title, release_date, performers, studio, tags, images
-              ↓
-              Store in qar.expeditions OR qar.voyages (qar schema ONLY)
-              ↓
-              metadata_json.stashdb_data = full GraphQL response
-              ↓
-              Download voyage cover image
-              ↓
-              Fetch crew details (findPerformer for each crew member)
-              ↓
-              Store in qar.crew table
-              ↓
-              Download crew images
-              ↓
-              Fetch port details (findStudio)
-              ↓
-              Store in qar.ports table
-              ↓
-              Link crew → voyage (qar.voyage_crew junction table)
-              ↓
-              Update Typesense search index (qar_voyages collection)
-              ↓
-              Notify user: "Metadata updated from StashDB"
 
-Match not found? → Manual search UI (user searches StashDB by title)
-                   ↓
-                   User selects correct scene
-                   ↓
-                   Fetch scene details (same flow as above)
-```
 
-### Crew Search Flow
-```
-User searches crew name
-        ↓
-GraphQL searchPerformer query
-        ↓
-Display results: name, image, cargo (measurements), career dates
-        ↓
-User selects crew member
-        ↓
-Fetch crew details (findPerformer)
-        ↓
-Store in qar.crew table
-        ↓
-Download crew images
-        ↓
-Display crew profile page:
-  - Bio (birthdate, ethnicity, country, measurements)
-  - Images (gallery)
-  - Tattoos & piercings (detailed)
-  - Career info (start/end year, active status)
-  - Filmography (all voyages with this crew member)
-```
 
-### Rate Limiting Strategy
-```
-StashDB has no hard rate limit, but avoid abuse:
-- Batch requests: Fetch multiple scenes in one query (GraphQL batch)
-- Caching: Cache performer/studio data for 30 days (reduce redundant requests)
-- Background jobs: Use River queue (avoid overwhelming API)
-- Exponential backoff: Retry with delay if 429/500 errors
-- User-initiated: Prioritize user-initiated searches over background jobs
-```
+## Configuration
+### Environment Variables
 
----
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/adult](integrations/metadata/adult.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [STASH.md](./STASH.md) - Stash self-hosted organizer (uses StashDB API)
-- [THEPORNDB.md](./THEPORNDB.md) - Alternative adult metadata provider
-- [WHISPARR.md](../../servarr/WHISPARR.md) - Adult content management (uses StashDB)
-- [ADULT_METADATA.md](../../../ADULT_METADATA.md) - Adult metadata system architecture
-- [ADULT_CONTENT_SYSTEM.md](../../../ADULT_CONTENT_SYSTEM.md) - Adult content isolation design
+### External Sources
+- [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) - Auto-resolved from ffmpeg-formats
+- [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) - Auto-resolved from genqlient
+- [genqlient GitHub README](https://github.com/Khan/genqlient) - Auto-resolved from genqlient-docs
+- [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](https://github.com/asticode/go-astiav) - Auto-resolved from go-astiav-docs
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [StashDB GraphQL API](https://stashdb.org/graphql) - Auto-resolved from stashdb
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
 
----
-
-## Notes
-
-### API Key (Free)
-- Register at https://stashdb.org/register
-- Free API access (no paid tiers)
-- Reasonable usage policy (no hard rate limit)
-
-### GraphQL vs REST
-- StashDB uses GraphQL (not REST)
-- Flexible queries (request only needed fields)
-- Batch requests (fetch multiple scenes in one query)
-- Strong typing (GraphQL schema validation)
-
-### Data Quality
-- **Community-driven**: User submissions with moderation
-- **High quality**: Active moderation team reviews submissions
-- **Performer focus**: Best performer metadata (measurements, tattoos, piercings)
-- **Scene fingerprinting**: Accurate scene identification via phash
-
-### Fingerprinting (Perceptual Hashing)
-- **Algorithm**: Perceptual hash (phash) - detects duplicate/similar videos
-- **Generation**: Use `ffmpeg` + perceptual hashing library (e.g., `goimagehash`)
-- **Matching**: Compare phash values (Hamming distance < threshold = match)
-- **Duration**: Include video duration for additional validation
-
-### Adult Content Isolation (CRITICAL)
-- **Database schema**: `qar` schema ONLY (`qar.expeditions`, `qar.voyages`, `qar.crew`, `qar.ports`)
-  - `qar.expeditions.metadata_json.stashdb_data` (JSONB)
-  - `qar.voyages.metadata_json.stashdb_data` (JSONB)
-  - `qar.crew` (dedicated table)
-  - `qar.ports` (dedicated table)
-  - `qar.expedition_crew` (junction table)
-  - `qar.voyage_crew` (junction table)
-- **API namespace**: `/api/v1/qar/metadata/stashdb/*` (isolated)
-  - `/api/v1/qar/metadata/stashdb/search/voyages`
-  - `/api/v1/qar/metadata/stashdb/search/crew`
-  - `/api/v1/qar/metadata/stashdb/voyages/{stashdb_id}`
-  - `/api/v1/qar/metadata/stashdb/crew/{stashdb_id}`
-  - `/api/v1/qar/metadata/stashdb/identify` (fingerprint lookup)
-- **Module location**: `internal/content/qar/metadata/stashdb/` (NOT `internal/service/metadata/`)
-- **Access control**: Mods/admins see all data for monitoring, regular users see only their library
-
-### Tags & Categories
-- **Categories**: Position, Act, Setting, Fetish, Hair Color, Ethnicity, etc.
-- **Hierarchical**: Tags have categories (e.g., "Doggy Style" → category "Position")
-- **Comprehensive**: 500+ tags covering all aspects
-- **User-defined**: Custom tags supported (in addition to StashDB tags)
-
-### Parent/Subsidiary Studios
-- **Hierarchy**: Studios can have parent companies (e.g., "Brazzers" → parent "MindGeek")
-- **Branding**: Display parent studio branding in UI
-- **Filtering**: Filter scenes by parent studio (e.g., all MindGeek content)
-
-### JSONB Storage
-- Store full StashDB GraphQL response in `qar.expeditions.metadata_json.stashdb_data`
-- Future-proofing: If StashDB adds new fields, they're automatically stored
-- Querying: Use PostgreSQL JSONB operators for advanced queries
-
-### Image URLs
-- **Direct URLs**: StashDB provides direct image URLs (no authentication required)
-- **CDN**: Images served via CDN (fast delivery)
-- **Sizes**: Multiple sizes available (thumbnail, medium, full-resolution)
-- **Download**: Download and store locally (avoid hotlinking, ensure availability)
-
-### Disambiguation
-- **Performer names**: Disambiguation field (e.g., "Performer Name (Studio)" OR "Performer Name (Birthdate)")
-- **Use case**: Multiple performers with same name (rare but possible)
-
-### Community Contributions
-- **User submissions**: Users can submit new scenes/performers/studios
-- **Moderation**: Active moderation team reviews submissions
-- **Edits**: Users can propose edits to existing data
-- **Trust system**: Established contributors have higher trust levels
-
-### Fallback Strategy
-- **StashDB primary**: Use StashDB as primary adult metadata source
-- **ThePornDB fallback**: Use ThePornDB if StashDB lacks data (rare)
-- **Manual entry**: Allow users to manually add metadata if both sources lack data
-
-### Use Case: Whisparr Integration
-- Whisparr uses StashDB for scene identification
-- When Whisparr downloads scene → fetch StashDB metadata → update Revenge database
-- Unified metadata across Whisparr + Revenge

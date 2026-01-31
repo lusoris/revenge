@@ -1,230 +1,167 @@
-# Auth Service
-
-<!-- SOURCES: fx, ogen -->
-
-<!-- DESIGN: services, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Authentication, registration, and password management
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Developer Resources](#developer-resources)
-- [Status](#status)
-- [Overview](#overview)
-- [Dependencies](#dependencies)
-- [Operations](#operations)
-  - [Login](#login)
-  - [Logout](#logout)
-  - [Logout All](#logout-all)
-  - [Register](#register)
-  - [Validate Token](#validate-token)
-  - [Change Password](#change-password)
-  - [Is Setup Required](#is-setup-required)
-- [Errors](#errors)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
-  - [Phase 2: Service Layer](#phase-2-service-layer)
-  - [Phase 3: Middleware](#phase-3-middleware)
-  - [Phase 4: API Integration](#phase-4-api-integration)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documents](#related-documents)
+- [Auth Service](#auth-service)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Service Structure](#service-structure)
+    - [Dependencies](#dependencies)
+    - [Provides](#provides)
+    - [Component Diagram](#component-diagram)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Module**: `internal/service/auth`
 
-## Developer Resources
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    note: Auto-resolved from ogen
+design_refs:
+  - title: services
+    path: services/INDEX.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
 
-> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#backend-services) for service inventory and status.
+# Auth Service
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: service
+
+
+> > Authentication, registration, and password management
+
+**Package**: `internal/service/auth`
+**fx Module**: `auth.Module`
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | ✅ |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |---
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-The Auth service coordinates authentication flows by combining the User and Session services. It provides:
 
-- User login/logout
-- Registration (first user becomes admin)
-- Password management
-- Token validation
-- Setup status checking
-
----
-
-## Dependencies
-
-```go
-type Service struct {
-    userService    *user.Service
-    sessionService *session.Service
-    logger         *slog.Logger
-}
-```
-
----
-
-## Operations
-
-### Login
-
-Authenticates user and creates a session.
-
-```go
-type LoginParams struct {
-    Username      string
-    Password      string
-    DeviceName    *string
-    DeviceType    *string
-    ClientName    *string
-    ClientVersion *string
-    IPAddress     netip.Addr
-    UserAgent     *string
-}
-
-type LoginResult struct {
-    User    *db.User
-    Session *db.Session
-    Token   string  // Raw token to return to client
-}
-
-func (s *Service) Login(ctx context.Context, params LoginParams) (*LoginResult, error)
-```
-
-**Flow**:
-1. Authenticate user via `userService.Authenticate()`
-2. Create session via `sessionService.Create()`
-3. Return user, session, and token
-
-### Logout
-
-Deactivates the current session.
-
-```go
-func (s *Service) Logout(ctx context.Context, token string) error
-```
-
-### Logout All
-
-Deactivates all sessions for a user.
-
-```go
-func (s *Service) LogoutAll(ctx context.Context, userID uuid.UUID) error
-```
-
-### Register
-
-Creates a new user account. First user registered becomes admin.
-
-```go
-type RegisterParams struct {
-    Username          string
-    Email             *string
-    Password          string
-    PreferredLanguage *string
-}
-
-func (s *Service) Register(ctx context.Context, params RegisterParams) (*db.User, error)
-```
-
-**Behavior**:
-- Checks if any users exist
-- First user: `isAdmin = true`, full access
-- Subsequent users: `isAdmin = false`
-- Default settings: `MaxRatingLevel = 100`, `AdultEnabled = false`
-
-### Validate Token
-
-Validates a session token and returns user + session.
-
-```go
-func (s *Service) ValidateToken(ctx context.Context, token string) (*db.User, *db.Session, error)
-```
-
-**Behavior**:
-- Validates token via session service
-- Fetches user by ID
-- Checks if user is disabled (deactivates session if so)
-- Updates session activity timestamp
-
-### Change Password
-
-Changes a user's password after validating current password.
-
-```go
-func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, currentPassword, newPassword string) error
-```
-
-### Is Setup Required
-
-Returns `true` if no users exist (initial setup needed).
-
-```go
-func (s *Service) IsSetupRequired(ctx context.Context) (bool, error)
-```
-
----
-
-## Errors
-
-| Error | Description |
-|-------|-------------|
-| `ErrSetupRequired` | Initial setup has not been completed |
-| `user.ErrUserDisabled` | User account is disabled |
-| `user.ErrInvalidCredentials` | Invalid username or password |
-
----
-
-## Implementation Checklist
-
-### Phase 1: Core Infrastructure
-- [ ] Create `internal/service/auth/` package structure
-- [ ] Define auth types and interfaces
-- [ ] Add fx module wiring
-
-### Phase 2: Service Layer
-- [ ] Implement login flow (user + session)
-- [ ] Implement logout flow
-- [ ] Implement password change
-- [ ] Add rate limiting for auth endpoints
-
-### Phase 3: Middleware
-- [ ] Implement auth middleware
-- [ ] Add session validation
-- [ ] Add API key validation fallback
-
-### Phase 4: API Integration
-- [ ] Define OpenAPI endpoints
-- [ ] Generate ogen handlers
-- [ ] Wire handlers to service
 
 ---
 
 
-## Related Documents
+## Architecture
 
-- [User Service](USER.md) - User account management
-- [Session Service](SESSION.md) - Session token handling
-- [OIDC Service](OIDC.md) - SSO authentication
-- [API Keys Service](APIKEYS.md) - Programmatic access
-- [Activity Service](ACTIVITY.md) - Login/logout event tracking
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory
+### Service Structure
+
+```
+internal/service/auth/
+├── module.go              # fx module definition
+├── service.go             # Service implementation
+├── repository.go          # Data access (if needed)
+├── handler.go             # HTTP handlers (if exposed)
+├── middleware.go          # Middleware (if needed)
+├── types.go               # Domain types
+└── service_test.go        # Tests
+```
+
+### Dependencies
+No external service dependencies.
+
+### Provides
+<!-- Service provides -->
+
+### Component Diagram
+
+<!-- Component diagram -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [services](services/INDEX.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
+

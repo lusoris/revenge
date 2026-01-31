@@ -1,255 +1,155 @@
-# OnlyFans Integration
-
-<!-- DESIGN: integrations/metadata/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Adult content platform subscription service - profile link tracking
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Status](#api-status)
-  - [Integration Approach](#integration-approach)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Link Tracking (Adult Content - c schema)](#phase-1-link-tracking-adult-content---c-schema)
-  - [Phase 2: UI Integration](#phase-2-ui-integration)
-  - [Phase 3: Link Verification](#phase-3-link-verification)
-- [Integration Pattern](#integration-pattern)
-  - [Link Tracking Flow](#link-tracking-flow)
-  - [Link Verification Flow](#link-verification-flow)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
-  - [NO Scraping (Legal/ToS Issues)](#no-scraping-legaltos-issues)
-  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
-  - [Link Sources](#link-sources)
-  - [External URLs Table Schema](#external-urls-table-schema)
-  - [URL Validation](#url-validation)
-  - [Link Display (UI)](#link-display-ui)
-  - [Community Moderation](#community-moderation)
-  - [Priority: VERY LOW](#priority-very-low)
-  - [Alternative Platforms](#alternative-platforms)
-  - [Fallback Strategy (Adult Content Platform Links)](#fallback-strategy-adult-content-platform-links)
+- [OnlyFans](#onlyfans)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+design_refs:
+  - title: integrations/metadata/adult
+    path: integrations/metadata/adult.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# OnlyFans
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with OnlyFans
+
+> Adult content platform subscription service - profile link tracking
+**Authentication**: none
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Link tracking approach, URL validation, verification flow |
-| Sources | ✅ | No API documented (link tracking only approach) |
-| Instructions | ✅ | Phased implementation checklist with c schema isolation |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**OnlyFans** is a subscription-based content platform where creators (including adult performers) share exclusive content with paying subscribers. OnlyFans does not provide a public API and actively blocks scrapers.
 
-**Key Features**:
-- **Creator profiles**: Performer profiles with subscription options
-- **Exclusive content**: Subscription-based content (photos, videos)
-- **Direct messaging**: Subscriber communication
-- **Tips/PPV**: Pay-per-view content, tipping
-- **No public API**: No official public API available
-
-**Use Cases**:
-- **Profile link tracking**: Store OnlyFans profile URLs for performers
-- **External link enrichment**: Add OnlyFans links to performer profiles
-- **Verified status**: Track if performer has OnlyFans account
-
-**⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.performers`)
-- **API namespace**: `/api/v1/legacy/external/onlyfans/*` (NOT `/api/v1/external/onlyfans/*`)
-- **Module location**: `internal/content/c/external/onlyfans/` (NOT `internal/service/external/`)
-- **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
-
-**⚠️ IMPORTANT: Link Tracking ONLY**:
-- **NO scraping**: OnlyFans actively blocks scrapers (legal/ToS issues)
-- **NO API**: No official public API
-- **Link storage only**: Store OnlyFans profile URLs (from FreeOnes, StashDB, user input)
-- **Display only**: Show OnlyFans links in UI (external link, opens in browser)
 
 ---
 
-## Developer Resources
 
-### API Status
-- **Official API**: NONE (no public API)
-- **Web Scraping**: NOT RECOMMENDED (actively blocked, legal issues)
-- **Content Partners**: Private API exists for OnlyFans partners only
+## Architecture
 
-### Integration Approach
-- **Link tracking only**: Do NOT scrape OnlyFans
-- **Source links from**:
-  - StashDB (`performer.urls` field with OnlyFans links)
-  - FreeOnes (scrape OnlyFans links from FreeOnes performer pages)
-  - User input (users can manually add OnlyFans links)
-- **Display links**: Show OnlyFans icon with external link (opens in browser)
+### Integration Structure
 
----
-
-## Implementation Checklist
-
-### Phase 1: Link Tracking (Adult Content - c schema)
-- [ ] Link storage table: `c.performer_external_urls`
-  - Fields: `platform='onlyfans'`, `url`, `verified`
-- [ ] Import OnlyFans links from StashDB (`performer.urls` field)
-- [ ] Import OnlyFans links from FreeOnes scraping
-- [ ] Manual link input (user can add OnlyFans link to performer profile)
-- [ ] Link validation (verify URL format `https://onlyfans.com/{username}`)
-- [ ] **c schema storage**: `c.performers.external_urls` (OnlyFans profile link)
-
-### Phase 2: UI Integration
-- [ ] Display OnlyFans links in performer profile (external links section)
-- [ ] OnlyFans icon (recognizable OF logo)
-- [ ] External link (opens in new tab/browser)
-- [ ] Verified badge (if link verified)
-
-### Phase 3: Link Verification
-- [ ] User verification (users can verify OnlyFans links)
-- [ ] Admin moderation (admins can approve/reject links)
-- [ ] Community flagging (flag incorrect/dead links)
-
----
-
-## Integration Pattern
-
-### Link Tracking Flow
 ```
-OnlyFans link source (StashDB OR FreeOnes OR user input)
-        ↓
-Extract OnlyFans URL (https://onlyfans.com/{username})
-        ↓
-Validate URL format
-        ↓
-Store in c.performers.external_urls:
-  - performer_id: UUID
-  - source: 'stashdb' OR 'freeones' OR 'user'
-  - platform: 'onlyfans'
-  - url: 'https://onlyfans.com/username'
-  - verified: FALSE (pending verification)
-        ↓
-Display in UI:
-  - Performer profile → External links section
-  - OnlyFans icon → Click opens https://onlyfans.com/username in new tab
+internal/integration/onlyfans/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Link Verification Flow
-```
-User clicks "Verify Link" on OnlyFans link
-        ↓
-User confirms: "I verified this OnlyFans link is correct"
-        ↓
-Update c.performers.external_urls:
-  - verified: TRUE
-  - verified_by: user_id
-  - verified_at: timestamp
-        ↓
-Display verified badge (✓) next to OnlyFans link
-```
+### Data Flow
 
----
+<!-- Data flow diagram -->
+
+### Provides
+
+This integration provides:
+<!-- Data provided by integration -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/adult](integrations/metadata/adult.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [FREEONES.md](./FREEONES.md) - FreeOnes performer database (OnlyFans links)
-- [PORNHUB.md](./PORNHUB.md) - Pornhub content platform
-- [STASHDB.md](../metadata/adult/STASHDB.md) - Primary adult metadata (performer.urls field)
+### External Sources
+<!-- External documentation sources -->
 
----
-
-## Notes
-
-### NO Scraping (Legal/ToS Issues)
-- **OnlyFans ToS**: Prohibits scraping, automation, data collection
-- **Legal risks**: Scraping OnlyFans can result in legal action
-- **Active blocking**: OnlyFans actively blocks scrapers (CAPTCHA, IP bans)
-- **Revenge policy**: Do NOT scrape OnlyFans (link tracking ONLY)
-
-### Adult Content Isolation (CRITICAL)
-- **Database schema**: `c` schema ONLY
-  - `c.performers.external_urls` (OnlyFans profile link)
-  - NO data in public schema
-- **API namespace**: `/api/v1/legacy/external/onlyfans/*` (isolated)
-- **Module location**: `internal/content/c/external/onlyfans/` (isolated)
-- **Access control**: Mods/admins see all, regular users see only their library
-
-### Link Sources
-1. **StashDB**: `performer.urls` field (OnlyFans links from StashDB)
-   - Import during StashDB performer sync
-   - Filter `site.name == "OnlyFans"`
-
-2. **FreeOnes**: OnlyFans links on FreeOnes performer pages
-   - Scrape OnlyFans links from FreeOnes external links section
-   - Validate URL format
-
-3. **User input**: Users can manually add OnlyFans links
-   - Input field: "OnlyFans URL"
-   - Validation: URL format `https://onlyfans.com/{username}`
-   - Moderation: Requires admin approval (prevent spam)
-
-### External URLs Table Schema
-```sql
--- Already defined in FREEONES.md, reuse for OnlyFans
-CREATE TABLE c.performer_external_urls (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  performer_id UUID NOT NULL REFERENCES c.performers(id) ON DELETE CASCADE,
-  source VARCHAR(50) NOT NULL, -- 'stashdb', 'freeones', 'user'
-  platform VARCHAR(50) NOT NULL, -- 'onlyfans', 'fansly', 'twitter', etc.
-  url TEXT NOT NULL,
-  verified BOOLEAN DEFAULT FALSE,
-  verified_by UUID REFERENCES users(id),
-  verified_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(performer_id, platform, url)
-);
-```
-
-### URL Validation
-- **Format**: `https://onlyfans.com/{username}`
-- **Username**: Alphanumeric + underscore (e.g., `performer_name`)
-- **Normalization**: Lowercase, remove trailing slash
-- **Validation**: Regex `^https://onlyfans\.com/[a-zA-Z0-9_]+$`
-
-### Link Display (UI)
-- **External links section**: Performer profile page
-- **OnlyFans icon**: Recognizable OF logo (blue/white)
-- **External link**: `<a href="https://onlyfans.com/username" target="_blank" rel="noopener noreferrer">`
-- **Verified badge**: ✓ if `verified=TRUE`
-- **Tooltip**: "OnlyFans: @username (Verified)" OR "OnlyFans: @username (Unverified)"
-
-### Community Moderation
-- **Link verification**: Users can verify links (confirm correctness)
-- **Admin moderation**: Admins can approve/reject user-submitted links
-- **Flagging**: Users can flag incorrect/dead links
-- **Removal**: Admins can remove spam/incorrect links
-
-### Priority: VERY LOW
-- **OnlyFans**: Link tracking only (no metadata extraction)
-- **Use case**: Display OnlyFans profile link in performer external links
-- **Implementation**: VERY LOW priority (basic link storage)
-
-### Alternative Platforms
-- **Fansly**: Similar to OnlyFans (subscription-based content)
-- **ManyVids**: Content platform with creator profiles
-- **Both**: Same approach (link tracking only, no scraping)
-
-### Fallback Strategy (Adult Content Platform Links)
-- **Order**: StashDB (primary urls field) → FreeOnes (external links scraping) → User input (manual)
-- **OnlyFans**: Link tracking only (display external link)

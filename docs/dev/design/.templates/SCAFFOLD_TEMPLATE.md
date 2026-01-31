@@ -1,189 +1,131 @@
-# {{ FEATURE_NAME }}
+## Table of Contents
 
-<!-- STATUS: 🔴 DESIGN INCOMPLETE - Scaffold only -->
+- [{{ FEATURE_NAME }}](#feature_name)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- BREADCRUMB: [Design Index](../DESIGN_INDEX.md) > [{{ CATEGORY }}](../{{ CATEGORY_PATH }}/INDEX.md) > {{ FEATURE_NAME }} -->
 
-<!-- SOURCES: To be added during design phase -->
-
-<!-- DESIGN: Complete design documentation pending -->
 
 ---
+sources:
+  - name: To be added during design phase
+    url: PLACEHOLDER_URL
+    note: ⚠️ Source 'To be added during design phase' not found - needs manual resolution
+design_refs:
+  - title: Complete design documentation pending
+    path: Complete design documentation pending.md
+---
+
+# {{ FEATURE_NAME }}
+
+
+**Created**: 2026-01-31
+**Status**: 🔴 PLANNED
+**Category**: other
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | 🔴 PLANNED |
-| Sources | 🔴 NOT STARTED |
-| Instructions | 🔴 NOT STARTED |
-| Code | 🔴 NOT STARTED |
-| Linting | 🔴 NOT STARTED |
-| Unit Testing | 🔴 NOT STARTED |
-| Integration Testing | 🔴 NOT STARTED |
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 PLANNED | - |
+| Sources | 🔴 NOT STARTED | - |
+| Instructions | 🔴 NOT STARTED | - |
+| Code | 🔴 NOT STARTED | - |
+| Linting | 🔴 NOT STARTED | - |
+| Unit Testing | 🔴 NOT STARTED | - |
+| Integration Testing | 🔴 NOT STARTED | - |
 
-**Last Updated**: {{ DATE }}
+**Overall**: 🔴 PLANNED
 
----
 
-## Overview
-
-> **Purpose**: {{ ONE_SENTENCE_DESCRIPTION }}
-
-**Target Version**: {{ TARGET_VERSION }}
-
-**Priority**: {{ PRIORITY_LEVEL }}
-
-**Current State**: This is a scaffold document. Full design documentation is pending.
 
 ---
 
-## Scope
 
-### In Scope
-{{ IN_SCOPE_ITEMS }}
+## Architecture
 
-### Out of Scope
-{{ OUT_OF_SCOPE_ITEMS }}
+<!-- Architecture diagram placeholder -->
 
----
+### Components
 
-## Design TODO
+<!-- Component description -->
 
-This scaffold outlines the structure for complete design documentation. The following sections need to be completed:
 
-### 1. Architecture
+## Implementation
 
-- [ ] Define overall system architecture
-- [ ] Define component interactions and relationships
-- [ ] Define data flow between components
-- [ ] Create architecture diagram (Mermaid or ASCII)
-- [ ] Document design patterns used
-- [ ] Document scalability considerations
+### File Structure
 
-### 2. Database Schema
+<!-- File structure -->
 
-- [ ] Define all database tables
-- [ ] Define columns with types and constraints
-- [ ] Define relationships (foreign keys, junctions)
-- [ ] Define indexes for performance
-- [ ] Define unique constraints
-- [ ] Create ER diagram
-- [ ] Document migration strategy
+### Key Interfaces
 
-### 3. API Endpoints
+<!-- Interface definitions -->
 
-- [ ] List all API endpoints (path, method)
-- [ ] Define request formats (headers, body, query params)
-- [ ] Define response formats (success, error)
-- [ ] Define authentication/authorization requirements
-- [ ] Define rate limiting rules
-- [ ] Define pagination patterns (if applicable)
-- [ ] Document example requests/responses
+### Dependencies
 
-### 4. External Integrations
+<!-- Dependency list -->
 
-- [ ] List required external services/APIs
-- [ ] Define integration points and protocols
-- [ ] Define data synchronization strategy
-- [ ] Define error handling and retry logic
-- [ ] Define fallback/degradation behavior
-- [ ] Document API credentials management
-- [ ] Document rate limiting for external APIs
 
-### 5. Business Logic
 
-- [ ] Define core business rules
-- [ ] Define validation rules
-- [ ] Define state transitions
-- [ ] Define edge cases and handling
-- [ ] Document calculations/algorithms
 
-### 6. Testing Strategy
 
-- [ ] Define unit test approach and coverage targets (80%+)
-- [ ] Define integration test scenarios
-- [ ] Define test data requirements
-- [ ] Define performance test criteria
-- [ ] Define E2E test scenarios (if applicable)
-- [ ] Document mocking strategy for external dependencies
+## Configuration
+### Environment Variables
 
-### 7. Security Considerations
+<!-- Environment variables -->
 
-- [ ] Define authentication requirements
-- [ ] Define authorization/RBAC rules
-- [ ] Document sensitive data handling
-- [ ] Document input validation and sanitization
-- [ ] Document security best practices
-- [ ] Identify potential vulnerabilities
+### Config Keys
 
-### 8. Performance Considerations
+<!-- Configuration keys -->
 
-- [ ] Define caching strategy (L1: otter, L2: rueidis)
-- [ ] Define query optimization approach
-- [ ] Document expected load/scale
-- [ ] Define monitoring metrics
-- [ ] Identify performance bottlenecks
 
-### 9. Implementation Notes
 
-- [ ] List Go packages needed (with versions from SOURCE_OF_TRUTH)
-- [ ] List internal dependencies (other services/modules)
-- [ ] List external dependencies
-- [ ] Document potential implementation challenges
-- [ ] Document alternative approaches considered
-- [ ] List open technical questions
 
----
+## Testing Strategy
 
-## Dependencies
+### Unit Tests
 
-**Depends on**:
-{{ DEPENDENCY_LIST }}
+<!-- Unit test strategy -->
 
-**Blocks**:
-{{ BLOCKS_LIST }}
+### Integration Tests
 
-**Related to**:
-{{ RELATED_LIST }}
+<!-- Integration test strategy -->
 
----
+### Test Coverage
 
-## Timeline
+Target: **80% minimum**
 
-- **Design Start**: TBD
-- **Design Complete**: TBD
-- **Implementation Start**: TBD (after all design docs complete)
-- **Target Release**: {{ TARGET_VERSION }}
 
----
 
-## Open Questions
 
-{{ OPEN_QUESTIONS_LIST }}
 
----
 
-## Research Links
 
-**To be added during design phase**:
-- [ ] Link to relevant external documentation
-- [ ] Link to similar designs in this project
-- [ ] Link to best practices/patterns
-- [ ] Link to source documentation (from docs/dev/sources/)
+## Related Documentation
+### Design Documents
+- [Complete design documentation pending](Complete design documentation pending.md)
 
----
+### External Sources
+- [To be added during design phase](PLACEHOLDER_URL) - ⚠️ Source 'To be added during design phase' not found - needs manual resolution
 
-## Notes
-
-- This scaffold follows the standard design document template
-- All sections should be completed before marking design as ✅
-- Targeting 99% perfection before implementation begins
-- Placeholder graphics acceptable; all technical content must be complete
-
----
-
-**Status**: 🔴 SCAFFOLD - Awaiting detailed design
-**Next Step**: Fill in architecture, database schema, and API sections
-
-<!-- CROSS-REFERENCES: To be added after design completion -->

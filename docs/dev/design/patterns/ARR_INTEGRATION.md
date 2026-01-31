@@ -1,118 +1,136 @@
-# Arr Integration Pattern
+## Table of Contents
 
-<!-- DESIGN: patterns, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+- [Arr Integration Pattern](#arr-integration-pattern)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
 
-> Common patterns for integrating with *arr services (Radarr, Sonarr, Lidarr, Whisparr, etc.)
-
-**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
+design_refs:
+  - title: patterns
+    path: patterns.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Arr Integration Pattern
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: pattern
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | Scaffold |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Design | 🟡 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: 🟡 In Progress
 
-All *arr services (Radarr, Sonarr, Lidarr, Whisparr, Chaptarr) share common API patterns. This document defines reusable patterns for:
 
-- API client configuration
-- Authentication handling
-- Webhook processing
-- Event synchronization
-- Error handling
 
 ---
 
-## Common API Pattern
 
-### Client Structure
+## Architecture
 
-```go
-type ArrClient struct {
-    baseURL    string
-    apiKey     string
-    httpClient *resty.Client
-}
+<!-- Architecture diagram placeholder -->
 
-func NewArrClient(baseURL, apiKey string) *ArrClient {
-    client := resty.New().
-        SetBaseURL(baseURL).
-        SetHeader("X-Api-Key", apiKey).
-        SetTimeout(30 * time.Second)
+### Components
 
-    return &ArrClient{
-        baseURL:    baseURL,
-        apiKey:     apiKey,
-        httpClient: client,
-    }
-}
-```
+<!-- Component description -->
 
-### Standard Endpoints
 
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /api/v3/system/status` | Health check |
-| `GET /api/v3/{resource}` | List items |
-| `GET /api/v3/{resource}/{id}` | Get single item |
-| `POST /api/v3/{resource}` | Create item |
-| `PUT /api/v3/{resource}/{id}` | Update item |
-| `DELETE /api/v3/{resource}/{id}` | Delete item |
+## Implementation
 
----
+### File Structure
 
-## Webhook Pattern
+<!-- File structure -->
 
-### Event Types
+### Key Interfaces
 
-| Event | Trigger |
-|-------|---------|
-| `Grab` | Item grabbed from indexer |
-| `Download` | Download completed |
-| `Rename` | File renamed |
-| `Delete` | Item deleted |
-| `Health` | Health status changed |
+<!-- Interface definitions -->
 
-### Handler Pattern
+### Dependencies
 
-```go
-func (h *WebhookHandler) HandleArrWebhook(w http.ResponseWriter, r *http.Request) {
-    var event ArrWebhookEvent
-    if err := json.NewDecoder(r.Body).Decode(&event); err != nil {
-        http.Error(w, "Invalid payload", http.StatusBadRequest)
-        return
-    }
+<!-- Dependency list -->
 
-    switch event.EventType {
-    case "Download":
-        h.handleDownload(event)
-    case "Grab":
-        h.handleGrab(event)
-    // ...
-    }
 
-    w.WriteHeader(http.StatusOK)
-}
-```
 
----
 
-## Related
 
-- [Radarr Integration](../integrations/servarr/RADARR.md)
-- [Sonarr Integration](../integrations/servarr/SONARR.md)
-- [Lidarr Integration](../integrations/servarr/LIDARR.md)
-- [Whisparr Integration](../integrations/servarr/WHISPARR.md)
-- [Chaptarr Integration](../integrations/servarr/CHAPTARR.md)
-- [Webhook Patterns](WEBHOOK_PATTERNS.md)
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [patterns](patterns.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+<!-- External documentation sources -->
+

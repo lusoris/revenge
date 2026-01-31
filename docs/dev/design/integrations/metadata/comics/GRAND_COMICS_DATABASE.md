@@ -1,331 +1,171 @@
-# Grand Comics Database (GCD) Integration
-
-<!-- SOURCES: pgx, postgresql-arrays, postgresql-json, river -->
-
-<!-- DESIGN: integrations/metadata/comics, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Open-source historical comics database (Golden/Silver Age focus)
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [Data Access](#data-access)
-  - [Key Features](#key-features)
-  - [Data Structure (Simplified)](#data-structure-simplified)
-- [Integration Approaches](#integration-approaches)
-  - [Approach 1: Database Import (Recommended for Historical Comics)](#approach-1-database-import-recommended-for-historical-comics)
-  - [Approach 2: Web Scraping (NOT Recommended)](#approach-2-web-scraping-not-recommended)
-  - [Approach 3: Community Tools (Optional)](#approach-3-community-tools-optional)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Database Import](#phase-1-database-import)
-  - [Phase 2: Metadata Service](#phase-2-metadata-service)
-  - [Phase 3: Cover Images](#phase-3-cover-images)
-  - [Phase 4: Sync & Maintenance](#phase-4-sync-maintenance)
-- [Integration Pattern](#integration-pattern)
-  - [Historical Comics Fallback Flow](#historical-comics-fallback-flow)
-  - [Golden Age Comics Example](#golden-age-comics-example)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [Grand Comics Database (GCD)](#grand-comics-database-gcd)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Priority**: 🟢 LOW (Phase 7 - Comics Module, historical fallback)
-**Provider**: Grand Comics Database Project
+
+---
+sources:
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/metadata/comics
+    path: integrations/metadata/comics.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Grand Comics Database (GCD)
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Grand Comics Database (GCD)
+
+> Open-source historical comics database (Golden/Silver Age focus)
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive database import strategy, SQL examples |
-| Sources | ✅ | Website, database dumps, data license linked |
-| Instructions | ✅ | Phased implementation checklist with import strategy |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Grand Comics Database (GCD)** is an open-source, volunteer-driven database focused on historical comics, particularly Golden Age (1938-1956) and Silver Age (1956-1970) comics. It's the most comprehensive source for public domain and historical comics metadata.
 
-**Why GCD** (as fallback):
-- **Historical focus**: Best source for pre-1980 comics
-- **Public domain comics**: Extensive coverage of public domain works
-- **Detailed credits**: Comprehensive creator credits (writers, artists, editors)
-- **Cover scans**: High-quality scans of historical covers
-- **Free and open**: Open-source project, no API key required
-- **International comics**: Strong coverage of non-US comics (European, British, etc.)
-
-**Limitations**:
-- **No official API**: Data available via database dumps, web scraping, or community tools
-- **Modern comics**: ComicVine better for post-1980 comics
-- **Update frequency**: Slower updates compared to commercial databases
-- **Manual integration**: Requires custom parsing or third-party tools
-
-**Use Case**: Fallback for historical comics (pre-1980), public domain comics, when ComicVine/Marvel API lack data.
 
 ---
 
-## Developer Resources
 
-### Data Access
-- **Website**: https://www.comics.org/
-- **Database Dumps**: https://docs.comics.org/wiki/Downloading_the_Data
-- **API**: No official API (use database dumps or community tools)
-- **Data License**: CC BY-SA 4.0 (Creative Commons Attribution-ShareAlike)
-- **Format**: MySQL dumps (import into PostgreSQL with conversion)
+## Architecture
 
-### Key Features
-- **Comprehensive historical data**: 1M+ issues, 300K+ series (1930s-present)
-- **Detailed credits**: Writers, pencillers, inkers, colorists, letterers, editors
-- **Cover gallery**: High-quality scans of comic covers (historical focus)
-- **Story details**: Individual story credits within issues (not just issue-level)
-- **Publisher information**: Extensive publisher/imprint data
-- **Reprints**: Tracks reprint editions and collections
+### Integration Structure
 
-### Data Structure (Simplified)
-```sql
--- GCD uses normalized relational database
--- Key tables: gcd_issue, gcd_series, gcd_story, gcd_creator, gcd_publisher
-
--- Example: gcd_issue table
-CREATE TABLE gcd_issue (
-    id INT PRIMARY KEY,
-    series_id INT,
-    number VARCHAR(50),
-    publication_date VARCHAR(20),
-    key_date VARCHAR(10),
-    page_count DECIMAL(10,2),
-    editing TEXT,
-    notes TEXT
-);
-
--- Example: gcd_story table (individual stories within issues)
-CREATE TABLE gcd_story (
-    id INT PRIMARY KEY,
-    issue_id INT,
-    title VARCHAR(255),
-    feature VARCHAR(255),
-    type_id INT,  -- cover, story, advertisement, etc.
-    page_count DECIMAL(10,2),
-    script TEXT,  -- writer credits
-    pencils TEXT, -- penciller credits
-    inks TEXT,
-    colors TEXT,
-    letters TEXT,
-    editing TEXT
-);
+```
+internal/integration/grand_comics_database_gcd/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
----
+### Data Flow
 
-## Integration Approaches
+<!-- Data flow diagram -->
 
-### Approach 1: Database Import (Recommended for Historical Comics)
-**Method**: Import GCD MySQL dump into Revenge PostgreSQL database
+### Provides
 
-**Pros**:
-- Full offline access to GCD data
-- No rate limits or API dependencies
-- Fast queries (local database)
-- Complete historical coverage
+This integration provides:
+<!-- Data provided by integration -->
 
-**Cons**:
-- Large database (~500MB-1GB)
-- Requires periodic updates (manual or automated sync)
-- Schema conversion (MySQL → PostgreSQL)
 
-**Implementation Steps**:
-1. Download GCD MySQL dump (https://docs.comics.org/wiki/Downloading_the_Data)
-2. Convert MySQL schema to PostgreSQL (use `pgloader` or manual conversion)
-3. Import into separate PostgreSQL schema (e.g., `gcd` schema)
-4. Create indexes for common queries (series_id, issue_number, publication_date)
-5. Implement GCD metadata service (query local GCD tables)
-6. Schedule monthly/quarterly updates (download new dumps, merge changes)
+## Implementation
 
-**Example Query** (after import):
-```sql
--- Find issue in GCD database
-SELECT
-    i.id,
-    i.number,
-    i.publication_date,
-    s.name AS series_name,
-    p.name AS publisher_name
-FROM gcd.gcd_issue i
-JOIN gcd.gcd_series s ON i.series_id = s.id
-JOIN gcd.gcd_publisher p ON s.publisher_id = p.id
-WHERE s.name ILIKE '%Action Comics%'
-  AND i.number = '1';
-```
+### File Structure
 
-### Approach 2: Web Scraping (NOT Recommended)
-**Method**: Scrape comics.org website for metadata
+<!-- File structure -->
 
-**Pros**:
-- No database import required
-- Always up-to-date data
+### Key Interfaces
 
-**Cons**:
-- Fragile (website changes break scraper)
-- Slow (HTTP requests for each lookup)
-- Violates GCD's ToS (use database dumps instead)
-- Rate limiting concerns
+<!-- Interface definitions -->
 
-**Verdict**: Use Approach 1 (database import) instead.
+### Dependencies
 
-### Approach 3: Community Tools (Optional)
-**Method**: Use third-party GCD API wrappers or tools
+<!-- Dependency list -->
 
-**Options**:
-- **pyGCD**: Python library for GCD data (https://github.com/comictagger/pyGCD)
-- **ComicTagger**: Desktop app with GCD integration (open-source)
 
-**Verdict**: Useful for reference, but database import provides more control.
 
----
 
-## Implementation Checklist
 
-### Phase 1: Database Import
-- [ ] Download GCD MySQL dump (https://docs.comics.org/wiki/Downloading_the_Data)
-- [ ] Convert MySQL schema to PostgreSQL (`pgloader` or manual)
-- [ ] Create `gcd` schema in PostgreSQL
-- [ ] Import GCD tables (gcd_issue, gcd_series, gcd_story, gcd_creator, gcd_publisher)
-- [ ] Create indexes (series_id, issue_number, publication_date)
-- [ ] Verify data integrity (sample queries, count checks)
+## Configuration
+### Environment Variables
 
-### Phase 2: Metadata Service
-- [ ] Implement GCD metadata service (query local GCD tables)
-- [ ] Search GCD for historical comics (pre-1980 fallback)
-- [ ] Fetch issue metadata (title, publication date, page count)
-- [ ] Fetch story credits (writers, artists, editors)
-- [ ] Map GCD IDs to Revenge comics table (metadata_json.gcd_id)
-- [ ] Store GCD metadata in metadata_json JSONB field
+<!-- Environment variables -->
 
-### Phase 3: Cover Images
-- [ ] Download GCD cover scans (https://www.comics.org/issue/{id}/cover/)
-- [ ] Store covers in Revenge media storage (cache locally)
-- [ ] Implement cover fallback (ComicVine → GCD covers)
+### Config Keys
 
-### Phase 4: Sync & Maintenance
-- [ ] Schedule GCD database updates (monthly/quarterly)
-- [ ] Implement incremental update strategy (detect changes, merge)
-- [ ] Add GCD attribution ("Data from Grand Comics Database (CC BY-SA 4.0)")
-- [ ] Document GCD schema for maintainability
+<!-- Configuration keys -->
 
----
 
-## Integration Pattern
 
-### Historical Comics Fallback Flow
-```
-Comic scanned from library (CBZ file)
-                ↓
-Extract metadata (ComicInfo.xml, filename parsing)
-                ↓
-Search ComicVine API (primary)
-                ↓
-NO RESULTS (pre-1980 comic or obscure title)
-                ↓
-Fallback: Search local GCD database
-                ↓
-Query gcd_series + gcd_issue tables
-                ↓
-Fetch metadata (publication date, credits, page count)
-                ↓
-Download GCD cover scan (if available)
-                ↓
-Store GCD metadata in metadata_json.gcd_data
-```
 
-### Golden Age Comics Example
-```sql
--- User adds "Action Comics #1" (1938, Superman's first appearance)
--- ComicVine may have incomplete data for 1930s comics
+## Testing Strategy
 
--- Step 1: Search ComicVine (primary attempt)
--- Result: Partial data OR no results
+### Unit Tests
 
--- Step 2: Fallback to GCD database
-SELECT
-    i.id AS gcd_issue_id,
-    i.number,
-    i.publication_date,
-    i.page_count,
-    s.name AS series_name,
-    p.name AS publisher_name
-FROM gcd.gcd_issue i
-JOIN gcd.gcd_series s ON i.series_id = s.id
-JOIN gcd.gcd_publisher p ON s.publisher_id = p.id
-WHERE s.name = 'Action Comics'
-  AND i.number = '1'
-  AND i.publication_date LIKE '1938%';
+<!-- Unit test strategy -->
 
--- Step 3: Fetch story credits (Superman story)
-SELECT
-    st.title,
-    st.script AS writer,
-    st.pencils AS artist,
-    st.inks AS inker
-FROM gcd.gcd_story st
-WHERE st.issue_id = {gcd_issue_id}
-  AND st.type_id = 19  -- story type (not advertisement)
-ORDER BY st.sequence_number;
+### Integration Tests
 
--- Result: "Superman, Champion of the Oppressed"
--- Writer: Jerry Siegel, Artist: Joe Shuster
-```
+<!-- Integration test strategy -->
 
----
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/comics](integrations/metadata/comics.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **ComicVine Integration**: `docs/integrations/metadata/comics/COMICVINE.md` (primary metadata source)
-- **Marvel API Integration**: `docs/integrations/metadata/comics/MARVEL_API.md` (Marvel enrichment)
-- **Comics Module**: `docs/features/COMICS_MODULE.md` (overall comics architecture)
+### External Sources
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Notes
-
-- **Historical Focus**: GCD excels at Golden Age (1938-1956) and Silver Age (1956-1970) comics
-- **Modern Comics**: ComicVine better for post-1980 comics (GCD still covers modern, but slower updates)
-- **Public Domain**: Best source for public domain comics (pre-1964 US comics)
-- **Database Size**: ~500MB-1GB (compressed), ~2-3GB (uncompressed)
-- **Update Frequency**: GCD releases database dumps monthly/quarterly (check https://docs.comics.org/)
-- **License**: CC BY-SA 4.0 (attribution + share-alike required)
-  - Attribution: "Data from Grand Comics Database (https://www.comics.org/) - CC BY-SA 4.0"
-- **Schema Complexity**: GCD uses highly normalized schema (many JOIN queries required)
-- **Story-Level Credits**: GCD tracks credits per story (not just per issue), very detailed
-- **No Official API**: Use database dumps only (web scraping violates ToS)
-- **Incremental Updates**: Track `modified` timestamps in GCD tables, sync changes only
-- **Cover Scans**: Available at `https://www.comics.org/issue/{gcd_issue_id}/cover/` (4 sizes: thumbnail, medium, large, original)
-- **Reprint Tracking**: GCD tracks reprints (useful for collections, trade paperbacks)
-- **International Comics**: Strong coverage of non-US comics (Franco-Belgian, British, etc.)
-- **Fallback Strategy**: ComicVine (primary) → Marvel API (Marvel) → GCD (historical/obscure)
-- **JSONB Storage**: Store GCD data in `metadata_json.gcd_data` (preserve full dataset)
-- **PostgreSQL Import**: Use `pgloader` for MySQL → PostgreSQL conversion
-  ```bash
-  # Install pgloader
-  brew install pgloader  # macOS
-  apt-get install pgloader  # Ubuntu
-
-  # Convert MySQL dump to PostgreSQL
-  pgloader mysql://user:pass@localhost/gcd postgresql://user:pass@localhost/revenge_gcd
-  ```
-- **Use Case Priority**: Low priority (most users have modern comics), implement only if historical comics support needed

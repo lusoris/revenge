@@ -1,136 +1,136 @@
-# Notifications System
+## Table of Contents
 
-<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+- [Notifications System](#notifications-system)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
 
-> Multi-channel notification delivery
-
-**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Notifications System
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: technical
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | Scaffold |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Design | 🟡 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: 🟡 In Progress
 
-Unified notification system supporting multiple delivery channels:
-- In-app notifications (WebSocket)
-- Email
-- Push notifications (FCM)
-- Webhooks
-- Discord/Telegram bots
+
 
 ---
 
-## Notification Types
-
-| Type | Channels | Priority |
-|------|----------|----------|
-| `library.new` | In-app, Push | Normal |
-| `playback.recommendation` | In-app | Low |
-| `account.security` | Email, In-app | High |
-| `system.maintenance` | All | High |
-| `admin.alert` | Email, Webhook | Critical |
-
----
-
-## Configuration
-
-```yaml
-notifications:
-  channels:
-    inapp:
-      enabled: true
-    email:
-      enabled: true
-    push:
-      enabled: true
-      fcm:
-        project_id: ${FCM_PROJECT_ID}
-        credentials: ${FCM_CREDENTIALS}
-    discord:
-      enabled: false
-      webhook_url: ${DISCORD_WEBHOOK}
-```
-
----
-
-## User Preferences
-
-Users can configure per-channel, per-type preferences:
-
-```json
-{
-  "userId": "uuid",
-  "preferences": {
-    "library.new": {
-      "inapp": true,
-      "email": false,
-      "push": true
-    },
-    "account.security": {
-      "inapp": true,
-      "email": true,
-      "push": true
-    }
-  }
-}
-```
-
----
 
 ## Architecture
 
-```
-┌─────────────────┐
-│ Notification    │
-│ Service         │
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │ Router  │
-    └────┬────┘
-         │
-┌────────┼────────┬────────┬────────┐
-│        │        │        │        │
-▼        ▼        ▼        ▼        ▼
-In-App  Email   Push   Discord  Webhook
-```
+<!-- Architecture diagram placeholder -->
 
----
+### Components
+
+<!-- Component description -->
+
 
 ## Implementation
 
-```go
-type NotificationService struct {
-    channels []NotificationChannel
-    router   *NotificationRouter
-    prefs    NotificationPreferences
-}
+### File Structure
 
-type NotificationChannel interface {
-    Name() string
-    Send(ctx context.Context, n *Notification) error
-    Supports(notificationType string) bool
-}
-```
+<!-- File structure -->
 
----
+### Key Interfaces
 
-## Related
+<!-- Interface definitions -->
 
-- [Notification Service](../services/NOTIFICATION.md)
-- [Webhooks](WEBHOOKS.md)
-- [Email System](EMAIL.md)
-- [WebSockets](WEBSOCKETS.md)
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [technical](technical.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+<!-- External documentation sources -->
+

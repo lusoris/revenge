@@ -1,437 +1,174 @@
-# ErsatzTV Integration
+## Table of Contents
 
-<!-- SOURCES: ersatztv-docs, gohlslib, m3u8, river, xmltv -->
+- [ErsatzTV](#ersatztv)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: integrations/livetv, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
+
+---
+sources:
+  - name: ErsatzTV Documentation
+    url: https://ersatztv.org/docs/
+    note: Auto-resolved from ersatztv-docs
+  - name: gohlslib (HLS)
+    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    note: Auto-resolved from gohlslib
+  - name: M3U8 Extended Format
+    url: https://datatracker.ietf.org/doc/html/rfc8216
+    note: Auto-resolved from m3u8
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: XMLTV Format
+    url: https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd
+    note: Auto-resolved from xmltv
+design_refs:
+  - title: integrations/livetv
+    path: integrations/livetv.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# ErsatzTV
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with ErsatzTV
 
 > Custom IPTV channel creation from your media library
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Documentation](#api-documentation)
-  - [Key Endpoints](#key-endpoints)
-  - [Output Formats](#output-formats)
-- [Integration Architecture](#integration-architecture)
-  - [Channel Management Flow](#channel-management-flow)
-  - [Dual Mode Support](#dual-mode-support)
-- [Age Restriction System](#age-restriction-system)
-  - [Channel Age Ratings](#channel-age-ratings)
-  - [QAR Channel Isolation](#qar-channel-isolation)
-  - [Channel Visibility](#channel-visibility)
-- [Database Schema](#database-schema)
-  - [Regular Channels (`public.iptv_channels`)](#regular-channels-publiciptv-channels)
-  - [QAR Channels (`qar.channels`)](#qar-channels-qarchannels)
-- [Configuration](#configuration)
-- [API Endpoints (Revenge)](#api-endpoints-revenge)
-  - [Regular Channels](#regular-channels)
-  - [Admin Endpoints](#admin-endpoints)
-  - [QAR Channels (Isolated)](#qar-channels-isolated)
-- [Frontend Integration](#frontend-integration)
-  - [Channel Guide Component](#channel-guide-component)
-  - [Applet Support (External Systems)](#applet-support-external-systems)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Basic Integration](#phase-1-basic-integration)
-  - [Phase 2: Channel Management](#phase-2-channel-management)
-  - [Phase 3: Age Restrictions](#phase-3-age-restrictions)
-  - [Phase 4: External Export](#phase-4-external-export)
-- [River Jobs](#river-jobs)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
-  - [Separate ErsatzTV Instance for QAR](#separate-ersatztv-instance-for-qar)
-  - [Hardware Transcoding](#hardware-transcoding)
-  - [Channel Number Ranges](#channel-number-ranges)
-
-<!-- TOC-END -->
-
-**Service**: ErsatzTV (https://ersatztv.org)
-**API**: REST API (Swagger at `/swagger`)
-**Category**: IPTV / Custom Channels
-**Priority**: HIGH (Core LiveTV feature)
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive API endpoints, age restrictions, database schema |
-| Sources | ✅ | Base URL, Swagger UI, output formats documented |
-| Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**ErsatzTV** is an open-source platform that transforms your personal media library into live, custom TV channels. It provides scheduling, EPG generation, and hardware-accelerated streaming.
 
-**Key Features**:
-- **Custom channel creation**: Design personalized 24/7 TV channels
-- **IPTV/EPG output**: M3U playlists + XMLTV guide data
-- **Hardware acceleration**: NVENC, QSV, VAAPI, AMF, VideoToolbox
-- **Media server integration**: Plex, Jellyfin, Emby support
-- **Scheduling**: Blocks, shuffled, scripted schedules
-- **Filler content**: Commercials, bumpers, pre-roll
-
-**Use Cases**:
-- Create "always-on" channels (Movie Channel, Kids Channel, etc.)
-- Simulate traditional TV viewing experience
-- Schedule specific content at specific times
-- Create themed channels (80s Movies, Documentaries, etc.)
 
 ---
 
-## Developer Resources
 
-### API Documentation
-- **Base URL**: `http://ersatztv:8409/api`
-- **Swagger UI**: `http://ersatztv:8409/swagger`
-- **Authentication**: None (local network assumed)
-- **Rate Limits**: None defined
+## Architecture
 
-### Key Endpoints
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/channels` | GET | List all channels |
-| `/api/channels` | POST | Create channel |
-| `/api/channels/{id}` | GET/PUT/DELETE | Channel CRUD |
-| `/api/channels/{id}/playout` | GET | Get playout schedule |
-| `/api/schedules` | GET/POST | Schedule management |
-| `/api/media/sources` | GET | List media sources |
-| `/api/maintenance/empty_trash` | POST | Empty trash |
-| `/api/streaming/sessions` | GET | Active transcoding sessions |
-
-### Output Formats
-
-| Format | URL | Purpose |
-|--------|-----|---------|
-| M3U Playlist | `/iptv/channels.m3u` | Channel list for IPTV clients |
-| XMLTV EPG | `/iptv/guide.xml` | Electronic Program Guide |
-| HLS Stream | `/iptv/channel/{number}.m3u8` | Individual channel stream |
-
----
-
-## Integration Architecture
-
-### Channel Management Flow
+### Integration Structure
 
 ```
-Admin creates channel in Revenge UI
-        ↓
-Revenge API → ErsatzTV API (create channel)
-        ↓
-Admin selects content (movies, shows, playlists)
-        ↓
-Revenge API → ErsatzTV API (add media items)
-        ↓
-Admin sets schedule (shuffle, block, scripted)
-        ↓
-ErsatzTV generates playout + EPG
-        ↓
-Users watch via IPTV player OR Revenge player
+internal/integration/ersatztv/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Dual Mode Support
+### Data Flow
 
-| Mode | Description | Use Case |
-|------|-------------|----------|
-| **Embedded** | Revenge player streams from ErsatzTV | In-app viewing |
-| **External** | Export M3U/EPG for external IPTV apps | VLC, Kodi, etc. |
+<!-- Data flow diagram -->
 
----
+### Provides
 
-## Age Restriction System
+This integration provides:
+<!-- Data provided by integration -->
 
-### Channel Age Ratings
 
-Channels inherit the highest rating of their content:
+## Implementation
 
-| Rating | Content | Access |
-|--------|---------|--------|
-| `G` | General | All users |
-| `PG` | Parental Guidance | All users |
-| `PG-13` | 13+ | Users with birthdate confirming 13+ |
-| `R` | Restricted | Users with birthdate confirming 17+ |
-| `NC-17` | Adults Only | 18+ verified users |
-| `QAR` | Adult (QAR content) | QAR-enabled users with PIN |
+### File Structure
 
-### QAR Channel Isolation
+<!-- File structure -->
 
-Channels containing QAR (adult) content follow strict isolation:
+### Key Interfaces
 
-```
-QAR Channel Creation:
-  1. Admin must have `qar:admin` permission
-  2. Channel marked as `age_rating: qar`
-  3. Channel stored in `qar.channels` table (isolated schema)
-  4. API namespace: `/api/v1/legacy/livetv/channels/*`
-  5. Viewing requires:
-     - User has `legacy:read` scope
-     - Valid QAR PIN entered
-     - Session PIN not expired
-```
+<!-- Interface definitions -->
 
-### Channel Visibility
+### Dependencies
 
-| User Type | G/PG | PG-13/R | NC-17 | QAR |
-|-----------|------|---------|-------|-----|
-| Guest | | | | |
-| Child Profile | | | | |
-| Teen Profile | | | | |
-| Adult Profile | | | | |
-| QAR-Enabled | | | | |
+<!-- Dependency list -->
 
----
 
-## Database Schema
 
-### Regular Channels (`public.iptv_channels`)
 
-```sql
-CREATE TABLE public.iptv_channels (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ersatztv_id INTEGER NOT NULL,          -- ErsatzTV channel ID
-    name VARCHAR(255) NOT NULL,
-    number INTEGER NOT NULL,               -- Channel number
-    logo_url TEXT,
-    age_rating VARCHAR(10) DEFAULT 'G',
-    category VARCHAR(50),                  -- Movie, TV, Music, etc.
-    is_enabled BOOLEAN DEFAULT true,
-    created_by UUID REFERENCES users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-### QAR Channels (`qar.channels`)
-
-```sql
-CREATE TABLE qar.channels (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ersatztv_id INTEGER NOT NULL,
-    name VARCHAR(255) NOT NULL,            -- Obfuscated name in DB
-    number INTEGER NOT NULL,
-    logo_url TEXT,
-    category VARCHAR(50),                  -- voyage, expedition, etc.
-    is_enabled BOOLEAN DEFAULT true,
-    created_by UUID REFERENCES users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
----
 
 ## Configuration
+### Environment Variables
 
-```yaml
-livetv:
-  enabled: true
+<!-- Environment variables -->
 
-  ersatztv:
-    url: "http://ersatztv:8409"
+### Config Keys
 
-    # Channel sync
-    sync:
-      interval: "5m"           # Sync channels every 5 min
-      auto_import: false       # Don't auto-import channels
+<!-- Configuration keys -->
 
-    # Streaming
-    streaming:
-      proxy: true              # Proxy streams through Revenge
-      hls_segments: 4          # HLS segment count
 
-    # EPG
-    epg:
-      cache_hours: 24
-      enhance_metadata: true   # Match EPG to TMDb/TVDB
 
-    # Age restrictions
-    age_restrictions:
-      enforce: true
-      default_rating: "G"
-      require_pin_for: ["NC-17", "QAR"]
 
-# QAR-specific channel settings
-legacy:
-  livetv:
-    enabled: false             # Separate toggle for QAR channels
-    ersatztv_instance: "http://ersatztv-qar:8409"  # Separate instance
-```
+## Testing Strategy
 
----
+### Unit Tests
 
-## API Endpoints (Revenge)
+<!-- Unit test strategy -->
 
-### Regular Channels
+### Integration Tests
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/v1/livetv/channels` | GET | List visible channels |
-| `/api/v1/livetv/channels/{id}` | GET | Channel details |
-| `/api/v1/livetv/channels/{id}/stream` | GET | Get stream URL |
-| `/api/v1/livetv/epg` | GET | Get EPG data |
-| `/api/v1/livetv/epg/{channel_id}` | GET | Channel EPG |
+<!-- Integration test strategy -->
 
-### Admin Endpoints
+### Test Coverage
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/v1/admin/livetv/channels` | POST | Create channel |
-| `/api/v1/admin/livetv/channels/{id}` | PUT/DELETE | Manage channel |
-| `/api/v1/admin/livetv/channels/{id}/schedule` | PUT | Set schedule |
-| `/api/v1/admin/livetv/sync` | POST | Force sync with ErsatzTV |
+Target: **80% minimum**
 
-### QAR Channels (Isolated)
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/v1/legacy/livetv/channels` | GET | List QAR channels |
-| `/api/v1/legacy/livetv/channels/{id}/stream` | GET | QAR stream (PIN required) |
 
----
 
-## Frontend Integration
 
-### Channel Guide Component
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ LIVE TV                                    [Guide] [List]   │
-├─────────────────────────────────────────────────────────────┤
-│ ▶ 1. Movie Channel      Now: The Matrix     Next: Aliens   │
-│   2. Kids Channel       Now: Toy Story      Next: Nemo     │
-│   3. Documentaries      Now: Planet Earth   Next: Cosmos   │
-│ 🔒 4. Late Night        [PIN Required]                      │
-├─────────────────────────────────────────────────────────────┤
-│                    CURRENTLY PLAYING                        │
-│  ┌──────────┐                                               │
-│  │          │  The Matrix (1999)                           │
-│  │  [LIVE]  │  Action, Sci-Fi • R                          │
-│  │          │  Started: 8:00 PM • Ends: 10:30 PM           │
-│  └──────────┘                                               │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### Applet Support (External Systems)
-
-For integration with external IPTV systems, Revenge provides:
-
-| Export | Format | URL |
-|--------|--------|-----|
-| M3U Export | M3U8 | `/api/v1/livetv/export/m3u?token={api_token}` |
-| EPG Export | XMLTV | `/api/v1/livetv/export/epg?token={api_token}` |
-| Kodi Addon | Repository | `/addons/kodi/revenge.livetv/` |
-
----
-
-## Implementation Checklist
-
-### Phase 1: Basic Integration
-- [ ] ErsatzTV REST client
-- [ ] Channel sync (ErsatzTV → Revenge DB)
-- [ ] Basic channel list API
-- [ ] Stream proxy endpoint
-- [ ] EPG import and caching
-
-### Phase 2: Channel Management
-- [ ] Create/edit channels via Revenge UI
-- [ ] Schedule builder UI
-- [ ] Content selection (from Revenge libraries)
-- [ ] Logo management
-
-### Phase 3: Age Restrictions
-- [ ] Age rating detection from content
-- [ ] Channel visibility filtering by user profile
-- [ ] PIN prompt for restricted channels
-- [ ] QAR channel isolation
-
-### Phase 4: External Export
-- [ ] M3U export with auth tokens
-- [ ] XMLTV export with full metadata
-- [ ] Kodi addon (optional)
-
----
-
-## River Jobs
-
-| Job | Queue | Purpose |
-|-----|-------|---------|
-| `SyncErsatzTVChannels` | `livetv` | Periodic channel sync |
-| `RefreshEPG` | `livetv` | Update EPG cache |
-| `EnhanceEPGMetadata` | `metadata` | Match EPG to TMDb/TVDB |
-
----
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/livetv](integrations/livetv.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [TVHeadend](TVHEADEND.md) - Traditional PVR backend
-- [NextPVR](NEXTPVR.md) - Windows PVR
-- [LIVE_TV_DVR.md](../../features/livetv/LIVE_TV_DVR.md) - Feature specification
-- [QAR Obfuscation](../../00_SOURCE_OF_TRUTH.md#qar-obfuscation-terminology) - Adult content isolation
-- [Age Restrictions](../../features/shared/CONTENT_RATING.md) - Content rating system
+### External Sources
+- [ErsatzTV Documentation](https://ersatztv.org/docs/) - Auto-resolved from ersatztv-docs
+- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [XMLTV Format](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) - Auto-resolved from xmltv
 
----
-
-## Notes
-
-### Separate ErsatzTV Instance for QAR
-
-For maximum isolation, deploy a separate ErsatzTV instance for QAR content:
-
-```yaml
-# docker-compose.yml
-services:
-  ersatztv:
-    image: jasongdove/ersatztv:latest
-    ports:
-      - "8409:8409"
-    volumes:
-      - ./media:/media:ro
-
-  ersatztv-qar:
-    image: jasongdove/ersatztv:latest
-    ports:
-      - "8410:8409"
-    volumes:
-      - ./media-qar:/media:ro  # Separate QAR media path
-    # Network isolated from main instance
-```
-
-### Hardware Transcoding
-
-ErsatzTV supports hardware acceleration:
-
-| Platform | Technology | Config |
-|----------|------------|--------|
-| NVIDIA | NVENC | `--runtime=nvidia` |
-| Intel | QSV | Device passthrough |
-| AMD | AMF/VAAPI | Device passthrough |
-| Apple | VideoToolbox | Native |
-
-### Channel Number Ranges
-
-| Range | Content |
-|-------|---------|
-| 1-99 | General entertainment |
-| 100-199 | Movies |
-| 200-299 | TV Series |
-| 300-399 | Kids |
-| 400-499 | Music |
-| 500-599 | Sports |
-| 900-999 | QAR (hidden unless enabled) |

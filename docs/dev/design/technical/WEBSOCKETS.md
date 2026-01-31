@@ -1,116 +1,140 @@
-# WebSockets
+## Table of Contents
 
-<!-- SOURCES: coder-websocket-docs -->
+- [WebSockets](#websockets)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
-
-> Real-time bidirectional communication
-
-**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
+sources:
+  - name: coder/websocket GitHub README
+    url: https://github.com/coder/websocket
+    note: Auto-resolved from coder-websocket-docs
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# WebSockets
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: technical
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | Scaffold |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Design | 🟡 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: 🟡 In Progress
 
-Revenge uses WebSockets for real-time features:
-- Playback progress sync
-- SyncPlay coordination
-- Live notifications
-- Remote control commands
-- Admin dashboard updates
+
 
 ---
 
-## Connection
 
-```
-wss://{server}/socket?token={jwt}
-```
+## Architecture
 
-Authentication via JWT token in query parameter or header.
+<!-- Architecture diagram placeholder -->
 
----
+### Components
 
-## Message Types
+<!-- Component description -->
 
-### Client → Server
-
-| Type | Purpose |
-|------|---------|
-| `ping` | Keepalive |
-| `playback.progress` | Report playback position |
-| `syncplay.command` | SyncPlay actions |
-| `remote.command` | Remote control |
-
-### Server → Client
-
-| Type | Purpose |
-|------|---------|
-| `pong` | Keepalive response |
-| `notification` | Push notification |
-| `syncplay.state` | SyncPlay sync |
-| `library.update` | Library changes |
-| `session.update` | Session changes |
-
----
-
-## Message Format
-
-```json
-{
-  "type": "playback.progress",
-  "id": "msg-123",
-  "data": {
-    "itemId": "uuid",
-    "positionTicks": 123456789,
-    "isPaused": false
-  }
-}
-```
-
----
 
 ## Implementation
 
-Using `github.com/coder/websocket` for WebSocket handling:
+### File Structure
 
-```go
-func (h *SocketHandler) HandleConnection(w http.ResponseWriter, r *http.Request) {
-    conn, err := websocket.Accept(w, r, nil)
-    if err != nil {
-        return
-    }
-    defer conn.Close(websocket.StatusNormalClosure, "")
+<!-- File structure -->
 
-    // Handle messages
-    for {
-        _, data, err := conn.Read(ctx)
-        if err != nil {
-            break
-        }
-        h.processMessage(conn, data)
-    }
-}
-```
+### Key Interfaces
 
----
+<!-- Interface definitions -->
 
-## Related
+### Dependencies
 
-- [SyncPlay Feature](../features/playback/SYNCPLAY.md)
-- [Session Service](../services/SESSION.md)
-- [WebSocket Source](../../sources/tooling/websocket.md)
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [technical](technical.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [coder/websocket GitHub README](https://github.com/coder/websocket) - Auto-resolved from coder-websocket-docs
+

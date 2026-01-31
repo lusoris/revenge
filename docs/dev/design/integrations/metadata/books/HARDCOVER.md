@@ -1,392 +1,160 @@
-# Hardcover Integration
-
-<!-- SOURCES: hardcover -->
-
-<!-- DESIGN: integrations/metadata/books, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Social reading platform - Goodreads alternative with API
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Base URL](#base-url)
-  - [Authentication](#authentication)
-  - [GraphQL Schema](#graphql-schema)
-    - [Search Books](#search-books)
-    - [Get Book by ID](#get-book-by-id)
-    - [Get Book by ISBN](#get-book-by-isbn)
-    - [Get User Reading List](#get-user-reading-list)
-    - [Add Book to User List](#add-book-to-user-list)
-- [Implementation Checklist](#implementation-checklist)
-  - [API Client (`internal/infra/metadata/provider_hardcover.go`)](#api-client-internalinframetadataprovider-hardcovergo)
-  - [Book Metadata (Fallback)](#book-metadata-fallback)
-  - [Social Features](#social-features)
-  - [Author Metadata](#author-metadata)
-  - [Series Handling](#series-handling)
-  - [Error Handling](#error-handling)
-- [Integration Pattern](#integration-pattern)
-  - [Sync User Reading List](#sync-user-reading-list)
-  - [Add Book to Hardcover List](#add-book-to-hardcover-list)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [Hardcover](#hardcover)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Service**: Hardcover
-**Type**: Social Reading + Metadata Provider (Books)
-**API Version**: GraphQL
-**Website**: https://hardcover.app
-**API Docs**: https://hardcover.app/docs/api
+
+---
+sources:
+  - name: Hardcover API
+    url: https://hardcover.app/docs/api
+    note: Auto-resolved from hardcover
+design_refs:
+  - title: integrations/metadata/books
+    path: integrations/metadata/books.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Hardcover
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Hardcover
+
+> Social reading platform - Goodreads alternative with API
+**API Base URL**: `https://api.hardcover.app/graphiql`
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive GraphQL API spec, sync patterns |
-| Sources | ✅ | Website, API docs, GraphQL playground linked |
-| Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Hardcover** is a modern social reading platform with an **official GraphQL API** (Goodreads alternative).
 
-**Why Hardcover**:
-- **Official GraphQL API** (unlike Goodreads)
-- Social reading features (reading lists, reviews, ratings)
-- Book metadata (title, author, ISBN, publication date)
-- User reading challenges
-- Book recommendations
-- Active development (indie project)
-
-**Use Cases**:
-- Book metadata (fallback to OpenLibrary)
-- Social features (user reading lists, reviews, ratings)
-- Reading challenges integration
-- Book recommendations
-- User profiles (reading history, favorites)
-
-**Status**:
-- ✅ **Official GraphQL API** (active development)
-- ✅ **Free tier** (generous limits)
-- ✅ **Open source roadmap** (community-driven)
 
 ---
 
-## Developer Resources
 
-**Website**: https://hardcover.app
-**API Documentation**: https://hardcover.app/docs/api
-**GraphQL Playground**: https://api.hardcover.app/graphiql
+## Architecture
 
-**Authentication**: API Key (registration required)
-**Rate Limit**: Generous (no strict public limit)
-**Free Tier**: Unlimited (API key required)
+### Integration Structure
 
----
-
-## API Details
-
-### Base URL
 ```
-https://api.hardcover.app/v1/graphql
+internal/integration/hardcover/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Authentication
-API Key (Header):
-```
-Authorization: Bearer {API_KEY}
-```
+### Data Flow
 
-**API Key Registration**: https://hardcover.app/settings/api
+<!-- Data flow diagram -->
 
-### GraphQL Schema
+### Provides
 
-#### Search Books
-```graphql
-query SearchBooks($query: String!, $limit: Int) {
-  search(query: $query, limit: $limit) {
-    books {
-      id
-      title
-      subtitle
-      description
-      isbn_10
-      isbn_13
-      pages
-      release_date
-      image
-      authors {
-        id
-        name
-        bio
-        image
-      }
-      contributions {
-        author {
-          name
-        }
-        role
-      }
-      user_book {
-        status
-        rating
-      }
-    }
-  }
-}
-```
+This integration provides:
+<!-- Data provided by integration -->
 
-#### Get Book by ID
-```graphql
-query GetBook($id: Int!) {
-  book(id: $id) {
-    id
-    title
-    subtitle
-    description
-    isbn_10
-    isbn_13
-    pages
-    release_date
-    image
-    authors {
-      id
-      name
-      bio
-      image
-    }
-    series {
-      id
-      name
-      position
-    }
-    editions {
-      id
-      title
-      isbn_13
-      release_date
-    }
-    ratings {
-      average
-      count
-    }
-    reviews {
-      id
-      body
-      rating
-      user {
-        name
-        image
-      }
-    }
-  }
-}
-```
 
-#### Get Book by ISBN
-```graphql
-query GetBookByISBN($isbn: String!) {
-  books(where: {isbn_13: {_eq: $isbn}}) {
-    id
-    title
-    # ... same fields as GetBook
-  }
-}
-```
+## Implementation
 
-#### Get User Reading List
-```graphql
-query GetUserBooks($userId: Int!, $status: String) {
-  user_books(where: {user_id: {_eq: $userId}, status: {_eq: $status}}) {
-    book {
-      id
-      title
-      image
-    }
-    status
-    rating
-    started_at
-    finished_at
-  }
-}
-```
+### File Structure
 
-**Status Values**:
-- `WANT_TO_READ`
-- `CURRENTLY_READING`
-- `READ`
-- `DID_NOT_FINISH`
+<!-- File structure -->
 
-#### Add Book to User List
-```graphql
-mutation AddBookToList($bookId: Int!, $status: String!, $rating: Int) {
-  insert_user_books_one(object: {book_id: $bookId, status: $status, rating: $rating}) {
-    id
-    status
-    rating
-  }
-}
-```
+### Key Interfaces
 
----
+<!-- Interface definitions -->
 
-## Implementation Checklist
+### Dependencies
 
-### API Client (`internal/infra/metadata/provider_hardcover.go`)
-- [ ] Base URL configuration
-- [ ] API Key configuration (Authorization header)
-- [ ] GraphQL client (HTTP POST to /v1/graphql)
-- [ ] Error handling (401: Invalid API key, 404: Book not found)
-- [ ] Response parsing (JSON unmarshalling)
+<!-- Dependency list -->
 
-### Book Metadata (Fallback)
-- [ ] Search books by title, author, ISBN
-- [ ] Fetch book by ID or ISBN
-- [ ] Extract: title, subtitle, description, ISBN, pages, release date, authors
-- [ ] Store in `books` table (fallback to OpenLibrary)
 
-### Social Features
-- [ ] Fetch user reading list (Want to Read, Currently Reading, Read)
-- [ ] Add book to user list
-- [ ] Update reading status
-- [ ] Rate book
-- [ ] Write review (optional)
 
-### Author Metadata
-- [ ] Fetch author by ID
-- [ ] Extract: name, bio, image
-- [ ] Store in `book_authors` table
 
-### Series Handling
-- [ ] Fetch series information
-- [ ] Store in `book_series` table
-- [ ] Link books to series (position in series)
 
-### Error Handling
-- [ ] Handle 401 (Invalid API key - check configuration)
-- [ ] Handle 404 (Book not found)
-- [ ] Handle GraphQL errors (parse `errors` array in response)
-- [ ] Log errors (no sensitive data)
+## Configuration
+### Environment Variables
 
----
+<!-- Environment variables -->
 
-## Integration Pattern
+### Config Keys
 
-### Sync User Reading List
-```go
-// Sync user's Hardcover reading list to Revenge
-func (s *BookService) SyncHardcoverReadingList(ctx context.Context, userID uuid.UUID) error {
-    // 1. Get user's Hardcover API key
-    hardcoverKey := s.db.GetUserHardcoverKey(userID)
-    if hardcoverKey == "" {
-        return errors.New("user not connected to Hardcover")
-    }
+<!-- Configuration keys -->
 
-    // 2. Fetch user's reading list from Hardcover
-    hardcoverUserID := s.hardcoverClient.GetUserID(hardcoverKey)
-    readingList := s.hardcoverClient.GetUserBooks(hardcoverUserID, "CURRENTLY_READING")
 
-    // 3. Store in Revenge database
-    for _, userBook := range readingList {
-        book := userBook.Book
 
-        // Ensure book exists in database
-        if !s.db.BookExists(book.ISBN13) {
-            s.db.InsertBook(map[string]interface{}{
-                "hardcover_id": book.ID,
-                "title":        book.Title,
-                "isbn_13":      book.ISBN13,
-                "release_date": book.ReleaseDate,
-            })
-        }
 
-        // Add to user's reading list
-        s.db.InsertUserReadingList(userID, book.ISBN13, map[string]interface{}{
-            "status":      "currently_reading",
-            "rating":      userBook.Rating,
-            "started_at":  userBook.StartedAt,
-        })
-    }
+## Testing Strategy
 
-    return nil
-}
-```
+### Unit Tests
 
-### Add Book to Hardcover List
-```go
-// User marks book as "Want to Read" → Add to Hardcover
-func (s *BookService) AddToHardcoverWantToRead(userID uuid.UUID, bookID uuid.UUID) error {
-    // 1. Get user's Hardcover API key
-    hardcoverKey := s.db.GetUserHardcoverKey(userID)
-    if hardcoverKey == "" {
-        return nil // User not connected, skip
-    }
+<!-- Unit test strategy -->
 
-    // 2. Get book
-    book := s.db.GetBook(bookID)
+### Integration Tests
 
-    // 3. Search Hardcover for book (by ISBN)
-    hardcoverBook := s.hardcoverClient.GetBookByISBN(hardcoverKey, book.ISBN13)
-    if hardcoverBook == nil {
-        return errors.New("book not found on Hardcover")
-    }
+<!-- Integration test strategy -->
 
-    // 4. Add to user's list
-    s.hardcoverClient.AddBookToList(hardcoverKey, hardcoverBook.ID, "WANT_TO_READ", nil)
+### Test Coverage
 
-    return nil
-}
-```
+Target: **80% minimum**
 
----
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/books](integrations/metadata/books.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **OpenLibrary Integration**: [OPENLIBRARY.md](OPENLIBRARY.md) (primary metadata)
-- **Goodreads Integration**: [GOODREADS.md](GOODREADS.md) (API retired)
-- **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
+### External Sources
+- [Hardcover API](https://hardcover.app/docs/api) - Auto-resolved from hardcover
 
----
-
-## Notes
-
-- **Official GraphQL API**: Modern alternative to Goodreads (which has retired API)
-- **API Key required**: Register at https://hardcover.app/settings/api
-- **Free tier**: Generous limits (no strict public limit, fair use)
-- **GraphQL**: Single endpoint, flexible queries (specify exactly what you need)
-- **Social features**: Reading lists, reviews, ratings, reading challenges
-- **Metadata quality**: Community-driven (some books may have incomplete data)
-- **OpenLibrary primary**: Use Hardcover for social features, OpenLibrary for comprehensive metadata
-- **User connection**: Users connect Hardcover account via OAuth or API key
-- **Sync strategy**: Two-way sync (Revenge ↔ Hardcover reading lists)
-- **Reading statuses**: Want to Read, Currently Reading, Read, Did Not Finish
-- **Ratings**: 1-5 stars (half-stars supported)
-- **Reviews**: Text reviews (optional, can be synced)
-- **Series support**: Books linked to series (position in series)
-- **Editions**: Multiple editions of same book (group by work)
-- **Author bios**: Available (store in `book_authors` table)
-- **Cover images**: Available (download and store locally)
-- **GraphQL playground**: https://api.hardcover.app/graphiql (test queries)
-- **Error handling**: GraphQL errors in `errors` array (parse separately from `data`)
-- **Indie project**: Developed by small team, active development
-- **Community**: Growing community (Reddit, Discord)
-- **Future**: Potential for deeper integration (challenges, recommendations, friends)

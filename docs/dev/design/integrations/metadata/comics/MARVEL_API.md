@@ -1,371 +1,171 @@
-# Marvel API Integration
-
-<!-- SOURCES: pgx, postgresql-arrays, postgresql-json, river -->
-
-<!-- DESIGN: integrations/metadata/comics, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Official Marvel Comics metadata (Marvel Universe content only)
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Documentation](#api-documentation)
-  - [Key Features](#key-features)
-  - [Authentication](#authentication)
-- [API Details](#api-details)
-  - [Authentication](#authentication)
-  - [Core Endpoints](#core-endpoints)
-    - [1. Search Comics](#1-search-comics)
-    - [2. Get Comic Details](#2-get-comic-details)
-    - [3. Get Character Details](#3-get-character-details)
-    - [4. Get Event Details](#4-get-event-details)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Integration](#phase-1-core-integration)
-  - [Phase 2: Character & Event Enrichment](#phase-2-character-event-enrichment)
-  - [Phase 3: Optimization](#phase-3-optimization)
-  - [Phase 4: Background Jobs (River)](#phase-4-background-jobs-river)
-- [Integration Pattern](#integration-pattern)
-  - [Metadata Enrichment Flow (Marvel Comics Only)](#metadata-enrichment-flow-marvel-comics-only)
-  - [Character Enrichment Flow](#character-enrichment-flow)
-  - [Rate Limiting Strategy](#rate-limiting-strategy)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [Marvel API](#marvel-api)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Priority**: 🟢 LOW (Phase 7 - Comics Module, optional enrichment)
-**Provider**: Marvel Entertainment
+
+---
+sources:
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/metadata/comics
+    path: integrations/metadata/comics.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Marvel API
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Marvel API
+
+> Official Marvel Comics metadata (Marvel Universe content only)
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive REST API spec, authentication, rate limiting |
-| Sources | ✅ | Base URL, documentation, authentication examples linked |
-| Instructions | ✅ | Phased implementation checklist with enrichment flow |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Marvel API** is the official API from Marvel Comics, providing metadata for Marvel Universe content (characters, comics, creators, events, series). It's useful as a **supplementary source** for Marvel-specific comics, but ComicVine remains the primary metadata provider due to publisher-agnostic coverage.
 
-**Why Marvel API** (as supplement):
-- Official Marvel data (authoritative for Marvel content)
-- Character bios and comic appearances
-- Event/crossover data (Civil War, Secret Wars, etc.)
-- Creator information (Stan Lee, Jack Kirby, etc.)
-- Free API with reasonable rate limits (3000 requests/day)
-
-**Limitations**:
-- **Marvel content only** (no DC, Image, Dark Horse, etc.)
-- **Rate limits**: 3000 requests per day (lower than ComicVine)
-- **Less comprehensive**: ComicVine often has more detailed metadata
-- **No cover images**: Marvel API does not provide high-quality cover images
-- **Requires attribution**: "Data provided by Marvel. © 2024 Marvel" required in UI
-
-**Use Case**: Optional enrichment for Marvel comics (character bios, event data), NOT primary metadata source.
 
 ---
 
-## Developer Resources
 
-### API Documentation
-- **Base URL**: `https://gateway.marvel.com/v1/public/`
-- **Documentation**: https://developer.marvel.com/documentation/getting_started
-- **API Version**: v1 (stable)
-- **Authentication**: API Key + Timestamp + MD5 Hash
-- **Rate Limits**: 3000 requests per day
-- **Response Format**: JSON
+## Architecture
 
-### Key Features
-- **Comics**: Comic issue metadata (title, description, dates, prices)
-- **Characters**: Character bios, appearances in comics
-- **Creators**: Creator information (writers, artists)
-- **Events**: Crossover events (Civil War, Infinity War, etc.)
-- **Series**: Comic series metadata (Amazing Spider-Man, X-Men, etc.)
+### Integration Structure
 
-### Authentication
-**Method**: API Key + Timestamp + Hash
-**Required Parameters**:
-- `apikey`: Your public API key
-- `ts`: Timestamp (e.g., `1`)
-- `hash`: MD5 hash of `ts + private_key + public_key`
-
-**Example Hash Generation** (Go):
-```go
-import (
-    "crypto/md5"
-    "fmt"
-    "time"
-)
-
-func generateMarvelHash(publicKey, privateKey string) (ts string, hash string) {
-    ts = fmt.Sprintf("%d", time.Now().Unix())
-    data := ts + privateKey + publicKey
-    hashBytes := md5.Sum([]byte(data))
-    hash = fmt.Sprintf("%x", hashBytes)
-    return ts, hash
-}
-
-// Usage:
-// ts, hash := generateMarvelHash(publicKey, privateKey)
-// url := fmt.Sprintf("https://gateway.marvel.com/v1/public/comics?apikey=%s&ts=%s&hash=%s", publicKey, ts, hash)
+```
+internal/integration/marvel_api/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
----
+### Data Flow
 
-## API Details
+<!-- Data flow diagram -->
 
-### Authentication
-**Method**: API Key + Timestamp + MD5 Hash
-**Rate Limit**: 3000 requests per day (resets at midnight EST)
+### Provides
 
-**Example Request**:
-```bash
-# Generate hash: md5(ts + privateKey + publicKey)
-# Example: ts=1, privateKey=abcdef, publicKey=123456
-# hash = md5("1abcdef123456") = "ffd275c5130566a2916217b101f26150"
+This integration provides:
+<!-- Data provided by integration -->
 
-curl "https://gateway.marvel.com/v1/public/comics/82967?apikey=123456&ts=1&hash=ffd275c5130566a2916217b101f26150"
-```
 
-### Core Endpoints
+## Implementation
 
-#### 1. Search Comics
-```http
-GET /v1/public/comics?titleStartsWith={title}&apikey={key}&ts={ts}&hash={hash}
-```
+### File Structure
 
-**Parameters**:
-- `titleStartsWith`: Comic title (e.g., "Amazing Spider-Man")
-- `issueNumber`: Issue number (e.g., "1")
-- `limit`: Results per page (max 100, default 20)
-- `offset`: Pagination offset
-- `orderBy`: Sort order (`focDate`, `onsaleDate`, `title`, `issueNumber`)
+<!-- File structure -->
 
-**Response**:
-```json
-{
-  "code": 200,
-  "status": "Ok",
-  "data": {
-    "offset": 0,
-    "limit": 20,
-    "total": 500,
-    "count": 20,
-    "results": [
-      {
-        "id": 82967,
-        "digitalId": 0,
-        "title": "Amazing Spider-Man (2018) #1",
-        "issueNumber": 1,
-        "description": "...",
-        "isbn": "",
-        "pageCount": 80,
-        "dates": [
-          {"type": "onsaleDate", "date": "2018-07-11T00:00:00-0400"},
-          {"type": "focDate", "date": "2018-06-18T00:00:00-0400"}
-        ],
-        "prices": [
-          {"type": "printPrice", "price": 5.99}
-        ],
-        "thumbnail": {
-          "path": "http://i.annihil.us/u/prod/marvel/i/mg/c/e0/5b2c4ff46c4c8",
-          "extension": "jpg"
-        },
-        "creators": {
-          "items": [
-            {"name": "Nick Spencer", "role": "writer"},
-            {"name": "Ryan Ottley", "role": "penciler"}
-          ]
-        },
-        "characters": {
-          "items": [
-            {"name": "Spider-Man (Peter Parker)"}
-          ]
-        },
-        "events": {
-          "items": []
-        }
-      }
-    ]
-  }
-}
-```
+### Key Interfaces
 
-#### 2. Get Comic Details
-```http
-GET /v1/public/comics/{comic_id}?apikey={key}&ts={ts}&hash={hash}
-```
+<!-- Interface definitions -->
 
-#### 3. Get Character Details
-```http
-GET /v1/public/characters/{character_id}?apikey={key}&ts={ts}&hash={hash}
-```
+### Dependencies
 
-**Response**:
-```json
-{
-  "code": 200,
-  "data": {
-    "results": [
-      {
-        "id": 1009610,
-        "name": "Spider-Man (Peter Parker)",
-        "description": "Bitten by a radioactive spider...",
-        "thumbnail": {
-          "path": "http://i.annihil.us/u/prod/marvel/i/mg/3/50/526548a343e4b",
-          "extension": "jpg"
-        },
-        "comics": {
-          "available": 4500,
-          "items": [
-            {"name": "Amazing Spider-Man #1"}
-          ]
-        }
-      }
-    ]
-  }
-}
-```
+<!-- Dependency list -->
 
-#### 4. Get Event Details
-```http
-GET /v1/public/events/{event_id}?apikey={key}&ts={ts}&hash={hash}
-```
 
-**Example**: Civil War, Secret Wars, Infinity War, etc.
 
----
 
-## Implementation Checklist
 
-### Phase 1: Core Integration
-- [ ] Register for Marvel API keys (https://developer.marvel.com/account)
-- [ ] Implement authentication (timestamp + MD5 hash generation)
-- [ ] Implement rate limiting (3000 requests/day, track usage)
-- [ ] Implement comic search (by title, issue number)
-- [ ] Implement comic metadata fetching (supplementary to ComicVine)
-- [ ] Store Marvel Comic IDs in `metadata_json` JSONB field
+## Configuration
+### Environment Variables
 
-### Phase 2: Character & Event Enrichment
-- [ ] Fetch character information (bios, appearances)
-- [ ] Store character bios in `metadata_json` (link to characters table)
-- [ ] Fetch event/crossover data (Civil War, Secret Wars, etc.)
-- [ ] Link comics to story arcs/events
-- [ ] Implement creator metadata fetching (Marvel-specific credits)
+<!-- Environment variables -->
 
-### Phase 3: Optimization
-- [ ] Cache Marvel API responses (reduce daily request count)
-- [ ] Use ComicVine as primary, Marvel API as enrichment only
-- [ ] Implement daily request counter (reset at midnight EST)
-- [ ] Add Marvel attribution in UI ("Data provided by Marvel. © 2024 Marvel")
-- [ ] Throttle requests (3000/day = ~2 requests/minute average)
+### Config Keys
 
-### Phase 4: Background Jobs (River)
-- [ ] Job: `EnrichMarvelComicArgs` (enrich Marvel comics with official data)
-- [ ] Job: `FetchMarvelCharacterArgs` (fetch character bios)
-- [ ] Job: `FetchMarvelEventArgs` (fetch crossover event data)
+<!-- Configuration keys -->
 
----
 
-## Integration Pattern
 
-### Metadata Enrichment Flow (Marvel Comics Only)
-```
-Comic scanned from library (CBZ file)
-                ↓
-Fetch ComicVine metadata (primary)
-                ↓
-Check if Marvel comic (publisher_id = Marvel)
-                ↓
-Query Marvel API for supplementary data (character bios, events)
-                ↓
-Merge Marvel API data into metadata_json
-                ↓
-Store enriched metadata in PostgreSQL
-```
 
-### Character Enrichment Flow
-```
-User views Marvel comic (e.g., Amazing Spider-Man #1)
-                ↓
-Display characters from ComicVine (character appearances)
-                ↓
-Background: Fetch character bios from Marvel API
-                ↓
-Cache character bios (reduce API calls)
-                ↓
-Display enriched character info in UI
-```
+## Testing Strategy
 
-### Rate Limiting Strategy
-```go
-// Marvel API: 3000 requests per day
-// Track daily usage, reset at midnight EST
+### Unit Tests
 
-type MarvelAPIClient struct {
-    requestCounter int
-    lastReset      time.Time
-    maxRequests    int // 3000
-}
+<!-- Unit test strategy -->
 
-func (c *MarvelAPIClient) checkRateLimit() error {
-    now := time.Now()
-    if now.Day() != c.lastReset.Day() {
-        c.requestCounter = 0
-        c.lastReset = now
-    }
-    if c.requestCounter >= c.maxRequests {
-        return fmt.Errorf("Marvel API rate limit exceeded (3000/day)")
-    }
-    c.requestCounter++
-    return nil
-}
-```
+### Integration Tests
 
----
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/comics](integrations/metadata/comics.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **ComicVine Integration**: `docs/integrations/metadata/comics/COMICVINE.md` (primary metadata source)
-- **Grand Comics Database**: `docs/integrations/metadata/comics/GRAND_COMICS_DATABASE.md` (historical fallback)
-- **Comics Module**: `docs/features/COMICS_MODULE.md` (overall comics architecture)
+### External Sources
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Notes
-
-- **NOT Primary Source**: ComicVine remains primary metadata provider (publisher-agnostic)
-- **Marvel Content Only**: API only covers Marvel Comics (no DC, Image, etc.)
-- **Rate Limits**: 3000 requests/day (strict enforcement, no hourly bucket)
-  - Track daily usage carefully
-  - Use as enrichment only (NOT for every comic)
-- **Attribution Required**: "Data provided by Marvel. © 2024 Marvel" in UI
-- **No Cover Images**: Marvel API does not provide high-quality cover images (use ComicVine)
-- **Hash Authentication**: MD5 hash of `ts + privateKey + publicKey` required for every request
-- **Timestamp**: Can use Unix timestamp OR any arbitrary number (commonly use `1` for simplicity)
-- **Thumbnail Images**: Low resolution (~100x150), use ComicVine for covers
-- **Character IDs**: Marvel character IDs useful for linking to Marvel Universe wiki/database
-- **Event Data**: Excellent source for crossover event information (Civil War, Secret Wars, etc.)
-- **Use Case**: Best for Marvel-specific enrichment (character bios, event context), NOT comprehensive metadata
-- **Fallback Strategy**: ComicVine (primary) → Marvel API (Marvel enrichment) → GCD (historical)
-- **JSONB Storage**: Store Marvel API responses in `metadata_json.marvel_data` for future use
-- **Daily Reset**: Rate limit resets at midnight EST (account for timezone)

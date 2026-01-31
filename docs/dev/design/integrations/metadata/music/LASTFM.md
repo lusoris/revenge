@@ -1,313 +1,164 @@
-# Last.fm Integration
-
-<!-- SOURCES: go-context, lastfm-api -->
-
-<!-- DESIGN: integrations/metadata/music, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Music scrobbling and metadata provider - artist bio, tags, similar artists
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Base URL](#base-url)
-  - [Authentication](#authentication)
-  - [OAuth Flow (for Scrobbling)](#oauth-flow-for-scrobbling)
-  - [Rate Limiting](#rate-limiting)
-  - [Key Endpoints](#key-endpoints)
-    - [Get Artist Info](#get-artist-info)
-    - [Get Album Info](#get-album-info)
-    - [Search Artists](#search-artists)
-    - [Scrobble Track (requires OAuth session)](#scrobble-track-requires-oauth-session)
-    - [Update Now Playing](#update-now-playing)
-- [Implementation Checklist](#implementation-checklist)
-  - [API Client (`internal/infra/scrobble/provider_lastfm.go`)](#api-client-internalinfrascrobbleprovider-lastfmgo)
-  - [Artist Metadata](#artist-metadata)
-  - [Scrobbling](#scrobbling)
-  - [User Stats](#user-stats)
-  - [Error Handling](#error-handling)
-- [Integration Pattern](#integration-pattern)
-  - [Scrobbling Workflow](#scrobbling-workflow)
-  - [Metadata Enrichment](#metadata-enrichment)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
+- [Last.fm](#lastfm)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Service**: Last.fm
-**Type**: Scrobbling + Metadata Provider (Music)
-**API Version**: 2.0
-**Website**: https://www.last.fm
-**API Docs**: https://www.last.fm/api
+
+---
+sources:
+  - name: Go context
+    url: https://pkg.go.dev/context
+    note: Auto-resolved from go-context
+  - name: Last.fm API
+    url: https://www.last.fm/api/intro
+    note: Auto-resolved from lastfm-api
+design_refs:
+  - title: integrations/metadata/music
+    path: integrations/metadata/music.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Last.fm
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Last.fm
+
+> Music scrobbling and metadata provider - artist bio, tags, similar artists
+**API Base URL**: `https://www.last.fm/api/intro`
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive API spec, OAuth flow, scrobbling protocol |
-| Sources | ✅ | API intro, authentication, scrobbling docs linked |
-| Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Last.fm** provides music scrobbling (listening history tracking) and music metadata (artist bio, tags, similar artists, album info).
 
-**Why Last.fm**:
-- Scrobbling (track listening history)
-- Artist biography and tags
-- Similar artists recommendations
-- User listening statistics
-- Free API (generous limits)
-- OAuth authentication
-
-**Use Cases**:
-- **Scrobbling**: Track user's music listening (sync to Last.fm profile)
-- **Metadata enrichment**: Artist bio, tags, similar artists (fallback to MusicBrainz)
-- **Recommendations**: Similar artists, top tracks, user stats
-- **Social features**: User profiles, friends, charts
 
 ---
 
-## Developer Resources
 
-**API Documentation**: https://www.last.fm/api/intro
-**Authentication**: https://www.last.fm/api/authentication
-**Scrobbling**: https://www.last.fm/api/scrobbling
+## Architecture
 
-**Authentication**: API Key + OAuth (for scrobbling)
-**Rate Limit**: Reasonable (no strict limit, respect fair use)
-**Free Tier**: Unlimited (API key required)
+### Integration Structure
 
----
-
-## API Details
-
-### Base URL
 ```
-https://ws.audioscrobbler.com/2.0/
+internal/integration/lastfm/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Authentication
-- **API Key**: Required for all requests (query param `api_key`)
-- **OAuth**: Required for scrobbling (write operations)
+### Data Flow
 
-**API Key Registration**: https://www.last.fm/api/account/create
+<!-- Data flow diagram -->
 
-### OAuth Flow (for Scrobbling)
-```
-1. Get API Key + Shared Secret (from Last.fm)
-2. Generate auth token: http://www.last.fm/api/auth/?api_key={API_KEY}
-3. User authorizes → redirected back with token
-4. Get session key: api_key={KEY}&method=auth.getSession&token={TOKEN}&api_sig={SIGNATURE}
-5. Use session key for scrobbling
-```
+### Provides
 
-### Rate Limiting
-- No strict rate limit (fair use)
-- Scrobbling: Max 50 tracks per request
-- Cache responses where possible
+This integration provides:
+<!-- Data provided by integration -->
 
-### Key Endpoints
 
-#### Get Artist Info
-```bash
-GET /2.0/?method=artist.getinfo&artist=Radiohead&api_key={API_KEY}&format=json
-```
+## Implementation
 
-**Response**:
-```json
-{
-  "artist": {
-    "name": "Radiohead",
-    "mbid": "a74b1b7f-71a5-4011-9441-d0b5e4122711",
-    "url": "https://www.last.fm/music/Radiohead",
-    "image": [
-      {"#text": "https://...", "size": "large"}
-    ],
-    "bio": {
-      "summary": "Radiohead are an English rock band...",
-      "content": "Full biography..."
-    },
-    "tags": {
-      "tag": [
-        {"name": "alternative rock", "url": "..."},
-        {"name": "experimental", "url": "..."}
-      ]
-    },
-    "similar": {
-      "artist": [
-        {"name": "Thom Yorke", "url": "..."}
-      ]
-    }
-  }
-}
-```
+### File Structure
 
-#### Get Album Info
-```bash
-GET /2.0/?method=album.getinfo&artist=Radiohead&album=OK+Computer&api_key={API_KEY}&format=json
-```
+<!-- File structure -->
 
-#### Search Artists
-```bash
-GET /2.0/?method=artist.search&artist=radiohead&api_key={API_KEY}&format=json
-```
+### Key Interfaces
 
-#### Scrobble Track (requires OAuth session)
-```bash
-POST /2.0/
-artist=Radiohead&track=Karma+Police&timestamp=1234567890&api_key={API_KEY}&api_sig={SIGNATURE}&sk={SESSION_KEY}&method=track.scrobble
-```
+<!-- Interface definitions -->
 
-**Required Parameters**:
-- `artist`: Artist name
-- `track`: Track name
-- `timestamp`: Unix timestamp when track started playing
-- `api_key`: API key
-- `sk`: Session key (from OAuth)
-- `api_sig`: MD5 signature
+### Dependencies
 
-**API Signature Calculation**:
-```
-MD5(api_key{API_KEY}artist{ARTIST}method{METHOD}sk{SESSION_KEY}timestamp{TIMESTAMP}track{TRACK}{SHARED_SECRET})
-```
+<!-- Dependency list -->
 
-#### Update Now Playing
-```bash
-POST /2.0/
-artist=Radiohead&track=Karma+Police&api_key={API_KEY}&api_sig={SIGNATURE}&sk={SESSION_KEY}&method=track.updateNowPlaying
-```
 
----
 
-## Implementation Checklist
 
-### API Client (`internal/infra/scrobble/provider_lastfm.go`)
-- [ ] Base URL configuration
-- [ ] API key configuration
-- [ ] OAuth flow (session key generation)
-- [ ] API signature generation (MD5)
-- [ ] Error handling (6: Invalid parameters, 9: Invalid session key, 11: Service offline)
-- [ ] Response parsing (JSON unmarshalling)
 
-### Artist Metadata
-- [ ] Fetch artist info (bio, tags, similar artists)
-- [ ] Extract: bio, tags, similar artists, images
-- [ ] Store in `music_artists` table (enrich MusicBrainz data)
-- [ ] Cache responses (1 day TTL)
+## Configuration
+### Environment Variables
 
-### Scrobbling
-- [ ] OAuth flow (user authorization)
-- [ ] Store session key per user
-- [ ] Scrobble track (when user plays music)
-- [ ] Update now playing (real-time)
-- [ ] Batch scrobbling (max 50 tracks per request)
-- [ ] Retry on failure (network errors)
+<!-- Environment variables -->
 
-### User Stats
-- [ ] Fetch user's top artists
-- [ ] Fetch user's top tracks
-- [ ] Fetch recent tracks
-- [ ] Display in user profile (optional)
+### Config Keys
 
-### Error Handling
-- [ ] Handle 6 (Invalid parameters)
-- [ ] Handle 9 (Invalid session key - re-authenticate)
-- [ ] Handle 11 (Service offline - retry)
-- [ ] Log errors (no sensitive data)
+<!-- Configuration keys -->
 
----
 
-## Integration Pattern
 
-### Scrobbling Workflow
-```go
-// User plays track → Scrobble to Last.fm
-func (s *ScrobbleService) ScrobbleTrack(ctx context.Context, userID uuid.UUID, trackID uuid.UUID) error {
-    // 1. Get user's Last.fm session key
-    sessionKey := s.db.GetUserLastFmSession(userID)
-    if sessionKey == "" {
-        return errors.New("user not connected to Last.fm")
-    }
 
-    // 2. Get track metadata
-    track := s.db.GetTrack(trackID)
+## Testing Strategy
 
-    // 3. Update now playing
-    s.lastfmClient.UpdateNowPlaying(sessionKey, track.Artist, track.Title)
+### Unit Tests
 
-    // 4. Scrobble after 30 seconds OR 50% playback
-    time.AfterFunc(30*time.Second, func() {
-        timestamp := time.Now().Unix()
-        s.lastfmClient.Scrobble(sessionKey, track.Artist, track.Title, timestamp)
-    })
+<!-- Unit test strategy -->
 
-    return nil
-}
-```
+### Integration Tests
 
-### Metadata Enrichment
-```go
-// Enrich artist with Last.fm bio/tags
-func (s *MusicService) EnrichArtistMetadata(artistID uuid.UUID) error {
-    artist := s.db.GetArtist(artistID)
+<!-- Integration test strategy -->
 
-    // Fetch from Last.fm
-    lastfmArtist := s.lastfmClient.GetArtistInfo(artist.Name)
+### Test Coverage
 
-    // Update artist with bio/tags
-    s.db.UpdateArtist(artistID, map[string]interface{}{
-        "biography":      lastfmArtist.Bio.Content,
-        "tags":           lastfmArtist.Tags,
-        "similar_artists": lastfmArtist.Similar,
-    })
+Target: **80% minimum**
 
-    return nil
-}
-```
 
----
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/music](integrations/metadata/music.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
-- **Scrobbling Overview**: [docs/SCROBBLING.md](../../../SCROBBLING.md)
-- **ListenBrainz Integration**: [../../scrobbling/LISTENBRAINZ.md](../../scrobbling/LISTENBRAINZ.md) (open alternative)
+### External Sources
+- [Go context](https://pkg.go.dev/context) - Auto-resolved from go-context
+- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
 
----
-
-## Notes
-
-- **API Key required**: Register at https://www.last.fm/api/account/create
-- **OAuth for scrobbling**: Write operations require user authorization
-- **Scrobble rules**: Min 30 seconds playback OR 50% of track (whichever comes first)
-- **Batch scrobbling**: Max 50 tracks per request (useful for offline sync)
-- **API signature**: MD5 hash of sorted params + shared secret
-- **MusicBrainz IDs**: Last.fm returns MusicBrainz IDs (cross-reference)
-- **Artist bio source**: Wikipedia-based (good for enrichment)
-- **Tags**: User-generated (folksonomy, useful for genre discovery)
-- **Similar artists**: Based on listening habits (recommendations)
-- **Rate limiting**: No strict limit, but respect fair use (cache responses)
-- **Error codes**: 6 (Invalid parameters), 9 (Invalid session key), 11 (Service offline), 26 (Suspended API key)
-- **Fallback**: Use MusicBrainz for core metadata, Last.fm for bio/tags/similar artists
-- **User privacy**: Scrobbling opt-in (user must authorize)
-- **Session key storage**: Store per user in `user_integrations` table (encrypted)
-- **Scrobbling alternatives**: ListenBrainz (open source, Last.fm compatible API)

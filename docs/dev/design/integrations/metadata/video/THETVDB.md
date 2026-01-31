@@ -1,319 +1,187 @@
-# TheTVDB Integration
-
-<!-- SOURCES: go-blurhash, pgx, postgresql-arrays, postgresql-json, river, thetvdb, typesense, typesense-go -->
-
-<!-- DESIGN: integrations/metadata/video, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Primary metadata provider for TV shows
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Authentication Flow](#authentication-flow)
-  - [Key Endpoints](#key-endpoints)
-- [Implementation Checklist](#implementation-checklist)
-- [Revenge Integration Pattern](#revenge-integration-pattern)
-  - [Go Client Example](#go-client-example)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Artwork Types](#artwork-types)
-- [External ID Mapping](#external-id-mapping)
-- [Notes](#notes)
+- [TheTVDB](#thetvdb)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: go-blurhash
+    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    note: Auto-resolved from go-blurhash
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: TheTVDB API
+    url: https://thetvdb.github.io/v4-api/
+    note: Auto-resolved from thetvdb
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: integrations/metadata/video
+    path: integrations/metadata/video.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# TheTVDB
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with TheTVDB
+
+> Primary metadata provider for TV shows
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive REST API v4 spec, JWT auth flow, artwork types |
-| Sources | ✅ | API docs, GitHub, Swagger UI linked |
-| Instructions | ✅ | Detailed implementation checklist with token management |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-TheTVDB is the industry-standard metadata provider for TV shows. Revenge uses TheTVDB as the primary metadata source for:
-- TV series metadata (title, overview, network, status)
-- Season metadata (season numbers, posters)
-- Episode metadata (episode titles, air dates, overviews)
-- Artwork (series posters, fanart, season posters, episode thumbnails)
 
-**Integration Points**:
-- **API client**: Query series, seasons, episodes, artwork
-- **JWT authentication**: Login to obtain JWT token, refresh periodically
-- **Rate limiting**: Varies by subscription tier
-- **Artwork CDN**: Download posters, fanart, banners
 
 ---
 
-## Developer Resources
 
-- 📚 **API Docs**: https://thetvdb.github.io/v4-api/
-- 🔗 **API v4**: https://api4.thetvdb.com/v4/
-- 🔗 **GitHub**: https://github.com/thetvdb/v4-api
-- 🔗 **Swagger UI**: https://thetvdb.github.io/v4-api/#/
+## Architecture
 
----
-
-## API Details
-
-**Base URL**: `https://api4.thetvdb.com/v4/`
-**Authentication**: JWT Bearer token (POST `/login` first)
-**Rate Limits**: Varies by subscription tier (free tier has limited requests)
-**Free Tier**: Available (requires API key registration)
-
-### Authentication Flow
-
-1. **Login** (POST `/login`):
-```json
-{
-  "apikey": "your-api-key",
-  "pin": ""
-}
-```
-
-2. **Receive JWT Token**:
-```json
-{
-  "status": "success",
-  "data": {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}
-```
-
-3. **Use Token** (Header: `Authorization: Bearer {token}`)
-
-4. **Refresh Token** (periodically, token expires after 24 hours)
-
-### Key Endpoints
-
-| Endpoint | Purpose |
-|----------|---------|
-| `/login` | Authenticate & obtain JWT token |
-| `/series/{id}` | Get series details |
-| `/series/{id}/extended` | Get series + episodes + seasons |
-| `/seasons/{id}` | Get season details |
-| `/seasons/{id}/extended` | Get season + episodes |
-| `/episodes/{id}` | Get episode details |
-| `/episodes/{id}/extended` | Get episode + translations |
-| `/artwork/{id}` | Get artwork details |
-| `/artwork/types` | List artwork types |
-| `/search` | Search series by name |
-
----
-
-## Implementation Checklist
-
-- [ ] **API Client** (`internal/service/metadata/provider_thetvdb.go`)
-  - [ ] JWT authentication (login, token refresh)
-  - [ ] Series metadata fetching
-  - [ ] Season metadata fetching
-  - [ ] Episode metadata fetching
-  - [ ] Artwork fetching (posters, fanart, season posters, episode thumbnails)
-  - [ ] Search functionality
-  - [ ] Rate limiting (tier-dependent)
-  - [ ] Error handling & retries (circuit breaker)
-
-- [ ] **JWT Token Management**
-  - [ ] Login on startup
-  - [ ] Store token in memory (OR cache)
-  - [ ] Refresh token every 23 hours
-  - [ ] Handle token expiration (401 response → re-login)
-
-- [ ] **Metadata Enrichment**
-  - [ ] Map TheTVDB series → Revenge `tvshows` table
-  - [ ] Map TheTVDB seasons → Revenge `tvshow_seasons` table
-  - [ ] Map TheTVDB episodes → Revenge `tvshow_episodes` table
-  - [ ] Map artwork → local storage (posters, fanart)
-  - [ ] Extract external IDs (IMDb, TMDb) for cross-referencing
-
-- [ ] **Artwork Handling**
-  - [ ] Download series posters
-  - [ ] Download series fanart (backdrops)
-  - [ ] Download season posters
-  - [ ] Download episode thumbnails
-  - [ ] Generate Blurhash for placeholders
-  - [ ] Store images locally (configurable path)
-
----
-
-## Revenge Integration Pattern
+### Integration Structure
 
 ```
-User requests TV show metadata (TheTVDB ID: 121361)
-           ↓
-Revenge queries TheTVDB API: /series/121361/extended
-           ↓
-TheTVDB returns series + seasons + episodes
-           ↓
-Revenge stores in PostgreSQL (tvshows, tvshow_seasons, tvshow_episodes)
-           ↓
-Query /artwork for posters, fanart
-           ↓
-Download artwork from TheTVDB CDN
-           ↓
-Generate Blurhash for placeholders
-           ↓
-Update Typesense search index
-           ↓
-TV show metadata available
+internal/integration/thetvdb/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Go Client Example
+### Data Flow
 
-```go
-type TheTVDBClient struct {
-    baseURL string
-    apiKey  string
-    token   string
-    client  *http.Client
-    mu      sync.RWMutex
-}
+<!-- Data flow diagram -->
 
-func (c *TheTVDBClient) Login(ctx context.Context) error {
-    url := fmt.Sprintf("%s/login", c.baseURL)
-    body := map[string]string{"apikey": c.apiKey, "pin": ""}
-    jsonBody, _ := json.Marshal(body)
+### Provides
 
-    req, _ := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(jsonBody))
-    req.Header.Set("Content-Type", "application/json")
+This integration provides:
+<!-- Data provided by integration -->
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return fmt.Errorf("login failed: %w", err)
-    }
-    defer resp.Body.Close()
 
-    var result struct {
-        Data struct {
-            Token string `json:"token"`
-        } `json:"data"`
-    }
-    json.NewDecoder(resp.Body).Decode(&result)
+## Implementation
 
-    c.mu.Lock()
-    c.token = result.Data.Token
-    c.mu.Unlock()
+### File Structure
 
-    return nil
-}
+<!-- File structure -->
 
-func (c *TheTVDBClient) GetSeries(ctx context.Context, seriesID int) (*Series, error) {
-    c.mu.RLock()
-    token := c.token
-    c.mu.RUnlock()
+### Key Interfaces
 
-    url := fmt.Sprintf("%s/series/%d/extended", c.baseURL, seriesID)
-    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
-    req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+<!-- Interface definitions -->
 
-    resp, err := c.client.Do(req)
-    if err != nil {
-        return nil, fmt.Errorf("failed to get series: %w", err)
-    }
-    defer resp.Body.Close()
+### Dependencies
 
-    if resp.StatusCode == 401 {
-        // Token expired, re-login
-        c.Login(ctx)
-        return c.GetSeries(ctx, seriesID)
-    }
+<!-- Dependency list -->
 
-    var result struct {
-        Data Series `json:"data"`
-    }
-    json.NewDecoder(resp.Body).Decode(&result)
-    return &result.Data, nil
-}
-```
 
----
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/video](integrations/metadata/video.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [TV Show Module](../../features/video/TVSHOW_MODULE.md)
-- [TMDb Integration](TMDB.md) - Alternative TV metadata source
-- [Sonarr Integration](../../servarr/SONARR.md) - TV show management
-- [Metadata Enrichment Pattern](../../patterns/METADATA_ENRICHMENT.md)
+### External Sources
+- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [TheTVDB API](https://thetvdb.github.io/v4-api/) - Auto-resolved from thetvdb
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
 
----
-
-## Artwork Types
-
-TheTVDB provides multiple artwork types:
-
-| Type | Description |
-|------|-------------|
-| `poster` | Series poster (vertical) |
-| `fanart` | Backdrop/fanart (horizontal) |
-| `banner` | Series banner (wide) |
-| `season` | Season poster |
-| `seasonwide` | Season banner |
-| `clearlogo` | Logo with transparent background |
-| `clearart` | Artwork with transparent background |
-| `background` | Background image |
-
-Query `/artwork/types` for full list.
-
----
-
-## External ID Mapping
-
-TheTVDB provides external IDs for cross-referencing:
-
-```json
-{
-  "id": 121361,
-  "remoteIds": [
-    {
-      "id": "tt0944947",
-      "type": 2,
-      "sourceName": "IMDB"
-    },
-    {
-      "id": "1399",
-      "type": 4,
-      "sourceName": "TheMovieDB.com"
-    }
-  ]
-}
-```
-
-Use these IDs to link with TMDb, IMDb, etc.
-
----
-
-## Notes
-
-- **TheTVDB API v4 is current** (v3 deprecated)
-- **JWT authentication required** (token expires after 24 hours, refresh periodically)
-- **Rate limits vary by tier** (free tier has limited requests, paid tiers have higher limits)
-- **Free tier available** (register for API key at https://thetvdb.com/api-information)
-- **Artwork CDN**: TheTVDB provides URLs to artwork (download separately)
-- **Blurhash**: Generate locally from downloaded images (not provided by TheTVDB)
-- **External IDs**: Use IMDb/TMDb IDs to cross-reference with other services
-- **Episode air dates**: TheTVDB uses UTC timezone (convert to user's timezone)
-- **Episode numbering**: Absolute episode numbers available (useful for anime)
-- **Translations**: TheTVDB supports multiple languages (query `/episodes/{id}/translations`)
-- **Network/Studio**: TheTVDB provides network info (e.g., "HBO", "Netflix")
-- **Status**: Series status (Continuing, Ended, Upcoming)
-- **Token refresh strategy**: Use background job (every 23 hours) to refresh token

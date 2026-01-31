@@ -1,0 +1,131 @@
+## Table of Contents
+
+- [Tracearr Analytics Service](#tracearr-analytics-service)
+- [Tracearr Analytics Service](#tracearr-analytics-service)
+  - [Contents](#contents)
+  - [How It Works](#how-it-works)
+    - [Content Flow](#content-flow)
+  - [Features](#features)
+  - [Configuration](#configuration)
+  - [Related Documentation](#related-documentation)
+    - [See Also](#see-also)
+
+
+
+---
+sources:
+  - name: Casbin
+    url: https://pkg.go.dev/github.com/casbin/casbin/v2
+    note: Auto-resolved from casbin
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: Go io
+    url: https://pkg.go.dev/io
+    note: Auto-resolved from go-io
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: rueidis
+    url: https://pkg.go.dev/github.com/redis/rueidis
+    note: Auto-resolved from rueidis
+  - name: rueidis GitHub README
+    url: https://github.com/redis/rueidis
+    note: Auto-resolved from rueidis-docs
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+  - name: Svelte 5 Runes
+    url: https://svelte.dev/docs/svelte/$state
+    note: Auto-resolved from svelte-runes
+  - name: Svelte 5 Documentation
+    url: https://svelte.dev/docs/svelte/overview
+    note: Auto-resolved from svelte5
+  - name: SvelteKit Documentation
+    url: https://svelte.dev/docs/kit/introduction
+    note: Auto-resolved from sveltekit
+design_refs:
+  - title: features/shared
+    path: features/shared.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Tracearr Analytics Service
+
+
+
+
+# Tracearr Analytics Service
+
+> Real-time monitoring, analytics, and account sharing detection for Revenge
+
+PLACEHOLDER: User-friendly overview
+
+---
+
+
+
+
+## Contents
+
+<!-- TOC will be auto-generated here by markdown-toc -->
+
+---
+
+
+## How It Works
+
+<!-- Wiki how it works description pending -->
+
+### Content Flow
+
+1. **Add Content**: Import or add manually
+2. **Metadata**: Automatically fetched
+3. **Library**: Organized by folder structure
+4. **Playback**: Stream directly or use external player
+
+
+
+
+## Features
+<!-- Feature list placeholder -->
+
+
+
+## Configuration
+<!-- User-friendly configuration guide -->
+
+
+
+
+
+
+
+
+
+## Related Documentation
+### See Also
+<!-- Related wiki pages -->
+
+
+
+---
+
+**Need Help?** [Open an issue](https://github.com/revenge-project/revenge/issues) or [Join the discussion](https://github.com/revenge-project/revenge/discussions)

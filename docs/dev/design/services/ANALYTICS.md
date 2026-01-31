@@ -1,243 +1,179 @@
-# Analytics Service
-
-<!-- SOURCES: fx, pgx, postgresql-arrays, postgresql-json, river -->
-
-<!-- DESIGN: services, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Usage analytics, playback statistics, and library insights
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Developer Resources](#developer-resources)
-- [Overview](#overview)
-- [Goals](#goals)
-- [Non-Goals](#non-goals)
-- [Technical Design](#technical-design)
-  - [Analytics Types](#analytics-types)
-  - [Data Model](#data-model)
-  - [Service Interface](#service-interface)
-- [Database Schema](#database-schema)
-- [River Jobs](#river-jobs)
-- [Configuration](#configuration)
-- [Checklist](#checklist)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documents](#related-documents)
+- [Analytics Service](#analytics-service)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Service Structure](#service-structure)
+    - [Dependencies](#dependencies)
+    - [Provides](#provides)
+    - [Component Diagram](#component-diagram)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Module**: `internal/service/analytics`
-**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-observability)
+
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: services
+    path: services/INDEX.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Analytics Service
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: service
+
+
+> > Usage analytics, playback statistics, and library insights
+
+**Package**: `internal/service/analytics`
+**fx Module**: `analytics.Module`
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | 🔴 |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |## Developer Resources
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-> Package versions: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core)
+**Overall**: ✅ Complete
 
-| Package | Purpose |
-|---------|---------|
-| River | Background job processing |
-| pgx | PostgreSQL driver |
-| otter | In-memory caching |
-| fx | Dependency injection |
+
 
 ---
 
-## Overview
 
-The Analytics service collects and aggregates usage data for insights:
-- Playback statistics (most watched, watch time)
-- Library statistics (size, growth, health)
-- User activity patterns
-- System performance metrics
+## Architecture
 
-All analytics are privacy-respecting and stored locally.
+### Service Structure
 
-## Goals
-
-- Provide library owners with usage insights
-- Enable "most popular" and "trending" features
-- Track library health (missing metadata, orphaned files)
-- Support admin dashboards
-
-## Non-Goals
-
-- Send data to external services
-- Track individual user behavior for profiling
-- Real-time analytics (batch processing is fine)
-
----
-
-## Technical Design
-
-### Analytics Types
-
-| Type | Granularity | Retention |
-|------|-------------|-----------|
-| Playback events | Per-play | 90 days raw, aggregated forever |
-| Library stats | Daily snapshot | Forever |
-| User activity | Daily aggregate | 30 days |
-| System metrics | Hourly | 7 days |
-
-### Data Model
-
-```go
-type PlaybackEvent struct {
-    ID          uuid.UUID
-    UserID      uuid.UUID
-    MediaID     uuid.UUID
-    MediaType   string
-    StartedAt   time.Time
-    EndedAt     *time.Time
-    DurationSec int
-    Completed   bool
-    ClientType  string
-}
-
-type LibraryStats struct {
-    LibraryID     uuid.UUID
-    Date          time.Time
-    TotalItems    int
-    TotalSizeGB   float64
-    MissingMeta   int
-    RecentlyAdded int
-}
-
-type UserActivityAggregate struct {
-    UserID      uuid.UUID
-    Date        time.Time
-    PlayCount   int
-    WatchTimeMin int
-    UniqueItems int
-}
+```
+internal/service/analytics/
+├── module.go              # fx module definition
+├── service.go             # Service implementation
+├── repository.go          # Data access (if needed)
+├── handler.go             # HTTP handlers (if exposed)
+├── middleware.go          # Middleware (if needed)
+├── types.go               # Domain types
+└── service_test.go        # Tests
 ```
 
-### Service Interface
+### Dependencies
+No external service dependencies.
 
-```go
-type AnalyticsService interface {
-    // Recording
-    RecordPlayback(ctx context.Context, event PlaybackEvent) error
-    RecordLibraryScan(ctx context.Context, libraryID uuid.UUID, stats ScanStats) error
+### Provides
+<!-- Service provides -->
 
-    // Queries
-    GetMostWatched(ctx context.Context, libraryID uuid.UUID, period time.Duration, limit int) ([]MediaStats, error)
-    GetRecentlyWatched(ctx context.Context, userID uuid.UUID, limit int) ([]MediaStats, error)
-    GetLibraryStats(ctx context.Context, libraryID uuid.UUID) (*LibraryStats, error)
-    GetUserStats(ctx context.Context, userID uuid.UUID, period time.Duration) (*UserStats, error)
+### Component Diagram
 
-    // Admin
-    GetSystemStats(ctx context.Context) (*SystemStats, error)
-    GetActiveUsers(ctx context.Context, since time.Duration) ([]UserActivity, error)
-}
-```
+<!-- Component diagram -->
 
----
 
-## Database Schema
+## Implementation
 
-```sql
-CREATE TABLE playback_events (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id),
-    media_id UUID NOT NULL,
-    media_type VARCHAR(20) NOT NULL,
-    started_at TIMESTAMPTZ NOT NULL,
-    ended_at TIMESTAMPTZ,
-    duration_sec INT,
-    completed BOOLEAN DEFAULT FALSE,
-    client_type VARCHAR(50),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-) PARTITION BY RANGE (started_at);
+### File Structure
 
-CREATE TABLE library_stats_daily (
-    library_id UUID NOT NULL,
-    date DATE NOT NULL,
-    total_items INT,
-    total_size_bytes BIGINT,
-    missing_metadata INT,
-    recently_added INT,
-    PRIMARY KEY (library_id, date)
-);
+<!-- File structure -->
 
-CREATE TABLE user_activity_daily (
-    user_id UUID NOT NULL,
-    date DATE NOT NULL,
-    play_count INT DEFAULT 0,
-    watch_time_min INT DEFAULT 0,
-    unique_items INT DEFAULT 0,
-    PRIMARY KEY (user_id, date)
-);
-```
+### Key Interfaces
 
----
+<!-- Interface definitions -->
 
-## River Jobs
+### Dependencies
 
-```go
-type AggregateAnalyticsArgs struct {
-    Date time.Time `json:"date"`
-}
+<!-- Dependency list -->
 
-func (AggregateAnalyticsArgs) Kind() string { return "analytics.aggregate_daily" }
 
-type CleanupAnalyticsArgs struct {
-    RetentionDays int `json:"retention_days"`
-}
 
-func (CleanupAnalyticsArgs) Kind() string { return "analytics.cleanup" }
-```
 
----
 
 ## Configuration
+### Environment Variables
 
-```yaml
-analytics:
-  enabled: true
-  retention:
-    raw_events: 90d
-    daily_aggregates: 365d
-  aggregation_schedule: "0 3 * * *"  # 3 AM daily
-```
+<!-- Environment variables -->
 
----
+### Config Keys
 
-## Checklist
-
-- [ ] Database migrations created
-- [ ] Playback event recording
-- [ ] Daily aggregation job
-- [ ] Query methods implemented
-- [ ] Admin dashboard endpoints
-- [ ] Cleanup job for retention
-- [ ] Tests written
-
----
+<!-- Configuration keys -->
 
 
-## Related Documents
 
-- [Activity Service](ACTIVITY.md) - Event logging
-- [Library Service](LIBRARY.md) - Library statistics
-- [Session Service](SESSION.md) - User session tracking
-- [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - Service inventory
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [services](services/INDEX.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+

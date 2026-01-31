@@ -1,338 +1,167 @@
-# NextPVR Integration
-
-<!-- SOURCES: gohlslib, m3u8, nextpvr -->
-
-<!-- DESIGN: integrations/livetv, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Windows/Linux DVR software with IPTV support
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Details](#api-details)
-  - [Authentication Flow](#authentication-flow)
-  - [Key Endpoints](#key-endpoints)
-  - [Example Requests](#example-requests)
-- [Data Mapping](#data-mapping)
-  - [Channel Mapping](#channel-mapping)
-  - [EPG Mapping](#epg-mapping)
-  - [Recording Mapping](#recording-mapping)
-- [Implementation Checklist](#implementation-checklist)
-- [Configuration](#configuration)
-- [Database Schema](#database-schema)
-- [Session Management](#session-management)
-- [Stream Handling](#stream-handling)
-  - [HLS Stream](#hls-stream)
-  - [Recording Playback](#recording-playback)
-- [Error Handling](#error-handling)
-- [NextPVR vs TVHeadend](#nextpvr-vs-tvheadend)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
+- [NextPVR](#nextpvr)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Priority**: 🟢 LOW (Phase 6 - LiveTV Module)
-**Type**: REST API client
+
+---
+sources:
+  - name: gohlslib (HLS)
+    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    note: Auto-resolved from gohlslib
+  - name: M3U8 Extended Format
+    url: https://datatracker.ietf.org/doc/html/rfc8216
+    note: Auto-resolved from m3u8
+  - name: NextPVR Documentation
+    url: https://github.com/sub3/NextPVR
+    note: Auto-resolved from nextpvr
+design_refs:
+  - title: integrations/livetv
+    path: integrations/livetv.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# NextPVR
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with NextPVR
+
+> Windows/Linux DVR software with IPTV support
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive API endpoints, data mapping, session management |
-| Sources | ✅ | Wiki, API reference, GitHub linked |
-| Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-NextPVR is a personal video recorder (PVR) software for Windows and Linux that supports various TV sources. Revenge integrates with NextPVR for:
-- Live TV streaming
-- Electronic Program Guide (EPG)
-- DVR recording management
-- IPTV/HDHR support
 
-**Integration Points**:
-- **REST API**: Channel, EPG, recording management
-- **Stream URLs**: Direct HTTP streaming
-- **Recording playback**: Completed recording access
 
 ---
 
-## Developer Resources
 
-- 📚 **Wiki**: https://github.com/sub3/NextPVR/wiki
-- 🔗 **API Reference**: https://github.com/sub3/NextPVR/wiki/API
-- 🔗 **GitHub**: https://github.com/sub3/NextPVR
+## Architecture
 
----
+### Integration Structure
 
-## API Details
-
-**Base URL**: `http://nextpvr:8866/`
-**Authentication**: API key via query parameter `?sid={session_id}` or PIN
-
-### Authentication Flow
-
-```bash
-# 1. Initiate session
-GET /service?method=session.initiate&ver=1.0&device=revenge
-
-# Response: <sid>SESSION_ID</sid>
-
-# 2. Login with PIN
-GET /service?method=session.login&md5={md5(":PIN:")}&sid={sid}
-
-# 3. Use sid in subsequent requests
+```
+internal/integration/nextpvr/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-### Key Endpoints
+### Data Flow
 
-| Endpoint | Purpose |
-|----------|---------|
-| `session.initiate` | Start session |
-| `session.login` | Authenticate |
-| `channel.list` | List channels |
-| `channel.icon` | Get channel icon |
-| `guide.list` | Get EPG data |
-| `recording.list` | List recordings |
-| `recording.schedule` | Schedule recording |
-| `recording.delete` | Delete recording |
-| `live.m3u8` | HLS stream |
+<!-- Data flow diagram -->
 
-### Example Requests
+### Provides
 
-```bash
-# List channels
-GET /service?method=channel.list&sid={sid}
+This integration provides:
+<!-- Data provided by integration -->
 
-# Get EPG (next 24 hours)
-GET /service?method=guide.list&channel_id={id}&sid={sid}
 
-# Get live stream
-GET /live?channel={oid}&client=revenge&sid={sid}
+## Implementation
 
-# HLS stream
-GET /live.m3u8?channel={oid}&sid={sid}
-```
+### File Structure
 
----
+<!-- File structure -->
 
-## Data Mapping
+### Key Interfaces
 
-### Channel Mapping
+<!-- Interface definitions -->
 
-| NextPVR Field | Revenge Field | Notes |
-|---------------|---------------|-------|
-| `channel_id` | `nextpvr_channel_id` | Channel ID |
-| `channel_oid` | `external_id` | Unique OID |
-| `channel_name` | `name` | Display name |
-| `channel_number` | `channel_number` | Channel number |
-| `channel_minor` | `subchannel` | Minor channel number |
-| `icon` | `logo_url` | Channel icon |
+### Dependencies
 
-### EPG Mapping
+<!-- Dependency list -->
 
-| NextPVR Field | Revenge Field | Notes |
-|---------------|---------------|-------|
-| `id` | `nextpvr_event_id` | EPG event ID |
-| `name` | `title` | Program title |
-| `desc` | `overview` | Description |
-| `start` | `start_time` | Start timestamp |
-| `end` | `end_time` | End timestamp |
-| `subtitle` | `subtitle` | Episode title |
-| `season` | `season_number` | Season |
-| `episode` | `episode_number` | Episode |
-| `genres` | `genres[]` | Genre list |
 
-### Recording Mapping
 
-| NextPVR Field | Revenge Field | Notes |
-|---------------|---------------|-------|
-| `id` | `nextpvr_recording_id` | Recording ID |
-| `name` | `title` | Recording title |
-| `desc` | `overview` | Description |
-| `start_time` | `start_time` | Start time |
-| `duration` | `duration_seconds` | Duration |
-| `status` | `status` | Recording status |
-| `file` | `file_path` | File location |
 
----
-
-## Implementation Checklist
-
-- [ ] **API Client** (`internal/service/livetv/provider_nextpvr.go`)
-  - [ ] Session management (initiate, login)
-  - [ ] Session refresh
-  - [ ] Channel fetching
-  - [ ] EPG fetching
-  - [ ] Stream URL generation
-  - [ ] Error handling
-
-- [ ] **Channel Sync** (`internal/service/sync/nextpvr_channels.go`)
-  - [ ] Initial channel import
-  - [ ] Icon downloading
-  - [ ] Channel ordering
-
-- [ ] **EPG Sync** (`internal/service/sync/nextpvr_epg.go`)
-  - [ ] Periodic EPG import
-  - [ ] Multi-day scheduling
-  - [ ] Genre mapping
-
-- [ ] **DVR Integration** (`internal/service/livetv/nextpvr_dvr.go`)
-  - [ ] List recordings
-  - [ ] Schedule recording
-  - [ ] Delete recording
-  - [ ] Recording playback
-
----
 
 ## Configuration
+### Environment Variables
 
-```yaml
-# configs/config.yaml
-integrations:
-  nextpvr:
-    enabled: true
-    base_url: "http://nextpvr:8866"
-    pin: "${REVENGE_NEXTPVR_PIN}"
+<!-- Environment variables -->
 
-    sync:
-      channels:
-        enabled: true
-        interval: "2h"
-      epg:
-        enabled: true
-        interval: "30m"
-        days_ahead: 7
+### Config Keys
 
-    streaming:
-      prefer_hls: true
-      proxy_streams: false
+<!-- Configuration keys -->
 
-    dvr:
-      enabled: true
-      pre_padding_minutes: 2
-      post_padding_minutes: 5
-```
 
----
 
-## Database Schema
 
-Uses shared Live TV tables from [TVHeadend Integration](TVHEADEND.md#database-schema).
+## Testing Strategy
 
----
+### Unit Tests
 
-## Session Management
+<!-- Unit test strategy -->
 
-NextPVR sessions expire. Handle with:
+### Integration Tests
 
-```go
-type NextPVRClient struct {
-    baseURL   string
-    pin       string
-    sessionID string
-    expiresAt time.Time
-    mu        sync.RWMutex
-}
+<!-- Integration test strategy -->
 
-func (c *NextPVRClient) ensureSession(ctx context.Context) error {
-    c.mu.Lock()
-    defer c.mu.Unlock()
+### Test Coverage
 
-    if c.sessionID != "" && time.Now().Before(c.expiresAt) {
-        return nil
-    }
+Target: **80% minimum**
 
-    // Initiate new session
-    sid, err := c.initiateSession(ctx)
-    if err != nil {
-        return err
-    }
 
-    // Login
-    if err := c.login(ctx, sid); err != nil {
-        return err
-    }
 
-    c.sessionID = sid
-    c.expiresAt = time.Now().Add(1 * time.Hour)
-    return nil
-}
-```
 
----
 
-## Stream Handling
-
-### HLS Stream
-
-```go
-func (p *NextPVRProvider) GetStreamURL(channelOID string) string {
-    return fmt.Sprintf(
-        "%s/live.m3u8?channel=%s&client=revenge&sid=%s",
-        p.baseURL, channelOID, p.sessionID,
-    )
-}
-```
-
-### Recording Playback
-
-```go
-func (p *NextPVRProvider) GetRecordingURL(recordingID string) string {
-    return fmt.Sprintf(
-        "%s/service?method=recording.stream&recording_id=%s&sid=%s",
-        p.baseURL, recordingID, p.sessionID,
-    )
-}
-```
-
----
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid session | Session expired | Re-authenticate |
-| Invalid PIN | Wrong PIN | Check configuration |
-| Channel not found | Invalid channel OID | Re-sync channels |
-| No tuners | All tuners busy | Inform user |
-
----
-
-## NextPVR vs TVHeadend
-
-| Feature | NextPVR | TVHeadend |
-|---------|---------|-----------|
-| Platform | Windows/Linux | Linux |
-| UI | Web + Desktop | Web |
-| IPTV support | Good | Excellent |
-| DVB support | Limited | Excellent |
-| API | REST/XML | REST/JSON + HTSP |
-| Community | Medium | Large |
-| Resource usage | Medium | Low |
-
-**Recommendation**: Use TVHeadend for Linux/DVB setups, NextPVR for Windows users.
-
----
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/livetv](integrations/livetv.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [TVHeadend Integration](TVHEADEND.md)
-- [Live TV Module](../../features/LIBRARY_TYPES.md)
+### External Sources
+- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
+- [NextPVR Documentation](https://github.com/sub3/NextPVR) - Auto-resolved from nextpvr
+

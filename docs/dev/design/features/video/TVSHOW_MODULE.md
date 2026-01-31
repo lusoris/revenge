@@ -1,455 +1,206 @@
+## Table of Contents
+
+- [TV Show Module](#tv-show-module)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Database Schema](#database-schema)
+    - [Module Structure](#module-structure)
+    - [Component Interaction](#component-interaction)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [Content Management](#content-management)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
+
+
+---
+sources:
+  - name: Uber fx
+    url: https://pkg.go.dev/go.uber.org/fx
+    note: Auto-resolved from fx
+  - name: go-blurhash
+    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    note: Auto-resolved from go-blurhash
+  - name: ogen OpenAPI Generator
+    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    note: Auto-resolved from ogen
+  - name: pgx PostgreSQL Driver
+    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    note: Auto-resolved from pgx
+  - name: PostgreSQL Arrays
+    url: https://www.postgresql.org/docs/current/arrays.html
+    note: Auto-resolved from postgresql-arrays
+  - name: PostgreSQL JSON Functions
+    url: https://www.postgresql.org/docs/current/functions-json.html
+    note: Auto-resolved from postgresql-json
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: Sonarr API Docs
+    url: https://sonarr.tv/docs/api/
+    note: Auto-resolved from sonarr-docs
+  - name: sqlc
+    url: https://docs.sqlc.dev/en/stable/
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    note: Auto-resolved from sqlc-config
+  - name: TheTVDB API
+    url: https://thetvdb.github.io/v4-api/
+    note: Auto-resolved from thetvdb
+design_refs:
+  - title: features/video
+    path: features/video.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
 # TV Show Module
 
-<!-- SOURCES: fx, go-blurhash, ogen, pgx, postgresql-arrays, postgresql-json, river, sonarr-docs, sqlc, sqlc-config, thetvdb -->
 
-<!-- DESIGN: features/video, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: feature
 
+
+> Content module for TV Shows, Seasons, Episodes
 
 > TV series, seasons, and episodes management
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Developer Resources](#developer-resources)
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Files](#files)
-- [Entity Hierarchy](#entity-hierarchy)
-  - [Series](#series)
-  - [Season](#season)
-  - [Episode](#episode)
-- [Service Operations](#service-operations)
-  - [Series Operations](#series-operations)
-  - [Season Operations](#season-operations)
-  - [Episode Operations](#episode-operations)
-- [User Data](#user-data)
-  - [Watch Progress](#watch-progress)
-  - [Series Progress](#series-progress)
-- [Metadata Flow](#metadata-flow)
-- [Background Jobs](#background-jobs)
-- [Database Schema](#database-schema)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
-  - [Phase 2: Database](#phase-2-database)
-  - [Phase 3: Service Layer](#phase-3-service-layer)
-  - [Phase 4: User Data](#phase-4-user-data)
-  - [Phase 5: Background Jobs](#phase-5-background-jobs)
-  - [Phase 6: API Integration](#phase-6-api-integration)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related](#related)
-
-<!-- TOC-END -->
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive spec with architecture, entities, operations |
-| Sources | ✅ | TMDb, TheTVDB, Sonarr API docs linked |
-| Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |**Location**: `internal/content/tvshow/`
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Developer Resources
-
-| Source | URL | Purpose |
-|--------|-----|---------|
-| TMDb API | [developers.themoviedb.org](https://developers.themoviedb.org/3) | Primary TV metadata |
-| TheTVDB API | [thetvdb.github.io/v4-api](https://thetvdb.github.io/v4-api/) | Secondary TV metadata, episode ordering |
-| Sonarr API | [sonarr.tv/docs/api](https://sonarr.tv/docs/api/) | Servarr integration |
-| TMDb Design Doc | [integrations/metadata/video/TMDB.md](../../integrations/metadata/video/TMDB.md) | TMDb integration spec |
-| TheTVDB Design Doc | [integrations/metadata/video/THETVDB.md](../../integrations/metadata/video/THETVDB.md) | TheTVDB integration spec |
-| Sonarr Design Doc | [integrations/servarr/SONARR.md](../../integrations/servarr/SONARR.md) | Sonarr integration spec |
-
----
-
-## Overview
-
-The TV Show module provides complete television library management:
-
-- Hierarchical structure (Series → Seasons → Episodes)
-- Entity definitions with full metadata support
-- Repository pattern with PostgreSQL implementation
-- Service layer with otter caching
-- Background jobs for metadata enrichment
-- User data (ratings, watch history, progress tracking)
-
----
 
 ## Architecture
 
+### Database Schema
+
+**Schema**: `public`
+
+<!-- Schema diagram -->
+
+### Module Structure
+
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                       API Layer                              │
-│                    (ogen handlers)                           │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-┌─────────────────────────▼───────────────────────────────────┐
-│                   TVShow Service                             │
-│   - Local cache (otter)                                      │
-│   - Business logic                                           │
-│   - Series/Season/Episode operations                         │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-┌─────────────────────────▼───────────────────────────────────┐
-│                    Repository Layer                          │
-│   - PostgreSQL queries (sqlc)                                │
-│   - Hierarchical queries                                     │
-│   - User data, relations                                     │
-└─────────────────────────────────────────────────────────────┘
+internal/content/tv_show/
+├── module.go              # fx module definition
+├── repository.go          # Database operations
+├── service.go             # Business logic
+├── handler.go             # HTTP handlers (ogen)
+├── types.go               # Domain types
+└── tv_show_test.go
 ```
 
----
-
-## Files
-
-| File | Description |
-|------|-------------|
-| `entity.go` | Domain entities (Series, Season, Episode, etc.) |
-| `repository.go` | Repository interface definition |
-| `repository_pg.go` | PostgreSQL implementation |
-| `repository_pg_user_data.go` | User ratings, watch history |
-| `repository_pg_relations.go` | Cast, crew, genres |
-| `service.go` | Business logic with caching |
-| `jobs.go` | River background jobs |
-| `metadata_provider.go` | TMDb metadata interface |
-| `module.go` | fx dependency injection |
-
----
-
-## Entity Hierarchy
-
-### Series
-
-```go
-type Series struct {
-    shared.ContentEntity
-
-    // Metadata
-    OriginalTitle  string
-    Tagline        string
-    Overview       string
-    FirstAirDate   *time.Time
-    LastAirDate    *time.Time
-    Status         string  // Continuing, Ended, Canceled
-    ContentRating  string
-    RatingLevel    int
-
-    // Counts
-    SeasonCount   int
-    EpisodeCount  int
-
-    // Ratings
-    CommunityRating float64
-    VoteCount       int
-
-    // Images
-    PosterPath       string
-    PosterBlurhash   string
-    BackdropPath     string
-    BackdropBlurhash string
-    LogoPath         string
-
-    // External IDs
-    TmdbID int
-    ImdbID string
-    TvdbID int
-
-    // Loaded on demand
-    Seasons  []Season
-    Cast     []CastMember
-    Crew     []CrewMember
-    Genres   []Genre
-    Studios  []Studio
-}
-```
-
-### Season
-
-```go
-type Season struct {
-    ID            uuid.UUID
-    SeriesID      uuid.UUID
-    SeasonNumber  int
-    Name          string
-    Overview      string
-    AirDate       *time.Time
-    EpisodeCount  int
-    PosterPath    string
-    PosterBlurhash string
-
-    // External IDs
-    TmdbID int
-    TvdbID int
-
-    // Loaded on demand
-    Episodes []Episode
-}
-```
-
-### Episode
-
-```go
-type Episode struct {
-    shared.ContentEntity
-
-    // Hierarchy
-    SeriesID      uuid.UUID
-    SeasonID      uuid.UUID
-    SeasonNumber  int
-    EpisodeNumber int
-
-    // Metadata
-    Overview      string
-    AirDate       *time.Time
-    RuntimeTicks  int64
+### Component Interaction
 
-    // Ratings
-    CommunityRating float64
-    VoteCount       int
-
-    // Images
-    StillPath      string
-    StillBlurhash  string
-
-    // External IDs
-    TmdbID int
-    ImdbID string
-    TvdbID int
-
-    // File info
-    Path      string
-    Container string
-    SizeBytes int64
-}
-```
+<!-- Component interaction diagram -->
 
----
 
-## Service Operations
+## Implementation
 
-### Series Operations
+### File Structure
 
-```go
-func (s *Service) GetSeries(ctx context.Context, id uuid.UUID) (*Series, error)
-func (s *Service) GetSeriesWithSeasons(ctx context.Context, id uuid.UUID) (*Series, error)
-func (s *Service) ListSeries(ctx context.Context, libraryID uuid.UUID, opts ListOptions) ([]*Series, error)
-func (s *Service) CreateSeries(ctx context.Context, series *Series) error
-func (s *Service) UpdateSeries(ctx context.Context, series *Series) error
-func (s *Service) DeleteSeries(ctx context.Context, id uuid.UUID) error
-```
-
-### Season Operations
-
-```go
-func (s *Service) GetSeason(ctx context.Context, id uuid.UUID) (*Season, error)
-func (s *Service) GetSeasonWithEpisodes(ctx context.Context, id uuid.UUID) (*Season, error)
-func (s *Service) ListSeasons(ctx context.Context, seriesID uuid.UUID) ([]*Season, error)
-```
-
-### Episode Operations
-
-```go
-func (s *Service) GetEpisode(ctx context.Context, id uuid.UUID) (*Episode, error)
-func (s *Service) ListEpisodes(ctx context.Context, seasonID uuid.UUID) ([]*Episode, error)
-func (s *Service) GetNextEpisode(ctx context.Context, userID, seriesID uuid.UUID) (*Episode, error)
-```
-
----
-
-## User Data
-
-### Watch Progress
-
-Tracks progress at episode level with series-wide aggregation:
-
-```go
-type EpisodeWatchHistory struct {
-    ID               uuid.UUID
-    UserID           uuid.UUID
-    EpisodeID        uuid.UUID
-    PositionTicks    int64
-    DurationTicks    int64
-    PlayedPercentage float64
-    Completed        bool
-    CompletedAt      *time.Time
-    StartedAt        time.Time
-    LastUpdatedAt    time.Time
-}
-```
-
-### Series Progress
-
-Calculated from episode watch history:
-
-- Episodes watched
-- Episodes remaining
-- Next episode to watch
-- Continue watching position
-
----
-
-## Metadata Flow
-
-> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#metadata-priority-chain) for full priority chain
-
-**Priority Order:**
-1. **LOCAL CACHE** → otter cache, instant display
-2. **ARR SERVICE** → Sonarr (cached TMDb/TheTVDB metadata)
-3. **EXTERNAL** → Direct TMDb/TheTVDB API (if Sonarr unavailable)
-4. **ENRICHMENT** → Background jobs for additional data
-
-**Primary Metadata Sources:** TMDb, TheTVDB
-**Arr Integration:** Sonarr
-
-```go
-type MetadataProvider interface {
-    SearchSeries(ctx context.Context, query string) ([]SeriesSearchResult, error)
-    GetSeriesMetadata(ctx context.Context, id int) (*SeriesMetadata, error)
-    GetSeasonMetadata(ctx context.Context, seriesID, seasonNumber int) (*SeasonMetadata, error)
-    GetEpisodeMetadata(ctx context.Context, seriesID, seasonNumber, episodeNumber int) (*EpisodeMetadata, error)
-}
-```
-
----
-
-## Background Jobs
-
-Metadata enrichment runs via River:
-
-- `SeriesMetadataRefreshJob` - Refresh series metadata
-- `SeasonMetadataRefreshJob` - Refresh season metadata
-- `EpisodeMetadataRefreshJob` - Refresh episode metadata
-- `SeriesImageDownloadJob` - Download series images
-- `NewEpisodeCheckJob` - Check for new episodes
-
----
-
-## Database Schema
-
-```sql
--- tvshow schema
-CREATE SCHEMA IF NOT EXISTS tvshow;
-
-CREATE TABLE tvshow.series (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    library_id UUID NOT NULL REFERENCES libraries(id),
-    path TEXT NOT NULL,
-    title TEXT NOT NULL,
-    sort_title TEXT,
-    original_title TEXT,
-    overview TEXT,
-    first_air_date DATE,
-    last_air_date DATE,
-    status TEXT,
-    season_count SMALLINT,
-    episode_count SMALLINT,
-    tmdb_id INTEGER,
-    tvdb_id INTEGER,
-    imdb_id TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE tvshow.seasons (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    series_id UUID NOT NULL REFERENCES tvshow.series(id) ON DELETE CASCADE,
-    season_number SMALLINT NOT NULL,
-    name TEXT,
-    overview TEXT,
-    air_date DATE,
-    episode_count SMALLINT,
-    tmdb_id INTEGER,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE (series_id, season_number)
-);
-
-CREATE TABLE tvshow.episodes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    series_id UUID NOT NULL REFERENCES tvshow.series(id) ON DELETE CASCADE,
-    season_id UUID NOT NULL REFERENCES tvshow.seasons(id) ON DELETE CASCADE,
-    season_number SMALLINT NOT NULL,
-    episode_number SMALLINT NOT NULL,
-    path TEXT,
-    title TEXT NOT NULL,
-    overview TEXT,
-    air_date DATE,
-    runtime_ticks BIGINT,
-    tmdb_id INTEGER,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE (series_id, season_number, episode_number)
-);
-```
-
----
-
-## Implementation Checklist
-
-### Phase 1: Core Infrastructure
-- [ ] Create `internal/content/tvshow/` package structure
-- [ ] Define `entity.go` with Series, Season, Episode structs
-- [ ] Create `repository.go` interface definition
-- [ ] Implement `repository_pg.go` with sqlc queries
-- [ ] Add fx module wiring in `module.go`
-
-### Phase 2: Database
-- [ ] Create migration `000XXX_create_tvshow_schema.up.sql`
-- [ ] Create `tvshow.series` table with all columns
-- [ ] Create `tvshow.seasons` table with series FK
-- [ ] Create `tvshow.episodes` table with series/season FKs
-- [ ] Create cast, crew, genres junction tables
-- [ ] Add indexes (library_id, tmdb_id, tvdb_id, series hierarchy)
-- [ ] Write sqlc queries in `queries/tvshow/`
-
-### Phase 3: Service Layer
-- [ ] Implement `service.go` with otter caching
-- [ ] Add Series operations (Get, GetWithSeasons, List, Create, Update, Delete)
-- [ ] Add Season operations (Get, GetWithEpisodes, List)
-- [ ] Add Episode operations (Get, List, GetNextEpisode)
-- [ ] Implement cache invalidation on mutations
-
-### Phase 4: User Data
-- [ ] Implement `repository_pg_user_data.go`
-- [ ] Add episode watch history tracking
-- [ ] Add series-level progress aggregation
-- [ ] Add GetNextEpisode logic (continue watching)
-- [ ] Add favorites and user ratings
-
-### Phase 5: Background Jobs
-- [ ] Create River job definitions in `jobs.go`
-- [ ] Implement `SeriesMetadataRefreshJob`
-- [ ] Implement `SeasonMetadataRefreshJob`
-- [ ] Implement `EpisodeMetadataRefreshJob`
-- [ ] Implement `SeriesImageDownloadJob`
-- [ ] Implement `NewEpisodeCheckJob`
-
-### Phase 6: API Integration
-- [ ] Define OpenAPI endpoints for series/seasons/episodes
-- [ ] Generate ogen handlers
-- [ ] Wire handlers to service layer
-- [ ] Add authentication/authorization checks
-
----
-
-
-## Related
-
-- [Movie Module](MOVIE_MODULE.md) - Movie management
-- [Watch Next](../playback/WATCH_NEXT_CONTINUE_WATCHING.md) - Continue watching
-- [Library Service](../../services/LIBRARY.md) - Library management
-- [Integrations: Sonarr](../../integrations/servarr/SONARR.md) - Sonarr integration
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+## API Endpoints
+
+### Content Management
+<!-- API endpoints placeholder -->
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [features/video](features/video.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
+- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
+- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
+- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Sonarr API Docs](https://sonarr.tv/docs/api/) - Auto-resolved from sonarr-docs
+- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
+- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [TheTVDB API](https://thetvdb.github.io/v4-api/) - Auto-resolved from thetvdb
+

@@ -1,93 +1,136 @@
-# Webhooks
+## Table of Contents
 
-<!-- DESIGN: technical, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
+- [Webhooks](#webhooks)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
 
-> Outgoing webhook system for event notifications
-
-**Source of Truth**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
 
 ---
+design_refs:
+  - title: technical
+    path: technical.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Webhooks
+
+
+**Created**: 2026-01-31
+**Status**: 🟡 In Progress
+**Category**: technical
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | Scaffold |
-| Sources | 🔴 |  |
-| Instructions | 🔴 |  |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |
----
+| Design | 🟡 | - |
+| Sources | 🔴 | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: 🟡 In Progress
 
-Revenge supports outgoing webhooks to notify external services of events. This enables integration with:
-- Discord/Slack for notifications
-- Home automation systems
-- Custom monitoring dashboards
-- Third-party services
+
 
 ---
 
-## Webhook Events
 
-| Event | Trigger | Payload |
-|-------|---------|---------|
-| `playback.start` | Media playback begins | Item, user, device |
-| `playback.stop` | Media playback ends | Item, user, progress |
-| `library.new` | New item added | Item metadata |
-| `library.updated` | Item metadata updated | Item metadata |
-| `user.created` | New user registered | User info |
-| `session.created` | New session started | Session info |
+## Architecture
 
----
+<!-- Architecture diagram placeholder -->
+
+### Components
+
+<!-- Component description -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
 
 ## Configuration
+### Environment Variables
 
-```yaml
-webhooks:
-  endpoints:
-    - name: discord
-      url: https://discord.com/api/webhooks/...
-      events: [playback.start, library.new]
-      secret: ${WEBHOOK_SECRET}
-    - name: home-assistant
-      url: http://homeassistant.local:8123/api/webhook/...
-      events: [playback.start, playback.stop]
-```
+<!-- Environment variables -->
 
----
+### Config Keys
 
-## Payload Format
+<!-- Configuration keys -->
 
-```json
-{
-  "event": "playback.start",
-  "timestamp": "2026-01-31T12:00:00Z",
-  "data": {
-    "item": { ... },
-    "user": { ... },
-    "device": { ... }
-  },
-  "signature": "sha256=..."
-}
-```
 
----
 
-## Security
 
-- HMAC-SHA256 signatures for payload verification
-- TLS required for all webhook URLs
-- Retry with exponential backoff on failure
+## Testing Strategy
 
----
+### Unit Tests
 
-## Related
+<!-- Unit test strategy -->
 
-- [Notification Service](../services/NOTIFICATION.md)
-- [Webhook Patterns](../patterns/WEBHOOK_PATTERNS.md)
-- [External Services](../integrations/external/INDEX.md)
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [technical](technical.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+
+### External Sources
+<!-- External documentation sources -->
+

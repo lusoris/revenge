@@ -1,415 +1,200 @@
-# Revenge - Design Principles
-
-<!-- SOURCES: dragonfly, ffmpeg, ffmpeg-codecs, ffmpeg-formats, go-astiav, go-astiav-docs, gohlslib, m3u8, river, shadcn-svelte, svelte-runes, svelte5, sveltekit, tanstack-query, typesense, typesense-go -->
-
-<!-- DESIGN: architecture, ADULT_CONTENT_SYSTEM, ADULT_METADATA, DATA_RECONCILIATION -->
-
-
-> Non-negotiable architecture principles for the entire project.
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Core Principles](#core-principles)
-  - [1. Performance First](#1-performance-first)
-  - [2. Client Agnostic](#2-client-agnostic)
-  - [3. Privacy by Default, Features by Choice](#3-privacy-by-default-features-by-choice)
-  - [4. Bleeding Edge, Stable Core](#4-bleeding-edge-stable-core)
-  - [5. Optional ML Integration](#5-optional-ml-integration)
-  - [6. Resource-Aware Background Tasks](#6-resource-aware-background-tasks)
-  - [7. Profile-Based Multi-User](#7-profile-based-multi-user)
-  - [8. WebUI Player Capabilities](#8-webui-player-capabilities)
-  - [9. External Transcoding](#9-external-transcoding)
-- [Anti-Patterns (FORBIDDEN)](#anti-patterns-forbidden)
-  - [❌ Never Do This](#never-do-this)
-- [Decision Log](#decision-log)
-- [Summary](#summary)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Cross-References](#cross-references)
+- [Revenge - Design Principles](#revenge-design-principles)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Dragonfly Documentation
+    url: https://www.dragonflydb.io/docs
+    note: Auto-resolved from dragonfly
+  - name: FFmpeg Documentation
+    url: https://ffmpeg.org/ffmpeg.html
+    note: Auto-resolved from ffmpeg
+  - name: FFmpeg Codecs
+    url: https://ffmpeg.org/ffmpeg-codecs.html
+    note: Auto-resolved from ffmpeg-codecs
+  - name: FFmpeg Formats
+    url: https://ffmpeg.org/ffmpeg-formats.html
+    note: Auto-resolved from ffmpeg-formats
+  - name: go-astiav (FFmpeg bindings)
+    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    note: Auto-resolved from go-astiav
+  - name: go-astiav GitHub README
+    url: https://github.com/asticode/go-astiav
+    note: Auto-resolved from go-astiav-docs
+  - name: gohlslib (HLS)
+    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    note: Auto-resolved from gohlslib
+  - name: M3U8 Extended Format
+    url: https://datatracker.ietf.org/doc/html/rfc8216
+    note: Auto-resolved from m3u8
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+  - name: shadcn-svelte
+    url: https://www.shadcn-svelte.com/docs
+    note: Auto-resolved from shadcn-svelte
+  - name: Svelte 5 Runes
+    url: https://svelte.dev/docs/svelte/$state
+    note: Auto-resolved from svelte-runes
+  - name: Svelte 5 Documentation
+    url: https://svelte.dev/docs/svelte/overview
+    note: Auto-resolved from svelte5
+  - name: SvelteKit Documentation
+    url: https://svelte.dev/docs/kit/introduction
+    note: Auto-resolved from sveltekit
+  - name: TanStack Query
+    url: https://tanstack.com/query/latest/docs/framework/svelte/overview
+    note: Auto-resolved from tanstack-query
+  - name: Typesense API
+    url: https://typesense.org/docs/latest/api/
+    note: Auto-resolved from typesense
+  - name: Typesense Go Client
+    url: https://github.com/typesense/typesense-go
+    note: Auto-resolved from typesense-go
+design_refs:
+  - title: architecture
+    path: architecture/INDEX.md
+  - title: ADULT_CONTENT_SYSTEM
+    path: ADULT_CONTENT_SYSTEM.md
+  - title: ADULT_METADATA
+    path: ADULT_METADATA.md
+  - title: DATA_RECONCILIATION
+    path: DATA_RECONCILIATION.md
+---
+
+# Revenge - Design Principles
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: architecture
+
+
+> PLACEHOLDER: Brief technical summary
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Complete principles specification |
-| Sources | ⚪ | N/A - internal design doc |
-| Instructions | 🔴 |  |
-| Code | 🔴 | Reset to template |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |**Priority**: 🔴 HIGH
-**Module**: Core design principles
-**Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
+| Design | ✅ | - |
+| Sources | ⚪ | - |
+| Instructions | 🔴 | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Core Principles
-
-### 1. Performance First
-
-**UX must never be blocked.**
-
-| Rule | Implementation |
-|------|----------------|
-| No blocking I/O in request handlers | Async via River Jobs |
-| No heavy computation in hot path | Offload to Blackbeard / background |
-| Database queries optimized | Indexes, prepared statements, connection pooling |
-| Caching aggressive | Dragonfly for hot data |
-
-```go
-// ❌ WRONG - Blocks request
-func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request) {
-    metadata := h.tmdb.FetchMetadata(id)  // Blocks!
-    // ...
-}
-
-// ✅ RIGHT - Returns cached, triggers background refresh
-func (h *Handler) GetMovie(w http.ResponseWriter, r *http.Request) {
-    movie := h.cache.GetMovie(id)  // Fast
-    if movie.NeedsRefresh() {
-        h.jobs.Enqueue(RefreshMetadataJob{ID: id})  // Async
-    }
-    // ...
-}
-```
-
-### 2. Client Agnostic
-
-**Native API first. Protocol bridges for specialized clients.**
-
-| Client Type | Support Strategy |
-|-------------|------------------|
-| Web | SvelteKit WebUI (primary) |
-| Mobile | Native iOS/Android apps (planned), VLC via Direct Play |
-| TV | Android TV/Apple TV apps (planned), DLNA |
-| Desktop | VLC, mpv, IINA via Direct Play |
-
-**Protocol Support:**
-- Revenge native API (OpenAPI spec-first)
-- Subsonic API for music apps (DSub, Ultrasonic, etc.)
-- DLNA/UPnP for Smart TVs and receivers
-- Chromecast/AirPlay for casting
-
-```yaml
-api:
-  protocols:
-    subsonic: true      # Music app support
-    dlna: true          # Smart TV support
-    chromecast: true    # Cast support
-```
-
-### 3. Privacy by Default, Features by Choice
-
-**Minimal tracking, maximum control.**
-
-| Data | Storage | Encryption | Purpose |
-|------|---------|------------|---------|
-| Watch History | Local DB | At-rest (AES-256) | Continue Watching, Statistics |
-| Play Events | Local DB | At-rest | Year in Review, Recommendations |
-| User Preferences | Local DB | At-rest | Personalization |
-
-**Rules:**
-- All user data encrypted at-rest
-- No external telemetry without explicit opt-in
-- No cloud calls without user consent
-- Export all personal data anytime (GDPR compliant)
-
-```sql
--- Encrypted user activity storage
-CREATE TABLE user_activity (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES users(id),
-    -- Encrypted blob containing activity details
-    activity_data BYTEA NOT NULL,  -- AES-256-GCM encrypted JSON
-    activity_type VARCHAR(50) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Encryption key derived from user's master key
--- Master key encrypted with user password
-```
-
-### 4. Bleeding Edge, Stable Core
-
-**Latest stable versions, no experiments in production.**
-
-> See [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#go-dependencies-core) for current package versions.
-
-**Version Policy:**
-- Use newest STABLE version for all components
-- Never use alpha/beta releases in production
-- Monitor via Dependabot (1 minor behind policy)
-
-**Forbidden:**
-- Alpha/Beta releases in production
-- Deprecated packages
-- Unmaintained dependencies (>1 year no commits)
-- Packages with known CVEs
-
-### 5. Optional ML Integration
-
-**Self-hosted ML only when explicitly configured.**
-
-| Feature | Without ML | With ML (Ollama/etc.) |
-|---------|------------|----------------------|
-| Recommendations | Genre/Cast/Director matching | Collaborative filtering, embeddings |
-| Search | Typesense full-text | Semantic search |
-| Intro Detection | Community markers, chapters | Audio fingerprinting |
-
-```yaml
-ml:
-  enabled: false
-  provider: ollama  # ollama, localai, etc.
-  endpoint: http://localhost:11434
-
-  features:
-    recommendations: true
-    semantic_search: true
-    intro_detection: false  # CPU-intensive
-```
-
-**No ML = Full functionality.** ML enhances, never requires.
-
-### 6. Resource-Aware Background Tasks
-
-**Heavy tasks only when resources are available.**
-
-| Task Priority | Condition | Examples |
-|---------------|-----------|----------|
-| Critical | Always run | Session cleanup, webhook delivery |
-| High | Low load | Metadata refresh, image download |
-| Normal | Idle | Library scan, search reindex |
-| Low | Very idle + opt-in | Audio fingerprinting, ML training |
-
-```go
-// Resource-aware job scheduling
-type JobPriority int
-
-const (
-    PriorityCritical JobPriority = iota  // Always
-    PriorityHigh                          // Load < 70%
-    PriorityNormal                        // Load < 50%
-    PriorityLow                           // Load < 20%, user opt-in
-)
-
-func (s *Scheduler) ShouldRun(priority JobPriority) bool {
-    load := s.GetSystemLoad()
-    switch priority {
-    case PriorityCritical:
-        return true
-    case PriorityHigh:
-        return load < 0.7
-    case PriorityNormal:
-        return load < 0.5
-    case PriorityLow:
-        return load < 0.2 && s.config.LowPriorityEnabled
-    }
-    return false
-}
-```
-
-### 7. Profile-Based Multi-User
-
-**One account, multiple profiles (Netflix model).**
-
-| Concept | Description |
-|---------|-------------|
-| User | Login credentials, admin rights, billing (if any) |
-| Profile | Watch history, preferences, recommendations, restrictions |
-
-```sql
--- Parent user account
-CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    username VARCHAR(100) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    is_admin BOOLEAN DEFAULT false,
-    max_profiles INT DEFAULT 5,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
--- Child profiles under user
-CREATE TABLE profiles (
-    id UUID PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(100) NOT NULL,
-    avatar_url VARCHAR(1024),
-    is_kids BOOLEAN DEFAULT false,
-    is_default BOOLEAN DEFAULT false,
-    pin_hash VARCHAR(255),  -- Optional PIN for profile
-    max_maturity VARCHAR(20),  -- G, PG, PG-13, R, NC-17
-    language VARCHAR(10) DEFAULT 'en',
-
-    -- Preferences
-    autoplay_next BOOLEAN DEFAULT true,
-    autoplay_previews BOOLEAN DEFAULT false,
-
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(user_id, name)
-);
-
--- All user data tied to profile, not user
-CREATE TABLE watch_history (
-    profile_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-    -- ...
-);
-```
-
-### 8. WebUI Player Capabilities
-
-**Our WebUI must have complete player features.**
-
-| Feature | Implementation | Priority |
-|---------|----------------|----------|
-| Gapless Playback | Web Audio API, preload next track | High |
-| Crossfade | Web Audio API, gain nodes | High |
-| Volume Normalization | ReplayGain tags + client-side gain | High |
-| Picture-in-Picture | Browser PiP API | Medium |
-| Chromecast | Google Cast SDK | Medium |
-| AirPlay | Safari only (native) | Low |
-
-```typescript
-// WebUI Audio Player with gapless support
-class GaplessPlayer {
-  private audioContext: AudioContext;
-  private currentSource: AudioBufferSourceNode | null = null;
-  private nextBuffer: AudioBuffer | null = null;
-
-  async preloadNext(url: string): Promise<void> {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    this.nextBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-  }
-
-  crossfadeTo(nextTrack: AudioBuffer, duration: number): void {
-    // Fade out current, fade in next using gain nodes
-  }
-}
-```
-
-**Frontend Stack:**
-- Framework: **SvelteKit 2**
-- UI Library: **Tailwind CSS 4** + shadcn-svelte
-- Player: Unified (Shaka/hls.js for video, Web Audio API for audio)
-- State Management: Svelte Stores (client) + TanStack Query (server)
-
----
-
-### 9. External Transcoding
-
-**Revenge NEVER transcodes internally. All transcoding via Blackbeard.**
-
-| Rule | Implementation |
-|------|----------------|
-| No FFmpeg in Revenge | Blackbeard handles all transcoding |
-| Stream proxy only | Revenge proxies for access control & tracking |
-| Scalable | Multiple Blackbeard instances possible |
-| Replaceable | Swap transcoder without touching Revenge |
-
-**Why:**
-- **Revenge stays lean** - No heavy codec dependencies (FFmpeg ~200MB)
-- **Scalable transcoding** - Spin up Blackbeard instances as needed
-- **Regional deployment** - Blackbeard near storage, Revenge near users
-- **GPU optimization** - Blackbeard uses hardware acceleration without affecting Revenge
-
-**Architecture:**
-```
-Client → Revenge (Auth, Session, Proxy) → Blackbeard (Transcode) → Storage
-         ↑                                                            ↓
-         └────────────── Stream flows through Revenge ───────────────┘
-```
-
-**Blackbeard APIs (internal):**
-- `POST /transcode/start` - Request transcoded stream
-- `GET /transcode/{id}/master.m3u8` - HLS manifest
-- `GET /transcode/{id}/{segment}.ts` - Video segment
-- `DELETE /transcode/{id}` - Stop transcoding, cleanup
-
-**Revenge APIs (client-facing):**
-- `GET /stream/{sessionId}/master.m3u8` - Proxied HLS manifest
-- `GET /stream/{sessionId}/{segment}.ts` - Proxied video segment
-- `WebSocket /playback/{sessionId}` - Quality switching, position tracking
-
-**Benefits:**
-- Centralized access control (all streams via Revenge)
-- Progress tracking (Revenge knows what client watches)
-- Bandwidth monitoring (measure actual throughput)
-- Session management (pause, seek, stop)
-
----
-
-## Anti-Patterns (FORBIDDEN)
-
-### ❌ Never Do This
-
-| Anti-Pattern | Why | Alternative |
-|--------------|-----|-------------|
-| Sync external API in request | Blocks UX | Background job + cache |
-| Store plaintext sensitive data | Security | Encrypt at-rest |
-| Global state | Testing nightmare | Dependency injection |
-| Panic for errors | Crashes server | Return error, handle gracefully |
-| Build native mobile apps | Maintenance burden | Support existing clients |
-| Require ML for basic features | Not everyone has GPU | ML enhances, core works without |
-| Track without consent | Privacy violation | Opt-in only for non-essential |
-
----
-
-## Decision Log
-
-| Date | Decision | Rationale |
-|------|----------|-----------|
-| 2026-01-28 | No native mobile apps | Support Jellyfin/Infuse instead |
-| 2026-01-28 | Profiles under Users | Family sharing like Netflix |
-| 2026-01-28 | Optional ML via Ollama | Self-hosted, not required |
-| 2026-01-28 | Encrypted activity tracking | Privacy + features (Wrapped) |
-| 2026-01-28 | Resource-aware background jobs | Don't overload home servers |
-| 2026-01-28 | WebUI with full player features | Primary interface |
-| 2026-01-28 | External transcoding (Blackbeard) | Keep Revenge lean, scalable |
-| 2026-01-28 | SvelteKit 2 + Tailwind CSS 4 | Modern, fast, accessible WebUI |
-
----
-
-## Summary
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    REVENGE DESIGN PRINCIPLES                    │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. Performance First     - Never block UX                      │
-│  2. Client Agnostic       - Support Jellyfin/Subsonic clients   │
-│  3. Privacy by Default    - Encrypted, local, opt-in tracking  │
-│  4. Bleeding Edge Stable  - Latest stable, no alpha/beta       │
-│  5. Optional ML           - Ollama integration, not required   │
-│  6. Resource Aware        - Background tasks respect load      │
-│  7. Profile Multi-User    - Netflix model (User → Profiles)    │
-│  8. Full WebUI Player     - Gapless, crossfade, PiP, Cast      │
-│  9. External Transcoding  - Delegate to Blackbeard service     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-
----
-
-## Cross-References
-
-| Related Document | Relationship |
-|------------------|--------------|
-| [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) | Package versions, design patterns |
-| [01_ARCHITECTURE.md](01_ARCHITECTURE.md) | System architecture implementation |
-| [03_METADATA_SYSTEM.md](03_METADATA_SYSTEM.md) | Metadata provider priorities |
-| [04_PLAYER_ARCHITECTURE.md](04_PLAYER_ARCHITECTURE.md) | WebUI player principles |
-| [05_PLUGIN_ARCHITECTURE_DECISION.md](05_PLUGIN_ARCHITECTURE_DECISION.md) | Native integration decision |
+
+## Architecture
+
+<!-- Architecture diagram placeholder -->
+
+### Components
+
+<!-- Component description -->
+
+
+## Implementation
+
+### File Structure
+
+<!-- File structure -->
+
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
+
+
+## Related Documentation
+### Design Documents
+- [architecture](architecture/INDEX.md)
+- [ADULT_CONTENT_SYSTEM](ADULT_CONTENT_SYSTEM.md)
+- [ADULT_METADATA](ADULT_METADATA.md)
+- [DATA_RECONCILIATION](DATA_RECONCILIATION.md)
+
+### External Sources
+- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
+- [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](https://github.com/asticode/go-astiav) - Auto-resolved from go-astiav-docs
+- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [shadcn-svelte](https://www.shadcn-svelte.com/docs) - Auto-resolved from shadcn-svelte
+- [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) - Auto-resolved from svelte5
+- [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) - Auto-resolved from sveltekit
+- [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) - Auto-resolved from tanstack-query
+- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
+- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+

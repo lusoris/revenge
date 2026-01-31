@@ -1,379 +1,167 @@
-# Wikipedia Integration
-
-<!-- SOURCES: dragonfly, mediawiki-api, river -->
-
-<!-- DESIGN: integrations/wiki, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> General encyclopedia information via Wikipedia API
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Documentation](#api-documentation)
-  - [Authentication](#authentication)
-  - [Data Coverage](#data-coverage)
-  - [Go Client Library](#go-client-library)
-- [API Details](#api-details)
-  - [REST Endpoints](#rest-endpoints)
-    - [Search Pages](#search-pages)
-    - [Get Page Extract (Summary)](#get-page-extract-summary)
-    - [Get Full Page Content](#get-full-page-content)
-    - [Get Page Images](#get-page-images)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Core Integration](#phase-1-core-integration)
-  - [Phase 2: Content Enhancement](#phase-2-content-enhancement)
-  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
-- [Integration Pattern](#integration-pattern)
-  - [Content Enrichment Flow](#content-enrichment-flow)
-  - [Rate Limiting Strategy](#rate-limiting-strategy)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
-  - [User-Agent Requirement (CRITICAL)](#user-agent-requirement-critical)
-  - [Rate Limits (200 req/sec)](#rate-limits-200-reqsec)
-  - [Content Licensing](#content-licensing)
-  - [Extract vs Full Content](#extract-vs-full-content)
-  - [Infobox Parsing](#infobox-parsing)
-  - [Multi-Language Support](#multi-language-support)
-  - [Disambiguation Pages](#disambiguation-pages)
-  - [Redirect Handling](#redirect-handling)
-  - [JSONB Storage](#jsonb-storage)
-  - [Caching Strategy](#caching-strategy)
-  - [Use Case: Plot Summaries](#use-case-plot-summaries)
-  - [Use Case: Biographies](#use-case-biographies)
-  - [Search Accuracy](#search-accuracy)
-  - [Image Quality](#image-quality)
-  - [API Response Caching](#api-response-caching)
-  - [Content Quality](#content-quality)
-  - [Fallback Strategy](#fallback-strategy)
+- [Wikipedia](#wikipedia)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
 
-**Service**: Wikipedia (https://www.wikipedia.org)
-**API**: MediaWiki Action API (https://www.mediawiki.org/wiki/API:Main_page)
-**Category**: Wiki / Knowledge Base
-**Priority**: 🟢 MEDIUM (Supplementary info)
+
+---
+sources:
+  - name: Dragonfly Documentation
+    url: https://www.dragonflydb.io/docs
+    note: Auto-resolved from dragonfly
+  - name: MediaWiki API
+    url: https://www.mediawiki.org/wiki/API:Main_page
+    note: Auto-resolved from mediawiki-api
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/wiki
+    path: integrations/wiki.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Wikipedia
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Wikipedia
+
+> General encyclopedia information via Wikipedia API
+**Authentication**: api_key
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Comprehensive API endpoints, data mapping, JSONB storage |
-| Sources | ✅ | MediaWiki API documentation with examples |
-| Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**Wikipedia** is the world's largest free encyclopedia with comprehensive information about movies, TV shows, music, books, people, and more. The MediaWiki Action API provides programmatic access to Wikipedia content.
 
-**Key Features**:
-- **General information**: Plot summaries, production info, cast/crew, release history
-- **Biography data**: Person biographies, career info, personal life
-- **Historical context**: Background information, cultural impact, trivia
-- **Multi-language**: 300+ language editions
-- **Free access**: No API key required (rate-limited)
-- **Structured data**: Infoboxes, categories, links
-
-**Use Cases**:
-- Plot summaries for movies/TV shows
-- Artist/performer biographies
-- Historical context for media
-- Trivia and background information
-- Links to related topics
 
 ---
 
-## Developer Resources
 
-### API Documentation
-- **Base URL**: `https://en.wikipedia.org/w/api.php` (English Wikipedia)
-- **API Docs**: https://www.mediawiki.org/wiki/API:Main_page
-- **Query Examples**: https://www.mediawiki.org/wiki/API:Query
-- **Rate Limits**: 200 requests/second (user-agent required)
+## Architecture
 
-### Authentication
-- **Method**: None (public API)
-- **User-Agent**: REQUIRED (`User-Agent: Revenge/1.0 (contact@example.com)`)
-- **Rate Limits**: 200 req/sec (respect rate limits)
+### Integration Structure
 
-### Data Coverage
-- **Articles**: 60M+ articles (all languages)
-- **English**: 6.8M+ articles
-- **Languages**: 300+ language editions
-- **Updates**: Real-time (community-edited)
-
-### Go Client Library
-- **Official**: None
-- **Recommended**: Use `net/http` with JSON parsing
-- **Alternative**: `github.com/trietmn/go-wiki` (unofficial)
-
----
-
-## API Details
-
-### REST Endpoints
-
-#### Search Pages
 ```
-GET /w/api.php?action=query&list=search&srsearch={query}&format=json
-
-Example:
-https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=The%20Matrix&format=json
-
-Response:
-{
-  "query": {
-    "search": [
-      {
-        "pageid": 45678,
-        "title": "The Matrix",
-        "snippet": "The <b>Matrix</b> is a 1999 science fiction action film..."
-      }
-    ]
-  }
-}
+internal/integration/wikipedia/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-#### Get Page Extract (Summary)
-```
-GET /w/api.php?action=query&prop=extracts&exintro=1&titles={title}&format=json
+### Data Flow
 
-Example:
-https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&titles=The%20Matrix&format=json
+<!-- Data flow diagram -->
 
-Response:
-{
-  "query": {
-    "pages": {
-      "45678": {
-        "pageid": 45678,
-        "title": "The Matrix",
-        "extract": "The Matrix is a 1999 science fiction action film written and directed by the Wachowskis..."
-      }
-    }
-  }
-}
-```
+### Provides
 
-#### Get Full Page Content
-```
-GET /w/api.php?action=parse&page={title}&format=json
+This integration provides:
+<!-- Data provided by integration -->
 
-Response includes:
-- Full HTML content
-- Infobox data
-- Categories
-- Links
-- Images
-```
 
-#### Get Page Images
-```
-GET /w/api.php?action=query&prop=pageimages&titles={title}&format=json
+## Implementation
 
-Response:
-{
-  "query": {
-    "pages": {
-      "45678": {
-        "thumbnail": {
-          "source": "https://upload.wikimedia.org/wikipedia/en/thumb/c/c1/The_Matrix_Poster.jpg/220px-The_Matrix_Poster.jpg",
-          "width": 220,
-          "height": 326
-        }
-      }
-    }
-  }
-}
-```
+### File Structure
 
----
+<!-- File structure -->
 
-## Implementation Checklist
+### Key Interfaces
 
-### Phase 1: Core Integration
-- [ ] REST API client setup (Go `net/http`)
-- [ ] User-Agent configuration (REQUIRED: `Revenge/1.0 (contact@example.com)`)
-- [ ] Page search (MediaWiki `action=query&list=search`)
-- [ ] Page extract fetch (summary text)
-- [ ] Full page content fetch (HTML parsing)
-- [ ] Image fetch (page thumbnails)
-- [ ] JSONB storage (`metadata_json.wikipedia_data`)
+<!-- Interface definitions -->
 
-### Phase 2: Content Enhancement
-- [ ] Plot summary extraction (movies/TV shows)
-- [ ] Biography extraction (actors/directors/musicians)
-- [ ] Trivia extraction (parse sections)
-- [ ] Production info extraction (parse infoboxes)
-- [ ] Multi-language support (fallback to English)
-- [ ] Link extraction (related topics)
+### Dependencies
 
-### Phase 3: Background Jobs (River)
-- [ ] **Job**: `wiki.wikipedia.fetch_summary` (fetch page summary)
-- [ ] **Job**: `wiki.wikipedia.refresh` (periodic refresh for popular content)
-- [ ] Rate limiting (200 req/sec max, use conservative limits)
-- [ ] Retry logic (exponential backoff)
+<!-- Dependency list -->
 
----
 
-## Integration Pattern
 
-### Content Enrichment Flow
-```
-User views movie/TV show/music page
-        ↓
-Check if Wikipedia summary exists in cache
-        ↓
-        NO
-        ↓
-Search Wikipedia API (action=query&list=search)
-        ↓
-Match found? → Get page extract (action=query&prop=extracts)
-              ↓
-              Extract summary text (intro paragraph)
-              ↓
-              Store in metadata_json.wikipedia_data
-              ↓
-              Display in UI (collapsible "Wikipedia" section)
-        ↓
-        NO MATCH
-        ↓
-Skip (no Wikipedia data available)
-```
 
-### Rate Limiting Strategy
-```
-Wikipedia rate limit: 200 req/sec (official limit, use conservative approach)
-- Conservative limit: 10 req/sec (token bucket)
-- Caching: Cache Wikipedia data for 30 days (reduce API calls)
-- Background jobs: Use River queue (prioritize user-initiated requests)
-- Exponential backoff: Retry with delay if 429 errors
-```
 
----
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/wiki](integrations/wiki.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [FANDOM.md](./FANDOM.md) - Fan wikis (MCU, Memory Alpha, Wookieepedia)
-- [TVTROPES.md](./TVTROPES.md) - Trope analysis
-- [Wiki System](../../features/shared/WIKI_SYSTEM.md) - Built-in wiki system
+### External Sources
+- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
+- [MediaWiki API](https://www.mediawiki.org/wiki/API:Main_page) - Auto-resolved from mediawiki-api
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Notes
-
-### User-Agent Requirement (CRITICAL)
-- **MUST set User-Agent**: Wikipedia requires User-Agent header
-- **Format**: `Revenge/1.0 (https://github.com/lusoris/revenge; contact@example.com)`
-- **Failure**: Requests without User-Agent will be blocked (HTTP 403)
-
-### Rate Limits (200 req/sec)
-- **Official limit**: 200 requests/second
-- **Conservative approach**: Use 10 req/sec to avoid issues
-- **Token bucket**: Implement client-side rate limiter
-- **Respect limits**: Aggressive usage can result in IP ban
-
-### Content Licensing
-- **License**: Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)
-- **Attribution**: MUST attribute Wikipedia in UI ("From Wikipedia, the free encyclopedia")
-- **Share-alike**: Derived content must use same license
-- **Citation**: Include Wikipedia page URL
-
-### Extract vs Full Content
-- **Extract** (`prop=extracts`): Plain text summary (intro paragraph)
-  - Use case: Quick info display in UI
-  - No images, no infoboxes
-- **Full content** (`action=parse`): Complete HTML
-  - Use case: Detailed wiki page
-  - Includes infoboxes, images, tables
-  - Requires HTML parsing
-
-### Infobox Parsing
-- **Infoboxes**: Structured data tables (e.g., movie release date, cast, budget)
-- **Parsing**: Extract from HTML (`<table class="infobox">`)
-- **Use case**: Enrich metadata (supplement TMDb/TheTVDB data)
-
-### Multi-Language Support
-- **Language editions**: 300+ languages (en, de, fr, es, ja, etc.)
-- **URL format**: `https://{lang}.wikipedia.org/w/api.php` (e.g., `de.wikipedia.org`)
-- **Fallback**: Try user's language → fallback to English
-- **Detection**: Use `Accept-Language` header OR explicit language selection
-
-### Disambiguation Pages
-- **Disambiguation pages**: Multiple meanings for same term
-- **Detection**: Check if page title contains "(disambiguation)"
-- **Handling**: Parse disambiguation page → list options → user selects correct page
-
-### Redirect Handling
-- **Redirects**: Wikipedia uses redirects (e.g., "The Matrix 1" → "The Matrix")
-- **Automatic**: MediaWiki API follows redirects by default
-- **Detection**: Check `redirects` field in response
-
-### JSONB Storage
-- Store Wikipedia data in `metadata_json.wikipedia_data`
-- Fields:
-  - `page_id`: Wikipedia page ID
-  - `title`: Page title
-  - `extract`: Summary text (intro paragraph)
-  - `url`: Wikipedia page URL
-  - `thumbnail`: Image URL
-  - `categories`: List of categories
-  - `last_fetched`: Timestamp
-
-### Caching Strategy
-- **Cache duration**: 30 days (Wikipedia content changes infrequently)
-- **Invalidation**: Manual refresh OR automatic on content update
-- **Storage**: Store in `metadata_json` (JSONB) + Dragonfly cache (fast access)
-
-### Use Case: Plot Summaries
-- **Movies/TV shows**: Extract plot summary from Wikipedia
-- **Supplement TMDb**: TMDb has short overviews, Wikipedia has detailed plots
-- **Display**: Collapsible section "Wikipedia Plot Summary" in UI
-
-### Use Case: Biographies
-- **Actors/directors/musicians**: Fetch biography from Wikipedia
-- **Supplement**: Enrich performer/artist pages with background info
-- **Display**: "Biography (Wikipedia)" section in performer profile
-
-### Search Accuracy
-- **Exact matches**: Search for exact title (e.g., "The Matrix")
-- **Disambiguation**: Handle multiple results (e.g., "The Matrix" vs "The Matrix Reloaded")
-- **Year matching**: Prefer results matching release year (filter by year)
-
-### Image Quality
-- **Thumbnails**: Wikipedia provides low-res thumbnails (220px width)
-- **Full images**: Fetch original images from Wikimedia Commons (higher resolution)
-- **Use case**: Fallback images if TMDb/TheTVDB lacks posters
-
-### API Response Caching
-- **Cache responses**: Cache API responses in Dragonfly (reduce redundant calls)
-- **TTL**: 30 days for page extracts, 7 days for search results
-- **Invalidation**: On user-initiated refresh
-
-### Content Quality
-- **Reliability**: Wikipedia content is community-edited (variable quality)
-- **Moderation**: Active moderation on popular pages (movies, TV shows)
-- **Vandalism**: Rare on popular pages, more common on obscure pages
-- **Use case**: Supplementary information (NOT primary metadata source)
-
-### Fallback Strategy
-- **Wikipedia supplementary**: Use Wikipedia for plot summaries, trivia, biographies
-- **Primary sources**: TMDb/TheTVDB for core metadata (titles, release dates, cast)
-- **Order**: TMDb/TheTVDB (primary) → Wikipedia (supplementary) → FANDOM/TVTropes (niche)

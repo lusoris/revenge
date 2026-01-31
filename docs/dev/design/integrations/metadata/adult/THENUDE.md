@@ -1,268 +1,162 @@
-# TheNude Integration
+## Table of Contents
 
-<!-- SOURCES: go-io, river -->
+- [TheNude](#thenude)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- DESIGN: integrations/metadata/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
+
+---
+sources:
+  - name: Go io
+    url: https://pkg.go.dev/io
+    note: Auto-resolved from go-io
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/metadata/adult
+    path: integrations/metadata/adult.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# TheNude
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with TheNude
 
 > Adult performer database with aliases and measurements
 
+---
 
-<!-- TOC-START -->
-
-## Table of Contents
-
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-  - [API Status](#api-status)
-  - [Authentication](#authentication)
-  - [Data Coverage](#data-coverage)
-  - [Go Scraping Library](#go-scraping-library)
-- [Integration Approach](#integration-approach)
-  - [Web Scraping Strategy](#web-scraping-strategy)
-    - [Performer Page Structure](#performer-page-structure)
-- [Implementation Checklist](#implementation-checklist)
-  - [Phase 1: Web Scraping (Adult Content - c schema)](#phase-1-web-scraping-adult-content---c-schema)
-  - [Phase 2: Alias Resolution](#phase-2-alias-resolution)
-  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
-- [Integration Pattern](#integration-pattern)
-  - [Alias Resolution Flow](#alias-resolution-flow)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
-- [Notes](#notes)
-  - [No Official API (Web Scraping Only)](#no-official-api-web-scraping-only)
-  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
-  - [Specialty: Alias Tracking](#specialty-alias-tracking)
-  - [Cross-Database Linking](#cross-database-linking)
-  - [JSONB Storage (c schema)](#jsonb-storage-c-schema)
-  - [Caching Strategy](#caching-strategy)
-  - [Fallback Strategy (Adult Performer Aliases)](#fallback-strategy-adult-performer-aliases)
-
-<!-- TOC-END -->
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | Web scraping spec, alias resolution flow, JSONB schema |
-| Sources | ✅ | Website URL, goquery library documented |
-| Instructions | ✅ | Phased implementation checklist with alias matching |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-**TheNude** is an adult performer database focusing on aliases, measurements, and cross-referencing performers across different names and studios. It's particularly useful for alias resolution and finding performers under multiple stage names.
 
-**Key Features**:
-- **Alias tracking**: Comprehensive alias/stage name tracking
-- **Measurements**: Physical attributes, tattoos, piercings
-- **Cross-referencing**: Links to other databases (FreeOnes, IAFD, Babepedia)
-- **Bio info**: Career dates, birthdate, ethnicity
-- **Photos**: Performer photos (limited compared to FreeOnes)
-
-**Use Cases**:
-- Alias resolution (match performer across different names)
-- Measurements enrichment
-- Cross-reference with other databases
-- Performer bio supplementation
-
-**⚠️ CRITICAL: Adult Content Isolation**:
-- **Database schema**: `c` schema ONLY (`c.performers`)
-- **API namespace**: `/api/v1/legacy/external/thenude/*` (NOT `/api/v1/external/thenude/*`)
-- **Module location**: `internal/content/c/external/thenude/` (NOT `internal/service/external/`)
-- **Access control**: Mods/admins can see all data for monitoring, regular users see only their own library
 
 ---
 
-## Developer Resources
 
-### API Status
-- **Official API**: NONE (no official API)
-- **Web Scraping**: Required (parse HTML)
-- **Base URL**: https://www.thenude.com/{performer_id}.htm
+## Architecture
 
-### Authentication
-- **Method**: None (public website)
-- **User-Agent**: REQUIRED (`User-Agent: Revenge/1.0 (contact@example.com)`)
-- **Rate Limits**: Very conservative (1 req/sec)
+### Integration Structure
 
-### Data Coverage
-- **Performers**: 50K+ performer profiles
-- **Specialty**: Alias tracking, cross-referencing
-- **Quality**: Good (focused database)
-
-### Go Scraping Library
-- **Recommended**: `github.com/PuerkitoBio/goquery`
-
----
-
-## Integration Approach
-
-### Web Scraping Strategy
-
-**⚠️ CRITICAL: No Official API - Web Scraping Required**
-
-#### Performer Page Structure
 ```
-URL: https://www.thenude.com/Performer_Name_12345.htm
-
-HTML Structure (example):
-<div class="performer-profile">
-  <h1>Performer Name</h1>
-
-  <div class="aliases">
-    <h2>Also Known As</h2>
-    <ul>
-      <li>Alias 1</li>
-      <li>Alias 2</li>
-      <li>Alias 3</li>
-    </ul>
-  </div>
-
-  <div class="bio">
-    <p><strong>Born:</strong> May 15, 1990</p>
-    <p><strong>Birthplace:</strong> Los Angeles, CA</p>
-    <p><strong>Ethnicity:</strong> Caucasian</p>
-    <p><strong>Career:</strong> 2015-2023</p>
-  </div>
-
-  <div class="measurements">
-    <p><strong>Height:</strong> 168 cm</p>
-    <p><strong>Weight:</strong> 57 kg</p>
-    <p><strong>Measurements:</strong> 34D-24-36</p>
-  </div>
-
-  <div class="external-links">
-    <h2>External Links</h2>
-    <ul>
-      <li><a href="https://www.freeones.com/...">FreeOnes</a></li>
-      <li><a href="https://www.iafd.com/...">IAFD</a></li>
-      <li><a href="https://www.babepedia.com/...">Babepedia</a></li>
-    </ul>
-  </div>
-</div>
+internal/integration/thenude/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
----
+### Data Flow
 
-## Implementation Checklist
+<!-- Data flow diagram -->
 
-### Phase 1: Web Scraping (Adult Content - c schema)
-- [ ] HTML scraping setup (`goquery`)
-- [ ] User-Agent configuration (REQUIRED)
-- [ ] URL construction (performer ID → TheNude URL)
-- [ ] Alias extraction (comprehensive alias list)
-- [ ] Bio extraction (birthdate, ethnicity, career dates)
-- [ ] Measurements extraction (height, weight, body measurements)
-- [ ] External links extraction (FreeOnes, IAFD, Babepedia cross-references)
-- [ ] **c schema storage**: `c.performers.metadata_json.thenude_data` (JSONB)
+### Provides
 
-### Phase 2: Alias Resolution
-- [ ] Alias matching (fuzzy matching across aliases)
-- [ ] Cross-database linking (match TheNude → FreeOnes/IAFD)
-- [ ] Performer deduplication (identify same performer under different names)
+This integration provides:
+<!-- Data provided by integration -->
 
-### Phase 3: Background Jobs (River)
-- [ ] **Job**: `c.external.thenude.scrape_performer` (scrape performer profile)
-- [ ] **Job**: `c.external.thenude.refresh` (periodic refresh)
-- [ ] Rate limiting (very conservative 1 req/sec)
-- [ ] Retry logic (exponential backoff)
 
----
+## Implementation
 
-## Integration Pattern
+### File Structure
 
-### Alias Resolution Flow
-```
-Performer name mismatch detected (e.g., "Jane Doe" in Revenge vs "J. Doe" in StashDB)
-        ↓
-Search TheNude for performer aliases
-        ↓
-Scrape TheNude profile (https://www.thenude.com/{performer_id}.htm)
-        ↓
-Parse aliases:
-  - "Jane Doe"
-  - "J. Doe"
-  - "Janie D"
-        ↓
-Store aliases in c.performers.metadata_json.thenude_data.aliases
-        ↓
-Use aliases for performer matching across databases
-```
+<!-- File structure -->
 
----
+### Key Interfaces
+
+<!-- Interface definitions -->
+
+### Dependencies
+
+<!-- Dependency list -->
+
+
+
+
+
+## Configuration
+### Environment Variables
+
+<!-- Environment variables -->
+
+### Config Keys
+
+<!-- Configuration keys -->
+
+
+
+
+## Testing Strategy
+
+### Unit Tests
+
+<!-- Unit test strategy -->
+
+### Integration Tests
+
+<!-- Integration test strategy -->
+
+### Test Coverage
+
+Target: **80% minimum**
+
+
+
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/adult](integrations/metadata/adult.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [FREEONES.md](./FREEONES.md) - FreeOnes performer database (primary)
-- [STASHDB.md](../metadata/adult/STASHDB.md) - Primary adult metadata
-- [BABEPEDIA.md](../wiki/adult/BABEPEDIA.md) - Adult performer wiki
-- [IAFD.md](../wiki/adult/IAFD.md) - Internet Adult Film Database
+### External Sources
+- [Go io](https://pkg.go.dev/io) - Auto-resolved from go-io
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
 
----
-
-## Notes
-
-### No Official API (Web Scraping Only)
-- **TheNude has NO API**: All data retrieval requires web scraping
-- **Scraping risks**: HTML structure changes can break scraper
-- **Priority**: LOW (FreeOnes is primary, TheNude is supplementary for aliases)
-
-### Adult Content Isolation (CRITICAL)
-- **Database schema**: `c` schema ONLY
-  - `c.performers.metadata_json.thenude_data` (JSONB)
-  - NO data in public schema
-- **API namespace**: `/api/v1/legacy/external/thenude/*` (isolated)
-- **Module location**: `internal/content/c/external/thenude/` (isolated)
-- **Access control**: Mods/admins see all, regular users see only their library
-
-### Specialty: Alias Tracking
-- **TheNude excels**: Comprehensive alias tracking (performers under 5-10+ different names)
-- **Use case**: Resolve performer aliases across different studios/scenes
-- **Example**: "Jane Doe" = "J. Doe" = "Janie D" = "Jane D." = all same performer
-
-### Cross-Database Linking
-- **TheNude links**: FreeOnes, IAFD, Babepedia, Boobpedia profiles
-- **Use case**: Cross-reference performer across databases
-- **Validation**: Use TheNude links to validate performer matches
-
-### JSONB Storage (c schema)
-```json
-{
-  "thenude_url": "https://www.thenude.com/Performer_Name_12345.htm",
-  "thenude_id": "12345",
-  "aliases": ["Alias 1", "Alias 2", "Alias 3"],
-  "birthdate": "1990-05-15",
-  "birthplace": "Los Angeles, CA",
-  "ethnicity": "Caucasian",
-  "career_start": 2015,
-  "career_end": 2023,
-  "height_cm": 168,
-  "weight_kg": 57,
-  "measurements": "34D-24-36",
-  "external_links": {
-    "freeones": "https://www.freeones.com/...",
-    "iafd": "https://www.iafd.com/...",
-    "babepedia": "https://www.babepedia.com/..."
-  },
-  "last_scraped": "2023-01-15T10:00:00Z"
-}
-```
-
-### Caching Strategy
-- **Cache duration**: 90 days (alias data stable)
-- **Use case**: One-time lookup for alias resolution
-
-### Fallback Strategy (Adult Performer Aliases)
-- **Order**: StashDB (primary aliases) → TheNude (comprehensive alias tracking) → IAFD (alternative) → Babepedia (alternative)

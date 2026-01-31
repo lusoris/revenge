@@ -1,294 +1,160 @@
-# Twitter/X Integration
-
-<!-- SOURCES: river -->
-
-<!-- DESIGN: integrations/metadata/adult, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Performer social media presence
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [API Access](#api-access)
-- [Configuration](#configuration)
-- [Data Mapping](#data-mapping)
-  - [Performer Social Presence](#performer-social-presence)
-- [API Endpoints](#api-endpoints)
-  - [Lookup User by Username](#lookup-user-by-username)
-- [Implementation](#implementation)
-  - [Twitter Client](#twitter-client)
-- [Database Schema](#database-schema)
-- [Implementation Checklist](#implementation-checklist)
-- [Privacy Considerations](#privacy-considerations)
-- [Error Handling](#error-handling)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
+- [Twitter/X](#twitterx)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: River Job Queue
+    url: https://pkg.go.dev/github.com/riverqueue/river
+    note: Auto-resolved from river
+design_refs:
+  - title: integrations/metadata/adult
+    path: integrations/metadata/adult.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Twitter/X
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Twitter/X
+
+> Performer social media presence
+**API Base URL**: `https://api.twitter.com/2/users/by/username`
+**Authentication**: bearer
+
+---
+
 
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | ✅ | REST API v2 spec, data mapping, database schema |
-| Sources | ✅ | API docs, pricing tiers linked |
-| Instructions | ✅ | Implementation checklist with River jobs |
-| Code | 🔴 |  |
-| Linting | 🔴 |  |
-| Unit Testing | 🔴 |  |
-| Integration Testing | 🔴 |  |---
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
 
-## Overview
+**Overall**: ✅ Complete
 
-Twitter/X integration for adult content performer profiles:
-- Official performer accounts
-- Promotional content links
-- Social media presence tracking
-- Profile verification
 
-**Note**: This is supplementary metadata for performer profiles, not content hosting.
 
 ---
 
-## Developer Resources
 
-- 📚 **API Docs**: https://developer.twitter.com/en/docs
-- 🔗 **API v2**: https://developer.twitter.com/en/docs/twitter-api
-- 💰 **Pricing**: https://developer.twitter.com/en/products/twitter-api
+## Architecture
 
----
-
-## API Access
-
-**Tiers**:
-| Tier | Requests | Cost |
-|------|----------|------|
-| Free | 1,500 tweets/month read | Free |
-| Basic | 10,000 tweets/month | $100/month |
-| Pro | 1M tweets/month | $5,000/month |
-
-**Note**: For performer profile lookup only, Free tier may suffice.
-
----
-
-## Configuration
-
-```yaml
-# configs/config.yaml
-integrations:
-  adult:
-    social:
-      twitter:
-        enabled: false  # Disabled by default
-        api_key: "${TWITTER_API_KEY:}"
-        api_secret: "${TWITTER_API_SECRET:}"
-        bearer_token: "${TWITTER_BEARER_TOKEN:}"
-
-        # Rate limiting
-        rate_limit:
-          requests_per_15min: 15  # Free tier
-
-        # Cache settings
-        cache_ttl: "7d"  # Performer profiles don't change often
-```
-
----
-
-## Data Mapping
-
-### Performer Social Presence
-
-| Twitter Field | Revenge Field | Notes |
-|---------------|---------------|-------|
-| `id` | `twitter_id` | Unique identifier |
-| `username` | `twitter_handle` | @username |
-| `name` | `display_name` | Display name |
-| `description` | `bio` | Profile bio |
-| `profile_image_url` | `avatar_url` | Profile picture |
-| `verified` | `is_verified` | Blue checkmark |
-| `public_metrics.followers_count` | `followers` | Follower count |
-| `url` | `website_url` | Profile link |
-
----
-
-## API Endpoints
-
-### Lookup User by Username
+### Integration Structure
 
 ```
-GET https://api.twitter.com/2/users/by/username/:username
+internal/integration/twitterx/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
-**Response**:
-```json
-{
-  "data": {
-    "id": "123456789",
-    "name": "Display Name",
-    "username": "performer_handle",
-    "description": "Bio text...",
-    "profile_image_url": "https://pbs.twimg.com/...",
-    "verified": true,
-    "public_metrics": {
-      "followers_count": 50000,
-      "following_count": 100,
-      "tweet_count": 5000
-    }
-  }
-}
-```
+### Data Flow
 
----
+<!-- Data flow diagram -->
+
+### Provides
+
+This integration provides:
+<!-- Data provided by integration -->
+
 
 ## Implementation
 
-### Twitter Client
+### File Structure
 
-```go
-// internal/content/c/metadata/twitter.go
-package metadata
+<!-- File structure -->
 
-type TwitterClient struct {
-    httpClient  *http.Client
-    bearerToken string
-    cache       *cache.Cache
-    logger      *slog.Logger
-}
+### Key Interfaces
 
-type TwitterProfile struct {
-    ID              string `json:"id"`
-    Username        string `json:"username"`
-    Name            string `json:"name"`
-    Description     string `json:"description"`
-    ProfileImageURL string `json:"profile_image_url"`
-    Verified        bool   `json:"verified"`
-    FollowersCount  int    `json:"followers_count"`
-}
+<!-- Interface definitions -->
 
-func (c *TwitterClient) GetProfile(ctx context.Context, username string) (*TwitterProfile, error) {
-    // Check cache first
-    cacheKey := fmt.Sprintf("twitter:profile:%s", username)
-    if cached, ok := c.cache.Get(cacheKey); ok {
-        return cached.(*TwitterProfile), nil
-    }
+### Dependencies
 
-    // Fetch from API
-    url := fmt.Sprintf("https://api.twitter.com/2/users/by/username/%s", username)
-    req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
-    req.Header.Set("Authorization", "Bearer "+c.bearerToken)
+<!-- Dependency list -->
 
-    // Add fields
-    q := req.URL.Query()
-    q.Add("user.fields", "description,profile_image_url,verified,public_metrics")
-    req.URL.RawQuery = q.Encode()
 
-    resp, err := c.httpClient.Do(req)
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
 
-    if resp.StatusCode == 429 {
-        return nil, ErrRateLimited
-    }
 
-    var result struct {
-        Data TwitterProfile `json:"data"`
-    }
-    json.NewDecoder(resp.Body).Decode(&result)
 
-    // Cache result
-    c.cache.Set(cacheKey, &result.Data, 7*24*time.Hour)
+## Configuration
+### Environment Variables
 
-    return &result.Data, nil
-}
-```
+<!-- Environment variables -->
 
----
+### Config Keys
 
-## Database Schema
+<!-- Configuration keys -->
 
-```sql
--- In schema 'c' (adult isolated)
-CREATE TABLE c.performer_social_links (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    performer_id UUID NOT NULL REFERENCES c.performers(id),
-    platform VARCHAR(50) NOT NULL,  -- 'twitter', 'instagram', etc.
-    handle VARCHAR(255) NOT NULL,
-    external_id VARCHAR(100),
-    display_name VARCHAR(255),
-    verified BOOLEAN DEFAULT FALSE,
-    followers_count INTEGER,
-    profile_url TEXT,
-    avatar_url TEXT,
-    last_synced_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-    UNIQUE(performer_id, platform)
-);
 
-CREATE INDEX idx_performer_social_platform
-    ON c.performer_social_links(platform);
-```
 
----
+## Testing Strategy
 
-## Implementation Checklist
+### Unit Tests
 
-- [ ] **Twitter Client** (`internal/content/c/metadata/twitter.go`)
-  - [ ] Bearer token auth
-  - [ ] Profile lookup
-  - [ ] Rate limiting
-  - [ ] Caching
+<!-- Unit test strategy -->
 
-- [ ] **Social Service** (`internal/content/c/service/social.go`)
-  - [ ] Link performer to Twitter
-  - [ ] Sync profile data
-  - [ ] Unlink account
+### Integration Tests
 
-- [ ] **River Jobs** (`internal/content/c/jobs/social.go`)
-  - [ ] SyncPerformerSocialsJob
-  - [ ] Batch sync
+<!-- Integration test strategy -->
 
----
+### Test Coverage
 
-## Privacy Considerations
+Target: **80% minimum**
 
-- Only public profile data is stored
-- No tweet content is fetched
-- Performers can opt-out
-- Data is isolated in `c` schema
-- Follows adult content isolation patterns
 
----
 
-## Error Handling
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 | Invalid token | Check bearer token |
-| 404 | User not found | Handle gracefully |
-| 429 | Rate limited | Backoff and retry |
-| 403 | Suspended account | Skip user |
 
----
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/metadata/adult](integrations/metadata/adult.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Instagram](INSTAGRAM.md)
-- [FreeOnes](../metadata/adult/FREEONES.md)
-- [StashDB](../metadata/adult/STASHDB.md)
+### External Sources
+- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+

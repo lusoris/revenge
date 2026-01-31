@@ -1,321 +1,168 @@
-# Authelia Integration
-
-<!-- SOURCES: authelia, authentik, keycloak -->
-
-<!-- DESIGN: integrations/auth, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
-
-
-> Self-hosted authentication and authorization server
-
-
-<!-- TOC-START -->
-
 ## Table of Contents
 
-- [Status](#status)
-- [Overview](#overview)
-- [Developer Resources](#developer-resources)
-- [OIDC Details](#oidc-details)
-  - [Supported Scopes](#supported-scopes)
-  - [Authelia Configuration](#authelia-configuration)
-- [Data Mapping](#data-mapping)
-  - [Authelia Claims → Revenge User](#authelia-claims-revenge-user)
-  - [Group → Role Mapping](#group-role-mapping)
-- [Implementation Checklist](#implementation-checklist)
-- [Configuration](#configuration)
-- [Database Schema](#database-schema)
-- [Authentication Flow](#authentication-flow)
-- [Security Considerations](#security-considerations)
-- [Troubleshooting](#troubleshooting)
-- [Sources & Cross-References](#sources-cross-references)
-  - [Cross-Reference Indexes](#cross-reference-indexes)
-  - [Referenced Sources](#referenced-sources)
-- [Related Design Docs](#related-design-docs)
-  - [In This Section](#in-this-section)
-  - [Related Topics](#related-topics)
-  - [Indexes](#indexes)
-- [Related Documentation](#related-documentation)
+- [Authelia](#authelia)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Integration Structure](#integration-structure)
+    - [Data Flow](#data-flow)
+    - [Provides](#provides)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
 
-<!-- TOC-END -->
+
+
+---
+sources:
+  - name: Authelia Documentation
+    url: https://www.authelia.com/overview/
+    note: Auto-resolved from authelia
+  - name: Authentik Documentation
+    url: https://goauthentik.io/docs/
+    note: Auto-resolved from authentik
+  - name: Keycloak Documentation
+    url: https://www.keycloak.org/documentation
+    note: Auto-resolved from keycloak
+design_refs:
+  - title: integrations/auth
+    path: integrations/auth.md
+  - title: 01_ARCHITECTURE
+    path: architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: architecture/03_METADATA_SYSTEM.md
+---
+
+# Authelia
+
+
+**Created**: 2026-01-31
+**Status**: ✅ Complete
+**Category**: integration
+
+
+> Integration with Authelia
+
+> Self-hosted authentication and authorization server
+**API Base URL**: `https://auth.example.com/api/oidc/authorization`
+**Authentication**: oauth
+
+---
+
 
 ## Status
 
-| Dimension | Status |
-|-----------|--------|
-| Design | ✅ |
-| Sources | ✅ |
-| Instructions | ✅ |
-| Code | 🔴 |
-| Linting | 🔴 |
-| Unit Testing | 🔴 |
-| Integration Testing | 🔴 |**Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
-**Type**: OIDC Identity Provider
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | - |
+| Sources | ✅ | - |
+| Instructions | ✅ | - |
+| Code | 🔴 | - |
+| Linting | 🔴 | - |
+| Unit Testing | 🔴 | - |
+| Integration Testing | 🔴 | - |
+
+**Overall**: ✅ Complete
+
+
 
 ---
 
-## Overview
 
-Authelia is a popular open-source authentication server that provides Single Sign-On (SSO) and two-factor authentication for self-hosted applications. Revenge integrates with Authelia as an OIDC provider for:
-- User authentication via OIDC
-- Single Sign-On across media stack
-- Two-factor authentication (TOTP, WebAuthn, Duo)
-- Access control and authorization
+## Architecture
 
-**Integration Points**:
-- **OIDC Provider**: Standard OpenID Connect flow
-- **Forward Auth**: Traefik/Nginx forward authentication
-- **User provisioning**: Auto-create Revenge users from OIDC claims
-- **Groups/Roles**: Map Authelia groups to Revenge roles
+### Integration Structure
 
----
-
-## Developer Resources
-
-- 📚 **Docs**: https://www.authelia.com/docs/
-- 🔗 **OIDC Docs**: https://www.authelia.com/integration/openid-connect/introduction/
-- 🔗 **GitHub**: https://github.com/authelia/authelia
-- 🔗 **Configuration Reference**: https://www.authelia.com/configuration/
-
----
-
-## OIDC Details
-
-**Discovery URL**: `https://auth.example.com/.well-known/openid-configuration`
-**Authorization Endpoint**: `https://auth.example.com/api/oidc/authorization`
-**Token Endpoint**: `https://auth.example.com/api/oidc/token`
-**UserInfo Endpoint**: `https://auth.example.com/api/oidc/userinfo`
-**JWKS URI**: `https://auth.example.com/api/oidc/jwks`
-
-### Supported Scopes
-
-| Scope | Claims |
-|-------|--------|
-| `openid` | `sub` |
-| `profile` | `name`, `preferred_username`, `given_name`, `family_name` |
-| `email` | `email`, `email_verified` |
-| `groups` | `groups` (array) |
-
-### Authelia Configuration
-
-```yaml
-# authelia/configuration.yml
-identity_providers:
-  oidc:
-    enabled: true
-    cors:
-      endpoints:
-        - authorization
-        - token
-        - userinfo
-    clients:
-      - client_id: revenge
-        client_name: Revenge Media Server
-        client_secret: '$pbkdf2-sha512$...'  # hashed secret
-        public: false
-        authorization_policy: two_factor
-        redirect_uris:
-          - https://revenge.example.com/api/v1/auth/oidc/callback
-        scopes:
-          - openid
-          - profile
-          - email
-          - groups
-        userinfo_signed_response_alg: none
-        token_endpoint_auth_method: client_secret_basic
+```
+internal/integration/authelia/
+├── client.go              # API client
+├── types.go               # Response types
+├── mapper.go              # Map external → internal types
+├── cache.go               # Response caching
+└── client_test.go         # Tests
 ```
 
----
+### Data Flow
 
-## Data Mapping
+<!-- Data flow diagram -->
 
-### Authelia Claims → Revenge User
+### Provides
 
-| Authelia Claim | Revenge Field | Notes |
-|----------------|---------------|-------|
-| `sub` | `oidc_subject` | Unique identifier |
-| `preferred_username` | `username` | Display name |
-| `email` | `email` | User email |
-| `email_verified` | `email_verified` | Verification status |
-| `name` | `display_name` | Full name |
-| `groups` | `roles[]` | Role mapping |
+This integration provides:
+<!-- Data provided by integration -->
 
-### Group → Role Mapping
 
-Configure in Revenge:
+## Implementation
 
-```yaml
-integrations:
-  oidc:
-    authelia:
-      group_mappings:
-        - group: "admins"
-          role: "admin"
-        - group: "media-users"
-          role: "user"
-        - group: "kids"
-          role: "restricted"
-```
+### File Structure
 
----
+<!-- File structure -->
 
-## Implementation Checklist
+### Key Interfaces
 
-- [ ] **OIDC Client** (`internal/service/oidc/provider_authelia.go`)
-  - [ ] Discovery document parsing
-  - [ ] Authorization code flow
-  - [ ] Token validation (JWT)
-  - [ ] UserInfo fetching
-  - [ ] Token refresh handling
+<!-- Interface definitions -->
 
-- [ ] **User Provisioning** (`internal/service/user/oidc_provisioning.go`)
-  - [ ] Auto-create user on first login
-  - [ ] Map OIDC claims to user fields
-  - [ ] Map groups to roles
-  - [ ] Handle user updates (name, email changes)
+### Dependencies
 
-- [ ] **Session Management**
-  - [ ] Create Revenge session from OIDC token
-  - [ ] Session expiry based on token expiry
-  - [ ] Single logout (if supported)
+<!-- Dependency list -->
 
----
+
+
+
 
 ## Configuration
+### Environment Variables
 
-```yaml
-# configs/config.yaml
-integrations:
-  oidc:
-    enabled: true
-    provider: "authelia"  # or authentik, keycloak, generic
-    authelia:
-      issuer_url: "https://auth.example.com"
-      client_id: "${REVENGE_OIDC_CLIENT_ID}"
-      client_secret: "${REVENGE_OIDC_CLIENT_SECRET}"
-      redirect_uri: "https://revenge.example.com/api/v1/auth/oidc/callback"
-      scopes:
-        - openid
-        - profile
-        - email
-        - groups
-      group_mappings:
-        admins: admin
-        media-users: user
-        kids: restricted
-      auto_provision: true
-      allow_registration: true  # Allow new users via OIDC
-```
+<!-- Environment variables -->
 
----
+### Config Keys
 
-## Database Schema
+<!-- Configuration keys -->
 
-```sql
--- OIDC provider configuration (admin-managed)
-CREATE TABLE oidc_providers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL UNIQUE,
-    provider_type VARCHAR(50) NOT NULL,  -- authelia, authentik, keycloak, generic
-    issuer_url TEXT NOT NULL,
-    client_id VARCHAR(255) NOT NULL,
-    client_secret_encrypted BYTEA NOT NULL,
-    scopes TEXT[] NOT NULL DEFAULT ARRAY['openid', 'profile', 'email'],
-    enabled BOOLEAN NOT NULL DEFAULT true,
-    auto_provision BOOLEAN NOT NULL DEFAULT true,
-    group_mappings JSONB,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
 
--- User OIDC links
-CREATE TABLE user_oidc_links (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    provider_id UUID NOT NULL REFERENCES oidc_providers(id) ON DELETE CASCADE,
-    oidc_subject VARCHAR(255) NOT NULL,
-    oidc_issuer TEXT NOT NULL,
-    last_login_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(provider_id, oidc_subject)
-);
 
-CREATE INDEX idx_user_oidc_links_user ON user_oidc_links(user_id);
-CREATE INDEX idx_user_oidc_links_subject ON user_oidc_links(oidc_subject);
-```
 
----
+## Testing Strategy
 
-## Authentication Flow
+### Unit Tests
 
-```
-┌──────────┐     ┌─────────┐     ┌──────────┐     ┌─────────┐
-│  User    │     │ Revenge │     │ Authelia │     │ Revenge │
-│ Browser  │     │  Login  │     │   OIDC   │     │   API   │
-└────┬─────┘     └────┬────┘     └────┬─────┘     └────┬────┘
-     │                │               │                │
-     │ Click "Login   │               │                │
-     │ with Authelia" │               │                │
-     │───────────────>│               │                │
-     │                │               │                │
-     │                │ Redirect to   │                │
-     │                │ /authorize    │                │
-     │<───────────────│               │                │
-     │                │               │                │
-     │ Login + 2FA    │               │                │
-     │───────────────────────────────>│                │
-     │                │               │                │
-     │                │  Auth code    │                │
-     │<───────────────────────────────│                │
-     │                │               │                │
-     │ Callback with  │               │                │
-     │ auth code      │               │                │
-     │───────────────>│               │                │
-     │                │               │                │
-     │                │ Exchange code │                │
-     │                │ for tokens    │                │
-     │                │──────────────>│                │
-     │                │               │                │
-     │                │ ID + Access   │                │
-     │                │ tokens        │                │
-     │                │<──────────────│                │
-     │                │               │                │
-     │                │ Create/update │                │
-     │                │ user + session│                │
-     │                │──────────────────────────────>│
-     │                │               │                │
-     │ Set session    │               │                │
-     │ cookie         │               │                │
-     │<───────────────│               │                │
-     │                │               │                │
-```
+<!-- Unit test strategy -->
 
----
+### Integration Tests
 
-## Security Considerations
+<!-- Integration test strategy -->
 
-1. **Token Validation**: Always validate JWT signature using Authelia's JWKS
-2. **State Parameter**: Use cryptographic state to prevent CSRF
-3. **PKCE**: Use PKCE (S256) for additional security
-4. **Secret Storage**: Encrypt client secret at rest
-5. **HTTPS Only**: Require HTTPS for all OIDC endpoints
+### Test Coverage
 
----
+Target: **80% minimum**
 
-## Troubleshooting
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid redirect URI | Mismatch in Authelia config | Verify redirect_uri in both configs |
-| Token validation failed | Clock skew | Sync server clocks, allow 5min leeway |
-| Groups not received | Missing scope | Add `groups` scope in Authelia client |
-| User not created | auto_provision disabled | Enable `auto_provision: true` |
 
----
+
+
 
 
 ## Related Documentation
+### Design Documents
+- [integrations/auth](integrations/auth.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
-- [Authentik Integration](AUTHENTIK.md)
-- [Keycloak Integration](KEYCLOAK.md)
-- [Generic OIDC](GENERIC_OIDC.md)
-- [OIDC Authentication](../../.github/instructions/oidc-authentication.instructions.md)
+### External Sources
+- [Authelia Documentation](https://www.authelia.com/overview/) - Auto-resolved from authelia
+- [Authentik Documentation](https://goauthentik.io/docs/) - Auto-resolved from authentik
+- [Keycloak Documentation](https://www.keycloak.org/documentation) - Auto-resolved from keycloak
+
