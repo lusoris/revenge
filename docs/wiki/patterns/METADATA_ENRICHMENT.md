@@ -13,11 +13,17 @@
 ---
 sources:
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
+    url: ../sources/tooling/river.md
+    note: Background job processing
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
-    note: Auto-resolved from rueidis
+    url: ../sources/tooling/rueidis.md
+    note: Distributed cache (L2)
+  - name: Otter
+    url: https://pkg.go.dev/github.com/maypok86/otter
+    note: In-memory cache (L1)
+  - name: Sturdyc
+    url: ../sources/tooling/sturdyc-guide.md
+    note: Request coalescing cache
 design_refs:
   - title: patterns
     path: patterns.md
@@ -34,9 +40,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Fast, efficient metadata with intelligent caching and background enrichment
 
-PLACEHOLDER: User-friendly overview
+The Metadata Enrichment Pattern ensures fast UI response times while maintaining rich, up-to-date metadata. The system uses a five-tier priority chain starting with local cache for instant results, falling back to Arr services (which cache upstream data), then internal sources, external APIs, and finally background enrichment jobs. Multi-tier caching with request coalescing prevents duplicate API calls and reduces external API quota consumption.
 
 ---
 

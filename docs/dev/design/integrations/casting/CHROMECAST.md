@@ -26,7 +26,7 @@
 ---
 sources:
   - name: go-chromecast
-    url: https://github.com/vishen/go-chromecast
+    url: ../sources/casting/go-chromecast.md
     note: Auto-resolved from go-chromecast
 design_refs:
   - title: integrations/casting
@@ -155,5 +155,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-chromecast](https://github.com/vishen/go-chromecast) - Auto-resolved from go-chromecast
+- [go-chromecast](../sources/casting/go-chromecast.md) - Auto-resolved from go-chromecast
 

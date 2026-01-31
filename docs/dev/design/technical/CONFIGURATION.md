@@ -23,59 +23,38 @@
 
 ---
 sources:
-  - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
-    note: Auto-resolved from dragonfly
-  - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
-    note: Auto-resolved from fx
   - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
-    note: Auto-resolved from koanf
-  - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
-  - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
-    note: Auto-resolved from rueidis-docs
-  - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
-    note: Auto-resolved from typesense-go
+    url: ../sources/tooling/koanf.md
+    note: Configuration management
+  - name: go-playground/validator
+    url: ../sources/tooling/validator.md
+    note: Config validation
 design_refs:
   - title: technical
-    path: technical.md
-  - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+    path: technical/INDEX.md
+  - title: TECH_STACK
+    path: technical/TECH_STACK.md
+  - title: 00_SOURCE_OF_TRUTH
+    path: 00_SOURCE_OF_TRUTH.md
 ---
 
 # Configuration Reference
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: technical
 
 
-> PLACEHOLDER: Brief technical summary
+> > Configuration system using koanf (YAML + environment variables + hot reload)
+
+Revenge configuration management:
+- **koanf**: Unified config from YAML files, env vars, flags
+- **Hot Reload**: Runtime config updates (subset of keys)
+- **Validation**: Schema validation with go-playground/validator
+- **Secrets**: Environment variable expansion and file-based secrets
+- **Env Prefix**: All env vars use `REVENGE_` prefix
+
 
 ---
 
@@ -84,15 +63,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete configuration reference |
+| Sources | ✅ | All config tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -160,21 +139,11 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [technical](technical/INDEX.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) - Auto-resolved from koanf
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [rueidis](https://pkg.go.dev/github.com/redis/rueidis) - Auto-resolved from rueidis
-- [rueidis GitHub README](https://github.com/redis/rueidis) - Auto-resolved from rueidis-docs
-- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
-- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+- [koanf](../sources/tooling/koanf.md) - Configuration management
+- [go-playground/validator](../sources/tooling/validator.md) - Config validation
 

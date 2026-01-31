@@ -12,11 +12,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Last.fm Scrobbling Integration](LASTFM_SCROBBLE.md) | Music scrobbling and listening history tracking | ✅ Designed |
-| [Letterboxd Integration](LETTERBOXD.md) | Social network for movie lovers and film tracking | 🟡 Partial |
-| [ListenBrainz Integration](LISTENBRAINZ.md) | Open-source music listening history tracking (MusicBrainz pr... | 🟡 Partial |
-| [Simkl Integration](SIMKL.md) | TV tracker and movie scrobbler (alternative to Trakt) | 🟡 Partial |
-| [Trakt Integration](TRAKT.md) | Social platform for tracking movies and TV shows | 🟡 Partial |
+| [Last.fm Scrobbling](LASTFM_SCROBBLE.md) | Integration with Last.fm Scrobbling | 🟡 Planned |
+| [Letterboxd](LETTERBOXD.md) | Integration with Letterboxd | 🟡 Planned |
+| [ListenBrainz](LISTENBRAINZ.md) | Integration with ListenBrainz | 🟡 Planned |
+| [Simkl](SIMKL.md) | Integration with Simkl | 🟡 Planned |
+| [Trakt](TRAKT.md) | Integration with Trakt | 🟡 Planned |
 
 ---
 

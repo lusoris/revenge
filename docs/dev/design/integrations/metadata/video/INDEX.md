@@ -12,10 +12,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [OMDb (Open Movie Database) Integration](OMDB.md) | Fallback metadata provider + IMDb ratings | ✅ Designed |
-| [ThePosterDB Integration](THEPOSTERDB.md) | Curated high-quality posters for movies and TV shows | ✅ Designed |
-| [TheTVDB Integration](THETVDB.md) | Primary metadata provider for TV shows | ✅ Designed |
-| [TMDb (The Movie Database) Integration](TMDB.md) | Primary metadata provider for movies and TV shows | ✅ Designed |
+| [OMDb (Open Movie Database)](OMDB.md) | Integration with OMDb (Open Movie Database) | 🟡 Planned |
+| [ThePosterDB](THEPOSTERDB.md) | Integration with ThePosterDB | 🟡 Planned |
+| [TheTVDB](THETVDB.md) | Integration with TheTVDB | 🟡 Planned |
+| [TMDb (The Movie Database)](TMDB.md) | Integration with TMDb (The Movie Database) | 🟡 Planned |
 
 ---
 

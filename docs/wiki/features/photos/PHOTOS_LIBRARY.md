@@ -15,31 +15,31 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/photos
@@ -59,9 +59,9 @@ design_refs:
 
 # Photos Library
 
-> Photo organization, viewing, and management
+> Your photo library organized by albums, people, and places
 
-PLACEHOLDER: User-friendly overview
+The Photos Library provides comprehensive photo management with support for JPEG, PNG, HEIC, and RAW formats. Organize photos into albums, tag people and places, and view your memories on an interactive map. The system automatically extracts EXIF metadata including GPS coordinates, camera settings, and timestamps. Browse photos with a beautiful lightbox gallery or slideshow mode.
 
 ---
 

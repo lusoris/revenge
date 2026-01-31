@@ -22,6 +22,22 @@
 
 
 ---
+sources:
+  - name: Radarr API Docs
+    url: ../sources/apis/radarr-docs.md
+    note: Auto-resolved from radarr-docs
+  - name: Sonarr API Docs
+    url: ../sources/apis/sonarr-docs.md
+    note: Auto-resolved from sonarr-docs
+  - name: Lidarr API Docs
+    url: ../sources/apis/lidarr-docs.md
+    note: Auto-resolved from lidarr-docs
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
+    note: Auto-resolved from river
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
+    note: Auto-resolved from fx
 design_refs:
   - title: technical
     path: technical.md
@@ -29,19 +45,30 @@ design_refs:
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: WEBHOOK_PATTERNS
+    path: patterns/WEBHOOK_PATTERNS.md
+  - title: ARR_INTEGRATION
+    path: patterns/ARR_INTEGRATION.md
+  - title: NOTIFICATIONS
+    path: technical/NOTIFICATIONS.md
 ---
 
 # Webhooks
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: technical
 
 
-> PLACEHOLDER: Brief technical summary
+> > Bidirectional webhook system for integrations and event notifications
+
+Complete webhook infrastructure:
+- **Incoming**: Receive events from Radarr, Sonarr, Lidarr, Whisparr, Stash
+- **Outgoing**: Send events to Discord, Slack, custom endpoints
+- **Security**: HMAC SHA-256 signature verification
+- **Reliability**: Exponential backoff retries via River queue
+- **Events**: 30+ event types for all content changes
 
 ---
 
@@ -50,15 +77,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete webhook system design |
+| Sources | ✅ | All webhook tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -129,8 +156,14 @@ Target: **80% minimum**
 - [technical](technical.md)
 - [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [WEBHOOK_PATTERNS](patterns/WEBHOOK_PATTERNS.md)
+- [ARR_INTEGRATION](patterns/ARR_INTEGRATION.md)
+- [NOTIFICATIONS](technical/NOTIFICATIONS.md)
 
 ### External Sources
-<!-- External documentation sources -->
+- [Radarr API Docs](../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
+- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
+- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Auto-resolved from lidarr-docs
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
 

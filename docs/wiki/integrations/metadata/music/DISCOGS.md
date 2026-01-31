@@ -14,10 +14,10 @@
 ---
 sources:
   - name: Discogs API
-    url: https://www.discogs.com/developers
+    url: ../sources/apis/discogs.md
     note: Auto-resolved from discogs
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
   - title: integrations/metadata/music

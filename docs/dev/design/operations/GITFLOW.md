@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [GitFlow Workflow Guide](#gitflow-workflow-guide)
+- [Git Workflow & Branching Strategy](#git-workflow-branching-strategy)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -24,13 +24,13 @@
 ---
 sources:
   - name: Conventional Commits
-    url: https://www.conventionalcommits.org/
+    url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
   - name: Git Flow
-    url: https://nvie.com/posts/a-successful-git-branching-model/
+    url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
   - name: Go io
-    url: https://pkg.go.dev/io
+    url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
 design_refs:
   - title: operations
@@ -43,15 +43,22 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# GitFlow Workflow Guide
+# Git Workflow & Branching Strategy
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: operations
 
 
-> PLACEHOLDER: Brief technical summary
+>   > Gitflow branching strategy and release process
+
+  Branch strategy:
+  - **main**: Production-ready code, protected
+  - **develop**: Integration branch for next release
+  - **feature/**: New features, merged to develop
+  - **fix/**: Bug fixes, merged to develop or main (hotfix)
+  - **release/**: Release preparation branches
 
 ---
 
@@ -60,15 +67,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
+| Design | ✅ | Complete Git workflow guide |
 | Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -142,7 +149,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Conventional Commits](https://www.conventionalcommits.org/) - Auto-resolved from conventional-commits
-- [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) - Auto-resolved from gitflow
-- [Go io](https://pkg.go.dev/io) - Auto-resolved from go-io
+- [Conventional Commits](../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
+- [Git Flow](../sources/standards/gitflow.md) - Auto-resolved from gitflow
+- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
 

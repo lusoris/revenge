@@ -14,13 +14,13 @@
 ---
 sources:
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: MusicBrainz API
-    url: https://musicbrainz.org/doc/MusicBrainz_API
+    url: ../sources/apis/musicbrainz.md
     note: Auto-resolved from musicbrainz
 design_refs:
   - title: integrations/metadata/music

@@ -14,19 +14,19 @@
 ---
 sources:
   - name: ComicVine API
-    url: https://comicvine.gamespot.com/api/documentation
+    url: ../sources/apis/comicvine.md
     note: Auto-resolved from comicvine
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/metadata/comics

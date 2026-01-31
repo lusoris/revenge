@@ -26,10 +26,10 @@
 ---
 sources:
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Open Library API
-    url: https://openlibrary.org/developers/api
+    url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
   - title: integrations/metadata/books
@@ -158,6 +158,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
-- [Open Library API](https://openlibrary.org/developers/api) - Auto-resolved from openlibrary
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
 

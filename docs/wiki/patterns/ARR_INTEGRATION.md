@@ -11,6 +11,19 @@
 
 
 ---
+sources:
+  - name: Radarr API Docs
+    url: ../sources/apis/radarr-docs.md
+    note: Radarr webhook events
+  - name: Sonarr API Docs
+    url: ../sources/apis/sonarr-docs.md
+    note: Sonarr webhook events
+  - name: Lidarr API Docs
+    url: ../sources/apis/lidarr-docs.md
+    note: Lidarr webhook events
+  - name: Servarr Wiki
+    url: ../sources/apis/servarr-wiki.md
+    note: Shared Arr stack documentation
 design_refs:
   - title: patterns
     path: patterns.md
@@ -27,9 +40,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Seamless integration with your Arr stack for automated media management
 
-PLACEHOLDER: User-friendly overview
+The Arr Integration Pattern provides a consistent approach for integrating with Radarr, Sonarr, Lidarr, and Whisparr. Webhook events automatically sync new downloads, metadata updates, and deletions. The system prioritizes Arr metadata (which is already cached from upstream sources) to minimize external API calls, while background jobs enrich content with additional metadata when needed.
 
 ---
 

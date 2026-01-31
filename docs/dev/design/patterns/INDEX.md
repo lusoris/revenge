@@ -10,9 +10,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Arr Integration Pattern](ARR_INTEGRATION.md) | Common patterns for integrating with *arr services (Radarr, ... | ✅ Designed |
-| [Metadata Enrichment Pattern](METADATA_ENRICHMENT.md) | Patterns for enriching content metadata from external provid... | ✅ Designed |
-| [Webhook Patterns](WEBHOOK_PATTERNS.md) | Patterns for processing webhooks and handling events | ✅ Designed |
+| [Arr Integration Pattern](ARR_INTEGRATION.md) | > Webhook-based integration pattern with Radarr, Sonarr, Lid... | 🟡 Planned |
+| [Metadata Enrichment Pattern](METADATA_ENRICHMENT.md) | > Multi-tier metadata enrichment with caching and background... | 🟡 Planned |
+| [Observability Pattern](OBSERVABILITY.md) | > Metrics, tracing, and logging patterns with Prometheus, Op... | 🟡 Planned |
+| [Testing Patterns](TESTING.md) | > Table-driven tests, mocking patterns, and integration test... | 🟡 Planned |
+| [Webhook Patterns](WEBHOOK_PATTERNS.md) | > Secure, reliable webhook handling with HMAC validation, as... | 🟡 Planned |
 
 ---
 

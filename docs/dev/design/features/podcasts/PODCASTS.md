@@ -15,6 +15,19 @@
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+      - [GET /api/v1/podcasts](#get-apiv1podcasts)
+      - [POST /api/v1/podcasts](#post-apiv1podcasts)
+      - [GET /api/v1/podcasts/:id](#get-apiv1podcastsid)
+      - [DELETE /api/v1/podcasts/:id](#delete-apiv1podcastsid)
+      - [GET /api/v1/podcasts/:id/episodes](#get-apiv1podcastsidepisodes)
+      - [GET /api/v1/podcasts/episodes/:id](#get-apiv1podcastsepisodesid)
+      - [GET /api/v1/podcasts/episodes/:id/stream](#get-apiv1podcastsepisodesidstream)
+      - [POST /api/v1/podcasts/episodes/:id/download](#post-apiv1podcastsepisodesiddownload)
+      - [GET /api/v1/podcasts/episodes/:id/progress](#get-apiv1podcastsepisodesidprogress)
+      - [PUT /api/v1/podcasts/episodes/:id/progress](#put-apiv1podcastsepisodesidprogress)
+      - [GET /api/v1/podcasts/search](#get-apiv1podcastssearch)
+      - [POST /api/v1/podcasts/import-opml](#post-apiv1podcastsimport-opml)
+      - [GET /api/v1/podcasts/export-opml](#get-apiv1podcastsexport-opml)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -28,19 +41,19 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/podcasts
@@ -64,6 +77,13 @@ design_refs:
 > Content module for Podcasts, Episodes
 
 > RSS podcast subscription and playback
+
+Complete podcast experience:
+- **RSS Feed Support**: Subscribe to any podcast via RSS/Atom feeds
+- **Automatic Updates**: Background jobs refresh feeds and download new episodes
+- **Playback Features**: Variable speed, chapter navigation, sleep timer
+- **Offline Support**: Download episodes for offline listening
+- **Discovery**: Search and browse podcasts via Podcast Index API
 
 ---
 
@@ -143,7 +163,49 @@ internal/content/podcasts/
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+#### GET /api/v1/podcasts
+
+---
+#### POST /api/v1/podcasts
+
+Subscribe by RSS URL
+
+---
+#### GET /api/v1/podcasts/:id
+
+---
+#### DELETE /api/v1/podcasts/:id
+
+Unsubscribe
+
+---
+#### GET /api/v1/podcasts/:id/episodes
+
+---
+#### GET /api/v1/podcasts/episodes/:id
+
+---
+#### GET /api/v1/podcasts/episodes/:id/stream
+
+---
+#### POST /api/v1/podcasts/episodes/:id/download
+
+---
+#### GET /api/v1/podcasts/episodes/:id/progress
+
+---
+#### PUT /api/v1/podcasts/episodes/:id/progress
+
+---
+#### GET /api/v1/podcasts/search
+
+---
+#### POST /api/v1/podcasts/import-opml
+
+---
+#### GET /api/v1/podcasts/export-opml
+
+---
 
 
 ## Testing Strategy
@@ -174,9 +236,9 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

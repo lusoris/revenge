@@ -10,7 +10,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Audiobook Module](AUDIOBOOK_MODULE.md) | Audiobook content management with metadata enrichment from A... | ✅ Designed |
+| [Audiobook Module](AUDIOBOOK_MODULE.md) | Content module for Books, Authors, Series | 🟡 Planned |
 
 ---
 

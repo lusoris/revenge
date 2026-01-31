@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Reverse Proxy & Deployment Best Practices](#revenge-reverse-proxy-deployment-best-practices)
+- [Reverse Proxy Configuration](#reverse-proxy-configuration)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -24,37 +24,37 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: Prometheus Go Client
-    url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
+    url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
   - name: Prometheus Metric Types
-    url: https://prometheus.io/docs/concepts/metric_types/
+    url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
   - title: operations
@@ -67,15 +67,21 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Revenge - Reverse Proxy & Deployment Best Practices
+# Reverse Proxy Configuration
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: operations
 
 
-> PLACEHOLDER: Brief technical summary
+>   > Reverse proxy setup with Traefik, Caddy, or nginx
+
+  Reverse proxy options:
+  - **Traefik**: Recommended for Docker, automatic SSL with Let's Encrypt
+  - **Caddy**: Simplest config, automatic HTTPS
+  - **nginx**: Most performant, manual SSL setup
+  - **Features**: WebSocket support, gzip compression, rate limiting
 
 ---
 
@@ -84,15 +90,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
+| Design | ✅ | Complete proxy setup guide |
 | Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -166,15 +172,15 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) - Auto-resolved from prometheus
-- [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) - Auto-resolved from prometheus-metrics
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [rueidis](https://pkg.go.dev/github.com/redis/rueidis) - Auto-resolved from rueidis
-- [rueidis GitHub README](https://github.com/redis/rueidis) - Auto-resolved from rueidis-docs
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
 

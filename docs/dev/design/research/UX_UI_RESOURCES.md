@@ -24,16 +24,16 @@
 ---
 sources:
   - name: shadcn-svelte
-    url: https://www.shadcn-svelte.com/docs
+    url: ../sources/frontend/shadcn-svelte.md
     note: Auto-resolved from shadcn-svelte
   - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
+    url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
+    url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
   - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
+    url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
   - title: research
@@ -145,8 +145,8 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [shadcn-svelte](https://www.shadcn-svelte.com/docs) - Auto-resolved from shadcn-svelte
-- [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) - Auto-resolved from svelte5
-- [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) - Auto-resolved from sveltekit
+- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Auto-resolved from shadcn-svelte
+- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
 

@@ -24,28 +24,28 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: testcontainers-go
-    url: https://golang.testcontainers.org/
+    url: ../sources/testing/testcontainers.md
     note: Auto-resolved from testcontainers
 ---
 
@@ -145,12 +145,12 @@ Target: **80% minimum**
 <!-- Related design docs -->
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
-- [testcontainers-go](https://golang.testcontainers.org/) - Auto-resolved from testcontainers
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [testcontainers-go](../sources/testing/testcontainers.md) - Auto-resolved from testcontainers
 

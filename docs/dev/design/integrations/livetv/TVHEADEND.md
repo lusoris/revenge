@@ -26,10 +26,10 @@
 ---
 sources:
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
 design_refs:
   - title: integrations/livetv
@@ -158,6 +158,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
 

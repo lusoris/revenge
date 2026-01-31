@@ -24,43 +24,43 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: https://www.authelia.com/overview/
+    url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: https://goauthentik.io/docs/
+    url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: FFmpeg Documentation
-    url: https://ffmpeg.org/ffmpeg.html
+    url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: https://ffmpeg.org/ffmpeg-codecs.html
+    url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: https://ffmpeg.org/ffmpeg-formats.html
+    url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
-    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: https://github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: Keycloak Documentation
-    url: https://www.keycloak.org/documentation
+    url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: research
@@ -172,17 +172,17 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](https://www.authelia.com/overview/) - Auto-resolved from authelia
-- [Authentik Documentation](https://goauthentik.io/docs/) - Auto-resolved from authentik
-- [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](https://github.com/asticode/go-astiav) - Auto-resolved from go-astiav-docs
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
-- [Keycloak Documentation](https://www.keycloak.org/documentation) - Auto-resolved from keycloak
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
+- [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 

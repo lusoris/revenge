@@ -13,10 +13,10 @@
 ---
 sources:
   - name: Conventional Commits
-    url: https://www.conventionalcommits.org/
+    url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
   - name: Git Flow
-    url: https://nvie.com/posts/a-successful-git-branching-model/
+    url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
 design_refs:
   - title: operations
@@ -34,9 +34,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Rules that protect main and develop branches from accidental changes
 
-PLACEHOLDER: User-friendly overview
+Branch protection rules prevent direct pushes to main and develop branches. All changes must go through pull requests with at least one approval. CI checks (tests, linting, coverage) must pass before merging. Force pushes are disabled to preserve commit history. These rules are configured in GitHub repository settings and ensure code quality and review for all changes.
 
 ---
 

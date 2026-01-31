@@ -12,8 +12,8 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Chromecast Integration](CHROMECAST.md) | Google Cast protocol for streaming to Chromecast devices | ✅ Designed |
-| [DLNA/UPnP Integration](DLNA.md) | Universal Plug and Play streaming to compatible devices | ✅ Designed |
+| [Chromecast](CHROMECAST.md) | Integration with Chromecast | 🟡 Planned |
+| [DLNA/UPnP](DLNA.md) | Integration with DLNA/UPnP | 🟡 Planned |
 
 ---
 

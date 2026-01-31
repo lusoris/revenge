@@ -13,17 +13,21 @@
 ---
 sources:
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
+  - name: OpenAPI 3.1 Specification
+    url: ../sources/apis/openapi-spec.md
+    note: API spec standard
+  - name: RFC 7807 Problem Details
+    url: https://datatracker.ietf.org/doc/html/rfc7807
+    note: Standardized error format
 design_refs:
   - title: technical
-    path: technical.md
+    path: technical/INDEX.md
   - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # API Reference
@@ -31,9 +35,11 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Developer API reference for building custom clients
 
-PLACEHOLDER: User-friendly overview
+
+The Revenge API lets you build custom clients and integrations. All endpoints use REST conventions with JSON request/response bodies. Authentication uses JWT tokens (for users) or API keys (for services). The API follows OpenAPI 3.1 specification - you can view the full spec at /api/openapi.json. Rate limiting protects the server from overload. Errors use RFC 7807 Problem Details format for consistent error handling across all endpoints.
+
 
 ---
 

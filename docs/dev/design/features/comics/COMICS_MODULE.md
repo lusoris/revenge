@@ -15,6 +15,18 @@
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+      - [GET /api/v1/comics/series](#get-apiv1comicsseries)
+      - [GET /api/v1/comics/series/:id](#get-apiv1comicsseriesid)
+      - [GET /api/v1/comics/series/:id/issues](#get-apiv1comicsseriesidissues)
+      - [GET /api/v1/comics/issues](#get-apiv1comicsissues)
+      - [GET /api/v1/comics/issues/:id](#get-apiv1comicsissuesid)
+      - [GET /api/v1/comics/issues/:id/read](#get-apiv1comicsissuesidread)
+      - [GET /api/v1/comics/issues/:id/pages/:page](#get-apiv1comicsissuesidpagespage)
+      - [GET /api/v1/comics/issues/:id/progress](#get-apiv1comicsissuesidprogress)
+      - [PUT /api/v1/comics/issues/:id/progress](#put-apiv1comicsissuesidprogress)
+      - [GET /api/v1/comics/publishers](#get-apiv1comicspublishers)
+      - [POST /api/v1/comics/pull-list](#post-apiv1comicspull-list)
+      - [GET /api/v1/comics/pull-list](#get-apiv1comicspull-list)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -28,37 +40,37 @@
 ---
 sources:
   - name: AniList GraphQL API
-    url: https://anilist.gitbook.io/anilist-apiv2-docs
+    url: ../sources/apis/anilist.md
     note: Auto-resolved from anilist
   - name: ComicVine API
-    url: https://comicvine.gamespot.com/api/documentation
+    url: ../sources/apis/comicvine.md
     note: Auto-resolved from comicvine
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: MyAnimeList API
-    url: https://myanimelist.net/apiconfig/references/api/v2
+    url: ../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
+    url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
+    url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
   - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
+    url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
   - title: features/comics
@@ -82,6 +94,13 @@ design_refs:
 > Content module for Comics, Issues, Series
 
 > Digital comics/manga/graphic novel support with metadata from ComicVine, Marvel API, GCD
+
+Complete comics library:
+- **Metadata Sources**: ComicVine (primary), Marvel API, Grand Comics Database, AniList/MAL (manga)
+- **Supported Formats**: CBZ, CBR, CB7, CBT, PDF
+- **Reader Features**: Page-by-page viewing, two-page spread, webtoon scroll mode
+- **Progress Tracking**: Per-user reading progress with sync across devices
+- **Collection Management**: Pull lists, reading lists, series tracking
 
 ---
 
@@ -161,7 +180,42 @@ internal/content/comics/
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+#### GET /api/v1/comics/series
+
+---
+#### GET /api/v1/comics/series/:id
+
+---
+#### GET /api/v1/comics/series/:id/issues
+
+---
+#### GET /api/v1/comics/issues
+
+---
+#### GET /api/v1/comics/issues/:id
+
+---
+#### GET /api/v1/comics/issues/:id/read
+
+---
+#### GET /api/v1/comics/issues/:id/pages/:page
+
+---
+#### GET /api/v1/comics/issues/:id/progress
+
+---
+#### PUT /api/v1/comics/issues/:id/progress
+
+---
+#### GET /api/v1/comics/publishers
+
+---
+#### POST /api/v1/comics/pull-list
+
+---
+#### GET /api/v1/comics/pull-list
+
+---
 
 
 ## Testing Strategy
@@ -192,15 +246,15 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](https://anilist.gitbook.io/anilist-apiv2-docs) - Auto-resolved from anilist
-- [ComicVine API](https://comicvine.gamespot.com/api/documentation) - Auto-resolved from comicvine
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [MyAnimeList API](https://myanimelist.net/apiconfig/references/api/v2) - Auto-resolved from myanimelist
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
-- [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) - Auto-resolved from svelte5
-- [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) - Auto-resolved from sveltekit
+- [AniList GraphQL API](../sources/apis/anilist.md) - Auto-resolved from anilist
+- [ComicVine API](../sources/apis/comicvine.md) - Auto-resolved from comicvine
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
 

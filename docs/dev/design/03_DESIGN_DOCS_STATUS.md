@@ -24,40 +24,40 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: https://www.authelia.com/overview/
+    url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: https://goauthentik.io/docs/
+    url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: Casbin
-    url: https://pkg.go.dev/github.com/casbin/casbin/v2
+    url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: Keycloak Documentation
-    url: https://www.keycloak.org/documentation
+    url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 ---
 
@@ -65,7 +65,7 @@ sources:
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: other
 
 
@@ -78,7 +78,7 @@ sources:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 Not Started | - |
+| Design | ✅ | - |
 | Sources | 🔴 Not Started | - |
 | Instructions | 🔴 Not Started | - |
 | Code | 🔴 Not Started | - |
@@ -86,7 +86,7 @@ sources:
 | Unit Testing | 🔴 Not Started | - |
 | Integration Testing | 🔴 Not Started | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -157,16 +157,16 @@ Target: **80% minimum**
 <!-- Related design docs -->
 
 ### External Sources
-- [Authelia Documentation](https://www.authelia.com/overview/) - Auto-resolved from authelia
-- [Authentik Documentation](https://goauthentik.io/docs/) - Auto-resolved from authentik
-- [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) - Auto-resolved from casbin
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [Keycloak Documentation](https://www.keycloak.org/documentation) - Auto-resolved from keycloak
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
-- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
+- [Casbin](../sources/security/casbin.md) - Auto-resolved from casbin
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

@@ -1,5 +1,8 @@
 # Design Documentation Completion Analysis
 
+<!-- DESIGN: .complete, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
+
 **Analysis Date**: 2026-01-31
 **Analyst**: Claude Code
 **Source**: YAML data files in `/data/` + SOURCE_OF_TRUTH.md

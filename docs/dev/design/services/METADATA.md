@@ -27,13 +27,13 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: services
@@ -165,7 +165,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 

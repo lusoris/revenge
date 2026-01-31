@@ -28,37 +28,37 @@
 ---
 sources:
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: google/uuid
-    url: https://pkg.go.dev/github.com/google/uuid
+    url: ../sources/tooling/uuid.md
     note: Auto-resolved from google-uuid
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Servarr Wiki
-    url: https://wiki.servarr.com/
+    url: ../sources/apis/servarr-wiki.md
     note: Auto-resolved from servarr-wiki
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: features/adult
@@ -192,15 +192,15 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
-- [google/uuid](https://pkg.go.dev/github.com/google/uuid) - Auto-resolved from google-uuid
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [Servarr Wiki](https://wiki.servarr.com/) - Auto-resolved from servarr-wiki
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
-- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
-- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [google/uuid](../sources/tooling/uuid.md) - Auto-resolved from google-uuid
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

@@ -18,9 +18,9 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [FANDOM Integration](FANDOM.md) | Fan-curated wikis for movies, TV shows, games, and more | 🟡 Partial |
-| [TVTropes Integration](TVTROPES.md) | Trope analysis and storytelling patterns | 🟡 Partial |
-| [Wikipedia Integration](WIKIPEDIA.md) | General encyclopedia information via Wikipedia API | 🟡 Partial |
+| [FANDOM](FANDOM.md) | Integration with FANDOM | 🟡 Planned |
+| [TVTropes](TVTROPES.md) | Integration with TVTropes | 🟡 Planned |
+| [Wikipedia](WIKIPEDIA.md) | Integration with Wikipedia | 🟡 Planned |
 
 ---
 

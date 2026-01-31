@@ -12,12 +12,12 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md) | Advanced playback features: trailers, themes, intros, trickp... | ✅ Designed |
-| [Release Calendar System](RELEASE_CALENDAR.md) | Upcoming releases and recent additions calendar via Servarr ... | ✅ Designed |
-| [Skip Intro / Credits Detection](SKIP_INTRO.md) | Automatic intro and credits detection with one-click skip | ✅ Designed |
-| [SyncPlay (Watch Together)](SYNCPLAY.md) | Synchronized playback for multiple users watching together | ✅ Designed |
-| [Trickplay (Timeline Thumbnails)](TRICKPLAY.md) | Thumbnail previews on video seek bar | ✅ Designed |
-| [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md) | Intelligent playback continuation and recommendation system | ✅ Designed |
+| [Revenge - Media Enhancement Features](MEDIA_ENHANCEMENTS.md) | Content module for  | 🟡 Planned |
+| [Release Calendar System](RELEASE_CALENDAR.md) | Content module for  | 🟡 Planned |
+| [Skip Intro / Credits Detection](SKIP_INTRO.md) | Content module for  | 🟡 Planned |
+| [SyncPlay (Watch Together)](SYNCPLAY.md) | Content module for  | 🟡 Planned |
+| [Trickplay (Timeline Thumbnails)](TRICKPLAY.md) | Content module for  | 🟡 Planned |
+| [Watch Next & Continue Watching System](WATCH_NEXT_CONTINUE_WATCHING.md) | Content module for  | 🟡 Planned |
 
 ---
 

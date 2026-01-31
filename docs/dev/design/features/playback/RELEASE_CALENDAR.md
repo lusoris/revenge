@@ -28,22 +28,22 @@
 ---
 sources:
   - name: Go context
-    url: https://pkg.go.dev/context
+    url: ../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
   - name: Radarr API Docs
-    url: https://radarr.video/docs/api/
+    url: ../sources/apis/radarr-docs.md
     note: Auto-resolved from radarr-docs
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Sonarr API Docs
-    url: https://sonarr.tv/docs/api/
+    url: ../sources/apis/sonarr-docs.md
     note: Auto-resolved from sonarr-docs
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/playback
@@ -177,10 +177,10 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go context](https://pkg.go.dev/context) - Auto-resolved from go-context
-- [Radarr API Docs](https://radarr.video/docs/api/) - Auto-resolved from radarr-docs
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [Sonarr API Docs](https://sonarr.tv/docs/api/) - Auto-resolved from sonarr-docs
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Go context](../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Radarr API Docs](../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

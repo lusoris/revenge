@@ -14,13 +14,13 @@
 ---
 sources:
   - name: Go io
-    url: https://pkg.go.dev/io
+    url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: Letterboxd API
-    url: https://api-docs.letterboxd.com/
+    url: ../sources/apis/letterboxd.md
     note: Auto-resolved from letterboxd
 design_refs:
   - title: integrations/scrobbling

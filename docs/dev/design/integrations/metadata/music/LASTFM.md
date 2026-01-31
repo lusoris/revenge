@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Go context
-    url: https://pkg.go.dev/context
+    url: ../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
   - title: integrations/metadata/music
@@ -159,6 +159,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go context](https://pkg.go.dev/context) - Auto-resolved from go-context
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
+- [Go context](../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 

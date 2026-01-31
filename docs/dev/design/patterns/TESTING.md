@@ -24,19 +24,19 @@
 ---
 sources:
   - name: Go Testing
-    url: https://pkg.go.dev/testing
+    url: ../sources/go/stdlib/testing.md
     note: Standard library testing
   - name: Testify
     url: https://github.com/stretchr/testify
     note: Assertions and test suites
   - name: Mockery
-    url: https://vektra.github.io/mockery/
+    url: ../sources/testing/mockery-guide.md
     note: Mock generation
   - name: Testcontainers Go
-    url: https://golang.testcontainers.org/
+    url: ../sources/testing/testcontainers.md
     note: Integration testing with containers
   - name: Embedded Postgres
-    url: https://github.com/fergusstrange/embedded-postgres
+    url: ../sources/testing/embedded-postgres-guide.md
     note: Fast PostgreSQL for unit tests
 design_refs:
   - title: patterns
@@ -74,7 +74,7 @@ Standard testing approach for Revenge project:
 |-----------|--------|-------|
 | Design | ✅ | - |
 | Sources | ✅ | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
@@ -153,9 +153,9 @@ Target: **80% minimum**
 - [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
-- [Go Testing](https://pkg.go.dev/testing) - Standard library testing
+- [Go Testing](../sources/go/stdlib/testing.md) - Standard library testing
 - [Testify](https://github.com/stretchr/testify) - Assertions and test suites
-- [Mockery](https://vektra.github.io/mockery/) - Mock generation
-- [Testcontainers Go](https://golang.testcontainers.org/) - Integration testing with containers
-- [Embedded Postgres](https://github.com/fergusstrange/embedded-postgres) - Fast PostgreSQL for unit tests
+- [Mockery](../sources/testing/mockery-guide.md) - Mock generation
+- [Testcontainers Go](../sources/testing/testcontainers.md) - Integration testing with containers
+- [Embedded Postgres](../sources/testing/embedded-postgres-guide.md) - Fast PostgreSQL for unit tests
 

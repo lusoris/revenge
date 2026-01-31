@@ -12,7 +12,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Photos Library](PHOTOS_LIBRARY.md) | Photo organization, viewing, and management | ✅ Designed |
+| [Photos Library](PHOTOS_LIBRARY.md) | Content module for Albums, Photos | 🟡 Planned |
 
 ---
 

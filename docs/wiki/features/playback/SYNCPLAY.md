@@ -15,10 +15,10 @@
 ---
 sources:
   - name: Go sync
-    url: https://pkg.go.dev/sync
+    url: ../sources/go/stdlib/sync.md
     note: Auto-resolved from go-sync
   - name: Jellyfin SyncPlay
-    url: https://jellyfin.org/docs/general/server/syncplay/
+    url: ../sources/apis/jellyfin-syncplay.md
     note: Auto-resolved from jellyfin-syncplay
 design_refs:
   - title: features/playback

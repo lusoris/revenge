@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Google Books API
-    url: https://developers.google.com/books/docs/v1/using
+    url: ../sources/apis/google-books.md
     note: Auto-resolved from google-books
   - name: Open Library API
-    url: https://openlibrary.org/developers/api
+    url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
   - title: integrations/metadata/books
@@ -158,6 +158,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Google Books API](https://developers.google.com/books/docs/v1/using) - Auto-resolved from google-books
-- [Open Library API](https://openlibrary.org/developers/api) - Auto-resolved from openlibrary
+- [Google Books API](../sources/apis/google-books.md) - Auto-resolved from google-books
+- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
 

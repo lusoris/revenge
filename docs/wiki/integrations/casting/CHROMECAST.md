@@ -14,7 +14,7 @@
 ---
 sources:
   - name: go-chromecast
-    url: https://github.com/vishen/go-chromecast
+    url: ../sources/casting/go-chromecast.md
     note: Auto-resolved from go-chromecast
 design_refs:
   - title: integrations/casting

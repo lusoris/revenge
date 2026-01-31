@@ -26,10 +26,10 @@
 ---
 sources:
   - name: MyAnimeList API
-    url: https://myanimelist.net/apiconfig/references/api/v2
+    url: ../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/anime
@@ -159,6 +159,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [MyAnimeList API](https://myanimelist.net/apiconfig/references/api/v2) - Auto-resolved from myanimelist
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 

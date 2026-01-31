@@ -14,10 +14,10 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 design_refs:
   - title: services

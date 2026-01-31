@@ -12,7 +12,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Blackbeard Integration](BLACKBEARD.md) | External transcoding service for Revenge | ✅ Designed |
+| [Blackbeard](BLACKBEARD.md) | Integration with Blackbeard | 🟡 Planned |
 
 ---
 

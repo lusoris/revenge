@@ -11,6 +11,19 @@
 
 
 ---
+sources:
+  - name: go-mail GitHub README
+    url: ../sources/tooling/go-mail-guide.md
+    note: Auto-resolved from go-mail
+  - name: go-fcm
+    url: ../sources/tooling/go-fcm.md
+    note: FCM push notifications
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
+    note: Auto-resolved from river
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
+    note: Auto-resolved from fx
 design_refs:
   - title: technical
     path: technical.md
@@ -18,8 +31,10 @@ design_refs:
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: EMAIL
+    path: technical/EMAIL.md
+  - title: WEBHOOKS
+    path: technical/WEBHOOKS.md
 ---
 
 # Notifications System
@@ -27,9 +42,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Stay informed with email, push, and webhook notifications
 
-PLACEHOLDER: User-friendly overview
+The Notifications System delivers real-time alerts across multiple channels. Users receive email notifications for account updates, push notifications on mobile devices via Firebase Cloud Messaging, and developers can subscribe to webhooks for automation. The system queues all notifications via River for reliable delivery with automatic retries and respects user preferences for each notification type.
 
 ---
 

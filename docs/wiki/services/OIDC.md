@@ -14,25 +14,25 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: https://www.authelia.com/overview/
+    url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: https://goauthentik.io/docs/
+    url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Keycloak Documentation
-    url: https://www.keycloak.org/documentation
+    url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: services

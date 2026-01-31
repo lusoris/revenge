@@ -26,13 +26,13 @@
 ---
 sources:
   - name: Go io
-    url: https://pkg.go.dev/io
+    url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: Letterboxd API
-    url: https://api-docs.letterboxd.com/
+    url: ../sources/apis/letterboxd.md
     note: Auto-resolved from letterboxd
 design_refs:
   - title: integrations/scrobbling
@@ -161,7 +161,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go io](https://pkg.go.dev/io) - Auto-resolved from go-io
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [Letterboxd API](https://api-docs.letterboxd.com/) - Auto-resolved from letterboxd
+- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Letterboxd API](../sources/apis/letterboxd.md) - Auto-resolved from letterboxd
 

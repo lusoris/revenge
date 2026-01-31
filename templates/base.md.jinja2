@@ -19,7 +19,7 @@
 sources:
 {%- for source in sources %}
   - name: {{ source.name }}
-    url: {{ source.url }}
+    url: {{ source.url|to_local_source }}
 {%- if source.note %}
     note: {{ source.note }}
 {%- endif %}
@@ -173,7 +173,10 @@ design_refs:
 {%- for endpoint in api_endpoints %}
 ### {{ endpoint.method }} {{ endpoint.path }}
 
+{%- if endpoint.get('description') %}
+
 {{ endpoint.description }}
+{%- endif %}
 
 **Request**:
 ```json
@@ -256,7 +259,7 @@ Target: **80% minimum**
 
 {%- if sources is defined and sources %}
 {%- for source in sources %}
-- [{{ source.name }}]({{ source.url }}){% if source.note %} - {{ source.note }}{% endif %}
+- [{{ source.name }}]({{ source.url|to_local_source }}){% if source.note %} - {{ source.note }}{% endif %}
 {%- endfor %}
 {%- else %}
 <!-- External documentation sources -->

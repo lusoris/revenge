@@ -12,9 +12,9 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Babepedia Integration](BABEPEDIA.md) | Adult performer wiki with biographies and filmographies | 🟡 Partial |
-| [Boobpedia Integration](BOOBPEDIA.md) | Adult performer encyclopedia with detailed profiles | 🟡 Partial |
-| [IAFD Integration](IAFD.md) | Internet Adult Film Database - Adult performer and scene dat... | 🟡 Partial |
+| [Babepedia](BABEPEDIA.md) | Integration with Babepedia | 🟡 Planned |
+| [Boobpedia](BOOBPEDIA.md) | Integration with Boobpedia | 🟡 Planned |
+| [IAFD](IAFD.md) | Integration with IAFD | 🟡 Planned |
 
 ---
 

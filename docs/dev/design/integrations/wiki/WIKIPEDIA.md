@@ -26,13 +26,13 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: MediaWiki API
-    url: https://www.mediawiki.org/wiki/API:Main_page
+    url: ../sources/wiki/mediawiki.md
     note: Auto-resolved from mediawiki-api
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/wiki
@@ -161,7 +161,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [MediaWiki API](https://www.mediawiki.org/wiki/API:Main_page) - Auto-resolved from mediawiki-api
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [MediaWiki API](../sources/wiki/mediawiki.md) - Auto-resolved from mediawiki-api
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 

@@ -14,13 +14,13 @@
 ---
 sources:
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Trakt API
-    url: https://trakt.tv/b/api-docs
+    url: ../sources/apis/trakt.md
     note: Auto-resolved from trakt
 design_refs:
   - title: integrations/scrobbling

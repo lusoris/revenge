@@ -28,28 +28,28 @@
 ---
 sources:
   - name: Casbin
-    url: https://pkg.go.dev/github.com/casbin/casbin/v2
+    url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: mmcdole/gofeed
-    url: https://pkg.go.dev/github.com/mmcdole/gofeed
+    url: ../sources/tooling/gofeed.md
     note: Auto-resolved from gofeed
   - name: gofeed GitHub README
-    url: https://github.com/mmcdole/gofeed
+    url: ../sources/tooling/gofeed-guide.md
     note: Auto-resolved from gofeed-docs
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/shared
@@ -183,12 +183,12 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) - Auto-resolved from casbin
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [mmcdole/gofeed](https://pkg.go.dev/github.com/mmcdole/gofeed) - Auto-resolved from gofeed
-- [gofeed GitHub README](https://github.com/mmcdole/gofeed) - Auto-resolved from gofeed-docs
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Casbin](../sources/security/casbin.md) - Auto-resolved from casbin
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [mmcdole/gofeed](../sources/tooling/gofeed.md) - Auto-resolved from gofeed
+- [gofeed GitHub README](../sources/tooling/gofeed-guide.md) - Auto-resolved from gofeed-docs
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

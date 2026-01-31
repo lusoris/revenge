@@ -24,10 +24,10 @@
 ---
 sources:
   - name: Conventional Commits
-    url: https://www.conventionalcommits.org/
+    url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
   - name: Git Flow
-    url: https://nvie.com/posts/a-successful-git-branching-model/
+    url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
 design_refs:
   - title: operations
@@ -44,11 +44,18 @@ design_refs:
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: operations
 
 
-> PLACEHOLDER: Brief technical summary
+>   > GitHub branch protection rules for main and develop
+
+  Protection rules:
+  - **Required Reviews**: 1 approval for PRs to main/develop
+  - **Status Checks**: CI must pass (tests, lint, coverage)
+  - **No Force Push**: Prevent history rewriting on protected branches
+  - **Linear History**: Require merge commits or squash
+  - **Up-to-date**: Branch must be current with base before merge
 
 ---
 
@@ -57,15 +64,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
+| Design | ✅ | Complete branch protection guide |
 | Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -139,6 +146,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Conventional Commits](https://www.conventionalcommits.org/) - Auto-resolved from conventional-commits
-- [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) - Auto-resolved from gitflow
+- [Conventional Commits](../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
+- [Git Flow](../sources/standards/gitflow.md) - Auto-resolved from gitflow
 

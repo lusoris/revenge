@@ -1,5 +1,8 @@
 # Design Documentation - Clarification Questions
 
+<!-- DESIGN: .complete, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
+
 **Purpose**: Gather requirements and clarifications before completing documentation gaps
 **Target Audience**: Project maintainers, product owners
 **Date**: 2026-01-31

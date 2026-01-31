@@ -15,6 +15,22 @@
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+      - [GET /api/v1/photos](#get-apiv1photos)
+      - [GET /api/v1/photos/:id](#get-apiv1photosid)
+      - [POST /api/v1/photos](#post-apiv1photos)
+      - [DELETE /api/v1/photos/:id](#delete-apiv1photosid)
+      - [GET /api/v1/photos/:id/download](#get-apiv1photosiddownload)
+      - [GET /api/v1/photos/:id/thumbnail/:size](#get-apiv1photosidthumbnailsize)
+      - [PUT /api/v1/photos/:id/tags](#put-apiv1photosidtags)
+      - [PUT /api/v1/photos/:id/favorite](#put-apiv1photosidfavorite)
+      - [GET /api/v1/photos/albums](#get-apiv1photosalbums)
+      - [POST /api/v1/photos/albums](#post-apiv1photosalbums)
+      - [GET /api/v1/photos/albums/:id](#get-apiv1photosalbumsid)
+      - [POST /api/v1/photos/albums/:id/photos](#post-apiv1photosalbumsidphotos)
+      - [GET /api/v1/photos/people](#get-apiv1photospeople)
+      - [POST /api/v1/photos/people](#post-apiv1photospeople)
+      - [GET /api/v1/photos/timeline](#get-apiv1photostimeline)
+      - [GET /api/v1/photos/map](#get-apiv1photosmap)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -28,31 +44,31 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/photos
@@ -76,6 +92,13 @@ design_refs:
 > Content module for Albums, Photos
 
 > Photo organization, viewing, and management
+
+Complete photo library:
+- **Supported Formats**: JPEG, PNG, WebP, HEIC, RAW (CR2, NEF, ARW, DNG)
+- **EXIF Extraction**: GPS, camera, lens, settings metadata
+- **Organization**: Albums, people/faces, places, events, tags
+- **Image Processing**: Thumbnails, blurhash placeholders, format conversion
+- **Viewing**: Lightbox gallery, slideshow, map view
 
 ---
 
@@ -155,7 +178,56 @@ internal/content/photos_library/
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+#### GET /api/v1/photos
+
+---
+#### GET /api/v1/photos/:id
+
+---
+#### POST /api/v1/photos
+
+Upload photo
+
+---
+#### DELETE /api/v1/photos/:id
+
+---
+#### GET /api/v1/photos/:id/download
+
+---
+#### GET /api/v1/photos/:id/thumbnail/:size
+
+---
+#### PUT /api/v1/photos/:id/tags
+
+---
+#### PUT /api/v1/photos/:id/favorite
+
+---
+#### GET /api/v1/photos/albums
+
+---
+#### POST /api/v1/photos/albums
+
+---
+#### GET /api/v1/photos/albums/:id
+
+---
+#### POST /api/v1/photos/albums/:id/photos
+
+---
+#### GET /api/v1/photos/people
+
+---
+#### POST /api/v1/photos/people
+
+---
+#### GET /api/v1/photos/timeline
+
+---
+#### GET /api/v1/photos/map
+
+---
 
 
 ## Testing Strategy
@@ -186,13 +258,13 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

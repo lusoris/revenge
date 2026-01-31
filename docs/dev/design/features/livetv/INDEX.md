@@ -12,7 +12,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Live TV & DVR](LIVE_TV_DVR.md) | Live television streaming and digital video recording | ✅ Designed |
+| [Live TV & DVR](LIVE_TV_DVR.md) | Content module for TV Shows, Seasons, Episodes | 🟡 Planned |
 
 ---
 

@@ -12,11 +12,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Architecture v2](01_ARCHITECTURE.md) | Complete modular architecture for a next-generation media se... | ✅ Designed |
-| [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md) | Non-negotiable architecture principles for the entire projec... | ✅ Designed |
-| [Revenge - Metadata System](03_METADATA_SYSTEM.md) | Servarr-first metadata with intelligent fallback and multi-l... | ✅ Designed |
-| [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md) | Unified web player for video and audio with native streaming... | ✅ Designed |
-| [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md) | Should Revenge use plugins or native integration? | ✅ Designed |
+| [Revenge - Architecture v2](01_ARCHITECTURE.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
+| [Revenge - Design Principles](02_DESIGN_PRINCIPLES.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
+| [Revenge - Metadata System](03_METADATA_SYSTEM.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
+| [Revenge - Player Architecture](04_PLAYER_ARCHITECTURE.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
+| [Plugin Architecture Decision](05_PLUGIN_ARCHITECTURE_DECISION.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
 
 ---
 

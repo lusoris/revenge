@@ -26,28 +26,28 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Servarr Wiki
-    url: https://wiki.servarr.com/
+    url: ../sources/apis/servarr-wiki.md
     note: Auto-resolved from servarr-wiki
   - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: integrations/servarr
@@ -176,12 +176,12 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [Servarr Wiki](https://wiki.servarr.com/) - Auto-resolved from servarr-wiki
-- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
-- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
+- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

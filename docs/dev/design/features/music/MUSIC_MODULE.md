@@ -15,6 +15,17 @@
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+      - [GET /api/v1/music/artists](#get-apiv1musicartists)
+      - [GET /api/v1/music/artists/:id](#get-apiv1musicartistsid)
+      - [GET /api/v1/music/artists/:id/albums](#get-apiv1musicartistsidalbums)
+      - [GET /api/v1/music/albums](#get-apiv1musicalbums)
+      - [GET /api/v1/music/albums/:id](#get-apiv1musicalbumsid)
+      - [GET /api/v1/music/albums/:id/tracks](#get-apiv1musicalbumsidtracks)
+      - [GET /api/v1/music/tracks](#get-apiv1musictracks)
+      - [GET /api/v1/music/tracks/:id](#get-apiv1musictracksid)
+      - [GET /api/v1/music/tracks/:id/stream](#get-apiv1musictracksidstream)
+      - [POST /api/v1/music/playlists](#post-apiv1musicplaylists)
+      - [GET /api/v1/music/genres](#get-apiv1musicgenres)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -28,31 +39,31 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/music
@@ -69,13 +80,20 @@ design_refs:
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: feature
 
 
 > Content module for Artists, Albums, Tracks
 
 > Music content management with metadata enrichment from MusicBrainz and Last.fm
+
+Complete music library management:
+- **Lidarr Integration**: Two-way sync for music library automation
+- **Metadata Sources**: MusicBrainz (primary), Last.fm (scrobbling, tags)
+- **Supported Formats**: MP3, FLAC, AAC, OGG, ALAC, Opus
+- **Playback**: HLS adaptive streaming with gapless playback
+- **Features**: Playlists, smart collections, album art, lyrics
 
 ---
 
@@ -84,15 +102,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete music module design |
+| Sources | ✅ | All music APIs documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -155,7 +173,39 @@ internal/content/music/
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+#### GET /api/v1/music/artists
+
+---
+#### GET /api/v1/music/artists/:id
+
+---
+#### GET /api/v1/music/artists/:id/albums
+
+---
+#### GET /api/v1/music/albums
+
+---
+#### GET /api/v1/music/albums/:id
+
+---
+#### GET /api/v1/music/albums/:id/tracks
+
+---
+#### GET /api/v1/music/tracks
+
+---
+#### GET /api/v1/music/tracks/:id
+
+---
+#### GET /api/v1/music/tracks/:id/stream
+
+---
+#### POST /api/v1/music/playlists
+
+---
+#### GET /api/v1/music/genres
+
+---
 
 
 ## Testing Strategy
@@ -186,13 +236,13 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

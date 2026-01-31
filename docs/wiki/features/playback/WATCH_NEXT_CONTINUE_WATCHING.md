@@ -15,7 +15,7 @@
 ---
 sources:
   - name: Jellyfin API
-    url: https://api.jellyfin.org/
+    url: ../sources/apis/jellyfin.md
     note: Auto-resolved from jellyfin-api
 design_refs:
   - title: features/playback

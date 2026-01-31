@@ -12,9 +12,9 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [AniList Integration](ANILIST.md) | Primary metadata and tracking provider for anime and manga | ✅ Designed |
-| [Kitsu Integration](KITSU.md) | Modern anime tracking platform with social features | ✅ Designed |
-| [MyAnimeList (MAL) Integration](MYANIMELIST.md) | Legacy anime tracking platform with extensive database | ✅ Designed |
+| [AniList](ANILIST.md) | Integration with AniList | 🟡 Planned |
+| [Kitsu](KITSU.md) | Integration with Kitsu | 🟡 Planned |
+| [MyAnimeList (MAL)](MYANIMELIST.md) | Integration with MyAnimeList (MAL) | 🟡 Planned |
 
 ---
 

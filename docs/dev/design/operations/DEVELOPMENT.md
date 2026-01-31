@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Clone repository](#clone-repository)
+- [Development Environment Setup](#development-environment-setup)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -23,62 +23,54 @@
 
 ---
 sources:
-  - name: Conventional Commits
-    url: https://www.conventionalcommits.org/
-    note: Auto-resolved from conventional-commits
-  - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
-    note: Auto-resolved from dragonfly
-  - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
-    note: Auto-resolved from koanf
-  - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
-    note: Auto-resolved from ogen
-  - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
+  - name: Go Installation
+    url: https://go.dev/doc/install
+    note: Official Go installation guide
+  - name: air Hot Reload
+    url: ../sources/go_dev_tools/air/main.md
+    note: Go hot reload tool
+  - name: Vite
+    url: https://vitejs.dev/guide/
+    note: Frontend build tool
+  - name: PostgreSQL Downloads
+    url: https://www.postgresql.org/download/
+    note: PostgreSQL installation
+  - name: Node.js Downloads
+    url: https://nodejs.org/
+    note: Node.js LTS releases
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
-    note: Auto-resolved from sqlc-config
-  - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
-    note: Auto-resolved from typesense-go
+    url: ../sources/database/sqlc.md
+    note: SQL code generation
+  - name: Conventional Commits
+    url: ../sources/standards/conventional-commits.md
+    note: Commit message format
 design_refs:
   - title: operations
     path: operations/INDEX.md
-  - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: TECH_STACK
+    path: technical/TECH_STACK.md
+  - title: BEST_PRACTICES
+    path: operations/BEST_PRACTICES.md
+  - title: 00_SOURCE_OF_TRUTH
+    path: 00_SOURCE_OF_TRUTH.md
 ---
 
-# Clone repository
+# Development Environment Setup
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: operations
 
 
-> PLACEHOLDER: Brief technical summary
+> > Local development environment setup with Go, Node.js, PostgreSQL, and hot reload
+
+Complete guide for setting up Revenge development environment:
+- **Prerequisites**: Go 1.25+, Node.js 20.x, PostgreSQL 18+, Python 3.12
+- **Hot Reload**: air for Go backend, Vite for frontend
+- **Database**: PostgreSQL only (no SQLite support)
+- **Build Flags**: GOEXPERIMENT=greenteagc,jsonv2
+
 
 ---
 
@@ -87,15 +79,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete developer setup guide |
+| Sources | ✅ | All tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -164,21 +156,16 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
-- [Conventional Commits](https://www.conventionalcommits.org/) - Auto-resolved from conventional-commits
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) - Auto-resolved from koanf
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
-- [Typesense API](https://typesense.org/docs/latest/api/) - Auto-resolved from typesense
-- [Typesense Go Client](https://github.com/typesense/typesense-go) - Auto-resolved from typesense-go
+- [Go Installation](https://go.dev/doc/install) - Official Go installation guide
+- [air Hot Reload](../sources/go_dev_tools/air/main.md) - Go hot reload tool
+- [Vite](https://vitejs.dev/guide/) - Frontend build tool
+- [PostgreSQL Downloads](https://www.postgresql.org/download/) - PostgreSQL installation
+- [Node.js Downloads](https://nodejs.org/) - Node.js LTS releases
+- [sqlc](../sources/database/sqlc.md) - SQL code generation
+- [Conventional Commits](../sources/standards/conventional-commits.md) - Commit message format
 

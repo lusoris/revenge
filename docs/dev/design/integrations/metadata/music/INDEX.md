@@ -12,10 +12,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Discogs Integration](DISCOGS.md) | Music marketplace and database - vinyl releases, marketplace... | ✅ Designed |
-| [Last.fm Integration](LASTFM.md) | Music scrobbling and metadata provider - artist bio, tags, s... | ✅ Designed |
-| [MusicBrainz Integration](MUSICBRAINZ.md) | Open music metadata database - primary metadata provider for... | ✅ Designed |
-| [Spotify Integration](SPOTIFY.md) | Music metadata and cover art provider - popularity scores, h... | ✅ Designed |
+| [Discogs](DISCOGS.md) | Integration with Discogs | 🟡 Planned |
+| [Last.fm](LASTFM.md) | Integration with Last.fm | 🟡 Planned |
+| [MusicBrainz](MUSICBRAINZ.md) | Integration with MusicBrainz | 🟡 Planned |
+| [Spotify](SPOTIFY.md) | Integration with Spotify | 🟡 Planned |
 
 ---
 

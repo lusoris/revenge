@@ -13,88 +13,88 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: FFmpeg Documentation
-    url: https://ffmpeg.org/ffmpeg.html
+    url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: https://ffmpeg.org/ffmpeg-codecs.html
+    url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: https://ffmpeg.org/ffmpeg-formats.html
+    url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: go-astiav (FFmpeg bindings)
-    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: https://github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: shadcn-svelte
-    url: https://www.shadcn-svelte.com/docs
+    url: ../sources/frontend/shadcn-svelte.md
     note: Auto-resolved from shadcn-svelte
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
+    url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
+    url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
   - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
+    url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
   - name: TanStack Query
-    url: https://tanstack.com/query/latest/docs/framework/svelte/overview
+    url: ../sources/frontend/tanstack-query.md
     note: Auto-resolved from tanstack-query
   - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: architecture

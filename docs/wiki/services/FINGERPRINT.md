@@ -14,34 +14,34 @@
 ---
 sources:
   - name: FFmpeg Documentation
-    url: https://ffmpeg.org/ffmpeg.html
+    url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: https://ffmpeg.org/ffmpeg-codecs.html
+    url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: https://ffmpeg.org/ffmpeg-formats.html
+    url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: go-astiav (FFmpeg bindings)
-    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: https://github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: services

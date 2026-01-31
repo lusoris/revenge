@@ -15,16 +15,16 @@
 ---
 sources:
   - name: Casbin
-    url: https://pkg.go.dev/github.com/casbin/casbin/v2
+    url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/adult

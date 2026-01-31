@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Frontend Architecture](#revenge-frontend-architecture)
+- [Frontend Architecture](#frontend-architecture)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -23,47 +23,66 @@
 
 ---
 sources:
-  - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-    note: Auto-resolved from gohlslib
-  - name: Last.fm API
-    url: https://www.last.fm/api/intro
-    note: Auto-resolved from lastfm-api
-  - name: shadcn-svelte
-    url: https://www.shadcn-svelte.com/docs
-    note: Auto-resolved from shadcn-svelte
-  - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
-    note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
-    note: Auto-resolved from svelte5
+    url: ../sources/frontend/svelte5.md
+    note: Component framework
+  - name: Svelte 5 Runes
+    url: ../sources/frontend/svelte-runes.md
+    note: Reactivity system
   - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
-    note: Auto-resolved from sveltekit
+    url: ../sources/frontend/sveltekit.md
+    note: Full-stack framework
+  - name: shadcn-svelte
+    url: ../sources/frontend/shadcn-svelte.md
+    note: Component library
+  - name: Bits UI
+    url: ../sources/frontend/bits-ui.md
+    note: Headless UI primitives
   - name: TanStack Query
-    url: https://tanstack.com/query/latest/docs/framework/svelte/overview
-    note: Auto-resolved from tanstack-query
+    url: ../sources/frontend/tanstack-query.md
+    note: Server state management
+  - name: Vidstack Player
+    url: ../sources/frontend/vidstack.md
+    note: Video player
+  - name: Vite Documentation
+    url: ../sources/frontend/vite.md
+    note: Build tool
+  - name: TailwindCSS Documentation
+    url: ../sources/frontend/tailwindcss.md
+    note: Styling framework
+  - name: Zod Documentation
+    url: ../sources/frontend/zod.md
+    note: Schema validation
+  - name: SvelteKit Superforms
+    url: ../sources/frontend/superforms.md
+    note: Form handling
 design_refs:
   - title: technical
-    path: technical.md
-  - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+    path: technical/INDEX.md
+  - title: TECH_STACK
+    path: technical/TECH_STACK.md
+  - title: 04_PLAYER_ARCHITECTURE
+    path: architecture/04_PLAYER_ARCHITECTURE.md
 ---
 
-# Revenge - Frontend Architecture
+# Frontend Architecture
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: technical
 
 
-> PLACEHOLDER: Brief technical summary
+> > Frontend architecture with SvelteKit 2, Svelte 5, Tailwind CSS 4, and shadcn-svelte
+
+Modern reactive frontend for Revenge:
+- **SvelteKit 2**: Full-stack meta-framework with SSR
+- **Svelte 5**: Component framework with runes reactivity
+- **Tailwind CSS 4**: Utility-first CSS with Rust engine
+- **shadcn-svelte**: Accessible component library
+- **TanStack Query**: Server state management
+- **Vidstack**: Video player with HLS support
+
 
 ---
 
@@ -72,15 +91,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete frontend architecture |
+| Sources | ✅ | All frontend tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -148,17 +167,20 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [technical](technical/INDEX.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [shadcn-svelte](https://www.shadcn-svelte.com/docs) - Auto-resolved from shadcn-svelte
-- [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) - Auto-resolved from svelte5
-- [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) - Auto-resolved from sveltekit
-- [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) - Auto-resolved from tanstack-query
+- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Component framework
+- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Reactivity system
+- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Full-stack framework
+- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library
+- [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
+- [TanStack Query](../sources/frontend/tanstack-query.md) - Server state management
+- [Vidstack Player](../sources/frontend/vidstack.md) - Video player
+- [Vite Documentation](../sources/frontend/vite.md) - Build tool
+- [TailwindCSS Documentation](../sources/frontend/tailwindcss.md) - Styling framework
+- [Zod Documentation](../sources/frontend/zod.md) - Schema validation
+- [SvelteKit Superforms](../sources/frontend/superforms.md) - Form handling
 

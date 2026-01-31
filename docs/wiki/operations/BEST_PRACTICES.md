@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Advanced Patterns & Best Practices](#advanced-patterns-best-practices)
+- [Development Best Practices](#development-best-practices)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -13,43 +13,43 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: otter Cache
-    url: https://pkg.go.dev/github.com/maypok86/otter/v2
+    url: ../sources/tooling/otter.md
     note: Auto-resolved from otter
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: sturdyc
-    url: https://pkg.go.dev/github.com/viccon/sturdyc
+    url: ../sources/tooling/sturdyc.md
     note: Auto-resolved from sturdyc
   - name: sturdyc GitHub README
-    url: https://github.com/viccon/sturdyc
+    url: ../sources/tooling/sturdyc-guide.md
     note: Auto-resolved from sturdyc-docs
 design_refs:
   - title: operations
@@ -62,14 +62,14 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Advanced Patterns & Best Practices
+# Development Best Practices
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Coding standards and patterns for contributing to Revenge
 
-PLACEHOLDER: User-friendly overview
+Follow these guidelines when contributing code to Revenge. Use gofmt for formatting and golangci-lint for linting. All code requires 80% minimum test coverage with table-driven tests. Use the repository pattern with fx dependency injection. Handle errors with sentinel errors and wrap with context using %w. Cache expensive operations with otter (L1) and rueidis (L2). See code examples for common patterns.
 
 ---
 

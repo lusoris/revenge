@@ -11,6 +11,22 @@
 
 
 ---
+sources:
+  - name: Radarr API Docs
+    url: ../sources/apis/radarr-docs.md
+    note: Auto-resolved from radarr-docs
+  - name: Sonarr API Docs
+    url: ../sources/apis/sonarr-docs.md
+    note: Auto-resolved from sonarr-docs
+  - name: Lidarr API Docs
+    url: ../sources/apis/lidarr-docs.md
+    note: Auto-resolved from lidarr-docs
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
+    note: Auto-resolved from river
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
+    note: Auto-resolved from fx
 design_refs:
   - title: technical
     path: technical.md
@@ -18,8 +34,12 @@ design_refs:
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: WEBHOOK_PATTERNS
+    path: patterns/WEBHOOK_PATTERNS.md
+  - title: ARR_INTEGRATION
+    path: patterns/ARR_INTEGRATION.md
+  - title: NOTIFICATIONS
+    path: technical/NOTIFICATIONS.md
 ---
 
 # Webhooks
@@ -27,9 +47,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Real-time event integration with external services
 
-PLACEHOLDER: User-friendly overview
+The Webhook System enables bidirectional event-driven integration. Receive webhooks from Arr services (Radarr, Sonarr, Lidarr, Whisparr) to automatically sync new downloads and metadata updates. Send webhooks to Discord, Slack, or custom endpoints for notifications and automation. All webhooks use HMAC signatures for security and are queued via River for reliable delivery with automatic retries.
 
 ---
 

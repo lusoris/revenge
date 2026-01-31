@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Versioning Strategy](#versioning-strategy)
+- [Semantic Versioning & Releases](#semantic-versioning-releases)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -13,19 +13,19 @@
 ---
 sources:
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Semantic Versioning
-    url: https://semver.org/
+    url: ../sources/standards/semver.md
     note: Auto-resolved from semver
 design_refs:
   - title: operations
@@ -38,14 +38,14 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Versioning Strategy
+# Semantic Versioning & Releases
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How version numbers work and when releases happen
 
-PLACEHOLDER: User-friendly overview
+Revenge follows Semantic Versioning (semver). Version numbers are formatted as vMAJOR.MINOR.PATCH. MAJOR bumps indicate breaking changes, MINOR adds new features without breaking existing functionality, and PATCH is for bug fixes. Releases are automated via Release Please - when commits merge to main, a release PR is created automatically with updated changelog. Pre-release versions (alpha, beta, rc) are used for testing before stable releases.
 
 ---
 

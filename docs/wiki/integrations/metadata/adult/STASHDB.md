@@ -14,46 +14,46 @@
 ---
 sources:
   - name: FFmpeg Documentation
-    url: https://ffmpeg.org/ffmpeg.html
+    url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: https://ffmpeg.org/ffmpeg-codecs.html
+    url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: https://ffmpeg.org/ffmpeg-formats.html
+    url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: Khan/genqlient
-    url: https://pkg.go.dev/github.com/Khan/genqlient
+    url: ../sources/tooling/genqlient.md
     note: Auto-resolved from genqlient
   - name: genqlient GitHub README
-    url: https://github.com/Khan/genqlient
+    url: ../sources/tooling/genqlient-guide.md
     note: Auto-resolved from genqlient-docs
   - name: go-astiav (FFmpeg bindings)
-    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: https://github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: StashDB GraphQL API
-    url: https://stashdb.org/graphql
+    url: ../sources/apis/stashdb-schema.graphql
     note: Auto-resolved from stashdb
   - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: integrations/metadata/adult

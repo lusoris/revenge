@@ -28,31 +28,31 @@
 ---
 sources:
   - name: Roku BIF Format
-    url: https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md
+    url: ../sources/protocols/bif.md
     note: Auto-resolved from bif-spec
   - name: FFmpeg Documentation
-    url: https://ffmpeg.org/ffmpeg.html
+    url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: https://ffmpeg.org/ffmpeg-codecs.html
+    url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: https://ffmpeg.org/ffmpeg-formats.html
+    url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
-    url: https://pkg.go.dev/github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: https://github.com/asticode/go-astiav
+    url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: Jellyfin Trickplay
-    url: https://jellyfin.org/docs/general/server/media/trickplay/
+    url: ../sources/apis/jellyfin-trickplay.md
     note: Auto-resolved from jellyfin-trickplay
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: WebVTT Specification
-    url: https://www.w3.org/TR/webvtt1/
+    url: ../sources/protocols/webvtt.md
     note: Auto-resolved from webvtt
 design_refs:
   - title: features/playback
@@ -186,13 +186,13 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Roku BIF Format](https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md) - Auto-resolved from bif-spec
-- [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](https://github.com/asticode/go-astiav) - Auto-resolved from go-astiav-docs
-- [Jellyfin Trickplay](https://jellyfin.org/docs/general/server/media/trickplay/) - Auto-resolved from jellyfin-trickplay
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [WebVTT Specification](https://www.w3.org/TR/webvtt1/) - Auto-resolved from webvtt
+- [Roku BIF Format](../sources/protocols/bif.md) - Auto-resolved from bif-spec
+- [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [Jellyfin Trickplay](../sources/apis/jellyfin-trickplay.md) - Auto-resolved from jellyfin-trickplay
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [WebVTT Specification](../sources/protocols/webvtt.md) - Auto-resolved from webvtt
 

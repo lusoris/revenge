@@ -12,11 +12,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Chaptarr Integration](CHAPTARR.md) | Book & audiobook management automation (uses Readarr API) | ✅ Designed |
-| [Lidarr Integration](LIDARR.md) | Music management automation | ✅ Designed |
-| [Radarr Integration](RADARR.md) | Movie management automation and metadata synchronization | ✅ Designed |
-| [Sonarr Integration](SONARR.md) | TV show management automation | ✅ Designed |
-| [Whisparr v3 Integration](WHISPARR.md) | Adult content management automation (eros branch) | ✅ Designed |
+| [Chaptarr](CHAPTARR.md) | Integration with Chaptarr | 🟡 Planned |
+| [Lidarr](LIDARR.md) | Integration with Lidarr | 🟡 Planned |
+| [Radarr](RADARR.md) | Integration with Radarr | 🟡 Planned |
+| [Sonarr](SONARR.md) | Integration with Sonarr | 🟡 Planned |
+| [Whisparr v3](WHISPARR.md) | Integration with Whisparr v3 | 🟡 Planned |
 
 ---
 

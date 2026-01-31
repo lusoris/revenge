@@ -12,10 +12,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Audible Integration](AUDIBLE.md) | Audiobook metadata provider - primary source for audiobooks | ✅ Designed |
-| [Goodreads Integration](GOODREADS.md) | Book metadata and social reading platform - ratings, reviews... | ✅ Designed |
-| [Hardcover Integration](HARDCOVER.md) | Social reading platform - Goodreads alternative with API | ✅ Designed |
-| [OpenLibrary Integration](OPENLIBRARY.md) | Open book metadata database - primary metadata provider for ... | ✅ Designed |
+| [Audible](AUDIBLE.md) | Integration with Audible | 🟡 Planned |
+| [Goodreads](GOODREADS.md) | Integration with Goodreads | 🟡 Planned |
+| [Hardcover](HARDCOVER.md) | Integration with Hardcover | 🟡 Planned |
+| [OpenLibrary](OPENLIBRARY.md) | Integration with OpenLibrary | 🟡 Planned |
 
 ---
 

@@ -15,34 +15,34 @@
 ---
 sources:
   - name: Audnexus API
-    url: https://api.audnex.us/
+    url: ../sources/apis/audnexus.md
     note: Auto-resolved from audnexus
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: Open Library API
-    url: https://openlibrary.org/developers/api
+    url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/audiobook
@@ -62,9 +62,9 @@ design_refs:
 
 # Audiobook Module
 
-> Audiobook content management with metadata enrichment from Audnexus and OpenLi
+> Your audiobook library with chapter navigation and progress sync
 
-PLACEHOLDER: User-friendly overview
+The Audiobook Module provides a complete audiobook experience with support for chapter navigation, progress tracking, and multi-device synchronization. It integrates with Chaptarr for automated audiobook management and uses Audnexus for rich metadata including narrators, publishers, and book descriptions. Resume playback across devices and adjust playback speed to your preference.
 
 ---
 

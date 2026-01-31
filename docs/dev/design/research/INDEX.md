@@ -12,8 +12,8 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [User Pain Points Research - Existing Media Servers](USER_PAIN_POINTS_RESEARCH.md) | Analysis of what users most complain about (and love) in Ple... | 🟡 Planned |
-| [UX/UI Design & Frontend Resources](UX_UI_RESOURCES.md) | **Status**: ✅ ALL 14 SOURCES FETCHED (2026-01-28) | 🟡 Planned |
+| [User Pain Points Research - Existing Media Servers](USER_PAIN_POINTS_RESEARCH.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
+| [UX/UI Design & Frontend Resources](UX_UI_RESOURCES.md) | PLACEHOLDER: Brief technical summary | 🟡 Planned |
 
 ---
 

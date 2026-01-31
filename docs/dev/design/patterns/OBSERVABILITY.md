@@ -27,13 +27,13 @@ sources:
     url: https://prometheus.io/docs/introduction/overview/
     note: Metrics collection
   - name: Prometheus Metrics Types
-    url: https://prometheus.io/docs/concepts/metric_types/
+    url: ../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
   - name: OpenTelemetry Go
-    url: https://opentelemetry.io/docs/languages/go/
+    url: ../sources/observability/opentelemetry.md
     note: Tracing SDK
   - name: slog
-    url: https://pkg.go.dev/log/slog
+    url: ../sources/go/stdlib/slog.md
     note: Structured logging
   - name: tint
     url: https://github.com/lmittmann/tint
@@ -42,7 +42,7 @@ sources:
     url: https://github.com/uber-go/zap
     note: High-performance JSON logs (prod)
   - name: Jaeger
-    url: https://www.jaegertracing.io/docs/
+    url: ../sources/observability/jaeger.md
     note: Distributed tracing backend
 design_refs:
   - title: patterns
@@ -80,7 +80,7 @@ All integrated via OpenTelemetry SDK for unified observability.
 |-----------|--------|-------|
 | Design | ✅ | - |
 | Sources | ✅ | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
@@ -160,10 +160,10 @@ Target: **80% minimum**
 
 ### External Sources
 - [Prometheus](https://prometheus.io/docs/introduction/overview/) - Metrics collection
-- [Prometheus Metrics Types](https://prometheus.io/docs/concepts/metric_types/) - Counter, Gauge, Histogram, Summary
-- [OpenTelemetry Go](https://opentelemetry.io/docs/languages/go/) - Tracing SDK
-- [slog](https://pkg.go.dev/log/slog) - Structured logging
+- [Prometheus Metrics Types](../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
+- [OpenTelemetry Go](../sources/observability/opentelemetry.md) - Tracing SDK
+- [slog](../sources/go/stdlib/slog.md) - Structured logging
 - [tint](https://github.com/lmittmann/tint) - Colorized slog handler (dev)
 - [zap](https://github.com/uber-go/zap) - High-performance JSON logs (prod)
-- [Jaeger](https://www.jaegertracing.io/docs/) - Distributed tracing backend
+- [Jaeger](../sources/observability/jaeger.md) - Distributed tracing backend
 

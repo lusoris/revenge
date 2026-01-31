@@ -12,48 +12,19 @@
 
 ---
 sources:
-  - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
-    note: Auto-resolved from dragonfly
-  - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
-    note: Auto-resolved from fx
   - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
-    note: Auto-resolved from koanf
-  - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
-  - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
-    note: Auto-resolved from rueidis-docs
-  - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
-    note: Auto-resolved from typesense-go
+    url: ../sources/tooling/koanf.md
+    note: Configuration management
+  - name: go-playground/validator
+    url: ../sources/tooling/validator.md
+    note: Config validation
 design_refs:
   - title: technical
-    path: technical.md
-  - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+    path: technical/INDEX.md
+  - title: TECH_STACK
+    path: technical/TECH_STACK.md
+  - title: 00_SOURCE_OF_TRUTH
+    path: 00_SOURCE_OF_TRUTH.md
 ---
 
 # Configuration Reference
@@ -61,9 +32,11 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Configuration guide for server deployment
 
-PLACEHOLDER: User-friendly overview
+
+Configure Revenge using a YAML file, environment variables, or both. All settings use the REVENGE_ prefix for environment variables (e.g., REVENGE_SERVER_PORT). Required settings include database URL and JWT secret. Optional settings control caching, search, logging, and integrations. Some settings support hot reload without restart. See the example config.yaml for a complete template with all available options.
+
 
 ---
 

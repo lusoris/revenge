@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Advanced Offloading Architecture](#revenge-advanced-offloading-architecture)
+- [Advanced Offloading Architecture](#advanced-offloading-architecture)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -13,34 +13,34 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: Prometheus Go Client
-    url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
+    url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
   - name: Prometheus Metric Types
-    url: https://prometheus.io/docs/concepts/metric_types/
+    url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: technical
@@ -49,18 +49,18 @@ design_refs:
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: METADATA_ENRICHMENT
+    path: patterns/METADATA_ENRICHMENT.md
 ---
 
-# Revenge - Advanced Offloading Architecture
+# Advanced Offloading Architecture
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Keep your API fast by offloading heavy work to specialized services
 
-PLACEHOLDER: User-friendly overview
+The Advanced Offloading Architecture ensures fast API response times by delegating heavy operations to background workers and specialized services. Transcoding, metadata enrichment, and image processing run asynchronously via River queue. Session storage and rate limiting use Dragonfly cache. Full-text search queries route to Typesense. Metrics collection offloads to Prometheus. The result is a responsive API that scales horizontally while handling resource-intensive tasks efficiently.
 
 ---
 

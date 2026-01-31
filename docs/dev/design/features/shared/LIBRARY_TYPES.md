@@ -28,25 +28,25 @@
 ---
 sources:
   - name: Casbin
-    url: https://pkg.go.dev/github.com/casbin/casbin/v2
+    url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: StashDB GraphQL API
-    url: https://stashdb.org/graphql
+    url: ../sources/apis/stashdb-schema.graphql
     note: Auto-resolved from stashdb
 design_refs:
   - title: features/shared
@@ -180,11 +180,11 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) - Auto-resolved from casbin
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [rueidis](https://pkg.go.dev/github.com/redis/rueidis) - Auto-resolved from rueidis
-- [rueidis GitHub README](https://github.com/redis/rueidis) - Auto-resolved from rueidis-docs
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
-- [StashDB GraphQL API](https://stashdb.org/graphql) - Auto-resolved from stashdb
+- [Casbin](../sources/security/casbin.md) - Auto-resolved from casbin
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [StashDB GraphQL API](../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
 

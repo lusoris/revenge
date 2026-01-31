@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Advanced Patterns & Best Practices](#advanced-patterns-best-practices)
+- [Development Best Practices](#development-best-practices)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -24,43 +24,43 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
+    url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: otter Cache
-    url: https://pkg.go.dev/github.com/maypok86/otter/v2
+    url: ../sources/tooling/otter.md
     note: Auto-resolved from otter
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: sturdyc
-    url: https://pkg.go.dev/github.com/viccon/sturdyc
+    url: ../sources/tooling/sturdyc.md
     note: Auto-resolved from sturdyc
   - name: sturdyc GitHub README
-    url: https://github.com/viccon/sturdyc
+    url: ../sources/tooling/sturdyc-guide.md
     note: Auto-resolved from sturdyc-docs
 design_refs:
   - title: operations
@@ -73,15 +73,22 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Advanced Patterns & Best Practices
+# Development Best Practices
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: operations
 
 
-> PLACEHOLDER: Brief technical summary
+>   > Coding standards, architectural patterns, and development guidelines
+
+  Best practices for Revenge development:
+  - **Code Style**: Go formatting, linting standards, naming conventions
+  - **Architecture**: Repository pattern, dependency injection with fx
+  - **Testing**: 80% minimum coverage, table-driven tests
+  - **Error Handling**: Sentinel errors, wrap with %w
+  - **Performance**: Caching strategies, connection pooling
 
 ---
 
@@ -90,15 +97,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
+| Design | ✅ | Complete coding standards and patterns |
 | Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -172,17 +179,17 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
-- [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) - Auto-resolved from koanf
-- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
-- [otter Cache](https://pkg.go.dev/github.com/maypok86/otter/v2) - Auto-resolved from otter
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [rueidis](https://pkg.go.dev/github.com/redis/rueidis) - Auto-resolved from rueidis
-- [rueidis GitHub README](https://github.com/redis/rueidis) - Auto-resolved from rueidis-docs
-- [sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc) - Auto-resolved from sturdyc
-- [sturdyc GitHub README](https://github.com/viccon/sturdyc) - Auto-resolved from sturdyc-docs
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [koanf](../sources/tooling/koanf.md) - Auto-resolved from koanf
+- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [otter Cache](../sources/tooling/otter.md) - Auto-resolved from otter
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [sturdyc](../sources/tooling/sturdyc.md) - Auto-resolved from sturdyc
+- [sturdyc GitHub README](../sources/tooling/sturdyc-guide.md) - Auto-resolved from sturdyc-docs
 

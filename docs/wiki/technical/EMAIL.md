@@ -13,8 +13,14 @@
 ---
 sources:
   - name: go-mail GitHub README
-    url: https://github.com/wneessen/go-mail
+    url: ../sources/tooling/go-mail-guide.md
     note: Auto-resolved from go-mail-docs
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
+    note: Auto-resolved from river
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
+    note: Auto-resolved from fx
 design_refs:
   - title: technical
     path: technical.md
@@ -22,8 +28,8 @@ design_refs:
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: NOTIFICATIONS
+    path: technical/NOTIFICATIONS.md
 ---
 
 # Email System
@@ -31,9 +37,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Reliable email delivery for notifications, alerts, and user communications
 
-PLACEHOLDER: User-friendly overview
+The Email System provides reliable SMTP email delivery with support for HTML templates, TLS encryption, and async sending. Built on go-mail library with connection pooling and automatic retries. All emails are queued via River for resilient delivery, with bounce detection and unsubscribe management built-in.
 
 ---
 

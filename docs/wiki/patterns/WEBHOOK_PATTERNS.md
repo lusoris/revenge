@@ -13,8 +13,17 @@
 ---
 sources:
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
+    url: ../sources/tooling/river.md
+    note: Background job processing
+  - name: crypto/hmac
+    url: https://pkg.go.dev/crypto/hmac
+    note: HMAC signature validation
+  - name: resty
+    url: ../sources/tooling/resty.md
+    note: HTTP client for webhook delivery
+  - name: gobreaker
+    url: ../sources/tooling/gobreaker.md
+    note: Circuit breaker pattern
 design_refs:
   - title: patterns
     path: patterns.md
@@ -31,9 +40,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Secure webhook integration with automatic retries and event tracking
 
-PLACEHOLDER: User-friendly overview
+The Webhook Pattern provides a secure, reliable foundation for receiving and processing webhook events from external services. All webhooks are validated using HMAC signatures or API keys, deduplicated using event IDs, and processed asynchronously via background jobs. Failed webhook processing automatically retries with exponential backoff, ensuring no events are lost.
 
 ---
 

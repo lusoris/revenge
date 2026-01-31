@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Discogs API
-    url: https://www.discogs.com/developers
+    url: ../sources/apis/discogs.md
     note: Auto-resolved from discogs
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
   - title: integrations/metadata/music
@@ -159,6 +159,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Discogs API](https://www.discogs.com/developers) - Auto-resolved from discogs
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
+- [Discogs API](../sources/apis/discogs.md) - Auto-resolved from discogs
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 

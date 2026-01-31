@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Clone repository](#clone-repository)
+- [Development Environment Setup](#development-environment-setup)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -12,61 +12,48 @@
 
 ---
 sources:
-  - name: Conventional Commits
-    url: https://www.conventionalcommits.org/
-    note: Auto-resolved from conventional-commits
-  - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
-    note: Auto-resolved from dragonfly
-  - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
-    note: Auto-resolved from koanf
-  - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
-    note: Auto-resolved from ogen
-  - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
+  - name: Go Installation
+    url: https://go.dev/doc/install
+    note: Official Go installation guide
+  - name: air Hot Reload
+    url: ../sources/go_dev_tools/air/main.md
+    note: Go hot reload tool
+  - name: Vite
+    url: https://vitejs.dev/guide/
+    note: Frontend build tool
+  - name: PostgreSQL Downloads
+    url: https://www.postgresql.org/download/
+    note: PostgreSQL installation
+  - name: Node.js Downloads
+    url: https://nodejs.org/
+    note: Node.js LTS releases
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
-    note: Auto-resolved from sqlc-config
-  - name: Typesense API
-    url: https://typesense.org/docs/latest/api/
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: https://github.com/typesense/typesense-go
-    note: Auto-resolved from typesense-go
+    url: ../sources/database/sqlc.md
+    note: SQL code generation
+  - name: Conventional Commits
+    url: ../sources/standards/conventional-commits.md
+    note: Commit message format
 design_refs:
   - title: operations
     path: operations/INDEX.md
-  - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: TECH_STACK
+    path: technical/TECH_STACK.md
+  - title: BEST_PRACTICES
+    path: operations/BEST_PRACTICES.md
+  - title: 00_SOURCE_OF_TRUTH
+    path: 00_SOURCE_OF_TRUTH.md
 ---
 
-# Clone repository
+# Development Environment Setup
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Get your local development environment running in minutes
 
-PLACEHOLDER: User-friendly overview
+
+This guide walks you through setting up Revenge for local development. You will install the required tools (Go 1.25+, Node.js 20, PostgreSQL 18), configure the database, and start the development servers with hot reload. The backend uses air for instant rebuilds on code changes, while the frontend uses Vite for blazing-fast HMR. Includes troubleshooting tips for common issues and useful Makefile commands to streamline your workflow.
+
 
 ---
 

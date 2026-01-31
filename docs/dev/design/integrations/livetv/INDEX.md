@@ -12,9 +12,9 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [ErsatzTV Integration](ERSATZTV.md) | Custom IPTV channel creation from your media library | ✅ Designed |
-| [NextPVR Integration](NEXTPVR.md) | Windows/Linux DVR software with IPTV support | ✅ Designed |
-| [TVHeadend Integration](TVHEADEND.md) | Open-source TV streaming server and DVR | ✅ Designed |
+| [ErsatzTV](ERSATZTV.md) | Integration with ErsatzTV | 🟡 Planned |
+| [NextPVR](NEXTPVR.md) | Integration with NextPVR | 🟡 Planned |
+| [TVHeadend](TVHEADEND.md) | Integration with TVHeadend | 🟡 Planned |
 
 ---
 

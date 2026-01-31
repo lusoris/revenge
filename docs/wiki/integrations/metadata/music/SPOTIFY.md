@@ -14,13 +14,13 @@
 ---
 sources:
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: Spotify Web API
-    url: https://developer.spotify.com/documentation/web-api
+    url: ../sources/apis/spotify.md
     note: Auto-resolved from spotify
 design_refs:
   - title: integrations/metadata/music

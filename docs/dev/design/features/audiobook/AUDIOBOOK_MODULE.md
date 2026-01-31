@@ -15,6 +15,15 @@
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+      - [GET /api/v1/audiobooks](#get-apiv1audiobooks)
+      - [GET /api/v1/audiobooks/:id](#get-apiv1audiobooksid)
+      - [GET /api/v1/audiobooks/:id/chapters](#get-apiv1audiobooksidchapters)
+      - [GET /api/v1/audiobooks/:id/stream](#get-apiv1audiobooksidstream)
+      - [GET /api/v1/audiobooks/:id/progress](#get-apiv1audiobooksidprogress)
+      - [PUT /api/v1/audiobooks/:id/progress](#put-apiv1audiobooksidprogress)
+      - [POST /api/v1/audiobooks/:id/bookmarks](#post-apiv1audiobooksidbookmarks)
+      - [GET /api/v1/audiobooks/authors](#get-apiv1audiobooksauthors)
+      - [GET /api/v1/audiobooks/series](#get-apiv1audiobooksseries)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -28,34 +37,34 @@
 ---
 sources:
   - name: Audnexus API
-    url: https://api.audnex.us/
+    url: ../sources/apis/audnexus.md
     note: Auto-resolved from audnexus
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: Open Library API
-    url: https://openlibrary.org/developers/api
+    url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/audiobook
@@ -72,13 +81,20 @@ design_refs:
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: feature
 
 
 > Content module for Books, Authors, Series
 
 > Audiobook content management with metadata enrichment from Audnexus and OpenLibrary
+
+Complete audiobook library:
+- **Chaptarr Integration**: Automated audiobook management and metadata sync
+- **Metadata Sources**: Audnexus (primary), OpenLibrary, Goodreads
+- **Supported Formats**: M4B (with chapters), MP3 (multi-file), AAC
+- **Chapter Navigation**: Jump to chapters, bookmarks, progress tracking
+- **Playback**: Variable speed (0.5x-3x), sleep timer, per-user resume
 
 ---
 
@@ -87,15 +103,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete audiobook module design |
+| Sources | ✅ | All audiobook APIs documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -158,7 +174,33 @@ internal/content/audiobook/
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+#### GET /api/v1/audiobooks
+
+---
+#### GET /api/v1/audiobooks/:id
+
+---
+#### GET /api/v1/audiobooks/:id/chapters
+
+---
+#### GET /api/v1/audiobooks/:id/stream
+
+---
+#### GET /api/v1/audiobooks/:id/progress
+
+---
+#### PUT /api/v1/audiobooks/:id/progress
+
+---
+#### POST /api/v1/audiobooks/:id/bookmarks
+
+---
+#### GET /api/v1/audiobooks/authors
+
+---
+#### GET /api/v1/audiobooks/series
+
+---
 
 
 ## Testing Strategy
@@ -189,14 +231,14 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Audnexus API](https://api.audnex.us/) - Auto-resolved from audnexus
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [Open Library API](https://openlibrary.org/developers/api) - Auto-resolved from openlibrary
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Audnexus API](../sources/apis/audnexus.md) - Auto-resolved from audnexus
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

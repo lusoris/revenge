@@ -12,7 +12,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Podcasts](PODCASTS.md) | RSS podcast subscription and playback | ✅ Designed |
+| [Podcasts](PODCASTS.md) | Content module for Podcasts, Episodes | 🟡 Planned |
 
 ---
 

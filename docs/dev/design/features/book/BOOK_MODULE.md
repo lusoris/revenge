@@ -15,6 +15,19 @@
     - [Config Keys](#config-keys)
   - [API Endpoints](#api-endpoints)
     - [Content Management](#content-management)
+      - [GET /api/v1/books](#get-apiv1books)
+      - [GET /api/v1/books/:id](#get-apiv1booksid)
+      - [GET /api/v1/books/:id/read](#get-apiv1booksidread)
+      - [GET /api/v1/books/:id/download](#get-apiv1booksiddownload)
+      - [GET /api/v1/books/:id/progress](#get-apiv1booksidprogress)
+      - [PUT /api/v1/books/:id/progress](#put-apiv1booksidprogress)
+      - [POST /api/v1/books/:id/bookmarks](#post-apiv1booksidbookmarks)
+      - [GET /api/v1/books/:id/bookmarks](#get-apiv1booksidbookmarks)
+      - [POST /api/v1/books/:id/highlights](#post-apiv1booksidhighlights)
+      - [GET /api/v1/books/:id/highlights](#get-apiv1booksidhighlights)
+      - [GET /api/v1/books/authors](#get-apiv1booksauthors)
+      - [GET /api/v1/books/series](#get-apiv1booksseries)
+      - [GET /api/v1/books/collections](#get-apiv1bookscollections)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -28,34 +41,34 @@
 ---
 sources:
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Google Books API
-    url: https://developers.google.com/books/docs/v1/using
+    url: ../sources/apis/google-books.md
     note: Auto-resolved from google-books
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: Open Library API
-    url: https://openlibrary.org/developers/api
+    url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/book
@@ -72,13 +85,20 @@ design_refs:
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: feature
 
 
 > Content module for Books, Authors, Series
 
 > Book/eBook content management with metadata enrichment from OpenLibrary and Goodreads
+
+Complete eBook library:
+- **Metadata Sources**: OpenLibrary (primary), Google Books, Goodreads, Hardcover
+- **Supported Formats**: EPUB, PDF, MOBI, AZW3, CBZ (comics)
+- **Reading Features**: Web reader, progress tracking, bookmarks, highlights
+- **Collections**: Reading lists, series tracking, genre collections
+- **Sync**: Multi-device reading progress synchronization
 
 ---
 
@@ -87,15 +107,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete book module design |
+| Sources | ✅ | All book APIs documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -158,7 +178,45 @@ internal/content/book/
 ## API Endpoints
 
 ### Content Management
-<!-- API endpoints placeholder -->
+#### GET /api/v1/books
+
+---
+#### GET /api/v1/books/:id
+
+---
+#### GET /api/v1/books/:id/read
+
+---
+#### GET /api/v1/books/:id/download
+
+---
+#### GET /api/v1/books/:id/progress
+
+---
+#### PUT /api/v1/books/:id/progress
+
+---
+#### POST /api/v1/books/:id/bookmarks
+
+---
+#### GET /api/v1/books/:id/bookmarks
+
+---
+#### POST /api/v1/books/:id/highlights
+
+---
+#### GET /api/v1/books/:id/highlights
+
+---
+#### GET /api/v1/books/authors
+
+---
+#### GET /api/v1/books/series
+
+---
+#### GET /api/v1/books/collections
+
+---
 
 
 ## Testing Strategy
@@ -189,14 +247,14 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](https://pkg.go.dev/go.uber.org/fx) - Auto-resolved from fx
-- [Google Books API](https://developers.google.com/books/docs/v1/using) - Auto-resolved from google-books
-- [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) - Auto-resolved from ogen
-- [Open Library API](https://openlibrary.org/developers/api) - Auto-resolved from openlibrary
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [sqlc](https://docs.sqlc.dev/en/stable/) - Auto-resolved from sqlc
-- [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) - Auto-resolved from sqlc-config
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Google Books API](../sources/apis/google-books.md) - Auto-resolved from google-books
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

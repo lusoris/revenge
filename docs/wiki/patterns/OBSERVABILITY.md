@@ -16,13 +16,13 @@ sources:
     url: https://prometheus.io/docs/introduction/overview/
     note: Metrics collection
   - name: Prometheus Metrics Types
-    url: https://prometheus.io/docs/concepts/metric_types/
+    url: ../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
   - name: OpenTelemetry Go
-    url: https://opentelemetry.io/docs/languages/go/
+    url: ../sources/observability/opentelemetry.md
     note: Tracing SDK
   - name: slog
-    url: https://pkg.go.dev/log/slog
+    url: ../sources/go/stdlib/slog.md
     note: Structured logging
   - name: tint
     url: https://github.com/lmittmann/tint
@@ -31,7 +31,7 @@ sources:
     url: https://github.com/uber-go/zap
     note: High-performance JSON logs (prod)
   - name: Jaeger
-    url: https://www.jaegertracing.io/docs/
+    url: ../sources/observability/jaeger.md
     note: Distributed tracing backend
 design_refs:
   - title: patterns
@@ -50,7 +50,7 @@ design_refs:
 > Monitoring and debugging patterns for production systems
 
 
-PLACEHOLDER: User-friendly overview of observability
+Revenge includes comprehensive monitoring and debugging capabilities out of the box. Metrics track request rates, errors, and response times via Prometheus. Distributed tracing with OpenTelemetry helps you follow requests across services and identify bottlenecks. Structured logging provides searchable, contextual logs for debugging. Health check endpoints let load balancers and orchestrators monitor service status. Pre-built Grafana dashboards visualize key metrics, and alert rules notify you of issues before users notice.
 
 
 ---

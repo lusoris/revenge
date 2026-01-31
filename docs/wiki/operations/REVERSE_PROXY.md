@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Reverse Proxy & Deployment Best Practices](#revenge-reverse-proxy-deployment-best-practices)
+- [Reverse Proxy Configuration](#reverse-proxy-configuration)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -13,37 +13,37 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: Prometheus Go Client
-    url: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus
+    url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
   - name: Prometheus Metric Types
-    url: https://prometheus.io/docs/concepts/metric_types/
+    url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: https://github.com/redis/rueidis
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
   - title: operations
@@ -56,14 +56,14 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Revenge - Reverse Proxy & Deployment Best Practices
+# Reverse Proxy Configuration
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Configure Traefik, Caddy, or nginx for HTTPS access to Revenge
 
-PLACEHOLDER: User-friendly overview
+A reverse proxy sits between the internet and Revenge, handling HTTPS encryption and routing. Traefik is recommended for Docker setups with automatic SSL certificates. Caddy offers the simplest configuration with automatic HTTPS. nginx provides the best performance but requires manual SSL setup. All options support WebSocket connections required for real-time features like SyncPlay. Includes complete configuration examples for each proxy.
 
 ---
 

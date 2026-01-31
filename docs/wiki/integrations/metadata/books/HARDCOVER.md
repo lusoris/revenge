@@ -14,7 +14,7 @@
 ---
 sources:
   - name: Hardcover API
-    url: https://hardcover.app/docs/api
+    url: ../sources/apis/hardcover.md
     note: Auto-resolved from hardcover
 design_refs:
   - title: integrations/metadata/books

@@ -57,6 +57,12 @@ class DocGenerator:
         # Load shared SOT data
         self.shared_data = self._load_shared_data()
 
+        # Load sources mapping for local links
+        self.sources_mapping = self._load_sources_mapping()
+
+        # Add custom filter to Jinja2 environment
+        self.env.filters['to_local_source'] = self._url_to_local_source
+
     def _load_shared_data(self) -> dict[str, Any]:
         """Load shared data from shared-sot.yaml."""
         shared_path = self.data_dir / "shared-sot.yaml"
@@ -68,6 +74,41 @@ class DocGenerator:
             data = yaml.safe_load(f)
             print(f"✓ Loaded shared data from {shared_path}")
             return data
+
+    def _load_sources_mapping(self) -> dict[str, str]:
+        """Load SOURCES.yaml and create URL -> local path mapping."""
+        sources_path = self.repo_root / "docs" / "dev" / "sources" / "SOURCES.yaml"
+        if not sources_path.exists():
+            print(f"⚠️  Warning: {sources_path} not found, using empty sources mapping")
+            return {}
+
+        with open(sources_path) as f:
+            sources_config = yaml.safe_load(f)
+
+        # Build mapping: URL -> relative path in docs/dev/sources/
+        url_to_path = {}
+        for category, sources_list in sources_config.get('sources', {}).items():
+            for source in sources_list:
+                if 'url' in source and 'output' in source:
+                    url_to_path[source['url']] = source['output']
+
+        print(f"✓ Loaded {len(url_to_path)} source URL mappings")
+        return url_to_path
+
+    def _url_to_local_source(self, url: str) -> str:
+        """Convert external URL to local source path if available.
+
+        Args:
+            url: External URL (e.g., 'https://pkg.go.dev/go.uber.org/fx')
+
+        Returns:
+            Local markdown link if URL is in mapping, otherwise original URL
+        """
+        if url in self.sources_mapping:
+            local_path = self.sources_mapping[url]
+            # Return relative path from docs/dev/design/ to docs/dev/sources/
+            return f"../sources/{local_path}"
+        return url
 
     def generate_doc(
         self,

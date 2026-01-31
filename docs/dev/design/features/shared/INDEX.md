@@ -12,21 +12,22 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Time-Based Access Controls](ACCESS_CONTROLS.md) | User access restrictions based on time, limits, and schedule... | ✅ Designed |
-| [Tracearr Analytics Service](ANALYTICS_SERVICE.md) | Real-time monitoring, analytics, and account sharing detecti... | ✅ Designed |
-| [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md) | Multi-platform client support with intelligent capability de... | ✅ Designed |
-| [Content Rating System](CONTENT_RATING.md) | Universal age restriction and content rating system for reve... | ✅ Designed |
-| [Revenge - Internationalization (i18n)](I18N.md) | Complete multi-language support for UI, metadata, and conten... | ✅ Designed |
-| [Library Types](LIBRARY_TYPES.md) | Per-module library architecture and supported content types | ✅ Designed |
-| [News System](NEWS_SYSTEM.md) | External news aggregation and internal announcements | ✅ Designed |
-| [Revenge - NSFW Toggle](NSFW_TOGGLE.md) | User preference component for adult content visibility. | ✅ Designed |
-| [Dynamic RBAC with Casbin](RBAC_CASBIN.md) | Role-Based Access Control using Casbin for dynamic permissio... | ✅ Designed |
-| [Native Request System](REQUEST_SYSTEM.md) | Content request management for all modules - replaces Overse... | ✅ Designed |
-| [Revenge - External Scrobbling & Sync](SCROBBLING.md) | Sync playback data to external services like Trakt, Last.fm,... | ✅ Designed |
-| [Ticketing System](TICKETING_SYSTEM.md) | User portal for bug reports, feature requests, and support t... | ✅ Designed |
-| [Revenge - User Experience Features](USER_EXPERIENCE_FEATURES.md) | User-facing features inspired by modern streaming services. | ✅ Designed |
-| [Voice Control](VOICE_CONTROL.md) | Voice assistant integration (Alexa, Google Assistant) | ✅ Designed |
-| [Internal Wiki System](WIKI_SYSTEM.md) | Modern, integrated knowledge base for users, mods, admins, a... | ✅ Designed |
+| [Time-Based Access Controls](ACCESS_CONTROLS.md) | Content module for  | 🟡 Planned |
+| [Tracearr Analytics Service](ANALYTICS_SERVICE.md) | Content module for  | 🟡 Planned |
+| [Revenge - Client Support & Device Capabilities](CLIENT_SUPPORT.md) | Content module for  | 🟡 Planned |
+| [Collections & Playlists](COLLECTIONS.md) | Content module for Movies, TV Shows, Music, All media types | 🟡 Planned |
+| [Content Rating System](CONTENT_RATING.md) | Content module for  | 🟡 Planned |
+| [Revenge - Internationalization (i18n)](I18N.md) | Content module for  | 🟡 Planned |
+| [Library Types](LIBRARY_TYPES.md) | Content module for  | 🟡 Planned |
+| [News System](NEWS_SYSTEM.md) | Content module for  | 🟡 Planned |
+| [Revenge - NSFW Toggle](NSFW_TOGGLE.md) | Content module for  | 🟡 Planned |
+| [Dynamic RBAC with Casbin](RBAC_CASBIN.md) | Content module for  | 🟡 Planned |
+| [Native Request System](REQUEST_SYSTEM.md) | Content module for  | 🟡 Planned |
+| [Revenge - External Scrobbling & Sync](SCROBBLING.md) | Content module for  | 🟡 Planned |
+| [Ticketing System](TICKETING_SYSTEM.md) | Content module for  | 🟡 Planned |
+| [Revenge - User Experience Features](USER_EXPERIENCE_FEATURES.md) | Content module for  | 🟡 Planned |
+| [Voice Control](VOICE_CONTROL.md) | Content module for  | 🟡 Planned |
+| [Internal Wiki System](WIKI_SYSTEM.md) | Content module for  | 🟡 Planned |
 
 ---
 

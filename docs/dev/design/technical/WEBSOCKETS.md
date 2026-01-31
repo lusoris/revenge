@@ -24,8 +24,14 @@
 ---
 sources:
   - name: coder/websocket GitHub README
-    url: https://github.com/coder/websocket
+    url: ../sources/tooling/websocket-guide.md
     note: Auto-resolved from coder-websocket-docs
+  - name: nhooyr.io/websocket
+    url: https://pkg.go.dev/nhooyr.io/websocket
+    note: WebSocket library (coder/websocket)
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
+    note: Auto-resolved from fx
 design_refs:
   - title: technical
     path: technical.md
@@ -33,19 +39,26 @@ design_refs:
     path: architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+  - title: WEBSOCKETS (Syncplay)
+    path: features/playback/SYNCPLAY.md
 ---
 
 # WebSockets
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: technical
 
 
-> PLACEHOLDER: Brief technical summary
+> > Real-time bidirectional communication via WebSockets
+
+Complete WebSocket infrastructure:
+- **Library**: nhooyr.io/websocket (coder/websocket)
+- **Channels**: Playback sync, notifications, live updates, transcoding progress
+- **Authentication**: JWT token validation on connect
+- **Protocol**: JSON message format with type-based routing
+- **Features**: Automatic reconnection, heartbeat/ping, message acknowledgment
 
 ---
 
@@ -54,15 +67,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete WebSocket system design |
+| Sources | ✅ | coder/websocket documentation included |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -133,8 +146,10 @@ Target: **80% minimum**
 - [technical](technical.md)
 - [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
+- [WEBSOCKETS (Syncplay)](features/playback/SYNCPLAY.md)
 
 ### External Sources
-- [coder/websocket GitHub README](https://github.com/coder/websocket) - Auto-resolved from coder-websocket-docs
+- [coder/websocket GitHub README](../sources/tooling/websocket-guide.md) - Auto-resolved from coder-websocket-docs
+- [nhooyr.io/websocket](https://pkg.go.dev/nhooyr.io/websocket) - WebSocket library (coder/websocket)
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
 

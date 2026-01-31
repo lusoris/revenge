@@ -12,7 +12,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Comics Module](COMICS_MODULE.md) | Digital comics/manga/graphic novel support with metadata fro... | ✅ Designed |
+| [Comics Module](COMICS_MODULE.md) | Content module for Comics, Issues, Series | 🟡 Planned |
 
 ---
 

@@ -10,7 +10,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Music Module](MUSIC_MODULE.md) | Music content management with metadata enrichment from Music... | ✅ Designed |
+| [Music Module](MUSIC_MODULE.md) | Content module for Artists, Albums, Tracks | 🟡 Planned |
 
 ---
 

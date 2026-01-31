@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Audnexus API
-    url: https://api.audnex.us/
+    url: ../sources/apis/audnexus.md
     note: Auto-resolved from audnexus
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
 design_refs:
   - title: integrations/metadata/books
@@ -159,6 +159,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Audnexus API](https://api.audnex.us/) - Auto-resolved from audnexus
-- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
+- [Audnexus API](../sources/apis/audnexus.md) - Auto-resolved from audnexus
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
 

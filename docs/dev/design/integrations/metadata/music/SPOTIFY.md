@@ -26,13 +26,13 @@
 ---
 sources:
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: Spotify Web API
-    url: https://developer.spotify.com/documentation/web-api
+    url: ../sources/apis/spotify.md
     note: Auto-resolved from spotify
 design_refs:
   - title: integrations/metadata/music
@@ -162,7 +162,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [Spotify Web API](https://developer.spotify.com/documentation/web-api) - Auto-resolved from spotify
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Spotify Web API](../sources/apis/spotify.md) - Auto-resolved from spotify
 

@@ -22,6 +22,19 @@
 
 
 ---
+sources:
+  - name: Radarr API Docs
+    url: ../sources/apis/radarr-docs.md
+    note: Radarr webhook events
+  - name: Sonarr API Docs
+    url: ../sources/apis/sonarr-docs.md
+    note: Sonarr webhook events
+  - name: Lidarr API Docs
+    url: ../sources/apis/lidarr-docs.md
+    note: Lidarr webhook events
+  - name: Servarr Wiki
+    url: ../sources/apis/servarr-wiki.md
+    note: Shared Arr stack documentation
 design_refs:
   - title: patterns
     path: patterns.md
@@ -37,11 +50,18 @@ design_refs:
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: pattern
 
 
-> PLACEHOLDER: Brief technical summary
+> > Webhook-based integration pattern with Radarr, Sonarr, Lidarr, and Whisparr
+
+Standard pattern for Arr stack integration:
+- **Webhook Handlers**: Process Download, Upgrade, Rename, Delete events
+- **Metadata Sync**: Two-way sync with conflict resolution
+- **Priority Chain**: Arr metadata > Internal > External APIs
+- **Background Jobs**: Async enrichment and validation
+- **Error Handling**: Retry logic with exponential backoff
 
 ---
 
@@ -50,15 +70,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete Arr integration pattern |
+| Sources | ✅ | All Arr tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -132,5 +152,8 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-<!-- External documentation sources -->
+- [Radarr API Docs](../sources/apis/radarr-docs.md) - Radarr webhook events
+- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Sonarr webhook events
+- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Lidarr webhook events
+- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Shared Arr stack documentation
 

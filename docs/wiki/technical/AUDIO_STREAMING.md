@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Audio Streaming & Progress Tracking](#revenge-audio-streaming-progress-tracking)
+- [Audio Streaming & Progress Tracking](#audio-streaming-progress-tracking)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -12,12 +12,15 @@
 
 ---
 sources:
-  - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
-    note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-    note: Auto-resolved from gohlslib
+    url: ../sources/media/gohlslib.md
+    note: HLS server implementation
+  - name: go-astiav (FFmpeg)
+    url: ../sources/media/go-astiav.md
+    note: Audio transcoding
+  - name: Dragonfly
+    url: ../sources/infrastructure/dragonfly.md
+    note: Progress tracking cache
 design_refs:
   - title: technical
     path: technical.md
@@ -29,14 +32,14 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Revenge - Audio Streaming & Progress Tracking
+# Audio Streaming & Progress Tracking
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Stream your music with adaptive quality and seamless progress sync
 
-PLACEHOLDER: User-friendly overview
+The Audio Streaming system delivers high-quality music playback using HLS (HTTP Live Streaming) with adaptive bitrate selection. Your progress is tracked per-second and synced in real-time across all devices, so you can start listening on your phone and continue on your computer exactly where you left off.
 
 ---
 

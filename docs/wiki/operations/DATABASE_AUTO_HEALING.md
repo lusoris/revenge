@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Database Auto-Healing & Consistency Restoration](#database-auto-healing-consistency-restoration)
+- [Database Auto-Healing & Recovery](#database-auto-healing-recovery)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -13,16 +13,16 @@
 ---
 sources:
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: operations
@@ -35,14 +35,14 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Database Auto-Healing & Consistency Restoration
+# Database Auto-Healing & Recovery
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How Revenge automatically recovers from database issues
 
-PLACEHOLDER: User-friendly overview
+Revenge includes built-in database recovery mechanisms. The connection pool (pgxpool) automatically reconnects after network interruptions. Health checks run periodically with exponential backoff on failures. If the database becomes unavailable, Revenge enters a degraded read-only mode using cached data. Database migrations run automatically on startup, and daily backups can be configured for disaster recovery.
 
 ---
 

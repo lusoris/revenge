@@ -12,10 +12,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Authelia Integration](AUTHELIA.md) | Self-hosted authentication and authorization server | ✅ Designed |
-| [Authentik Integration](AUTHENTIK.md) | Enterprise-grade identity provider for self-hosted environme... | 🟡 Partial |
-| [Generic OIDC Integration](GENERIC_OIDC.md) | Support for any OpenID Connect compatible provider | ✅ Designed |
-| [Keycloak Integration](KEYCLOAK.md) | Enterprise identity and access management solution | 🟡 Partial |
+| [Authelia](AUTHELIA.md) | Integration with Authelia | 🟡 Planned |
+| [Authentik](AUTHENTIK.md) | Integration with Authentik | 🟡 Planned |
+| [Generic OIDC](GENERIC_OIDC.md) | Integration with Generic OIDC | 🟡 Planned |
+| [Keycloak](KEYCLOAK.md) | Integration with Keycloak | 🟡 Planned |
 
 ---
 

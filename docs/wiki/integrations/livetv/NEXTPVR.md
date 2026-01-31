@@ -14,13 +14,13 @@
 ---
 sources:
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: NextPVR Documentation
-    url: https://github.com/sub3/NextPVR
+    url: ../sources/livetv/nextpvr.md
     note: Auto-resolved from nextpvr
 design_refs:
   - title: integrations/livetv

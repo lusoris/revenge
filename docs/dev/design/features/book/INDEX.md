@@ -10,7 +10,7 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Book Module](BOOK_MODULE.md) | Book/eBook content management with metadata enrichment from ... | ✅ Designed |
+| [Book Module](BOOK_MODULE.md) | Content module for Books, Authors, Series | 🟡 Planned |
 
 ---
 

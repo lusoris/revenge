@@ -12,14 +12,14 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Advanced Patterns & Best Practices](BEST_PRACTICES.md) | Comprehensive guide for professional-grade implementations i... | ✅ Designed |
-| [Branch Protection Rules](BRANCH_PROTECTION.md) | **Status**: ✅ Branch protection is **ACTIVE** on `main` and ... | 🟡 Planned |
-| [Database Auto-Healing & Consistency Restoration](DATABASE_AUTO_HEALING.md) | Automatic recovery strategies for PostgreSQL database corrup... | ✅ Designed |
-| [Clone repository](DEVELOPMENT.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
-| [GitFlow Workflow Guide](GITFLOW.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
-| [Revenge - Reverse Proxy & Deployment Best Practices](REVERSE_PROXY.md) | Production deployment with nginx, Caddy, Traefik, and Docker... | ✅ Designed |
-| [revenge - Setup Guide](SETUP.md) | Auto-generated section linking to external documentation sou... | 🟡 Planned |
-| [Versioning Strategy](VERSIONING.md) | Auto-generated section linking to external documentation sou... | ✅ Designed |
+| [Development Best Practices](BEST_PRACTICES.md) | > Coding standards, architectural patterns, and development ... | 🟡 Planned |
+| [Branch Protection Rules](BRANCH_PROTECTION.md) | > GitHub branch protection rules for main and develop | 🟡 Planned |
+| [Database Auto-Healing & Recovery](DATABASE_AUTO_HEALING.md) | > Automatic database recovery and self-healing mechanisms | 🟡 Planned |
+| [Development Environment Setup](DEVELOPMENT.md) | > Local development environment setup with Go, Node.js, Post... | 🟡 Planned |
+| [Git Workflow & Branching Strategy](GITFLOW.md) | > Gitflow branching strategy and release process | 🟡 Planned |
+| [Reverse Proxy Configuration](REVERSE_PROXY.md) | > Reverse proxy setup with Traefik, Caddy, or nginx | 🟡 Planned |
+| [Production Deployment Setup](SETUP.md) | > Production deployment guide for self-hosting Revenge | 🟡 Planned |
+| [Semantic Versioning & Releases](VERSIONING.md) | > Semantic versioning (semver) and automated release process | 🟡 Planned |
 
 ---
 

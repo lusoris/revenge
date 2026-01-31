@@ -12,8 +12,8 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Movie Module](MOVIE_MODULE.md) | Movie content management with metadata enrichment | ✅ Designed |
-| [TV Show Module](TVSHOW_MODULE.md) | TV series, seasons, and episodes management | ✅ Designed |
+| [Movie Module](MOVIE_MODULE.md) | Content module for Movies, Collections | 🟡 Planned |
+| [TV Show Module](TVSHOW_MODULE.md) | Content module for TV Shows, Seasons, Episodes | 🟡 Planned |
 
 ---
 

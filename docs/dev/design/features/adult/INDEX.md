@@ -12,11 +12,11 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md) | Complete adult content management with Stash ecosystem integ... | ✅ Designed |
-| [Revenge - Adult Content Metadata System](ADULT_METADATA.md) | ⚠️ **DEPRECATED**: This document has been merged into [ADULT... | ✅ Designed |
-| [Adult Data Reconciliation](DATA_RECONCILIATION.md) | Fuzzy logic and confidence scoring for conflicting metadata | ✅ Designed |
-| [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md) | Image gallery management for adult content with performer li... | ✅ Designed |
-| [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md) | Custom UI/UX approach for adult content scenes using Whispar... | ✅ Designed |
+| [Revenge - Adult Content System](ADULT_CONTENT_SYSTEM.md) | Content module for Scenes, Performers, Studios | 🟡 Planned |
+| [Revenge - Adult Content Metadata System](ADULT_METADATA.md) | Content module for Scenes, Performers, Studios | 🟡 Planned |
+| [Adult Data Reconciliation](DATA_RECONCILIATION.md) | Content module for Scenes, Performers, Studios | 🟡 Planned |
+| [Adult Gallery Module (QAR: Treasures)](GALLERY_MODULE.md) | Content module for Scenes, Performers, Studios | 🟡 Planned |
+| [Whisparr v3 & StashDB Schema Integration](WHISPARR_STASHDB_SCHEMA.md) | Content module for  | 🟡 Planned |
 
 ---
 

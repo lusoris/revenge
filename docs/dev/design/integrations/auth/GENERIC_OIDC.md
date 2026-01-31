@@ -26,16 +26,16 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: https://www.authelia.com/overview/
+    url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: https://goauthentik.io/docs/
+    url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: Keycloak Documentation
-    url: https://www.keycloak.org/documentation
+    url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
   - name: OpenID Connect Core
-    url: https://openid.net/specs/openid-connect-core-1_0.html
+    url: ../sources/security/oidc-core.md
     note: Auto-resolved from oidc
 design_refs:
   - title: integrations/auth
@@ -165,8 +165,8 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](https://www.authelia.com/overview/) - Auto-resolved from authelia
-- [Authentik Documentation](https://goauthentik.io/docs/) - Auto-resolved from authentik
-- [Keycloak Documentation](https://www.keycloak.org/documentation) - Auto-resolved from keycloak
-- [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html) - Auto-resolved from oidc
+- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
+- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [OpenID Connect Core](../sources/security/oidc-core.md) - Auto-resolved from oidc
 

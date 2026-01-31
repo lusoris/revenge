@@ -15,37 +15,37 @@
 ---
 sources:
   - name: AniList GraphQL API
-    url: https://anilist.gitbook.io/anilist-apiv2-docs
+    url: ../sources/apis/anilist.md
     note: Auto-resolved from anilist
   - name: ComicVine API
-    url: https://comicvine.gamespot.com/api/documentation
+    url: ../sources/apis/comicvine.md
     note: Auto-resolved from comicvine
   - name: Uber fx
-    url: https://pkg.go.dev/go.uber.org/fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: MyAnimeList API
-    url: https://myanimelist.net/apiconfig/references/api/v2
+    url: ../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
   - name: ogen OpenAPI Generator
-    url: https://pkg.go.dev/github.com/ogen-go/ogen
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
+    url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
+    url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
   - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
+    url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
   - title: features/comics
@@ -65,9 +65,9 @@ design_refs:
 
 # Comics Module
 
-> Digital comics/manga/graphic novel support with metadata from ComicVine, Marve
+> Your digital comics library with beautiful reading experience
 
-PLACEHOLDER: User-friendly overview
+The Comics Module provides a comprehensive digital comics experience supporting CBZ, CBR, and PDF formats. Read comics, manga, and graphic novels with a beautiful web reader that supports single-page, two-page spread, and webtoon scroll modes. Track your reading progress, manage pull lists, and discover new series with rich metadata from ComicVine, Marvel API, and anime databases for manga.
 
 ---
 

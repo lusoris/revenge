@@ -26,13 +26,13 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: Go io
-    url: https://pkg.go.dev/io
+    url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/metadata/adult
@@ -160,7 +160,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [Go io](https://pkg.go.dev/io) - Auto-resolved from go-io
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 

@@ -12,9 +12,9 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [ComicVine API Integration](COMICVINE.md) | Primary comics metadata provider (GameSpot's comprehensive c... | ✅ Designed |
-| [Grand Comics Database (GCD) Integration](GRAND_COMICS_DATABASE.md) | Open-source historical comics database (Golden/Silver Age fo... | ✅ Designed |
-| [Marvel API Integration](MARVEL_API.md) | Official Marvel Comics metadata (Marvel Universe content onl... | ✅ Designed |
+| [ComicVine API](COMICVINE.md) | Integration with ComicVine API | 🟡 Planned |
+| [Grand Comics Database (GCD)](GRAND_COMICS_DATABASE.md) | Integration with Grand Comics Database (GCD) | 🟡 Planned |
+| [Marvel API](MARVEL_API.md) | Integration with Marvel API | 🟡 Planned |
 
 ---
 

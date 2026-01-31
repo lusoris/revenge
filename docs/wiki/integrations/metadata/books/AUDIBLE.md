@@ -14,10 +14,10 @@
 ---
 sources:
   - name: Audnexus API
-    url: https://api.audnex.us/
+    url: ../sources/apis/audnexus.md
     note: Auto-resolved from audnexus
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
 design_refs:
   - title: integrations/metadata/books

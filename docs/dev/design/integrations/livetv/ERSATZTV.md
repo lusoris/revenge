@@ -26,19 +26,19 @@
 ---
 sources:
   - name: ErsatzTV Documentation
-    url: https://ersatztv.org/docs/
+    url: ../sources/livetv/ersatztv-guide.md
     note: Auto-resolved from ersatztv-docs
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: https://datatracker.ietf.org/doc/html/rfc8216
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: XMLTV Format
-    url: https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd
+    url: ../sources/protocols/xmltv.md
     note: Auto-resolved from xmltv
 design_refs:
   - title: integrations/livetv
@@ -166,9 +166,9 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [ErsatzTV Documentation](https://ersatztv.org/docs/) - Auto-resolved from ersatztv-docs
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) - Auto-resolved from m3u8
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [XMLTV Format](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) - Auto-resolved from xmltv
+- [ErsatzTV Documentation](../sources/livetv/ersatztv-guide.md) - Auto-resolved from ersatztv-docs
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [XMLTV Format](../sources/protocols/xmltv.md) - Auto-resolved from xmltv
 

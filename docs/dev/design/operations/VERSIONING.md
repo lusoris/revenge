@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Versioning Strategy](#versioning-strategy)
+- [Semantic Versioning & Releases](#semantic-versioning-releases)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -24,19 +24,19 @@
 ---
 sources:
   - name: pgx PostgreSQL Driver
-    url: https://pkg.go.dev/github.com/jackc/pgx/v5
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: https://www.postgresql.org/docs/current/arrays.html
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: https://www.postgresql.org/docs/current/functions-json.html
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Semantic Versioning
-    url: https://semver.org/
+    url: ../sources/standards/semver.md
     note: Auto-resolved from semver
 design_refs:
   - title: operations
@@ -49,15 +49,22 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Versioning Strategy
+# Semantic Versioning & Releases
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: operations
 
 
-> PLACEHOLDER: Brief technical summary
+>   > Semantic versioning (semver) and automated release process
+
+  Versioning strategy:
+  - **Format**: vMAJOR.MINOR.PATCH (e.g., v1.2.3)
+  - **MAJOR**: Breaking changes to API or behavior
+  - **MINOR**: New features, backwards compatible
+  - **PATCH**: Bug fixes, security patches
+  - **Automation**: Release Please for changelog and version bumps
 
 ---
 
@@ -66,15 +73,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
+| Design | ✅ | Complete versioning guide |
 | Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -148,9 +155,9 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) - Auto-resolved from pgx
-- [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) - Auto-resolved from postgresql-json
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [Semantic Versioning](https://semver.org/) - Auto-resolved from semver
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Semantic Versioning](../sources/standards/semver.md) - Auto-resolved from semver
 

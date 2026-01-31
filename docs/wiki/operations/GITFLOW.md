@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [GitFlow Workflow Guide](#gitflow-workflow-guide)
+- [Git Workflow & Branching Strategy](#git-workflow-branching-strategy)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -13,13 +13,13 @@
 ---
 sources:
   - name: Conventional Commits
-    url: https://www.conventionalcommits.org/
+    url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
   - name: Git Flow
-    url: https://nvie.com/posts/a-successful-git-branching-model/
+    url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
   - name: Go io
-    url: https://pkg.go.dev/io
+    url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
 design_refs:
   - title: operations
@@ -32,14 +32,14 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# GitFlow Workflow Guide
+# Git Workflow & Branching Strategy
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How we use Git branches for features, releases, and hotfixes
 
-PLACEHOLDER: User-friendly overview
+Revenge uses a Gitflow-style branching strategy. The main branch contains production-ready code, while develop is the integration branch for the next release. Create feature/* branches for new work, fix/* for bug fixes. All merges require pull request review. Commits follow Conventional Commits format (feat:, fix:, docs:) for automatic changelog generation. Git hooks enforce commit message format and run linters before push.
 
 ---
 

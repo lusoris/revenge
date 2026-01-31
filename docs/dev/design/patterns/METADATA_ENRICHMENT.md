@@ -24,11 +24,17 @@
 ---
 sources:
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Auto-resolved from river
+    url: ../sources/tooling/river.md
+    note: Background job processing
   - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
-    note: Auto-resolved from rueidis
+    url: ../sources/tooling/rueidis.md
+    note: Distributed cache (L2)
+  - name: Otter
+    url: https://pkg.go.dev/github.com/maypok86/otter
+    note: In-memory cache (L1)
+  - name: Sturdyc
+    url: ../sources/tooling/sturdyc-guide.md
+    note: Request coalescing cache
 design_refs:
   - title: patterns
     path: patterns.md
@@ -44,11 +50,18 @@ design_refs:
 
 
 **Created**: 2026-01-31
-**Status**: 🟡 In Progress
+**Status**: ✅ Complete
 **Category**: pattern
 
 
-> PLACEHOLDER: Brief technical summary
+> > Multi-tier metadata enrichment with caching and background jobs
+
+Standardized metadata enrichment pattern:
+- **Priority Chain**: Cache → Arr → Internal → External → Background
+- **Multi-Tier Cache**: Otter (L1) + Rueidis (L2) + Sturdyc (coalescing)
+- **Background Jobs**: Async enrichment via River queue
+- **Request Coalescing**: De-duplicate concurrent requests
+- **TTL Strategy**: Different TTLs per data type and source
 
 ---
 
@@ -57,15 +70,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🟡 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete metadata enrichment pattern |
+| Sources | ✅ | All enrichment tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🟡 In Progress
+**Overall**: ✅ Complete
 
 
 
@@ -139,6 +152,8 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) - Auto-resolved from river
-- [rueidis](https://pkg.go.dev/github.com/redis/rueidis) - Auto-resolved from rueidis
+- [River Job Queue](../sources/tooling/river.md) - Background job processing
+- [rueidis](../sources/tooling/rueidis.md) - Distributed cache (L2)
+- [Otter](https://pkg.go.dev/github.com/maypok86/otter) - In-memory cache (L1)
+- [Sturdyc](../sources/tooling/sturdyc-guide.md) - Request coalescing cache
 

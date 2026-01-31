@@ -15,22 +15,22 @@
 ---
 sources:
   - name: Go context
-    url: https://pkg.go.dev/context
+    url: ../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
   - name: Radarr API Docs
-    url: https://radarr.video/docs/api/
+    url: ../sources/apis/radarr-docs.md
     note: Auto-resolved from radarr-docs
   - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Sonarr API Docs
-    url: https://sonarr.tv/docs/api/
+    url: ../sources/apis/sonarr-docs.md
     note: Auto-resolved from sonarr-docs
   - name: sqlc
-    url: https://docs.sqlc.dev/en/stable/
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: https://docs.sqlc.dev/en/stable/reference/config.html
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/playback

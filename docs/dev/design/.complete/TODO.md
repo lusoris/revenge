@@ -1,5 +1,8 @@
 # Design Documentation Completion - TODO List
 
+<!-- DESIGN: .complete, README, SCAFFOLD_TEMPLATE, test_output_claude -->
+
+
 **Purpose**: Detailed action items for completing all design documentation
 **Source**: [ANALYSIS.md](ANALYSIS.md) gap analysis
 **Automation**: Aligned with YAML-to-Markdown generation system

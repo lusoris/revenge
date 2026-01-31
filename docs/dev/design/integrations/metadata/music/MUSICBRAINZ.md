@@ -26,13 +26,13 @@
 ---
 sources:
   - name: go-blurhash
-    url: https://pkg.go.dev/github.com/bbrks/go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Last.fm API
-    url: https://www.last.fm/api/intro
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: MusicBrainz API
-    url: https://musicbrainz.org/doc/MusicBrainz_API
+    url: ../sources/apis/musicbrainz.md
     note: Auto-resolved from musicbrainz
 design_refs:
   - title: integrations/metadata/music
@@ -161,7 +161,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) - Auto-resolved from go-blurhash
-- [Last.fm API](https://www.last.fm/api/intro) - Auto-resolved from lastfm-api
-- [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API) - Auto-resolved from musicbrainz
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [MusicBrainz API](../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz
 

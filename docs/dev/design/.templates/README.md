@@ -1,8 +1,11 @@
 # Design Documentation Templates
 
+<!-- DESIGN: .templates, ANALYSIS, QUESTIONS, README -->
+
+
 **Purpose**: Jinja2 templates for generating both Claude-optimized and Wiki documentation from a single source.
 
-**Master Reference**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md) - All versions, dependencies, and architecture decisions
+**Master Reference**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - All versions, dependencies, and architecture decisions
 
 ---
 
@@ -222,9 +225,6 @@ These appear in BOTH versions (with different content):
 |-----------|--------|-------|
 | Design | 🟡 | Scaffold - needs detailed database schema |
 | Code | 🔴 | Not started |
-
-**Location**: `internal/content/music/`
-
 ## Architecture
 
 ```

@@ -12,10 +12,10 @@
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [Dragonfly Integration](DRAGONFLY.md) | High-performance Redis-compatible cache | ✅ Designed |
-| [PostgreSQL Integration](POSTGRESQL.md) | Primary database for all Revenge data | ✅ Designed |
-| [River Integration](RIVER.md) | PostgreSQL-native job queue | ✅ Designed |
-| [Typesense Integration](TYPESENSE.md) | Fast, typo-tolerant search engine | ✅ Designed |
+| [Dragonfly](DRAGONFLY.md) | Integration with Dragonfly | 🟡 Planned |
+| [PostgreSQL](POSTGRESQL.md) | Integration with PostgreSQL | 🟡 Planned |
+| [River](RIVER.md) | Integration with River | 🟡 Planned |
+| [Typesense](TYPESENSE.md) | Integration with Typesense | 🟡 Planned |
 
 ---
 

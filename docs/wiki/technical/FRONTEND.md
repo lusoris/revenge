@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Frontend Architecture](#revenge-frontend-architecture)
+- [Frontend Architecture](#frontend-architecture)
   - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -12,46 +12,58 @@
 
 ---
 sources:
-  - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-    note: Auto-resolved from gohlslib
-  - name: Last.fm API
-    url: https://www.last.fm/api/intro
-    note: Auto-resolved from lastfm-api
-  - name: shadcn-svelte
-    url: https://www.shadcn-svelte.com/docs
-    note: Auto-resolved from shadcn-svelte
-  - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
-    note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
-    note: Auto-resolved from svelte5
+    url: ../sources/frontend/svelte5.md
+    note: Component framework
+  - name: Svelte 5 Runes
+    url: ../sources/frontend/svelte-runes.md
+    note: Reactivity system
   - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
-    note: Auto-resolved from sveltekit
+    url: ../sources/frontend/sveltekit.md
+    note: Full-stack framework
+  - name: shadcn-svelte
+    url: ../sources/frontend/shadcn-svelte.md
+    note: Component library
+  - name: Bits UI
+    url: ../sources/frontend/bits-ui.md
+    note: Headless UI primitives
   - name: TanStack Query
-    url: https://tanstack.com/query/latest/docs/framework/svelte/overview
-    note: Auto-resolved from tanstack-query
+    url: ../sources/frontend/tanstack-query.md
+    note: Server state management
+  - name: Vidstack Player
+    url: ../sources/frontend/vidstack.md
+    note: Video player
+  - name: Vite Documentation
+    url: ../sources/frontend/vite.md
+    note: Build tool
+  - name: TailwindCSS Documentation
+    url: ../sources/frontend/tailwindcss.md
+    note: Styling framework
+  - name: Zod Documentation
+    url: ../sources/frontend/zod.md
+    note: Schema validation
+  - name: SvelteKit Superforms
+    url: ../sources/frontend/superforms.md
+    note: Form handling
 design_refs:
   - title: technical
-    path: technical.md
-  - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+    path: technical/INDEX.md
+  - title: TECH_STACK
+    path: technical/TECH_STACK.md
+  - title: 04_PLAYER_ARCHITECTURE
+    path: architecture/04_PLAYER_ARCHITECTURE.md
 ---
 
-# Revenge - Frontend Architecture
+# Frontend Architecture
 
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Beautiful, fast UI built with modern web technologies
 
-PLACEHOLDER: User-friendly overview
+
+The Revenge web interface is built with SvelteKit and Svelte 5 for a fast, reactive experience. Tailwind CSS provides consistent styling with dark mode support. The video player (Vidstack) handles HLS adaptive streaming, subtitles, and Chromecast. TanStack Query manages data fetching with automatic caching and background updates. Forms use Superforms with Zod validation for a smooth user experience.
+
 
 ---
 

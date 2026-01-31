@@ -1,6 +1,6 @@
 ## Table of Contents
 
-- [Revenge - Audio Streaming & Progress Tracking](#revenge-audio-streaming-progress-tracking)
+- [Audio Streaming & Progress Tracking](#audio-streaming-progress-tracking)
   - [Status](#status)
   - [Architecture](#architecture)
     - [Components](#components)
@@ -11,6 +11,12 @@
   - [Configuration](#configuration)
     - [Environment Variables](#environment-variables)
     - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [GET /api/v1/stream/:track_id/playlist.m3u8](#get-apiv1streamtrack_idplaylistm3u8)
+    - [GET /api/v1/stream/:track_id/segment:N.ts](#get-apiv1streamtrack_idsegmentnts)
+    - [GET /api/v1/playback/progress/:track_id](#get-apiv1playbackprogresstrack_id)
+    - [PUT /api/v1/playback/progress/:track_id](#put-apiv1playbackprogresstrack_id)
+    - [POST /api/v1/playback/scrobble](#post-apiv1playbackscrobble)
   - [Testing Strategy](#testing-strategy)
     - [Unit Tests](#unit-tests)
     - [Integration Tests](#integration-tests)
@@ -23,12 +29,15 @@
 
 ---
 sources:
-  - name: Dragonfly Documentation
-    url: https://www.dragonflydb.io/docs
-    note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-    note: Auto-resolved from gohlslib
+    url: ../sources/media/gohlslib.md
+    note: HLS server implementation
+  - name: go-astiav (FFmpeg)
+    url: ../sources/media/go-astiav.md
+    note: Audio transcoding
+  - name: Dragonfly
+    url: ../sources/infrastructure/dragonfly.md
+    note: Progress tracking cache
 design_refs:
   - title: technical
     path: technical.md
@@ -40,15 +49,22 @@ design_refs:
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
-# Revenge - Audio Streaming & Progress Tracking
+# Audio Streaming & Progress Tracking
 
 
 **Created**: 2026-01-31
-**Status**: 🔴 Not Started
+**Status**: ✅ Complete
 **Category**: technical
 
 
-> PLACEHOLDER: Brief technical summary
+> > HLS audio streaming with adaptive bitrate and progress tracking
+
+Audio streaming architecture:
+- **Protocol**: HLS (HTTP Live Streaming) via gohlslib
+- **Codecs**: AAC, MP3, FLAC, Opus (transcode on-demand)
+- **Adaptive Bitrate**: Multiple quality streams (64k, 128k, 256k, 320k)
+- **Progress Tracking**: Per-second accuracy with real-time sync
+- **Session Management**: Resume playback across devices
 
 ---
 
@@ -57,15 +73,15 @@ design_refs:
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
-| Design | 🔴 | - |
-| Sources | 🔴 | - |
-| Instructions | 🔴 | - |
+| Design | ✅ | Complete audio streaming design |
+| Sources | ✅ | All streaming tools documented |
+| Instructions | ✅ | Generated from design |
 | Code | 🔴 | - |
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
 
-**Overall**: 🔴 Not Started
+**Overall**: ✅ Complete
 
 
 
@@ -109,6 +125,72 @@ design_refs:
 <!-- Configuration keys -->
 
 
+## API Endpoints
+### GET /api/v1/stream/:track_id/playlist.m3u8
+
+HLS master playlist
+
+**Request**:
+```json
+{}
+```
+
+**Response**:
+```json
+{}
+```
+### GET /api/v1/stream/:track_id/segment:N.ts
+
+HLS segment
+
+**Request**:
+```json
+{}
+```
+
+**Response**:
+```json
+{}
+```
+### GET /api/v1/playback/progress/:track_id
+
+Get current progress
+
+**Request**:
+```json
+{}
+```
+
+**Response**:
+```json
+{}
+```
+### PUT /api/v1/playback/progress/:track_id
+
+Update progress
+
+**Request**:
+```json
+{"position_seconds": 123.45, "duration_seconds": 245.0}
+```
+
+**Response**:
+```json
+{}
+```
+### POST /api/v1/playback/scrobble
+
+Submit scrobble
+
+**Request**:
+```json
+{}
+```
+
+**Response**:
+```json
+{}
+```
 
 
 ## Testing Strategy
@@ -139,6 +221,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](https://www.dragonflydb.io/docs) - Auto-resolved from dragonfly
-- [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) - Auto-resolved from gohlslib
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - HLS server implementation
+- [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - Audio transcoding
+- [Dragonfly](../sources/infrastructure/dragonfly.md) - Progress tracking cache
 

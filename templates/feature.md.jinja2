@@ -116,16 +116,19 @@ internal/content/{{ module_name }}/
 {%- for endpoint in api_endpoints %}
 #### {{ endpoint.method }} {{ endpoint.path }}
 
-{{ endpoint.description }}
+{%- if endpoint.get('description') %}
 
-{%- if endpoint.request_example %}
+{{ endpoint.description }}
+{%- endif %}
+
+{%- if endpoint.get('request_example') %}
 **Request**:
 ```json
 {{ endpoint.request_example }}
 ```
 {%- endif %}
 
-{%- if endpoint.response_example %}
+{%- if endpoint.get('response_example') %}
 **Response**:
 ```json
 {{ endpoint.response_example }}
