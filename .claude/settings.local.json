@@ -68,7 +68,9 @@
       "Bash(tee:*)",
       "Bash(git stash:*)",
       "Bash(git clean:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(sort:*)",
+      "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && head -5 {}')"
     ]
   }
 }
