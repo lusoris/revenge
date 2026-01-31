@@ -28,7 +28,7 @@ See [02_DESIGN_PRINCIPLES.md](docs/dev/design/architecture/02_DESIGN_PRINCIPLES.
 ## Features
 
 ### Content Modules
-- **12 Content Types**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Comics, Collections, and Adult content (isolated `c` schema)
+- **12 Content Types**: Movies, TV Shows, Music, Audiobooks, Books, Podcasts, Photos, Live TV, Comics, Collections, and QAR content (isolated `qar` schema with pirate-themed obfuscation)
 - **Module-Specific Age Restrictions**: Separate rating systems per module (video MPAA/BBFC, music parental advisory, books age ranges, comics publisher ratings)
 
 ### Playback
@@ -94,7 +94,13 @@ GOEXPERIMENT=greenteagc,jsonv2 go run ./cmd/revenge
 
 ## Documentation
 
-All documentation lives in [docs/dev/design/](docs/dev/design/00_SOURCE_OF_TRUTH.md).
+### Developer Documentation
+All design documentation lives in [docs/dev/design/](docs/dev/design/00_SOURCE_OF_TRUTH.md).
+
+### User Documentation
+User-facing wiki documentation is available in [docs/wiki/](docs/wiki/).
+
+---
 
 ### Core Design
 - [Source of Truth](docs/dev/design/00_SOURCE_OF_TRUTH.md) - Master reference for all versions and modules
@@ -136,9 +142,6 @@ All documentation lives in [docs/dev/design/](docs/dev/design/00_SOURCE_OF_TRUTH
 - [Setup Guide](docs/dev/design/operations/SETUP.md) - Production deployment
 - [Development Guide](docs/dev/design/operations/DEVELOPMENT.md) - Development environment
 - [Best Practices](docs/dev/design/operations/BEST_PRACTICES.md) - Resilience, observability patterns
-
-### Development Instructions
-- [Instructions Index](.github/instructions/INDEX.instructions.md) - AI-assisted development guidelines
 
 ---
 
