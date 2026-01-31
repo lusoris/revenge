@@ -2,20 +2,55 @@
 
 > Intelligent playback continuation and recommendation system
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+  - [Goals](#goals)
+- [Feature Components](#feature-components)
+  - [1. Continue Watching](#1-continue-watching)
+  - [2. Watch Next (Series)](#2-watch-next-series)
+  - [3. Series Watch Progress](#3-series-watch-progress)
+  - [4. Up Next / Auto-Play Queue](#4-up-next-auto-play-queue)
+  - [5. Cross-Device Sync](#5-cross-device-sync)
+- [API Endpoints](#api-endpoints)
+  - [Continue Watching](#continue-watching)
+  - [Watch Next (Series)](#watch-next-series)
+  - [Up Next Queue](#up-next-queue)
+- [User Settings](#user-settings)
+- [Event Triggers](#event-triggers)
+  - [On Playback Start](#on-playback-start)
+  - [On Playback Progress](#on-playback-progress)
+  - [On Playback Stop](#on-playback-stop)
+- [Implementation Checklist](#implementation-checklist)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🔴 HIGH (Core UX Feature)
-**Related**: [METADATA_SYSTEM.md](../architecture/03_METADATA_SYSTEM.md), [SCROBBLING.md](SCROBBLING.md)
+**Related**: [METADATA_SYSTEM.md](../../architecture/03_METADATA_SYSTEM.md), [SCROBBLING.md](SCROBBLING.md)
 **Location**: `internal/feature/watchnext/`
 
 ---
@@ -513,4 +548,4 @@ func OnPlaybackStop(ctx context.Context, userID uuid.UUID, contentID uuid.UUID, 
 
 - [SCROBBLING.md](SCROBBLING.md) - External service sync (Trakt, etc.)
 - [USER_EXPERIENCE_FEATURES.md](USER_EXPERIENCE_FEATURES.md) - Other UX features
-- [PLAYER_ARCHITECTURE.md](../architecture/04_PLAYER_ARCHITECTURE.md) - Video player design
+- [PLAYER_ARCHITECTURE.md](../../architecture/04_PLAYER_ARCHITECTURE.md) - Video player design

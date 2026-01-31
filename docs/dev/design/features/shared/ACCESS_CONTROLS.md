@@ -2,6 +2,44 @@
 
 > User access restrictions based on time, limits, and schedules
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Features](#features)
+- [Use Cases](#use-cases)
+  - [Parental Controls](#parental-controls)
+  - [Guest Accounts](#guest-accounts)
+  - [Household Rules](#household-rules)
+- [Database Schema](#database-schema)
+- [Go Implementation](#go-implementation)
+- [API Endpoints](#api-endpoints)
+- [Client Integration](#client-integration)
+  - [Playback Enforcement](#playback-enforcement)
+  - [Warning UI](#warning-ui)
+  - [Blocked UI](#blocked-ui)
+- [RBAC Permissions](#rbac-permissions)
+- [Configuration](#configuration)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +47,10 @@
 | Design | ✅ | Full design with DB schema, Go implementation, API endpoints |
 | Sources | 🟡 | Inspired by Emby Parental Controls |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: 🟡 MEDIUM (Emby has this)
 **Inspired By**: Emby Parental Controls
 **Location**: `internal/service/access/`
@@ -432,6 +469,17 @@ access_controls:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

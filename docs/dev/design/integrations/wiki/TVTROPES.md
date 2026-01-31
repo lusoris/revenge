@@ -2,6 +2,56 @@
 
 > Trope analysis and storytelling patterns
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Scraping Library](#go-scraping-library)
+- [Integration Approach](#integration-approach)
+  - [Web Scraping Strategy](#web-scraping-strategy)
+    - [Movie/TV Show Page Structure](#movietv-show-page-structure)
+    - [Trope Page Structure](#trope-page-structure)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Web Scraping (Low Priority)](#phase-1-web-scraping-low-priority)
+  - [Phase 2: Content Parsing](#phase-2-content-parsing)
+  - [Phase 3: Background Jobs (River) - Low Priority](#phase-3-background-jobs-river---low-priority)
+- [Integration Pattern](#integration-pattern)
+  - [Trope Scraping Flow](#trope-scraping-flow)
+  - [URL Mapping](#url-mapping)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [No Official API (Web Scraping)](#no-official-api-web-scraping)
+  - [User-Agent Requirement](#user-agent-requirement)
+  - [Rate Limits (Conservative)](#rate-limits-conservative)
+  - [Content Licensing](#content-licensing)
+  - [URL Normalization](#url-normalization)
+  - [HTML Parsing Challenges](#html-parsing-challenges)
+  - [JSONB Storage](#jsonb-storage)
+  - [Caching Strategy](#caching-strategy)
+  - [Use Case: Niche Audience](#use-case-niche-audience)
+  - [Trope Display UI](#trope-display-ui)
+  - [Scraping Ethics](#scraping-ethics)
+  - [robots.txt Compliance](#robotstxt-compliance)
+  - [Maintenance Burden](#maintenance-burden)
+  - [Fallback Strategy](#fallback-strategy)
+
+<!-- TOC-END -->
+
 **Service**: TVTropes (https://tvtropes.org)
 **API**: None (web scraping required)
 **Category**: Wiki / Trope Analysis
@@ -10,15 +60,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive HTML structures, URL mapping, JSONB storage |
 | Sources | ✅ | Developer resources with scraping strategy |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -206,7 +255,9 @@ TVTropes scraping: 1 req/sec (very conservative)
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
 | [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -242,7 +293,7 @@ TVTropes scraping: 1 req/sec (very conservative)
 
 - [WIKIPEDIA.md](./WIKIPEDIA.md) - General encyclopedia
 - [FANDOM.md](./FANDOM.md) - Fan wikis
-- [INTERNAL_WIKI.md](../../features/INTERNAL_WIKI.md) - Built-in wiki system
+- [Wiki System](../../features/shared/WIKI_SYSTEM.md) - Built-in wiki system
 
 ---
 

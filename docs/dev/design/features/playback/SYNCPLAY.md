@@ -2,18 +2,50 @@
 
 > Synchronized playback for multiple users watching together
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Features](#features)
+  - [Core Functionality](#core-functionality)
+  - [Session Types](#session-types)
+- [Architecture](#architecture)
+- [Go Packages](#go-packages)
+- [Database Schema](#database-schema)
+- [WebSocket Protocol](#websocket-protocol)
+  - [Client → Server Messages](#client-server-messages)
+  - [Server → Client Messages](#server-client-messages)
+- [Latency Compensation](#latency-compensation)
+- [Go Service Implementation](#go-service-implementation)
+- [API Endpoints](#api-endpoints)
+- [RBAC Permissions](#rbac-permissions)
+- [Configuration](#configuration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟢 HIGH (Critical Gap - Jellyfin has this)
 **Inspired By**: Jellyfin SyncPlay
 **Location**: `internal/feature/syncplay/`

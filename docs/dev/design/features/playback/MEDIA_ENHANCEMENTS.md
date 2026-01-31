@@ -2,18 +2,42 @@
 
 > Advanced playback features: trailers, themes, intros, trickplay, cinema mode, and live TV.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Feature Overview](#feature-overview)
+- [Cinema Mode (Theatrical Experience)](#cinema-mode-theatrical-experience)
+  - [Overview](#overview)
+  - [Preroll System](#preroll-system)
+  - [Intermission System](#intermission-system)
+  - [Postroll / Up Next](#postroll-up-next)
+  - [Cinema Mode Configuration](#cinema-mode-configuration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Summary](#summary)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Location**: `internal/feature/enhancements/`
 
 ---
@@ -1342,6 +1366,20 @@ media_enhancements:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../../sources/protocols/m3u8.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

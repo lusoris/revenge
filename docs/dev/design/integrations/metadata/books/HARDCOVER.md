@@ -2,6 +2,45 @@
 
 > Social reading platform - Goodreads alternative with API
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base URL](#base-url)
+  - [Authentication](#authentication)
+  - [GraphQL Schema](#graphql-schema)
+    - [Search Books](#search-books)
+    - [Get Book by ID](#get-book-by-id)
+    - [Get Book by ISBN](#get-book-by-isbn)
+    - [Get User Reading List](#get-user-reading-list)
+    - [Add Book to User List](#add-book-to-user-list)
+- [Implementation Checklist](#implementation-checklist)
+  - [API Client (`internal/infra/metadata/provider_hardcover.go`)](#api-client-internalinframetadataprovider-hardcovergo)
+  - [Book Metadata (Fallback)](#book-metadata-fallback)
+  - [Social Features](#social-features)
+  - [Author Metadata](#author-metadata)
+  - [Series Handling](#series-handling)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Sync User Reading List](#sync-user-reading-list)
+  - [Add Book to Hardcover List](#add-book-to-hardcover-list)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: Hardcover
 **Type**: Social Reading + Metadata Provider (Books)
 **API Version**: GraphQL
@@ -11,15 +50,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive GraphQL API spec, sync patterns |
 | Sources | ✅ | Website, API docs, GraphQL playground linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -367,7 +405,6 @@ func (s *BookService) AddToHardcoverWantToRead(userID uuid.UUID, bookID uuid.UUI
 
 ## Related Documentation
 
-- **Book Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Book section)
 - **OpenLibrary Integration**: [OPENLIBRARY.md](OPENLIBRARY.md) (primary metadata)
 - **Goodreads Integration**: [GOODREADS.md](GOODREADS.md) (API retired)
 - **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)

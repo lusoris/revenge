@@ -1,10 +1,49 @@
 # Audiobook & Podcast Module
 
-← Back to [Integrations](../)
-
 > Native audiobook and podcast management
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Architecture Decision](#architecture-decision)
+- [Features](#features)
+  - [Library Management](#library-management)
+  - [Audiobook Features](#audiobook-features)
+  - [Podcast Features](#podcast-features)
+  - [Playback & Progress](#playback--progress)
+  - [Metadata Providers](#metadata-providers)
+  - [User Features](#user-features)
+- [Implementation Status](#implementation-status)
+- [Technical Details](#technical-details)
+  - [RSS Feed Parsing](#rss-feed-parsing)
+  - [Episode Downloads](#episode-downloads)
+  - [Chapter Extraction](#chapter-extraction)
+- [Sources & Cross-References](#sources--cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🟡 | Native implementation approach documented |
+| Sources | 🟡 | gofeed, Audnexus, Podcast Index sources available |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 
 ---
 
@@ -15,7 +54,7 @@ Revenge provides **native audiobook and podcast management** - all functionality
 - **Audiobook Library Management** - Multi-library support, file scanning, metadata
 - **Podcast Management** - RSS feed parsing, episode downloads, subscriptions
 - **Playback Features** - Progress tracking, bookmarks, sleep timer, chapters
-- **Metadata Providers** - Audible/Audnexus, OpenLibrary, Goodreads, etc.
+- **Metadata Providers** - Audible/Audnexus, OpenLibrary, Goodreads, Podcast Index
 - **Multi-user Support** - Per-user progress, preferences, permissions
 
 ---
@@ -76,13 +115,11 @@ Revenge provides **native audiobook and podcast management** - all functionality
 
 | Provider | Content | Status |
 | -------- | ------- | ------ |
-| Audnexus | Audiobook chapters, metadata | Planned |
-| Audible | Audiobook metadata, covers | Planned |
-| OpenLibrary | Book metadata | Planned |
-| Goodreads | Ratings, reviews | Planned |
-| Google Books | Book metadata | Planned |
-| iTunes Podcasts | Podcast search | Planned |
-| Podcast Index | Podcast search, chapters | Planned |
+| [Audnexus](../metadata/books/AUDIBLE.md) | Audiobook chapters, metadata, narrators | Planned |
+| [OpenLibrary](../metadata/books/OPENLIBRARY.md) | Book metadata | Planned |
+| [Goodreads](../metadata/books/GOODREADS.md) | Ratings, reviews | Planned |
+| [Hardcover](../metadata/books/HARDCOVER.md) | Book metadata, lists | Planned |
+| [Podcast Index](https://podcastindex.org) | Podcast search, chapters | Planned |
 
 ### User Features
 
@@ -98,15 +135,16 @@ Revenge provides **native audiobook and podcast management** - all functionality
 
 | Component | Status | Location |
 | --------- | ------ | -------- |
-| Audiobook Entity | ✅ Done | `internal/content/audiobook/entity.go` |
-| Audiobook Repository | ✅ Done | `internal/content/audiobook/repository.go` |
-| Audiobook Service | ✅ Done | `internal/content/audiobook/service.go` |
-| Audiobook Jobs | ✅ Done | `internal/content/audiobook/jobs.go` |
-| Podcast Entity | ✅ Done | `internal/content/podcast/entity.go` |
-| Podcast Repository | ✅ Done | `internal/content/podcast/repository.go` |
-| Podcast Service | ✅ Done | `internal/content/podcast/service.go` |
-| RSS Parser | 🟡 Stub | `internal/content/podcast/rss_parser.go` |
+| Audiobook Entity | 🔴 TODO | `internal/content/audiobook/entity.go` |
+| Audiobook Repository | 🔴 TODO | `internal/content/audiobook/repository.go` |
+| Audiobook Service | 🔴 TODO | `internal/content/audiobook/service.go` |
+| Audiobook Jobs | 🔴 TODO | `internal/content/audiobook/jobs.go` |
+| Podcast Entity | 🔴 TODO | `internal/content/podcast/entity.go` |
+| Podcast Repository | 🔴 TODO | `internal/content/podcast/repository.go` |
+| Podcast Service | 🔴 TODO | `internal/content/podcast/service.go` |
+| RSS Parser | 🔴 TODO | `internal/content/podcast/rss_parser.go` |
 | Audnexus Provider | 🔴 TODO | `internal/service/metadata/audnexus/` |
+| Podcast Index Provider | 🔴 TODO | `internal/service/metadata/podcastindex/` |
 | Sleep Timer | 🔴 TODO | Playback service |
 | Chapter Editor | 🔴 TODO | API + Frontend |
 
@@ -150,9 +188,56 @@ func (w *DownloadWorker) Work(ctx context.Context, job *river.Job[DownloadEpisod
 
 ---
 
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [gofeed RSS Parser](https://pkg.go.dev/github.com/mmcdole/gofeed) | [Local](../../../sources/tooling/gofeed.md) |
+| [gofeed Guide](../../../sources/tooling/gofeed-guide.md) | Usage patterns |
+| [River Background Jobs](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [fsnotify File Watcher](https://pkg.go.dev/github.com/fsnotify/fsnotify) | [Local](../../../sources/tooling/fsnotify.md) |
+| [go-astiav FFmpeg](https://github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
+| [dhowden/tag Audio Tags](https://pkg.go.dev/github.com/dhowden/tag) | [Local](../../../sources/media/dhowden-tag.md) |
+| [bogem/id3v2 ID3 Tags](https://pkg.go.dev/github.com/bogem/id3v2/v2) | [Local](../../../sources/media/bogem-id3v2.md) |
+| [Podcast Index API](https://podcastindex-org.github.io/docs-api/) | [Local](../../../sources/apis/podcastindex.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+<!-- DESIGN-BREADCRUMBS-START -->
+
+## Related Design Docs
+
+> Auto-generated cross-references to related design documentation
+
+**Category**: [Integrations](../INDEX.md) > Audiobook
+
+### Related Topics
+
+- [Audiobook Module Feature](../../features/audiobook/AUDIOBOOK_MODULE.md) _Features_
+- [Podcasts Feature](../../features/podcasts/PODCASTS.md) _Features_
+- [Audio Streaming](../../technical/AUDIO_STREAMING.md) _Technical_
+- [Scrobbling](../../features/shared/SCROBBLING.md) _Shared Features_
+
+### Indexes
+
+- [Design Index](../../DESIGN_INDEX.md) - All design docs by category/topic
+- [Source of Truth](../../00_SOURCE_OF_TRUTH.md) - Package versions and status
+
+<!-- DESIGN-BREADCRUMBS-END -->
+
 ## Related Documentation
 
 - [Book Metadata Providers](../metadata/books/INDEX.md)
 - [Audible/Audnexus](../metadata/books/AUDIBLE.md)
-- [Audio Streaming](../../technical/AUDIO_STREAMING.md)
-- [Scrobbling](../../features/shared/SCROBBLING.md)
+- [Chaptarr Integration](../servarr/CHAPTARR.md)

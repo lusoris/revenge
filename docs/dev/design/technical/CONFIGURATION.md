@@ -2,6 +2,52 @@
 
 > Complete configuration options for Revenge
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Configuration File](#configuration-file)
+- [Environment Variables](#environment-variables)
+- [Configuration Sections](#configuration-sections)
+  - [Server Configuration](#server-configuration)
+  - [Database Configuration](#database-configuration)
+  - [Cache Configuration](#cache-configuration)
+  - [Search Configuration](#search-configuration)
+  - [Auth Configuration](#auth-configuration)
+  - [Metadata Configuration](#metadata-configuration)
+  - [Modules Configuration](#modules-configuration)
+  - [Logging Configuration](#logging-configuration)
+- [Loading Order](#loading-order)
+- [fx Module](#fx-module)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 **Location**: `internal/config/config.go`
 
 ---
@@ -264,7 +310,15 @@ fx.New(
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
 | [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

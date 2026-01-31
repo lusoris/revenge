@@ -8,9 +8,11 @@
 
 ## Documents
 
-| Document | Description | Status |
-|----------|-------------|--------|
-| [Versioning Strategy](VERSIONING.md) | Auto-generated section linking to external documentation sou... | ✅ Designed |
+*Planning documents have been moved to [operations/](../operations/) for better organization.*
+
+| Document | New Location |
+|----------|--------------|
+| Versioning Strategy | [operations/VERSIONING.md](../operations/VERSIONING.md) |
 
 ---
 

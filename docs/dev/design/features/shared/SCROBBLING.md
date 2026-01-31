@@ -2,6 +2,57 @@
 
 > Sync playback data to external services like Trakt, Last.fm, ListenBrainz, etc.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Trakt Integration](#trakt-integration)
+  - [OAuth Setup](#oauth-setup)
+  - [Scrobble Actions](#scrobble-actions)
+  - [Sync History](#sync-history)
+- [Last.fm Integration](#lastfm-integration)
+  - [Scrobbling](#scrobbling)
+  - [Last.fm Rules](#lastfm-rules)
+- [ListenBrainz Integration](#listenbrainz-integration)
+- [Scrobble Service](#scrobble-service)
+  - [Job Definitions](#job-definitions)
+  - [Scrobble Workers](#scrobble-workers)
+  - [Scrobble Trigger Service](#scrobble-trigger-service)
+- [User Service Connections](#user-service-connections)
+  - [Database Schema](#database-schema)
+  - [Connection Management](#connection-management)
+- [History Sync](#history-sync)
+  - [Import from External Services](#import-from-external-services)
+  - [Export to External Services](#export-to-external-services)
+- [Configuration](#configuration)
+- [API Endpoints](#api-endpoints)
+- [Summary](#summary)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: OAuth & Authentication Clients](#phase-3-oauth-authentication-clients)
+  - [Phase 4: Scrobble Service Layer](#phase-4-scrobble-service-layer)
+  - [Phase 5: External Service Clients - Scrobbling](#phase-5-external-service-clients---scrobbling)
+  - [Phase 6: Background Jobs - Scrobbling](#phase-6-background-jobs---scrobbling)
+  - [Phase 7: History Sync](#phase-7-history-sync)
+  - [Phase 8: Connection Management Service](#phase-8-connection-management-service)
+  - [Phase 9: API Integration](#phase-9-api-integration)
+  - [Phase 10: Progress Integration](#phase-10-progress-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +60,10 @@
 | Design | ✅ | Full design with Trakt, Last.fm, ListenBrainz integrations |
 | Sources | ✅ | OAuth flows, API clients, River jobs documented |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -1086,6 +1136,17 @@ paths:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

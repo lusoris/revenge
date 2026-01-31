@@ -2,18 +2,45 @@
 
 > External transcoding service for Revenge
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [API Details](#api-details)
+  - [gRPC API (Primary)](#grpc-api-primary)
+  - [REST API (Alternative)](#rest-api-alternative)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Transcode Decision Flow](#transcode-decision-flow)
+- [Error Handling](#error-handling)
+- [Monitoring](#monitoring)
+  - [Metrics to Expose](#metrics-to-expose)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive gRPC/REST API spec, protobuf definitions, architecture diagram |
 | Sources | ✅ | Internal service, proto definitions documented |
 | Instructions | ✅ | Detailed implementation checklist with session management |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -425,6 +452,19 @@ var (
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../../sources/protocols/m3u8.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../../sources/observability/prometheus-metrics.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

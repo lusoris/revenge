@@ -820,8 +820,8 @@ sources:
     name: golang.org/x/text
     url: https://pkg.go.dev/golang.org/x/text
     output: go/x/text.md
-    status: unchanged
-    fetched_at: '2026-01-30T23:33:24.227057+00:00'
+    status: success
+    fetched_at: '2026-01-31T01:02:16.818909+00:00'
     error: null
     content_hash: e432f48b26db5fc6
   golang-x-exp:
@@ -1679,9 +1679,9 @@ sources:
     fetched_at: '2026-01-30T23:56:40.208639+00:00'
     error: null
     content_hash: 4fe04c6f20bf2960
-last_updated: '2026-01-30T23:56:50.968480+00:00'
-total_sources: 210
-successful: 172
-failed: 20
-skipped: 5
-unchanged: 13
+last_updated: '2026-01-31T01:02:21.141418+00:00'
+total_sources: 6
+successful: 1
+failed: 5
+skipped: 0
+unchanged: 0

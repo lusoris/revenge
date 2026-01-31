@@ -2,18 +2,44 @@
 
 > Curated high-quality posters for movies and TV shows
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Integration Options](#integration-options)
+  - [Option 1: Community API (Recommended)](#option-1-community-api-recommended)
+  - [Option 2: Web Scraping (Fallback)](#option-2-web-scraping-fallback)
+- [Implementation Checklist](#implementation-checklist)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Go Client Example (Community API)](#go-client-example-community-api)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Poster Sets & Collections](#poster-sets-collections)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive integration options, scraping constraints, poster sets |
 | Sources | ✅ | Website, community API, robots.txt linked |
 | Instructions | ✅ | Detailed implementation checklist with fallback strategy |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -186,7 +212,11 @@ func (c *PosterDBClient) DownloadPoster(ctx context.Context, posterURL string) (
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
 | [ThePosterDB API](https://theposterdb.com/api) | [Local](../../../../sources/apis/theposterdb.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -221,8 +251,8 @@ func (c *PosterDBClient) DownloadPoster(ctx context.Context, posterURL string) (
 
 ## Related Documentation
 
-- [Movie Module](../../architecture/modules/MOVIE.md)
-- [TV Show Module](../../architecture/modules/TVSHOW.md)
+- [Movie Module](../../features/video/MOVIE_MODULE.md)
+- [TV Show Module](../../features/video/TVSHOW_MODULE.md)
 - [TMDb Integration](TMDB.md) - Default poster source
 - [Media Enhancements](../../features/MEDIA_ENHANCEMENTS.md)
 

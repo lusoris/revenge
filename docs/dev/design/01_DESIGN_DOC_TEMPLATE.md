@@ -144,6 +144,19 @@ How to upgrade from current state (if applicable).
 - [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../sources/database/sqlc-config.md) |
+| [testcontainers-go](https://golang.testcontainers.org/) | [Local](../sources/testing/testcontainers.md) |
+
 <!-- SOURCE-BREADCRUMBS-END -->
 
 ## Related Documents

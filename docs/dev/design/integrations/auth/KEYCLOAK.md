@@ -2,18 +2,51 @@
 
 > Enterprise identity and access management solution
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [OIDC Details](#oidc-details)
+  - [Supported Scopes](#supported-scopes)
+  - [Keycloak Configuration](#keycloak-configuration)
+- [Data Mapping](#data-mapping)
+  - [Keycloak Claims → Revenge User](#keycloak-claims-revenge-user)
+  - [Role Mapping Strategies](#role-mapping-strategies)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Advanced Features](#advanced-features)
+  - [Fine-Grained Authorization](#fine-grained-authorization)
+  - [User Federation (LDAP)](#user-federation-ldap)
+  - [Social Identity Providers](#social-identity-providers)
+- [Database Schema](#database-schema)
+- [Keycloak vs Others](#keycloak-vs-others)
+- [Troubleshooting](#troubleshooting)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟢 LOW (Phase 1 - Core Infrastructure)
 **Type**: OIDC Identity Provider
 
@@ -298,6 +331,8 @@ Uses shared OIDC tables from [Authelia Integration](AUTHELIA.md#database-schema)
 
 | Source | Documentation |
 |--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../../sources/security/authentik.md) |
 | [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../../sources/security/keycloak.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

@@ -2,18 +2,60 @@
 
 > Adult content platform with performer pages and scene metadata
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Status](#api-status)
+  - [Authentication (Web Scraping)](#authentication-web-scraping)
+  - [Data Coverage](#data-coverage)
+  - [Go Scraping Library](#go-scraping-library)
+- [Integration Approach](#integration-approach)
+  - [Web Scraping Strategy](#web-scraping-strategy)
+    - [Performer Page Structure](#performer-page-structure)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Web Scraping (Adult Content - c schema)](#phase-1-web-scraping-adult-content---c-schema)
+  - [Phase 2: Link Enrichment](#phase-2-link-enrichment)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Performer Profile URL Enrichment Flow](#performer-profile-url-enrichment-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [Official API (Restricted)](#official-api-restricted)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [Age Verification Cookie](#age-verification-cookie)
+  - [Verified Performers](#verified-performers)
+  - [Social Links Extraction](#social-links-extraction)
+  - [JSONB Storage (c schema)](#jsonb-storage-c-schema)
+  - [Priority: LOW](#priority-low)
+  - [Rate Limiting & Blocking](#rate-limiting-blocking)
+  - [Caching Strategy](#caching-strategy)
+  - [Fallback Strategy (Adult Performer External Links)](#fallback-strategy-adult-performer-external-links)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Web scraping spec, HTML structure, JSONB schema |
 | Sources | ✅ | Partner API noted, goquery library documented |
 | Instructions | ✅ | Phased implementation checklist with c schema isolation |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -182,6 +224,7 @@ Display in UI:
 | Source | Documentation |
 |--------|---------------|
 | [Go io](https://pkg.go.dev/io) | [Local](../../../../sources/go/stdlib/io.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

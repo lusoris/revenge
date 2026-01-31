@@ -2,6 +2,47 @@
 
 > Voice assistant integration (Alexa, Google Assistant)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Supported Platforms](#supported-platforms)
+- [Features](#features)
+  - [Playback Control](#playback-control)
+  - [Content Navigation](#content-navigation)
+  - [Information](#information)
+- [Architecture](#architecture)
+- [Alexa Skill](#alexa-skill)
+  - [Skill Definition](#skill-definition)
+  - [Lambda Handler (Go)](#lambda-handler-go)
+- [Google Assistant](#google-assistant)
+  - [Actions Definition](#actions-definition)
+- [Database Schema](#database-schema)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [Account Linking](#account-linking)
+  - [Alexa Account Linking Flow](#alexa-account-linking-flow)
+- [RBAC Permissions](#rbac-permissions)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: OAuth & Account Linking](#phase-4-oauth-account-linking)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +50,10 @@
 | Design | ✅ | Full design with Alexa/Google intents, Lambda handler, DB schema |
 | Sources | 🟡 | Inspired by Emby Voice Control |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Last Updated**: 2026-01-30
 **Location**: `internal/voice/`
 **Priority**: 🔵 LOW (Nice to have - Emby has this)
@@ -473,6 +513,18 @@ voice_control:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

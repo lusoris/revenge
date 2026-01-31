@@ -2,18 +2,54 @@
 
 > Music management automation
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Endpoints](#key-endpoints)
+- [Webhook Events](#webhook-events)
+  - [On Import (Album Downloaded & Imported)](#on-import-album-downloaded-imported)
+  - [On Album Added (New Album Tracked)](#on-album-added-new-album-tracked)
+  - [On Track File Delete](#on-track-file-delete)
+  - [On Artist Delete](#on-artist-delete)
+  - [On Rename](#on-rename)
+  - [On Health Issue](#on-health-issue)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Go Client Example](#go-client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Quality Profile Mapping](#quality-profile-mapping)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 HIGH (Phase 4 - Music Module)
 **Type**: Webhook listener + API client for metadata sync
 
@@ -234,8 +270,15 @@ func (c *LidarrClient) GetAlbumsByArtist(ctx context.Context, artistID int) ([]A
 
 | Source | Documentation |
 |--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
 | [Lidarr API Docs](https://lidarr.audio/docs/api/) | [Local](../../../sources/apis/lidarr-docs.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
 | [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -273,11 +316,11 @@ func (c *LidarrClient) GetAlbumsByArtist(ctx context.Context, artistID int) ([]A
 
 - [Radarr Integration](RADARR.md) - Similar workflow for movies
 - [Sonarr Integration](SONARR.md) - Similar workflow for TV shows
-- [Music Module](../../architecture/modules/MUSIC.md)
+- [Music Module](../../features/music/MUSIC_MODULE.md)
 - [MusicBrainz Integration](../metadata/music/MUSICBRAINZ.md)
 - [Last.fm Integration](../metadata/music/LASTFM.md)
-- [Arr Integration Pattern](../../patterns/arr_integration.md)
-- [Webhook Handling](../../patterns/webhook_patterns.md)
+- [Arr Integration Pattern](../../patterns/ARR_INTEGRATION.md)
+- [Webhook Handling](../../patterns/WEBHOOK_PATTERNS.md)
 
 ---
 

@@ -2,18 +2,49 @@
 
 > Performer social media presence
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Access Challenges](#api-access-challenges)
+- [Configuration](#configuration)
+- [Data Model](#data-model)
+  - [Performer Social Link](#performer-social-link)
+- [Implementation](#implementation)
+  - [Manual Link Management](#manual-link-management)
+- [Database Schema](#database-schema)
+- [API Endpoints](#api-endpoints)
+  - [Add Instagram Link](#add-instagram-link)
+  - [Get Social Links](#get-social-links)
+- [Implementation Checklist](#implementation-checklist)
+- [Future Considerations](#future-considerations)
+- [Privacy Considerations](#privacy-considerations)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | API access challenges documented, manual link approach defined |
 | Sources | ✅ | Basic Display API, Graph API docs linked |
 | Instructions | ✅ | Implementation checklist with sqlc queries |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -275,6 +306,13 @@ func (c *InstagramClient) GetBusinessProfile(ctx context.Context, username strin
 
 - [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,21 +2,56 @@
 
 > Windows/Linux DVR software with IPTV support
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Authentication Flow](#authentication-flow)
+  - [Key Endpoints](#key-endpoints)
+  - [Example Requests](#example-requests)
+- [Data Mapping](#data-mapping)
+  - [Channel Mapping](#channel-mapping)
+  - [EPG Mapping](#epg-mapping)
+  - [Recording Mapping](#recording-mapping)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Session Management](#session-management)
+- [Stream Handling](#stream-handling)
+  - [HLS Stream](#hls-stream)
+  - [Recording Playback](#recording-playback)
+- [Error Handling](#error-handling)
+- [NextPVR vs TVHeadend](#nextpvr-vs-tvheadend)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 6 - LiveTV Module)
 **Type**: REST API client
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive API endpoints, data mapping, session management |
 | Sources | ✅ | Wiki, API reference, GitHub linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -308,7 +343,9 @@ func (p *NextPVRProvider) GetRecordingURL(recordingID string) string {
 
 | Source | Documentation |
 |--------|---------------|
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../../sources/protocols/m3u8.md) |
 | [NextPVR Documentation](https://github.com/sub3/NextPVR) | [Local](../../../sources/livetv/nextpvr.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

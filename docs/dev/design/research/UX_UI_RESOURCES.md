@@ -4,6 +4,59 @@
 >
 > These authoritative sources inform frontend instruction files, component design, and user experience patterns for Revenge.
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [1. Accessibility Standards](#1-accessibility-standards)
+  - [W3C WCAG 2.2 (Web Content Accessibility Guidelines)](#w3c-wcag-22-web-content-accessibility-guidelines)
+  - [ISO 9241-11:2018 (Ergonomics of Human-System Interaction)](#iso-9241-112018-ergonomics-of-human-system-interaction)
+- [2. Usability Heuristics & Laws](#2-usability-heuristics-laws)
+  - [Nielsen Norman Group - 10 Usability Heuristics](#nielsen-norman-group---10-usability-heuristics)
+  - [Laws of UX](#laws-of-ux)
+- [3. Design Systems & Component Libraries](#3-design-systems-component-libraries)
+  - [Google Material Design 3 (M3 Expressive)](#google-material-design-3-m3-expressive)
+  - [Apple Human Interface Guidelines (HIG)](#apple-human-interface-guidelines-hig)
+  - [Microsoft Fluent Design System (Fluent 2)](#microsoft-fluent-design-system-fluent-2)
+  - [Atlassian Design System](#atlassian-design-system)
+  - [IBM Carbon Design System](#ibm-carbon-design-system)
+- [4. Government & Institutional Standards](#4-government-institutional-standards)
+  - [UK Government Design Principles (GDS)](#uk-government-design-principles-gds)
+- [5. UX Research & Best Practices](#5-ux-research-best-practices)
+  - [Interaction Design Foundation (IDF)](#interaction-design-foundation-idf)
+  - [Baymard Institute (E-commerce UX Research)](#baymard-institute-e-commerce-ux-research)
+  - [Smashing Magazine (UX Design)](#smashing-magazine-ux-design)
+- [6. Web Standards & Patterns](#6-web-standards-patterns)
+  - [web.dev Patterns (Google)](#webdev-patterns-google)
+- [7. Summary: Application to Revenge](#7-summary-application-to-revenge)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [8. Quality Gates for Frontend Development](#8-quality-gates-for-frontend-development)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ---
 
 ## 1. Accessibility Standards
@@ -291,6 +344,15 @@
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,18 +2,53 @@
 
 > High-performance Redis-compatible cache
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Connection Details](#connection-details)
+- [Configuration](#configuration)
+- [Cache Usage Patterns](#cache-usage-patterns)
+  - [Session Storage](#session-storage)
+  - [API Response Caching](#api-response-caching)
+  - [Rate Limiting](#rate-limiting)
+  - [Pub/Sub for Real-time](#pubsub-for-real-time)
+  - [Distributed Locking](#distributed-locking)
+- [Key Naming Convention](#key-naming-convention)
+- [Implementation Checklist](#implementation-checklist)
+- [Docker Compose](#docker-compose)
+  - [Dragonfly vs Redis Configuration](#dragonfly-vs-redis-configuration)
+- [Health Checks](#health-checks)
+- [Monitoring](#monitoring)
+  - [Key Metrics](#key-metrics)
+  - [Dragonfly INFO](#dragonfly-info)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
 **Type**: In-memory cache/session store
 
@@ -408,6 +443,14 @@ redis-cli CLIENT LIST
 | Source | Documentation |
 |--------|---------------|
 | [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../../sources/observability/prometheus-metrics.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 | [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
 | [rueidis GitHub README](https://github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis-guide.md) |
 

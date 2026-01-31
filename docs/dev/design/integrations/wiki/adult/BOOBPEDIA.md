@@ -2,6 +2,64 @@
 
 > Adult performer encyclopedia with detailed profiles
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [MediaWiki API Endpoints](#mediawiki-api-endpoints)
+    - [Search for Performer](#search-for-performer)
+    - [Get Page Extract](#get-page-extract)
+    - [Get Full Page Content](#get-full-page-content)
+    - [Get Page Images](#get-page-images)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go HTTP Client](#go-http-client)
+- [API Details](#api-details)
+  - [Search Endpoint](#search-endpoint)
+  - [Page Extract Endpoint](#page-extract-endpoint)
+  - [Full Page Content Endpoint](#full-page-content-endpoint)
+  - [Images Endpoint](#images-endpoint)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: REST Client (Adult Content - c schema)](#phase-1-rest-client-adult-content---c-schema)
+  - [Phase 2: Content Enhancement](#phase-2-content-enhancement)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Performer Enrichment Flow](#performer-enrichment-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [MediaWiki API (Same as Wikipedia)](#mediawiki-api-same-as-wikipedia)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [User-Agent Requirement](#user-agent-requirement)
+  - [Rate Limits (Conservative)](#rate-limits-conservative)
+  - [Content Licensing](#content-licensing)
+  - [Boobpedia vs Wikipedia](#boobpedia-vs-wikipedia)
+  - [Boobpedia vs Babepedia](#boobpedia-vs-babepedia)
+  - [Extract vs Full Content](#extract-vs-full-content)
+  - [Infobox Parsing](#infobox-parsing)
+  - [Search Accuracy](#search-accuracy)
+  - [Image Quality](#image-quality)
+  - [JSONB Storage (c schema)](#jsonb-storage-c-schema)
+  - [Caching Strategy](#caching-strategy)
+  - [Use Case: Performer Enrichment](#use-case-performer-enrichment)
+  - [Content Quality](#content-quality)
+  - [Priority: LOW (Alternative Source)](#priority-low-alternative-source)
+  - [Fallback Strategy (Adult Performer Metadata)](#fallback-strategy-adult-performer-metadata)
+
+<!-- TOC-END -->
+
 **Service**: Boobpedia (https://www.boobpedia.com)
 **API**: MediaWiki Action API (same as Wikipedia)
 **Category**: Wiki / Encyclopedia (Adult Content)
@@ -10,15 +68,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive API endpoints, data mapping, JSONB storage |
 | Sources | ✅ | MediaWiki API documentation with examples |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -249,6 +306,13 @@ Boobpedia API: 10 req/sec (conservative, same as Wikipedia)
 
 - [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../../sources/infrastructure/dragonfly.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

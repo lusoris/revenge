@@ -2,18 +2,66 @@
 
 > Custom UI/UX approach for adult content scenes using Whisparr cache
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Executive Summary](#executive-summary)
+- [Whisparr v3 Context](#whisparr-v3-context)
+  - [Branch Information](#branch-information)
+  - [API Endpoints (Sonarr-based)](#api-endpoints-sonarr-based)
+  - [Key Differences from TV Shows](#key-differences-from-tv-shows)
+- [Whisparr Cache Structure](#whisparr-cache-structure)
+- [Revenge Schema Design](#revenge-schema-design)
+  - [PostgreSQL Schema: `qar` (Adult Content Isolation - Queen Anne's Revenge)](#postgresql-schema-qar-adult-content-isolation---queen-annes-revenge)
+- [UI/UX Approach (Custom Design)](#uiux-approach-custom-design)
+  - [No TV Show Paradigm](#no-tv-show-paradigm)
+  - [URL Structure](#url-structure)
+  - [NSFW Toggle Integration](#nsfw-toggle-integration)
+- [StashDB Integration](#stashdb-integration)
+  - [StashDB API](#stashdb-api)
+  - [Metadata Enrichment Flow](#metadata-enrichment-flow)
+  - [StashDB Schema Mapping](#stashdb-schema-mapping)
+- [Perceptual Hashing (Scene Identification)](#perceptual-hashing-scene-identification)
+  - [Hash Types](#hash-types)
+  - [Fingerprint Fetch Flow](#fingerprint-fetch-flow)
+  - [Fingerprint Matching](#fingerprint-matching)
+  - [pHash Generation](#phash-generation)
+- [Implementation Phases](#implementation-phases)
+  - [Phase 1: Whisparr Cache Analysis (Week 1)](#phase-1-whisparr-cache-analysis-week-1)
+  - [Phase 2: Revenge Schema Creation (Week 1)](#phase-2-revenge-schema-creation-week-1)
+  - [Phase 3: Whisparr Import Service (Week 2)](#phase-3-whisparr-import-service-week-2)
+  - [Phase 4: StashDB Enrichment (Week 2)](#phase-4-stashdb-enrichment-week-2)
+  - [Phase 5: API Endpoints (Week 3)](#phase-5-api-endpoints-week-3)
+  - [Phase 6: Frontend UI/UX (Week 4-5)](#phase-6-frontend-uiux-week-4-5)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Design Decisions (Resolved 2026-01-30)](#design-decisions-resolved-2026-01-30)
+  - [Sync Architecture](#sync-architecture)
+  - [Tag Mapping Strategy](#tag-mapping-strategy)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Last Updated**: 2026-01-28
 **Dependencies**: Whisparr v3 ("eros" branch), StashDB API, PostgreSQL schema `qar`
 
@@ -505,8 +553,20 @@ func (s *FingerprintService) generatePHash(filePath string) (string, error) {
 
 | Source | Documentation |
 |--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
 | [Whisparr OpenAPI Spec](https://raw.githubusercontent.com/Whisparr/Whisparr/develop/src/Whisparr.Api.V3/openapi.json) | [Local](../../../sources/apis/whisparr-openapi.json) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../../sources/frontend/shadcn-svelte.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

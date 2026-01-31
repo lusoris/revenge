@@ -2,6 +2,47 @@
 
 > Movie content management with metadata enrichment
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Files](#files)
+- [Entity: Movie](#entity-movie)
+- [Service Configuration](#service-configuration)
+- [Service Operations](#service-operations)
+  - [Get Movie](#get-movie)
+  - [List Movies](#list-movies)
+  - [Create/Update/Delete](#createupdatedelete)
+- [User Data](#user-data)
+  - [Favorites](#favorites)
+  - [Watch Progress](#watch-progress)
+  - [Ratings](#ratings)
+- [Metadata Flow](#metadata-flow)
+- [Background Jobs](#background-jobs)
+- [Database Schema](#database-schema)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: User Data](#phase-4-user-data)
+  - [Phase 5: Background Jobs](#phase-5-background-jobs)
+  - [Phase 6: API Integration](#phase-6-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +50,10 @@
 | Design | ✅ | Comprehensive spec with architecture, entities, operations |
 | Sources | ✅ | TMDb, Radarr API docs linked |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Location**: `internal/content/movie/`
 
 ---
@@ -357,7 +397,16 @@ CREATE TABLE movie.movies (
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
 | [Radarr API Docs](https://radarr.video/docs/api/) | [Local](../../../sources/apis/radarr-docs.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../sources/media/go-blurhash.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,6 +2,45 @@
 
 > Open music metadata database - primary metadata provider for music
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base URL](#base-url)
+  - [Authentication](#authentication)
+  - [Rate Limiting](#rate-limiting)
+  - [Key Endpoints](#key-endpoints)
+    - [Get Artist](#get-artist)
+    - [Get Release Group (Album)](#get-release-group-album)
+    - [Get Recording (Track)](#get-recording-track)
+    - [Search Artists](#search-artists)
+    - [Cover Art Archive](#cover-art-archive)
+- [Implementation Checklist](#implementation-checklist)
+  - [API Client (`internal/infra/metadata/provider_musicbrainz.go`)](#api-client-internalinframetadataprovider-musicbrainzgo)
+  - [Artist Metadata](#artist-metadata)
+  - [Album Metadata](#album-metadata)
+  - [Track Metadata](#track-metadata)
+  - [Cover Art Handling](#cover-art-handling)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Lidarr Webhook → MusicBrainz Metadata Sync](#lidarr-webhook-musicbrainz-metadata-sync)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: MusicBrainz
 **Type**: Metadata Provider (Music)
 **API Version**: v2 (REST JSON)
@@ -11,15 +50,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API endpoints, data mapping, Cover Art Archive |
 | Sources | ✅ | API docs, rate limiting, search syntax linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -245,7 +283,9 @@ func (s *MusicService) HandleLidarrAlbumAdded(albumID string) error {
 
 | Source | Documentation |
 |--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../../sources/apis/lastfm.md) |
 | [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API) | [Local](../../../../sources/apis/musicbrainz.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -280,7 +320,6 @@ func (s *MusicService) HandleLidarrAlbumAdded(albumID string) error {
 
 ## Related Documentation
 
-- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **Lidarr Integration**: [../servarr/LIDARR.md](../servarr/LIDARR.md)
 - **Last.fm Integration**: [LASTFM.md](LASTFM.md) (scrobbling + artist bio)
 - **Spotify Integration**: [SPOTIFY.md](SPOTIFY.md) (cover art fallback)

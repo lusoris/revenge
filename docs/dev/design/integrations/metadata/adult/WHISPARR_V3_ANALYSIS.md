@@ -2,6 +2,36 @@
 
 > Analysis of Whisparr v3 (eros) codebase for adult movie/scene schema structure (Whisparr models scenes as episodes under series)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Key Findings](#key-findings)
+  - [1. Metadata Providers](#1-metadata-providers)
+  - [2. Database Schema](#2-database-schema)
+  - [3. Important Differences from TV Shows](#3-important-differences-from-tv-shows)
+  - [4. Metadata Export (XBMC/Kodi/Emby)](#4-metadata-export-xbmckodiemby)
+  - [5. File Naming Tokens](#5-file-naming-tokens)
+  - [6. TPDb Import Lists](#6-tpdb-import-lists)
+  - [7. Stash Integration](#7-stash-integration)
+- [Schema Mapping for Revenge](#schema-mapping-for-revenge)
+  - [c.movies Table](#cmovies-table)
+  - [c.performers Table](#cperformers-table)
+  - [c.studios Table](#cstudios-table)
+  - [c.movie_performers (Junction Table)](#cmovie-performers-junction-table)
+- [Key Takeaways for Revenge](#key-takeaways-for-revenge)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Source**: https://github.com/Whisparr/Whisparr/tree/eros
 **API Docs**: https://github.com/Whisparr/Whisparr/tree/eros-api-docs
 **Purpose**: Understanding adult content metadata structure for Revenge integration
@@ -9,15 +39,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive schema analysis, data mapping, NFO format |
 | Sources | ✅ | GitHub source, API docs linked |
 | Instructions | 🟡 | Schema mapping provided, no implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Key Findings

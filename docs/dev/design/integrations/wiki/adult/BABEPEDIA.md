@@ -2,6 +2,55 @@
 
 > Adult performer wiki with biographies and filmographies
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Scraping Library](#go-scraping-library)
+- [Integration Approach](#integration-approach)
+  - [Web Scraping Strategy](#web-scraping-strategy)
+    - [Performer Page Structure](#performer-page-structure)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Web Scraping (Adult Content - c schema)](#phase-1-web-scraping-adult-content---c-schema)
+  - [Phase 2: Data Enrichment](#phase-2-data-enrichment)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Performer Enrichment Flow](#performer-enrichment-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [No Official API (Web Scraping)](#no-official-api-web-scraping)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [User-Agent Requirement](#user-agent-requirement)
+  - [Rate Limits (Conservative)](#rate-limits-conservative)
+  - [Content Licensing](#content-licensing)
+  - [URL Normalization](#url-normalization)
+  - [HTML Parsing Challenges](#html-parsing-challenges)
+  - [JSONB Storage (c schema)](#jsonb-storage-c-schema)
+  - [Caching Strategy](#caching-strategy)
+  - [Use Case: Performer Enrichment](#use-case-performer-enrichment)
+  - [Measurements Tracking](#measurements-tracking)
+  - [Career Timeline](#career-timeline)
+  - [Alias Resolution](#alias-resolution)
+  - [Scraping Ethics](#scraping-ethics)
+  - [Fallback Strategy (Adult Performer Metadata)](#fallback-strategy-adult-performer-metadata)
+
+<!-- TOC-END -->
+
 **Service**: Babepedia (https://www.babepedia.com)
 **API**: None (web scraping required)
 **Category**: Wiki / Knowledge Base (Adult Content)
@@ -10,15 +59,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive HTML structure, data mapping, JSONB storage |
 | Sources | ✅ | Developer resources with scraping strategy |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -201,7 +249,9 @@ Babepedia scraping: 1 req/sec (very conservative)
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../../sources/infrastructure/dragonfly.md) |
 | [Go io](https://pkg.go.dev/io) | [Local](../../../../sources/go/stdlib/io.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

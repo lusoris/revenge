@@ -2,6 +2,62 @@
 
 > Analysis of what users most complain about (and love) in Plex, Jellyfin, Emby
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Research Sources](#research-sources)
+- [Major Complaints (What Users Hate)](#major-complaints-what-users-hate)
+  - [1. **Library Scanning Performance**](#1-library-scanning-performance)
+  - [2. **Metadata Accuracy & Matching**](#2-metadata-accuracy-matching)
+  - [3. **Transcoding Quality & Performance**](#3-transcoding-quality-performance)
+  - [4. **Remote Access Complexity**](#4-remote-access-complexity)
+  - [5. **Mobile App Quality**](#5-mobile-app-quality)
+  - [6. **Subtitle Support**](#6-subtitle-support)
+  - [7. **Collections & Organization**](#7-collections-organization)
+  - [8. **Live TV & DVR**](#8-live-tv-dvr)
+  - [9. **User Management & Permissions**](#9-user-management-permissions)
+  - [10. **Resource Usage**](#10-resource-usage)
+- [What Users LOVE (Keep These)](#what-users-love-keep-these)
+  - [1. **Ease of Initial Setup** (Plex wins)](#1-ease-of-initial-setup-plex-wins)
+  - [2. **Automatic Metadata** (Plex/Jellyfin)](#2-automatic-metadata-plexjellyfin)
+  - [3. **Free & Open Source** (Jellyfin)](#3-free-open-source-jellyfin)
+  - [4. **Hardware Transcoding** (Plex Pass, Emby Plus)](#4-hardware-transcoding-plex-pass-emby-plus)
+  - [5. **Client Availability** (Plex)](#5-client-availability-plex)
+  - [6. **Watch Together** (Plex)](#6-watch-together-plex)
+  - [7. **Intro Skip** (Plex, Jellyfin with plugins)](#7-intro-skip-plex-jellyfin-with-plugins)
+- [Competitive Positioning](#competitive-positioning)
+- [Lessons for Revenge](#lessons-for-revenge)
+  - [DO:](#do)
+  - [DON'T:](#dont)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Next Steps](#next-steps)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Research Sources
 
 - **Reddit**: r/Plex, r/jellyfin, r/selfhosted
@@ -272,6 +328,23 @@
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../sources/security/authentik.md) |
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../sources/security/keycloak.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

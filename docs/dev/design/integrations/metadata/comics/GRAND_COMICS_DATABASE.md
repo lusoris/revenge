@@ -2,21 +2,55 @@
 
 > Open-source historical comics database (Golden/Silver Age focus)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [Data Access](#data-access)
+  - [Key Features](#key-features)
+  - [Data Structure (Simplified)](#data-structure-simplified)
+- [Integration Approaches](#integration-approaches)
+  - [Approach 1: Database Import (Recommended for Historical Comics)](#approach-1-database-import-recommended-for-historical-comics)
+  - [Approach 2: Web Scraping (NOT Recommended)](#approach-2-web-scraping-not-recommended)
+  - [Approach 3: Community Tools (Optional)](#approach-3-community-tools-optional)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Database Import](#phase-1-database-import)
+  - [Phase 2: Metadata Service](#phase-2-metadata-service)
+  - [Phase 3: Cover Images](#phase-3-cover-images)
+  - [Phase 4: Sync & Maintenance](#phase-4-sync-maintenance)
+- [Integration Pattern](#integration-pattern)
+  - [Historical Comics Fallback Flow](#historical-comics-fallback-flow)
+  - [Golden Age Comics Example](#golden-age-comics-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 7 - Comics Module, historical fallback)
 **Provider**: Grand Comics Database Project
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive database import strategy, SQL examples |
 | Sources | ✅ | Website, database dumps, data license linked |
 | Instructions | ✅ | Phased implementation checklist with import strategy |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -265,6 +299,14 @@ ORDER BY st.sequence_number;
 
 - [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

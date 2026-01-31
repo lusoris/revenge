@@ -2,6 +2,38 @@
 
 > API key generation, validation, and management
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Developer Resources](#developer-resources)
+- [Status](#status)
+- [Overview](#overview)
+- [Operations](#operations)
+  - [Create API Key](#create-api-key)
+  - [Validate API Key](#validate-api-key)
+  - [Retrieve Keys](#retrieve-keys)
+  - [Delete Keys](#delete-keys)
+- [Key Security](#key-security)
+- [Scopes](#scopes)
+- [Errors](#errors)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: API Integration](#phase-4-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documents](#related-documents)
+
+<!-- TOC-END -->
+
 **Module**: `internal/service/apikeys`
 
 ## Developer Resources
@@ -17,16 +49,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -173,6 +204,19 @@ Common scopes:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

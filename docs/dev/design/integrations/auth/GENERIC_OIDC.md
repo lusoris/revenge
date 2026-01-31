@@ -2,18 +2,55 @@
 
 > Support for any OpenID Connect compatible provider
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [OIDC Requirements](#oidc-requirements)
+  - [Required Claims](#required-claims)
+- [Configuration](#configuration)
+  - [Basic Configuration](#basic-configuration)
+  - [Advanced Configuration](#advanced-configuration)
+- [Implementation Checklist](#implementation-checklist)
+- [Claim Path Syntax](#claim-path-syntax)
+- [Provider-Specific Examples](#provider-specific-examples)
+  - [Auth0](#auth0)
+  - [Azure AD](#azure-ad)
+  - [Google](#google)
+  - [Okta](#okta)
+  - [AWS Cognito](#aws-cognito)
+  - [Dex](#dex)
+  - [Zitadel](#zitadel)
+- [Database Schema](#database-schema)
+- [Error Handling](#error-handling)
+- [Testing Configuration](#testing-configuration)
+- [Security Best Practices](#security-best-practices)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
 **Type**: OIDC Identity Provider
 
@@ -371,6 +408,9 @@ echo $TOKEN | cut -d. -f2 | base64 -d | jq
 
 | Source | Documentation |
 |--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../../sources/security/authentik.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../../sources/security/keycloak.md) |
 | [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html) | [Local](../../../sources/security/oidc-core.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

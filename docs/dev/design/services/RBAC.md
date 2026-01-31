@@ -2,6 +2,37 @@
 
 > Role-based access control with Casbin
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Developer Resources](#developer-resources)
+- [Status](#status)
+- [Overview](#overview)
+- [Model](#model)
+- [Operations](#operations)
+  - [Check Permission](#check-permission)
+  - [Role Management](#role-management)
+  - [Policy Management](#policy-management)
+- [Default Roles](#default-roles)
+- [Resource Types](#resource-types)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Casbin Setup](#phase-2-casbin-setup)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Middleware](#phase-4-middleware)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documents](#related-documents)
+
+<!-- TOC-END -->
+
 **Module**: `internal/service/rbac`
 
 ## Developer Resources
@@ -11,16 +42,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -157,6 +187,16 @@ func (s *Service) GetPoliciesForSubject(ctx context.Context, sub string) ([][]st
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../sources/security/casbin.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

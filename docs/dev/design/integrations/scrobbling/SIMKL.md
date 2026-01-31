@@ -2,6 +2,60 @@
 
 > TV tracker and movie scrobbler (alternative to Trakt)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [OAuth 2.0 Flow](#oauth-20-flow)
+  - [Required Headers](#required-headers)
+- [API Endpoints](#api-endpoints)
+  - [Check-in (Mark as Watching)](#check-in-mark-as-watching)
+  - [Scrobble (Mark as Watched)](#scrobble-mark-as-watched)
+  - [Get Watch History](#get-watch-history)
+  - [Add Rating](#add-rating)
+  - [Get Ratings](#get-ratings)
+  - [Add to Watchlist](#add-to-watchlist)
+  - [Get Watchlist](#get-watchlist)
+  - [Get User Statistics](#get-user-statistics)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Integration Pattern](#integration-pattern)
+  - [Real-time Scrobbling Flow](#real-time-scrobbling-flow)
+  - [Watch History Sync Flow](#watch-history-sync-flow)
+  - [Rating Sync Flow](#rating-sync-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [OAuth 2.0 Token Management](#oauth-20-token-management)
+  - [Rate Limits](#rate-limits)
+  - [Scrobbling Threshold](#scrobbling-threshold)
+  - [Rating Normalization](#rating-normalization)
+  - [Watch History Deduplication](#watch-history-deduplication)
+  - [ID Mapping](#id-mapping)
+  - [Bi-directional Sync Strategy](#bi-directional-sync-strategy)
+  - [TV Shows Scrobbling](#tv-shows-scrobbling)
+  - [Anime Support](#anime-support)
+  - [Error Handling](#error-handling)
+  - [Privacy Considerations](#privacy-considerations)
+  - [Simkl vs Trakt](#simkl-vs-trakt)
+  - [Fallback Strategy (Social Tracking)](#fallback-strategy-social-tracking)
+
+<!-- TOC-END -->
+
 **Service**: Simkl (https://simkl.com)
 **API**: REST API with OAuth 2.0
 **Category**: Scrobbling / Social
@@ -9,16 +63,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -343,6 +396,8 @@ Simkl rating synced
 
 | Source | Documentation |
 |--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Simkl API](https://simkl.docs.apiary.io/) | [Local](../../../sources/apis/simkl.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

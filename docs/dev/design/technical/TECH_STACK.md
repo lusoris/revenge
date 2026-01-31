@@ -1,5 +1,85 @@
 # Revenge - Technology Stack
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [🚀 Modern Go Setup (2025)](#modern-go-setup-2025)
+  - [Core Language](#core-language)
+  - [Standard Library First](#standard-library-first)
+  - [Dependencies (Carefully Selected)](#dependencies-carefully-selected)
+    - [Configuration](#configuration)
+    - [Logging](#logging)
+    - [Dependency Injection](#dependency-injection)
+    - [Database](#database)
+    - [Cache & Search](#cache-search)
+    - [Job Queue](#job-queue)
+    - [API Documentation](#api-documentation)
+  - [Removed/Replaced](#removedreplaced)
+- [📦 Dependency Philosophy](#dependency-philosophy)
+- [🎯 Modern Go Features Used](#modern-go-features-used)
+  - [Go 1.25 Features (NEW)](#go-125-features-new)
+  - [Go 1.22+ Features](#go-122-features)
+  - [Go 1.21+ Features](#go-121-features)
+  - [Modern Patterns](#modern-patterns)
+- [🔄 Technology Stack Summary](#technology-stack-summary)
+- [🎨 Frontend Stack](#frontend-stack)
+  - [Core Framework](#core-framework)
+  - [UI Framework](#ui-framework)
+  - [State Management](#state-management)
+  - [Features](#features)
+  - [Frontend Structure](#frontend-structure)
+  - [Admin Features](#admin-features)
+- [📱 Client Profiles (Blackbeard)](#client-profiles-blackbeard)
+  - [Device Groups](#device-groups)
+  - [Profile Definition](#profile-definition)
+  - [Profile Selection Flow](#profile-selection-flow)
+  - [Bandwidth-Based Override](#bandwidth-based-override)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [🖥️ Deployment & Platform Support](#deployment-platform-support)
+  - [Primary Target](#primary-target)
+  - [Supported Platforms](#supported-platforms)
+  - [Deployment Options](#deployment-options)
+    - [1. Docker Compose (Recommended)](#1-docker-compose-recommended)
+    - [2. Native Binary](#2-native-binary)
+    - [3. Container Orchestration](#3-container-orchestration)
+  - [Hardware Transcoding (Blackbeard)](#hardware-transcoding-blackbeard)
+  - [Minimum Requirements](#minimum-requirements)
+  - [Environment Variables](#environment-variables)
+- [⚡ Performance Improvements](#performance-improvements)
+- [🛡️ Security Updates](#security-updates)
+- [📝 Code Style](#code-style)
+  - [Modern Go Code](#modern-go-code)
+  - [Deprecated Patterns](#deprecated-patterns)
+- [🔧 Development Tools](#development-tools)
+- [📚 Resources](#resources)
+- [✅ Checklist](#checklist)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## 🚀 Modern Go Setup (2025)
 
 ### Core Language
@@ -280,11 +360,28 @@ type TranscodeProfile struct {
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
 | [Go log/slog](https://pkg.go.dev/log/slog) | [Local](../../sources/go/stdlib/slog.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
 | [River Documentation](https://riverqueue.com/docs) | [Local](../../sources/tooling/river-guide.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
+| [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) | [Local](../../sources/frontend/tanstack-query.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
 | [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
 | [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
 | [ogen Documentation](https://ogen.dev/docs/intro) | [Local](../../sources/tooling/ogen-guide.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

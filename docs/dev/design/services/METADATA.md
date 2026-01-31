@@ -2,21 +2,62 @@
 
 > External metadata providers for media enrichment
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Provider Inventory](#provider-inventory)
+  - [Video Providers](#video-providers)
+  - [Music Providers](#music-providers)
+  - [Book Providers](#book-providers)
+  - [Comics Providers](#comics-providers)
+  - [QAR Providers (Adult)](#qar-providers-adult)
+  - [Arr Services (Primary)](#arr-services-primary)
+- [Provider Architecture](#provider-architecture)
+- [Provider Interface](#provider-interface)
+- [TMDb Provider](#tmdb-provider)
+  - [Rate Limits](#rate-limits)
+- [Radarr Provider](#radarr-provider)
+  - [Priority](#priority)
+- [StashDB Provider (QAR)](#stashdb-provider-qar)
+  - [GraphQL Client](#graphql-client)
+- [Configuration](#configuration)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Video Providers](#phase-2-video-providers)
+  - [Phase 3: Audio Providers](#phase-3-audio-providers)
+  - [Phase 4: QAR Providers](#phase-4-qar-providers)
+  - [Phase 5: Book Providers](#phase-5-book-providers)
+  - [Phase 6: Service Layer](#phase-6-service-layer)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 **Module**: `internal/service/metadata/`
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md#metadata-providers)
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Developer Resources
@@ -306,6 +347,14 @@ arr:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../sources/apis/lastfm.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

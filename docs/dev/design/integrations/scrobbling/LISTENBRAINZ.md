@@ -2,6 +2,57 @@
 
 > Open-source music listening history tracking (MusicBrainz project)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [User Token Setup](#user-token-setup)
+  - [Required Headers](#required-headers)
+- [API Endpoints](#api-endpoints)
+  - [Submit Listens (Scrobble)](#submit-listens-scrobble)
+  - [Get Listens (Recent Tracks)](#get-listens-recent-tracks)
+  - [Get Playing Now](#get-playing-now)
+  - [Get Statistics](#get-statistics)
+  - [Delete Listen](#delete-listen)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Integration Pattern](#integration-pattern)
+  - [Real-time Scrobbling Flow](#real-time-scrobbling-flow)
+  - [Listening History Sync Flow](#listening-history-sync-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [Authentication (Simple Token)](#authentication-simple-token)
+  - [Rate Limits](#rate-limits)
+  - [Listen Types](#listen-types)
+  - [MusicBrainz ID Integration](#musicbrainz-id-integration)
+  - [Scrobbling Rules (Same as Last.fm)](#scrobbling-rules-same-as-lastfm)
+  - [Batch Import](#batch-import)
+  - [Pagination (Fetch History)](#pagination-fetch-history)
+  - [Deduplication Strategy](#deduplication-strategy)
+  - [Statistics (Top Artists/Releases/Recordings)](#statistics-top-artistsreleasesrecordings)
+  - [Delete Listens](#delete-listens)
+  - [Privacy & Open Data](#privacy-open-data)
+  - [ListenBrainz vs Last.fm](#listenbrainz-vs-lastfm)
+  - [Error Handling](#error-handling)
+  - [Fallback Strategy (Music Scrobbling)](#fallback-strategy-music-scrobbling)
+
+<!-- TOC-END -->
+
 **Service**: ListenBrainz (https://listenbrainz.org)
 **API**: REST API with user token authentication
 **Category**: Scrobbling / Music
@@ -9,16 +60,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -291,6 +341,13 @@ Ongoing sync:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,6 +2,78 @@
 
 > Role-Based Access Control using Casbin for dynamic permission management.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Architecture](#architecture)
+  - [Components](#components)
+  - [Data Flow](#data-flow)
+- [Database Schema](#database-schema)
+  - [roles Table](#roles-table)
+  - [System Roles (Cannot Be Deleted)](#system-roles-cannot-be-deleted)
+  - [casbin_rules Table (Managed by Casbin)](#casbin-rules-table-managed-by-casbin)
+  - [permission_definitions Table](#permission-definitions-table)
+- [Permission Categories](#permission-categories)
+- [Available Permissions](#available-permissions)
+  - [System Permissions](#system-permissions)
+  - [User Permissions](#user-permissions)
+  - [Library Permissions](#library-permissions)
+  - [Content Permissions](#content-permissions)
+  - [Playback Permissions](#playback-permissions)
+  - [Social Permissions](#social-permissions)
+  - [Request Permissions](#request-permissions)
+  - [Adult Request Permissions (Schema `c`)](#adult-request-permissions-schema-c)
+  - [Adult Permissions](#adult-permissions)
+- [Usage](#usage)
+  - [Checking Permissions in Handlers](#checking-permissions-in-handlers)
+  - [Using Middleware](#using-middleware)
+  - [Managing Roles via API](#managing-roles-via-api)
+- [Casbin Model](#casbin-model)
+- [Performance](#performance)
+- [Migration from Static RBAC](#migration-from-static-rbac)
+- [Dependencies](#dependencies)
+- [Metadata Auditing](#metadata-auditing)
+  - [Design Principles](#design-principles)
+  - [Audit Log Schema](#audit-log-schema)
+  - [Async Write Pattern](#async-write-pattern)
+  - [Retention & Cleanup](#retention-cleanup)
+  - [Configuration](#configuration)
+  - [Audited Actions](#audited-actions)
+  - [Metadata Locking](#metadata-locking)
+  - [Viewing Edit History](#viewing-edit-history)
+  - [Rollback Support](#rollback-support)
+- [Resource-Level Permissions (Polymorphic)](#resource-level-permissions-polymorphic)
+  - [Two Permission Types](#two-permission-types)
+  - [Polymorphic Resource Grants](#polymorphic-resource-grants)
+  - [Why Polymorphic?](#why-polymorphic)
+  - [Resource Types](#resource-types)
+  - [Grant Types](#grant-types)
+  - [Usage](#usage)
+  - [Cleanup on Delete](#cleanup-on-delete)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Casbin Integration](#phase-3-casbin-integration)
+  - [Phase 4: Service Layer](#phase-4-service-layer)
+  - [Phase 5: Resource Grants](#phase-5-resource-grants)
+  - [Phase 6: Audit Logging](#phase-6-audit-logging)
+  - [Phase 7: Metadata Locking](#phase-7-metadata-locking)
+  - [Phase 8: Middleware & API Integration](#phase-8-middleware-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +81,10 @@
 | Design | ✅ | Full design with Casbin model, DB schema, audit logging |
 | Sources | ✅ | casbin/casbin, pckhoi/casbin-pgx-adapter documented |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -738,6 +809,14 @@ func (s *MovieModule) DeleteLibrary(ctx context.Context, libraryID uuid.UUID) er
 | [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
 | [Casbin Documentation](https://casbin.org/docs/overview) | [Local](../../../sources/security/casbin-guide.md) |
 | [Casbin pgx Adapter](https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3) | [Local](../../../sources/security/casbin-pgx.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -777,6 +856,7 @@ func (s *MovieModule) DeleteLibrary(ctx context.Context, libraryID uuid.UUID) er
 
 ## Related
 
+- [RBAC Service](../../services/RBAC.md) - Service implementation (code, API, middleware)
 - [ARCHITECTURE.md](../../architecture/01_ARCHITECTURE.md) - Overall architecture
 - [DESIGN_PRINCIPLES.md](../../architecture/02_DESIGN_PRINCIPLES.md) - Design principles
 - [LIBRARY_TYPES.md](LIBRARY_TYPES.md) - Per-module library architecture

@@ -2,18 +2,48 @@
 
 > Primary metadata provider for movies and TV shows
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Endpoints](#key-endpoints)
+- [Implementation Checklist](#implementation-checklist)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Go Client Example](#go-client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Image Sizes](#image-sizes)
+  - [Posters](#posters)
+  - [Backdrops](#backdrops)
+  - [Logos](#logos)
+  - [Profile Pictures (Actors/Directors)](#profile-pictures-actorsdirectors)
+- [External ID Mapping](#external-id-mapping)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API v3 spec, image CDN, external ID mapping |
 | Sources | ✅ | API docs v3/v4, image CDN, status page linked |
 | Instructions | ✅ | Detailed implementation checklist with i18n support |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -198,7 +228,13 @@ func (c *TMDbClient) DownloadImage(ctx context.Context, imagePath string, size s
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../../sources/infrastructure/typesense-go.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
 | [golang.org/x/time](https://pkg.go.dev/golang.org/x/time) | [Local](../../../../sources/go/x/time.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -233,11 +269,11 @@ func (c *TMDbClient) DownloadImage(ctx context.Context, imagePath string, size s
 
 ## Related Documentation
 
-- [Movie Module](../../architecture/modules/MOVIE.md)
-- [TV Show Module](../../architecture/modules/TVSHOW.md)
+- [Movie Module](../../features/video/MOVIE_MODULE.md)
+- [TV Show Module](../../features/video/TVSHOW_MODULE.md)
 - [TheTVDB Integration](THETVDB.md) - Primary TV metadata source
 - [OMDb Integration](OMDB.md) - Fallback metadata + IMDb ratings
-- [Metadata Enrichment Pattern](../../patterns/metadata_enrichment.md)
+- [Metadata Enrichment Pattern](../../patterns/METADATA_ENRICHMENT.md)
 
 ---
 

@@ -2,18 +2,56 @@
 
 > Movie management automation and metadata synchronization
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base Configuration](#base-configuration)
+  - [Key Endpoints](#key-endpoints)
+    - [Movies](#movies)
+    - [Import Lists](#import-lists)
+    - [Metadata](#metadata)
+    - [Media Management](#media-management)
+    - [System](#system)
+- [Webhook Events](#webhook-events)
+  - [Webhook Payload Example](#webhook-payload-example)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Metadata Flow](#metadata-flow)
+  - [Client Example](#client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Quality Profile Mapping](#quality-profile-mapping)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🔴 CRITICAL (Phase 2 - Movie Module)
 **Authentication**: API Key (`X-Api-Key` header)
 
@@ -203,8 +241,14 @@ func (c *RadarrClient) GetMovie(ctx context.Context, id int) (*Movie, error) {
 | Source | Documentation |
 |--------|---------------|
 | [Go context](https://pkg.go.dev/context) | [Local](../../../sources/go/stdlib/context.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
 | [Radarr API Docs](https://radarr.video/docs/api/) | [Local](../../../sources/apis/radarr-docs.md) |
 | [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -243,8 +287,8 @@ func (c *RadarrClient) GetMovie(ctx context.Context, id int) (*Movie, error) {
 - [Sonarr Integration](SONARR.md) - TV show management
 - [Lidarr Integration](LIDARR.md) - Music management
 - [Movie Module](../../architecture/01_ARCHITECTURE.md#movie-module) - Revenge movie module design
-- [Arr Integration Pattern](../../patterns/arr_integration.md) - Common patterns for all *arr services
-- [Webhook Handling](../../patterns/webhook_patterns.md) - Webhook processing patterns
+- [Arr Integration Pattern](../../patterns/ARR_INTEGRATION.md) - Common patterns for all *arr services
+- [Webhook Handling](../../patterns/WEBHOOK_PATTERNS.md) - Webhook processing patterns
 
 ---
 

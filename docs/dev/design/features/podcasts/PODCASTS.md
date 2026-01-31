@@ -2,6 +2,40 @@
 
 > RSS podcast subscription and playback
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Features](#features)
+- [Go Packages](#go-packages)
+- [Database Schema](#database-schema)
+- [River Jobs](#river-jobs)
+- [Go Implementation](#go-implementation)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [RBAC Permissions](#rbac-permissions)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Feed Parsing](#phase-3-feed-parsing)
+  - [Phase 4: Service Layer](#phase-4-service-layer)
+  - [Phase 5: Download Management](#phase-5-download-management)
+  - [Phase 6: Background Jobs](#phase-6-background-jobs)
+  - [Phase 7: API Integration](#phase-7-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +43,10 @@
 | Design | ✅ | Comprehensive spec with features, schema, jobs |
 | Sources | ✅ | Go package URLs listed (gofeed, gorilla/feeds) |
 | Instructions | ✅ | Code examples exist, no explicit checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: LOW (Nice to have - Plex has this)
 **Inspired By**: Plex Podcasts, Apple Podcasts
 **Location**: `internal/content/podcasts/`
@@ -462,6 +495,16 @@ podcasts:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

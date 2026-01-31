@@ -29,6 +29,89 @@ SOURCES_YAML = SOURCES_DIR / "SOURCES.yaml"
 BREADCRUMB_START = "<!-- SOURCE-BREADCRUMBS-START -->"
 BREADCRUMB_END = "<!-- SOURCE-BREADCRUMBS-END -->"
 
+# Keyword to source mappings for better cross-referencing
+# Maps keywords/topics to source IDs (from SOURCES.yaml)
+KEYWORD_SOURCE_MAP = {
+    # API integrations
+    "tmdb": ["tmdb-api"],
+    "themoviedb": ["tmdb-api"],
+    "thetvdb": ["thetvdb-api"],
+    "musicbrainz": ["musicbrainz-api"],
+    "last.fm": ["lastfm-api"],
+    "lastfm": ["lastfm-api"],
+    "listenbrainz": ["listenbrainz-api"],
+    "trakt": ["trakt-api"],
+    "simkl": ["simkl-api"],
+    "anilist": ["anilist-schema"],
+    "myanimelist": ["myanimelist-api"],
+    "comicvine": ["comicvine-api"],
+    "openlibrary": ["openlibrary-api"],
+    "spotify": ["spotify-api"],
+    "discogs": ["discogs-api"],
+    "omdb": ["omdb-api"],
+
+    # Auth providers
+    "keycloak": ["keycloak"],
+    "authelia": ["authelia"],
+    "authentik": ["authentik"],
+    "oidc": ["oidc-core"],
+    "oauth": ["oauth2-rfc"],
+    "jwt": ["jwt-rfc"],
+
+    # Servarr stack
+    "radarr": ["radarr-openapi"],
+    "sonarr": ["sonarr-openapi"],
+    "lidarr": ["lidarr-openapi"],
+    "whisparr": ["whisparr-openapi"],
+    "readarr": ["readarr-openapi"],
+
+    # Database
+    "postgresql": ["pgx", "postgresql-json", "postgresql-arrays"],
+    "postgres": ["pgx", "postgresql-json"],
+    "sqlc": ["sqlc", "sqlc-config"],
+
+    # Caching
+    "dragonfly": ["dragonfly"],
+    "redis": ["rueidis", "rueidis-guide"],
+    "typesense": ["typesense", "typesense-go"],
+
+    # Frontend
+    "svelte": ["svelte5", "svelte-runes", "sveltekit"],
+    "sveltekit": ["sveltekit"],
+    "shadcn": ["shadcn-svelte"],
+    "vidstack": ["vidstack"],
+    "tanstack": ["tanstack-query"],
+
+    # Protocols
+    "hls": ["hls-rfc", "gohlslib"],
+    "webrtc": ["webrtc", "pion-webrtc"],
+    "xmltv": ["xmltv", "xmltv-format"],
+    "m3u": ["m3u8"],
+
+    # Media processing
+    "ffmpeg": ["ffmpeg", "ffmpeg-codecs", "ffmpeg-formats", "go-astiav"],
+    "blurhash": ["go-blurhash"],
+    "vips": ["govips-guide"],
+
+    # Observability
+    "prometheus": ["prometheus", "prometheus-metrics"],
+    "opentelemetry": ["opentelemetry"],
+    "grafana": ["grafana", "grafana-dashboards"],
+    "jaeger": ["jaeger", "jaeger-go"],
+
+    # Testing
+    "testcontainers": ["testcontainers"],
+    "testify": ["testify"],
+    "mockery": ["mockery", "mockery-guide"],
+
+    # Go tooling
+    "fx": ["fx", "fx-guide"],
+    "koanf": ["koanf"],
+    "ogen": ["ogen", "ogen-guide"],
+    "river": ["river", "river-guide"],
+    "casbin": ["casbin", "casbin-guide", "casbin-pgx"],
+}
+
 
 def load_sources() -> dict:
     """Load SOURCES.yaml."""
@@ -78,6 +161,7 @@ def build_source_index(config: dict) -> dict:
 def extract_references(content: str, source_index: dict) -> list[dict]:
     """Extract source references from document content."""
     found = {}
+    content_lower = content.lower()
 
     # Extract URLs
     url_pattern = r'https?://[^\s\)\]>"\']+'
@@ -110,6 +194,20 @@ def extract_references(content: str, source_index: dict) -> list[dict]:
                 if pkg in source_pkg or source_pkg in pkg:
                     found[info["id"]] = info
                     break
+
+    # Keyword-based matching (new)
+    for keyword, source_ids in KEYWORD_SOURCE_MAP.items():
+        if keyword.lower() in content_lower:
+            for source_id in source_ids:
+                # Look up source by ID in the index
+                for info in source_index["urls"].values():
+                    if info["id"] == source_id:
+                        found[info["id"]] = info
+                        break
+                for info in source_index["packages"].values():
+                    if info["id"] == source_id:
+                        found[info["id"]] = info
+                        break
 
     return list(found.values())
 

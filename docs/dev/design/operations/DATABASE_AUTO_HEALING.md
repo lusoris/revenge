@@ -2,6 +2,65 @@
 
 > Automatic recovery strategies for PostgreSQL database corruption and inconsistency
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Context](#context)
+- [Detection Tools](#detection-tools)
+  - [1. `amcheck` Extension (PostgreSQL 10+)](#1-amcheck-extension-postgresql-10)
+  - [2. `pg_visibility` Extension (9.6+)](#2-pg-visibility-extension-96)
+  - [3. `pg_checksums` (PostgreSQL 12+)](#3-pg-checksums-postgresql-12)
+  - [4. Custom Consistency Checks](#4-custom-consistency-checks)
+    - [FK Integrity](#fk-integrity)
+    - [Enum Constraints](#enum-constraints)
+    - [JSON Schema Validation](#json-schema-validation)
+- [Automatic Repair Strategies](#automatic-repair-strategies)
+  - [1. Index Corruption → REINDEX](#1-index-corruption-reindex)
+  - [2. Visibility Map Corruption → VACUUM FULL](#2-visibility-map-corruption-vacuum-full)
+  - [3. Orphaned Data → Cascade Delete](#3-orphaned-data-cascade-delete)
+  - [4. Invalid Data → Nullify + Log](#4-invalid-data-nullify-log)
+  - [5. Constraint Violations → Rollback Transaction](#5-constraint-violations-rollback-transaction)
+- [Background Jobs (River)](#background-jobs-river)
+  - [Health Check Job (Every 10 minutes)](#health-check-job-every-10-minutes)
+  - [Index Check Job (Weekly)](#index-check-job-weekly)
+  - [Orphan Cleanup Job (Daily)](#orphan-cleanup-job-daily)
+- [Recovery from Corruption](#recovery-from-corruption)
+  - [CRITICAL: Snapshot Before Repair](#critical-snapshot-before-repair)
+  - [Repair Workflow](#repair-workflow)
+- [Monitoring & Alerts](#monitoring-alerts)
+  - [Metrics to Track (via pkg/metrics)](#metrics-to-track-via-pkgmetrics)
+  - [Alerts](#alerts)
+- [Configuration (config.yaml)](#configuration-configyaml)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Tools](#related-tools)
+- [References](#references)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Context
 
 Revenge's PostgreSQL database may encounter corruption or inconsistency due to:
@@ -221,6 +280,15 @@ database:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

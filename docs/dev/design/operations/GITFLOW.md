@@ -1,5 +1,66 @@
 # GitFlow Workflow Guide
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Branch Structure](#branch-structure)
+- [Main Branches](#main-branches)
+  - [`main`](#main)
+  - [`develop`](#develop)
+- [Supporting Branches](#supporting-branches)
+  - [Feature Branches (`feature/*`)](#feature-branches-feature)
+  - [Fix Branches (`fix/*`)](#fix-branches-fix)
+  - [Release Branches (`release/*`)](#release-branches-release)
+  - [Hotfix Branches (`hotfix/*`)](#hotfix-branches-hotfix)
+- [Commit Message Format](#commit-message-format)
+  - [Types:](#types)
+  - [Examples:](#examples)
+- [Pull Request Process](#pull-request-process)
+  - [Creating a PR](#creating-a-pr)
+  - [Reviewing a PR](#reviewing-a-pr)
+  - [Merging a PR](#merging-a-pr)
+- [Common Scenarios](#common-scenarios)
+  - [Updating your branch with latest develop](#updating-your-branch-with-latest-develop)
+  - [Fixing a mistake in your last commit](#fixing-a-mistake-in-your-last-commit)
+  - [Cherry-picking a commit](#cherry-picking-a-commit)
+  - [Reverting a commit](#reverting-a-commit)
+- [Repository Setup](#repository-setup)
+  - [Initial Setup](#initial-setup)
+  - [Developer Setup](#developer-setup)
+- [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
+  - [Merge Conflicts](#merge-conflicts)
+  - [Accidentally committed to wrong branch](#accidentally-committed-to-wrong-branch)
+  - [Need to sync fork](#need-to-sync-fork)
+- [Resources](#resources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 This document describes the Git branching strategy for revenge.
 
 ## Branch Structure

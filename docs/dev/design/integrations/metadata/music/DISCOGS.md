@@ -2,6 +2,44 @@
 
 > Music marketplace and database - vinyl releases, marketplace data, detailed credits
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base URL](#base-url)
+  - [Authentication (Personal Access Token - Recommended)](#authentication-personal-access-token---recommended)
+  - [Rate Limiting](#rate-limiting)
+  - [Key Endpoints](#key-endpoints)
+    - [Search Releases](#search-releases)
+    - [Get Release](#get-release)
+    - [Get Artist](#get-artist)
+    - [Get Master Release](#get-master-release)
+- [Implementation Checklist](#implementation-checklist)
+  - [API Client (`internal/infra/metadata/provider_discogs.go`)](#api-client-internalinframetadataprovider-discogsgo)
+  - [Release Metadata (Physical Media)](#release-metadata-physical-media)
+  - [Detailed Credits](#detailed-credits)
+  - [Marketplace Data (Future Feature)](#marketplace-data-future-feature)
+  - [Label Information](#label-information)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Enrich Album with Discogs Metadata](#enrich-album-with-discogs-metadata)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: Discogs
 **Type**: Metadata Provider (Music)
 **API Version**: 2.0
@@ -11,15 +49,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API endpoints, marketplace data, credits |
 | Sources | ✅ | API docs, authentication, database linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -259,6 +296,7 @@ func (s *MusicService) EnrichAlbumWithDiscogs(albumID uuid.UUID) error {
 | Source | Documentation |
 |--------|---------------|
 | [Discogs API](https://www.discogs.com/developers) | [Local](../../../../sources/apis/discogs.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../../sources/apis/lastfm.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -293,7 +331,6 @@ func (s *MusicService) EnrichAlbumWithDiscogs(albumID uuid.UUID) error {
 
 ## Related Documentation
 
-- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
 - **Lidarr Integration**: [../servarr/LIDARR.md](../servarr/LIDARR.md)
 

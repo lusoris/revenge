@@ -2,6 +2,44 @@
 
 > Per-module library architecture and supported content types
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Architecture Overview](#architecture-overview)
+  - [Why Per-Module Libraries?](#why-per-module-libraries)
+  - [Shared Components](#shared-components)
+- [Per-Module Library Tables](#per-module-library-tables)
+- [Example: Movie Library Schema](#example-movie-library-schema)
+- [Example: Adult Library Schema (Isolated - QAR Obfuscation)](#example-adult-library-schema-isolated---qar-obfuscation)
+- [Cross-Module Access Control (Polymorphic)](#cross-module-access-control-polymorphic)
+  - [Why Polymorphic?](#why-polymorphic)
+  - [Usage Pattern](#usage-pattern)
+  - [Listing All Libraries (UI)](#listing-all-libraries-ui)
+- [Module Implementation](#module-implementation)
+- [Migration Required](#migration-required)
+  - [Current State (To Be Changed)](#current-state-to-be-changed)
+  - [Migration Plan](#migration-plan)
+  - [Why This Change?](#why-this-change)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +47,10 @@
 | Design | ✅ | Full design with per-module tables, polymorphic permissions |
 | Sources | 🟡 | Architecture references |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Location**: `internal/module/` (per-module library implementations)
 **Current Migration**: `shared/000005_libraries.up.sql` - **TO BE SPLIT**
 
@@ -330,7 +367,6 @@ The per-module approach provides:
 - Independent module deployment
 - Schema-level isolation for adult content (`qar` schema)
 
-See: [MODULE_IMPLEMENTATION_TODO.md](../../planning/MODULE_IMPLEMENTATION_TODO.md)
 
 ---
 
@@ -417,7 +453,12 @@ See: [MODULE_IMPLEMENTATION_TODO.md](../../planning/MODULE_IMPLEMENTATION_TODO.m
 
 | Source | Documentation |
 |--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

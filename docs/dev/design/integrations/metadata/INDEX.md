@@ -68,7 +68,7 @@ Adult content metadata (isolated in `qar` schema).
 |----------|------|--------|
 | [StashDB](adult/STASHDB.md) | Scenes | 🟢 Primary |
 | [ThePornDB](adult/THEPORNDB.md) | Scenes | 🟡 Secondary |
-| [FreeOnes](../external/adult/FREEONES.md) | Performers | 🟢 Primary |
+| [FreeOnes](../metadata/adult/FREEONES.md) | Performers | 🟢 Primary |
 
 ---
 
@@ -109,6 +109,29 @@ metadata:
       api_key: "${TVDB_API_KEY}"
       priority: 2
 ```
+
+---
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A
 
 ---
 

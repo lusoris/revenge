@@ -2,6 +2,20 @@
 
 > Active tracking of open items requiring resolution
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Open Items](#open-items)
+- [Resolved Items (Reference)](#resolved-items-reference)
+- [How to Add New Questions](#how-to-add-new-questions)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+
+<!-- TOC-END -->
+
 **Last Updated**: Auto-generated
 
 ---

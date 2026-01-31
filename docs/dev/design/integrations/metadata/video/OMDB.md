@@ -2,18 +2,45 @@
 
 > Fallback metadata provider + IMDb ratings
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Query Parameters](#query-parameters)
+  - [Key Endpoints](#key-endpoints)
+- [Response Example](#response-example)
+- [Implementation Checklist](#implementation-checklist)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Go Client Example](#go-client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Rating Sources](#rating-sources)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API spec, query parameters, response examples |
 | Sources | ✅ | API docs linked |
 | Instructions | ✅ | Detailed implementation checklist with ratings aggregation |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -226,6 +253,9 @@ func (c *OMDbClient) GetByTitle(ctx context.Context, title string, year int) (*M
 | Source | Documentation |
 |--------|---------------|
 | [OMDb API](https://www.omdbapi.com/) | [Local](../../../../sources/apis/omdb.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -260,9 +290,9 @@ func (c *OMDbClient) GetByTitle(ctx context.Context, title string, year int) (*M
 
 ## Related Documentation
 
-- [Movie Module](../../architecture/modules/MOVIE.md)
+- [Movie Module](../../features/video/MOVIE_MODULE.md)
 - [TMDb Integration](TMDB.md) - Primary movie metadata source
-- [Metadata Enrichment Pattern](../../patterns/metadata_enrichment.md)
+- [Metadata Enrichment Pattern](../../patterns/METADATA_ENRICHMENT.md)
 
 ---
 

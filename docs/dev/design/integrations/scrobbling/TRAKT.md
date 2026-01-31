@@ -2,6 +2,61 @@
 
 > Social platform for tracking movies and TV shows
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [OAuth 2.0 Flow](#oauth-20-flow)
+  - [Required Headers](#required-headers)
+- [API Endpoints](#api-endpoints)
+  - [Scrobble (Mark as Watching)](#scrobble-mark-as-watching)
+  - [Scrobble (Mark as Watched)](#scrobble-mark-as-watched)
+  - [Add to Watch History](#add-to-watch-history)
+  - [Get Watch History](#get-watch-history)
+  - [Add Rating](#add-rating)
+  - [Get Ratings](#get-ratings)
+  - [Add to Watchlist](#add-to-watchlist)
+  - [Get Watchlist](#get-watchlist)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: OAuth 2.0 Setup](#phase-1-oauth-20-setup)
+  - [Phase 2: Scrobbling (Real-time)](#phase-2-scrobbling-real-time)
+  - [Phase 3: Watch History Sync](#phase-3-watch-history-sync)
+  - [Phase 4: Ratings Sync](#phase-4-ratings-sync)
+  - [Phase 5: Watchlist Sync](#phase-5-watchlist-sync)
+  - [Phase 6: Background Jobs (River)](#phase-6-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Real-time Scrobbling Flow](#real-time-scrobbling-flow)
+  - [Watch History Sync Flow](#watch-history-sync-flow)
+  - [Rating Sync Flow](#rating-sync-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [OAuth 2.0 Token Management](#oauth-20-token-management)
+  - [Rate Limits](#rate-limits)
+  - [Scrobbling Threshold](#scrobbling-threshold)
+  - [Rating Normalization](#rating-normalization)
+  - [Watch History Deduplication](#watch-history-deduplication)
+  - [ID Mapping](#id-mapping)
+  - [Bi-directional Sync Strategy](#bi-directional-sync-strategy)
+  - [TV Shows Scrobbling](#tv-shows-scrobbling)
+  - [Trakt VIP Features](#trakt-vip-features)
+  - [Error Handling](#error-handling)
+  - [Privacy Considerations](#privacy-considerations)
+  - [Fallback Strategy (Social Tracking)](#fallback-strategy-social-tracking)
+
+<!-- TOC-END -->
+
 **Service**: Trakt (https://trakt.tv)
 **API**: REST API with OAuth 2.0
 **Category**: Scrobbling / Social
@@ -9,16 +64,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -369,6 +423,8 @@ Trakt rating synced
 
 | Source | Documentation |
 |--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Trakt API](https://trakt.tv/b/api-docs) | [Local](../../../sources/apis/trakt.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

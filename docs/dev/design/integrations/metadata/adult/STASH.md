@@ -2,6 +2,59 @@
 
 > Self-hosted adult media organizer with GraphQL API
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Client Library](#go-client-library)
+- [API Details](#api-details)
+  - [GraphQL Queries](#graphql-queries)
+    - [List All Scenes](#list-all-scenes)
+    - [Get Scene Details](#get-scene-details)
+    - [List All Performers](#list-all-performers)
+    - [Get Performer Details](#get-performer-details)
+    - [List All Studios](#list-all-studios)
+    - [Get Configuration](#get-configuration)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration (Optional)](#phase-1-core-integration-optional)
+  - [Phase 2: One-Time Migration (Optional)](#phase-2-one-time-migration-optional)
+  - [Phase 3: Ongoing Sync (Optional)](#phase-3-ongoing-sync-optional)
+- [Integration Pattern](#integration-pattern)
+  - [One-Time Library Import Flow](#one-time-library-import-flow)
+  - [Incremental Sync Flow (Optional)](#incremental-sync-flow-optional)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [Self-Hosted Requirement](#self-hosted-requirement)
+  - [Use Case: Migration vs Sync](#use-case-migration-vs-sync)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [File Handling](#file-handling)
+  - [StashDB IDs](#stashdb-ids)
+  - [Voyage Markers](#voyage-markers)
+  - [Performer Images](#performer-images)
+  - [GraphQL vs REST](#graphql-vs-rest)
+  - [Rate Limiting](#rate-limiting)
+  - [Ship Log (Watch History - Optional)](#ship-log-watch-history---optional)
+  - [Two-Way Sync (Advanced)](#two-way-sync-advanced)
+  - [Conflict Resolution](#conflict-resolution)
+  - [JSONB Storage](#jsonb-storage)
+  - [Use Case: Optional Integration](#use-case-optional-integration)
+
+<!-- TOC-END -->
+
 **Service**: Stash (https://github.com/stashapp/stash)
 **API**: GraphQL API (localhost:9999/graphql)
 **Category**: Self-Hosted Media Organizer (Adult Content)
@@ -10,15 +63,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive GraphQL API spec, data mapping, integration patterns |
 | Sources | ✅ | GraphQL schema, playground, GitHub, docs linked |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -467,7 +519,13 @@ For each updated scene:
 | Source | Documentation |
 |--------|---------------|
 | [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) | [Local](../../../../sources/tooling/genqlient.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../../sources/infrastructure/typesense-go.md) |
 | [genqlient GitHub README](https://github.com/Khan/genqlient) | [Local](../../../../sources/tooling/genqlient-guide.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../../sources/media/gohlslib.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

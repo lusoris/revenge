@@ -2,6 +2,59 @@
 
 > Music scrobbling and listening history tracking
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [API Key Setup](#api-key-setup)
+  - [Required Parameters](#required-parameters)
+  - [API Signature](#api-signature)
+- [API Endpoints](#api-endpoints)
+  - [Scrobble Track](#scrobble-track)
+  - [Update Now Playing](#update-now-playing)
+  - [Get Recent Tracks](#get-recent-tracks)
+  - [Get Loved Tracks](#get-loved-tracks)
+  - [Love/Unlove Track](#loveunlove-track)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Authentication Setup](#phase-1-authentication-setup)
+  - [Phase 2: Scrobbling (Real-time)](#phase-2-scrobbling-real-time)
+  - [Phase 3: Listening History Sync](#phase-3-listening-history-sync)
+  - [Phase 4: Loved Tracks Sync](#phase-4-loved-tracks-sync)
+  - [Phase 5: Background Jobs (River)](#phase-5-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Real-time Scrobbling Flow](#real-time-scrobbling-flow)
+  - [Listening History Sync Flow](#listening-history-sync-flow)
+  - [Loved Tracks Sync Flow](#loved-tracks-sync-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [Authentication (Desktop Auth Flow)](#authentication-desktop-auth-flow)
+  - [Rate Limits](#rate-limits)
+  - [Scrobbling Rules (Last.fm Standard)](#scrobbling-rules-lastfm-standard)
+  - [API Signature Calculation](#api-signature-calculation)
+  - [Batch Scrobbling](#batch-scrobbling)
+  - [Deduplication Strategy](#deduplication-strategy)
+  - [MusicBrainz IDs](#musicbrainz-ids)
+  - [Loved Tracks vs Favorites](#loved-tracks-vs-favorites)
+  - [Artist/Album Metadata Enrichment](#artistalbum-metadata-enrichment)
+  - [Error Handling](#error-handling)
+  - [Privacy Considerations](#privacy-considerations)
+  - [Last.fm vs ListenBrainz](#lastfm-vs-listenbrainz)
+  - [Fallback Strategy (Music Scrobbling)](#fallback-strategy-music-scrobbling)
+
+<!-- TOC-END -->
+
 **Service**: Last.fm (https://www.last.fm)
 **API**: REST API with API key + session authentication
 **Category**: Scrobbling / Music
@@ -9,16 +62,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -312,6 +364,7 @@ Last.fm marks track as loved
 | Source | Documentation |
 |--------|---------------|
 | [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

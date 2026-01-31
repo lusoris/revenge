@@ -2,21 +2,55 @@
 
 > Universal Plug and Play streaming to compatible devices
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Technical Details](#technical-details)
+  - [DLNA Device Classes](#dlna-device-classes)
+  - [UPnP Services](#upnp-services)
+  - [Discovery (SSDP)](#discovery-ssdp)
+- [Implementation Checklist](#implementation-checklist)
+  - [DLNA Server (DMS)](#dlna-server-dms)
+  - [DLNA Control Point (DMC)](#dlna-control-point-dmc)
+- [Configuration](#configuration)
+  - [DLNA Transcode Profile](#dlna-transcode-profile)
+- [Database Schema](#database-schema)
+- [ContentDirectory Structure](#contentdirectory-structure)
+- [DIDL-Lite Response](#didl-lite-response)
+- [DLNA.ORG Headers](#dlnaorg-headers)
+  - [DLNA Flags](#dlna-flags)
+- [Casting Flow](#casting-flow)
+- [Supported DLNA Devices](#supported-dlna-devices)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 6 - Casting)
 **Type**: UPnP/DLNA server + control point
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive UPnP protocol spec, DIDL-Lite, database schema |
 | Sources | ✅ | UPnP spec, DLNA guidelines, Go libraries linked |
 | Instructions | ✅ | Detailed implementation checklist for DMS and DMC |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview

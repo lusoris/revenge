@@ -2,6 +2,55 @@
 
 > Alternative adult metadata provider with scene/performer/studio data
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Client Library](#go-client-library)
+- [API Details](#api-details)
+  - [REST Endpoints](#rest-endpoints)
+    - [Search Scenes](#search-scenes)
+    - [Get Scene Details](#get-scene-details)
+    - [Search Performers](#search-performers)
+    - [Get Performer Details](#get-performer-details)
+    - [Search Studios](#search-studios)
+    - [Get Studio Details](#get-studio-details)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration](#phase-1-core-integration)
+  - [Phase 2: Fallback Logic](#phase-2-fallback-logic)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Fallback Metadata Fetch Flow](#fallback-metadata-fetch-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [API Key (Free)](#api-key-free)
+  - [Rate Limits (120 req/min)](#rate-limits-120-reqmin)
+  - [Data Quality](#data-quality)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [Fallback Strategy](#fallback-strategy)
+  - [JSONB Storage](#jsonb-storage)
+  - [Site vs Studio](#site-vs-studio)
+  - [Image URLs](#image-urls)
+  - [Performer Aliases](#performer-aliases)
+  - [Use Case: Supplementary Metadata](#use-case-supplementary-metadata)
+
+<!-- TOC-END -->
+
 **Service**: ThePornDB (https://theporndb.net)
 **API**: REST API v1 (https://api.theporndb.net)
 **Category**: Metadata Provider (Adult Content)
@@ -10,15 +59,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API endpoints, data mapping, fallback logic |
 | Sources | ✅ | Base URL, API docs, Swagger UI linked |
 | Instructions | ✅ | Phased implementation checklist with fallback strategy |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -391,7 +439,10 @@ ThePornDB rate limit: 120 req/min (2 req/sec)
 
 | Source | Documentation |
 |--------|---------------|
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 | [ThePornDB API](https://api.theporndb.net/docs) | [Local](../../../../sources/apis/theporndb.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../../sources/infrastructure/typesense-go.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

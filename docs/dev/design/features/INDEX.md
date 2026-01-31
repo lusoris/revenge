@@ -109,6 +109,21 @@ Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A
 
 ---
 
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
+
+---
+
 ## Related Documentation
 
 - [Architecture](../architecture/) - System design

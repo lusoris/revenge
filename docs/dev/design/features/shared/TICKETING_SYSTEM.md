@@ -2,18 +2,73 @@
 
 > User portal for bug reports, feature requests, and support tickets
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Executive Summary](#executive-summary)
+- [User Portal](#user-portal)
+  - [Ticket Submission Form](#ticket-submission-form)
+  - [Ticket Viewing](#ticket-viewing)
+  - [User Actions](#user-actions)
+- [Admin Interface](#admin-interface)
+  - [Triage Dashboard](#triage-dashboard)
+  - [Admin Actions](#admin-actions)
+- [PostgreSQL Schema](#postgresql-schema)
+- [API Endpoints](#api-endpoints)
+  - [User Endpoints](#user-endpoints)
+  - [Admin Endpoints](#admin-endpoints)
+- [Email Notifications](#email-notifications)
+  - [User Notifications](#user-notifications)
+  - [Admin Notifications](#admin-notifications)
+- [Webhook Triggers](#webhook-triggers)
+  - [Events](#events)
+  - [Payload Example](#payload-example)
+  - [Integrations](#integrations)
+- [GitHub Issues Sync (Optional)](#github-issues-sync-optional)
+  - [Two-Way Sync](#two-way-sync)
+  - [GitHub Issue Metadata](#github-issue-metadata)
+  - [Sync Rules](#sync-rules)
+- [UI/UX Design](#uiux-design)
+  - [User Ticket Submission Form](#user-ticket-submission-form)
+  - [Admin Dashboard](#admin-dashboard)
+  - [Ticket Detail Page](#ticket-detail-page)
+- [Implementation Phases](#implementation-phases)
+  - [Phase 1: Backend (Week 1)](#phase-1-backend-week-1)
+  - [Phase 2: User Portal (Week 2)](#phase-2-user-portal-week-2)
+  - [Phase 3: Admin Interface (Week 3)](#phase-3-admin-interface-week-3)
+  - [Phase 4: Notifications (Week 4)](#phase-4-notifications-week-4)
+  - [Phase 5: GitHub Sync (Optional, Week 5)](#phase-5-github-sync-optional-week-5)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | ✅ | Full design with DB schema, API endpoints, GitHub sync |
-| Sources | 🟡 | |
+| Sources | 🟡 |  |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Last Updated**: 2026-01-30
 **Location**: `internal/ticketing/`
 **Dependencies**: User authentication, email notifications, webhook triggers
@@ -521,6 +576,24 @@ revenge_url: https://revenge.local/support/tickets/1234
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../../sources/frontend/shadcn-svelte.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

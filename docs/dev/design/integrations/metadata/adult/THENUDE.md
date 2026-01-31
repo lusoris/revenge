@@ -2,18 +2,57 @@
 
 > Adult performer database with aliases and measurements
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Status](#api-status)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Scraping Library](#go-scraping-library)
+- [Integration Approach](#integration-approach)
+  - [Web Scraping Strategy](#web-scraping-strategy)
+    - [Performer Page Structure](#performer-page-structure)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Web Scraping (Adult Content - c schema)](#phase-1-web-scraping-adult-content---c-schema)
+  - [Phase 2: Alias Resolution](#phase-2-alias-resolution)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Alias Resolution Flow](#alias-resolution-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [No Official API (Web Scraping Only)](#no-official-api-web-scraping-only)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [Specialty: Alias Tracking](#specialty-alias-tracking)
+  - [Cross-Database Linking](#cross-database-linking)
+  - [JSONB Storage (c schema)](#jsonb-storage-c-schema)
+  - [Caching Strategy](#caching-strategy)
+  - [Fallback Strategy (Adult Performer Aliases)](#fallback-strategy-adult-performer-aliases)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Web scraping spec, alias resolution flow, JSONB schema |
 | Sources | ✅ | Website URL, goquery library documented |
 | Instructions | ✅ | Phased implementation checklist with alias matching |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -176,6 +215,7 @@ Use aliases for performer matching across databases
 | Source | Documentation |
 |--------|---------------|
 | [Go io](https://pkg.go.dev/io) | [Local](../../../../sources/go/stdlib/io.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

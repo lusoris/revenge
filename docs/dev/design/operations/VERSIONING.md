@@ -1,5 +1,49 @@
 # Versioning Strategy
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Semantic Versioning (SemVer)](#semantic-versioning-semver)
+  - [Version Components](#version-components)
+- [Release Phases](#release-phases)
+  - [Pre-1.0 Development (Current)](#pre-10-development-current)
+  - [Post-1.0 (Future)](#post-10-future)
+- [Release Process](#release-process)
+  - [Automated Releases (Release Please)](#automated-releases-release-please)
+  - [Manual Releases](#manual-releases)
+- [Version in Code](#version-in-code)
+- [Pre-release Versions](#pre-release-versions)
+- [API Versioning](#api-versioning)
+- [Deprecation Policy](#deprecation-policy)
+- [Version Compatibility Matrix](#version-compatibility-matrix)
+- [Checking Version](#checking-version)
+- [Related Design Docs](#related-design-docs)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 This document describes the versioning strategy for revenge.
 
 ## Semantic Versioning (SemVer)
@@ -200,6 +244,9 @@ Response:
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
 | [Semantic Versioning](https://semver.org/) | [Local](../../sources/standards/semver.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

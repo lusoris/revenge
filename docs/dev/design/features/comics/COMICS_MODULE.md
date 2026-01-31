@@ -2,6 +2,55 @@
 
 > Digital comics/manga/graphic novel support with metadata from ComicVine, Marvel API, GCD
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [File Format Support](#file-format-support)
+- [Schema Design](#schema-design)
+  - [Core Tables](#core-tables)
+  - [Publishers](#publishers)
+  - [Creators (Writers, Artists, Colorists, etc.)](#creators-writers-artists-colorists-etc)
+  - [Genres & Tags](#genres-tags)
+  - [User Data (Per-Module Isolation)](#user-data-per-module-isolation)
+- [Metadata Sources](#metadata-sources)
+  - [1. ComicVine API (Primary)](#1-comicvine-api-primary)
+  - [2. Marvel API (Marvel Comics Only)](#2-marvel-api-marvel-comics-only)
+  - [3. Grand Comics Database (GCD)](#3-grand-comics-database-gcd)
+  - [4. AniList (Manga)](#4-anilist-manga)
+  - [5. MyAnimeList (Manga Fallback)](#5-myanimelist-manga-fallback)
+- [Reading Experience](#reading-experience)
+  - [Web Reader](#web-reader)
+- [Folder Structure vs TV Shows](#folder-structure-vs-tv-shows)
+- [ComicInfo.xml Parsing](#comicinfoxml-parsing)
+- [Relationships to Other Modules](#relationships-to-other-modules)
+  - [Cross-Module Links](#cross-module-links)
+- [API Endpoints](#api-endpoints)
+- [Background Jobs (River)](#background-jobs-river)
+- [Go Packages](#go-packages)
+- [Summary](#summary)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: File Processing](#phase-3-file-processing)
+  - [Phase 4: Service Layer](#phase-4-service-layer)
+  - [Phase 5: Metadata Integration](#phase-5-metadata-integration)
+  - [Phase 6: Background Jobs](#phase-6-background-jobs)
+  - [Phase 7: API Integration](#phase-7-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +58,10 @@
 | Design | ✅ | Comprehensive spec with schema, file formats, metadata sources |
 | Sources | ✅ | ComicVine, Marvel API, GCD, AniList, MyAnimeList documented |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Location**: `internal/content/comics/`
 
 ---
@@ -693,6 +741,14 @@ Key packages used:
 | [AniList GraphQL API](https://anilist.gitbook.io/anilist-apiv2-docs) | [Local](../../../sources/apis/anilist.md) |
 | [ComicVine API](https://comicvine.gamespot.com/api/documentation) | [Local](../../../sources/apis/comicvine.md) |
 | [MyAnimeList API](https://myanimelist.net/apiconfig/references/api/v2) | [Local](../../../sources/apis/myanimelist.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

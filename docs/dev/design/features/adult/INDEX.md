@@ -36,7 +36,7 @@
 ## Related
 
 - [Adult Metadata Providers](../../integrations/metadata/adult/)
-- [Adult External Services](../../integrations/external/adult/)
+- [Adult External Services](../../integrations/metadata/adult/)
 
 ---
 

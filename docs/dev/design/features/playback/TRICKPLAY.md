@@ -2,18 +2,52 @@
 
 > Thumbnail previews on video seek bar
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Features](#features)
+- [Thumbnail Formats](#thumbnail-formats)
+  - [Sprite Sheets (Recommended)](#sprite-sheets-recommended)
+  - [BIF (Base Index Frames)](#bif-base-index-frames)
+  - [WebVTT](#webvtt)
+- [Architecture](#architecture)
+- [Go Packages](#go-packages)
+- [Database Schema](#database-schema)
+- [River Jobs](#river-jobs)
+- [Go Implementation](#go-implementation)
+- [API Endpoints](#api-endpoints)
+- [Client Integration](#client-integration)
+  - [HTML5 Video Player](#html5-video-player)
+  - [Video.js Plugin](#videojs-plugin)
+- [Configuration](#configuration)
+- [Priority Queue](#priority-queue)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟢 HIGH (Critical Gap - All competitors have this)
 **Inspired By**: Jellyfin Trickplay, Plex Timeline Preview
 **Location**: `internal/feature/trickplay/`
@@ -396,9 +430,14 @@ Content is prioritized for trickplay generation:
 
 | Source | Documentation |
 |--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
 | [Jellyfin Trickplay](https://jellyfin.org/docs/general/server/media/trickplay/) | [Local](../../../sources/apis/jellyfin-trickplay.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Roku BIF Format](https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md) | [Local](../../../sources/protocols/bif.md) |
 | [WebVTT Specification](https://www.w3.org/TR/webvtt1/) | [Local](../../../sources/protocols/webvtt.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

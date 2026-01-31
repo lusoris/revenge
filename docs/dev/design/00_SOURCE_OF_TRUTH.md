@@ -9,6 +9,45 @@
 
 ---
 
+## Documentation Map
+
+> Navigate to any part of the documentation from here
+
+| Category | Index | Description |
+|----------|-------|-------------|
+| **Architecture** | [INDEX](architecture/INDEX.md) | System design, principles, metadata system |
+| **Features** | [INDEX](features/INDEX.md) | Content modules, playback, shared features |
+| **Integrations** | [INDEX](integrations/INDEX.md) | Metadata providers, Arr stack, auth providers |
+| **Services** | [INDEX](services/INDEX.md) | Backend services (auth, user, session, etc.) |
+| **Operations** | [INDEX](operations/INDEX.md) | Setup, deployment, best practices |
+| **Technical** | [INDEX](technical/INDEX.md) | API, frontend, configuration |
+| **Research** | [INDEX](research/INDEX.md) | User pain points, UX/UI resources |
+
+### Quick Links
+
+| Topic | Document |
+|-------|----------|
+| Full Design Index | [DESIGN_INDEX.md](DESIGN_INDEX.md) |
+| Navigation Map | [NAVIGATION.md](NAVIGATION.md) |
+| External Sources | [SOURCES_INDEX.md](../sources/SOURCES_INDEX.md) |
+| Design ↔ Sources | [DESIGN_CROSSREF.md](../sources/DESIGN_CROSSREF.md) |
+
+### Deep Directory Shortcuts
+
+> Direct access to nested documentation (depth 3+)
+
+| Path | Key Documents |
+|------|---------------|
+| **Metadata Providers** | |
+| └ [integrations/metadata/video/](integrations/metadata/video/INDEX.md) | [TMDb](integrations/metadata/video/TMDB.md), [TheTVDB](integrations/metadata/video/THETVDB.md) |
+| └ [integrations/metadata/music/](integrations/metadata/music/INDEX.md) | [MusicBrainz](integrations/metadata/music/MUSICBRAINZ.md), [Last.fm](integrations/metadata/music/LASTFM.md) |
+| └ [integrations/metadata/books/](integrations/metadata/books/INDEX.md) | [OpenLibrary](integrations/metadata/books/OPENLIBRARY.md), [Audible](integrations/metadata/books/AUDIBLE.md) |
+| └ [integrations/metadata/adult/](integrations/metadata/adult/INDEX.md) | [StashDB](integrations/metadata/adult/STASHDB.md), [ThePornDB](integrations/metadata/adult/THEPORNDB.md) |
+| **Wiki Sources** | |
+| └ [integrations/wiki/adult/](integrations/wiki/adult/INDEX.md) | [IAFD](integrations/wiki/adult/IAFD.md), [Babepedia](integrations/wiki/adult/BABEPEDIA.md) |
+
+---
+
 ## Core Design Principles
 
 ### Database Strategy
@@ -54,18 +93,18 @@ This applies to ALL data types across all modules.
 
 | Module | Schema | Status | Primary Metadata | Arr Integration | Design Doc |
 |--------|--------|--------|------------------|-----------------|------------|
-| Movie | `public` | ✅ Complete | TMDb | Radarr | [movie.md](features/movies/) |
-| TV Show | `public` | ✅ Complete | TMDb, TheTVDB | Sonarr | [tv.md](features/tv/) |
-| Music | `public` | 🟡 Scaffold | MusicBrainz, Last.fm | Lidarr | [music.md](features/music/) |
-| Audiobook | `public` | 🟡 Scaffold | Audnexus, OpenLibrary | Chaptarr | [audiobook.md](features/audiobook/) |
-| Book | `public` | 🟡 Scaffold | OpenLibrary, Goodreads | Chaptarr | [book.md](features/book/) |
-| Podcast | `public` | 🟡 Scaffold | RSS/iTunes | Native | [podcast.md](features/podcasts/) |
-| Photo | `public` | 🔴 Planned | EXIF, Immich | - | [photo.md](features/photos/) |
-| Comics | `public` | 🔴 Planned | ComicVine | - | [comics.md](features/comics/) |
-| LiveTV | `public` | 🔴 Planned | XMLTV | TVHeadend | [livetv.md](features/livetv/) |
-| QAR Voyages | `qar` | 🟡 Scaffold | StashDB, ThePornDB | Whisparr | [qar.md](features/adult/) |
-| QAR Expeditions | `qar` | 🟡 Scaffold | StashDB, ThePornDB | Whisparr | [qar.md](features/adult/) |
-| QAR Treasures | `qar` | 🟡 Scaffold | StashDB | Prowlarr | [GALLERY_MODULE.md](features/adult/) |
+| Movie | `public` | ✅ Complete | TMDb | Radarr | [MOVIE_MODULE.md](features/video/MOVIE_MODULE.md) |
+| TV Show | `public` | ✅ Complete | TMDb, TheTVDB | Sonarr | [TVSHOW_MODULE.md](features/video/TVSHOW_MODULE.md) |
+| Music | `public` | 🟡 Scaffold | MusicBrainz, Last.fm | Lidarr | [MUSIC_MODULE.md](features/music/MUSIC_MODULE.md) |
+| Audiobook | `public` | 🟡 Scaffold | Audnexus, OpenLibrary | Chaptarr | [AUDIOBOOK_MODULE.md](features/audiobook/AUDIOBOOK_MODULE.md) |
+| Book | `public` | 🟡 Scaffold | OpenLibrary, Goodreads | Chaptarr | [BOOK_MODULE.md](features/book/BOOK_MODULE.md) |
+| Podcast | `public` | 🟡 Scaffold | RSS/iTunes | Native | [PODCASTS.md](features/podcasts/PODCASTS.md) |
+| Photo | `public` | 🔴 Planned | EXIF, Immich | - | [PHOTOS_LIBRARY.md](features/photos/PHOTOS_LIBRARY.md) |
+| Comics | `public` | 🔴 Planned | ComicVine | - | [COMICS_MODULE.md](features/comics/COMICS_MODULE.md) |
+| LiveTV | `public` | 🔴 Planned | XMLTV | TVHeadend | [LIVE_TV_DVR.md](features/livetv/LIVE_TV_DVR.md) |
+| QAR Voyages | `qar` | 🟡 Scaffold | StashDB, ThePornDB | Whisparr | [ADULT_CONTENT_SYSTEM.md](features/adult/ADULT_CONTENT_SYSTEM.md) |
+| QAR Expeditions | `qar` | 🟡 Scaffold | StashDB, ThePornDB | Whisparr | [ADULT_CONTENT_SYSTEM.md](features/adult/ADULT_CONTENT_SYSTEM.md) |
+| QAR Treasures | `qar` | 🟡 Scaffold | StashDB | Prowlarr | [GALLERY_MODULE.md](features/adult/GALLERY_MODULE.md) |
 
 ---
 
@@ -1261,13 +1300,29 @@ Instead of duplicating version tables.
 |--------|---------------|
 | [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../sources/security/casbin.md) |
 | [Casbin pgx Adapter](https://pkg.go.dev/github.com/pckhoi/casbin-pgx-adapter/v3) | [Local](../sources/security/casbin-pgx.md) |
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../sources/infrastructure/dragonfly.md) |
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../sources/media/ffmpeg-formats.md) |
 | [Go io](https://pkg.go.dev/io) | [Local](../sources/go/stdlib/io.md) |
 | [HashiCorp Raft](https://pkg.go.dev/github.com/hashicorp/raft) | [Local](../sources/distributed/hashicorp-raft.md) |
 | [HashiCorp Raft GitHub](https://github.com/hashicorp/raft) | [Local](../sources/distributed/hashicorp-raft-guide.md) |
 | [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) | [Local](../sources/tooling/genqlient.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../sources/apis/lastfm.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../sources/protocols/m3u8.md) |
 | [Open Policy Agent](https://pkg.go.dev/github.com/open-policy-agent/opa) | [Local](../sources/security/opa.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../sources/database/postgresql-json.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../sources/observability/prometheus-metrics.md) |
 | [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../sources/frontend/sveltekit.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../sources/infrastructure/typesense-go.md) |
 | [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../sources/tooling/fx.md) |
+| [XMLTV Format](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) | [Local](../sources/protocols/xmltv.md) |
 | [air (hot reload)](https://github.com/air-verse/air) | [Local](../sources/tooling/air.md) |
 | [appleboy/go-fcm](https://pkg.go.dev/github.com/appleboy/go-fcm) | [Local](../sources/tooling/go-fcm.md) |
 | [corona10/goimagehash](https://pkg.go.dev/github.com/corona10/goimagehash) | [Local](../sources/media/goimagehash.md) |
@@ -1285,6 +1340,7 @@ Instead of duplicating version tables.
 | [go-mail GitHub README](https://github.com/wneessen/go-mail) | [Local](../sources/tooling/go-mail-guide.md) |
 | [go-playground/validator](https://pkg.go.dev/github.com/go-playground/validator/v10) | [Local](../sources/tooling/validator.md) |
 | [gofeed GitHub README](https://github.com/mmcdole/gofeed) | [Local](../sources/tooling/gofeed-guide.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../sources/media/gohlslib.md) |
 | [goimagehash GitHub](https://github.com/corona10/goimagehash) | [Local](../sources/media/goimagehash-guide.md) |
 | [golang-migrate](https://github.com/golang-migrate/migrate) | [Local](../sources/database/migrations.md) |
 | [golang.org/x/crypto](https://pkg.go.dev/golang.org/x/crypto) | [Local](../sources/go/x/crypto.md) |
@@ -1302,9 +1358,13 @@ Instead of duplicating version tables.
 | [resty HTTP Client](https://pkg.go.dev/github.com/go-resty/resty/v2) | [Local](../sources/tooling/resty.md) |
 | [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../sources/tooling/rueidis.md) |
 | [rueidis GitHub README](https://github.com/redis/rueidis) | [Local](../sources/tooling/rueidis-guide.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../sources/frontend/shadcn-svelte.md) |
 | [sony/gobreaker](https://pkg.go.dev/github.com/sony/gobreaker) | [Local](../sources/tooling/gobreaker.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../sources/database/sqlc-config.md) |
 | [sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc) | [Local](../sources/tooling/sturdyc.md) |
 | [sturdyc GitHub README](https://github.com/viccon/sturdyc) | [Local](../sources/tooling/sturdyc-guide.md) |
+| [testcontainers-go](https://golang.testcontainers.org/) | [Local](../sources/testing/testcontainers.md) |
 | [testify](https://pkg.go.dev/github.com/stretchr/testify) | [Local](../sources/testing/testify.md) |
 | [uber-go/zap](https://pkg.go.dev/go.uber.org/zap) | [Local](../sources/tooling/zap.md) |
 | [wneessen/go-mail](https://pkg.go.dev/github.com/wneessen/go-mail) | [Local](../sources/tooling/go-mail.md) |

@@ -3,18 +3,82 @@
 > Complete adult content management with Stash ecosystem integration.
 > All adult content isolated in PostgreSQL schema `qar` with "Queen Anne's Revenge" themed obfuscation.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Design Principles](#design-principles)
+- [Queen Anne's Revenge Obfuscation](#queen-annes-revenge-obfuscation)
+  - [Example API Response](#example-api-response)
+  - [Database Schema Example](#database-schema-example)
+  - [Code Mapping Layer](#code-mapping-layer)
+- [Architecture Overview](#architecture-overview)
+- [Data Sources](#data-sources)
+  - [Priority Order](#priority-order)
+  - [Whisparr-v3 (Acquisition Proxy)](#whisparr-v3-acquisition-proxy)
+  - [StashDB Integration (Community Database)](#stashdb-integration-community-database)
+  - [Stash-App Integration (Private Instance)](#stash-app-integration-private-instance)
+- [Perceptual Hashing (Scene Identification)](#perceptual-hashing-scene-identification)
+  - [Hash Types](#hash-types)
+  - [Implementation](#implementation)
+- [Database Schema](#database-schema)
+- [Voyage-First Model (Whisparr v3)](#voyage-first-model-whisparr-v3)
+- [Features Specific to Adult Content](#features-specific-to-adult-content)
+  - [Voyage Markers (Timestamped Tags)](#voyage-markers-timestamped-tags)
+  - [Performer Filtering](#performer-filtering)
+  - [Studio Networks](#studio-networks)
+  - [Interactive Content](#interactive-content)
+- [Security Hardening](#security-hardening)
+  - [1. Complete Schema Isolation](#1-complete-schema-isolation)
+  - [2. Access Control (RBAC)](#2-access-control-rbac)
+  - [3. URL Obfuscation](#3-url-obfuscation)
+  - [4. Audit Logging (Isolated)](#4-audit-logging-isolated)
+  - [5. Network Security](#5-network-security)
+  - [6. Data Encryption](#6-data-encryption)
+  - [7. Privacy Controls](#7-privacy-controls)
+  - [8. Error Response Obfuscation](#8-error-response-obfuscation)
+  - [9. Database Connection Isolation](#9-database-connection-isolation)
+  - [Security Checklist](#security-checklist)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [River Jobs](#river-jobs)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Schema & Database Setup](#phase-1-schema-database-setup)
+  - [Phase 2: Core Repository & Service Layer](#phase-2-core-repository-service-layer)
+  - [Phase 3: Whisparr Integration (Acquisition)](#phase-3-whisparr-integration-acquisition)
+  - [Phase 4: Fingerprinting & Identification](#phase-4-fingerprinting-identification)
+  - [Phase 5: StashDB Enrichment](#phase-5-stashdb-enrichment)
+  - [Phase 6: Stash-App Integration (Optional/Private)](#phase-6-stash-app-integration-optionalprivate)
+  - [Phase 7: TPDB Fallback](#phase-7-tpdb-fallback)
+  - [Phase 8: Access Control & Security](#phase-8-access-control-security)
+  - [Phase 9: API Endpoints](#phase-9-api-endpoints)
+  - [Phase 10: River Jobs & Background Processing](#phase-10-river-jobs-background-processing)
+  - [Phase 11: Testing & Validation](#phase-11-testing-validation)
+  - [Phase 12: Deployment & Documentation](#phase-12-deployment-documentation)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Summary](#summary)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ## Design Principles
 
 1. **Complete Isolation** - Separate schema, namespace, and storage
@@ -1503,7 +1567,13 @@ func (SyncStashAppArgs) Kind() string { return "adult.sync_stash_app" }
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

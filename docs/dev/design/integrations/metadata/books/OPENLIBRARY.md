@@ -2,6 +2,44 @@
 
 > Open book metadata database - primary metadata provider for books (Goodreads alternative)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base URLs](#base-urls)
+  - [Key Endpoints](#key-endpoints)
+    - [Get Book by ISBN](#get-book-by-isbn)
+    - [Get Work (Canonical Book)](#get-work-canonical-book)
+    - [Get Author](#get-author)
+    - [Search Books](#search-books)
+    - [Get Cover Image](#get-cover-image)
+- [Implementation Checklist](#implementation-checklist)
+  - [API Client (`internal/infra/metadata/provider_openlibrary.go`)](#api-client-internalinframetadataprovider-openlibrarygo)
+  - [Book Metadata](#book-metadata)
+  - [Author Metadata](#author-metadata)
+  - [Cover Art Handling](#cover-art-handling)
+  - [Work vs Edition Handling](#work-vs-edition-handling)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Book Metadata Workflow](#book-metadata-workflow)
+  - [Readarr Integration](#readarr-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: OpenLibrary (Internet Archive)
 **Type**: Metadata Provider (Books)
 **API Version**: v1
@@ -11,15 +49,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API endpoints, data mapping |
 | Sources | ✅ | API docs, Books API, Covers API, Search API linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -306,6 +343,7 @@ func (s *BookService) HandleReadarrBookAdded(bookID string) error {
 | Source | Documentation |
 |--------|---------------|
 | [Open Library API](https://openlibrary.org/developers/api) | [Local](../../../../sources/apis/openlibrary.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -340,7 +378,6 @@ func (s *BookService) HandleReadarrBookAdded(bookID string) error {
 
 ## Related Documentation
 
-- **Book Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Book section)
 - **Goodreads Integration**: [GOODREADS.md](GOODREADS.md) (API retired, use OpenLibrary)
 - **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
 - **Hardcover Integration**: [HARDCOVER.md](HARDCOVER.md) (social reading platform)

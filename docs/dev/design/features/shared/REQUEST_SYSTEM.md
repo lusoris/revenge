@@ -2,6 +2,68 @@
 
 > Content request management for all modules - replaces Overseerr/Jellyseerr
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Design Decision](#design-decision)
+- [Core Features (from Overseerr/Jellyseerr)](#core-features-from-overseerrjellyseerr)
+  - [User-Facing Features](#user-facing-features)
+  - [Polls System](#polls-system)
+  - [Admin Features](#admin-features)
+  - [Advanced Automation Features](#advanced-automation-features)
+- [Per-Module Request Handling](#per-module-request-handling)
+  - [Movies (Radarr Integration)](#movies-radarr-integration)
+  - [TV Shows (Sonarr Integration)](#tv-shows-sonarr-integration)
+  - [Music (Lidarr Integration)](#music-lidarr-integration)
+  - [Audiobooks (Audiobookshelf Integration)](#audiobooks-audiobookshelf-integration)
+  - [Books (Chaptarr Integration)](#books-chaptarr-integration)
+  - [Podcasts (Audiobookshelf Integration)](#podcasts-audiobookshelf-integration)
+  - [Rule 5: Auto-Request Next Season (Watch-Based Automation)](#rule-5-auto-request-next-season-watch-based-automation)
+  - [Rule 6: Hold Requests if Storage Low](#rule-6-hold-requests-if-storage-low)
+  - [Rule 7: Auto-Decline if User Never Watches Genre](#rule-7-auto-decline-if-user-never-watches-genre)
+  - [Rule 8: Auto-Approve if User Frequently Watches Genre](#rule-8-auto-approve-if-user-frequently-watches-genre)
+- [Advanced Automation Examples](#advanced-automation-examples)
+  - [Example 1: Intelligent Season Automation (TV Shows)](#example-1-intelligent-season-automation-tv-shows)
+  - [Example 2: Adult Content Studio Request](#example-2-adult-content-studio-request)
+  - [Example 3: Storage-Aware Request Management](#example-3-storage-aware-request-management)
+- [UI Design (Inline in Revenge)](#ui-design-inline-in-revenge)
+  - [User Request Flow (Inline UI)](#user-request-flow-inline-ui)
+  - [Admin Approval Dashboard (Inline UI)](#admin-approval-dashboard-inline-ui)
+- [Notes](#notes)
+- [Implementation Phases](#implementation-phases)
+  - [Phase 1: Core Request System (Week 1)](#phase-1-core-request-system-week-1)
+  - [Phase 2: Content Search Integration (Week 2)](#phase-2-content-search-integration-week-2)
+  - [Phase 3: Arr Integration (Week 3)](#phase-3-arr-integration-week-3)
+  - [Phase 4: Audiobookshelf Integration (Week 3)](#phase-4-audiobookshelf-integration-week-3)
+  - [Phase 5: Notifications (Week 4)](#phase-5-notifications-week-4)
+  - [Phase 6: Frontend (Week 4-5)](#phase-6-frontend-week-4-5)
+  - [Phase 7: Auto-Approval Rules (Week 5)](#phase-7-auto-approval-rules-week-5)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer - Core](#phase-3-service-layer---core)
+  - [Phase 4: Content Search Modules](#phase-4-content-search-modules)
+  - [Phase 5: Arr Integration](#phase-5-arr-integration)
+  - [Phase 6: Audiobookshelf Integration](#phase-6-audiobookshelf-integration)
+  - [Phase 7: Background Jobs - Automation](#phase-7-background-jobs---automation)
+  - [Phase 8: Polls System](#phase-8-polls-system)
+  - [Phase 9: Notifications](#phase-9-notifications)
+  - [Phase 10: API Integration](#phase-10-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +71,10 @@
 | Design | ✅ | Full design with DB schema, automation rules, polls system |
 | Sources | 🟡 | Replaces Overseerr/Jellyseerr |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: 🟡 HIGH (Phase 9 - External Services)
 **Replaces**: Overseerr, Jellyseerr (NO integration - native only)
 
@@ -1241,6 +1302,22 @@ func (s *RequestService) ApprovePodcastRequest(ctx context.Context, requestID uu
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

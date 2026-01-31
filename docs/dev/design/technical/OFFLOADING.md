@@ -2,6 +2,60 @@
 
 > Keep only essential services hot, offload everything else with fast spin-up.
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Philosophy](#philosophy)
+- [Service Categories](#service-categories)
+  - [🔴 Always Hot (Never Offload)](#always-hot-never-offload)
+  - [🟡 Warm Standby (Connection Pooling)](#warm-standby-connection-pooling)
+  - [🟢 Cold Start (Lazy Initialization)](#cold-start-lazy-initialization)
+  - [⚫ Background (Async Processing)](#background-async-processing)
+- [Implementation Patterns](#implementation-patterns)
+  - [1. Lazy Service Factory](#1-lazy-service-factory)
+  - [2. Connection Pool with Auto-Scaling](#2-connection-pool-with-auto-scaling)
+  - [3. Service Health & Readiness](#3-service-health-readiness)
+  - [4. Graceful Degradation](#4-graceful-degradation)
+- [Offloading by Module](#offloading-by-module)
+  - [Playback Service](#playback-service)
+  - [Content Modules (Movie, TV, etc.)](#content-modules-movie-tv-etc)
+  - [Infrastructure](#infrastructure)
+- [Memory Budget](#memory-budget)
+- [Configuration](#configuration)
+- [Monitoring](#monitoring)
+  - [Metrics to Track](#metrics-to-track)
+  - [Alerts](#alerts)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Best Practices](#best-practices)
+  - [DO](#do)
+  - [DON'T](#dont)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Philosophy
 
 **Core Principle:** Minimize resource usage during idle periods while ensuring instant availability when needed.
@@ -374,6 +428,20 @@ type OffloadingMetrics struct {
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../sources/observability/prometheus-metrics.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

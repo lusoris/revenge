@@ -2,18 +2,61 @@
 
 > Adult performer database with comprehensive profiles and links
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Status](#api-status)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Scraping Library](#go-scraping-library)
+- [Integration Approach](#integration-approach)
+  - [Web Scraping Strategy](#web-scraping-strategy)
+    - [Performer Page Structure](#performer-page-structure)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Web Scraping (Adult Content - c schema)](#phase-1-web-scraping-adult-content---c-schema)
+  - [Phase 2: Link Enrichment](#phase-2-link-enrichment)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Performer Enrichment Flow](#performer-enrichment-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [No Official API (Web Scraping Only)](#no-official-api-web-scraping-only)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [External Links Table Schema](#external-links-table-schema)
+  - [URL Extraction](#url-extraction)
+  - [Photo Gallery](#photo-gallery)
+  - [Awards Tracking](#awards-tracking)
+  - [Alias Resolution](#alias-resolution)
+  - [JSONB Storage (c schema)](#jsonb-storage-c-schema)
+  - [Caching Strategy](#caching-strategy)
+  - [Robots.txt Compliance](#robotstxt-compliance)
+  - [Fallback Strategy (Adult Performer Metadata)](#fallback-strategy-adult-performer-metadata)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive web scraping spec, HTML structure, JSONB schema |
 | Sources | ✅ | Website URL, goquery library documented |
 | Instructions | ✅ | Detailed phased implementation checklist with c schema isolation |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -202,7 +245,9 @@ Display in UI (performer profile page, c schema isolated)
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../../sources/infrastructure/dragonfly.md) |
 | [Go io](https://pkg.go.dev/io) | [Local](../../../../sources/go/stdlib/io.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

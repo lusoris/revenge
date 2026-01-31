@@ -2,6 +2,44 @@
 
 > Should Revenge use plugins or native integration?
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Context](#context)
+- [Plugin Architectures Evaluated](#plugin-architectures-evaluated)
+  - [1. HashiCorp go-plugin (gRPC-based)](#1-hashicorp-go-plugin-grpc-based)
+  - [2. Stdlib plugin package (Shared Libraries)](#2-stdlib-plugin-package-shared-libraries)
+  - [3. WebAssembly Plugins (WASM)](#3-webassembly-plugins-wasm)
+- [Native Integration (Monolith with Modularity)](#native-integration-monolith-with-modularity)
+- [Trade-Off Analysis](#trade-off-analysis)
+- [Industry Trends](#industry-trends)
+  - [Modern Monoliths (2024-2026)](#modern-monoliths-2024-2026)
+  - [When Plugins Make Sense](#when-plugins-make-sense)
+- [Decision Criteria](#decision-criteria)
+  - [User Requirement: Efficiency Priority](#user-requirement-efficiency-priority)
+  - [State-of-the-Art: Modern Monoliths](#state-of-the-art-modern-monoliths)
+  - [Maintenance Burden](#maintenance-burden)
+- [Recommendation: **Native Integration**](#recommendation-native-integration)
+  - [Core Rationale](#core-rationale)
+  - [Implementation Strategy](#implementation-strategy)
+  - [Extensibility via Configuration](#extensibility-via-configuration)
+  - [Migration Path (if plugins needed later)](#migration-path-if-plugins-needed-later)
+- [Summary](#summary)
+- [References](#references)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Cross-References](#cross-references)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -13,7 +51,6 @@
 | Linting | ⚪ | N/A |
 | Unit Testing | ⚪ | N/A |
 | Integration Testing | ⚪ | N/A |
-
 **Priority**: ✅ COMPLETE (Decision made: Native Integration)
 **Module**: N/A - Architecture Decision Record
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -410,6 +447,18 @@ If third-party extensions become critical:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,6 +2,45 @@
 
 > Music metadata and cover art provider - popularity scores, high-quality images
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base URL](#base-url)
+  - [Authentication (Client Credentials Flow)](#authentication-client-credentials-flow)
+  - [Rate Limiting](#rate-limiting)
+  - [Key Endpoints](#key-endpoints)
+    - [Search Artists](#search-artists)
+    - [Get Artist](#get-artist)
+    - [Get Album](#get-album)
+    - [Get Track](#get-track)
+- [Implementation Checklist](#implementation-checklist)
+  - [API Client (`internal/infra/metadata/provider_spotify.go`)](#api-client-internalinframetadataprovider-spotifygo)
+  - [Token Management](#token-management)
+  - [Cover Art Fallback](#cover-art-fallback)
+  - [Popularity Scores](#popularity-scores)
+  - [Metadata Enrichment](#metadata-enrichment)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Cover Art Fallback Workflow](#cover-art-fallback-workflow)
+  - [Popularity Scores Update](#popularity-scores-update)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: Spotify
 **Type**: Metadata Provider (Music)
 **API Version**: Web API v1
@@ -11,15 +50,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API endpoints, OAuth flow, token management |
 | Sources | ✅ | API docs, authentication, console linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -285,7 +323,9 @@ func (s *MusicService) UpdatePopularityScores(ctx context.Context) error {
 
 | Source | Documentation |
 |--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../../sources/apis/lastfm.md) |
 | [Spotify Web API](https://developer.spotify.com/documentation/web-api) | [Local](../../../../sources/apis/spotify.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -320,7 +360,6 @@ func (s *MusicService) UpdatePopularityScores(ctx context.Context) error {
 
 ## Related Documentation
 
-- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
 - **Cover Art Archive**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary cover art source)
 - **Last.fm Integration**: [LASTFM.md](LASTFM.md) (scrobbling + bio)

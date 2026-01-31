@@ -2,18 +2,55 @@
 
 > Adult content platform subscription service - profile link tracking
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Status](#api-status)
+  - [Integration Approach](#integration-approach)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Link Tracking (Adult Content - c schema)](#phase-1-link-tracking-adult-content---c-schema)
+  - [Phase 2: UI Integration](#phase-2-ui-integration)
+  - [Phase 3: Link Verification](#phase-3-link-verification)
+- [Integration Pattern](#integration-pattern)
+  - [Link Tracking Flow](#link-tracking-flow)
+  - [Link Verification Flow](#link-verification-flow)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [NO Scraping (Legal/ToS Issues)](#no-scraping-legaltos-issues)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [Link Sources](#link-sources)
+  - [External URLs Table Schema](#external-urls-table-schema)
+  - [URL Validation](#url-validation)
+  - [Link Display (UI)](#link-display-ui)
+  - [Community Moderation](#community-moderation)
+  - [Priority: VERY LOW](#priority-very-low)
+  - [Alternative Platforms](#alternative-platforms)
+  - [Fallback Strategy (Adult Content Platform Links)](#fallback-strategy-adult-content-platform-links)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Link tracking approach, URL validation, verification flow |
 | Sources | ✅ | No API documented (link tracking only approach) |
 | Instructions | ✅ | Phased implementation checklist with c schema isolation |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview

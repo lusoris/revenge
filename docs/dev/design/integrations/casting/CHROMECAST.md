@@ -2,21 +2,52 @@
 
 > Google Cast protocol for streaming to Chromecast devices
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Technical Details](#technical-details)
+  - [Discovery](#discovery)
+  - [Cast Protocol](#cast-protocol)
+  - [Key Namespaces](#key-namespaces)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+  - [Transcode Profiles for Chromecast](#transcode-profiles-for-chromecast)
+- [Database Schema](#database-schema)
+- [API Endpoints](#api-endpoints)
+- [Cast Flow](#cast-flow)
+- [Media Load Message](#media-load-message)
+- [Chromecast Capabilities](#chromecast-capabilities)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 6 - Casting)
 **Type**: CAST protocol client
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive protocol spec, device capabilities, database schema |
 | Sources | ✅ | Cast SDK, receiver SDK, Go library linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview

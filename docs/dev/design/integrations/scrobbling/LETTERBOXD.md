@@ -2,6 +2,56 @@
 
 > Social network for movie lovers and film tracking
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Status](#api-status)
+  - [Unofficial API Options](#unofficial-api-options)
+  - [Authentication](#authentication)
+- [Integration Approach](#integration-approach)
+  - [Web Scraping Strategy](#web-scraping-strategy)
+    - [User Profile Page](#user-profile-page)
+    - [Diary (Watch History)](#diary-watch-history)
+    - [Ratings](#ratings)
+    - [Watchlist](#watchlist)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Integration Pattern](#integration-pattern)
+  - [One-Time Import Flow](#one-time-import-flow)
+  - [Rating Normalization](#rating-normalization)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [No Official API (Web Scraping Only)](#no-official-api-web-scraping-only)
+  - [User-Agent Requirement](#user-agent-requirement)
+  - [Rate Limits (Conservative)](#rate-limits-conservative)
+  - [Read-Only Integration](#read-only-integration)
+  - [Movie Matching Strategy](#movie-matching-strategy)
+  - [Pagination](#pagination)
+  - [HTML Parsing Challenges](#html-parsing-challenges)
+  - [robots.txt Compliance](#robotstxt-compliance)
+  - [Maintenance Burden](#maintenance-burden)
+  - [Letterboxd vs Trakt](#letterboxd-vs-trakt)
+  - [Privacy Considerations](#privacy-considerations)
+  - [Fallback Strategy (Movie Tracking)](#fallback-strategy-movie-tracking)
+  - [Future: Official API](#future-official-api)
+
+<!-- TOC-END -->
+
 **Service**: Letterboxd (https://letterboxd.com)
 **API**: No official public API (web scraping OR unofficial API)
 **Category**: Scrobbling / Social (Movies Only)
@@ -9,16 +59,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -231,6 +280,7 @@ Conversion: Direct 1:1 mapping (no conversion needed)
 | Source | Documentation |
 |--------|---------------|
 | [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../../sources/apis/lastfm.md) |
 | [Letterboxd API](https://api-docs.letterboxd.com/) | [Local](../../../sources/apis/letterboxd.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

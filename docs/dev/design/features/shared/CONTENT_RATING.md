@@ -2,6 +2,57 @@
 
 > Universal age restriction and content rating system for revenge.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Design Principles](#design-principles)
+  - [Private Server Model](#private-server-model)
+  - [Content-Based Filtering (NOT Person-Based)](#content-based-filtering-not-person-based)
+  - [FSK18 vs Adult Distinction](#fsk18-vs-adult-distinction)
+- [International Rating Systems](#international-rating-systems)
+  - [Supported Systems](#supported-systems)
+  - [Database Schema](#database-schema)
+  - [Normalized Level Scale](#normalized-level-scale)
+  - [Filtering Logic](#filtering-logic)
+  - [Display Logic](#display-logic)
+- [User Settings](#user-settings)
+  - [User Table Extensions](#user-table-extensions)
+  - [Age Calculation](#age-calculation)
+- [Person Visibility](#person-visibility)
+  - [Logic](#logic)
+  - [Image Handling for Persons](#image-handling-for-persons)
+- [API Behavior](#api-behavior)
+  - [Content Listing](#content-listing)
+  - [Restricted Content Response](#restricted-content-response)
+- [Metadata Provider Integration](#metadata-provider-integration)
+- [Module-Specific Rating Systems](#module-specific-rating-systems)
+  - [Video Content (Movies & TV Shows)](#video-content-movies-tv-shows)
+  - [Music (Audio Content)](#music-audio-content)
+  - [Books](#books)
+  - [Comics](#comics)
+  - [Per-Module Filtering](#per-module-filtering)
+  - [User Preferences](#user-preferences)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +60,10 @@
 | Design | ✅ | Full design with DB schema, Go filtering logic, per-module systems |
 | Sources | 🟡 | International rating systems documented |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Location**: `internal/service/rating/`
 
 ---
@@ -275,7 +325,7 @@ func (f *Filter) GetPersonImage(ctx context.Context, personID, userID uuid.UUID)
         }
     }
 
-    // No allowed image = return placeholder
+    // No allowed image = return 🔴 Not implemented
     return f.getPlaceholderImage()
 }
 ```
@@ -310,7 +360,7 @@ When content is restricted but `hide_restricted = false`:
     "IsRestricted": true,
     "RequiresPin": true,
     "MinimumRatingLevel": 75,
-    "ImageUrl": "/placeholder/restricted.png"
+    "ImageUrl": "/🔴 Not implemented/restricted.png"
 }
 ```
 
@@ -537,6 +587,17 @@ ALTER TABLE users ADD COLUMN comic_max_rating VARCHAR(20) DEFAULT 'teen_plus';
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

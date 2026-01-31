@@ -2,6 +2,56 @@
 
 > Fan-curated wikis for movies, TV shows, games, and more
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Client Library](#go-client-library)
+- [API Details](#api-details)
+  - [REST Endpoints (Same as Wikipedia)](#rest-endpoints-same-as-wikipedia)
+    - [Search Pages](#search-pages)
+    - [Get Page Extract](#get-page-extract)
+    - [Get Page Images](#get-page-images)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration](#phase-1-core-integration)
+  - [Phase 2: Wiki Mapping](#phase-2-wiki-mapping)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Wiki Selection Flow](#wiki-selection-flow)
+  - [Wiki Mapping Table](#wiki-mapping-table)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [Wiki Selection Strategy](#wiki-selection-strategy)
+  - [Popular Wiki Mappings](#popular-wiki-mappings)
+  - [FANDOM vs Wikipedia](#fandom-vs-wikipedia)
+  - [Content Licensing](#content-licensing)
+  - [User-Agent Requirement](#user-agent-requirement)
+  - [Rate Limits](#rate-limits)
+  - [JSONB Storage](#jsonb-storage)
+  - [Caching Strategy](#caching-strategy)
+  - [Content Quality](#content-quality)
+  - [Episode Guides](#episode-guides)
+  - [Character Bios](#character-bios)
+  - [Spoilers Warning](#spoilers-warning)
+  - [Multi-Language Support](#multi-language-support)
+  - [Fallback Strategy](#fallback-strategy)
+
+<!-- TOC-END -->
+
 **Service**: FANDOM (https://www.fandom.com)
 **API**: MediaWiki Action API (same as Wikipedia)
 **Category**: Wiki / Knowledge Base (Fan Communities)
@@ -10,15 +60,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive API endpoints, wiki mapping, JSONB storage |
 | Sources | ✅ | MediaWiki API documentation with examples |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -191,6 +240,12 @@ tvshows table:
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+
 <!-- SOURCE-BREADCRUMBS-END -->
 
 <!-- DESIGN-BREADCRUMBS-START -->
@@ -225,7 +280,7 @@ tvshows table:
 
 - [WIKIPEDIA.md](./WIKIPEDIA.md) - General encyclopedia
 - [TVTROPES.md](./TVTROPES.md) - Trope analysis
-- [INTERNAL_WIKI.md](../../features/INTERNAL_WIKI.md) - Built-in wiki system
+- [Wiki System](../../features/shared/WIKI_SYSTEM.md) - Built-in wiki system
 
 ---
 

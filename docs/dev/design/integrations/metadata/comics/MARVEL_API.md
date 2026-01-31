@@ -2,21 +2,59 @@
 
 > Official Marvel Comics metadata (Marvel Universe content only)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Key Features](#key-features)
+  - [Authentication](#authentication)
+- [API Details](#api-details)
+  - [Authentication](#authentication)
+  - [Core Endpoints](#core-endpoints)
+    - [1. Search Comics](#1-search-comics)
+    - [2. Get Comic Details](#2-get-comic-details)
+    - [3. Get Character Details](#3-get-character-details)
+    - [4. Get Event Details](#4-get-event-details)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration](#phase-1-core-integration)
+  - [Phase 2: Character & Event Enrichment](#phase-2-character-event-enrichment)
+  - [Phase 3: Optimization](#phase-3-optimization)
+  - [Phase 4: Background Jobs (River)](#phase-4-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Metadata Enrichment Flow (Marvel Comics Only)](#metadata-enrichment-flow-marvel-comics-only)
+  - [Character Enrichment Flow](#character-enrichment-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 7 - Comics Module, optional enrichment)
 **Provider**: Marvel Entertainment
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API spec, authentication, rate limiting |
 | Sources | ✅ | Base URL, documentation, authentication examples linked |
 | Instructions | ✅ | Phased implementation checklist with enrichment flow |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -311,6 +349,15 @@ func (c *MarvelAPIClient) checkRateLimit() error {
 
 - [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

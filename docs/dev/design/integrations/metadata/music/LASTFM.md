@@ -2,6 +2,46 @@
 
 > Music scrobbling and metadata provider - artist bio, tags, similar artists
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Base URL](#base-url)
+  - [Authentication](#authentication)
+  - [OAuth Flow (for Scrobbling)](#oauth-flow-for-scrobbling)
+  - [Rate Limiting](#rate-limiting)
+  - [Key Endpoints](#key-endpoints)
+    - [Get Artist Info](#get-artist-info)
+    - [Get Album Info](#get-album-info)
+    - [Search Artists](#search-artists)
+    - [Scrobble Track (requires OAuth session)](#scrobble-track-requires-oauth-session)
+    - [Update Now Playing](#update-now-playing)
+- [Implementation Checklist](#implementation-checklist)
+  - [API Client (`internal/infra/scrobble/provider_lastfm.go`)](#api-client-internalinfrascrobbleprovider-lastfmgo)
+  - [Artist Metadata](#artist-metadata)
+  - [Scrobbling](#scrobbling)
+  - [User Stats](#user-stats)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Scrobbling Workflow](#scrobbling-workflow)
+  - [Metadata Enrichment](#metadata-enrichment)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: Last.fm
 **Type**: Scrobbling + Metadata Provider (Music)
 **API Version**: 2.0
@@ -11,15 +51,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive API spec, OAuth flow, scrobbling protocol |
 | Sources | ✅ | API intro, authentication, scrobbling docs linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -294,7 +333,6 @@ func (s *MusicService) EnrichArtistMetadata(artistID uuid.UUID) error {
 
 ## Related Documentation
 
-- **Music Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Music section)
 - **MusicBrainz Integration**: [MUSICBRAINZ.md](MUSICBRAINZ.md) (primary metadata)
 - **Scrobbling Overview**: [docs/SCROBBLING.md](../../../SCROBBLING.md)
 - **ListenBrainz Integration**: [../../scrobbling/LISTENBRAINZ.md](../../scrobbling/LISTENBRAINZ.md) (open alternative)

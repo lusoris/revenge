@@ -2,18 +2,54 @@
 
 > Adult content management automation (eros branch)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Endpoints (Assumed - Radarr-like)](#key-endpoints-assumed---radarr-like)
+- [Webhook Events (Assumed - Radarr-like)](#webhook-events-assumed---radarr-like)
+  - [On Import (Scene Downloaded & Imported)](#on-import-scene-downloaded-imported)
+  - [On Movie Added (New Scene Tracked)](#on-movie-added-new-scene-tracked)
+  - [On Movie Delete](#on-movie-delete)
+  - [On Movie File Delete](#on-movie-file-delete)
+  - [On Rename](#on-rename)
+  - [On Health Issue](#on-health-issue)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Go Client Example](#go-client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Quality Profile Mapping](#quality-profile-mapping)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 7 - Adult Modules)
 **Type**: Webhook listener + API client for metadata sync
 **Schema Isolation**: PostgreSQL schema `qar` (see [Adult Content System](../../features/ADULT_CONTENT_SYSTEM.md))
@@ -208,6 +244,17 @@ func (c *WhisparrClient) GetScene(ctx context.Context, sceneID int) (*Scene, err
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
 
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+
 <!-- SOURCE-BREADCRUMBS-END -->
 
 <!-- DESIGN-BREADCRUMBS-START -->
@@ -246,8 +293,8 @@ func (c *WhisparrClient) GetScene(ctx context.Context, sceneID int) (*Scene, err
 - [Whisparr/StashDB Schema](../../features/WHISPARR_STASHDB_SCHEMA.md) - Database design
 - [StashDB Integration](../metadata/adult/STASHDB.md) - Performer/studio metadata
 - [Radarr Integration](RADARR.md) - Similar API structure
-- [Arr Integration Pattern](../../patterns/arr_integration.md)
-- [Webhook Handling](../../patterns/webhook_patterns.md)
+- [Arr Integration Pattern](../../patterns/ARR_INTEGRATION.md)
+- [Webhook Handling](../../patterns/WEBHOOK_PATTERNS.md)
 
 ---
 

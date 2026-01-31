@@ -1,5 +1,61 @@
 # Branch Protection Rules
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Main Branch (`main`)](#main-branch-main)
+  - [Active Protection Rules:](#active-protection-rules)
+- [Develop Branch (`develop`)](#develop-branch-develop)
+  - [Active Protection Rules:](#active-protection-rules)
+- [Feature Branches (`feature/*`, `fix/*`)](#feature-branches-feature-fix)
+  - [Naming Conventions:](#naming-conventions)
+  - [Best Practices:](#best-practices)
+- [Release Branches (`release/*`)](#release-branches-release)
+  - [Protection Rules:](#protection-rules)
+  - [Release Process:](#release-process)
+- [Hotfix Branches (`hotfix/*`)](#hotfix-branches-hotfix)
+  - [Protection Rules:](#protection-rules)
+  - [Hotfix Process:](#hotfix-process)
+- [Tag Protection](#tag-protection)
+  - [Protected Tag Patterns:](#protected-tag-patterns)
+  - [Rules:](#rules)
+- [Repository Settings](#repository-settings)
+  - [General:](#general)
+  - [Security:](#security)
+- [Setting Up Protection Rules](#setting-up-protection-rules)
+  - [Via GitHub UI:](#via-github-ui)
+  - [Via GitHub CLI:](#via-github-cli)
+  - [Via Terraform (Infrastructure as Code):](#via-terraform-infrastructure-as-code)
+- [Workflow Summary](#workflow-summary)
+- [Additional Resources](#additional-resources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 This document outlines the branch protection rules for the revenge repository.
 
 > **Status**: ✅ Branch protection is **ACTIVE** on `main` and `develop`

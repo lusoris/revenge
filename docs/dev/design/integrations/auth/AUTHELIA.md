@@ -2,18 +2,48 @@
 
 > Self-hosted authentication and authorization server
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [OIDC Details](#oidc-details)
+  - [Supported Scopes](#supported-scopes)
+  - [Authelia Configuration](#authelia-configuration)
+- [Data Mapping](#data-mapping)
+  - [Authelia Claims → Revenge User](#authelia-claims-revenge-user)
+  - [Group → Role Mapping](#group-role-mapping)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Authentication Flow](#authentication-flow)
+- [Security Considerations](#security-considerations)
+- [Troubleshooting](#troubleshooting)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
 **Type**: OIDC Identity Provider
 
@@ -289,6 +319,14 @@ CREATE INDEX idx_user_oidc_links_subject ON user_oidc_links(oidc_subject);
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../../sources/security/authentik.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../../sources/security/keycloak.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,18 +2,60 @@
 
 > Multi-platform client support with intelligent capability detection.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Supported Clients Overview](#supported-clients-overview)
+  - [Native Clients (Planned)](#native-clients-planned)
+  - [Third-Party Clients](#third-party-clients)
+- [Client Capability Detection](#client-capability-detection)
+  - [Capability Model](#capability-model)
+  - [User-Agent Detection](#user-agent-detection)
+- [Chromecast Integration](#chromecast-integration)
+  - [Cast SDK Integration (Frontend)](#cast-sdk-integration-frontend)
+  - [Backend Support](#backend-support)
+- [DLNA/UPnP Support](#dlnaupnp-support)
+  - [DLNA Server Implementation](#dlna-server-implementation)
+  - [DLNA Profiles](#dlna-profiles)
+- [Bandwidth Adaptation](#bandwidth-adaptation)
+  - [Adaptive Bitrate for Audio](#adaptive-bitrate-for-audio)
+  - [Client-Reported Bandwidth](#client-reported-bandwidth)
+- [Session Management](#session-management)
+  - [Multi-Device Sync](#multi-device-sync)
+- [Configuration](#configuration)
+- [Summary](#summary)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Client Capability Detection](#phase-2-client-capability-detection)
+  - [Phase 3: Chromecast Integration](#phase-3-chromecast-integration)
+  - [Phase 4: DLNA/UPnP Support](#phase-4-dlnaupnp-support)
+  - [Phase 5: Session Management & API](#phase-5-session-management-api)
+  - [Phase 6: Subsonic API Compatibility](#phase-6-subsonic-api-compatibility)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | ✅ | Full design with capability model, DLNA, Chromecast |
-| Sources | 🟡 | |
+| Sources | 🟡 |  |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Last Updated**: 2026-01-30
 **Location**: `internal/clients/`
 
@@ -729,6 +771,21 @@ clients:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

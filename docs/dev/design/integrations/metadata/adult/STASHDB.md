@@ -2,6 +2,60 @@
 
 > Adult metadata database for performers, studios, and scenes
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Client Library](#go-client-library)
+- [API Details](#api-details)
+  - [GraphQL Queries](#graphql-queries)
+    - [Search Scenes](#search-scenes)
+    - [Get Scene Details](#get-scene-details)
+    - [Search Performers](#search-performers)
+    - [Get Performer Details](#get-performer-details)
+    - [Search Studios](#search-studios)
+    - [Fingerprint Lookup (Scene Identification)](#fingerprint-lookup-scene-identification)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration](#phase-1-core-integration)
+  - [Phase 2: Fingerprinting & Auto-Identification](#phase-2-fingerprinting-auto-identification)
+  - [Phase 3: Performer & Studio Management](#phase-3-performer-studio-management)
+  - [Phase 4: Background Jobs (River)](#phase-4-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Scene Metadata Fetch Flow](#scene-metadata-fetch-flow)
+  - [Crew Search Flow](#crew-search-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [API Key (Free)](#api-key-free)
+  - [GraphQL vs REST](#graphql-vs-rest)
+  - [Data Quality](#data-quality)
+  - [Fingerprinting (Perceptual Hashing)](#fingerprinting-perceptual-hashing)
+  - [Adult Content Isolation (CRITICAL)](#adult-content-isolation-critical)
+  - [Tags & Categories](#tags-categories)
+  - [Parent/Subsidiary Studios](#parentsubsidiary-studios)
+  - [JSONB Storage](#jsonb-storage)
+  - [Image URLs](#image-urls)
+  - [Disambiguation](#disambiguation)
+  - [Community Contributions](#community-contributions)
+  - [Fallback Strategy](#fallback-strategy)
+  - [Use Case: Whisparr Integration](#use-case-whisparr-integration)
+
+<!-- TOC-END -->
+
 **Service**: StashDB (https://stashdb.org)
 **API**: GraphQL API (https://stashdb.org/graphql)
 **Category**: Metadata Provider (Adult Content)
@@ -10,15 +64,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive GraphQL API spec, fingerprinting, data mapping |
 | Sources | ✅ | GraphQL schema, playground, API docs, GitHub linked |
 | Instructions | ✅ | Phased implementation checklist with fingerprinting |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -473,9 +526,19 @@ StashDB has no hard rate limit, but avoid abuse:
 
 | Source | Documentation |
 |--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../../sources/media/ffmpeg-formats.md) |
 | [Khan/genqlient](https://pkg.go.dev/github.com/Khan/genqlient) | [Local](../../../../sources/tooling/genqlient.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 | [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../../sources/apis/stashdb-schema.graphql) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../../sources/infrastructure/typesense-go.md) |
 | [genqlient GitHub README](https://github.com/Khan/genqlient) | [Local](../../../../sources/tooling/genqlient-guide.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../../sources/media/go-astiav.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

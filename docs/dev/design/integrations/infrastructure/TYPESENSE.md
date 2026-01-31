@@ -2,18 +2,59 @@
 
 > Fast, typo-tolerant search engine
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Connection Details](#connection-details)
+- [Configuration](#configuration)
+- [Collection Schemas](#collection-schemas)
+  - [Movies Collection](#movies-collection)
+  - [TV Shows Collection](#tv-shows-collection)
+  - [Music Collection](#music-collection)
+  - [People Collection](#people-collection)
+- [Search Operations](#search-operations)
+  - [Basic Search](#basic-search)
+  - [Faceted Search](#faceted-search)
+  - [Multi-Search](#multi-search)
+  - [Vector Search (Similarity)](#vector-search-similarity)
+- [Indexing](#indexing)
+  - [Index Document](#index-document)
+  - [Batch Indexing](#batch-indexing)
+  - [Delete from Index](#delete-from-index)
+- [Implementation Checklist](#implementation-checklist)
+- [Docker Compose](#docker-compose)
+- [Health Checks](#health-checks)
+- [Monitoring](#monitoring)
+  - [Key Metrics](#key-metrics)
+  - [Typesense Stats](#typesense-stats)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
 **Type**: Search engine
 
@@ -497,8 +538,15 @@ curl http://localhost:8108/collections/movies -H "X-TYPESENSE-API-KEY: ${API_KEY
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../../sources/observability/prometheus-metrics.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
 | [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

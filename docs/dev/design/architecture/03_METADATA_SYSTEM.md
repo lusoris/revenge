@@ -2,18 +2,81 @@
 
 > Servarr-first metadata with intelligent fallback and multi-language support.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Provider Framework](#phase-1-provider-framework)
+  - [Phase 2: Servarr Integration](#phase-2-servarr-integration)
+  - [Phase 3: Fallback Providers](#phase-3-fallback-providers)
+  - [Phase 4: Service Layer](#phase-4-service-layer)
+- [Design Philosophy](#design-philosophy)
+- [Architecture Overview](#architecture-overview)
+- [Data Sources Priority](#data-sources-priority)
+  - [Movies](#movies)
+  - [TV Shows](#tv-shows)
+  - [Music](#music)
+  - [Audiobooks](#audiobooks)
+  - [Books (E-Books)](#books-e-books)
+  - [Podcasts](#podcasts)
+  - [Adult Content](#adult-content)
+- [Multi-Language Support](#multi-language-support)
+  - [Language Priority Resolution](#language-priority-resolution)
+  - [Translation Storage](#translation-storage)
+  - [Translation Fetch Flow](#translation-fetch-flow)
+  - [UI Behavior](#ui-behavior)
+- [Local Data Sources](#local-data-sources)
+  - [Servarr Suite](#servarr-suite)
+  - [Native Audio Content Management](#native-audio-content-management)
+- [Servarr Integration](#servarr-integration)
+  - [Radarr API Integration](#radarr-api-integration)
+  - [Sonarr API Integration](#sonarr-api-integration)
+  - [Webhook Listeners](#webhook-listeners)
+- [Fallback Providers](#fallback-providers)
+  - [TMDb Provider](#tmdb-provider)
+  - [MusicBrainz Provider](#musicbrainz-provider)
+- [Metadata Jobs](#metadata-jobs)
+  - [Job Definitions](#job-definitions)
+  - [Worker Implementation](#worker-implementation)
+- [Image Management](#image-management)
+  - [Image Types](#image-types)
+  - [Image Storage](#image-storage)
+  - [Blurhash Generation](#blurhash-generation)
+- [Caching Strategy](#caching-strategy)
+  - [Cache Layers](#cache-layers)
+  - [Cache Keys](#cache-keys)
+  - [TTL Configuration](#ttl-configuration)
+- [Configuration](#configuration)
+  - [Servarr Configuration](#servarr-configuration)
+  - [Language Configuration](#language-configuration)
+- [API Endpoints](#api-endpoints)
+  - [Metadata Endpoints](#metadata-endpoints)
+- [Summary](#summary)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Cross-References](#cross-references)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | ✅ | Complete metadata system specification |
 | Sources | 🟡 | API docs partially fetched |
-| Instructions | 🔴 | |
+| Instructions | 🔴 |  |
 | Code | 🔴 | Reset to template |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: 🔴 HIGH
 **Module**: `internal/service/metadata`
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -620,7 +683,7 @@ CREATE TABLE movie_images (
     height      INT,
     vote_count  INT DEFAULT 0,            -- From TMDb
     vote_avg    FLOAT DEFAULT 0,
-    blurhash    VARCHAR(50),              -- For loading placeholder
+    blurhash    VARCHAR(50),              -- For loading 🔴 Not implemented
     is_primary  BOOLEAN DEFAULT false,
     source      VARCHAR(50),              -- 'arr', 'tmdb', 'fanart', 'manual'
     created_at  TIMESTAMPTZ DEFAULT NOW()
@@ -875,6 +938,19 @@ paths:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../sources/apis/lastfm.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../sources/media/go-blurhash.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

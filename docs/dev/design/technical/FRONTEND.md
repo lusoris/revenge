@@ -2,6 +2,74 @@
 
 > Modern, responsive web interface with full RBAC and theme support.
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
+  - [Roles](#roles)
+  - [Permissions](#permissions)
+  - [Permission Check](#permission-check)
+- [Theme System](#theme-system)
+  - [CSS Variables](#css-variables)
+  - [Theme Store](#theme-store)
+  - [Custom Themes (Admin)](#custom-themes-admin)
+- [API Integration](#api-integration)
+  - [OpenAPI Client Generation](#openapi-client-generation)
+  - [TanStack Query Integration](#tanstack-query-integration)
+  - [Usage in Components](#usage-in-components)
+- [Video Player](#video-player)
+  - [Features](#features)
+  - [Player Component](#player-component)
+- [PWA Support](#pwa-support)
+  - [Service Worker](#service-worker)
+  - [Manifest](#manifest)
+- [Internationalization (i18n)](#internationalization-i18n)
+  - [Setup](#setup)
+  - [Usage](#usage)
+- [Responsive Design](#responsive-design)
+  - [Breakpoints](#breakpoints)
+  - [Mobile-First Components](#mobile-first-components)
+- [Admin Panel Features](#admin-panel-features)
+  - [Dashboard](#dashboard)
+  - [User Management](#user-management)
+  - [Library Management](#library-management)
+  - [Server Settings](#server-settings)
+  - [Activity Logs](#activity-logs)
+- [Development](#development)
+  - [Setup](#setup)
+  - [Build](#build)
+  - [Component Development](#component-development)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Technology Stack
 
 | Component | Technology | Version | Purpose |
@@ -562,6 +630,18 @@ npx shadcn-svelte@latest add dialog
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../sources/apis/lastfm.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
+| [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) | [Local](../../sources/frontend/tanstack-query.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

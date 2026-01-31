@@ -2,21 +2,54 @@
 
 > Open-source TV streaming server and DVR
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [HTTP API](#http-api)
+  - [Stream URLs](#stream-urls)
+  - [HTSP Protocol (Optional)](#htsp-protocol-optional)
+- [Data Mapping](#data-mapping)
+  - [Channel Mapping](#channel-mapping)
+  - [EPG Mapping](#epg-mapping)
+  - [Recording Mapping](#recording-mapping)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Stream Handling](#stream-handling)
+  - [Direct Stream URL](#direct-stream-url)
+  - [Proxied Stream](#proxied-stream)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 6 - LiveTV Module)
 **Type**: HTTP API + HTSP client
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive HTTP/HTSP API spec, data mapping, database schema |
 | Sources | ✅ | Docs, API reference, HTSP protocol, GitHub linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -339,6 +372,13 @@ func (h *LiveTVHandler) StreamChannel(w http.ResponseWriter, r *http.Request) {
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../../sources/protocols/m3u8.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

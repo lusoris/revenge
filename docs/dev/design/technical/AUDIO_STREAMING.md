@@ -2,6 +2,68 @@
 
 > Complete audio streaming with progress persistence and session management.
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Audio Streaming Architecture](#audio-streaming-architecture)
+  - [Flow Diagram](#flow-diagram)
+  - [Direct Play vs Transcoding](#direct-play-vs-transcoding)
+  - [Audio Formats Support](#audio-formats-support)
+- [Bandwidth-Aware Audio Streaming](#bandwidth-aware-audio-streaming)
+  - [Overview](#overview)
+  - [Audio Quality Tiers](#audio-quality-tiers)
+  - [Bandwidth Measurement](#bandwidth-measurement)
+  - [Client Bandwidth Reporting](#client-bandwidth-reporting)
+  - [Frontend Bandwidth Monitoring](#frontend-bandwidth-monitoring)
+  - [Quality Switch Handling](#quality-switch-handling)
+- [Progress Tracking](#progress-tracking)
+  - [Database Schema](#database-schema)
+  - [Progress Service](#progress-service)
+  - [Progress Update Batching](#progress-update-batching)
+- [Playback Session](#playback-session)
+  - [Session State](#session-state)
+  - [Session Manager](#session-manager)
+- [Music Queue](#music-queue)
+  - [Queue Management](#queue-management)
+- [Podcast Features](#podcast-features)
+  - [Skip Segments](#skip-segments)
+  - [Episode Played Status](#episode-played-status)
+- [Audiobook Features](#audiobook-features)
+  - [Chapter Navigation](#chapter-navigation)
+  - [Bookmarks](#bookmarks)
+  - [Sleep Timer](#sleep-timer)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Summary](#summary)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Overview
 
 Audio streaming in Revenge covers multiple content types with unique requirements:
@@ -1192,6 +1254,13 @@ audio:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

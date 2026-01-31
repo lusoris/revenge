@@ -2,6 +2,48 @@
 
 > TV series, seasons, and episodes management
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Files](#files)
+- [Entity Hierarchy](#entity-hierarchy)
+  - [Series](#series)
+  - [Season](#season)
+  - [Episode](#episode)
+- [Service Operations](#service-operations)
+  - [Series Operations](#series-operations)
+  - [Season Operations](#season-operations)
+  - [Episode Operations](#episode-operations)
+- [User Data](#user-data)
+  - [Watch Progress](#watch-progress)
+  - [Series Progress](#series-progress)
+- [Metadata Flow](#metadata-flow)
+- [Background Jobs](#background-jobs)
+- [Database Schema](#database-schema)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: User Data](#phase-4-user-data)
+  - [Phase 5: Background Jobs](#phase-5-background-jobs)
+  - [Phase 6: API Integration](#phase-6-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +51,10 @@
 | Design | ✅ | Comprehensive spec with architecture, entities, operations |
 | Sources | ✅ | TMDb, TheTVDB, Sonarr API docs linked |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Location**: `internal/content/tvshow/`
 
 ---
@@ -417,8 +458,17 @@ CREATE TABLE tvshow.episodes (
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Sonarr API Docs](https://sonarr.tv/docs/api/) | [Local](../../../sources/apis/sonarr-docs.md) |
 | [TheTVDB API](https://thetvdb.github.io/v4-api/) | [Local](../../../sources/apis/thetvdb.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../sources/media/go-blurhash.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

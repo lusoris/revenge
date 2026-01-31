@@ -2,18 +2,85 @@
 
 > Unified web player for video and audio with native streaming and transcode fallback.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Playback Core](#phase-1-playback-core)
+  - [Phase 2: Streaming Protocol Support](#phase-2-streaming-protocol-support)
+  - [Phase 3: Audio Features](#phase-3-audio-features)
+  - [Phase 4: Video Features](#phase-4-video-features)
+- [Overview](#overview)
+- [Design Decisions](#design-decisions)
+- [Player Components](#player-components)
+- [Streaming Strategy](#streaming-strategy)
+  - [Decision Tree](#decision-tree)
+  - [Capability Detection](#capability-detection)
+- [MKV Direct Play Support](#mkv-direct-play-support)
+  - [Browser Compatibility](#browser-compatibility)
+  - [Why MKV Direct Play?](#why-mkv-direct-play)
+  - [Implementation Strategy](#implementation-strategy)
+  - [MKV MIME Types](#mkv-mime-types)
+  - [Video Element Setup](#video-element-setup)
+  - [Fallback Strategy](#fallback-strategy)
+  - [Testing MKV Support](#testing-mkv-support)
+  - [Performance Benefits](#performance-benefits)
+- [HLS vs DASH](#hls-vs-dash)
+  - [Comparison](#comparison)
+  - [Strategy: HLS Primary, DASH Fallback](#strategy-hls-primary-dash-fallback)
+  - [Error Handling & Failover](#error-handling-failover)
+- [Video Player Implementation](#video-player-implementation)
+  - [Library: Shaka Player + hls.js](#library-shaka-player-hlsjs)
+- [Audio Player Implementation](#audio-player-implementation)
+  - [Library: Web Audio API + Howler.js](#library-web-audio-api-howlerjs)
+- [Synced Lyrics](#synced-lyrics)
+  - [Data Model](#data-model)
+  - [LRC Format Support](#lrc-format-support)
+  - [Lyrics Display Component](#lyrics-display-component)
+- [Audio Visualization](#audio-visualization)
+  - [Canvas-based Visualizer](#canvas-based-visualizer)
+  - [Fanart-based Visualization (Alternative)](#fanart-based-visualization-alternative)
+- [Subtitle Support](#subtitle-support)
+  - [External WebVTT](#external-webvtt)
+  - [Internal Subtitle Tracks (from Container)](#internal-subtitle-tracks-from-container)
+  - [Styling](#styling)
+- [Quality Switching](#quality-switching)
+  - [User Settings](#user-settings)
+  - [Seamless Quality Switch](#seamless-quality-switch)
+- [iOS Safari Limitations & Graceful Degradation](#ios-safari-limitations-graceful-degradation)
+- [Performance Optimizations](#performance-optimizations)
+  - [1. Web Workers for Audio Processing](#1-web-workers-for-audio-processing)
+  - [2. IndexedDB for Offline Caching](#2-indexeddb-for-offline-caching)
+  - [3. Request Prioritization](#3-request-prioritization)
+- [Custom UI Controls](#custom-ui-controls)
+  - [Control Bar Components](#control-bar-components)
+- [Architecture Summary](#architecture-summary)
+- [Next Steps](#next-steps)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Cross-References](#cross-references)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | ✅ | Complete player architecture specification |
 | Sources | ⚪ | N/A - internal design doc |
-| Instructions | 🔴 | |
+| Instructions | 🔴 |  |
 | Code | 🔴 | Reset to template |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: 🟡 MEDIUM
 **Module**: `web/src/lib/player`
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -1351,6 +1418,20 @@ Player Architecture:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../sources/protocols/m3u8.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

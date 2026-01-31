@@ -2,6 +2,69 @@
 
 > Real-time monitoring, analytics, and account sharing detection for Revenge
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Core Features (from Tracearr)](#core-features-from-tracearr)
+  - [1. Session Monitoring](#1-session-monitoring)
+  - [2. Stream Analytics](#2-stream-analytics)
+  - [3. Library Analytics](#3-library-analytics)
+    - [Overview Page](#overview-page)
+    - [Quality Page](#quality-page)
+    - [Storage Page](#storage-page)
+    - [Watch Page](#watch-page)
+  - [4. Account Sharing Detection](#4-account-sharing-detection)
+  - [5. Live TV & Music Tracking](#5-live-tv-music-tracking)
+  - [6. Stream Map](#6-stream-map)
+  - [7. Bulk Actions](#7-bulk-actions)
+  - [8. Public API](#8-public-api)
+- [Revenge Implementation (Go)](#revenge-implementation-go)
+  - [PostgreSQL Schema](#postgresql-schema)
+  - [Go Service Structure](#go-service-structure)
+  - [River Jobs](#river-jobs)
+- [Go Libraries (Open Source)](#go-libraries-open-source)
+  - [Geolocation](#geolocation)
+  - [Mapping (Frontend)](#mapping-frontend)
+  - [Charts (Frontend)](#charts-frontend)
+  - [Notifications](#notifications)
+- [API Endpoints](#api-endpoints)
+  - [Sessions](#sessions)
+  - [Violations](#violations)
+  - [Trust Scores](#trust-scores)
+  - [Library Analytics](#library-analytics)
+  - [Sharing Rules](#sharing-rules)
+  - [Stream Map](#stream-map)
+  - [Bulk Actions](#bulk-actions)
+- [Implementation Phases](#implementation-phases)
+  - [Phase 1: Session Tracking (Week 1)](#phase-1-session-tracking-week-1)
+  - [Phase 2: Sharing Detection (Week 2)](#phase-2-sharing-detection-week-2)
+  - [Phase 3: Trust Scoring (Week 2)](#phase-3-trust-scoring-week-2)
+  - [Phase 4: Library Analytics (Week 3)](#phase-4-library-analytics-week-3)
+  - [Phase 5: Geolocation & Map (Week 3)](#phase-5-geolocation-map-week-3)
+  - [Phase 6: Notifications (Week 4)](#phase-6-notifications-week-4)
+  - [Phase 7: Frontend Dashboard (Week 4-5)](#phase-7-frontend-dashboard-week-4-5)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +72,10 @@
 | Design | ✅ | Full design with PostgreSQL schema, Go service structure, API endpoints |
 | Sources | ✅ | Based on Tracearr, extensive Go library references |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Based On**: Tracearr (https://github.com/connorgallopo/Tracearr)
 **Priority**: 🟡 HIGH (Phase 9 - External Services)
 **License**: AGPL-3.0 (rebuild required to avoid copyleft in Revenge)
@@ -492,7 +554,19 @@ POST /api/v1/analytics/bulk/delete-sessions # Bulk delete sessions
 
 | Source | Documentation |
 |--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
 | [Go io](https://pkg.go.dev/io) | [Local](../../../sources/go/stdlib/io.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

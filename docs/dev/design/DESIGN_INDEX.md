@@ -6,6 +6,37 @@
 
 ---
 
+## Start Here
+
+> Recommended reading order for new developers
+
+### 1. Understand the System
+
+| Step | Document | Time | Description |
+|------|----------|------|-------------|
+| 1 | [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md) | 10 min | Package versions, module status, core decisions |
+| 2 | [Architecture](architecture/01_ARCHITECTURE.md) | 20 min | System overview, components, data flow |
+| 3 | [Design Principles](architecture/02_DESIGN_PRINCIPLES.md) | 10 min | Coding conventions, patterns, best practices |
+
+### 2. Pick Your Area
+
+| If you're working on... | Start with |
+|-------------------------|------------|
+| Content modules (Movies, TV, Music) | [Features Index](features/INDEX.md) → Module doc |
+| Backend services | [Services Index](services/INDEX.md) → Service doc |
+| External integrations | [Integrations Index](integrations/INDEX.md) → Provider doc |
+| Deployment/Operations | [Operations Index](operations/INDEX.md) |
+| Frontend | [FRONTEND.md](technical/FRONTEND.md) |
+| API design | [API.md](technical/API.md) |
+
+### 3. Navigation Aids
+
+- [NAVIGATION.md](NAVIGATION.md) - Full navigation map with all categories
+- [SOURCES_INDEX.md](../sources/SOURCES_INDEX.md) - External documentation sources
+- [DESIGN_CROSSREF.md](../sources/DESIGN_CROSSREF.md) - Which docs link to which sources
+
+---
+
 ## Quick Stats
 
 - **Total Documents**: 126
@@ -126,12 +157,12 @@
 
 | Document | Topics | Links |
 |----------|--------|-------|
-| [FreeOnes Integration](integrations/external/adult/FREEONES.md) | authentication, metadata, playback | 5 |
-| [Instagram Integration](integrations/external/adult/INSTAGRAM.md) | authentication, metadata, playback | 2 |
-| [OnlyFans Integration](integrations/external/adult/ONLYFANS.md) | metadata, search, database | 3 |
-| [Pornhub Integration](integrations/external/adult/PORNHUB.md) | authentication, metadata, playback | 4 |
-| [TheNude Integration](integrations/external/adult/THENUDE.md) | authentication, metadata, search | 2 |
-| [Twitter/X Integration](integrations/external/adult/TWITTER_X.md) | authentication, metadata, playback | 2 |
+| [FreeOnes Integration](integrations/metadata/adult/FREEONES.md) | authentication, metadata, playback | 5 |
+| [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md) | authentication, metadata, playback | 2 |
+| [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md) | metadata, search, database | 3 |
+| [Pornhub Integration](integrations/metadata/adult/PORNHUB.md) | authentication, metadata, playback | 4 |
+| [TheNude Integration](integrations/metadata/adult/THENUDE.md) | authentication, metadata, search | 2 |
+| [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md) | authentication, metadata, playback | 2 |
 
 ### Integrations → Infrastructure
 
@@ -252,7 +283,7 @@
 
 | Document | Topics | Links |
 |----------|--------|-------|
-| [Versioning Strategy](planning/VERSIONING.md) | authentication, metadata, playback | 0 |
+| [Versioning Strategy](operations/VERSIONING.md) | authentication, metadata, playback | 0 |
 
 ### Research
 
@@ -316,12 +347,12 @@
 - [Ticketing System](features/shared/TICKETING_SYSTEM.md)
 - [Revenge - User Experience Features](features/shared/USER_EXPERIENCE_FEATURES.md)
 - [Internal Wiki System](features/shared/WIKI_SYSTEM.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [ErsatzTV Integration](integrations/livetv/ERSATZTV.md)
 - [Stash Integration](integrations/metadata/adult/STASH.md)
@@ -396,12 +427,12 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -452,7 +483,7 @@
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Activity Service](services/ACTIVITY.md)
@@ -520,11 +551,11 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -571,7 +602,7 @@
 - [Clone repository](operations/DEVELOPMENT.md)
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Activity Service](services/ACTIVITY.md)
@@ -616,7 +647,7 @@
 - [AniList Integration](integrations/anime/ANILIST.md)
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
 - [Typesense Integration](integrations/infrastructure/TYPESENSE.md)
 - [Audible Integration](integrations/metadata/books/AUDIBLE.md)
@@ -668,10 +699,10 @@
 - [TV Show Module](features/video/TVSHOW_MODULE.md)
 - [AniList Integration](integrations/anime/ANILIST.md)
 - [MyAnimeList (MAL) Integration](integrations/anime/MYANIMELIST.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -760,12 +791,12 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -811,7 +842,7 @@
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [Activity Service](services/ACTIVITY.md)
 - [Analytics Service](services/ANALYTICS.md)
@@ -880,12 +911,12 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -936,7 +967,7 @@
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Activity Service](services/ACTIVITY.md)
@@ -999,10 +1030,10 @@
 - [Kitsu Integration](integrations/anime/KITSU.md)
 - [MyAnimeList (MAL) Integration](integrations/anime/MYANIMELIST.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1121,12 +1152,12 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1173,7 +1204,7 @@
 - [Database Auto-Healing & Consistency Restoration](operations/DATABASE_AUTO_HEALING.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [Activity Service](services/ACTIVITY.md)
 - [Analytics Service](services/ANALYTICS.md)
@@ -1227,11 +1258,11 @@
 - [MyAnimeList (MAL) Integration](integrations/anime/MYANIMELIST.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1314,10 +1345,10 @@
 - [Authentik Integration](integrations/auth/AUTHENTIK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1353,7 +1384,7 @@
 - [Clone repository](operations/DEVELOPMENT.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Fingerprint Service](services/FINGERPRINT.md)
 - [Library Service](services/LIBRARY.md)
@@ -1399,10 +1430,10 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1439,7 +1470,7 @@
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Analytics Service](services/ANALYTICS.md)
@@ -1488,8 +1519,8 @@
 - [Kitsu Integration](integrations/anime/KITSU.md)
 - [MyAnimeList (MAL) Integration](integrations/anime/MYANIMELIST.md)
 - [Authelia Integration](integrations/auth/AUTHELIA.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Typesense Integration](integrations/infrastructure/TYPESENSE.md)
 - [ErsatzTV Integration](integrations/livetv/ERSATZTV.md)
 - [NextPVR Integration](integrations/livetv/NEXTPVR.md)
@@ -1574,12 +1605,12 @@
 - [Keycloak Integration](integrations/auth/KEYCLOAK.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [FreeOnes Integration](integrations/external/adult/FREEONES.md)
-- [Instagram Integration](integrations/external/adult/INSTAGRAM.md)
-- [OnlyFans Integration](integrations/external/adult/ONLYFANS.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
-- [TheNude Integration](integrations/external/adult/THENUDE.md)
-- [Twitter/X Integration](integrations/external/adult/TWITTER_X.md)
+- [FreeOnes Integration](integrations/metadata/adult/FREEONES.md)
+- [Instagram Integration](integrations/metadata/adult/INSTAGRAM.md)
+- [OnlyFans Integration](integrations/metadata/adult/ONLYFANS.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
+- [TheNude Integration](integrations/metadata/adult/THENUDE.md)
+- [Twitter/X Integration](integrations/metadata/adult/TWITTER_X.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1630,7 +1661,7 @@
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
 - [revenge - Setup Guide](operations/SETUP.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Activity Service](services/ACTIVITY.md)
@@ -1694,7 +1725,7 @@
 - [MyAnimeList (MAL) Integration](integrations/anime/MYANIMELIST.md)
 - [Chromecast Integration](integrations/casting/CHROMECAST.md)
 - [DLNA/UPnP Integration](integrations/casting/DLNA.md)
-- [Pornhub Integration](integrations/external/adult/PORNHUB.md)
+- [Pornhub Integration](integrations/metadata/adult/PORNHUB.md)
 - [Dragonfly Integration](integrations/infrastructure/DRAGONFLY.md)
 - [PostgreSQL Integration](integrations/infrastructure/POSTGRESQL.md)
 - [River Integration](integrations/infrastructure/RIVER.md)
@@ -1791,10 +1822,41 @@
 - [Branch Protection Rules](operations/BRANCH_PROTECTION.md)
 - [GitFlow Workflow Guide](operations/GITFLOW.md)
 - [Revenge - Reverse Proxy & Deployment Best Practices](operations/REVERSE_PROXY.md)
-- [Versioning Strategy](planning/VERSIONING.md)
+- [Versioning Strategy](operations/VERSIONING.md)
 - [User Pain Points Research - Existing Media Servers](research/USER_PAIN_POINTS_RESEARCH.md)
 - [UX/UI Design & Frontend Resources](research/UX_UI_RESOURCES.md)
 - [Revenge - Technology Stack](technical/TECH_STACK.md)
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../sources/security/authentik.md) |
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../sources/security/casbin.md) |
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../sources/infrastructure/dragonfly.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../sources/security/keycloak.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../sources/apis/lastfm.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../sources/infrastructure/typesense-go.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../sources/database/pgx.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ---
 

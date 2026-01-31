@@ -2,6 +2,46 @@
 
 > Auto-generated overview of design document completeness
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status Legend](#status-legend)
+- [Overall Summary](#overall-summary)
+- [Architecture](#architecture)
+- [Features - Adult](#features---adult)
+- [Features - Comics](#features---comics)
+- [Features - Livetv](#features---livetv)
+- [Features - Photos](#features---photos)
+- [Features - Playback](#features---playback)
+- [Features - Podcasts](#features---podcasts)
+- [Features - Shared](#features---shared)
+- [Features - Video](#features---video)
+- [Integrations - Anime](#integrations---anime)
+- [Integrations - Auth](#integrations---auth)
+- [Integrations - Casting](#integrations---casting)
+- [Integrations - External](#integrations---external)
+- [Integrations - Infrastructure](#integrations---infrastructure)
+- [Integrations - Livetv](#integrations---livetv)
+- [Integrations - Metadata](#integrations---metadata)
+- [Integrations - Scrobbling](#integrations---scrobbling)
+- [Integrations - Servarr](#integrations---servarr)
+- [Integrations - Transcoding](#integrations---transcoding)
+- [Integrations - Wiki](#integrations---wiki)
+- [Operations](#operations)
+- [Planning](#planning)
+- [Research](#research)
+- [Services](#services)
+- [Technical](#technical)
+- [Notes](#notes)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Regenerate](#regenerate)
+
+<!-- TOC-END -->
+
 **Last Updated**: Auto-generated
 
 ---
@@ -209,12 +249,12 @@
 
 | Document | Design | Sources | Instructions | Code | Linting | Unit | Integration |
 |----------|--------|---------|--------------|------|---------|------|-------------|
-| [FREEONES](integrations/external/adult/FREEONES.md) | ✅ | 🟡 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
-| [INSTAGRAM](integrations/external/adult/INSTAGRAM.md) | ✅ | 🔴 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
-| [ONLYFANS](integrations/external/adult/ONLYFANS.md) | ✅ | 🔴 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
-| [PORNHUB](integrations/external/adult/PORNHUB.md) | 🟡 | 🟡 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
-| [THENUDE](integrations/external/adult/THENUDE.md) | 🟡 | 🟡 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
-| [TWITTER_X](integrations/external/adult/TWITTER_X.md) | ✅ | 🔴 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
+| [FREEONES](integrations/metadata/adult/FREEONES.md) | ✅ | 🟡 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
+| [INSTAGRAM](integrations/metadata/adult/INSTAGRAM.md) | ✅ | 🔴 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
+| [ONLYFANS](integrations/metadata/adult/ONLYFANS.md) | ✅ | 🔴 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
+| [PORNHUB](integrations/metadata/adult/PORNHUB.md) | 🟡 | 🟡 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
+| [THENUDE](integrations/metadata/adult/THENUDE.md) | 🟡 | 🟡 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
+| [TWITTER_X](integrations/metadata/adult/TWITTER_X.md) | ✅ | 🔴 | ✅ | 🔴 | 🔴 | 🔴 | 🔴 |
 
 **Summary**: 4/6 Design ✅ | 0/6 Sources ✅ | 6/6 Instructions ✅
 
@@ -346,7 +386,7 @@
 
 | Document | Design | Sources | Instructions | Code | Linting | Unit | Integration |
 |----------|--------|---------|--------------|------|---------|------|-------------|
-| [VERSIONING](planning/VERSIONING.md) | ✅ | ✅ | 🔴 | 🔴 | 🔴 | 🔴 | 🔴 |
+| [VERSIONING](operations/VERSIONING.md) | ✅ | ✅ | 🔴 | 🔴 | 🔴 | 🔴 | 🔴 |
 
 **Summary**: 1/1 Design ✅ | 1/1 Sources ✅ | 0/1 Instructions ✅
 
@@ -408,6 +448,37 @@
 - **Design**: Schemas, tables, architecture diagrams, Go code examples
 - **Sources**: Developer Resources section with external documentation links
 - **Instructions**: Implementation Checklist with actionable items
+
+
+<!-- SOURCE-BREADCRUMBS-START -->
+
+## Sources & Cross-References
+
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../sources/security/authentik.md) |
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../sources/security/casbin.md) |
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../sources/infrastructure/dragonfly.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../sources/security/keycloak.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../sources/apis/lastfm.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../sources/infrastructure/typesense-go.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../sources/database/pgx.md) |
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ---
 

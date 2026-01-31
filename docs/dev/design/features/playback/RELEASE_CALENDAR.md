@@ -2,18 +2,59 @@
 
 > Upcoming releases and recent additions calendar via Servarr integration
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Goals](#goals)
+- [Non-Goals](#non-goals)
+- [Technical Design](#technical-design)
+  - [Database Schema](#database-schema)
+  - [Servarr Calendar API Integration](#servarr-calendar-api-integration)
+    - [Radarr Calendar](#radarr-calendar)
+    - [Sonarr Calendar](#sonarr-calendar)
+    - [Lidarr Calendar](#lidarr-calendar)
+    - [Chaptarr Calendar (Readarr API)](#chaptarr-calendar-readarr-api)
+  - [Repository Interface](#repository-interface)
+  - [Service Layer](#service-layer)
+  - [API Endpoints](#api-endpoints)
+  - [River Jobs](#river-jobs)
+- [Configuration](#configuration)
+- [Implementation Checklist](#implementation-checklist)
+  - [Database](#database)
+  - [sqlc Queries](#sqlc-queries)
+  - [Repository](#repository)
+  - [Servarr Clients](#servarr-clients)
+  - [Service](#service)
+  - [Jobs](#jobs)
+  - [API](#api)
+  - [Frontend](#frontend)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM
 **Module**: `internal/calendar`
 **Dependencies**: [Servarr Integration](../integrations/servarr/INDEX.md)
@@ -466,7 +507,10 @@ calendar:
 |--------|---------------|
 | [Go context](https://pkg.go.dev/context) | [Local](../../../sources/go/stdlib/context.md) |
 | [Radarr API Docs](https://radarr.video/docs/api/) | [Local](../../../sources/apis/radarr-docs.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Sonarr API Docs](https://sonarr.tv/docs/api/) | [Local](../../../sources/apis/sonarr-docs.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

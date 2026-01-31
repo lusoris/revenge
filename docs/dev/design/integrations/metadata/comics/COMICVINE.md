@@ -2,21 +2,59 @@
 
 > Primary comics metadata provider (GameSpot's comprehensive comics database)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Key Features](#key-features)
+  - [Authentication](#authentication)
+- [API Details](#api-details)
+  - [Authentication](#authentication)
+  - [Core Endpoints](#core-endpoints)
+    - [1. Search Issues](#1-search-issues)
+    - [2. Get Issue Details](#2-get-issue-details)
+    - [3. Get Volume (Series) Details](#3-get-volume-series-details)
+    - [4. Get Publisher Details](#4-get-publisher-details)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration](#phase-1-core-integration)
+  - [Phase 2: Metadata Enrichment](#phase-2-metadata-enrichment)
+  - [Phase 3: Advanced Features](#phase-3-advanced-features)
+  - [Phase 4: Background Jobs (River)](#phase-4-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Metadata Fetch Flow](#metadata-fetch-flow)
+  - [Search Flow](#search-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Priority**: 🟡 MEDIUM (Phase 7 - Comics Module)
 **Provider**: ComicVine (GameSpot)
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API endpoints, data mapping, rate limiting |
 | Sources | ✅ | Base URL, documentation, authentication details linked |
 | Instructions | ✅ | Phased implementation checklist with background jobs |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -303,6 +341,10 @@ limiter := rate.NewLimiter(rate.Every(18*time.Second), 200)
 | Source | Documentation |
 |--------|---------------|
 | [ComicVine API](https://comicvine.gamespot.com/api/documentation) | [Local](../../../../sources/apis/comicvine.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

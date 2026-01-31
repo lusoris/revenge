@@ -2,21 +2,54 @@
 
 > Legacy anime tracking platform with extensive database
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Endpoints](#key-endpoints)
+  - [Request Headers](#request-headers)
+  - [Response Fields](#response-fields)
+- [Data Mapping](#data-mapping)
+  - [MAL → Revenge Mapping](#mal-revenge-mapping)
+  - [Status Mapping](#status-mapping)
+  - [Score Mapping](#score-mapping)
+- [OAuth2 Flow (PKCE)](#oauth2-flow-pkce)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Error Handling](#error-handling)
+- [MAL vs AniList Priority](#mal-vs-anilist-priority)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟡 MEDIUM (Phase 6 - Anime Module)
 **Type**: REST API client with OAuth2
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API spec, PKCE flow, data mapping |
 | Sources | ✅ | API docs, endpoint, OAuth portal linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -277,6 +310,7 @@ When both sources available:
 | Source | Documentation |
 |--------|---------------|
 | [MyAnimeList API](https://myanimelist.net/apiconfig/references/api/v2) | [Local](../../../sources/apis/myanimelist.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

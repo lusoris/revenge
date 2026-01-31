@@ -2,6 +2,40 @@
 
 > Book metadata and social reading platform - ratings, reviews, book lists
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Migration Strategy](#migration-strategy)
+  - [Option 1: OpenLibrary (Recommended)](#option-1-openlibrary-recommended)
+  - [Option 2: Google Books API](#option-2-google-books-api)
+  - [Option 3: Web Scraping (NOT Recommended)](#option-3-web-scraping-not-recommended)
+- [Historical API Details (Archived)](#historical-api-details-archived)
+  - [Base URL (RETIRED)](#base-url-retired)
+  - [Authentication (RETIRED)](#authentication-retired)
+  - [Key Endpoints (RETIRED)](#key-endpoints-retired)
+- [Implementation Checklist](#implementation-checklist)
+  - [Migration to OpenLibrary](#migration-to-openlibrary)
+  - [Web Scraping Fallback (Optional, NOT Recommended)](#web-scraping-fallback-optional-not-recommended)
+  - [Google Books API Fallback (Optional)](#google-books-api-fallback-optional)
+- [Integration Pattern (Historical)](#integration-pattern-historical)
+  - [Book Metadata Workflow (Archived)](#book-metadata-workflow-archived)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: Goodreads (Amazon)
 **Type**: Metadata Provider (Books)
 **API Version**: N/A (API retired 2020)
@@ -11,15 +45,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Migration strategy documented, alternatives analyzed |
 | Sources | 🟡 | API retired, historical docs archived |
 | Instructions | ✅ | Migration checklist to OpenLibrary |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -229,7 +262,6 @@ func (s *BookService) FetchBookMetadata(isbn string) error {
 
 ## Related Documentation
 
-- **Book Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Book section)
 - **OpenLibrary Integration**: [OPENLIBRARY.md](OPENLIBRARY.md) (recommended alternative)
 - **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md)
 - **Hardcover Integration**: [HARDCOVER.md](HARDCOVER.md) (social reading platform)

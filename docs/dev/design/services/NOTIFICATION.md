@@ -2,6 +2,43 @@
 
 > Multi-channel notifications for users and admins
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Developer Resources](#developer-resources)
+- [Status](#status)
+- [Overview](#overview)
+- [Goals](#goals)
+- [Non-Goals](#non-goals)
+- [Technical Design](#technical-design)
+  - [Notification Channels](#notification-channels)
+  - [Notification Types](#notification-types)
+  - [Service Interface](#service-interface)
+  - [WebSocket Integration](#websocket-integration)
+- [Database Schema](#database-schema)
+- [River Jobs](#river-jobs)
+- [Configuration](#configuration)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: In-App Channel](#phase-3-in-app-channel)
+  - [Phase 4: Email Channel](#phase-4-email-channel)
+  - [Phase 5: Webhook Channel](#phase-5-webhook-channel)
+  - [Phase 6: Background Jobs](#phase-6-background-jobs)
+  - [Phase 7: API Integration](#phase-7-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documents](#related-documents)
+
+<!-- TOC-END -->
+
 **Module**: `internal/service/notification`
 
 ## Developer Resources
@@ -18,16 +55,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -285,6 +321,17 @@ notification:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

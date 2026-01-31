@@ -2,6 +2,39 @@
 
 > OpenID Connect / SSO provider management
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Developer Resources](#developer-resources)
+- [Status](#status)
+- [Overview](#overview)
+- [Provider Configuration](#provider-configuration)
+  - [Claim Mapping](#claim-mapping)
+  - [Role Mapping](#role-mapping)
+- [Operations](#operations)
+  - [Provider Management](#provider-management)
+  - [User Links](#user-links)
+  - [Public Info](#public-info)
+- [Authentication Flow](#authentication-flow)
+- [Errors](#errors)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: API Integration](#phase-4-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documents](#related-documents)
+
+<!-- TOC-END -->
+
 **Module**: `internal/service/oidc`
 
 ## Developer Resources
@@ -10,16 +43,15 @@
 
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -181,6 +213,18 @@ func (s *Service) GetPublicProviders(ctx context.Context) ([]ProviderInfo, error
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../sources/security/authelia.md) |
+| [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../sources/security/authentik.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../sources/security/keycloak.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

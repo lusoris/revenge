@@ -2,6 +2,48 @@
 
 > Live television streaming and digital video recording
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Features](#features)
+  - [Live TV](#live-tv)
+  - [DVR (Recording)](#dvr-recording)
+- [Supported Sources](#supported-sources)
+  - [Tuners](#tuners)
+  - [IPTV](#iptv)
+  - [EPG Sources](#epg-sources)
+- [Architecture](#architecture)
+- [Go Packages](#go-packages)
+- [Database Schema](#database-schema)
+- [River Jobs](#river-jobs)
+- [Go Implementation](#go-implementation)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [RBAC Permissions](#rbac-permissions)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Tuner Integration](#phase-3-tuner-integration)
+  - [Phase 4: EPG Management](#phase-4-epg-management)
+  - [Phase 5: Service Layer](#phase-5-service-layer)
+  - [Phase 6: DVR/Recording](#phase-6-dvrrecording)
+  - [Phase 7: Background Jobs](#phase-7-background-jobs)
+  - [Phase 8: API Integration](#phase-8-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +51,10 @@
 | Design | ✅ | Comprehensive spec with architecture, schema, jobs |
 | Sources | ✅ | API docs linked for HDHomeRun, TVHeadend, XMLTV, M3U, Schedules Direct |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: HIGH (Critical Gap - All competitors have this)
 **Inspired By**: Jellyfin Live TV, Plex DVR, Emby Live TV
 **Location**: `internal/content/livetv/`
@@ -566,7 +607,19 @@ livetv:
 
 | Source | Documentation |
 |--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../../sources/protocols/m3u8.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [XMLTV Format](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) | [Local](../../../sources/protocols/xmltv.md) |
 | [XMLTV Wiki](https://wiki.xmltv.org/index.php/XMLTVFormat) | [Local](../../../sources/protocols/xmltv-format.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

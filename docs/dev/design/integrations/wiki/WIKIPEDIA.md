@@ -2,6 +2,60 @@
 
 > General encyclopedia information via Wikipedia API
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Data Coverage](#data-coverage)
+  - [Go Client Library](#go-client-library)
+- [API Details](#api-details)
+  - [REST Endpoints](#rest-endpoints)
+    - [Search Pages](#search-pages)
+    - [Get Page Extract (Summary)](#get-page-extract-summary)
+    - [Get Full Page Content](#get-full-page-content)
+    - [Get Page Images](#get-page-images)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Integration](#phase-1-core-integration)
+  - [Phase 2: Content Enhancement](#phase-2-content-enhancement)
+  - [Phase 3: Background Jobs (River)](#phase-3-background-jobs-river)
+- [Integration Pattern](#integration-pattern)
+  - [Content Enrichment Flow](#content-enrichment-flow)
+  - [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [User-Agent Requirement (CRITICAL)](#user-agent-requirement-critical)
+  - [Rate Limits (200 req/sec)](#rate-limits-200-reqsec)
+  - [Content Licensing](#content-licensing)
+  - [Extract vs Full Content](#extract-vs-full-content)
+  - [Infobox Parsing](#infobox-parsing)
+  - [Multi-Language Support](#multi-language-support)
+  - [Disambiguation Pages](#disambiguation-pages)
+  - [Redirect Handling](#redirect-handling)
+  - [JSONB Storage](#jsonb-storage)
+  - [Caching Strategy](#caching-strategy)
+  - [Use Case: Plot Summaries](#use-case-plot-summaries)
+  - [Use Case: Biographies](#use-case-biographies)
+  - [Search Accuracy](#search-accuracy)
+  - [Image Quality](#image-quality)
+  - [API Response Caching](#api-response-caching)
+  - [Content Quality](#content-quality)
+  - [Fallback Strategy](#fallback-strategy)
+
+<!-- TOC-END -->
+
 **Service**: Wikipedia (https://www.wikipedia.org)
 **API**: MediaWiki Action API (https://www.mediawiki.org/wiki/API:Main_page)
 **Category**: Wiki / Knowledge Base
@@ -10,15 +64,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive API endpoints, data mapping, JSONB storage |
 | Sources | ✅ | MediaWiki API documentation with examples |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -227,7 +280,9 @@ Wikipedia rate limit: 200 req/sec (official limit, use conservative approach)
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
 | [MediaWiki API](https://www.mediawiki.org/wiki/API:Main_page) | [Local](../../../sources/wiki/mediawiki.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -263,7 +318,7 @@ Wikipedia rate limit: 200 req/sec (official limit, use conservative approach)
 
 - [FANDOM.md](./FANDOM.md) - Fan wikis (MCU, Memory Alpha, Wookieepedia)
 - [TVTROPES.md](./TVTROPES.md) - Trope analysis
-- [INTERNAL_WIKI.md](../../features/INTERNAL_WIKI.md) - Built-in wiki system
+- [Wiki System](../../features/shared/WIKI_SYSTEM.md) - Built-in wiki system
 
 ---
 

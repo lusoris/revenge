@@ -2,18 +2,58 @@
 
 > PostgreSQL-native job queue
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Configuration](#configuration)
+- [Job Definitions](#job-definitions)
+  - [Library Scan Job](#library-scan-job)
+  - [Metadata Fetch Job](#metadata-fetch-job)
+  - [Transcode Job](#transcode-job)
+  - [Scheduled Jobs](#scheduled-jobs)
+- [River Client Setup](#river-client-setup)
+- [Worker Registration](#worker-registration)
+- [Enqueueing Jobs](#enqueueing-jobs)
+  - [Simple Enqueue](#simple-enqueue)
+  - [Transactional Enqueue](#transactional-enqueue)
+  - [Delayed Enqueue](#delayed-enqueue)
+  - [Bulk Enqueue](#bulk-enqueue)
+- [Implementation Checklist](#implementation-checklist)
+- [Database Migration](#database-migration)
+- [River UI](#river-ui)
+- [Monitoring](#monitoring)
+  - [Key Metrics](#key-metrics)
+  - [Query Job Stats](#query-job-stats)
+- [Error Handling](#error-handling)
+  - [Retry Configuration](#retry-configuration)
+  - [Error States](#error-states)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
 **Type**: Background job queue
 
@@ -573,12 +613,20 @@ func (w *FetchMetadataWorker) Work(ctx context.Context, job *river.Job[FetchMeta
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../../sources/observability/prometheus-metrics.md) |
 | [River Documentation](https://riverqueue.com/docs) | [Local](../../../sources/tooling/river-guide.md) |
 | [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
 | [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
 | [google/uuid](https://pkg.go.dev/github.com/google/uuid) | [Local](../../../sources/tooling/uuid.md) |
 | [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 | [pgxpool Connection Pool](https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool) | [Local](../../../sources/database/pgxpool.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

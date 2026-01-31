@@ -2,7 +2,7 @@
 
 ← Back to [Integrations](../)
 
-> Third-party integrations and data sources
+> Third-party integrations beyond media metadata (notifications, webhooks, etc.)
 
 **Source of Truth**: [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md)
 
@@ -11,63 +11,57 @@
 ## Overview
 
 External services provide supplementary features beyond core media server functionality:
-- Notifications
-- Download management
-- Sync services
-- Webhooks
+- Notifications (Discord, Telegram, etc.)
+- Webhooks for custom integrations
+- Home automation (Home Assistant)
 
 ---
 
 ## Categories
 
-### 📱 Notifications
+### Notifications
 Push notifications and alerts.
 
 *(Planned for future implementation)*
 
-### 🔗 Webhooks
+| Service | Protocol | Status |
+|---------|----------|--------|
+| Discord | Webhook | 🔴 Planned |
+| Telegram | Bot API | 🔴 Planned |
+| Pushover | REST | 🔴 Planned |
+
+### Webhooks
 Event-driven integrations.
 
 *(Planned for future implementation)*
 
-### 🔞 [Adult Services](adult/INDEX.md)
-Adult content social and metadata services.
+### Home Automation
+Smart home integration.
 
-| Provider | Type | Status |
-|----------|------|--------|
-| [Twitter/X](adult/TWITTER_X.md) | Social | 🔴 Planned |
-| [Instagram](adult/INSTAGRAM.md) | Social | 🔴 Planned |
-| [FreeOnes](../metadata/adult/FREEONES.md) | Metadata | 🟡 Planned |
-| [Pornhub](adult/PORNHUB.md) | Metadata | 🔴 Planned |
-| [OnlyFans](adult/ONLYFANS.md) | Metadata | 🔴 Planned |
-| [TheNude](adult/THENUDE.md) | Metadata | 🔴 Planned |
+| Service | Protocol | Status |
+|---------|----------|--------|
+| Home Assistant | REST/WS | 🔴 Planned |
 
 ---
 
-## Service Types
+## Note
 
-| Type | Description | Examples |
-|------|-------------|----------|
-| Metadata | Content information | FreeOnes, IAFD |
-| Social | Social media links | Twitter, Instagram |
-| Notifications | Push alerts | Discord, Telegram |
-| Webhooks | Event triggers | Custom endpoints |
+**Adult-related external services** have been moved to [integrations/metadata/adult/](../metadata/adult/INDEX.md) for consolidation.
 
 ---
 
-## Configuration
+<!-- SOURCE-BREADCRUMBS-START -->
 
-```yaml
-external:
-  notifications:
-    discord:
-      enabled: false
-      webhook_url: "${DISCORD_WEBHOOK}"
+## Sources & Cross-References
 
-  webhooks:
-    enabled: false
-    endpoints: []
-```
+> Auto-generated section linking to external documentation sources
+
+### Cross-Reference Indexes
+
+- [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
+- [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+<!-- SOURCE-BREADCRUMBS-END -->
 
 ---
 
@@ -75,4 +69,12 @@ external:
 
 - [Metadata Providers](../metadata/INDEX.md)
 - [Scrobbling Services](../scrobbling/INDEX.md)
-- [Servarr Stack](../servarr/INDEX.md)
+- [Notification Service](../../services/NOTIFICATION.md)
+
+---
+
+## Status Legend
+
+> See [00_SOURCE_OF_TRUTH.md](../../00_SOURCE_OF_TRUTH.md#status-system) for full status definitions
+
+Quick reference: ✅ Complete | 🟡 Partial | 🔴 Not Started | ⚪ N/A

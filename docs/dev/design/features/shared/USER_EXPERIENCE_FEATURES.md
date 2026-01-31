@@ -2,6 +2,73 @@
 
 > User-facing features inspired by modern streaming services.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Feature Matrix](#feature-matrix)
+- [Video Features](#video-features)
+  - [Skip Intro / Recap / Outro](#skip-intro-recap-outro)
+  - [Continue Watching](#continue-watching)
+  - ["Are You Still Watching?"](#are-you-still-watching)
+  - [Playback Speed Control](#playback-speed-control)
+  - [Sleep Timer](#sleep-timer)
+  - [Picture-in-Picture (PiP)](#picture-in-picture-pip)
+  - [Random Episode / Shuffle Play](#random-episode-shuffle-play)
+- [Audio Features (Spotify-inspired)](#audio-features-spotify-inspired)
+  - [Gapless Playback](#gapless-playback)
+  - [Crossfade](#crossfade)
+  - [Volume Normalization](#volume-normalization)
+  - [Synced Lyrics](#synced-lyrics)
+  - [Audio Quality Selection](#audio-quality-selection)
+- [Discovery & Recommendations](#discovery-recommendations)
+  - [Smart Home Screen](#smart-home-screen)
+  - ["More Like This"](#more-like-this)
+  - [Collections & Lists](#collections-lists)
+- [Social Features](#social-features)
+  - [User Profiles](#user-profiles)
+    - [Avatar Sources](#avatar-sources)
+  - [Kids Mode](#kids-mode)
+  - [Watch Party](#watch-party)
+  - [Activity Feed](#activity-feed)
+  - [Year in Review / Wrapped](#year-in-review-wrapped)
+- [Downloads & Offline](#downloads-offline)
+  - [Smart Downloads](#smart-downloads)
+- [Accessibility](#accessibility)
+  - [Audio Descriptions](#audio-descriptions)
+  - [Subtitle Customization](#subtitle-customization)
+  - [Reduced Motion](#reduced-motion)
+- [Quality of Life](#quality-of-life)
+  - [Intro Preview / Autoplay Previews](#intro-preview-autoplay-previews)
+  - [Content Warnings](#content-warnings)
+  - [Parental Controls](#parental-controls)
+- [Implementation Priority](#implementation-priority)
+  - [Phase 1: Core Playback](#phase-1-core-playback)
+  - [Phase 2: Profiles & Personalization](#phase-2-profiles-personalization)
+  - [Phase 3: Audio](#phase-3-audio)
+  - [Phase 4: Social](#phase-4-social)
+  - [Phase 5: Downloads](#phase-5-downloads)
+- [Summary](#summary)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: API Integration](#phase-5-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +76,10 @@
 | Design | ✅ | Full design with feature matrix, DB schemas, UI patterns |
 | Sources | ✅ | Netflix, Spotify, Disney+, YouTube features documented |
 | Instructions | ✅ | Implementation checklist complete |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Last Updated**: 2026-01-30
 **Location**: `internal/ux/`
 
@@ -912,6 +978,19 @@ All streaming/transcoding is delegated to Blackbeard. Revenge focuses on the use
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

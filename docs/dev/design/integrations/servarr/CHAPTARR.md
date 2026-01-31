@@ -2,18 +2,57 @@
 
 > Book & audiobook management automation (uses Readarr API)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Endpoints](#key-endpoints)
+- [Webhook Events](#webhook-events)
+  - [On Import (Book Downloaded & Imported)](#on-import-book-downloaded-imported)
+  - [On Book Added (New Book Tracked)](#on-book-added-new-book-tracked)
+  - [On Book File Delete](#on-book-file-delete)
+  - [On Author Delete](#on-author-delete)
+  - [On Rename](#on-rename)
+  - [On Health Issue](#on-health-issue)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Client Setup](#phase-1-client-setup)
+  - [Phase 2: API Implementation](#phase-2-api-implementation)
+  - [Phase 3: Service Integration](#phase-3-service-integration)
+  - [Phase 4: Testing](#phase-4-testing)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Audiobook Routing](#audiobook-routing)
+  - [Go Client Example](#go-client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Quality Profile Mapping](#quality-profile-mapping)
+  - [Audiobooks](#audiobooks)
+  - [Ebooks](#ebooks)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | 🟡 | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | 🟡 |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 6 - Book Module)
 **Type**: Webhook listener + API client for metadata sync
 
@@ -258,7 +297,13 @@ func (c *ReadarrClient) GetBooksByAuthor(ctx context.Context, authorID int) ([]B
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
 | [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -294,13 +339,13 @@ func (c *ReadarrClient) GetBooksByAuthor(ctx context.Context, authorID int) ([]B
 
 ## Related Documentation
 
-- [Book Module](../../architecture/modules/BOOK.md)
-- [Audiobook Module](../../architecture/modules/AUDIOBOOK.md)
+- [Book Module](../../features/book/BOOK_MODULE.md)
+- [Audiobook Module](../../features/audiobook/AUDIOBOOK_MODULE.md)
 - [Goodreads Integration](../metadata/books/GOODREADS.md)
 - [Audible Integration](../metadata/books/AUDIBLE.md)
 - [Native Audiobook/Podcast](../audiobook/INDEX.md)
-- [Arr Integration Pattern](../../patterns/arr_integration.md)
-- [Webhook Handling](../../patterns/webhook_patterns.md)
+- [Arr Integration Pattern](../../patterns/ARR_INTEGRATION.md)
+- [Webhook Handling](../../patterns/WEBHOOK_PATTERNS.md)
 
 ---
 

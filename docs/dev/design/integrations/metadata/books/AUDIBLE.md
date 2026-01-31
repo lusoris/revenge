@@ -2,6 +2,46 @@
 
 > Audiobook metadata provider - primary source for audiobooks
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Migration Strategy](#migration-strategy)
+  - [Option 1: Chaptarr Metadata (Recommended)](#option-1-chaptarr-metadata-recommended)
+  - [Option 2: Audnexus API (Community Project)](#option-2-audnexus-api-community-project)
+  - [Option 3: Web Scraping (NOT Recommended)](#option-3-web-scraping-not-recommended)
+- [Audnexus API Details (Unofficial)](#audnexus-api-details-unofficial)
+  - [Base URL](#base-url)
+  - [Authentication](#authentication)
+  - [Key Endpoints](#key-endpoints)
+    - [Search Audiobooks](#search-audiobooks)
+    - [Get Audiobook by ASIN](#get-audiobook-by-asin)
+- [Implementation Checklist](#implementation-checklist)
+  - [Option 1: Chaptarr Integration (Recommended)](#option-1-chaptarr-integration-recommended)
+  - [Option 2: Audnexus API Client (Unofficial)](#option-2-audnexus-api-client-unofficial)
+  - [Audiobook Metadata](#audiobook-metadata)
+  - [Narrator Information](#narrator-information)
+  - [Cover Art Handling](#cover-art-handling)
+  - [Series Handling](#series-handling)
+  - [Error Handling](#error-handling)
+- [Integration Pattern](#integration-pattern)
+  - [Chaptarr Webhook → Audiobook Metadata Sync](#chaptarr-webhook-audiobook-metadata-sync)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 **Service**: Audible (Amazon)
 **Type**: Metadata Provider (Audiobooks)
 **API Version**: NO official public API
@@ -11,15 +51,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive alternatives analysis, Audnexus API details |
 | Sources | ✅ | Unofficial libraries, Audnexus API docs linked |
 | Instructions | ✅ | Implementation checklist with multiple options |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -258,6 +297,7 @@ func (s *AudiobookService) HandleChaptarrAudiobookAdded(audiobookID string) erro
 | Source | Documentation |
 |--------|---------------|
 | [Audnexus API](https://api.audnex.us/) | [Local](../../../../sources/apis/audnexus.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -292,7 +332,6 @@ func (s *AudiobookService) HandleChaptarrAudiobookAdded(audiobookID string) erro
 
 ## Related Documentation
 
-- **Audiobook Module**: [MODULE_IMPLEMENTATION_TODO.md](../../../planning/MODULE_IMPLEMENTATION_TODO.md) (Audiobook section)
 - **Chaptarr Integration**: [../../servarr/CHAPTARR.md](../../servarr/CHAPTARR.md) (recommended approach)
 - **Native Audiobook/Podcast**: [../audiobook/INDEX.md](../audiobook/INDEX.md) (native implementation)
 

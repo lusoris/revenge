@@ -2,20 +2,68 @@
 
 > Fuzzy logic and confidence scoring for conflicting metadata
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Problem Examples](#problem-examples)
+  - [Measurements](#measurements)
+  - [Career Status](#career-status)
+- [Solution Architecture](#solution-architecture)
+- [Source Trust Scoring](#source-trust-scoring)
+  - [Trust Modifiers](#trust-modifiers)
+- [Fuzzy Logic Rules](#fuzzy-logic-rules)
+  - [Measurements (Bust, Waist, Hips)](#measurements-bust-waist-hips)
+  - [Cup Size Normalization](#cup-size-normalization)
+  - [Career Status Rules](#career-status-rules)
+- [Confidence Scoring](#confidence-scoring)
+- [Database Schema](#database-schema)
+- [River Jobs](#river-jobs)
+- [UI Integration](#ui-integration)
+  - [Performer Profile](#performer-profile)
+  - [Source Comparison Modal](#source-comparison-modal)
+- [Manual Override](#manual-override)
+- [Configuration](#configuration)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Schema & Database](#phase-1-schema-database)
+  - [Phase 2: Core Reconciliation Engine](#phase-2-core-reconciliation-engine)
+  - [Phase 3: Fuzzy Logic Rules](#phase-3-fuzzy-logic-rules)
+  - [Phase 4: Source Integration](#phase-4-source-integration)
+  - [Phase 5: Reconciliation Pipeline](#phase-5-reconciliation-pipeline)
+  - [Phase 6: Manual Override Support](#phase-6-manual-override-support)
+  - [Phase 7: UI Components](#phase-7-ui-components)
+  - [Phase 8: Reconciliation Scheduling](#phase-8-reconciliation-scheduling)
+  - [Phase 9: Configuration](#phase-9-configuration)
+  - [Phase 10: Testing](#phase-10-testing)
+  - [Phase 11: Documentation](#phase-11-documentation)
+- [Go Packages](#go-packages)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **⚠️ Adult Content**: All processing isolated in `qar` schema.
 
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | 🟡     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | 🟡 |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 ---
 
 ## Overview
@@ -526,6 +574,15 @@ Key packages used:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

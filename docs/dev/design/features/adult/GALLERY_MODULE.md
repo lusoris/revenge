@@ -2,18 +2,56 @@
 
 > Image gallery management for adult content with performer links and Prowlarr integration
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [QAR Fleet Types](#qar-fleet-types)
+- [Overview](#overview)
+  - [Key Features](#key-features)
+- [QAR Obfuscation](#qar-obfuscation)
+  - [Chest Types (Gallery Categories)](#chest-types-gallery-categories)
+- [Database Schema](#database-schema)
+- [Entity Relationships](#entity-relationships)
+- [Go Entities](#go-entities)
+- [Prowlarr Integration (Download Search)](#prowlarr-integration-download-search)
+  - [Configuration](#configuration)
+  - [Prowlarr Client](#prowlarr-client)
+  - [River Jobs for Download Processing](#river-jobs-for-download-processing)
+- [Search Integration (Typesense)](#search-integration-typesense)
+- [API Endpoints](#api-endpoints)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Schema & Repository](#phase-1-schema-repository)
+  - [Phase 2: Core Service](#phase-2-core-service)
+  - [Phase 3: SABnzbd Integration](#phase-3-sabnzbd-integration)
+  - [Phase 4: Image Processing](#phase-4-image-processing)
+  - [Phase 5: Search](#phase-5-search)
+  - [Phase 6: API](#phase-6-api)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 7 - Adult Enhancements)
 **Schema**: `qar` (Queen Anne's Revenge isolated schema)
 **API Namespace**: `/api/v1/legacy/treasures` (obfuscated)
@@ -157,7 +195,7 @@ CREATE TABLE qar.doubloons (
     -- Fingerprinting (deduplication)
     phash           VARCHAR(64),                       -- Perceptual hash
     md5             VARCHAR(64),
-    blurhash        VARCHAR(100),                      -- For placeholder
+    blurhash        VARCHAR(100),                      -- For 🔴 Not implemented
 
     -- Processing
     thumbnail_path  TEXT,                              -- Generated thumbnail
@@ -753,11 +791,17 @@ POST   /api/v1/legacy/treasures/{id}/rate          # Rate gallery
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
 | [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 | [Servarr Wiki](https://wiki.servarr.com/) | [Local](../../../sources/apis/servarr-wiki.md) |
 | [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../sources/media/go-blurhash.md) |
 | [google/uuid](https://pkg.go.dev/github.com/google/uuid) | [Local](../../../sources/tooling/uuid.md) |
 | [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

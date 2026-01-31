@@ -3,18 +3,62 @@
 > User preference component for adult content visibility.
 > Referenced by [WHISPARR_STASHDB_SCHEMA.md](WHISPARR_STASHDB_SCHEMA.md) and [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md).
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [User Preference Storage](#user-preference-storage)
+  - [Database Schema](#database-schema)
+  - [Cache Layer](#cache-layer)
+- [API Middleware](#api-middleware)
+  - [Route Protection](#route-protection)
+  - [Search Filtering](#search-filtering)
+- [Frontend Components](#frontend-components)
+  - [Toggle Component (Svelte)](#toggle-component-svelte)
+  - [Sidebar Integration](#sidebar-integration)
+  - [Settings Page](#settings-page)
+- [Auto-Lock Feature](#auto-lock-feature)
+  - [Backend Implementation](#backend-implementation)
+  - [Activity Tracking](#activity-tracking)
+- [Security Considerations](#security-considerations)
+  - [PIN Storage](#pin-storage)
+  - [Audit Logging](#audit-logging)
+- [API Endpoints](#api-endpoints)
+- [Behavior Summary](#behavior-summary)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: Middleware](#phase-5-middleware)
+  - [Phase 6: API Integration](#phase-6-api-integration)
+  - [Phase 7: Search Integration](#phase-7-search-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | ✅ | Full design with DB schema, middleware, Svelte components |
-| Sources | 🟡 | |
+| Sources | 🟡 |  |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -270,7 +314,7 @@ func (s *SearchService) Search(ctx context.Context, query string, opts SearchOpt
                 pattern="[0-9]*"
                 maxlength="6"
                 bind:value={pin}
-                placeholder="Enter PIN"
+                🔴 Not implemented="Enter PIN"
                 class:error={!!error}
             />
             {#if error}
@@ -736,6 +780,25 @@ paths:
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../../sources/frontend/sveltekit.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../../sources/tooling/rueidis.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

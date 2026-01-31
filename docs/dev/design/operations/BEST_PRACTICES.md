@@ -2,6 +2,86 @@
 
 > Comprehensive guide for professional-grade implementations in Revenge.
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Disk-Based Transcode Cache](#disk-based-transcode-cache)
+  - [Problem](#problem)
+  - [Solution](#solution)
+  - [Cache Key](#cache-key)
+  - [Quotas](#quotas)
+  - [Cache Hit Flow](#cache-hit-flow)
+  - [Configuration](#configuration)
+- [Resilience Patterns](#resilience-patterns)
+  - [Circuit Breaker](#circuit-breaker)
+  - [Bulkhead](#bulkhead)
+  - [Rate Limiting](#rate-limiting)
+  - [Retry with Backoff](#retry-with-backoff)
+- [Self-Healing & Supervision](#self-healing-supervision)
+  - [Service Supervisor](#service-supervisor)
+  - [Supervision Strategies](#supervision-strategies)
+  - [Health Integration](#health-integration)
+- [Graceful Shutdown](#graceful-shutdown)
+  - [Shutdown Hooks](#shutdown-hooks)
+  - [Connection Draining](#connection-draining)
+- [Hot Reload](#hot-reload)
+  - [Configuration Hot Reload](#configuration-hot-reload)
+  - [Feature Flags](#feature-flags)
+  - [Atomic Configuration Swap](#atomic-configuration-swap)
+- [Observability](#observability)
+  - [Structured Logging](#structured-logging)
+  - [Metrics](#metrics)
+  - [Health Endpoint](#health-endpoint)
+- [Memory Management](#memory-management)
+  - [Overview](#overview)
+  - [Memory Budgeting](#memory-budgeting)
+  - [Tiered Caching Architecture](#tiered-caching-architecture)
+  - [UI Metadata Cache](#ui-metadata-cache)
+  - [Memory Pressure Monitoring](#memory-pressure-monitoring)
+  - [Memory-Aware Transcode Cache](#memory-aware-transcode-cache)
+  - [Pool Patterns](#pool-patterns)
+- [Database Patterns](#database-patterns)
+  - [Connection Pool Sizing](#connection-pool-sizing)
+  - [Query Timeouts](#query-timeouts)
+  - [Transaction Patterns](#transaction-patterns)
+- [API Best Practices](#api-best-practices)
+  - [Request Validation](#request-validation)
+  - [Error Handling](#error-handling)
+  - [Pagination](#pagination)
+  - [Versioning](#versioning)
+- [Package Summary](#package-summary)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Quick Reference](#quick-reference)
+  - [Startup Order](#startup-order)
+  - [Shutdown Order](#shutdown-order)
+  - [Key Timeouts](#key-timeouts)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Table of Contents
 
 1. [Disk-Based Transcode Cache](#disk-based-transcode-cache)
@@ -787,8 +867,14 @@ type PaginatedResponse[T any] struct {
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../sources/protocols/m3u8.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
 | [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
 | [otter Cache](https://pkg.go.dev/github.com/maypok86/otter/v2) | [Local](../../sources/tooling/otter.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
 | [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 | [rueidis GitHub README](https://github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis-guide.md) |
 | [sturdyc](https://pkg.go.dev/github.com/viccon/sturdyc) | [Local](../../sources/tooling/sturdyc.md) |

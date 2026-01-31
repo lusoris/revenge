@@ -2,18 +2,51 @@
 
 > Enterprise-grade identity provider for self-hosted environments
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [OIDC Details](#oidc-details)
+  - [Supported Scopes](#supported-scopes)
+  - [Authentik Configuration](#authentik-configuration)
+- [Data Mapping](#data-mapping)
+  - [Authentik Claims → Revenge User](#authentik-claims-revenge-user)
+  - [Group → Role Mapping](#group-role-mapping)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Advanced Features](#advanced-features)
+  - [Property Mappings](#property-mappings)
+  - [Outpost (Proxy)](#outpost-proxy)
+  - [API Authentication](#api-authentication)
+- [Database Schema](#database-schema)
+- [Authentik vs Authelia](#authentik-vs-authelia)
+- [Troubleshooting](#troubleshooting)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-| --------- | ------ | ----- |
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟡 MEDIUM (Phase 1 - Core Infrastructure)
 **Type**: OIDC Identity Provider
 
@@ -259,7 +292,9 @@ Uses shared OIDC tables from [Authelia Integration](AUTHELIA.md#database-schema)
 
 | Source | Documentation |
 |--------|---------------|
+| [Authelia Documentation](https://www.authelia.com/overview/) | [Local](../../../sources/security/authelia.md) |
 | [Authentik Documentation](https://goauthentik.io/docs/) | [Local](../../../sources/security/authentik.md) |
+| [Keycloak Documentation](https://www.keycloak.org/documentation) | [Local](../../../sources/security/keycloak.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

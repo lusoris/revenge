@@ -10,6 +10,55 @@
 
 ```powershell
 # Clone repository
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Development Quick Start](#development-quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Setup (Windows PowerShell)](#setup-windows-powershell)
+  - [Setup (Linux/macOS)](#setup-linuxmacos)
+  - [Available Commands](#available-commands)
+    - [Using Make (recommended)](#using-make-recommended)
+    - [Using Scripts](#using-scripts)
+  - [First Run](#first-run)
+  - [Development with Docker](#development-with-docker)
+  - [Project Structure](#project-structure)
+  - [Configuration](#configuration)
+  - [Testing](#testing)
+  - [Debugging](#debugging)
+  - [Code Quality](#code-quality)
+  - [Git Workflow](#git-workflow)
+  - [Commit Message Format](#commit-message-format)
+  - [Useful Resources](#useful-resources)
+  - [Troubleshooting](#troubleshooting)
+  - [Next Steps](#next-steps)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 git clone https://github.com/lusoris/revenge.git
 cd revenge
 
@@ -206,7 +255,6 @@ chore: update dependencies
 - [Architecture Documentation](../architecture/01_ARCHITECTURE.md)
 - [Setup Guide](SETUP.md)
 - [Contributing Guidelines](../../../../CONTRIBUTING.md)
-- [Module Implementation TODO](../planning/MODULE_IMPLEMENTATION_TODO.md)
 
 ### Troubleshooting
 
@@ -242,7 +290,6 @@ go mod download
 ### Next Steps
 
 1. Review the [TODO.md](../../../../TODO.md) for current sprint tasks
-2. Check [Module Implementation TODO](../planning/MODULE_IMPLEMENTATION_TODO.md) for module status
 3. Pick a task and create a feature branch
 4. Implement, test, and submit a Pull Request
 
@@ -297,5 +344,15 @@ go mod download
 | Source | Documentation |
 |--------|---------------|
 | [Conventional Commits](https://www.conventionalcommits.org/) | [Local](../../sources/standards/conventional-commits.md) |
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

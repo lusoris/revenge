@@ -1,5 +1,69 @@
 # revenge - Setup Guide
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Quick Start Options](#quick-start-options)
+  - [Option 1: Docker Compose (Recommended)](#option-1-docker-compose-recommended)
+  - [Option 2: Native Binary](#option-2-native-binary)
+- [Environment Variables](#environment-variables)
+- [Building from Source](#building-from-source)
+  - [Prerequisites](#prerequisites)
+  - [Clone and Build](#clone-and-build)
+  - [Development Mode](#development-mode)
+- [Configuration File](#configuration-file)
+- [Reverse Proxy Setup](#reverse-proxy-setup)
+  - [NGINX](#nginx)
+  - [Caddy (Easier)](#caddy-easier)
+- [First-Time Setup Wizard](#first-time-setup-wizard)
+  - [Import from Existing Revenge](#import-from-existing-revenge)
+- [Hardware Acceleration](#hardware-acceleration)
+  - [Linux (VAAPI)](#linux-vaapi)
+  - [NVIDIA (NVENC)](#nvidia-nvenc)
+  - [macOS (VideoToolbox)](#macos-videotoolbox)
+- [Systemd Service (Linux)](#systemd-service-linux)
+- [Troubleshooting](#troubleshooting)
+  - [Check Logs](#check-logs)
+  - [Common Issues](#common-issues)
+- [Performance Tuning](#performance-tuning)
+  - [PostgreSQL Optimization](#postgresql-optimization)
+  - [Dragonfly Memory](#dragonfly-memory)
+- [Upgrade](#upgrade)
+  - [Docker](#docker)
+  - [Docker Compose](#docker-compose)
+  - [Native Binary](#native-binary)
+- [Backup & Restore](#backup-restore)
+  - [PostgreSQL](#postgresql)
+  - [Full Backup (Docker Volumes)](#full-backup-docker-volumes)
+- [Support](#support)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Quick Start Options
 
 ### Option 1: Docker Compose (Recommended)
@@ -596,6 +660,18 @@ docker run --rm \
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
 | [Go io](https://pkg.go.dev/io) | [Local](../../sources/go/stdlib/io.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->

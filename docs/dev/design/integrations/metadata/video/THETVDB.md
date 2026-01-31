@@ -2,18 +2,45 @@
 
 > Primary metadata provider for TV shows
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Authentication Flow](#authentication-flow)
+  - [Key Endpoints](#key-endpoints)
+- [Implementation Checklist](#implementation-checklist)
+- [Revenge Integration Pattern](#revenge-integration-pattern)
+  - [Go Client Example](#go-client-example)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Artwork Types](#artwork-types)
+- [External ID Mapping](#external-id-mapping)
+- [Notes](#notes)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive REST API v4 spec, JWT auth flow, artwork types |
 | Sources | ✅ | API docs, GitHub, Swagger UI linked |
 | Instructions | ✅ | Detailed implementation checklist with token management |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -232,7 +259,13 @@ func (c *TheTVDBClient) GetSeries(ctx context.Context, seriesID int) (*Series, e
 
 | Source | Documentation |
 |--------|---------------|
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../../sources/database/postgresql-json.md) |
 | [TheTVDB API](https://thetvdb.github.io/v4-api/) | [Local](../../../../sources/apis/thetvdb.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../../sources/infrastructure/typesense-go.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../../sources/media/go-blurhash.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
@@ -267,10 +300,10 @@ func (c *TheTVDBClient) GetSeries(ctx context.Context, seriesID int) (*Series, e
 
 ## Related Documentation
 
-- [TV Show Module](../../architecture/modules/TVSHOW.md)
+- [TV Show Module](../../features/video/TVSHOW_MODULE.md)
 - [TMDb Integration](TMDB.md) - Alternative TV metadata source
 - [Sonarr Integration](../../servarr/SONARR.md) - TV show management
-- [Metadata Enrichment Pattern](../../patterns/metadata_enrichment.md)
+- [Metadata Enrichment Pattern](../../patterns/METADATA_ENRICHMENT.md)
 
 ---
 

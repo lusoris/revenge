@@ -2,21 +2,50 @@
 
 > Primary metadata and tracking provider for anime and manga
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Queries](#key-queries)
+  - [Key Mutations](#key-mutations)
+- [Data Mapping](#data-mapping)
+  - [AniList → Revenge Mapping](#anilist-revenge-mapping)
+  - [Status Mapping](#status-mapping)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Rate Limiting Strategy](#rate-limiting-strategy)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟡 MEDIUM (Phase 6 - Anime Module)
 **Type**: GraphQL API client with OAuth
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive GraphQL API spec, data mapping, database schema |
 | Sources | ✅ | API docs, GraphQL endpoint, OAuth portal linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -289,6 +318,8 @@ AniList allows 90 requests per minute. Strategy:
 |--------|---------------|
 | [AniList GraphQL API](https://anilist.gitbook.io/anilist-apiv2-docs) | [Local](../../../sources/apis/anilist.md) |
 | [AniList GraphQL Schema](https://graphql.anilist.co) | [Local](../../../sources/apis/anilist-schema.graphql) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../../sources/media/go-blurhash.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,18 +2,48 @@
 
 > Performer social media presence
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Access](#api-access)
+- [Configuration](#configuration)
+- [Data Mapping](#data-mapping)
+  - [Performer Social Presence](#performer-social-presence)
+- [API Endpoints](#api-endpoints)
+  - [Lookup User by Username](#lookup-user-by-username)
+- [Implementation](#implementation)
+  - [Twitter Client](#twitter-client)
+- [Database Schema](#database-schema)
+- [Implementation Checklist](#implementation-checklist)
+- [Privacy Considerations](#privacy-considerations)
+- [Error Handling](#error-handling)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | REST API v2 spec, data mapping, database schema |
 | Sources | ✅ | API docs, pricing tiers linked |
 | Instructions | ✅ | Implementation checklist with River jobs |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -263,6 +293,12 @@ CREATE INDEX idx_performer_social_platform
 
 - [All Sources Index](../../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -1,5 +1,53 @@
 # API Reference
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+  - [Base URL](#base-url)
+  - [OpenAPI Specifications](#openapi-specifications)
+  - [Code Generation](#code-generation)
+- [Authentication](#authentication)
+  - [Token Flow](#token-flow)
+- [Health Endpoints](#health-endpoints)
+  - [Health Response](#health-response)
+- [Content Rating System](#content-rating-system)
+- [Error Responses](#error-responses)
+- [Adult Content (QAR)](#adult-content-qar)
+- [Viewing the API](#viewing-the-api)
+  - [Swagger UI](#swagger-ui)
+  - [OpenAPI JSON](#openapi-json)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Development](#development)
+  - [Adding New Endpoints](#adding-new-endpoints)
+  - [Handler Pattern](#handler-pattern)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 This document describes the HTTP API architecture for Revenge.
 
 ## Overview
@@ -179,6 +227,12 @@ http://localhost:8096/api/v1/openapi.json
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

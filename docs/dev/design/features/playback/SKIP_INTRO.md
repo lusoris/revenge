@@ -2,18 +2,53 @@
 
 > Automatic intro and credits detection with one-click skip
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Developer Resources](#developer-resources)
+- [Overview](#overview)
+- [Features](#features)
+- [Detection Methods](#detection-methods)
+  - [1. Audio Fingerprinting (Primary)](#1-audio-fingerprinting-primary)
+  - [2. Silence Detection](#2-silence-detection)
+  - [3. Black Frame Detection](#3-black-frame-detection)
+  - [4. Template Matching (Credits)](#4-template-matching-credits)
+- [Architecture](#architecture)
+- [Go Packages](#go-packages)
+- [Database Schema](#database-schema)
+- [River Jobs](#river-jobs)
+- [Go Implementation](#go-implementation)
+- [API Endpoints](#api-endpoints)
+- [Client Integration](#client-integration)
+  - [Skip Button UI](#skip-button-ui)
+  - [JavaScript Implementation](#javascript-implementation)
+- [Configuration](#configuration)
+- [RBAC Permissions](#rbac-permissions)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes |
-| ------------------- | ------ | ----- |
-| Design              | ✅     |       |
-| Sources             | ✅     |       |
-| Instructions        | ✅     |       |
-| Code                | 🔴     |       |
-| Linting             | 🔴     |       |
-| Unit Testing        | 🔴     |       |
-| Integration Testing | 🔴     |       |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🟢 HIGH (Critical Gap - Plex/Jellyfin have this)
 **Inspired By**: Plex Skip Intro, Jellyfin Intro Skipper plugin
 **Location**: `internal/feature/skipintro/`
@@ -438,6 +473,11 @@ skip_detection:
 | Source | Documentation |
 |--------|---------------|
 | [Chromaprint/AcoustID](https://acoustid.org/chromaprint) | [Local](../../../sources/standards/chromaprint.md) |
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

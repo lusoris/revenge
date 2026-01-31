@@ -2,6 +2,56 @@
 
 > Custom IPTV channel creation from your media library
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+  - [API Documentation](#api-documentation)
+  - [Key Endpoints](#key-endpoints)
+  - [Output Formats](#output-formats)
+- [Integration Architecture](#integration-architecture)
+  - [Channel Management Flow](#channel-management-flow)
+  - [Dual Mode Support](#dual-mode-support)
+- [Age Restriction System](#age-restriction-system)
+  - [Channel Age Ratings](#channel-age-ratings)
+  - [QAR Channel Isolation](#qar-channel-isolation)
+  - [Channel Visibility](#channel-visibility)
+- [Database Schema](#database-schema)
+  - [Regular Channels (`public.iptv_channels`)](#regular-channels-publiciptv-channels)
+  - [QAR Channels (`qar.channels`)](#qar-channels-qarchannels)
+- [Configuration](#configuration)
+- [API Endpoints (Revenge)](#api-endpoints-revenge)
+  - [Regular Channels](#regular-channels)
+  - [Admin Endpoints](#admin-endpoints)
+  - [QAR Channels (Isolated)](#qar-channels-isolated)
+- [Frontend Integration](#frontend-integration)
+  - [Channel Guide Component](#channel-guide-component)
+  - [Applet Support (External Systems)](#applet-support-external-systems)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Basic Integration](#phase-1-basic-integration)
+  - [Phase 2: Channel Management](#phase-2-channel-management)
+  - [Phase 3: Age Restrictions](#phase-3-age-restrictions)
+  - [Phase 4: External Export](#phase-4-external-export)
+- [River Jobs](#river-jobs)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+- [Notes](#notes)
+  - [Separate ErsatzTV Instance for QAR](#separate-ersatztv-instance-for-qar)
+  - [Hardware Transcoding](#hardware-transcoding)
+  - [Channel Number Ranges](#channel-number-ranges)
+
+<!-- TOC-END -->
+
 **Service**: ErsatzTV (https://ersatztv.org)
 **API**: REST API (Swagger at `/swagger`)
 **Category**: IPTV / Custom Channels
@@ -10,15 +60,14 @@
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive API endpoints, age restrictions, database schema |
 | Sources | ✅ | Base URL, Swagger UI, output formats documented |
 | Instructions | ✅ | Phased implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -341,6 +390,10 @@ For integration with external IPTV systems, Revenge provides:
 | Source | Documentation |
 |--------|---------------|
 | [ErsatzTV Documentation](https://ersatztv.org/docs/) | [Local](../../../sources/livetv/ersatztv-guide.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../../sources/protocols/m3u8.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [XMLTV Format](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) | [Local](../../../sources/protocols/xmltv.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../../sources/media/gohlslib.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

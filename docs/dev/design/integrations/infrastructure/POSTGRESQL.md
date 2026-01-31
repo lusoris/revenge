@@ -2,18 +2,56 @@
 
 > Primary database for all Revenge data
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [Connection Details](#connection-details)
+- [Configuration](#configuration)
+- [Schema Design Principles](#schema-design-principles)
+  - [Module Isolation](#module-isolation)
+  - [QAR Content Isolation](#qar-content-isolation)
+  - [User Data Separation](#user-data-separation)
+- [sqlc Integration](#sqlc-integration)
+- [Migration Strategy](#migration-strategy)
+- [Performance Optimization](#performance-optimization)
+  - [Indexes](#indexes)
+  - [Partitioning](#partitioning)
+  - [Connection Pooling](#connection-pooling)
+- [Health Checks](#health-checks)
+- [Backup Strategy](#backup-strategy)
+  - [pg_dump](#pg-dump)
+  - [Continuous Archiving (WAL)](#continuous-archiving-wal)
+- [Docker Compose](#docker-compose)
+- [Monitoring](#monitoring)
+  - [Key Metrics](#key-metrics)
+  - [Prometheus Exporter](#prometheus-exporter)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension | Status | Notes |
-|-----------|--------|-------|
-| Design | ✅ | |
-| Sources | ✅ | |
-| Instructions | ✅ | |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Dimension | Status |
+|-----------|--------|
+| Design | ✅ |
+| Sources | ✅ |
+| Instructions | ✅ |
+| Code | 🔴 |
+| Linting | 🔴 |
+| Unit Testing | 🔴 |
+| Integration Testing | 🔴 |
 **Priority**: 🔴 CRITICAL (Phase 1 - Core Infrastructure)
 **Type**: Primary data store
 
@@ -393,10 +431,18 @@ services:
 
 | Source | Documentation |
 |--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../../sources/infrastructure/dragonfly.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
 | [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../../sources/observability/prometheus-metrics.md) |
 | [River Documentation](https://riverqueue.com/docs) | [Local](../../../sources/tooling/river-guide.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../../sources/infrastructure/typesense-go.md) |
 | [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 | [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

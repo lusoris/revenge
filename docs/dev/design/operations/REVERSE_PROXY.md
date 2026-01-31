@@ -2,6 +2,68 @@
 
 > Production deployment with nginx, Caddy, Traefik, and Docker optimization.
 
+
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Reverse Proxy Configurations](#reverse-proxy-configurations)
+  - [Nginx (Recommended)](#nginx-recommended)
+  - [Caddy (Simpler Alternative)](#caddy-simpler-alternative)
+  - [Traefik (Docker-native)](#traefik-docker-native)
+- [Server Configuration](#server-configuration)
+  - [Revenge Backend Settings](#revenge-backend-settings)
+  - [Headers Middleware](#headers-middleware)
+- [Streaming Optimization](#streaming-optimization)
+  - [Byte Range Support](#byte-range-support)
+  - [Nginx Slice Module (for large files)](#nginx-slice-module-for-large-files)
+- [Caching Strategy](#caching-strategy)
+  - [Nginx Proxy Cache](#nginx-proxy-cache)
+  - [CDN Headers](#cdn-headers)
+- [Load Balancing](#load-balancing)
+  - [Multiple Backend Instances](#multiple-backend-instances)
+  - [Docker Swarm / Kubernetes](#docker-swarm-kubernetes)
+- [Security Best Practices](#security-best-practices)
+  - [Fail2ban Configuration](#fail2ban-configuration)
+  - [WAF Rules (ModSecurity)](#waf-rules-modsecurity)
+  - [IP Allowlist for Admin](#ip-allowlist-for-admin)
+- [Monitoring & Observability](#monitoring-observability)
+  - [Prometheus Metrics Endpoint](#prometheus-metrics-endpoint)
+  - [Nginx Status](#nginx-status)
+  - [Log Format for Analysis](#log-format-for-analysis)
+- [Docker Production Setup](#docker-production-setup)
+  - [Optimized Dockerfile](#optimized-dockerfile)
+  - [Docker Compose Production](#docker-compose-production)
+- [Configuration Summary](#configuration-summary)
+  - [Environment Variables](#environment-variables)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Quick Reference](#quick-reference)
+
+<!-- TOC-END -->
+
+## Status
+
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | 🔴 |  |
+| Sources | 🔴 |  |
+| Instructions | 🔴 |  |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
+
+---
+
 ## Overview
 
 Revenge is designed to run behind a reverse proxy for:
@@ -851,6 +913,21 @@ REVENGE_JWT_SECRET=file:/run/secrets/jwt_secret
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../sources/protocols/m3u8.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [Prometheus Go Client](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus) | [Local](../../sources/observability/prometheus.md) |
+| [Prometheus Metric Types](https://prometheus.io/docs/concepts/metric_types/) | [Local](../../sources/observability/prometheus-metrics.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

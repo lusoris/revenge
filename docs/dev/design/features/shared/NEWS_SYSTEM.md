@@ -2,6 +2,54 @@
 
 > External news aggregation and internal announcements
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [External News (RSS Aggregation)](#external-news-rss-aggregation)
+  - [Go Packages](#go-packages)
+  - [Feed Categories](#feed-categories)
+    - [Standard Content](#standard-content)
+    - [Adult Content (Isolated)](#adult-content-isolated)
+  - [Database Schema](#database-schema)
+  - [River Jobs](#river-jobs)
+  - [Go Implementation Example](#go-implementation-example)
+- [Internal News (Announcements)](#internal-news-announcements)
+  - [Announcement Types](#announcement-types)
+  - [Database Schema](#database-schema)
+  - [RBAC Permissions](#rbac-permissions)
+- [Real-Time Notifications](#real-time-notifications)
+  - [Go Packages](#go-packages)
+  - [SSE for Announcements](#sse-for-announcements)
+- [Configuration](#configuration)
+- [API Endpoints](#api-endpoints)
+  - [External News](#external-news)
+  - [Internal Announcements](#internal-announcements)
+- [UI/UX Integration](#uiux-integration)
+  - [News Dashboard Widget](#news-dashboard-widget)
+  - [Announcement Banner](#announcement-banner)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Core Infrastructure](#phase-1-core-infrastructure)
+  - [Phase 2: Database](#phase-2-database)
+  - [Phase 3: Service Layer](#phase-3-service-layer)
+  - [Phase 4: Background Jobs](#phase-4-background-jobs)
+  - [Phase 5: Real-Time Notifications](#phase-5-real-time-notifications)
+  - [Phase 6: API Integration](#phase-6-api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related](#related)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -9,11 +57,10 @@
 | Design | ✅ | Full design with RSS aggregation, announcements, SSE |
 | Sources | ✅ | gofeed, gorilla/feeds, r3labs/sse documented |
 | Instructions | ✅ | Implementation checklist added |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -406,8 +453,14 @@ GET  /api/v1/news/stream             # SSE endpoint
 
 | Source | Documentation |
 |--------|---------------|
+| [Casbin](https://pkg.go.dev/github.com/casbin/casbin/v2) | [Local](../../../sources/security/casbin.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../../sources/tooling/fx.md) |
 | [gofeed GitHub README](https://github.com/mmcdole/gofeed) | [Local](../../../sources/tooling/gofeed-guide.md) |
 | [mmcdole/gofeed](https://pkg.go.dev/github.com/mmcdole/gofeed) | [Local](../../../sources/tooling/gofeed.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../../sources/tooling/ogen.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

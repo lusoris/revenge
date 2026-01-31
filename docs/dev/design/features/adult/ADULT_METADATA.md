@@ -4,18 +4,53 @@
 > See that document for the complete adult content architecture including metadata, privacy, API endpoints, and database schema.
 > This file is kept for reference during migration only.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Design Philosophy](#design-philosophy)
+- [Architecture Overview](#architecture-overview)
+- [Data Sources Priority](#data-sources-priority)
+  - [Adult Movies (Scenes)](#adult-movies-scenes)
+  - [Adult Scenes (Series)](#adult-scenes-series)
+  - [Performers](#performers)
+  - [Studios](#studios)
+- [Whisparr Integration (Primary)](#whisparr-integration-primary)
+  - [Client Implementation](#client-implementation)
+- [Stash App Integration (Enrichment)](#stash-app-integration-enrichment)
+  - [GraphQL Client](#graphql-client)
+  - [Stash Scene Markers](#stash-scene-markers)
+- [StashDB Integration (Community Database)](#stashdb-integration-community-database)
+  - [GraphQL Client](#graphql-client)
+  - [Fingerprint Generation](#fingerprint-generation)
+- [TPDB Integration (Fallback)](#tpdb-integration-fallback)
+- [Database Schema (`qar` Schema)](#database-schema-qar-schema)
+- [Metadata Service](#metadata-service)
+- [Configuration](#configuration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Summary](#summary)
+
+<!-- TOC-END -->
+
 ## Status
 
-| Dimension           | Status | Notes                                        |
-| ------------------- | ------ | -------------------------------------------- |
-| Design              | ✅     | Deprecated, merged into ADULT_CONTENT_SYSTEM |
-| Sources             | ✅     |                                              |
-| Instructions        | ✅     | See ADULT_CONTENT_SYSTEM.md                  |
-| Code                | 🔴     |                                              |
-| Linting             | 🔴     |                                              |
-| Unit Testing        | 🔴     |                                              |
-| Integration Testing | 🔴     |                                              |
-
+| Dimension | Status | Notes |
+|-----------|--------|-------|
+| Design | ✅ | Deprecated, merged into ADULT_CONTENT_SYSTEM |
+| Sources | ✅ |  |
+| Instructions | ✅ | See ADULT_CONTENT_SYSTEM.md |
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 > Complete metadata integration for adult content modules using Whisparr, Stash, and StashDB.
@@ -1036,8 +1071,15 @@ adult:
 
 | Source | Documentation |
 |--------|---------------|
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../../sources/media/ffmpeg-formats.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../../sources/database/postgresql-json.md) |
 | [StashDB GraphQL API](https://stashdb.org/graphql) | [Local](../../../sources/apis/stashdb-schema.graphql) |
 | [ThePornDB API](https://api.theporndb.net/docs) | [Local](../../../sources/apis/theporndb.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../../sources/media/go-astiav.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../../sources/database/pgx.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

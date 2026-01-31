@@ -3,18 +3,112 @@
 > Complete modular architecture for a next-generation media server.
 > Ground-up design with full module isolation, no shared content tables.
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Implementation Checklist](#implementation-checklist)
+  - [Phase 1: Project Foundation](#phase-1-project-foundation)
+  - [Phase 2: Database Layer](#phase-2-database-layer)
+  - [Phase 3: API Layer](#phase-3-api-layer)
+  - [Phase 4: Infrastructure](#phase-4-infrastructure)
+- [Design Principles](#design-principles)
+- [Technology Stack](#technology-stack)
+  - [Dependencies](#dependencies)
+- [Module Overview](#module-overview)
+  - [Content Modules (12)](#content-modules-12)
+  - [Shared Infrastructure](#shared-infrastructure)
+- [Project Structure](#project-structure)
+- [Job Queue (River)](#job-queue-river)
+- [External Transcoding (Blackbeard)](#external-transcoding-blackbeard)
+  - [Architecture](#architecture)
+  - [Playback Flow](#playback-flow)
+  - [Client Detection](#client-detection)
+  - [Bandwidth Monitoring (External Clients)](#bandwidth-monitoring-external-clients)
+  - [Transcode Request](#transcode-request)
+  - [Why Proxy Through Revenge?](#why-proxy-through-revenge)
+  - [Blackbeard API (Internal)](#blackbeard-api-internal)
+  - [Internal Raw File Serving](#internal-raw-file-serving)
+  - [Stream Buffering](#stream-buffering)
+  - [Transcode Cache](#transcode-cache)
+  - [Benefits](#benefits)
+- [API Structure](#api-structure)
+  - [OpenAPI Spec-First with ogen](#openapi-spec-first-with-ogen)
+  - [URL Structure](#url-structure)
+- [Database Migrations](#database-migrations)
+  - [Per-Module Structure](#per-module-structure)
+  - [Migration Order](#migration-order)
+- [Caching Strategy (Dragonfly)](#caching-strategy-dragonfly)
+- [Search Architecture (Typesense)](#search-architecture-typesense)
+- [Shared Resources](#shared-resources)
+  - [Playlist Pools (3)](#playlist-pools-3)
+  - [Collection Pools (3)](#collection-pools-3)
+- [Rating Systems](#rating-systems)
+  - [Content Ratings (Age Restriction)](#content-ratings-age-restriction)
+  - [User Ratings (Per Module)](#user-ratings-per-module)
+  - [External Ratings (Per Module)](#external-ratings-per-module)
+- [QAR Schema Isolation (Adult Content)](#qar-schema-isolation-adult-content)
+- [Per-Module Tables Template](#per-module-tables-template)
+  - [Core Tables](#core-tables)
+  - [People/Credits (domain-dependent)](#peoplecredits-domain-dependent)
+  - [Studios (per module)](#studios-per-module)
+  - [Video-specific (movie, tvshow, adult)](#video-specific-movie-tvshow-adult)
+  - [Music-specific](#music-specific)
+  - [Photo-specific](#photo-specific)
+  - [User Data (per module)](#user-data-per-module)
+- [Summary](#summary)
+- [Frontend Architecture](#frontend-architecture)
+  - [Technology Stack](#technology-stack)
+  - [Frontend Structure](#frontend-structure)
+  - [Player Features (WebUI)](#player-features-webui)
+  - [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
+  - [Theme System](#theme-system)
+- [Client Profiles (Blackbeard)](#client-profiles-blackbeard)
+  - [Device Group Mapping](#device-group-mapping)
+  - [Profile Selection Flow](#profile-selection-flow)
+  - [Bandwidth-Based Override](#bandwidth-based-override)
+- [Deployment](#deployment)
+  - [Docker Compose (Recommended)](#docker-compose-recommended)
+  - [Platform Support](#platform-support)
+- [Internal Packages](#internal-packages)
+  - [pkg/resilience - Fault Tolerance](#pkgresilience---fault-tolerance)
+  - [pkg/supervisor - Self-Healing](#pkgsupervisor---self-healing)
+  - [pkg/graceful - Shutdown](#pkggraceful---shutdown)
+  - [pkg/hotreload - Runtime Config](#pkghotreload---runtime-config)
+  - [pkg/metrics - Observability](#pkgmetrics---observability)
+  - [pkg/lazy - Lazy Initialization](#pkglazy---lazy-initialization)
+  - [pkg/health - Health Checks](#pkghealth---health-checks)
+- [Documentation Index](#documentation-index)
+  - [Core Architecture](#core-architecture)
+  - [Frontend & UI](#frontend-ui)
+  - [Content & Metadata](#content-metadata)
+  - [Streaming & Playback](#streaming-playback)
+  - [Operations & Deployment](#operations-deployment)
+  - [API & Integration](#api-integration)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Cross-References](#cross-references)
+
+<!-- TOC-END -->
+
 ## Status
 
 | Dimension | Status | Notes |
 |-----------|--------|-------|
 | Design | ✅ | Complete architecture specification |
 | Sources | ⚪ | N/A - internal architecture doc |
-| Instructions | 🔴 | |
+| Instructions | 🔴 |  |
 | Code | 🔴 | Reset to template |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 **Priority**: 🔴 HIGH
 **Module**: Core architecture
 **Dependencies**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md)
@@ -1060,14 +1154,14 @@ volumes:
 | Document | Description |
 |----------|-------------|
 | [01_ARCHITECTURE.md](01_ARCHITECTURE.md) | This document - system architecture |
-| [TECH_STACK.md](TECH_STACK.md) | Technology choices and rationale |
+| [TECH_STACK.md](../technical/TECH_STACK.md) | Technology choices and rationale |
 | [Source of Truth - Project Structure](../00_SOURCE_OF_TRUTH.md#project-structure) | Directory layout |
 
 ### Frontend & UI
 
 | Document | Description |
 |----------|-------------|
-| [FRONTEND.md](FRONTEND.md) | SvelteKit frontend architecture, RBAC, themes |
+| [FRONTEND.md](../technical/FRONTEND.md) | SvelteKit frontend architecture, RBAC, themes |
 | [I18N.md](I18N.md) | Internationalization (UI, metadata, audio/subtitle) |
 
 ### Content & Metadata
@@ -1082,20 +1176,20 @@ volumes:
 
 | Document | Description |
 |----------|-------------|
-| [AUDIO_STREAMING.md](AUDIO_STREAMING.md) | Audio streaming, progress tracking, bandwidth adaptation |
+| [AUDIO_STREAMING.md](../technical/AUDIO_STREAMING.md) | Audio streaming, progress tracking, bandwidth adaptation |
 | [CLIENT_SUPPORT.md](CLIENT_SUPPORT.md) | Client capabilities, Chromecast, DLNA |
 | [MEDIA_ENHANCEMENTS.md](MEDIA_ENHANCEMENTS.md) | Trailers, themes, intros, trickplay, chapters, Live TV |
-| [OFFLOADING.md](OFFLOADING.md) | Blackbeard transcoding integration |
+| [OFFLOADING.md](../technical/OFFLOADING.md) | Blackbeard transcoding integration |
 | [SCROBBLING.md](SCROBBLING.md) | External sync (Trakt, Last.fm, ListenBrainz) |
 
 ### Operations & Deployment
 
 | Document | Description |
 |----------|-------------|
-| [REVERSE_PROXY.md](REVERSE_PROXY.md) | Nginx, Caddy, Traefik configuration |
-| [BEST_PRACTICES.md](BEST_PRACTICES.md) | Resilience, self-healing, observability |
-| [DEVELOPMENT.md](DEVELOPMENT.md) | Development environment setup |
-| [SETUP.md](SETUP.md) | Production deployment |
+| [REVERSE_PROXY.md](../operations/REVERSE_PROXY.md) | Nginx, Caddy, Traefik configuration |
+| [BEST_PRACTICES.md](../operations/BEST_PRACTICES.md) | Resilience, self-healing, observability |
+| [DEVELOPMENT.md](../operations/DEVELOPMENT.md) | Development environment setup |
+| [SETUP.md](../operations/SETUP.md) | Production deployment |
 | [Source of Truth - Orchestration](../00_SOURCE_OF_TRUTH.md#container-orchestration) | K8s, K3s, Swarm deployment patterns |
 | [Source of Truth - Clustering](../00_SOURCE_OF_TRUTH.md#distributed-consensus-raft) | Raft consensus for HA deployments |
 
@@ -1103,7 +1197,7 @@ volumes:
 
 | Document | Description |
 |----------|-------------|
-| [API.md](API.md) | API design guidelines |
+| [API.md](../technical/API.md) | API design guidelines |
 
 
 <!-- SOURCE-BREADCRUMBS-START -->
@@ -1116,6 +1210,37 @@ volumes:
 
 - [All Sources Index](../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [Dragonfly Documentation](https://www.dragonflydb.io/docs) | [Local](../../sources/infrastructure/dragonfly.md) |
+| [FFmpeg Codecs](https://ffmpeg.org/ffmpeg-codecs.html) | [Local](../../sources/media/ffmpeg-codecs.md) |
+| [FFmpeg Documentation](https://ffmpeg.org/ffmpeg.html) | [Local](../../sources/media/ffmpeg.md) |
+| [FFmpeg Formats](https://ffmpeg.org/ffmpeg-formats.html) | [Local](../../sources/media/ffmpeg-formats.md) |
+| [Last.fm API](https://www.last.fm/api/intro) | [Local](../../sources/apis/lastfm.md) |
+| [M3U8 Extended Format](https://datatracker.ietf.org/doc/html/rfc8216) | [Local](../../sources/protocols/m3u8.md) |
+| [PostgreSQL Arrays](https://www.postgresql.org/docs/current/arrays.html) | [Local](../../sources/database/postgresql-arrays.md) |
+| [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html) | [Local](../../sources/database/postgresql-json.md) |
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../sources/tooling/river.md) |
+| [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) | [Local](../../sources/frontend/svelte5.md) |
+| [Svelte 5 Runes](https://svelte.dev/docs/svelte/$state) | [Local](../../sources/frontend/svelte-runes.md) |
+| [SvelteKit Documentation](https://svelte.dev/docs/kit/introduction) | [Local](../../sources/frontend/sveltekit.md) |
+| [TanStack Query](https://tanstack.com/query/latest/docs/framework/svelte/overview) | [Local](../../sources/frontend/tanstack-query.md) |
+| [Typesense API](https://typesense.org/docs/latest/api/) | [Local](../../sources/infrastructure/typesense.md) |
+| [Typesense Go Client](https://github.com/typesense/typesense-go) | [Local](../../sources/infrastructure/typesense-go.md) |
+| [Uber fx](https://pkg.go.dev/go.uber.org/fx) | [Local](../../sources/tooling/fx.md) |
+| [go-astiav (FFmpeg bindings)](https://pkg.go.dev/github.com/asticode/go-astiav) | [Local](../../sources/media/go-astiav.md) |
+| [go-blurhash](https://pkg.go.dev/github.com/bbrks/go-blurhash) | [Local](../../sources/media/go-blurhash.md) |
+| [gohlslib (HLS)](https://pkg.go.dev/github.com/bluenviron/gohlslib/v2) | [Local](../../sources/media/gohlslib.md) |
+| [koanf](https://pkg.go.dev/github.com/knadh/koanf/v2) | [Local](../../sources/tooling/koanf.md) |
+| [ogen OpenAPI Generator](https://pkg.go.dev/github.com/ogen-go/ogen) | [Local](../../sources/tooling/ogen.md) |
+| [pgx PostgreSQL Driver](https://pkg.go.dev/github.com/jackc/pgx/v5) | [Local](../../sources/database/pgx.md) |
+| [rueidis](https://pkg.go.dev/github.com/redis/rueidis) | [Local](../../sources/tooling/rueidis.md) |
+| [shadcn-svelte](https://www.shadcn-svelte.com/docs) | [Local](../../sources/frontend/shadcn-svelte.md) |
+| [sqlc](https://docs.sqlc.dev/en/stable/) | [Local](../../sources/database/sqlc.md) |
+| [sqlc Configuration](https://docs.sqlc.dev/en/stable/reference/config.html) | [Local](../../sources/database/sqlc-config.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 

@@ -2,21 +2,55 @@
 
 > Modern anime tracking platform with social features
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+- [Developer Resources](#developer-resources)
+- [API Details](#api-details)
+  - [Key Endpoints](#key-endpoints)
+  - [JSON:API Features](#jsonapi-features)
+- [Data Mapping](#data-mapping)
+  - [Kitsu → Revenge Mapping](#kitsu-revenge-mapping)
+  - [Status Mapping](#status-mapping)
+  - [Score Mapping](#score-mapping)
+- [OAuth2 Flow](#oauth2-flow)
+- [Implementation Checklist](#implementation-checklist)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [ID Mapping via Kitsu](#id-mapping-via-kitsu)
+- [Error Handling](#error-handling)
+- [Kitsu Advantages](#kitsu-advantages)
+- [Kitsu Limitations](#kitsu-limitations)
+- [Priority in Anime Stack](#priority-in-anime-stack)
+- [Sources & Cross-References](#sources-cross-references)
+  - [Cross-Reference Indexes](#cross-reference-indexes)
+  - [Referenced Sources](#referenced-sources)
+- [Related Design Docs](#related-design-docs)
+  - [In This Section](#in-this-section)
+  - [Related Topics](#related-topics)
+  - [Indexes](#indexes)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 **Priority**: 🟢 LOW (Phase 6 - Anime Module)
 **Type**: JSON:API client with OAuth2
 
 ## Status
 
 | Dimension | Status | Notes |
-| --------- | ------ | ----- |
+|-----------|--------|-------|
 | Design | ✅ | Comprehensive JSON:API spec, data mapping, OAuth flow |
 | Sources | ✅ | API docs, endpoint, OAuth docs, GitHub linked |
 | Instructions | ✅ | Detailed implementation checklist |
-| Code | 🔴 | |
-| Linting | 🔴 | |
-| Unit Testing | 🔴 | |
-| Integration Testing | 🔴 | |
-
+| Code | 🔴 |  |
+| Linting | 🔴 |  |
+| Unit Testing | 🔴 |  |
+| Integration Testing | 🔴 |  |
 ---
 
 ## Overview
@@ -307,6 +341,12 @@ Use this to cross-reference anime across services.
 
 - [All Sources Index](../../../sources/SOURCES_INDEX.md) - Complete list of external documentation
 - [Design ↔ Sources Map](../../../sources/DESIGN_CROSSREF.md) - Which docs reference which sources
+
+### Referenced Sources
+
+| Source | Documentation |
+|--------|---------------|
+| [River Job Queue](https://pkg.go.dev/github.com/riverqueue/river) | [Local](../../../sources/tooling/river.md) |
 
 <!-- SOURCE-BREADCRUMBS-END -->
 
