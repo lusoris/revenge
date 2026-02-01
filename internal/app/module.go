@@ -8,9 +8,12 @@ import (
 	"net/http"
 
 	"github.com/lusoris/revenge/internal/config"
+	"github.com/lusoris/revenge/internal/infra/cache"
 	"github.com/lusoris/revenge/internal/infra/database"
 	"github.com/lusoris/revenge/internal/infra/health"
+	"github.com/lusoris/revenge/internal/infra/jobs"
 	"github.com/lusoris/revenge/internal/infra/logging"
+	"github.com/lusoris/revenge/internal/infra/search"
 	"go.uber.org/fx"
 )
 
@@ -22,6 +25,9 @@ var Module = fx.Module("app",
 	// Infrastructure
 	logging.Module,
 	database.Module,
+	cache.Module,
+	search.Module,
+	jobs.Module,
 	health.Module,
 
 	// HTTP Server

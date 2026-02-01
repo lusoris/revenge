@@ -1,0 +1,54 @@
+# ogen Code Generation Configuration
+# https://ogen.dev/docs/intro
+
+# OpenAPI specification path
+spec: api/openapi/openapi.yaml
+
+# Output directory for generated server code
+target: internal/api/ogen
+
+# Package name for generated code
+package_name: ogen
+
+# Generation options
+generate:
+  # Generate server interfaces
+  server: true
+
+  # Generate client (useful for testing)
+  client: true
+
+  # Generate convenience wrappers
+  convenient_errors: true
+
+# Clean output directory before generation
+clean: true
+
+# Inference options
+infer:
+  # Infer schema types from examples
+  schema_type: true
+
+# Code style options
+format:
+  # Run gofmt on generated code
+  gofmt: true
+
+  # Run goimports on generated code
+  goimports: true
+
+# Error handling
+error:
+  # Use go-faster/errors for error handling
+  use_go_faster_errors: true
+
+# Optional features
+features:
+  # Generate validation code
+  validation: true
+
+  # Generate JSON encoding/decoding
+  json: true
+
+  # Generate examples from OpenAPI spec
+  examples: false

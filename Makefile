@@ -137,9 +137,13 @@ install-tools: ## Install development tools
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
-generate: ## Run go generate
+generate: ogen sqlc ## Run all code generation (ogen, sqlc, go generate)
 	@echo "Running go generate..."
 	go generate ./...
+
+ogen: ## Generate ogen code from OpenAPI spec
+	@echo "Generating ogen code..."
+	go run github.com/ogen-go/ogen/cmd/ogen@latest --config ogen.yaml
 
 sqlc: ## Generate sqlc code
 	@echo "Generating sqlc code..."

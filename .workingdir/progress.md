@@ -112,3 +112,14 @@
   - Needs merge after verifying failed fetch is acceptable
 - Verified progress.md accuracy: All claimed files exist and are implemented
 - Documented bugfix in bugfixes.md for future test creation
+- Fixed Discogs fetch failure: Updated User-Agent to realistic browser string
+- **Completed remaining v0.1.0 TODO items:**
+  - Moved internal/errors/api.go → internal/api/errors.go (correct location)
+  - Created cache/search/jobs infrastructure module stubs
+  - Created internal/infra/health/checks.go with dependency check functions
+  - Implemented cmd/revenge/migrate.go with up/down/version/to subcommands
+  - Created ogen.yaml configuration for OpenAPI code generation
+  - Updated Makefile generate target to include ogen and sqlc
+  - Updated app module to include all infrastructure modules
+  - **BUILD & TESTS PASS**: All packages compile, all tests pass
+  - Binary: bin/revenge (21MB)

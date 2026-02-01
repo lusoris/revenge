@@ -61,9 +61,4 @@ func main() {
 	fmt.Println("Server stopped")
 }
 
-func runMigrate() {
-	// TODO: Implement migration subcommands (up, down, version)
-	fmt.Println("Migration commands not yet implemented")
-	fmt.Println("Usage: revenge migrate [up|down|version]")
-	os.Exit(1)
-}
+// runMigrate is implemented in migrate.go
