@@ -1,0 +1,61 @@
+# Auto-generated from SOURCE_OF_TRUTH.md
+# Do not edit directly. Run: python scripts/deploy-pipeline/01-generate.py
+# Generated: 2026-02-01
+
+replicaCount: 2
+image:
+  repository: ghcr.io/lusoris/revenge
+  pullPolicy: IfNotPresent
+  tag: ''
+service:
+  type: ClusterIP
+  port: 8080
+ingress:
+  enabled: false
+  className: ''
+  annotations: {}
+  hosts:
+  - host: revenge.local
+    paths:
+    - path: /
+      pathType: Prefix
+  tls: []
+resources:
+  limits:
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+livenessProbe:
+  httpGet:
+    path: /health/live
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 10
+readinessProbe:
+  httpGet:
+    path: /health/ready
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+revenge:
+  server:
+    port: 8080
+    host: 0.0.0.0
+  database:
+    host: ''
+    port: 5432
+    name: revenge
+    user: revenge
+  cache:
+    host: ''
+    port: 6379
+postgresql:
+  enabled: true

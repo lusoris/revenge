@@ -1,0 +1,135 @@
+name: Deploy Validation
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'charts/**'
+      - 'deploy/**'
+      - 'scripts/deploy-pipeline/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    paths:
+      - 'charts/**'
+      - 'deploy/**'
+      - 'scripts/deploy-pipeline/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy.yml'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  versions:
+    name: Get versions from SOURCE_OF_TRUTH
+    uses: ./.github/workflows/_versions.yml
+
+  generate:
+    name: Regenerate Deploy Files
+    runs-on: ubuntu-latest
+    needs: versions
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ needs.versions.outputs.python-version }}
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Generate deploy files
+        run: python scripts/deploy-pipeline/01-generate.py
+
+      - name: Check for drift
+        run: |
+          if ! git diff --exit-code charts/ deploy/; then
+            echo "::warning::Deploy files are out of sync with SOURCE_OF_TRUTH"
+            echo "Run: python scripts/deploy-pipeline/01-generate.py"
+            exit 1
+          fi
+          echo "✅ Deploy files are in sync"
+
+  helm-lint:
+    name: Lint Helm Chart
+    runs-on: ubuntu-latest
+    needs: generate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.0
+
+      - name: Lint chart
+        run: helm lint charts/revenge
+
+      - name: Template chart (dry-run)
+        run: |
+          helm template revenge charts/revenge \
+            --set postgresql.enabled=true \
+            --set postgresql.auth.password=test \
+            > /dev/null
+
+  compose-validate:
+    name: Validate Docker Compose
+    runs-on: ubuntu-latest
+    needs: generate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate compose file
+        run: docker compose -f deploy/docker-compose.yml config --quiet
+
+  helm-package:
+    name: Package Helm Chart
+    runs-on: ubuntu-latest
+    needs: [helm-lint, compose-validate]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.0
+
+      - name: Get chart version
+        id: chart
+        run: |
+          VERSION=$(grep '^version:' charts/revenge/Chart.yaml | awk '{print $2}')
+          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            VERSION="${VERSION}-dev.$(git rev-parse --short HEAD)"
+            sed -i "s/^version:.*/version: ${VERSION}/" charts/revenge/Chart.yaml
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Package chart
+        run: helm package charts/revenge -d .cr-release-packages
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push chart to GHCR
+        run: |
+          for chart in .cr-release-packages/*.tgz; do
+            helm push "$chart" oci://ghcr.io/${{ github.repository_owner }}/charts
+          done

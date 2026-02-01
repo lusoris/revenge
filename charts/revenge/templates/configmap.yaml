@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "revenge.fullname" . }}-config
+  labels:
+    {{- include "revenge.labels" . | nindent 4 }}
+data:
+  REVENGE_SERVER_PORT: {{ .Values.revenge.server.port | quote }}
+  REVENGE_SERVER_HOST: {{ .Values.revenge.server.host | quote }}
+  REVENGE_DATABASE_PORT: {{ .Values.revenge.database.port | quote }}
+  REVENGE_DATABASE_NAME: {{ .Values.revenge.database.name | quote }}
+  REVENGE_DATABASE_USER: {{ .Values.revenge.database.user | quote }}
+  {{- if .Values.revenge.cache.host }}
+  REVENGE_CACHE_PORT: {{ .Values.revenge.cache.port | quote }}
+  REVENGE_CACHE_DB: {{ .Values.revenge.cache.db | quote }}
+  {{- end }}
+  {{- if .Values.revenge.search.host }}
+  REVENGE_SEARCH_PORT: {{ .Values.revenge.search.port | quote }}
+  REVENGE_SEARCH_PROTOCOL: {{ .Values.revenge.search.protocol | quote }}
+  {{- end }}
