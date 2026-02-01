@@ -142,7 +142,8 @@ class CodeFormatter:
         return FormatResult(
             formatter="go",
             success=gofmt_result.success and goimports_result.success,
-            files_formatted=gofmt_result.files_formatted + goimports_result.files_formatted,
+            files_formatted=gofmt_result.files_formatted
+            + goimports_result.files_formatted,
             output=f"{gofmt_result.output}\n{goimports_result.output}",
             error=f"{gofmt_result.error}\n{goimports_result.error}",
             exit_code=gofmt_result.exit_code or goimports_result.exit_code,
@@ -177,16 +178,19 @@ class CodeFormatter:
             cmd.append("--write")
 
         # Format TypeScript, JavaScript, JSON, YAML, Markdown
-        cmd.extend([
-            "**/*.{ts,tsx,js,jsx,json,yaml,yml,md}",
-            "--ignore-path",
-            ".gitignore",
-        ])
+        cmd.extend(
+            [
+                "**/*.{ts,tsx,js,jsx,json,yaml,yml,md}",
+                "--ignore-path",
+                ".gitignore",
+            ]
+        )
 
         return self.run_command(cmd)
 
     def format_all_code(
-        self, formatters: list[str] | None = None,
+        self,
+        formatters: list[str] | None = None,
     ) -> dict[str, FormatResult]:
         """Format all or selected code.
 
@@ -234,7 +238,9 @@ class CodeFormatter:
                         if self.check:
                             print(f"✓ {formatter_name}: formatting is correct")
                         else:
-                            print(f"✓ {formatter_name}: formatted {result.files_formatted} files")
+                            print(
+                                f"✓ {formatter_name}: formatted {result.files_formatted} files"
+                            )
                     else:
                         print(f"✗ {formatter_name}: formatting issues found")
 
@@ -257,9 +263,9 @@ class CodeFormatter:
         Args:
             results: Dict of formatter results
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Formatter Summary")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         total_files = sum(r.files_formatted for r in results.values())
         passed = sum(1 for r in results.values() if r.success)
@@ -277,7 +283,7 @@ class CodeFormatter:
             if self.verbose and result.output:
                 print(f"           Output: {result.output[:200]}")
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Total Formatters: {len(results)} | Passed: {passed} | Failed: {failed}")
 
         if not self.check:
@@ -293,7 +299,7 @@ class CodeFormatter:
         else:
             print(f"❌ {failed} formatter(s) failed")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
 
 def main():
@@ -359,9 +365,9 @@ def main():
     formatter = CodeFormatter(check=args.check, verbose=args.verbose)
 
     # Run formatters
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Code Formatting - {len(formatters) if formatters else 'all languages'}")
-    print(f"{'='*70}\n")
+    print(f"{'=' * 70}\n")
 
     if args.check:
         print("🔍 Check mode - no changes will be made\n")

@@ -133,7 +133,9 @@ def get_category_docs(doc_path: Path, all_docs: list[Path]) -> list[Path]:
 
 
 def get_related_docs(
-    doc_path: Path, all_docs: list[Path], topic_index: dict,
+    doc_path: Path,
+    all_docs: list[Path],
+    topic_index: dict,
 ) -> list[Path]:
     """Get related documents from other categories based on shared topics."""
     content = doc_path.read_text(encoding="utf-8")
@@ -255,7 +257,8 @@ def update_doc_breadcrumbs(
 
     # Check if section already exists
     pattern = re.compile(
-        rf"{re.escape(BREADCRUMB_START)}.*?{re.escape(BREADCRUMB_END)}", re.DOTALL,
+        rf"{re.escape(BREADCRUMB_START)}.*?{re.escape(BREADCRUMB_END)}",
+        re.DOTALL,
     )
 
     if pattern.search(content):
@@ -287,7 +290,10 @@ def update_doc_breadcrumbs(
 def main():
     parser = argparse.ArgumentParser(description="Add design doc breadcrumbs")
     parser.add_argument(
-        "--update", "-u", action="store_true", help="Write files (default: dry run)",
+        "--update",
+        "-u",
+        action="store_true",
+        help="Write files (default: dry run)",
     )
     args = parser.parse_args()
 
@@ -308,7 +314,10 @@ def main():
         related_docs = get_related_docs(doc_path, docs, topic_index)
 
         changed = update_doc_breadcrumbs(
-            doc_path, category_docs, related_docs, dry_run=not args.update,
+            doc_path,
+            category_docs,
+            related_docs,
+            dry_run=not args.update,
         )
 
         rel_path = doc_path.relative_to(DESIGN_DIR)

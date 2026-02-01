@@ -33,7 +33,8 @@ def extract_sot_versions() -> dict:
     # Pattern for table rows with package and version
     # | `package/path` | vX.Y.Z | description |
     table_pattern = re.compile(
-        r"\|\s*`([^`]+)`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?(?:-\w+)?)\s*\|", re.MULTILINE,
+        r"\|\s*`([^`]+)`\s*\|\s*(v?\d+\.\d+(?:\.\d+)?(?:-\w+)?)\s*\|",
+        re.MULTILINE,
     )
 
     for match in table_pattern.finditer(content):

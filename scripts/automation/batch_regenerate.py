@@ -145,9 +145,9 @@ class BatchRegenerator:
         """
         yaml_files = self.find_yaml_files()
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("BATCH REGENERATION")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Found {len(yaml_files)} YAML files to process\n")
 
         stats = {
@@ -187,16 +187,16 @@ class BatchRegenerator:
             print()
 
         # Summary
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total files: {stats['total']}")
         print(f"Success: {stats['success']}")
         print(f"Failed: {stats['failed']}")
         print("\nBy category:")
         for category, count in sorted(stats["by_category"].items()):
             print(f"  {category}: {count} files")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         return stats
 

@@ -49,7 +49,8 @@ SKIP_FILES = {
 
 # Status table pattern
 STATUS_TABLE_PATTERN = re.compile(
-    r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n((?:\|.*?\n)+)", re.MULTILINE,
+    r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n((?:\|.*?\n)+)",
+    re.MULTILINE,
 )
 
 # Row pattern
@@ -134,7 +135,8 @@ def fix_status_table(content: str) -> tuple[str, bool]:
 
     # Find the full table including header
     full_pattern = re.compile(
-        r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n(?:\|.*?\n)+", re.MULTILINE,
+        r"\|\s*Dimension\s*\|\s*Status\s*\|.*?\n\|[-\s|]+\n(?:\|.*?\n)+",
+        re.MULTILINE,
     )
 
     full_match = full_pattern.search(content)
@@ -219,7 +221,10 @@ def main():
     parser = argparse.ArgumentParser(description="Sync status tables")
     parser.add_argument("--category", "-c", help="Only check specific category")
     parser.add_argument(
-        "--fix", "-f", action="store_true", help="Fix formatting issues",
+        "--fix",
+        "-f",
+        action="store_true",
+        help="Fix formatting issues",
     )
     parser.add_argument(
         "--add-missing",

@@ -276,7 +276,10 @@ def main() -> int:
         related_docs = get_related_docs(doc_path, docs, topic_index)
 
         changed = update_document(
-            doc_path, category_docs, related_docs, dry_run=dry_run,
+            doc_path,
+            category_docs,
+            related_docs,
+            dry_run=dry_run,
         )
 
         rel_path = doc_path.relative_to(DESIGN_DIR)

@@ -80,12 +80,18 @@ class GitHubProjectsManager:
         """
         print(f"📋 Creating project: {title}")
 
-        output = self.run_gh_command([
-            "project", "create",
-            "--owner", self.repo_owner,
-            "--title", title,
-            "--format", "json",
-        ])
+        output = self.run_gh_command(
+            [
+                "project",
+                "create",
+                "--owner",
+                self.repo_owner,
+                "--title",
+                title,
+                "--format",
+                "json",
+            ]
+        )
 
         if self.dry_run:
             return "1"  # Dummy project number for dry-run
@@ -96,7 +102,13 @@ class GitHubProjectsManager:
         print(f"   ✓ Created project #{project_number}")
         return str(project_number)
 
-    def add_field(self, project_number: str, field_name: str, field_type: str, options: list[str] | None = None):
+    def add_field(
+        self,
+        project_number: str,
+        field_name: str,
+        field_type: str,
+        options: list[str] | None = None,
+    ):
         """Add custom field to project.
 
         Args:
@@ -108,10 +120,15 @@ class GitHubProjectsManager:
         print(f"   Adding field: {field_name} ({field_type})")
 
         cmd = [
-            "project", "field-create", project_number,
-            "--owner", self.repo_owner,
-            "--name", field_name,
-            "--data-type", field_type,
+            "project",
+            "field-create",
+            project_number,
+            "--owner",
+            self.repo_owner,
+            "--name",
+            field_name,
+            "--data-type",
+            field_type,
         ]
 
         if options and field_type == "SINGLE_SELECT":
@@ -141,7 +158,9 @@ class GitHubProjectsManager:
         # For now, we'll document this as a manual step
 
         print("   ⚠️  Status field configuration requires manual setup via GitHub UI")
-        print("       Configure Status field with: Backlog, Todo, In Progress, Review, Done")
+        print(
+            "       Configure Status field with: Backlog, Todo, In Progress, Review, Done"
+        )
 
     def add_items_to_project(self, project_number: str):
         """Add existing issues/PRs to project.
@@ -152,13 +171,20 @@ class GitHubProjectsManager:
         print("   Adding existing issues to project...")
 
         # Get open issues
-        issues_output = self.run_gh_command([
-            "issue", "list",
-            "--repo", self.repo_full,
-            "--state", "open",
-            "--limit", "100",
-            "--json", "number",
-        ])
+        issues_output = self.run_gh_command(
+            [
+                "issue",
+                "list",
+                "--repo",
+                self.repo_full,
+                "--state",
+                "open",
+                "--limit",
+                "100",
+                "--json",
+                "number",
+            ]
+        )
 
         if self.dry_run or not issues_output:
             print("   ℹ️  No issues to add (or dry-run)")
@@ -169,20 +195,26 @@ class GitHubProjectsManager:
         for issue in issues:
             issue_number = issue["number"]
             try:
-                self.run_gh_command([
-                    "project", "item-add", project_number,
-                    "--owner", self.repo_owner,
-                    "--url", f"https://github.com/{self.repo_full}/issues/{issue_number}",
-                ])
+                self.run_gh_command(
+                    [
+                        "project",
+                        "item-add",
+                        project_number,
+                        "--owner",
+                        self.repo_owner,
+                        "--url",
+                        f"https://github.com/{self.repo_full}/issues/{issue_number}",
+                    ]
+                )
                 print(f"      ✓ Added issue #{issue_number}")
             except subprocess.CalledProcessError as e:
                 print(f"      ⚠️  Failed to add issue #{issue_number}: {e}")
 
     def setup_project(self):
         """Set up complete GitHub Project."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"GitHub Projects Setup - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -207,7 +239,13 @@ class GitHubProjectsManager:
             project_number,
             "Effort",
             "SINGLE_SELECT",
-            ["XS (< 1hr)", "S (1-4hrs)", "M (1-2 days)", "L (3-5 days)", "XL (1-2 weeks)"],
+            [
+                "XS (< 1hr)",
+                "S (1-4hrs)",
+                "M (1-2 days)",
+                "L (3-5 days)",
+                "XL (1-2 weeks)",
+            ],
         )
 
         self.add_field(
@@ -225,10 +263,12 @@ class GitHubProjectsManager:
         print("\n📌 Adding items to project...")
         self.add_items_to_project(project_number)
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("✅ Project setup complete!")
-        print(f"{'='*70}\n")
-        print(f"Project URL: https://github.com/orgs/{self.repo_owner}/projects/{project_number}")
+        print(f"{'=' * 70}\n")
+        print(
+            f"Project URL: https://github.com/orgs/{self.repo_owner}/projects/{project_number}"
+        )
         print("\n⚠️  Manual steps required:")
         print("   1. Configure Status field options in GitHub UI")
         print("   2. Set up automation rules (auto-add, auto-move)")
@@ -254,7 +294,12 @@ def get_repo_info() -> tuple[str, str]:
         # Parse owner and repo from URL
         # Handles: git@github.com:owner/repo.git or https://github.com/owner/repo.git
         if "github.com" in remote_url:
-            parts = remote_url.split("github.com")[-1].strip(":/").replace(".git", "").split("/")
+            parts = (
+                remote_url.split("github.com")[-1]
+                .strip(":/")
+                .replace(".git", "")
+                .split("/")
+            )
             if len(parts) >= 2:
                 return parts[0], parts[1]
 

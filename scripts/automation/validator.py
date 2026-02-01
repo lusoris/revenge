@@ -55,7 +55,14 @@ class YAMLValidator:
 
         # Map additional categories to generic schema
         if "generic" in schemas:
-            for cat in ["architecture", "operations", "technical", "pattern", "research", "other"]:
+            for cat in [
+                "architecture",
+                "operations",
+                "technical",
+                "pattern",
+                "research",
+                "other",
+            ]:
                 schemas[cat] = schemas["generic"]
 
         return schemas

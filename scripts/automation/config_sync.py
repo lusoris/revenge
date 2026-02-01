@@ -291,9 +291,9 @@ class ConfigSync:
         Returns:
             Combined statistics dict
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"CONFIG SYNC - {'DRY RUN' if dry_run else 'LIVE'}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         total_stats = {"updated": 0, "unchanged": 0, "errors": 0}
 
@@ -314,9 +314,9 @@ class ConfigSync:
                 total_stats[key] += stats.get(key, 0)
 
         # Summary
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Updated: {total_stats['updated']}")
         print(f"Unchanged: {total_stats['unchanged']}")
         print(f"Errors: {total_stats['errors']}")
@@ -324,7 +324,7 @@ class ConfigSync:
         if dry_run:
             print("\n⚠️  DRY RUN MODE - No changes written")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         return total_stats
 

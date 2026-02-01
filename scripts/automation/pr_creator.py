@@ -187,7 +187,13 @@ class PRCreator:
         Returns:
             True if all changes are in docs/, data/, templates/, schemas/
         """
-        docs_prefixes = ("docs/", "data/", "templates/", "schemas/", ".github/workflows/doc-")
+        docs_prefixes = (
+            "docs/",
+            "data/",
+            "templates/",
+            "schemas/",
+            ".github/workflows/doc-",
+        )
         return all(any(f.startswith(prefix) for prefix in docs_prefixes) for f in files)
 
     def create_branch(self, branch_name: str) -> bool:
@@ -279,11 +285,17 @@ class PRCreator:
         try:
             # Create PR
             cmd = [
-                "gh", "pr", "create",
-                "--base", base_branch,
-                "--head", branch_name,
-                "--title", title,
-                "--body", body,
+                "gh",
+                "pr",
+                "create",
+                "--base",
+                base_branch,
+                "--head",
+                branch_name,
+                "--title",
+                title,
+                "--body",
+                body,
             ]
 
             if auto_merge:
@@ -394,14 +406,14 @@ class PRCreator:
 """
 
         if dry_run:
-            print(f"\n{'='*70}")
+            print(f"\n{'=' * 70}")
             print("DRY RUN - Would create PR:")
-            print(f"{'='*70}")
+            print(f"{'=' * 70}")
             print(f"Branch: {branch_name}")
             print(f"Title: {title}")
             print(f"Body:\n{body}")
             print(f"Auto-merge: {self.is_docs_only_change(changed_files)}")
-            print(f"{'='*70}\n")
+            print(f"{'=' * 70}\n")
             return True, "dry-run"
 
         # Create branch
@@ -409,7 +421,9 @@ class PRCreator:
             return False, "Failed to create branch"
 
         # Commit changes
-        commit_msg = title + "\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+        commit_msg = (
+            title + "\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+        )
         if not self.commit_changes(commit_msg):
             return False, "Failed to commit changes"
 

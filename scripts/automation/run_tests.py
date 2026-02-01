@@ -76,7 +76,9 @@ class TestRunner:
         self.root = Path.cwd()
 
     def run_command(
-        self, cmd: list[str], cwd: Path | None = None,
+        self,
+        cmd: list[str],
+        cwd: Path | None = None,
     ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
@@ -155,7 +157,9 @@ class TestRunner:
                 # Try to get coverage from coverage.out
                 coverage_file = self.root / "coverage.out"
                 if coverage_file.exists():
-                    cov_result = self.run_command(["go", "tool", "cover", "-func=coverage.out"])
+                    cov_result = self.run_command(
+                        ["go", "tool", "cover", "-func=coverage.out"]
+                    )
                     total_match = re.search(r"total:.*?([\d.]+)%", cov_result.stdout)
                     if total_match:
                         coverage_pct = float(total_match.group(1))
@@ -183,11 +187,13 @@ class TestRunner:
         cmd = ["pytest"]
 
         if self.coverage:
-            cmd.extend([
-                "--cov=scripts",
-                "--cov-report=term-missing",
-                "--cov-report=json",
-            ])
+            cmd.extend(
+                [
+                    "--cov=scripts",
+                    "--cov-report=term-missing",
+                    "--cov-report=json",
+                ]
+            )
 
         if self.verbose:
             cmd.append("-v")
@@ -373,9 +379,9 @@ class TestRunner:
         Args:
             results: Dict of test results
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Test Summary")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         total_passed = sum(r.passed for r in results.values())
         total_failed = sum(r.failed for r in results.values())
@@ -383,7 +389,10 @@ class TestRunner:
 
         for suite_name, result in sorted(results.items()):
             status = "✓ PASS" if result.success else "✗ FAIL"
-            print(f"{status:10} {suite_name:10} P:{result.passed:4} F:{result.failed:4} S:{result.skipped:4}", end="")
+            print(
+                f"{status:10} {suite_name:10} P:{result.passed:4} F:{result.failed:4} S:{result.skipped:4}",
+                end="",
+            )
 
             # Print coverage if available
             if result.coverage is not None:
@@ -392,7 +401,7 @@ class TestRunner:
 
             print()
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Total: P:{total_passed} F:{total_failed} S:{total_skipped}")
 
         if self.coverage:
@@ -400,14 +409,16 @@ class TestRunner:
                 r.coverage for r in results.values() if r.coverage is not None
             ) / len([r for r in results.values() if r.coverage is not None])
             cov_status = "✓" if avg_coverage >= self.threshold else "✗"
-            print(f"Average Coverage: {avg_coverage:.2f}% (threshold: {self.threshold}%) {cov_status}")
+            print(
+                f"Average Coverage: {avg_coverage:.2f}% (threshold: {self.threshold}%) {cov_status}"
+            )
 
         if total_failed == 0:
             print("✅ All tests passed!")
         else:
             print(f"❌ {total_failed} test(s) failed")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
     def check_coverage_threshold(self, results: dict[str, TestResult]) -> bool:
         """Check if coverage meets threshold.
@@ -509,9 +520,9 @@ def main():
     )
 
     # Run tests
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Running Tests - {len(suites) if suites else 'all suites'}")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     if args.coverage:
         print(f"📊 Coverage reporting enabled (threshold: {args.threshold}%)")

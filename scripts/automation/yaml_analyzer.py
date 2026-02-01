@@ -103,9 +103,9 @@ class YAMLAnalyzer:
         # Skip shared-sot.yaml
         yaml_files = [f for f in yaml_files if f.name != "shared-sot.yaml"]
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("YAML COMPLETION ANALYSIS")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Analyzing {len(yaml_files)} YAML files...\n")
 
         stats = {
@@ -148,9 +148,9 @@ class YAMLAnalyzer:
         results = analysis["results"]
 
         # Summary
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total files: {stats['total']}")
         print("\nBy category:")
         for category, count in sorted(stats["by_category"].items()):
@@ -164,9 +164,9 @@ class YAMLAnalyzer:
         print(f"Missing required fields: {stats['total_missing']}")
 
         # Top priority files (features, services, integrations with low completion)
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("TOP PRIORITY FOR COMPLETION")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         priority_categories = ["feature", "service", "integration"]
         priority_files = [
@@ -199,9 +199,9 @@ class YAMLAnalyzer:
             print("✅ No high-priority files need completion!\n")
 
         # Files with missing sources/design_refs
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("FILES MISSING CROSS-REFERENCES")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         missing_refs = [
             r
@@ -219,7 +219,7 @@ class YAMLAnalyzer:
         else:
             print("✅ All files have sources or design refs!\n")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
 
 def main():

@@ -155,7 +155,10 @@ def validate_file(
             link_url = match.group(2)
 
             is_valid, error = validate_link(
-                file_path, link_text, link_url, file_headings_cache,
+                file_path,
+                link_text,
+                link_url,
+                file_headings_cache,
             )
 
             if not is_valid:
@@ -180,10 +183,16 @@ def main():
         help="Directory or file to check (default: docs/)",
     )
     parser.add_argument(
-        "--fix", "-f", action="store_true", help="Attempt to fix simple issues",
+        "--fix",
+        "-f",
+        action="store_true",
+        help="Attempt to fix simple issues",
     )
     parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Show all checked files",
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Show all checked files",
     )
     args = parser.parse_args()
 

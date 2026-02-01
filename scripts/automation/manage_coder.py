@@ -44,7 +44,9 @@ class CoderManager:
         self.root = Path.cwd()
         self.template_dir = self.root / ".coder"
 
-    def run_command(self, cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    def run_command(
+        self, cmd: list[str], cwd: Path | None = None
+    ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
         Args:
@@ -123,14 +125,20 @@ class CoderManager:
         print(f"\n🏗️  Creating workspace: {name}")
 
         if self.dry_run:
-            print(f"[DRY-RUN] Would create workspace '{name}' from template '{template}'")
+            print(
+                f"[DRY-RUN] Would create workspace '{name}' from template '{template}'"
+            )
             return True
 
-        result = self.run_command([
-            "coder", "create",
-            "--template", template,
-            name,
-        ])
+        result = self.run_command(
+            [
+                "coder",
+                "create",
+                "--template",
+                template,
+                name,
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Failed to create workspace: {result.stderr}")
@@ -294,11 +302,16 @@ class CoderManager:
         """
         print("\n📤 Pushing template to Coder...")
 
-        result = self.run_command([
-            "coder", "templates", "push",
-            "--directory", str(self.template_dir),
-            "revenge",
-        ])
+        result = self.run_command(
+            [
+                "coder",
+                "templates",
+                "push",
+                "--directory",
+                str(self.template_dir),
+                "revenge",
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Failed to push template: {result.stderr}")

@@ -109,12 +109,15 @@ class GitHubLabelsManager:
             Dict mapping label names to their properties
         """
         try:
-            output = self.run_gh_command([
-                "api",
-                f"/repos/{self.repo_full}/labels",
-                "--paginate",
-                "--jq", ".",
-            ])
+            output = self.run_gh_command(
+                [
+                    "api",
+                    f"/repos/{self.repo_full}/labels",
+                    "--paginate",
+                    "--jq",
+                    ".",
+                ]
+            )
 
             if not output or self.dry_run:
                 return {}
@@ -147,14 +150,20 @@ class GitHubLabelsManager:
             return
 
         try:
-            self.run_gh_command([
-                "api",
-                "-X", "POST",
-                f"/repos/{self.repo_full}/labels",
-                "-f", f"name={name}",
-                "-f", f"color={color}",
-                "-f", f"description={description}",
-            ])
+            self.run_gh_command(
+                [
+                    "api",
+                    "-X",
+                    "POST",
+                    f"/repos/{self.repo_full}/labels",
+                    "-f",
+                    f"name={name}",
+                    "-f",
+                    f"color={color}",
+                    "-f",
+                    f"description={description}",
+                ]
+            )
             print(f"      ✓ Created: {name}")
         except subprocess.CalledProcessError as e:
             print(f"      ✗ Failed to create {name}: {e}")
@@ -176,15 +185,21 @@ class GitHubLabelsManager:
         try:
             # URL-encode the label name for the API call
             import urllib.parse
+
             encoded_name = urllib.parse.quote(name)
 
-            self.run_gh_command([
-                "api",
-                "-X", "PATCH",
-                f"/repos/{self.repo_full}/labels/{encoded_name}",
-                "-f", f"color={color}",
-                "-f", f"description={description}",
-            ])
+            self.run_gh_command(
+                [
+                    "api",
+                    "-X",
+                    "PATCH",
+                    f"/repos/{self.repo_full}/labels/{encoded_name}",
+                    "-f",
+                    f"color={color}",
+                    "-f",
+                    f"description={description}",
+                ]
+            )
             print(f"      ✓ Updated: {name}")
         except subprocess.CalledProcessError as e:
             print(f"      ✗ Failed to update {name}: {e}")
@@ -203,13 +218,17 @@ class GitHubLabelsManager:
 
         try:
             import urllib.parse
+
             encoded_name = urllib.parse.quote(name)
 
-            self.run_gh_command([
-                "api",
-                "-X", "DELETE",
-                f"/repos/{self.repo_full}/labels/{encoded_name}",
-            ])
+            self.run_gh_command(
+                [
+                    "api",
+                    "-X",
+                    "DELETE",
+                    f"/repos/{self.repo_full}/labels/{encoded_name}",
+                ]
+            )
             print(f"      ✓ Deleted: {name}")
         except subprocess.CalledProcessError as e:
             print(f"      ✗ Failed to delete {name}: {e}")
@@ -221,9 +240,9 @@ class GitHubLabelsManager:
             config_file: Path to labels.yml
             cleanup: If True, remove labels not in config
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"GitHub Labels Sync - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -279,9 +298,9 @@ class GitHubLabelsManager:
             print(f"\n   Deleted: {deleted} labels")
 
         # Summary
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Sync Summary")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"   Created: {created}")
         print(f"   Updated: {updated}")
         print(f"   Skipped: {skipped}")
@@ -293,9 +312,9 @@ class GitHubLabelsManager:
         Args:
             config_file: Path to labels.yml
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"GitHub Labels Check - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         config_labels = self.load_label_config(config_file)
         existing_labels = self.get_existing_labels()
@@ -335,8 +354,10 @@ class GitHubLabelsManager:
                 description = label_def.get("description", "")
                 existing = existing_labels[name]
 
-                if (existing["color"].lower() != color.lower()
-                        or existing["description"] != description):
+                if (
+                    existing["color"].lower() != color.lower()
+                    or existing["description"] != description
+                ):
                     updates_needed += 1
 
         if updates_needed:
@@ -365,7 +386,12 @@ def get_repo_info() -> tuple[str, str]:
         remote_url = result.stdout.strip()
 
         if "github.com" in remote_url:
-            parts = remote_url.split("github.com")[-1].strip(":/").replace(".git", "").split("/")
+            parts = (
+                remote_url.split("github.com")[-1]
+                .strip(":/")
+                .replace(".git", "")
+                .split("/")
+            )
             if len(parts) >= 2:
                 return parts[0], parts[1]
 

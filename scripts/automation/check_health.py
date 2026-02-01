@@ -55,7 +55,9 @@ class HealthChecker:
         self.root = Path.cwd()
         self.results: list[HealthCheck] = []
 
-    def run_command(self, cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    def run_command(
+        self, cmd: list[str], cwd: Path | None = None
+    ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
         Args:
@@ -422,9 +424,9 @@ class HealthChecker:
         Args:
             results: List of HealthCheck results
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("System Health Check")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         healthy = sum(1 for r in results if r.status == "healthy")
         degraded = sum(1 for r in results if r.status == "degraded")
@@ -438,9 +440,11 @@ class HealthChecker:
             else:
                 icon = "❌"
 
-            print(f"{icon} {result.component:20} {result.status.upper():12} {result.message}")
+            print(
+                f"{icon} {result.component:20} {result.status.upper():12} {result.message}"
+            )
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Summary: Healthy:{healthy} Degraded:{degraded} Unhealthy:{unhealthy}")
 
         if unhealthy > 0:
@@ -450,7 +454,7 @@ class HealthChecker:
         else:
             print("✅ System health: HEALTHY")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
     def create_github_issue(self, results: list[HealthCheck]) -> bool:
         """Create GitHub issue for unhealthy components.
@@ -475,7 +479,9 @@ class HealthChecker:
             issue_body += f"- **{result.component}**: {result.message}\n"
 
         issue_body += "\n**Automated health check failed.**\n"
-        issue_body += "\n🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+        issue_body += (
+            "\n🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+        )
 
         # Create issue using gh CLI
         try:
@@ -560,7 +566,9 @@ def main():
     # Run checks
     results = []
 
-    if args.all or not any([args.automation, args.services, args.frontend, args.resources]):
+    if args.all or not any(
+        [args.automation, args.services, args.frontend, args.resources]
+    ):
         results = checker.check_all()
     else:
         if args.automation:
@@ -575,7 +583,9 @@ def main():
     # Output results
     if args.json:
         output = {
-            "status": "healthy" if all(r.status == "healthy" for r in results) else "degraded",
+            "status": "healthy"
+            if all(r.status == "healthy" for r in results)
+            else "degraded",
             "components": [
                 {
                     "component": r.component,

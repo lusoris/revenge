@@ -361,10 +361,14 @@ def main():
         description="Hybrid link fixer for design documentation",
     )
     parser.add_argument(
-        "--fix", action="store_true", help="Apply auto-fixes (default: dry-run)",
+        "--fix",
+        action="store_true",
+        help="Apply auto-fixes (default: dry-run)",
     )
     parser.add_argument(
-        "--report", action="store_true", help="Generate detailed report file",
+        "--report",
+        action="store_true",
+        help="Generate detailed report file",
     )
     parser.add_argument(
         "--verbose",

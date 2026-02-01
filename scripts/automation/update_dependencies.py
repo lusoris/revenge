@@ -148,7 +148,8 @@ class DependencyUpdater:
         try:
             # Get outdated packages
             output = self.run_command(
-                ["npm", "outdated", "--json"], cwd=frontend_dir,
+                ["npm", "outdated", "--json"],
+                cwd=frontend_dir,
             )
 
             if not output or self.dry_run:
@@ -247,7 +248,8 @@ class DependencyUpdater:
             return []
 
     def check_all_dependencies(
-        self, ecosystem: str | None = None,
+        self,
+        ecosystem: str | None = None,
     ) -> dict[str, list[Dependency]]:
         """Check all dependencies or specific ecosystem.
 
@@ -286,7 +288,9 @@ class DependencyUpdater:
 
         if self.dry_run:
             for dep in deps:
-                print(f"   [DRY-RUN] Would update {dep.name}: {dep.current} → {dep.available}")
+                print(
+                    f"   [DRY-RUN] Would update {dep.name}: {dep.current} → {dep.available}"
+                )
             return True
 
         try:
@@ -320,7 +324,9 @@ class DependencyUpdater:
 
         if self.dry_run:
             for dep in deps:
-                print(f"   [DRY-RUN] Would update {dep.name}: {dep.current} → {dep.available}")
+                print(
+                    f"   [DRY-RUN] Would update {dep.name}: {dep.current} → {dep.available}"
+                )
             return True
 
         frontend_dir = self.root / "frontend"
@@ -329,7 +335,8 @@ class DependencyUpdater:
             for dep in deps:
                 print(f"   Updating {dep.name}: {dep.current} → {dep.available}")
                 self.run_command(
-                    ["npm", "update", dep.name], cwd=frontend_dir,
+                    ["npm", "update", dep.name],
+                    cwd=frontend_dir,
                 )
 
             print("   ✓ npm dependencies updated")
@@ -355,7 +362,9 @@ class DependencyUpdater:
 
         if self.dry_run:
             for dep in deps:
-                print(f"   [DRY-RUN] Would update {dep.name}: {dep.current} → {dep.available}")
+                print(
+                    f"   [DRY-RUN] Would update {dep.name}: {dep.current} → {dep.available}"
+                )
             return True
 
         try:
@@ -457,10 +466,14 @@ class DependencyUpdater:
                 if dep_list:
                     msg_lines.append(f"{ecosystem.upper()}:")
                     for dep in dep_list:
-                        msg_lines.append(f"- {dep.name}: {dep.current} → {dep.available}")
+                        msg_lines.append(
+                            f"- {dep.name}: {dep.current} → {dep.available}"
+                        )
                     msg_lines.append("")
 
-            msg_lines.append("Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>")
+            msg_lines.append(
+                "Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+            )
 
             self.run_command(["git", "commit", "-m", "\n".join(msg_lines)])
 
@@ -468,23 +481,36 @@ class DependencyUpdater:
             self.run_command(["git", "push", "-u", "origin", branch])
 
             pr_body = "## Dependency Updates\n\n"
-            pr_body += f"Updated {total} dependencies across {len(deps)} ecosystems.\n\n"
+            pr_body += (
+                f"Updated {total} dependencies across {len(deps)} ecosystems.\n\n"
+            )
 
             for ecosystem, dep_list in deps.items():
                 if dep_list:
                     pr_body += f"### {ecosystem.upper()}\n\n"
                     for dep in dep_list:
-                        pr_body += f"- **{dep.name}**: {dep.current} → {dep.available}\n"
+                        pr_body += (
+                            f"- **{dep.name}**: {dep.current} → {dep.available}\n"
+                        )
                     pr_body += "\n"
 
-            pr_body += "\n🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+            pr_body += (
+                "\n🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+            )
 
-            self.run_command([
-                "gh", "pr", "create",
-                "--title", "chore(deps): update dependencies",
-                "--body", pr_body,
-                "--label", "dependencies",
-            ])
+            self.run_command(
+                [
+                    "gh",
+                    "pr",
+                    "create",
+                    "--title",
+                    "chore(deps): update dependencies",
+                    "--body",
+                    pr_body,
+                    "--label",
+                    "dependencies",
+                ]
+            )
 
             print("   ✓ PR created successfully")
             return True
@@ -554,9 +580,9 @@ def main():
     updater = DependencyUpdater(dry_run=args.dry_run, verbose=args.verbose)
 
     # Check dependencies
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Dependency Update - {args.ecosystem or 'all ecosystems'}")
-    print(f"{'='*70}\n")
+    print(f"{'=' * 70}\n")
 
     if args.dry_run:
         print("🔍 DRY-RUN MODE - No changes will be made\n")

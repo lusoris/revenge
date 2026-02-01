@@ -83,13 +83,17 @@ class GitHubMilestonesManager:
             List of milestone dicts
         """
         try:
-            output = self.run_gh_command([
-                "api",
-                f"/repos/{self.repo_full}/milestones",
-                "-f", f"state={state}",
-                "--paginate",
-                "--jq", ".",
-            ])
+            output = self.run_gh_command(
+                [
+                    "api",
+                    f"/repos/{self.repo_full}/milestones",
+                    "-f",
+                    f"state={state}",
+                    "--paginate",
+                    "--jq",
+                    ".",
+                ]
+            )
 
             if not output or self.dry_run:
                 return []
@@ -157,7 +161,9 @@ class GitHubMilestonesManager:
 
         return f"v{major}.{minor}.{patch}"
 
-    def create_milestone(self, title: str, description: str = "", due_date: str | None = None):
+    def create_milestone(
+        self, title: str, description: str = "", due_date: str | None = None
+    ):
         """Create a new milestone.
 
         Args:
@@ -176,9 +182,11 @@ class GitHubMilestonesManager:
         try:
             cmd = [
                 "api",
-                "-X", "POST",
+                "-X",
+                "POST",
                 f"/repos/{self.repo_full}/milestones",
-                "-f", f"title={title}",
+                "-f",
+                f"title={title}",
             ]
 
             if description:
@@ -205,12 +213,16 @@ class GitHubMilestonesManager:
             return
 
         try:
-            self.run_gh_command([
-                "api",
-                "-X", "PATCH",
-                f"/repos/{self.repo_full}/milestones/{milestone_number}",
-                "-f", "state=closed",
-            ])
+            self.run_gh_command(
+                [
+                    "api",
+                    "-X",
+                    "PATCH",
+                    f"/repos/{self.repo_full}/milestones/{milestone_number}",
+                    "-f",
+                    "state=closed",
+                ]
+            )
             print(f"      ✓ Closed milestone #{milestone_number}")
         except subprocess.CalledProcessError as e:
             print(f"      ✗ Failed to close milestone: {e}")
@@ -223,16 +235,22 @@ class GitHubMilestonesManager:
             milestone_number: Milestone number
         """
         if self.dry_run:
-            print(f"      [DRY-RUN] Would assign #{issue_number} to milestone #{milestone_number}")
+            print(
+                f"      [DRY-RUN] Would assign #{issue_number} to milestone #{milestone_number}"
+            )
             return
 
         try:
-            self.run_gh_command([
-                "api",
-                "-X", "PATCH",
-                f"/repos/{self.repo_full}/issues/{issue_number}",
-                "-f", f"milestone={milestone_number}",
-            ])
+            self.run_gh_command(
+                [
+                    "api",
+                    "-X",
+                    "PATCH",
+                    f"/repos/{self.repo_full}/issues/{issue_number}",
+                    "-f",
+                    f"milestone={milestone_number}",
+                ]
+            )
         except subprocess.CalledProcessError as e:
             print(f"      ✗ Failed to assign #{issue_number}: {e}")
 
@@ -242,9 +260,9 @@ class GitHubMilestonesManager:
         Args:
             bump: Version component to bump (major, minor, patch)
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Create Next Milestone - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -271,9 +289,9 @@ class GitHubMilestonesManager:
 
     def close_completed_milestones(self):
         """Close milestones that have all issues closed."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Close Completed Milestones - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -303,9 +321,9 @@ class GitHubMilestonesManager:
             from_milestone: Source milestone title
             to_milestone: Target milestone title
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Move Open Issues - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -328,14 +346,19 @@ class GitHubMilestonesManager:
 
         # Get issues from source milestone
         try:
-            output = self.run_gh_command([
-                "api",
-                f"/repos/{self.repo_full}/issues",
-                "-f", f"milestone={from_ms['number']}",
-                "-f", "state=open",
-                "--paginate",
-                "--jq", ".",
-            ])
+            output = self.run_gh_command(
+                [
+                    "api",
+                    f"/repos/{self.repo_full}/issues",
+                    "-f",
+                    f"milestone={from_ms['number']}",
+                    "-f",
+                    "state=open",
+                    "--paginate",
+                    "--jq",
+                    ".",
+                ]
+            )
 
             issues = [] if not output or self.dry_run else json.loads(output)
 
@@ -371,7 +394,12 @@ def get_repo_info() -> tuple[str, str]:
         remote_url = result.stdout.strip()
 
         if "github.com" in remote_url:
-            parts = remote_url.split("github.com")[-1].strip(":/").replace(".git", "").split("/")
+            parts = (
+                remote_url.split("github.com")[-1]
+                .strip(":/")
+                .replace(".git", "")
+                .split("/")
+            )
             if len(parts) >= 2:
                 return parts[0], parts[1]
 
@@ -452,7 +480,9 @@ def main():
     elif args.move_open:
         manager.move_open_issues(args.move_open[0], args.move_open[1])
     else:
-        print("❌ Error: Specify an action (--create-next, --close-completed, or --move-open)")
+        print(
+            "❌ Error: Specify an action (--create-next, --close-completed, or --move-open)"
+        )
         parser.print_help()
         sys.exit(1)
 

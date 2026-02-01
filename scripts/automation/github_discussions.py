@@ -84,11 +84,14 @@ class GitHubDiscussionsManager:
 
         # Check if discussions are already enabled
         try:
-            result = self.run_gh_command([
-                "api",
-                f"/repos/{self.repo_full}",
-                "--jq", ".has_discussions",
-            ])
+            result = self.run_gh_command(
+                [
+                    "api",
+                    f"/repos/{self.repo_full}",
+                    "--jq",
+                    ".has_discussions",
+                ]
+            )
 
             if not self.dry_run:
                 has_discussions = result.strip().lower() == "true"
@@ -129,18 +132,29 @@ class GitHubDiscussionsManager:
             }
             """
 
-            result = self.run_gh_command([
-                "api", "graphql",
-                "-f", f"owner={self.repo_owner}",
-                "-f", f"name={self.repo_name}",
-                "-f", f"query={query}",
-            ])
+            result = self.run_gh_command(
+                [
+                    "api",
+                    "graphql",
+                    "-f",
+                    f"owner={self.repo_owner}",
+                    "-f",
+                    f"name={self.repo_name}",
+                    "-f",
+                    f"query={query}",
+                ]
+            )
 
             if self.dry_run or not result:
                 return []
 
             data = json.loads(result)
-            categories = data.get("data", {}).get("repository", {}).get("discussionCategories", {}).get("nodes", [])
+            categories = (
+                data.get("data", {})
+                .get("repository", {})
+                .get("discussionCategories", {})
+                .get("nodes", [])
+            )
 
             print(f"   ✓ Found {len(categories)} categories")
             return categories
@@ -274,9 +288,9 @@ labels: ["bug", "needs-triage"]
 
     def print_manual_steps(self):
         """Print manual configuration steps."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("⚠️  Manual Configuration Required")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         print("Since GitHub Discussions configuration via API is limited,")
         print("please complete the following steps manually:\n")
@@ -303,9 +317,9 @@ labels: ["bug", "needs-triage"]
 
     def setup_discussions(self):
         """Set up complete GitHub Discussions."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"GitHub Discussions Setup - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -329,9 +343,9 @@ labels: ["bug", "needs-triage"]
         # Print manual steps
         self.print_manual_steps()
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("✅ Discussion templates created!")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print("Templates location: .github/DISCUSSION_TEMPLATE/\n")
 
 
@@ -353,7 +367,12 @@ def get_repo_info() -> tuple[str, str]:
 
         # Parse owner and repo from URL
         if "github.com" in remote_url:
-            parts = remote_url.split("github.com")[-1].strip(":/").replace(".git", "").split("/")
+            parts = (
+                remote_url.split("github.com")[-1]
+                .strip(":/")
+                .replace(".git", "")
+                .split("/")
+            )
             if len(parts) >= 2:
                 return parts[0], parts[1]
 

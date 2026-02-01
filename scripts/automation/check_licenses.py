@@ -103,7 +103,9 @@ class LicenseChecker:
         self.verbose = verbose
         self.root = Path.cwd()
 
-    def run_command(self, cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    def run_command(
+        self, cmd: list[str], cwd: Path | None = None
+    ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
         Args:
@@ -240,7 +242,8 @@ class LicenseChecker:
 
         return LicenseCheckResult(
             ecosystem="go",
-            success=len(denied_licenses) == 0 and (not self.strict or len(unknown_licenses) == 0),
+            success=len(denied_licenses) == 0
+            and (not self.strict or len(unknown_licenses) == 0),
             total=len(licenses),
             allowed=len(licenses) - len(denied_licenses) - len(unknown_licenses),
             denied=len(denied_licenses),
@@ -325,7 +328,8 @@ class LicenseChecker:
 
         return LicenseCheckResult(
             ecosystem="npm",
-            success=len(denied_licenses) == 0 and (not self.strict or len(unknown_licenses) == 0),
+            success=len(denied_licenses) == 0
+            and (not self.strict or len(unknown_licenses) == 0),
             total=len(licenses),
             allowed=len(licenses) - len(denied_licenses) - len(unknown_licenses),
             denied=len(denied_licenses),
@@ -390,7 +394,8 @@ class LicenseChecker:
 
         return LicenseCheckResult(
             ecosystem="python",
-            success=len(denied_licenses) == 0 and (not self.strict or len(unknown_licenses) == 0),
+            success=len(denied_licenses) == 0
+            and (not self.strict or len(unknown_licenses) == 0),
             total=len(licenses),
             allowed=len(licenses) - len(denied_licenses) - len(unknown_licenses),
             denied=len(denied_licenses),
@@ -403,7 +408,8 @@ class LicenseChecker:
         )
 
     def check_all_licenses(
-        self, ecosystems: list[str] | None = None,
+        self,
+        ecosystems: list[str] | None = None,
     ) -> dict[str, LicenseCheckResult]:
         """Check all or selected ecosystems.
 
@@ -439,9 +445,13 @@ class LicenseChecker:
 
                 # Print progress
                 if result.success:
-                    print(f"   ✓ {ecosystem_name}: {result.allowed}/{result.total} allowed")
+                    print(
+                        f"   ✓ {ecosystem_name}: {result.allowed}/{result.total} allowed"
+                    )
                 else:
-                    print(f"   ✗ {ecosystem_name}: {result.denied} denied, {result.unknown} unknown")
+                    print(
+                        f"   ✗ {ecosystem_name}: {result.denied} denied, {result.unknown} unknown"
+                    )
 
             except Exception as e:
                 print(f"   ✗ {ecosystem_name}: exception - {e}")
@@ -463,9 +473,9 @@ class LicenseChecker:
         Args:
             results: Dict of check results
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("License Compliance Summary")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         total_deps = sum(r.total for r in results.values())
         total_allowed = sum(r.allowed for r in results.values())
@@ -480,7 +490,7 @@ class LicenseChecker:
                 f"Total:{result.total:4}",
             )
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(
             f"Overall: Allowed:{total_allowed} Denied:{total_denied} "
             f"Unknown:{total_unknown} Total:{total_deps}",
@@ -495,9 +505,11 @@ class LicenseChecker:
         if total_denied == 0 and (not self.strict or total_unknown == 0):
             print("✅ All licenses are compliant!")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
-    def generate_report(self, results: dict[str, LicenseCheckResult], output_file: Path):
+    def generate_report(
+        self, results: dict[str, LicenseCheckResult], output_file: Path
+    ):
         """Generate detailed license report.
 
         Args:
@@ -516,12 +528,18 @@ class LicenseChecker:
 
                 if result.denied_licenses:
                     f.write("### ❌ Denied Licenses\n\n")
-                    f.writelines(f"- {lic.name}@{lic.version}: {lic.license}\n" for lic in result.denied_licenses)
+                    f.writelines(
+                        f"- {lic.name}@{lic.version}: {lic.license}\n"
+                        for lic in result.denied_licenses
+                    )
                     f.write("\n")
 
                 if result.unknown_licenses:
                     f.write("### ⚠️ Unknown Licenses\n\n")
-                    f.writelines(f"- {lic.name}@{lic.version}: {lic.license}\n" for lic in result.unknown_licenses)
+                    f.writelines(
+                        f"- {lic.name}@{lic.version}: {lic.license}\n"
+                        for lic in result.unknown_licenses
+                    )
                     f.write("\n")
 
         print(f"📄 Report saved to: {output_file}")
@@ -596,9 +614,11 @@ def main():
     checker = LicenseChecker(strict=args.strict, verbose=args.verbose)
 
     # Check licenses
-    print(f"\n{'='*70}")
-    print(f"License Compliance Check - {len(ecosystems) if ecosystems else 'all ecosystems'}")
-    print(f"{'='*70}")
+    print(f"\n{'=' * 70}")
+    print(
+        f"License Compliance Check - {len(ecosystems) if ecosystems else 'all ecosystems'}"
+    )
+    print(f"{'=' * 70}")
 
     if args.strict:
         print("⚠️  Strict mode enabled - unknown licenses will fail\n")

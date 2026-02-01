@@ -256,7 +256,10 @@ def generate_index(directory: Path, files: list[Path], index_data: dict) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Generate sources index files")
     parser.add_argument(
-        "--update", "-u", action="store_true", help="Write files (default: dry run)",
+        "--update",
+        "-u",
+        action="store_true",
+        help="Write files (default: dry run)",
     )
     args = parser.parse_args()
 

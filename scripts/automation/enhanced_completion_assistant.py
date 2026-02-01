@@ -229,7 +229,9 @@ class EnhancedCompletionAssistant:
         return fields
 
     def suggest_completions(
-        self, yaml_file: Path, category: str,
+        self,
+        yaml_file: Path,
+        category: str,
     ) -> dict | None:
         """Suggest completions for a YAML file.
 
@@ -266,7 +268,10 @@ class EnhancedCompletionAssistant:
         return None
 
     def apply_suggestions(
-        self, yaml_file: Path, suggestions: dict, dry_run: bool = False,
+        self,
+        yaml_file: Path,
+        suggestions: dict,
+        dry_run: bool = False,
     ) -> bool:
         """Apply suggestions to YAML file.
 
@@ -301,13 +306,20 @@ class EnhancedCompletionAssistant:
         # Write updated YAML
         with open(yaml_file, "w") as f:
             yaml.safe_dump(
-                data, f, default_flow_style=False, allow_unicode=True, sort_keys=False,
+                data,
+                f,
+                default_flow_style=False,
+                allow_unicode=True,
+                sort_keys=False,
             )
 
         return True
 
     def process_category(
-        self, category: str, auto_apply: bool = False, dry_run: bool = False,
+        self,
+        category: str,
+        auto_apply: bool = False,
+        dry_run: bool = False,
     ) -> dict:
         """Process all files in a category.
 
@@ -336,9 +348,9 @@ class EnhancedCompletionAssistant:
             print(f"\n⚠️  No YAML files found for category: {category}")
             return {"total": 0, "suggested": 0, "applied": 0}
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"ENHANCED COMPLETION - {category.upper()}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Found {len(yaml_files)} files")
         print(f"Mode: {'AUTO-APPLY' if auto_apply else 'DRY-RUN'}\n")
 
@@ -381,13 +393,13 @@ class EnhancedCompletionAssistant:
             print()
 
         # Summary
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total files: {stats['total']}")
         print(f"Files with suggestions: {stats['suggested']}")
         print(f"Files updated: {stats['applied']}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         return stats
 

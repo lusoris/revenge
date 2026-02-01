@@ -251,7 +251,9 @@ class SOTParser:
                 dependencies[key].append(dep)
 
         total = sum(len(deps) for deps in dependencies.values())
-        print(f"   ✓ Parsed {total} Go dependencies across {len(dependencies)} categories")
+        print(
+            f"   ✓ Parsed {total} Go dependencies across {len(dependencies)} categories"
+        )
         return dependencies
 
     def _parse_design_principles(self) -> dict[str, Any]:
@@ -290,9 +292,7 @@ class SOTParser:
         )
         if patterns_match:
             patterns_table = patterns_match.group(1)
-            lines = [
-                line.strip() for line in patterns_table.split("\n") if "|" in line
-            ]
+            lines = [line.strip() for line in patterns_table.split("\n") if "|" in line]
             if len(lines) >= 3:
                 patterns_list = []
                 for line in lines[2:]:
@@ -300,11 +300,13 @@ class SOTParser:
                         continue
                     cells = [cell.strip() for cell in line.split("|")[1:-1]]
                     if len(cells) >= 3:
-                        patterns_list.append({
-                            "pattern": cells[0],
-                            "decision": cells[1],
-                            "notes": cells[2],
-                        })
+                        patterns_list.append(
+                            {
+                                "pattern": cells[0],
+                                "decision": cells[1],
+                                "notes": cells[2],
+                            }
+                        )
                 principles["design_patterns"] = patterns_list
 
         print("   ✓ Parsed design principles")

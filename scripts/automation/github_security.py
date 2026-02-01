@@ -101,7 +101,9 @@ class GitHubSecurityManager:
         if self.dry_run:
             print(f"      [DRY-RUN] Would set protection rules for {branch}:")
             print("         • Require PR reviews (1 approval)")
-            print(f"         • Require status checks: {rules['required_status_checks']['contexts']}")
+            print(
+                f"         • Require status checks: {rules['required_status_checks']['contexts']}"
+            )
             print("         • Linear history required")
             print("         • No force push")
             print("         • Include administrators")
@@ -110,22 +112,36 @@ class GitHubSecurityManager:
             api_endpoint = f"/repos/{self.repo_full}/branches/{branch}/protection"
 
             try:
-                self.run_gh_command([
-                    "api",
-                    "-X", "PUT",
-                    api_endpoint,
-                    "-f", f"required_status_checks[strict]={str(strict).lower()}",
-                    "-f", "required_status_checks[contexts][]=test",
-                    "-f", "required_status_checks[contexts][]=lint",
-                    "-f", "required_status_checks[contexts][]=build",
-                    "-f", "enforce_admins=true",
-                    "-f", "required_pull_request_reviews[required_approving_review_count]=1",
-                    "-f", "required_pull_request_reviews[dismiss_stale_reviews]=true",
-                    "-f", "required_pull_request_reviews[require_code_owner_reviews]=true",
-                    "-f", "required_linear_history=true",
-                    "-f", "allow_force_pushes=false",
-                    "-f", "allow_deletions=false",
-                ])
+                self.run_gh_command(
+                    [
+                        "api",
+                        "-X",
+                        "PUT",
+                        api_endpoint,
+                        "-f",
+                        f"required_status_checks[strict]={str(strict).lower()}",
+                        "-f",
+                        "required_status_checks[contexts][]=test",
+                        "-f",
+                        "required_status_checks[contexts][]=lint",
+                        "-f",
+                        "required_status_checks[contexts][]=build",
+                        "-f",
+                        "enforce_admins=true",
+                        "-f",
+                        "required_pull_request_reviews[required_approving_review_count]=1",
+                        "-f",
+                        "required_pull_request_reviews[dismiss_stale_reviews]=true",
+                        "-f",
+                        "required_pull_request_reviews[require_code_owner_reviews]=true",
+                        "-f",
+                        "required_linear_history=true",
+                        "-f",
+                        "allow_force_pushes=false",
+                        "-f",
+                        "allow_deletions=false",
+                    ]
+                )
                 print(f"      ✓ Protection configured for {branch}")
             except subprocess.CalledProcessError as e:
                 print(f"      ⚠️  Failed to configure protection for {branch}: {e}")
@@ -161,19 +177,27 @@ class GitHubSecurityManager:
 
                 # Enable secret scanning
                 if feature == "secret_scanning":
-                    self.run_gh_command([
-                        "api",
-                        "-X", "PATCH",
-                        api_endpoint,
-                        "-f", "security_and_analysis[secret_scanning][status]=enabled",
-                    ])
+                    self.run_gh_command(
+                        [
+                            "api",
+                            "-X",
+                            "PATCH",
+                            api_endpoint,
+                            "-f",
+                            "security_and_analysis[secret_scanning][status]=enabled",
+                        ]
+                    )
                 elif feature == "secret_scanning_push_protection":
-                    self.run_gh_command([
-                        "api",
-                        "-X", "PATCH",
-                        api_endpoint,
-                        "-f", "security_and_analysis[secret_scanning_push_protection][status]=enabled",
-                    ])
+                    self.run_gh_command(
+                        [
+                            "api",
+                            "-X",
+                            "PATCH",
+                            api_endpoint,
+                            "-f",
+                            "security_and_analysis[secret_scanning_push_protection][status]=enabled",
+                        ]
+                    )
 
                 print(f"      ✓ {description} enabled")
             except subprocess.CalledProcessError as e:
@@ -185,11 +209,14 @@ class GitHubSecurityManager:
         print("\n📊 Checking security status...")
 
         try:
-            output = self.run_gh_command([
-                "api",
-                f"/repos/{self.repo_full}",
-                "--jq", ".security_and_analysis",
-            ])
+            output = self.run_gh_command(
+                [
+                    "api",
+                    f"/repos/{self.repo_full}",
+                    "--jq",
+                    ".security_and_analysis",
+                ]
+            )
 
             if not self.dry_run and output:
                 status = json.loads(output) if output else {}
@@ -213,9 +240,9 @@ class GitHubSecurityManager:
 
     def print_manual_steps(self):
         """Print manual configuration steps."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("⚠️  Manual Configuration Steps")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         print("Some features require manual setup in GitHub UI:\n")
 
@@ -239,9 +266,9 @@ class GitHubSecurityManager:
 
     def setup_security(self):
         """Set up complete GitHub Security configuration."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"GitHub Security Setup - {self.repo_full}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("🔍 DRY-RUN MODE - No changes will be made\n")
@@ -260,9 +287,9 @@ class GitHubSecurityManager:
         # Print manual steps
         self.print_manual_steps()
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("✅ Security setup complete!")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print("Note: Some features may require GitHub Advanced Security")
         print("      for private repositories.\n")
 
@@ -285,7 +312,12 @@ def get_repo_info() -> tuple[str, str]:
 
         # Parse owner and repo from URL
         if "github.com" in remote_url:
-            parts = remote_url.split("github.com")[-1].strip(":/").replace(".git", "").split("/")
+            parts = (
+                remote_url.split("github.com")[-1]
+                .strip(":/")
+                .replace(".git", "")
+                .split("/")
+            )
             if len(parts) >= 2:
                 return parts[0], parts[1]
 
@@ -299,7 +331,9 @@ def get_repo_info() -> tuple[str, str]:
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(description="Configure GitHub Security & Branch Protection")
+    parser = argparse.ArgumentParser(
+        description="Configure GitHub Security & Branch Protection"
+    )
     parser.add_argument(
         "--dry-run",
         action="store_true",

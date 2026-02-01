@@ -153,7 +153,9 @@ class BadgeGenerator:
         """
         try:
             # Run go tool cover to get percentage
-            result = self._run_command(["go", "tool", "cover", "-func", str(coverage_file)])
+            result = self._run_command(
+                ["go", "tool", "cover", "-func", str(coverage_file)]
+            )
             if result:
                 # Last line contains total coverage: "total: (statement coverage) xx.x%"
                 match = re.search(r"total:.*?\s+([\d.]+)%", result)
@@ -261,9 +263,9 @@ class BadgeGenerator:
 
     def generate_all(self):
         """Generate all badges."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Badge Generation")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Badges directory: {self.badges_dir}")
 
         badges = {
@@ -286,9 +288,9 @@ class BadgeGenerator:
                 results[name] = "✗"
                 print(f"   ✗ Failed to create {name} badge: {e}")
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Badge Generation Summary")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         for name, status in results.items():
             print(f"   {status} {name.capitalize()}")
@@ -347,7 +349,9 @@ def main():
     generator = BadgeGenerator(args.badges_dir, args.repo_root)
 
     # Generate based on arguments
-    if args.all or (not args.coverage and not args.build and not args.version and not args.license):
+    if args.all or (
+        not args.coverage and not args.build and not args.version and not args.license
+    ):
         generator.generate_all()
     else:
         if args.coverage:

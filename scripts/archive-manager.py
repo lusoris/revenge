@@ -90,7 +90,9 @@ def list_archives():
 
 
 def archive_document(
-    doc_path: Path, reason: str = "Document deprecated", dry_run: bool = True,
+    doc_path: Path,
+    reason: str = "Document deprecated",
+    dry_run: bool = True,
 ):
     """Archive a document, leaving a redirect stub."""
     if not doc_path.exists():
@@ -264,7 +266,10 @@ def main():
     archive_parser = subparsers.add_parser("archive", help="Archive a document")
     archive_parser.add_argument("path", type=Path, help="Document to archive")
     archive_parser.add_argument(
-        "--reason", "-r", default="Document deprecated", help="Reason for archiving",
+        "--reason",
+        "-r",
+        default="Document deprecated",
+        help="Reason for archiving",
     )
     archive_parser.add_argument(
         "--execute",
@@ -276,7 +281,9 @@ def main():
     # Restore command
     restore_parser = subparsers.add_parser("restore", help="Restore from archive")
     restore_parser.add_argument(
-        "path", type=Path, help="Document or archive to restore",
+        "path",
+        type=Path,
+        help="Document or archive to restore",
     )
     restore_parser.add_argument(
         "--execute",
@@ -288,7 +295,11 @@ def main():
     # Cleanup command
     cleanup_parser = subparsers.add_parser("cleanup", help="Remove old archives")
     cleanup_parser.add_argument(
-        "--days", "-d", type=int, default=90, help="Remove archives older than N days",
+        "--days",
+        "-d",
+        type=int,
+        default=90,
+        help="Remove archives older than N days",
     )
     cleanup_parser.add_argument(
         "--execute",

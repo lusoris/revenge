@@ -166,15 +166,18 @@ class LinterRunner:
             cmd[1] = "--write"
 
         # Ignore patterns
-        cmd.extend([
-            "--ignore-path",
-            ".gitignore",
-        ])
+        cmd.extend(
+            [
+                "--ignore-path",
+                ".gitignore",
+            ]
+        )
 
         return self.run_command(cmd)
 
     def run_all_linters(
-        self, linters: list[str] | None = None,
+        self,
+        linters: list[str] | None = None,
     ) -> dict[str, LintResult]:
         """Run all or selected linters in parallel.
 
@@ -207,8 +210,7 @@ class LinterRunner:
         with ThreadPoolExecutor(max_workers=4) as executor:
             # Submit all linter tasks
             future_to_linter = {
-                executor.submit(method): name
-                for name, method in linter_methods.items()
+                executor.submit(method): name for name, method in linter_methods.items()
             }
 
             # Collect results as they complete
@@ -242,9 +244,9 @@ class LinterRunner:
         Args:
             results: Dict of linter results
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Linter Summary")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         passed = sum(1 for r in results.values() if r.success)
         failed = len(results) - passed
@@ -261,7 +263,7 @@ class LinterRunner:
             if self.verbose and result.output:
                 print(f"           Output: {result.output[:200]}")
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"Total: {len(results)} | Passed: {passed} | Failed: {failed}")
 
         if failed == 0:
@@ -269,7 +271,7 @@ class LinterRunner:
         else:
             print(f"❌ {failed} linter(s) failed")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
     def print_detailed_output(self, results: dict[str, LintResult]):
         """Print detailed output for failed linters.
@@ -373,9 +375,9 @@ def main():
     runner = LinterRunner(fix=args.fix, verbose=args.verbose)
 
     # Run linters
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Running Linters - {len(linters) if linters else 'all'}")
-    print(f"{'='*70}\n")
+    print(f"{'=' * 70}\n")
 
     if args.fix:
         print("🔧 Auto-fix mode enabled\n")

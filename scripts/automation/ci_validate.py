@@ -43,9 +43,9 @@ class CIValidator:
         Returns:
             Tuple of (all_valid, results_dict)
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("SCHEMA VALIDATION")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         results = self.validator.validate_directory(self.repo_root / "data")
         all_valid = self.validator.print_results(results)
@@ -58,9 +58,9 @@ class CIValidator:
         Returns:
             Tuple of (acceptable, analysis_dict)
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("PLACEHOLDER ANALYSIS")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         analysis = self.analyzer.analyze_all()
 
@@ -77,7 +77,9 @@ class CIValidator:
 
         # Otherwise, just warn
         if total_placeholders > 0 or total_missing > 0:
-            print(f"\n⚠️  Warning: {total_placeholders + total_missing} fields need completion")
+            print(
+                f"\n⚠️  Warning: {total_placeholders + total_missing} fields need completion"
+            )
             print("   This is acceptable for now, but should be addressed")
 
         return True, analysis
@@ -90,9 +92,9 @@ class CIValidator:
         """
         import subprocess
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("GIT STATUS CHECK")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         try:
             # Check for uncommitted changes
@@ -137,9 +139,9 @@ class CIValidator:
         Returns:
             True if all checks pass, False otherwise
         """
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"CI/CD VALIDATION - {'STRICT' if self.strict else 'LENIENT'} MODE")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
 
         checks_passed = True
 
@@ -168,12 +170,12 @@ class CIValidator:
             print("\n✅ Git status check PASSED")
 
         # Final summary
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         if checks_passed:
             print("✅ ALL CHECKS PASSED")
         else:
             print("❌ SOME CHECKS FAILED")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         return checks_passed
 

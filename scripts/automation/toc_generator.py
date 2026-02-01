@@ -154,7 +154,7 @@ class TOCGenerator:
         if valid_positions:
             next_section = min(valid_positions)
             # Remove TOC section up to (but not including) the newline before next section
-            return content[:toc_start] + content[next_section + 1:]
+            return content[:toc_start] + content[next_section + 1 :]
         # TOC is at the end
         return content[:toc_start]
 
@@ -217,7 +217,10 @@ class TOCGenerator:
         return True
 
     def process_directory(
-        self, directory: Path, pattern: str = "**/*.md", dry_run: bool = False,
+        self,
+        directory: Path,
+        pattern: str = "**/*.md",
+        dry_run: bool = False,
     ) -> dict:
         """Process all markdown files in directory.
 
@@ -267,7 +270,9 @@ def main():
         print()
         print("Examples:")
         print("  python toc_generator.py docs/dev/design/ --dry-run")
-        print("  python toc_generator.py docs/dev/design/features/video/MOVIE_MODULE.md --live")
+        print(
+            "  python toc_generator.py docs/dev/design/features/video/MOVIE_MODULE.md --live"
+        )
         sys.exit(0)
 
     path_arg = args[0]
@@ -282,9 +287,9 @@ def main():
     # Initialize generator
     generator = TOCGenerator()
 
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"TOC GENERATOR - {'DRY RUN' if dry_run else 'LIVE'}")
-    print(f"{'='*70}\n")
+    print(f"{'=' * 70}\n")
 
     if path.is_file():
         # Process single file
@@ -304,9 +309,9 @@ def main():
         print(f"Processing: {path}/**/*.md\n")
         stats = generator.process_directory(path, dry_run=dry_run)
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Processed: {stats['processed']}")
         print(f"Modified: {stats['modified']}")
         print(f"Unchanged: {stats['unchanged']}")
@@ -314,7 +319,7 @@ def main():
         if dry_run:
             print("\n⚠️  DRY RUN MODE - No changes written")
 
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
     else:
         print(f"❌ Invalid path: {path}")

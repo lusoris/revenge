@@ -126,7 +126,8 @@ def update_toc(content: str, headings: list[dict]) -> tuple[str, bool]:
 
     # Check if TOC already exists
     toc_pattern = re.compile(
-        rf"{re.escape(TOC_START)}.*?{re.escape(TOC_END)}", re.DOTALL,
+        rf"{re.escape(TOC_START)}.*?{re.escape(TOC_END)}",
+        re.DOTALL,
     )
 
     if toc_pattern.search(content):
@@ -182,7 +183,10 @@ def find_documents(directory: Path) -> list[Path]:
 def main():
     parser = argparse.ArgumentParser(description="Generate table of contents")
     parser.add_argument(
-        "--update", "-u", action="store_true", help="Write changes (default: dry run)",
+        "--update",
+        "-u",
+        action="store_true",
+        help="Write changes (default: dry run)",
     )
     parser.add_argument("--file", "-f", type=Path, help="Process single file")
     parser.add_argument(
@@ -198,10 +202,14 @@ def main():
         help="Minimum lines to trigger TOC (default: 150)",
     )
     parser.add_argument(
-        "--force", action="store_true", help="Generate TOC even for small docs",
+        "--force",
+        action="store_true",
+        help="Generate TOC even for small docs",
     )
     parser.add_argument(
-        "--remove", action="store_true", help="Remove TOC from documents",
+        "--remove",
+        action="store_true",
+        help="Remove TOC from documents",
     )
     args = parser.parse_args()
 
@@ -221,7 +229,8 @@ def main():
         if args.remove:
             if TOC_START in content:
                 toc_pattern = re.compile(
-                    rf"{re.escape(TOC_START)}.*?{re.escape(TOC_END)}\n*", re.DOTALL,
+                    rf"{re.escape(TOC_START)}.*?{re.escape(TOC_END)}\n*",
+                    re.DOTALL,
                 )
                 new_content = toc_pattern.sub("", content)
                 if new_content != content:

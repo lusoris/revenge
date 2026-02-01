@@ -46,7 +46,9 @@ class LogViewer:
         self.root = Path.cwd()
         self.logs_dir = self.root / "logs"
 
-    def run_command(self, cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    def run_command(
+        self, cmd: list[str], cwd: Path | None = None
+    ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
         Args:
@@ -133,7 +135,10 @@ class LogViewer:
         return True
 
     def search_workflow_logs(
-        self, run_id: str, pattern: str, case_sensitive: bool = False,
+        self,
+        run_id: str,
+        pattern: str,
+        case_sensitive: bool = False,
     ) -> bool:
         """Search workflow logs for pattern.
 
@@ -171,7 +176,9 @@ class LogViewer:
 
         return True
 
-    def download_workflow_logs(self, run_id: str, output_dir: Path | None = None) -> bool:
+    def download_workflow_logs(
+        self, run_id: str, output_dir: Path | None = None
+    ) -> bool:
         """Download workflow logs.
 
         Args:
@@ -188,14 +195,16 @@ class LogViewer:
 
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        result = self.run_command([
-            "gh",
-            "run",
-            "download",
-            run_id,
-            "--dir",
-            str(output_dir),
-        ])
+        result = self.run_command(
+            [
+                "gh",
+                "run",
+                "download",
+                run_id,
+                "--dir",
+                str(output_dir),
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Failed to download logs: {result.stderr}")
@@ -205,7 +214,10 @@ class LogViewer:
         return True
 
     def view_docker_logs(
-        self, container: str, lines: int = 100, follow: bool = False,
+        self,
+        container: str,
+        lines: int = 100,
+        follow: bool = False,
     ) -> bool:
         """View Docker container logs.
 
@@ -243,7 +255,10 @@ class LogViewer:
             return True
 
     def view_local_logs(
-        self, log_file: str, lines: int | None = None, follow: bool = False,
+        self,
+        log_file: str,
+        lines: int | None = None,
+        follow: bool = False,
     ) -> bool:
         """View local log files.
 
@@ -288,7 +303,10 @@ class LogViewer:
             return True
 
     def search_local_logs(
-        self, pattern: str, directory: Path | None = None, case_sensitive: bool = False,
+        self,
+        pattern: str,
+        directory: Path | None = None,
+        case_sensitive: bool = False,
     ) -> bool:
         """Search local log files.
 
@@ -474,12 +492,18 @@ def main():
     elif args.view:
         success = viewer.view_workflow_log(args.view, args.job)
     elif args.search and args.run_id:
-        success = viewer.search_workflow_logs(args.run_id, args.search, args.case_sensitive)
+        success = viewer.search_workflow_logs(
+            args.run_id, args.search, args.case_sensitive
+        )
     elif args.search:
-        success = viewer.search_local_logs(args.search, case_sensitive=args.case_sensitive)
+        success = viewer.search_local_logs(
+            args.search, case_sensitive=args.case_sensitive
+        )
     elif args.docker:
         success = viewer.view_docker_logs(
-            args.docker, args.lines or 100, args.follow,
+            args.docker,
+            args.lines or 100,
+            args.follow,
         )
     elif args.local:
         success = viewer.view_local_logs(args.local, args.lines, args.follow)

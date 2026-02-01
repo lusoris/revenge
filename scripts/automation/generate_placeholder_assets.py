@@ -96,10 +96,14 @@ class PlaceholderGenerator:
         """
         try:
             # Try to load a nice sans-serif font
-            return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size)
+            return ImageFont.truetype(
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", size
+            )
         except OSError:
             try:
-                return ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", size)
+                return ImageFont.truetype(
+                    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", size
+                )
             except OSError:
                 # Fall back to default font
                 return ImageFont.load_default()
@@ -185,7 +189,9 @@ class PlaceholderGenerator:
         img.save(output_path, "PNG", optimize=True)
         return output_path
 
-    def create_logo_placeholder(self, size: tuple[int, int], variant: str = "default") -> Path:
+    def create_logo_placeholder(
+        self, size: tuple[int, int], variant: str = "default"
+    ) -> Path:
         """Create placeholder logo.
 
         Args:
@@ -212,8 +218,14 @@ class PlaceholderGenerator:
             circle_center = (size[0] // 2, size[1] // 2)
             draw.ellipse(
                 [
-                    (circle_center[0] - circle_radius, circle_center[1] - circle_radius),
-                    (circle_center[0] + circle_radius, circle_center[1] + circle_radius),
+                    (
+                        circle_center[0] - circle_radius,
+                        circle_center[1] - circle_radius,
+                    ),
+                    (
+                        circle_center[0] + circle_radius,
+                        circle_center[1] + circle_radius,
+                    ),
                 ],
                 fill=(*self._hex_to_rgb(self.COLORS["primary"]), 255),
                 outline=(*self._hex_to_rgb(self.COLORS["secondary"]), 255),
@@ -374,14 +386,39 @@ class PlaceholderGenerator:
         print("\n📸 Generating screenshot placeholders...")
 
         screenshots = [
-            ("movie-library.png", (1200, 800), "Movie Library", "Browse your movie collection"),
-            ("movie-details.png", (1200, 800), "Movie Details", "View detailed movie information"),
+            (
+                "movie-library.png",
+                (1200, 800),
+                "Movie Library",
+                "Browse your movie collection",
+            ),
+            (
+                "movie-details.png",
+                (1200, 800),
+                "Movie Details",
+                "View detailed movie information",
+            ),
             ("tv-library.png", (1200, 800), "TV Shows Library", "Browse your TV shows"),
-            ("tv-details.png", (1200, 800), "TV Show Details", "View show and episode information"),
-            ("player-controls.png", (1600, 900), "Video Player", "Watch with advanced playback controls"),
+            (
+                "tv-details.png",
+                (1200, 800),
+                "TV Show Details",
+                "View show and episode information",
+            ),
+            (
+                "player-controls.png",
+                (1600, 900),
+                "Video Player",
+                "Watch with advanced playback controls",
+            ),
             ("settings-general.png", (1200, 800), "Settings", "Configure your server"),
             ("dashboard.png", (1600, 900), "Dashboard", "Monitor your media server"),
-            ("search-results.png", (1200, 800), "Search", "Find content across all libraries"),
+            (
+                "search-results.png",
+                (1200, 800),
+                "Search",
+                "Find content across all libraries",
+            ),
         ]
 
         for filename, size, title, subtitle in screenshots:
@@ -428,23 +465,25 @@ class PlaceholderGenerator:
 
     def generate_all(self):
         """Generate all placeholder assets."""
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("Placeholder Asset Generation")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Assets directory: {self.assets_dir}")
 
         self.generate_branding()
         self.generate_screenshots()
         self.generate_social()
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("✅ All placeholder assets generated!")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(description="Generate placeholder documentation assets")
+    parser = argparse.ArgumentParser(
+        description="Generate placeholder documentation assets"
+    )
     parser.add_argument(
         "--all",
         action="store_true",

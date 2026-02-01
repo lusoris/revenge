@@ -43,7 +43,9 @@ class DockerManager:
         self.verbose = verbose
         self.root = Path.cwd()
 
-    def run_command(self, cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    def run_command(
+        self, cmd: list[str], cwd: Path | None = None
+    ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
         Args:
@@ -219,12 +221,16 @@ class DockerManager:
         # Validate Dockerfile
         dockerfile = self.root / "Dockerfile"
         if dockerfile.exists():
-            result = self.run_command([
-                "docker", "build",
-                "--dry-run",
-                "-f", str(dockerfile),
-                ".",
-            ])
+            result = self.run_command(
+                [
+                    "docker",
+                    "build",
+                    "--dry-run",
+                    "-f",
+                    str(dockerfile),
+                    ".",
+                ]
+            )
 
             if result.returncode == 0:
                 print("✅ Dockerfile is valid")
@@ -260,11 +266,15 @@ class DockerManager:
         """
         print(f"\n🏗️  Building Docker images (tag: {tag})...")
 
-        result = self.run_command([
-            "docker", "build",
-            "-t", f"revenge:{tag}",
-            ".",
-        ])
+        result = self.run_command(
+            [
+                "docker",
+                "build",
+                "-t",
+                f"revenge:{tag}",
+                ".",
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Build failed:\n{result.stderr}")
@@ -290,21 +300,27 @@ class DockerManager:
         remote_tag = f"{registry}/revenge:{tag}"
 
         # Tag image
-        result = self.run_command([
-            "docker", "tag",
-            local_tag,
-            remote_tag,
-        ])
+        result = self.run_command(
+            [
+                "docker",
+                "tag",
+                local_tag,
+                remote_tag,
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Tagging failed:\n{result.stderr}")
             return False
 
         # Push image
-        result = self.run_command([
-            "docker", "push",
-            remote_tag,
-        ])
+        result = self.run_command(
+            [
+                "docker",
+                "push",
+                remote_tag,
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Push failed:\n{result.stderr}")

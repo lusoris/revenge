@@ -125,14 +125,18 @@ def main() -> int:
     archive_parser = subparsers.add_parser("archive", help="Archive a file")
     archive_parser.add_argument("file", type=Path, help="File to archive")
     archive_parser.add_argument(
-        "--apply", action="store_true", help="Actually archive (default: dry-run)",
+        "--apply",
+        action="store_true",
+        help="Actually archive (default: dry-run)",
     )
 
     # Restore command
     restore_parser = subparsers.add_parser("restore", help="Restore an archived file")
     restore_parser.add_argument("file", type=Path, help="File to restore")
     restore_parser.add_argument(
-        "--apply", action="store_true", help="Actually restore (default: dry-run)",
+        "--apply",
+        action="store_true",
+        help="Actually restore (default: dry-run)",
     )
 
     args = parser.parse_args()

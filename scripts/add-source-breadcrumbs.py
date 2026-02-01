@@ -244,7 +244,8 @@ def generate_breadcrumb_section(doc_path: Path, references: list[dict]) -> str:
 
     # Calculate relative paths to indexes
     sources_index_rel = calculate_relative_path(
-        doc_path, SOURCES_DIR / "SOURCES_INDEX.md",
+        doc_path,
+        SOURCES_DIR / "SOURCES_INDEX.md",
     )
     crossref_rel = calculate_relative_path(doc_path, SOURCES_DIR / "DESIGN_CROSSREF.md")
 
@@ -348,7 +349,7 @@ def update_document(doc_path: Path, source_index: dict, dry_run: bool = False) -
         if end_idx is None:
             end_idx = insert_idx + 1
 
-        new_lines = [*lines[:insert_idx], breadcrumbs, *lines[end_idx + 1:]]
+        new_lines = [*lines[:insert_idx], breadcrumbs, *lines[end_idx + 1 :]]
     elif action == "insert":
         new_lines = [*lines[:insert_idx], "", breadcrumbs, "", *lines[insert_idx:]]
     else:  # append
@@ -394,7 +395,10 @@ def main():
         description="Add source breadcrumbs to design docs",
     )
     parser.add_argument(
-        "--dry-run", "-n", action="store_true", help="Preview changes without writing",
+        "--dry-run",
+        "-n",
+        action="store_true",
+        help="Preview changes without writing",
     )
     parser.add_argument("--file", "-f", help="Update specific file only")
     args = parser.parse_args()

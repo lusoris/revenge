@@ -327,7 +327,9 @@ def main() -> int:
 
     print("Analyzing cross-references...")
     _, source_referenced_by = analyze_design_docs(
-        design_docs, url_to_source, package_to_source,
+        design_docs,
+        url_to_source,
+        package_to_source,
     )
     print(f"  Found {len(source_referenced_by)} sources referenced")
 

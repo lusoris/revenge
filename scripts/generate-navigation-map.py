@@ -371,10 +371,16 @@ def main():
         description="Generate NAVIGATION.md for design documentation",
     )
     parser.add_argument(
-        "--output", "-o", type=Path, default=DEFAULT_OUTPUT, help="Output file path",
+        "--output",
+        "-o",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        help="Output file path",
     )
     parser.add_argument(
-        "--dry-run", action="store_true", help="Print to stdout instead of writing file",
+        "--dry-run",
+        action="store_true",
+        help="Print to stdout instead of writing file",
     )
 
     args = parser.parse_args()

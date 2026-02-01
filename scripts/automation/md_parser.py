@@ -76,7 +76,9 @@ class MarkdownParser:
 
         # Extract sources comment
         sources_match = re.search(
-            r"<!--\s*SOURCES:\s*(.+?)\s*-->", content, re.IGNORECASE,
+            r"<!--\s*SOURCES:\s*(.+?)\s*-->",
+            content,
+            re.IGNORECASE,
         )
         if sources_match:
             source_ids = [s.strip() for s in sources_match.group(1).split(",")]
@@ -84,7 +86,9 @@ class MarkdownParser:
 
         # Extract design refs comment
         design_match = re.search(
-            r"<!--\s*DESIGN:\s*(.+?)\s*-->", content, re.IGNORECASE,
+            r"<!--\s*DESIGN:\s*(.+?)\s*-->",
+            content,
+            re.IGNORECASE,
         )
         if design_match:
             design_ids = [d.strip() for d in design_match.group(1).split(",")]
@@ -328,12 +332,15 @@ class MarkdownParser:
 
         # Convert to YAML
         yaml_str = yaml.dump(
-            yaml_data, default_flow_style=False, allow_unicode=True, sort_keys=False,
+            yaml_data,
+            default_flow_style=False,
+            allow_unicode=True,
+            sort_keys=False,
         )
 
         # Add header comment
-        header = f"""# Auto-generated YAML from {data.get('source_file', 'markdown')}
-# Migration Date: {data.get('created_date', '2026-01-31')}
+        header = f"""# Auto-generated YAML from {data.get("source_file", "markdown")}
+# Migration Date: {data.get("created_date", "2026-01-31")}
 #
 # TODO: Complete the PLACEHOLDER fields below
 # TODO: Review auto-resolved sources and design_refs

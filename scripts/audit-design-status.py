@@ -328,7 +328,10 @@ All decisions documented in [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md):
 def main():
     parser = argparse.ArgumentParser(description="Audit design documentation status")
     parser.add_argument(
-        "--update", "-u", action="store_true", help="Update status and questions files",
+        "--update",
+        "-u",
+        action="store_true",
+        help="Update status and questions files",
     )
     args = parser.parse_args()
 

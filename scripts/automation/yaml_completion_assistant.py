@@ -53,8 +53,7 @@ class CompletionAssistant:
 
                     # Check for placeholders
                     has_placeholders = any(
-                        isinstance(v, str) and "PLACEHOLDER" in v
-                        for v in data.values()
+                        isinstance(v, str) and "PLACEHOLDER" in v for v in data.values()
                     )
 
                     if has_placeholders:
@@ -189,7 +188,10 @@ class CompletionAssistant:
         return suggestions
 
     def apply_suggestions(
-        self, yaml_file: Path, suggestions: dict, auto_apply: bool = False,
+        self,
+        yaml_file: Path,
+        suggestions: dict,
+        auto_apply: bool = False,
     ):
         """Apply suggestions to YAML file.
 
@@ -239,7 +241,13 @@ class CompletionAssistant:
         if updates_made:
             # Write back to file
             with open(yaml_file, "w") as f:
-                yaml.dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+                yaml.dump(
+                    data,
+                    f,
+                    default_flow_style=False,
+                    allow_unicode=True,
+                    sort_keys=False,
+                )
             print(f"   ✅ Updated {yaml_file.name}")
         else:
             print("   ⊘ No changes made")
@@ -253,9 +261,9 @@ class CompletionAssistant:
         """
         incomplete_files = self.find_incomplete_files(category)
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("YAML COMPLETION ASSISTANT")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Found {len(incomplete_files)} incomplete files")
 
         if category:
@@ -280,9 +288,9 @@ class CompletionAssistant:
                 if cont == "n":
                     continue
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("✅ Processing complete!")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
 
 def main():

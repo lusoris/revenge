@@ -415,7 +415,10 @@ def generate_index(dir_path: str, docs: list[Path]) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Generate design doc indexes")
     parser.add_argument(
-        "--update", "-u", action="store_true", help="Write files (default: dry run)",
+        "--update",
+        "-u",
+        action="store_true",
+        help="Write files (default: dry run)",
     )
     args = parser.parse_args()
 

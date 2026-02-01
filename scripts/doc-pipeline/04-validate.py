@@ -191,7 +191,9 @@ def validate_document(doc_path: Path) -> dict:
     if re.search(r"\bTODO\b|\bFIXME\b|\bXXX\b", content):
         results["info"].append("Contains TODO/FIXME markers")
 
-    if re.search(r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.IGNORECASE):
+    if re.search(
+        r"\[.*TBD.*\]|\[.*TODO.*\]|placeholder|lorem ipsum", content, re.IGNORECASE
+    ):
         results["warnings"].append("Contains placeholder content")
 
     long_lines = sum(

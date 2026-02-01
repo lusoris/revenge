@@ -61,7 +61,7 @@ class DocGenerator:
         self.sources_mapping = self._load_sources_mapping()
 
         # Add custom filter to Jinja2 environment
-        self.env.filters['to_local_source'] = self._url_to_local_source
+        self.env.filters["to_local_source"] = self._url_to_local_source
 
     def _load_shared_data(self) -> dict[str, Any]:
         """Load shared data from shared-sot.yaml."""
@@ -87,10 +87,10 @@ class DocGenerator:
 
         # Build mapping: URL -> relative path in docs/dev/sources/
         url_to_path = {}
-        for category, sources_list in sources_config.get('sources', {}).items():
+        for category, sources_list in sources_config.get("sources", {}).items():
             for source in sources_list:
-                if 'url' in source and 'output' in source:
-                    url_to_path[source['url']] = source['output']
+                if "url" in source and "output" in source:
+                    url_to_path[source["url"]] = source["output"]
 
         print(f"✓ Loaded {len(url_to_path)} source URL mappings")
         return url_to_path
@@ -175,7 +175,9 @@ class DocGenerator:
         return generated_files
 
     def _merge_data(
-        self, shared: dict[str, Any], doc: dict[str, Any],
+        self,
+        shared: dict[str, Any],
+        doc: dict[str, Any],
     ) -> dict[str, Any]:
         """Merge shared data with doc-specific data.
 

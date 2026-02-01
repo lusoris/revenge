@@ -156,14 +156,14 @@ class FormatFixer:
             print("\n⚠️  No YAML files found")
             return {"total": 0, "fixed": 0, "fx_module_fixes": 0, "status_fixes": 0}
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("VALIDATION FORMAT FIXER")
         if category:
             print(f"Category: {category}")
         else:
             print("Processing: All files")
         print(f"Mode: {'DRY-RUN' if dry_run else 'LIVE'}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Found {len(yaml_files)} files\n")
 
         stats = {
@@ -200,16 +200,16 @@ class FormatFixer:
                 print()
 
         # Summary
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total files: {stats['total']}")
         print(f"Files fixed: {stats['fixed']}")
         print(f"  • fx_module fixes: {stats['fx_module_fixes']}")
         print(f"  • overall_status fixes: {stats['status_fixes']}")
         if dry_run:
             print("\n⚠️  DRY-RUN MODE - No changes written")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         return stats
 

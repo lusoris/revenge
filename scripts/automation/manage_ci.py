@@ -44,7 +44,9 @@ class CIManager:
         self.root = Path.cwd()
         self.workflows_dir = self.root / ".github" / "workflows"
 
-    def run_command(self, cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    def run_command(
+        self, cmd: list[str], cwd: Path | None = None
+    ) -> subprocess.CompletedProcess:
         """Run command and return result.
 
         Args:
@@ -119,7 +121,9 @@ class CIManager:
         if not self.workflows_dir.exists():
             return []
 
-        return sorted(self.workflows_dir.glob("*.yml")) + sorted(self.workflows_dir.glob("*.yaml"))
+        return sorted(self.workflows_dir.glob("*.yml")) + sorted(
+            self.workflows_dir.glob("*.yaml")
+        )
 
     def validate_workflows(self) -> bool:
         """Validate workflow syntax with actionlint.
@@ -178,11 +182,16 @@ class CIManager:
         """
         print(f"\n▶️  Triggering workflow: {workflow} on {branch}...")
 
-        result = self.run_command([
-            "gh", "workflow", "run",
-            workflow,
-            "--ref", branch,
-        ])
+        result = self.run_command(
+            [
+                "gh",
+                "workflow",
+                "run",
+                workflow,
+                "--ref",
+                branch,
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Failed to trigger workflow: {result.stderr}")
@@ -202,10 +211,15 @@ class CIManager:
         """
         print(f"\n📊 Recent workflow runs (limit: {limit})...")
 
-        result = self.run_command([
-            "gh", "run", "list",
-            "--limit", str(limit),
-        ])
+        result = self.run_command(
+            [
+                "gh",
+                "run",
+                "list",
+                "--limit",
+                str(limit),
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Failed to get workflow status: {result.stderr}")
@@ -251,11 +265,16 @@ class CIManager:
 
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        result = self.run_command([
-            "gh", "run", "download",
-            run_id,
-            "--dir", str(output_dir),
-        ])
+        result = self.run_command(
+            [
+                "gh",
+                "run",
+                "download",
+                run_id,
+                "--dir",
+                str(output_dir),
+            ]
+        )
 
         if result.returncode != 0:
             print(f"❌ Failed to download logs: {result.stderr}")

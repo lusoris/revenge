@@ -107,9 +107,9 @@ class BatchMigrator:
         """
         md_files = self.find_design_docs()
 
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print(f"BATCH MIGRATION - {'DRY RUN' if self.dry_run else 'LIVE RUN'}")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
         print(f"Found {len(md_files)} design docs to migrate\n")
 
         stats = {
@@ -150,9 +150,9 @@ class BatchMigrator:
             )
 
         # Print results
-        print(f"\n{'='*70}")
+        print(f"\n{'=' * 70}")
         print("MIGRATION RESULTS")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         for result in results:
             status_icon = "✓" if "✓" in result["status"] else "✗"
@@ -162,9 +162,9 @@ class BatchMigrator:
             print()
 
         # Print summary
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print("SUMMARY")
-        print(f"{'='*70}")
+        print(f"{'=' * 70}")
         print(f"Total files: {stats['total']}")
         print(f"Migrated: {stats['success']}")
         print(f"Skipped: {stats['skipped']}")
@@ -172,7 +172,7 @@ class BatchMigrator:
         print("\nBy category:")
         for category, count in sorted(stats["by_category"].items()):
             print(f"  {category}: {count} files")
-        print(f"{'='*70}\n")
+        print(f"{'=' * 70}\n")
 
         if self.dry_run:
             print("⚠️  DRY RUN - No files were written")
