@@ -60,6 +60,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web App"]
+    node2["Chromecast<br/>Device"]
+    node3["Revenge<br/>Server<br/>(HLS Stream)"]
+    node4["Receiver<br/>Application<br/>(Custom)"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+```
+
 ### Integration Structure
 
 ```

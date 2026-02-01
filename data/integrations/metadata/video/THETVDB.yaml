@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY metadata provider (fallback + enrichment) for TV shows'
 wiki_tagline: '> Direct TheTVDB API - Supplementary to Sonarr'
-wiki_overview: 'SUPPLEMENTARY metadata source for TV shows. Used as: (1) **Fallback** when Sonarr not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data not cached by Sonarr. Free API with JWT authentication. Strong anime support with multiple episode ordering (aired/DVD/absolute). Multi-language metadata. **Optional proxy/VPN routing** for restricted regions (via HTTP_CLIENT service).'
+wiki_overview: 'SUPPLEMENTARY metadata source for TV shows. Used as: (1) **Fallback** when Sonarr not setup, unreachable,
+  or lacks metadata, (2) **Enrichment** for additional data not cached by Sonarr. Free API with JWT authentication. Strong
+  anime support with multiple episode ordering (aired/DVD/absolute). Multi-language metadata. **Optional proxy/VPN routing**
+  for restricted regions (via HTTP_CLIENT service).'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -57,36 +60,19 @@ integration_name: TheTVDB
 integration_id: thetvdb
 external_service: TheTVDB
 auth_method: api_key
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Metadata<br/>Service"]
+      node2["Sonarr<br/>(LOCAL cache)"]
+      node3["TheTVDB API<br/>(fallback +<br/>enrichment)"]
+      node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+      node5["JWT Token<br/>Manager"]
+      node2 --> node3
+      node1 --> node2
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌──────────────┐
-  │  Revenge     │
-  │  Metadata    │
-  │  Service     │
-  └──────┬───────┘
-         │
-         ├─────────────────────────────────────┐
-         │ PRIMARY                             │ SUPPLEMENTARY
-         ▼                                     ▼
-  ┌──────────────┐                      ┌──────────────┐
-  │   Sonarr     │                      │ TheTVDB API  │
-  │ (LOCAL cache)│                      │  (fallback + │
-  │              │                      │  enrichment) │
-  └──────┬───────┘                      └──────┬───────┘
-         │                                     │
-         ▼                              ┌──────┴────────┐
-  ┌──────────────┐                     │  HTTP_CLIENT  │
-  │ TheTVDB API  │                     │  (optional    │
-  │  (external)  │                     │   proxy/VPN)  │
-  └──────────────┘                     └───────┬───────┘
-                                              │
-                                       ┌──────┴───────┐
-                                       │  JWT Token   │
-                                       │   Manager    │
-                                       └──────────────┘
-  ```
-
 api_details: |
   **API Version**: v4
   **Base URL**: `https://api4.thetvdb.com/v4`
@@ -107,7 +93,6 @@ api_details: |
   - `default` - Aired order (most common)
   - `dvd` - DVD release order
   - `absolute` - Absolute numbering (anime)
-
 database_schema: |
   **Schema**: `public`
 
@@ -148,7 +133,6 @@ database_schema: |
     UNIQUE(provider)
   );
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/tvdb/
@@ -161,7 +145,6 @@ module_structure: |
   ├── images.go                    # Image download
   └── tvdb_test.go
   ```
-
 key_interfaces: |
   ```go
   // TheTVDB provider implementation
@@ -227,7 +210,6 @@ key_interfaces: |
     Image          string  `json:"image"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -238,7 +220,6 @@ dependencies: |
 
   **External APIs**:
   - TheTVDB API v4 (free tier with API key)
-
 env_vars: |
   ```bash
   # TheTVDB API
@@ -251,7 +232,6 @@ env_vars: |
   # Caching
   TVDB_CACHE_TTL=24h
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -273,7 +253,6 @@ config_keys: |
           url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
           interface: tun0          # VPN interface (if type=vpn)
   ```
-
 component_interaction: |
   **JWT Authentication Flow**:
   1. Provider initializes, needs JWT token
@@ -302,7 +281,6 @@ component_interaction: |
   3. Allow user to choose ordering preference per show
   4. Display episodes in chosen order
   5. Fall back to aired order if preferred not available
-
 api_request_examples: |
   **Authenticate**:
   ```
@@ -349,7 +327,6 @@ api_request_examples: |
   GET https://api4.thetvdb.com/v4/series/81189/extended?meta=episodes
   Authorization: Bearer {token}
   ```
-
 supported_metadata: |
   **TV Series**:
   - Series name and original name
@@ -376,7 +353,6 @@ supported_metadata: |
   **Seasons**:
   - Season posters
   - Season type (aired, DVD, absolute)
-
 episode_ordering_strategy: |
   **Ordering Types**:
   - **Aired** (default): Episodes in broadcast order
@@ -393,7 +369,6 @@ episode_ordering_strategy: |
   - Aired: S01E01
   - Absolute: E001 (continues across seasons)
   - User chooses "absolute" → episodes shown as E001, E002, E003...
-
 token_management: |
   **JWT Token Lifecycle**:
   1. Request token with POST /login (API key in body)
@@ -409,7 +384,6 @@ token_management: |
   - Query provider_tokens WHERE expires_at < now() + 24h
   - Refresh tokens nearing expiry
   - Update database with new token and expiry
-
 unit_tests: |
   ```go
   func TestTVDBProvider_TokenManagement(t *testing.T) {
@@ -424,7 +398,6 @@ unit_tests: |
     // Test all three ordering types
   }
   ```
-
 integration_tests: |
   ```go
   func TestTVDB_FullWorkflow(t *testing.T) {
@@ -432,7 +405,6 @@ integration_tests: |
     // Test auth, search, fetch, episodes
   }
   ```
-
 anime_support: |
   **Absolute Numbering**:
   - Anime often uses continuous numbering (E001, E002...) instead of seasons
@@ -444,7 +416,6 @@ anime_support: |
   - Aired: S01E01, S01E02, ..., S02E01...
   - Absolute: E001, E002, E003, E004... (continuous)
   - Better for anime tracking apps
-
 error_handling: |
   **HTTP Error Codes**:
   - 401 Unauthorized → JWT expired or invalid (refresh and retry)
@@ -457,7 +428,6 @@ error_handling: |
   - 429, 500+: Exponential backoff (1s, 2s, 4s, max 3 attempts)
   - 404: Don't retry, log and skip
   - Network errors: Retry once after 5 seconds
-
 performance_optimization: |
   **Extended Endpoints**:
   - Use `/series/{id}/extended?meta=episodes` to fetch series + all episodes in one request
@@ -473,7 +443,6 @@ performance_optimization: |
   - TheTVDB provides multiple artwork types (poster, banner, background, clearlogo)
   - Fetch only needed types to reduce bandwidth
   - Download highest quality, generate thumbnails locally
-
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider** (not primary)
 
@@ -519,7 +488,6 @@ supplementary_role: |
     return show, nil
   }
   ```
-
 proxy_vpn_support: |
   **Optional Proxy/VPN Routing** (via HTTP_CLIENT service)
 

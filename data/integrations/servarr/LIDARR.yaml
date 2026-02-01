@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Music management automation'
 wiki_tagline: '> Automatic music downloads with Lidarr'
-wiki_overview: Lidarr integration automates music library management. Add artists
-  and Lidarr downloads their discography. Monitors for new album releases. Quality
-  profiles control format preferences (FLAC, MP3). Webhooks notify Revenge when albums
+wiki_overview: Lidarr integration automates music library management. Add artists and Lidarr downloads their discography.
+  Monitors for new album releases. Quality profiles control format preferences (FLAC, MP3). Webhooks notify Revenge when albums
   are imported. Configure with your Lidarr URL and API key.
 sources:
 - name: Uber fx
@@ -65,7 +64,6 @@ integration_id: lidarr
 external_service: Lidarr
 auth_method: api_key
 api_base_url: http://localhost:8686/api/v1
-
 dual_role_metadata_and_downloads: |
   **CRITICAL: Lidarr serves DUAL purposes in the Revenge architecture**:
 
@@ -94,21 +92,17 @@ dual_role_metadata_and_downloads: |
   - Lidarr is NOT just a download tool - it's the metadata backbone for music
   - Direct MusicBrainz/Last.fm integrations are SUPPLEMENTARY for enrichment (scrobbling, listening stats)
   - This dual-role pattern is consistent across ALL Arr services
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Request"]
+      node2["Lidarr<br/>Integration"]
+      node3["Lidarr<br/>Server"]
+      node4["Webhook<br/>Handler"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Revenge    │────▶│   Lidarr     │────▶│   Lidarr    │
-  │  Request    │◀────│ Integration  │◀────│   Server    │
-  │  System     │     │              │     └─────────────┘
-  └─────────────┘     └──────┬───────┘
-                             │
-                      ┌──────▼────────┐
-                      │   Webhook     │
-                      │   Handler     │
-                      └───────────────┘
-  ```
-
 api_details: |
   **API Version**: v1
   **Base URL**: `http://localhost:8686/api/v1` (configurable)
@@ -121,7 +115,6 @@ api_details: |
   - `/album` - Get albums
   - `/command` - Trigger commands
   - `/calendar` - Get upcoming releases
-
 database_schema: |
   **Schema**: `public`
 
@@ -156,7 +149,6 @@ database_schema: |
     UNIQUE(album_id)
   );
   ```
-
 api_request_examples: |
   **Add Artist**:
   ```
@@ -175,7 +167,6 @@ api_request_examples: |
     }
   }
   ```
-
 webhook_handling: |
   **Webhook Payload** (AlbumDownload):
   ```json
@@ -200,14 +191,12 @@ webhook_handling: |
     ]
   }
   ```
-
 quality_profiles: |
   **Audio Quality Profiles**:
   - Lossless (FLAC)
   - High Quality (320kbps MP3)
   - Standard (V0 MP3)
   - Any
-
 metadata_profiles: |
   **Metadata Profiles**:
   - Studio Albums Only

@@ -61,6 +61,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Request"]
+    node2["Radarr<br/>Integration"]
+    node3["Radarr<br/>Server"]
+    node4["Webhook<br/>Handler"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

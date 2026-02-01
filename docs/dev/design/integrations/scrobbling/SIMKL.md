@@ -61,6 +61,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Playback"]
+    node2["Simkl<br/>Integration"]
+    node3["Simkl<br/>API"]
+    node4["Scrobble<br/>Queue (River)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

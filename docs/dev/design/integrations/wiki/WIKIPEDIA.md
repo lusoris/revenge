@@ -59,6 +59,15 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    node2["Wikipedia<br/>MediaWiki<br/>API"]
+    node3["Article Content<br/>- Summary<br/>- Plot"]
+    node2 --> node3
+    node1 --> node2
+```
+
 ### Integration Structure
 
 ```

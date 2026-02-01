@@ -18,11 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Server settings persistence and retrieval'
 wiki_tagline: '> Server settings persistence and retrieval'
-wiki_overview: The Settings service stores and manages server configuration that can
-  be changed at runtime. Unlike config file settings, these can be modified through
-  the UI without restarting. Includes transcoding preferences, default languages,
-  metadata sources, and feature flags. Changes take effect immediately and persist
-  across restarts.
+wiki_overview: The Settings service stores and manages server configuration that can be changed at runtime. Unlike config
+  file settings, these can be modified through the UI without restarting. Includes transcoding preferences, default languages,
+  metadata sources, and feature flags. Changes take effect immediately and persist across restarts.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -63,28 +61,19 @@ design_refs:
 service_name: Settings Service
 package_path: internal/service/settings
 fx_module: settings.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                       ┌──────────────────────┼────────────┐
-                       ▼                      ▼            ▼
-                  ┌──────────┐          ┌───────────┐  ┌────────┐
-                  │Repository│          │  Koanf    │  │  Cache │
-                  │  (sqlc)  │          │ (Config)  │  │(otter) │
-                  └────┬─────┘          └───────────┘  └────────┘
-                       │
-                       ▼
-                  ┌─────────────┐
-                  │ PostgreSQL  │
-                  │   (pgx)     │
-                  └─────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -127,7 +116,6 @@ database_schema: |
   );
   CREATE INDEX idx_settings_history_setting ON settings_history(setting_id, changed_at DESC);
   ```
-
 module_structure: |
   ```
   internal/service/settings/
@@ -140,7 +128,6 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── settings_test.go
   ```
-
 key_interfaces: |
   ```go
   type SettingsService interface {
@@ -166,7 +153,6 @@ key_interfaces: |
     Description  *string    `db:"description" json:"description,omitempty"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -174,18 +160,15 @@ dependencies: |
   - `github.com/knadh/koanf/v2` - Configuration management
   - `github.com/maypok86/otter` - Settings cache
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   SETTINGS_CACHE_TTL=5m
   ```
-
 config_keys: |
   ```yaml
   settings:
     cache_ttl: 5m
   ```
-
 component_interaction: |
   **Update Setting**:
   1. Admin changes setting: PUT /api/v1/settings/server.name
@@ -195,7 +178,6 @@ component_interaction: |
   5. Invalidate cache
   6. Broadcast change event (WebSocket)
   7. Affected services reload configuration
-
 api_endpoints: |
   ```
   GET    /api/v1/settings               # List all settings
@@ -205,14 +187,12 @@ api_endpoints: |
   POST   /api/v1/settings/:key/reset    # Reset to default
   GET    /api/v1/settings/:key/history  # Get change history
   ```
-
 unit_tests: |
   ```go
   func TestSettingsService_SetSetting(t *testing.T) {
     // Test setting update with validation
   }
   ```
-
 integration_tests: |
   ```go
   func TestSettings_HistoryTracking(t *testing.T) {

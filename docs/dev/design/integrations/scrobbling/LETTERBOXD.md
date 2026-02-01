@@ -59,6 +59,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Watch<br/>History"]
+    node2["Letterboxd<br/>Integration"]
+    node3["Letterboxd<br/>Website"]
+    node4["CSV Export/<br/>Import"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

@@ -59,6 +59,15 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge Server<br/>┌────────────────┐    ┌────────────────┐    ┌────────────────┐<br/>Playback"]
+    node2["Transcoding Router<br/>(choose internal vs external)"]
+    node3["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>┌──────────────────────────────────────────────────────────────┐"]
+    node1 --> node2
+    node2 --> node3
+```
+
 ### Integration Structure
 
 ```

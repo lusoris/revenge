@@ -61,6 +61,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Search)"]
+    node2["Search<br/>Service"]
+    node3["Typesense<br/>Server"]
+    node4["Sync Job<br/>(PostgreSQL<br/>→ Typesense)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

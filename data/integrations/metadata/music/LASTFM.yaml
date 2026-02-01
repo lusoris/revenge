@@ -18,7 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY enrichment provider (artist bios, tags, similar artists) + scrobbling'
 wiki_tagline: '> Artist enrichment metadata (bios, tags, similar) - Supplementary to Lidarr'
-wiki_overview: 'SUPPLEMENTARY enrichment for music metadata. Provides: (1) Artist biographies, (2) Community tags/genres, (3) Similar artist recommendations, (4) Album/track playcount stats. Also scrobbling service (see SCROBBLING.yaml). Free API key required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).'
+wiki_overview: 'SUPPLEMENTARY enrichment for music metadata. Provides: (1) Artist biographies, (2) Community tags/genres,
+  (3) Similar artist recommendations, (4) Album/track playcount stats. Also scrobbling service (see SCROBBLING.yaml). Free
+  API key required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service).'
 sources:
 - name: Go context
   url: https://pkg.go.dev/context
@@ -42,15 +44,15 @@ integration_id: lastfm
 external_service: Last.fm
 api_base_url: https://ws.audioscrobbler.com/2.0/
 auth_method: api_key
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Metadata<br/>Service"]
+      node2["Last.fm<br/>Provider"]
+      node3["Last.fm<br/>API"]
+      node1 --> node2
+      node2 --> node3
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Metadata   │────▶│   Last.fm    │────▶│  Last.fm    │
-  │  Service    │◀────│   Provider   │◀────│     API     │
-  └─────────────┘     └──────────────┘     └─────────────┘
-  ```
-
 api_details: |
   **API Version**: 2.0
   **Base URL**: `https://ws.audioscrobbler.com/2.0/`
@@ -64,7 +66,6 @@ api_details: |
   - `album.getInfo` - Get album details
   - `track.getInfo` - Get track details
   - `track.getSimilar` - Get similar tracks
-
 database_schema: |
   **Schema**: `public`
 
@@ -91,7 +92,6 @@ database_schema: |
     UNIQUE(artist_id)
   );
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/lastfm/
@@ -103,7 +103,6 @@ module_structure: |
   ├── similar.go                   # Similar artist/track methods
   └── lastfm_test.go
   ```
-
 key_interfaces: |
   ```go
   // Last.fm provider implementation
@@ -159,7 +158,6 @@ key_interfaces: |
     Image []Image `xml:"image"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -170,7 +168,6 @@ dependencies: |
 
   **External APIs**:
   - Last.fm API 2.0 (free with API key)
-
 env_vars: |
   ```bash
   # Last.fm API
@@ -180,7 +177,6 @@ env_vars: |
   # Caching
   LASTFM_CACHE_TTL=168h  # 7 days
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -191,7 +187,6 @@ config_keys: |
         api_secret: ${LASTFM_API_SECRET}
         cache_ttl: 168h
   ```
-
 component_interaction: |
   **Artist Bio Fetch**:
   1. Artist already in database (from MusicBrainz)
@@ -216,7 +211,6 @@ component_interaction: |
   3. Response includes match score (0.0-1.0)
   4. Display "Similar Artists" section with top matches
   5. Link to other artists in library, or external Last.fm links
-
 api_request_examples: |
   **Get Artist Info**:
   ```
@@ -273,7 +267,6 @@ api_request_examples: |
   ```
   GET https://ws.audioscrobbler.com/2.0/?method=artist.getSimilar&artist=Radiohead&limit=10&api_key=xxx&format=json
   ```
-
 use_cases: |
   **Primary Use Cases**:
   1. **Artist Biographies**: Display rich text bios on artist pages
@@ -297,7 +290,6 @@ use_cases: |
   🎵 Muse (92% match)
   🎵 Arcade Fire (87% match)
   ```
-
 xml_parsing: |
   **XML Response Format**:
   - Last.fm returns XML by default (add `&format=json` for JSON)
@@ -315,7 +307,6 @@ xml_parsing: |
   var resp LastFMResponse
   err := xml.Unmarshal(body, &resp)
   ```
-
 tag_system: |
   **Community Tags**:
   - Users tag artists/albums/tracks on Last.fm
@@ -331,7 +322,6 @@ tag_system: |
   **Example Tags**:
   - Artist: Radiohead → [alternative rock, rock, experimental, indie, progressive rock]
   - Album: OK Computer → [alternative rock, 90s, classic, art rock]
-
 similar_artist_matching: |
   **Match Score**:
   - 1.0 = Perfect match (often solo projects of band members)
@@ -356,7 +346,6 @@ similar_artist_matching: |
     ]
   }
   ```
-
 unit_tests: |
   ```go
   func TestLastFMProvider_GetArtistInfo(t *testing.T) {
@@ -367,7 +356,6 @@ unit_tests: |
     // Test XML response parsing
   }
   ```
-
 integration_tests: |
   ```go
   func TestLastFM_FullWorkflow(t *testing.T) {
@@ -375,7 +363,6 @@ integration_tests: |
     // Test artist info, tags, similar artists
   }
   ```
-
 caching_strategy: |
   **Long TTL for Artist Data**:
   - Artist bios don't change frequently (7 day TTL)
@@ -386,7 +373,6 @@ caching_strategy: |
   - `lastfm:artist:{mbid}` - Full artist info
   - `lastfm:tags:{mbid}` - Tags only
   - `lastfm:similar:{mbid}` - Similar artists
-
 error_handling: |
   **API Error Codes**:
   - 6: Invalid parameters
@@ -397,7 +383,6 @@ error_handling: |
   - Invalid key: Log error, disable provider
   - Rate limit: Wait and retry with exponential backoff
   - Artist not found: Return nil, continue with MusicBrainz only
-
 performance_optimization: |
   **Batch Fetching**:
   - Queue artist info requests

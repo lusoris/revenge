@@ -64,6 +64,25 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Metadata<br/>Service"]
+    node4["Priority<br/>Chain"]
+    node5["L1 Cache<br/>L2 Cache<br/>▼                                ▼"]
+    node6["PRIMARY [local Arr services]<br/>▼                                                   ▼<br/>────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐"]
+    node7["SUPPLEMENTARY [external APIs]<br/>▼<br/>──────┐  ┌──────────────┐  ┌─────────────"]
+    node8["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+    node5 --> node6
+    node6 --> node7
+    node7 --> node8
+```
+
 ### Service Structure
 
 ```

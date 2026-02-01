@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> High-performance Redis-compatible cache'
 wiki_tagline: '> Fast distributed caching with Dragonfly'
-wiki_overview: Dragonfly provides high-speed caching for Revenge. Stores session data,
-  API responses, and frequently accessed metadata in memory. Redis-compatible so existing
-  tools work. Dramatically faster than Redis with lower memory usage. Required for
-  multi-server deployments, optional but recommended for single-server.
+wiki_overview: Dragonfly provides high-speed caching for Revenge. Stores session data, API responses, and frequently accessed
+  metadata in memory. Redis-compatible so existing tools work. Dramatically faster than Redis with lower memory usage. Required
+  for multi-server deployments, optional but recommended for single-server.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -67,22 +66,17 @@ integration_name: Dragonfly
 integration_id: dragonfly
 external_service: Dragonfly
 auth_method: password
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Server<br/>(Services)"]
+      node2["rueidis<br/>(Redis Client"]
+      node3["Dragonfly<br/>Server"]
+      node4["sturdyc<br/>(Coalescing)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Server    │────▶│   rueidis    │────▶│  Dragonfly  │
-  │ (Services)  │◀────│ (Redis Client│◀────│   Server    │
-  └─────────────┘     │  with Auto-  │     └─────────────┘
-                      │   Pipelining)│
-                      └──────────────┘
-                             │
-                      ┌──────┴───────┐
-                      │   sturdyc    │
-                      │ (Coalescing) │
-                      └──────────────┘
-  ```
-
 connection_details: |
   **Client**: rueidis (high-performance Redis client with auto-pipelining)
   **Protocol**: Redis RESP3
@@ -93,7 +87,6 @@ connection_details: |
   ```
   redis://[:password@]host:port[/database]
   ```
-
 cache_architecture: |
   **Two-Tier Caching**:
   - **L1 Cache**: otter (in-memory, process-local, TTL-based)
@@ -106,7 +99,6 @@ cache_architecture: |
   4. Store in both L1 and L2 for future requests
 
   **Request Coalescing**: sturdyc prevents stampede by coalescing concurrent requests
-
 key_features: |
   **Advantages over Redis**:
   - 25x faster for certain workloads
@@ -122,7 +114,6 @@ key_features: |
   - Rate limiting counters
   - Real-time activity tracking
   - EPG program guide cache
-
 module_structure: |
   ```
   internal/cache/
@@ -134,7 +125,6 @@ module_structure: |
   ├── keys.go                      # Cache key utilities
   └── cache_test.go
   ```
-
 key_interfaces: |
   ```go
   // Cache interface (unified L1 + L2)
@@ -162,7 +152,6 @@ key_interfaces: |
     TTL      time.Duration `yaml:"ttl"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/redis/rueidis` - High-performance Redis client
@@ -172,7 +161,6 @@ dependencies: |
 
   **External Services**:
   - Dragonfly server (recommended) or Redis 6.0+ (fallback)
-
 env_vars: |
   ```bash
   # Dragonfly connection
@@ -189,7 +177,6 @@ env_vars: |
   # L2 cache (Dragonfly)
   CACHE_L2_TTL=1h
   ```
-
 config_keys: |
   ```yaml
   cache:
@@ -209,7 +196,6 @@ config_keys: |
     l2:
       ttl: 1h
   ```
-
 component_interaction: |
   **Cache Read** (with L1 + L2):
   1. Service requests data for key "movie:123"
@@ -235,7 +221,6 @@ component_interaction: |
   4. Other 99 requests wait for the result
   5. All 100 requests receive the same result
   6. Prevents database stampede
-
 api_endpoints: |
   **Health Check**:
   ```
@@ -265,7 +250,6 @@ api_endpoints: |
   ```
   GET /api/v1/admin/cache/stats
   ```
-
 common_operations: |
   **Session Storage**:
   ```go
@@ -288,7 +272,6 @@ common_operations: |
   client.Do(ctx, client.B().Incr().Key("ratelimit:user:123").Build())
   client.Do(ctx, client.B().Expire().Key("ratelimit:user:123").Seconds(60).Build())
   ```
-
 unit_tests: |
   ```go
   func TestDragonflyConnection(t *testing.T) {
@@ -303,7 +286,6 @@ unit_tests: |
     // Test request coalescing prevents stampede
   }
   ```
-
 integration_tests: |
   ```go
   func TestDragonfly_FullWorkflow(t *testing.T) {
@@ -311,7 +293,6 @@ integration_tests: |
     // Test cache operations, invalidation, TTL expiry
   }
   ```
-
 monitoring: |
   **Metrics Exposed** (via Prometheus):
   - `cache_l1_hits_total` - L1 cache hits
@@ -320,7 +301,6 @@ monitoring: |
   - `cache_l2_misses_total` - L2 cache misses
   - `cache_request_coalescing_total` - Requests coalesced by sturdyc
   - `dragonfly_connected` - Connection status (0/1)
-
 performance_tuning: |
   **L1 Cache Sizing**:
   - `max_size` should be based on available memory

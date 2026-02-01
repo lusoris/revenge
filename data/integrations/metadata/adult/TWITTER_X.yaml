@@ -18,7 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> LINK-ONLY performer social media profiles for QAR content'
 wiki_tagline: '> Twitter/X - Performer profile links for QAR'
-wiki_overview: 'LINK-ONLY integration for QAR performer profiles. Stores verified Twitter/X profile URLs. Basic profile verification via web scraping. **NO Twitter API access** (expensive, restrictive). **Proxy/VPN recommended** (via HTTP_CLIENT service).'
+wiki_overview: LINK-ONLY integration for QAR performer profiles. Stores verified Twitter/X profile URLs. Basic profile verification
+  via web scraping. **NO Twitter API access** (expensive, restrictive). **Proxy/VPN recommended** (via HTTP_CLIENT service).
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
@@ -45,38 +46,19 @@ api_base_url: https://x.com
 data_access_method: web_scraping
 content_streaming: false
 auth_method: none
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+      node2["Twitter/X Link<br/>(verified URL)"]
+      node3["x.com<br/>(login wall)"]
+      node4["Followers<br/>(limited)"]
+      node5["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
+      node3 --> node4
+      node1 --> node2
+      node2 --> node3
+      node4 --> node5
   ```
-  ┌───────────────────┐
-  │   Performer       │
-  │   Profile Page    │
-  │   (Revenge UI)    │
-  └─────────┬─────────┘
-            │ Display social links
-            ▼
-  ┌───────────────────┐
-  │   Twitter/X Link  │───→ Opens in new tab
-  │   (verified URL)  │     (user's browser)
-  └─────────┬─────────┘
-            │ URL verification
-            │ (NO API access)
-            ▼
-  ┌───────────────────┐     ┌──────────────┐
-  │     x.com         │────▶│  Followers   │
-  │   (login wall)    │     │  (limited)   │
-  └───────────────────┘     └──────────────┘
-            │
-     ┌──────┴────────┐
-     │  HTTP_CLIENT  │
-     │  (recommended │
-     │   proxy/VPN)  │
-     └───────────────┘
-
-  NOTE: Twitter API is NOT used (expensive, restrictive).
-  Only web scraping for basic verification.
-  ```
-
 integration_scope: |
   **WHAT THIS INTEGRATION DOES**:
   - ✅ Stores performer Twitter/X profile URLs
@@ -95,7 +77,6 @@ integration_scope: |
   - Twitter API now very expensive ($100/mo minimum)
   - Restrictive rate limits
   - Profile links can be verified without API
-
 api_details: |
   **Data Access**: Web scraping (limited)
   **Base URL**: `https://x.com` (formerly twitter.com)
@@ -115,7 +96,6 @@ api_details: |
   404 Not Found → Profile doesn't exist
   302 Redirect → May require login
   ```
-
 database_schema: |
   Uses shared `qar.social_profiles` table.
 
@@ -141,7 +121,6 @@ database_schema: |
     now()
   );
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/social/twitter/
@@ -150,7 +129,6 @@ module_structure: |
   ├── verification.go          # Profile URL verification
   └── twitter_test.go
   ```
-
 key_interfaces: |
   ```go
   // Twitter/X provider (no API, scraping only)
@@ -233,7 +211,6 @@ key_interfaces: |
     }
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -250,7 +227,6 @@ dependencies: |
 
   **NOT Used**:
   - Twitter API v2 (too expensive, $100/mo minimum)
-
 env_vars: |
   ```bash
   # Twitter/X integration (NO API)
@@ -262,7 +238,6 @@ env_vars: |
   TWITTER_PROXY_ENABLED=true
   TWITTER_PROXY_URL=socks5://127.0.0.1:9050
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -286,7 +261,6 @@ config_keys: |
           enabled: true
           check_interval: 168h
   ```
-
 component_interaction: |
   **Link Storage**:
   1. FreeOnes/StashDB provides Twitter username
@@ -305,7 +279,6 @@ component_interaction: |
   2. HEAD/GET request to each profile URL
   3. Update verification status
   4. Mark broken or suspended accounts
-
 scraping_limitations: |
   **Twitter/X is Difficult to Scrape**:
 
@@ -331,7 +304,6 @@ scraping_limitations: |
   nitterURL := fmt.Sprintf("https://nitter.net/%s", username)
   // Parse from Nitter instead
   ```
-
 link_role: |
   **LINK-Only Provider**
 
@@ -346,14 +318,12 @@ link_role: |
   External Links:
   [𝕏 Twitter] → Opens x.com/username in new tab
   ```
-
 error_handling: |
   **Expected Responses**:
   - 200 OK → Profile exists (try to extract metadata)
   - 302 Redirect → May require login
   - 404 Not Found → Profile doesn't exist
   - 403 Forbidden → Suspended or blocked
-
 unit_tests: |
   ```go
   func TestTwitter_VerifyUsername(t *testing.T) {
@@ -376,7 +346,6 @@ unit_tests: |
     assert.Equal(t, "Display Name", info.DisplayName)
   }
   ```
-
 best_practices: |
   **Twitter/X Integration**:
   - Don't use Twitter API (too expensive)

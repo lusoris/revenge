@@ -128,6 +128,19 @@ fx.Provide(
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["External APIs<br/>(TMDb, TVDB)"]
+    node2["HTTP Client<br/>Factory"]
+    node3["Services<br/>(Metadata,"]
+    node4["Proxy/VPN<br/>(Tor, HTTP)"]
+    node5["Local Services<br/>(Arr, Stash)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+```
+
 ### Service Structure
 
 ```

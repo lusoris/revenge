@@ -34,6 +34,12 @@
 {%- if claude %}
 ## Architecture
 
+{%- if architecture_diagram is defined and architecture_diagram %}
+
+{{ architecture_diagram }}
+
+{%- endif %}
+
 ### Service Structure
 
 ```

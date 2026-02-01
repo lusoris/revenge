@@ -62,6 +62,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Server<br/>(Services)"]
+    node2["rueidis<br/>(Redis Client"]
+    node3["Dragonfly<br/>Server"]
+    node4["sturdyc<br/>(Coalescing)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

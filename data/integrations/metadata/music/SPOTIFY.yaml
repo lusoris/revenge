@@ -18,7 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY enrichment provider (high-quality images, popularity scores)'
 wiki_tagline: '> High-quality artwork and popularity - Supplementary to Lidarr'
-wiki_overview: 'SUPPLEMENTARY enrichment for music metadata. Provides: (1) High-quality album artwork, (2) Artist images (HD quality), (3) Popularity scores (trending/popular music), (4) Spotify URIs (for linking). OAuth authentication required. **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Metadata-only (no playback/streaming).'
+wiki_overview: 'SUPPLEMENTARY enrichment for music metadata. Provides: (1) High-quality album artwork, (2) Artist images (HD
+  quality), (3) Popularity scores (trending/popular music), (4) Spotify URIs (for linking). OAuth authentication required.
+  **Optional proxy/VPN routing** if needed (via HTTP_CLIENT service). Metadata-only (no playback/streaming).'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -43,20 +45,17 @@ integration_id: spotify
 external_service: Spotify
 api_base_url: https://api.spotify.com/v1
 auth_method: oauth
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Metadata<br/>Service"]
+      node2["Spotify<br/>Provider"]
+      node3["Spotify<br/>Web API"]
+      node4["Client Creds<br/>OAuth 2.0"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Metadata   │────▶│   Spotify    │────▶│  Spotify    │
-  │  Service    │◀────│   Provider   │◀────│  Web API    │
-  └─────────────┘     └──────┬───────┘     └─────────────┘
-                             │
-                      ┌──────┴───────┐
-                      │Client Creds  │
-                      │ OAuth 2.0    │
-                      └──────────────┘
-  ```
-
 api_details: |
   **API Version**: v1
   **Base URL**: `https://api.spotify.com/v1`
@@ -69,7 +68,6 @@ api_details: |
   - `/albums/{id}` - Get album details
   - `/tracks/{id}` - Get track details
   - `/artists/{id}/albums` - Get artist's albums
-
 database_schema: |
   **Schema**: `public`
 
@@ -92,7 +90,6 @@ database_schema: |
   );
   CREATE INDEX idx_spotify_id ON spotify_ids(spotify_id);
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/spotify/
@@ -104,7 +101,6 @@ module_structure: |
   ├── images.go                    # Image download
   └── spotify_test.go
   ```
-
 key_interfaces: |
   ```go
   // Spotify provider implementation
@@ -161,7 +157,6 @@ key_interfaces: |
     Width  int    `json:"width"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -173,7 +168,6 @@ dependencies: |
 
   **External APIs**:
   - Spotify Web API (free with Spotify Developer account)
-
 env_vars: |
   ```bash
   # Spotify API
@@ -183,7 +177,6 @@ env_vars: |
   # Caching
   SPOTIFY_CACHE_TTL=168h  # 7 days
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -194,7 +187,6 @@ config_keys: |
         client_secret: ${SPOTIFY_CLIENT_SECRET}
         cache_ttl: 168h
   ```
-
 oauth_flow: |
   **Client Credentials Flow** (no user auth):
   1. Encode client_id:client_secret as base64
@@ -220,7 +212,6 @@ oauth_flow: |
     "expires_in": 3600
   }
   ```
-
 api_request_examples: |
   **Search Artist**:
   ```
@@ -264,7 +255,6 @@ api_request_examples: |
   GET https://api.spotify.com/v1/albums/6dVIqQ8qmQ5GBnJ9shOYGE
   Authorization: Bearer {token}
   ```
-
 use_cases: |
   **Primary Use Cases**:
   1. **High-Quality Images**: Album artwork and artist photos (640x640, 300x300, 64x64)
@@ -273,7 +263,6 @@ use_cases: |
   4. **Supplementary Metadata**: When MusicBrainz lacks data
 
   **Note**: Spotify API is for metadata only, NOT for music playback/streaming
-
 image_quality: |
   **Image Sizes**:
   - Large: 640x640
@@ -292,7 +281,6 @@ image_quality: |
   3. Generate blurhash for lazy loading
   4. Store in local file system
   5. Use medium/small for thumbnails
-
 popularity_score: |
   **Popularity Metric**:
   - 0-100 scale
@@ -310,7 +298,6 @@ popularity_score: |
   ORDER BY s.popularity DESC
   LIMIT 10;
   ```
-
 unit_tests: |
   ```go
   func TestSpotifyProvider_ClientCredentials(t *testing.T) {
@@ -321,7 +308,6 @@ unit_tests: |
     // Test artist search with mock HTTP client
   }
   ```
-
 integration_tests: |
   ```go
   func TestSpotify_FullWorkflow(t *testing.T) {

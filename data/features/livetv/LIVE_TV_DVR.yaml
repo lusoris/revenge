@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Live television streaming and digital video recording'
 wiki_tagline: '> Watch and record live TV through your media server'
-wiki_overview: Stream live TV channels through Revenge with support for multiple backends
-  (TVHeadend, NextPVR, ErsatzTV). Browse the electronic program guide (EPG) to see
-  what is on. Schedule recordings manually or by series. Recorded shows appear in
-  your library with full metadata. Time-shifting lets you pause and rewind live broadcasts.
+wiki_overview: Stream live TV channels through Revenge with support for multiple backends (TVHeadend, NextPVR, ErsatzTV).
+  Browse the electronic program guide (EPG) to see what is on. Schedule recordings manually or by series. Recorded shows appear
+  in your library with full metadata. Time-shifting lets you pause and rewind live broadcasts.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -79,20 +78,21 @@ content_types:
 - TV Shows
 - Seasons
 - Episodes
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -340,7 +340,6 @@ file_structure: |
   ├── TimeshiftControls.svelte     # Pause/rewind controls
   └── BackendSettings.svelte       # Backend configuration
   ```
-
 key_interfaces: |
   ```go
   // Repository interface for database operations
@@ -464,7 +463,6 @@ key_interfaces: |
       FetchAndParse(ctx context.Context, url string) (*EPGData, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   ```go
@@ -517,7 +515,6 @@ dependencies: |
   - **NextPVR**: Windows-based PVR software
   - **ErsatzTV**: Virtual channel management
   - **XMLTV EPG Source**: Electronic program guide data
-
 env_vars: |
   ```bash
   # Backend defaults
@@ -553,7 +550,6 @@ env_vars: |
   # Worker
   LIVETV_WORKER_CONCURRENCY=3               # Concurrent recording jobs
   ```
-
 config_keys: |
   ```yaml
   livetv:
@@ -607,7 +603,6 @@ config_keys: |
       concurrency: 3
       retry_attempts: 2
   ```
-
 defaults: |
   - **Auto-sync**: Enabled with 6-hour interval
   - **EPG Retention**: 14 days
@@ -620,12 +615,16 @@ defaults: |
   - **Max Concurrent Recordings**: 5
   - **Time-shift Buffer**: 2 hours max
   - **Worker Concurrency**: 3 recording jobs
-
-module_structure: "```\n  internal/content/live_tv_&_dvr/\n  ├── module.go       \
-  \       # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
+module_structure: |-
+  ```
+    internal/content/live_tv_&_dvr/
+    ├── module.go              # fx module definition
+    ├── repository.go          # Database operations (sqlc)
+    ├── service.go             # Business logic
+    ├── handler.go             # HTTP handlers (ogen)
+    ├── types.go               # Domain types
+    └── cache.go               # Caching layer (otter)
+    ```
 request_examples: |
   **Add Backend**:
   ```json
@@ -718,7 +717,6 @@ request_examples: |
     "is_paused": false
   }
   ```
-
 response_examples: |
   **Backend Object**:
   ```json
@@ -886,7 +884,6 @@ response_examples: |
     "status": "active"
   }
   ```
-
 unit_tests: |
   **Repository Layer**:
   - Test CRUD operations for backends, channels, EPG programs, recordings
@@ -946,7 +943,6 @@ unit_tests: |
   - Mock service layer
 
   **Coverage Target**: 85%+ for critical paths (streaming, recording, EPG)
-
 integration_tests: |
   **Database Integration**:
   - Test full recording lifecycle with real PostgreSQL (testcontainers)
@@ -989,9 +985,7 @@ integration_tests: |
   - Test concurrent streaming (10+ streams)
   - Test concurrent recordings (5 recordings)
   - Test time-shift buffer performance
-
-test_coverage_target: "80%"
-
+test_coverage_target: 80%
 api_endpoints:
 - method: GET
   path: /api/v1/livetv/backends
@@ -1056,7 +1050,9 @@ api_endpoints:
 - method: DELETE
   path: /api/v1/livetv/timeshift/:id
   description: Stop time-shift session
-
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+component_interaction: |-
+  1. Client requests resource via HTTP
+    2. API handler validates and routes to service
+    3. Service checks cache, queries repository if needed
+    4. Repository executes SQL via sqlc
+    5. Results return through layers to client

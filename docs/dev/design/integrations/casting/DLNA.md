@@ -60,6 +60,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Smart TV<br/>DLNA Client"]
+    node2["Revenge<br/>MediaServer"]
+    node3["Renderer<br/>(Playback)"]
+    node4["AVTransport<br/>Service"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+```
+
 ### Integration Structure
 
 ```

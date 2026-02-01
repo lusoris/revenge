@@ -61,6 +61,19 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["User<br/>Browser"]
+    node2["Keycloak<br/>Auth Server"]
+    node3["Revenge<br/>Server"]
+    node4["Keycloak<br/>Token Endpoint"]
+    node5["User<br/>Session"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+    node4 --> node5
+```
+
 ### Integration Structure
 
 ```

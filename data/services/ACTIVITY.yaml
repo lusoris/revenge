@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Audit logging and event tracking'
 wiki_tagline: '> Audit logging and event tracking'
-wiki_overview: The Activity service logs important events for security and debugging.
-  Track logins, failed auth attempts, permission changes, and admin actions. Activity
-  logs include timestamps, user info, IP addresses, and action details. Admins can
-  search and filter logs. Configurable retention period automatically cleans old entries.
+wiki_overview: The Activity service logs important events for security and debugging. Track logins, failed auth attempts,
+  permission changes, and admin actions. Activity logs include timestamps, user info, IP addresses, and action details. Admins
+  can search and filter logs. Configurable retention period automatically cleans old entries.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -47,28 +46,19 @@ design_refs:
 service_name: Activity Service
 package_path: internal/service/activity
 fx_module: activity.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                       ┌──────────────────────┼────────────┐
-                       ▼                      ▼            ▼
-                  ┌──────────┐          ┌───────────┐  ┌────────┐
-                  │Repository│          │  River    │  │  Cache │
-                  │  (sqlc)  │          │  Queue    │  │(otter) │
-                  └────┬─────┘          └───────────┘  └────────┘
-                       │
-                       ▼
-                  ┌─────────────┐
-                  │ PostgreSQL  │
-                  │   (pgx)     │
-                  └─────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -106,7 +96,6 @@ database_schema: |
   CREATE INDEX idx_activity_log_created ON activity_log(created_at DESC);
   CREATE INDEX idx_activity_log_ip ON activity_log(ip_address, created_at DESC);
   ```
-
 module_structure: |
   ```
   internal/service/activity/
@@ -118,7 +107,6 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── activity_test.go
   ```
-
 key_interfaces: |
   ```go
   type ActivityService interface {
@@ -148,20 +136,17 @@ key_interfaces: |
     CreatedAt    time.Time              `db:"created_at" json:"created_at"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/riverqueue/river` - Cleanup jobs
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   ACTIVITY_RETENTION_DAYS=90
   ACTIVITY_CLEANUP_INTERVAL=24h
   ```
-
 config_keys: |
   ```yaml
   activity:
@@ -169,7 +154,6 @@ config_keys: |
     cleanup_interval: 24h
     log_failed_attempts: true
   ```
-
 component_interaction: |
   **Activity Logging**:
   1. User performs action (e.g., updates settings)
@@ -187,7 +171,6 @@ component_interaction: |
   1. River job runs daily
   2. DELETE FROM activity_log WHERE created_at < now() - retention_days
   3. Log cleanup statistics
-
 api_endpoints: |
   ```
   GET    /api/v1/activity                # Search activity logs
@@ -221,14 +204,12 @@ api_endpoints: |
     "page": 1
   }
   ```
-
 unit_tests: |
   ```go
   func TestActivityService_Log(t *testing.T) {
     // Test activity logging
   }
   ```
-
 integration_tests: |
   ```go
   func TestActivity_CleanupOldLogs(t *testing.T) {

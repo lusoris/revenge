@@ -60,6 +60,21 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Client"]
+    node2["EPG Service<br/>(Revenge)"]
+    node3["TVHeadend API<br/>/api/channel/<br/>/api/epg/"]
+    node4["Player<br/>(Vidstack)"]
+    node5["TVHeadend<br/>Streaming"]
+    node6["DVB Adapter/<br/>IPTV/DVR Files"]
+    node1 --> node2
+    node4 --> node5
+    node2 --> node3
+    node3 --> node4
+    node5 --> node6
+```
+
 ### Integration Structure
 
 ```

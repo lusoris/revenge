@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Voice assistant integration (Alexa, Google Assistant)'
 wiki_tagline: '> Control playback with Alexa and Google Assistant'
-wiki_overview: Use your voice to control Revenge through smart assistants. Ask Alexa
-  or Google to play a specific movie, pause, skip forward, or turn on subtitles. Browse
-  by genre or actor with natural language. Works with Echo devices, Google Home, and
-  compatible smart speakers. Requires linking your account in the assistant app.
+wiki_overview: Use your voice to control Revenge through smart assistants. Ask Alexa or Google to play a specific movie, pause,
+  skip forward, or turn on subtitles. Browse by genre or actor with natural language. Works with Echo devices, Google Home,
+  and compatible smart speakers. Requires linking your account in the assistant app.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -57,20 +56,21 @@ design_refs:
 feature_name: Voice Control
 module_name: voice_control
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -143,7 +143,6 @@ database_schema: |
   );
   CREATE INDEX idx_voice_devices_user ON voice_devices(user_id);
   ```
-
 module_structure: |
   ```
   internal/voice/
@@ -166,7 +165,6 @@ module_structure: |
       ├── action.json              # Google Action manifest
       └── intents.json             # Google intents
   ```
-
 key_interfaces: |
   ```go
   type VoiceService interface {
@@ -202,7 +200,6 @@ key_interfaces: |
     } `json:"request"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -215,14 +212,12 @@ dependencies: |
   - Amazon Alexa Skills Kit (ASK)
   - Google Assistant SDK / Dialogflow
   - Apple HomeKit (future)
-
 env_vars: |
   ```bash
   VOICE_ALEXA_SKILL_ID=amzn1.ask.skill.xxxxx
   VOICE_GOOGLE_PROJECT_ID=revenge-voice-xxxxx
   VOICE_ENABLED=true
   ```
-
 config_keys: |
   ```yaml
   voice:
@@ -234,7 +229,6 @@ config_keys: |
       project_id: revenge-voice-xxxxx
       credentials_file: /config/google-service-account.json
   ```
-
 component_interaction: |
   **Alexa Command Flow**:
   1. User: "Alexa, ask Revenge to play Inception"
@@ -262,7 +256,6 @@ component_interaction: |
   4. User logs in and authorizes
   5. Alexa/Google receives OAuth token
   6. Store in voice_assistant_connections
-
 api_endpoints: |
   ```
   # Voice webhook endpoints (public, verified)
@@ -310,7 +303,6 @@ api_endpoints: |
     }
   }
   ```
-
 unit_tests: |
   ```go
   func TestVoiceService_ParseIntent(t *testing.T) {
@@ -321,7 +313,6 @@ unit_tests: |
     // Test Alexa request handling
   }
   ```
-
 integration_tests: |
   ```go
   func TestVoice_AlexaFlow(t *testing.T) {

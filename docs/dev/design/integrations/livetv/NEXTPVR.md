@@ -60,6 +60,21 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Client"]
+    node2["EPG Service<br/>(Revenge)"]
+    node3["NextPVR API<br/>/service"]
+    node4["Player<br/>(Vidstack)"]
+    node5["NextPVR<br/>Stream"]
+    node6["TV Tuner/<br/>Recordings"]
+    node1 --> node2
+    node4 --> node5
+    node2 --> node3
+    node3 --> node4
+    node5 --> node6
+```
+
 ### Integration Structure
 
 ```

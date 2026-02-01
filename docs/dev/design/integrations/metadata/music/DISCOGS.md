@@ -62,6 +62,15 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Metadata<br/>Service"]
+    node2["Discogs<br/>Provider"]
+    node3["Discogs<br/>API"]
+    node1 --> node2
+    node2 --> node3
+```
+
 ### Integration Structure
 
 ```

@@ -59,6 +59,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>QAR Module<br/>(Performer)"]
+    node2["Babepedia<br/>Scraper"]
+    node3["Performer Data<br/>- Biography"]
+    node4["Rate Limiter"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

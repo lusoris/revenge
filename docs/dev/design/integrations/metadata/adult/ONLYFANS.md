@@ -61,6 +61,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+    node2["OnlyFans Link<br/>(verified URL)"]
+    node3["OnlyFans.com<br/>(login wall)"]
+    node4["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```

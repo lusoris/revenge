@@ -60,6 +60,19 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(API Key)"]
+    node2["Middleware<br/>(API Auth)"]
+    node3["Service<br/>(Logic)"]
+    node4["▼                      ▼            ▼<br/>──────┐          ┌───────────┐  ┌────<br/>sitory"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+```
+
 ### Service Structure
 
 ```

@@ -63,6 +63,21 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Metadata<br/>Service"]
+    node2["Lidarr<br/>(LOCAL cache)"]
+    node3["MusicBrainz<br/>API<br/>(fallback +"]
+    node4["MusicBrainz<br/>API<br/>(external)"]
+    node5["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node6["▼────┐  ┌──────▼──────┐  ┌───▼─<br/>er<br/>AcoustID/"]
+    node2 --> node3
+    node4 --> node5
+    node1 --> node2
+    node3 --> node4
+    node5 --> node6
+```
+
 ### Integration Structure
 
 ```

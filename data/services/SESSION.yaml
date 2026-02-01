@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Session token management and device tracking'
 wiki_tagline: '> Session token management and device tracking'
-wiki_overview: The Session service tracks active login sessions across devices. Each
-  login creates a session with device info (browser, OS, IP). Users can view all active
-  sessions and revoke access to specific devices. Sessions expire automatically after
-  inactivity. Admins can forcibly terminate sessions for security incidents.
+wiki_overview: The Session service tracks active login sessions across devices. Each login creates a session with device info
+  (browser, OS, IP). Users can view all active sessions and revoke access to specific devices. Sessions expire automatically
+  after inactivity. Admins can forcibly terminate sessions for security incidents.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -59,28 +58,19 @@ design_refs:
 service_name: Session Service
 package_path: internal/service/session
 fx_module: session.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["Middleware<br/>(Auth)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼            ▼            ▼<br/>────┐  ┌──────────┐  ┌─────<br/>tory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  Middleware  │────▶│   Service   │
-  │  (Web/App)  │◀────│   (Auth)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-        │                                          │
-        │ Bearer Token                ┌────────────┼────────────┐
-        │                             ▼            ▼            ▼
-        │                      ┌──────────┐  ┌──────────┐  ┌────────┐
-        │                      │Repository│  │  Cache   │  │ Redis  │
-        │                      │  (sqlc)  │  │ (otter)  │  │(rueidis)│
-        │                      └────┬─────┘  └──────────┘  └────────┘
-        │                           │
-        │                           ▼
-        │                      ┌─────────────┐
-        │                      │ PostgreSQL  │
-        │                      │   (pgx)     │
-        │                      └─────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -132,7 +122,6 @@ database_schema: |
   CREATE INDEX idx_refresh_tokens_session ON refresh_tokens(session_id);
   CREATE INDEX idx_refresh_tokens_token_hash ON refresh_tokens(token_hash);
   ```
-
 module_structure: |
   ```
   internal/service/session/
@@ -150,7 +139,6 @@ module_structure: |
   └── sessions/
       └── +page.svelte             # Active sessions management
   ```
-
 key_interfaces: |
   ```go
   type SessionService interface {
@@ -190,7 +178,6 @@ key_interfaces: |
     IPAddress  net.IP
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -202,7 +189,6 @@ dependencies: |
   - `github.com/riverqueue/river` - Session cleanup jobs
   - `net` - IP address handling
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   SESSION_TOKEN_LENGTH=32           # bytes
@@ -211,7 +197,6 @@ env_vars: |
   SESSION_INACTIVITY_TIMEOUT=168h   # 7 days
   SESSION_CLEANUP_INTERVAL=1h
   ```
-
 config_keys: |
   ```yaml
   session:
@@ -222,7 +207,6 @@ config_keys: |
     cleanup_interval: 1h
     max_sessions_per_user: 10
   ```
-
 component_interaction: |
   **Session Creation** (on login):
   1. User successfully authenticates (see AUTH service)
@@ -257,7 +241,6 @@ component_interaction: |
   1. River job runs every hour
   2. Delete expired sessions: DELETE FROM sessions WHERE expires_at < now OR (is_active = true AND last_activity_at < now - inactivity_timeout)
   3. Cleanup orphaned refresh tokens
-
 api_endpoints: |
   ```
   POST   /api/v1/sessions              # Create session (internal, called by auth service)
@@ -308,7 +291,6 @@ api_endpoints: |
     ]
   }
   ```
-
 unit_tests: |
   ```go
   func TestSessionService_CreateSession(t *testing.T) {
@@ -324,7 +306,6 @@ unit_tests: |
     // Test secure random token generation
   }
   ```
-
 integration_tests: |
   ```go
   func TestSession_FullLifecycle(t *testing.T) {

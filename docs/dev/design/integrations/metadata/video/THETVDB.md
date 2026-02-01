@@ -61,6 +61,19 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Metadata<br/>Service"]
+    node2["Sonarr<br/>(LOCAL cache)"]
+    node3["TheTVDB API<br/>(fallback +<br/>enrichment)"]
+    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node5["JWT Token<br/>Manager"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+    node4 --> node5
+```
+
 ### Integration Structure
 
 ```

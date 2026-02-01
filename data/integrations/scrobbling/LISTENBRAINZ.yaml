@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Open-source music listening history tracking (MusicBrainz project)'
 wiki_tagline: '> Open-source music scrobbling with ListenBrainz'
-wiki_overview: ListenBrainz is an open-source alternative to Last.fm for tracking
-  music listening. Part of the MusicBrainz project. Scrobble your plays and build
-  a listening history. Import your Last.fm history to start. Discover music through
+wiki_overview: ListenBrainz is an open-source alternative to Last.fm for tracking music listening. Part of the MusicBrainz
+  project. Scrobble your plays and build a listening history. Import your Last.fm history to start. Discover music through
   community playlists. Your data is open and exportable.
 sources:
 - name: Last.fm API
@@ -41,21 +40,17 @@ integration_id: listenbrainz
 external_service: ListenBrainz
 api_base_url: https://api.listenbrainz.org/1
 auth_method: token
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Playback"]
+      node2["ListenBrainz<br/>Integration"]
+      node3["ListenBrainz<br/>API"]
+      node4["Listen<br/>Queue (River)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Revenge    │────▶│ ListenBrainz │────▶│ListenBrainz │
-  │  Playback   │◀────│ Integration  │◀────│     API     │
-  │  Events     │     │              │     └─────────────┘
-  └─────────────┘     └──────┬───────┘
-                             │
-                      ┌──────▼────────┐
-                      │  Listen       │
-                      │  Queue (River)│
-                      └───────────────┘
-  ```
-
 api_details: |
   **API Version**: v1
   **Base URL**: `https://api.listenbrainz.org/1`
@@ -74,7 +69,6 @@ api_details: |
   **Required Headers**:
   - `Content-Type: application/json`
   - `Authorization: Token {user_token}`
-
 database_schema: |
   **Schema**: `public`
 
@@ -139,7 +133,6 @@ database_schema: |
   );
   CREATE INDEX idx_lb_imported_connection ON listenbrainz_imported_listens(connection_id);
   ```
-
 module_structure: |
   ```
   internal/integrations/listenbrainz/
@@ -151,7 +144,6 @@ module_structure: |
   ├── types.go                     # ListenBrainz API types
   └── listenbrainz_test.go
   ```
-
 key_interfaces: |
   ```go
   // ListenBrainz integration service
@@ -187,7 +179,6 @@ key_interfaces: |
     AdditionalInfo  map[string]interface{} `json:"additional_info,omitempty"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -198,14 +189,12 @@ dependencies: |
 
   **External Services**:
   - ListenBrainz account (free, open-source)
-
 env_vars: |
   ```bash
   # No global config needed - users provide their own tokens
   LISTENBRAINZ_AUTO_SUBMIT=true
   LISTENBRAINZ_IMPORT_ON_CONNECT=true
   ```
-
 config_keys: |
   ```yaml
   integrations:
@@ -214,7 +203,6 @@ config_keys: |
       import_on_connect: true        # Import existing history when user connects
       max_import_age_days: 365       # Only import listens from last year
   ```
-
 component_interaction: |
   **User Connection Flow**:
   1. User goes to ListenBrainz settings in Revenge
@@ -242,7 +230,6 @@ component_interaction: |
   4. Match tracks by recording_mbid (MusicBrainz ID)
   5. Store in listenbrainz_imported_listens
   6. Mark tracks as "played" in Revenge
-
 api_request_examples: |
   **Submit Single Listen**:
   ```
@@ -329,7 +316,6 @@ api_request_examples: |
     }
   }
   ```
-
 listen_submission: |
   **Listen Types**:
   - **single**: Submit a completed listen (requires listened_at timestamp)
@@ -350,7 +336,6 @@ listen_submission: |
   - Can submit up to 100 listens per request
   - Use for importing historical data
   - Listens must be in chronological order
-
 musicbrainz_integration: |
   **Recording MBID Matching**:
   - Query MusicBrainz for recording_mbid during track scan
@@ -366,7 +351,6 @@ musicbrainz_integration: |
   - ListenBrainz accepts listens without MBIDs
   - Uses fuzzy matching on artist_name + track_name
   - Less accurate but still functional
-
 import_workflow: |
   **Initial Import**:
   1. User connects ListenBrainz account
@@ -386,7 +370,6 @@ import_workflow: |
   **Conflict Handling**:
   - If listen already exists in local playback history, skip
   - Use (connection_id, listened_at, recording_mbid) as unique key
-
 statistics_sync: |
   **User Statistics**:
   - GET /1/stats/user/{username}/artists - Top artists (all time, year, month)
@@ -401,7 +384,6 @@ statistics_sync: |
   - Display user's top artists/tracks in Revenge UI
   - Compare local playback stats with ListenBrainz stats
   - Verify sync completeness
-
 unit_tests: |
   ```go
   func TestListenBrainzService_SubmitListen(t *testing.T) {
@@ -421,7 +403,6 @@ unit_tests: |
     // Test invalid token handling
   }
   ```
-
 integration_tests: |
   ```go
   func TestListenBrainz_FullWorkflow(t *testing.T) {

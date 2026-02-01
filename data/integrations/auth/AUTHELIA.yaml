@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Lightweight authentication and authorization server for homelab environments'
 wiki_tagline: '> Single sign-on with Authelia'
-wiki_overview: Connect Revenge to your Authelia identity provider for centralized
-  authentication in homelab setups. Authelia provides OIDC with LDAP or file-based
-  backends, perfect for self-hosted environments. Supports two-factor authentication,
+wiki_overview: Connect Revenge to your Authelia identity provider for centralized authentication in homelab setups. Authelia
+  provides OIDC with LDAP or file-based backends, perfect for self-hosted environments. Supports two-factor authentication,
   access control policies, and group-based role mapping.
 sources:
 - name: Authelia Documentation
@@ -44,47 +43,19 @@ integration_id: authelia
 external_service: Authelia
 api_base_url: https://auth.homelab.local
 auth_method: oidc
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["User<br/>Browser"]
+      node2["Authelia<br/>Auth Server"]
+      node3["Revenge<br/>Server"]
+      node4["Authelia<br/>OIDC Endpoint"]
+      node5["User<br/>Session"]
+      node1 --> node2
+      node3 --> node4
+      node2 --> node3
+      node4 --> node5
   ```
-  ┌──────────────┐    1. Auth Request   ┌─────────────────┐
-  │    User      │─────(redirect)──────▶│    Authelia     │
-  │   Browser    │                      │   Auth Server   │
-  └──────┬───────┘                      └────────┬────────┘
-         │                                       │
-         │ 2. Login page (optional 2FA)         │
-         │◀──────────────────────────────────────│
-         │                                       │
-         │ 3. Submit credentials + TOTP          │
-         │──────────────────────────────────────▶│
-         │                  ┌────────────────────┤
-         │                  │  Check against:    │
-         │                  │  - LDAP backend    │
-         │                  │  - File backend    │
-         │                  │  - Access policies │
-         │                  └────────────────────┤
-         │ 4. Authorization code                │
-         │◀──────────────────────────────────────│
-         │   (redirect to callback)              │
-         ▼                                       │
-  ┌──────────────┐    5. Exchange code  ┌────────┴────────┐
-  │   Revenge    │─────for tokens──────▶│    Authelia     │
-  │   Server     │                      │   OIDC Endpoint │
-  │              │◀─────────────────────│                 │
-  │              │  6. ID token + access│                 │
-  └──────┬───────┘     token            └─────────────────┘
-         │
-         │ 7. Verify token (JWKS)
-         │ 8. Get user info
-         │ 9. Map groups → roles
-         │ 10. Create session
-         ▼
-  ┌──────────────┐
-  │   User       │
-  │  Session     │
-  └──────────────┘
-  ```
-
 protocol_details: |
   **OpenID Connect (OIDC)** with Authelia:
 
@@ -108,7 +79,6 @@ protocol_details: |
   - Session management with Redis or in-memory
   - LDAP/Active Directory backend support
   - File-based user database option
-
 module_structure: |
   ```
   internal/
@@ -128,7 +98,6 @@ module_structure: |
     oidc/
       authelia.yaml            # Provider configuration example
   ```
-
 key_interfaces: |
   ```go
   // AutheliaProvider implements OIDC for Authelia
@@ -199,7 +168,6 @@ key_interfaces: |
       AMR               []string // Authentication methods (pwd, otp, etc.)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
@@ -211,7 +179,6 @@ dependencies: |
   - Authelia server (https://www.authelia.com/)
   - Redis (for Authelia session storage, optional)
   - LDAP server (optional backend)
-
 env_vars: |
   ```bash
   # Authelia OIDC configuration
@@ -221,7 +188,6 @@ env_vars: |
   REVENGE_OIDC_AUTHELIA_CLIENT_SECRET=very-secret-key
   REVENGE_OIDC_AUTHELIA_REDIRECT_URL=https://revenge.local/api/v1/auth/oidc/callback
   ```
-
 config_keys: |
   ```yaml
   auth:
@@ -251,7 +217,6 @@ config_keys: |
           use_pkce: true                    # Enable PKCE (recommended)
           require_mfa: false                # Require two-factor auth
   ```
-
 provider_setup: |
   **Authelia Configuration Steps**:
 
@@ -372,7 +337,6 @@ provider_setup: |
      - Complete 2FA if required (TOTP, WebAuthn, etc.)
      - Redirects back to Revenge with token
      - User created automatically with mapped roles
-
 component_interaction: |
   **OIDC Login Flow**:
 
@@ -410,7 +374,6 @@ component_interaction: |
      - Create Revenge session
      - Set session cookie
      - Redirect to app homepage
-
 api_endpoints: |
   **OIDC Endpoints** (Revenge):
   ```
@@ -470,7 +433,6 @@ api_endpoints: |
     "expires_in": 3600
   }
   ```
-
 group_mapping: |
   **Authelia Group → Revenge Role Mapping**:
 
@@ -523,7 +485,6 @@ group_mapping: |
   groups_filter: (&(member={dn})(objectClass=groupOfNames))
   group_name_attribute: cn
   ```
-
 token_refresh: |
   **Refresh Token Flow**:
 
@@ -566,7 +527,6 @@ token_refresh: |
   ```
 
   **Note**: If refresh tokens are not enabled in Authelia client config, users must re-authenticate when session expires.
-
 error_handling: |
   **Common Errors**:
 
@@ -635,7 +595,6 @@ error_handling: |
       }, nil
   }
   ```
-
 unit_tests: |
   ```go
   func TestAutheliaProvider_ExchangeCode(t *testing.T) {
@@ -725,7 +684,6 @@ unit_tests: |
       assert.True(t, hasMFA, "expected MFA to be detected from AMR claim")
   }
   ```
-
 integration_tests: |
   ```go
   func TestAuthelia_FullOIDCFlow(t *testing.T) {
@@ -789,7 +747,6 @@ integration_tests: |
       // 4. Group mapping to Revenge roles
   }
   ```
-
 best_practices: |
   **Security**:
   - Use PKCE for authorization code flow (set `use_pkce: true`)

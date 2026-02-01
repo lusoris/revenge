@@ -18,11 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Multi-platform client support with intelligent capability detection.'
 wiki_tagline: '> Watch on any device with automatic quality adjustment'
-wiki_overview: Revenge works on phones, tablets, smart TVs, web browsers, and streaming
-  devices. The server detects each client type and capabilities automatically. Direct
-  play when the device supports the format, transcode when needed. Per-device quality
-  settings let you optimize for mobile data or big screen viewing. Sync downloads
-  for offline playback on mobile devices.
+wiki_overview: Revenge works on phones, tablets, smart TVs, web browsers, and streaming devices. The server detects each client
+  type and capabilities automatically. Direct play when the device supports the format, transcode when needed. Per-device
+  quality settings let you optimize for mobile data or big screen viewing. Sync downloads for offline playback on mobile devices.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -67,20 +65,21 @@ design_refs:
 feature_name: Revenge - Client Support & Device Capabilities
 module_name: revenge___client_support_&_device_capabilities
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -182,19 +181,16 @@ key_interfaces: |
     DetectCapabilities(ctx context.Context, userAgent string) (*DeviceCapabilities, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/mssola/user_agent` - User agent parsing
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   CLIENTS_AUTO_DETECT_CAPABILITIES=true
   ```
-
 config_keys: |
   ```yaml
   clients:
@@ -202,7 +198,6 @@ config_keys: |
     default_max_resolution: 1080p
     default_max_bitrate_mbps: 20
   ```
-
 component_interaction: |
   **Device Registration**:
   1. Client connects with User-Agent header
@@ -216,21 +211,18 @@ component_interaction: |
   2. Service stores in device_codec_support
   3. Used for direct play vs transcode decisions
   4. Fallback to common codecs if not reported
-
 api_endpoints: |
   ```
   POST /api/v1/clients/register     # Register device
   GET  /api/v1/clients/:id           # Get device info
   PUT  /api/v1/clients/:id/profile   # Update quality profile
   ```
-
 unit_tests: |
   ```go
   func TestClientService_DetectCapabilities(t *testing.T) {
     // Test UA parsing and capability detection
   }
   ```
-
 integration_tests: |
   ```go
   func TestClients_EndToEnd(t *testing.T) {

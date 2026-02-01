@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Legacy anime tracking platform with extensive database'
 wiki_tagline: '> Sync anime progress with MyAnimeList'
-wiki_overview: Connect MyAnimeList (MAL) to sync your anime watching history. MAL
-  has the largest anime database with user reviews, rankings, and recommendations.
-  Watch status syncs both directions - import your MAL list and export new watches.
+wiki_overview: Connect MyAnimeList (MAL) to sync your anime watching history. MAL has the largest anime database with user
+  reviews, rankings, and recommendations. Watch status syncs both directions - import your MAL list and export new watches.
   Uses official MAL API for reliable synchronization.
 sources:
 - name: MyAnimeList API
@@ -41,45 +40,25 @@ integration_id: myanimelist_mal
 external_service: MyAnimeList (MAL)
 api_base_url: https://api.myanimelist.net/v2
 auth_method: oauth
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Web Player"]
+      node2["Anime Item<br/>(TV Show)"]
+      node3["Scrobbling<br/>Service"]
+      node4["River Queue<br/>(Background)"]
+      node5["MAL<br/>Scrobbler"]
+      node6["Database<br/>(history)"]
+      node7["MAL API v2<br/>(REST)"]
+      node8["MAL<br/>User Profile"]
+      node1 --> node2
+      node3 --> node4
+      node6 --> node7
+      node2 --> node3
+      node4 --> node5
+      node5 --> node6
+      node7 --> node8
   ```
-  ┌──────────────┐    1. Watch anime   ┌─────────────────┐
-  │   Revenge    │────episode──────────▶│   Anime Item    │
-  │  Web Player  │                      │   (TV Show)     │
-  └──────┬───────┘                      └────────┬────────┘
-         │                                       │
-         │ 2. Update progress                   │
-         ▼                                       ▼
-  ┌──────────────┐    3. Queue job     ┌────────────────┐
-  │  Scrobbling  │────────────────────▶│  River Queue   │
-  │   Service    │                     │  (Background)  │
-  └──────┬───────┘                     └────────┬───────┘
-         │                                      │
-         │                              4. Process job
-         │                                      ▼
-         │                             ┌────────────────┐
-         │                             │  MAL           │
-         │                             │  Scrobbler     │
-         │                             └────────┬───────┘
-         │                                      │
-         │                              5. PATCH /anime/{id}/my_list_status
-         │                              (update progress)
-         │                                      ▼
-  ┌──────┴───────┐                     ┌────────────────┐
-  │  Database    │                     │   MAL API v2   │
-  │  (history)   │                     │   (REST)       │
-  └──────────────┘                     └────────┬───────┘
-                                                │
-                                        6. Update user's
-                                           anime list
-                                                ▼
-                                       ┌────────────────┐
-                                       │  MAL           │
-                                       │  User Profile  │
-                                       └────────────────┘
-  ```
-
 protocol_details: |
   **REST API v2**:
 
@@ -112,7 +91,6 @@ protocol_details: |
   - Use `?fields=` parameter to request specific fields
   - Default: minimal fields (id, title, main_picture)
   - Detailed: `?fields=id,title,synopsis,num_episodes,status,genres,studios`
-
 module_structure: |
   ```
   internal/
@@ -132,7 +110,6 @@ module_structure: |
     scrobbling/
       myanimelist.yaml    # MAL configuration example
   ```
-
 key_interfaces: |
   ```go
   // MALClient manages MyAnimeList API v2
@@ -343,7 +320,6 @@ key_interfaces: |
       State         string
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/riverqueue/river` - Background job queue
@@ -354,7 +330,6 @@ dependencies: |
 
   **External Services**:
   - MyAnimeList API v2 (https://myanimelist.net)
-
 env_vars: |
   ```bash
   # MAL OAuth configuration
@@ -366,7 +341,6 @@ env_vars: |
   # Sync settings
   REVENGE_MAL_SYNC_INTERVAL=24h
   ```
-
 config_keys: |
   ```yaml
   scrobbling:
@@ -381,7 +355,6 @@ config_keys: |
       metadata_enabled: true
       metadata_priority: 20       # Lower priority than AniList/Kitsu
   ```
-
 pkce_implementation: |
   **PKCE (Proof Key for Code Exchange)**:
 
@@ -415,7 +388,6 @@ pkce_implementation: |
       }, nil
   }
   ```
-
 oauth_flow: |
   **OAuth 2.0 with PKCE Flow**:
 
@@ -486,7 +458,6 @@ oauth_flow: |
      GET https://api.myanimelist.net/v2/anime?q=demon%20slayer
      Authorization: Bearer abc123...
      ```
-
 api_examples: |
   **Search Anime**:
   ```http
@@ -560,7 +531,6 @@ api_examples: |
     "updated_at": "2026-02-01T11:00:00Z"
   }
   ```
-
 component_interaction: |
   **Scrobbling Workflow**:
 
@@ -580,7 +550,6 @@ component_interaction: |
      - GET /users/@me/animelist (paginated)
      - Import missing anime
      - Update watch status
-
 api_endpoints: |
   **Revenge API Endpoints**:
 
@@ -597,7 +566,6 @@ api_endpoints: |
   POST /api/v1/scrobbling/mal/import
   POST /api/v1/scrobbling/mal/sync
   ```
-
 error_handling: |
   **Common Errors**:
 
@@ -615,7 +583,6 @@ error_handling: |
 
   - **429 Too Many Requests**: Rate limit exceeded
     - Solution: Implement backoff
-
 unit_tests: |
   ```go
   func TestMALClient_SearchAnime(t *testing.T) {
@@ -650,7 +617,6 @@ unit_tests: |
       assert.NotEmpty(t, pkce.State)
   }
   ```
-
 integration_tests: |
   ```go
   func TestMAL_FullWorkflow(t *testing.T) {
@@ -676,7 +642,6 @@ integration_tests: |
       assert.NotEmpty(t, user.Name)
   }
   ```
-
 best_practices: |
   **OAuth & PKCE**:
   - Always use PKCE for OAuth 2.0 (MAL requirement)

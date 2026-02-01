@@ -16,14 +16,11 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Role-Based Access Control using Casbin for dynamic permission
-  management.'
+technical_summary: '> Role-Based Access Control using Casbin for dynamic permission management.'
 wiki_tagline: '> Fine-grained permissions for users, roles, and content'
-wiki_overview: Define exactly what each user can do with role-based access control.
-  Create custom roles (Admin, Moderator, Family, Guest) with specific permissions.
-  Control access to libraries, features, and administrative functions. Permissions
-  update instantly without requiring logout. Built on Casbin for enterprise-grade
-  policy enforcement with PostgreSQL persistence.
+wiki_overview: Define exactly what each user can do with role-based access control. Create custom roles (Admin, Moderator,
+  Family, Guest) with specific permissions. Control access to libraries, features, and administrative functions. Permissions
+  update instantly without requiring logout. Built on Casbin for enterprise-grade policy enforcement with PostgreSQL persistence.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -68,20 +65,21 @@ design_refs:
 feature_name: Dynamic RBAC with Casbin
 module_name: dynamic_rbac_with_casbin
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -245,7 +243,6 @@ key_interfaces: |
     GetRolesForUser(user string) ([]string, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -253,13 +250,11 @@ dependencies: |
   - `github.com/casbin/casbin/v2` - RBAC policy engine
   - `github.com/pckhoi/casbin-pgx-adapter/v3` - PostgreSQL adapter for Casbin
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   RBAC_MODEL_PATH=config/rbac/model.conf
   RBAC_POLICY_PATH=config/rbac/policy.csv
   ```
-
 config_keys: |
   ```yaml
   rbac:
@@ -268,7 +263,6 @@ config_keys: |
     cache_enabled: true
     cache_ttl: 5m
   ```
-
 casbin_model: |
   **File**: `config/rbac/model.conf`
 
@@ -288,7 +282,6 @@ casbin_model: |
   [matchers]
   m = g(r.sub, p.sub) && r.obj == p.obj && r.act == p.act
   ```
-
 default_policies: |
   **File**: `config/rbac/policy.csv`
 
@@ -313,7 +306,6 @@ default_policies: |
   p, guest, movie, read
   p, guest, tvshow, read
   ```
-
 component_interaction: |
   **Permission Check Flow**:
   1. HTTP request arrives with JWT token
@@ -340,7 +332,6 @@ component_interaction: |
   3. When user requests library content, middleware checks library_permissions
   4. If no library-specific permission exists, check global permissions
   5. Deny access if neither permission exists
-
 api_endpoints: |
   ```
   POST   /api/v1/rbac/roles                       # Create role
@@ -363,7 +354,6 @@ api_endpoints: |
   POST   /api/v1/rbac/libraries/:id/users/:userId # Grant library access
   DELETE /api/v1/rbac/libraries/:id/users/:userId # Revoke library access
   ```
-
 unit_tests: |
   ```go
   func TestRBACService_CreateRole(t *testing.T) {
@@ -411,7 +401,6 @@ unit_tests: |
     // Test role inheritance
   }
   ```
-
 integration_tests: |
   ```go
   func TestRBAC_EndToEnd(t *testing.T) {

@@ -16,14 +16,11 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Real-time monitoring, analytics, and account sharing detection
-  for Revenge'
+technical_summary: '> Real-time monitoring, analytics, and account sharing detection for Revenge'
 wiki_tagline: '> See what is being watched and detect account sharing'
-wiki_overview: The Tracearr analytics dashboard shows real-time server activity. See
-  what is being watched right now, popular content this week, and overall library
-  statistics. Track bandwidth usage and transcoding load. Account sharing detection
-  spots when the same user watches from multiple locations simultaneously. Export
-  reports for server administrators.
+wiki_overview: The Tracearr analytics dashboard shows real-time server activity. See what is being watched right now, popular
+  content this week, and overall library statistics. Track bandwidth usage and transcoding load. Account sharing detection
+  spots when the same user watches from multiple locations simultaneously. Export reports for server administrators.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -77,20 +74,21 @@ design_refs:
 feature_name: Tracearr Analytics Service
 module_name: tracearr_analytics_service
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -297,7 +295,6 @@ key_interfaces: |
     DetectDeviceSpike(ctx context.Context) ([]SharingAlert, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -308,7 +305,6 @@ dependencies: |
 
   **External Data**:
   - MaxMind GeoLite2 database for IP geolocation
-
 env_vars: |
   ```bash
   ANALYTICS_ENABLED=true
@@ -316,7 +312,6 @@ env_vars: |
   ANALYTICS_RETENTION_DAYS=90
   ANALYTICS_SHARING_DETECTION_ENABLED=true
   ```
-
 config_keys: |
   ```yaml
   analytics:
@@ -329,7 +324,6 @@ config_keys: |
       geo_distance_threshold_km: 500        # Alert if streams from >500km apart
       device_spike_threshold: 5             # Alert if >5 new devices in 24h
   ```
-
 component_interaction: |
   **Session Recording Flow**:
   1. Client starts playback, sends session start event
@@ -361,7 +355,6 @@ component_interaction: |
   5. If >500km apart, create sharing_alert
   6. Check device_id counts in last 24h
   7. If >5 new devices, create alert
-
 api_endpoints: |
   ```
   GET  /api/v1/analytics/sessions/active         # Get currently active sessions
@@ -376,7 +369,6 @@ api_endpoints: |
   GET  /api/v1/analytics/sharing/alerts          # Get sharing alerts
   POST /api/v1/analytics/sharing/alerts/:id/dismiss  # Dismiss alert
   ```
-
 unit_tests: |
   ```go
   func TestAnalyticsService_RecordSession(t *testing.T) {
@@ -413,7 +405,6 @@ unit_tests: |
     // Test geo-distance sharing detection
   }
   ```
-
 integration_tests: |
   ```go
   func TestAnalytics_EndToEnd(t *testing.T) {

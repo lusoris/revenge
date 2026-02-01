@@ -16,28 +16,20 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Book/eBook content management with metadata enrichment from
-  Chaptarr and external providers
-
+technical_summary: |-
+  > Book/eBook content management with metadata enrichment from Chaptarr and external providers
 
   Complete eBook library:
-
   - **Metadata Sources**: Chaptarr (PRIMARY - aggregates OpenLibrary/Goodreads), with direct APIs as supplementary
-
   - **Supported Formats**: EPUB, PDF, MOBI, AZW3, CBZ (comics)
-
   - **Reading Features**: Web reader, progress tracking, bookmarks, highlights
-
   - **Collections**: Reading lists, series tracking, genre collections
-
-  - **Sync**: Multi-device reading progress synchronization'
+  - **Sync**: Multi-device reading progress synchronization
 wiki_tagline: '> Your digital library with reading progress and recommendations'
-wiki_overview: The Book Module provides a comprehensive eBook library with support
-  for multiple formats including EPUB, PDF, and MOBI. Uses Chaptarr as the PRIMARY
-  metadata source (aggregates from OpenLibrary/Goodreads locally), with direct APIs
-  as supplementary enrichment. Chaptarr integration provides both metadata caching
-  and download automation. Track your reading progress across devices, create custom
-  reading lists, and discover new books. The built-in web reader lets you read anywhere
+wiki_overview: The Book Module provides a comprehensive eBook library with support for multiple formats including EPUB, PDF,
+  and MOBI. Uses Chaptarr as the PRIMARY metadata source (aggregates from OpenLibrary/Goodreads locally), with direct APIs
+  as supplementary enrichment. Chaptarr integration provides both metadata caching and download automation. Track your reading
+  progress across devices, create custom reading lists, and discover new books. The built-in web reader lets you read anywhere
   without additional software.
 sources:
 - name: Uber fx
@@ -326,25 +318,31 @@ api_endpoints:
 - method: GET
   path: /api/v1/books/collections
   description: List all book collections
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
-module_structure: "```\n  internal/content/book/\n  ├── module.go              # fx\
-  \ module definition\n  ├── repository.go          # Database operations (sqlc)\n\
-  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
-  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
-  \              # Caching layer (otter)\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["▼                      ▼            ▼<br/>─────┐          ┌───────────┐  ┌─────<br/>itory"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
+module_structure: |-
+  ```
+    internal/content/book/
+    ├── module.go              # fx module definition
+    ├── repository.go          # Database operations (sqlc)
+    ├── service.go             # Business logic
+    ├── handler.go             # HTTP handlers (ogen)
+    ├── types.go               # Domain types
+    └── cache.go               # Caching layer (otter)
+    ```
 component_interaction: |
   1. **Request Flow**:
      - Client sends HTTP request to `/api/v1/books/*`
@@ -376,8 +374,6 @@ component_interaction: |
      - Service updates reading_progress table
      - Progress synced to all user's devices in real-time
      - Last read position restored when opening book
-
-# Implementation
 file_structure: |
   ```
   internal/content/book/
@@ -418,7 +414,6 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (books/* endpoints)
   ```
-
 key_interfaces: |
   ```go
   // Repository defines database operations for books
@@ -509,7 +504,6 @@ key_interfaces: |
       SyncProgress(ctx context.Context, userID uuid.UUID) error
   }
   ```
-
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -535,8 +529,6 @@ dependencies: |
 
   **Database**:
   - PostgreSQL 18+ with trigram extension for fuzzy search
-
-# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_BOOK_CACHE_TTL` - Cache TTL duration (default: 30m)
@@ -548,7 +540,6 @@ env_vars: |
   - `REVENGE_BOOK_READER_MAX_FILE_SIZE` - Max file size for web reader in MB (default: 100)
   - `REVENGE_BOOK_PROGRESS_SYNC_INTERVAL` - Progress sync interval in seconds (default: 30)
   - `REVENGE_BOOK_COVER_CACHE_PATH` - Path for cached cover images
-
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -618,7 +609,6 @@ config_keys: |
       recommendations_enabled: true
       export_highlights: true
   ```
-
 defaults: |
   - Cache TTL: 30 minutes
   - Cache size: 100 MB
@@ -629,8 +619,6 @@ defaults: |
   - Metadata priority: OpenLibrary → Google Books → Goodreads → Hardcover
   - PDF render quality: high
   - Highlights/bookmarks/reading lists: all enabled
-
-# API Endpoints (additional to those already listed)
 request_examples: |
   **List books with filters**:
   ```http
@@ -676,7 +664,6 @@ request_examples: |
     "note": "Famous quote from Hamlet"
   }
   ```
-
 response_examples: |
   **Book details response**:
   ```json
@@ -745,8 +732,6 @@ response_examples: |
     "total": 12
   }
   ```
-
-# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD operations for books
@@ -784,7 +769,6 @@ unit_tests: |
   - Test multi-device sync
   - Test concurrent progress updates
   - Test progress restoration
-
 integration_tests: |
   **Full Stack Tests**:
   - Test complete request flow (client → database)
@@ -807,7 +791,6 @@ integration_tests: |
   - Test progress tracking during reading
   - Test highlight creation UX
   - Test bookmark functionality
-
 test_coverage_target: |
   - **Overall**: 80% minimum
   - **Repository**: 90% (critical path)

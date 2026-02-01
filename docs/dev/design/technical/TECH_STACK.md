@@ -66,30 +66,24 @@ Stack overview:
 
 ## Architecture
 
-┌─────────────────────────────────────────────────────────────────┐
-│                    SvelteKit Frontend                           │
-│          (Svelte 5 + Tailwind 4 + shadcn-svelte)               │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ HTTP/JSON
-┌─────────────────────▼───────────────────────────────────────────┐
-│                  ogen OpenAPI Handlers                          │
-│             (Type-safe from openapi.yaml)                       │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────────┐
-│                   Service Layer (fx)                            │
-│         Movies │ TV │ Music │ QAR │ User │ Auth                 │
-└─────┬───────┬──┴──┬────────┬──────┬──────────────────────┬─────┘
-      │       │     │        │      │                      │
-┌─────▼───┐ ┌─▼─────▼──┐ ┌──▼──────▼───┐          ┌───────▼──────┐
-│  Cache  │ │  Search  │ │   Jobs      │          │  Repository  │
-│  (L1+L2)│ │(Typesense)│ │   (River)   │          │   (sqlc)     │
-└─────────┘ └──────────┘ └─────────────┘          └───────┬──────┘
-                                                            │
-                                                  ┌─────────▼──────┐
-                                                  │  PostgreSQL 18 │
-                                                  └────────────────┘
-
+```mermaid
+flowchart TD
+    node1["SvelteKit Frontend<br/>(Svelte 5 + Tailwind 4 + shadcn-svelte)"]
+    node2["ogen OpenAPI Handlers<br/>(Type-safe from openapi.yaml)"]
+    node3["Service Layer [fx]<br/>Movies<br/>TV"]
+    node4["Cache<br/>(L1+L2)"]
+    node5["Search<br/>(Typesense)"]
+    node6["Jobs<br/>(River)"]
+    node7["Repository<br/>(sqlc)"]
+    node8["PostgreSQL 18"]
+    node4 --> node5
+    node5 --> node6
+    node6 --> node7
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node7 --> node8
+```
 
 ### Components
 

@@ -18,7 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> ENRICHMENT link provider for trope analysis and storytelling patterns'
 wiki_tagline: '> TVTropes - Discover tropes and storytelling patterns'
-wiki_overview: 'ENRICHMENT link provider to TVTropes wiki. Links to trope analysis for movies, TV shows, and other media. Discover recurring storytelling patterns, character archetypes, and narrative devices. **No API available** - uses URL construction and verification. Great for understanding what makes stories tick.'
+wiki_overview: ENRICHMENT link provider to TVTropes wiki. Links to trope analysis for movies, TV shows, and other media. Discover
+  recurring storytelling patterns, character archetypes, and narrative devices. **No API available** - uses URL construction
+  and verification. Great for understanding what makes stories tick.
 sources:
 - name: TVTropes
   url: https://tvtropes.org
@@ -49,33 +51,15 @@ external_service: TVTropes
 api_base_url: https://tvtropes.org
 auth_method: none
 data_access_method: url_verification
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+      node2["TVTropes<br/>(web)"]
+      node3["Trope Analysis<br/>- Used tropes"]
+      node2 --> node3
+      node1 --> node2
   ```
-  ┌──────────────┐
-  │  Revenge     │
-  │  Detail Page │
-  │  (Movie/TV)  │
-  └──────┬───────┘
-         │ "Tropes" link
-         ▼
-  ┌──────────────┐     ┌───────────────────┐
-  │   TVTropes   │────▶│  Trope Analysis   │
-  │   (web)      │     │  - Used tropes    │
-  └──────┬───────┘     │  - Character types│
-         │             │  - Plot devices   │
-  ┌──────┴───────┐     │  - Narrative      │
-  │ Rate Limiter │     └───────────────────┘
-  │ (0.5/sec)    │
-  └──────────────┘
-
-  URL Structure:
-  - /pmwiki/pmwiki.php/Film/{Title}
-  - /pmwiki/pmwiki.php/Series/{Title}
-  - /pmwiki/pmwiki.php/WesternAnimation/{Title}
-  - /pmwiki/pmwiki.php/Anime/{Title}
-  ```
-
 api_details: |
   **Data Access**: URL construction + verification (NO API)
   **Base URL**: `https://tvtropes.org`
@@ -99,7 +83,6 @@ api_details: |
   **Title Formatting**:
   - Remove spaces, articles, punctuation
   - CamelCase: "The Dark Knight" → "TheDarkKnight"
-
 database_schema: |
   ```sql
   -- TVTropes page links
@@ -117,7 +100,6 @@ database_schema: |
   );
   CREATE INDEX idx_tvtropes_content ON tvtropes_links(content_type, content_id);
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/tvtropes/
@@ -128,7 +110,6 @@ module_structure: |
   ├── title_formatter.go           # CamelCase formatting
   └── tvtropes_test.go
   ```
-
 key_interfaces: |
   ```go
   // TVTropes link provider
@@ -172,7 +153,6 @@ key_interfaces: |
     return strings.Join(words, "")
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -184,14 +164,12 @@ dependencies: |
 
   **External**:
   - TVTropes website (no API)
-
 env_vars: |
   ```bash
   TVTROPES_ENABLED=true
   TVTROPES_RATE_LIMIT=0.5
   TVTROPES_CACHE_TTL=168h
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -212,7 +190,6 @@ config_keys: |
           book: Literature
           game: VideoGame
   ```
-
 component_interaction: |
   **Link Generation Flow**:
   1. User views movie/show detail page
@@ -252,7 +229,6 @@ component_interaction: |
     }
   }
   ```
-
 url_construction: |
   **URL Building**:
   ```go
@@ -278,7 +254,6 @@ url_construction: |
     return resp.StatusCode == 200 && resp.Request.URL.String() == url, nil
   }
   ```
-
 enrichment_role: |
   **ENRICHMENT-Only Provider**
 
@@ -300,7 +275,6 @@ enrichment_role: |
   Learn More:
   [📚 TVTropes] → View tropes for "Breaking Bad"
   ```
-
 error_handling: |
   **Expected Responses**:
   - 200 OK + same URL → Page exists
@@ -312,7 +286,6 @@ error_handling: |
   - Try alternate namespace (Film vs WesternAnimation)
   - Try with/without year suffix
   - Fall back to search URL if page not found
-
 unit_tests: |
   ```go
   func TestTVTropes_FormatTitle(t *testing.T) {
@@ -339,7 +312,6 @@ unit_tests: |
     assert.Equal(t, "https://tvtropes.org/pmwiki/pmwiki.php/Film/DarkKnight", url)
   }
   ```
-
 best_practices: |
   **URL Construction**:
   - Use correct namespace for content type

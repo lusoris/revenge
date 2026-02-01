@@ -59,6 +59,17 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Comics<br/>Library"]
+    node2["ComicVine<br/>(modern)"]
+    node3["GCD<br/>(historical)"]
+    node4["Rate Limiter<br/>(polite)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+```
+
 ### Integration Structure
 
 ```
