@@ -1,0 +1,176 @@
+name: Deploy Testing - k3s
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'charts/**'
+      - 'deploy/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-k3s.yml'
+  pull_request:
+    paths:
+      - 'charts/**'
+      - 'deploy/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-k3s.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  versions:
+    name: Get versions from SOURCE_OF_TRUTH
+    uses: ./.github/workflows/_versions.yml
+
+  k3d-deploy:
+    name: Test k3s Deployment
+    runs-on: ubuntu-latest
+    needs: versions
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up k3d
+        uses: AbsaOSS/k3d-action@v2
+        with:
+          cluster-name: "revenge-test"
+          args: >-
+            --agents 1
+            --port 8080:80@loadbalancer
+            --port 8443:443@loadbalancer
+
+      - name: Verify k3s cluster
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.0
+
+      - name: Create namespace
+        run: kubectl create namespace revenge-test
+
+      - name: Deploy PostgreSQL (for testing)
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm install postgresql bitnami/postgresql \
+            --namespace revenge-test \
+            --set auth.postgresPassword=test \
+            --set auth.database=revenge \
+            --wait --timeout 5m
+
+      - name: Deploy Dragonfly (for testing)
+        run: |
+          helm repo add dragonfly https://dragonflydb.github.io/dragonfly-operator
+          helm install dragonfly dragonfly/dragonfly \
+            --namespace revenge-test \
+            --wait --timeout 5m
+
+      - name: Build and load Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}:test .
+          k3d image import ghcr.io/${{ github.repository }}:test -c revenge-test
+
+      - name: Deploy Revenge with Helm
+        run: |
+          helm install revenge charts/revenge \
+            --namespace revenge-test \
+            --set image.repository=ghcr.io/${{ github.repository }} \
+            --set image.tag=test \
+            --set image.pullPolicy=Never \
+            --set postgresql.enabled=false \
+            --set postgresql.host=postgresql.revenge-test.svc.cluster.local \
+            --set postgresql.password=test \
+            --set dragonfly.enabled=false \
+            --set dragonfly.host=dragonfly.revenge-test.svc.cluster.local \
+            --wait --timeout 10m
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n revenge-test
+          kubectl get services -n revenge-test
+
+      - name: Wait for Revenge to be ready
+        run: |
+          kubectl wait --for=condition=ready pod \
+            -l app.kubernetes.io/name=revenge \
+            -n revenge-test \
+            --timeout=5m
+
+      - name: Test health endpoints
+        run: |
+          kubectl port-forward -n revenge-test service/revenge 8080:8080 &
+          PID=$!
+          sleep 5
+
+          # Test liveness
+          curl -f http://localhost:8080/health/live || exit 1
+
+          # Test readiness
+          curl -f http://localhost:8080/health/ready || exit 1
+
+          # Test startup
+          curl -f http://localhost:8080/health/startup || exit 1
+
+          kill $PID
+
+      - name: Get pod logs on failure
+        if: failure()
+        run: |
+          echo "=== Revenge Pods ==="
+          kubectl get pods -n revenge-test
+          echo ""
+          echo "=== Revenge Logs ==="
+          kubectl logs -n revenge-test -l app.kubernetes.io/name=revenge --tail=100
+          echo ""
+          echo "=== PostgreSQL Logs ==="
+          kubectl logs -n revenge-test -l app.kubernetes.io/name=postgresql --tail=50
+          echo ""
+          echo "=== Dragonfly Logs ==="
+          kubectl logs -n revenge-test -l app.kubernetes.io/name=dragonfly --tail=50
+
+      - name: Cleanup
+        if: always()
+        run: |
+          helm uninstall revenge -n revenge-test --ignore-not-found
+          helm uninstall postgresql -n revenge-test --ignore-not-found
+          helm uninstall dragonfly -n revenge-test --ignore-not-found
+
+  k3s-manifests:
+    name: Test k3s Manifests
+    runs-on: ubuntu-latest
+    needs: versions
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.0
+
+      - name: Generate k3s manifests
+        run: |
+          helm template revenge charts/revenge \
+            --namespace revenge \
+            --set image.tag=${{ needs.versions.outputs.go-version }} \
+            > deploy/k3s-manifests.yaml
+
+      - name: Validate manifests with kubeval
+        uses: instrumenta/kubeval-action@master
+        with:
+          files: deploy/k3s-manifests.yaml
+          version: "1.28.0"
+
+      - name: Upload manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: k3s-manifests
+          path: deploy/k3s-manifests.yaml
