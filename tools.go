@@ -7,6 +7,6 @@ package tools
 
 import (
 	_ "github.com/fergusstrange/embedded-postgres" // v1.30.0
-	_ "github.com/ogen-go/ogen"                     // v1.18.0
-	_ "github.com/stretchr/testify"                 // v1.11.1
+	_ "github.com/ogen-go/ogen"                    // v1.18.0
+	_ "github.com/stretchr/testify"                // v1.11.1
 )

@@ -254,13 +254,13 @@ This milestone establishes the Go project structure, dependency injection framew
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| go.uber.org/fx | v1.23.0 | Dependency injection |
-| github.com/jackc/pgx/v5 | v5.7.5 | PostgreSQL driver |
+| go.uber.org/fx | v1.24.0 | Dependency injection |
+| github.com/jackc/pgx/v5 | v5.8.0 | PostgreSQL driver |
 | github.com/knadh/koanf/v2 | v2.3.0 | Configuration |
 | github.com/ogen-go/ogen | v1.18.0 | OpenAPI codegen |
 | github.com/golang-migrate/migrate/v4 | v4.19.1 | Migrations |
 | github.com/lmittmann/tint | v1.1.2 | Dev logging |
-| go.uber.org/zap | v1.28.0 | Prod logging |
+| go.uber.org/zap | v1.27.1 | Prod logging |
 | github.com/go-faster/errors | v0.7.1 | Error handling |
 | github.com/stretchr/testify | v1.11.1 | Testing |
 | github.com/fergusstrange/embedded-postgres | v1.30.0 | Test database |

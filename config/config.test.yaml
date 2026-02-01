@@ -1,0 +1,44 @@
+# Test Configuration for Revenge
+# Used in CI and local test environments
+
+server:
+  host: "127.0.0.1"
+  port: 18096 # Different port to avoid conflicts with dev server
+  read_timeout: 5s
+  write_timeout: 10s
+  idle_timeout: 120s
+  shutdown_timeout: 5s
+
+database:
+  # Database URL will be overridden by test setup
+  # - embedded-postgres: postgres://revenge_test:test_pass@localhost:15432/revenge_test
+  # - testcontainers: postgres://revenge_test:test_pass@localhost:<random>/revenge_test
+  url: "postgres://revenge_test:test_pass@localhost:15432/revenge_test?sslmode=disable"
+  max_conns: 5 # Lower for tests
+  min_conns: 1
+  max_conn_lifetime: 5m
+  max_conn_idle_time: 1m
+  health_check_period: 30s
+
+cache:
+  # Cache not used in v0.1.0 tests
+  url: ""
+  max_retries: 2
+  pool_size: 5
+
+search:
+  # Search not used in v0.1.0 tests
+  url: ""
+  api_key: ""
+  timeout: 3s
+
+jobs:
+  # Jobs not used in v0.1.0 tests
+  workers: 2
+  max_attempts: 1
+  poll_interval: 100ms
+
+logging:
+  level: "debug" # Verbose logging for tests
+  format: "text" # Easier to read in test output
+  development: true # Enable development features
