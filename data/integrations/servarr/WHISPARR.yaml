@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult content management automation (eros branch)'
 wiki_tagline: '> Automatic adult content downloads with Whisparr'
-wiki_overview: 'Whisparr (eros branch) automates adult content downloads. Request scenes and Whisparr handles acquisition. Integrates with StashDB for metadata. Webhooks notify Revenge when content is imported. Part of the QAR adult content system. Configure with Whisparr URL and API key in settings.'
+wiki_overview: Whisparr (eros branch) automates adult content downloads. Request scenes
+  and Whisparr handles acquisition. Integrates with StashDB for metadata. Webhooks
+  notify Revenge when content is imported. Part of the QAR adult content system. Configure
+  with Whisparr URL and API key in settings.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -42,14 +45,12 @@ sources:
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
 design_refs:
-- title: integrations/servarr
-  path: integrations/servarr.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Whisparr v3
 integration_id: whisparr_v3
 external_service: Whisparr v3

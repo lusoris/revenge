@@ -19,7 +19,11 @@ status_integration_testing_notes: '-'
 technical_summary: '> Custom UI/UX approach for adult content scenes using Whisparr
   cache'
 wiki_tagline: '> Scene browsing powered by Whisparr and StashDB data'
-wiki_overview: 'Browse adult scenes with rich metadata from StashDB via Whisparr integration. Scene details include performer info, studio, release date, and tags. Whisparr caches data locally for fast browsing. Custom UI designed specifically for scene-based content. Filter by performer, studio, or any combination of tags. Integrates with the broader QAR adult content system.'
+wiki_overview: Browse adult scenes with rich metadata from StashDB via Whisparr integration.
+  Scene details include performer info, studio, release date, and tags. Whisparr caches
+  data locally for fast browsing. Custom UI designed specifically for scene-based
+  content. Filter by performer, studio, or any combination of tags. Integrates with
+  the broader QAR adult content system.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -67,14 +71,12 @@ sources:
   url: https://raw.githubusercontent.com/Whisparr/Whisparr/develop/src/Whisparr.Api.V3/openapi.json
   note: Auto-resolved from whisparr
 design_refs:
-- title: features/adult
-  path: features/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Whisparr v3 & StashDB Schema Integration
 module_name: whisparr_v3_&_stashdb_schema_integration
 schema_name: qar

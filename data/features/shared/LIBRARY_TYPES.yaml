@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Per-module library architecture and supported content types'
 wiki_tagline: '> Organize content into movies, TV, music, and more'
-wiki_overview: 'Create separate libraries for different content types. Movies, TV Shows, Music, Audiobooks, Photos, Comics, and Adult content each have their own library type with tailored features. Point multiple folders at one library or separate by quality (4K vs 1080p). Each library type has specialized metadata handling, artwork display, and playback behavior.'
+wiki_overview: Create separate libraries for different content types. Movies, TV Shows,
+  Music, Audiobooks, Photos, Comics, and Adult content each have their own library
+  type with tailored features. Point multiple folders at one library or separate by
+  quality (4K vs 1080p). Each library type has specialized metadata handling, artwork
+  display, and playback behavior.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -42,14 +46,12 @@ sources:
   url: https://stashdb.org/graphql
   note: Auto-resolved from stashdb
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Library Types
 module_name: library_types
 schema_name: public

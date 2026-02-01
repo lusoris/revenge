@@ -49,13 +49,13 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: EMAIL
-    path: technical/EMAIL.md
+    path: ../technical/EMAIL.md
   - title: WEBHOOKS
-    path: technical/WEBHOOKS.md
+    path: ../technical/WEBHOOKS.md
 ---
 
 # Notifications System
@@ -280,8 +280,8 @@ Target: **80% minimum**
 - [technical](technical.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [EMAIL](technical/EMAIL.md)
-- [WEBHOOKS](technical/WEBHOOKS.md)
+- [EMAIL](../technical/EMAIL.md)
+- [WEBHOOKS](../technical/WEBHOOKS.md)
 
 ### External Sources
 - [go-mail GitHub README](../../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail

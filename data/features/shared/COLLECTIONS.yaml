@@ -36,7 +36,12 @@ technical_summary: '> User-created collections and playlists for organizing medi
 wiki_tagline: '> Organize your media with custom collections and playlists
 
   '
-wiki_overview: 'The Collections system lets you group any media into custom collections. Create manual collections by hand-picking items, or smart collections that automatically update based on filters. Mix and match movies, TV shows, albums, and more in a single collection. Share collections publicly or collaborate with other users. Perfect for creating themed collections like "Best of 2023", "Oscar Winners", or "Workout Music".
+wiki_overview: 'The Collections system lets you group any media into custom collections.
+  Create manual collections by hand-picking items, or smart collections that automatically
+  update based on filters. Mix and match movies, TV shows, albums, and more in a single
+  collection. Share collections publicly or collaborate with other users. Perfect
+  for creating themed collections like "Best of 2023", "Oscar Winners", or "Workout
+  Music".
 
   '
 sources:
@@ -48,11 +53,11 @@ sources:
   note: Auto-resolved from ogen
 design_refs:
 - title: features/shared
-  path: features/shared/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: LIBRARY_TYPES
-  path: features/shared/LIBRARY_TYPES.md
+  path: ../../features/shared/LIBRARY_TYPES.md
 feature_name: Collections & Playlists
 module_name: collections
 schema_name: public

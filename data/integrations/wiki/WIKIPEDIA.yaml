@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> General encyclopedia information via Wikipedia API'
 wiki_tagline: '> Background information from Wikipedia'
-wiki_overview: 'Wikipedia integration provides encyclopedic context for your media. Plot summaries, production history, and critical reception. Links to actor and director biographies. Available in multiple languages. Cached locally for fast access. No API key required.'
+wiki_overview: Wikipedia integration provides encyclopedic context for your media.
+  Plot summaries, production history, and critical reception. Links to actor and director
+  biographies. Available in multiple languages. Cached locally for fast access. No
+  API key required.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -30,14 +33,12 @@ sources:
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
-- title: integrations/wiki
-  path: integrations/wiki.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Wikipedia
 integration_id: wikipedia
 external_service: Wikipedia

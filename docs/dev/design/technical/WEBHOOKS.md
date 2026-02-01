@@ -42,15 +42,15 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: WEBHOOK_PATTERNS
-    path: patterns/WEBHOOK_PATTERNS.md
+    path: ../patterns/WEBHOOK_PATTERNS.md
   - title: ARR_INTEGRATION
-    path: patterns/ARR_INTEGRATION.md
+    path: ../patterns/ARR_INTEGRATION.md
   - title: NOTIFICATIONS
-    path: technical/NOTIFICATIONS.md
+    path: ../technical/NOTIFICATIONS.md
 ---
 
 # Webhooks
@@ -156,9 +156,9 @@ Target: **80% minimum**
 - [technical](technical.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [WEBHOOK_PATTERNS](patterns/WEBHOOK_PATTERNS.md)
-- [ARR_INTEGRATION](patterns/ARR_INTEGRATION.md)
-- [NOTIFICATIONS](technical/NOTIFICATIONS.md)
+- [WEBHOOK_PATTERNS](../patterns/WEBHOOK_PATTERNS.md)
+- [ARR_INTEGRATION](../patterns/ARR_INTEGRATION.md)
+- [NOTIFICATIONS](../technical/NOTIFICATIONS.md)
 
 ### External Sources
 - [Radarr API Docs](../../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs

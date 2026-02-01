@@ -70,14 +70,12 @@ sources:
     url: ../../../sources/protocols/xmltv-format.md
     note: Auto-resolved from xmltv-wiki
 design_refs:
-  - title: features/livetv
-    path: features/livetv.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Live TV & DVR
@@ -195,7 +193,6 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [features/livetv](features/livetv.md)
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)

@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Fuzzy logic and confidence scoring for conflicting metadata'
 wiki_tagline: '> Smart matching when metadata sources disagree'
-wiki_overview: 'When multiple metadata sources provide conflicting information, the reconciliation system resolves differences. Uses fuzzy string matching and confidence scoring to pick the best data. Manually override any field when automatic matching is wrong. Track which source provided each piece of metadata. Particularly useful for adult content where naming is inconsistent.'
+wiki_overview: When multiple metadata sources provide conflicting information, the
+  reconciliation system resolves differences. Uses fuzzy string matching and confidence
+  scoring to pick the best data. Manually override any field when automatic matching
+  is wrong. Track which source provided each piece of metadata. Particularly useful
+  for adult content where naming is inconsistent.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -33,14 +37,12 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/adult
-  path: features/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Adult Data Reconciliation
 module_name: adult_data_reconciliation
 schema_name: qar

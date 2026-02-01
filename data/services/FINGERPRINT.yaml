@@ -19,7 +19,11 @@ status_integration_testing_notes: '-'
 technical_summary: '> Media file identification via perceptual hashing and acoustic
   fingerprinting'
 wiki_tagline: '> Media file identification via perceptual hashing and acoustic fingerprinting'
-wiki_overview: 'Fingerprinting identifies media files by their content, not just filenames. Perceptual hashes match images and video frames even after re-encoding. Acoustic fingerprints identify music tracks. This enables duplicate detection, automatic metadata matching, and skip intro detection. Fingerprints are computed on library scan and stored for fast lookups.'
+wiki_overview: Fingerprinting identifies media files by their content, not just filenames.
+  Perceptual hashes match images and video frames even after re-encoding. Acoustic
+  fingerprints identify music tracks. This enables duplicate detection, automatic
+  metadata matching, and skip intro detection. Fingerprints are computed on library
+  scan and stored for fast lookups.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -53,13 +57,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: services
-  path: services/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 service_name: Fingerprint Service
 package_path: internal/service/fingerprint
 fx_module: fingerprint.Module

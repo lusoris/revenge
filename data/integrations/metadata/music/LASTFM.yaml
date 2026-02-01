@@ -19,7 +19,10 @@ status_integration_testing_notes: '-'
 technical_summary: '> Music scrobbling and metadata provider - artist bio, tags, similar
   artists'
 wiki_tagline: '> Artist bios and similar artist recommendations'
-wiki_overview: 'Last.fm provides artist biographies, tags, and similar artist recommendations. Supplements MusicBrainz with community-curated data. Scrobble your listening history to track what you play. See your listening stats and discover new music based on your taste. Free API key required.'
+wiki_overview: Last.fm provides artist biographies, tags, and similar artist recommendations.
+  Supplements MusicBrainz with community-curated data. Scrobble your listening history
+  to track what you play. See your listening stats and discover new music based on
+  your taste. Free API key required.
 sources:
 - name: Go context
   url: https://pkg.go.dev/context
@@ -29,13 +32,13 @@ sources:
   note: Auto-resolved from lastfm-api
 design_refs:
 - title: integrations/metadata/music
-  path: integrations/metadata/music.md
+  path: ../../../integrations/metadata/music.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Last.fm
 integration_id: lastfm
 external_service: Last.fm

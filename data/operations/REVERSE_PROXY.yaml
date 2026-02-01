@@ -22,7 +22,12 @@ technical_summary: "  > Reverse proxy setup with Traefik, Caddy, or nginx\n\n  R
   \ performant, manual SSL setup\n  - **Features**: WebSocket support, gzip compression,\
   \ rate limiting"
 wiki_tagline: '> Configure Traefik, Caddy, or nginx for HTTPS access to Revenge'
-wiki_overview: 'A reverse proxy sits between the internet and Revenge, handling HTTPS encryption and routing. Traefik is recommended for Docker setups with automatic SSL certificates. Caddy offers the simplest configuration with automatic HTTPS. nginx provides the best performance but requires manual SSL setup. All options support WebSocket connections required for real-time features like SyncPlay. Includes complete configuration examples for each proxy.'
+wiki_overview: A reverse proxy sits between the internet and Revenge, handling HTTPS
+  encryption and routing. Traefik is recommended for Docker setups with automatic
+  SSL certificates. Caddy offers the simplest configuration with automatic HTTPS.
+  nginx provides the best performance but requires manual SSL setup. All options support
+  WebSocket connections required for real-time features like SyncPlay. Includes complete
+  configuration examples for each proxy.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -59,12 +64,12 @@ sources:
   note: Auto-resolved from rueidis-docs
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 traefik: Automatic service discovery with Docker labels
 ssl: Let's Encrypt automatic certificate management

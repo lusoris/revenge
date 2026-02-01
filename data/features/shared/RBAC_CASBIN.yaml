@@ -19,7 +19,11 @@ status_integration_testing_notes: '-'
 technical_summary: '> Role-Based Access Control using Casbin for dynamic permission
   management.'
 wiki_tagline: '> Fine-grained permissions for users, roles, and content'
-wiki_overview: 'Define exactly what each user can do with role-based access control. Create custom roles (Admin, Moderator, Family, Guest) with specific permissions. Control access to libraries, features, and administrative functions. Permissions update instantly without requiring logout. Built on Casbin for enterprise-grade policy enforcement with PostgreSQL persistence.'
+wiki_overview: Define exactly what each user can do with role-based access control.
+  Create custom roles (Admin, Moderator, Family, Guest) with specific permissions.
+  Control access to libraries, features, and administrative functions. Permissions
+  update instantly without requiring logout. Built on Casbin for enterprise-grade
+  policy enforcement with PostgreSQL persistence.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -55,14 +59,12 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Dynamic RBAC with Casbin
 module_name: dynamic_rbac_with_casbin
 schema_name: public

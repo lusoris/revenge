@@ -47,11 +47,11 @@ sources:
     note: Form handling
 design_refs:
   - title: technical
-    path: technical/INDEX.md
+    path: INDEX.md
   - title: TECH_STACK
-    path: technical/TECH_STACK.md
+    path: ../technical/TECH_STACK.md
   - title: 04_PLAYER_ARCHITECTURE
-    path: architecture/04_PLAYER_ARCHITECTURE.md
+    path: ../architecture/04_PLAYER_ARCHITECTURE.md
 ---
 
 # Frontend Architecture

@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Music management automation'
 wiki_tagline: '> Automatic music downloads with Lidarr'
-wiki_overview: 'Lidarr integration automates music library management. Add artists and Lidarr downloads their discography. Monitors for new album releases. Quality profiles control format preferences (FLAC, MP3). Webhooks notify Revenge when albums are imported. Configure with your Lidarr URL and API key.'
+wiki_overview: Lidarr integration automates music library management. Add artists
+  and Lidarr downloads their discography. Monitors for new album releases. Quality
+  profiles control format preferences (FLAC, MP3). Webhooks notify Revenge when albums
+  are imported. Configure with your Lidarr URL and API key.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -51,14 +54,12 @@ sources:
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
 design_refs:
-- title: integrations/servarr
-  path: integrations/servarr.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Lidarr
 integration_id: lidarr
 external_service: Lidarr

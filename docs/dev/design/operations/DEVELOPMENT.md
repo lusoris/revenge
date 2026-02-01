@@ -46,11 +46,11 @@ sources:
     note: Commit message format
 design_refs:
   - title: operations
-    path: operations/INDEX.md
+    path: INDEX.md
   - title: TECH_STACK
-    path: technical/TECH_STACK.md
+    path: ../technical/TECH_STACK.md
   - title: BEST_PRACTICES
-    path: operations/BEST_PRACTICES.md
+    path: ../operations/BEST_PRACTICES.md
   - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
@@ -155,10 +155,10 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [operations](operations/INDEX.md)
+- [operations](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [BEST_PRACTICES](BEST_PRACTICES.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide

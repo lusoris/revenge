@@ -42,11 +42,11 @@ sources:
     note: Auto-resolved from ogen
 design_refs:
   - title: features/shared
-    path: features/shared/INDEX.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../../architecture/01_ARCHITECTURE.md
   - title: LIBRARY_TYPES
-    path: features/shared/LIBRARY_TYPES.md
+    path: ../../features/shared/LIBRARY_TYPES.md
 ---
 
 # Collections & Playlists
@@ -306,9 +306,9 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [features/shared](features/shared/INDEX.md)
+- [features/shared](INDEX.md)
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [LIBRARY_TYPES](features/shared/LIBRARY_TYPES.md)
+- [LIBRARY_TYPES](../../features/shared/LIBRARY_TYPES.md)
 
 ### External Sources
 - [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx

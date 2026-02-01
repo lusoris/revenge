@@ -20,7 +20,10 @@ technical_summary: '> Advanced playback features: trailers, themes, intros, tric
   cinema mode, and live TV.'
 wiki_tagline: '> Advanced playback features: trailers, themes, intros, trickplay,
   cinema mode, '
-wiki_overview: 'Enhanced playback features that make watching more enjoyable. Includes trailer playback before movies (Cinema Mode), theme songs for TV shows, chapter markers for easy navigation, and picture-in-picture support. All features are optional and configurable per-user or per-library.'
+wiki_overview: Enhanced playback features that make watching more enjoyable. Includes
+  trailer playback before movies (Cinema Mode), theme songs for TV shows, chapter
+  markers for easy navigation, and picture-in-picture support. All features are optional
+  and configurable per-user or per-library.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -53,14 +56,12 @@ sources:
   url: https://svelte.dev/docs/kit/introduction
   note: Auto-resolved from sveltekit
 design_refs:
-- title: features/playback
-  path: features/playback.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Revenge - Media Enhancement Features
 module_name: revenge___media_enhancement_features
 schema_name: public

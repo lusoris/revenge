@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV series, seasons, and episodes management'
 wiki_tagline: '> Organize TV series with seasons, episodes, and watch progress'
-wiki_overview: 'Manage TV shows organized by series, season, and episode. Automatic metadata from TheTVDB and TMDB adds artwork, episode descriptions, and air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling for pilots, finales, and specials. Sonarr integration monitors for new episodes and downloads them automatically.'
+wiki_overview: Manage TV shows organized by series, season, and episode. Automatic
+  metadata from TheTVDB and TMDB adds artwork, episode descriptions, and air dates.
+  Track watch progress per user - see where you left off and what episodes are unwatched.
+  Special episode handling for pilots, finales, and specials. Sonarr integration monitors
+  for new episodes and downloads them automatically.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -54,14 +58,12 @@ sources:
   url: https://thetvdb.github.io/v4-api/
   note: Auto-resolved from thetvdb
 design_refs:
-- title: features/video
-  path: features/video.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: TV Show Module
 module_name: tv_show
 schema_name: public

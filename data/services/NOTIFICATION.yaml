@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Multi-channel notifications for users and admins'
 wiki_tagline: '> Multi-channel notifications for users and admins'
-wiki_overview: 'Get notified about important events through multiple channels. Receive alerts when new media is added, downloads complete, or errors occur. Supports email, push notifications (via FCM), webhooks, and in-app notifications. Configure which events trigger notifications and choose delivery channels per user or globally.'
+wiki_overview: Get notified about important events through multiple channels. Receive
+  alerts when new media is added, downloads complete, or errors occur. Supports email,
+  push notifications (via FCM), webhooks, and in-app notifications. Configure which
+  events trigger notifications and choose delivery channels per user or globally.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -40,13 +43,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: services
-  path: services/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 service_name: Notification Service
 package_path: internal/service/notification
 fx_module: notification.Module

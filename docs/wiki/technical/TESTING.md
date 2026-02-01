@@ -31,9 +31,9 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: BEST_PRACTICES
-    path: operations/BEST_PRACTICES.md
+    path: ../operations/BEST_PRACTICES.md
 ---
 
 # Testing Patterns and Practices

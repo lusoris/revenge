@@ -23,11 +23,11 @@ sources:
     note: Standardized error format
 design_refs:
   - title: technical
-    path: technical/INDEX.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # API Reference

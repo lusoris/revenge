@@ -18,16 +18,17 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Universal Plug and Play streaming to compatible devices'
 wiki_tagline: '> Stream to smart TVs and devices via DLNA'
-wiki_overview: 'Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles, and media players. Revenge appears as a media server on your network. Browse and play content directly from your TV remote or device app. No app installation required on the receiving device.'
+wiki_overview: Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles,
+  and media players. Revenge appears as a media server on your network. Browse and
+  play content directly from your TV remote or device app. No app installation required
+  on the receiving device.
 design_refs:
-- title: integrations/casting
-  path: integrations/casting.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: DLNA/UPnP
 integration_id: dlnaupnp
 external_service: DLNA/UPnP

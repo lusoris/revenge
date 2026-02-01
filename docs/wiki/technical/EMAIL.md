@@ -25,11 +25,11 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: NOTIFICATIONS
-    path: technical/NOTIFICATIONS.md
+    path: ../technical/NOTIFICATIONS.md
 ---
 
 # Email System

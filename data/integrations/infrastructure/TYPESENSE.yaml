@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Fast, typo-tolerant search engine'
 wiki_tagline: '> Instant search with typo tolerance'
-wiki_overview: 'Typesense powers the search functionality in Revenge. Search results appear instantly as you type. Typo-tolerant so misspellings still find the right content. Faceted search lets you filter by genre, year, rating, and more. Automatically indexes new content as it is added to your library.'
+wiki_overview: Typesense powers the search functionality in Revenge. Search results
+  appear instantly as you type. Typo-tolerant so misspellings still find the right
+  content. Faceted search lets you filter by genre, year, rating, and more. Automatically
+  indexes new content as it is added to your library.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -48,14 +51,12 @@ sources:
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
 design_refs:
-- title: integrations/infrastructure
-  path: integrations/infrastructure.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Typesense
 integration_id: typesense
 external_service: Typesense

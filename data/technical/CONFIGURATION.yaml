@@ -16,63 +16,84 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
+technical_summary: '> Configuration system using koanf (YAML + environment variables
+  + hot reload)
 
-technical_summary: |
-  > Configuration system using koanf (YAML + environment variables + hot reload)
 
   Revenge configuration management:
+
   - **koanf**: Unified config from YAML files, env vars, flags
+
   - **Hot Reload**: Runtime config updates (subset of keys)
+
   - **Validation**: Schema validation with go-playground/validator
+
   - **Secrets**: Environment variable expansion and file-based secrets
+
   - **Env Prefix**: All env vars use `REVENGE_` prefix
 
-wiki_tagline: |
-  > Configuration guide for server deployment
+  '
+wiki_tagline: '> Configuration guide for server deployment
 
-wiki_overview: |
-  Configure Revenge using a YAML file, environment variables, or both. All settings use the REVENGE_ prefix for environment variables (e.g., REVENGE_SERVER_PORT). Required settings include database URL and JWT secret. Optional settings control caching, search, logging, and integrations. Some settings support hot reload without restart. See the example config.yaml for a complete template with all available options.
+  '
+wiki_overview: 'Configure Revenge using a YAML file, environment variables, or both.
+  All settings use the REVENGE_ prefix for environment variables (e.g., REVENGE_SERVER_PORT).
+  Required settings include database URL and JWT secret. Optional settings control
+  caching, search, logging, and integrations. Some settings support hot reload without
+  restart. See the example config.yaml for a complete template with all available
+  options.
 
+  '
 sources:
-  - name: koanf
-    url: https://pkg.go.dev/github.com/knadh/koanf/v2
-    note: Configuration management
-  - name: go-playground/validator
-    url: https://pkg.go.dev/github.com/go-playground/validator/v10
-    note: Config validation
-
+- name: koanf
+  url: https://pkg.go.dev/github.com/knadh/koanf/v2
+  note: Configuration management
+- name: go-playground/validator
+  url: https://pkg.go.dev/github.com/go-playground/validator/v10
+  note: Config validation
 design_refs:
-  - title: technical
-    path: technical/INDEX.md
-  - title: TECH_STACK
-    path: technical/TECH_STACK.md
-  - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
-
+- title: technical
+  path: INDEX.md
+- title: TECH_STACK
+  path: ../technical/TECH_STACK.md
+- title: 00_SOURCE_OF_TRUTH
+  path: 00_SOURCE_OF_TRUTH.md
 config_file: config.yaml
 env_prefix: REVENGE_
 config_file_locations:
-  - ./config.yaml
-  - /etc/revenge/config.yaml
-  - ~/.config/revenge/config.yaml
+- ./config.yaml
+- /etc/revenge/config.yaml
+- ~/.config/revenge/config.yaml
+environment_variable_mapping: '> All config keys map to env vars via `REVENGE_` prefix
+  + `_` separator
 
-environment_variable_mapping: |
-  > All config keys map to env vars via `REVENGE_` prefix + `_` separator
 
   **Conversion Pattern**:
+
   ```
+
   YAML Key:        server.port
+
   Environment:     REVENGE_SERVER_PORT
+
   Docker Compose:  REVENGE_SERVER_PORT: "8080"
+
   K8s ConfigMap:   REVENGE_SERVER_PORT: "8080"
+
   ```
+
 
   **Type Conversion**:
+
   - `int`: Parsed as integer
+
   - `bool`: Accepts "true", "false", "1", "0"
+
   - `string`: Used as-is
+
   - `[]string`: Comma-separated values
 
+  '
 core_config_sections:
   server:
     port:
@@ -95,7 +116,6 @@ core_config_sections:
       default: 30s
       env: REVENGE_SERVER_WRITE_TIMEOUT
       description: HTTP write timeout
-
   database:
     driver:
       type: string
@@ -124,7 +144,6 @@ core_config_sections:
       default: 5m
       env: REVENGE_DATABASE_CONN_MAX_LIFETIME
       description: Connection max lifetime
-
   cache:
     url:
       type: string
@@ -136,7 +155,6 @@ core_config_sections:
       default: true
       env: REVENGE_CACHE_ENABLED
       description: Enable distributed cache
-
   search:
     url:
       type: string
@@ -148,7 +166,6 @@ core_config_sections:
       env: REVENGE_SEARCH_API_KEY
       description: Typesense API key
       secret: true
-
   auth:
     jwt_secret:
       type: string
@@ -166,7 +183,6 @@ core_config_sections:
       default: 720h
       env: REVENGE_REFRESH_TOKEN_EXPIRY
       description: Refresh token expiry (30 days)
-
   legacy:
     enabled:
       type: bool
@@ -183,190 +199,94 @@ core_config_sections:
       env: REVENGE_LEGACY_ENCRYPTION_KEY
       description: AES-256 key for QAR field encryption
       secret: true
+hot_reload_support: '**Hot-Reloadable Keys** (no restart required):
 
-hot_reload_support: |
-  **Hot-Reloadable Keys** (no restart required):
   - `server.read_timeout`
+
   - `server.write_timeout`
+
   - `cache.enabled`
+
   - `legacy.require_pin`
+
   - `log.level`
 
+
   **Non-Reloadable Keys** (require restart):
+
   - `server.port`
+
   - `server.host`
+
   - `database.url`
+
   - `database.max_open_conns`
+
   - `auth.jwt_secret`
 
+
   **Hot Reload Trigger**:
+
   - Send `SIGHUP` signal to process
+
   - Or use admin API: `POST /api/v1/admin/config/reload`
 
-validation_rules: |
-  **Built-in Validators** (go-playground/validator):
-  - `required`: Field must be present
-  - `min=32`: Minimum length (for JWT secret)
-  - `uri`: Valid URI format
-  - `oneof=postgres`: Must be one of allowed values
-  - `gt=0`: Greater than 0
+  '
+validation_rules: "**Built-in Validators** (go-playground/validator):\n- `required`:\
+  \ Field must be present\n- `min=32`: Minimum length (for JWT secret)\n- `uri`: Valid\
+  \ URI format\n- `oneof=postgres`: Must be one of allowed values\n- `gt=0`: Greater\
+  \ than 0\n\n**Example Validation Tags**:\n```go\ntype Config struct {\n    Server\
+  \ struct {\n        Port int `validate:\"required,gt=0,lt=65536\"`\n        Host\
+  \ string `validate:\"required,ip|hostname\"`\n    }\n    Database struct {\n   \
+  \     Driver string `validate:\"required,oneof=postgres\"`\n        URL    string\
+  \ `validate:\"required,uri\"`\n    }\n    Auth struct {\n        JWTSecret string\
+  \ `validate:\"required,min=32\"`\n    }\n}\n```\n"
+secrets_management: "**Environment Variable Expansion**:\n```yaml\n# config.yaml\n\
+  auth:\n  jwt_secret: ${JWT_SECRET}\ndatabase:\n  url: ${DATABASE_URL}\n```\n\n**File-Based\
+  \ Secrets** (Docker/K8s):\n```yaml\n# config.yaml\nauth:\n  jwt_secret_file: /run/secrets/jwt_secret\n\
+  ```\n\n**Precedence Order** (highest to lowest):\n1. Environment variables\n2. Config\
+  \ file\n3. Default values\n"
+example_config_file: "```yaml\n# config.yaml - Example configuration file\n\nserver:\n\
+  \  port: 8080\n  host: 0.0.0.0\n  read_timeout: 30s\n  write_timeout: 30s\n\ndatabase:\n\
+  \  driver: postgres\n  url: postgres://revenge:password@localhost:5432/revenge?sslmode=disable\n\
+  \  max_open_conns: 25\n  max_idle_conns: 5\n  conn_max_lifetime: 5m\n\ncache:\n\
+  \  url: redis://localhost:6379\n  enabled: true\n\nsearch:\n  url: http://localhost:8108\n\
+  \  api_key: ${TYPESENSE_API_KEY}\n\nauth:\n  jwt_secret: ${JWT_SECRET}  # Min 32\
+  \ chars\n  jwt_expiry: 24h\n  refresh_token_expiry: 720h\n\nlog:\n  level: info\
+  \  # debug, info, warn, error\n  format: json  # json, text\n\nlegacy:\n  enabled:\
+  \ false\n  require_pin: true\n  encryption_key: ${LEGACY_ENCRYPTION_KEY}\n\n# Metadata\
+  \ providers\nmetadata:\n  tmdb:\n    api_key: ${TMDB_API_KEY}\n  stashdb:\n    api_key:\
+  \ ${STASHDB_API_KEY}\n\n# Arr stack integration\narr:\n  radarr:\n    url: http://radarr:7878\n\
+  \    api_key: ${RADARR_API_KEY}\n  sonarr:\n    url: http://sonarr:8989\n    api_key:\
+  \ ${SONARR_API_KEY}\n  whisparr:\n    url: http://whisparr:6969\n    api_key: ${WHISPARR_API_KEY}\n\
+  ```\n"
+docker_compose_example: "```yaml\nservices:\n  revenge:\n    image: revenge:latest\n\
+  \    environment:\n      # Core\n      REVENGE_SERVER_PORT: \"8080\"\n      REVENGE_DATABASE_DRIVER:\
+  \ \"postgres\"\n      REVENGE_DATABASE_URL: \"postgres://revenge:${DB_PASSWORD}@db:5432/revenge\"\
+  \n\n      # Cache & Search\n      REVENGE_CACHE_URL: \"redis://dragonfly:6379\"\n\
+  \      REVENGE_SEARCH_URL: \"http://typesense:8108\"\n      REVENGE_SEARCH_API_KEY:\
+  \ \"${TYPESENSE_API_KEY}\"\n\n      # Auth\n      REVENGE_JWT_SECRET: \"${JWT_SECRET}\"\
+  \n\n      # Logging\n      REVENGE_LOG_LEVEL: \"info\"\n      REVENGE_LOG_FORMAT:\
+  \ \"json\"\n    volumes:\n      - ./config.yaml:/etc/revenge/config.yaml:ro\n  \
+  \    - /media:/media:ro\n    ports:\n      - \"8080:8080\"\n```\n"
+kubernetes_configmap_example: "```yaml\napiVersion: v1\nkind: ConfigMap\nmetadata:\n\
+  \  name: revenge-config\ndata:\n  REVENGE_SERVER_PORT: \"8080\"\n  REVENGE_DATABASE_DRIVER:\
+  \ \"postgres\"\n  REVENGE_CACHE_URL: \"redis://dragonfly:6379\"\n  REVENGE_SEARCH_URL:\
+  \ \"http://typesense:8108\"\n  REVENGE_LOG_LEVEL: \"info\"\n  REVENGE_LOG_FORMAT:\
+  \ \"json\"\n---\napiVersion: v1\nkind: Secret\nmetadata:\n  name: revenge-secrets\n\
+  type: Opaque\nstringData:\n  REVENGE_DATABASE_URL: \"postgres://user:pass@db:5432/revenge\"\
+  \n  REVENGE_JWT_SECRET: \"your-secret-key-min-32-chars\"\n  REVENGE_SEARCH_API_KEY:\
+  \ \"typesense-api-key\"\n```\n"
+config_loading_order: '1. Load default values (compiled into binary)
 
-  **Example Validation Tags**:
-  ```go
-  type Config struct {
-      Server struct {
-          Port int `validate:"required,gt=0,lt=65536"`
-          Host string `validate:"required,ip|hostname"`
-      }
-      Database struct {
-          Driver string `validate:"required,oneof=postgres"`
-          URL    string `validate:"required,uri"`
-      }
-      Auth struct {
-          JWTSecret string `validate:"required,min=32"`
-      }
-  }
-  ```
-
-secrets_management: |
-  **Environment Variable Expansion**:
-  ```yaml
-  # config.yaml
-  auth:
-    jwt_secret: ${JWT_SECRET}
-  database:
-    url: ${DATABASE_URL}
-  ```
-
-  **File-Based Secrets** (Docker/K8s):
-  ```yaml
-  # config.yaml
-  auth:
-    jwt_secret_file: /run/secrets/jwt_secret
-  ```
-
-  **Precedence Order** (highest to lowest):
-  1. Environment variables
-  2. Config file
-  3. Default values
-
-example_config_file: |
-  ```yaml
-  # config.yaml - Example configuration file
-
-  server:
-    port: 8080
-    host: 0.0.0.0
-    read_timeout: 30s
-    write_timeout: 30s
-
-  database:
-    driver: postgres
-    url: postgres://revenge:password@localhost:5432/revenge?sslmode=disable
-    max_open_conns: 25
-    max_idle_conns: 5
-    conn_max_lifetime: 5m
-
-  cache:
-    url: redis://localhost:6379
-    enabled: true
-
-  search:
-    url: http://localhost:8108
-    api_key: ${TYPESENSE_API_KEY}
-
-  auth:
-    jwt_secret: ${JWT_SECRET}  # Min 32 chars
-    jwt_expiry: 24h
-    refresh_token_expiry: 720h
-
-  log:
-    level: info  # debug, info, warn, error
-    format: json  # json, text
-
-  legacy:
-    enabled: false
-    require_pin: true
-    encryption_key: ${LEGACY_ENCRYPTION_KEY}
-
-  # Metadata providers
-  metadata:
-    tmdb:
-      api_key: ${TMDB_API_KEY}
-    stashdb:
-      api_key: ${STASHDB_API_KEY}
-
-  # Arr stack integration
-  arr:
-    radarr:
-      url: http://radarr:7878
-      api_key: ${RADARR_API_KEY}
-    sonarr:
-      url: http://sonarr:8989
-      api_key: ${SONARR_API_KEY}
-    whisparr:
-      url: http://whisparr:6969
-      api_key: ${WHISPARR_API_KEY}
-  ```
-
-docker_compose_example: |
-  ```yaml
-  services:
-    revenge:
-      image: revenge:latest
-      environment:
-        # Core
-        REVENGE_SERVER_PORT: "8080"
-        REVENGE_DATABASE_DRIVER: "postgres"
-        REVENGE_DATABASE_URL: "postgres://revenge:${DB_PASSWORD}@db:5432/revenge"
-
-        # Cache & Search
-        REVENGE_CACHE_URL: "redis://dragonfly:6379"
-        REVENGE_SEARCH_URL: "http://typesense:8108"
-        REVENGE_SEARCH_API_KEY: "${TYPESENSE_API_KEY}"
-
-        # Auth
-        REVENGE_JWT_SECRET: "${JWT_SECRET}"
-
-        # Logging
-        REVENGE_LOG_LEVEL: "info"
-        REVENGE_LOG_FORMAT: "json"
-      volumes:
-        - ./config.yaml:/etc/revenge/config.yaml:ro
-        - /media:/media:ro
-      ports:
-        - "8080:8080"
-  ```
-
-kubernetes_configmap_example: |
-  ```yaml
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: revenge-config
-  data:
-    REVENGE_SERVER_PORT: "8080"
-    REVENGE_DATABASE_DRIVER: "postgres"
-    REVENGE_CACHE_URL: "redis://dragonfly:6379"
-    REVENGE_SEARCH_URL: "http://typesense:8108"
-    REVENGE_LOG_LEVEL: "info"
-    REVENGE_LOG_FORMAT: "json"
-  ---
-  apiVersion: v1
-  kind: Secret
-  metadata:
-    name: revenge-secrets
-  type: Opaque
-  stringData:
-    REVENGE_DATABASE_URL: "postgres://user:pass@db:5432/revenge"
-    REVENGE_JWT_SECRET: "your-secret-key-min-32-chars"
-    REVENGE_SEARCH_API_KEY: "typesense-api-key"
-  ```
-
-config_loading_order: |
-  1. Load default values (compiled into binary)
   2. Load config.yaml (if exists)
+
   3. Override with environment variables (REVENGE_* prefix)
+
   4. Override with command-line flags
+
   5. Validate final configuration
+
   6. Start server
+
+  '

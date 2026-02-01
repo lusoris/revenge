@@ -16,47 +16,51 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > Multi-tier metadata enrichment with caching and background jobs
+technical_summary: '> Multi-tier metadata enrichment with caching and background jobs
+
 
   Standardized metadata enrichment pattern:
+
   - **Priority Chain**: Cache → Arr → Internal → External → Background
+
   - **Multi-Tier Cache**: Otter (L1) + Rueidis (L2) + Sturdyc (coalescing)
+
   - **Background Jobs**: Async enrichment via River queue
+
   - **Request Coalescing**: De-duplicate concurrent requests
-  - **TTL Strategy**: Different TTLs per data type and source
 
-wiki_tagline: |-
-  > Fast, efficient metadata with intelligent caching and background enrichment
-
-wiki_overview: |-
-  The Metadata Enrichment Pattern ensures fast UI response times while maintaining rich, up-to-date metadata. The system uses a five-tier priority chain starting with local cache for instant results, falling back to Arr services (which cache upstream data), then internal sources, external APIs, and finally background enrichment jobs. Multi-tier caching with request coalescing prevents duplicate API calls and reduces external API quota consumption.
+  - **TTL Strategy**: Different TTLs per data type and source'
+wiki_tagline: '> Fast, efficient metadata with intelligent caching and background
+  enrichment'
+wiki_overview: The Metadata Enrichment Pattern ensures fast UI response times while
+  maintaining rich, up-to-date metadata. The system uses a five-tier priority chain
+  starting with local cache for instant results, falling back to Arr services (which
+  cache upstream data), then internal sources, external APIs, and finally background
+  enrichment jobs. Multi-tier caching with request coalescing prevents duplicate API
+  calls and reduces external API quota consumption.
 sources:
-  - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Background job processing
-  - name: rueidis
-    url: https://pkg.go.dev/github.com/redis/rueidis
-    note: Distributed cache (L2)
-  - name: Otter
-    url: https://pkg.go.dev/github.com/maypok86/otter
-    note: In-memory cache (L1)
-  - name: Sturdyc
-    url: https://github.com/viccon/sturdyc
-    note: Request coalescing cache
-
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Background job processing
+- name: rueidis
+  url: https://pkg.go.dev/github.com/redis/rueidis
+  note: Distributed cache (L2)
+- name: Otter
+  url: https://pkg.go.dev/github.com/maypok86/otter
+  note: In-memory cache (L1)
+- name: Sturdyc
+  url: https://github.com/viccon/sturdyc
+  note: Request coalescing cache
 design_refs:
 - title: patterns
   path: patterns.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
-
+  path: ../architecture/03_METADATA_SYSTEM.md
 pattern_name: Metadata Enrichment Pattern
-
 priority_chain:
   tier_1_cache:
     name: Local Cache (L1)
@@ -66,10 +70,9 @@ priority_chain:
     ttl: 5-15 minutes
     description: In-memory cache for hot data, fastest possible response
     use_cases:
-      - Frequently accessed movies/albums
-      - User session data
-      - Recently viewed content
-
+    - Frequently accessed movies/albums
+    - User session data
+    - Recently viewed content
   tier_2_cache:
     name: Distributed Cache (L2)
     technology: Rueidis (Dragonfly/Redis)
@@ -78,10 +81,9 @@ priority_chain:
     ttl: 1-24 hours (varies by data type)
     description: Shared cache across all instances
     use_cases:
-      - All metadata (movies, TV, music, etc.)
-      - Search results
-      - External API responses
-
+    - All metadata (movies, TV, music, etc.)
+    - Search results
+    - External API responses
   tier_3_arr:
     name: Arr Services
     technology: Radarr, Sonarr, Lidarr, Whisparr
@@ -90,10 +92,9 @@ priority_chain:
     ttl: Refreshed on webhook events
     description: Arr services cache metadata from TMDb, MusicBrainz, etc.
     use_cases:
-      - Movies managed by Radarr
-      - TV shows managed by Sonarr
-      - Music managed by Lidarr
-
+    - Movies managed by Radarr
+    - TV shows managed by Sonarr
+    - Music managed by Lidarr
   tier_4_internal:
     name: Internal Services
     technology: Stash-App (for QAR content)
@@ -102,9 +103,8 @@ priority_chain:
     ttl: N/A (direct database query)
     description: Internal metadata sources
     use_cases:
-      - Adult content (QAR module)
-      - User-generated metadata
-
+    - Adult content (QAR module)
+    - User-generated metadata
   tier_5_external:
     name: External APIs
     technology: TMDb, MusicBrainz, StashDB, etc.
@@ -113,63 +113,36 @@ priority_chain:
     rate_limits: Varies (40 req/10s for TMDb)
     description: Direct API calls as last resort
     use_cases:
-      - Content not in Arr
-      - Missing metadata fields
-      - Fresh data required
-
+    - Content not in Arr
+    - Missing metadata fields
+    - Fresh data required
   tier_6_background:
     name: Background Enrichment
     technology: River job queue
     latency: Async (seconds to minutes)
     description: Non-blocking enrichment after initial response
     use_cases:
-      - High-resolution images
-      - Cast and crew details
-      - User reviews and ratings
-      - Video codec analysis
-
+    - High-resolution images
+    - Cast and crew details
+    - User reviews and ratings
+    - Video codec analysis
 cache_strategy:
-  multi_tier_example: |
-    ```go
-    func (s *MovieService) GetByID(ctx context.Context, id uuid.UUID) (*Movie, error) {
-        // Tier 1: Check L1 cache (Otter)
-        if cached, ok := s.l1Cache.Get(id.String()); ok {
-            return cached.(*Movie), nil
-        }
-
-        // Tier 2: Check L2 cache (Rueidis + Sturdyc for coalescing)
-        movie, err := s.l2Cache.GetOrFetch(ctx, id.String(), func(ctx context.Context) (*Movie, error) {
-            // Tier 3: Check Arr service (Radarr)
-            if m, err := s.radarrClient.GetMovie(ctx, id); err == nil {
-                return m, nil
-            }
-
-            // Tier 4: Check internal sources (not applicable for movies)
-
-            // Tier 5: Fetch from external API (TMDb)
-            tmdbMovie, err := s.tmdbClient.GetMovie(ctx, id)
-            if err != nil {
-                return nil, err
-            }
-
-            // Convert to internal format
-            return s.convertTMDbMovie(tmdbMovie), nil
-        }, 1*time.Hour) // L2 TTL: 1 hour
-
-        if err != nil {
-            return nil, err
-        }
-
-        // Store in L1 cache
-        s.l1Cache.Set(id.String(), movie, 10*time.Minute)
-
-        // Tier 6: Queue background enrichment job
-        s.queueEnrichment(ctx, id)
-
-        return movie, nil
-    }
-    ```
-
+  multi_tier_example: "```go\nfunc (s *MovieService) GetByID(ctx context.Context,\
+    \ id uuid.UUID) (*Movie, error) {\n    // Tier 1: Check L1 cache (Otter)\n   \
+    \ if cached, ok := s.l1Cache.Get(id.String()); ok {\n        return cached.(*Movie),\
+    \ nil\n    }\n\n    // Tier 2: Check L2 cache (Rueidis + Sturdyc for coalescing)\n\
+    \    movie, err := s.l2Cache.GetOrFetch(ctx, id.String(), func(ctx context.Context)\
+    \ (*Movie, error) {\n        // Tier 3: Check Arr service (Radarr)\n        if\
+    \ m, err := s.radarrClient.GetMovie(ctx, id); err == nil {\n            return\
+    \ m, nil\n        }\n\n        // Tier 4: Check internal sources (not applicable\
+    \ for movies)\n\n        // Tier 5: Fetch from external API (TMDb)\n        tmdbMovie,\
+    \ err := s.tmdbClient.GetMovie(ctx, id)\n        if err != nil {\n           \
+    \ return nil, err\n        }\n\n        // Convert to internal format\n      \
+    \  return s.convertTMDbMovie(tmdbMovie), nil\n    }, 1*time.Hour) // L2 TTL: 1\
+    \ hour\n\n    if err != nil {\n        return nil, err\n    }\n\n    // Store\
+    \ in L1 cache\n    s.l1Cache.Set(id.String(), movie, 10*time.Minute)\n\n    //\
+    \ Tier 6: Queue background enrichment job\n    s.queueEnrichment(ctx, id)\n\n\
+    \    return movie, nil\n}\n```\n"
   ttl_guidelines:
     movies_tv:
       base_metadata: 24 hours
@@ -189,145 +162,123 @@ cache_strategy:
       general: 15 minutes
       trending: 5 minutes
       recommendations: 1 hour
-
 request_coalescing:
-  problem: Multiple concurrent requests for same resource hit external API multiple times
+  problem: Multiple concurrent requests for same resource hit external API multiple
+    times
   solution: Sturdyc library coalesces concurrent requests into single backend call
-  example: |
-    ```go
+  example: '```go
+
     // Sturdyc coalescing cache wrapper
+
     cache := sturdyc.New[string, *Movie](1000, 10*time.Minute, 5)
 
+
     // Multiple concurrent requests for same movie
+
     // Only ONE external API call is made, all requesters get the same result
+
     movie1, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc)
-    movie2, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc) // Waits for first call
-    movie3, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc) // Waits for first call
+
+    movie2, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc) // Waits for first
+    call
+
+    movie3, _ := cache.GetOrFetch(ctx, "movie-123", fetchFunc) // Waits for first
+    call
+
 
     // All three get the same movie object from single API call
+
     ```
 
+    '
 background_enrichment_jobs:
-  - job: EnrichMovieDetails
-    trigger: Movie accessed but missing extended metadata
-    priority: Low
-    actions:
-      - Fetch full cast and crew
-      - Download high-resolution poster/backdrop
-      - Fetch user reviews
-      - Get similar movies
-      - Extract video codec and quality info
-    implementation: |
-      ```go
-      type EnrichMovieDetailsArgs struct {
-          MovieID uuid.UUID `json:"movie_id"`
-      }
-
-      func (w *EnrichMovieDetailsWorker) Work(ctx context.Context, job *river.Job[EnrichMovieDetailsArgs]) error {
-          movie, err := w.repo.GetByID(ctx, job.Args.MovieID)
-          if err != nil {
-              return err
-          }
-
-          // Fetch extended details from TMDb
-          details, err := w.tmdbClient.GetMovieDetails(ctx, movie.TMDbID)
-          if err != nil {
-              return err
-          }
-
-          // Update database with enriched data
-          movie.Cast = details.Cast
-          movie.Crew = details.Crew
-          movie.BackdropURL = details.BackdropURL
-          movie.UserRating = details.UserRating
-
-          return w.repo.Update(ctx, movie)
-      }
-      ```
-
-  - job: EnrichAlbumArtwork
-    trigger: Album added but only has low-res cover art
-    priority: Medium
-    actions:
-      - Download high-resolution album art
-      - Fetch artist images
-      - Generate blurhash placeholders
-    rate_limit: 10 per minute (respect API limits)
-
-  - job: EnrichVideoAnalysis
-    trigger: Video file added
-    priority: Low
-    actions:
-      - Extract codec information (ffprobe)
-      - Generate preview thumbnails
-      - Detect intro/outro timestamps
-      - Calculate video fingerprint
-    resource_intensive: true
-
+- job: EnrichMovieDetails
+  trigger: Movie accessed but missing extended metadata
+  priority: Low
+  actions:
+  - Fetch full cast and crew
+  - Download high-resolution poster/backdrop
+  - Fetch user reviews
+  - Get similar movies
+  - Extract video codec and quality info
+  implementation: "```go\ntype EnrichMovieDetailsArgs struct {\n    MovieID uuid.UUID\
+    \ `json:\"movie_id\"`\n}\n\nfunc (w *EnrichMovieDetailsWorker) Work(ctx context.Context,\
+    \ job *river.Job[EnrichMovieDetailsArgs]) error {\n    movie, err := w.repo.GetByID(ctx,\
+    \ job.Args.MovieID)\n    if err != nil {\n        return err\n    }\n\n    //\
+    \ Fetch extended details from TMDb\n    details, err := w.tmdbClient.GetMovieDetails(ctx,\
+    \ movie.TMDbID)\n    if err != nil {\n        return err\n    }\n\n    // Update\
+    \ database with enriched data\n    movie.Cast = details.Cast\n    movie.Crew =\
+    \ details.Crew\n    movie.BackdropURL = details.BackdropURL\n    movie.UserRating\
+    \ = details.UserRating\n\n    return w.repo.Update(ctx, movie)\n}\n```\n"
+- job: EnrichAlbumArtwork
+  trigger: Album added but only has low-res cover art
+  priority: Medium
+  actions:
+  - Download high-resolution album art
+  - Fetch artist images
+  - Generate blurhash placeholders
+  rate_limit: 10 per minute (respect API limits)
+- job: EnrichVideoAnalysis
+  trigger: Video file added
+  priority: Low
+  actions:
+  - Extract codec information (ffprobe)
+  - Generate preview thumbnails
+  - Detect intro/outro timestamps
+  - Calculate video fingerprint
+  resource_intensive: true
 cache_invalidation:
   strategies:
-    - strategy: TTL Expiration
-      description: Automatic expiration based on configured TTL
-      use_case: Most metadata
-    - strategy: Event-Based
-      description: Invalidate on webhook events (Arr updates, deletions)
-      use_case: Arr-managed content
-    - strategy: Manual
-      description: User-triggered refresh (rare)
-      use_case: Stale data or API changes
-    - strategy: Lazy Invalidation
-      description: Fetch new data in background, serve stale while updating
-      use_case: High-traffic content
-
-  implementation_example: |
-    ```go
-    // Event-based cache invalidation on Arr webhook
-    func (h *WebhookHandler) handleMovieUpdate(ctx context.Context, event *RadarrEvent) error {
-        movieID := event.Movie.ID
-
-        // Invalidate both L1 and L2 cache
-        s.l1Cache.Delete(movieID.String())
-        s.l2Cache.Delete(ctx, movieID.String())
-
-        // Update database with new metadata
-        return s.repo.Update(ctx, event.Movie)
-    }
-    ```
-
+  - strategy: TTL Expiration
+    description: Automatic expiration based on configured TTL
+    use_case: Most metadata
+  - strategy: Event-Based
+    description: Invalidate on webhook events (Arr updates, deletions)
+    use_case: Arr-managed content
+  - strategy: Manual
+    description: User-triggered refresh (rare)
+    use_case: Stale data or API changes
+  - strategy: Lazy Invalidation
+    description: Fetch new data in background, serve stale while updating
+    use_case: High-traffic content
+  implementation_example: "```go\n// Event-based cache invalidation on Arr webhook\n\
+    func (h *WebhookHandler) handleMovieUpdate(ctx context.Context, event *RadarrEvent)\
+    \ error {\n    movieID := event.Movie.ID\n\n    // Invalidate both L1 and L2 cache\n\
+    \    s.l1Cache.Delete(movieID.String())\n    s.l2Cache.Delete(ctx, movieID.String())\n\
+    \n    // Update database with new metadata\n    return s.repo.Update(ctx, event.Movie)\n\
+    }\n```\n"
 monitoring_and_metrics:
   cache_metrics:
-    - "L1 hit rate (target: >70%)"
-    - "L2 hit rate (target: >85%)"
-    - "Cache miss latency (target: <500ms)"
-    - Background job queue depth
-    - External API call count
-    - External API rate limit errors
-
+  - 'L1 hit rate (target: >70%)'
+  - 'L2 hit rate (target: >85%)'
+  - 'Cache miss latency (target: <500ms)'
+  - Background job queue depth
+  - External API call count
+  - External API rate limit errors
   alerts:
-    - alert: Low cache hit rate
-      threshold: "L1 <60% or L2 <75%"
-      action: Investigate cache size or TTL configuration
-    - alert: High external API calls
-      threshold: ">1000 calls/minute"
-      action: Check for cache misses or coalescing failures
-    - alert: Background job queue growing
-      threshold: ">10000 pending jobs"
-      action: Scale workers or investigate stuck jobs
-
+  - alert: Low cache hit rate
+    threshold: L1 <60% or L2 <75%
+    action: Investigate cache size or TTL configuration
+  - alert: High external API calls
+    threshold: '>1000 calls/minute'
+    action: Check for cache misses or coalescing failures
+  - alert: Background job queue growing
+    threshold: '>10000 pending jobs'
+    action: Scale workers or investigate stuck jobs
 best_practices:
-  - practice: Always cache external API responses
-    reason: Reduces API quota consumption and latency
-  - practice: Use request coalescing for hot data
-    reason: Prevents thundering herd on cache miss
-  - practice: Implement graceful degradation
-    reason: Serve stale cache if external API is down
-  - practice: Monitor cache hit rates
-    reason: Identify optimization opportunities
-  - practice: Use appropriate TTLs per data type
-    reason: Balance freshness vs API calls
-  - practice: Queue non-critical enrichment
-    reason: Fast initial response, rich data eventually
-  - practice: Implement cache warming
-    reason: Pre-populate cache for popular content
-  - practice: Use cache tags for bulk invalidation
-    reason: Invalidate related items efficiently
+- practice: Always cache external API responses
+  reason: Reduces API quota consumption and latency
+- practice: Use request coalescing for hot data
+  reason: Prevents thundering herd on cache miss
+- practice: Implement graceful degradation
+  reason: Serve stale cache if external API is down
+- practice: Monitor cache hit rates
+  reason: Identify optimization opportunities
+- practice: Use appropriate TTLs per data type
+  reason: Balance freshness vs API calls
+- practice: Queue non-critical enrichment
+  reason: Fast initial response, rich data eventually
+- practice: Implement cache warming
+  reason: Pre-populate cache for popular content
+- practice: Use cache tags for bulk invalidation
+  reason: Invalidate related items efficiently

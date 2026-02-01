@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV tracker and movie scrobbler (alternative to Trakt)'
 wiki_tagline: '> Track TV and movies with Simkl'
-wiki_overview: 'Simkl provides TV and movie tracking as an alternative to Trakt. Automatic scrobbling records what you watch. Strong anime support with AniList integration. Sync your watchlist and watched history. View detailed statistics about your viewing habits. Free account with no limits.'
+wiki_overview: Simkl provides TV and movie tracking as an alternative to Trakt. Automatic
+  scrobbling records what you watch. Strong anime support with AniList integration.
+  Sync your watchlist and watched history. View detailed statistics about your viewing
+  habits. Free account with no limits.
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro
@@ -30,14 +33,12 @@ sources:
   url: https://simkl.docs.apiary.io/
   note: Auto-resolved from simkl
 design_refs:
-- title: integrations/scrobbling
-  path: integrations/scrobbling.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Simkl
 integration_id: simkl
 external_service: Simkl

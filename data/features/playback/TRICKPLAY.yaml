@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Thumbnail previews on video seek bar'
 wiki_tagline: '> Thumbnail previews on video seek bar'
-wiki_overview: 'See where you are going when scrubbing through videos. Trickplay generates thumbnail previews that appear when hovering over the seek bar. Thumbnails are created during library scan using FFmpeg. Supports BIF format for Roku compatibility. Configurable interval (default 10 seconds) and quality settings per library.'
+wiki_overview: See where you are going when scrubbing through videos. Trickplay generates
+  thumbnail previews that appear when hovering over the seek bar. Thumbnails are created
+  during library scan using FFmpeg. Supports BIF format for Roku compatibility. Configurable
+  interval (default 10 seconds) and quality settings per library.
 sources:
 - name: Roku BIF Format
   url: https://developer.roku.com/docs/developer-program/media-playback/trick-mode/bif-file-creation.md
@@ -48,14 +51,12 @@ sources:
   url: https://www.w3.org/TR/webvtt1/
   note: Auto-resolved from webvtt
 design_refs:
-- title: features/playback
-  path: features/playback.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Trickplay (Timeline Thumbnails)
 module_name: trickplay_(timeline_thumbnails)
 schema_name: public

@@ -31,9 +31,9 @@ sources:
     note: Animation library option
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: ACCESSIBILITY
-    path: technical/design/ACCESSIBILITY.md
+    path: ../../technical/design/ACCESSIBILITY.md
 ---
 
 # Motion & Animation
@@ -137,8 +137,8 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [ACCESSIBILITY](technical/design/ACCESSIBILITY.md)
+- [DESIGN_SYSTEM](../../technical/DESIGN_SYSTEM.md)
+- [ACCESSIBILITY](../../technical/design/ACCESSIBILITY.md)
 
 ### External Sources
 - [Svelte Transitions](https://svelte.dev/docs/svelte-transition) - Built-in transitions

@@ -36,7 +36,12 @@ technical_summary: '> Table-driven tests, mocking patterns, and integration test
 wiki_tagline: '> Testing standards and patterns for code quality
 
   '
-wiki_overview: 'Revenge maintains high code quality through comprehensive testing. All new code requires 80% test coverage minimum. Unit tests use table-driven patterns for clarity and completeness, with mocks generated automatically via Mockery. Integration tests run against real PostgreSQL using embedded-postgres for speed or testcontainers for full fidelity. The CI pipeline runs all tests on every pull request, blocking merges that reduce coverage or introduce failing tests.
+wiki_overview: 'Revenge maintains high code quality through comprehensive testing.
+  All new code requires 80% test coverage minimum. Unit tests use table-driven patterns
+  for clarity and completeness, with mocks generated automatically via Mockery. Integration
+  tests run against real PostgreSQL using embedded-postgres for speed or testcontainers
+  for full fidelity. The CI pipeline runs all tests on every pull request, blocking
+  merges that reduce coverage or introduce failing tests.
 
   '
 sources:
@@ -57,11 +62,11 @@ sources:
   note: Fast PostgreSQL for unit tests
 design_refs:
 - title: patterns
-  path: patterns/INDEX.md
+  path: INDEX.md
 - title: BEST_PRACTICES
-  path: operations/BEST_PRACTICES.md
+  path: ../operations/BEST_PRACTICES.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 pattern_name: Testing Patterns
 test_coverage_requirements:
   minimum: 80%

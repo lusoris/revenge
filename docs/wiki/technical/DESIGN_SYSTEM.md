@@ -38,11 +38,11 @@ sources:
     note: UI body font
 design_refs:
   - title: FRONTEND
-    path: technical/FRONTEND.md
+    path: ../technical/FRONTEND.md
   - title: 04_PLAYER_ARCHITECTURE
-    path: architecture/04_PLAYER_ARCHITECTURE.md
+    path: ../architecture/04_PLAYER_ARCHITECTURE.md
   - title: USER_EXPERIENCE_FEATURES
-    path: features/shared/USER_EXPERIENCE_FEATURES.md
+    path: ../features/shared/USER_EXPERIENCE_FEATURES.md
 ---
 
 # Design System

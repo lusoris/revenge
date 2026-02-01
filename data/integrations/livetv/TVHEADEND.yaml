@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Open-source TV streaming server and DVR'
 wiki_tagline: '> Live TV and DVR with TVHeadend'
-wiki_overview: 'TVHeadend integration brings live TV and DVR to Revenge. Supports DVB, IPTV, and other broadcast sources. Watch live channels through the Revenge interface. Schedule recordings and manage the DVR queue. EPG data displays what is currently airing and coming up next.'
+wiki_overview: TVHeadend integration brings live TV and DVR to Revenge. Supports DVB,
+  IPTV, and other broadcast sources. Watch live channels through the Revenge interface.
+  Schedule recordings and manage the DVR queue. EPG data displays what is currently
+  airing and coming up next.
 sources:
 - name: gohlslib (HLS)
   url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
@@ -27,14 +30,12 @@ sources:
   url: https://datatracker.ietf.org/doc/html/rfc8216
   note: Auto-resolved from m3u8
 design_refs:
-- title: integrations/livetv
-  path: integrations/livetv.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: TVHeadend
 integration_id: tvheadend
 external_service: TVHeadend

@@ -46,11 +46,11 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: METADATA_ENRICHMENT
-    path: patterns/METADATA_ENRICHMENT.md
+    path: ../patterns/METADATA_ENRICHMENT.md
 ---
 
 # Advanced Offloading Architecture

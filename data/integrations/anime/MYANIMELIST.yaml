@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Legacy anime tracking platform with extensive database'
 wiki_tagline: '> Sync anime progress with MyAnimeList'
-wiki_overview: 'Connect MyAnimeList (MAL) to sync your anime watching history. MAL has the largest anime database with user reviews, rankings, and recommendations. Watch status syncs both directions - import your MAL list and export new watches. Uses official MAL API for reliable synchronization.'
+wiki_overview: Connect MyAnimeList (MAL) to sync your anime watching history. MAL
+  has the largest anime database with user reviews, rankings, and recommendations.
+  Watch status syncs both directions - import your MAL list and export new watches.
+  Uses official MAL API for reliable synchronization.
 sources:
 - name: MyAnimeList API
   url: https://myanimelist.net/apiconfig/references/api/v2
@@ -27,14 +30,12 @@ sources:
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
-- title: integrations/anime
-  path: integrations/anime.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: MyAnimeList (MAL)
 integration_id: myanimelist_mal
 external_service: MyAnimeList (MAL)

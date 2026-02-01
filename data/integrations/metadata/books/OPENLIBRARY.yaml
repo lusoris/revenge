@@ -19,7 +19,10 @@ status_integration_testing_notes: '-'
 technical_summary: '> Open book metadata database - primary metadata provider for
   books (Goodreads alternative)'
 wiki_tagline: '> Free book metadata from Open Library'
-wiki_overview: 'Open Library provides free book metadata as part of the Internet Archive. Covers millions of books with basic information, covers, and edition details. No API key required. Primary book metadata source since Goodreads closed their API. Links to Internet Archive for borrowable digital copies.'
+wiki_overview: Open Library provides free book metadata as part of the Internet Archive.
+  Covers millions of books with basic information, covers, and edition details. No
+  API key required. Primary book metadata source since Goodreads closed their API.
+  Links to Internet Archive for borrowable digital copies.
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -29,13 +32,13 @@ sources:
   note: Auto-resolved from openlibrary
 design_refs:
 - title: integrations/metadata/books
-  path: integrations/metadata/books.md
+  path: ../../../integrations/metadata/books.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: OpenLibrary
 integration_id: openlibrary
 external_service: OpenLibrary

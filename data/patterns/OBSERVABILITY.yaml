@@ -35,7 +35,13 @@ technical_summary: '> Metrics, tracing, and logging patterns with Prometheus, Op
 wiki_tagline: '> Monitoring and debugging patterns for production systems
 
   '
-wiki_overview: 'Revenge includes comprehensive monitoring and debugging capabilities out of the box. Metrics track request rates, errors, and response times via Prometheus. Distributed tracing with OpenTelemetry helps you follow requests across services and identify bottlenecks. Structured logging provides searchable, contextual logs for debugging. Health check endpoints let load balancers and orchestrators monitor service status. Pre-built Grafana dashboards visualize key metrics, and alert rules notify you of issues before users notice.
+wiki_overview: 'Revenge includes comprehensive monitoring and debugging capabilities
+  out of the box. Metrics track request rates, errors, and response times via Prometheus.
+  Distributed tracing with OpenTelemetry helps you follow requests across services
+  and identify bottlenecks. Structured logging provides searchable, contextual logs
+  for debugging. Health check endpoints let load balancers and orchestrators monitor
+  service status. Pre-built Grafana dashboards visualize key metrics, and alert rules
+  notify you of issues before users notice.
 
   '
 sources:
@@ -62,11 +68,11 @@ sources:
   note: Distributed tracing backend
 design_refs:
 - title: patterns
-  path: patterns/INDEX.md
+  path: INDEX.md
 - title: TECH_STACK
-  path: technical/TECH_STACK.md
+  path: ../technical/TECH_STACK.md
 - title: BEST_PRACTICES
-  path: operations/BEST_PRACTICES.md
+  path: ../operations/BEST_PRACTICES.md
 pattern_name: Observability Pattern
 metrics_prometheus:
   endpoint: /metrics

@@ -20,7 +20,9 @@ technical_summary: '> ⚠️ **DEPRECATED**: This document has been merged into 
   > See that document for the complete adult content architecture including metadata,
   privacy,'
 wiki_tagline: '> Deprecated - see ADULT_CONTENT_SYSTEM'
-wiki_overview: 'This document has been merged into ADULT_CONTENT_SYSTEM.md. See that document for complete adult content architecture including metadata, privacy features, and integration details.'
+wiki_overview: This document has been merged into ADULT_CONTENT_SYSTEM.md. See that
+  document for complete adult content architecture including metadata, privacy features,
+  and integration details.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -56,14 +58,12 @@ sources:
   url: https://api.theporndb.net/docs
   note: Auto-resolved from theporndb
 design_refs:
-- title: features/adult
-  path: features/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Revenge - Adult Content Metadata System
 module_name: revenge___adult_content_metadata_system
 schema_name: qar

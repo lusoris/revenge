@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Windows/Linux DVR software with IPTV support'
 wiki_tagline: '> Record live TV with NextPVR'
-wiki_overview: 'Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRun, and IPTV sources. Browse the guide in Revenge and schedule recordings. Recorded shows automatically appear in your library. Available for Windows and Linux servers.'
+wiki_overview: Connect NextPVR for live TV and DVR functionality. Supports cable card,
+  HDHomeRun, and IPTV sources. Browse the guide in Revenge and schedule recordings.
+  Recorded shows automatically appear in your library. Available for Windows and Linux
+  servers.
 sources:
 - name: gohlslib (HLS)
   url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
@@ -30,14 +33,12 @@ sources:
   url: https://github.com/sub3/NextPVR
   note: Auto-resolved from nextpvr
 design_refs:
-- title: integrations/livetv
-  path: integrations/livetv.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: NextPVR
 integration_id: nextpvr
 external_service: NextPVR

@@ -16,452 +16,349 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
+technical_summary: '> WCAG 2.1 AAA compliant accessibility system
 
-technical_summary: |
-  > WCAG 2.1 AAA compliant accessibility system
 
   Accessibility features:
+
   - **Target**: WCAG 2.1 AAA (highest standard)
+
   - **Contrast**: 7:1 normal text, 4.5:1 large text
+
   - **Keyboard**: Full navigation, skip links, focus traps
+
   - **Screen Readers**: ARIA labels, live regions, landmarks
+
   - **Subtitles**: Full customization (font, size, color, position)
 
+  '
 wiki_tagline: '> Accessible to everyone, by design'
-
-wiki_overview: "Revenge targets WCAG 2.1 AAA, the highest accessibility standard. Color contrast meets 7:1 for normal text. Full keyboard navigation with visible focus states. Screen reader support with ARIA labels and live regions. Subtitle customization includes font choice, colors, sizing, and position. Respects prefers-reduced-motion for users sensitive to animation."
-
+wiki_overview: Revenge targets WCAG 2.1 AAA, the highest accessibility standard. Color
+  contrast meets 7:1 for normal text. Full keyboard navigation with visible focus
+  states. Screen reader support with ARIA labels and live regions. Subtitle customization
+  includes font choice, colors, sizing, and position. Respects prefers-reduced-motion
+  for users sensitive to animation.
 sources:
-  - name: WCAG 2.1 Guidelines
-    url: https://www.w3.org/WAI/WCAG21/quickref/
-    note: Accessibility standards
-  - name: ARIA Authoring Practices
-    url: https://www.w3.org/WAI/ARIA/apg/
-    note: ARIA patterns
-
+- name: WCAG 2.1 Guidelines
+  url: https://www.w3.org/WAI/WCAG21/quickref/
+  note: Accessibility standards
+- name: ARIA Authoring Practices
+  url: https://www.w3.org/WAI/ARIA/apg/
+  note: ARIA patterns
 design_refs:
-  - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
-  - title: MOTION
-    path: technical/design/MOTION.md
-
-# =============================================================================
-# ACCESSIBILITY TARGET
-# =============================================================================
-
+- title: DESIGN_SYSTEM
+  path: ../../technical/DESIGN_SYSTEM.md
+- title: MOTION
+  path: ../../technical/design/MOTION.md
 target:
-  standard: "WCAG 2.1"
-  level: "AAA"
-  description: "Highest accessibility standard - ensuring Revenge is usable by everyone"
-
+  standard: WCAG 2.1
+  level: AAA
+  description: Highest accessibility standard - ensuring Revenge is usable by everyone
   principles:
-    perceivable: "Information presentable in ways users can perceive"
-    operable: "UI components and navigation are operable"
-    understandable: "Information and UI operation are understandable"
-    robust: "Content can be interpreted by assistive technologies"
-
-# =============================================================================
-# COLOR CONTRAST
-# =============================================================================
-
+    perceivable: Information presentable in ways users can perceive
+    operable: UI components and navigation are operable
+    understandable: Information and UI operation are understandable
+    robust: Content can be interpreted by assistive technologies
 color_contrast:
   normal_text:
-    ratio: "7:1 minimum"
-    level: "AAA"
-    applies_to: "Body text, UI labels, descriptions"
-
+    ratio: 7:1 minimum
+    level: AAA
+    applies_to: Body text, UI labels, descriptions
   large_text:
-    ratio: "4.5:1 minimum"
-    level: "AAA"
-    definition: "18pt (24px) regular or 14pt (19px) bold"
-    applies_to: "Headings, large buttons"
-
+    ratio: 4.5:1 minimum
+    level: AAA
+    definition: 18pt (24px) regular or 14pt (19px) bold
+    applies_to: Headings, large buttons
   ui_components:
-    ratio: "3:1 minimum"
-    level: "AA"
-    applies_to: "Icons, borders, form controls, focus indicators"
-
+    ratio: 3:1 minimum
+    level: AA
+    applies_to: Icons, borders, form controls, focus indicators
   graphical_objects:
-    ratio: "3:1 minimum"
-    applies_to: "Charts, graphs, icons conveying meaning"
-
+    ratio: 3:1 minimum
+    applies_to: Charts, graphs, icons conveying meaning
   testing_tools:
-    - "Chrome DevTools Accessibility Inspector"
-    - "axe DevTools browser extension"
-    - "Contrast Checker (WebAIM)"
-
-# =============================================================================
-# KEYBOARD NAVIGATION
-# =============================================================================
-
+  - Chrome DevTools Accessibility Inspector
+  - axe DevTools browser extension
+  - Contrast Checker (WebAIM)
 keyboard_navigation:
   full_support: true
-  description: "All functionality available via keyboard"
-
+  description: All functionality available via keyboard
   tab_order:
-    style: "Logical, follows visual layout"
-    custom: "tabindex for dynamic content"
-    skip_decorative: "tabindex=-1 for non-interactive elements"
-
+    style: Logical, follows visual layout
+    custom: tabindex for dynamic content
+    skip_decorative: tabindex=-1 for non-interactive elements
   skip_link:
-    text: "Skip to main content"
-    position: "First focusable element"
-    visibility: "Visible on focus"
-    target: "main element"
-
+    text: Skip to main content
+    position: First focusable element
+    visibility: Visible on focus
+    target: main element
   focus_trap:
-    description: "Modals and dialogs trap focus within"
-    escape: "Escape key closes and returns focus"
-    wrap: "Tab wraps from last to first element"
-
+    description: Modals and dialogs trap focus within
+    escape: Escape key closes and returns focus
+    wrap: Tab wraps from last to first element
   focus_management:
-    modal_open: "Focus first interactive element"
-    modal_close: "Return focus to trigger element"
-    page_navigation: "Focus main heading or content"
-    dynamic_content: "Announce changes, manage focus"
-
+    modal_open: Focus first interactive element
+    modal_close: Return focus to trigger element
+    page_navigation: Focus main heading or content
+    dynamic_content: Announce changes, manage focus
   keyboard_shortcuts:
-    discoverable: "? shows all shortcuts"
-    customizable: "Future: user can rebind"
-    avoid_conflicts: "Don't override browser shortcuts"
-
-# =============================================================================
-# FOCUS STATES
-# =============================================================================
-
+    discoverable: '? shows all shortcuts'
+    customizable: 'Future: user can rebind'
+    avoid_conflicts: Don't override browser shortcuts
 focus_states:
-  visibility: "Always visible on keyboard focus"
-
+  visibility: Always visible on keyboard focus
   style:
-    default: "ring-2 ring-module-primary ring-offset-2"
-    high_contrast: "ring-2 ring-white ring-offset-2 ring-offset-black"
-    inset: "ring-2 ring-inset ring-module-primary"
-
+    default: ring-2 ring-module-primary ring-offset-2
+    high_contrast: ring-2 ring-white ring-offset-2 ring-offset-black
+    inset: ring-2 ring-inset ring-module-primary
   focus_visible:
-    description: "Show focus ring only on keyboard focus, not click"
-    css: ":focus-visible { outline: ... }"
-
+    description: Show focus ring only on keyboard focus, not click
+    css: ':focus-visible { outline: ... }'
   never_remove:
-    description: "Never use outline: none without replacement"
-    exception: "Only with visible alternative indicator"
-
+    description: 'Never use outline: none without replacement'
+    exception: Only with visible alternative indicator
   custom_components:
-    buttons: "Ring around button"
-    cards: "Ring around card"
-    inputs: "Ring around input field"
-    links: "Underline + ring"
-
-# =============================================================================
-# SCREEN READERS
-# =============================================================================
-
+    buttons: Ring around button
+    cards: Ring around card
+    inputs: Ring around input field
+    links: Underline + ring
 screen_readers:
-
   aria_labels:
-    description: "All interactive elements have accessible names"
-
+    description: All interactive elements have accessible names
     patterns:
-      buttons: "aria-label for icon-only buttons"
-      links: "Descriptive link text (not 'click here')"
-      images: "alt text for meaningful images"
-      decorative: "alt='' for decorative images"
-      form_inputs: "Associated label element"
-
+      buttons: aria-label for icon-only buttons
+      links: Descriptive link text (not 'click here')
+      images: alt text for meaningful images
+      decorative: alt='' for decorative images
+      form_inputs: Associated label element
   live_regions:
-    description: "Dynamic content updates announced"
-
+    description: Dynamic content updates announced
     types:
-      polite: "Non-urgent updates (search results)"
-      assertive: "Important updates (errors)"
-      status: "Status messages"
-
+      polite: Non-urgent updates (search results)
+      assertive: Important updates (errors)
+      status: Status messages
     implementation:
-      search_results: "aria-live='polite'"
-      form_errors: "aria-live='assertive'"
-      loading_states: "aria-live='polite'"
-      notifications: "role='alert'"
-
+      search_results: aria-live='polite'
+      form_errors: aria-live='assertive'
+      loading_states: aria-live='polite'
+      notifications: role='alert'
   landmarks:
-    description: "Proper semantic structure"
-
+    description: Proper semantic structure
     required:
-      banner: "Site header (role='banner' or <header>)"
-      navigation: "Main nav (role='navigation' or <nav>)"
-      main: "Main content (role='main' or <main>)"
-      contentinfo: "Footer (role='contentinfo' or <footer>)"
-      search: "Search form (role='search')"
-
+      banner: Site header (role='banner' or <header>)
+      navigation: Main nav (role='navigation' or <nav>)
+      main: Main content (role='main' or <main>)
+      contentinfo: Footer (role='contentinfo' or <footer>)
+      search: Search form (role='search')
   headings:
-    description: "Logical heading hierarchy"
-
+    description: Logical heading hierarchy
     rules:
-      - "One h1 per page"
-      - "No skipped levels"
-      - "Headings describe content"
-
-# =============================================================================
-# FORMS
-# =============================================================================
-
+    - One h1 per page
+    - No skipped levels
+    - Headings describe content
 forms:
   labels:
     visible: true
-    associated: "for/id or wrapping"
-    required: "aria-required='true'"
-
+    associated: for/id or wrapping
+    required: aria-required='true'
   errors:
-    association: "aria-describedby linking error to input"
-    announcement: "aria-live for dynamic errors"
-    visual: "Icon + text, not color alone"
-
+    association: aria-describedby linking error to input
+    announcement: aria-live for dynamic errors
+    visual: Icon + text, not color alone
   instructions:
-    position: "Before or within form"
-    association: "aria-describedby"
-
+    position: Before or within form
+    association: aria-describedby
   validation:
-    timing: "On blur or submit"
-    inline: "Error message below field"
-    summary: "Error summary at form top"
-
+    timing: On blur or submit
+    inline: Error message below field
+    summary: Error summary at form top
   input_types:
-    use_appropriate: "email, tel, url, number"
-    autocomplete: "Enable where appropriate"
-    pattern: "Provide for validation"
-
-# =============================================================================
-# SUBTITLES / CAPTIONS
-# =============================================================================
-
+    use_appropriate: email, tel, url, number
+    autocomplete: Enable where appropriate
+    pattern: Provide for validation
 subtitles:
-  customization: "Accessibility+"
-  description: "Full customization for readability"
-
+  customization: Accessibility+
+  description: Full customization for readability
   options:
     font_family:
-      choices: ["System default", "Sans-serif", "Serif", "Monospace", "OpenDyslexic"]
-      default: "Sans-serif"
-
+      choices:
+      - System default
+      - Sans-serif
+      - Serif
+      - Monospace
+      - OpenDyslexic
+      default: Sans-serif
     font_size:
-      range: "50% - 200%"
-      default: "100%"
-      step: "25%"
-
+      range: 50% - 200%
+      default: 100%
+      step: 25%
     text_color:
-      choices: ["White", "Yellow", "Cyan", "Green", "Custom"]
-      default: "White"
-
+      choices:
+      - White
+      - Yellow
+      - Cyan
+      - Green
+      - Custom
+      default: White
     background_color:
-      choices: ["Black", "Dark gray", "Transparent", "Custom"]
-      default: "Black"
-
+      choices:
+      - Black
+      - Dark gray
+      - Transparent
+      - Custom
+      default: Black
     background_opacity:
-      range: "0% - 100%"
-      default: "75%"
-
+      range: 0% - 100%
+      default: 75%
     edge_style:
-      choices: ["None", "Drop shadow", "Raised", "Depressed", "Outline"]
-      default: "None"
-
+      choices:
+      - None
+      - Drop shadow
+      - Raised
+      - Depressed
+      - Outline
+      default: None
     position:
-      choices: ["Bottom", "Top"]
-      default: "Bottom"
-
+      choices:
+      - Bottom
+      - Top
+      default: Bottom
   presets:
-    high_contrast: "Yellow on black, 150% size"
-    dyslexia_friendly: "OpenDyslexic font, cream background"
-    minimal: "White, no background, small"
-
+    high_contrast: Yellow on black, 150% size
+    dyslexia_friendly: OpenDyslexic font, cream background
+    minimal: White, no background, small
   sync:
-    preference: "Synced across devices"
-    storage: "User settings"
-
-# =============================================================================
-# REDUCED MOTION
-# =============================================================================
-
+    preference: Synced across devices
+    storage: User settings
 reduced_motion:
   respect_preference: true
-  description: "Honor prefers-reduced-motion OS setting"
-
+  description: Honor prefers-reduced-motion OS setting
   detection:
-    css: "@media (prefers-reduced-motion: reduce)"
-    js: "window.matchMedia('(prefers-reduced-motion: reduce)').matches"
-
+    css: '@media (prefers-reduced-motion: reduce)'
+    js: 'window.matchMedia(''(prefers-reduced-motion: reduce)'').matches'
   behavior:
-    animations: "Disabled or minimal"
-    transitions: "Instant"
-    auto_play: "Disabled for video backgrounds"
-    parallax: "Disabled"
-    carousel: "No auto-advance"
-
+    animations: Disabled or minimal
+    transitions: Instant
+    auto_play: Disabled for video backgrounds
+    parallax: Disabled
+    carousel: No auto-advance
   manual_override:
-    setting: "Settings > Accessibility > Reduce motion"
-    options: ["System default", "Always reduce", "Always enable"]
-
-# =============================================================================
-# COLOR INDEPENDENCE
-# =============================================================================
-
+    setting: Settings > Accessibility > Reduce motion
+    options:
+    - System default
+    - Always reduce
+    - Always enable
 color_independence:
-  description: "Never use color alone to convey information"
-
+  description: Never use color alone to convey information
   patterns:
     status_indicators:
-      success: "Green checkmark icon + 'Success' text"
-      error: "Red X icon + 'Error' text"
-      warning: "Yellow triangle icon + 'Warning' text"
-
+      success: Green checkmark icon + 'Success' text
+      error: Red X icon + 'Error' text
+      warning: Yellow triangle icon + 'Warning' text
     form_validation:
-      error: "Red border + error icon + error text"
-      success: "Green border + checkmark icon"
-
+      error: Red border + error icon + error text
+      success: Green border + checkmark icon
     links:
-      style: "Underlined, not just colored"
-
+      style: Underlined, not just colored
     charts:
-      style: "Patterns + colors + labels"
-
+      style: Patterns + colors + labels
     required_fields:
-      style: "Asterisk + 'Required' label"
-
-# =============================================================================
-# TEXT ALTERNATIVES
-# =============================================================================
-
+      style: Asterisk + 'Required' label
 text_alternatives:
-
   images:
     meaningful:
-      alt: "Descriptive text"
-      example: "Poster for The Dark Knight showing Batman overlooking Gotham"
+      alt: Descriptive text
+      example: Poster for The Dark Knight showing Batman overlooking Gotham
     decorative:
-      alt: "''"
-      aria: "aria-hidden='true'"
+      alt: ''''''
+      aria: aria-hidden='true'
     complex:
-      longdesc: "Extended description or link to full description"
-
+      longdesc: Extended description or link to full description
   icons:
-    with_text: "aria-hidden='true' (text provides context)"
-    standalone: "aria-label='Description'"
-    decorative: "aria-hidden='true'"
-
+    with_text: aria-hidden='true' (text provides context)
+    standalone: aria-label='Description'
+    decorative: aria-hidden='true'
   video:
-    captions: "Required for all video content"
-    audio_description: "For important visual-only information"
-    transcript: "Provided for all video/audio"
-
+    captions: Required for all video content
+    audio_description: For important visual-only information
+    transcript: Provided for all video/audio
   audio:
-    transcript: "Text alternative for audio content"
-
-# =============================================================================
-# TOUCH TARGETS
-# =============================================================================
-
+    transcript: Text alternative for audio content
 touch_targets:
-  minimum_size: "44px × 44px"
-  spacing: "8px minimum between targets"
-
+  minimum_size: 44px × 44px
+  spacing: 8px minimum between targets
   exceptions:
-    inline_links: "Text links in paragraphs"
-    dense_lists: "Can be smaller with spacing"
-
+    inline_links: Text links in paragraphs
+    dense_lists: Can be smaller with spacing
   implementation:
-    buttons: "min-h-11 min-w-11 (44px)"
-    icons: "Padding to reach 44px tap area"
-    checkboxes: "Large hit area, not just visible box"
-
-# =============================================================================
-# TIMING
-# =============================================================================
-
+    buttons: min-h-11 min-w-11 (44px)
+    icons: Padding to reach 44px tap area
+    checkboxes: Large hit area, not just visible box
 timing:
   adjustable: true
-
   session_timeout:
-    warning: "2 minutes before timeout"
-    extension: "User can extend"
-    save_work: "Save state before logout"
-
+    warning: 2 minutes before timeout
+    extension: User can extend
+    save_work: Save state before logout
   auto_advancing:
-    carousels: "Pause on hover/focus"
-    video_autoplay: "Disabled by default"
-    notifications: "Pause on hover, extend on interaction"
-
+    carousels: Pause on hover/focus
+    video_autoplay: Disabled by default
+    notifications: Pause on hover, extend on interaction
   time_limits:
-    forms: "No time limit or generous extension"
-    quizzes: "N/A"
-
-# =============================================================================
-# TESTING
-# =============================================================================
-
+    forms: No time limit or generous extension
+    quizzes: N/A
 testing:
-
   automated:
     tools:
-      - "axe DevTools"
-      - "WAVE"
-      - "Lighthouse Accessibility"
-      - "Pa11y"
-    ci_integration: "axe-core in test suite"
-
+    - axe DevTools
+    - WAVE
+    - Lighthouse Accessibility
+    - Pa11y
+    ci_integration: axe-core in test suite
   manual:
     keyboard:
-      - "Tab through entire page"
-      - "Verify focus visibility"
-      - "Test all interactive elements"
-      - "Verify skip link"
-
+    - Tab through entire page
+    - Verify focus visibility
+    - Test all interactive elements
+    - Verify skip link
     screen_reader:
-      - "NVDA (Windows)"
-      - "VoiceOver (macOS)"
-      - "TalkBack (Android)"
-      - "VoiceOver (iOS)"
-
+    - NVDA (Windows)
+    - VoiceOver (macOS)
+    - TalkBack (Android)
+    - VoiceOver (iOS)
     zoom:
-      - "200% browser zoom"
-      - "400% for AAA compliance"
-      - "Verify no horizontal scrolling"
-
+    - 200% browser zoom
+    - 400% for AAA compliance
+    - Verify no horizontal scrolling
   checklists:
-    - "WebAIM WCAG 2.1 Checklist"
-    - "A11Y Project Checklist"
-
-# =============================================================================
-# IMPLEMENTATION CHECKLIST
-# =============================================================================
-
+  - WebAIM WCAG 2.1 Checklist
+  - A11Y Project Checklist
 implementation_checklist:
-
   phase_1_foundation:
-    - "Set up axe-core in test suite"
-    - "Configure ESLint accessibility rules"
-    - "Implement skip link"
-    - "Set up focus management utilities"
-    - "Create focus-visible styles"
-
+  - Set up axe-core in test suite
+  - Configure ESLint accessibility rules
+  - Implement skip link
+  - Set up focus management utilities
+  - Create focus-visible styles
   phase_2_components:
-    - "Audit all components for ARIA"
-    - "Add aria-labels to icon buttons"
-    - "Implement live regions"
-    - "Add keyboard handlers"
-    - "Test with screen reader"
-
+  - Audit all components for ARIA
+  - Add aria-labels to icon buttons
+  - Implement live regions
+  - Add keyboard handlers
+  - Test with screen reader
   phase_3_content:
-    - "Add alt text to all images"
-    - "Ensure heading hierarchy"
-    - "Add landmarks to all pages"
-    - "Implement form accessibility"
-    - "Add subtitle customization"
-
+  - Add alt text to all images
+  - Ensure heading hierarchy
+  - Add landmarks to all pages
+  - Implement form accessibility
+  - Add subtitle customization
   phase_4_testing:
-    - "Full keyboard navigation test"
-    - "Screen reader testing (NVDA, VO)"
-    - "Color contrast verification"
-    - "Zoom testing (200%, 400%)"
-    - "Reduced motion testing"
-
+  - Full keyboard navigation test
+  - Screen reader testing (NVDA, VO)
+  - Color contrast verification
+  - Zoom testing (200%, 400%)
+  - Reduced motion testing
   phase_5_documentation:
-    - "Accessibility statement"
-    - "Known issues list"
-    - "Contact for accessibility feedback"
+  - Accessibility statement
+  - Known issues list
+  - Contact for accessibility feedback

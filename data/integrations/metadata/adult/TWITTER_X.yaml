@@ -18,20 +18,23 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Performer social media presence'
 wiki_tagline: '> Performer Twitter/X links'
-wiki_overview: 'Links to performer Twitter/X profiles in the adult content system. Tracks verified social media handles. Provides another way to discover performer content. Links stored as part of performer metadata records. No direct API integration - handles only.'
+wiki_overview: Links to performer Twitter/X profiles in the adult content system.
+  Tracks verified social media handles. Provides another way to discover performer
+  content. Links stored as part of performer metadata records. No direct API integration
+  - handles only.
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
 - title: integrations/metadata/adult
-  path: integrations/metadata/adult.md
+  path: ../../../integrations/metadata/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Twitter/X
 integration_id: twitterx
 external_service: Twitter/X

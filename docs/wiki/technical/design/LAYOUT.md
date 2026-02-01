@@ -20,11 +20,11 @@ sources:
     note: Breakpoint system
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: NAVIGATION
-    path: technical/design/NAVIGATION.md
+    path: ../../technical/design/NAVIGATION.md
   - title: COMPONENTS
-    path: technical/design/COMPONENTS.md
+    path: ../../technical/design/COMPONENTS.md
 ---
 
 # Layout System

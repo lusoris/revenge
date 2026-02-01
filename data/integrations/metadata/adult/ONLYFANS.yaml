@@ -18,16 +18,18 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult content platform subscription service - profile link tracking'
 wiki_tagline: '> Performer OnlyFans links'
-wiki_overview: 'Tracks OnlyFans profile links for adult performers. Links stored in performer metadata for reference. No content access or subscription management - profile links only. Helps identify performer presence on the platform.'
+wiki_overview: Tracks OnlyFans profile links for adult performers. Links stored in
+  performer metadata for reference. No content access or subscription management -
+  profile links only. Helps identify performer presence on the platform.
 design_refs:
 - title: integrations/metadata/adult
-  path: integrations/metadata/adult.md
+  path: ../../../integrations/metadata/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: OnlyFans
 integration_id: onlyfans
 external_service: OnlyFans

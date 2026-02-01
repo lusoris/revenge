@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Server settings persistence and retrieval'
 wiki_tagline: '> Server settings persistence and retrieval'
-wiki_overview: 'The Settings service stores and manages server configuration that can be changed at runtime. Unlike config file settings, these can be modified through the UI without restarting. Includes transcoding preferences, default languages, metadata sources, and feature flags. Changes take effect immediately and persist across restarts.'
+wiki_overview: The Settings service stores and manages server configuration that can
+  be changed at runtime. Unlike config file settings, these can be modified through
+  the UI without restarting. Includes transcoding preferences, default languages,
+  metadata sources, and feature flags. Changes take effect immediately and persist
+  across restarts.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -49,13 +53,13 @@ sources:
   note: Auto-resolved from sqlc-config
 design_refs:
 - title: services
-  path: services/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 service_name: Settings Service
 package_path: internal/service/settings
 fx_module: settings.Module

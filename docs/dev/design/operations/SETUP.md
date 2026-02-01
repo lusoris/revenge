@@ -70,11 +70,11 @@ sources:
     note: Auto-resolved from typesense-go
 design_refs:
   - title: operations
-    path: operations/INDEX.md
+    path: INDEX.md
   - title: TECH_STACK
-    path: technical/TECH_STACK.md
+    path: ../technical/TECH_STACK.md
   - title: REVERSE_PROXY
-    path: operations/REVERSE_PROXY.md
+    path: ../operations/REVERSE_PROXY.md
   - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
@@ -179,10 +179,10 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [operations](operations/INDEX.md)
+- [operations](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [REVERSE_PROXY](REVERSE_PROXY.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [REVERSE_PROXY](../operations/REVERSE_PROXY.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

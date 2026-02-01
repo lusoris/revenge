@@ -57,11 +57,11 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: METADATA_ENRICHMENT
-    path: patterns/METADATA_ENRICHMENT.md
+    path: ../patterns/METADATA_ENRICHMENT.md
 ---
 
 # Advanced Offloading Architecture
@@ -167,7 +167,7 @@ Target: **80% minimum**
 - [technical](technical.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [METADATA_ENRICHMENT](patterns/METADATA_ENRICHMENT.md)
+- [METADATA_ENRICHMENT](../patterns/METADATA_ENRICHMENT.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

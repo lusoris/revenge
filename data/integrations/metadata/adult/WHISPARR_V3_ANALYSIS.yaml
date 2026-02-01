@@ -19,16 +19,19 @@ status_integration_testing_notes: '-'
 technical_summary: '> Analysis of Whisparr v3 (eros) codebase for adult movie/scene
   schema structure (Whisparr models scenes as episodes under series)'
 wiki_tagline: '> How Whisparr models adult content'
-wiki_overview: 'Technical analysis of Whisparr v3 (eros branch) structure. Documents how Whisparr models scenes as episodes within series. Informs the QAR schema design for compatibility. Reference document for developers integrating Whisparr data. Not a user-facing feature.'
+wiki_overview: Technical analysis of Whisparr v3 (eros branch) structure. Documents
+  how Whisparr models scenes as episodes within series. Informs the QAR schema design
+  for compatibility. Reference document for developers integrating Whisparr data.
+  Not a user-facing feature.
 design_refs:
 - title: integrations/metadata/adult
-  path: integrations/metadata/adult.md
+  path: ../../../integrations/metadata/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Whisparr v3 (eros) - Adult Content Structure Analysis
 integration_id: whisparr_v3_eros__adult_content_structure_analysis
 external_service: Whisparr v3 (eros) - Adult Content Structure Analysis

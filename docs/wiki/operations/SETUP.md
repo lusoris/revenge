@@ -64,11 +64,11 @@ sources:
     note: Auto-resolved from typesense-go
 design_refs:
   - title: operations
-    path: operations/INDEX.md
+    path: INDEX.md
   - title: TECH_STACK
-    path: technical/TECH_STACK.md
+    path: ../technical/TECH_STACK.md
   - title: REVERSE_PROXY
-    path: operations/REVERSE_PROXY.md
+    path: ../operations/REVERSE_PROXY.md
   - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---

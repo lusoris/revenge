@@ -29,11 +29,11 @@ sources:
     note: Fast PostgreSQL for unit tests
 design_refs:
   - title: patterns
-    path: patterns/INDEX.md
+    path: INDEX.md
   - title: BEST_PRACTICES
-    path: operations/BEST_PRACTICES.md
+    path: ../operations/BEST_PRACTICES.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # Testing Patterns

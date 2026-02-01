@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Support for any OpenID Connect compatible provider'
 wiki_tagline: '> Connect any OIDC provider for authentication'
-wiki_overview: 'Use any OpenID Connect compatible identity provider with Revenge. Works with corporate identity systems, cloud providers (Google, Microsoft, Okta), or other self-hosted solutions. Configure the discovery URL, client ID, and secret. Map claims to Revenge user attributes and roles.'
+wiki_overview: Use any OpenID Connect compatible identity provider with Revenge. Works
+  with corporate identity systems, cloud providers (Google, Microsoft, Okta), or other
+  self-hosted solutions. Configure the discovery URL, client ID, and secret. Map claims
+  to Revenge user attributes and roles.
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/
@@ -33,14 +36,12 @@ sources:
   url: https://openid.net/specs/openid-connect-core-1_0.html
   note: Auto-resolved from oidc
 design_refs:
-- title: integrations/auth
-  path: integrations/auth.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Generic OIDC
 integration_id: generic_oidc
 external_service: Generic OIDC

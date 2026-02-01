@@ -22,7 +22,12 @@ technical_summary: "  > Gitflow branching strategy and release process\n\n  Bran
   \ - **fix/**: Bug fixes, merged to develop or main (hotfix)\n  - **release/**: Release\
   \ preparation branches"
 wiki_tagline: '> How we use Git branches for features, releases, and hotfixes'
-wiki_overview: 'Revenge uses a Gitflow-style branching strategy. The main branch contains production-ready code, while develop is the integration branch for the next release. Create feature/* branches for new work, fix/* for bug fixes. All merges require pull request review. Commits follow Conventional Commits format (feat:, fix:, docs:) for automatic changelog generation. Git hooks enforce commit message format and run linters before push.'
+wiki_overview: Revenge uses a Gitflow-style branching strategy. The main branch contains
+  production-ready code, while develop is the integration branch for the next release.
+  Create feature/* branches for new work, fix/* for bug fixes. All merges require
+  pull request review. Commits follow Conventional Commits format (feat:, fix:, docs:)
+  for automatic changelog generation. Git hooks enforce commit message format and
+  run linters before push.
 sources:
 - name: Conventional Commits
   url: https://www.conventionalcommits.org/
@@ -35,13 +40,13 @@ sources:
   note: Auto-resolved from go-io
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 branches:
   main: Production releases only
   develop: Active development integration

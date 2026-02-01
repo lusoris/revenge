@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary metadata provider for movies and TV shows'
 wiki_tagline: '> Movie and TV metadata from TMDB'
-wiki_overview: 'The Movie Database (TMDB) provides rich metadata for movies and TV shows. Posters, backdrops, cast information, trailers, and descriptions are fetched automatically. Free API with generous rate limits. Community-curated data in multiple languages. Primary metadata source used by Revenge.'
+wiki_overview: The Movie Database (TMDB) provides rich metadata for movies and TV
+  shows. Posters, backdrops, cast information, trailers, and descriptions are fetched
+  automatically. Free API with generous rate limits. Community-curated data in multiple
+  languages. Primary metadata source used by Revenge.
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -46,13 +49,13 @@ sources:
   note: Auto-resolved from typesense-go
 design_refs:
 - title: integrations/metadata/video
-  path: integrations/metadata/video.md
+  path: ../../../integrations/metadata/video.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: TMDb (The Movie Database)
 integration_id: tmdb_the_movie_database
 external_service: TMDb (The Movie Database)

@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult metadata database for performers, studios, and scenes'
 wiki_tagline: '> Primary adult metadata from StashDB'
-wiki_overview: 'StashDB is the primary metadata source for adult content. Community-maintained database of performers, studios, and scenes. Fingerprinting matches your files to database entries. High-quality metadata with multiple verification levels. GraphQL API provides comprehensive data access.'
+wiki_overview: StashDB is the primary metadata source for adult content. Community-maintained
+  database of performers, studios, and scenes. Fingerprinting matches your files to
+  database entries. High-quality metadata with multiple verification levels. GraphQL
+  API provides comprehensive data access.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -64,13 +67,13 @@ sources:
   note: Auto-resolved from typesense-go
 design_refs:
 - title: integrations/metadata/adult
-  path: integrations/metadata/adult.md
+  path: ../../../integrations/metadata/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: StashDB
 integration_id: stashdb
 external_service: StashDB

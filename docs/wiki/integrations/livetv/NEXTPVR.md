@@ -23,14 +23,12 @@ sources:
     url: ../../../sources/livetv/nextpvr.md
     note: Auto-resolved from nextpvr
 design_refs:
-  - title: integrations/livetv
-    path: integrations/livetv.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
   - title: 03_METADATA_SYSTEM
-    path: architecture/03_METADATA_SYSTEM.md
+    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # NextPVR

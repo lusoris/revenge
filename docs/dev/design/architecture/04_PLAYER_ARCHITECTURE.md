@@ -55,13 +55,13 @@ sources:
     note: Auto-resolved from sveltekit
 design_refs:
   - title: architecture
-    path: architecture/INDEX.md
+    path: INDEX.md
   - title: ADULT_CONTENT_SYSTEM
-    path: ADULT_CONTENT_SYSTEM.md
+    path: ../features/adult/ADULT_CONTENT_SYSTEM.md
   - title: ADULT_METADATA
-    path: ADULT_METADATA.md
+    path: ../features/adult/ADULT_METADATA.md
   - title: DATA_RECONCILIATION
-    path: DATA_RECONCILIATION.md
+    path: ../features/adult/DATA_RECONCILIATION.md
 ---
 
 # Revenge - Player Architecture
@@ -165,10 +165,10 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [architecture](architecture/INDEX.md)
-- [ADULT_CONTENT_SYSTEM](ADULT_CONTENT_SYSTEM.md)
-- [ADULT_METADATA](ADULT_METADATA.md)
-- [DATA_RECONCILIATION](DATA_RECONCILIATION.md)
+- [architecture](INDEX.md)
+- [ADULT_CONTENT_SYSTEM](../features/adult/ADULT_CONTENT_SYSTEM.md)
+- [ADULT_METADATA](../features/adult/ADULT_METADATA.md)
+- [DATA_RECONCILIATION](../features/adult/DATA_RECONCILIATION.md)
 
 ### External Sources
 - [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg

@@ -16,19 +16,29 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |
-  > Core design principles and patterns guiding Revenge development
+technical_summary: '> Core design principles and patterns guiding Revenge development
+
 
   Key principles:
+
   - **PostgreSQL Only**: No SQLite - simplifies codebase, pgx is best driver
+
   - **80% Test Coverage**: Required minimum for all packages
+
   - **Local-First Metadata**: Always prefer cached/local data over external APIs
+
   - **Table-Driven Tests**: testify + mockery for consistent testing
+
   - **Sentinel Errors**: Type-safe error handling with wrapped contexts
 
+  '
 wiki_tagline: '> The philosophy behind how Revenge is built'
-
-wiki_overview: 'Revenge follows strict design principles for maintainability and performance. PostgreSQL is the only supported database - no SQLite complexity. All code requires 80% minimum test coverage with table-driven tests. Metadata always comes from local cache first, then Arr services, then external APIs. Error handling uses sentinel errors for type safety. Logging is text in development (tint) and JSON in production (zap). These principles ensure consistent, testable, performant code.'
+wiki_overview: Revenge follows strict design principles for maintainability and performance.
+  PostgreSQL is the only supported database - no SQLite complexity. All code requires
+  80% minimum test coverage with table-driven tests. Metadata always comes from local
+  cache first, then Arr services, then external APIs. Error handling uses sentinel
+  errors for type safety. Logging is text in development (tint) and JSON in production
+  (zap). These principles ensure consistent, testable, performant code.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -80,10 +90,10 @@ sources:
   note: Auto-resolved from typesense-go
 design_refs:
 - title: architecture
-  path: architecture/INDEX.md
+  path: INDEX.md
 - title: ADULT_CONTENT_SYSTEM
-  path: ADULT_CONTENT_SYSTEM.md
+  path: ../features/adult/ADULT_CONTENT_SYSTEM.md
 - title: ADULT_METADATA
-  path: ADULT_METADATA.md
+  path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
-  path: DATA_RECONCILIATION.md
+  path: ../features/adult/DATA_RECONCILIATION.md

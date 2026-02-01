@@ -16,355 +16,243 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > Secure, reliable webhook handling with HMAC validation, async processing, and retry logic
+technical_summary: '> Secure, reliable webhook handling with HMAC validation, async
+  processing, and retry logic
+
 
   Standard webhook handling pattern:
+
   - **Security**: HMAC signature validation, API key auth, IP whitelisting
+
   - **Async Processing**: Queue events via River for non-blocking response
+
   - **Deduplication**: Event ID tracking to prevent duplicate processing
+
   - **Retry Logic**: Exponential backoff for failed webhook processing
-  - **Logging**: Comprehensive webhook event and error logging
 
-wiki_tagline: |-
-  > Secure webhook integration with automatic retries and event tracking
-
-wiki_overview: |-
-  The Webhook Pattern provides a secure, reliable foundation for receiving and processing webhook events from external services. All webhooks are validated using HMAC signatures or API keys, deduplicated using event IDs, and processed asynchronously via background jobs. Failed webhook processing automatically retries with exponential backoff, ensuring no events are lost.
+  - **Logging**: Comprehensive webhook event and error logging'
+wiki_tagline: '> Secure webhook integration with automatic retries and event tracking'
+wiki_overview: The Webhook Pattern provides a secure, reliable foundation for receiving
+  and processing webhook events from external services. All webhooks are validated
+  using HMAC signatures or API keys, deduplicated using event IDs, and processed asynchronously
+  via background jobs. Failed webhook processing automatically retries with exponential
+  backoff, ensuring no events are lost.
 sources:
-  - name: River Job Queue
-    url: https://pkg.go.dev/github.com/riverqueue/river
-    note: Background job processing
-  - name: crypto/hmac
-    url: https://pkg.go.dev/crypto/hmac
-    note: HMAC signature validation
-  - name: resty
-    url: https://pkg.go.dev/github.com/go-resty/resty/v2
-    note: HTTP client for webhook delivery
-  - name: gobreaker
-    url: https://pkg.go.dev/github.com/sony/gobreaker
-    note: Circuit breaker pattern
-
+- name: River Job Queue
+  url: https://pkg.go.dev/github.com/riverqueue/river
+  note: Background job processing
+- name: crypto/hmac
+  url: https://pkg.go.dev/crypto/hmac
+  note: HMAC signature validation
+- name: resty
+  url: https://pkg.go.dev/github.com/go-resty/resty/v2
+  note: HTTP client for webhook delivery
+- name: gobreaker
+  url: https://pkg.go.dev/github.com/sony/gobreaker
+  note: Circuit breaker pattern
 design_refs:
 - title: patterns
   path: patterns.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
-
+  path: ../architecture/03_METADATA_SYSTEM.md
 pattern_name: Webhook Handling Pattern
-
 webhook_sources:
   arr_services:
-    - Radarr (movie downloads, upgrades, deletions)
-    - Sonarr (TV episode downloads, series updates)
-    - Lidarr (album downloads, artist updates)
-    - Whisparr (adult content downloads - QAR module)
+  - Radarr (movie downloads, upgrades, deletions)
+  - Sonarr (TV episode downloads, series updates)
+  - Lidarr (album downloads, artist updates)
+  - Whisparr (adult content downloads - QAR module)
   internal_services:
-    - Stash-App (QAR scene metadata updates)
+  - Stash-App (QAR scene metadata updates)
   external_providers:
-    - Metadata providers (TMDb, MusicBrainz updates)
-    - Auth providers (OIDC user updates)
-    - Payment providers (subscription webhooks)
-    - Notification services (delivery confirmations)
-
+  - Metadata providers (TMDb, MusicBrainz updates)
+  - Auth providers (OIDC user updates)
+  - Payment providers (subscription webhooks)
+  - Notification services (delivery confirmations)
 event_catalog:
   arr_events:
-    - event: Download
-      sources: [Radarr, Sonarr, Lidarr, Whisparr]
-      trigger: New file downloaded
-      priority: High
-      processing: Immediate database update + background enrichment
-    - event: Upgrade
-      sources: [Radarr, Sonarr, Lidarr, Whisparr]
-      trigger: Better quality file downloaded
-      priority: Medium
-      processing: Update file path, delete old reference
-    - event: Rename
-      sources: [Radarr, Sonarr, Lidarr, Whisparr]
-      trigger: File renamed
-      priority: Low
-      processing: Update file path only
-    - event: Delete
-      sources: [Radarr, Sonarr, Lidarr, Whisparr]
-      trigger: Item deleted from Arr service
-      priority: High
-      processing: Mark as unavailable or cascade delete
-    - event: Test
-      sources: [Radarr, Sonarr, Lidarr, Whisparr]
-      trigger: Webhook connection test
-      priority: Low
-      processing: Log and respond 200 OK
-
+  - event: Download
+    sources:
+    - Radarr
+    - Sonarr
+    - Lidarr
+    - Whisparr
+    trigger: New file downloaded
+    priority: High
+    processing: Immediate database update + background enrichment
+  - event: Upgrade
+    sources:
+    - Radarr
+    - Sonarr
+    - Lidarr
+    - Whisparr
+    trigger: Better quality file downloaded
+    priority: Medium
+    processing: Update file path, delete old reference
+  - event: Rename
+    sources:
+    - Radarr
+    - Sonarr
+    - Lidarr
+    - Whisparr
+    trigger: File renamed
+    priority: Low
+    processing: Update file path only
+  - event: Delete
+    sources:
+    - Radarr
+    - Sonarr
+    - Lidarr
+    - Whisparr
+    trigger: Item deleted from Arr service
+    priority: High
+    processing: Mark as unavailable or cascade delete
+  - event: Test
+    sources:
+    - Radarr
+    - Sonarr
+    - Lidarr
+    - Whisparr
+    trigger: Webhook connection test
+    priority: Low
+    processing: Log and respond 200 OK
   stash_events:
-    - event: scene.create
-      trigger: New scene added to Stash
-      priority: Medium
-      processing: Create QAR record with metadata
-    - event: scene.update
-      trigger: Scene metadata updated
-      priority: Low
-      processing: Update QAR metadata cache
-    - event: performer.create
-      trigger: New performer added
-      priority: Medium
-      processing: Create performer record
-
+  - event: scene.create
+    trigger: New scene added to Stash
+    priority: Medium
+    processing: Create QAR record with metadata
+  - event: scene.update
+    trigger: Scene metadata updated
+    priority: Low
+    processing: Update QAR metadata cache
+  - event: performer.create
+    trigger: New performer added
+    priority: Medium
+    processing: Create performer record
   auth_events:
-    - event: user.created
-      trigger: New user registered via OIDC
-      priority: High
-      processing: Create user record, assign default roles
-    - event: user.updated
-      trigger: User profile updated
-      priority: Low
-      processing: Sync user metadata
-    - event: user.deleted
-      trigger: User deleted from auth provider
-      priority: High
-      processing: Soft delete user, revoke sessions
-
+  - event: user.created
+    trigger: New user registered via OIDC
+    priority: High
+    processing: Create user record, assign default roles
+  - event: user.updated
+    trigger: User profile updated
+    priority: Low
+    processing: Sync user metadata
+  - event: user.deleted
+    trigger: User deleted from auth provider
+    priority: High
+    processing: Soft delete user, revoke sessions
 security_patterns:
   hmac_validation:
     description: Validate webhook authenticity using HMAC-SHA256 signatures
-    implementation: |
-      ```go
-      func ValidateHMAC(payload []byte, signature string, secret string) bool {
-          mac := hmac.New(sha256.New, []byte(secret))
-          mac.Write(payload)
-          expectedMAC := mac.Sum(nil)
-          expectedSig := "sha256=" + hex.EncodeToString(expectedMAC)
-          return hmac.Equal([]byte(expectedSig), []byte(signature))
-      }
-
-      func (h *WebhookHandler) HandleWebhook(ctx context.Context, req *WebhookRequest) error {
-          // Read raw body for signature validation
-          body, err := io.ReadAll(req.Body)
-          if err != nil {
-              return fmt.Errorf("failed to read body: %w", err)
-          }
-
-          // Validate HMAC signature
-          signature := req.Header.Get("X-Webhook-Signature")
-          if !ValidateHMAC(body, signature, h.webhookSecret) {
-              return ErrInvalidSignature
-          }
-
-          // Parse and process event
-          var event WebhookEvent
-          if err := json.Unmarshal(body, &event); err != nil {
-              return fmt.Errorf("failed to parse event: %w", err)
-          }
-
-          return h.processEvent(ctx, &event)
-      }
-      ```
+    implementation: "```go\nfunc ValidateHMAC(payload []byte, signature string, secret\
+      \ string) bool {\n    mac := hmac.New(sha256.New, []byte(secret))\n    mac.Write(payload)\n\
+      \    expectedMAC := mac.Sum(nil)\n    expectedSig := \"sha256=\" + hex.EncodeToString(expectedMAC)\n\
+      \    return hmac.Equal([]byte(expectedSig), []byte(signature))\n}\n\nfunc (h\
+      \ *WebhookHandler) HandleWebhook(ctx context.Context, req *WebhookRequest) error\
+      \ {\n    // Read raw body for signature validation\n    body, err := io.ReadAll(req.Body)\n\
+      \    if err != nil {\n        return fmt.Errorf(\"failed to read body: %w\"\
+      , err)\n    }\n\n    // Validate HMAC signature\n    signature := req.Header.Get(\"\
+      X-Webhook-Signature\")\n    if !ValidateHMAC(body, signature, h.webhookSecret)\
+      \ {\n        return ErrInvalidSignature\n    }\n\n    // Parse and process event\n\
+      \    var event WebhookEvent\n    if err := json.Unmarshal(body, &event); err\
+      \ != nil {\n        return fmt.Errorf(\"failed to parse event: %w\", err)\n\
+      \    }\n\n    return h.processEvent(ctx, &event)\n}\n```\n"
     providers_using: GitHub, Stripe, Shopify, Discord
-
   api_key_auth:
     description: Simple API key validation for trusted services
-    implementation: |
-      ```go
-      func (h *WebhookHandler) ValidateAPIKey(ctx context.Context, apiKey string) error {
-          // Check against configured API keys (from database or config)
-          valid, err := h.apiKeyRepo.Validate(ctx, apiKey)
-          if err != nil {
-              return fmt.Errorf("failed to validate API key: %w", err)
-          }
-          if !valid {
-              return ErrInvalidAPIKey
-          }
-          return nil
-      }
-      ```
+    implementation: "```go\nfunc (h *WebhookHandler) ValidateAPIKey(ctx context.Context,\
+      \ apiKey string) error {\n    // Check against configured API keys (from database\
+      \ or config)\n    valid, err := h.apiKeyRepo.Validate(ctx, apiKey)\n    if err\
+      \ != nil {\n        return fmt.Errorf(\"failed to validate API key: %w\", err)\n\
+      \    }\n    if !valid {\n        return ErrInvalidAPIKey\n    }\n    return\
+      \ nil\n}\n```\n"
     providers_using: Radarr, Sonarr, Lidarr, Whisparr, Stash-App
-
   ip_whitelisting:
     description: Restrict webhook sources to known IP addresses
-    implementation: |
-      ```go
-      func (h *WebhookHandler) ValidateSourceIP(ctx context.Context, remoteAddr string) error {
-          ip := net.ParseIP(remoteAddr)
-          if ip == nil {
-              return ErrInvalidIP
-          }
-
-          // Check against whitelist (CIDR ranges)
-          for _, allowedCIDR := range h.config.AllowedIPRanges {
-              _, ipNet, _ := net.ParseCIDR(allowedCIDR)
-              if ipNet.Contains(ip) {
-                  return nil
-              }
-          }
-
-          return ErrIPNotAllowed
-      }
-      ```
+    implementation: "```go\nfunc (h *WebhookHandler) ValidateSourceIP(ctx context.Context,\
+      \ remoteAddr string) error {\n    ip := net.ParseIP(remoteAddr)\n    if ip ==\
+      \ nil {\n        return ErrInvalidIP\n    }\n\n    // Check against whitelist\
+      \ (CIDR ranges)\n    for _, allowedCIDR := range h.config.AllowedIPRanges {\n\
+      \        _, ipNet, _ := net.ParseCIDR(allowedCIDR)\n        if ipNet.Contains(ip)\
+      \ {\n            return nil\n        }\n    }\n\n    return ErrIPNotAllowed\n\
+      }\n```\n"
     use_cases: Internal services, known webhook providers
-
-webhook_handler_pattern: |
-  **Standard Webhook Handler Implementation**:
-
-  ```go
-  // Webhook handler receives events from external services
-  type WebhookHandler struct {
-      logger        *slog.Logger
-      eventQueue    *river.Client[pgx.Tx]
-      webhookRepo   *WebhookRepository
-      webhookSecret string
-  }
-
-  func (h *WebhookHandler) HandleIncomingWebhook(ctx context.Context, req *http.Request) error {
-      // 1. Validate security (HMAC, API key, or IP)
-      if err := h.validateSecurity(ctx, req); err != nil {
-          h.logger.Warn("webhook security validation failed", "error", err)
-          return ErrUnauthorized
-      }
-
-      // 2. Read and parse payload
-      body, err := io.ReadAll(req.Body)
-      if err != nil {
-          return fmt.Errorf("failed to read body: %w", err)
-      }
-
-      var event WebhookEvent
-      if err := json.Unmarshal(body, &event); err != nil {
-          return fmt.Errorf("failed to parse event: %w", err)
-      }
-
-      // 3. Validate event schema
-      if err := h.validateEvent(&event); err != nil {
-          h.logger.Warn("invalid webhook event", "error", err)
-          return ErrInvalidEvent
-      }
-
-      // 4. Check for duplicate (idempotency)
-      isDuplicate, err := h.webhookRepo.IsDuplicate(ctx, event.ID, event.Source)
-      if err != nil {
-          return fmt.Errorf("failed to check duplicate: %w", err)
-      }
-      if isDuplicate {
-          h.logger.Info("duplicate webhook event ignored", "event_id", event.ID)
-          return nil // Return success to prevent retries
-      }
-
-      // 5. Log webhook event
-      if err := h.webhookRepo.LogEvent(ctx, &event, body); err != nil {
-          h.logger.Error("failed to log webhook", "error", err)
-          // Continue processing even if logging fails
-      }
-
-      // 6. Queue for async processing
-      _, err = h.eventQueue.Insert(ctx, ProcessWebhookArgs{
-          EventID: event.ID,
-          Source:  event.Source,
-          Type:    event.Type,
-          Payload: body,
-      }, nil)
-      if err != nil {
-          return fmt.Errorf("failed to queue event: %w", err)
-      }
-
-      h.logger.Info("webhook queued for processing", "event_id", event.ID, "type", event.Type)
-      return nil
-  }
-  ```
-
+webhook_handler_pattern: "**Standard Webhook Handler Implementation**:\n\n```go\n\
+  // Webhook handler receives events from external services\ntype WebhookHandler struct\
+  \ {\n    logger        *slog.Logger\n    eventQueue    *river.Client[pgx.Tx]\n \
+  \   webhookRepo   *WebhookRepository\n    webhookSecret string\n}\n\nfunc (h *WebhookHandler)\
+  \ HandleIncomingWebhook(ctx context.Context, req *http.Request) error {\n    //\
+  \ 1. Validate security (HMAC, API key, or IP)\n    if err := h.validateSecurity(ctx,\
+  \ req); err != nil {\n        h.logger.Warn(\"webhook security validation failed\"\
+  , \"error\", err)\n        return ErrUnauthorized\n    }\n\n    // 2. Read and parse\
+  \ payload\n    body, err := io.ReadAll(req.Body)\n    if err != nil {\n        return\
+  \ fmt.Errorf(\"failed to read body: %w\", err)\n    }\n\n    var event WebhookEvent\n\
+  \    if err := json.Unmarshal(body, &event); err != nil {\n        return fmt.Errorf(\"\
+  failed to parse event: %w\", err)\n    }\n\n    // 3. Validate event schema\n  \
+  \  if err := h.validateEvent(&event); err != nil {\n        h.logger.Warn(\"invalid\
+  \ webhook event\", \"error\", err)\n        return ErrInvalidEvent\n    }\n\n  \
+  \  // 4. Check for duplicate (idempotency)\n    isDuplicate, err := h.webhookRepo.IsDuplicate(ctx,\
+  \ event.ID, event.Source)\n    if err != nil {\n        return fmt.Errorf(\"failed\
+  \ to check duplicate: %w\", err)\n    }\n    if isDuplicate {\n        h.logger.Info(\"\
+  duplicate webhook event ignored\", \"event_id\", event.ID)\n        return nil //\
+  \ Return success to prevent retries\n    }\n\n    // 5. Log webhook event\n    if\
+  \ err := h.webhookRepo.LogEvent(ctx, &event, body); err != nil {\n        h.logger.Error(\"\
+  failed to log webhook\", \"error\", err)\n        // Continue processing even if\
+  \ logging fails\n    }\n\n    // 6. Queue for async processing\n    _, err = h.eventQueue.Insert(ctx,\
+  \ ProcessWebhookArgs{\n        EventID: event.ID,\n        Source:  event.Source,\n\
+  \        Type:    event.Type,\n        Payload: body,\n    }, nil)\n    if err !=\
+  \ nil {\n        return fmt.Errorf(\"failed to queue event: %w\", err)\n    }\n\n\
+  \    h.logger.Info(\"webhook queued for processing\", \"event_id\", event.ID, \"\
+  type\", event.Type)\n    return nil\n}\n```\n"
 event_validation:
   schema_validation:
     method: JSON Schema or struct tags with validator library
-    example: |
-      ```go
-      type WebhookEvent struct {
-          ID        string    `json:"id" validate:"required,uuid"`
-          Source    string    `json:"source" validate:"required,oneof=radarr sonarr lidarr whisparr stash"`
-          Type      string    `json:"type" validate:"required"`
-          Timestamp time.Time `json:"timestamp" validate:"required"`
-          Payload   any       `json:"payload" validate:"required"`
-      }
-
-      func (h *WebhookHandler) validateEvent(event *WebhookEvent) error {
-          return h.validator.Struct(event)
-      }
-      ```
-
+    example: "```go\ntype WebhookEvent struct {\n    ID        string    `json:\"\
+      id\" validate:\"required,uuid\"`\n    Source    string    `json:\"source\" validate:\"\
+      required,oneof=radarr sonarr lidarr whisparr stash\"`\n    Type      string\
+      \    `json:\"type\" validate:\"required\"`\n    Timestamp time.Time `json:\"\
+      timestamp\" validate:\"required\"`\n    Payload   any       `json:\"payload\"\
+      \ validate:\"required\"`\n}\n\nfunc (h *WebhookHandler) validateEvent(event\
+      \ *WebhookEvent) error {\n    return h.validator.Struct(event)\n}\n```\n"
   deduplication:
     method: Track event IDs in database with TTL
     storage: Redis (7-day TTL) or PostgreSQL with cleanup job
-    example: |
-      ```go
-      func (r *WebhookRepository) IsDuplicate(ctx context.Context, eventID, source string) (bool, error) {
-          key := fmt.Sprintf("webhook:%s:%s", source, eventID)
-
-          // Check if event ID exists
-          exists, err := r.cache.Exists(ctx, key).Result()
-          if err != nil {
-              return false, fmt.Errorf("failed to check duplicate: %w", err)
-          }
-
-          if exists > 0 {
-              return true, nil
-          }
-
-          // Store event ID with 7-day TTL
-          if err := r.cache.Set(ctx, key, time.Now(), 7*24*time.Hour).Err(); err != nil {
-              return false, fmt.Errorf("failed to store event ID: %w", err)
-          }
-
-          return false, nil
-      }
-      ```
-
+    example: "```go\nfunc (r *WebhookRepository) IsDuplicate(ctx context.Context,\
+      \ eventID, source string) (bool, error) {\n    key := fmt.Sprintf(\"webhook:%s:%s\"\
+      , source, eventID)\n\n    // Check if event ID exists\n    exists, err := r.cache.Exists(ctx,\
+      \ key).Result()\n    if err != nil {\n        return false, fmt.Errorf(\"failed\
+      \ to check duplicate: %w\", err)\n    }\n\n    if exists > 0 {\n        return\
+      \ true, nil\n    }\n\n    // Store event ID with 7-day TTL\n    if err := r.cache.Set(ctx,\
+      \ key, time.Now(), 7*24*time.Hour).Err(); err != nil {\n        return false,\
+      \ fmt.Errorf(\"failed to store event ID: %w\", err)\n    }\n\n    return false,\
+      \ nil\n}\n```\n"
 async_processing:
   method: River background jobs
   benefits:
-    - Fast webhook response (< 100ms)
-    - Automatic retries on failure
-    - Priority-based processing
-    - Job monitoring and metrics
-
-  worker_implementation: |
-    ```go
-    type ProcessWebhookArgs struct {
-        EventID string `json:"event_id"`
-        Source  string `json:"source"`
-        Type    string `json:"type"`
-        Payload []byte `json:"payload"`
-    }
-
-    type ProcessWebhookWorker struct {
-        logger  *slog.Logger
-        handler WebhookEventHandler
-    }
-
-    func (w *ProcessWebhookWorker) Work(ctx context.Context, job *river.Job[ProcessWebhookArgs]) error {
-        w.logger.Info("processing webhook event",
-            "event_id", job.Args.EventID,
-            "source", job.Args.Source,
-            "type", job.Args.Type)
-
-        // Route to appropriate handler based on source and type
-        handler, err := w.handler.GetHandler(job.Args.Source, job.Args.Type)
-        if err != nil {
-            return fmt.Errorf("no handler for %s/%s: %w", job.Args.Source, job.Args.Type, err)
-        }
-
-        // Process the event
-        if err := handler.Handle(ctx, job.Args.Payload); err != nil {
-            w.logger.Error("webhook processing failed",
-                "event_id", job.Args.EventID,
-                "error", err)
-            return err // Will trigger retry
-        }
-
-        w.logger.Info("webhook processed successfully", "event_id", job.Args.EventID)
-        return nil
-    }
-    ```
-
+  - Fast webhook response (< 100ms)
+  - Automatic retries on failure
+  - Priority-based processing
+  - Job monitoring and metrics
+  worker_implementation: "```go\ntype ProcessWebhookArgs struct {\n    EventID string\
+    \ `json:\"event_id\"`\n    Source  string `json:\"source\"`\n    Type    string\
+    \ `json:\"type\"`\n    Payload []byte `json:\"payload\"`\n}\n\ntype ProcessWebhookWorker\
+    \ struct {\n    logger  *slog.Logger\n    handler WebhookEventHandler\n}\n\nfunc\
+    \ (w *ProcessWebhookWorker) Work(ctx context.Context, job *river.Job[ProcessWebhookArgs])\
+    \ error {\n    w.logger.Info(\"processing webhook event\",\n        \"event_id\"\
+    , job.Args.EventID,\n        \"source\", job.Args.Source,\n        \"type\", job.Args.Type)\n\
+    \n    // Route to appropriate handler based on source and type\n    handler, err\
+    \ := w.handler.GetHandler(job.Args.Source, job.Args.Type)\n    if err != nil {\n\
+    \        return fmt.Errorf(\"no handler for %s/%s: %w\", job.Args.Source, job.Args.Type,\
+    \ err)\n    }\n\n    // Process the event\n    if err := handler.Handle(ctx, job.Args.Payload);\
+    \ err != nil {\n        w.logger.Error(\"webhook processing failed\",\n      \
+    \      \"event_id\", job.Args.EventID,\n            \"error\", err)\n        return\
+    \ err // Will trigger retry\n    }\n\n    w.logger.Info(\"webhook processed successfully\"\
+    , \"event_id\", job.Args.EventID)\n    return nil\n}\n```\n"
 retry_logic:
   strategy: Exponential backoff with jitter
   configuration:
@@ -372,31 +260,15 @@ retry_logic:
     initial_delay: 1s
     max_delay: 60s
     backoff_multiplier: 2
-
-  river_configuration: |
-    ```go
-    workers := river.NewWorkers()
-    river.AddWorker(workers, &ProcessWebhookWorker{
-        logger:  logger,
-        handler: eventHandler,
-    })
-
-    riverClient, err := river.NewClient(riverpgxv5.New(dbPool), &river.Config{
-        Queues: map[string]river.QueueConfig{
-            river.QueueDefault: {MaxWorkers: 10},
-            "webhooks":         {MaxWorkers: 20}, // High concurrency for webhooks
-        },
-        Workers: workers,
-    })
-
-    // Insert job with custom retry policy
-    _, err = riverClient.Insert(ctx, ProcessWebhookArgs{...}, &river.InsertOpts{
-        MaxAttempts: 5,
-        Queue:       "webhooks",
-        Priority:    1, // Higher priority
-    })
-    ```
-
+  river_configuration: "```go\nworkers := river.NewWorkers()\nriver.AddWorker(workers,\
+    \ &ProcessWebhookWorker{\n    logger:  logger,\n    handler: eventHandler,\n})\n\
+    \nriverClient, err := river.NewClient(riverpgxv5.New(dbPool), &river.Config{\n\
+    \    Queues: map[string]river.QueueConfig{\n        river.QueueDefault: {MaxWorkers:\
+    \ 10},\n        \"webhooks\":         {MaxWorkers: 20}, // High concurrency for\
+    \ webhooks\n    },\n    Workers: workers,\n})\n\n// Insert job with custom retry\
+    \ policy\n_, err = riverClient.Insert(ctx, ProcessWebhookArgs{...}, &river.InsertOpts{\n\
+    \    MaxAttempts: 5,\n    Queue:       \"webhooks\",\n    Priority:    1, // Higher\
+    \ priority\n})\n```\n"
 error_handling:
   response_codes:
     200: Success - event processed or queued
@@ -405,155 +277,90 @@ error_handling:
     409: Conflict - duplicate event (idempotent response)
     429: Rate Limited - too many requests
     500: Internal Error - temporary failure, will retry
-
-  error_logging: |
-    ```go
-    func (h *WebhookHandler) HandleWebhook(ctx context.Context, req *http.Request) (int, error) {
-        if err := h.processWebhook(ctx, req); err != nil {
-            switch {
-            case errors.Is(err, ErrInvalidSignature), errors.Is(err, ErrInvalidAPIKey):
-                h.logger.Warn("webhook unauthorized", "error", err, "source", req.RemoteAddr)
-                return 401, err
-            case errors.Is(err, ErrInvalidEvent):
-                h.logger.Warn("webhook invalid", "error", err)
-                return 400, err
-            case errors.Is(err, ErrDuplicateEvent):
-                h.logger.Info("webhook duplicate", "event_id", req.Header.Get("X-Event-ID"))
-                return 200, nil // Return success for duplicates
-            default:
-                h.logger.Error("webhook processing failed", "error", err)
-                return 500, err
-            }
-        }
-        return 200, nil
-    }
-    ```
-
-database_schema: |
-  ```sql
-  -- Webhook Event Log
-  CREATE TABLE webhook_events (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    event_id TEXT NOT NULL, -- External event ID (for deduplication)
-    source TEXT NOT NULL, -- radarr, sonarr, stash, etc.
-    event_type TEXT NOT NULL,
-    payload JSONB NOT NULL,
-    signature TEXT,
-    ip_address INET,
-    received_at TIMESTAMPTZ DEFAULT NOW(),
-    processed_at TIMESTAMPTZ,
-    status TEXT DEFAULT 'pending', -- pending, processing, completed, failed
-    error_message TEXT,
-    retry_count INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_webhook_events_event_id ON webhook_events(source, event_id);
-  CREATE INDEX idx_webhook_events_status ON webhook_events(status, received_at);
-  CREATE INDEX idx_webhook_events_source ON webhook_events(source, event_type, received_at DESC);
-
-  -- Webhook Subscriptions (for outgoing webhooks)
-  CREATE TABLE webhook_subscriptions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    url TEXT NOT NULL,
-    secret TEXT NOT NULL, -- HMAC secret for signing outgoing webhooks
-    events TEXT[] NOT NULL, -- Array of event types to subscribe to
-    active BOOLEAN DEFAULT TRUE,
-    last_success_at TIMESTAMPTZ,
-    last_failure_at TIMESTAMPTZ,
-    failure_count INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_webhook_subscriptions_active ON webhook_subscriptions(active);
-  ```
-
+  error_logging: "```go\nfunc (h *WebhookHandler) HandleWebhook(ctx context.Context,\
+    \ req *http.Request) (int, error) {\n    if err := h.processWebhook(ctx, req);\
+    \ err != nil {\n        switch {\n        case errors.Is(err, ErrInvalidSignature),\
+    \ errors.Is(err, ErrInvalidAPIKey):\n            h.logger.Warn(\"webhook unauthorized\"\
+    , \"error\", err, \"source\", req.RemoteAddr)\n            return 401, err\n \
+    \       case errors.Is(err, ErrInvalidEvent):\n            h.logger.Warn(\"webhook\
+    \ invalid\", \"error\", err)\n            return 400, err\n        case errors.Is(err,\
+    \ ErrDuplicateEvent):\n            h.logger.Info(\"webhook duplicate\", \"event_id\"\
+    , req.Header.Get(\"X-Event-ID\"))\n            return 200, nil // Return success\
+    \ for duplicates\n        default:\n            h.logger.Error(\"webhook processing\
+    \ failed\", \"error\", err)\n            return 500, err\n        }\n    }\n \
+    \   return 200, nil\n}\n```\n"
+database_schema: "```sql\n-- Webhook Event Log\nCREATE TABLE webhook_events (\n  id\
+  \ UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  event_id TEXT NOT NULL, -- External\
+  \ event ID (for deduplication)\n  source TEXT NOT NULL, -- radarr, sonarr, stash,\
+  \ etc.\n  event_type TEXT NOT NULL,\n  payload JSONB NOT NULL,\n  signature TEXT,\n\
+  \  ip_address INET,\n  received_at TIMESTAMPTZ DEFAULT NOW(),\n  processed_at TIMESTAMPTZ,\n\
+  \  status TEXT DEFAULT 'pending', -- pending, processing, completed, failed\n  error_message\
+  \ TEXT,\n  retry_count INTEGER DEFAULT 0,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
+  \  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_webhook_events_event_id\
+  \ ON webhook_events(source, event_id);\nCREATE INDEX idx_webhook_events_status ON\
+  \ webhook_events(status, received_at);\nCREATE INDEX idx_webhook_events_source ON\
+  \ webhook_events(source, event_type, received_at DESC);\n\n-- Webhook Subscriptions\
+  \ (for outgoing webhooks)\nCREATE TABLE webhook_subscriptions (\n  id UUID PRIMARY\
+  \ KEY DEFAULT gen_random_uuid(),\n  url TEXT NOT NULL,\n  secret TEXT NOT NULL,\
+  \ -- HMAC secret for signing outgoing webhooks\n  events TEXT[] NOT NULL, -- Array\
+  \ of event types to subscribe to\n  active BOOLEAN DEFAULT TRUE,\n  last_success_at\
+  \ TIMESTAMPTZ,\n  last_failure_at TIMESTAMPTZ,\n  failure_count INTEGER DEFAULT\
+  \ 0,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT\
+  \ NOW()\n);\n\nCREATE INDEX idx_webhook_subscriptions_active ON webhook_subscriptions(active);\n\
+  ```\n"
 outgoing_webhooks:
   description: Deliver webhook events to external services
   use_cases:
-    - Notify external services of new downloads
-    - Sync user actions to external systems
-    - Trigger automation workflows
-
-  delivery_pattern: |
-    ```go
-    type WebhookDeliveryService struct {
-        httpClient *resty.Client
-        logger     *slog.Logger
-        breaker    *gobreaker.CircuitBreaker
-    }
-
-    func (s *WebhookDeliveryService) Deliver(ctx context.Context, subscription *WebhookSubscription, event *WebhookEvent) error {
-        // Serialize event
-        payload, err := json.Marshal(event)
-        if err != nil {
-            return fmt.Errorf("failed to marshal event: %w", err)
-        }
-
-        // Generate HMAC signature
-        signature := s.generateHMAC(payload, subscription.Secret)
-
-        // Deliver via circuit breaker
-        _, err = s.breaker.Execute(func() (any, error) {
-            resp, err := s.httpClient.R().
-                SetContext(ctx).
-                SetHeader("Content-Type", "application/json").
-                SetHeader("X-Webhook-Signature", signature).
-                SetHeader("X-Event-Type", event.Type).
-                SetHeader("X-Event-ID", event.ID).
-                SetBody(payload).
-                Post(subscription.URL)
-
-            if err != nil {
-                return nil, fmt.Errorf("delivery failed: %w", err)
-            }
-
-            if resp.StatusCode() >= 400 {
-                return nil, fmt.Errorf("delivery failed with status %d", resp.StatusCode())
-            }
-
-            return resp, nil
-        })
-
-        return err
-    }
-    ```
-
+  - Notify external services of new downloads
+  - Sync user actions to external systems
+  - Trigger automation workflows
+  delivery_pattern: "```go\ntype WebhookDeliveryService struct {\n    httpClient *resty.Client\n\
+    \    logger     *slog.Logger\n    breaker    *gobreaker.CircuitBreaker\n}\n\n\
+    func (s *WebhookDeliveryService) Deliver(ctx context.Context, subscription *WebhookSubscription,\
+    \ event *WebhookEvent) error {\n    // Serialize event\n    payload, err := json.Marshal(event)\n\
+    \    if err != nil {\n        return fmt.Errorf(\"failed to marshal event: %w\"\
+    , err)\n    }\n\n    // Generate HMAC signature\n    signature := s.generateHMAC(payload,\
+    \ subscription.Secret)\n\n    // Deliver via circuit breaker\n    _, err = s.breaker.Execute(func()\
+    \ (any, error) {\n        resp, err := s.httpClient.R().\n            SetContext(ctx).\n\
+    \            SetHeader(\"Content-Type\", \"application/json\").\n            SetHeader(\"\
+    X-Webhook-Signature\", signature).\n            SetHeader(\"X-Event-Type\", event.Type).\n\
+    \            SetHeader(\"X-Event-ID\", event.ID).\n            SetBody(payload).\n\
+    \            Post(subscription.URL)\n\n        if err != nil {\n            return\
+    \ nil, fmt.Errorf(\"delivery failed: %w\", err)\n        }\n\n        if resp.StatusCode()\
+    \ >= 400 {\n            return nil, fmt.Errorf(\"delivery failed with status %d\"\
+    , resp.StatusCode())\n        }\n\n        return resp, nil\n    })\n\n    return\
+    \ err\n}\n```\n"
 monitoring_and_metrics:
   metrics:
-    - Webhook events received per minute
-    - Webhook processing latency (p50, p95, p99)
-    - Webhook processing success rate
-    - Webhook retry count distribution
-    - Failed webhooks by source/type
-
+  - Webhook events received per minute
+  - Webhook processing latency (p50, p95, p99)
+  - Webhook processing success rate
+  - Webhook retry count distribution
+  - Failed webhooks by source/type
   alerts:
-    - alert: High webhook failure rate
-      threshold: ">10% failures over 5 minutes"
-      action: Check service health and logs
-    - alert: Webhook processing lag
-      threshold: ">1000 pending events"
-      action: Scale webhook workers
-    - alert: Repeated webhook failures
-      threshold: ">5 consecutive failures for same subscription"
-      action: Disable subscription, notify admin
-
+  - alert: High webhook failure rate
+    threshold: '>10% failures over 5 minutes'
+    action: Check service health and logs
+  - alert: Webhook processing lag
+    threshold: '>1000 pending events'
+    action: Scale webhook workers
+  - alert: Repeated webhook failures
+    threshold: '>5 consecutive failures for same subscription'
+    action: Disable subscription, notify admin
 best_practices:
-  - practice: Always validate webhook signatures
-    reason: Prevents unauthorized webhook spoofing
-  - practice: Return 200 OK immediately after queueing
-    reason: Fast response prevents sender timeouts and retries
-  - practice: Implement idempotency with event IDs
-    reason: Prevents duplicate processing on retries
-  - practice: Log all webhook events
-    reason: Debugging, auditing, and replay capability
-  - practice: Use circuit breakers for outgoing webhooks
-    reason: Prevents cascading failures
-  - practice: Process webhooks asynchronously
-    reason: Isolates webhook receiver from processing failures
-  - practice: Set reasonable retry limits
-    reason: Prevents infinite retry loops
-  - practice: Monitor webhook health metrics
-    reason: Early detection of integration issues
+- practice: Always validate webhook signatures
+  reason: Prevents unauthorized webhook spoofing
+- practice: Return 200 OK immediately after queueing
+  reason: Fast response prevents sender timeouts and retries
+- practice: Implement idempotency with event IDs
+  reason: Prevents duplicate processing on retries
+- practice: Log all webhook events
+  reason: Debugging, auditing, and replay capability
+- practice: Use circuit breakers for outgoing webhooks
+  reason: Prevents cascading failures
+- practice: Process webhooks asynchronously
+  reason: Isolates webhook receiver from processing failures
+- practice: Set reasonable retry limits
+  reason: Prevents infinite retry loops
+- practice: Monitor webhook health metrics
+  reason: Early detection of integration issues

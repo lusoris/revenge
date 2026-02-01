@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Enterprise identity and access management solution'
 wiki_tagline: '> Single sign-on with Keycloak'
-wiki_overview: 'Integrate with Keycloak for enterprise-grade identity management. Supports LDAP/Active Directory backends, social login federation, and fine-grained access control. Create a Revenge client in Keycloak and configure the connection in Revenge settings. Role mappings sync Keycloak roles to Revenge permissions.'
+wiki_overview: Integrate with Keycloak for enterprise-grade identity management. Supports
+  LDAP/Active Directory backends, social login federation, and fine-grained access
+  control. Create a Revenge client in Keycloak and configure the connection in Revenge
+  settings. Role mappings sync Keycloak roles to Revenge permissions.
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/
@@ -30,14 +33,12 @@ sources:
   url: https://www.keycloak.org/documentation
   note: Auto-resolved from keycloak
 design_refs:
-- title: integrations/auth
-  path: integrations/auth.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Keycloak
 integration_id: keycloak
 external_service: Keycloak

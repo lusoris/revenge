@@ -56,11 +56,11 @@ sources:
     note: UI body font
 design_refs:
   - title: FRONTEND
-    path: technical/FRONTEND.md
+    path: ../technical/FRONTEND.md
   - title: 04_PLAYER_ARCHITECTURE
-    path: architecture/04_PLAYER_ARCHITECTURE.md
+    path: ../architecture/04_PLAYER_ARCHITECTURE.md
   - title: USER_EXPERIENCE_FEATURES
-    path: features/shared/USER_EXPERIENCE_FEATURES.md
+    path: ../features/shared/USER_EXPERIENCE_FEATURES.md
 ---
 
 # Design System
@@ -200,9 +200,9 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [FRONTEND](FRONTEND.md)
+- [FRONTEND](../technical/FRONTEND.md)
 - [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
-- [USER_EXPERIENCE_FEATURES](features/shared/USER_EXPERIENCE_FEATURES.md)
+- [USER_EXPERIENCE_FEATURES](../features/shared/USER_EXPERIENCE_FEATURES.md)
 
 ### External Sources
 - [shadcn-svelte](../../sources/frontend/shadcn-svelte.md) - Component library

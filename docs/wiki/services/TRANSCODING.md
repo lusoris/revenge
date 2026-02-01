@@ -29,11 +29,11 @@ design_refs:
   - title: services
     path: services.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: OFFLOADING
-    path: technical/OFFLOADING.md
+    path: ../technical/OFFLOADING.md
   - title: AUDIO_STREAMING
-    path: technical/AUDIO_STREAMING.md
+    path: ../technical/AUDIO_STREAMING.md
 ---
 
 # Transcoding Service

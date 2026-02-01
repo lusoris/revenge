@@ -34,7 +34,12 @@ technical_summary: '> Local development environment setup with Go, Node.js, Post
 wiki_tagline: '> Get your local development environment running in minutes
 
   '
-wiki_overview: 'This guide walks you through setting up Revenge for local development. You will install the required tools (Go 1.25+, Node.js 20, PostgreSQL 18), configure the database, and start the development servers with hot reload. The backend uses air for instant rebuilds on code changes, while the frontend uses Vite for blazing-fast HMR. Includes troubleshooting tips for common issues and useful Makefile commands to streamline your workflow.
+wiki_overview: 'This guide walks you through setting up Revenge for local development.
+  You will install the required tools (Go 1.25+, Node.js 20, PostgreSQL 18), configure
+  the database, and start the development servers with hot reload. The backend uses
+  air for instant rebuilds on code changes, while the frontend uses Vite for blazing-fast
+  HMR. Includes troubleshooting tips for common issues and useful Makefile commands
+  to streamline your workflow.
 
   '
 sources:
@@ -61,11 +66,11 @@ sources:
   note: Commit message format
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: TECH_STACK
-  path: technical/TECH_STACK.md
+  path: ../technical/TECH_STACK.md
 - title: BEST_PRACTICES
-  path: operations/BEST_PRACTICES.md
+  path: ../operations/BEST_PRACTICES.md
 - title: 00_SOURCE_OF_TRUTH
   path: 00_SOURCE_OF_TRUTH.md
 operation_name: Development Environment Setup

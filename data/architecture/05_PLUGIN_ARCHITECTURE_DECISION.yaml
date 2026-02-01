@@ -16,19 +16,30 @@ status_unit_testing: ⚪
 status_unit_testing_notes: '-'
 status_integration_testing: ⚪
 status_integration_testing_notes: '-'
-technical_summary: |
-  > ADR: Decision to use integrations over plugins
+technical_summary: '> ADR: Decision to use integrations over plugins
+
 
   Decision rationale:
+
   - **No Plugin System**: Revenge uses direct integrations instead of plugins
+
   - **Why**: Simpler maintenance, better security, faster development
-  - **Integrations**: First-class support for common services (Arr stack, metadata providers)
+
+  - **Integrations**: First-class support for common services (Arr stack, metadata
+  providers)
+
   - **Webhooks**: External systems can integrate via webhooks
+
   - **Future**: May add scripting for power users (Lua or Starlark)
 
+  '
 wiki_tagline: '> Why Revenge uses integrations instead of plugins'
-
-wiki_overview: 'Revenge deliberately chose not to implement a plugin system. Instead, common integrations (Radarr, Sonarr, TMDb, etc.) are built directly into the codebase with first-class support. This means faster development, better security (no arbitrary code execution), and simpler maintenance. External systems can still integrate via webhooks and the REST API. For power users who need custom automation, scripting support (Lua or Starlark) may be added in the future.'
+wiki_overview: Revenge deliberately chose not to implement a plugin system. Instead,
+  common integrations (Radarr, Sonarr, TMDb, etc.) are built directly into the codebase
+  with first-class support. This means faster development, better security (no arbitrary
+  code execution), and simpler maintenance. External systems can still integrate via
+  webhooks and the REST API. For power users who need custom automation, scripting
+  support (Lua or Starlark) may be added in the future.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -59,10 +70,10 @@ sources:
   note: Auto-resolved from typesense-go
 design_refs:
 - title: architecture
-  path: architecture/INDEX.md
+  path: INDEX.md
 - title: ADULT_CONTENT_SYSTEM
-  path: ADULT_CONTENT_SYSTEM.md
+  path: ../features/adult/ADULT_CONTENT_SYSTEM.md
 - title: ADULT_METADATA
-  path: ADULT_METADATA.md
+  path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
-  path: DATA_RECONCILIATION.md
+  path: ../features/adult/DATA_RECONCILIATION.md

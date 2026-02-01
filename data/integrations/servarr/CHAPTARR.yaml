@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Book & audiobook management automation (uses Readarr API)'
 wiki_tagline: '> Automatic book and audiobook downloads with Chaptarr'
-wiki_overview: 'Chaptarr manages book and audiobook downloads using the Readarr API. Add authors and their works download automatically. Monitors for new releases. Supports both ebook and audiobook formats. Webhooks notify Revenge when books are imported. Connect with your Chaptarr/Readarr URL and API key.'
+wiki_overview: Chaptarr manages book and audiobook downloads using the Readarr API.
+  Add authors and their works download automatically. Monitors for new releases. Supports
+  both ebook and audiobook formats. Webhooks notify Revenge when books are imported.
+  Connect with your Chaptarr/Readarr URL and API key.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -45,14 +48,12 @@ sources:
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
 design_refs:
-- title: integrations/servarr
-  path: integrations/servarr.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Chaptarr
 integration_id: chaptarr
 external_service: Chaptarr

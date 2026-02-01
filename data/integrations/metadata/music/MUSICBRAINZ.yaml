@@ -19,7 +19,10 @@ status_integration_testing_notes: '-'
 technical_summary: '> Open music metadata database - primary metadata provider for
   music'
 wiki_tagline: '> Open music database for artist and album data'
-wiki_overview: 'MusicBrainz is the primary source for music metadata. Open database with artist, album, and track information. Cover art from Cover Art Archive. Links to other services via MBIDs. No API key required but rate limits apply. Identifies music by acoustic fingerprinting.'
+wiki_overview: MusicBrainz is the primary source for music metadata. Open database
+  with artist, album, and track information. Cover art from Cover Art Archive. Links
+  to other services via MBIDs. No API key required but rate limits apply. Identifies
+  music by acoustic fingerprinting.
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -32,13 +35,13 @@ sources:
   note: Auto-resolved from musicbrainz
 design_refs:
 - title: integrations/metadata/music
-  path: integrations/metadata/music.md
+  path: ../../../integrations/metadata/music.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: MusicBrainz
 integration_id: musicbrainz
 external_service: MusicBrainz

@@ -31,11 +31,11 @@ sources:
     note: Design inspiration
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: COLOR_SYSTEM
-    path: technical/design/COLOR_SYSTEM.md
+    path: ../../technical/design/COLOR_SYSTEM.md
   - title: PIRATE_MODE
-    path: technical/design/PIRATE_MODE.md
+    path: ../../technical/design/PIRATE_MODE.md
 ---
 
 # Brand Identity
@@ -138,9 +138,9 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [COLOR_SYSTEM](technical/design/COLOR_SYSTEM.md)
-- [PIRATE_MODE](technical/design/PIRATE_MODE.md)
+- [DESIGN_SYSTEM](../../technical/DESIGN_SYSTEM.md)
+- [COLOR_SYSTEM](../../technical/design/COLOR_SYSTEM.md)
+- [PIRATE_MODE](../../technical/design/PIRATE_MODE.md)
 
 ### External Sources
 - [Netflix Brand Guidelines](https://brand.netflix.com/) - Design inspiration

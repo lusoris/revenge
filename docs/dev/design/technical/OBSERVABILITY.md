@@ -51,11 +51,11 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: OFFLOADING
-    path: technical/OFFLOADING.md
+    path: ../technical/OFFLOADING.md
 ---
 
 # Observability - Metrics, Tracing, and Logging
@@ -161,7 +161,7 @@ Target: **80% minimum**
 - [technical](technical.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [OFFLOADING](OFFLOADING.md)
+- [OFFLOADING](../technical/OFFLOADING.md)
 
 ### External Sources
 - [Prometheus Go Client](../../sources/observability/prometheus.md) - Metrics instrumentation

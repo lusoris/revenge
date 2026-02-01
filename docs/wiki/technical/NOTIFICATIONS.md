@@ -28,13 +28,13 @@ design_refs:
   - title: technical
     path: technical.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
-    path: architecture/02_DESIGN_PRINCIPLES.md
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
   - title: EMAIL
-    path: technical/EMAIL.md
+    path: ../technical/EMAIL.md
   - title: WEBHOOKS
-    path: technical/WEBHOOKS.md
+    path: ../technical/WEBHOOKS.md
 ---
 
 # Notifications System

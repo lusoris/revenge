@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary metadata and tracking provider for anime and manga'
 wiki_tagline: '> Sync anime watch status with AniList'
-wiki_overview: 'Connect your AniList account to sync anime watching progress. Metadata for anime series pulls from AniList including cover art, descriptions, and airing schedules. Mark episodes as watched in Revenge and your AniList profile updates automatically. Import your existing AniList watchlist to track completion.'
+wiki_overview: Connect your AniList account to sync anime watching progress. Metadata
+  for anime series pulls from AniList including cover art, descriptions, and airing
+  schedules. Mark episodes as watched in Revenge and your AniList profile updates
+  automatically. Import your existing AniList watchlist to track completion.
 sources:
 - name: AniList GraphQL API
   url: https://anilist.gitbook.io/anilist-apiv2-docs
@@ -33,14 +36,12 @@ sources:
   url: https://pkg.go.dev/github.com/riverqueue/river
   note: Auto-resolved from river
 design_refs:
-- title: integrations/anime
-  path: integrations/anime.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: AniList
 integration_id: anilist
 external_service: AniList

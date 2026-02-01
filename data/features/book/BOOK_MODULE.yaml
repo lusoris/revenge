@@ -16,21 +16,27 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > Book/eBook content management with metadata enrichment from OpenLibrary and Goodreads
+technical_summary: '> Book/eBook content management with metadata enrichment from
+  OpenLibrary and Goodreads
+
 
   Complete eBook library:
+
   - **Metadata Sources**: OpenLibrary (primary), Google Books, Goodreads, Hardcover
+
   - **Supported Formats**: EPUB, PDF, MOBI, AZW3, CBZ (comics)
+
   - **Reading Features**: Web reader, progress tracking, bookmarks, highlights
+
   - **Collections**: Reading lists, series tracking, genre collections
-  - **Sync**: Multi-device reading progress synchronization
 
-wiki_tagline: |-
-  > Your digital library with reading progress and recommendations
-
-wiki_overview: |-
-  The Book Module provides a comprehensive eBook library with support for multiple formats including EPUB, PDF, and MOBI. Track your reading progress across devices, create custom reading lists, and discover new books through metadata from OpenLibrary, Google Books, and Goodreads. The built-in web reader lets you read anywhere without additional software.
+  - **Sync**: Multi-device reading progress synchronization'
+wiki_tagline: '> Your digital library with reading progress and recommendations'
+wiki_overview: The Book Module provides a comprehensive eBook library with support
+  for multiple formats including EPUB, PDF, and MOBI. Track your reading progress
+  across devices, create custom reading lists, and discover new books through metadata
+  from OpenLibrary, Google Books, and Goodreads. The built-in web reader lets you
+  read anywhere without additional software.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -63,14 +69,12 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/book
-  path: features/book.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Book Module
 module_name: book
 schema_name: public
@@ -78,192 +82,113 @@ content_types:
 - Books
 - Authors
 - Series
-
 supported_formats:
-  - format: EPUB
-    description: Electronic Publication (industry standard)
-    reader: Built-in web reader with Epub.js
-    features: Reflowable text, font customization, night mode
-    preferred: true
-  - format: PDF
-    description: Portable Document Format
-    reader: PDF.js web reader
-    features: Page navigation, zoom, search
-    notes: Fixed layout, not reflowable
-  - format: MOBI
-    description: Mobipocket eBook format (Amazon Kindle)
-    reader: Convert to EPUB or serve as-is
-    features: Basic reading, limited styling
-  - format: AZW3
-    description: Amazon Kindle Format 8
-    reader: Convert to EPUB for web reading
-    features: Enhanced formatting vs MOBI
-  - format: CBZ
-    description: Comic Book Archive (ZIP)
-    reader: Image-based comic reader
-    features: Page-by-page image viewing
-    notes: See COMICS_MODULE for full comic support
-
+- format: EPUB
+  description: Electronic Publication (industry standard)
+  reader: Built-in web reader with Epub.js
+  features: Reflowable text, font customization, night mode
+  preferred: true
+- format: PDF
+  description: Portable Document Format
+  reader: PDF.js web reader
+  features: Page navigation, zoom, search
+  notes: Fixed layout, not reflowable
+- format: MOBI
+  description: Mobipocket eBook format (Amazon Kindle)
+  reader: Convert to EPUB or serve as-is
+  features: Basic reading, limited styling
+- format: AZW3
+  description: Amazon Kindle Format 8
+  reader: Convert to EPUB for web reading
+  features: Enhanced formatting vs MOBI
+- format: CBZ
+  description: Comic Book Archive (ZIP)
+  reader: Image-based comic reader
+  features: Page-by-page image viewing
+  notes: See COMICS_MODULE for full comic support
 metadata_sources:
-  - name: OpenLibrary
-    purpose: Primary metadata source
-    priority: 1
-    fields: Title, author, ISBN, subjects, publication date, cover, description
-    api_url: https://openlibrary.org/api/
-  - name: Google Books
-    purpose: Supplemental metadata and previews
-    priority: 2
-    fields: Book details, preview pages, related books
-    api_url: https://www.googleapis.com/books/v1/
-  - name: Goodreads
-    purpose: Ratings, reviews, recommendations
-    priority: 3
-    fields: Average rating, ratings count, reviews, similar books
-    api_url: https://www.goodreads.com/api/
-  - name: Hardcover
-    purpose: Alternative metadata source
-    priority: 4
-    fields: Book details, community features
-    api_url: https://hardcover.app/api/
-
-database_schema: |
-  ```sql
-  -- Book Authors
-  CREATE TABLE book_authors (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    biography TEXT,
-    birth_date DATE,
-    death_date DATE,
-    image_url TEXT,
-    openlibrary_id TEXT,
-    goodreads_id TEXT,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_book_authors_name ON book_authors USING GIN(to_tsvector('english', name));
-  CREATE INDEX idx_book_authors_openlibrary ON book_authors(openlibrary_id);
-
-  -- Book Series
-  CREATE TABLE book_series (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    description TEXT,
-    total_books INTEGER,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_book_series_name ON book_series USING GIN(to_tsvector('english', name));
-
-  -- Books
-  CREATE TABLE books (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    subtitle TEXT,
-    author_id UUID REFERENCES book_authors(id),
-    series_id UUID REFERENCES book_series(id),
-    series_position NUMERIC,
-    isbn_10 TEXT,
-    isbn_13 TEXT,
-    publisher TEXT,
-    publish_date DATE,
-    page_count INTEGER,
-    description TEXT,
-    language TEXT DEFAULT 'en',
-    openlibrary_id TEXT,
-    goodreads_id TEXT,
-    google_books_id TEXT,
-    cover_url TEXT,
-    file_path TEXT,
-    file_format TEXT, -- epub, pdf, mobi, azw3, cbz
-    file_size_bytes BIGINT,
-    subjects TEXT[],
-    genres TEXT[],
-    average_rating NUMERIC,
-    ratings_count INTEGER,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_books_author ON books(author_id);
-  CREATE INDEX idx_books_series ON books(series_id);
-  CREATE INDEX idx_books_title ON books USING GIN(to_tsvector('english', title));
-  CREATE INDEX idx_books_isbn13 ON books(isbn_13);
-  CREATE INDEX idx_books_openlibrary ON books(openlibrary_id);
-
-  -- Reading Progress (per-user)
-  CREATE TABLE reading_progress (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
-    book_id UUID REFERENCES books(id) ON DELETE CASCADE,
-    current_page INTEGER,
-    total_pages INTEGER,
-    progress_percent NUMERIC, -- 0-100
-    current_location TEXT, -- CFI for EPUB, page for PDF
-    completed BOOLEAN DEFAULT FALSE,
-    started_at TIMESTAMPTZ,
-    completed_at TIMESTAMPTZ,
-    last_read_at TIMESTAMPTZ DEFAULT NOW(),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(user_id, book_id)
-  );
-
-  CREATE INDEX idx_reading_progress_user ON reading_progress(user_id);
-  CREATE INDEX idx_reading_progress_last_read ON reading_progress(user_id, last_read_at DESC);
-
-  -- Bookmarks
-  CREATE TABLE book_bookmarks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
-    book_id UUID REFERENCES books(id) ON DELETE CASCADE,
-    location TEXT NOT NULL, -- CFI or page number
-    note TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_book_bookmarks_user_book ON book_bookmarks(user_id, book_id);
-
-  -- Highlights
-  CREATE TABLE book_highlights (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
-    book_id UUID REFERENCES books(id) ON DELETE CASCADE,
-    location_start TEXT NOT NULL,
-    location_end TEXT NOT NULL,
-    highlighted_text TEXT NOT NULL,
-    note TEXT,
-    color TEXT DEFAULT 'yellow',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_book_highlights_user_book ON book_highlights(user_id, book_id);
-  ```
-
+- name: OpenLibrary
+  purpose: Primary metadata source
+  priority: 1
+  fields: Title, author, ISBN, subjects, publication date, cover, description
+  api_url: https://openlibrary.org/api/
+- name: Google Books
+  purpose: Supplemental metadata and previews
+  priority: 2
+  fields: Book details, preview pages, related books
+  api_url: https://www.googleapis.com/books/v1/
+- name: Goodreads
+  purpose: Ratings, reviews, recommendations
+  priority: 3
+  fields: Average rating, ratings count, reviews, similar books
+  api_url: https://www.goodreads.com/api/
+- name: Hardcover
+  purpose: Alternative metadata source
+  priority: 4
+  fields: Book details, community features
+  api_url: https://hardcover.app/api/
+database_schema: "```sql\n-- Book Authors\nCREATE TABLE book_authors (\n  id UUID\
+  \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  biography TEXT,\n\
+  \  birth_date DATE,\n  death_date DATE,\n  image_url TEXT,\n  openlibrary_id TEXT,\n\
+  \  goodreads_id TEXT,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
+  \  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_book_authors_name\
+  \ ON book_authors USING GIN(to_tsvector('english', name));\nCREATE INDEX idx_book_authors_openlibrary\
+  \ ON book_authors(openlibrary_id);\n\n-- Book Series\nCREATE TABLE book_series (\n\
+  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  description\
+  \ TEXT,\n  total_books INTEGER,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT\
+  \ NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_book_series_name\
+  \ ON book_series USING GIN(to_tsvector('english', name));\n\n-- Books\nCREATE TABLE\
+  \ books (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  title TEXT NOT NULL,\n\
+  \  subtitle TEXT,\n  author_id UUID REFERENCES book_authors(id),\n  series_id UUID\
+  \ REFERENCES book_series(id),\n  series_position NUMERIC,\n  isbn_10 TEXT,\n  isbn_13\
+  \ TEXT,\n  publisher TEXT,\n  publish_date DATE,\n  page_count INTEGER,\n  description\
+  \ TEXT,\n  language TEXT DEFAULT 'en',\n  openlibrary_id TEXT,\n  goodreads_id TEXT,\n\
+  \  google_books_id TEXT,\n  cover_url TEXT,\n  file_path TEXT,\n  file_format TEXT,\
+  \ -- epub, pdf, mobi, azw3, cbz\n  file_size_bytes BIGINT,\n  subjects TEXT[],\n\
+  \  genres TEXT[],\n  average_rating NUMERIC,\n  ratings_count INTEGER,\n  metadata\
+  \ JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT\
+  \ NOW()\n);\n\nCREATE INDEX idx_books_author ON books(author_id);\nCREATE INDEX\
+  \ idx_books_series ON books(series_id);\nCREATE INDEX idx_books_title ON books USING\
+  \ GIN(to_tsvector('english', title));\nCREATE INDEX idx_books_isbn13 ON books(isbn_13);\n\
+  CREATE INDEX idx_books_openlibrary ON books(openlibrary_id);\n\n-- Reading Progress\
+  \ (per-user)\nCREATE TABLE reading_progress (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
+  \  user_id UUID NOT NULL,\n  book_id UUID REFERENCES books(id) ON DELETE CASCADE,\n\
+  \  current_page INTEGER,\n  total_pages INTEGER,\n  progress_percent NUMERIC, --\
+  \ 0-100\n  current_location TEXT, -- CFI for EPUB, page for PDF\n  completed BOOLEAN\
+  \ DEFAULT FALSE,\n  started_at TIMESTAMPTZ,\n  completed_at TIMESTAMPTZ,\n  last_read_at\
+  \ TIMESTAMPTZ DEFAULT NOW(),\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
+  \ TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id, book_id)\n);\n\nCREATE INDEX idx_reading_progress_user\
+  \ ON reading_progress(user_id);\nCREATE INDEX idx_reading_progress_last_read ON\
+  \ reading_progress(user_id, last_read_at DESC);\n\n-- Bookmarks\nCREATE TABLE book_bookmarks\
+  \ (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n\
+  \  book_id UUID REFERENCES books(id) ON DELETE CASCADE,\n  location TEXT NOT NULL,\
+  \ -- CFI or page number\n  note TEXT,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n\
+  );\n\nCREATE INDEX idx_book_bookmarks_user_book ON book_bookmarks(user_id, book_id);\n\
+  \n-- Highlights\nCREATE TABLE book_highlights (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n\
+  \  user_id UUID NOT NULL,\n  book_id UUID REFERENCES books(id) ON DELETE CASCADE,\n\
+  \  location_start TEXT NOT NULL,\n  location_end TEXT NOT NULL,\n  highlighted_text\
+  \ TEXT NOT NULL,\n  note TEXT,\n  color TEXT DEFAULT 'yellow',\n  created_at TIMESTAMPTZ\
+  \ DEFAULT NOW()\n);\n\nCREATE INDEX idx_book_highlights_user_book ON book_highlights(user_id,\
+  \ book_id);\n```\n"
 reading_features:
   web_reader:
     epub_library: Epub.js
     pdf_library: PDF.js
     features:
-      - Font size customization
-      - Font family selection
-      - Line height adjustment
-      - Margin customization
-      - Night mode / Dark theme
-      - Sepia mode
-      - Column layout (1 or 2 columns)
-      - Full-screen mode
+    - Font size customization
+    - Font family selection
+    - Line height adjustment
+    - Margin customization
+    - Night mode / Dark theme
+    - Sepia mode
+    - Column layout (1 or 2 columns)
+    - Full-screen mode
   navigation:
-    - Table of contents
-    - Page navigation
-    - Search within book
-    - Jump to page/location
-    - Previous/next chapter
+  - Table of contents
+  - Page navigation
+  - Search within book
+  - Jump to page/location
+  - Previous/next chapter
   reading_progress:
     tracking: Automatic page/location tracking
     sync: Real-time across devices
@@ -277,15 +202,14 @@ reading_features:
     colors: Yellow, green, blue, pink, purple
     notes: Optional note per highlight
     export: Export highlights to Markdown/JSON
-
 collection_features:
   reading_lists:
     types:
-      - Want to Read
-      - Currently Reading
-      - Completed
-      - Favorites
-      - Custom lists
+    - Want to Read
+    - Currently Reading
+    - Completed
+    - Favorites
+    - Custom lists
     sharing: Public or private lists
   series_tracking:
     auto_detection: Group books by series from metadata
@@ -295,50 +219,48 @@ collection_features:
     auto_tagging: From metadata subjects
     browsing: Browse by genre/subject
     filters: Filter by publication date, rating, etc.
-
 recommendations:
   similar_books: Based on metadata (genre, author, series)
-  collaborative_filtering: "You might also like (if enough users)"
+  collaborative_filtering: You might also like (if enough users)
   trending: Popular books across all users
   new_releases: Recently added books
-
 api_endpoints:
-  - method: GET
-    path: /api/v1/books
-    description: List all books with pagination and filters
-  - method: GET
-    path: /api/v1/books/:id
-    description: Get book details by ID
-  - method: GET
-    path: /api/v1/books/:id/read
-    description: Get book content for web reader
-  - method: GET
-    path: /api/v1/books/:id/download
-    description: Download book file in original format
-  - method: GET
-    path: /api/v1/books/:id/progress
-    description: Get user reading progress for a book
-  - method: PUT
-    path: /api/v1/books/:id/progress
-    description: Update user reading progress
-  - method: POST
-    path: /api/v1/books/:id/bookmarks
-    description: Create a bookmark at current position
-  - method: GET
-    path: /api/v1/books/:id/bookmarks
-    description: Get all user bookmarks for a book
-  - method: POST
-    path: /api/v1/books/:id/highlights
-    description: Create a text highlight with optional note
-  - method: GET
-    path: /api/v1/books/:id/highlights
-    description: Get all user highlights for a book
-  - method: GET
-    path: /api/v1/books/authors
-    description: List all book authors
-  - method: GET
-    path: /api/v1/books/series
-    description: List all book series
-  - method: GET
-    path: /api/v1/books/collections
-    description: List all book collections
+- method: GET
+  path: /api/v1/books
+  description: List all books with pagination and filters
+- method: GET
+  path: /api/v1/books/:id
+  description: Get book details by ID
+- method: GET
+  path: /api/v1/books/:id/read
+  description: Get book content for web reader
+- method: GET
+  path: /api/v1/books/:id/download
+  description: Download book file in original format
+- method: GET
+  path: /api/v1/books/:id/progress
+  description: Get user reading progress for a book
+- method: PUT
+  path: /api/v1/books/:id/progress
+  description: Update user reading progress
+- method: POST
+  path: /api/v1/books/:id/bookmarks
+  description: Create a bookmark at current position
+- method: GET
+  path: /api/v1/books/:id/bookmarks
+  description: Get all user bookmarks for a book
+- method: POST
+  path: /api/v1/books/:id/highlights
+  description: Create a text highlight with optional note
+- method: GET
+  path: /api/v1/books/:id/highlights
+  description: Get all user highlights for a book
+- method: GET
+  path: /api/v1/books/authors
+  description: List all book authors
+- method: GET
+  path: /api/v1/books/series
+  description: List all book series
+- method: GET
+  path: /api/v1/books/collections
+  description: List all book collections

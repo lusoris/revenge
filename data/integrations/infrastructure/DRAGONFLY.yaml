@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> High-performance Redis-compatible cache'
 wiki_tagline: '> Fast distributed caching with Dragonfly'
-wiki_overview: 'Dragonfly provides high-speed caching for Revenge. Stores session data, API responses, and frequently accessed metadata in memory. Redis-compatible so existing tools work. Dramatically faster than Redis with lower memory usage. Required for multi-server deployments, optional but recommended for single-server.'
+wiki_overview: Dragonfly provides high-speed caching for Revenge. Stores session data,
+  API responses, and frequently accessed metadata in memory. Redis-compatible so existing
+  tools work. Dramatically faster than Redis with lower memory usage. Required for
+  multi-server deployments, optional but recommended for single-server.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -54,14 +57,12 @@ sources:
   url: https://github.com/typesense/typesense-go
   note: Auto-resolved from typesense-go
 design_refs:
-- title: integrations/infrastructure
-  path: integrations/infrastructure.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Dragonfly
 integration_id: dragonfly
 external_service: Dragonfly

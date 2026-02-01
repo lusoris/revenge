@@ -18,20 +18,23 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Social reading platform - Goodreads alternative with API'
 wiki_tagline: '> Track reading with Hardcover'
-wiki_overview: 'Hardcover is a modern alternative to Goodreads with an open API. Sync your reading progress and shelves. Import reading history from Goodreads exports. Community ratings and reviews supplement metadata. Connect your Hardcover account in Revenge settings to enable sync.'
+wiki_overview: Hardcover is a modern alternative to Goodreads with an open API. Sync
+  your reading progress and shelves. Import reading history from Goodreads exports.
+  Community ratings and reviews supplement metadata. Connect your Hardcover account
+  in Revenge settings to enable sync.
 sources:
 - name: Hardcover API
   url: https://hardcover.app/docs/api
   note: Auto-resolved from hardcover
 design_refs:
 - title: integrations/metadata/books
-  path: integrations/metadata/books.md
+  path: ../../../integrations/metadata/books.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Hardcover
 integration_id: hardcover
 external_service: Hardcover

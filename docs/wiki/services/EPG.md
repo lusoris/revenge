@@ -29,15 +29,15 @@ design_refs:
   - title: services
     path: services.md
   - title: 01_ARCHITECTURE
-    path: architecture/01_ARCHITECTURE.md
+    path: ../architecture/01_ARCHITECTURE.md
   - title: LIVE_TV_DVR
-    path: features/livetv/LIVE_TV_DVR.md
+    path: ../features/livetv/LIVE_TV_DVR.md
   - title: TVHEADEND
-    path: integrations/livetv/TVHEADEND.md
+    path: ../integrations/livetv/TVHEADEND.md
   - title: NEXTPVR
-    path: integrations/livetv/NEXTPVR.md
+    path: ../integrations/livetv/NEXTPVR.md
   - title: ERSATZTV
-    path: integrations/livetv/ERSATZTV.md
+    path: ../integrations/livetv/ERSATZTV.md
 ---
 
 # EPG Service

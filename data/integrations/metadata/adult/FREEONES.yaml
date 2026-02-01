@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer database with comprehensive profiles and links'
 wiki_tagline: '> Performer profiles from FreeOnes'
-wiki_overview: 'FreeOnes aggregates performer information and social media links. Comprehensive profiles with photos and statistics. Cross-references to other databases. Used to enrich performer metadata in the QAR system. Provides additional profile images and biographical data.'
+wiki_overview: FreeOnes aggregates performer information and social media links. Comprehensive
+  profiles with photos and statistics. Cross-references to other databases. Used to
+  enrich performer metadata in the QAR system. Provides additional profile images
+  and biographical data.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -31,13 +34,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: integrations/metadata/adult
-  path: integrations/metadata/adult.md
+  path: ../../../integrations/metadata/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: FreeOnes
 integration_id: freeones
 external_service: FreeOnes

@@ -23,7 +23,11 @@ technical_summary: "  > Automatic database recovery and self-healing mechanisms\
   \ schema migration on startup\n  - **Backup**: Automated daily backups with retention\
   \ policy"
 wiki_tagline: '> How Revenge automatically recovers from database issues'
-wiki_overview: 'Revenge includes built-in database recovery mechanisms. The connection pool (pgxpool) automatically reconnects after network interruptions. Health checks run periodically with exponential backoff on failures. If the database becomes unavailable, Revenge enters a degraded read-only mode using cached data. Database migrations run automatically on startup, and daily backups can be configured for disaster recovery.'
+wiki_overview: Revenge includes built-in database recovery mechanisms. The connection
+  pool (pgxpool) automatically reconnects after network interruptions. Health checks
+  run periodically with exponential backoff on failures. If the database becomes unavailable,
+  Revenge enters a degraded read-only mode using cached data. Database migrations
+  run automatically on startup, and daily backups can be configured for disaster recovery.
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5
@@ -39,12 +43,12 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 pooling: pgxpool manages connection lifecycle
 recovery: Exponential backoff retry strategy

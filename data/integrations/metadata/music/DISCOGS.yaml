@@ -19,7 +19,10 @@ status_integration_testing_notes: '-'
 technical_summary: '> Music marketplace and database - vinyl releases, marketplace
   data, detailed credits'
 wiki_tagline: '> Vinyl and CD release data from Discogs'
-wiki_overview: 'Discogs provides detailed release information for physical media collectors. Track vinyl pressings, CD editions, and regional variations. Detailed credits list every contributor. Marketplace data shows record values. Excellent for identifying specific pressings and editions of albums.'
+wiki_overview: Discogs provides detailed release information for physical media collectors.
+  Track vinyl pressings, CD editions, and regional variations. Detailed credits list
+  every contributor. Marketplace data shows record values. Excellent for identifying
+  specific pressings and editions of albums.
 sources:
 - name: Discogs API
   url: https://www.discogs.com/developers
@@ -29,13 +32,13 @@ sources:
   note: Auto-resolved from lastfm-api
 design_refs:
 - title: integrations/metadata/music
-  path: integrations/metadata/music.md
+  path: ../../../integrations/metadata/music.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Discogs
 integration_id: discogs
 external_service: Discogs

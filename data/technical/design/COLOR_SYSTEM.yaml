@@ -16,328 +16,219 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
+technical_summary: '> Arr-aligned module color system with full theme shift
 
-technical_summary: |
-  > Arr-aligned module color system with full theme shift
 
   Color system features:
+
   - **Default**: Dark theme with light mode support
+
   - **Module Colors**: Aligned with Arr ecosystem (Radarr, Sonarr, Lidarr, etc.)
+
   - **Theme Shift**: Full UI color shift per module (sidebar, header, cards)
+
   - **Semantic Tokens**: Consistent naming across themes
 
+  '
 wiki_tagline: '> Colors that match your media management stack'
-
-wiki_overview: "The Revenge color system aligns with the Arr ecosystem you already know. Movies use Radarr's gold, TV uses Sonarr's blue, Music uses Lidarr's green, and Adult uses Whisparr's pink. Each module shifts the entire UI theme - not just accents, but backgrounds, cards, and navigation. Dark theme is default with full light mode support."
-
+wiki_overview: The Revenge color system aligns with the Arr ecosystem you already
+  know. Movies use Radarr's gold, TV uses Sonarr's blue, Music uses Lidarr's green,
+  and Adult uses Whisparr's pink. Each module shifts the entire UI theme - not just
+  accents, but backgrounds, cards, and navigation. Dark theme is default with full
+  light mode support.
 sources:
-  - name: Tailwind CSS Colors
-    url: https://tailwindcss.com/docs/customizing-colors
-    note: Color system foundation
-  - name: Radix Colors
-    url: https://www.radix-ui.com/colors
-    note: Accessible color scales
-
+- name: Tailwind CSS Colors
+  url: https://tailwindcss.com/docs/customizing-colors
+  note: Color system foundation
+- name: Radix Colors
+  url: https://www.radix-ui.com/colors
+  note: Accessible color scales
 design_refs:
-  - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
-    path: technical/design/BRAND_IDENTITY.md
-
-# =============================================================================
-# COLOR SYSTEM
-# =============================================================================
-
+- title: DESIGN_SYSTEM
+  path: ../../technical/DESIGN_SYSTEM.md
+- title: BRAND_IDENTITY
+  path: ../../technical/design/BRAND_IDENTITY.md
 system:
-  default_theme: "dark"
-  color_scope: "Full Theme Shift"
-  description: |
-    Dark-first palette with Arr-ecosystem aligned module colors.
+  default_theme: dark
+  color_scope: Full Theme Shift
+  description: 'Dark-first palette with Arr-ecosystem aligned module colors.
+
     Each module uses its corresponding Arr service color (refined for dark theme).
+
     Full theme shift: sidebar, header, cards all shift hue per module.
 
-# =============================================================================
-# BASE PALETTE
-# =============================================================================
-
+    '
 base_palette:
   neutral:
-    description: "Gray scale for backgrounds, text, borders"
-    50: "hsl(0, 0%, 98%)"
-    100: "hsl(0, 0%, 96%)"
-    200: "hsl(0, 0%, 90%)"
-    300: "hsl(0, 0%, 83%)"
-    400: "hsl(0, 0%, 64%)"
-    500: "hsl(0, 0%, 45%)"
-    600: "hsl(0, 0%, 32%)"
-    700: "hsl(0, 0%, 25%)"
-    800: "hsl(0, 0%, 15%)"
-    900: "hsl(0, 0%, 9%)"
-    950: "hsl(0, 0%, 4%)"
-
+    description: Gray scale for backgrounds, text, borders
+    50: hsl(0, 0%, 98%)
+    100: hsl(0, 0%, 96%)
+    200: hsl(0, 0%, 90%)
+    300: hsl(0, 0%, 83%)
+    400: hsl(0, 0%, 64%)
+    500: hsl(0, 0%, 45%)
+    600: hsl(0, 0%, 32%)
+    700: hsl(0, 0%, 25%)
+    800: hsl(0, 0%, 15%)
+    900: hsl(0, 0%, 9%)
+    950: hsl(0, 0%, 4%)
   brand:
-    description: "Base brand color (Indigo) - used for search, settings, brand elements"
-    primary: "hsl(239, 84%, 67%)"
-    hover: "hsl(239, 84%, 74%)"
-    muted: "hsl(239, 40%, 30%)"
-
-# =============================================================================
-# MODULE COLORS (ARR-ALIGNED)
-# =============================================================================
-
+    description: Base brand color (Indigo) - used for search, settings, brand elements
+    primary: hsl(239, 84%, 67%)
+    hover: hsl(239, 84%, 74%)
+    muted: hsl(239, 40%, 30%)
 module_colors:
   movies:
-    arr_service: "Radarr"
-    arr_original: "#ffc230"
+    arr_service: Radarr
+    arr_original: '#ffc230'
     refined:
-      primary: "hsl(43, 96%, 56%)"
-      hover: "hsl(43, 96%, 65%)"
-      muted: "hsl(43, 50%, 20%)"
-      background_tint: "hsl(43, 30%, 6%)"
-    description: "Cinematic gold - Oscar statuette, film reels"
-
+      primary: hsl(43, 96%, 56%)
+      hover: hsl(43, 96%, 65%)
+      muted: hsl(43, 50%, 20%)
+      background_tint: hsl(43, 30%, 6%)
+    description: Cinematic gold - Oscar statuette, film reels
   tv:
-    arr_service: "Sonarr"
-    arr_original: "#5d9cec"
+    arr_service: Sonarr
+    arr_original: '#5d9cec'
     refined:
-      primary: "hsl(214, 80%, 65%)"
-      hover: "hsl(214, 80%, 72%)"
-      muted: "hsl(214, 40%, 22%)"
-      background_tint: "hsl(214, 30%, 6%)"
-    description: "Cozy evening blue - binge watching vibes"
-
+      primary: hsl(214, 80%, 65%)
+      hover: hsl(214, 80%, 72%)
+      muted: hsl(214, 40%, 22%)
+      background_tint: hsl(214, 30%, 6%)
+    description: Cozy evening blue - binge watching vibes
   music:
-    arr_service: "Lidarr"
-    arr_original: "#00bc8c"
+    arr_service: Lidarr
+    arr_original: '#00bc8c'
     refined:
-      primary: "hsl(163, 72%, 45%)"
-      hover: "hsl(163, 72%, 55%)"
-      muted: "hsl(163, 35%, 18%)"
-      background_tint: "hsl(163, 25%, 5%)"
-    description: "Fresh green - musical, concert vibes"
-
+      primary: hsl(163, 72%, 45%)
+      hover: hsl(163, 72%, 55%)
+      muted: hsl(163, 35%, 18%)
+      background_tint: hsl(163, 25%, 5%)
+    description: Fresh green - musical, concert vibes
   adult:
-    arr_service: "Whisparr"
-    arr_original: "#ff69b4"
+    arr_service: Whisparr
+    arr_original: '#ff69b4'
     refined:
-      primary: "hsl(330, 81%, 60%)"
-      hover: "hsl(330, 81%, 70%)"
-      muted: "hsl(330, 40%, 22%)"
-      background_tint: "hsl(330, 25%, 5%)"
-    description: "Mysterious crimson/pink - alluring, forbidden"
-    qar_note: "Uses pirate terminology - treasure gold accents available"
-
+      primary: hsl(330, 81%, 60%)
+      hover: hsl(330, 81%, 70%)
+      muted: hsl(330, 40%, 22%)
+      background_tint: hsl(330, 25%, 5%)
+    description: Mysterious crimson/pink - alluring, forbidden
+    qar_note: Uses pirate terminology - treasure gold accents available
   books:
-    arr_service: "Readarr"
-    includes: "Audiobooks"
+    arr_service: Readarr
+    includes: Audiobooks
     refined:
-      primary: "hsl(32, 95%, 44%)"
-      hover: "hsl(32, 95%, 54%)"
-      muted: "hsl(32, 45%, 18%)"
-      background_tint: "hsl(32, 30%, 5%)"
-    description: "Aged parchment amber - literary, classic"
-
+      primary: hsl(32, 95%, 44%)
+      hover: hsl(32, 95%, 54%)
+      muted: hsl(32, 45%, 18%)
+      background_tint: hsl(32, 30%, 5%)
+    description: Aged parchment amber - literary, classic
   photos:
     arr_service: null
     refined:
-      primary: "hsl(187, 92%, 42%)"
-      hover: "hsl(187, 92%, 52%)"
-      muted: "hsl(187, 40%, 18%)"
-      background_tint: "hsl(187, 25%, 5%)"
-    description: "Fresh cyan - visual, memories"
-
+      primary: hsl(187, 92%, 42%)
+      hover: hsl(187, 92%, 52%)
+      muted: hsl(187, 40%, 18%)
+      background_tint: hsl(187, 25%, 5%)
+    description: Fresh cyan - visual, memories
   podcasts:
     arr_service: null
     refined:
-      primary: "hsl(25, 95%, 53%)"
-      hover: "hsl(25, 95%, 63%)"
-      muted: "hsl(25, 45%, 20%)"
-      background_tint: "hsl(25, 30%, 5%)"
-    description: "Broadcast orange - radio, voice"
-
+      primary: hsl(25, 95%, 53%)
+      hover: hsl(25, 95%, 63%)
+      muted: hsl(25, 45%, 20%)
+      background_tint: hsl(25, 30%, 5%)
+    description: Broadcast orange - radio, voice
   livetv:
     arr_service: null
     refined:
-      primary: "hsl(0, 84%, 60%)"
-      hover: "hsl(0, 84%, 70%)"
-      muted: "hsl(0, 40%, 20%)"
-      background_tint: "hsl(0, 25%, 5%)"
-    description: "Live indicator red - broadcast, recording"
-
+      primary: hsl(0, 84%, 60%)
+      hover: hsl(0, 84%, 70%)
+      muted: hsl(0, 40%, 20%)
+      background_tint: hsl(0, 25%, 5%)
+    description: Live indicator red - broadcast, recording
   comics:
-    arr_service: "Kapowarr/Mylar"
+    arr_service: Kapowarr/Mylar
     refined:
-      primary: "hsl(48, 96%, 53%)"
-      hover: "hsl(48, 96%, 63%)"
-      muted: "hsl(48, 50%, 22%)"
-      background_tint: "hsl(48, 30%, 5%)"
-    description: "POW! yellow - comic book action"
-
+      primary: hsl(48, 96%, 53%)
+      hover: hsl(48, 96%, 63%)
+      muted: hsl(48, 50%, 22%)
+      background_tint: hsl(48, 30%, 5%)
+    description: POW! yellow - comic book action
   settings:
-    description: "Uses base brand accent (indigo)"
-    uses: "brand.primary"
-
+    description: Uses base brand accent (indigo)
+    uses: brand.primary
   search:
-    description: "Uses base brand accent (indigo)"
-    uses: "brand.primary"
-
-# =============================================================================
-# SEMANTIC TOKENS
-# =============================================================================
-
+    description: Uses base brand accent (indigo)
+    uses: brand.primary
 semantic_tokens:
   dark_mode:
-    background: "neutral-950"
-    background_secondary: "neutral-900"
-    background_tertiary: "neutral-800"
-    foreground: "neutral-50"
-    foreground_muted: "neutral-400"
-    foreground_subtle: "neutral-500"
-    border: "neutral-800"
-    border_hover: "neutral-700"
-    card: "neutral-900"
-    card_hover: "neutral-800"
-    input: "neutral-800"
-    ring: "module-primary"
-
+    background: neutral-950
+    background_secondary: neutral-900
+    background_tertiary: neutral-800
+    foreground: neutral-50
+    foreground_muted: neutral-400
+    foreground_subtle: neutral-500
+    border: neutral-800
+    border_hover: neutral-700
+    card: neutral-900
+    card_hover: neutral-800
+    input: neutral-800
+    ring: module-primary
   light_mode:
-    background: "neutral-50"
-    background_secondary: "neutral-100"
-    background_tertiary: "neutral-200"
-    foreground: "neutral-900"
-    foreground_muted: "neutral-600"
-    foreground_subtle: "neutral-500"
-    border: "neutral-200"
-    border_hover: "neutral-300"
-    card: "neutral-50"
-    card_hover: "neutral-100"
-
+    background: neutral-50
+    background_secondary: neutral-100
+    background_tertiary: neutral-200
+    foreground: neutral-900
+    foreground_muted: neutral-600
+    foreground_subtle: neutral-500
+    border: neutral-200
+    border_hover: neutral-300
+    card: neutral-50
+    card_hover: neutral-100
   states:
-    destructive: "hsl(0, 84%, 60%)"
-    destructive_foreground: "neutral-50"
-    success: "hsl(142, 76%, 36%)"
-    success_foreground: "neutral-50"
-    warning: "hsl(38, 92%, 50%)"
-    warning_foreground: "neutral-900"
-    info: "hsl(199, 89%, 48%)"
-    info_foreground: "neutral-50"
-
-# =============================================================================
-# CSS IMPLEMENTATION
-# =============================================================================
-
+    destructive: hsl(0, 84%, 60%)
+    destructive_foreground: neutral-50
+    success: hsl(142, 76%, 36%)
+    success_foreground: neutral-50
+    warning: hsl(38, 92%, 50%)
+    warning_foreground: neutral-900
+    info: hsl(199, 89%, 48%)
+    info_foreground: neutral-50
 css_variables:
-  root: |
-    /* app.css - Dark mode (default) */
-    :root {
-      --background: 0 0% 4%;
-      --foreground: 0 0% 98%;
-      --card: 0 0% 9%;
-      --card-foreground: 0 0% 98%;
-      --popover: 0 0% 9%;
-      --popover-foreground: 0 0% 98%;
-      --primary: 239 84% 67%;
-      --primary-foreground: 0 0% 98%;
-      --secondary: 0 0% 15%;
-      --secondary-foreground: 0 0% 98%;
-      --muted: 0 0% 15%;
-      --muted-foreground: 0 0% 64%;
-      --accent: 330 81% 60%;
-      --accent-foreground: 0 0% 98%;
-      --destructive: 0 84% 60%;
-      --destructive-foreground: 0 0% 98%;
-      --border: 0 0% 15%;
-      --input: 0 0% 15%;
-      --ring: 239 84% 67%;
-      --radius: 0.5rem;
-
-      /* Module color (default to brand) */
-      --module-primary: 239 84% 67%;
-      --module-primary-hover: 239 84% 74%;
-      --module-muted: 239 40% 30%;
-    }
-
-  light_mode: |
-    .light {
-      --background: 0 0% 98%;
-      --foreground: 0 0% 9%;
-      --card: 0 0% 100%;
-      --card-foreground: 0 0% 9%;
-      --muted: 0 0% 96%;
-      --muted-foreground: 0 0% 45%;
-      --border: 0 0% 90%;
-    }
-
-  module_themes: |
-    /* Module theme shift via data attribute */
-    [data-module="movies"] {
-      --module-primary: 43 96% 56%;
-      --module-primary-hover: 43 96% 65%;
-      --module-muted: 43 50% 20%;
-      --background: 43 30% 4%;
-      --card: 43 20% 8%;
-    }
-
-    [data-module="tv"] {
-      --module-primary: 214 80% 65%;
-      --module-primary-hover: 214 80% 72%;
-      --module-muted: 214 40% 22%;
-      --background: 214 30% 4%;
-      --card: 214 20% 8%;
-    }
-
-    [data-module="music"] {
-      --module-primary: 163 72% 45%;
-      --module-primary-hover: 163 72% 55%;
-      --module-muted: 163 35% 18%;
-      --background: 163 25% 4%;
-      --card: 163 20% 7%;
-    }
-
-    [data-module="adult"] {
-      --module-primary: 330 81% 60%;
-      --module-primary-hover: 330 81% 70%;
-      --module-muted: 330 40% 22%;
-      --background: 330 25% 4%;
-      --card: 330 20% 7%;
-    }
-
-    [data-module="books"] {
-      --module-primary: 32 95% 44%;
-      --module-primary-hover: 32 95% 54%;
-      --module-muted: 32 45% 18%;
-      --background: 32 30% 4%;
-      --card: 32 20% 7%;
-    }
-
-    [data-module="photos"] {
-      --module-primary: 187 92% 42%;
-      --module-primary-hover: 187 92% 52%;
-      --module-muted: 187 40% 18%;
-      --background: 187 25% 4%;
-      --card: 187 20% 7%;
-    }
-
-    [data-module="podcasts"] {
-      --module-primary: 25 95% 53%;
-      --module-primary-hover: 25 95% 63%;
-      --module-muted: 25 45% 20%;
-      --background: 25 30% 4%;
-      --card: 25 20% 7%;
-    }
-
-    [data-module="livetv"] {
-      --module-primary: 0 84% 60%;
-      --module-primary-hover: 0 84% 70%;
-      --module-muted: 0 40% 20%;
-      --background: 0 25% 4%;
-      --card: 0 20% 7%;
-    }
-
-    [data-module="comics"] {
-      --module-primary: 48 96% 53%;
-      --module-primary-hover: 48 96% 63%;
-      --module-muted: 48 50% 22%;
-      --background: 48 30% 4%;
-      --card: 48 20% 7%;
-    }
+  root: "/* app.css - Dark mode (default) */\n:root {\n  --background: 0 0% 4%;\n\
+    \  --foreground: 0 0% 98%;\n  --card: 0 0% 9%;\n  --card-foreground: 0 0% 98%;\n\
+    \  --popover: 0 0% 9%;\n  --popover-foreground: 0 0% 98%;\n  --primary: 239 84%\
+    \ 67%;\n  --primary-foreground: 0 0% 98%;\n  --secondary: 0 0% 15%;\n  --secondary-foreground:\
+    \ 0 0% 98%;\n  --muted: 0 0% 15%;\n  --muted-foreground: 0 0% 64%;\n  --accent:\
+    \ 330 81% 60%;\n  --accent-foreground: 0 0% 98%;\n  --destructive: 0 84% 60%;\n\
+    \  --destructive-foreground: 0 0% 98%;\n  --border: 0 0% 15%;\n  --input: 0 0%\
+    \ 15%;\n  --ring: 239 84% 67%;\n  --radius: 0.5rem;\n\n  /* Module color (default\
+    \ to brand) */\n  --module-primary: 239 84% 67%;\n  --module-primary-hover: 239\
+    \ 84% 74%;\n  --module-muted: 239 40% 30%;\n}\n"
+  light_mode: ".light {\n  --background: 0 0% 98%;\n  --foreground: 0 0% 9%;\n  --card:\
+    \ 0 0% 100%;\n  --card-foreground: 0 0% 9%;\n  --muted: 0 0% 96%;\n  --muted-foreground:\
+    \ 0 0% 45%;\n  --border: 0 0% 90%;\n}\n"
+  module_themes: "/* Module theme shift via data attribute */\n[data-module=\"movies\"\
+    ] {\n  --module-primary: 43 96% 56%;\n  --module-primary-hover: 43 96% 65%;\n\
+    \  --module-muted: 43 50% 20%;\n  --background: 43 30% 4%;\n  --card: 43 20% 8%;\n\
+    }\n\n[data-module=\"tv\"] {\n  --module-primary: 214 80% 65%;\n  --module-primary-hover:\
+    \ 214 80% 72%;\n  --module-muted: 214 40% 22%;\n  --background: 214 30% 4%;\n\
+    \  --card: 214 20% 8%;\n}\n\n[data-module=\"music\"] {\n  --module-primary: 163\
+    \ 72% 45%;\n  --module-primary-hover: 163 72% 55%;\n  --module-muted: 163 35%\
+    \ 18%;\n  --background: 163 25% 4%;\n  --card: 163 20% 7%;\n}\n\n[data-module=\"\
+    adult\"] {\n  --module-primary: 330 81% 60%;\n  --module-primary-hover: 330 81%\
+    \ 70%;\n  --module-muted: 330 40% 22%;\n  --background: 330 25% 4%;\n  --card:\
+    \ 330 20% 7%;\n}\n\n[data-module=\"books\"] {\n  --module-primary: 32 95% 44%;\n\
+    \  --module-primary-hover: 32 95% 54%;\n  --module-muted: 32 45% 18%;\n  --background:\
+    \ 32 30% 4%;\n  --card: 32 20% 7%;\n}\n\n[data-module=\"photos\"] {\n  --module-primary:\
+    \ 187 92% 42%;\n  --module-primary-hover: 187 92% 52%;\n  --module-muted: 187\
+    \ 40% 18%;\n  --background: 187 25% 4%;\n  --card: 187 20% 7%;\n}\n\n[data-module=\"\
+    podcasts\"] {\n  --module-primary: 25 95% 53%;\n  --module-primary-hover: 25 95%\
+    \ 63%;\n  --module-muted: 25 45% 20%;\n  --background: 25 30% 4%;\n  --card: 25\
+    \ 20% 7%;\n}\n\n[data-module=\"livetv\"] {\n  --module-primary: 0 84% 60%;\n \
+    \ --module-primary-hover: 0 84% 70%;\n  --module-muted: 0 40% 20%;\n  --background:\
+    \ 0 25% 4%;\n  --card: 0 20% 7%;\n}\n\n[data-module=\"comics\"] {\n  --module-primary:\
+    \ 48 96% 53%;\n  --module-primary-hover: 48 96% 63%;\n  --module-muted: 48 50%\
+    \ 22%;\n  --background: 48 30% 4%;\n  --card: 48 20% 7%;\n}\n"

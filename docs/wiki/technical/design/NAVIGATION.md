@@ -17,9 +17,9 @@ sources:
     note: Navigation icons
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: CLIENT_SUPPORT
-    path: features/shared/CLIENT_SUPPORT.md
+    path: ../../features/shared/CLIENT_SUPPORT.md
 ---
 
 # Navigation System

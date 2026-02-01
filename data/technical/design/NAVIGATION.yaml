@@ -16,444 +16,367 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
+technical_summary: '> Multi-platform navigation with keyboard-first design
 
-technical_summary: |
-  > Multi-platform navigation with keyboard-first design
 
   Navigation system features:
+
   - **Sidebar**: Collapsible rail (64px/240px) with module icons
+
   - **Header**: Sticky with search, notifications, user menu
+
   - **Mobile**: Bottom navigation bar with 4 items
+
   - **TV**: Spatial navigation for 10-foot UI
+
   - **Keyboard**: YouTube-style shortcuts, command palette
 
+  '
 wiki_tagline: '> Navigate Revenge on any device'
-
-wiki_overview: "Navigation adapts to your device. Desktop uses a collapsible sidebar rail with module icons. Mobile gets a bottom navigation bar. TV apps use spatial navigation with D-pad support. Keyboard users get YouTube-style player shortcuts and a command palette (Ctrl+K) for quick access to anything."
-
+wiki_overview: Navigation adapts to your device. Desktop uses a collapsible sidebar
+  rail with module icons. Mobile gets a bottom navigation bar. TV apps use spatial
+  navigation with D-pad support. Keyboard users get YouTube-style player shortcuts
+  and a command palette (Ctrl+K) for quick access to anything.
 sources:
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Navigation icons
-
+- name: Lucide Icons
+  url: https://lucide.dev/icons/
+  note: Navigation icons
 design_refs:
-  - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
-  - title: CLIENT_SUPPORT
-    path: features/shared/CLIENT_SUPPORT.md
-
-# =============================================================================
-# SIDEBAR NAVIGATION
-# =============================================================================
-
+- title: DESIGN_SYSTEM
+  path: ../../technical/DESIGN_SYSTEM.md
+- title: CLIENT_SUPPORT
+  path: ../../features/shared/CLIENT_SUPPORT.md
 sidebar:
-  style: "Collapsible Rail"
-  width_collapsed: "64px"
-  width_expanded: "240px"
-  behavior: "Icons only when collapsed, expands to show labels"
-
+  style: Collapsible Rail
+  width_collapsed: 64px
+  width_expanded: 240px
+  behavior: Icons only when collapsed, expands to show labels
   toggle:
-    position: "Bottom of sidebar"
-    icon: "ChevronLeft / ChevronRight"
-    persist: "Remember preference in localStorage"
-
+    position: Bottom of sidebar
+    icon: ChevronLeft / ChevronRight
+    persist: Remember preference in localStorage
   sections:
     main:
-      - icon: "Home"
-        label: "Home"
-        path: "/"
-      - icon: "Film"
-        label: "Movies"
-        path: "/movies"
-        module: "movies"
-      - icon: "Tv"
-        label: "TV Shows"
-        path: "/tv"
-        module: "tv"
-      - icon: "Music"
-        label: "Music"
-        path: "/music"
-        module: "music"
-      - icon: "Book"
-        label: "Books"
-        path: "/books"
-        module: "books"
-      - icon: "Image"
-        label: "Photos"
-        path: "/photos"
-        module: "photos"
-      - icon: "Podcast"
-        label: "Podcasts"
-        path: "/podcasts"
-        module: "podcasts"
-      - icon: "Radio"
-        label: "Live TV"
-        path: "/livetv"
-        module: "livetv"
-      - icon: "BookOpen"
-        label: "Comics"
-        path: "/comics"
-        module: "comics"
-
+    - icon: Home
+      label: Home
+      path: /
+    - icon: Film
+      label: Movies
+      path: /movies
+      module: movies
+    - icon: Tv
+      label: TV Shows
+      path: /tv
+      module: tv
+    - icon: Music
+      label: Music
+      path: /music
+      module: music
+    - icon: Book
+      label: Books
+      path: /books
+      module: books
+    - icon: Image
+      label: Photos
+      path: /photos
+      module: photos
+    - icon: Podcast
+      label: Podcasts
+      path: /podcasts
+      module: podcasts
+    - icon: Radio
+      label: Live TV
+      path: /livetv
+      module: livetv
+    - icon: BookOpen
+      label: Comics
+      path: /comics
+      module: comics
     features:
-      - divider: true
-      - icon: "Calendar"
-        label: "Calendar"
-        path: "/calendar"
-      - icon: "Clock"
-        label: "Recently Added"
-        path: "/recent"
-      - icon: "Bell"
-        label: "Requests"
-        path: "/requests"
-
+    - divider: true
+    - icon: Calendar
+      label: Calendar
+      path: /calendar
+    - icon: Clock
+      label: Recently Added
+      path: /recent
+    - icon: Bell
+      label: Requests
+      path: /requests
     system:
-      - divider: true
-      - icon: "Settings"
-        label: "Settings"
-        path: "/settings"
-
+    - divider: true
+    - icon: Settings
+      label: Settings
+      path: /settings
   active_indicator:
-    style: "Left border + background highlight"
-    color: "var(--module-primary)"
-
+    style: Left border + background highlight
+    color: var(--module-primary)
   hover:
-    background: "var(--muted)"
-    transition: "150ms"
-
-# =============================================================================
-# HEADER
-# =============================================================================
-
+    background: var(--muted)
+    transition: 150ms
 header:
-  height: "64px"
-  position: "sticky top-0"
-  background: "var(--background)"
+  height: 64px
+  position: sticky top-0
+  background: var(--background)
   blur_on_scroll: true
-
   layout:
-    left: "Logo (ship silhouette, links to home)"
-    center: "Search bar with command palette trigger"
-    right: "Notifications, user avatar, theme toggle"
-
+    left: Logo (ship silhouette, links to home)
+    center: Search bar with command palette trigger
+    right: Notifications, user avatar, theme toggle
   logo:
-    variant: "icon"
-    size: "32px"
-    link: "/"
-
+    variant: icon
+    size: 32px
+    link: /
   search:
-    placeholder: "Search... (Ctrl+K)"
-    width: "400px max"
-    trigger: "Click or Ctrl+K"
-    opens: "Command palette"
-
+    placeholder: Search... (Ctrl+K)
+    width: 400px max
+    trigger: Click or Ctrl+K
+    opens: Command palette
   right_actions:
-    - icon: "Bell"
-      label: "Notifications"
-      badge: "Unread count"
-    - icon: "Moon/Sun"
-      label: "Theme toggle"
-    - component: "UserAvatar"
-      dropdown: true
-      items:
-        - "Profile"
-        - "Settings"
-        - "Sign out"
-
+  - icon: Bell
+    label: Notifications
+    badge: Unread count
+  - icon: Moon/Sun
+    label: Theme toggle
+  - component: UserAvatar
+    dropdown: true
+    items:
+    - Profile
+    - Settings
+    - Sign out
   scroll_behavior:
-    initial: "Transparent background"
-    scrolled: "Add background blur"
-    threshold: "50px"
-
-# =============================================================================
-# MOBILE NAVIGATION
-# =============================================================================
-
+    initial: Transparent background
+    scrolled: Add background blur
+    threshold: 50px
 mobile_nav:
-  style: "Bottom navigation bar"
-  height: "56px"
-  position: "fixed bottom-0"
-  background: "var(--background)"
-  border_top: "1px solid var(--border)"
-
+  style: Bottom navigation bar
+  height: 56px
+  position: fixed bottom-0
+  background: var(--background)
+  border_top: 1px solid var(--border)
   items:
-    - icon: "Home"
-      label: "Home"
-      path: "/"
-    - icon: "Search"
-      label: "Search"
-      action: "Open search modal"
-    - icon: "Library"
-      label: "Library"
-      path: "/library"
-    - icon: "MoreHorizontal"
-      label: "More"
-      action: "Opens full menu"
-
+  - icon: Home
+    label: Home
+    path: /
+  - icon: Search
+    label: Search
+    action: Open search modal
+  - icon: Library
+    label: Library
+    path: /library
+  - icon: MoreHorizontal
+    label: More
+    action: Opens full menu
   active_indicator:
-    style: "Filled icon + label color"
-    color: "var(--module-primary)"
-
+    style: Filled icon + label color
+    color: var(--module-primary)
   more_menu:
-    style: "Bottom sheet"
-    content: "Full sidebar navigation list"
-
-# =============================================================================
-# FILTER PANEL
-# =============================================================================
-
+    style: Bottom sheet
+    content: Full sidebar navigation list
 filter_panel:
-  style: "Floating Panel"
-  description: "Collapsible floating filter panel, keeps grid full-width"
-  position: "Top-right, overlays content"
-
+  style: Floating Panel
+  description: Collapsible floating filter panel, keeps grid full-width
+  position: Top-right, overlays content
   trigger:
-    icon: "SlidersHorizontal"
-    label: "Filters"
-    position: "Above grid, right-aligned"
-
+    icon: SlidersHorizontal
+    label: Filters
+    position: Above grid, right-aligned
   panel:
-    width: "320px"
-    animation: "slide from right"
-    backdrop: "None (floating)"
-
+    width: 320px
+    animation: slide from right
+    backdrop: None (floating)
   filters:
     genre:
-      type: "Multi-select chips"
-      source: "API"
+      type: Multi-select chips
+      source: API
     year:
-      type: "Range slider"
+      type: Range slider
       min: 1900
-      max: "current year"
+      max: current year
     rating:
-      type: "Star rating slider"
-      range: "0-10"
+      type: Star rating slider
+      range: 0-10
     resolution:
-      type: "Checkboxes"
-      options: ["4K", "1080p", "720p", "SD"]
+      type: Checkboxes
+      options:
+      - 4K
+      - 1080p
+      - 720p
+      - SD
     status:
-      type: "Radio buttons"
-      options: ["All", "Watched", "Unwatched", "In Progress"]
-
-  apply_behavior: "Instant (no apply button)"
-  clear_all: "Reset all filters"
-
-# =============================================================================
-# COMMAND PALETTE
-# =============================================================================
-
+      type: Radio buttons
+      options:
+      - All
+      - Watched
+      - Unwatched
+      - In Progress
+  apply_behavior: Instant (no apply button)
+  clear_all: Reset all filters
 command_palette:
-  trigger: "Ctrl+K / Cmd+K"
-  alternative_trigger: "/ (when not in input)"
-
+  trigger: Ctrl+K / Cmd+K
+  alternative_trigger: / (when not in input)
   style:
-    width: "600px max"
-    position: "Center screen"
-    backdrop: "blur"
-    animation: "fade + scale"
-
+    width: 600px max
+    position: Center screen
+    backdrop: blur
+    animation: fade + scale
   search:
-    placeholder: "Type to search..."
-    debounce: "150ms"
+    placeholder: Type to search...
+    debounce: 150ms
     instant_results: true
-
   sections:
-    - label: "Quick Actions"
-      items:
-        - "Go to Movies"
-        - "Go to TV Shows"
-        - "Open Settings"
-        - "Toggle Theme"
-    - label: "Content"
-      items: "Search results from library"
-    - label: "People"
-      items: "Actors, directors"
-    - label: "Pages"
-      items: "All navigable pages"
-
+  - label: Quick Actions
+    items:
+    - Go to Movies
+    - Go to TV Shows
+    - Open Settings
+    - Toggle Theme
+  - label: Content
+    items: Search results from library
+  - label: People
+    items: Actors, directors
+  - label: Pages
+    items: All navigable pages
   keyboard_nav:
-    up_down: "Navigate items"
-    enter: "Select item"
-    escape: "Close palette"
-
+    up_down: Navigate items
+    enter: Select item
+    escape: Close palette
   recent_searches:
     enabled: true
     max_items: 5
-
-# =============================================================================
-# KEYBOARD SHORTCUTS
-# =============================================================================
-
 keyboard:
-  style: "YouTube-style"
-  description: "Well-known video player shortcuts users already know"
-
+  style: YouTube-style
+  description: Well-known video player shortcuts users already know
   player_shortcuts:
-    space: "Play/pause"
-    k: "Play/pause"
-    f: "Fullscreen"
-    m: "Mute/unmute"
-    j: "Seek -10 seconds"
-    l: "Seek +10 seconds"
-    left: "Seek -5 seconds"
-    right: "Seek +5 seconds"
-    up: "Volume up 5%"
-    down: "Volume down 5%"
-    c: "Toggle captions"
-    "0-9": "Seek to percentage (0=0%, 5=50%, etc.)"
-    "<": "Decrease playback speed"
-    ">": "Increase playback speed"
-    n: "Next episode"
-    p: "Previous episode"
-    i: "Show video info"
-
+    space: Play/pause
+    k: Play/pause
+    f: Fullscreen
+    m: Mute/unmute
+    j: Seek -10 seconds
+    l: Seek +10 seconds
+    left: Seek -5 seconds
+    right: Seek +5 seconds
+    up: Volume up 5%
+    down: Volume down 5%
+    c: Toggle captions
+    0-9: Seek to percentage (0=0%, 5=50%, etc.)
+    <: Decrease playback speed
+    '>': Increase playback speed
+    n: Next episode
+    p: Previous episode
+    i: Show video info
   global_shortcuts:
-    "/": "Focus search"
-    "Ctrl+K": "Command palette"
-    "Escape": "Close modal/menu"
-    "?": "Show keyboard shortcuts help"
-    "g h": "Go to Home"
-    "g m": "Go to Movies"
-    "g t": "Go to TV Shows"
-    "g s": "Go to Settings"
-
+    /: Focus search
+    Ctrl+K: Command palette
+    Escape: Close modal/menu
+    '?': Show keyboard shortcuts help
+    g h: Go to Home
+    g m: Go to Movies
+    g t: Go to TV Shows
+    g s: Go to Settings
   shortcuts_dialog:
-    trigger: "?"
-    style: "Modal with shortcut list"
+    trigger: '?'
+    style: Modal with shortcut list
     categories:
-      - "Navigation"
-      - "Playback"
-      - "Global"
-
-# =============================================================================
-# TV / 10-FOOT UI
-# =============================================================================
-
+    - Navigation
+    - Playback
+    - Global
 tv_interface:
-  navigation_style: "Spatial Navigation"
-  description: "Focus moves to nearest item in direction - fluid movement"
-
+  navigation_style: Spatial Navigation
+  description: Focus moves to nearest item in direction - fluid movement
   design_considerations:
-    text_size: "Minimum 24px"
-    contrast: "High contrast mode"
-    focus_indicators: "Clear, visible focus rings"
-    navigation_paths: "Simple, predictable"
-    hover_states: "None (no mouse)"
-    optimization: "D-pad optimized"
-
+    text_size: Minimum 24px
+    contrast: High contrast mode
+    focus_indicators: Clear, visible focus rings
+    navigation_paths: Simple, predictable
+    hover_states: None (no mouse)
+    optimization: D-pad optimized
   remote_mapping:
-    arrows: "Navigate focus"
-    enter: "Select/play"
-    back: "Go back/close"
-    menu: "Show options context menu"
-    play_pause: "Control playback"
+    arrows: Navigate focus
+    enter: Select/play
+    back: Go back/close
+    menu: Show options context menu
+    play_pause: Control playback
     color_buttons:
-      red: "Context action 1"
-      green: "Context action 2"
-      yellow: "Context action 3"
-      blue: "Context action 4"
-
+      red: Context action 1
+      green: Context action 2
+      yellow: Context action 3
+      blue: Context action 4
   focus_management:
-    algorithm: "Nearest neighbor"
-    wrap: "Optional per container"
-    memory: "Remember last focused item per section"
-
+    algorithm: Nearest neighbor
+    wrap: Optional per container
+    memory: Remember last focused item per section
   layout_adjustments:
-    sidebar: "Hidden, use on-screen menu"
-    card_size: "Larger (minimum 200px wide)"
-    row_height: "300px minimum"
-    spacing: "Increased (24px gaps)"
-
-# =============================================================================
-# MOBILE GESTURES
-# =============================================================================
-
+    sidebar: Hidden, use on-screen menu
+    card_size: Larger (minimum 200px wide)
+    row_height: 300px minimum
+    spacing: Increased (24px gaps)
 mobile_gestures:
-  mode: "Configurable"
-  description: "Users can enable/disable gesture navigation in settings"
-  default: "Enabled"
-
+  mode: Configurable
+  description: Users can enable/disable gesture navigation in settings
+  default: Enabled
   available_gestures:
     swipe_back:
-      gesture: "Swipe from left edge"
-      action: "Navigate back"
-      threshold: "50px"
+      gesture: Swipe from left edge
+      action: Navigate back
+      threshold: 50px
     swipe_cards:
-      gesture: "Horizontal swipe on carousel"
-      action: "Navigate between items"
+      gesture: Horizontal swipe on carousel
+      action: Navigate between items
     pull_refresh:
-      gesture: "Pull down at top"
-      action: "Refresh content"
-      indicator: "Spinner animation"
+      gesture: Pull down at top
+      action: Refresh content
+      indicator: Spinner animation
     long_press:
-      gesture: "Press and hold"
-      action: "Context menu"
-      duration: "500ms"
+      gesture: Press and hold
+      action: Context menu
+      duration: 500ms
     pinch_zoom:
-      gesture: "Pinch in/out"
-      action: "Zoom images"
-      scope: "Photo viewer only"
-
+      gesture: Pinch in/out
+      action: Zoom images
+      scope: Photo viewer only
   player_gestures:
-    double_tap_left: "Seek -10s"
-    double_tap_right: "Seek +10s"
-    vertical_swipe_left: "Brightness"
-    vertical_swipe_right: "Volume"
-    horizontal_swipe: "Seek"
-
+    double_tap_left: Seek -10s
+    double_tap_right: Seek +10s
+    vertical_swipe_left: Brightness
+    vertical_swipe_right: Volume
+    horizontal_swipe: Seek
   settings_toggle:
-    location: "Settings > Accessibility > Gestures"
+    location: Settings > Accessibility > Gestures
     options:
-      - "All gestures enabled"
-      - "Navigation gestures only"
-      - "Disabled"
-
-# =============================================================================
-# BREADCRUMBS
-# =============================================================================
-
+    - All gestures enabled
+    - Navigation gestures only
+    - Disabled
 breadcrumbs:
-  style: "Minimal"
-  display: "Only in nested pages (detail views)"
-
+  style: Minimal
+  display: Only in nested pages (detail views)
   format:
-    separator: "/"
-    truncation: "Middle ellipsis for long titles"
+    separator: /
+    truncation: Middle ellipsis for long titles
     max_items: 3
-
-  example: "Movies / Action / The Dark Knight"
-
+  example: Movies / Action / The Dark Knight
   behavior:
-    click: "Navigate to that level"
-    mobile: "Collapse to back button + current"
-
-# =============================================================================
-# SEARCH
-# =============================================================================
-
+    click: Navigate to that level
+    mobile: Collapse to back button + current
 search:
-  behavior: "Instant Results"
-  description: "Results appear as you type"
-  debounce: "150ms"
-
+  behavior: Instant Results
+  description: Results appear as you type
+  debounce: 150ms
   scopes:
-    - "All content"
-    - "Movies"
-    - "TV Shows"
-    - "Music"
-    - "People"
-    - "Settings"
-
+  - All content
+  - Movies
+  - TV Shows
+  - Music
+  - People
+  - Settings
   results_display:
-    type: "Dropdown below search"
+    type: Dropdown below search
     max_visible: 8
-    sections: "Grouped by type"
-
+    sections: Grouped by type
   keyboard_nav:
-    up_down: "Navigate results"
-    enter: "Go to result"
-    escape: "Close results"
-
+    up_down: Navigate results
+    enter: Go to result
+    escape: Close results
   mobile:
-    trigger: "Search icon in bottom nav"
-    display: "Full-screen search overlay"
+    trigger: Search icon in bottom nav
+    display: Full-screen search overlay

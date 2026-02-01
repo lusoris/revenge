@@ -28,9 +28,9 @@ sources:
     note: Navigation icons
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: CLIENT_SUPPORT
-    path: features/shared/CLIENT_SUPPORT.md
+    path: ../../features/shared/CLIENT_SUPPORT.md
 ---
 
 # Navigation System
@@ -134,8 +134,8 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [CLIENT_SUPPORT](features/shared/CLIENT_SUPPORT.md)
+- [DESIGN_SYSTEM](../../technical/DESIGN_SYSTEM.md)
+- [CLIENT_SUPPORT](../../features/shared/CLIENT_SUPPORT.md)
 
 ### External Sources
 - [Lucide Icons](https://lucide.dev/icons/) - Navigation icons

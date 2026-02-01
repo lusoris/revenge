@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Social network for movie lovers and film tracking'
 wiki_tagline: '> Log films to your Letterboxd diary'
-wiki_overview: 'Letterboxd integration logs movies to your film diary. Rate films as you watch and add reviews. Import your existing Letterboxd watchlist. See friends activity and discover films through the community. Note: Uses CSV import/export as Letterboxd API is limited.'
+wiki_overview: 'Letterboxd integration logs movies to your film diary. Rate films
+  as you watch and add reviews. Import your existing Letterboxd watchlist. See friends
+  activity and discover films through the community. Note: Uses CSV import/export
+  as Letterboxd API is limited.'
 sources:
 - name: Go io
   url: https://pkg.go.dev/io
@@ -30,14 +33,12 @@ sources:
   url: https://api-docs.letterboxd.com/
   note: Auto-resolved from letterboxd
 design_refs:
-- title: integrations/scrobbling
-  path: integrations/scrobbling.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Letterboxd
 integration_id: letterboxd
 external_service: Letterboxd

@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> External transcoding service for Revenge'
 wiki_tagline: '> Offload transcoding to dedicated workers'
-wiki_overview: 'Blackbeard handles video transcoding on dedicated hardware. Offload CPU-intensive transcoding from your main server. Supports hardware acceleration (NVENC, QSV, VAAPI). Multiple workers can process jobs in parallel. Reduces load on the Revenge server for better playback performance.'
+wiki_overview: Blackbeard handles video transcoding on dedicated hardware. Offload
+  CPU-intensive transcoding from your main server. Supports hardware acceleration
+  (NVENC, QSV, VAAPI). Multiple workers can process jobs in parallel. Reduces load
+  on the Revenge server for better playback performance.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -48,14 +51,12 @@ sources:
   url: https://prometheus.io/docs/concepts/metric_types/
   note: Auto-resolved from prometheus-metrics
 design_refs:
-- title: integrations/transcoding
-  path: integrations/transcoding.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Blackbeard
 integration_id: blackbeard
 external_service: Blackbeard

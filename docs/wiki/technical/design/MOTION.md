@@ -20,9 +20,9 @@ sources:
     note: Animation library option
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: ACCESSIBILITY
-    path: technical/design/ACCESSIBILITY.md
+    path: ../../technical/design/ACCESSIBILITY.md
 ---
 
 # Motion & Animation

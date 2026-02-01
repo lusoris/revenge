@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Custom IPTV channel creation from your media library'
 wiki_tagline: '> Create custom TV channels from your library'
-wiki_overview: 'ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 movie channel, a sitcom channel, or themed marathons. Channels play through Revenge like traditional live TV. Schedule content or let it shuffle randomly. Perfect for a lean-back viewing experience.'
+wiki_overview: ErsatzTV creates custom IPTV channels from your existing media. Build
+  a 24/7 movie channel, a sitcom channel, or themed marathons. Channels play through
+  Revenge like traditional live TV. Schedule content or let it shuffle randomly. Perfect
+  for a lean-back viewing experience.
 sources:
 - name: ErsatzTV Documentation
   url: https://ersatztv.org/docs/
@@ -36,14 +39,12 @@ sources:
   url: https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd
   note: Auto-resolved from xmltv
 design_refs:
-- title: integrations/livetv
-  path: integrations/livetv.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: ErsatzTV
 integration_id: ersatztv
 external_service: ErsatzTV

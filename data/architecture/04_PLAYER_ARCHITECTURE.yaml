@@ -16,19 +16,29 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |
-  > Media playback system with HLS streaming and Vidstack player
+technical_summary: '> Media playback system with HLS streaming and Vidstack player
+
 
   Player components:
+
   - **Backend**: gohlslib for HLS manifest generation, FFmpeg for transcoding
+
   - **Frontend**: Vidstack player with HLS.js for adaptive streaming
+
   - **Features**: Skip intro, trickplay thumbnails, chapter markers, subtitles
+
   - **Casting**: Chromecast and DLNA support
+
   - **Sync**: SyncPlay for watching together remotely
 
+  '
 wiki_tagline: '> How Revenge plays your media across all devices'
-
-wiki_overview: 'The player architecture handles media playback across web, mobile, and TV clients. Videos stream via HLS for adaptive quality based on your connection. The backend generates HLS manifests and handles transcoding when needed (using FFmpeg). The web player (Vidstack) supports chapters, subtitles, skip intro, and trickplay thumbnails. Chromecast lets you cast to TV, and SyncPlay lets multiple users watch together in sync.'
+wiki_overview: The player architecture handles media playback across web, mobile,
+  and TV clients. Videos stream via HLS for adaptive quality based on your connection.
+  The backend generates HLS manifests and handles transcoding when needed (using FFmpeg).
+  The web player (Vidstack) supports chapters, subtitles, skip intro, and trickplay
+  thumbnails. Chromecast lets you cast to TV, and SyncPlay lets multiple users watch
+  together in sync.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -62,10 +72,10 @@ sources:
   note: Auto-resolved from sveltekit
 design_refs:
 - title: architecture
-  path: architecture/INDEX.md
+  path: INDEX.md
 - title: ADULT_CONTENT_SYSTEM
-  path: ADULT_CONTENT_SYSTEM.md
+  path: ../features/adult/ADULT_CONTENT_SYSTEM.md
 - title: ADULT_METADATA
-  path: ADULT_METADATA.md
+  path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
-  path: DATA_RECONCILIATION.md
+  path: ../features/adult/DATA_RECONCILIATION.md

@@ -26,11 +26,11 @@ sources:
     note: Icon library
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: FRONTEND
-    path: technical/FRONTEND.md
+    path: ../../technical/FRONTEND.md
   - title: 04_PLAYER_ARCHITECTURE
-    path: architecture/04_PLAYER_ARCHITECTURE.md
+    path: ../../architecture/04_PLAYER_ARCHITECTURE.md
 ---
 
 # UI Components

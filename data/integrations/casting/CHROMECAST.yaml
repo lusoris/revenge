@@ -18,20 +18,21 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Google Cast protocol for streaming to Chromecast devices'
 wiki_tagline: '> Cast media to Chromecast and Google TV'
-wiki_overview: 'Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled device. Click the cast icon in the player to see available devices on your network. Control playback from your phone or computer while watching on the big screen. Supports subtitles and multiple audio tracks.'
+wiki_overview: Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled
+  device. Click the cast icon in the player to see available devices on your network.
+  Control playback from your phone or computer while watching on the big screen. Supports
+  subtitles and multiple audio tracks.
 sources:
 - name: go-chromecast
   url: https://github.com/vishen/go-chromecast
   note: Auto-resolved from go-chromecast
 design_refs:
-- title: integrations/casting
-  path: integrations/casting.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 integration_name: Chromecast
 integration_id: chromecast
 external_service: Chromecast

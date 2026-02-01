@@ -19,7 +19,11 @@ status_integration_testing_notes: '-'
 technical_summary: '> Real-time monitoring, analytics, and account sharing detection
   for Revenge'
 wiki_tagline: '> See what is being watched and detect account sharing'
-wiki_overview: 'The Tracearr analytics dashboard shows real-time server activity. See what is being watched right now, popular content this week, and overall library statistics. Track bandwidth usage and transcoding load. Account sharing detection spots when the same user watches from multiple locations simultaneously. Export reports for server administrators.'
+wiki_overview: The Tracearr analytics dashboard shows real-time server activity. See
+  what is being watched right now, popular content this week, and overall library
+  statistics. Track bandwidth usage and transcoding load. Account sharing detection
+  spots when the same user watches from multiple locations simultaneously. Export
+  reports for server administrators.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -64,14 +68,12 @@ sources:
   url: https://svelte.dev/docs/kit/introduction
   note: Auto-resolved from sveltekit
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Tracearr Analytics Service
 module_name: tracearr_analytics_service
 schema_name: public

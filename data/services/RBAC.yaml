@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Role-based access control with Casbin'
 wiki_tagline: '> Role-based access control with Casbin'
-wiki_overview: 'The RBAC service controls who can do what in Revenge. Built on Casbin, it supports roles (Admin, User, Guest) and fine-grained permissions. Admins define policies like "Users can view movies" or "Guests cannot access adult content". Policies are stored in PostgreSQL and cached for fast authorization checks on every request.'
+wiki_overview: The RBAC service controls who can do what in Revenge. Built on Casbin,
+  it supports roles (Admin, User, Guest) and fine-grained permissions. Admins define
+  policies like "Users can view movies" or "Guests cannot access adult content". Policies
+  are stored in PostgreSQL and cached for fast authorization checks on every request.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -40,13 +43,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: services
-  path: services/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 service_name: RBAC Service
 package_path: internal/service/rbac
 fx_module: rbac.Module

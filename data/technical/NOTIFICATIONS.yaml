@@ -16,23 +16,29 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > Multi-channel notification system: Email, Push (FCM), Webhooks
+technical_summary: '> Multi-channel notification system: Email, Push (FCM), Webhooks
+
 
   Unified notification delivery:
+
   - **Email**: SMTP via go-mail, templates, bounce handling
+
   - **Push**: Firebase Cloud Messaging (FCM) via go-fcm
+
   - **Webhooks**: HTTP callbacks to external services
+
   - **Queue**: River async job queue with retries
+
   - **Preferences**: Per-user, per-channel filtering
-  - **Features**: Rate limiting, deduplication, batching
 
-wiki_tagline: |-
-  > Stay informed with email, push, and webhook notifications
-
-wiki_overview: |-
-  The Notifications System delivers real-time alerts across multiple channels. Users receive email notifications for account updates, push notifications on mobile devices via Firebase Cloud Messaging, and developers can subscribe to webhooks for automation. The system queues all notifications via River for reliable delivery with automatic retries and respects user preferences for each notification type.
-
+  - **Features**: Rate limiting, deduplication, batching'
+wiki_tagline: '> Stay informed with email, push, and webhook notifications'
+wiki_overview: The Notifications System delivers real-time alerts across multiple
+  channels. Users receive email notifications for account updates, push notifications
+  on mobile devices via Firebase Cloud Messaging, and developers can subscribe to
+  webhooks for automation. The system queues all notifications via River for reliable
+  delivery with automatic retries and respects user preferences for each notification
+  type.
 sources:
 - name: go-mail GitHub README
   url: https://github.com/wneessen/go-mail
@@ -46,475 +52,361 @@ sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
   note: Auto-resolved from fx
-
 design_refs:
 - title: technical
   path: technical.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: EMAIL
-  path: technical/EMAIL.md
+  path: ../technical/EMAIL.md
 - title: WEBHOOKS
-  path: technical/WEBHOOKS.md
-
+  path: ../technical/WEBHOOKS.md
 notification_channels:
   email:
     library: go-mail
     use_cases:
-      - Account registration/verification
-      - Password reset
-      - New content alerts
-      - Server announcements
-      - Weekly digest
+    - Account registration/verification
+    - Password reset
+    - New content alerts
+    - Server announcements
+    - Weekly digest
     advantages:
-      - Reaches all users
-      - Detailed formatting
-      - Actionable links
+    - Reaches all users
+    - Detailed formatting
+    - Actionable links
     disadvantages:
-      - Slower delivery
-      - May be filtered as spam
-      - Requires email verification
+    - Slower delivery
+    - May be filtered as spam
+    - Requires email verification
     implementation_ref: See EMAIL.yaml for details
-
   push:
     library: go-fcm (Firebase Cloud Messaging)
     platforms:
-      - Android
-      - iOS
-      - Web (PWA)
+    - Android
+    - iOS
+    - Web (PWA)
     use_cases:
-      - New episode available
-      - Download complete
-      - Server error (admin)
-      - Playback resume reminder
+    - New episode available
+    - Download complete
+    - Server error (admin)
+    - Playback resume reminder
     advantages:
-      - Instant delivery
-      - High visibility
-      - Works when app closed
+    - Instant delivery
+    - High visibility
+    - Works when app closed
     disadvantages:
-      - Requires device registration
-      - Limited payload size (4KB)
-      - Battery impact if overused
-
+    - Requires device registration
+    - Limited payload size (4KB)
+    - Battery impact if overused
   webhook:
     protocol: HTTP POST with JSON payload
     use_cases:
-      - Integration with Discord/Slack
-      - Automation workflows
-      - External monitoring systems
-      - Custom notification handlers
+    - Integration with Discord/Slack
+    - Automation workflows
+    - External monitoring systems
+    - Custom notification handlers
     advantages:
-      - Flexible integration
-      - Machine-readable format
-      - Supports complex workflows
+    - Flexible integration
+    - Machine-readable format
+    - Supports complex workflows
     disadvantages:
-      - Requires external endpoint
-      - Security considerations (webhook secrets)
-      - Delivery not guaranteed
-
+    - Requires external endpoint
+    - Security considerations (webhook secrets)
+    - Delivery not guaranteed
 notification_types:
   user_account:
-    - type: user.registered
-      channels: [email]
-      priority: high
-      description: Welcome email after registration
-      template_data:
-        - username
-        - verification_link
-    - type: user.email_verified
-      channels: [email]
-      priority: normal
-      description: Confirmation that email was verified
-    - type: user.password_reset
-      channels: [email]
-      priority: high
-      description: Password reset link
-      template_data:
-        - reset_link
-        - expiry_time
-    - type: user.password_changed
-      channels: [email]
-      priority: high
-      description: Alert that password was changed
-    - type: user.login_new_device
-      channels: [email, push]
-      priority: normal
-      description: Alert for login from new device
-      template_data:
-        - device_info
-        - location
-        - ip_address
-
+  - type: user.registered
+    channels:
+    - email
+    priority: high
+    description: Welcome email after registration
+    template_data:
+    - username
+    - verification_link
+  - type: user.email_verified
+    channels:
+    - email
+    priority: normal
+    description: Confirmation that email was verified
+  - type: user.password_reset
+    channels:
+    - email
+    priority: high
+    description: Password reset link
+    template_data:
+    - reset_link
+    - expiry_time
+  - type: user.password_changed
+    channels:
+    - email
+    priority: high
+    description: Alert that password was changed
+  - type: user.login_new_device
+    channels:
+    - email
+    - push
+    priority: normal
+    description: Alert for login from new device
+    template_data:
+    - device_info
+    - location
+    - ip_address
   content:
-    - type: content.new_episode
-      channels: [email, push, webhook]
-      priority: normal
-      description: New episode available for tracked show
-      template_data:
-        - show_title
-        - episode_number
-        - air_date
-    - type: content.new_movie
-      channels: [email, push, webhook]
-      priority: normal
-      description: New movie added matching preferences
-      template_data:
-        - movie_title
-        - release_year
-        - genres
-    - type: content.new_album
-      channels: [email, push, webhook]
-      priority: normal
-      description: New album from followed artist
-      template_data:
-        - artist_name
-        - album_title
-        - release_date
-
+  - type: content.new_episode
+    channels:
+    - email
+    - push
+    - webhook
+    priority: normal
+    description: New episode available for tracked show
+    template_data:
+    - show_title
+    - episode_number
+    - air_date
+  - type: content.new_movie
+    channels:
+    - email
+    - push
+    - webhook
+    priority: normal
+    description: New movie added matching preferences
+    template_data:
+    - movie_title
+    - release_year
+    - genres
+  - type: content.new_album
+    channels:
+    - email
+    - push
+    - webhook
+    priority: normal
+    description: New album from followed artist
+    template_data:
+    - artist_name
+    - album_title
+    - release_date
   playback:
-    - type: playback.resume_reminder
-      channels: [push]
-      priority: low
-      description: Reminder to resume watching/listening
-      template_data:
-        - media_title
-        - progress_percent
-    - type: playback.intro_detected
-      channels: [push]
-      priority: low
-      description: Skip intro available
-      skip_preferences: true
-
+  - type: playback.resume_reminder
+    channels:
+    - push
+    priority: low
+    description: Reminder to resume watching/listening
+    template_data:
+    - media_title
+    - progress_percent
+  - type: playback.intro_detected
+    channels:
+    - push
+    priority: low
+    description: Skip intro available
+    skip_preferences: true
   server:
-    - type: server.error
-      channels: [email, push, webhook]
-      priority: critical
-      recipients: admins
-      description: Critical server error
-      template_data:
-        - error_message
-        - component
-        - timestamp
-    - type: server.storage_warning
-      channels: [email, webhook]
-      priority: high
-      recipients: admins
-      description: Low disk space warning
-      template_data:
-        - used_percent
-        - available_gb
-    - type: server.backup_complete
-      channels: [email, webhook]
-      priority: low
-      recipients: admins
-      description: Database backup completed
-      template_data:
-        - backup_size
-        - duration
-
+  - type: server.error
+    channels:
+    - email
+    - push
+    - webhook
+    priority: critical
+    recipients: admins
+    description: Critical server error
+    template_data:
+    - error_message
+    - component
+    - timestamp
+  - type: server.storage_warning
+    channels:
+    - email
+    - webhook
+    priority: high
+    recipients: admins
+    description: Low disk space warning
+    template_data:
+    - used_percent
+    - available_gb
+  - type: server.backup_complete
+    channels:
+    - email
+    - webhook
+    priority: low
+    recipients: admins
+    description: Database backup completed
+    template_data:
+    - backup_size
+    - duration
   integration:
-    - type: integration.arr_download
-      channels: [webhook]
-      priority: normal
-      description: Arr service downloaded content
-      template_data:
-        - arr_service
-        - content_title
-        - quality
-
+  - type: integration.arr_download
+    channels:
+    - webhook
+    priority: normal
+    description: Arr service downloaded content
+    template_data:
+    - arr_service
+    - content_title
+    - quality
 push_notifications_fcm:
   setup:
     service_account_key: Required from Firebase console
     project_id: Firebase project ID
     config_location: config/firebase-adminsdk.json
-
   registration:
     description: Client apps register FCM token with server
     endpoint: POST /api/v1/user/push/register
     payload:
-      - device_token (FCM token from client)
-      - device_type (android, ios, web)
-      - device_name (optional)
-
-  message_structure: |
-    ```json
-    {
-      "notification": {
-        "title": "New Episode Available",
-        "body": "Breaking Bad S05E14 just aired",
-        "image": "https://example.com/poster.jpg"
-      },
-      "data": {
-        "type": "content.new_episode",
-        "content_id": "uuid-here",
-        "action": "open_player"
-      },
-      "android": {
-        "priority": "high",
-        "notification": {
-          "sound": "default",
-          "click_action": "FLUTTER_NOTIFICATION_CLICK"
-        }
-      },
-      "apns": {
-        "payload": {
-          "aps": {
-            "sound": "default",
-            "badge": 1
-          }
-        }
-      }
-    }
-    ```
-
-  implementation: |
-    ```go
-    import fcm "github.com/appleboy/go-fcm"
-
-    type FCMNotifier struct {
-        client *fcm.Client
-        repo   PushTokenRepository
-    }
-
-    func (n *FCMNotifier) SendPush(ctx context.Context, userID uuid.UUID, notification *Notification) error {
-        // Get user's FCM tokens (may have multiple devices)
-        tokens, err := n.repo.GetUserTokens(ctx, userID)
-        if err != nil {
-            return err
-        }
-
-        msg := &fcm.Message{
-            Notification: &fcm.Notification{
-                Title: notification.Title,
-                Body:  notification.Body,
-                Image: notification.ImageURL,
-            },
-            Data: map[string]string{
-                "type":       notification.Type,
-                "content_id": notification.ContentID.String(),
-                "action":     notification.Action,
-            },
-            RegistrationIDs: tokens,
-        }
-
-        resp, err := n.client.Send(msg)
-        if err != nil {
-            return fmt.Errorf("fcm send: %w", err)
-        }
-
-        // Handle invalid tokens
-        if resp.Failure > 0 {
-            n.handleFailures(ctx, resp, tokens)
-        }
-
-        return nil
-    }
-
-    func (n *FCMNotifier) handleFailures(ctx context.Context, resp *fcm.Response, tokens []string) {
-        for i, result := range resp.Results {
-            if result.Error != nil {
-                // Remove invalid/expired tokens
-                if result.Error == fcm.ErrInvalidRegistration || result.Error == fcm.ErrNotRegistered {
-                    n.repo.DeleteToken(ctx, tokens[i])
-                }
-            }
-        }
-    }
-    ```
-
+    - device_token (FCM token from client)
+    - device_type (android, ios, web)
+    - device_name (optional)
+  message_structure: "```json\n{\n  \"notification\": {\n    \"title\": \"New Episode\
+    \ Available\",\n    \"body\": \"Breaking Bad S05E14 just aired\",\n    \"image\"\
+    : \"https://example.com/poster.jpg\"\n  },\n  \"data\": {\n    \"type\": \"content.new_episode\"\
+    ,\n    \"content_id\": \"uuid-here\",\n    \"action\": \"open_player\"\n  },\n\
+    \  \"android\": {\n    \"priority\": \"high\",\n    \"notification\": {\n    \
+    \  \"sound\": \"default\",\n      \"click_action\": \"FLUTTER_NOTIFICATION_CLICK\"\
+    \n    }\n  },\n  \"apns\": {\n    \"payload\": {\n      \"aps\": {\n        \"\
+    sound\": \"default\",\n        \"badge\": 1\n      }\n    }\n  }\n}\n```\n"
+  implementation: "```go\nimport fcm \"github.com/appleboy/go-fcm\"\n\ntype FCMNotifier\
+    \ struct {\n    client *fcm.Client\n    repo   PushTokenRepository\n}\n\nfunc\
+    \ (n *FCMNotifier) SendPush(ctx context.Context, userID uuid.UUID, notification\
+    \ *Notification) error {\n    // Get user's FCM tokens (may have multiple devices)\n\
+    \    tokens, err := n.repo.GetUserTokens(ctx, userID)\n    if err != nil {\n \
+    \       return err\n    }\n\n    msg := &fcm.Message{\n        Notification: &fcm.Notification{\n\
+    \            Title: notification.Title,\n            Body:  notification.Body,\n\
+    \            Image: notification.ImageURL,\n        },\n        Data: map[string]string{\n\
+    \            \"type\":       notification.Type,\n            \"content_id\": notification.ContentID.String(),\n\
+    \            \"action\":     notification.Action,\n        },\n        RegistrationIDs:\
+    \ tokens,\n    }\n\n    resp, err := n.client.Send(msg)\n    if err != nil {\n\
+    \        return fmt.Errorf(\"fcm send: %w\", err)\n    }\n\n    // Handle invalid\
+    \ tokens\n    if resp.Failure > 0 {\n        n.handleFailures(ctx, resp, tokens)\n\
+    \    }\n\n    return nil\n}\n\nfunc (n *FCMNotifier) handleFailures(ctx context.Context,\
+    \ resp *fcm.Response, tokens []string) {\n    for i, result := range resp.Results\
+    \ {\n        if result.Error != nil {\n            // Remove invalid/expired tokens\n\
+    \            if result.Error == fcm.ErrInvalidRegistration || result.Error ==\
+    \ fcm.ErrNotRegistered {\n                n.repo.DeleteToken(ctx, tokens[i])\n\
+    \            }\n        }\n    }\n}\n```\n"
   token_management:
     storage: PostgreSQL table user_push_tokens
     fields:
-      - user_id
-      - device_token
-      - device_type (android, ios, web)
-      - device_name
-      - registered_at
-      - last_used_at
+    - user_id
+    - device_token
+    - device_type (android, ios, web)
+    - device_name
+    - registered_at
+    - last_used_at
     cleanup: Delete tokens that fail with NotRegistered error
-
   payload_limits:
     fcm_max_size: 4 KB
     notification_title: 256 characters
     notification_body: 1024 characters
     data_fields: Up to 4 KB total
-
 webhook_notifications:
   webhook_registration:
     endpoint: POST /api/v1/admin/webhooks
     payload:
-      - url (target endpoint)
-      - events (list of event types to subscribe)
-      - secret (for HMAC signature validation)
-      - enabled (true/false)
-
-  webhook_delivery: |
-    ```http
-    POST /your-webhook-endpoint HTTP/1.1
-    Host: example.com
-    Content-Type: application/json
-    X-Revenge-Event: content.new_episode
-    X-Revenge-Signature: sha256=abc123...
-    X-Revenge-Delivery: uuid-here
-    User-Agent: Revenge-Webhook/1.0
-
-    {
-      "event": "content.new_episode",
-      "timestamp": "2026-01-31T10:30:00Z",
-      "data": {
-        "show_title": "Breaking Bad",
-        "season": 5,
-        "episode": 14,
-        "air_date": "2013-09-15"
-      }
-    }
-    ```
-
-  signature_verification: |
-    ```go
-    // Generate HMAC signature
-    import (
-        "crypto/hmac"
-        "crypto/sha256"
-        "encoding/hex"
-    )
-
-    func generateSignature(payload []byte, secret string) string {
-        h := hmac.New(sha256.New, []byte(secret))
-        h.Write(payload)
-        return "sha256=" + hex.EncodeToString(h.Sum(nil))
-    }
-
-    // Receiver should verify signature
-    func verifySignature(payload []byte, signature, secret string) bool {
-        expected := generateSignature(payload, secret)
-        return hmac.Equal([]byte(signature), []byte(expected))
-    }
-    ```
-
+    - url (target endpoint)
+    - events (list of event types to subscribe)
+    - secret (for HMAC signature validation)
+    - enabled (true/false)
+  webhook_delivery: "```http\nPOST /your-webhook-endpoint HTTP/1.1\nHost: example.com\n\
+    Content-Type: application/json\nX-Revenge-Event: content.new_episode\nX-Revenge-Signature:\
+    \ sha256=abc123...\nX-Revenge-Delivery: uuid-here\nUser-Agent: Revenge-Webhook/1.0\n\
+    \n{\n  \"event\": \"content.new_episode\",\n  \"timestamp\": \"2026-01-31T10:30:00Z\"\
+    ,\n  \"data\": {\n    \"show_title\": \"Breaking Bad\",\n    \"season\": 5,\n\
+    \    \"episode\": 14,\n    \"air_date\": \"2013-09-15\"\n  }\n}\n```\n"
+  signature_verification: "```go\n// Generate HMAC signature\nimport (\n    \"crypto/hmac\"\
+    \n    \"crypto/sha256\"\n    \"encoding/hex\"\n)\n\nfunc generateSignature(payload\
+    \ []byte, secret string) string {\n    h := hmac.New(sha256.New, []byte(secret))\n\
+    \    h.Write(payload)\n    return \"sha256=\" + hex.EncodeToString(h.Sum(nil))\n\
+    }\n\n// Receiver should verify signature\nfunc verifySignature(payload []byte,\
+    \ signature, secret string) bool {\n    expected := generateSignature(payload,\
+    \ secret)\n    return hmac.Equal([]byte(signature), []byte(expected))\n}\n```\n"
   retry_logic:
     max_attempts: 5
     backoff: Exponential (1m, 5m, 15m, 1h, 4h)
     timeout: 10 seconds per request
     failure_handling: Disable webhook after 10 consecutive failures
-
 notification_queue:
   queue_system: River job queue
   job_types:
-    - SendEmailNotification
-    - SendPushNotification
-    - SendWebhookNotification
-
-  job_definition: |
-    ```go
-    type SendNotificationArgs struct {
-        NotificationID uuid.UUID          `json:"notification_id"`
-        UserID         uuid.UUID          `json:"user_id"`
-        Type           string             `json:"type"`
-        Channels       []string           `json:"channels"` // email, push, webhook
-        Title          string             `json:"title"`
-        Body           string             `json:"body"`
-        Data           map[string]any     `json:"data"`
-        Priority       int                `json:"priority"` // 1=critical, 2=high, 3=normal, 4=low
-    }
-
-    type SendNotificationWorker struct {
-        river.WorkerDefaults[SendNotificationArgs]
-        emailNotifier   *EmailNotifier
-        pushNotifier    *FCMNotifier
-        webhookNotifier *WebhookNotifier
-        prefsRepo       UserPreferencesRepository
-    }
-
-    func (w *SendNotificationWorker) Work(ctx context.Context, job *river.Job[SendNotificationArgs]) error {
-        // Check user preferences
-        prefs, err := w.prefsRepo.Get(ctx, job.Args.UserID)
-        if err != nil {
-            return err
-        }
-
-        // Send to each enabled channel
-        for _, channel := range job.Args.Channels {
-            if !prefs.IsChannelEnabled(channel, job.Args.Type) {
-                continue
-            }
-
-            switch channel {
-            case "email":
-                err = w.emailNotifier.Send(ctx, job.Args)
-            case "push":
-                err = w.pushNotifier.Send(ctx, job.Args)
-            case "webhook":
-                err = w.webhookNotifier.Send(ctx, job.Args)
-            }
-
-            if err != nil {
-                slog.Error("notification send failed",
-                    "channel", channel,
-                    "type", job.Args.Type,
-                    "error", err)
-            }
-        }
-
-        return nil
-    }
-    ```
-
+  - SendEmailNotification
+  - SendPushNotification
+  - SendWebhookNotification
+  job_definition: "```go\ntype SendNotificationArgs struct {\n    NotificationID uuid.UUID\
+    \          `json:\"notification_id\"`\n    UserID         uuid.UUID          `json:\"\
+    user_id\"`\n    Type           string             `json:\"type\"`\n    Channels\
+    \       []string           `json:\"channels\"` // email, push, webhook\n    Title\
+    \          string             `json:\"title\"`\n    Body           string    \
+    \         `json:\"body\"`\n    Data           map[string]any     `json:\"data\"\
+    `\n    Priority       int                `json:\"priority\"` // 1=critical, 2=high,\
+    \ 3=normal, 4=low\n}\n\ntype SendNotificationWorker struct {\n    river.WorkerDefaults[SendNotificationArgs]\n\
+    \    emailNotifier   *EmailNotifier\n    pushNotifier    *FCMNotifier\n    webhookNotifier\
+    \ *WebhookNotifier\n    prefsRepo       UserPreferencesRepository\n}\n\nfunc (w\
+    \ *SendNotificationWorker) Work(ctx context.Context, job *river.Job[SendNotificationArgs])\
+    \ error {\n    // Check user preferences\n    prefs, err := w.prefsRepo.Get(ctx,\
+    \ job.Args.UserID)\n    if err != nil {\n        return err\n    }\n\n    // Send\
+    \ to each enabled channel\n    for _, channel := range job.Args.Channels {\n \
+    \       if !prefs.IsChannelEnabled(channel, job.Args.Type) {\n            continue\n\
+    \        }\n\n        switch channel {\n        case \"email\":\n            err\
+    \ = w.emailNotifier.Send(ctx, job.Args)\n        case \"push\":\n            err\
+    \ = w.pushNotifier.Send(ctx, job.Args)\n        case \"webhook\":\n          \
+    \  err = w.webhookNotifier.Send(ctx, job.Args)\n        }\n\n        if err !=\
+    \ nil {\n            slog.Error(\"notification send failed\",\n              \
+    \  \"channel\", channel,\n                \"type\", job.Args.Type,\n         \
+    \       \"error\", err)\n        }\n    }\n\n    return nil\n}\n```\n"
   priority_queues:
     critical: Processed immediately (server errors)
     high: Within 1 minute (password reset)
     normal: Within 5 minutes (new content)
     low: Within 15 minutes (digest emails)
-
 user_preferences:
-  database_schema: |
-    ```sql
-    CREATE TABLE user_notification_preferences (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      notification_type TEXT NOT NULL, -- e.g., content.new_episode
-      email_enabled BOOLEAN DEFAULT TRUE,
-      push_enabled BOOLEAN DEFAULT TRUE,
-      webhook_enabled BOOLEAN DEFAULT FALSE,
-      frequency TEXT DEFAULT 'instant', -- instant, hourly, daily, weekly
-      created_at TIMESTAMPTZ DEFAULT NOW(),
-      updated_at TIMESTAMPTZ DEFAULT NOW(),
-      UNIQUE(user_id, notification_type)
-    );
-
-    CREATE INDEX idx_user_notification_prefs_user ON user_notification_preferences(user_id);
-    ```
-
+  database_schema: "```sql\nCREATE TABLE user_notification_preferences (\n  id UUID\
+    \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL REFERENCES users(id)\
+    \ ON DELETE CASCADE,\n  notification_type TEXT NOT NULL, -- e.g., content.new_episode\n\
+    \  email_enabled BOOLEAN DEFAULT TRUE,\n  push_enabled BOOLEAN DEFAULT TRUE,\n\
+    \  webhook_enabled BOOLEAN DEFAULT FALSE,\n  frequency TEXT DEFAULT 'instant',\
+    \ -- instant, hourly, daily, weekly\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n\
+    \  updated_at TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id, notification_type)\n\
+    );\n\nCREATE INDEX idx_user_notification_prefs_user ON user_notification_preferences(user_id);\n\
+    ```\n"
   default_preferences:
-    user.registered: {email: true, push: false, webhook: false}
-    user.password_reset: {email: true, push: false, webhook: false}
-    content.new_episode: {email: true, push: true, webhook: false}
-    content.new_movie: {email: true, push: true, webhook: false}
-    server.error: {email: true, push: true, webhook: true}
-
+    user.registered:
+      email: true
+      push: false
+      webhook: false
+    user.password_reset:
+      email: true
+      push: false
+      webhook: false
+    content.new_episode:
+      email: true
+      push: true
+      webhook: false
+    content.new_movie:
+      email: true
+      push: true
+      webhook: false
+    server.error:
+      email: true
+      push: true
+      webhook: true
   global_toggles:
     mute_all: Disable all non-critical notifications
     do_not_disturb: Disable push during certain hours
     vacation_mode: Pause notifications, queue for later
-
 batching_and_deduplication:
   email_batching:
     description: Group multiple notifications into digest emails
     frequencies:
-      - instant (no batching)
-      - hourly (top of each hour)
-      - daily (8 AM user timezone)
-      - weekly (Monday 8 AM user timezone)
-    example: "5 new episodes available this week"
-
+    - instant (no batching)
+    - hourly (top of each hour)
+    - daily (8 AM user timezone)
+    - weekly (Monday 8 AM user timezone)
+    example: 5 new episodes available this week
   deduplication:
     window: 5 minutes
     strategy: Same notification type + content ID
     action: Skip duplicate, update timestamp on first
     example: Prevent double-notification if webhook fires twice
-
 rate_limiting:
   per_user:
     email: 20 per hour
@@ -529,75 +421,62 @@ rate_limiting:
     email: 1000 per minute
     push: 5000 per minute
     webhook: 500 per minute
-
 notification_history:
   database_table: notification_log
-  schema: |
-    ```sql
-    CREATE TABLE notification_log (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID REFERENCES users(id),
-      notification_type TEXT NOT NULL,
-      channel TEXT NOT NULL, -- email, push, webhook
-      status TEXT NOT NULL, -- sent, failed, bounced, skipped
-      sent_at TIMESTAMPTZ DEFAULT NOW(),
-      metadata JSONB,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    );
-
-    CREATE INDEX idx_notification_log_user ON notification_log(user_id, sent_at DESC);
-    CREATE INDEX idx_notification_log_type ON notification_log(notification_type);
-    ```
-
+  schema: "```sql\nCREATE TABLE notification_log (\n  id UUID PRIMARY KEY DEFAULT\
+    \ gen_random_uuid(),\n  user_id UUID REFERENCES users(id),\n  notification_type\
+    \ TEXT NOT NULL,\n  channel TEXT NOT NULL, -- email, push, webhook\n  status TEXT\
+    \ NOT NULL, -- sent, failed, bounced, skipped\n  sent_at TIMESTAMPTZ DEFAULT NOW(),\n\
+    \  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX\
+    \ idx_notification_log_user ON notification_log(user_id, sent_at DESC);\nCREATE\
+    \ INDEX idx_notification_log_type ON notification_log(notification_type);\n```\n"
   retention: 90 days for normal notifications, 1 year for critical
-
 api_endpoints:
-  - method: GET
-    path: /api/v1/user/notifications/preferences
-    description: Get user notification preferences
-  - method: PUT
-    path: /api/v1/user/notifications/preferences
-    description: Update notification preferences
-  - method: POST
-    path: /api/v1/user/push/register
-    description: Register FCM device token
-  - method: DELETE
-    path: /api/v1/user/push/unregister
-    description: Unregister device from push
-  - method: GET
-    path: /api/v1/user/notifications/history
-    description: Get notification history
-  - method: POST
-    path: /api/v1/admin/webhooks
-    description: Register webhook endpoint
-  - method: GET
-    path: /api/v1/admin/webhooks
-    description: List registered webhooks
-  - method: DELETE
-    path: /api/v1/admin/webhooks/:id
-    description: Delete webhook
-  - method: POST
-    path: /api/v1/admin/notifications/test
-    description: Send test notification (admin only)
-
+- method: GET
+  path: /api/v1/user/notifications/preferences
+  description: Get user notification preferences
+- method: PUT
+  path: /api/v1/user/notifications/preferences
+  description: Update notification preferences
+- method: POST
+  path: /api/v1/user/push/register
+  description: Register FCM device token
+- method: DELETE
+  path: /api/v1/user/push/unregister
+  description: Unregister device from push
+- method: GET
+  path: /api/v1/user/notifications/history
+  description: Get notification history
+- method: POST
+  path: /api/v1/admin/webhooks
+  description: Register webhook endpoint
+- method: GET
+  path: /api/v1/admin/webhooks
+  description: List registered webhooks
+- method: DELETE
+  path: /api/v1/admin/webhooks/:id
+  description: Delete webhook
+- method: POST
+  path: /api/v1/admin/notifications/test
+  description: Send test notification (admin only)
 best_practices:
-  - practice: Respect user preferences
-    reason: Avoid notification fatigue and unsubscribes
-  - practice: Use appropriate channels
-    reason: Email for detailed info, push for urgency, webhooks for automation
-  - practice: Batch low-priority notifications
-    reason: Reduce email volume, improve user experience
-  - practice: Implement rate limiting
-    reason: Prevent spam and abuse
-  - practice: Deduplicate within time window
-    reason: Avoid annoying duplicate notifications
-  - practice: Track delivery status
-    reason: Monitor failures, remove invalid tokens
-  - practice: Use templates for consistency
-    reason: Maintainable, localized notifications
-  - practice: Secure webhooks with HMAC
-    reason: Prevent spoofing and unauthorized access
-  - practice: Handle failures gracefully
-    reason: Retry transient errors, disable invalid endpoints
-  - practice: Test notifications in development
-    reason: Use mailhog for email, FCM sandbox for push
+- practice: Respect user preferences
+  reason: Avoid notification fatigue and unsubscribes
+- practice: Use appropriate channels
+  reason: Email for detailed info, push for urgency, webhooks for automation
+- practice: Batch low-priority notifications
+  reason: Reduce email volume, improve user experience
+- practice: Implement rate limiting
+  reason: Prevent spam and abuse
+- practice: Deduplicate within time window
+  reason: Avoid annoying duplicate notifications
+- practice: Track delivery status
+  reason: Monitor failures, remove invalid tokens
+- practice: Use templates for consistency
+  reason: Maintainable, localized notifications
+- practice: Secure webhooks with HMAC
+  reason: Prevent spoofing and unauthorized access
+- practice: Handle failures gracefully
+  reason: Retry transient errors, disable invalid endpoints
+- practice: Test notifications in development
+  reason: Use mailhog for email, FCM sandbox for push

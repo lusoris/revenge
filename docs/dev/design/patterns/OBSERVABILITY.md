@@ -46,11 +46,11 @@ sources:
     note: Distributed tracing backend
 design_refs:
   - title: patterns
-    path: patterns/INDEX.md
+    path: INDEX.md
   - title: TECH_STACK
-    path: technical/TECH_STACK.md
+    path: ../technical/TECH_STACK.md
   - title: BEST_PRACTICES
-    path: operations/BEST_PRACTICES.md
+    path: ../operations/BEST_PRACTICES.md
 ---
 
 # Observability Pattern
@@ -154,7 +154,7 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [patterns](patterns/INDEX.md)
+- [patterns](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
 - [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
 

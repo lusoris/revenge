@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer wiki with biographies and filmographies'
 wiki_tagline: '> Performer biographies from Babepedia'
-wiki_overview: 'Babepedia provides biographical information for adult performers. Physical attributes, career history, and social media links. Supplements StashDB performer data. Used within the QAR adult content system. Links to performer profiles from content detail pages.'
+wiki_overview: Babepedia provides biographical information for adult performers. Physical
+  attributes, career history, and social media links. Supplements StashDB performer
+  data. Used within the QAR adult content system. Links to performer profiles from
+  content detail pages.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -31,13 +34,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: integrations/wiki/adult
-  path: integrations/wiki/adult.md
+  path: ../../../integrations/wiki/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Babepedia
 integration_id: babepedia
 external_service: Babepedia

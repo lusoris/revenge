@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Full-text search via Typesense with per-module collections'
 wiki_tagline: '> Full-text search via Typesense with per-module collections'
-wiki_overview: 'Search instantly across your entire library using Typesense. Find movies, shows, music, and people with typo-tolerant full-text search. Results are filtered by user permissions - you only see content you have access to. Search supports filters (year, genre, rating), facets, and sorting. Separate collections per media type ensure fast, relevant results.'
+wiki_overview: Search instantly across your entire library using Typesense. Find movies,
+  shows, music, and people with typo-tolerant full-text search. Results are filtered
+  by user permissions - you only see content you have access to. Search supports filters
+  (year, genre, rating), facets, and sorting. Separate collections per media type
+  ensure fast, relevant results.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -34,13 +38,13 @@ sources:
   note: Auto-resolved from typesense-go
 design_refs:
 - title: services
-  path: services/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 service_name: Search Service
 package_path: internal/service/search
 fx_module: search.Module

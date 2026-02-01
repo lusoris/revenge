@@ -23,7 +23,11 @@ technical_summary: "  > GitHub branch protection rules for main and develop\n\n 
   \ commits or squash\n  - **Up-to-date**: Branch must be current with base before\
   \ merge"
 wiki_tagline: '> Rules that protect main and develop branches from accidental changes'
-wiki_overview: 'Branch protection rules prevent direct pushes to main and develop branches. All changes must go through pull requests with at least one approval. CI checks (tests, linting, coverage) must pass before merging. Force pushes are disabled to preserve commit history. These rules are configured in GitHub repository settings and ensure code quality and review for all changes.'
+wiki_overview: Branch protection rules prevent direct pushes to main and develop branches.
+  All changes must go through pull requests with at least one approval. CI checks
+  (tests, linting, coverage) must pass before merging. Force pushes are disabled to
+  preserve commit history. These rules are configured in GitHub repository settings
+  and ensure code quality and review for all changes.
 sources:
 - name: Conventional Commits
   url: https://www.conventionalcommits.org/
@@ -33,12 +37,12 @@ sources:
   note: Auto-resolved from gitflow
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 main: Strictest protection - production code
 develop: Require CI + 1 review

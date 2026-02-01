@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult content platform with performer pages and scene metadata'
 wiki_tagline: '> Performer pages from Pornhub'
-wiki_overview: 'Pornhub integration provides links to official performer channels. View counts and popularity metrics available. Cross-references performer identities across platforms. Part of the QAR adult metadata enrichment pipeline. Links stored for reference, no content streaming.'
+wiki_overview: Pornhub integration provides links to official performer channels.
+  View counts and popularity metrics available. Cross-references performer identities
+  across platforms. Part of the QAR adult metadata enrichment pipeline. Links stored
+  for reference, no content streaming.
 sources:
 - name: Go io
   url: https://pkg.go.dev/io
@@ -28,13 +31,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: integrations/metadata/adult
-  path: integrations/metadata/adult.md
+  path: ../../../integrations/metadata/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Pornhub
 integration_id: pornhub
 external_service: Pornhub

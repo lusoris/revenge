@@ -19,7 +19,11 @@ status_integration_testing_notes: '-'
 technical_summary: '> Modern, integrated knowledge base for users, mods, admins, and
   devs'
 wiki_tagline: '> Built-in documentation and help system'
-wiki_overview: 'Self-hosted wiki for server documentation and guides. Create articles for users explaining how to use features, for moderators on content policies, and for admins on server management. Markdown editor with live preview. Search across all articles. Permission-controlled sections keep sensitive docs private. Versioned content tracks changes over time.'
+wiki_overview: Self-hosted wiki for server documentation and guides. Create articles
+  for users explaining how to use features, for moderators on content policies, and
+  for admins on server management. Markdown editor with live preview. Search across
+  all articles. Permission-controlled sections keep sensitive docs private. Versioned
+  content tracks changes over time.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -52,14 +56,12 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Internal Wiki System
 module_name: internal_wiki_system
 schema_name: public

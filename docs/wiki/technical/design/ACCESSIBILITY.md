@@ -20,9 +20,9 @@ sources:
     note: ARIA patterns
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: MOTION
-    path: technical/design/MOTION.md
+    path: ../../technical/design/MOTION.md
 ---
 
 # Accessibility

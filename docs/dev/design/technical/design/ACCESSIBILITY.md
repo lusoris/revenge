@@ -31,9 +31,9 @@ sources:
     note: ARIA patterns
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: MOTION
-    path: technical/design/MOTION.md
+    path: ../../technical/design/MOTION.md
 ---
 
 # Accessibility
@@ -137,8 +137,8 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [MOTION](technical/design/MOTION.md)
+- [DESIGN_SYSTEM](../../technical/DESIGN_SYSTEM.md)
+- [MOTION](../../technical/design/MOTION.md)
 
 ### External Sources
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/) - Accessibility standards

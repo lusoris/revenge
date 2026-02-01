@@ -22,7 +22,12 @@ technical_summary: "  > Semantic versioning (semver) and automated release proce
   \ compatible\n  - **PATCH**: Bug fixes, security patches\n  - **Automation**: Release\
   \ Please for changelog and version bumps"
 wiki_tagline: '> How version numbers work and when releases happen'
-wiki_overview: 'Revenge follows Semantic Versioning (semver). Version numbers are formatted as vMAJOR.MINOR.PATCH. MAJOR bumps indicate breaking changes, MINOR adds new features without breaking existing functionality, and PATCH is for bug fixes. Releases are automated via Release Please - when commits merge to main, a release PR is created automatically with updated changelog. Pre-release versions (alpha, beta, rc) are used for testing before stable releases.'
+wiki_overview: Revenge follows Semantic Versioning (semver). Version numbers are formatted
+  as vMAJOR.MINOR.PATCH. MAJOR bumps indicate breaking changes, MINOR adds new features
+  without breaking existing functionality, and PATCH is for bug fixes. Releases are
+  automated via Release Please - when commits merge to main, a release PR is created
+  automatically with updated changelog. Pre-release versions (alpha, beta, rc) are
+  used for testing before stable releases.
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5
@@ -41,12 +46,12 @@ sources:
   note: Auto-resolved from semver
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 semver: Strict semantic versioning
 changelog: Auto-generated from conventional commits

@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Synchronized playback for multiple users watching together'
 wiki_tagline: '> Synchronized playback for multiple users watching together'
-wiki_overview: 'Watch movies and shows together with friends, even when apart. SyncPlay keeps everyone at the same playback position in real-time via WebSocket. Create a room, share the link, and playback syncs automatically. Pause/play/seek actions sync to all participants. Built-in chat for commentary during viewing.'
+wiki_overview: Watch movies and shows together with friends, even when apart. SyncPlay
+  keeps everyone at the same playback position in real-time via WebSocket. Create
+  a room, share the link, and playback syncs automatically. Pause/play/seek actions
+  sync to all participants. Built-in chat for commentary during viewing.
 sources:
 - name: Go sync
   url: https://pkg.go.dev/sync
@@ -27,14 +30,12 @@ sources:
   url: https://jellyfin.org/docs/general/server/syncplay/
   note: Auto-resolved from jellyfin-syncplay
 design_refs:
-- title: features/playback
-  path: features/playback.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: SyncPlay (Watch Together)
 module_name: syncplay_(watch_together)
 schema_name: public

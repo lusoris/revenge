@@ -17,9 +17,9 @@ sources:
     note: Base icons to customize
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: BRAND_IDENTITY
-    path: technical/design/BRAND_IDENTITY.md
+    path: ../../technical/design/BRAND_IDENTITY.md
 ---
 
 # Pirate Mode Easter Eggs

@@ -16,394 +16,263 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
+technical_summary: '> Frontend architecture with SvelteKit 2, Svelte 5, Tailwind CSS
+  4, and shadcn-svelte
 
-technical_summary: |
-  > Frontend architecture with SvelteKit 2, Svelte 5, Tailwind CSS 4, and shadcn-svelte
 
   Modern reactive frontend for Revenge:
+
   - **SvelteKit 2**: Full-stack meta-framework with SSR
+
   - **Svelte 5**: Component framework with runes reactivity
+
   - **Tailwind CSS 4**: Utility-first CSS with Rust engine
+
   - **shadcn-svelte**: Accessible component library
+
   - **TanStack Query**: Server state management
+
   - **Vidstack**: Video player with HLS support
 
-wiki_tagline: |
-  > Beautiful, fast UI built with modern web technologies
+  '
+wiki_tagline: '> Beautiful, fast UI built with modern web technologies
 
-wiki_overview: |
-  The Revenge web interface is built with SvelteKit and Svelte 5 for a fast, reactive experience. Tailwind CSS provides consistent styling with dark mode support. The video player (Vidstack) handles HLS adaptive streaming, subtitles, and Chromecast. TanStack Query manages data fetching with automatic caching and background updates. Forms use Superforms with Zod validation for a smooth user experience.
+  '
+wiki_overview: 'The Revenge web interface is built with SvelteKit and Svelte 5 for
+  a fast, reactive experience. Tailwind CSS provides consistent styling with dark
+  mode support. The video player (Vidstack) handles HLS adaptive streaming, subtitles,
+  and Chromecast. TanStack Query manages data fetching with automatic caching and
+  background updates. Forms use Superforms with Zod validation for a smooth user experience.
 
+  '
 sources:
-  - name: Svelte 5 Documentation
-    url: https://svelte.dev/docs/svelte/overview
-    note: Component framework
-  - name: Svelte 5 Runes
-    url: https://svelte.dev/docs/svelte/$state
-    note: Reactivity system
-  - name: SvelteKit Documentation
-    url: https://svelte.dev/docs/kit/introduction
-    note: Full-stack framework
-  - name: shadcn-svelte
-    url: https://www.shadcn-svelte.com/docs
-    note: Component library
-  - name: Bits UI
-    url: https://www.bits-ui.com/docs/introduction
-    note: Headless UI primitives
-  - name: TanStack Query
-    url: https://tanstack.com/query/latest/docs/framework/svelte/overview
-    note: Server state management
-  - name: Vidstack Player
-    url: https://www.vidstack.io/docs/player/getting-started/installation
-    note: Video player
-  - name: Vite Documentation
-    url: https://vite.dev/guide/
-    note: Build tool
-  - name: TailwindCSS Documentation
-    url: https://tailwindcss.com/docs
-    note: Styling framework
-  - name: Zod Documentation
-    url: https://zod.dev/
-    note: Schema validation
-  - name: SvelteKit Superforms
-    url: https://superforms.rocks/
-    note: Form handling
-
+- name: Svelte 5 Documentation
+  url: https://svelte.dev/docs/svelte/overview
+  note: Component framework
+- name: Svelte 5 Runes
+  url: https://svelte.dev/docs/svelte/$state
+  note: Reactivity system
+- name: SvelteKit Documentation
+  url: https://svelte.dev/docs/kit/introduction
+  note: Full-stack framework
+- name: shadcn-svelte
+  url: https://www.shadcn-svelte.com/docs
+  note: Component library
+- name: Bits UI
+  url: https://www.bits-ui.com/docs/introduction
+  note: Headless UI primitives
+- name: TanStack Query
+  url: https://tanstack.com/query/latest/docs/framework/svelte/overview
+  note: Server state management
+- name: Vidstack Player
+  url: https://www.vidstack.io/docs/player/getting-started/installation
+  note: Video player
+- name: Vite Documentation
+  url: https://vite.dev/guide/
+  note: Build tool
+- name: TailwindCSS Documentation
+  url: https://tailwindcss.com/docs
+  note: Styling framework
+- name: Zod Documentation
+  url: https://zod.dev/
+  note: Schema validation
+- name: SvelteKit Superforms
+  url: https://superforms.rocks/
+  note: Form handling
 design_refs:
-  - title: technical
-    path: technical/INDEX.md
-  - title: TECH_STACK
-    path: technical/TECH_STACK.md
-  - title: 04_PLAYER_ARCHITECTURE
-    path: architecture/04_PLAYER_ARCHITECTURE.md
-
+- title: technical
+  path: INDEX.md
+- title: TECH_STACK
+  path: ../technical/TECH_STACK.md
+- title: 04_PLAYER_ARCHITECTURE
+  path: ../architecture/04_PLAYER_ARCHITECTURE.md
 framework: SvelteKit 2
 ui_library: Svelte 5 (runes)
 styling: Tailwind CSS 4
 components: shadcn-svelte + Bits UI
+project_structure: '```
 
-project_structure: |
-  ```
   frontend/
+
   ├── src/
+
   │   ├── routes/               # SvelteKit file-based routing
+
   │   │   ├── +layout.svelte    # Root layout
+
   │   │   ├── +layout.ts        # Root layout data loading
+
   │   │   ├── +page.svelte      # Home page
+
   │   │   ├── movies/
+
   │   │   │   ├── +page.svelte  # Movies list
+
   │   │   │   └── [id]/         # Movie detail
+
   │   │   │       └── +page.svelte
+
   │   │   ├── tv/
+
   │   │   ├── music/
+
   │   │   └── settings/
+
   │   ├── lib/
+
   │   │   ├── components/       # Reusable components
+
   │   │   │   ├── ui/           # shadcn-svelte components
+
   │   │   │   ├── layout/       # Layout components
+
   │   │   │   └── features/     # Feature-specific components
+
   │   │   ├── stores/           # Svelte stores
+
   │   │   ├── api/              # API client
+
   │   │   ├── utils/            # Utilities
+
   │   │   └── types/            # TypeScript types
+
   │   ├── app.html              # HTML template
+
   │   └── app.css               # Global styles
+
   ├── static/                   # Static assets
+
   ├── package.json
+
   ├── vite.config.ts
+
   ├── svelte.config.js
+
   ├── tailwind.config.js
+
   └── tsconfig.json
+
   ```
 
-component_organization: |
-  **Component Categories**:
+  '
+component_organization: "**Component Categories**:\n\n1. **UI Components** (`lib/components/ui/`):\n\
+  \   - shadcn-svelte primitives (Button, Card, Dialog, etc.)\n   - Reusable, accessible,\
+  \ themeable\n\n2. **Layout Components** (`lib/components/layout/`):\n   - Header,\
+  \ Sidebar, Footer\n   - Navigation, Breadcrumbs\n\n3. **Feature Components** (`lib/components/features/`):\n\
+  \   - MovieCard, TVShowCard, AlbumCard\n   - VideoPlayer, AudioPlayer\n   - LibraryGrid,\
+  \ ItemDetail\n\n**Component Naming**:\n- PascalCase for components: `MovieCard.svelte`\n\
+  - kebab-case for files: `movie-card.svelte` (SvelteKit convention)\n"
+state_management: "**Svelte Runes** (local state):\n```svelte\n<script lang=\"ts\"\
+  >\n  import { $state, $derived, $effect } from 'svelte';\n\n  let count = $state(0);\n\
+  \  let doubled = $derived(count * 2);\n\n  $effect(() => {\n    console.log(`Count\
+  \ is now ${count}`);\n  });\n</script>\n```\n\n**Svelte Stores** (shared state):\n\
+  ```typescript\n// lib/stores/auth.ts\nimport { writable } from 'svelte/store';\n\
+  \nexport const user = writable<User | null>(null);\nexport const isAuthenticated\
+  \ = writable(false);\n```\n\n**TanStack Query** (server state):\n```svelte\n<script\
+  \ lang=\"ts\">\n  import { createQuery } from '@tanstack/svelte-query';\n\n  const\
+  \ moviesQuery = createQuery({\n    queryKey: ['movies'],\n    queryFn: () => api.movies.list()\n\
+  \  });\n</script>\n\n{#if $moviesQuery.isLoading}\n  <Spinner />\n{:else if $moviesQuery.error}\n\
+  \  <Error message={$moviesQuery.error.message} />\n{:else}\n  <MovieGrid movies={$moviesQuery.data}\
+  \ />\n{/if}\n```\n"
+styling_system: "**Tailwind CSS 4** (Rust engine, CSS-first config):\n\n```css\n/*\
+  \ app.css */\n@import \"tailwindcss\";\n\n@theme {\n  --color-revenge-primary: #6366f1;\n\
+  \  --color-revenge-secondary: #ec4899;\n  --radius: 0.5rem;\n}\n```\n\n**Component\
+  \ Styling**:\n```svelte\n<div class=\"rounded-lg bg-background p-4 shadow-md\">\n\
+  \  <h2 class=\"text-2xl font-bold text-foreground\">Title</h2>\n</div>\n```\n\n\
+  **Dark Mode**:\n- Class-based: `dark:bg-gray-900`\n- Theme toggle in root layout\n\
+  - Persisted to localStorage\n"
+api_client: "**Generated from OpenAPI**:\n```typescript\n// lib/api/client.ts\nimport\
+  \ { createClient } from '@hey-api/openapi-ts';\n\nexport const api = createClient({\n\
+  \  baseUrl: '/api/v1',\n  headers: {\n    'Authorization': `Bearer ${getToken()}`\n\
+  \  }\n});\n```\n\n**Usage in Components**:\n```svelte\n<script lang=\"ts\">\n  import\
+  \ { api } from '$lib/api/client';\n  import { createQuery } from '@tanstack/svelte-query';\n\
+  \n  const moviesQuery = createQuery({\n    queryKey: ['movies'],\n    queryFn: ()\
+  \ => api.movies.getMovies({ limit: 20 })\n  });\n</script>\n```\n"
+forms_and_validation: "**Superforms + Zod**:\n\n```typescript\n// lib/schemas/movie.ts\n\
+  import { z } from 'zod';\n\nexport const movieSchema = z.object({\n  title: z.string().min(1,\
+  \ 'Title is required'),\n  year: z.number().min(1900).max(2100),\n  rating: z.number().min(0).max(10).optional()\n\
+  });\n```\n\n```svelte\n<script lang=\"ts\">\n  import { superForm } from 'sveltekit-superforms/client';\n\
+  \  import { movieSchema } from '$lib/schemas/movie';\n\n  export let data;\n\n \
+  \ const { form, errors, enhance } = superForm(data.form, {\n    validators: movieSchema\n\
+  \  });\n</script>\n\n<form method=\"POST\" use:enhance>\n  <input bind:value={$form.title}\
+  \ />\n  {#if $errors.title}\n    <span class=\"text-red-500\">{$errors.title}</span>\n\
+  \  {/if}\n\n  <button type=\"submit\">Save</button>\n</form>\n```\n"
+authentication: "**JWT Storage**:\n- Access token: Memory (not localStorage, XSS protection)\n\
+  - Refresh token: HttpOnly cookie\n\n**Auth Flow**:\n1. Login → Server sets refresh\
+  \ token cookie\n2. Client receives access token in response\n3. Store access token\
+  \ in memory\n4. Use access token for API calls\n5. On 401, refresh access token\
+  \ using refresh cookie\n\n**Auth Store**:\n```typescript\n// lib/stores/auth.ts\n\
+  import { writable } from 'svelte/store';\n\nlet accessToken: string | null = null;\n\
+  \nexport const user = writable<User | null>(null);\n\nexport async function login(email:\
+  \ string, password: string) {\n  const res = await api.auth.login({ email, password\
+  \ });\n  accessToken = res.access_token;\n  user.set(res.user);\n}\n\nexport function\
+  \ getAccessToken() {\n  return accessToken;\n}\n```\n"
+routing: "**File-Based Routing** (SvelteKit):\n\n| Route File | URL | Description\
+  \ |\n|------------|-----|-------------|\n| `routes/+page.svelte` | `/` | Home page\
+  \ |\n| `routes/movies/+page.svelte` | `/movies` | Movies list |\n| `routes/movies/[id]/+page.svelte`\
+  \ | `/movies/123` | Movie detail |\n| `routes/settings/+layout.svelte` | `/settings/*`\
+  \ | Settings layout |\n\n**Data Loading** (`+page.ts`):\n```typescript\n// routes/movies/[id]/+page.ts\n\
+  export async function load({ params, fetch }) {\n  const movie = await fetch(`/api/v1/movies/${params.id}`).then(r\
+  \ => r.json());\n  return { movie };\n}\n```\n"
+video_player: "**Vidstack Player** (HLS, DASH, MP4):\n\n```svelte\n<script lang=\"\
+  ts\">\n  import { MediaPlayer, MediaProvider } from '@vidstack/svelte';\n  import\
+  \ '@vidstack/styles/defaults.css';\n\n  export let src: string;\n  export let poster:\
+  \ string;\n</script>\n\n<MediaPlayer title=\"Movie Title\" {src} {poster}>\n  <MediaProvider\
+  \ />\n  <!-- Custom controls -->\n</MediaPlayer>\n```\n\n**Features**:\n- HLS adaptive\
+  \ streaming\n- Subtitle tracks\n- Chapter markers\n- Keyboard shortcuts\n- Picture-in-Picture\n\
+  - Chromecast support\n"
+build_and_dev: "**Development**:\n```bash\ncd frontend\nnpm run dev  # Vite dev server\
+  \ at http://localhost:5173\n```\n\n**Build**:\n```bash\nnpm run build  # SvelteKit\
+  \ build\n```\n\n**Preview**:\n```bash\nnpm run preview  # Preview production build\n\
+  ```\n\n**Vite Config** (`vite.config.ts`):\n```typescript\nimport { sveltekit }\
+  \ from '@sveltejs/kit/vite';\nimport { defineConfig } from 'vite';\n\nexport default\
+  \ defineConfig({\n  plugins: [sveltekit()],\n  server: {\n    port: 5173,\n    proxy:\
+  \ {\n      '/api': 'http://localhost:8080'\n    }\n  }\n});\n```\n"
+testing: '**Unit Tests** (Vitest):
 
-  1. **UI Components** (`lib/components/ui/`):
-     - shadcn-svelte primitives (Button, Card, Dialog, etc.)
-     - Reusable, accessible, themeable
-
-  2. **Layout Components** (`lib/components/layout/`):
-     - Header, Sidebar, Footer
-     - Navigation, Breadcrumbs
-
-  3. **Feature Components** (`lib/components/features/`):
-     - MovieCard, TVShowCard, AlbumCard
-     - VideoPlayer, AudioPlayer
-     - LibraryGrid, ItemDetail
-
-  **Component Naming**:
-  - PascalCase for components: `MovieCard.svelte`
-  - kebab-case for files: `movie-card.svelte` (SvelteKit convention)
-
-state_management: |
-  **Svelte Runes** (local state):
-  ```svelte
-  <script lang="ts">
-    import { $state, $derived, $effect } from 'svelte';
-
-    let count = $state(0);
-    let doubled = $derived(count * 2);
-
-    $effect(() => {
-      console.log(`Count is now ${count}`);
-    });
-  </script>
-  ```
-
-  **Svelte Stores** (shared state):
-  ```typescript
-  // lib/stores/auth.ts
-  import { writable } from 'svelte/store';
-
-  export const user = writable<User | null>(null);
-  export const isAuthenticated = writable(false);
-  ```
-
-  **TanStack Query** (server state):
-  ```svelte
-  <script lang="ts">
-    import { createQuery } from '@tanstack/svelte-query';
-
-    const moviesQuery = createQuery({
-      queryKey: ['movies'],
-      queryFn: () => api.movies.list()
-    });
-  </script>
-
-  {#if $moviesQuery.isLoading}
-    <Spinner />
-  {:else if $moviesQuery.error}
-    <Error message={$moviesQuery.error.message} />
-  {:else}
-    <MovieGrid movies={$moviesQuery.data} />
-  {/if}
-  ```
-
-styling_system: |
-  **Tailwind CSS 4** (Rust engine, CSS-first config):
-
-  ```css
-  /* app.css */
-  @import "tailwindcss";
-
-  @theme {
-    --color-revenge-primary: #6366f1;
-    --color-revenge-secondary: #ec4899;
-    --radius: 0.5rem;
-  }
-  ```
-
-  **Component Styling**:
-  ```svelte
-  <div class="rounded-lg bg-background p-4 shadow-md">
-    <h2 class="text-2xl font-bold text-foreground">Title</h2>
-  </div>
-  ```
-
-  **Dark Mode**:
-  - Class-based: `dark:bg-gray-900`
-  - Theme toggle in root layout
-  - Persisted to localStorage
-
-api_client: |
-  **Generated from OpenAPI**:
-  ```typescript
-  // lib/api/client.ts
-  import { createClient } from '@hey-api/openapi-ts';
-
-  export const api = createClient({
-    baseUrl: '/api/v1',
-    headers: {
-      'Authorization': `Bearer ${getToken()}`
-    }
-  });
-  ```
-
-  **Usage in Components**:
-  ```svelte
-  <script lang="ts">
-    import { api } from '$lib/api/client';
-    import { createQuery } from '@tanstack/svelte-query';
-
-    const moviesQuery = createQuery({
-      queryKey: ['movies'],
-      queryFn: () => api.movies.getMovies({ limit: 20 })
-    });
-  </script>
-  ```
-
-forms_and_validation: |
-  **Superforms + Zod**:
-
-  ```typescript
-  // lib/schemas/movie.ts
-  import { z } from 'zod';
-
-  export const movieSchema = z.object({
-    title: z.string().min(1, 'Title is required'),
-    year: z.number().min(1900).max(2100),
-    rating: z.number().min(0).max(10).optional()
-  });
-  ```
-
-  ```svelte
-  <script lang="ts">
-    import { superForm } from 'sveltekit-superforms/client';
-    import { movieSchema } from '$lib/schemas/movie';
-
-    export let data;
-
-    const { form, errors, enhance } = superForm(data.form, {
-      validators: movieSchema
-    });
-  </script>
-
-  <form method="POST" use:enhance>
-    <input bind:value={$form.title} />
-    {#if $errors.title}
-      <span class="text-red-500">{$errors.title}</span>
-    {/if}
-
-    <button type="submit">Save</button>
-  </form>
-  ```
-
-authentication: |
-  **JWT Storage**:
-  - Access token: Memory (not localStorage, XSS protection)
-  - Refresh token: HttpOnly cookie
-
-  **Auth Flow**:
-  1. Login → Server sets refresh token cookie
-  2. Client receives access token in response
-  3. Store access token in memory
-  4. Use access token for API calls
-  5. On 401, refresh access token using refresh cookie
-
-  **Auth Store**:
-  ```typescript
-  // lib/stores/auth.ts
-  import { writable } from 'svelte/store';
-
-  let accessToken: string | null = null;
-
-  export const user = writable<User | null>(null);
-
-  export async function login(email: string, password: string) {
-    const res = await api.auth.login({ email, password });
-    accessToken = res.access_token;
-    user.set(res.user);
-  }
-
-  export function getAccessToken() {
-    return accessToken;
-  }
-  ```
-
-routing: |
-  **File-Based Routing** (SvelteKit):
-
-  | Route File | URL | Description |
-  |------------|-----|-------------|
-  | `routes/+page.svelte` | `/` | Home page |
-  | `routes/movies/+page.svelte` | `/movies` | Movies list |
-  | `routes/movies/[id]/+page.svelte` | `/movies/123` | Movie detail |
-  | `routes/settings/+layout.svelte` | `/settings/*` | Settings layout |
-
-  **Data Loading** (`+page.ts`):
-  ```typescript
-  // routes/movies/[id]/+page.ts
-  export async function load({ params, fetch }) {
-    const movie = await fetch(`/api/v1/movies/${params.id}`).then(r => r.json());
-    return { movie };
-  }
-  ```
-
-video_player: |
-  **Vidstack Player** (HLS, DASH, MP4):
-
-  ```svelte
-  <script lang="ts">
-    import { MediaPlayer, MediaProvider } from '@vidstack/svelte';
-    import '@vidstack/styles/defaults.css';
-
-    export let src: string;
-    export let poster: string;
-  </script>
-
-  <MediaPlayer title="Movie Title" {src} {poster}>
-    <MediaProvider />
-    <!-- Custom controls -->
-  </MediaPlayer>
-  ```
-
-  **Features**:
-  - HLS adaptive streaming
-  - Subtitle tracks
-  - Chapter markers
-  - Keyboard shortcuts
-  - Picture-in-Picture
-  - Chromecast support
-
-build_and_dev: |
-  **Development**:
   ```bash
-  cd frontend
-  npm run dev  # Vite dev server at http://localhost:5173
-  ```
 
-  **Build**:
-  ```bash
-  npm run build  # SvelteKit build
-  ```
-
-  **Preview**:
-  ```bash
-  npm run preview  # Preview production build
-  ```
-
-  **Vite Config** (`vite.config.ts`):
-  ```typescript
-  import { sveltekit } from '@sveltejs/kit/vite';
-  import { defineConfig } from 'vite';
-
-  export default defineConfig({
-    plugins: [sveltekit()],
-    server: {
-      port: 5173,
-      proxy: {
-        '/api': 'http://localhost:8080'
-      }
-    }
-  });
-  ```
-
-testing: |
-  **Unit Tests** (Vitest):
-  ```bash
   npm run test
+
   ```
+
 
   **E2E Tests** (Playwright):
+
   ```bash
+
   npm run test:e2e
+
   ```
 
-performance_optimization: |
-  **Code Splitting**:
+  '
+performance_optimization: '**Code Splitting**:
+
   - Automatic route-based splitting (SvelteKit)
+
   - Dynamic imports for large components
 
+
   **Image Optimization**:
+
   - `@sveltejs/enhanced-img` for responsive images
+
   - Lazy loading with `loading="lazy"`
 
+
   **Caching**:
+
   - TanStack Query cache
+
   - Service Worker for offline support
 
+
   **Bundle Size**:
+
   - Tree-shaking (Vite)
+
   - Svelte compile-time optimization
+
   - Target: < 200KB initial JS bundle
+
+  '

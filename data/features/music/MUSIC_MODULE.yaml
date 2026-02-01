@@ -16,21 +16,27 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > Music content management with metadata enrichment from MusicBrainz and Last.fm
+technical_summary: '> Music content management with metadata enrichment from MusicBrainz
+  and Last.fm
+
 
   Complete music library management:
+
   - **Lidarr Integration**: Two-way sync for music library automation
+
   - **Metadata Sources**: MusicBrainz (primary), Last.fm (scrobbling, tags)
+
   - **Supported Formats**: MP3, FLAC, AAC, OGG, ALAC, Opus
+
   - **Playback**: HLS adaptive streaming with gapless playback
-  - **Features**: Playlists, smart collections, album art, lyrics
 
-wiki_tagline: |-
-  > Your complete music library with beautiful album art and metadata
-
-wiki_overview: |-
-  The Music Module provides a complete music library experience with support for artists, albums, and tracks. It integrates with Lidarr for automated music management and uses MusicBrainz and Last.fm for rich metadata. Stream your music in high quality with gapless playback, create playlists, and discover new music through smart collections.
+  - **Features**: Playlists, smart collections, album art, lyrics'
+wiki_tagline: '> Your complete music library with beautiful album art and metadata'
+wiki_overview: The Music Module provides a complete music library experience with
+  support for artists, albums, and tracks. It integrates with Lidarr for automated
+  music management and uses MusicBrainz and Last.fm for rich metadata. Stream your
+  music in high quality with gapless playback, create playlists, and discover new
+  music through smart collections.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -60,14 +66,12 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/music
-  path: features/music.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Music Module
 module_name: music
 schema_name: public
@@ -75,7 +79,6 @@ content_types:
 - Artists
 - Albums
 - Tracks
-
 lidarr_integration:
   sync_direction: two-way
   metadata_priority:
@@ -83,115 +86,70 @@ lidarr_integration:
     2: MusicBrainz (direct API)
     3: Last.fm (tags, scrobbles, similar artists)
   webhook_events:
-    - AlbumDownload
-    - AlbumUpgrade
-    - TrackRetag
-    - ArtistDelete
+  - AlbumDownload
+  - AlbumUpgrade
+  - TrackRetag
+  - ArtistDelete
   notes: Lidarr provides pre-fetched MusicBrainz metadata, reducing API calls
-
 supported_formats:
-  - format: MP3
-    codec: MPEG-1/2 Audio Layer III
-    streaming: Direct playback or HLS transcode
-  - format: FLAC
-    codec: Free Lossless Audio Codec
-    streaming: Transcode to AAC/Opus for bandwidth savings
-  - format: AAC
-    codec: Advanced Audio Coding
-    streaming: Direct playback via HLS
-  - format: OGG
-    codec: Vorbis/Opus
-    streaming: Direct playback or transcode
-  - format: ALAC
-    codec: Apple Lossless
-    streaming: Transcode to AAC for web playback
-  - format: Opus
-    codec: Opus
-    streaming: Direct playback (best quality/bandwidth ratio)
-
+- format: MP3
+  codec: MPEG-1/2 Audio Layer III
+  streaming: Direct playback or HLS transcode
+- format: FLAC
+  codec: Free Lossless Audio Codec
+  streaming: Transcode to AAC/Opus for bandwidth savings
+- format: AAC
+  codec: Advanced Audio Coding
+  streaming: Direct playback via HLS
+- format: OGG
+  codec: Vorbis/Opus
+  streaming: Direct playback or transcode
+- format: ALAC
+  codec: Apple Lossless
+  streaming: Transcode to AAC for web playback
+- format: Opus
+  codec: Opus
+  streaming: Direct playback (best quality/bandwidth ratio)
 metadata_sources:
-  - name: Lidarr
-    purpose: Primary metadata source (cached from MusicBrainz)
-    priority: 1
-    fields: Artist, album, track, release date, genres, album art
-  - name: MusicBrainz
-    purpose: Fallback for missing metadata
-    priority: 2
-    fields: Complete discography, relationships, ISRCs
-    api_url: https://musicbrainz.org/ws/2/
-  - name: Last.fm
-    purpose: User scrobbles, tags, similar artists
-    priority: 3
-    fields: Play counts, user tags, artist bio, similar artists
-    api_url: https://www.last.fm/api
-
-database_schema: |
-  ```sql
-  -- Artists
-  CREATE TABLE artists (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    musicbrainz_id UUID,
-    lidarr_id INTEGER,
-    biography TEXT,
-    genres TEXT[],
-    image_url TEXT,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_artists_musicbrainz ON artists(musicbrainz_id);
-  CREATE INDEX idx_artists_lidarr ON artists(lidarr_id);
-  CREATE INDEX idx_artists_name ON artists USING GIN(to_tsvector('english', name));
-
-  -- Albums
-  CREATE TABLE albums (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
-    title TEXT NOT NULL,
-    musicbrainz_release_id UUID,
-    lidarr_id INTEGER,
-    release_date DATE,
-    album_type TEXT, -- album, ep, single, compilation
-    genres TEXT[],
-    label TEXT,
-    cover_art_url TEXT,
-    track_count INTEGER,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_albums_artist ON albums(artist_id);
-  CREATE INDEX idx_albums_musicbrainz ON albums(musicbrainz_release_id);
-  CREATE INDEX idx_albums_lidarr ON albums(lidarr_id);
-  CREATE INDEX idx_albums_title ON albums USING GIN(to_tsvector('english', title));
-
-  -- Tracks
-  CREATE TABLE tracks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    album_id UUID REFERENCES albums(id) ON DELETE CASCADE,
-    title TEXT NOT NULL,
-    track_number INTEGER,
-    disc_number INTEGER DEFAULT 1,
-    duration_seconds INTEGER,
-    musicbrainz_recording_id UUID,
-    file_path TEXT,
-    file_format TEXT, -- mp3, flac, aac, etc.
-    bitrate INTEGER,
-    sample_rate INTEGER,
-    lyrics TEXT,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_tracks_album ON tracks(album_id);
-  CREATE INDEX idx_tracks_musicbrainz ON tracks(musicbrainz_recording_id);
-  CREATE INDEX idx_tracks_title ON tracks USING GIN(to_tsvector('english', title));
-  ```
-
+- name: Lidarr
+  purpose: Primary metadata source (cached from MusicBrainz)
+  priority: 1
+  fields: Artist, album, track, release date, genres, album art
+- name: MusicBrainz
+  purpose: Fallback for missing metadata
+  priority: 2
+  fields: Complete discography, relationships, ISRCs
+  api_url: https://musicbrainz.org/ws/2/
+- name: Last.fm
+  purpose: User scrobbles, tags, similar artists
+  priority: 3
+  fields: Play counts, user tags, artist bio, similar artists
+  api_url: https://www.last.fm/api
+database_schema: "```sql\n-- Artists\nCREATE TABLE artists (\n  id UUID PRIMARY KEY\
+  \ DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  musicbrainz_id UUID,\n  lidarr_id\
+  \ INTEGER,\n  biography TEXT,\n  genres TEXT[],\n  image_url TEXT,\n  metadata JSONB,\n\
+  \  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n\
+  );\n\nCREATE INDEX idx_artists_musicbrainz ON artists(musicbrainz_id);\nCREATE INDEX\
+  \ idx_artists_lidarr ON artists(lidarr_id);\nCREATE INDEX idx_artists_name ON artists\
+  \ USING GIN(to_tsvector('english', name));\n\n-- Albums\nCREATE TABLE albums (\n\
+  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  artist_id UUID REFERENCES artists(id)\
+  \ ON DELETE CASCADE,\n  title TEXT NOT NULL,\n  musicbrainz_release_id UUID,\n \
+  \ lidarr_id INTEGER,\n  release_date DATE,\n  album_type TEXT, -- album, ep, single,\
+  \ compilation\n  genres TEXT[],\n  label TEXT,\n  cover_art_url TEXT,\n  track_count\
+  \ INTEGER,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
+  \ TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_albums_artist ON albums(artist_id);\n\
+  CREATE INDEX idx_albums_musicbrainz ON albums(musicbrainz_release_id);\nCREATE INDEX\
+  \ idx_albums_lidarr ON albums(lidarr_id);\nCREATE INDEX idx_albums_title ON albums\
+  \ USING GIN(to_tsvector('english', title));\n\n-- Tracks\nCREATE TABLE tracks (\n\
+  \  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  album_id UUID REFERENCES albums(id)\
+  \ ON DELETE CASCADE,\n  title TEXT NOT NULL,\n  track_number INTEGER,\n  disc_number\
+  \ INTEGER DEFAULT 1,\n  duration_seconds INTEGER,\n  musicbrainz_recording_id UUID,\n\
+  \  file_path TEXT,\n  file_format TEXT, -- mp3, flac, aac, etc.\n  bitrate INTEGER,\n\
+  \  sample_rate INTEGER,\n  lyrics TEXT,\n  metadata JSONB,\n  created_at TIMESTAMPTZ\
+  \ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_tracks_album\
+  \ ON tracks(album_id);\nCREATE INDEX idx_tracks_musicbrainz ON tracks(musicbrainz_recording_id);\n\
+  CREATE INDEX idx_tracks_title ON tracks USING GIN(to_tsvector('english', title));\n\
+  ```\n"
 playback_features:
   streaming_protocol: HLS (HTTP Live Streaming)
   gapless_playback: true
@@ -199,57 +157,54 @@ playback_features:
   audio_normalization: ReplayGain support
   lyrics_display: Synced lyrics (LRC format) if available
   queue_management: Add to queue, play next, shuffle, repeat
-
 playlist_support:
   types:
-    - Manual playlists (user-created)
-    - Smart playlists (filter-based)
+  - Manual playlists (user-created)
+  - Smart playlists (filter-based)
   features:
-    - Collaborative playlists
-    - Playlist sharing (public/private)
-    - Import from M3U/PLS
-    - Export to M3U/PLS
+  - Collaborative playlists
+  - Playlist sharing (public/private)
+  - Import from M3U/PLS
+  - Export to M3U/PLS
   database_table: playlists (shared with other modules)
-
 scrobbling_integration:
   services:
-    - Last.fm
-    - ListenBrainz
-    - Spotify (if configured)
+  - Last.fm
+  - ListenBrainz
+  - Spotify (if configured)
   scrobble_trigger: 50% played or 4 minutes (whichever comes first)
   offline_queue: Queue scrobbles when offline, submit when online
-
 api_endpoints:
-  - method: GET
-    path: /api/v1/music/artists
-    description: List all artists with pagination and filters
-  - method: GET
-    path: /api/v1/music/artists/:id
-    description: Get artist details by ID
-  - method: GET
-    path: /api/v1/music/artists/:id/albums
-    description: List all albums by an artist
-  - method: GET
-    path: /api/v1/music/albums
-    description: List all albums with pagination and filters
-  - method: GET
-    path: /api/v1/music/albums/:id
-    description: Get album details by ID
-  - method: GET
-    path: /api/v1/music/albums/:id/tracks
-    description: List all tracks on an album
-  - method: GET
-    path: /api/v1/music/tracks
-    description: List all tracks with pagination and filters
-  - method: GET
-    path: /api/v1/music/tracks/:id
-    description: Get track details by ID
-  - method: GET
-    path: /api/v1/music/tracks/:id/stream
-    description: Get audio streaming URL for a track
-  - method: POST
-    path: /api/v1/music/playlists
-    description: Create a new playlist
-  - method: GET
-    path: /api/v1/music/genres
-    description: List all music genres
+- method: GET
+  path: /api/v1/music/artists
+  description: List all artists with pagination and filters
+- method: GET
+  path: /api/v1/music/artists/:id
+  description: Get artist details by ID
+- method: GET
+  path: /api/v1/music/artists/:id/albums
+  description: List all albums by an artist
+- method: GET
+  path: /api/v1/music/albums
+  description: List all albums with pagination and filters
+- method: GET
+  path: /api/v1/music/albums/:id
+  description: Get album details by ID
+- method: GET
+  path: /api/v1/music/albums/:id/tracks
+  description: List all tracks on an album
+- method: GET
+  path: /api/v1/music/tracks
+  description: List all tracks with pagination and filters
+- method: GET
+  path: /api/v1/music/tracks/:id
+  description: Get track details by ID
+- method: GET
+  path: /api/v1/music/tracks/:id/stream
+  description: Get audio streaming URL for a track
+- method: POST
+  path: /api/v1/music/playlists
+  description: Create a new playlist
+- method: GET
+  path: /api/v1/music/genres
+  description: List all music genres

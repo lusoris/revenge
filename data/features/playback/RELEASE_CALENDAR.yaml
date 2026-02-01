@@ -19,7 +19,10 @@ status_integration_testing_notes: '-'
 technical_summary: '> Upcoming releases and recent additions calendar via Servarr
   integration'
 wiki_tagline: '> Upcoming releases and recent additions calendar via Servarr integration'
-wiki_overview: 'See upcoming releases and recent additions at a glance. The calendar pulls data from Radarr, Sonarr, and other Arr services to show what is releasing soon. View by day, week, or month. Filter by media type, genre, or library. Get notified when anticipated titles become available in your library.'
+wiki_overview: See upcoming releases and recent additions at a glance. The calendar
+  pulls data from Radarr, Sonarr, and other Arr services to show what is releasing
+  soon. View by day, week, or month. Filter by media type, genre, or library. Get
+  notified when anticipated titles become available in your library.
 sources:
 - name: Go context
   url: https://pkg.go.dev/context
@@ -40,14 +43,12 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/playback
-  path: features/playback.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Release Calendar System
 module_name: release_calendar_system
 schema_name: public

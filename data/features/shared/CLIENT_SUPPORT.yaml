@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Multi-platform client support with intelligent capability detection.'
 wiki_tagline: '> Watch on any device with automatic quality adjustment'
-wiki_overview: 'Revenge works on phones, tablets, smart TVs, web browsers, and streaming devices. The server detects each client type and capabilities automatically. Direct play when the device supports the format, transcode when needed. Per-device quality settings let you optimize for mobile data or big screen viewing. Sync downloads for offline playback on mobile devices.'
+wiki_overview: Revenge works on phones, tablets, smart TVs, web browsers, and streaming
+  devices. The server detects each client type and capabilities automatically. Direct
+  play when the device supports the format, transcode when needed. Per-device quality
+  settings let you optimize for mobile data or big screen viewing. Sync downloads
+  for offline playback on mobile devices.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -54,14 +58,12 @@ sources:
   url: https://svelte.dev/docs/kit/introduction
   note: Auto-resolved from sveltekit
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Revenge - Client Support & Device Capabilities
 module_name: revenge___client_support_&_device_capabilities
 schema_name: public

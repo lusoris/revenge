@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User portal for bug reports, feature requests, and support tickets'
 wiki_tagline: '> Report issues and request features through a built-in portal'
-wiki_overview: 'Built-in support system for your media server. Users can submit bug reports, request features, or ask for help without leaving the app. Admins see a dashboard of all tickets with priority, status, and assignment. Email notifications keep everyone updated. Integrates with GitHub Issues for developers who want external tracking.'
+wiki_overview: Built-in support system for your media server. Users can submit bug
+  reports, request features, or ask for help without leaving the app. Admins see a
+  dashboard of all tickets with priority, status, and assignment. Email notifications
+  keep everyone updated. Integrates with GitHub Issues for developers who want external
+  tracking.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -63,14 +67,12 @@ sources:
   url: https://svelte.dev/docs/kit/introduction
   note: Auto-resolved from sveltekit
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Ticketing System
 module_name: ticketing_system
 schema_name: public

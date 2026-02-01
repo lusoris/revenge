@@ -16,21 +16,26 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |-
-  > RSS podcast subscription and playback
+technical_summary: '> RSS podcast subscription and playback
+
 
   Complete podcast experience:
+
   - **RSS Feed Support**: Subscribe to any podcast via RSS/Atom feeds
+
   - **Automatic Updates**: Background jobs refresh feeds and download new episodes
+
   - **Playback Features**: Variable speed, chapter navigation, sleep timer
+
   - **Offline Support**: Download episodes for offline listening
-  - **Discovery**: Search and browse podcasts via Podcast Index API
 
-wiki_tagline: |-
-  > Your podcast library with automatic updates and offline downloads
-
-wiki_overview: |-
-  The Podcasts Module provides a complete podcast listening experience with RSS feed subscriptions, automatic episode updates, and offline downloads. Subscribe to your favorite podcasts, get notified of new episodes, and listen with variable speed playback and chapter navigation. All episodes are automatically organized and ready to play across all your devices.
+  - **Discovery**: Search and browse podcasts via Podcast Index API'
+wiki_tagline: '> Your podcast library with automatic updates and offline downloads'
+wiki_overview: The Podcasts Module provides a complete podcast listening experience
+  with RSS feed subscriptions, automatic episode updates, and offline downloads. Subscribe
+  to your favorite podcasts, get notified of new episodes, and listen with variable
+  speed playback and chapter navigation. All episodes are automatically organized
+  and ready to play across all your devices.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -48,38 +53,34 @@ sources:
   url: https://docs.sqlc.dev/en/stable/reference/config.html
   note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/podcasts
-  path: features/podcasts.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Podcasts
 module_name: podcasts
 schema_name: public
 content_types:
 - Podcasts
 - Episodes
-
 rss_feed_support:
   formats:
-    - RSS 2.0
-    - Atom
-    - Podcast RSS (with iTunes extensions)
+  - RSS 2.0
+  - Atom
+  - Podcast RSS (with iTunes extensions)
   discovery:
-    - Podcast Index API (search and discovery)
-    - Manual RSS URL subscription
-    - Import OPML feed lists
+  - Podcast Index API (search and discovery)
+  - Manual RSS URL subscription
+  - Import OPML feed lists
   metadata_extraction:
-    - Title, description, author
-    - Artwork (feed and episode level)
-    - Categories and keywords
-    - Episode duration and file size
-    - Publication dates
-    - Chapter markers (if present)
-
+  - Title, description, author
+  - Artwork (feed and episode level)
+  - Categories and keywords
+  - Episode duration and file size
+  - Publication dates
+  - Chapter markers (if present)
 automatic_updates:
   refresh_strategy:
     method: Background jobs via River
@@ -92,102 +93,45 @@ automatic_updates:
   notifications:
     new_episodes: Push notifications for subscribed podcasts
     download_complete: Notify when episode download finishes
-
-database_schema: |
-  ```sql
-  -- Podcasts
-  CREATE TABLE podcasts (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT NOT NULL,
-    description TEXT,
-    author TEXT,
-    rss_url TEXT NOT NULL UNIQUE,
-    website_url TEXT,
-    image_url TEXT,
-    categories TEXT[],
-    language TEXT DEFAULT 'en',
-    explicit BOOLEAN DEFAULT FALSE,
-    last_fetched_at TIMESTAMPTZ,
-    refresh_interval_hours INTEGER DEFAULT 6,
-    auto_download BOOLEAN DEFAULT FALSE,
-    auto_download_count INTEGER DEFAULT 3,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_podcasts_title ON podcasts USING GIN(to_tsvector('english', title));
-  CREATE INDEX idx_podcasts_rss_url ON podcasts(rss_url);
-
-  -- Podcast Episodes
-  CREATE TABLE podcast_episodes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    podcast_id UUID REFERENCES podcasts(id) ON DELETE CASCADE,
-    title TEXT NOT NULL,
-    description TEXT,
-    episode_number INTEGER,
-    season_number INTEGER,
-    publication_date TIMESTAMPTZ,
-    duration_seconds INTEGER,
-    file_url TEXT NOT NULL,
-    file_path TEXT, -- Local path if downloaded
-    file_size_bytes BIGINT,
-    file_type TEXT, -- audio/mpeg, audio/mp4, etc.
-    guid TEXT UNIQUE, -- RSS GUID for deduplication
-    image_url TEXT,
-    explicit BOOLEAN DEFAULT FALSE,
-    metadata JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_podcast_episodes_podcast ON podcast_episodes(podcast_id);
-  CREATE INDEX idx_podcast_episodes_pub_date ON podcast_episodes(podcast_id, publication_date DESC);
-  CREATE INDEX idx_podcast_episodes_guid ON podcast_episodes(guid);
-
-  -- Episode Chapters (Podcasting 2.0)
-  CREATE TABLE podcast_chapters (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    episode_id UUID REFERENCES podcast_episodes(id) ON DELETE CASCADE,
-    start_time_seconds NUMERIC NOT NULL,
-    title TEXT,
-    url TEXT,
-    image_url TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  );
-
-  CREATE INDEX idx_podcast_chapters_episode ON podcast_chapters(episode_id, start_time_seconds);
-
-  -- Podcast Subscriptions (per-user)
-  CREATE TABLE podcast_subscriptions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
-    podcast_id UUID REFERENCES podcasts(id) ON DELETE CASCADE,
-    subscribed_at TIMESTAMPTZ DEFAULT NOW(),
-    notifications_enabled BOOLEAN DEFAULT TRUE,
-    UNIQUE(user_id, podcast_id)
-  );
-
-  CREATE INDEX idx_podcast_subscriptions_user ON podcast_subscriptions(user_id);
-
-  -- Episode Playback Progress (per-user)
-  CREATE TABLE podcast_progress (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
-    episode_id UUID REFERENCES podcast_episodes(id) ON DELETE CASCADE,
-    current_position_seconds NUMERIC NOT NULL DEFAULT 0,
-    completed BOOLEAN DEFAULT FALSE,
-    last_played_at TIMESTAMPTZ DEFAULT NOW(),
-    playback_speed NUMERIC DEFAULT 1.0,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(user_id, episode_id)
-  );
-
-  CREATE INDEX idx_podcast_progress_user ON podcast_progress(user_id);
-  CREATE INDEX idx_podcast_progress_last_played ON podcast_progress(user_id, last_played_at DESC);
-  ```
-
+database_schema: "```sql\n-- Podcasts\nCREATE TABLE podcasts (\n  id UUID PRIMARY\
+  \ KEY DEFAULT gen_random_uuid(),\n  title TEXT NOT NULL,\n  description TEXT,\n\
+  \  author TEXT,\n  rss_url TEXT NOT NULL UNIQUE,\n  website_url TEXT,\n  image_url\
+  \ TEXT,\n  categories TEXT[],\n  language TEXT DEFAULT 'en',\n  explicit BOOLEAN\
+  \ DEFAULT FALSE,\n  last_fetched_at TIMESTAMPTZ,\n  refresh_interval_hours INTEGER\
+  \ DEFAULT 6,\n  auto_download BOOLEAN DEFAULT FALSE,\n  auto_download_count INTEGER\
+  \ DEFAULT 3,\n  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at\
+  \ TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE INDEX idx_podcasts_title ON podcasts USING\
+  \ GIN(to_tsvector('english', title));\nCREATE INDEX idx_podcasts_rss_url ON podcasts(rss_url);\n\
+  \n-- Podcast Episodes\nCREATE TABLE podcast_episodes (\n  id UUID PRIMARY KEY DEFAULT\
+  \ gen_random_uuid(),\n  podcast_id UUID REFERENCES podcasts(id) ON DELETE CASCADE,\n\
+  \  title TEXT NOT NULL,\n  description TEXT,\n  episode_number INTEGER,\n  season_number\
+  \ INTEGER,\n  publication_date TIMESTAMPTZ,\n  duration_seconds INTEGER,\n  file_url\
+  \ TEXT NOT NULL,\n  file_path TEXT, -- Local path if downloaded\n  file_size_bytes\
+  \ BIGINT,\n  file_type TEXT, -- audio/mpeg, audio/mp4, etc.\n  guid TEXT UNIQUE,\
+  \ -- RSS GUID for deduplication\n  image_url TEXT,\n  explicit BOOLEAN DEFAULT FALSE,\n\
+  \  metadata JSONB,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ\
+  \ DEFAULT NOW()\n);\n\nCREATE INDEX idx_podcast_episodes_podcast ON podcast_episodes(podcast_id);\n\
+  CREATE INDEX idx_podcast_episodes_pub_date ON podcast_episodes(podcast_id, publication_date\
+  \ DESC);\nCREATE INDEX idx_podcast_episodes_guid ON podcast_episodes(guid);\n\n\
+  -- Episode Chapters (Podcasting 2.0)\nCREATE TABLE podcast_chapters (\n  id UUID\
+  \ PRIMARY KEY DEFAULT gen_random_uuid(),\n  episode_id UUID REFERENCES podcast_episodes(id)\
+  \ ON DELETE CASCADE,\n  start_time_seconds NUMERIC NOT NULL,\n  title TEXT,\n  url\
+  \ TEXT,\n  image_url TEXT,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\nCREATE\
+  \ INDEX idx_podcast_chapters_episode ON podcast_chapters(episode_id, start_time_seconds);\n\
+  \n-- Podcast Subscriptions (per-user)\nCREATE TABLE podcast_subscriptions (\n  id\
+  \ UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n  podcast_id\
+  \ UUID REFERENCES podcasts(id) ON DELETE CASCADE,\n  subscribed_at TIMESTAMPTZ DEFAULT\
+  \ NOW(),\n  notifications_enabled BOOLEAN DEFAULT TRUE,\n  UNIQUE(user_id, podcast_id)\n\
+  );\n\nCREATE INDEX idx_podcast_subscriptions_user ON podcast_subscriptions(user_id);\n\
+  \n-- Episode Playback Progress (per-user)\nCREATE TABLE podcast_progress (\n  id\
+  \ UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID NOT NULL,\n  episode_id\
+  \ UUID REFERENCES podcast_episodes(id) ON DELETE CASCADE,\n  current_position_seconds\
+  \ NUMERIC NOT NULL DEFAULT 0,\n  completed BOOLEAN DEFAULT FALSE,\n  last_played_at\
+  \ TIMESTAMPTZ DEFAULT NOW(),\n  playback_speed NUMERIC DEFAULT 1.0,\n  created_at\
+  \ TIMESTAMPTZ DEFAULT NOW(),\n  updated_at TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id,\
+  \ episode_id)\n);\n\nCREATE INDEX idx_podcast_progress_user ON podcast_progress(user_id);\n\
+  CREATE INDEX idx_podcast_progress_last_played ON podcast_progress(user_id, last_played_at\
+  \ DESC);\n```\n"
 playback_features:
   streaming: Direct streaming or HLS transcode
   variable_speed: 0.5x, 0.75x, 1.0x, 1.25x, 1.5x, 1.75x, 2.0x, 2.5x, 3.0x
@@ -196,65 +140,62 @@ playback_features:
   skip_controls: Skip forward/back 15/30/60 seconds (configurable)
   queue_management: Play queue, up next, shuffle
   offline_playback: Download episodes for offline listening
-
 discovery_features:
   podcast_index_api: Search 4M+ podcasts via Podcast Index
   categories: Browse by category (Comedy, News, Technology, etc.)
   trending: Popular podcasts across all users
   recommendations: Based on listening history and subscriptions
   import_export: Import/export OPML feed lists
-
 background_jobs:
-  - job: Feed Refresh
-    frequency: Every 1-6 hours per podcast
-    action: Check RSS feed for new episodes
-  - job: Auto Download
-    trigger: New episode detected + auto_download enabled
-    action: Download latest N episodes
-  - job: Cleanup
-    frequency: Daily
-    action: Remove old downloaded episodes per retention policy
-  - job: Image Cache
-    trigger: New podcast/episode added
-    action: Download and cache artwork
-
+- job: Feed Refresh
+  frequency: Every 1-6 hours per podcast
+  action: Check RSS feed for new episodes
+- job: Auto Download
+  trigger: New episode detected + auto_download enabled
+  action: Download latest N episodes
+- job: Cleanup
+  frequency: Daily
+  action: Remove old downloaded episodes per retention policy
+- job: Image Cache
+  trigger: New podcast/episode added
+  action: Download and cache artwork
 api_endpoints:
-  - method: GET
-    path: /api/v1/podcasts
-    description: List all subscribed podcasts
-  - method: POST
-    path: /api/v1/podcasts
-    description: Subscribe to a podcast by RSS URL
-  - method: GET
-    path: /api/v1/podcasts/:id
-    description: Get podcast details by ID
-  - method: DELETE
-    path: /api/v1/podcasts/:id
-    description: Unsubscribe from a podcast
-  - method: GET
-    path: /api/v1/podcasts/:id/episodes
-    description: List all episodes for a podcast
-  - method: GET
-    path: /api/v1/podcasts/episodes/:id
-    description: Get episode details by ID
-  - method: GET
-    path: /api/v1/podcasts/episodes/:id/stream
-    description: Get streaming URL for an episode
-  - method: POST
-    path: /api/v1/podcasts/episodes/:id/download
-    description: Download an episode for offline listening
-  - method: GET
-    path: /api/v1/podcasts/episodes/:id/progress
-    description: Get user playback progress for an episode
-  - method: PUT
-    path: /api/v1/podcasts/episodes/:id/progress
-    description: Update user playback progress for an episode
-  - method: GET
-    path: /api/v1/podcasts/search
-    description: Search podcasts via Podcast Index API
-  - method: POST
-    path: /api/v1/podcasts/import-opml
-    description: Import podcast subscriptions from OPML file
-  - method: GET
-    path: /api/v1/podcasts/export-opml
-    description: Export podcast subscriptions as OPML file
+- method: GET
+  path: /api/v1/podcasts
+  description: List all subscribed podcasts
+- method: POST
+  path: /api/v1/podcasts
+  description: Subscribe to a podcast by RSS URL
+- method: GET
+  path: /api/v1/podcasts/:id
+  description: Get podcast details by ID
+- method: DELETE
+  path: /api/v1/podcasts/:id
+  description: Unsubscribe from a podcast
+- method: GET
+  path: /api/v1/podcasts/:id/episodes
+  description: List all episodes for a podcast
+- method: GET
+  path: /api/v1/podcasts/episodes/:id
+  description: Get episode details by ID
+- method: GET
+  path: /api/v1/podcasts/episodes/:id/stream
+  description: Get streaming URL for an episode
+- method: POST
+  path: /api/v1/podcasts/episodes/:id/download
+  description: Download an episode for offline listening
+- method: GET
+  path: /api/v1/podcasts/episodes/:id/progress
+  description: Get user playback progress for an episode
+- method: PUT
+  path: /api/v1/podcasts/episodes/:id/progress
+  description: Update user playback progress for an episode
+- method: GET
+  path: /api/v1/podcasts/search
+  description: Search podcasts via Podcast Index API
+- method: POST
+  path: /api/v1/podcasts/import-opml
+  description: Import podcast subscriptions from OPML file
+- method: GET
+  path: /api/v1/podcasts/export-opml
+  description: Export podcast subscriptions as OPML file

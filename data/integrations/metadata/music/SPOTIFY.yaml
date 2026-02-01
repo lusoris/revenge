@@ -19,7 +19,10 @@ status_integration_testing_notes: '-'
 technical_summary: '> Music metadata and cover art provider - popularity scores, high-quality
   images'
 wiki_tagline: '> Album artwork and artist images from Spotify'
-wiki_overview: 'Spotify provides high-quality album artwork and artist images. Popularity scores help surface trending music. Used to supplement MusicBrainz metadata with better images. Does not provide playback or streaming - only metadata. Requires Spotify developer credentials.'
+wiki_overview: Spotify provides high-quality album artwork and artist images. Popularity
+  scores help surface trending music. Used to supplement MusicBrainz metadata with
+  better images. Does not provide playback or streaming - only metadata. Requires
+  Spotify developer credentials.
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -32,13 +35,13 @@ sources:
   note: Auto-resolved from spotify
 design_refs:
 - title: integrations/metadata/music
-  path: integrations/metadata/music.md
+  path: ../../../integrations/metadata/music.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Spotify
 integration_id: spotify
 external_service: Spotify

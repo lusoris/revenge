@@ -31,9 +31,9 @@ sources:
     note: Config validation
 design_refs:
   - title: technical
-    path: technical/INDEX.md
+    path: INDEX.md
   - title: TECH_STACK
-    path: technical/TECH_STACK.md
+    path: ../technical/TECH_STACK.md
   - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
@@ -139,9 +139,9 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [technical](technical/INDEX.md)
-- [TECH_STACK](TECH_STACK.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [technical](INDEX.md)
+- [TECH_STACK](../technical/TECH_STACK.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [koanf](../../sources/tooling/koanf.md) - Configuration management

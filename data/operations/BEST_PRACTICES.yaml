@@ -23,7 +23,12 @@ technical_summary: "  > Coding standards, architectural patterns, and developmen
   \ table-driven tests\n  - **Error Handling**: Sentinel errors, wrap with %w\n  -\
   \ **Performance**: Caching strategies, connection pooling"
 wiki_tagline: '> Coding standards and patterns for contributing to Revenge'
-wiki_overview: 'Follow these guidelines when contributing code to Revenge. Use gofmt for formatting and golangci-lint for linting. All code requires 80% minimum test coverage with table-driven tests. Use the repository pattern with fx dependency injection. Handle errors with sentinel errors and wrap with context using %w. Cache expensive operations with otter (L1) and rueidis (L2). See code examples for common patterns.'
+wiki_overview: Follow these guidelines when contributing code to Revenge. Use gofmt
+  for formatting and golangci-lint for linting. All code requires 80% minimum test
+  coverage with table-driven tests. Use the repository pattern with fx dependency
+  injection. Handle errors with sentinel errors and wrap with context using %w. Cache
+  expensive operations with otter (L1) and rueidis (L2). See code examples for common
+  patterns.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -66,13 +71,13 @@ sources:
   note: Auto-resolved from sturdyc-docs
 design_refs:
 - title: operations
-  path: operations/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 go_style:
   formatting: Always use gofmt/goimports
   naming: PascalCase for exports, camelCase for internal

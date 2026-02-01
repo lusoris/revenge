@@ -20,11 +20,11 @@ sources:
     note: Design inspiration
 design_refs:
   - title: DESIGN_SYSTEM
-    path: technical/DESIGN_SYSTEM.md
+    path: ../../technical/DESIGN_SYSTEM.md
   - title: COLOR_SYSTEM
-    path: technical/design/COLOR_SYSTEM.md
+    path: ../../technical/design/COLOR_SYSTEM.md
   - title: PIRATE_MODE
-    path: technical/design/PIRATE_MODE.md
+    path: ../../technical/design/PIRATE_MODE.md
 ---
 
 # Brand Identity

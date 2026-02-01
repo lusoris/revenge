@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> API key generation, validation, and management'
 wiki_tagline: '> API key generation, validation, and management'
-wiki_overview: 'API keys allow external applications to access Revenge programmatically. Create keys with specific scopes (read-only, write, admin) and optional expiration dates. Each key is associated with a user and inherits their permissions. Keys can be revoked instantly. Use API keys for automation, mobile apps, or third-party integrations.'
+wiki_overview: API keys allow external applications to access Revenge programmatically.
+  Create keys with specific scopes (read-only, write, admin) and optional expiration
+  dates. Each key is associated with a user and inherits their permissions. Keys can
+  be revoked instantly. Use API keys for automation, mobile apps, or third-party integrations.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -46,13 +49,13 @@ sources:
   note: Auto-resolved from sqlc-config
 design_refs:
 - title: services
-  path: services/INDEX.md
+  path: INDEX.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
 service_name: API Keys Service
 package_path: internal/service/apikeys
 fx_module: apikeys.Module

@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Curated high-quality posters for movies and TV shows'
 wiki_tagline: '> Premium curated poster artwork'
-wiki_overview: 'ThePosterDB offers designer-quality posters and artwork for your library. Community-curated collection with consistent styling options. Browse by collection sets for matching artwork across related titles. Higher quality than standard metadata sources. Connect your ThePosterDB account to access the full library.'
+wiki_overview: ThePosterDB offers designer-quality posters and artwork for your library.
+  Community-curated collection with consistent styling options. Browse by collection
+  sets for matching artwork across related titles. Higher quality than standard metadata
+  sources. Connect your ThePosterDB account to access the full library.
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -40,13 +43,13 @@ sources:
   note: Auto-resolved from theposterdb
 design_refs:
 - title: integrations/metadata/video
-  path: integrations/metadata/video.md
+  path: ../../../integrations/metadata/video.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: ThePosterDB
 integration_id: theposterdb
 external_service: ThePosterDB

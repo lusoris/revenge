@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Content request management for all modules - replaces Overseerr/Jellyseerr'
 wiki_tagline: '> Let users request movies, shows, and music directly'
-wiki_overview: 'Built-in request system replaces Overseerr/Jellyseerr. Users browse TMDB, TheTVDB, or MusicBrainz and request content they want. Requests route to the appropriate Arr service (Radarr, Sonarr, Lidarr) for automatic download. Admins can approve/deny requests or set auto-approval rules. Track request status and get notified when content arrives.'
+wiki_overview: Built-in request system replaces Overseerr/Jellyseerr. Users browse
+  TMDB, TheTVDB, or MusicBrainz and request content they want. Requests route to the
+  appropriate Arr service (Radarr, Sonarr, Lidarr) for automatic download. Admins
+  can approve/deny requests or set auto-approval rules. Track request status and get
+  notified when content arrives.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -54,14 +58,12 @@ sources:
   url: https://svelte.dev/docs/kit/introduction
   note: Auto-resolved from sveltekit
 design_refs:
-- title: features/shared
-  path: features/shared.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../architecture/03_METADATA_SYSTEM.md
 feature_name: Native Request System
 module_name: native_request_system
 schema_name: public

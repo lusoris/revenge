@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer encyclopedia with detailed profiles'
 wiki_tagline: '> Performer encyclopedia from Boobpedia'
-wiki_overview: 'Boobpedia provides detailed performer profiles for the adult content system. Career timelines, studio affiliations, and filmography data. Community-maintained wiki format. Complements other adult metadata sources. Part of the QAR performer metadata pipeline.'
+wiki_overview: Boobpedia provides detailed performer profiles for the adult content
+  system. Career timelines, studio affiliations, and filmography data. Community-maintained
+  wiki format. Complements other adult metadata sources. Part of the QAR performer
+  metadata pipeline.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -28,13 +31,13 @@ sources:
   note: Auto-resolved from river
 design_refs:
 - title: integrations/wiki/adult
-  path: integrations/wiki/adult.md
+  path: ../../../integrations/wiki/adult.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../../../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../../../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../../../architecture/03_METADATA_SYSTEM.md
 integration_name: Boobpedia
 integration_id: boobpedia
 external_service: Boobpedia

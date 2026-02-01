@@ -16,19 +16,29 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: |
-  > Research into problems users face with existing media servers
+technical_summary: '> Research into problems users face with existing media servers
+
 
   Pain points identified:
+
   - **Slow Libraries**: Scanning takes hours on large collections
+
   - **Metadata Mismatch**: Wrong matches, missing posters
+
   - **Complex Setup**: Difficult initial configuration
+
   - **Poor Mobile**: Mobile apps are afterthoughts
+
   - **Transcoding Issues**: Buffering, quality problems
 
+  '
 wiki_tagline: '> What users hate about existing media servers'
-
-wiki_overview: 'This research documents common complaints about Jellyfin, Plex, and Emby from Reddit, forums, and GitHub issues. Key pain points include slow library scans, incorrect metadata matching, complicated setup processes, poor mobile experiences, and transcoding problems. Revenge addresses each issue with local-first metadata caching, smart matching algorithms, streamlined setup wizards, mobile-first design, and hardware-accelerated transcoding.'
+wiki_overview: This research documents common complaints about Jellyfin, Plex, and
+  Emby from Reddit, forums, and GitHub issues. Key pain points include slow library
+  scans, incorrect metadata matching, complicated setup processes, poor mobile experiences,
+  and transcoding problems. Revenge addresses each issue with local-first metadata
+  caching, smart matching algorithms, streamlined setup wizards, mobile-first design,
+  and hardware-accelerated transcoding.
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/
@@ -73,8 +83,8 @@ design_refs:
 - title: research
   path: research.md
 - title: 01_ARCHITECTURE
-  path: architecture/01_ARCHITECTURE.md
+  path: ../architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
-  path: architecture/02_DESIGN_PRINCIPLES.md
+  path: ../architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
-  path: architecture/03_METADATA_SYSTEM.md
+  path: ../architecture/03_METADATA_SYSTEM.md
