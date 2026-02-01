@@ -47,7 +47,7 @@ sources:
     note: Dependency injection
 design_refs:
   - title: services
-    path: services.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
     path: ../architecture/01_ARCHITECTURE.md
   - title: LIVE_TV_DVR
@@ -260,7 +260,7 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [services](services.md)
+- [services](INDEX.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [LIVE_TV_DVR](../features/livetv/LIVE_TV_DVR.md)
 - [TVHEADEND](../integrations/livetv/TVHEADEND.md)

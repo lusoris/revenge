@@ -76,7 +76,7 @@ design_refs:
   - title: REVERSE_PROXY
     path: ../operations/REVERSE_PROXY.md
   - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
+    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Production Deployment Setup
@@ -182,7 +182,7 @@ Target: **80% minimum**
 - [operations](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
 - [REVERSE_PROXY](../operations/REVERSE_PROXY.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly

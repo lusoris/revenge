@@ -37,7 +37,7 @@ sources:
     note: Request coalescing cache
 design_refs:
   - title: patterns
-    path: patterns.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
     path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
@@ -146,7 +146,7 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [patterns](patterns.md)
+- [patterns](INDEX.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)

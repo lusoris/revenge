@@ -158,7 +158,7 @@ design_refs:
 - title: 03_METADATA_SYSTEM
   path: ../architecture/03_METADATA_SYSTEM.md
 - title: 00_SOURCE_OF_TRUTH
-  path: 00_SOURCE_OF_TRUTH.md
+  path: ../00_SOURCE_OF_TRUTH.md
 backend:
   language: Go
   version: 1.25.6

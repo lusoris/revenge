@@ -57,7 +57,7 @@ design_refs:
 - title: TECH_STACK
   path: ../technical/TECH_STACK.md
 - title: 00_SOURCE_OF_TRUTH
-  path: 00_SOURCE_OF_TRUTH.md
+  path: ../00_SOURCE_OF_TRUTH.md
 config_file: config.yaml
 env_prefix: REVENGE_
 config_file_locations:

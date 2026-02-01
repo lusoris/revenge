@@ -23,7 +23,7 @@ sources:
     note: Progress tracking cache
 design_refs:
   - title: technical
-    path: technical.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
     path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

@@ -38,8 +38,6 @@ sources:
     url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: integrations/metadata/comics
-    path: ../../../integrations/metadata/comics.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
@@ -158,7 +156,6 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [integrations/metadata/comics](../../../integrations/metadata/comics.md)
 - [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)

@@ -41,8 +41,6 @@ sources:
     url: ../../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: integrations/metadata/adult
-    path: ../../../integrations/metadata/adult.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

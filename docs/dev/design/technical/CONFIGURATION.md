@@ -35,7 +35,7 @@ design_refs:
   - title: TECH_STACK
     path: ../technical/TECH_STACK.md
   - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
+    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Configuration Reference
@@ -141,7 +141,7 @@ Target: **80% minimum**
 ### Design Documents
 - [technical](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [koanf](../../sources/tooling/koanf.md) - Configuration management

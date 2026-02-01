@@ -20,8 +20,6 @@ sources:
     url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
-  - title: integrations/metadata/books
-    path: ../../../integrations/metadata/books.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

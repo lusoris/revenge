@@ -32,8 +32,6 @@ sources:
     url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
-  - title: integrations/metadata/books
-    path: ../../../integrations/metadata/books.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
@@ -152,7 +150,6 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [integrations/metadata/books](../../../integrations/metadata/books.md)
 - [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)

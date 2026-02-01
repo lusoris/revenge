@@ -23,8 +23,6 @@ sources:
     url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: integrations/wiki/adult
-    path: ../../../integrations/wiki/adult.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

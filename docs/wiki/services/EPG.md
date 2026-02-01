@@ -27,7 +27,7 @@ sources:
     note: Dependency injection
 design_refs:
   - title: services
-    path: services.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
     path: ../architecture/01_ARCHITECTURE.md
   - title: LIVE_TV_DVR

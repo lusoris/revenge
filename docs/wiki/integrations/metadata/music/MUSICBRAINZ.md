@@ -23,8 +23,6 @@ sources:
     url: ../../../../sources/apis/musicbrainz.md
     note: Auto-resolved from musicbrainz
 design_refs:
-  - title: integrations/metadata/music
-    path: ../../../integrations/metadata/music.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

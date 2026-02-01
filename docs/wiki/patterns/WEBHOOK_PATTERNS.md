@@ -26,7 +26,7 @@ sources:
     note: Circuit breaker pattern
 design_refs:
   - title: patterns
-    path: patterns.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
     path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

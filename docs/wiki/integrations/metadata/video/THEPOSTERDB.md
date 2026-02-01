@@ -32,8 +32,6 @@ sources:
     url: ../../../../sources/apis/theposterdb.md
     note: Auto-resolved from theposterdb
 design_refs:
-  - title: integrations/metadata/video
-    path: ../../../integrations/metadata/video.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

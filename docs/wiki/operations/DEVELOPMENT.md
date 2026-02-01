@@ -41,7 +41,7 @@ design_refs:
   - title: BEST_PRACTICES
     path: ../operations/BEST_PRACTICES.md
   - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
+    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Development Environment Setup

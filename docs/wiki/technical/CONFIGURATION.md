@@ -24,7 +24,7 @@ design_refs:
   - title: TECH_STACK
     path: ../technical/TECH_STACK.md
   - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
+    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Configuration Reference

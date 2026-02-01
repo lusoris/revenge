@@ -64,7 +64,7 @@ sources:
     note: Auto-resolved from river
 design_refs:
   - title: research
-    path: research.md
+    path: INDEX.md
   - title: 01_ARCHITECTURE
     path: ../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES
@@ -174,7 +174,7 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [research](research.md)
+- [research](INDEX.md)
 - [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)

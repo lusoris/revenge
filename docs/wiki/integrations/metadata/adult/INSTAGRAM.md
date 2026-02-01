@@ -20,8 +20,6 @@ sources:
     url: ../../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-  - title: integrations/metadata/adult
-    path: ../../../integrations/metadata/adult.md
   - title: 01_ARCHITECTURE
     path: ../../../architecture/01_ARCHITECTURE.md
   - title: 02_DESIGN_PRINCIPLES

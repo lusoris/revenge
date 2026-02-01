@@ -53,13 +53,21 @@ def fix_design_refs(yaml_file: Path, repo_root: Path) -> int:
         path = ref["path"]
         original_path = path
 
-        # Remove self-referential category summary links (e.g., features/adult.md from features/adult/)
+        # Remove self-referential category summary links
+        # e.g., features/adult.md from features/adult/ (depth=2)
+        # e.g., integrations/metadata/adult.md from integrations/metadata/adult/ (depth=3)
         # These category summary files don't exist and shouldn't be self-referenced
-        if output_subdir and path == f"../../{output_subdir}.md":
-            refs_to_remove.append(ref)
-            fixes_applied += 1
-            print(f"    Removed: {original_path} (self-referential category summary)")
-            continue
+        if output_subdir:
+            depth = output_subdir.count("/") + 1
+            expected_prefix = "../" * depth
+            self_ref_path = f"{expected_prefix}{output_subdir}.md"
+            if path == self_ref_path:
+                refs_to_remove.append(ref)
+                fixes_applied += 1
+                print(
+                    f"    Removed: {original_path} (self-referential category summary)"
+                )
+                continue
 
         # Fix same-directory INDEX.md references
         # e.g., architecture/INDEX.md → INDEX.md (when file is in architecture/)
@@ -96,8 +104,40 @@ def fix_design_refs(yaml_file: Path, repo_root: Path) -> int:
                 )
                 target_found = True
 
+            # Check for root-level files referenced from subdirectories
+            # e.g., "00_SOURCE_OF_TRUTH.md" from technical/ → "../00_SOURCE_OF_TRUTH.md"
+            if (
+                not target_found
+                and "/" not in path
+                and path != "INDEX.md"
+                and output_subdir
+            ):
+                # Special files that exist at root level
+                root_files = ["00_SOURCE_OF_TRUTH.md", "NAVIGATION.md"]
+                if path in root_files:
+                    ref["path"] = f"../{path}"
+                    fixes_applied += 1
+                    print(f"    Fixed: {original_path} → ../{path} (root-level file)")
+                    target_found = True
+
+            # Check if this is a same-directory category reference
+            # e.g., "technical.md" from technical/ → should be "INDEX.md"
+            if (
+                not target_found
+                and "/" not in path
+                and path != "INDEX.md"
+                and output_subdir
+            ):
+                # Get the last part of output_subdir
+                category_name = output_subdir.split("/")[-1]
+                if path == f"{category_name}.md":
+                    ref["path"] = "INDEX.md"
+                    fixes_applied += 1
+                    print(f"    Fixed: {original_path} → INDEX.md (category self-ref)")
+                    target_found = True
+
             if not target_found and "/" not in path and path != "INDEX.md":
-                # Keep as-is for now, might be same-directory reference
+                # Keep as-is for now, might be valid same-directory reference
                 pass
 
         # Fix cross-directory references with wrong depth

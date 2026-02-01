@@ -70,7 +70,7 @@ design_refs:
   - title: REVERSE_PROXY
     path: ../operations/REVERSE_PROXY.md
   - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
+    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Production Deployment Setup

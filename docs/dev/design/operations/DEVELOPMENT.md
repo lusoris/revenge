@@ -52,7 +52,7 @@ design_refs:
   - title: BEST_PRACTICES
     path: ../operations/BEST_PRACTICES.md
   - title: 00_SOURCE_OF_TRUTH
-    path: 00_SOURCE_OF_TRUTH.md
+    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Development Environment Setup
@@ -158,7 +158,7 @@ Target: **80% minimum**
 - [operations](INDEX.md)
 - [TECH_STACK](../technical/TECH_STACK.md)
 - [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide
