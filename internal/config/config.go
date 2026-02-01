@@ -167,7 +167,7 @@ func Defaults() map[string]interface{} {
 		"server.shutdown_timeout": "10s",
 
 		// Database defaults
-		"database.url":                 "",
+		"database.url":                 "postgres://revenge:changeme@localhost:5432/revenge?sslmode=disable",
 		"database.max_conns":           0, // 0 = (CPU * 2) + 1
 		"database.min_conns":           2,
 		"database.max_conn_lifetime":   "30m",

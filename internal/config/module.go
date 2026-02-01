@@ -34,7 +34,7 @@ func Default() *Config {
 			ShutdownTimeout: 10000000000,  // 10s
 		},
 		Database: DatabaseConfig{
-			URL:               "",
+			URL:               "postgres://revenge:changeme@localhost:5432/revenge?sslmode=disable",
 			MaxConns:          0, // Auto: (CPU * 2) + 1
 			MinConns:          2,
 			MaxConnLifetime:   1800000000000, // 30m
