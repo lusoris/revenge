@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Generic OIDC](#generic-oidc)
 - [Generic OIDC](#generic-oidc)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Generic OIDC
 
@@ -31,9 +31,6 @@ Use any OpenID Connect compatible identity provider with Revenge. Works with cor
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

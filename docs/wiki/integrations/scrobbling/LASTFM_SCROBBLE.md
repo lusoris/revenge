@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Last.fm Scrobbling](#lastfm-scrobbling)
 - [Last.fm Scrobbling](#lastfm-scrobbling)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Last.fm Scrobbling
 
@@ -31,9 +31,6 @@ Send your music listening history to Last.fm automatically. Tracks scrobble afte
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

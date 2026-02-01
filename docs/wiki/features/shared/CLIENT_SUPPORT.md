@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - Client Support & Device Capabilities](#revenge-client-support-device-capabilities)
 - [Revenge - Client Support & Device Capabilities](#revenge-client-support-device-capabilities)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - Client Support & Device Capabilities
 
@@ -32,9 +32,6 @@ Revenge works on phones, tablets, smart TVs, web browsers, and streaming devices
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

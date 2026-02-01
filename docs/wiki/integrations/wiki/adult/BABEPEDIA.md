@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Babepedia](#babepedia)
 - [Babepedia](#babepedia)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Babepedia
 
@@ -31,9 +31,6 @@ Babepedia provides biographical information for adult performers. Physical attri
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

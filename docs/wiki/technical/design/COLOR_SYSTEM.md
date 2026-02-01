@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Color System](#color-system)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Color System
 
@@ -28,9 +28,6 @@ The Revenge color system aligns with the Arr ecosystem you already know. Movies 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

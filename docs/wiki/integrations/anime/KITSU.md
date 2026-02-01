@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Kitsu](#kitsu)
 - [Kitsu](#kitsu)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Kitsu
 
@@ -31,9 +31,6 @@ Link your Kitsu account to track anime watching. Kitsu provides metadata, commun
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

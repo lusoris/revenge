@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Trickplay (Timeline Thumbnails)](#trickplay-timeline-thumbnails)
 - [Trickplay (Timeline Thumbnails)](#trickplay-timeline-thumbnails)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Trickplay (Timeline Thumbnails)
 
@@ -32,9 +32,6 @@ See where you are going when scrubbing through videos. Trickplay generates thumb
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

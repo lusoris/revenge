@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Design Documentation Status](#design-documentation-status)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Design Documentation Status
 
@@ -28,9 +28,6 @@ This dashboard shows the completion status of all design documentation. Each doc
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

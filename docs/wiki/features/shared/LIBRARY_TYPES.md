@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Library Types](#library-types)
 - [Library Types](#library-types)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Library Types
 
@@ -32,9 +32,6 @@ Create separate libraries for different content types. Movies, TV Shows, Music, 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - Media Enhancement Features](#revenge-media-enhancement-features)
 - [Revenge - Media Enhancement Features](#revenge-media-enhancement-features)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - Media Enhancement Features
 
@@ -32,9 +32,6 @@ Enhanced playback features that make watching more enjoyable. Includes trailer p
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

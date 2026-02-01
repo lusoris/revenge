@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Development Environment Setup](#development-environment-setup)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Development Environment Setup
 
@@ -30,9 +30,6 @@ This guide walks you through setting up Revenge for local development. You will 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

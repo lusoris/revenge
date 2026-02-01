@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [ThePosterDB](#theposterdb)
 - [ThePosterDB](#theposterdb)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # ThePosterDB
 
@@ -31,9 +31,6 @@ ThePosterDB offers designer-quality posters and artwork for your library. Commun
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

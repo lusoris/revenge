@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Audiobook Module](#audiobook-module)
 - [Audiobook Module](#audiobook-module)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Audiobook Module
 
@@ -32,9 +32,6 @@ The Audiobook Module provides a complete audiobook experience with support for c
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

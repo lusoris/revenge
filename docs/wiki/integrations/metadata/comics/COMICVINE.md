@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [ComicVine API](#comicvine-api)
 - [ComicVine API](#comicvine-api)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # ComicVine API
 
@@ -31,9 +31,6 @@ ComicVine provides comprehensive comic book metadata including issue details, st
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

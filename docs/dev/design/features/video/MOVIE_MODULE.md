@@ -1,3 +1,8 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Movie Module](#movie-module)
@@ -23,10 +28,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
----
 
 # Movie Module
 

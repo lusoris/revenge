@@ -1,24 +1,3 @@
-## Table of Contents
-
-- [Advanced Offloading Architecture](#advanced-offloading-architecture)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -63,6 +42,28 @@ design_refs:
   - title: METADATA_ENRICHMENT
     path: ../patterns/METADATA_ENRICHMENT.md
 ---
+
+## Table of Contents
+
+- [Advanced Offloading Architecture](#advanced-offloading-architecture)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # Advanced Offloading Architecture
 

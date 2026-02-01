@@ -1,40 +1,3 @@
-## Table of Contents
-
-- [Comics Module](#comics-module)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Database Schema](#database-schema)
-    - [Module Structure](#module-structure)
-    - [Component Interaction](#component-interaction)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [API Endpoints](#api-endpoints)
-    - [Content Management](#content-management)
-      - [GET /api/v1/comics/series](#get-apiv1comicsseries)
-      - [GET /api/v1/comics/series/:id](#get-apiv1comicsseriesid)
-      - [GET /api/v1/comics/series/:id/issues](#get-apiv1comicsseriesidissues)
-      - [GET /api/v1/comics/issues](#get-apiv1comicsissues)
-      - [GET /api/v1/comics/issues/:id](#get-apiv1comicsissuesid)
-      - [GET /api/v1/comics/issues/:id/read](#get-apiv1comicsissuesidread)
-      - [GET /api/v1/comics/issues/:id/pages/:page](#get-apiv1comicsissuesidpagespage)
-      - [GET /api/v1/comics/issues/:id/progress](#get-apiv1comicsissuesidprogress)
-      - [PUT /api/v1/comics/issues/:id/progress](#put-apiv1comicsissuesidprogress)
-      - [GET /api/v1/comics/publishers](#get-apiv1comicspublishers)
-      - [POST /api/v1/comics/pull-list](#post-apiv1comicspull-list)
-      - [GET /api/v1/comics/pull-list](#get-apiv1comicspull-list)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -80,6 +43,44 @@ design_refs:
   - title: 03_METADATA_SYSTEM
     path: ../../architecture/03_METADATA_SYSTEM.md
 ---
+
+## Table of Contents
+
+- [Comics Module](#comics-module)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Database Schema](#database-schema)
+    - [Module Structure](#module-structure)
+    - [Component Interaction](#component-interaction)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [Content Management](#content-management)
+      - [GET /api/v1/comics/series](#get-apiv1comicsseries)
+      - [GET /api/v1/comics/series/:id](#get-apiv1comicsseriesid)
+      - [GET /api/v1/comics/series/:id/issues](#get-apiv1comicsseriesidissues)
+      - [GET /api/v1/comics/issues](#get-apiv1comicsissues)
+      - [GET /api/v1/comics/issues/:id](#get-apiv1comicsissuesid)
+      - [GET /api/v1/comics/issues/:id/read](#get-apiv1comicsissuesidread)
+      - [GET /api/v1/comics/issues/:id/pages/:page](#get-apiv1comicsissuesidpagespage)
+      - [GET /api/v1/comics/issues/:id/progress](#get-apiv1comicsissuesidprogress)
+      - [PUT /api/v1/comics/issues/:id/progress](#put-apiv1comicsissuesidprogress)
+      - [GET /api/v1/comics/publishers](#get-apiv1comicspublishers)
+      - [POST /api/v1/comics/pull-list](#post-apiv1comicspull-list)
+      - [GET /api/v1/comics/pull-list](#get-apiv1comicspull-list)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # Comics Module
 

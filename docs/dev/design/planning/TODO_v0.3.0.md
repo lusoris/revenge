@@ -1,5 +1,29 @@
 # TODO v0.3.0 - MVP (Movies)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Movie Module (Backend)](#movie-module-backend)
+  - [Collection Support](#collection-support)
+  - [Metadata Service (TMDb)](#metadata-service-tmdb)
+  - [Search Service (Typesense)](#search-service-typesense)
+  - [Radarr Integration](#radarr-integration)
+  - [Frontend (Basic SvelteKit)](#frontend-basic-sveltekit)
+  - [Infrastructure](#infrastructure)
+  - [Documentation](#documentation)
+- [Verification Checklist](#verification-checklist)
+- [MVP Definition of Done](#mvp-definition-of-done)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+  - [Backend](#backend)
+  - [Frontend](#frontend)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Movie Module + Basic Frontend

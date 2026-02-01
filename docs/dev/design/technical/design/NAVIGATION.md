@@ -1,3 +1,17 @@
+
+
+---
+sources:
+  - name: Lucide Icons
+    url: https://lucide.dev/icons/
+    note: Navigation icons
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: ../../technical/DESIGN_SYSTEM.md
+  - title: CLIENT_SUPPORT
+    path: ../../features/shared/CLIENT_SUPPORT.md
+---
+
 ## Table of Contents
 
 - [Navigation System](#navigation-system)
@@ -19,19 +33,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Navigation icons
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: CLIENT_SUPPORT
-    path: ../../features/shared/CLIENT_SUPPORT.md
----
 
 # Navigation System
 

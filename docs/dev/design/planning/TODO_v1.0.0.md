@@ -1,5 +1,33 @@
 # TODO v1.0.0 - Revenge (First Stable)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [RC Issue Resolution](#rc-issue-resolution)
+  - [Performance Benchmarks](#performance-benchmarks)
+  - [Security Certification](#security-certification)
+  - [Documentation Complete](#documentation-complete)
+  - [Official Docker Images](#official-docker-images)
+  - [Helm Chart Publishing](#helm-chart-publishing)
+  - [Docker Compose / Swarm Templates](#docker-compose-swarm-templates)
+  - [Community Guidelines](#community-guidelines)
+  - [Release Process](#release-process)
+  - [Post-Release](#post-release)
+- [Verification Checklist](#verification-checklist)
+  - [Functional](#functional)
+  - [Non-Functional](#non-functional)
+  - [Infrastructure](#infrastructure)
+  - [Quality](#quality)
+- [Definition of Done for v1.0.0](#definition-of-done-for-v100)
+- [Post-1.0 Considerations](#post-10-considerations)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Production Ready

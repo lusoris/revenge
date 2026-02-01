@@ -1,24 +1,3 @@
-## Table of Contents
-
-- [WebSockets](#websockets)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -42,6 +21,28 @@ design_refs:
   - title: WEBSOCKETS (Syncplay)
     path: ../features/playback/SYNCPLAY.md
 ---
+
+## Table of Contents
+
+- [WebSockets](#websockets)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # WebSockets
 

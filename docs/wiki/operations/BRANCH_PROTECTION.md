@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Branch Protection Rules](#branch-protection-rules)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Branch Protection Rules
 
@@ -28,9 +28,6 @@ Branch protection rules prevent direct pushes to main and develop branches. All 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [NextPVR](#nextpvr)
 - [NextPVR](#nextpvr)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # NextPVR
 
@@ -31,9 +31,6 @@ Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRu
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

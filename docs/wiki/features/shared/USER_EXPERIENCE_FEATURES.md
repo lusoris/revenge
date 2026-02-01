@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - User Experience Features](#revenge-user-experience-features)
 - [Revenge - User Experience Features](#revenge-user-experience-features)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - User Experience Features
 
@@ -32,9 +32,6 @@ Modern UI inspired by popular streaming services. Auto-playing previews on hover
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

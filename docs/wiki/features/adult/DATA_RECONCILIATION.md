@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Adult Data Reconciliation](#adult-data-reconciliation)
 - [Adult Data Reconciliation](#adult-data-reconciliation)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Adult Data Reconciliation
 
@@ -32,9 +32,6 @@ When multiple metadata sources provide conflicting information, the reconciliati
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

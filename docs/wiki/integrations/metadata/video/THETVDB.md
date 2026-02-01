@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [TheTVDB](#thetvdb)
 - [TheTVDB](#thetvdb)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # TheTVDB
 
@@ -31,9 +31,6 @@ TheTVDB provides detailed TV show metadata including episode names, air dates, a
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

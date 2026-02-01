@@ -1,3 +1,19 @@
+
+
+---
+sources:
+  - name: go-chromecast
+    url: ../../../sources/casting/go-chromecast.md
+    note: Auto-resolved from go-chromecast
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [Chromecast](#chromecast)
@@ -21,21 +37,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: go-chromecast
-    url: ../../../sources/casting/go-chromecast.md
-    note: Auto-resolved from go-chromecast
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
 
 # Chromecast
 

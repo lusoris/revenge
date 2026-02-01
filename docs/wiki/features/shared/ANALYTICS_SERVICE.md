@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Tracearr Analytics Service](#tracearr-analytics-service)
 - [Tracearr Analytics Service](#tracearr-analytics-service)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Tracearr Analytics Service
 
@@ -32,9 +32,6 @@ The Tracearr analytics dashboard shows real-time server activity. See what is be
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

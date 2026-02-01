@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Typography](#typography)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Typography
 
@@ -28,9 +28,6 @@ Typography in Revenge uses a modern + serif accent approach. Inter handles all b
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

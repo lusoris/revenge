@@ -1,5 +1,25 @@
 # TODO v0.8.0 - Intelligence
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Scrobbling Service](#scrobbling-service)
+  - [Analytics Service](#analytics-service)
+  - [Notification Service](#notification-service)
+  - [Request System](#request-system)
+  - [Fingerprint Service](#fingerprint-service)
+  - [Grants Service (Sharing)](#grants-service-sharing)
+  - [i18n Support](#i18n-support)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Advanced Features

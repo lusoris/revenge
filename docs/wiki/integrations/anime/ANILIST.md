@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [AniList](#anilist)
 - [AniList](#anilist)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # AniList
 
@@ -31,9 +31,6 @@ Connect your AniList account to sync anime watching progress. Metadata for anime
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

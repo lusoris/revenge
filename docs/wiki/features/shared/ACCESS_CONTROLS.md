@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Time-Based Access Controls](#time-based-access-controls)
 - [Time-Based Access Controls](#time-based-access-controls)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Time-Based Access Controls
 
@@ -32,9 +32,6 @@ Set rules for when users can access content. Limit viewing to certain hours (kid
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,5 +1,25 @@
 # TODO v0.4.0 - Shows
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [TV Show Module (Backend)](#tv-show-module-backend)
+  - [TheTVDB Integration](#thetvdb-integration)
+  - [TMDb TV Support](#tmdb-tv-support)
+  - [Sonarr Integration](#sonarr-integration)
+  - [Episode Watch Progress](#episode-watch-progress)
+  - [Search Integration](#search-integration)
+  - [Frontend Updates](#frontend-updates)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > TV Shows Module

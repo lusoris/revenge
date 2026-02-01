@@ -1,3 +1,23 @@
+
+
+---
+sources:
+  - name: Inter
+    url: https://fonts.google.com/specimen/Inter
+    note: UI body font
+  - name: Playfair Display
+    url: https://fonts.google.com/specimen/Playfair+Display
+    note: Serif accent font
+  - name: JetBrains Mono
+    url: https://fonts.google.com/specimen/JetBrains+Mono
+    note: Monospace font
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: ../../technical/DESIGN_SYSTEM.md
+  - title: BRAND_IDENTITY
+    path: ../../technical/design/BRAND_IDENTITY.md
+---
+
 ## Table of Contents
 
 - [Typography](#typography)
@@ -19,25 +39,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Inter
-    url: https://fonts.google.com/specimen/Inter
-    note: UI body font
-  - name: Playfair Display
-    url: https://fonts.google.com/specimen/Playfair+Display
-    note: Serif accent font
-  - name: JetBrains Mono
-    url: https://fonts.google.com/specimen/JetBrains+Mono
-    note: Monospace font
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
-    path: ../../technical/design/BRAND_IDENTITY.md
----
 
 # Typography
 

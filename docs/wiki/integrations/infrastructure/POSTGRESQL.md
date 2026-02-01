@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [PostgreSQL](#postgresql)
 - [PostgreSQL](#postgresql)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # PostgreSQL
 
@@ -31,9 +31,6 @@ PostgreSQL is the only supported database for Revenge (no SQLite). Stores all me
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

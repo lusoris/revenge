@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - NSFW Toggle](#revenge-nsfw-toggle)
 - [Revenge - NSFW Toggle](#revenge-nsfw-toggle)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - NSFW Toggle
 
@@ -32,9 +32,6 @@ Control adult content visibility per user. When disabled, adult libraries are co
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

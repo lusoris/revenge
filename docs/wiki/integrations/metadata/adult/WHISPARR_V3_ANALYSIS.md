@@ -1,18 +1,18 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Whisparr v3 (eros) - Adult Content Structure Analysis](#whisparr-v3-eros-adult-content-structure-analysis)
 - [Whisparr v3 (eros) - Adult Content Structure Analysis](#whisparr-v3-eros-adult-content-structure-analysis)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
-
-
----
----
 
 # Whisparr v3 (eros) - Adult Content Structure Analysis
 
@@ -30,9 +30,6 @@ Technical analysis of Whisparr v3 (eros branch) structure. Documents how Whispar
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

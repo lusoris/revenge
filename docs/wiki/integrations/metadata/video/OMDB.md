@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [OMDb (Open Movie Database)](#omdb-open-movie-database)
 - [OMDb (Open Movie Database)](#omdb-open-movie-database)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # OMDb (Open Movie Database)
 
@@ -31,9 +31,6 @@ OMDb provides supplementary metadata including IMDb ratings, Rotten Tomatoes sco
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

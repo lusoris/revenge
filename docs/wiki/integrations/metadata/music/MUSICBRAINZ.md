@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [MusicBrainz](#musicbrainz)
 - [MusicBrainz](#musicbrainz)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # MusicBrainz
 
@@ -31,9 +31,6 @@ MusicBrainz is the primary source for music metadata. Open database with artist,
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,31 +1,3 @@
-## Table of Contents
-
-- [Design System](#design-system)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Implementation Checklist](#implementation-checklist)
-    - [Phase 1: Foundation](#phase-1-foundation)
-    - [Phase 2: Components](#phase-2-components)
-    - [Phase 3: Navigation](#phase-3-navigation)
-    - [Phase 4: Motion](#phase-4-motion)
-    - [Phase 5: Accessibility](#phase-5-accessibility)
-    - [Phase 6: Polish](#phase-6-polish)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -62,6 +34,35 @@ design_refs:
   - title: USER_EXPERIENCE_FEATURES
     path: ../features/shared/USER_EXPERIENCE_FEATURES.md
 ---
+
+## Table of Contents
+
+- [Design System](#design-system)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Implementation Checklist](#implementation-checklist)
+    - [Phase 1: Foundation](#phase-1-foundation)
+    - [Phase 2: Components](#phase-2-components)
+    - [Phase 3: Navigation](#phase-3-navigation)
+    - [Phase 4: Motion](#phase-4-motion)
+    - [Phase 5: Accessibility](#phase-5-accessibility)
+    - [Phase 6: Polish](#phase-6-polish)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # Design System
 

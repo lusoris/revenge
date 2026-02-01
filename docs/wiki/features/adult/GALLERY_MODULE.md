@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Adult Gallery Module (QAR: Treasures)](#adult-gallery-module-qar-treasures)
 - [Adult Gallery Module (QAR: Treasures)](#adult-gallery-module-qar-treasures)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Adult Gallery Module (QAR: Treasures)
 
@@ -32,9 +32,6 @@ Organize adult image sets and galleries with full metadata support. Link galleri
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

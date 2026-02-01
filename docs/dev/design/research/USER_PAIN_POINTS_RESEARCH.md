@@ -1,24 +1,3 @@
-## Table of Contents
-
-- [User Pain Points Research - Existing Media Servers](#user-pain-points-research-existing-media-servers)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Components](#components)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -72,6 +51,28 @@ design_refs:
   - title: 03_METADATA_SYSTEM
     path: ../architecture/03_METADATA_SYSTEM.md
 ---
+
+## Table of Contents
+
+- [User Pain Points Research - Existing Media Servers](#user-pain-points-research-existing-media-servers)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Components](#components)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # User Pain Points Research - Existing Media Servers
 

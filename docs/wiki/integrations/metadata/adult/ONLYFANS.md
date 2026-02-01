@@ -1,18 +1,18 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [OnlyFans](#onlyfans)
 - [OnlyFans](#onlyfans)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
-
-
----
----
 
 # OnlyFans
 
@@ -30,9 +30,6 @@ Tracks OnlyFans profile links for adult performers. Links stored in performer me
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

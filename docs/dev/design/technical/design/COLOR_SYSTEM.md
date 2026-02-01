@@ -1,3 +1,20 @@
+
+
+---
+sources:
+  - name: Tailwind CSS Colors
+    url: https://tailwindcss.com/docs/customizing-colors
+    note: Color system foundation
+  - name: Radix Colors
+    url: https://www.radix-ui.com/colors
+    note: Accessible color scales
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: ../../technical/DESIGN_SYSTEM.md
+  - title: BRAND_IDENTITY
+    path: ../../technical/design/BRAND_IDENTITY.md
+---
+
 ## Table of Contents
 
 - [Color System](#color-system)
@@ -19,22 +36,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Tailwind CSS Colors
-    url: https://tailwindcss.com/docs/customizing-colors
-    note: Color system foundation
-  - name: Radix Colors
-    url: https://www.radix-ui.com/colors
-    note: Accessible color scales
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
-    path: ../../technical/design/BRAND_IDENTITY.md
----
 
 # Color System
 

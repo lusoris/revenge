@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [ErsatzTV](#ersatztv)
 - [ErsatzTV](#ersatztv)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # ErsatzTV
 
@@ -31,9 +31,6 @@ ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 mov
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

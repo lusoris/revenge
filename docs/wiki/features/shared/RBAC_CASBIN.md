@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Dynamic RBAC with Casbin](#dynamic-rbac-with-casbin)
 - [Dynamic RBAC with Casbin](#dynamic-rbac-with-casbin)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Dynamic RBAC with Casbin
 
@@ -32,9 +32,6 @@ Define exactly what each user can do with role-based access control. Create cust
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

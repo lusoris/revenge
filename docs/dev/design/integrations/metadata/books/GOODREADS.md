@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: Google Books API
+    url: ../../../../sources/apis/google-books.md
+    note: Auto-resolved from google-books
+  - name: Open Library API
+    url: ../../../../sources/apis/openlibrary.md
+    note: Auto-resolved from openlibrary
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [Goodreads](#goodreads)
@@ -21,24 +40,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Google Books API
-    url: ../../../../sources/apis/google-books.md
-    note: Auto-resolved from google-books
-  - name: Open Library API
-    url: ../../../../sources/apis/openlibrary.md
-    note: Auto-resolved from openlibrary
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
----
 
 # Goodreads
 

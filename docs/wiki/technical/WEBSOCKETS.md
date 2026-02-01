@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [WebSockets](#websockets)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # WebSockets
 
@@ -28,9 +28,6 @@ The WebSocket System enables real-time bidirectional communication between the s
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [StashDB](#stashdb)
 - [StashDB](#stashdb)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # StashDB
 
@@ -31,9 +31,6 @@ StashDB is the primary metadata source for adult content. Community-maintained d
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

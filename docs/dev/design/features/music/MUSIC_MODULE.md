@@ -1,39 +1,3 @@
-## Table of Contents
-
-- [Music Module](#music-module)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Database Schema](#database-schema)
-    - [Module Structure](#module-structure)
-    - [Component Interaction](#component-interaction)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [API Endpoints](#api-endpoints)
-    - [Content Management](#content-management)
-      - [GET /api/v1/music/artists](#get-apiv1musicartists)
-      - [GET /api/v1/music/artists/:id](#get-apiv1musicartistsid)
-      - [GET /api/v1/music/artists/:id/albums](#get-apiv1musicartistsidalbums)
-      - [GET /api/v1/music/albums](#get-apiv1musicalbums)
-      - [GET /api/v1/music/albums/:id](#get-apiv1musicalbumsid)
-      - [GET /api/v1/music/albums/:id/tracks](#get-apiv1musicalbumsidtracks)
-      - [GET /api/v1/music/tracks](#get-apiv1musictracks)
-      - [GET /api/v1/music/tracks/:id](#get-apiv1musictracksid)
-      - [GET /api/v1/music/tracks/:id/stream](#get-apiv1musictracksidstream)
-      - [POST /api/v1/music/playlists](#post-apiv1musicplaylists)
-      - [GET /api/v1/music/genres](#get-apiv1musicgenres)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -73,6 +37,43 @@ design_refs:
   - title: 03_METADATA_SYSTEM
     path: ../../architecture/03_METADATA_SYSTEM.md
 ---
+
+## Table of Contents
+
+- [Music Module](#music-module)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Database Schema](#database-schema)
+    - [Module Structure](#module-structure)
+    - [Component Interaction](#component-interaction)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [Content Management](#content-management)
+      - [GET /api/v1/music/artists](#get-apiv1musicartists)
+      - [GET /api/v1/music/artists/:id](#get-apiv1musicartistsid)
+      - [GET /api/v1/music/artists/:id/albums](#get-apiv1musicartistsidalbums)
+      - [GET /api/v1/music/albums](#get-apiv1musicalbums)
+      - [GET /api/v1/music/albums/:id](#get-apiv1musicalbumsid)
+      - [GET /api/v1/music/albums/:id/tracks](#get-apiv1musicalbumsidtracks)
+      - [GET /api/v1/music/tracks](#get-apiv1musictracks)
+      - [GET /api/v1/music/tracks/:id](#get-apiv1musictracksid)
+      - [GET /api/v1/music/tracks/:id/stream](#get-apiv1musictracksidstream)
+      - [POST /api/v1/music/playlists](#post-apiv1musicplaylists)
+      - [GET /api/v1/music/genres](#get-apiv1musicgenres)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # Music Module
 

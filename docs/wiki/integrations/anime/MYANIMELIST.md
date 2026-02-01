@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [MyAnimeList (MAL)](#myanimelist-mal)
 - [MyAnimeList (MAL)](#myanimelist-mal)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # MyAnimeList (MAL)
 
@@ -31,9 +31,6 @@ Connect MyAnimeList (MAL) to sync your anime watching history. MAL has the large
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [User Service](#user-service)
 - [User Service](#user-service)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # User Service
 
@@ -31,9 +31,6 @@ The User service manages user accounts, profiles, and preferences. Admins can cr
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

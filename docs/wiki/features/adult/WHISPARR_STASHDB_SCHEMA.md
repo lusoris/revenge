@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Whisparr v3 & StashDB Schema Integration](#whisparr-v3-stashdb-schema-integration)
 - [Whisparr v3 & StashDB Schema Integration](#whisparr-v3-stashdb-schema-integration)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Whisparr v3 & StashDB Schema Integration
 
@@ -32,9 +32,6 @@ Browse adult scenes with rich metadata from StashDB via Whisparr integration. Sc
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

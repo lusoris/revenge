@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [SyncPlay (Watch Together)](#syncplay-watch-together)
 - [SyncPlay (Watch Together)](#syncplay-watch-together)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # SyncPlay (Watch Together)
 
@@ -32,9 +32,6 @@ Watch movies and shows together with friends, even when apart. SyncPlay keeps ev
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

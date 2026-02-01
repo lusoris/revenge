@@ -1,5 +1,23 @@
 # TODO v0.0.0 - Foundation
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [GitHub Actions Pipelines](#github-actions-pipelines)
+  - [Docker Configuration](#docker-configuration)
+  - [Helm Chart](#helm-chart)
+  - [Security Configuration](#security-configuration)
+  - [Documentation](#documentation)
+  - [Repository Settings](#repository-settings)
+- [Verification Checklist](#verification-checklist)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > CI/CD Infrastructure

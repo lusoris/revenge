@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [API Reference](#api-reference)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # API Reference
 
@@ -30,9 +30,6 @@ The Revenge API lets you build custom clients and integrations. All endpoints us
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

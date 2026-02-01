@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [TVTropes](#tvtropes)
 - [TVTropes](#tvtropes)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # TVTropes
 
@@ -31,9 +31,6 @@ TVTropes integration links to trope analysis for your media. Discover recurring 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

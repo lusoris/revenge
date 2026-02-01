@@ -1,3 +1,8 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Questions & Gaps to Discuss](#questions-gaps-to-discuss)
@@ -19,10 +24,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
----
 
 # Questions & Gaps to Discuss
 

@@ -1,37 +1,3 @@
-## Table of Contents
-
-- [Audiobook Module](#audiobook-module)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Database Schema](#database-schema)
-    - [Module Structure](#module-structure)
-    - [Component Interaction](#component-interaction)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [API Endpoints](#api-endpoints)
-    - [Content Management](#content-management)
-      - [GET /api/v1/audiobooks](#get-apiv1audiobooks)
-      - [GET /api/v1/audiobooks/:id](#get-apiv1audiobooksid)
-      - [GET /api/v1/audiobooks/:id/chapters](#get-apiv1audiobooksidchapters)
-      - [GET /api/v1/audiobooks/:id/stream](#get-apiv1audiobooksidstream)
-      - [GET /api/v1/audiobooks/:id/progress](#get-apiv1audiobooksidprogress)
-      - [PUT /api/v1/audiobooks/:id/progress](#put-apiv1audiobooksidprogress)
-      - [POST /api/v1/audiobooks/:id/bookmarks](#post-apiv1audiobooksidbookmarks)
-      - [GET /api/v1/audiobooks/authors](#get-apiv1audiobooksauthors)
-      - [GET /api/v1/audiobooks/series](#get-apiv1audiobooksseries)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -74,6 +40,41 @@ design_refs:
   - title: 03_METADATA_SYSTEM
     path: ../../architecture/03_METADATA_SYSTEM.md
 ---
+
+## Table of Contents
+
+- [Audiobook Module](#audiobook-module)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Database Schema](#database-schema)
+    - [Module Structure](#module-structure)
+    - [Component Interaction](#component-interaction)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [Content Management](#content-management)
+      - [GET /api/v1/audiobooks](#get-apiv1audiobooks)
+      - [GET /api/v1/audiobooks/:id](#get-apiv1audiobooksid)
+      - [GET /api/v1/audiobooks/:id/chapters](#get-apiv1audiobooksidchapters)
+      - [GET /api/v1/audiobooks/:id/stream](#get-apiv1audiobooksidstream)
+      - [GET /api/v1/audiobooks/:id/progress](#get-apiv1audiobooksidprogress)
+      - [PUT /api/v1/audiobooks/:id/progress](#put-apiv1audiobooksidprogress)
+      - [POST /api/v1/audiobooks/:id/bookmarks](#post-apiv1audiobooksidbookmarks)
+      - [GET /api/v1/audiobooks/authors](#get-apiv1audiobooksauthors)
+      - [GET /api/v1/audiobooks/series](#get-apiv1audiobooksseries)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # Audiobook Module
 

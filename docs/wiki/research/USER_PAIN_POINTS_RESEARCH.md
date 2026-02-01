@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [User Pain Points Research - Existing Media Servers](#user-pain-points-research-existing-media-servers)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # User Pain Points Research - Existing Media Servers
 
@@ -28,9 +28,6 @@ This research documents common complaints about Jellyfin, Plex, and Emby from Re
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

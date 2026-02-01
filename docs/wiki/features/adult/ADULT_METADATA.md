@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - Adult Content Metadata System](#revenge-adult-content-metadata-system)
 - [Revenge - Adult Content Metadata System](#revenge-adult-content-metadata-system)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - Adult Content Metadata System
 
@@ -32,9 +32,6 @@ This document has been merged into ADULT_CONTENT_SYSTEM.md. See that document fo
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

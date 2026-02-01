@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: Go context
+    url: ../../../../sources/go/stdlib/context.md
+    note: Auto-resolved from go-context
+  - name: Last.fm API
+    url: ../../../../sources/apis/lastfm.md
+    note: Auto-resolved from lastfm-api
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [Last.fm](#lastfm)
@@ -21,24 +40,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Go context
-    url: ../../../../sources/go/stdlib/context.md
-    note: Auto-resolved from go-context
-  - name: Last.fm API
-    url: ../../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
----
 
 # Last.fm
 

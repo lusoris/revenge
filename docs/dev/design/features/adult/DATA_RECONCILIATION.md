@@ -1,3 +1,28 @@
+
+
+---
+sources:
+  - name: Casbin
+    url: ../../../sources/security/casbin.md
+    note: Auto-resolved from casbin
+  - name: River Job Queue
+    url: ../../../sources/tooling/river.md
+    note: Auto-resolved from river
+  - name: sqlc
+    url: ../../../sources/database/sqlc.md
+    note: Auto-resolved from sqlc
+  - name: sqlc Configuration
+    url: ../../../sources/database/sqlc-config.md
+    note: Auto-resolved from sqlc-config
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [Adult Data Reconciliation](#adult-data-reconciliation)
@@ -23,30 +48,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Casbin
-    url: ../../../sources/security/casbin.md
-    note: Auto-resolved from casbin
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
 
 # Adult Data Reconciliation
 

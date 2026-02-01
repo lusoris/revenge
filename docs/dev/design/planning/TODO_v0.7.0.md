@@ -1,5 +1,26 @@
 # TODO v0.7.0 - Media
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Audiobook Module](#audiobook-module)
+  - [Audnexus Integration](#audnexus-integration)
+  - [Book (eBook) Module](#book-ebook-module)
+  - [OpenLibrary Integration](#openlibrary-integration)
+  - [Goodreads Integration (Limited)](#goodreads-integration-limited)
+  - [Podcast Module](#podcast-module)
+  - [iTunes/Podcast Index Integration](#itunespodcast-index-integration)
+  - [Frontend Updates](#frontend-updates)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Additional Content Modules

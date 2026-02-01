@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [API Keys Service](#api-keys-service)
 - [API Keys Service](#api-keys-service)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # API Keys Service
 
@@ -31,9 +31,6 @@ API keys allow external applications to access Revenge programmatically. Create 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

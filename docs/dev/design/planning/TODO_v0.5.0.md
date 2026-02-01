@@ -1,5 +1,25 @@
 # TODO v0.5.0 - Audio
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Music Module (Backend)](#music-module-backend)
+  - [MusicBrainz Integration](#musicbrainz-integration)
+  - [Last.fm Integration](#lastfm-integration)
+  - [Lidarr Integration](#lidarr-integration)
+  - [Audio Player](#audio-player)
+  - [Search Integration](#search-integration)
+  - [Frontend Updates](#frontend-updates)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Music Module

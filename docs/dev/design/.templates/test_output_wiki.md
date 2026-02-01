@@ -1,3 +1,23 @@
+
+
+---
+sources:
+  - name: Uber fx
+    url: ../../sources/tooling/fx.md
+    note: Auto-resolved from fx
+  - name: pgx PostgreSQL Driver
+    url: ../../sources/database/pgx.md
+    note: Auto-resolved from pgx
+  - name: sqlc
+    url: ../../sources/database/sqlc.md
+    note: Auto-resolved from sqlc
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../architecture/02_DESIGN_PRINCIPLES.md
+---
+
 ## Table of Contents
 
 - [Example Feature](#example-feature)
@@ -19,25 +39,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
----
 
 # Example Feature
 

@@ -1,3 +1,17 @@
+
+
+---
+sources:
+  - name: Lucide Icons
+    url: https://lucide.dev/icons/
+    note: Base icons to customize
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: ../../technical/DESIGN_SYSTEM.md
+  - title: BRAND_IDENTITY
+    path: ../../technical/design/BRAND_IDENTITY.md
+---
+
 ## Table of Contents
 
 - [Pirate Mode Easter Eggs](#pirate-mode-easter-eggs)
@@ -19,19 +33,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Base icons to customize
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
-    path: ../../technical/design/BRAND_IDENTITY.md
----
 
 # Pirate Mode Easter Eggs
 

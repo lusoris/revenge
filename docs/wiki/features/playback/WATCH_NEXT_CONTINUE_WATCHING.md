@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Watch Next & Continue Watching System](#watch-next-continue-watching-system)
 - [Watch Next & Continue Watching System](#watch-next-continue-watching-system)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Watch Next & Continue Watching System
 
@@ -32,9 +32,6 @@ Never lose your place. Continue Watching shows partially-watched content with pr
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

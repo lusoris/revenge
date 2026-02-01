@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [TheNude](#thenude)
 - [TheNude](#thenude)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # TheNude
 
@@ -31,9 +31,6 @@ TheNude tracks performer aliases and stage names. Helps identify performers who 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

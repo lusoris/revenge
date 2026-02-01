@@ -1,28 +1,3 @@
-## Table of Contents
-
-- [Revenge - User Experience Features](#revenge-user-experience-features)
-  - [Status](#status)
-  - [Architecture](#architecture)
-    - [Database Schema](#database-schema)
-    - [Module Structure](#module-structure)
-    - [Component Interaction](#component-interaction)
-  - [Implementation](#implementation)
-    - [File Structure](#file-structure)
-    - [Key Interfaces](#key-interfaces)
-    - [Dependencies](#dependencies)
-  - [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Config Keys](#config-keys)
-  - [API Endpoints](#api-endpoints)
-    - [Content Management](#content-management)
-  - [Testing Strategy](#testing-strategy)
-    - [Unit Tests](#unit-tests)
-    - [Integration Tests](#integration-tests)
-    - [Test Coverage](#test-coverage)
-  - [Related Documentation](#related-documentation)
-    - [Design Documents](#design-documents)
-    - [External Sources](#external-sources)
-
 
 
 ---
@@ -59,6 +34,32 @@ design_refs:
   - title: 03_METADATA_SYSTEM
     path: ../../architecture/03_METADATA_SYSTEM.md
 ---
+
+## Table of Contents
+
+- [Revenge - User Experience Features](#revenge-user-experience-features)
+  - [Status](#status)
+  - [Architecture](#architecture)
+    - [Database Schema](#database-schema)
+    - [Module Structure](#module-structure)
+    - [Component Interaction](#component-interaction)
+  - [Implementation](#implementation)
+    - [File Structure](#file-structure)
+    - [Key Interfaces](#key-interfaces)
+    - [Dependencies](#dependencies)
+  - [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Config Keys](#config-keys)
+  - [API Endpoints](#api-endpoints)
+    - [Content Management](#content-management)
+  - [Testing Strategy](#testing-strategy)
+    - [Unit Tests](#unit-tests)
+    - [Integration Tests](#integration-tests)
+    - [Test Coverage](#test-coverage)
+  - [Related Documentation](#related-documentation)
+    - [Design Documents](#design-documents)
+    - [External Sources](#external-sources)
+
 
 # Revenge - User Experience Features
 

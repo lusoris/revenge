@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [FreeOnes](#freeones)
 - [FreeOnes](#freeones)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # FreeOnes
 
@@ -31,9 +31,6 @@ FreeOnes aggregates performer information and social media links. Comprehensive 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

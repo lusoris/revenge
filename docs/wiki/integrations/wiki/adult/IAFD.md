@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [IAFD](#iafd)
 - [IAFD](#iafd)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # IAFD
 
@@ -31,9 +31,6 @@ Internet Adult Film Database (IAFD) provides comprehensive industry data. Perfor
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

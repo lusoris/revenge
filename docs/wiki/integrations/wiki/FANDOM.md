@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [FANDOM](#fandom)
 - [FANDOM](#fandom)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # FANDOM
 
@@ -31,9 +31,6 @@ Connect your library to FANDOM fan wikis. Deep links to character pages, episode
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

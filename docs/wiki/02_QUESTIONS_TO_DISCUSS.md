@@ -1,17 +1,17 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Questions & Gaps to Discuss](#questions-gaps-to-discuss)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
-
-
----
----
 
 # Questions & Gaps to Discuss
 
@@ -27,9 +27,6 @@ This document tracks unresolved design questions and gaps that need team discuss
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

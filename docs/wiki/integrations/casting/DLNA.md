@@ -1,18 +1,18 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [DLNA/UPnP](#dlnaupnp)
 - [DLNA/UPnP](#dlnaupnp)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
-
-
----
----
 
 # DLNA/UPnP
 
@@ -30,9 +30,6 @@ Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles, and 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

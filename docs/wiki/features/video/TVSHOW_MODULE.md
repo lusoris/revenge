@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [TV Show Module](#tv-show-module)
 - [TV Show Module](#tv-show-module)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # TV Show Module
 
@@ -32,9 +32,6 @@ Manage TV shows organized by series, season, and episode. Automatic metadata fro
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

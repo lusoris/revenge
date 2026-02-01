@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Movie Module](#movie-module)
 - [Movie Module](#movie-module)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -10,10 +14,6 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
 
-
-
----
----
 
 # Movie Module
 
@@ -31,9 +31,6 @@ Manage your movie collection with automatic metadata from TMDB, TheTVDB, and oth
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

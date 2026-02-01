@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: Audnexus API
+    url: ../../../../sources/apis/audnexus.md
+    note: Auto-resolved from audnexus
+  - name: go-blurhash
+    url: ../../../../sources/media/go-blurhash.md
+    note: Auto-resolved from go-blurhash
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [Audible](#audible)
@@ -21,24 +40,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Audnexus API
-    url: ../../../../sources/apis/audnexus.md
-    note: Auto-resolved from audnexus
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
----
 
 # Audible
 

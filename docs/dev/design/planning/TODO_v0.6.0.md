@@ -1,5 +1,25 @@
 # TODO v0.6.0 - Playback
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Trickplay (Preview Thumbnails)](#trickplay-preview-thumbnails)
+  - [Skip Intro/Credits](#skip-introcredits)
+  - [Watch Next / Continue Watching](#watch-next-continue-watching)
+  - [SyncPlay (Group Playback)](#syncplay-group-playback)
+  - [Media Enhancements](#media-enhancements)
+  - [Chromecast Support](#chromecast-support)
+  - [DLNA Support](#dlna-support)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Playback Features

@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - External Scrobbling & Sync](#revenge-external-scrobbling-sync)
 - [Revenge - External Scrobbling & Sync](#revenge-external-scrobbling-sync)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - External Scrobbling & Sync
 
@@ -32,9 +32,6 @@ Scrobble your viewing and listening history to external services. Connect Trakt 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

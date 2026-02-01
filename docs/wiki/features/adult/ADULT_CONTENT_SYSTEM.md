@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Revenge - Adult Content System](#revenge-adult-content-system)
 - [Revenge - Adult Content System](#revenge-adult-content-system)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Revenge - Adult Content System
 
@@ -32,9 +32,6 @@ Manage adult content in a completely isolated library (codenamed QAR - Queen Ann
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

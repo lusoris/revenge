@@ -1,5 +1,30 @@
 # TODO v0.1.0 - Skeleton
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Go Module Structure](#go-module-structure)
+  - [fx Dependency Injection](#fx-dependency-injection)
+  - [Configuration System (koanf)](#configuration-system-koanf)
+  - [Database Infrastructure](#database-infrastructure)
+  - [OpenAPI Skeleton (ogen)](#openapi-skeleton-ogen)
+  - [Logging Infrastructure](#logging-infrastructure)
+  - [Error Handling Patterns](#error-handling-patterns)
+  - [Basic Health Endpoints](#basic-health-endpoints)
+  - [Main Entry Point](#main-entry-point)
+  - [Testing Infrastructure](#testing-infrastructure)
+  - [Makefile](#makefile)
+  - [Air Configuration](#air-configuration)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Project Structure

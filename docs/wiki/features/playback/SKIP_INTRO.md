@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Skip Intro / Credits Detection](#skip-intro-credits-detection)
 - [Skip Intro / Credits Detection](#skip-intro-credits-detection)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Skip Intro / Credits Detection
 
@@ -32,9 +32,6 @@ Skip repetitive intros and credits with one click. Revenge automatically detects
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Live TV & DVR](#live-tv-dvr)
 - [Live TV & DVR](#live-tv-dvr)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Live TV & DVR
 
@@ -32,9 +32,6 @@ Stream live TV channels through Revenge with support for multiple backends (TVHe
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

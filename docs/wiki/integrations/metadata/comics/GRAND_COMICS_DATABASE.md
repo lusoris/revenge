@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [Grand Comics Database (GCD)](#grand-comics-database-gcd)
 - [Grand Comics Database (GCD)](#grand-comics-database-gcd)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # Grand Comics Database (GCD)
 
@@ -31,9 +31,6 @@ Grand Comics Database (GCD) specializes in historical comics from the Golden and
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

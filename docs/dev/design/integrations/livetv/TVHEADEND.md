@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: gohlslib (HLS)
+    url: ../../../sources/media/gohlslib.md
+    note: Auto-resolved from gohlslib
+  - name: M3U8 Extended Format
+    url: ../../../sources/protocols/m3u8.md
+    note: Auto-resolved from m3u8
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [TVHeadend](#tvheadend)
@@ -21,24 +40,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: gohlslib (HLS)
-    url: ../../../sources/media/gohlslib.md
-    note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
-    url: ../../../sources/protocols/m3u8.md
-    note: Auto-resolved from m3u8
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
 
 # TVHeadend
 

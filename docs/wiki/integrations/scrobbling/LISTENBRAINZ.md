@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [ListenBrainz](#listenbrainz)
 - [ListenBrainz](#listenbrainz)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # ListenBrainz
 
@@ -31,9 +31,6 @@ ListenBrainz is an open-source alternative to Last.fm for tracking music listeni
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

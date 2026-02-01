@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: Uber fx
+    url: ../../../sources/tooling/fx.md
+    note: Auto-resolved from fx
+  - name: ogen OpenAPI Generator
+    url: ../../../sources/tooling/ogen.md
+    note: Auto-resolved from ogen
+design_refs:
+  - title: features/shared
+    path: INDEX.md
+  - title: 01_ARCHITECTURE
+    path: ../../architecture/01_ARCHITECTURE.md
+  - title: LIBRARY_TYPES
+    path: ../../features/shared/LIBRARY_TYPES.md
+---
+
 ## Table of Contents
 
 - [Collections & Playlists](#collections-playlists)
@@ -30,24 +49,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: ogen OpenAPI Generator
-    url: ../../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-design_refs:
-  - title: features/shared
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: LIBRARY_TYPES
-    path: ../../features/shared/LIBRARY_TYPES.md
----
 
 # Collections & Playlists
 

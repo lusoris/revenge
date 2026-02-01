@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: Go sync
+    url: ../../../sources/go/stdlib/sync.md
+    note: Auto-resolved from go-sync
+  - name: Jellyfin SyncPlay
+    url: ../../../sources/apis/jellyfin-syncplay.md
+    note: Auto-resolved from jellyfin-syncplay
+design_refs:
+  - title: 01_ARCHITECTURE
+    path: ../../architecture/01_ARCHITECTURE.md
+  - title: 02_DESIGN_PRINCIPLES
+    path: ../../architecture/02_DESIGN_PRINCIPLES.md
+  - title: 03_METADATA_SYSTEM
+    path: ../../architecture/03_METADATA_SYSTEM.md
+---
+
 ## Table of Contents
 
 - [SyncPlay (Watch Together)](#syncplay-watch-together)
@@ -23,24 +42,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: Go sync
-    url: ../../../sources/go/stdlib/sync.md
-    note: Auto-resolved from go-sync
-  - name: Jellyfin SyncPlay
-    url: ../../../sources/apis/jellyfin-syncplay.md
-    note: Auto-resolved from jellyfin-syncplay
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
 
 # SyncPlay (Watch Together)
 

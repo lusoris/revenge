@@ -1,5 +1,45 @@
 # Design Documentation Templates
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Files](#files)
+- [Template Philosophy](#template-philosophy)
+- [Variable Sources](#variable-sources)
+- [Usage](#usage)
+  - [1. Create Variable Data File](#1-create-variable-data-file)
+  - [2. Generate Documentation](#2-generate-documentation)
+  - [3. Validate Against SOURCE_OF_TRUTH](#3-validate-against-source-of-truth)
+- [Template Sections](#template-sections)
+  - [Claude-Only Sections](#claude-only-sections)
+  - [Wiki-Only Sections](#wiki-only-sections)
+  - [Shared Sections](#shared-sections)
+- [Example: Music Module](#example-music-module)
+  - [Claude Doc Preview](#claude-doc-preview)
+  - [Wiki Doc Preview](#wiki-doc-preview)
+- [Best Practices](#best-practices)
+  - [1. Always Reference SOURCE_OF_TRUTH](#1-always-reference-source-of-truth)
+  - [2. Keep Claude Docs Technical](#2-keep-claude-docs-technical)
+  - [3. Keep Wiki Docs User-Friendly](#3-keep-wiki-docs-user-friendly)
+  - [4. Use Diagrams](#4-use-diagrams)
+  - [5. Validate Everything](#5-validate-everything)
+- [Automation](#automation)
+  - [Doc Pipeline Integration](#doc-pipeline-integration)
+  - [CI/CD Hooks](#cicd-hooks)
+- [Template Maintenance](#template-maintenance)
+  - [Updating the Template](#updating-the-template)
+  - [Adding New Variables](#adding-new-variables)
+  - [Version Control](#version-control)
+- [Troubleshooting](#troubleshooting)
+  - [Template Rendering Error](#template-rendering-error)
+  - [SOT Validation Fails](#sot-validation-fails)
+  - [Links Break After Generation](#links-break-after-generation)
+- [Future Enhancements](#future-enhancements)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
 **Purpose**: Jinja2 templates for generating both Claude-optimized and Wiki documentation from a single source.

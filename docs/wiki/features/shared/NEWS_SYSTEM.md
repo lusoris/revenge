@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [News System](#news-system)
 - [News System](#news-system)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
   - [Features](#features)
@@ -11,10 +15,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # News System
 
@@ -32,9 +32,6 @@ Stay informed with server announcements and entertainment news. Admins can post 
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

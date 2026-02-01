@@ -1,7 +1,11 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [{{ FEATURE_NAME }}](#feature_name)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -9,10 +13,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # {{ FEATURE_NAME }}
 
@@ -28,9 +28,6 @@ PLACEHOLDER: User-friendly overview
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

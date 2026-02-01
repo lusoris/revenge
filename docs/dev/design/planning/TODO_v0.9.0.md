@@ -1,5 +1,29 @@
 # TODO v0.9.0 - RC1 (Release Candidate)
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [QAR Module (Adult Content)](#qar-module-adult-content)
+  - [StashDB Integration](#stashdb-integration)
+  - [Whisparr Integration](#whisparr-integration)
+  - [Live TV/DVR](#live-tvdvr)
+  - [Photos Module](#photos-module)
+  - [Comics Module](#comics-module)
+  - [Performance Optimization](#performance-optimization)
+  - [Bug Fixes](#bug-fixes)
+  - [Documentation](#documentation)
+  - [Security Audit](#security-audit)
+  - [Helm Chart Polish](#helm-chart-polish)
+  - [Docker Configuration Polish](#docker-configuration-polish)
+- [Verification Checklist](#verification-checklist)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > QAR Module, Live TV, Polish

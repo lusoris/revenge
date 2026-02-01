@@ -1,5 +1,31 @@
 # TODO v0.2.0 - Core
 
+
+<!-- TOC-START -->
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Deliverables](#deliverables)
+  - [Auth Service](#auth-service)
+  - [User Service](#user-service)
+  - [Session Service](#session-service)
+  - [RBAC Service (Casbin)](#rbac-service-casbin)
+  - [API Keys Service](#api-keys-service)
+  - [OIDC Service](#oidc-service)
+  - [Settings Service](#settings-service)
+  - [Activity Service](#activity-service)
+  - [Library Service](#library-service)
+  - [Health Service (Enhancement)](#health-service-enhancement)
+  - [PostgreSQL Integration](#postgresql-integration)
+  - [Dragonfly/Redis Integration](#dragonflyredis-integration)
+  - [River Job Queue Setup](#river-job-queue-setup)
+- [Verification Checklist](#verification-checklist)
+- [Dependencies from SOURCE_OF_TRUTH](#dependencies-from-source-of-truth)
+- [Related Documentation](#related-documentation)
+
+<!-- TOC-END -->
+
 <!-- DESIGN: planning, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 > Backend Services

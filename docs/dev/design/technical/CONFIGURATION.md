@@ -1,3 +1,22 @@
+
+
+---
+sources:
+  - name: koanf
+    url: ../../sources/tooling/koanf.md
+    note: Configuration management
+  - name: go-playground/validator
+    url: ../../sources/tooling/validator.md
+    note: Config validation
+design_refs:
+  - title: technical
+    path: INDEX.md
+  - title: TECH_STACK
+    path: ../technical/TECH_STACK.md
+  - title: 00_SOURCE_OF_TRUTH
+    path: ../00_SOURCE_OF_TRUTH.md
+---
+
 ## Table of Contents
 
 - [Configuration Reference](#configuration-reference)
@@ -19,24 +38,6 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
----
-sources:
-  - name: koanf
-    url: ../../sources/tooling/koanf.md
-    note: Configuration management
-  - name: go-playground/validator
-    url: ../../sources/tooling/validator.md
-    note: Config validation
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: TECH_STACK
-    path: ../technical/TECH_STACK.md
-  - title: 00_SOURCE_OF_TRUTH
-    path: ../00_SOURCE_OF_TRUTH.md
----
 
 # Configuration Reference
 

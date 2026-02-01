@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [TMDb (The Movie Database)](#tmdb-the-movie-database)
 - [TMDb (The Movie Database)](#tmdb-the-movie-database)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # TMDb (The Movie Database)
 
@@ -31,9 +31,6 @@ The Movie Database (TMDB) provides rich metadata for movies and TV shows. Poster
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 

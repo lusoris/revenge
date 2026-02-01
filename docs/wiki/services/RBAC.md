@@ -1,8 +1,12 @@
+
+
+---
+---
+
 ## Table of Contents
 
 - [RBAC Service](#rbac-service)
 - [RBAC Service](#rbac-service)
-  - [Contents](#contents)
   - [How It Works](#how-it-works)
   - [Features](#features)
   - [Configuration](#configuration)
@@ -10,10 +14,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
----
----
 
 # RBAC Service
 
@@ -31,9 +31,6 @@ The RBAC service controls who can do what in Revenge. Built on Casbin, it suppor
 
 
 
-## Contents
-
-<!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
