@@ -211,14 +211,8 @@ class DeployGenerator:
                 {"name": "Revenge Team", "url": "https://github.com/lusoris/revenge"}
             ],
             "keywords": ["media-server", "self-hosted", "go", "svelte"],
-            "dependencies": [
-                {
-                    "name": "postgresql",
-                    "version": "~16.0",
-                    "repository": "oci://registry-1.docker.io/bitnamicharts",
-                    "condition": "postgresql.enabled",
-                },
-            ],
+            # Note: Dependencies like postgresql can be added by users via:
+            # helm dependency add bitnami/postgresql --repository oci://registry-1.docker.io/bitnamicharts
         }
 
         self._write_yaml(self.charts_dir / "Chart.yaml", chart)

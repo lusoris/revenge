@@ -20,8 +20,3 @@ keywords:
 - self-hosted
 - go
 - svelte
-dependencies:
-- name: postgresql
-  version: ~16.0
-  repository: oci://registry-1.docker.io/bitnamicharts
-  condition: postgresql.enabled
