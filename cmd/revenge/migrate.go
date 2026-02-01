@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/lusoris/revenge/internal/config"
 	"github.com/lusoris/revenge/internal/infra/database"
@@ -32,11 +30,8 @@ func runMigrate() {
 		Development: cfg.Logging.Development,
 	})
 
-	// Create database pool
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	pool, err := database.NewPool(ctx, cfg, logger)
+	// Create database pool (NewPool creates its own context internally)
+	pool, err := database.NewPool(cfg, logger)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to connect to database: %v\n", err)
 		os.Exit(1)

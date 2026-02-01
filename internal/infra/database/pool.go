@@ -48,7 +48,7 @@ func PoolConfig(cfg *config.Config) (*pgxpool.Config, error) {
 }
 
 // NewPool creates a new PostgreSQL connection pool.
-func NewPool(ctx context.Context, cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
+func NewPool(cfg *config.Config, logger *slog.Logger) (*pgxpool.Pool, error) {
 	poolConfig, err := PoolConfig(cfg)
 	if err != nil {
 		return nil, err
@@ -61,15 +61,16 @@ func NewPool(ctx context.Context, cfg *config.Config, logger *slog.Logger) (*pgx
 		slog.Int("min_conns", int(poolConfig.MinConns)),
 	)
 
+	// Create context with timeout for pool creation
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
 	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create connection pool")
 	}
 
 	// Verify connection
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	if err := pool.Ping(ctx); err != nil {
 		pool.Close()
 		return nil, errors.Wrap(err, "failed to ping database")

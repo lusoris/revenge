@@ -98,9 +98,8 @@ func NewTestDatabase(t *testing.T) *TestDatabase {
 		},
 	}
 
-	// Create database pool
-	ctx := context.Background()
-	pool, err := database.NewPool(ctx, cfg, logger)
+	// Create database pool (NewPool creates its own context internally)
+	pool, err := database.NewPool(cfg, logger)
 	if err != nil {
 		postgres.Stop()
 		t.Fatalf("failed to create database pool: %v", err)

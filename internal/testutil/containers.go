@@ -115,8 +115,8 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 		Development: cfg.Logging.Development,
 	})
 
-	// Create database pool
-	pool, err := database.NewPool(ctx, cfg, logger)
+	// Create database pool (NewPool creates its own context internally)
+	pool, err := database.NewPool(cfg, logger)
 	if err != nil {
 		container.Terminate(ctx)
 		t.Fatalf("failed to create database pool: %v", err)
