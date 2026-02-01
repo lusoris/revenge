@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true
+          cache: false  # Disabled until go.sum exists
 
       # NOTE: golangci-lint skipped until it supports Go 1.25+
       # - name: Run golangci-lint
@@ -56,7 +56,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-          cache: true
+          cache: false  # Disabled until go.sum exists
 
       - name: Download dependencies
         run: go mod download
@@ -86,7 +86,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true
+          cache: false  # Disabled until go.sum exists
 
       - name: Build binary
         env:

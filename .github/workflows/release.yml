@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ needs.versions.outputs.go-version }}
-          cache: true
+          cache: false  # Disabled until go.sum exists
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
