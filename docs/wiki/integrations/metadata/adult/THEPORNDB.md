@@ -14,16 +14,16 @@
 ---
 sources:
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: ThePornDB API
-    url: ../sources/apis/theporndb.md
+    url: ../../../../sources/apis/theporndb.md
     note: Auto-resolved from theporndb
   - name: Typesense API
-    url: ../sources/infrastructure/typesense.md
+    url: ../../../../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
+    url: ../../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: integrations/metadata/adult

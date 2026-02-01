@@ -15,37 +15,37 @@
 ---
 sources:
   - name: Casbin
-    url: ../sources/security/casbin.md
+    url: ../../../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: Casbin Documentation
-    url: ../sources/security/casbin-guide.md
+    url: ../../../sources/security/casbin-guide.md
     note: Auto-resolved from casbin-docs
   - name: Casbin pgx Adapter
-    url: ../sources/security/casbin-pgx.md
+    url: ../../../sources/security/casbin-pgx.md
     note: Auto-resolved from casbin-pgx-adapter
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/shared

@@ -28,10 +28,10 @@
 ---
 sources:
   - name: Go sync
-    url: ../sources/go/stdlib/sync.md
+    url: ../../../sources/go/stdlib/sync.md
     note: Auto-resolved from go-sync
   - name: Jellyfin SyncPlay
-    url: ../sources/apis/jellyfin-syncplay.md
+    url: ../../../sources/apis/jellyfin-syncplay.md
     note: Auto-resolved from jellyfin-syncplay
 design_refs:
   - title: features/playback
@@ -160,11 +160,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go sync](../sources/go/stdlib/sync.md) - Auto-resolved from go-sync
-- [Jellyfin SyncPlay](../sources/apis/jellyfin-syncplay.md) - Auto-resolved from jellyfin-syncplay
+- [Go sync](../../../sources/go/stdlib/sync.md) - Auto-resolved from go-sync
+- [Jellyfin SyncPlay](../../../sources/apis/jellyfin-syncplay.md) - Auto-resolved from jellyfin-syncplay
 

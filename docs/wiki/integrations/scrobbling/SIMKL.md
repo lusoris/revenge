@@ -14,13 +14,13 @@
 ---
 sources:
   - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Simkl API
-    url: ../sources/apis/simkl.md
+    url: ../../../sources/apis/simkl.md
     note: Auto-resolved from simkl
 design_refs:
   - title: integrations/scrobbling

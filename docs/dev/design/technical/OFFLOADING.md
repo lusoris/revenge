@@ -24,34 +24,34 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: koanf
-    url: ../sources/tooling/koanf.md
+    url: ../../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: Prometheus Go Client
-    url: ../sources/observability/prometheus.md
+    url: ../../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
   - name: Prometheus Metric Types
-    url: ../sources/observability/prometheus-metrics.md
+    url: ../../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: Typesense API
-    url: ../sources/infrastructure/typesense.md
+    url: ../../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
+    url: ../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: technical
@@ -165,19 +165,19 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 - [METADATA_ENRICHMENT](patterns/METADATA_ENRICHMENT.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [koanf](../sources/tooling/koanf.md) - Auto-resolved from koanf
-- [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [koanf](../../sources/tooling/koanf.md) - Auto-resolved from koanf
+- [Prometheus Go Client](../../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

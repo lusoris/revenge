@@ -13,43 +13,43 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: koanf
-    url: ../sources/tooling/koanf.md
+    url: ../../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: otter Cache
-    url: ../sources/tooling/otter.md
+    url: ../../sources/tooling/otter.md
     note: Auto-resolved from otter
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: sturdyc
-    url: ../sources/tooling/sturdyc.md
+    url: ../../sources/tooling/sturdyc.md
     note: Auto-resolved from sturdyc
   - name: sturdyc GitHub README
-    url: ../sources/tooling/sturdyc-guide.md
+    url: ../../sources/tooling/sturdyc-guide.md
     note: Auto-resolved from sturdyc-docs
 design_refs:
   - title: operations

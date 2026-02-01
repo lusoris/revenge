@@ -41,19 +41,19 @@
 ---
 sources:
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/podcasts
@@ -253,14 +253,14 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/podcasts](features/podcasts.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

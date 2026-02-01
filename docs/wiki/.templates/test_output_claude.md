@@ -13,13 +13,13 @@
 ---
 sources:
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 design_refs:
   - title: 01_ARCHITECTURE

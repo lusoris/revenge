@@ -13,13 +13,13 @@
 ---
 sources:
   - name: shadcn-svelte
-    url: ../sources/frontend/shadcn-svelte.md
+    url: ../../sources/frontend/shadcn-svelte.md
     note: Component library
   - name: Bits UI
-    url: ../sources/frontend/bits-ui.md
+    url: ../../sources/frontend/bits-ui.md
     note: Headless UI primitives
   - name: Tailwind CSS 4
-    url: ../sources/frontend/tailwindcss.md
+    url: ../../sources/frontend/tailwindcss.md
     note: Utility-first CSS
   - name: Lucide Icons
     url: https://lucide.dev/icons/

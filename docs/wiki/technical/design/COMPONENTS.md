@@ -13,10 +13,10 @@
 ---
 sources:
   - name: shadcn-svelte
-    url: ../sources/frontend/shadcn-svelte.md
+    url: ../../../sources/frontend/shadcn-svelte.md
     note: Component library
   - name: Bits UI
-    url: ../sources/frontend/bits-ui.md
+    url: ../../../sources/frontend/bits-ui.md
     note: Headless UI primitives
   - name: Vidstack Player
     url: https://www.vidstack.io/docs/player

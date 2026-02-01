@@ -24,49 +24,49 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: FFmpeg Documentation
-    url: ../sources/media/ffmpeg.md
+    url: ../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: ../sources/media/ffmpeg-codecs.md
+    url: ../../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: ../sources/media/ffmpeg-formats.md
+    url: ../../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
-    url: ../sources/media/go-astiav.md
+    url: ../../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: ../sources/media/go-astiav-guide.md
+    url: ../../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: Typesense API
-    url: ../sources/infrastructure/typesense.md
+    url: ../../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
+    url: ../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: operations
@@ -180,24 +180,24 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [TECH_STACK](../technical/TECH_STACK.md)
-- [REVERSE_PROXY](REVERSE_PROXY.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [REVERSE_PROXY](operations/REVERSE_PROXY.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [Go io](../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

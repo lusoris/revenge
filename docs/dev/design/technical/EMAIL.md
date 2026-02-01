@@ -29,13 +29,13 @@
 ---
 sources:
   - name: go-mail GitHub README
-    url: ../sources/tooling/go-mail-guide.md
+    url: ../../sources/tooling/go-mail-guide.md
     note: Auto-resolved from go-mail-docs
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
   - title: technical
@@ -202,12 +202,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 - [NOTIFICATIONS](technical/NOTIFICATIONS.md)
 
 ### External Sources
-- [go-mail GitHub README](../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail-docs
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [go-mail GitHub README](../../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail-docs
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
 

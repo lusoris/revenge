@@ -14,10 +14,10 @@
 ---
 sources:
   - name: Google Books API
-    url: ../sources/apis/google-books.md
+    url: ../../../../sources/apis/google-books.md
     note: Auto-resolved from google-books
   - name: Open Library API
-    url: ../sources/apis/openlibrary.md
+    url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
   - title: integrations/metadata/books

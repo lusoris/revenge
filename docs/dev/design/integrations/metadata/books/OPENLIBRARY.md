@@ -26,10 +26,10 @@
 ---
 sources:
   - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Open Library API
-    url: ../sources/apis/openlibrary.md
+    url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
   - title: integrations/metadata/books
@@ -153,11 +153,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/books](integrations/metadata/books.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Open Library API](../../../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
 

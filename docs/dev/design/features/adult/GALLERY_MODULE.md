@@ -28,37 +28,37 @@
 ---
 sources:
   - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: google/uuid
-    url: ../sources/tooling/uuid.md
+    url: ../../../sources/tooling/uuid.md
     note: Auto-resolved from google-uuid
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Servarr Wiki
-    url: ../sources/apis/servarr-wiki.md
+    url: ../../../sources/apis/servarr-wiki.md
     note: Auto-resolved from servarr-wiki
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: Typesense API
-    url: ../sources/infrastructure/typesense.md
+    url: ../../../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
   - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
+    url: ../../../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
   - title: features/adult
@@ -187,20 +187,20 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/adult](features/adult.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [google/uuid](../sources/tooling/uuid.md) - Auto-resolved from google-uuid
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [go-blurhash](../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [google/uuid](../../../sources/tooling/uuid.md) - Auto-resolved from google-uuid
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [Servarr Wiki](../../../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
+- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Typesense API](../../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
 

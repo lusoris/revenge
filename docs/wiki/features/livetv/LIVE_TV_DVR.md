@@ -15,46 +15,46 @@
 ---
 sources:
   - name: FFmpeg Documentation
-    url: ../sources/media/ffmpeg.md
+    url: ../../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: ../sources/media/ffmpeg-codecs.md
+    url: ../../../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: ../sources/media/ffmpeg-formats.md
+    url: ../../../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: go-astiav (FFmpeg bindings)
-    url: ../sources/media/go-astiav.md
+    url: ../../../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: ../sources/media/go-astiav-guide.md
+    url: ../../../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: XMLTV Format
-    url: ../sources/protocols/xmltv.md
+    url: ../../../sources/protocols/xmltv.md
     note: Auto-resolved from xmltv
   - name: XMLTV Wiki
-    url: ../sources/protocols/xmltv-format.md
+    url: ../../../sources/protocols/xmltv-format.md
     note: Auto-resolved from xmltv-wiki
 design_refs:
   - title: features/livetv

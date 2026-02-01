@@ -26,13 +26,13 @@
 ---
 sources:
   - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: Letterboxd API
-    url: ../sources/apis/letterboxd.md
+    url: ../../../sources/apis/letterboxd.md
     note: Auto-resolved from letterboxd
 design_refs:
   - title: integrations/scrobbling
@@ -156,12 +156,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/scrobbling](integrations/scrobbling.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [Letterboxd API](../sources/apis/letterboxd.md) - Auto-resolved from letterboxd
+- [Go io](../../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [Last.fm API](../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Letterboxd API](../../../sources/apis/letterboxd.md) - Auto-resolved from letterboxd
 

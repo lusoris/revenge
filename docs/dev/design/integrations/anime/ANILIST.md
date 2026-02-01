@@ -26,16 +26,16 @@
 ---
 sources:
   - name: AniList GraphQL API
-    url: ../sources/apis/anilist.md
+    url: ../../../sources/apis/anilist.md
     note: Auto-resolved from anilist
   - name: AniList GraphQL Schema
-    url: ../sources/apis/anilist-schema.graphql
+    url: ../../../sources/apis/anilist-schema.graphql
     note: Auto-resolved from anilist-graphql
   - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/anime
@@ -159,13 +159,13 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/anime](integrations/anime.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](../sources/apis/anilist.md) - Auto-resolved from anilist
-- [AniList GraphQL Schema](../sources/apis/anilist-schema.graphql) - Auto-resolved from anilist-graphql
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [AniList GraphQL API](../../../sources/apis/anilist.md) - Auto-resolved from anilist
+- [AniList GraphQL Schema](../../../sources/apis/anilist-schema.graphql) - Auto-resolved from anilist-graphql
+- [go-blurhash](../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
 

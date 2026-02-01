@@ -14,13 +14,13 @@
 ---
 sources:
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: services

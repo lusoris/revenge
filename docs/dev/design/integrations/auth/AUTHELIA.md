@@ -26,13 +26,13 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: ../sources/security/authelia.md
+    url: ../../../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: ../sources/security/authentik.md
+    url: ../../../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
+    url: ../../../sources/security/keycloak.md
     note: Auto-resolved from keycloak
 design_refs:
   - title: integrations/auth
@@ -157,12 +157,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/auth](integrations/auth.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
-- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
-- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [Authelia Documentation](../../../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../../../sources/security/authentik.md) - Auto-resolved from authentik
+- [Keycloak Documentation](../../../sources/security/keycloak.md) - Auto-resolved from keycloak
 

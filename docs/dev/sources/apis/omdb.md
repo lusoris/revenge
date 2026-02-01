@@ -1,37 +1,40 @@
 # OMDb API
 
 > Source: https://www.omdbapi.com/
-> Fetched: 2026-02-01T11:43:47.458643+00:00
-> Content-Hash: 26f42876565a2122
+> Fetched: 2026-02-01T13:59:42.797009+00:00
+> Content-Hash: 350900b5499f7387
 > Type: html
 
 ---
 
 OMDb API
 
-- Usage
-- Parameters
-- Examples
-- Change Log
-- [API Key](apikey.aspx)
+  * Usage
+  * Parameters
+  * Examples
+  * Change Log
+  * [API Key](apikey.aspx)
 
-- [Become a Patron](https://www.patreon.com/join/omdb)
-- [Donate](donate.htm)
-- [Contact](/cdn-cgi/l/email-protection#abc9cdd9c2dfd1ebcdcacfc2c5ccd8c2ccc5cac785c8c4c6)
+
+  * [Become a Patron](https://www.patreon.com/join/omdb)
+  * [Donate](donate.htm)
+  * [Contact](/cdn-cgi/l/email-protection#1a787c68736e605a7c7b7e73747d69737d747b7634797577)
+
+
 
 # OMDb API
 
 The Open Movie Database
 
-The OMDb API is a RESTful web service to obtain movie information, all content and images on the site are contributed and maintained by our users.
+The OMDb API is a RESTful web service to obtain movie information, all content and images on the site are contributed and maintained by our users.   
   
 If you find this service useful, please consider making a [one-time donation](donate.htm) or [become a patron](https://www.patreon.com/join/omdb).
 
 #### Poster API
 
-The Poster API is only available to patrons.
+The Poster API is only available to patrons.   
   
-Currently over 280,000 posters, updated daily with resolutions up to 2000x3000.
+Currently over 280,000 posters, updated daily with resolutions up to 2000x3000. 
 
 ×
 
@@ -46,11 +49,16 @@ Currently over 280,000 posters, updated daily with resolutions up to 2000x3000.
 # Usage
 
 Send all data requests to:
-
+    
+    
     http://www.omdbapi.com/?apikey=[yourkey]&
 
-Poster API requests:
+  
 
+
+Poster API requests:
+    
+    
     http://img.omdbapi.com/?apikey=[yourkey]&
 
 # Parameters
@@ -89,54 +97,66 @@ By Title
 
 Title: Year: Plot: Short Full Response: JSON XML Search Reset
 
-Request:
+  
 
+
+Request:
+    
+    
     [](javascript:;)
 
 Response:
+
 
 By ID
 
 ID: Plot: Short Full Response: JSON XML Search Reset
 
-Request:
+  
 
+
+Request:
+    
+    
     [](javascript:;)
 
 Response:
 
+
 # Change Log
 
-- 04/08/19
-  - Added support for eight digit IMDb IDs.
-- 01/20/19
-  - Supressed adult content from search results.
-- 01/20/19
-  - Added Swagger files ([YAML](http://www.omdbapi.com/swagger.yaml), [JSON](http://www.omdbapi.com/swagger.json)) to expose current API abilities and upcoming REST functions.
-- 11/02/17
-  - **FREE KEYS!** The "open" API is finally open again!
-- 08/20/17
-  - I created a [GitHub repository](https://github.com/omdbapi/OMDb-API/issues) for tracking bugs.
-- 05/10/17
-  - Due to some security concerns on how the keys were being distributed I updated the form to email them and also changed the algorithm used, which means your older keys not obtained through email will eventually stop working.
-- 01/12/17
-  - Removed single character restriction from title/search results.
-- 06/11/16
-  - "totalSeasons" count has been added to series results.
-- 1/20/16
-  - To accommodate search paging "totalResults" is now returned at the root level.
-- 12/12/15
-  - Search pagination added: [http://www.omdbapi.com/?s=Batman&**page=2**](http://www.omdbapi.com/?s=Batman&page=2)
-- 11/16/15
-  - Season+Episode now works with "i" parameter: [http://www.omdbapi.com/?**i=tt0944947** &Season=1](http://www.omdbapi.com/?i=tt0944947&Season=1)
-  - Fixed the max pool size connection issues.
-- 10/18/15
-  - You can now return all episodes by using just the "Season" parameter: [http://www.omdbapi.com/?t=Game of Thrones&**Season=1**](http://www.omdbapi.com/?t=Game of Thrones&Season=1)
-- 9/9/15
-  - New server is up, response times should be < 500ms.
-  - Setup a CDN/Caching service with [CloudFlare](http://www.cloudflare.com)
-- 8/15/15
-  - Created and Fixed a bad parsing error with JSON response. -Sorry about that!
-  - HTTPS (with TLS) is now active: [https://www.omdbapi.com/](https://www.omdbapi.com)
-- 5/10/15
-  - Season+Episode search parameters added: [http://www.omdbapi.com/?t=Game of Thrones&**Season=1** &**Episode=1**](http://www.omdbapi.com/?t=Game of Thrones&Season=1&Episode=1)
+  * 04/08/19 
+    * Added support for eight digit IMDb IDs.
+  * 01/20/19 
+    * Supressed adult content from search results.
+  * 01/20/19 
+    * Added Swagger files ([YAML](http://www.omdbapi.com/swagger.yaml), [JSON](http://www.omdbapi.com/swagger.json)) to expose current API abilities and upcoming REST functions.
+  * 11/02/17 
+    * **FREE KEYS!** The "open" API is finally open again!
+  * 08/20/17 
+    * I created a [GitHub repository](https://github.com/omdbapi/OMDb-API/issues) for tracking bugs.
+  * 05/10/17 
+    * Due to some security concerns on how the keys were being distributed I updated the form to email them and also changed the algorithm used, which means your older keys not obtained through email will eventually stop working.
+  * 01/12/17 
+    * Removed single character restriction from title/search results.
+  * 06/11/16 
+    * "totalSeasons" count has been added to series results.
+  * 1/20/16 
+    * To accommodate search paging "totalResults" is now returned at the root level.
+  * 12/12/15 
+    * Search pagination added: [http://www.omdbapi.com/?s=Batman&**page=2**](http://www.omdbapi.com/?s=Batman&page=2)
+  * 11/16/15 
+    * Season+Episode now works with "i" parameter: [http://www.omdbapi.com/?**i=tt0944947** &Season=1](http://www.omdbapi.com/?i=tt0944947&Season=1)
+    * Fixed the max pool size connection issues.
+  * 10/18/15 
+    * You can now return all episodes by using just the "Season" parameter: [http://www.omdbapi.com/?t=Game of Thrones&**Season=1**](http://www.omdbapi.com/?t=Game of Thrones&Season=1)
+  * 9/9/15 
+    * New server is up, response times should be < 500ms.
+    * Setup a CDN/Caching service with [CloudFlare](http://www.cloudflare.com)
+  * 8/15/15 
+    * Created and Fixed a bad parsing error with JSON response. -Sorry about that!
+    * HTTPS (with TLS) is now active: [https://www.omdbapi.com/](https://www.omdbapi.com)
+  * 5/10/15 
+    * Season+Episode search parameters added: [http://www.omdbapi.com/?t=Game of Thrones&**Season=1** &**Episode=1**](http://www.omdbapi.com/?t=Game of Thrones&Season=1&Episode=1)
+
+

@@ -14,13 +14,13 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: MediaWiki API
-    url: ../sources/wiki/mediawiki.md
+    url: ../../../sources/wiki/mediawiki.md
     note: Auto-resolved from mediawiki-api
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/wiki

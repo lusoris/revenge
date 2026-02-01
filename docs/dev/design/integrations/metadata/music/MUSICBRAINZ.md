@@ -26,13 +26,13 @@
 ---
 sources:
   - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
   - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: MusicBrainz API
-    url: ../sources/apis/musicbrainz.md
+    url: ../../../../sources/apis/musicbrainz.md
     note: Auto-resolved from musicbrainz
 design_refs:
   - title: integrations/metadata/music
@@ -156,12 +156,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/music](integrations/metadata/music.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [MusicBrainz API](../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz
+- [go-blurhash](../../../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [MusicBrainz API](../../../../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz
 

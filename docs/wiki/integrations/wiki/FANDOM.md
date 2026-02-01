@@ -14,7 +14,7 @@
 ---
 sources:
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/wiki

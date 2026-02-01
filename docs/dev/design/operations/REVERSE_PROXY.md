@@ -24,37 +24,37 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: Prometheus Go Client
-    url: ../sources/observability/prometheus.md
+    url: ../../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
   - name: Prometheus Metric Types
-    url: ../sources/observability/prometheus-metrics.md
+    url: ../../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
   - title: operations
@@ -167,20 +167,20 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [Prometheus Go Client](../../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
 

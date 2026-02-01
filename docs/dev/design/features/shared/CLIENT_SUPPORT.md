@@ -28,37 +28,37 @@
 ---
 sources:
   - name: Casbin
-    url: ../sources/security/casbin.md
+    url: ../../../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Svelte 5 Runes
-    url: ../sources/frontend/svelte-runes.md
+    url: ../../../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: ../sources/frontend/svelte5.md
+    url: ../../../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
   - name: SvelteKit Documentation
-    url: ../sources/frontend/sveltekit.md
+    url: ../../../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
   - title: features/shared
@@ -187,20 +187,20 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](../sources/security/casbin.md) - Auto-resolved from casbin
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
-- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+- [Casbin](../../../sources/security/casbin.md) - Auto-resolved from casbin
+- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
+- [gohlslib (HLS)](../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
 

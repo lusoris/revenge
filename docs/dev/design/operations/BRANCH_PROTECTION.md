@@ -24,10 +24,10 @@
 ---
 sources:
   - name: Conventional Commits
-    url: ../sources/standards/conventional-commits.md
+    url: ../../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
   - name: Git Flow
-    url: ../sources/standards/gitflow.md
+    url: ../../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
 design_refs:
   - title: operations
@@ -141,11 +141,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Conventional Commits](../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
-- [Git Flow](../sources/standards/gitflow.md) - Auto-resolved from gitflow
+- [Conventional Commits](../../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
+- [Git Flow](../../sources/standards/gitflow.md) - Auto-resolved from gitflow
 

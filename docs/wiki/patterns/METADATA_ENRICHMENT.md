@@ -13,16 +13,16 @@
 ---
 sources:
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Background job processing
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Distributed cache (L2)
   - name: Otter
     url: https://pkg.go.dev/github.com/maypok86/otter
     note: In-memory cache (L1)
   - name: Sturdyc
-    url: ../sources/tooling/sturdyc-guide.md
+    url: ../../sources/tooling/sturdyc-guide.md
     note: Request coalescing cache
 design_refs:
   - title: patterns

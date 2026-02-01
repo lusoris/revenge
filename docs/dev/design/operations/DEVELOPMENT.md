@@ -27,7 +27,7 @@ sources:
     url: https://go.dev/doc/install
     note: Official Go installation guide
   - name: air Hot Reload
-    url: ../sources/go_dev_tools/air/main.md
+    url: ../../sources/go_dev_tools/air/main.md
     note: Go hot reload tool
   - name: Vite
     url: https://vitejs.dev/guide/
@@ -39,10 +39,10 @@ sources:
     url: https://nodejs.org/
     note: Node.js LTS releases
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: SQL code generation
   - name: Conventional Commits
-    url: ../sources/standards/conventional-commits.md
+    url: ../../sources/standards/conventional-commits.md
     note: Commit message format
 design_refs:
   - title: operations
@@ -156,16 +156,16 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [TECH_STACK](../technical/TECH_STACK.md)
-- [BEST_PRACTICES](BEST_PRACTICES.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide
-- [air Hot Reload](../sources/go_dev_tools/air/main.md) - Go hot reload tool
+- [air Hot Reload](../../sources/go_dev_tools/air/main.md) - Go hot reload tool
 - [Vite](https://vitejs.dev/guide/) - Frontend build tool
 - [PostgreSQL Downloads](https://www.postgresql.org/download/) - PostgreSQL installation
 - [Node.js Downloads](https://nodejs.org/) - Node.js LTS releases
-- [sqlc](../sources/database/sqlc.md) - SQL code generation
-- [Conventional Commits](../sources/standards/conventional-commits.md) - Commit message format
+- [sqlc](../../sources/database/sqlc.md) - SQL code generation
+- [Conventional Commits](../../sources/standards/conventional-commits.md) - Commit message format
 

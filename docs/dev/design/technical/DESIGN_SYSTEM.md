@@ -31,13 +31,13 @@
 ---
 sources:
   - name: shadcn-svelte
-    url: ../sources/frontend/shadcn-svelte.md
+    url: ../../sources/frontend/shadcn-svelte.md
     note: Component library
   - name: Bits UI
-    url: ../sources/frontend/bits-ui.md
+    url: ../../sources/frontend/bits-ui.md
     note: Headless UI primitives
   - name: Tailwind CSS 4
-    url: ../sources/frontend/tailwindcss.md
+    url: ../../sources/frontend/tailwindcss.md
     note: Utility-first CSS
   - name: Lucide Icons
     url: https://lucide.dev/icons/
@@ -200,14 +200,14 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [FRONTEND](FRONTEND.md)
-- [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
+- [FRONTEND](technical/FRONTEND.md)
+- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
 - [USER_EXPERIENCE_FEATURES](features/shared/USER_EXPERIENCE_FEATURES.md)
 
 ### External Sources
-- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library
-- [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
-- [Tailwind CSS 4](../sources/frontend/tailwindcss.md) - Utility-first CSS
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md) - Component library
+- [Bits UI](../../sources/frontend/bits-ui.md) - Headless UI primitives
+- [Tailwind CSS 4](../../sources/frontend/tailwindcss.md) - Utility-first CSS
 - [Lucide Icons](https://lucide.dev/icons/) - Icon library (standard mode)
 - [Vidstack Player](https://www.vidstack.io/docs/player) - Video player components
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/) - Accessibility standards (targeting AAA)

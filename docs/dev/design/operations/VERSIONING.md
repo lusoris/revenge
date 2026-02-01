@@ -24,19 +24,19 @@
 ---
 sources:
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Semantic Versioning
-    url: ../sources/standards/semver.md
+    url: ../../sources/standards/semver.md
     note: Auto-resolved from semver
 design_refs:
   - title: operations
@@ -150,14 +150,14 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Semantic Versioning](../sources/standards/semver.md) - Auto-resolved from semver
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Semantic Versioning](../../sources/standards/semver.md) - Auto-resolved from semver
 

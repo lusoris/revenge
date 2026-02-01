@@ -24,43 +24,43 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: koanf
-    url: ../sources/tooling/koanf.md
+    url: ../../sources/tooling/koanf.md
     note: Auto-resolved from koanf
   - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: otter Cache
-    url: ../sources/tooling/otter.md
+    url: ../../sources/tooling/otter.md
     note: Auto-resolved from otter
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: sturdyc
-    url: ../sources/tooling/sturdyc.md
+    url: ../../sources/tooling/sturdyc.md
     note: Auto-resolved from sturdyc
   - name: sturdyc GitHub README
-    url: ../sources/tooling/sturdyc-guide.md
+    url: ../../sources/tooling/sturdyc-guide.md
     note: Auto-resolved from sturdyc-docs
 design_refs:
   - title: operations
@@ -174,22 +174,22 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [koanf](../sources/tooling/koanf.md) - Auto-resolved from koanf
-- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [otter Cache](../sources/tooling/otter.md) - Auto-resolved from otter
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-- [sturdyc](../sources/tooling/sturdyc.md) - Auto-resolved from sturdyc
-- [sturdyc GitHub README](../sources/tooling/sturdyc-guide.md) - Auto-resolved from sturdyc-docs
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [koanf](../../sources/tooling/koanf.md) - Auto-resolved from koanf
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [otter Cache](../../sources/tooling/otter.md) - Auto-resolved from otter
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [sturdyc](../../sources/tooling/sturdyc.md) - Auto-resolved from sturdyc
+- [sturdyc GitHub README](../../sources/tooling/sturdyc-guide.md) - Auto-resolved from sturdyc-docs
 

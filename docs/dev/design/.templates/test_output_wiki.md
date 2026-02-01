@@ -24,13 +24,13 @@
 ---
 sources:
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 design_refs:
   - title: 01_ARCHITECTURE
@@ -132,11 +132,11 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
 

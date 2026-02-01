@@ -24,16 +24,16 @@
 ---
 sources:
   - name: Radarr API Docs
-    url: ../sources/apis/radarr-docs.md
+    url: ../../sources/apis/radarr-docs.md
     note: Radarr webhook events
   - name: Sonarr API Docs
-    url: ../sources/apis/sonarr-docs.md
+    url: ../../sources/apis/sonarr-docs.md
     note: Sonarr webhook events
   - name: Lidarr API Docs
-    url: ../sources/apis/lidarr-docs.md
+    url: ../../sources/apis/lidarr-docs.md
     note: Lidarr webhook events
   - name: Servarr Wiki
-    url: ../sources/apis/servarr-wiki.md
+    url: ../../sources/apis/servarr-wiki.md
     note: Shared Arr stack documentation
 design_refs:
   - title: patterns
@@ -147,13 +147,13 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Radarr API Docs](../sources/apis/radarr-docs.md) - Radarr webhook events
-- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Sonarr webhook events
-- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Lidarr webhook events
-- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Shared Arr stack documentation
+- [Radarr API Docs](../../sources/apis/radarr-docs.md) - Radarr webhook events
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Sonarr webhook events
+- [Lidarr API Docs](../../sources/apis/lidarr-docs.md) - Lidarr webhook events
+- [Servarr Wiki](../../sources/apis/servarr-wiki.md) - Shared Arr stack documentation
 

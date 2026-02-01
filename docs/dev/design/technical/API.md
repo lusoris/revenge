@@ -24,10 +24,10 @@
 ---
 sources:
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: OpenAPI 3.1 Specification
-    url: ../sources/apis/openapi-spec.md
+    url: ../../sources/apis/openapi-spec.md
     note: API spec standard
   - name: RFC 7807 Problem Details
     url: https://datatracker.ietf.org/doc/html/rfc7807
@@ -143,11 +143,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [OpenAPI 3.1 Specification](../sources/apis/openapi-spec.md) - API spec standard
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [OpenAPI 3.1 Specification](../../sources/apis/openapi-spec.md) - API spec standard
 - [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807) - Standardized error format
 

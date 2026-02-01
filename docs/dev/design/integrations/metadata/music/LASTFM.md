@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Go context
-    url: ../sources/go/stdlib/context.md
+    url: ../../../../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
   - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
   - title: integrations/metadata/music
@@ -154,11 +154,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/music](integrations/metadata/music.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go context](../sources/go/stdlib/context.md) - Auto-resolved from go-context
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Go context](../../../../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Last.fm API](../../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 

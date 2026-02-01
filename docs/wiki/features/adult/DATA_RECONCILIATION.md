@@ -15,16 +15,16 @@
 ---
 sources:
   - name: Casbin
-    url: ../sources/security/casbin.md
+    url: ../../../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/adult

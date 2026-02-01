@@ -37,13 +37,13 @@ sources:
     url: http://wiki.xmltv.org/index.php/XMLTVFormat
     note: EPG data format standard
   - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
+    url: ../../sources/infrastructure/typesense-go.md
     note: Full-text search for programs
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Scheduled EPG refresh jobs
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Dependency injection
 design_refs:
   - title: services
@@ -261,7 +261,7 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [services](services.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
 - [LIVE_TV_DVR](features/livetv/LIVE_TV_DVR.md)
 - [TVHEADEND](integrations/livetv/TVHEADEND.md)
 - [NEXTPVR](integrations/livetv/NEXTPVR.md)
@@ -269,7 +269,7 @@ Target: **80% minimum**
 
 ### External Sources
 - [XMLTV Format](http://wiki.xmltv.org/index.php/XMLTVFormat) - EPG data format standard
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Full-text search for programs
-- [River Job Queue](../sources/tooling/river.md) - Scheduled EPG refresh jobs
-- [Uber fx](../sources/tooling/fx.md) - Dependency injection
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Full-text search for programs
+- [River Job Queue](../../sources/tooling/river.md) - Scheduled EPG refresh jobs
+- [Uber fx](../../sources/tooling/fx.md) - Dependency injection
 

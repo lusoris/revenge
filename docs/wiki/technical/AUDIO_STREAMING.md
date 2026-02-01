@@ -13,13 +13,13 @@
 ---
 sources:
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: HLS server implementation
   - name: go-astiav (FFmpeg)
-    url: ../sources/media/go-astiav.md
+    url: ../../sources/media/go-astiav.md
     note: Audio transcoding
   - name: Dragonfly
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Progress tracking cache
 design_refs:
   - title: technical

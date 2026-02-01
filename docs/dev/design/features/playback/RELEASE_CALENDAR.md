@@ -28,22 +28,22 @@
 ---
 sources:
   - name: Go context
-    url: ../sources/go/stdlib/context.md
+    url: ../../../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
   - name: Radarr API Docs
-    url: ../sources/apis/radarr-docs.md
+    url: ../../../sources/apis/radarr-docs.md
     note: Auto-resolved from radarr-docs
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: Sonarr API Docs
-    url: ../sources/apis/sonarr-docs.md
+    url: ../../../sources/apis/sonarr-docs.md
     note: Auto-resolved from sonarr-docs
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/playback
@@ -172,15 +172,15 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go context](../sources/go/stdlib/context.md) - Auto-resolved from go-context
-- [Radarr API Docs](../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Go context](../../../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Radarr API Docs](../../../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [Sonarr API Docs](../../../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
+- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

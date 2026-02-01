@@ -26,13 +26,13 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/wiki
@@ -155,12 +155,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/wiki](integrations/wiki.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [Go io](../../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
 

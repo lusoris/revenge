@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Google Books API
-    url: ../sources/apis/google-books.md
+    url: ../../../../sources/apis/google-books.md
     note: Auto-resolved from google-books
   - name: Open Library API
-    url: ../sources/apis/openlibrary.md
+    url: ../../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
   - title: integrations/metadata/books
@@ -153,11 +153,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/books](integrations/metadata/books.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Google Books API](../sources/apis/google-books.md) - Auto-resolved from google-books
-- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [Google Books API](../../../../sources/apis/google-books.md) - Auto-resolved from google-books
+- [Open Library API](../../../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
 

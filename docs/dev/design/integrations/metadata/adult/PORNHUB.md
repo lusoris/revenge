@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/metadata/adult
@@ -152,11 +152,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/adult](integrations/metadata/adult.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Go io](../../../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [River Job Queue](../../../../sources/tooling/river.md) - Auto-resolved from river
 

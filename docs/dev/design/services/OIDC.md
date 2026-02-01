@@ -27,25 +27,25 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: ../sources/security/authelia.md
+    url: ../../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: ../sources/security/authentik.md
+    url: ../../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
+    url: ../../sources/security/keycloak.md
     note: Auto-resolved from keycloak
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: services
@@ -172,16 +172,16 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [services](services/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
-- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Authelia Documentation](../../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../../sources/security/authentik.md) - Auto-resolved from authentik
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [Keycloak Documentation](../../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

@@ -15,25 +15,25 @@
 ---
 sources:
   - name: Chromaprint/AcoustID
-    url: ../sources/standards/chromaprint.md
+    url: ../../../sources/standards/chromaprint.md
     note: Auto-resolved from chromaprint-acoustid
   - name: FFmpeg Documentation
-    url: ../sources/media/ffmpeg.md
+    url: ../../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: ../sources/media/ffmpeg-codecs.md
+    url: ../../../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: ../sources/media/ffmpeg-formats.md
+    url: ../../../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
-    url: ../sources/media/go-astiav.md
+    url: ../../../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: ../sources/media/go-astiav-guide.md
+    url: ../../../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: features/playback

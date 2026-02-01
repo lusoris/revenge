@@ -26,10 +26,10 @@
 ---
 sources:
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
 design_refs:
   - title: integrations/livetv
@@ -153,11 +153,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/livetv](integrations/livetv.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [gohlslib (HLS)](../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
 

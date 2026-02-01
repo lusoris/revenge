@@ -28,7 +28,7 @@
 ---
 sources:
   - name: Jellyfin API
-    url: ../sources/apis/jellyfin.md
+    url: ../../../sources/apis/jellyfin.md
     note: Auto-resolved from jellyfin-api
 design_refs:
   - title: features/playback
@@ -157,10 +157,10 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Jellyfin API](../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api
+- [Jellyfin API](../../../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api
 

@@ -26,10 +26,10 @@
 ---
 sources:
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: integrations/metadata/adult
@@ -153,11 +153,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/adult](integrations/metadata/adult.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [sqlc](../../../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

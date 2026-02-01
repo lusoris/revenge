@@ -13,19 +13,19 @@
 ---
 sources:
   - name: Go Testing
-    url: ../sources/go/stdlib/testing.md
+    url: ../../sources/go/stdlib/testing.md
     note: Standard library testing
   - name: Testify
     url: https://github.com/stretchr/testify
     note: Assertions and test suites
   - name: Mockery
-    url: ../sources/testing/mockery-guide.md
+    url: ../../sources/testing/mockery-guide.md
     note: Mock generation
   - name: Testcontainers Go
-    url: ../sources/testing/testcontainers.md
+    url: ../../sources/testing/testcontainers.md
     note: Integration testing with containers
   - name: Embedded Postgres
-    url: ../sources/testing/embedded-postgres-guide.md
+    url: ../../sources/testing/embedded-postgres-guide.md
     note: Fast PostgreSQL for unit tests
 design_refs:
   - title: patterns

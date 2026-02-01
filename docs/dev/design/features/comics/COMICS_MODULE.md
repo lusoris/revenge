@@ -40,37 +40,37 @@
 ---
 sources:
   - name: AniList GraphQL API
-    url: ../sources/apis/anilist.md
+    url: ../../../sources/apis/anilist.md
     note: Auto-resolved from anilist
   - name: ComicVine API
-    url: ../sources/apis/comicvine.md
+    url: ../../../sources/apis/comicvine.md
     note: Auto-resolved from comicvine
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: MyAnimeList API
-    url: ../sources/apis/myanimelist.md
+    url: ../../../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: Svelte 5 Runes
-    url: ../sources/frontend/svelte-runes.md
+    url: ../../../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
   - name: Svelte 5 Documentation
-    url: ../sources/frontend/svelte5.md
+    url: ../../../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
   - name: SvelteKit Documentation
-    url: ../sources/frontend/sveltekit.md
+    url: ../../../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
   - title: features/comics
@@ -265,20 +265,20 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/comics](features/comics.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](../sources/apis/anilist.md) - Auto-resolved from anilist
-- [ComicVine API](../sources/apis/comicvine.md) - Auto-resolved from comicvine
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
-- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+- [AniList GraphQL API](../../../sources/apis/anilist.md) - Auto-resolved from anilist
+- [ComicVine API](../../../sources/apis/comicvine.md) - Auto-resolved from comicvine
+- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
+- [MyAnimeList API](../../../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
 

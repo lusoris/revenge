@@ -14,13 +14,13 @@
 ---
 sources:
   - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
   - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/wiki/adult

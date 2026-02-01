@@ -24,13 +24,13 @@
 ---
 sources:
   - name: coder/websocket GitHub README
-    url: ../sources/tooling/websocket-guide.md
+    url: ../../sources/tooling/websocket-guide.md
     note: Auto-resolved from coder-websocket-docs
   - name: nhooyr.io/websocket
     url: https://pkg.go.dev/nhooyr.io/websocket
     note: WebSocket library (coder/websocket)
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
   - title: technical
@@ -144,12 +144,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 - [WEBSOCKETS (Syncplay)](features/playback/SYNCPLAY.md)
 
 ### External Sources
-- [coder/websocket GitHub README](../sources/tooling/websocket-guide.md) - Auto-resolved from coder-websocket-docs
+- [coder/websocket GitHub README](../../sources/tooling/websocket-guide.md) - Auto-resolved from coder-websocket-docs
 - [nhooyr.io/websocket](https://pkg.go.dev/nhooyr.io/websocket) - WebSocket library (coder/websocket)
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
 

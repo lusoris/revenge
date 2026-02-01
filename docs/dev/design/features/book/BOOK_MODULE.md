@@ -41,34 +41,34 @@
 ---
 sources:
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: Google Books API
-    url: ../sources/apis/google-books.md
+    url: ../../../sources/apis/google-books.md
     note: Auto-resolved from google-books
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
   - name: Open Library API
-    url: ../sources/apis/openlibrary.md
+    url: ../../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: features/book
@@ -268,19 +268,19 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/book](features/book.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [Google Books API](../sources/apis/google-books.md) - Auto-resolved from google-books
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
+- [Google Books API](../../../sources/apis/google-books.md) - Auto-resolved from google-books
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Open Library API](../../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 

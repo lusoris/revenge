@@ -24,19 +24,19 @@
 ---
 sources:
   - name: Go Testing
-    url: ../sources/go/stdlib/testing.md
+    url: ../../sources/go/stdlib/testing.md
     note: Standard library testing
   - name: Testify
     url: https://github.com/stretchr/testify
     note: Assertions and test suites
   - name: Mockery
-    url: ../sources/testing/mockery-guide.md
+    url: ../../sources/testing/mockery-guide.md
     note: Mock generation
   - name: Testcontainers Go
-    url: ../sources/testing/testcontainers.md
+    url: ../../sources/testing/testcontainers.md
     note: Integration testing with containers
   - name: Embedded Postgres
-    url: ../sources/testing/embedded-postgres-guide.md
+    url: ../../sources/testing/embedded-postgres-guide.md
     note: Fast PostgreSQL for unit tests
 design_refs:
   - title: patterns
@@ -149,13 +149,13 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns/INDEX.md)
-- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
-- [Go Testing](../sources/go/stdlib/testing.md) - Standard library testing
+- [Go Testing](../../sources/go/stdlib/testing.md) - Standard library testing
 - [Testify](https://github.com/stretchr/testify) - Assertions and test suites
-- [Mockery](../sources/testing/mockery-guide.md) - Mock generation
-- [Testcontainers Go](../sources/testing/testcontainers.md) - Integration testing with containers
-- [Embedded Postgres](../sources/testing/embedded-postgres-guide.md) - Fast PostgreSQL for unit tests
+- [Mockery](../../sources/testing/mockery-guide.md) - Mock generation
+- [Testcontainers Go](../../sources/testing/testcontainers.md) - Integration testing with containers
+- [Embedded Postgres](../../sources/testing/embedded-postgres-guide.md) - Fast PostgreSQL for unit tests
 

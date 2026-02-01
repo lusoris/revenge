@@ -95,19 +95,23 @@ class DocGenerator:
         print(f"✓ Loaded {len(url_to_path)} source URL mappings")
         return url_to_path
 
-    def _url_to_local_source(self, url: str) -> str:
+    def _url_to_local_source(self, url: str, depth: int = 0) -> str:
         """Convert external URL to local source path if available.
 
         Args:
             url: External URL (e.g., 'https://pkg.go.dev/go.uber.org/fx')
+            depth: Subdirectory depth (0 for root, 1 for one level deep, etc.)
 
         Returns:
             Local markdown link if URL is in mapping, otherwise original URL
         """
         if url in self.sources_mapping:
             local_path = self.sources_mapping[url]
-            # Return relative path from docs/dev/design/ to docs/dev/sources/
-            return f"../sources/{local_path}"
+            # Calculate relative path based on depth
+            # depth=0: ../sources/ (from docs/dev/design/)
+            # depth=1: ../../sources/ (from docs/dev/design/subdir/)
+            prefix = "../" * (depth + 1)
+            return f"{prefix}sources/{local_path}"
         return url
 
     def generate_doc(
@@ -137,8 +141,20 @@ class DocGenerator:
         # Merge shared data with doc-specific data
         merged_data = self._merge_data(self.shared_data, doc_data)
 
+        # Calculate depth from output_subpath for relative linking
+        # Empty or '.' = depth 0, 'features' = depth 1, 'features/video' = depth 2
+        depth = 0 if not output_subpath or output_subpath == "." else output_subpath.count("/") + 1
+
         # Get template
         template = self.env.get_template(template_name)
+
+        # Create depth-aware filter for this render
+        def to_local_source_with_depth(url: str) -> str:
+            return self._url_to_local_source(url, depth)
+
+        # Temporarily override the filter for this render
+        original_filter = self.env.filters.get("to_local_source")
+        self.env.filters["to_local_source"] = to_local_source_with_depth
 
         generated_files = {}
 
@@ -171,6 +187,10 @@ class DocGenerator:
             )
             generated_files["wiki"] = wiki_path
             print(f"  ✓ Wiki: {wiki_path.relative_to(self.repo_root)}")
+
+        # Restore original filter
+        if original_filter:
+            self.env.filters["to_local_source"] = original_filter
 
         return generated_files
 

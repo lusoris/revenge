@@ -13,43 +13,43 @@
 ---
 sources:
   - name: Authelia Documentation
-    url: ../sources/security/authelia.md
+    url: ../../sources/security/authelia.md
     note: Auto-resolved from authelia
   - name: Authentik Documentation
-    url: ../sources/security/authentik.md
+    url: ../../sources/security/authentik.md
     note: Auto-resolved from authentik
   - name: FFmpeg Documentation
-    url: ../sources/media/ffmpeg.md
+    url: ../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: ../sources/media/ffmpeg-codecs.md
+    url: ../../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: ../sources/media/ffmpeg-formats.md
+    url: ../../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
-    url: ../sources/media/go-astiav.md
+    url: ../../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: ../sources/media/go-astiav-guide.md
+    url: ../../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
+    url: ../../sources/security/keycloak.md
     note: Auto-resolved from keycloak
   - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
   - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
   - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: research

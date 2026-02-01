@@ -14,10 +14,10 @@
 ---
 sources:
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
   - title: integrations/metadata/adult

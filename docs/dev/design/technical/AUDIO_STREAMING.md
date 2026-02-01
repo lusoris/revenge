@@ -30,13 +30,13 @@
 ---
 sources:
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: HLS server implementation
   - name: go-astiav (FFmpeg)
-    url: ../sources/media/go-astiav.md
+    url: ../../sources/media/go-astiav.md
     note: Audio transcoding
   - name: Dragonfly
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Progress tracking cache
 design_refs:
   - title: technical
@@ -216,12 +216,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - HLS server implementation
-- [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - Audio transcoding
-- [Dragonfly](../sources/infrastructure/dragonfly.md) - Progress tracking cache
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - HLS server implementation
+- [go-astiav (FFmpeg)](../../sources/media/go-astiav.md) - Audio transcoding
+- [Dragonfly](../../sources/infrastructure/dragonfly.md) - Progress tracking cache
 

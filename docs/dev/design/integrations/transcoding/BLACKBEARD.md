@@ -26,31 +26,31 @@
 ---
 sources:
   - name: FFmpeg Documentation
-    url: ../sources/media/ffmpeg.md
+    url: ../../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
   - name: FFmpeg Codecs
-    url: ../sources/media/ffmpeg-codecs.md
+    url: ../../../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
   - name: FFmpeg Formats
-    url: ../sources/media/ffmpeg-formats.md
+    url: ../../../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
   - name: go-astiav (FFmpeg bindings)
-    url: ../sources/media/go-astiav.md
+    url: ../../../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
   - name: go-astiav GitHub README
-    url: ../sources/media/go-astiav-guide.md
+    url: ../../../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
   - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
   - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
   - name: Prometheus Go Client
-    url: ../sources/observability/prometheus.md
+    url: ../../../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
   - name: Prometheus Metric Types
-    url: ../sources/observability/prometheus-metrics.md
+    url: ../../../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
 design_refs:
   - title: integrations/transcoding
@@ -173,18 +173,18 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/transcoding](integrations/transcoding.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [FFmpeg Documentation](../../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [gohlslib (HLS)](../../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [Prometheus Go Client](../../../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
 

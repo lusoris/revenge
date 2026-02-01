@@ -26,10 +26,10 @@
 ---
 sources:
   - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/scrobbling
@@ -154,11 +154,11 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [integrations/scrobbling](integrations/scrobbling.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Last.fm API](../../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [River Job Queue](../../../sources/tooling/river.md) - Auto-resolved from river
 

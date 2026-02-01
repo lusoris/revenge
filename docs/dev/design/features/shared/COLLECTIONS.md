@@ -35,10 +35,10 @@
 ---
 sources:
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../../sources/tooling/fx.md
     note: Auto-resolved from fx
   - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 design_refs:
   - title: features/shared
@@ -307,10 +307,10 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared/INDEX.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
 - [LIBRARY_TYPES](features/shared/LIBRARY_TYPES.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Uber fx](../../../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md) - Auto-resolved from ogen
 

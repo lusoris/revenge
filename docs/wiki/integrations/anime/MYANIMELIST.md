@@ -14,10 +14,10 @@
 ---
 sources:
   - name: MyAnimeList API
-    url: ../sources/apis/myanimelist.md
+    url: ../../../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
   - title: integrations/anime

@@ -14,16 +14,16 @@
 ---
 sources:
   - name: go-astiav (FFmpeg)
-    url: ../sources/media/go-astiav.md
+    url: ../../sources/media/go-astiav.md
     note: FFmpeg Go bindings
   - name: gohlslib
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: HLS streaming library
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Background job processing
   - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Dependency injection
 design_refs:
   - title: services

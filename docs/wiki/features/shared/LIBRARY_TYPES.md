@@ -15,25 +15,25 @@
 ---
 sources:
   - name: Casbin
-    url: ../sources/security/casbin.md
+    url: ../../../sources/security/casbin.md
     note: Auto-resolved from casbin
   - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../../sources/tooling/river.md
     note: Auto-resolved from river
   - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
   - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
   - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
   - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
   - name: StashDB GraphQL API
-    url: ../sources/apis/stashdb-schema.graphql
+    url: ../../../sources/apis/stashdb-schema.graphql
     note: Auto-resolved from stashdb
 design_refs:
   - title: features/shared

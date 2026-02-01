@@ -24,10 +24,10 @@
 ---
 sources:
   - name: shadcn-svelte
-    url: ../sources/frontend/shadcn-svelte.md
+    url: ../../../sources/frontend/shadcn-svelte.md
     note: Component library
   - name: Bits UI
-    url: ../sources/frontend/bits-ui.md
+    url: ../../../sources/frontend/bits-ui.md
     note: Headless UI primitives
   - name: Vidstack Player
     url: https://www.vidstack.io/docs/player
@@ -146,12 +146,12 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [FRONTEND](../../technical/FRONTEND.md)
-- [04_PLAYER_ARCHITECTURE](../../architecture/04_PLAYER_ARCHITECTURE.md)
+- [FRONTEND](technical/FRONTEND.md)
+- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
-- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library
-- [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
+- [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md) - Component library
+- [Bits UI](../../../sources/frontend/bits-ui.md) - Headless UI primitives
 - [Vidstack Player](https://www.vidstack.io/docs/player) - Video player components
 - [Lucide Icons](https://lucide.dev/icons/) - Icon library
 
