@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [FreeOnes](#freeones)
 - [FreeOnes](#freeones)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# FreeOnes
-
-
 
 
 # FreeOnes
+
+
+
 
 > FreeOnes - Performer enrichment for Whisparr/StashDB
 

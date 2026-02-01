@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [IAFD](#iafd)
 - [IAFD](#iafd)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# IAFD
-
-
 
 
 # IAFD
+
+
+
 
 > Industry database from IAFD
 

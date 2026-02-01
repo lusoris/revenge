@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Comics Module](#comics-module)
 - [Comics Module](#comics-module)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Comics Module
-
-
 
 
 # Comics Module
+
+
+
 
 > Your digital comics library with beautiful reading experience
 

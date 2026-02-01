@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Blackbeard](#blackbeard)
 - [Blackbeard](#blackbeard)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Blackbeard
-
-
 
 
 # Blackbeard
+
+
+
 
 > Blackbeard - External transcoding offloading
 

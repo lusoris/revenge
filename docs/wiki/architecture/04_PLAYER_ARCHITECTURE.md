@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Revenge - Player Architecture](#revenge-player-architecture)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Revenge - Player Architecture

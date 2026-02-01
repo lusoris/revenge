@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Marvel API](#marvel-api)
 - [Marvel API](#marvel-api)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Marvel API
-
-
 
 
 # Marvel API
+
+
+
 
 > Official Marvel Comics API for Marvel titles
 

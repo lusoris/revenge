@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Live TV & DVR](#live-tv-dvr)
 - [Live TV & DVR](#live-tv-dvr)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Live TV & DVR
-
-
 
 
 # Live TV & DVR
+
+
+
 
 > Watch and record live TV through your media server
 

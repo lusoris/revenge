@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [User Service](#user-service)
 - [User Service](#user-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# User Service
-
-
 
 
 # User Service
+
+
+
 
 > User account management and authentication
 

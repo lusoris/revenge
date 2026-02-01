@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Development Best Practices](#development-best-practices)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Development Best Practices

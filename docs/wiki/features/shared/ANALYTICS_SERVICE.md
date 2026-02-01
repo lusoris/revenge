@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Tracearr Analytics Service](#tracearr-analytics-service)
 - [Tracearr Analytics Service](#tracearr-analytics-service)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Tracearr Analytics Service
-
-
 
 
 # Tracearr Analytics Service
+
+
+
 
 > See what is being watched and detect account sharing
 

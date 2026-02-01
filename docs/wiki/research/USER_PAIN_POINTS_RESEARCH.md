@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [User Pain Points Research - Existing Media Servers](#user-pain-points-research-existing-media-servers)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # User Pain Points Research - Existing Media Servers

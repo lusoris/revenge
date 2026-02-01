@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [ListenBrainz](#listenbrainz)
 - [ListenBrainz](#listenbrainz)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# ListenBrainz
-
-
 
 
 # ListenBrainz
+
+
+
 
 > Open-source music scrobbling with ListenBrainz
 

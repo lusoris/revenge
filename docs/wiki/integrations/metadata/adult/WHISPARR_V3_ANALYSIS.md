@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Whisparr v3 (eros) - Adult Content Structure Analysis](#whisparr-v3-eros-adult-content-structure-analysis)
 - [Whisparr v3 (eros) - Adult Content Structure Analysis](#whisparr-v3-eros-adult-content-structure-analysis)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -14,12 +8,12 @@
     - [Related Pages](#related-pages)
 
 
-# Whisparr v3 (eros) - Adult Content Structure Analysis
-
-
 
 
 # Whisparr v3 (eros) - Adult Content Structure Analysis
+
+
+
 
 > How Whisparr models adult content
 

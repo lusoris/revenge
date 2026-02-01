@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Watch Next & Continue Watching System](#watch-next-continue-watching-system)
 - [Watch Next & Continue Watching System](#watch-next-continue-watching-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Watch Next & Continue Watching System
-
-
 
 
 # Watch Next & Continue Watching System
+
+
+
 
 > Intelligent playback continuation and recommendation system
 

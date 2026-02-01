@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [StashDB](#stashdb)
 - [StashDB](#stashdb)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# StashDB
-
-
 
 
 # StashDB
+
+
+
 
 > StashDB metadata - Supplementary to Whisparr
 

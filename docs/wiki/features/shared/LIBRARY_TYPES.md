@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Library Types](#library-types)
 - [Library Types](#library-types)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Library Types
-
-
 
 
 # Library Types
+
+
+
 
 > Organize content into movies, TV, music, and more
 

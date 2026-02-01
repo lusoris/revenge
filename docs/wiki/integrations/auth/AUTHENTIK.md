@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Authentik](#authentik)
 - [Authentik](#authentik)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Authentik
-
-
 
 
 # Authentik
+
+
+
 
 > Single sign-on with Authentik
 

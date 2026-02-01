@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Revenge - Media Enhancement Features](#revenge-media-enhancement-features)
 - [Revenge - Media Enhancement Features](#revenge-media-enhancement-features)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Revenge - Media Enhancement Features
-
-
 
 
 # Revenge - Media Enhancement Features
+
+
+
 
 > Advanced playback features: trailers, themes, intros, trickplay, cinema mode, 
 

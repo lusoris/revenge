@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Generic OIDC](#generic-oidc)
 - [Generic OIDC](#generic-oidc)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Generic OIDC
-
-
 
 
 # Generic OIDC
+
+
+
 
 > Connect any OIDC provider for authentication
 

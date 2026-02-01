@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Radarr](#radarr)
 - [Radarr](#radarr)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Radarr
-
-
 
 
 # Radarr
+
+
+
 
 > Automatic movie downloads with Radarr
 

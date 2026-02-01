@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [OMDb (Open Movie Database)](#omdb-open-movie-database)
 - [OMDb (Open Movie Database)](#omdb-open-movie-database)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# OMDb (Open Movie Database)
-
-
 
 
 # OMDb (Open Movie Database)
+
+
+
 
 > Multi-source ratings enrichment (IMDb, Rotten Tomatoes, Metacritic)
 

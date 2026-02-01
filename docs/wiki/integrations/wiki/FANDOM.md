@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [FANDOM](#fandom)
 - [FANDOM](#fandom)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# FANDOM
-
-
 
 
 # FANDOM
+
+
+
 
 > FANDOM - Links to fan wikis for movies, TV, games
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [ComicVine API](#comicvine-api)
 - [ComicVine API](#comicvine-api)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# ComicVine API
-
-
 
 
 # ComicVine API
+
+
+
 
 > ComicVine - Primary comic book metadata
 

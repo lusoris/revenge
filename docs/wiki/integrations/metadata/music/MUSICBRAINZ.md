@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [MusicBrainz](#musicbrainz)
 - [MusicBrainz](#musicbrainz)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# MusicBrainz
-
-
 
 
 # MusicBrainz
+
+
+
 
 > Direct MusicBrainz API - Supplementary to Lidarr
 

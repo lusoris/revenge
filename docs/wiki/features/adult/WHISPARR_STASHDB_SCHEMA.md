@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Whisparr v3 & StashDB Schema Integration](#whisparr-v3-stashdb-schema-integration)
 - [Whisparr v3 & StashDB Schema Integration](#whisparr-v3-stashdb-schema-integration)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Whisparr v3 & StashDB Schema Integration
-
-
 
 
 # Whisparr v3 & StashDB Schema Integration
+
+
+
 
 > Scene browsing powered by Whisparr and StashDB data
 

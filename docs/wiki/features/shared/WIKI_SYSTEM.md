@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Internal Wiki System](#internal-wiki-system)
 - [Internal Wiki System](#internal-wiki-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Internal Wiki System
-
-
 
 
 # Internal Wiki System
+
+
+
 
 > Built-in documentation and help system
 

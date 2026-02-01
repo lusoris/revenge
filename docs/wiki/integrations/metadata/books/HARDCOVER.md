@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Hardcover](#hardcover)
 - [Hardcover](#hardcover)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Hardcover
-
-
 
 
 # Hardcover
+
+
+
 
 > Hardcover - Track book reading and sync shelves
 

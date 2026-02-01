@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Observability - Metrics, Tracing, and Logging](#observability-metrics-tracing-and-logging)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Observability - Metrics, Tracing, and Logging

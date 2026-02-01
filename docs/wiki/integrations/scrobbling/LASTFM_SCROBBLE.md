@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Last.fm Scrobbling](#lastfm-scrobbling)
 - [Last.fm Scrobbling](#lastfm-scrobbling)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Last.fm Scrobbling
-
-
 
 
 # Last.fm Scrobbling
+
+
+
 
 > Scrobble music plays to Last.fm
 

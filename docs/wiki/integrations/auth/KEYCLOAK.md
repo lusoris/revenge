@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Keycloak](#keycloak)
 - [Keycloak](#keycloak)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Keycloak
-
-
 
 
 # Keycloak
+
+
+
 
 > Single sign-on with Keycloak
 

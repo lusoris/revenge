@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Adult Gallery Module (QAR: Treasures)](#adult-gallery-module-qar-treasures)
 - [Adult Gallery Module (QAR: Treasures)](#adult-gallery-module-qar-treasures)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Adult Gallery Module (QAR: Treasures)
-
-
 
 
 # Adult Gallery Module (QAR: Treasures)
+
+
+
 
 > Browse and organize adult image galleries
 

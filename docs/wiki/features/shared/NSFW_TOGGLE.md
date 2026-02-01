@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Revenge - NSFW Toggle](#revenge-nsfw-toggle)
 - [Revenge - NSFW Toggle](#revenge-nsfw-toggle)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Revenge - NSFW Toggle
-
-
 
 
 # Revenge - NSFW Toggle
+
+
+
 
 > Show or hide adult libraries with a simple toggle
 

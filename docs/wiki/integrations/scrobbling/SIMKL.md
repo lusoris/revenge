@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Simkl](#simkl)
 - [Simkl](#simkl)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Simkl
-
-
 
 
 # Simkl
+
+
+
 
 > Track TV and movies with Simkl
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Babepedia](#babepedia)
 - [Babepedia](#babepedia)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Babepedia
-
-
 
 
 # Babepedia
+
+
+
 
 > Performer biographies from Babepedia
 

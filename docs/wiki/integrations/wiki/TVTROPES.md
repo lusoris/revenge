@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [TVTropes](#tvtropes)
 - [TVTropes](#tvtropes)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# TVTropes
-
-
 
 
 # TVTropes
+
+
+
 
 > TVTropes - Discover tropes and storytelling patterns
 

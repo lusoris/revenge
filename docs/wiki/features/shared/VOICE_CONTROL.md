@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Voice Control](#voice-control)
 - [Voice Control](#voice-control)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Voice Control
-
-
 
 
 # Voice Control
+
+
+
 
 > Control playback with Alexa and Google Assistant
 

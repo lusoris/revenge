@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Instagram](#instagram)
 - [Instagram](#instagram)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Instagram
-
-
 
 
 # Instagram
+
+
+
 
 > Instagram - Performer profile links for QAR
 

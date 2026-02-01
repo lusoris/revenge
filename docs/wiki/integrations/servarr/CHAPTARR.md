@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Chaptarr](#chaptarr)
 - [Chaptarr](#chaptarr)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Chaptarr
-
-
 
 
 # Chaptarr
+
+
+
 
 > Automatic book and audiobook downloads with Chaptarr
 

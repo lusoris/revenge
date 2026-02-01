@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Trakt](#trakt)
 - [Trakt](#trakt)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Trakt
-
-
 
 
 # Trakt
+
+
+
 
 > Track movies/TV and enrich metadata with Trakt
 

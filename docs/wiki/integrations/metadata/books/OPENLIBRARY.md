@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [OpenLibrary](#openlibrary)
 - [OpenLibrary](#openlibrary)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# OpenLibrary
-
-
 
 
 # OpenLibrary
+
+
+
 
 > Open book metadata - Supplementary to Chaptarr
 

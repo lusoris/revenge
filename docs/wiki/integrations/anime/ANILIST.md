@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [AniList](#anilist)
 - [AniList](#anilist)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# AniList
-
-
 
 
 # AniList
+
+
+
 
 > Sync anime watch status with AniList
 

@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Database Auto-Healing & Recovery](#database-auto-healing-recovery)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Database Auto-Healing & Recovery

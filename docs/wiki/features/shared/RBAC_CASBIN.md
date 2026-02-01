@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Dynamic RBAC with Casbin](#dynamic-rbac-with-casbin)
 - [Dynamic RBAC with Casbin](#dynamic-rbac-with-casbin)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Dynamic RBAC with Casbin
-
-
 
 
 # Dynamic RBAC with Casbin
+
+
+
 
 > Fine-grained permissions for users, roles, and content
 

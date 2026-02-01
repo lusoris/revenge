@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Sonarr](#sonarr)
 - [Sonarr](#sonarr)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Sonarr
-
-
 
 
 # Sonarr
+
+
+
 
 > Automatic TV show downloads with Sonarr
 

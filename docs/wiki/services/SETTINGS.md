@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Settings Service](#settings-service)
 - [Settings Service](#settings-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Settings Service
-
-
 
 
 # Settings Service
+
+
+
 
 > Server settings persistence and retrieval
 

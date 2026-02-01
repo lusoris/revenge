@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Kitsu](#kitsu)
 - [Kitsu](#kitsu)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Kitsu
-
-
 
 
 # Kitsu
+
+
+
 
 > Sync anime progress with Kitsu
 

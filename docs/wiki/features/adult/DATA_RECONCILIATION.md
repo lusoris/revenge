@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Adult Data Reconciliation](#adult-data-reconciliation)
 - [Adult Data Reconciliation](#adult-data-reconciliation)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Adult Data Reconciliation
-
-
 
 
 # Adult Data Reconciliation
+
+
+
 
 > Smart matching when metadata sources disagree
 

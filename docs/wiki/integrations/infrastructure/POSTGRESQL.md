@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [PostgreSQL](#postgresql)
 - [PostgreSQL](#postgresql)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# PostgreSQL
-
-
 
 
 # PostgreSQL
+
+
+
 
 > PostgreSQL stores all your media data
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Discogs](#discogs)
 - [Discogs](#discogs)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Discogs
-
-
 
 
 # Discogs
+
+
+
 
 > Physical release metadata (vinyl/CD) - Supplementary to Lidarr
 

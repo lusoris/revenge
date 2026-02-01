@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Advanced Offloading Architecture](#advanced-offloading-architecture)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Advanced Offloading Architecture

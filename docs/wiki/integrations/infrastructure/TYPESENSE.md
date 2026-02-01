@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Typesense](#typesense)
 - [Typesense](#typesense)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Typesense
-
-
 
 
 # Typesense
+
+
+
 
 > Instant search with typo tolerance
 

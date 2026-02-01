@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [River](#river)
 - [River](#river)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# River
-
-
 
 
 # River
+
+
+
 
 > Background job processing with River
 

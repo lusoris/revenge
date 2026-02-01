@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Testing Patterns and Practices](#testing-patterns-and-practices)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Testing Patterns and Practices

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Revenge - User Experience Features](#revenge-user-experience-features)
 - [Revenge - User Experience Features](#revenge-user-experience-features)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Revenge - User Experience Features
-
-
 
 
 # Revenge - User Experience Features
+
+
+
 
 > A streaming experience that feels like Netflix
 

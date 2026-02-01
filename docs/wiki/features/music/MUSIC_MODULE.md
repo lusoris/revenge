@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Music Module](#music-module)
 - [Music Module](#music-module)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Music Module
-
-
 
 
 # Music Module
+
+
+
 
 > Your complete music library with beautiful album art and metadata
 

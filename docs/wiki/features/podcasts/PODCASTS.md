@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Podcasts](#podcasts)
 - [Podcasts](#podcasts)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Podcasts
-
-
 
 
 # Podcasts
+
+
+
 
 > Your podcast library with automatic updates and offline downloads
 

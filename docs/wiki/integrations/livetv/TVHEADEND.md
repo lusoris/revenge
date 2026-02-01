@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [TVHeadend](#tvheadend)
 - [TVHeadend](#tvheadend)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# TVHeadend
-
-
 
 
 # TVHeadend
+
+
+
 
 > Live TV and DVR with TVHeadend
 

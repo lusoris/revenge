@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Trickplay (Timeline Thumbnails)](#trickplay-timeline-thumbnails)
 - [Trickplay (Timeline Thumbnails)](#trickplay-timeline-thumbnails)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Trickplay (Timeline Thumbnails)
-
-
 
 
 # Trickplay (Timeline Thumbnails)
+
+
+
 
 > Thumbnail previews on video seek bar
 

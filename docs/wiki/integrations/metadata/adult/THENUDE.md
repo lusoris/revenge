@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [TheNude](#thenude)
 - [TheNude](#thenude)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# TheNude
-
-
 
 
 # TheNude
+
+
+
 
 > TheNude - Performer alias resolution for Whisparr/StashDB
 

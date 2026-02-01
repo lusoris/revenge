@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Branch Protection Rules](#branch-protection-rules)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Branch Protection Rules

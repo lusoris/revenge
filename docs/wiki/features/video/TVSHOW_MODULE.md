@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [TV Show Module](#tv-show-module)
 - [TV Show Module](#tv-show-module)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# TV Show Module
-
-
 
 
 # TV Show Module
+
+
+
 
 > Organize TV series with seasons, episodes, and watch progress
 

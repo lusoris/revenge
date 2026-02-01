@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Lidarr](#lidarr)
 - [Lidarr](#lidarr)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Lidarr
-
-
 
 
 # Lidarr
+
+
+
 
 > Automatic music downloads with Lidarr
 

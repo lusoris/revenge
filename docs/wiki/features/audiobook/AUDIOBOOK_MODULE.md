@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Audiobook Module](#audiobook-module)
 - [Audiobook Module](#audiobook-module)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Audiobook Module
-
-
 
 
 # Audiobook Module
+
+
+
 
 > Your audiobook library with chapter navigation and progress sync
 

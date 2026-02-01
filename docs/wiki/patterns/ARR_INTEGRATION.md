@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Arr Integration Pattern](#arr-integration-pattern)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Arr Integration Pattern

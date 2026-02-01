@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Notifications System](#notifications-system)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Notifications System

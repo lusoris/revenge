@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Library Service](#library-service)
 - [Library Service](#library-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Library Service
-
-
 
 
 # Library Service
+
+
+
 
 > Library management and access control
 

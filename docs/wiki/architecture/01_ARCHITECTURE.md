@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Revenge - Architecture v2](#revenge-architecture-v2)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Revenge - Architecture v2

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Activity Service](#activity-service)
 - [Activity Service](#activity-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Activity Service
-
-
 
 
 # Activity Service
+
+
+
 
 > Audit logging and event tracking
 

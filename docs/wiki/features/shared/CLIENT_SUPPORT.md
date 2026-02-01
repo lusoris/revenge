@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Revenge - Client Support & Device Capabilities](#revenge-client-support-device-capabilities)
 - [Revenge - Client Support & Device Capabilities](#revenge-client-support-device-capabilities)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Revenge - Client Support & Device Capabilities
-
-
 
 
 # Revenge - Client Support & Device Capabilities
+
+
+
 
 > Watch on any device with automatic quality adjustment
 

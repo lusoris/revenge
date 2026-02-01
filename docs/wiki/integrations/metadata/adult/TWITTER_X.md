@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Twitter/X](#twitterx)
 - [Twitter/X](#twitterx)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Twitter/X
-
-
 
 
 # Twitter/X
+
+
+
 
 > Twitter/X - Performer profile links for QAR
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Session Service](#session-service)
 - [Session Service](#session-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Session Service
-
-
 
 
 # Session Service
+
+
+
 
 > Session token management and device tracking
 

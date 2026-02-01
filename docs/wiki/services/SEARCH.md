@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Search Service](#search-service)
 - [Search Service](#search-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Search Service
-
-
 
 
 # Search Service
+
+
+
 
 > Full-text search via Typesense with per-module collections
 

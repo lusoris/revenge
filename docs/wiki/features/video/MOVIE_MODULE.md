@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Movie Module](#movie-module)
 - [Movie Module](#movie-module)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -15,12 +9,12 @@
     - [Related Pages](#related-pages)
 
 
-# Movie Module
-
-
 
 
 # Movie Module
+
+
+
 
 > Your movie library with rich metadata and artwork
 

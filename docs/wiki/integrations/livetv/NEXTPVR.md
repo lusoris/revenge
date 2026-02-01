@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [NextPVR](#nextpvr)
 - [NextPVR](#nextpvr)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# NextPVR
-
-
 
 
 # NextPVR
+
+
+
 
 > Record live TV with NextPVR
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [SyncPlay (Watch Together)](#syncplay-watch-together)
 - [SyncPlay (Watch Together)](#syncplay-watch-together)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# SyncPlay (Watch Together)
-
-
 
 
 # SyncPlay (Watch Together)
+
+
+
 
 > Synchronized playback for multiple users watching together
 

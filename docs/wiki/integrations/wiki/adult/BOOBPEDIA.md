@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Boobpedia](#boobpedia)
 - [Boobpedia](#boobpedia)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Boobpedia
-
-
 
 
 # Boobpedia
+
+
+
 
 > Performer encyclopedia from Boobpedia
 

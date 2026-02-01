@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Plugin Architecture Decision](#plugin-architecture-decision)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Plugin Architecture Decision

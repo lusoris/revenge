@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Skip Intro / Credits Detection](#skip-intro-credits-detection)
 - [Skip Intro / Credits Detection](#skip-intro-credits-detection)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Skip Intro / Credits Detection
-
-
 
 
 # Skip Intro / Credits Detection
+
+
+
 
 > Automatic intro and credits detection with one-click skip
 

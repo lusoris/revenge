@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Semantic Versioning & Releases](#semantic-versioning-releases)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Semantic Versioning & Releases

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [DLNA/UPnP](#dlnaupnp)
 - [DLNA/UPnP](#dlnaupnp)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -14,12 +8,12 @@
     - [Related Pages](#related-pages)
 
 
-# DLNA/UPnP
-
-
 
 
 # DLNA/UPnP
+
+
+
 
 > Stream to smart TVs and devices via DLNA
 

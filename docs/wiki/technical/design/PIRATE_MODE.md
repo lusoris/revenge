@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Pirate Mode Easter Eggs](#pirate-mode-easter-eggs)
@@ -12,6 +7,8 @@
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
+
+
 
 
 # Pirate Mode Easter Eggs

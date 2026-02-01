@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Wikipedia](#wikipedia)
 - [Wikipedia](#wikipedia)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Wikipedia
-
-
 
 
 # Wikipedia
+
+
+
 
 > Wikipedia - Background information for media
 

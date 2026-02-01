@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Ticketing System](#ticketing-system)
 - [Ticketing System](#ticketing-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Ticketing System
-
-
 
 
 # Ticketing System
+
+
+
 
 > Report issues and request features through a built-in portal
 

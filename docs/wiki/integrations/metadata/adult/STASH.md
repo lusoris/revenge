@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Stash](#stash)
 - [Stash](#stash)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Stash
-
-
 
 
 # Stash
+
+
+
 
 > Import/sync from local Stash instance
 

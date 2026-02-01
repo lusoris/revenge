@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [OIDC Service](#oidc-service)
 - [OIDC Service](#oidc-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# OIDC Service
-
-
 
 
 # OIDC Service
+
+
+
 
 > OpenID Connect / SSO provider management
 

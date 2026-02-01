@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Auth Service](#auth-service)
 - [Auth Service](#auth-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Auth Service
-
-
 
 
 # Auth Service
+
+
+
 
 > Authentication, registration, and password management
 

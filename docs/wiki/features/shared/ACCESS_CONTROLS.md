@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Time-Based Access Controls](#time-based-access-controls)
 - [Time-Based Access Controls](#time-based-access-controls)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Time-Based Access Controls
-
-
 
 
 # Time-Based Access Controls
+
+
+
 
 > Control when and how users can access your media
 

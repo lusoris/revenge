@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [EPG Service](#epg-service)
 - [EPG Service](#epg-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# EPG Service
-
-
 
 
 # EPG Service
+
+
+
 
 > TV program schedules and guide data for Live TV and DVR
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Book Module](#book-module)
 - [Book Module](#book-module)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Book Module
-
-
 
 
 # Book Module
+
+
+
 
 > Your digital library with reading progress and recommendations
 

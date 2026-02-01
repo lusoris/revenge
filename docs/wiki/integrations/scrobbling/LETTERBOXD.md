@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Letterboxd](#letterboxd)
 - [Letterboxd](#letterboxd)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Letterboxd
-
-
 
 
 # Letterboxd
+
+
+
 
 > Log films to your Letterboxd diary
 

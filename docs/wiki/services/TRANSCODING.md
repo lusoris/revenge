@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Transcoding Service](#transcoding-service)
 - [Transcoding Service](#transcoding-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Transcoding Service
-
-
 
 
 # Transcoding Service
+
+
+
 
 > High-performance media transcoding with hardware acceleration
 

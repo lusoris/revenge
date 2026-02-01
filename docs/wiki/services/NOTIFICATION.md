@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Notification Service](#notification-service)
 - [Notification Service](#notification-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Notification Service
-
-
 
 
 # Notification Service
+
+
+
 
 > Multi-channel notifications for users and admins
 

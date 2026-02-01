@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Audible](#audible)
 - [Audible](#audible)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Audible
-
-
 
 
 # Audible
+
+
+
 
 > Audnexus - Audiobook metadata enrichment for Chaptarr
 

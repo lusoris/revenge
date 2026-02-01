@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [TMDb (The Movie Database)](#tmdb-the-movie-database)
 - [TMDb (The Movie Database)](#tmdb-the-movie-database)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# TMDb (The Movie Database)
-
-
 
 
 # TMDb (The Movie Database)
+
+
+
 
 > Direct TMDb API - Supplementary to Radarr/Sonarr
 

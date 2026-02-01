@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Content Rating System](#content-rating-system)
 - [Content Rating System](#content-rating-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Content Rating System
-
-
 
 
 # Content Rating System
+
+
+
 
 > Age ratings and content restrictions across all media
 

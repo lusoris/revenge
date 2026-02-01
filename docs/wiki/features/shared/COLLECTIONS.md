@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Collections & Playlists](#collections-playlists)
 - [Collections & Playlists](#collections-playlists)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Collections & Playlists
-
-
 
 
 # Collections & Playlists
+
+
+
 
 > Organize your media with custom collections and playlists
 

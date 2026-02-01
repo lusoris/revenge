@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Spotify](#spotify)
 - [Spotify](#spotify)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Spotify
-
-
 
 
 # Spotify
+
+
+
 
 > High-quality artwork and popularity - Supplementary to Lidarr
 

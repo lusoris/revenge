@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Native Request System](#native-request-system)
 - [Native Request System](#native-request-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Native Request System
-
-
 
 
 # Native Request System
+
+
+
 
 > Let users request movies, shows, and music directly
 

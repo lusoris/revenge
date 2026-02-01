@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Analytics Service](#analytics-service)
 - [Analytics Service](#analytics-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Analytics Service
-
-
 
 
 # Analytics Service
+
+
+
 
 > Usage analytics, playback statistics, and library insights
 

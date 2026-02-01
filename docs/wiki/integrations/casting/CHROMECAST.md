@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Chromecast](#chromecast)
 - [Chromecast](#chromecast)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Chromecast
-
-
 
 
 # Chromecast
+
+
+
 
 > Cast media to Chromecast and Google TV
 

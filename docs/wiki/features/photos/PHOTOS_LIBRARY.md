@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Photos Library](#photos-library)
 - [Photos Library](#photos-library)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Photos Library
-
-
 
 
 # Photos Library
+
+
+
 
 > Your photo library organized by albums, people, and places
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [ErsatzTV](#ersatztv)
 - [ErsatzTV](#ersatztv)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# ErsatzTV
-
-
 
 
 # ErsatzTV
+
+
+
 
 > Create custom TV channels from your library
 

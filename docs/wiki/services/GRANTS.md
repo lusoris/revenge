@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Grants Service](#grants-service)
 - [Grants Service](#grants-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Grants Service
-
-
 
 
 # Grants Service
+
+
+
 
 > Polymorphic resource access grants for fine-grained sharing
 

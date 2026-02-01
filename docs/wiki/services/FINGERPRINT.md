@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Fingerprint Service](#fingerprint-service)
 - [Fingerprint Service](#fingerprint-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Fingerprint Service
-
-
 
 
 # Fingerprint Service
+
+
+
 
 > Media file identification via perceptual hashing and acoustic fingerprinting
 

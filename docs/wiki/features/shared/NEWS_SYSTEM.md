@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [News System](#news-system)
 - [News System](#news-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# News System
-
-
 
 
 # News System
+
+
+
 
 > Server announcements and entertainment news in one place
 

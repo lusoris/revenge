@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [HTTP Client & Proxy](#http-client-proxy)
 - [HTTP Client & Proxy](#http-client-proxy)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# HTTP Client & Proxy
-
-
 
 
 # HTTP Client & Proxy
+
+
+
 
 > Route external API calls through proxy or VPN for privacy
 

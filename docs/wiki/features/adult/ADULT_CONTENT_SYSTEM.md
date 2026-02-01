@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Revenge - Adult Content System](#revenge-adult-content-system)
 - [Revenge - Adult Content System](#revenge-adult-content-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Revenge - Adult Content System
-
-
 
 
 # Revenge - Adult Content System
+
+
+
 
 > Isolated adult library with Stash and StashDB integration
 

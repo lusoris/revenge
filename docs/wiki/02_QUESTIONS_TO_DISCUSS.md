@@ -1,8 +1,3 @@
-
-
----
----
-
 ## Table of Contents
 
 - [Questions & Gaps to Discuss](#questions-gaps-to-discuss)
@@ -11,6 +6,8 @@
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
     - [Related Pages](#related-pages)
+
+
 
 
 # Questions & Gaps to Discuss

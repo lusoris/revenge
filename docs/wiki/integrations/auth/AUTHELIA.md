@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Authelia](#authelia)
 - [Authelia](#authelia)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Authelia
-
-
 
 
 # Authelia
+
+
+
 
 > Single sign-on with Authelia
 

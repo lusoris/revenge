@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [RBAC Service](#rbac-service)
 - [RBAC Service](#rbac-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# RBAC Service
-
-
 
 
 # RBAC Service
+
+
+
 
 > Role-based access control with Casbin
 

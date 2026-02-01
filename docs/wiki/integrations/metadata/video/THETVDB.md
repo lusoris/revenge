@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [TheTVDB](#thetvdb)
 - [TheTVDB](#thetvdb)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# TheTVDB
-
-
 
 
 # TheTVDB
+
+
+
 
 > Direct TheTVDB API - Supplementary to Sonarr
 

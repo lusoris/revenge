@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Revenge - External Scrobbling & Sync](#revenge-external-scrobbling-sync)
 - [Revenge - External Scrobbling & Sync](#revenge-external-scrobbling-sync)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Revenge - External Scrobbling & Sync
-
-
 
 
 # Revenge - External Scrobbling & Sync
+
+
+
 
 > Track what you watch and listen to across services
 

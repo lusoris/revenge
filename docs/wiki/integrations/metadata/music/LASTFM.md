@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Last.fm](#lastfm)
 - [Last.fm](#lastfm)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Last.fm
-
-
 
 
 # Last.fm
+
+
+
 
 > Artist enrichment metadata (bios, tags, similar) - Supplementary to Lidarr
 

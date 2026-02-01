@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [ThePornDB](#theporndb)
 - [ThePornDB](#theporndb)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# ThePornDB
-
-
 
 
 # ThePornDB
+
+
+
 
 > ThePornDB - Supplementary to Whisparr/StashDB
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Grand Comics Database (GCD)](#grand-comics-database-gcd)
 - [Grand Comics Database (GCD)](#grand-comics-database-gcd)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Grand Comics Database (GCD)
-
-
 
 
 # Grand Comics Database (GCD)
+
+
+
 
 > GCD - Historical comic bibliographic data
 

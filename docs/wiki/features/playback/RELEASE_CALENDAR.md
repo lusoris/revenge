@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Release Calendar System](#release-calendar-system)
 - [Release Calendar System](#release-calendar-system)
   - [How It Works](#how-it-works)
     - [Content Flow](#content-flow)
@@ -16,12 +10,12 @@
     - [Learn More](#learn-more)
 
 
-# Release Calendar System
-
-
 
 
 # Release Calendar System
+
+
+
 
 > Upcoming releases and recent additions calendar via Servarr integration
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Metadata Service](#metadata-service)
 - [Metadata Service](#metadata-service)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Metadata Service
-
-
 
 
 # Metadata Service
+
+
+
 
 > Unified metadata service with Arr-first priority chain
 

@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [MyAnimeList (MAL)](#myanimelist-mal)
 - [MyAnimeList (MAL)](#myanimelist-mal)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# MyAnimeList (MAL)
-
-
 
 
 # MyAnimeList (MAL)
+
+
+
 
 > Sync anime progress with MyAnimeList
 

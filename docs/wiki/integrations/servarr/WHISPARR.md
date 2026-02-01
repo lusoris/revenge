@@ -1,11 +1,5 @@
-
-
----
----
-
 ## Table of Contents
 
-- [Whisparr v3](#whisparr-v3)
 - [Whisparr v3](#whisparr-v3)
   - [How It Works](#how-it-works)
   - [Features](#features)
@@ -15,12 +9,12 @@
     - [Learn More](#learn-more)
 
 
-# Whisparr v3
-
-
 
 
 # Whisparr v3
+
+
+
 
 > Automatic adult content downloads with Whisparr
 
