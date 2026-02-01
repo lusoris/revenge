@@ -1293,6 +1293,30 @@ sources:
       type: github_readme
       output: "testing/embedded-postgres-guide.md"
 
+    - id: kind
+      name: "kind (Kubernetes in Docker)"
+      url: "https://kind.sigs.k8s.io/"
+      type: html
+      output: "orchestration/kind.md"
+
+    - id: k3d
+      name: "k3d (k3s in Docker)"
+      url: "https://k3d.io/"
+      type: html
+      output: "orchestration/k3d.md"
+
+    - id: kubeval
+      name: "kubeval"
+      url: "https://github.com/instrumenta/kubeval"
+      type: github_readme
+      output: "orchestration/kubeval.md"
+
+    - id: chart-testing
+      name: "Helm Chart Testing (ct)"
+      url: "https://github.com/helm/chart-testing"
+      type: github_readme
+      output: "orchestration/chart-testing.md"
+
   # ============================================================================
   # OBSERVABILITY - Monitoring & Logging
   # ============================================================================
