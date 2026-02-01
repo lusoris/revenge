@@ -143,7 +143,11 @@ class DocGenerator:
 
         # Calculate depth from output_subpath for relative linking
         # Empty or '.' = depth 0, 'features' = depth 1, 'features/video' = depth 2
-        depth = 0 if not output_subpath or output_subpath == "." else output_subpath.count("/") + 1
+        depth = (
+            0
+            if not output_subpath or output_subpath == "."
+            else output_subpath.count("/") + 1
+        )
 
         # Get template
         template = self.env.get_template(template_name)
