@@ -29,26 +29,9 @@ LINK-ONLY integration for QAR performer profiles. Stores verified Twitter/X prof
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

@@ -18,7 +18,11 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Metadata aggregation with PRIMARY (Arr) and SUPPLEMENTARY (external) providers'
 wiki_tagline: '> Unified metadata service with Arr-first priority chain'
-wiki_overview: 'Metadata service orchestrates content enrichment using PRIMARY sources (Arr services - Radarr, Sonarr, Lidarr, Chaptarr, Whisparr) that aggregate metadata locally, with SUPPLEMENTARY external APIs (TMDb, TheTVDB, MusicBrainz, etc.) as fallback and enrichment. Priority chain: L1 cache → L2 cache → Arr services (PRIMARY) → External APIs (SUPPLEMENTARY via optional proxy/VPN). Automatic filename matching, manual override, and scheduled background refresh jobs keep metadata current.'
+wiki_overview: 'Metadata service orchestrates content enrichment using PRIMARY sources (Arr services - Radarr, Sonarr, Lidarr,
+  Chaptarr, Whisparr) that aggregate metadata locally, with SUPPLEMENTARY external APIs (TMDb, TheTVDB, MusicBrainz, etc.)
+  as fallback and enrichment. Priority chain: L1 cache → L2 cache → Arr services (PRIMARY) → External APIs (SUPPLEMENTARY
+  via optional proxy/VPN). Automatic filename matching, manual override, and scheduled background refresh jobs keep metadata
+  current.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -47,54 +51,25 @@ design_refs:
 service_name: Metadata Service
 package_path: internal/service/metadata
 fx_module: metadata.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Metadata<br/>Service"]
+      node4["Priority<br/>Chain"]
+      node5["L1 Cache<br/>L2 Cache<br/>er"]
+      node6["PRIMARY [local Arr services]<br/>Sonarr<br/>Lidarr"]
+      node7["SUPPLEMENTARY [external APIs]<br/>VDB<br/>MusicBrainz"]
+      node8["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
+      node5 --> node6
+      node6 --> node7
+      node7 --> node8
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│  Metadata   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   Service   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                                            ┌──────┴──────┐
-                                            │  Priority   │
-                                            │   Chain     │
-                                            └──────┬──────┘
-                                                   │
-                  ┌────────────────────────────────┼──────────────────────────┐
-                  │ L1 Cache                       │ L2 Cache                 │
-                  ▼                                ▼                          │
-            ┌──────────┐                    ┌──────────┐                     │
-            │  Otter   │                    │Dragonfly │                     │
-            │(in-mem)  │                    │(distrib) │                     │
-            └──────────┘                    └──────────┘                     │
-                                                   │                          │
-                  ┌────────────────────────────────┴──────────────────┐      │
-                  │ PRIMARY (local Arr services)                      │      │
-                  ▼                                                   ▼      │
-         ┌────────────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐       │
-         │ Radarr/Sonarr  │  │ Lidarr  │  │Chaptarr │  │ Whisparr │       │
-         │ (LOCAL cache)  │  │(music)  │  │(books)  │  │  (QAR)   │       │
-         └────────┬───────┘  └────┬────┘  └────┬────┘  └─────┬────┘       │
-                  │               │            │             │             │
-                  └───────────────┴────────────┴─────────────┘             │
-                                  │                                        │
-                  ┌───────────────┴───────────────────────┐                │
-                  │ SUPPLEMENTARY (external APIs)          │                │
-                  ▼                                        ▼                ▼
-         ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────┐
-         │  TMDb/TVDB   │  │ MusicBrainz  │  │ OpenLibrary  │  │ StashDB  │
-         │ (via proxy)  │  │ (via proxy)  │  │ (via proxy)  │  │(via proxy)│
-         └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └─────┬────┘
-                │                  │                 │                 │
-                └──────────────────┴─────────────────┴─────────────────┘
-                                   │
-                            ┌──────┴────────┐
-                            │ HTTP_CLIENT   │
-                            │ (optional     │
-                            │  proxy/VPN)   │
-                            └───────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -183,7 +158,6 @@ database_schema: |
   );
   CREATE INDEX idx_metadata_refresh_next ON metadata_refresh_schedule(next_refresh_at);
   ```
-
 module_structure: |
   ```
   internal/service/metadata/
@@ -213,7 +187,6 @@ module_structure: |
           ├── stashdb.go           # StashDB provider
           └── lastfm.go            # Last.fm provider
   ```
-
 key_interfaces: |
   ```go
   type MetadataService interface {
@@ -253,7 +226,6 @@ key_interfaces: |
     ExternalIDs map[string]interface{} `json:"external_ids"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -279,7 +251,6 @@ dependencies: |
   - OpenLibrary API (https://openlibrary.org/api/)
   - StashDB GraphQL API (https://stashdb.org/graphql)
   - Last.fm API (https://ws.audioscrobbler.com/2.0/)
-
 env_vars: |
   ```bash
   METADATA_TMDB_API_KEY=your_api_key
@@ -288,7 +259,6 @@ env_vars: |
   METADATA_REFRESH_INTERVAL=168h  # 7 days
   METADATA_CACHE_TTL=24h
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -352,7 +322,6 @@ config_keys: |
       l1_ttl: 5m   # Otter cache
       l2_ttl: 24h  # Dragonfly cache
   ```
-
 component_interaction: |
   **Metadata Fetch** (new content with priority chain):
   1. Library scanner finds new movie file
@@ -396,7 +365,6 @@ component_interaction: |
      - Compare with existing data
      - Update if changed (e.g., new poster, updated rating)
      - Schedule next refresh
-
 api_endpoints: |
   ```
   # Search
@@ -429,7 +397,6 @@ api_endpoints: |
     ]
   }
   ```
-
 unit_tests: |
   ```go
   func TestMetadataService_Search(t *testing.T) {
@@ -440,7 +407,6 @@ unit_tests: |
     // Test parsing "Inception (2010).mkv" -> title="Inception", year=2010
   }
   ```
-
 integration_tests: |
   ```go
   func TestMetadata_FetchFlow(t *testing.T) {
@@ -463,7 +429,6 @@ integration_tests: |
     // Verify Arr services bypass proxy (local)
   }
   ```
-
 dual_role_architecture: |
   **Arr Services as PRIMARY Metadata Aggregators**:
 
@@ -493,7 +458,6 @@ dual_role_architecture: |
   - Revenge queries Arr services FIRST for all metadata
   - Direct external APIs used ONLY as fallback or enrichment
   - External API results optionally added to Arr for future queries
-
 provider_priority_chain: |
   **Priority Chain Resolution**:
 
@@ -570,7 +534,6 @@ provider_priority_chain: |
   - **Subsequent requests**: Arr cache (fast, local, no proxy needed)
   - **Cache builds over time**: More content = more Arr-cached metadata
   - **Fallback safety**: If Arr unavailable, external APIs still work
-
 proxy_vpn_support: |
   **Optional Proxy/VPN Routing for External APIs**:
 

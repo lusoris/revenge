@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Custom IPTV channel creation from your media library'
 wiki_tagline: '> Create custom TV channels from your library'
-wiki_overview: ErsatzTV creates custom IPTV channels from your existing media. Build
-  a 24/7 movie channel, a sitcom channel, or themed marathons. Channels play through
-  Revenge like traditional live TV. Schedule content or let it shuffle randomly. Perfect
-  for a lean-back viewing experience.
+wiki_overview: ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 movie channel, a sitcom channel,
+  or themed marathons. Channels play through Revenge like traditional live TV. Schedule content or let it shuffle randomly.
+  Perfect for a lean-back viewing experience.
 sources:
 - name: ErsatzTV Documentation
   url: https://ersatztv.org/docs/
@@ -50,43 +49,19 @@ integration_id: ersatztv
 external_service: ErsatzTV
 api_base_url: http://ersatztv.local:8409
 auth_method: none
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Web Client"]
+      node2["EPG Service<br/>(Revenge)"]
+      node3["ErsatzTV API<br/>/api/channels<br/>/api/xmltv.xml"]
+      node4["Player<br/>(Vidstack)"]
+      node5["Media Files<br/>(your library)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌──────────────┐    1. View EPG      ┌─────────────────┐
-  │   Revenge    │────────────────────▶│   EPG Service   │
-  │  Web Client  │                     │  (Revenge)      │
-  └──────┬───────┘                     └────────┬────────┘
-         │                                      │
-         │ 2. Select channel                   │
-         │                              3. Fetch EPG from
-         │                                 ErsatzTV
-         │                                      ▼
-         │                             ┌────────────────┐
-         │                             │  ErsatzTV API  │
-         │                             │  /api/channels │
-         │                             │  /api/xmltv.xml│
-         │                             └────────┬───────┘
-         │                                      │
-         │ 4. Play channel                     │ 5. Get channel
-         ▼                                      │    stream URL
-  ┌──────────────┐                             ▼
-  │   Player     │    6. Request HLS  ┌────────────────┐
-  │  (Vidstack)  │───────────────────▶│  ErsatzTV      │
-  └──────────────┘                    │  HLS Endpoint  │
-                                       │  /iptv/{id}.m3u8│
-                                       └────────┬───────┘
-                                                │
-                                        7. Generate HLS
-                                           from scheduled
-                                           media files
-                                                ▼
-                                       ┌────────────────┐
-                                       │  Media Files   │
-                                       │  (your library)│
-                                       └────────────────┘
-  ```
-
 protocol_details: |
   **ErsatzTV REST API**:
 
@@ -120,7 +95,6 @@ protocol_details: |
   - **Smart Collections**: Rule-based auto-updating
   - **Flood**: Fill schedule with single item (24/7 marathons)
   - **Blocks**: Time-based programming blocks
-
 module_structure: |
   ```
   internal/
@@ -139,7 +113,6 @@ module_structure: |
     livetv/
       ersatztv.yaml       # ErsatzTV configuration example
   ```
-
 key_interfaces: |
   ```go
   // ErsatzTVClient manages ErsatzTV API
@@ -229,7 +202,6 @@ key_interfaces: |
       CurrentPage int `json:"current_page"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/bluenviron/gohlslib/v2` - HLS parsing/handling
@@ -239,7 +211,6 @@ dependencies: |
 
   **External Services**:
   - ErsatzTV server (https://ersatztv.org)
-
 env_vars: |
   ```bash
   # ErsatzTV configuration
@@ -248,7 +219,6 @@ env_vars: |
   REVENGE_ERSATZTV_SYNC_INTERVAL=1h
   REVENGE_ERSATZTV_EPG_DAYS=7
   ```
-
 config_keys: |
   ```yaml
   livetv:
@@ -260,7 +230,6 @@ config_keys: |
       stream_proxy: false        # Proxy HLS through Revenge (or direct)
       logo_cache: true           # Cache channel logos locally
   ```
-
 component_interaction: |
   **EPG Sync Workflow**:
 
@@ -287,7 +256,6 @@ component_interaction: |
      - Retrieve HLS stream URL (direct or proxied)
      - Pass URL to Vidstack player
      - Player loads HLS and begins playback
-
 api_endpoints: |
   **Revenge API Endpoints**:
 
@@ -360,7 +328,6 @@ api_endpoints: |
     ]
   }
   ```
-
 xmltv_parsing: |
   **XMLTV Format**:
 
@@ -419,7 +386,6 @@ xmltv_parsing: |
       return entries, nil
   }
   ```
-
 error_handling: |
   **Common Errors**:
 
@@ -434,7 +400,6 @@ error_handling: |
 
   - **EPG Sync Failed**: XMLTV parsing error
     - Solution: Check ErsatzTV version, validate XMLTV format
-
 unit_tests: |
   ```go
   func TestErsatzTVClient_GetChannels(t *testing.T) {
@@ -467,7 +432,6 @@ unit_tests: |
       assert.NotEmpty(t, entries)
   }
   ```
-
 integration_tests: |
   ```go
   func TestErsatzTV_FullWorkflow(t *testing.T) {
@@ -497,7 +461,6 @@ integration_tests: |
       assert.NotEmpty(t, xmltv)
   }
   ```
-
 best_practices: |
   **Configuration**:
   - Run ErsatzTV on same network as Revenge

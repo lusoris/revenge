@@ -29,26 +29,9 @@ ThePosterDB offers designer-quality posters and artwork for your library. Commun
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

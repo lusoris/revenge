@@ -29,26 +29,9 @@ Typesense powers the search functionality in Revenge. Search results appear inst
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

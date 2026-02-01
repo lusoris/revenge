@@ -29,26 +29,9 @@ Use any OpenID Connect compatible identity provider with Revenge. Works with cor
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

@@ -43,25 +43,6 @@ Decision rationale:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

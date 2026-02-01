@@ -21,28 +21,9 @@ A reverse proxy sits between the internet and Revenge, handling HTTPS encryption
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

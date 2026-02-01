@@ -29,26 +29,9 @@ EXTERNAL transcoding service integration. Blackbeard is a **third-party distribu
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

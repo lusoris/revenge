@@ -55,39 +55,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Client"]
+    node2["EPG Service<br/>(Revenge)"]
+    node3["NextPVR API<br/>/service"]
+    node4["Player<br/>(Vidstack)"]
+    node5["NextPVR<br/>Stream"]
+    node6["TV Tuner/<br/>Recordings"]
+    node1 --> node2
+    node4 --> node5
+    node2 --> node3
+    node3 --> node4
+    node5 --> node6
 ```
-┌──────────────┐    1. View EPG      ┌─────────────────┐
-│   Revenge    │────────────────────▶│   EPG Service   │
-│  Web Client  │                     │  (Revenge)      │
-└──────┬───────┘                     └────────┬────────┘
-       │                                      │
-       │ 2. Select channel                   │ 3. Fetch EPG from
-       │                                      │    NextPVR
-       │                                      ▼
-       │                             ┌────────────────┐
-       │                             │  NextPVR API   │
-       │                             │  /service      │
-       │                             └────────┬───────┘
-       │                                      │
-       │ 4. Play live TV                     │ 5. Get stream URL
-       │    or recording                      │
-       ▼                                      ▼
-┌──────────────┐                     ┌────────────────┐
-│   Player     │    6. Request       │  NextPVR       │
-│  (Vidstack)  │────HLS stream──────▶│  Stream        │
-└──────────────┘                     │  /live/...     │
-                                      │  /recording/...│
-                                      └────────┬───────┘
-                                               │
-                                       7. Stream from
-                                          tuner/file
-                                               ▼
-                                      ┌────────────────┐
-                                      │ TV Tuner/      │
-                                      │ Recordings     │
-                                      └────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -106,8 +87,6 @@ internal/integration/nextpvr/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -238,12 +217,6 @@ type JSONRPCError struct {
 **External Services**:
 - NextPVR server (https://github.com/sub3/NextPVR)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -268,8 +241,6 @@ livetv:
     transcode_profile: "Default"
 ```
 
-
-
 ## API Endpoints
 **Revenge API Endpoints**:
 
@@ -282,13 +253,6 @@ POST /api/v1/livetv/nextpvr/record
 DELETE /api/v1/livetv/nextpvr/recordings/{id}
 POST /api/v1/livetv/nextpvr/sync
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

@@ -16,26 +16,20 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Photo organization, viewing, and management
-
+technical_summary: |-
+  > Photo organization, viewing, and management
 
   Complete photo library:
-
   - **Supported Formats**: JPEG, PNG, WebP, HEIC, RAW (CR2, NEF, ARW, DNG)
-
   - **EXIF Extraction**: GPS, camera, lens, settings metadata
-
   - **Organization**: Albums, people/faces, places, events, tags
-
   - **Image Processing**: Thumbnails, blurhash placeholders, format conversion
-
-  - **Viewing**: Lightbox gallery, slideshow, map view'
+  - **Viewing**: Lightbox gallery, slideshow, map view
 wiki_tagline: '> Your photo library organized by albums, people, and places'
-wiki_overview: The Photos Library provides comprehensive photo management with support
-  for JPEG, PNG, HEIC, and RAW formats. Organize photos into albums, tag people and
-  places, and view your memories on an interactive map. The system automatically extracts
-  EXIF metadata including GPS coordinates, camera settings, and timestamps. Browse
-  photos with a beautiful lightbox gallery or slideshow mode.
+wiki_overview: The Photos Library provides comprehensive photo management with support for JPEG, PNG, HEIC, and RAW formats.
+  Organize photos into albums, tag people and places, and view your memories on an interactive map. The system automatically
+  extracts EXIF metadata including GPS coordinates, camera settings, and timestamps. Browse photos with a beautiful lightbox
+  gallery or slideshow mode.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -340,7 +334,6 @@ file_structure: |
   ├── AlbumManager.svelte          # Album management
   └── PeopleTagging.svelte         # People tagging UI
   ```
-
 key_interfaces: |
   ```go
   // Repository interface for database operations
@@ -464,7 +457,6 @@ key_interfaces: |
       ReverseGeocode(ctx context.Context, lat, lon float64) (string, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   ```go
@@ -513,7 +505,6 @@ dependencies: |
   **Optional Services**:
   - **Nominatim**: Reverse geocoding (self-hosted or public)
   - **Photon**: Alternative geocoding service
-
 env_vars: |
   ```bash
   # Storage
@@ -548,7 +539,6 @@ env_vars: |
   PHOTOS_ASYNC_PROCESSING=true              # Use River queue for processing
   PHOTOS_WORKER_CONCURRENCY=4               # Concurrent processing jobs
   ```
-
 config_keys: |
   ```yaml
   photos:
@@ -621,7 +611,6 @@ config_keys: |
       ttl_album_list: 5m
       ttl_people_list: 10m
   ```
-
 defaults: |
   - **Storage Type**: S3 (MinIO) for scalability
   - **Max Upload Size**: 100 MB per photo
@@ -634,7 +623,6 @@ defaults: |
   - **Async Processing**: Enabled via River queue
   - **Worker Concurrency**: 4 workers for image processing
   - **Cache TTL**: 1h for photo metadata, 5m for album lists
-
 organization_features:
   albums:
     types:
@@ -820,7 +808,6 @@ request_examples: |
   GET /api/v1/photos/map?bounds=-118.5,33.5,-117.5,34.5
   Authorization: Bearer <token>
   ```
-
 response_examples: |
   **Photo Object**:
   ```json
@@ -973,7 +960,6 @@ response_examples: |
     ]
   }
   ```
-
 unit_tests: |
   **Repository Layer**:
   - Test CRUD operations for photos, albums, people
@@ -1020,7 +1006,6 @@ unit_tests: |
   - Mock service layer
 
   **Coverage Target**: 85%+ for critical paths (upload, processing, search)
-
 integration_tests: |
   **Database Integration**:
   - Test full photo lifecycle with real PostgreSQL (testcontainers)
@@ -1064,9 +1049,7 @@ integration_tests: |
   - Test timeline query performance (10k+ photos)
   - Test map clustering performance
   - Test full-text search performance
-
-test_coverage_target: "80%"
-
+test_coverage_target: 80%
 api_endpoints:
 - method: GET
   path: /api/v1/photos
@@ -1116,25 +1099,34 @@ api_endpoints:
 - method: GET
   path: /api/v1/photos/map
   description: Get photos with location data for map view
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
-module_structure: "```\n  internal/content/photos_library/\n  ├── module.go      \
-  \        # fx module definition\n  ├── repository.go          # Database operations\
-  \ (sqlc)\n  ├── service.go             # Business logic\n  ├── handler.go      \
-  \       # HTTP handlers (ogen)\n  ├── types.go               # Domain types\n  └──\
-  \ cache.go               # Caching layer (otter)\n  ```"
-component_interaction: "1. Client requests resource via HTTP\n  2. API handler validates\
-  \ and routes to service\n  3. Service checks cache, queries repository if needed\n\
-  \  4. Repository executes SQL via sqlc\n  5. Results return through layers to client"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
+module_structure: |-
+  ```
+    internal/content/photos_library/
+    ├── module.go              # fx module definition
+    ├── repository.go          # Database operations (sqlc)
+    ├── service.go             # Business logic
+    ├── handler.go             # HTTP handlers (ogen)
+    ├── types.go               # Domain types
+    └── cache.go               # Caching layer (otter)
+    ```
+component_interaction: |-
+  1. Client requests resource via HTTP
+    2. API handler validates and routes to service
+    3. Service checks cache, queries repository if needed
+    4. Repository executes SQL via sqlc
+    5. Results return through layers to client

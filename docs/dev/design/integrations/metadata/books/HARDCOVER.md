@@ -54,32 +54,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Book Library"]
+    node2["Hardcover<br/>Account"]
+    node3["River Queue<br/>(background)"]
+    node4["User Shelves<br/>- Want to Read"]
+    node5["Hardcover API<br/>(GraphQL)"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+    node4 --> node5
 ```
-┌──────────────────┐                    ┌──────────────────┐
-│  Revenge         │                    │   Hardcover      │
-│  Book Library    │◀──── Two-Way ────▶│   Account        │
-└────────┬─────────┘       Sync        └────────┬─────────┘
-         │                                       │
-         │ Reading Events                        │
-         ▼                                       ▼
-┌──────────────────┐                    ┌──────────────────┐
-│   River Queue    │                    │   User Shelves   │
-│   (background)   │                    │   - Want to Read │
-└────────┬─────────┘                    │   - Reading      │
-         │                              │   - Read         │
-         ▼                              └──────────────────┘
-┌──────────────────┐
-│  Hardcover API   │
-│  (GraphQL)       │
-└──────────────────┘
-
-Sync Types:
-- Reading progress → Hardcover
-- Book completion → Hardcover
-- Shelf changes ← Hardcover
-- Ratings ← Hardcover (enrichment)
-```
-
 
 ### Integration Structure
 
@@ -98,8 +84,6 @@ internal/integration/hardcover/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -142,12 +126,6 @@ type TokenStore interface {
 **External**:
 - Hardcover API (OAuth 2.0 required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -171,15 +149,6 @@ scrobbling:
       interval: 30m
       direction: bidirectional    # 'to_hardcover', 'from_hardcover', 'bidirectional'
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

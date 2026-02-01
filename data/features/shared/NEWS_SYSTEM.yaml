@@ -18,11 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> External news aggregation and internal announcements'
 wiki_tagline: '> Server announcements and entertainment news in one place'
-wiki_overview: Stay informed with server announcements and entertainment news. Admins
-  can post messages about maintenance, new content, or server updates. RSS feeds bring
-  in news from entertainment sources. Filter news by category (movies, TV, music).
-  Dismiss read items or pin important announcements. Appears on the home dashboard
-  for all users.
+wiki_overview: Stay informed with server announcements and entertainment news. Admins can post messages about maintenance,
+  new content, or server updates. RSS feeds bring in news from entertainment sources. Filter news by category (movies, TV,
+  music). Dismiss read items or pin important announcements. Appears on the home dashboard for all users.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -58,20 +56,21 @@ design_refs:
 feature_name: News System
 module_name: news_system
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -219,7 +218,6 @@ key_interfaces: |
     FetchFeed(ctx context.Context, url string) (*gofeed.Feed, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -227,13 +225,11 @@ dependencies: |
   - `github.com/mmcdole/gofeed` - RSS/Atom feed parser
   - `github.com/riverqueue/river` - Background RSS fetch jobs
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   NEWS_RSS_ENABLED=true
   NEWS_RSS_FETCH_INTERVAL=1h
   ```
-
 config_keys: |
   ```yaml
   news:
@@ -247,7 +243,6 @@ config_keys: |
         url: "https://www.theverge.com/rss/entertainment/index.xml"
         category: "general"
   ```
-
 component_interaction: |
   **RSS Fetch Flow**:
   1. River background job runs every hour
@@ -273,7 +268,6 @@ component_interaction: |
   3. Admin can set is_pinned=true to pin to top
   4. Users see pinned announcements first
   5. Mark as read when user clicks article
-
 api_endpoints: |
   ```
   GET    /api/v1/news                      # List articles
@@ -290,7 +284,6 @@ api_endpoints: |
   DELETE /api/v1/news/rss/feeds/:id        # Remove RSS feed
   POST   /api/v1/news/rss/feeds/:id/fetch  # Manually fetch feed
   ```
-
 unit_tests: |
   ```go
   func TestNewsService_CreateArticle(t *testing.T) {
@@ -306,7 +299,6 @@ unit_tests: |
     // Test read tracking
   }
   ```
-
 integration_tests: |
   ```go
   func TestNews_EndToEnd(t *testing.T) {

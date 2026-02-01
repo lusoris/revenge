@@ -43,25 +43,6 @@ Key principles:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

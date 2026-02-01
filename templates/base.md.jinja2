@@ -63,7 +63,12 @@
 {#- This block is kept for template inheritance but renders nothing -#}
 {%- endblock %}
 
+{#- Only show divider if there's content in following sections -#}
+{%- set has_main_content = architecture_diagram is defined or file_structure is defined or env_vars is defined or api_endpoints is defined or unit_tests_description is defined %}
+{%- if has_main_content %}
+
 ---
+{%- endif %}
 
 {% block architecture -%}
 {%- if claude %}
@@ -85,9 +90,9 @@
 {{ wiki_how_it_works }}
 {%- endif %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block implementation -%}
+{%- block implementation -%}
 {%- if claude %}
 {%- set has_impl = file_structure is defined or key_interfaces is defined or dependencies is defined %}
 {%- if has_impl %}
@@ -129,9 +134,9 @@
 {%- endif %}
 {%- endif %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block features -%}
+{%- block features -%}
 {%- if wiki %}
 ## Features
 
@@ -143,9 +148,9 @@
 <!-- Feature list placeholder -->
 {%- endif %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block screenshots -%}
+{%- block screenshots -%}
 {%- if wiki and screenshots is defined and screenshots %}
 ## Screenshots
 
@@ -158,9 +163,9 @@
 
 {%- endfor %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block configuration -%}
+{%- block configuration -%}
 {%- set has_config = env_vars is defined or config_keys is defined or wiki_configuration is defined %}
 {%- if has_config %}
 ## Configuration
@@ -204,9 +209,9 @@
 {%- endif %}
 {%- endif %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block api -%}
+{%- block api -%}
 {%- if claude and api_endpoints is defined and api_endpoints %}
 ## API Endpoints
 
@@ -233,9 +238,9 @@
 {%- endfor %}
 {%- endif %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block testing -%}
+{%- block testing -%}
 {%- if claude %}
 {%- set has_tests = unit_tests_description is defined or integration_tests_description is defined or test_coverage_notes is defined %}
 {%- if has_tests %}
@@ -265,9 +270,9 @@ Target: **80% minimum**
 {%- endif %}
 {%- endif %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block implementation_checklist -%}
+{%- block implementation_checklist -%}
 {%- if claude and implementation_phases is defined and implementation_phases %}
 ## Implementation Checklist
 
@@ -280,9 +285,9 @@ Target: **80% minimum**
 
 {%- endfor %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block troubleshooting -%}
+{%- block troubleshooting -%}
 {%- if wiki and troubleshooting is defined and troubleshooting %}
 ## Troubleshooting
 
@@ -295,9 +300,9 @@ Target: **80% minimum**
 
 {%- endfor %}
 {%- endif %}
-{%- endblock %}
+{%- endblock -%}
 
-{% block related_docs -%}
+{%- block related_docs %}
 ## Related Documentation
 
 {%- if claude %}

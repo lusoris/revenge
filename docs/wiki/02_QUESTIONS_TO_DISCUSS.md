@@ -20,28 +20,9 @@ This document tracks unresolved design questions and gaps that need team discuss
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

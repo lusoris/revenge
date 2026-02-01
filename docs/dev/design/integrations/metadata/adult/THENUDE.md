@@ -57,37 +57,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Data<br/>Reconciliation<br/>Service"]
+    node2["TheNude<br/>(Alias Database)"]
+    node3["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"]
+    node4["Rate Limiter<br/>(1 req/sec)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌───────────────────┐
-│   Data            │
-│   Reconciliation  │
-│   Service         │
-└─────────┬─────────┘
-          │
-          │ Alias Resolution
-          ▼
-┌───────────────────┐
-│     TheNude       │
-│  (Alias Database) │
-└─────────┬─────────┘
-          │
-   ┌──────┴────────┐
-   │  HTTP_CLIENT  │
-   │  (RECOMMENDED │
-   │   proxy/VPN)  │
-   └───────────────┘
-          │
-   ┌──────┴───────┐
-   │ Rate Limiter │
-   │ (1 req/sec)  │
-   └──────────────┘
-
-Use Case:
-Scene has "Performer A" → TheNude shows aliases
-→ "Performer A" = "Stage Name B" = "Name C"
-→ Link all instances to single performer record
-```
-
 
 ### Integration Structure
 
@@ -106,8 +85,6 @@ internal/integration/thenude/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -184,12 +161,6 @@ type AliasResult struct {
 - HTTP_CLIENT - Proxy/VPN routing (RECOMMENDED)
 - DATA_RECONCILIATION - Alias resolution consumer
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -241,15 +212,6 @@ metadata:
         min_fuzzy_score: 0.85     # Minimum similarity for fuzzy match
         normalize_names: true     # Remove punctuation, lowercase
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

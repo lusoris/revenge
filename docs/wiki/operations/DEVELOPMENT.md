@@ -23,28 +23,9 @@ This guide walks you through setting up Revenge for local development. You will 
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

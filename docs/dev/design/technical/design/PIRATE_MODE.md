@@ -42,25 +42,6 @@ Pirate mode features:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

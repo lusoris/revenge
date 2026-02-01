@@ -56,18 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Metadata<br/>Service"]
+    node2["ThePosterDB<br/>Provider"]
+    node3["PosterDB API<br/>(External)"]
+    node4["Image Download<br/>& Storage"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Metadata   │────▶│ ThePosterDB  │────▶│PosterDB API │
-│  Service    │◀────│  Provider    │◀────│ (External)  │
-└─────────────┘     └──────┬───────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │Image Download│
-                    │  & Storage   │
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -86,8 +84,6 @@ internal/integration/theposterdb/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -152,12 +148,6 @@ type PosterSet struct {
 **External APIs**:
 - ThePosterDB API (free with registration)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -186,15 +176,6 @@ metadata:
       generate_blurhash: true
       cache_ttl: 168h
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

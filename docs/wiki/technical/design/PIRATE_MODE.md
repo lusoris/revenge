@@ -21,28 +21,9 @@ Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's le
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

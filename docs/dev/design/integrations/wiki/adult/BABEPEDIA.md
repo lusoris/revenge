@@ -54,30 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>QAR Module<br/>(Performer)"]
+    node2["Babepedia<br/>Scraper"]
+    node3["Performer Data<br/>- Biography"]
+    node4["Rate Limiter"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
 ```
-┌──────────────┐
-│  Revenge     │
-│  QAR Module  │
-│  (Performer) │
-└──────┬───────┘
-       │ Enrichment request
-       ▼
-┌──────────────┐     ┌───────────────────┐
-│  Babepedia   │────▶│  Performer Data   │
-│  Scraper     │     │  - Biography      │
-└──────┬───────┘     │  - Measurements   │
-       │             │  - Career dates   │
-┌──────┴───────┐     │  - Social links   │
-│ Rate Limiter │     │  - Photo URL      │
-│ + Proxy Pool │     └───────────────────┘
-└──────────────┘
-
-Data Flow:
-Performer Identified → Check Cache → Scrape Profile → Parse HTML → Store Enrichment
-
-Integration Role: ENRICHMENT (supplements StashDB performer data)
-```
-
 
 ### Integration Structure
 
@@ -96,8 +82,6 @@ internal/integration/babepedia/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -176,12 +160,6 @@ func (p *BabepediaProvider) parseProfile(doc *goquery.Document) (*PerformerProfi
 **External**:
 - Babepedia website (no official API)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -209,15 +187,6 @@ qar:
         use_proxy: true
         retry_on_block: true
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

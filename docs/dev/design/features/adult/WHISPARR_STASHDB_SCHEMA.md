@@ -58,25 +58,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -99,8 +94,6 @@ internal/content/whisparr_v3_&_stashdb_schema_integration/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -290,12 +283,6 @@ type WebhookEvent struct {
 - Whisparr API v3 - Adult content management
 - StashDB GraphQL API - Collaborative metadata database
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -344,8 +331,6 @@ stashdb:
   # Rate limiting
   requests_per_minute: 30
 ```
-
-
 
 ## API Endpoints
 
@@ -455,13 +440,6 @@ Response 200 OK:
   "local_id": "aa0e8400-e29b-41d4-a716-446655440005"
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

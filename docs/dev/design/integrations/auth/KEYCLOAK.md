@@ -56,49 +56,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["User<br/>Browser"]
+    node2["Keycloak<br/>Auth Server"]
+    node3["Revenge<br/>Server"]
+    node4["Keycloak<br/>Token Endpoint"]
+    node5["User<br/>Session"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+    node4 --> node5
 ```
-┌──────────────┐    1. Auth Request   ┌─────────────────┐
-│    User      │─────(redirect)──────▶│    Keycloak     │
-│   Browser    │                      │   Auth Server   │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │ 2. Login page (realm selection)      │
-       │◀──────────────────────────────────────│
-       │                                       │
-       │ 3. Submit credentials                │
-       │──────────────────────────────────────▶│
-       │                  ┌────────────────────┤
-       │                  │  Authenticate:     │
-       │                  │  - Local users     │
-       │                  │  - LDAP/AD         │
-       │                  │  - Social login    │
-       │                  │  - SAML federation │
-       │                  │  - Custom SPI      │
-       │                  └────────────────────┤
-       │ 4. Authorization code                │
-       │◀──────────────────────────────────────│
-       │   (redirect to callback)              │
-       ▼                                       │
-┌──────────────┐    5. Exchange code  ┌────────┴────────┐
-│   Revenge    │─────for tokens──────▶│    Keycloak     │
-│   Server     │                      │  Token Endpoint │
-│              │◀─────────────────────│                 │
-│              │  6. ID + access +    │                 │
-└──────┬───────┘     refresh tokens   └─────────────────┘
-       │
-       │ 7. Verify token (JWKS)
-       │ 8. Introspect token (optional)
-       │ 9. Get user info
-       │ 10. Map roles/groups → Revenge roles
-       │ 11. Apply audience validation
-       │ 12. Create session
-       ▼
-┌──────────────┐
-│   User       │
-│  Session     │
-└──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -117,8 +86,6 @@ internal/integration/keycloak/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -230,12 +197,6 @@ type TokenIntrospection struct {
 **External Services**:
 - Keycloak server 23.0+ (https://www.keycloak.org/)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -288,8 +249,6 @@ auth:
         update_user_info: true
         user_claim: "preferred_username"  # Field to use as username
 ```
-
-
 
 ## API Endpoints
 **OIDC Endpoints** (Revenge):
@@ -351,13 +310,6 @@ POST /api/v1/auth/oidc/introspect
   "aud": ["revenge-api"]
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

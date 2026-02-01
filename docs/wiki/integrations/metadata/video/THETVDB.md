@@ -29,26 +29,9 @@ SUPPLEMENTARY metadata source for TV shows. Used as: (1) **Fallback** when Sonar
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

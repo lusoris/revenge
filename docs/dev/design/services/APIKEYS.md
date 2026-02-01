@@ -55,26 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(API Key)"]
+    node2["Middleware<br/>(API Auth)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>Cache<br/>RB"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  Middleware  │────▶│   Service   │
-│ (API Key)   │◀────│ (API Auth)   │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │   Cache   │  │  RBAC  │
-                │  (sqlc)  │          │  (otter)  │  │Service │
-                └────┬─────┘          └───────────┘  └────────┘
-                     │
-                     ▼
-                ┌─────────────┐
-                │ PostgreSQL  │
-                │   (pgx)     │
-                └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -105,8 +97,6 @@ internal/service/apikeys/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -158,12 +148,6 @@ type CreateKeyRequest struct {
 - `crypto/sha256` - Key hashing
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -182,8 +166,6 @@ apikeys:
   default_expiry: 0  # 0 = never expire
   max_per_user: 10
 ```
-
-
 
 ## API Endpoints
 ```
@@ -215,13 +197,6 @@ GET    /api/v1/apikeys/:id/usage    # Get usage stats
   "message": "Store this key securely. It won't be shown again."
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

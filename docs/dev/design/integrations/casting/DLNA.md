@@ -55,39 +55,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Smart TV<br/>DLNA Client"]
+    node2["Revenge<br/>MediaServer"]
+    node3["Renderer<br/>(Playback)"]
+    node4["AVTransport<br/>Service"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
 ```
-┌──────────────┐    SSDP Discovery    ┌─────────────────┐
-│   Smart TV   │◀─────(UDP 1900)─────▶│    Revenge      │
-│  DLNA Client │                      │  MediaServer    │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │  1. Discover servers (M-SEARCH)      │
-       │──────────────────────────────────────▶│
-       │                                       │
-       │  2. Get device description (XML)     │
-       │◀──────────────────────────────────────│
-       │                                       │
-       │  3. Browse content (SOAP)            │
-       │──────────────────────────────────────▶│
-       │   <Browse ObjectID="0"/>             │
-       │                                       │
-       │  4. Receive content list (DIDL-Lite) │
-       │◀──────────────────────────────────────│
-       │   <?xml version="1.0"?>              │
-       │   <DIDL-Lite>...</DIDL-Lite>         │
-       │                                       │
-       │  5. Request media URL                │
-       │──────────────────────────────────────▶│
-       │                                       │
-       │  6. Stream media (HTTP)              │
-       │◀──────────────────────────────────────│
-       │                                       │
-┌──────▼───────┐                      ┌────────▼────────┐
-│   Renderer   │                      │   AVTransport   │
-│   (Playback) │◀──Control (SOAP)────│   Service       │
-└──────────────┘                      └─────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -106,8 +83,6 @@ internal/integration/dlnaupnp/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -238,12 +213,6 @@ type DLNAProfile struct {
 **External Tools**:
 - FFmpeg (for transcoding incompatible formats)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -295,8 +264,6 @@ casting:
       image_thumbnails: true
 ```
 
-
-
 ## API Endpoints
 **DLNA Server Control** (Admin API):
 ```
@@ -330,13 +297,6 @@ GET /api/v1/dlna/status
   }
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

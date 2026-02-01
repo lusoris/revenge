@@ -58,34 +58,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Metadata<br/>Service"]
+    node2["Whisparr<br/>(LOCAL cache)"]
+    node3["ThePornDB<br/>(fallback +<br/>enrichment)"]
+    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node5["Rate Limiter<br/>(10 req/sec)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+    node4 --> node5
 ```
-┌──────────────┐
-│  Revenge     │
-│  Metadata    │
-│  Service     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────────┐
-       │ PRIMARY                                  │ SUPPLEMENTARY
-       ▼                                          ▼
-┌──────────────┐                           ┌──────────────┐
-│   Whisparr   │                           │  ThePornDB   │
-│ (LOCAL cache)│                           │  (fallback + │
-│              │                           │  enrichment) │
-└──────┬───────┘                           └──────┬───────┘
-       │                                          │
-       ▼                                   ┌──────┴────────┐
-┌──────────────┐                          │  HTTP_CLIENT  │
-│  StashDB     │                          │  (optional    │
-│  (external)  │                          │   proxy/VPN)  │
-└──────────────┘                          └───────────────┘
-                                                 │
-                                          ┌──────┴───────┐
-                                          │ Rate Limiter │
-                                          │ (10 req/sec) │
-                                          └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -104,8 +88,6 @@ internal/integration/theporndb/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -203,12 +185,6 @@ type StudioMetadata struct {
 - Whisparr - PRIMARY metadata source
 - StashDB - Alternative supplementary source
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -260,15 +236,6 @@ metadata:
           - md5
           - phash                # Perceptual hash for similar scenes
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

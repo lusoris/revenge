@@ -23,28 +23,9 @@ Revenge maintains high code quality through comprehensive testing. All new code 
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

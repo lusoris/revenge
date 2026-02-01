@@ -44,25 +44,6 @@ Modern reactive frontend for Revenge:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

@@ -54,29 +54,14 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>QAR Module<br/>(Performer)"]
+    node2["Boobpedia<br/>MediaWiki<br/>API"]
+    node3["Performer Data<br/>- Biography<br/>- Career history"]
+    node2 --> node3
+    node1 --> node2
 ```
-┌──────────────┐
-│  Revenge     │
-│  QAR Module  │
-│  (Performer) │
-└──────┬───────┘
-       │ Enrichment request
-       ▼
-┌──────────────┐     ┌───────────────────┐
-│  Boobpedia   │────▶│  Performer Data   │
-│  MediaWiki   │     │  - Biography      │
-│  API         │     │  - Career history │
-└──────┬───────┘     │  - Studio info    │
-       │             │  - Filmography    │
-┌──────┴───────┐     │  - Infobox data   │
-│ Rate Limiter │     └───────────────────┘
-│ (polite)     │
-└──────────────┘
-
-Uses MediaWiki API (same as Wikipedia)
-Integration Role: ENRICHMENT (supplements StashDB/Babepedia)
-```
-
 
 ### Integration Structure
 
@@ -95,8 +80,6 @@ internal/integration/boobpedia/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -186,12 +169,6 @@ func parseInfobox(wikitext string) (*PerformerInfo, error) {
 **External**:
 - Boobpedia MediaWiki API (public, no key)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -217,15 +194,6 @@ qar:
         priority: 20             # After StashDB (10), before Babepedia (30)
         extract_sentences: 5
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

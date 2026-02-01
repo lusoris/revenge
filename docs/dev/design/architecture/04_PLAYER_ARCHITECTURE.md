@@ -58,79 +58,26 @@ Player components:
 
 # Player Architecture
 
+```mermaid
+flowchart TD
+    node1["CLIENT LAYER<br/>Web Player<br/>Mobile App"]
+    node2["HLS.js<br/>(Adaptive)"]
+    node3["STREAMING LAYER<br/>HLS Manifest Generator (gohlslib)<br/>- Master Playlist (.m3u8)"]
+    node4["Transcoding Engine [FFmpeg/go-astiav]<br/>- Codec Conversion (H.264, H.265, AV1)<br/>- Audio Transcoding (AAC, Opus)"]
+    node5["FEATURE LAYER<br/>Skip Intro<br/>Trickplay"]
+    node6["SyncPlay<br/>- WebSocket<br/>- Sync State"]
+    node7["Casting<br/>- Chromecast<br/>- DLNA"]
+    node8["Subtitles<br/>- SSA/ASS<br/>- WebVTT"]
+    node9["STORAGE LAYER<br/>Media Files<br/>Metadata DB"]
+    node6 --> node7
+    node7 --> node8
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+    node5 --> node6
+    node8 --> node9
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         CLIENT LAYER                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │ Web Player   │  │ Mobile App   │  │ TV App       │         │
-│  │ (Vidstack)   │  │ (React Native)│  │ (Android TV) │         │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
-│         │                 │                  │                  │
-│         └─────────────────┼──────────────────┘                  │
-│                           │                                     │
-│                    ┌──────▼───────┐                            │
-│                    │   HLS.js     │                            │
-│                    │ (Adaptive)   │                            │
-│                    └──────┬───────┘                            │
-└───────────────────────────┼─────────────────────────────────────┘
-                            │
-┌───────────────────────────▼─────────────────────────────────────┐
-│                      STREAMING LAYER                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │              HLS Manifest Generator (gohlslib)           │  │
-│  │  - Master Playlist (.m3u8)                               │  │
-│  │  - Media Playlists (video/audio/subs)                    │  │
-│  │  - Adaptive Bitrate Profiles                             │  │
-│  └──────────────────┬───────────────────────────────────────┘  │
-│                     │                                           │
-│  ┌──────────────────▼───────────────────────────────────────┐  │
-│  │           Transcoding Engine (FFmpeg/go-astiav)          │  │
-│  │  - Codec Conversion (H.264, H.265, AV1)                  │  │
-│  │  - Audio Transcoding (AAC, Opus)                         │  │
-│  │  - Subtitle Burning/Extract                              │  │
-│  │  - Hardware Acceleration (VAAPI, NVENC, QSV)             │  │
-│  └──────────────────┬───────────────────────────────────────┘  │
-│                     │                                           │
-└─────────────────────┼───────────────────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────────────────┐
-│                    FEATURE LAYER                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │ Skip Intro   │  │  Trickplay   │  │  Chapters    │         │
-│  │ - Timeline   │  │  - Thumbnails│  │  - Markers   │         │
-│  │ - Detection  │  │  - Scrubbing │  │  - Navigation│         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
-│                                                                  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │  SyncPlay    │  │  Casting     │  │  Subtitles   │         │
-│  │ - WebSocket  │  │  - Chromecast│  │  - SSA/ASS   │         │
-│  │ - Sync State │  │  - DLNA      │  │  - WebVTT    │         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-
-┌──────────────────────────────────────────────────────────────────┐
-│                       STORAGE LAYER                               │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌────────────────┐ │
-│  │ Media Files      │  │ Metadata DB      │  │ Cache          │ │
-│  │ - Video Streams  │  │ - Playback State │  │ - Transcodes   │ │
-│  │ - Audio Tracks   │  │ - User Progress  │  │ - Trickplay    │ │
-│  │ - Subtitle Files │  │ - Watch History  │  │ - Segments     │ │
-│  └──────────────────┘  └──────────────────┘  └────────────────┘ │
-│                                                                   │
-└───────────────────────────────────────────────────────────────────┘
-```
-
-
-
 ## Implementation
 
 ### File Structure
@@ -460,12 +407,6 @@ const (
 - `vidstack` (^1.12.0): Web video player framework
 - `hls.js` (^1.5.0): HLS adaptive streaming
 - `@vidstack/react` (^1.12.0): React bindings for Vidstack (mobile)
-
-
-
-
-
-
 ## Configuration
 
 ### Config Keys
@@ -486,15 +427,6 @@ const (
 | `playback.syncplay.enabled` | bool | True | Enable SyncPlay feature |
 | `playback.casting.chromecast_enabled` | bool | True | Enable Chromecast support |
 | `playback.casting.dlna_enabled` | bool | True | Enable DLNA support |
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [architecture](INDEX.md)

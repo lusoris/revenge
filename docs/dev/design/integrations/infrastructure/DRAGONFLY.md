@@ -57,20 +57,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Server<br/>(Services)"]
+    node2["rueidis<br/>(Redis Client"]
+    node3["Dragonfly<br/>Server"]
+    node4["sturdyc<br/>(Coalescing)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Server    │────▶│   rueidis    │────▶│  Dragonfly  │
-│ (Services)  │◀────│ (Redis Client│◀────│   Server    │
-└─────────────┘     │  with Auto-  │     └─────────────┘
-                    │   Pipelining)│
-                    └──────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │   sturdyc    │
-                    │ (Coalescing) │
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -89,8 +85,6 @@ internal/integration/dragonfly/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -133,12 +127,6 @@ type L1Config struct {
 **External Services**:
 - Dragonfly server (recommended) or Redis 6.0+ (fallback)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -180,8 +168,6 @@ cache:
     ttl: 1h
 ```
 
-
-
 ## API Endpoints
 **Health Check**:
 ```
@@ -211,13 +197,6 @@ GET /api/v1/health/cache
 ```
 GET /api/v1/admin/cache/stats
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

@@ -21,28 +21,9 @@ Component library built on shadcn-svelte and Bits UI. Media cards with hover inf
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

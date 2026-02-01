@@ -24,25 +24,8 @@ The Notifications System delivers real-time alerts across multiple channels. Use
 ---
 
 
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

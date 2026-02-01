@@ -21,28 +21,9 @@ Revenge follows Semantic Versioning (semver). Version numbers are formatted as v
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

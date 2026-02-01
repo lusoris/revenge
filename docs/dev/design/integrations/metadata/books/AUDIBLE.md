@@ -54,35 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Audiobook<br/>Service"]
+    node2["Chaptarr<br/>(LOCAL cache)"]
+    node3["Audnexus<br/>(Audible<br/>metadata)"]
+    node4["Rate Limiter<br/>(1 req/sec)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
 ```
-┌──────────────┐
-│  Revenge     │
-│  Audiobook   │
-│  Service     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────────┐
-       │ PRIMARY                                  │ SUPPLEMENTARY
-       ▼                                          ▼
-┌──────────────┐                           ┌──────────────┐
-│   Chaptarr   │                           │   Audnexus   │
-│ (LOCAL cache)│                           │  (Audible    │
-│              │                           │   metadata)  │
-└──────────────┘                           └──────┬───────┘
-                                                  │
-                                           ┌──────┴───────┐
-                                           │ Rate Limiter │
-                                           │ (1 req/sec)  │
-                                           └──────────────┘
-
-Key Data:
-- Narrator information
-- Chapter markers (timestamps)
-- Series info
-- Audible ASIN mappings
-- Cover images
-```
-
 
 ### Integration Structure
 
@@ -101,8 +82,6 @@ internal/integration/audible/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -165,12 +144,6 @@ type Chapter struct {
 **External APIs**:
 - Audnexus API (free, no key required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -194,15 +167,6 @@ metadata:
       role: supplementary
       priority: 20
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

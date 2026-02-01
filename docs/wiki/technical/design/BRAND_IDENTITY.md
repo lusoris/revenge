@@ -21,28 +21,9 @@ Revenge takes its name and visual identity from Queen Anne's Revenge - Blackbear
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

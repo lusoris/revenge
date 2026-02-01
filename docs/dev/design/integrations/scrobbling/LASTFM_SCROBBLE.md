@@ -43,8 +43,6 @@
 
 
 
----
-
 
 ## Architecture
 
@@ -65,23 +63,6 @@ internal/integration/lastfm_scrobbling/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)

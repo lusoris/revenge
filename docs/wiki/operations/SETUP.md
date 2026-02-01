@@ -28,27 +28,9 @@ This guide covers everything you need to deploy Revenge in production. The recom
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
 ## Troubleshooting
 ### Container won't start
 
@@ -82,7 +64,6 @@ This guide covers everything you need to deploy Revenge in production. The recom
 2. Review active transcoding jobs: `docker compose logs revenge | grep transcode`
 3. Increase dragonfly cache size
 4. Consider offloading transcoding to Blackbeard
-
 
 ## Related Documentation
 ### Related Pages

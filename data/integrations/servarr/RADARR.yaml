@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Movie management automation and metadata synchronization'
 wiki_tagline: '> Automatic movie downloads with Radarr'
-wiki_overview: Radarr integration enables automatic movie downloads and library management.
-  Request movies in Revenge and Radarr handles finding and downloading them. Webhooks
-  notify Revenge when new movies arrive. Library status shows which movies are monitored
-  and their quality. Connect by entering your Radarr URL and API key.
+wiki_overview: Radarr integration enables automatic movie downloads and library management. Request movies in Revenge and
+  Radarr handles finding and downloading them. Webhooks notify Revenge when new movies arrive. Library status shows which
+  movies are monitored and their quality. Connect by entering your Radarr URL and API key.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -65,7 +64,6 @@ integration_id: radarr
 external_service: Radarr
 auth_method: api_key
 api_base_url: http://localhost:7878/api/v3
-
 dual_role_metadata_and_downloads: |
   **CRITICAL: Radarr serves DUAL purposes in the Revenge architecture**:
 
@@ -99,21 +97,17 @@ dual_role_metadata_and_downloads: |
     - Lidarr → Music (MusicBrainz metadata)
     - Chaptarr → Books/Audiobooks (GoodReads/OpenLibrary metadata)
     - Whisparr → Adult Content (StashDB metadata)
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Request"]
+      node2["Radarr<br/>Integration"]
+      node3["Radarr<br/>Server"]
+      node4["Webhook<br/>Handler"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Revenge    │────▶│   Radarr     │────▶│   Radarr    │
-  │  Request    │◀────│ Integration  │◀────│   Server    │
-  │  System     │     │              │     └─────────────┘
-  └─────────────┘     └──────┬───────┘
-                             │
-                      ┌──────▼────────┐
-                      │   Webhook     │
-                      │   Handler     │
-                      └───────────────┘
-  ```
-
 api_details: |
   **API Version**: v3
   **Base URL**: `http://localhost:7878/api/v3` (configurable)
@@ -129,7 +123,6 @@ api_details: |
   - `/command` - Trigger commands (search, refresh)
   - `/history` - Get download history
   - `/calendar` - Get upcoming releases
-
 database_schema: |
   **Schema**: `public`
 
@@ -169,7 +162,6 @@ database_schema: |
   );
   CREATE INDEX idx_radarr_movies_instance ON radarr_movies(radarr_instance_id);
   ```
-
 module_structure: |
   ```
   internal/integrations/radarr/
@@ -181,7 +173,6 @@ module_structure: |
   ├── types.go                     # Radarr API types
   └── radarr_test.go
   ```
-
 key_interfaces: |
   ```go
   // Radarr integration service
@@ -214,7 +205,6 @@ key_interfaces: |
     SizeOnDisk      int64    `json:"sizeOnDisk"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -225,7 +215,6 @@ dependencies: |
 
   **External Services**:
   - Radarr v3+ (self-hosted)
-
 env_vars: |
   ```bash
   # Radarr instance
@@ -236,7 +225,6 @@ env_vars: |
   RADARR_AUTO_SYNC=true
   RADARR_SYNC_INTERVAL=300  # 5 minutes
   ```
-
 config_keys: |
   ```yaml
   integrations:
@@ -249,7 +237,6 @@ config_keys: |
           auto_sync: true
           sync_interval: 300
   ```
-
 component_interaction: |
   **Add Movie to Radarr** (from Revenge request):
   1. User requests movie in Revenge
@@ -274,7 +261,6 @@ component_interaction: |
   3. Compare with radarr_movies table
   4. Update monitored status, has_file, file_path
   5. Create/update movies in Revenge library
-
 api_request_examples: |
   **Add Movie**:
   ```
@@ -310,7 +296,6 @@ api_request_examples: |
   GET http://localhost:7878/api/v3/movie/123
   X-Api-Key: your_api_key
   ```
-
 webhook_handling: |
   **Supported Events**:
   - **Download**: Movie downloaded and imported
@@ -345,7 +330,6 @@ webhook_handling: |
   2. Parse event type
   3. Update database based on event
   4. Trigger library rescan if needed
-
 quality_profiles: |
   **Quality Profiles**:
   - Define preferred quality (720p, 1080p, 4K)
@@ -373,7 +357,6 @@ quality_profiles: |
     }
   ]
   ```
-
 unit_tests: |
   ```go
   func TestRadarrService_AddMovie(t *testing.T) {
@@ -384,7 +367,6 @@ unit_tests: |
     // Test webhook processing
   }
   ```
-
 integration_tests: |
   ```go
   func TestRadarr_FullWorkflow(t *testing.T) {

@@ -42,25 +42,6 @@ Typography approach:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

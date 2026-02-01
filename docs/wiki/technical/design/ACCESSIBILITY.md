@@ -21,28 +21,9 @@ Revenge targets WCAG 2.1 AAA, the highest accessibility standard. Color contrast
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

@@ -22,31 +22,12 @@ SUPPLEMENTARY metadata source for books/audiobooks. Used as: (1) **Fallback** wh
 
 
 
----
-
 
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

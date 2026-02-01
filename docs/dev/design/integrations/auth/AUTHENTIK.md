@@ -56,40 +56,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["User<br/>Browser"]
+    node2["Authentik<br/>IdP Server"]
+    node3["Revenge<br/>Server"]
+    node4["Authentik<br/>OAuth2 API"]
+    node5["User<br/>Session"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+    node4 --> node5
 ```
-┌──────────────┐    1. Auth Request   ┌─────────────────┐
-│    User      │─────(redirect)──────▶│   Authentik     │
-│   Browser    │                      │   IdP Server    │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │ 2. Login page                        │
-       │◀──────────────────────────────────────│
-       │                                       │
-       │ 3. Submit credentials                │
-       │──────────────────────────────────────▶│
-       │                                       │
-       │ 4. Authorization code                │
-       │◀──────────────────────────────────────│
-       │   (redirect to callback)              │
-       ▼                                       │
-┌──────────────┐    5. Exchange code  ┌────────┴────────┐
-│   Revenge    │─────for tokens──────▶│   Authentik     │
-│   Server     │                      │   OAuth2 API    │
-│              │◀─────────────────────│                 │
-│              │  6. ID token + access│                 │
-└──────┬───────┘     token            └─────────────────┘
-       │
-       │ 7. Verify token (JWKS)
-       │ 8. Get user info
-       │ 9. Map groups → roles
-       │ 10. Create session
-       ▼
-┌──────────────┐
-│   User       │
-│  Session     │
-└──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -108,8 +86,6 @@ internal/integration/authentik/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -190,12 +166,6 @@ type UserInfo struct {
 **External Services**:
 - Authentik server (https://goauthentik.io/)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -237,8 +207,6 @@ auth:
         user_claim: "preferred_username"  # Field to use as username
 ```
 
-
-
 ## API Endpoints
 **OIDC Endpoints** (Revenge):
 ```
@@ -277,13 +245,6 @@ GET /api/v1/auth/oidc/callback?
 5. Sets session cookie
 6. Redirects to /
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

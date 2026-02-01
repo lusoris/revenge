@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY ratings enrichment provider (IMDb/RT/Metacritic)'
 wiki_tagline: '> Multi-source ratings enrichment (IMDb, Rotten Tomatoes, Metacritic)'
-wiki_overview: 'SUPPLEMENTARY ratings enrichment for movies/TV shows. Provides: (1) IMDb ratings + vote counts, (2) Rotten Tomatoes scores (Tomatometer/Audience), (3) Metacritic scores, (4) Box office data, (5) Awards info. Free API with 1000 req/day limit. **Optional proxy/VPN routing** for restricted regions (via HTTP_CLIENT service). Primary use: Display multi-source ratings on detail pages.'
+wiki_overview: 'SUPPLEMENTARY ratings enrichment for movies/TV shows. Provides: (1) IMDb ratings + vote counts, (2) Rotten
+  Tomatoes scores (Tomatometer/Audience), (3) Metacritic scores, (4) Box office data, (5) Awards info. Free API with 1000
+  req/day limit. **Optional proxy/VPN routing** for restricted regions (via HTTP_CLIENT service). Primary use: Display multi-source
+  ratings on detail pages.'
 sources:
 - name: OMDb API
   url: https://www.omdbapi.com/
@@ -50,20 +53,17 @@ integration_name: OMDb (Open Movie Database)
 integration_id: omdb_open_movie_database
 external_service: OMDb (Open Movie Database)
 auth_method: api_key
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Metadata<br/>Service"]
+      node2["OMDb<br/>Provider"]
+      node3["OMDb API<br/>(External)"]
+      node4["Rate Limiter<br/>(1000/day)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Metadata   │────▶│   OMDb       │────▶│  OMDb API   │
-  │  Service    │◀────│   Provider   │◀────│ (External)  │
-  └─────────────┘     └──────┬───────┘     └─────────────┘
-                             │
-                      ┌──────┴───────┐
-                      │ Rate Limiter │
-                      │ (1000/day)   │
-                      └──────────────┘
-  ```
-
 api_details: |
   **API Version**: v1
   **Base URL**: `http://www.omdbapi.com`
@@ -81,7 +81,6 @@ api_details: |
   - Metacritic scores
   - Awards and nominations
   - Box office revenue
-
 database_schema: |
   **Schema**: `public`
 
@@ -110,7 +109,6 @@ database_schema: |
   );
   CREATE INDEX idx_external_ratings_imdb ON external_ratings(imdb_rating DESC) WHERE imdb_rating IS NOT NULL;
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/omdb/
@@ -121,7 +119,6 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (1000/day)
   └── omdb_test.go
   ```
-
 key_interfaces: |
   ```go
   // OMDb provider implementation
@@ -175,7 +172,6 @@ key_interfaces: |
     Value  string `json:"Value"`    // "8.8/10", "87%", "82/100"
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -185,7 +181,6 @@ dependencies: |
 
   **External APIs**:
   - OMDb API (free tier: 1,000 requests/day)
-
 env_vars: |
   ```bash
   # OMDb API
@@ -197,7 +192,6 @@ env_vars: |
   # Caching
   OMDB_CACHE_TTL=168h  # 7 days
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -208,7 +202,6 @@ config_keys: |
         daily_limit: 1000
         cache_ttl: 168h  # 7 days
   ```
-
 component_interaction: |
   **Ratings Fetch Workflow**:
   1. Movie already has TMDb metadata with IMDb ID
@@ -235,7 +228,6 @@ component_interaction: |
   - If limit reached, return cached data only
   - Log warning when approaching limit (90%)
   - Admins can monitor usage via metrics
-
 api_request_examples: |
   **Get by IMDb ID**:
   ```
@@ -280,7 +272,6 @@ api_request_examples: |
   ```
   GET http://www.omdbapi.com/?t=Inception&y=2010&apikey=xxx
   ```
-
 rating_parsing: |
   **Rating Sources**:
   - **IMDb**: "8.8/10" → Parse to 8.8
@@ -314,7 +305,6 @@ rating_parsing: |
     return ratings, nil
   }
   ```
-
 use_cases: |
   **Primary Use Cases**:
   1. **Multiple Rating Sources**: Display IMDb, Rotten Tomatoes, Metacritic on movie detail pages
@@ -332,7 +322,6 @@ use_cases: |
   Box Office: $292.6M
   Awards: Won 4 Oscars
   ```
-
 rate_limiting_strategy: |
   **Daily Limit Tracking**:
   ```go
@@ -368,7 +357,6 @@ rate_limiting_strategy: |
   - Return error if no cache
   - Log warning to admins
   - Resume requests next day at midnight UTC
-
 unit_tests: |
   ```go
   func TestOMDbProvider_GetByIMDbID(t *testing.T) {
@@ -383,7 +371,6 @@ unit_tests: |
     // Test daily reset at midnight UTC
   }
   ```
-
 integration_tests: |
   ```go
   func TestOMDb_FullWorkflow(t *testing.T) {
@@ -391,7 +378,6 @@ integration_tests: |
     // Test fetch, parsing, caching
   }
   ```
-
 caching_strategy: |
   **Long TTL for Ratings**:
   - Ratings don't change frequently (7 day TTL)
@@ -401,7 +387,6 @@ caching_strategy: |
   **Cache Keys**:
   - `omdb:imdb:{imdb_id}` - Full metadata
   - `omdb:ratings:{imdb_id}` - Ratings only
-
 error_handling: |
   **API Error Responses**:
   - `{"Response":"False","Error":"Movie not found!"}` → 404 Not Found
@@ -413,7 +398,6 @@ error_handling: |
   - 404: Return nil, don't retry
   - 429: Return cached data, resume tomorrow
   - Network errors: Retry once after 5 seconds
-
 performance_optimization: |
   **Selective Fetching**:
   - Only fetch ratings for popular content (e.g., >100 views)
@@ -424,7 +408,6 @@ performance_optimization: |
   - Background job to pre-fetch ratings for library content
   - Spread requests throughout the day to avoid hitting limit
   - Priority queue: popular movies first
-
 monitoring: |
   **Metrics Exposed** (via Prometheus):
   - `omdb_requests_total` - Total requests made

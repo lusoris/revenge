@@ -75,25 +75,20 @@ Complete eBook library:
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -116,8 +111,6 @@ internal/content/book/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -282,12 +275,6 @@ type ProgressTracker interface {
 **Database**:
 - PostgreSQL 18+ with trigram extension for fuzzy search
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -374,8 +361,6 @@ book:
     export_highlights: true
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -444,13 +429,6 @@ List all book series
 List all book collections
 
 ---
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)

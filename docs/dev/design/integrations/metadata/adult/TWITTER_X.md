@@ -56,36 +56,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+    node2["Twitter/X Link<br/>(verified URL)"]
+    node3["x.com<br/>(login wall)"]
+    node4["Followers<br/>(limited)"]
+    node5["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
+    node3 --> node4
+    node1 --> node2
+    node2 --> node3
+    node4 --> node5
 ```
-┌───────────────────┐
-│   Performer       │
-│   Profile Page    │
-│   (Revenge UI)    │
-└─────────┬─────────┘
-          │ Display social links
-          ▼
-┌───────────────────┐
-│   Twitter/X Link  │───→ Opens in new tab
-│   (verified URL)  │     (user's browser)
-└─────────┬─────────┘
-          │ URL verification
-          │ (NO API access)
-          ▼
-┌───────────────────┐     ┌──────────────┐
-│     x.com         │────▶│  Followers   │
-│   (login wall)    │     │  (limited)   │
-└───────────────────┘     └──────────────┘
-          │
-   ┌──────┴────────┐
-   │  HTTP_CLIENT  │
-   │  (recommended │
-   │   proxy/VPN)  │
-   └───────────────┘
-
-NOTE: Twitter API is NOT used (expensive, restrictive).
-Only web scraping for basic verification.
-```
-
 
 ### Integration Structure
 
@@ -104,8 +86,6 @@ internal/integration/twitterx/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -210,12 +190,6 @@ func (p *TwitterProvider) extractProfileInfo(
 **NOT Used**:
 - Twitter API v2 (too expensive, $100/mo minimum)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -255,15 +229,6 @@ metadata:
         enabled: true
         check_interval: 168h
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

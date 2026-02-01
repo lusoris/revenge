@@ -55,26 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["Middleware<br/>(Auth)"]
+    node3["Service<br/>(Logic)"]
+    node4["tory<br/>Cache<br/>Redi"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  Middleware  │────▶│   Service   │
-│  (Web/App)  │◀────│   (Auth)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-      │                                          │
-      │ Bearer Token                ┌────────────┼────────────┐
-      │                             ▼            ▼            ▼
-      │                      ┌──────────┐  ┌──────────┐  ┌────────┐
-      │                      │Repository│  │  Cache   │  │ Redis  │
-      │                      │  (sqlc)  │  │ (otter)  │  │(rueidis)│
-      │                      └────┬─────┘  └──────────┘  └────────┘
-      │                           │
-      │                           ▼
-      │                      ┌─────────────┐
-      │                      │ PostgreSQL  │
-      │                      │   (pgx)     │
-      │                      └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -108,8 +100,6 @@ internal/service/session/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -166,12 +156,6 @@ type DeviceInfo struct {
 - `net` - IP address handling
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -195,8 +179,6 @@ session:
   cleanup_interval: 1h
   max_sessions_per_user: 10
 ```
-
-
 
 ## API Endpoints
 ```
@@ -248,13 +230,6 @@ DELETE /api/v1/sessions              # Revoke all sessions (logout everywhere)
   ]
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

@@ -21,28 +21,9 @@ Revenge includes built-in database recovery mechanisms. The connection pool (pgx
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

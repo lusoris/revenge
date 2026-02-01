@@ -42,8 +42,6 @@
 
 
 
----
-
 
 ## Architecture
 
@@ -64,23 +62,6 @@ internal/integration/stashdb/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)

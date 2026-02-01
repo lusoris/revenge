@@ -55,19 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Scanner<br/>(Library)"]
+    node2["Service<br/>(Logic)"]
+    node3["Repository<br/>(sqlc)"]
+    node4["FFmpeg<br/>(go-astiav)"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node4 --> node5
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Scanner   │────▶│   Service    │────▶│  Repository │
-│  (Library)  │     │   (Logic)    │     │   (sqlc)    │
-└─────────────┘     └──────┬───────┘     └──────┬──────┘
-                           │                    │
-                           ▼                    ▼
-                    ┌─────────────┐      ┌─────────────┐
-                    │   FFmpeg    │      │ PostgreSQL  │
-                    │(go-astiav)  │      │   (pgx)     │
-                    └─────────────┘      └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -103,8 +102,6 @@ internal/service/fingerprint/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -152,12 +149,6 @@ type Fingerprint struct {
 - FFmpeg (for frame extraction)
 - fpcalc (Chromaprint fingerprinting tool)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -178,8 +169,6 @@ fingerprint:
   chromaprint_path: /usr/bin/fpcalc
 ```
 
-
-
 ## API Endpoints
 ```
 POST   /api/v1/fingerprints/generate/:type/:id  # Generate fingerprint
@@ -188,13 +177,6 @@ POST   /api/v1/fingerprints/detect-duplicates   # Detect duplicates
 GET    /api/v1/fingerprints/duplicates          # List all duplicates
 DELETE /api/v1/fingerprints/duplicates/:id      # Mark as not duplicate
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

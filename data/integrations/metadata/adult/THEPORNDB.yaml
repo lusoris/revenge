@@ -18,7 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY adult metadata provider (fallback + enrichment) for QAR content'
 wiki_tagline: '> ThePornDB - Supplementary to Whisparr/StashDB'
-wiki_overview: 'SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback** when Whisparr/StashDB not setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. REST API with scene/performer/studio matching. Fingerprint-based file identification. **Optional proxy/VPN routing** for privacy (via HTTP_CLIENT service).'
+wiki_overview: 'SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback** when Whisparr/StashDB not
+  setup, unreachable, or lacks metadata, (2) **Enrichment** for additional data. REST API with scene/performer/studio matching.
+  Fingerprint-based file identification. **Optional proxy/VPN routing** for privacy (via HTTP_CLIENT service).'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
@@ -53,36 +55,19 @@ integration_id: theporndb
 external_service: ThePornDB
 api_base_url: https://api.theporndb.net
 auth_method: api_key
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Metadata<br/>Service"]
+      node2["Whisparr<br/>(LOCAL cache)"]
+      node3["ThePornDB<br/>(fallback +<br/>enrichment)"]
+      node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+      node5["Rate Limiter<br/>(10 req/sec)"]
+      node2 --> node3
+      node1 --> node2
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌──────────────┐
-  │  Revenge     │
-  │  Metadata    │
-  │  Service     │
-  └──────┬───────┘
-         │
-         ├─────────────────────────────────────────┐
-         │ PRIMARY                                  │ SUPPLEMENTARY
-         ▼                                          ▼
-  ┌──────────────┐                           ┌──────────────┐
-  │   Whisparr   │                           │  ThePornDB   │
-  │ (LOCAL cache)│                           │  (fallback + │
-  │              │                           │  enrichment) │
-  └──────┬───────┘                           └──────┬───────┘
-         │                                          │
-         ▼                                   ┌──────┴────────┐
-  ┌──────────────┐                          │  HTTP_CLIENT  │
-  │  StashDB     │                          │  (optional    │
-  │  (external)  │                          │   proxy/VPN)  │
-  └──────────────┘                          └───────────────┘
-                                                   │
-                                            ┌──────┴───────┐
-                                            │ Rate Limiter │
-                                            │ (10 req/sec) │
-                                            └──────────────┘
-  ```
-
 api_details: |
   **API Version**: v1
   **Base URL**: `https://api.theporndb.net`
@@ -104,7 +89,6 @@ api_details: |
   - `hash` - File hash for exact matching
   - `limit` - Results per page (default: 10, max: 100)
   - `page` - Pagination offset
-
 database_schema: |
   **Schema**: `qar` (pirate-themed obfuscation)
 
@@ -157,7 +141,6 @@ database_schema: |
   );
   CREATE INDEX idx_tpdb_cache_expiry ON qar.tpdb_cache(expires_at);
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/theporndb/
@@ -172,7 +155,6 @@ module_structure: |
   ├── ratelimit.go                 # Rate limiter (10/sec)
   └── theporndb_test.go
   ```
-
 key_interfaces: |
   ```go
   // ThePornDB provider implementation
@@ -247,7 +229,6 @@ key_interfaces: |
     SceneCount  int       `json:"scene_count"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -265,7 +246,6 @@ dependencies: |
   - HTTP_CLIENT - Proxy/VPN routing (optional)
   - Whisparr - PRIMARY metadata source
   - StashDB - Alternative supplementary source
-
 env_vars: |
   ```bash
   # ThePornDB API
@@ -283,7 +263,6 @@ env_vars: |
   TPDB_PROXY_ENABLED=false
   TPDB_PROXY_URL=socks5://127.0.0.1:9050
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -313,7 +292,6 @@ config_keys: |
             - md5
             - phash                # Perceptual hash for similar scenes
   ```
-
 component_interaction: |
   **Scene Metadata Fetch (Treasure)**:
   1. File scanner detects new QAR media file
@@ -343,7 +321,6 @@ component_interaction: |
   - If Whisparr unavailable: Try StashDB, then ThePornDB
   - If StashDB unavailable: Try ThePornDB directly
   - If all fail: Store file without metadata, retry later via River job
-
 api_request_examples: |
   **Search Scene by Title**:
   ```bash
@@ -425,7 +402,6 @@ api_request_examples: |
     }
   }
   ```
-
 fingerprint_matching: |
   **Supported Hash Types**:
   - **oshash** (OpenSubtitles Hash): Based on file size + first/last 64KB
@@ -489,7 +465,6 @@ fingerprint_matching: |
     return result.Data, nil
   }
   ```
-
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider** (not primary)
 
@@ -544,7 +519,6 @@ supplementary_role: |
     return scene, nil
   }
   ```
-
 proxy_vpn_support: |
   **Optional Proxy/VPN Routing** (via HTTP_CLIENT service)
 
@@ -570,7 +544,6 @@ proxy_vpn_support: |
   ```
 
   **See**: [HTTP_CLIENT.yaml](../../../services/HTTP_CLIENT.yaml) for implementation
-
 error_handling: |
   **HTTP Error Codes**:
   - 401 Unauthorized → Invalid or missing API key
@@ -593,7 +566,6 @@ error_handling: |
     ErrUnauthorized      = errors.New("invalid API key")
   )
   ```
-
 unit_tests: |
   ```go
   func TestThePornDB_SearchScene(t *testing.T) {
@@ -628,7 +600,6 @@ unit_tests: |
     assert.Greater(t, elapsed, 400*time.Millisecond)
   }
   ```
-
 integration_tests: |
   ```go
   func TestThePornDB_FullWorkflow(t *testing.T) {
@@ -655,7 +626,6 @@ integration_tests: |
     }
   }
   ```
-
 caching_strategy: |
   **Cache Layers**:
   - **L1**: In-memory cache (otter) for hot data (5 minute TTL)
@@ -673,7 +643,6 @@ caching_strategy: |
   - Manual refresh via admin UI
   - Automatic expiry after TTL
   - Cleared on provider configuration change
-
 best_practices: |
   **API Usage**:
   - Always include Authorization header with Bearer token

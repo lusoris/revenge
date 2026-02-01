@@ -55,18 +55,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Services<br/>(Enqueue)"]
+    node2["River<br/>Client"]
+    node3["PostgreSQL<br/>(Job Store)"]
+    node4["Workers<br/>(Background)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Services   │────▶│   River      │────▶│ PostgreSQL  │
-│ (Enqueue)   │     │   Client     │     │ (Job Store) │
-└─────────────┘     └──────────────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │   Workers    │
-                    │ (Background) │
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -85,8 +83,6 @@ internal/integration/river/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -127,12 +123,6 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 - `github.com/google/uuid` - UUID support
 - `go.uber.org/fx` - Dependency injection
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -168,8 +158,6 @@ jobs:
         max_workers: 5
 ```
 
-
-
 ## API Endpoints
 **List Jobs**:
 ```
@@ -203,13 +191,6 @@ GET /api/v1/admin/jobs?state=running&limit=50
 ```
 DELETE /api/v1/admin/jobs/:id
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

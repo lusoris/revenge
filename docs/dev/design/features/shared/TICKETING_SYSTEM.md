@@ -54,25 +54,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -95,8 +90,6 @@ internal/content/ticketing_system/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -159,12 +152,6 @@ type GitHubIntegration interface {
 **External APIs**:
 - GitHub REST API v3 (optional)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -191,8 +178,6 @@ tickets:
     auto_create_issues: false
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -212,13 +197,6 @@ GET    /api/v1/tickets/:id/attachments # List attachments
 PUT    /api/v1/tickets/:id/assign      # Assign ticket
 POST   /api/v1/tickets/:id/github      # Link GitHub issue
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

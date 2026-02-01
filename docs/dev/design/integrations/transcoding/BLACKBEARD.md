@@ -54,45 +54,14 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge Server<br/>Playback<br/>Transcoding"]
+    node2["Transcoding Router<br/>(choose internal vs external)"]
+    node3["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>Distributed Transcoding Workers"]
+    node1 --> node2
+    node2 --> node3
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                        Revenge Server                             │
-│  ┌────────────────┐    ┌────────────────┐    ┌────────────────┐  │
-│  │   Playback     │    │   Transcoding  │    │   INTERNAL     │  │
-│  │   Service      │───▶│   Service      │───▶│   FFmpeg       │  │
-│  └────────────────┘    └───────┬────────┘    │  (go-astiav)   │  │
-│                                │             └────────────────┘  │
-│                                │                                  │
-│              ┌─────────────────┴──────────────────┐              │
-│              │      Transcoding Router            │              │
-│              │   (choose internal vs external)    │              │
-│              └─────────────────┬──────────────────┘              │
-│                                │                                  │
-└────────────────────────────────┼──────────────────────────────────┘
-                                 │
-                                 │ OPTIONAL External Offloading
-                                 │ (via REST API)
-                                 ▼
-┌────────────────────────────────────────────────────────────────────┐
-│                   EXTERNAL: Blackbeard Service                      │
-│                   (Third-party, NOT developed by us)                │
-│  ┌──────────────────────────────────────────────────────────────┐  │
-│  │  Distributed Transcoding Workers                              │  │
-│  │  - GPU acceleration (NVENC, QSV, VAAPI)                       │  │
-│  │  - Multiple worker instances                                   │  │
-│  │  - Job queue and coordination                                  │  │
-│  │  - API for job submission and status                           │  │
-│  └──────────────────────────────────────────────────────────────┘  │
-│                                                                      │
-│  NOTE: Blackbeard is developed externally.                          │
-│  Details about its architecture will come from the Blackbeard team. │
-└────────────────────────────────────────────────────────────────────┘
-
-Transcoding Strategy:
-1. INTERNAL (default): go-astiav FFmpeg bindings
-2. EXTERNAL (optional): Offload to Blackbeard if configured
-```
-
 
 ### Integration Structure
 
@@ -111,8 +80,6 @@ internal/integration/blackbeard/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -199,12 +166,6 @@ func (r *TranscodingRouter) Transcode(ctx context.Context, job *TranscodeJob) er
 **External**:
 - Blackbeard service (user-deployed, not developed by us)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -247,15 +208,6 @@ transcoding:
     segment_duration: 6s
     target_duration: 6
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

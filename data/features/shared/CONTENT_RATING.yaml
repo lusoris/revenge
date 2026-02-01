@@ -18,11 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Universal age restriction and content rating system for revenge.'
 wiki_tagline: '> Age ratings and content restrictions across all media'
-wiki_overview: Unified content rating system covering movies, TV shows, music, and
-  games. Supports multiple rating systems (MPAA, PEGI, TV Parental Guidelines, ESRB).
-  Set maximum allowed ratings per user profile - perfect for kid accounts. Content
-  warnings for mature themes are displayed before playback. Ratings are pulled automatically
-  from metadata providers.
+wiki_overview: Unified content rating system covering movies, TV shows, music, and games. Supports multiple rating systems
+  (MPAA, PEGI, TV Parental Guidelines, ESRB). Set maximum allowed ratings per user profile - perfect for kid accounts. Content
+  warnings for mature themes are displayed before playback. Ratings are pulled automatically from metadata providers.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -55,20 +53,21 @@ design_refs:
 feature_name: Content Rating System
 module_name: content_rating_system
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -215,19 +214,16 @@ key_interfaces: |
     RatingValues []map[string]interface{} `db:"rating_values" json:"rating_values"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/jackc/pgx/v5/pgtype` - JSONB handling
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   RATINGS_ENFORCE=true
   ```
-
 config_keys: |
   ```yaml
   ratings:
@@ -240,7 +236,6 @@ config_keys: |
       - ESRB
       - BBFC
   ```
-
 component_interaction: |
   **Rating Retrieval Flow**:
   1. User requests content (movie, TV show, etc.)
@@ -261,7 +256,6 @@ component_interaction: |
   2. Service queries rating_value_mappings for conversion
   3. Compare mapped values
   4. Use approximate age equivalence if direct mapping unavailable
-
 api_endpoints: |
   ```
   GET  /api/v1/ratings/content/:type/:id       # Get content ratings
@@ -272,7 +266,6 @@ api_endpoints: |
 
   GET  /api/v1/ratings/check?content=:id       # Check if content allowed for user
   ```
-
 unit_tests: |
   ```go
   func TestRatingService_CheckRatingAllowed(t *testing.T) {
@@ -307,7 +300,6 @@ unit_tests: |
     // MPAA PG-13 → PEGI 12
   }
   ```
-
 integration_tests: |
   ```go
   func TestRatings_EndToEnd(t *testing.T) {

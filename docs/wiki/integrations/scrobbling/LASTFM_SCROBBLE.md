@@ -22,31 +22,12 @@ Send your music listening history to Last.fm automatically. Tracks scrobble afte
 
 
 
----
-
 
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

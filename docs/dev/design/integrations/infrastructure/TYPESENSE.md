@@ -56,19 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Search)"]
+    node2["Search<br/>Service"]
+    node3["Typesense<br/>Server"]
+    node4["Sync Job<br/>(PostgreSQL<br/>Typesense)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│   Search     │────▶│  Typesense  │
-│  (Search)   │◀────│   Service    │◀────│   Server    │
-└─────────────┘     └──────┬───────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │   Sync Job   │
-                    │ (PostgreSQL  │
-                    │   → Typesense)│
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -87,8 +84,6 @@ internal/integration/typesense/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -140,12 +135,6 @@ type SearchResults struct {
 **External Services**:
 - Typesense server (required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -174,8 +163,6 @@ search:
     sync_interval: 5m
     batch_size: 100
 ```
-
-
 
 ## API Endpoints
 **Search**:
@@ -212,13 +199,6 @@ GET /api/v1/search?q=inception&collections=movies,tvshows&filter_by=release_year
 ```
 GET /api/v1/search/autocomplete?q=inc&collection=movies
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

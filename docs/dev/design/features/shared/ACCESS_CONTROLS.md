@@ -54,25 +54,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -95,8 +90,6 @@ internal/content/time_based_access_controls/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -115,12 +108,6 @@ type AccessService interface {
 - `github.com/jackc/pgx/v5`
 - `github.com/casbin/casbin/v2` - Policy enforcement
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -137,8 +124,6 @@ access:
   default_daily_limit_minutes: 120
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -147,13 +132,6 @@ GET  /api/v1/access/schedules/:userId
 POST /api/v1/access/schedules
 GET  /api/v1/access/usage/:userId
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

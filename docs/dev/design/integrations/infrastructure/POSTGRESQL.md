@@ -55,19 +55,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Server<br/>(Services)"]
+    node2["pgxpool<br/>(Connection"]
+    node3["PostgreSQL<br/>Server 18+"]
+    node4["sqlc<br/>(Query Gen)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Server    │────▶│   pgxpool    │────▶│ PostgreSQL  │
-│ (Services)  │◀────│ (Connection  │◀────│  Server 18+ │
-└─────────────┘     │     Pool)    │     └─────────────┘
-                    └──────┬───────┘
-                           │
-                    ┌──────┴───────┐
-                    │   sqlc       │
-                    │ (Query Gen)  │
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -86,8 +83,6 @@ internal/integration/postgresql/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -127,12 +122,6 @@ type PostgresConfig struct {
 **External Services**:
 - PostgreSQL 18.0+ server (required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -170,8 +159,6 @@ database:
     max_conn_idle_time: 30m
 ```
 
-
-
 ## API Endpoints
 **Health Check**:
 ```
@@ -190,13 +177,6 @@ GET /api/v1/health/database
   }
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

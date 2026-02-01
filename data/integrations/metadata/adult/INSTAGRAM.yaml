@@ -18,7 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> LINK-ONLY performer social media profiles for QAR content'
 wiki_tagline: '> Instagram - Performer profile links for QAR'
-wiki_overview: 'LINK-ONLY integration for QAR performer profiles. Stores verified Instagram profile URLs. Extracts basic public metrics (followers, posts). **NO content access** - only profile links and public metrics. **Web scraping** with rate limiting. **Proxy/VPN recommended** (via HTTP_CLIENT service).'
+wiki_overview: LINK-ONLY integration for QAR performer profiles. Stores verified Instagram profile URLs. Extracts basic public
+  metrics (followers, posts). **NO content access** - only profile links and public metrics. **Web scraping** with rate limiting.
+  **Proxy/VPN recommended** (via HTTP_CLIENT service).
 sources:
 - name: PuerkitoBio/goquery
   url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
@@ -44,38 +46,19 @@ external_service: Instagram
 api_base_url: https://www.instagram.com
 data_access_method: web_scraping
 content_streaming: false
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+      node2["Instagram Link<br/>(verified URL)"]
+      node3["Instagram.com<br/>(login wall)"]
+      node4["Followers<br/>Post Count"]
+      node5["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
+      node3 --> node4
+      node1 --> node2
+      node2 --> node3
+      node4 --> node5
   ```
-  ┌───────────────────┐
-  │   Performer       │
-  │   Profile Page    │
-  │   (Revenge UI)    │
-  └─────────┬─────────┘
-            │ Display social links
-            ▼
-  ┌───────────────────┐
-  │   Instagram Link  │───→ Opens in new tab
-  │   (verified URL)  │     (user's browser)
-  └─────────┬─────────┘
-            │ Metadata only
-            │ (NO content)
-            ▼
-  ┌───────────────────┐     ┌──────────────┐
-  │   Instagram.com   │────▶│  Followers   │
-  │   (login wall)    │     │  Post Count  │
-  └───────────────────┘     │  Bio         │
-            │               └──────────────┘
-     ┌──────┴────────┐
-     │  HTTP_CLIENT  │
-     │  (recommended │
-     │   proxy/VPN)  │
-     └───────────────┘
-
-  IMPORTANT: This integration does NOT access any content.
-  Only stores verified profile links and public counts.
-  ```
-
 integration_scope: |
   **WHAT THIS INTEGRATION DOES**:
   - ✅ Stores verified performer Instagram profile URLs
@@ -95,7 +78,6 @@ integration_scope: |
   - Heavy rate limiting and bot detection
   - Profile pages may require authentication
   - Only public profile info accessible
-
 api_details: |
   **Data Access**: Web scraping (very limited)
   **Base URL**: `https://www.instagram.com`
@@ -119,7 +101,6 @@ api_details: |
 
   **IMPORTANT**: Instagram aggressively blocks scrapers.
   This integration has very limited functionality.
-
 database_schema: |
   **Schema**: `qar` (pirate-themed obfuscation)
 
@@ -155,7 +136,6 @@ database_schema: |
   );
   CREATE INDEX idx_social_profiles_platform ON qar.social_profiles(platform, username);
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/social/
@@ -172,7 +152,6 @@ module_structure: |
       ├── types.go                 # Shared types
       └── verification.go          # Link verification
   ```
-
 key_interfaces: |
   ```go
   // Social profile link provider interface
@@ -217,7 +196,6 @@ key_interfaces: |
     cache       Cache
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -232,7 +210,6 @@ dependencies: |
 
   **Internal Services**:
   - HTTP_CLIENT - Proxy/VPN routing
-
 env_vars: |
   ```bash
   # Instagram integration
@@ -244,7 +221,6 @@ env_vars: |
   INSTAGRAM_PROXY_ENABLED=true
   INSTAGRAM_PROXY_URL=socks5://127.0.0.1:9050
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -267,7 +243,6 @@ config_keys: |
           enabled: true
           check_interval: 168h       # Weekly
   ```
-
 component_interaction: |
   **Profile Link Storage**:
   1. FreeOnes/StashDB provides Instagram username for performer
@@ -285,7 +260,6 @@ component_interaction: |
   - May work on some profiles
   - Returns nil for inaccessible data
   - Caches for 7 days
-
 scraping_limitations: |
   **Instagram is Highly Restrictive**:
 
@@ -353,7 +327,6 @@ scraping_limitations: |
     // ... extraction logic ...
   }
   ```
-
 link_role: |
   **LINK-Only Provider**
 
@@ -373,7 +346,6 @@ link_role: |
   - Cannot access stories
   - Cannot embed content
   - Links open in user's browser
-
 error_handling: |
   **Expected Errors**:
   - 404 Not Found → Profile doesn't exist
@@ -385,7 +357,6 @@ error_handling: |
   - If scraping fails → store link anyway (unverified)
   - If metrics unavailable → store nil values
   - Retry verification weekly
-
 unit_tests: |
   ```go
   func TestInstagram_VerifyUsername(t *testing.T) {
@@ -401,7 +372,6 @@ unit_tests: |
     assert.Contains(t, info.ProfileURL, "instagram.com/testuser")
   }
   ```
-
 best_practices: |
   **Instagram Integration**:
   - Keep it minimal (verification only)

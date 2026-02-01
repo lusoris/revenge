@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Multi-channel notifications for users and admins'
 wiki_tagline: '> Multi-channel notifications for users and admins'
-wiki_overview: Get notified about important events through multiple channels. Receive
-  alerts when new media is added, downloads complete, or errors occur. Supports email,
-  push notifications (via FCM), webhooks, and in-app notifications. Configure which
+wiki_overview: Get notified about important events through multiple channels. Receive alerts when new media is added, downloads
+  complete, or errors occur. Supports email, push notifications (via FCM), webhooks, and in-app notifications. Configure which
   events trigger notifications and choose delivery channels per user or globally.
 sources:
 - name: Uber fx
@@ -53,24 +52,19 @@ design_refs:
 service_name: Notification Service
 package_path: internal/service/notification
 fx_module: notification.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Event<br/>Publisher"]
+      node2["Notification<br/>Service"]
+      node3["Channels<br/>(Email,<br/>Push,"]
+      node4["PostgreSQL<br/>(pgx)"]
+      node5["External<br/>Services"]
+      node1 --> node2
+      node2 --> node3
+      node4 --> node5
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Event     │────▶│  Notification│────▶│  Channels   │
-  │  Publisher  │     │   Service    │     │  (Email,    │
-  │             │     │              │     │   Push,     │
-  │             │     │              │     │   Webhook)  │
-  └─────────────┘     └──────┬───────┘     └─────┬───────┘
-                             │                   │
-                             ▼                   ▼
-                      ┌─────────────┐     ┌──────────────┐
-                      │ PostgreSQL  │     │   External   │
-                      │   (pgx)     │     │   Services   │
-                      └─────────────┘     │ (SMTP, FCM)  │
-                                          └──────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -176,7 +170,6 @@ database_schema: |
   );
   CREATE INDEX idx_push_devices_user ON push_notification_devices(user_id);
   ```
-
 module_structure: |
   ```
   internal/service/notification/
@@ -193,7 +186,6 @@ module_structure: |
       ├── webhook.go               # Webhook delivery
       └── inapp.go                 # In-app notification storage
   ```
-
 key_interfaces: |
   ```go
   type NotificationService interface {
@@ -231,7 +223,6 @@ key_interfaces: |
     Send(ctx context.Context, recipient User, notification Notification) error
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -246,7 +237,6 @@ dependencies: |
   **External Services**:
   - SMTP server for email
   - Firebase Cloud Messaging (FCM) for push notifications
-
 env_vars: |
   ```bash
   NOTIFICATION_SMTP_HOST=smtp.gmail.com
@@ -256,7 +246,6 @@ env_vars: |
   NOTIFICATION_FCM_CREDENTIALS_FILE=/config/fcm-service-account.json
   NOTIFICATION_DELIVERY_WORKERS=5
   ```
-
 config_keys: |
   ```yaml
   notification:
@@ -275,7 +264,6 @@ config_keys: |
       retry_attempts: 3
       retry_delay: 5m
   ```
-
 component_interaction: |
   **Notification Flow** (content added):
   1. Library scanner adds new movie
@@ -308,7 +296,6 @@ component_interaction: |
   3. Store in push_notification_devices
   4. When sending push, query all active devices for user
   5. Send to each FCM token
-
 api_endpoints: |
   ```
   # In-app notifications
@@ -355,7 +342,6 @@ api_endpoints: |
   --
   Revenge Media Server
   ```
-
 unit_tests: |
   ```go
   func TestNotificationService_Send(t *testing.T) {
@@ -366,7 +352,6 @@ unit_tests: |
     // Test template rendering with data
   }
   ```
-
 integration_tests: |
   ```go
   func TestNotification_EmailDelivery(t *testing.T) {

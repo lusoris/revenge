@@ -56,19 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Request"]
+    node2["Radarr<br/>Integration"]
+    node3["Radarr<br/>Server"]
+    node4["Webhook<br/>Handler"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Revenge    │────▶│   Radarr     │────▶│   Radarr    │
-│  Request    │◀────│ Integration  │◀────│   Server    │
-│  System     │     │              │     └─────────────┘
-└─────────────┘     └──────┬───────┘
-                           │
-                    ┌──────▼────────┐
-                    │   Webhook     │
-                    │   Handler     │
-                    └───────────────┘
-```
-
 
 ### Integration Structure
 
@@ -87,8 +84,6 @@ internal/integration/radarr/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -137,12 +132,6 @@ type RadarrMovie struct {
 **External Services**:
 - Radarr v3+ (self-hosted)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -170,15 +159,6 @@ integrations:
         auto_sync: true
         sync_interval: 300
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

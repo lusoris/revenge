@@ -16,39 +16,25 @@ status_unit_testing: ✅
 status_unit_testing_notes: 80%+ coverage target
 status_integration_testing: ✅
 status_integration_testing_notes: testcontainers in use
-technical_summary: '> Complete technology stack powering Revenge
-
+technical_summary: |
+  > Complete technology stack powering Revenge
 
   Stack overview:
-
   - **Backend**: Go 1.25.6 with GOEXPERIMENT=greenteagc,jsonv2
-
   - **DI Framework**: fx v1.24.0 for dependency injection and lifecycle management
-
   - **API Layer**: ogen v1.18.0 for type-safe OpenAPI code generation
-
   - **Database**: PostgreSQL 18+ with pgx v5.8.0 driver, sqlc v1.30.0 code generation
-
   - **Caching**: L1 (otter v2.3.1 in-memory), L2 (Dragonfly v1.26.1 via rueidis v1.0.54)
-
   - **Search**: Typesense 27.1 for full-text search with typo tolerance
-
   - **Jobs**: River v0.20.1 for PostgreSQL-backed job queue
-
   - **Logging**: slog/tint v1.1.2 (dev), zap v1.27.1 (prod)
-
   - **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
-
   - **Testing**: testify v1.11.1, mockery v3.3.0, testcontainers v0.40.0
-
-  '
 wiki_tagline: '> Modern, performant stack for self-hosted media serving'
-wiki_overview: Revenge uses a carefully selected stack optimized for performance and
-  maintainability. The Go backend leverages fx for dependency injection, ogen for
-  type-safe API generation from OpenAPI specs, and pgx for high-performance PostgreSQL
-  access. Multi-tier caching with otter (L1) and Dragonfly (L2) ensures low latency.
-  Typesense provides instant full-text search. River handles background jobs using
-  PostgreSQL for ACID guarantees. The SvelteKit frontend with Svelte 5 runes delivers
+wiki_overview: Revenge uses a carefully selected stack optimized for performance and maintainability. The Go backend leverages
+  fx for dependency injection, ogen for type-safe API generation from OpenAPI specs, and pgx for high-performance PostgreSQL
+  access. Multi-tier caching with otter (L1) and Dragonfly (L2) ensures low latency. Typesense provides instant full-text
+  search. River handles background jobs using PostgreSQL for ACID guarantees. The SvelteKit frontend with Svelte 5 runes delivers
   reactive UIs with minimal overhead.
 sources:
 - name: Dragonfly Documentation
@@ -305,23 +291,25 @@ components:
   - Search (typesense client)
   - Jobs (river queue)
   - Logging (slog/zap)
-architecture_diagram: "┌─────────────────────────────────────────────────────────────────┐\n\
-  │                    SvelteKit Frontend                           │\n│         \
-  \ (Svelte 5 + Tailwind 4 + shadcn-svelte)               │\n└─────────────────────┬───────────────────────────────────────────┘\n\
-  \                      │ HTTP/JSON\n┌─────────────────────▼───────────────────────────────────────────┐\n\
-  │                  ogen OpenAPI Handlers                          │\n│         \
-  \    (Type-safe from openapi.yaml)                       │\n└─────────────────────┬───────────────────────────────────────────┘\n\
-  \                      │\n┌─────────────────────▼───────────────────────────────────────────┐\n\
-  │                   Service Layer (fx)                            │\n│         Movies\
-  \ │ TV │ Music │ QAR │ User │ Auth                 │\n└─────┬───────┬──┴──┬────────┬──────┬──────────────────────┬─────┘\n\
-  \      │       │     │        │      │                      │\n┌─────▼───┐ ┌─▼─────▼──┐\
-  \ ┌──▼──────▼───┐          ┌───────▼──────┐\n│  Cache  │ │  Search  │ │   Jobs \
-  \     │          │  Repository  │\n│  (L1+L2)│ │(Typesense)│ │   (River)   │   \
-  \       │   (sqlc)     │\n└─────────┘ └──────────┘ └─────────────┘          └───────┬──────┘\n\
-  \                                                            │\n               \
-  \                                   ┌─────────▼──────┐\n                       \
-  \                           │  PostgreSQL 18 │\n                               \
-  \                   └────────────────┘\n"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["SvelteKit Frontend<br/>(Svelte 5 + Tailwind 4 + shadcn-svelte)"]
+      node2["ogen OpenAPI Handlers<br/>(Type-safe from openapi.yaml)"]
+      node3["Service Layer [fx]<br/>Movies<br/>TV"]
+      node4["Cache<br/>(L1+L2)"]
+      node5["Search<br/>(Typesense)"]
+      node6["Jobs<br/>(River)"]
+      node7["Repository<br/>(sqlc)"]
+      node8["PostgreSQL 18"]
+      node4 --> node5
+      node5 --> node6
+      node6 --> node7
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node7 --> node8
+  ```
 env_vars:
 - name: REVENGE_SERVER_HOST
   type: string
@@ -347,35 +335,22 @@ env_vars:
   type: bool
   default: true
   description: Enable River job queue
-testing_approach: '### Unit Tests
-
+testing_approach: |
+  ### Unit Tests
   - **Framework**: testify/assert, testify/require
-
   - **Mocking**: mockery v3 for interface mocks
-
   - **Database**: embedded-postgres for fast in-memory tests
-
   - **Coverage**: 80% minimum (enforced in CI)
-
   - **Pattern**: Table-driven tests
 
-
   ### Integration Tests
-
   - **Framework**: testcontainers-go v0.40.0
-
   - **Services**: Real PostgreSQL 18, Dragonfly, Typesense containers
-
   - **Scope**: Full stack with real dependencies
-
   - **CI Matrix**: ubuntu-latest, macos-latest, windows-latest
 
-
   ### Test Coverage Target
-
   **80% minimum** - enforced in CI
-
-  '
 expected_load: 1000+ concurrent users, 10k+ req/min
 performance_optimizations:
 - Multi-tier caching (L1 memory + L2 distributed)

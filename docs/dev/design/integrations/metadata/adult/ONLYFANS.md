@@ -56,36 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+    node2["OnlyFans Link<br/>(verified URL)"]
+    node3["OnlyFans.com<br/>(login wall)"]
+    node4["HTTP_CLIENT<br/>(recommended<br/>proxy/VPN)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌───────────────────┐
-│   Performer       │
-│   Profile Page    │
-│   (Revenge UI)    │
-└─────────┬─────────┘
-          │ Display social links
-          ▼
-┌───────────────────┐
-│   OnlyFans Link   │───→ Opens in new tab
-│   (verified URL)  │     (user's browser)
-└─────────┬─────────┘
-          │ URL verification only
-          │ (NO content access)
-          ▼
-┌───────────────────┐
-│   OnlyFans.com    │
-│   (login wall)    │
-└───────────────────┘
-          │
-   ┌──────┴────────┐
-   │  HTTP_CLIENT  │
-   │  (recommended │
-   │   proxy/VPN)  │
-   └───────────────┘
-
-IMPORTANT: This integration does NOT access any content.
-Only verifies profile URLs exist.
-```
-
 
 ### Integration Structure
 
@@ -104,8 +84,6 @@ internal/integration/onlyfans/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -180,12 +158,6 @@ func (p *OnlyFansProvider) GetProfileInfo(
 **Internal Services**:
 - HTTP_CLIENT - Proxy/VPN routing
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -224,15 +196,6 @@ metadata:
         enabled: true
         check_interval: 168h
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

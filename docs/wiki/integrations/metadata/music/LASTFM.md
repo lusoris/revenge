@@ -29,26 +29,9 @@ SUPPLEMENTARY enrichment for music metadata. Provides: (1) Artist biographies, (
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

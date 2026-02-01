@@ -37,26 +37,9 @@ The Photos Library provides comprehensive photo management with support for JPEG
 2. **Metadata**: Automatically fetched
 3. **Library**: Organized by folder structure
 4. **Playback**: Stream directly or use external player
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

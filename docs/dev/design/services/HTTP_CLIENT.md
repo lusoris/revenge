@@ -123,23 +123,18 @@ fx.Provide(
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["External APIs<br/>(TMDb, TVDB)"]
+    node2["HTTP Client<br/>Factory"]
+    node3["Services<br/>(Metadata,"]
+    node4["Proxy/VPN<br/>(Tor, HTTP)"]
+    node5["Local Services<br/>(Arr, Stash)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
-│  External APIs  │◀────│  HTTP Client     │◀────│  Services   │
-│  (TMDb, TVDB)   │     │  Factory         │     │  (Metadata, │
-└─────────────────┘     │                  │     │   Requests) │
-                        │  - Proxy Router  │     └─────────────┘
-┌─────────────────┐     │  - VPN Binding   │
-│  Proxy/VPN      │◀────│  - Health Check  │
-│  (Tor, HTTP)    │     │  - Middleware    │
-└─────────────────┘     └──────────────────┘
-                                  │
-┌─────────────────┐               │
-│  Local Services │◀──────────────┘
-│  (Arr, Stash)   │    (Direct, no proxy)
-└─────────────────┘
-```
-
 
 ### Service Structure
 
@@ -172,8 +167,6 @@ internal/httpclient/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -271,12 +264,6 @@ func RetryMiddleware(maxRetries int, backoff time.Duration) Middleware
 - `go.uber.org/fx` - Dependency injection
 - `log/slog` - Structured logging
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -352,15 +339,6 @@ httpclient:
     - service: stash
       proxy: none             # Stash → Direct (local)
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

@@ -85,16 +85,6 @@ No external service dependencies.
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
-
-
-
-
-
-
-
-
 ## API Endpoints
 ### GET /api/v1/epg/channels
 
@@ -232,13 +222,6 @@ Get EPG statistics
   }
 }
 ```
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [services](INDEX.md)

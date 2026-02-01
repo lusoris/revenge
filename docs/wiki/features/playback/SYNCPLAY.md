@@ -37,26 +37,9 @@ Watch movies and shows together with friends, even when apart. SyncPlay keeps ev
 2. **Metadata**: Automatically fetched
 3. **Library**: Organized by folder structure
 4. **Playback**: Stream directly or use external player
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

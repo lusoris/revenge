@@ -21,28 +21,9 @@ Follow these guidelines when contributing code to Revenge. Use gofmt for formatt
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

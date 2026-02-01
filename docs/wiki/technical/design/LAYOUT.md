@@ -21,28 +21,9 @@ The layout system uses a 4px base unit for all spacing, ensuring visual consiste
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

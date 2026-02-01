@@ -54,25 +54,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -95,8 +90,6 @@ internal/content/revenge___client_support_&_device_capabilities/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -120,12 +113,6 @@ type ClientService interface {
 - `github.com/mssola/user_agent` - User agent parsing
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -143,8 +130,6 @@ clients:
   default_max_bitrate_mbps: 20
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -153,13 +138,6 @@ POST /api/v1/clients/register     # Register device
 GET  /api/v1/clients/:id           # Get device info
 PUT  /api/v1/clients/:id/profile   # Update quality profile
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

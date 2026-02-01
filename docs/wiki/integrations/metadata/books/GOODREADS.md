@@ -22,31 +22,12 @@ Data import integration for Goodreads library. CSV-based import (Goodreads API i
 
 
 
----
-
 
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

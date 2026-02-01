@@ -25,26 +25,9 @@ Revenge uses a carefully selected stack optimized for performance and maintainab
 ---
 
 
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

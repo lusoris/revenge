@@ -54,33 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    node2["FANDOM<br/>MediaWiki<br/>API"]
+    node3["Fan Wiki Links<br/>- Character pages<br/>- Episode guides"]
+    node4["Rate Limiter<br/>(polite)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
 ```
-┌──────────────┐
-│  Revenge     │
-│  Detail Page │
-│  (Movie/TV)  │
-└──────┬───────┘
-       │ "Learn More" links
-       ▼
-┌──────────────┐     ┌───────────────────┐
-│   FANDOM     │────▶│  Fan Wiki Links   │
-│  MediaWiki   │     │  - Character pages│
-│  API         │     │  - Episode guides │
-└──────┬───────┘     │  - Lore/universe  │
-       │             │  - Cast info      │
-┌──────┴───────┐     └───────────────────┘
-│ Rate Limiter │
-│ (polite)     │
-└──────────────┘
-
-Major Wikis:
-- starwars.fandom.com (Wookieepedia)
-- marvel.fandom.com (Marvel Database)
-- gameofthrones.fandom.com
-- memory-alpha.fandom.com (Star Trek)
-- lotr.fandom.com (Tolkien Gateway)
-```
-
 
 ### Integration Structure
 
@@ -99,8 +82,6 @@ internal/integration/fandom/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -163,12 +144,6 @@ type WikiLink struct {
 **External**:
 - FANDOM MediaWiki API (free, no key)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -209,15 +184,6 @@ metadata:
           name: Tolkien Gateway
           keywords: [Lord of the Rings, Hobbit, Rings of Power]
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

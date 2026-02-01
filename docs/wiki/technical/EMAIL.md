@@ -24,25 +24,8 @@ The Email System provides reliable SMTP email delivery with support for HTML tem
 ---
 
 
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

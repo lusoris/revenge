@@ -16,13 +16,12 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> User preference component for adult content visibility. > Referenced
-  by [WHISPARR_STASHDB_SCHEMA.md](../adult/WHISPARR_STASHDB_SCHEMA.md) and [ADULT_CONTENT_SYSTEM.md](../adult/ADULT_CONTENT_SYSTEM.md).'
+technical_summary: '> User preference component for adult content visibility. > Referenced by [WHISPARR_STASHDB_SCHEMA.md](../adult/WHISPARR_STASHDB_SCHEMA.md)
+  and [ADULT_CONTENT_SYSTEM.md](../adult/ADULT_CONTENT_SYSTEM.md).'
 wiki_tagline: '> Show or hide adult libraries with a simple toggle'
-wiki_overview: Control adult content visibility per user. When disabled, adult libraries
-  are completely hidden from the UI. Toggle requires PIN confirmation for security.
-  Quick toggle in the header for users with permission. Server admins control who
-  can enable the toggle. Works with the RBAC system to enforce content access policies.
+wiki_overview: Control adult content visibility per user. When disabled, adult libraries are completely hidden from the UI.
+  Toggle requires PIN confirmation for security. Quick toggle in the header for users with permission. Server admins control
+  who can enable the toggle. Works with the RBAC system to enforce content access policies.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -79,20 +78,21 @@ design_refs:
 feature_name: Revenge - NSFW Toggle
 module_name: revenge___nsfw_toggle
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -134,7 +134,6 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── nsfw_test.go
   ```
-
 key_interfaces: |
   ```go
   type NSFWService interface {
@@ -145,26 +144,22 @@ key_interfaces: |
     VerifyPIN(ctx context.Context, userID uuid.UUID, pin string) (bool, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `golang.org/x/crypto/bcrypt` - PIN hashing
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   NSFW_DEFAULT_SESSION_TIMEOUT=60
   ```
-
 config_keys: |
   ```yaml
   nsfw:
     default_session_timeout_minutes: 60
     require_pin_by_default: true
   ```
-
 component_interaction: |
   **Toggle Flow**:
   1. User clicks NSFW toggle in header
@@ -178,7 +173,6 @@ component_interaction: |
   2. Middleware checks nsfw_sessions
   3. If not enabled or expired, return 403
   4. If enabled, allow access to qar.* schema
-
 api_endpoints: |
   ```
   POST /api/v1/nsfw/enable          # Enable NSFW mode
@@ -186,14 +180,12 @@ api_endpoints: |
   GET  /api/v1/nsfw/status          # Get NSFW status
   PUT  /api/v1/nsfw/pin             # Set/update PIN
   ```
-
 unit_tests: |
   ```go
   func TestNSFWService_EnableDisable(t *testing.T) {
     // Test enable/disable flow with PIN
   }
   ```
-
 integration_tests: |
   ```go
   func TestNSFW_EndToEnd(t *testing.T) {

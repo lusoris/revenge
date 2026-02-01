@@ -25,26 +25,9 @@ The player architecture handles media playback across web, mobile, and TV client
 ---
 
 
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

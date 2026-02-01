@@ -42,8 +42,6 @@
 
 
 
----
-
 
 ## Architecture
 
@@ -64,23 +62,6 @@ internal/integration/stash/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [ADULT_CONTENT_SYSTEM (QAR module)](../../../features/adult/ADULT_CONTENT_SYSTEM.md)

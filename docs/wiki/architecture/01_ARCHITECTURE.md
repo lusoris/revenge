@@ -25,26 +25,9 @@ Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL stores all
 ---
 
 
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

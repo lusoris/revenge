@@ -57,40 +57,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Performer<br/>Enrichment"]
+    node2["Whisparr/StashDB<br/>(performer base)"]
+    node3["FreeOnes<br/>(additional<br/>details)"]
+    node4["HTTP_CLIENT<br/>(RECOMMENDED<br/>proxy/VPN)"]
+    node5["Rate Limiter<br/>(2 req/sec)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+    node4 --> node5
 ```
-┌──────────────────┐
-│  Revenge         │
-│  Performer       │
-│  Enrichment      │
-└────────┬─────────┘
-         │
-         ├──────────────────────────────────────────┐
-         │ PRIMARY                                   │ ENRICHMENT
-         ▼                                           ▼
-┌─────────────────┐                          ┌──────────────┐
-│ Whisparr/StashDB│                          │   FreeOnes   │
-│ (performer base)│                          │ (additional  │
-│                 │                          │  details)    │
-└─────────────────┘                          └──────┬───────┘
-                                                    │
-                                             ┌──────┴────────┐
-                                             │  HTTP_CLIENT  │
-                                             │  (RECOMMENDED │
-                                             │   proxy/VPN)  │
-                                             └───────────────┘
-                                                    │
-                                             ┌──────┴───────┐
-                                             │ Rate Limiter │
-                                             │ (2 req/sec)  │
-                                             └──────────────┘
-
-Data Flow:
-1. Performer exists in Whisparr/StashDB (base profile)
-2. Enrichment job queries FreeOnes for additional data
-3. Merge: aliases, measurements, social links, career dates
-4. Store enriched profile in local database
-```
-
 
 ### Integration Structure
 
@@ -109,8 +87,6 @@ internal/integration/freeones/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -216,12 +192,6 @@ type SocialLink struct {
 - HTTP_CLIENT - Proxy/VPN routing (RECOMMENDED for scraping)
 - Whisparr/StashDB - Base performer data to enrich
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -275,15 +245,6 @@ metadata:
         priority: low              # Background job priority
         batch_size: 10             # Performers per batch job
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

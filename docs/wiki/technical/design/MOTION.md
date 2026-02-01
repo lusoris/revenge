@@ -21,28 +21,9 @@ Motion in Revenge is expressive but purposeful. Cards scale on hover, overlays f
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

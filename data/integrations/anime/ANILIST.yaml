@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary metadata and tracking provider for anime and manga'
 wiki_tagline: '> Sync anime watch status with AniList'
-wiki_overview: Connect your AniList account to sync anime watching progress. Metadata
-  for anime series pulls from AniList including cover art, descriptions, and airing
-  schedules. Mark episodes as watched in Revenge and your AniList profile updates
+wiki_overview: Connect your AniList account to sync anime watching progress. Metadata for anime series pulls from AniList
+  including cover art, descriptions, and airing schedules. Mark episodes as watched in Revenge and your AniList profile updates
   automatically. Import your existing AniList watchlist to track completion.
 sources:
 - name: AniList GraphQL API
@@ -47,45 +46,25 @@ integration_id: anilist
 external_service: AniList
 api_base_url: https://graphql.anilist.co
 auth_method: oauth
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Web Player"]
+      node2["Anime Item<br/>(TV Show)"]
+      node3["Scrobbling<br/>Service"]
+      node4["River Queue<br/>(Background)"]
+      node5["AniList<br/>Scrobbler"]
+      node6["Database<br/>(history)"]
+      node7["AniList API<br/>(GraphQL)"]
+      node8["AniList<br/>User Profile"]
+      node1 --> node2
+      node3 --> node4
+      node6 --> node7
+      node2 --> node3
+      node4 --> node5
+      node5 --> node6
+      node7 --> node8
   ```
-  ┌──────────────┐    1. Watch anime   ┌─────────────────┐
-  │   Revenge    │────episode──────────▶│   Anime Item    │
-  │  Web Player  │                      │   (TV Show)     │
-  └──────┬───────┘                      └────────┬────────┘
-         │                                       │
-         │ 2. Update progress                   │
-         ▼                                       ▼
-  ┌──────────────┐    3. Queue job     ┌────────────────┐
-  │  Scrobbling  │────────────────────▶│  River Queue   │
-  │   Service    │                     │  (Background)  │
-  └──────┬───────┘                     └────────┬───────┘
-         │                                      │
-         │                              4. Process job
-         │                                      ▼
-         │                             ┌────────────────┐
-         │                             │  AniList       │
-         │                             │  Scrobbler     │
-         │                             └────────┬───────┘
-         │                                      │
-         │                              5. GraphQL mutation
-         │                              (SaveMediaListEntry)
-         │                                      ▼
-  ┌──────┴───────┐                     ┌────────────────┐
-  │  Database    │                     │   AniList API  │
-  │  (history)   │                     │   (GraphQL)    │
-  └──────────────┘                     └────────┬───────┘
-                                                │
-                                        6. Update user's
-                                           anime list
-                                                ▼
-                                       ┌────────────────┐
-                                       │  AniList       │
-                                       │  User Profile  │
-                                       └────────────────┘
-  ```
-
 protocol_details: |
   **GraphQL API**:
 
@@ -120,7 +99,6 @@ protocol_details: |
   - `SaveMediaListEntry` - Update watch status
   - `DeleteMediaListEntry` - Remove from list
   - `UpdateUser` - Update user preferences
-
 module_structure: |
   ```
   internal/
@@ -141,7 +119,6 @@ module_structure: |
     scrobbling/
       anilist.yaml        # AniList configuration example
   ```
-
 key_interfaces: |
   ```go
   // AniListClient manages AniList GraphQL API
@@ -341,7 +318,6 @@ key_interfaces: |
       Locations []GraphQLErrorLocation `json:"locations,omitempty"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/riverqueue/river` - Background job queue for async scrobbling
@@ -351,7 +327,6 @@ dependencies: |
 
   **External Services**:
   - AniList API (https://anilist.co)
-
 env_vars: |
   ```bash
   # AniList OAuth configuration
@@ -364,7 +339,6 @@ env_vars: |
   REVENGE_ANILIST_SYNC_INTERVAL=24h
   REVENGE_ANILIST_AUTO_SYNC=true
   ```
-
 config_keys: |
   ```yaml
   scrobbling:
@@ -379,7 +353,6 @@ config_keys: |
       metadata_enabled: true      # Use for anime metadata
       metadata_priority: 10       # Priority in metadata chain (lower = higher priority)
   ```
-
 graphql_queries: |
   **Search Anime**:
   ```graphql
@@ -541,7 +514,6 @@ graphql_queries: |
     }
   }
   ```
-
 oauth_flow: |
   **OAuth 2.0 Authorization Code Flow**:
 
@@ -596,7 +568,6 @@ oauth_flow: |
        "variables": {...}
      }
      ```
-
 component_interaction: |
   **Scrobbling Workflow**:
 
@@ -637,7 +608,6 @@ component_interaction: |
      - Fetch user's complete AniList library
      - Import missing anime to Revenge
      - Update watch status for existing anime
-
 api_endpoints: |
   **Revenge API Endpoints**:
 
@@ -686,7 +656,6 @@ api_endpoints: |
     "errors": 0
   }
   ```
-
 metadata_matching: |
   **Matching Revenge Anime to AniList**:
 
@@ -702,7 +671,6 @@ metadata_matching: |
   3. **Manual Override**:
      - Allow user to manually link if auto-match fails
      - Store mapping in database
-
 error_handling: |
   **Common Errors**:
 
@@ -729,7 +697,6 @@ error_handling: |
     ]
   }
   ```
-
 unit_tests: |
   ```go
   func TestAniListClient_SearchAnime(t *testing.T) {
@@ -772,7 +739,6 @@ unit_tests: |
       // Test error handling
   }
   ```
-
 integration_tests: |
   ```go
   func TestAniList_FullWorkflow(t *testing.T) {
@@ -804,7 +770,6 @@ integration_tests: |
       assert.NotEmpty(t, user.Name)
   }
   ```
-
 best_practices: |
   **API Usage**:
   - Respect rate limits (90 req/min)

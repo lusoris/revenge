@@ -57,25 +57,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -98,8 +93,6 @@ internal/content/revenge___user_experience_features/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -138,12 +131,6 @@ type UXPreferences struct {
 - `github.com/riverqueue/river` - Background trending calculation
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -163,8 +150,6 @@ ux:
   default_accent_color: '#e50914'
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -182,13 +167,6 @@ PUT    /api/v1/ux/preferences         # Update preferences
 GET    /api/v1/ux/top10/:type/:period # Get Top 10 list
 GET    /api/v1/ux/trending            # Get trending content
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

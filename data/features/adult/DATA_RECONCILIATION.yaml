@@ -18,11 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Fuzzy logic and confidence scoring for conflicting metadata'
 wiki_tagline: '> Smart matching when metadata sources disagree'
-wiki_overview: When multiple metadata sources provide conflicting information, the
-  reconciliation system resolves differences. Uses fuzzy string matching and confidence
-  scoring to pick the best data. Manually override any field when automatic matching
-  is wrong. Track which source provided each piece of metadata. Particularly useful
-  for adult content where naming is inconsistent.
+wiki_overview: When multiple metadata sources provide conflicting information, the reconciliation system resolves differences.
+  Uses fuzzy string matching and confidence scoring to pick the best data. Manually override any field when automatic matching
+  is wrong. Track which source provided each piece of metadata. Particularly useful for adult content where naming is inconsistent.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -50,20 +48,21 @@ content_types:
 - Scenes
 - Performers
 - Studios
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `qar`
 
@@ -141,7 +140,6 @@ database_schema: |
   );
   CREATE INDEX idx_fuzzy_match_cache_lookup ON qar.fuzzy_match_cache(string_a, string_b);
   ```
-
 module_structure: |
   ```
   internal/content/adult/reconciliation/
@@ -185,14 +183,12 @@ module_structure: |
   └── qar/
       └── 014_reconciliation.sql   # Schema creation
   ```
-
 file_structure: |
   **Key Files**:
   - `internal/content/adult/reconciliation/service.go` - Core reconciliation logic
   - `internal/content/adult/reconciliation/fuzzy/*.go` - Fuzzy matching algorithms
   - `internal/content/adult/reconciliation/repository.go` - Metadata source tracking
   - `migrations/qar/014_reconciliation.sql` - Database schema
-
 key_interfaces: |
   ```go
   // ReconciliationService handles metadata conflict resolution
@@ -311,7 +307,6 @@ key_interfaces: |
     CreatedAt     time.Time       `db:"created_at" json:"created_at"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid` - UUID handling
@@ -328,7 +323,6 @@ dependencies: |
 
   **External APIs**:
   - None (internal reconciliation logic)
-
 env_vars: |
   ```bash
   # Reconciliation settings
@@ -337,7 +331,6 @@ env_vars: |
   RECONCILIATION_CACHE_SIZE=10000               # Fuzzy match cache entries
   RECONCILIATION_CACHE_TTL=24h                  # Cache expiration
   ```
-
 config_keys: |
   ```yaml
   reconciliation:
@@ -369,7 +362,6 @@ config_keys: |
       - jaro_winkler     # Jaro-Winkler similarity
       - trigram          # PostgreSQL pg_trgm
   ```
-
 component_interaction: |
   **Reconciliation Flow**:
   1. Metadata import from source (StashDB, Whisparr, Stash)
@@ -400,7 +392,6 @@ component_interaction: |
   4. Manual overrides always win (highest priority)
   5. Original source data preserved in metadata_sources
   6. User can remove override to revert to auto-reconciliation
-
 api_endpoints: |
   **Endpoints**:
   ```
@@ -528,7 +519,6 @@ api_endpoints: |
     ]
   }
   ```
-
 unit_tests: |
   ```go
   // internal/content/adult/reconciliation/reconciliation_test.go
@@ -602,7 +592,6 @@ unit_tests: |
   - Manual override enforcement
   - Conflict detection
   - Cache hit/miss scenarios
-
 integration_tests: |
   ```go
   // tests/integration/adult/reconciliation_test.go

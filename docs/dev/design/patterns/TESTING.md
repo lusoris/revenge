@@ -43,25 +43,6 @@ Standard testing approach for Revenge project:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

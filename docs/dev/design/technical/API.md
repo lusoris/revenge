@@ -43,25 +43,6 @@ Complete API documentation for Revenge:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

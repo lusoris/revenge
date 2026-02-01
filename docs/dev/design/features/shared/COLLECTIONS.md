@@ -70,25 +70,20 @@ Collections allow users to group media items together:
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -111,8 +106,6 @@ internal/content/collections/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -172,12 +165,6 @@ type SmartCollectionEvaluator interface {
 - `github.com/jackc/pgx/v5/pgtype` - JSONB handling
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -193,8 +180,6 @@ collections:
   max_items_per_collection: 5000
   smart_collection_cache_ttl: 5m
 ```
-
-
 
 ## API Endpoints
 
@@ -334,13 +319,6 @@ Remove item from collection
 ```
 
 ---
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [features/shared](INDEX.md)

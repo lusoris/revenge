@@ -62,43 +62,24 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Player"]
+    node2["Anime Item<br/>(TV Show)"]
+    node3["Scrobbling<br/>Service"]
+    node4["River Queue<br/>(Background)"]
+    node5["Kitsu<br/>Scrobbler"]
+    node6["Database<br/>(history)"]
+    node7["Kitsu API<br/>(REST)"]
+    node8["Kitsu<br/>User Library"]
+    node1 --> node2
+    node3 --> node4
+    node6 --> node7
+    node2 --> node3
+    node4 --> node5
+    node5 --> node6
+    node7 --> node8
 ```
-┌──────────────┐    1. Watch anime   ┌─────────────────┐
-│   Revenge    │────episode──────────▶│   Anime Item    │
-│  Web Player  │                      │   (TV Show)     │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │ 2. Update progress                   │
-       ▼                                       ▼
-┌──────────────┐    3. Queue job     ┌────────────────┐
-│  Scrobbling  │────────────────────▶│  River Queue   │
-│   Service    │                     │  (Background)  │
-└──────┬───────┘                     └────────┬───────┘
-       │                                      │
-       │                              4. Process job
-       │                                      ▼
-       │                             ┌────────────────┐
-       │                             │  Kitsu         │
-       │                             │  Scrobbler     │
-       │                             └────────┬───────┘
-       │                                      │
-       │                              5. PATCH /library-entries/{id}
-       │                              (JSON:API format)
-       │                                      ▼
-┌──────┴───────┐                     ┌────────────────┐
-│  Database    │                     │   Kitsu API    │
-│  (history)   │                     │   (REST)       │
-└──────────────┘                     └────────┬───────┘
-                                              │
-                                      6. Update user's
-                                         library
-                                              ▼
-                                     ┌────────────────┐
-                                     │  Kitsu         │
-                                     │  User Library  │
-                                     └────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -117,8 +98,6 @@ internal/integration/kitsu/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -348,12 +327,6 @@ type OAuthTokenResponse struct {
 **External Services**:
 - Kitsu API (https://kitsu.io)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -385,8 +358,6 @@ scrobbling:
     metadata_enabled: true
     metadata_priority: 15     # Lower priority than AniList
 ```
-
-
 
 ## API Endpoints
 **Revenge API Endpoints**:
@@ -422,13 +393,6 @@ Response:
   }
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

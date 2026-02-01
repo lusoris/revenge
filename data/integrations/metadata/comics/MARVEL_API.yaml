@@ -18,7 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> SUPPLEMENTARY official Marvel metadata - Marvel Universe content only'
 wiki_tagline: '> Official Marvel Comics API for Marvel titles'
-wiki_overview: 'SUPPLEMENTARY metadata source for Marvel comics ONLY. Official Marvel Developer API provides authoritative data for Marvel-published content. Character appearances, creator credits, event tie-ins. High-quality cover images directly from Marvel. **Only covers Marvel content** (not DC, indie, manga). Free developer account required. 3000 req/day rate limit.'
+wiki_overview: SUPPLEMENTARY metadata source for Marvel comics ONLY. Official Marvel Developer API provides authoritative
+  data for Marvel-published content. Character appearances, creator credits, event tie-ins. High-quality cover images directly
+  from Marvel. **Only covers Marvel content** (not DC, indie, manga). Free developer account required. 3000 req/day rate limit.
 sources:
 - name: Marvel Developer Portal
   url: https://developer.marvel.com/docs
@@ -46,35 +48,17 @@ integration_id: marvel
 external_service: Marvel Developer API
 api_base_url: https://gateway.marvel.com/v1/public
 auth_method: api_key_hash
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Comics<br/>Library"]
+      node2["ComicVine<br/>(all comics)"]
+      node3["Marvel API<br/>(Marvel only)"]
+      node4["API Auth<br/>(hash-based)"]
+      node2 --> node3
+      node1 --> node2
+      node3 --> node4
   ```
-  ┌──────────────┐
-  │  Revenge     │
-  │  Comics      │
-  │  Library     │
-  └──────┬───────┘
-         │
-         ├─────────────────────────────────────────┐
-         │ PRIMARY                                  │ SUPPLEMENTARY
-         ▼                                          ▼
-  ┌──────────────┐                           ┌──────────────┐
-  │  ComicVine   │                           │  Marvel API  │
-  │  (all comics)│                           │ (Marvel only)│
-  └──────────────┘                           └──────┬───────┘
-                                                    │
-                                             ┌──────┴───────┐
-                                             │  API Auth    │
-                                             │ (hash-based) │
-                                             └──────────────┘
-
-  Coverage:
-  - Marvel Comics only (X-Men, Avengers, Spider-Man, etc.)
-  - NOT: DC, Image, indie, manga
-  - High-quality official images
-  - Character/event relationships
-  ```
-
 api_details: |
   **API**: Marvel Developer Portal API v1
   **Base URL**: `https://gateway.marvel.com/v1/public`
@@ -104,7 +88,6 @@ api_details: |
      ↓        ↓
   Characters, Creators, Events
   ```
-
 database_schema: |
   ```sql
   -- Marvel comic cache
@@ -142,7 +125,6 @@ database_schema: |
     UNIQUE(comic_issue_id)
   );
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/marvel/
@@ -155,7 +137,6 @@ module_structure: |
   ├── series.go                    # Series endpoints
   └── marvel_test.go
   ```
-
 key_interfaces: |
   ```go
   // Marvel API client
@@ -210,7 +191,6 @@ key_interfaces: |
     ComicsAvailable int `json:"comics.available"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -222,7 +202,6 @@ dependencies: |
 
   **External**:
   - Marvel Developer API (free account required)
-
 env_vars: |
   ```bash
   MARVEL_ENABLED=true
@@ -230,7 +209,6 @@ env_vars: |
   MARVEL_PRIVATE_KEY=your_private_key
   MARVEL_CACHE_TTL=168h
   ```
-
 config_keys: |
   ```yaml
   metadata:
@@ -244,7 +222,6 @@ config_keys: |
         priority: 15          # Between ComicVine (10) and GCD (20)
         daily_limit: 3000     # API limit
   ```
-
 component_interaction: |
   **Marvel Comic Enrichment**:
   1. Comic identified via ComicVine (PRIMARY)
@@ -260,7 +237,6 @@ component_interaction: |
   3. Store character appearances
   4. Display character info on comic detail page
   5. Link to Marvel Universe character profiles
-
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider**
 
@@ -275,7 +251,6 @@ supplementary_role: |
   - ONLY Marvel-published content
   - No DC, Image, indie, manga coverage
   - 3000 requests/day limit
-
 api_request_examples: |
   **Search for Comic**:
   ```bash
@@ -308,7 +283,6 @@ api_request_examples: |
     }
   }
   ```
-
 authentication: |
   **Marvel API Authentication**:
   ```go
@@ -323,14 +297,12 @@ authentication: |
     return c.httpClient.Get(url)
   }
   ```
-
 error_handling: |
   **HTTP Errors**:
   - 401 Unauthorized → Invalid API keys
   - 403 Forbidden → Rate limit exceeded
   - 404 Not Found → Comic/character not found
   - 409 Conflict → Missing timestamp/hash
-
 unit_tests: |
   ```go
   func TestMarvel_GenerateAuth(t *testing.T) {
@@ -350,7 +322,6 @@ unit_tests: |
     assert.Len(t, results, 1)
   }
   ```
-
 best_practices: |
   **API Usage**:
   - Monitor daily request count (3000 limit)

@@ -18,11 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User-facing features inspired by modern streaming services.'
 wiki_tagline: '> A streaming experience that feels like Netflix'
-wiki_overview: Modern UI inspired by popular streaming services. Auto-playing previews
-  on hover, personalized recommendations, and trending sections. Top 10 lists show
-  what is popular on your server. Quick actions let you add to watchlist or mark as
-  watched. Keyboard shortcuts for power users. Dark and light themes with customizable
-  accent colors.
+wiki_overview: Modern UI inspired by popular streaming services. Auto-playing previews on hover, personalized recommendations,
+  and trending sections. Top 10 lists show what is popular on your server. Quick actions let you add to watchlist or mark
+  as watched. Keyboard shortcuts for power users. Dark and light themes with customizable accent colors.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -58,20 +56,21 @@ design_refs:
 feature_name: Revenge - User Experience Features
 module_name: revenge___user_experience_features
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -154,7 +153,6 @@ database_schema: |
     PRIMARY KEY (user_id, action)
   );
   ```
-
 module_structure: |
   ```
   internal/ux/
@@ -183,7 +181,6 @@ module_structure: |
       ├── TrendingCarousel.svelte  # Trending content
       └── ThemeSelector.svelte     # Theme picker
   ```
-
 key_interfaces: |
   ```go
   type UXService interface {
@@ -210,20 +207,17 @@ key_interfaces: |
     AutoplayNextEpisode bool     `db:"autoplay_next_episode" json:"autoplay_next_episode"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/riverqueue/river` - Background trending calculation
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   UX_TRENDING_UPDATE_INTERVAL=1h
   UX_TOP10_UPDATE_INTERVAL=6h
   ```
-
 config_keys: |
   ```yaml
   ux:
@@ -232,7 +226,6 @@ config_keys: |
     default_theme: dark
     default_accent_color: '#e50914'
   ```
-
 component_interaction: |
   **Watchlist Add**:
   1. User clicks "Add to Watchlist" button
@@ -252,7 +245,6 @@ component_interaction: |
   2. PUT /api/v1/ux/preferences
   3. Update user_ux_preferences
   4. Frontend applies CSS variables immediately
-
 api_endpoints: |
   ```
   # Watchlist
@@ -268,7 +260,6 @@ api_endpoints: |
   GET    /api/v1/ux/top10/:type/:period # Get Top 10 list
   GET    /api/v1/ux/trending            # Get trending content
   ```
-
 unit_tests: |
   ```go
   func TestUXService_Watchlist(t *testing.T) {
@@ -279,7 +270,6 @@ unit_tests: |
     // Test trending score calculation
   }
   ```
-
 integration_tests: |
   ```go
   func TestUX_EndToEnd(t *testing.T) {

@@ -55,26 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>RBAC<br/>Scan"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │   RBAC    │  │Scanner │
-                │  (sqlc)  │          │  Service  │  │(fsnotify)│
-                └────┬─────┘          └───────────┘  └────────┘
-                     │
-                     ▼
-                ┌─────────────┐
-                │ PostgreSQL  │
-                │   (pgx)     │
-                └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -103,8 +95,6 @@ internal/service/library/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -133,12 +123,6 @@ type LibraryService interface {
 - `github.com/fsnotify/fsnotify`
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -155,8 +139,6 @@ library:
   realtime_monitoring: true
 ```
 
-
-
 ## API Endpoints
 ```
 GET    /api/v1/libraries                   # List accessible libraries
@@ -164,13 +146,6 @@ GET    /api/v1/libraries/:id               # Get library details
 POST   /api/v1/libraries/:id/permissions   # Grant permission
 DELETE /api/v1/libraries/:id/permissions/:user_id # Revoke permission
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

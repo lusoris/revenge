@@ -56,16 +56,6 @@ Unified notification delivery:
 ---
 
 
-
-
-
-
-
-
-
-
-
-
 ## API Endpoints
 ### GET /api/v1/user/notifications/preferences
 
@@ -184,13 +174,6 @@ Send test notification (admin only)
 ```json
 {}
 ```
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)

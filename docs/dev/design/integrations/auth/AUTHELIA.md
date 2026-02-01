@@ -56,45 +56,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["User<br/>Browser"]
+    node2["Authelia<br/>Auth Server"]
+    node3["Revenge<br/>Server"]
+    node4["Authelia<br/>OIDC Endpoint"]
+    node5["User<br/>Session"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+    node4 --> node5
 ```
-┌──────────────┐    1. Auth Request   ┌─────────────────┐
-│    User      │─────(redirect)──────▶│    Authelia     │
-│   Browser    │                      │   Auth Server   │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │ 2. Login page (optional 2FA)         │
-       │◀──────────────────────────────────────│
-       │                                       │
-       │ 3. Submit credentials + TOTP          │
-       │──────────────────────────────────────▶│
-       │                  ┌────────────────────┤
-       │                  │  Check against:    │
-       │                  │  - LDAP backend    │
-       │                  │  - File backend    │
-       │                  │  - Access policies │
-       │                  └────────────────────┤
-       │ 4. Authorization code                │
-       │◀──────────────────────────────────────│
-       │   (redirect to callback)              │
-       ▼                                       │
-┌──────────────┐    5. Exchange code  ┌────────┴────────┐
-│   Revenge    │─────for tokens──────▶│    Authelia     │
-│   Server     │                      │   OIDC Endpoint │
-│              │◀─────────────────────│                 │
-│              │  6. ID token + access│                 │
-└──────┬───────┘     token            └─────────────────┘
-       │
-       │ 7. Verify token (JWKS)
-       │ 8. Get user info
-       │ 9. Map groups → roles
-       │ 10. Create session
-       ▼
-┌──────────────┐
-│   User       │
-│  Session     │
-└──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -113,8 +86,6 @@ internal/integration/authelia/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -202,12 +173,6 @@ type UserInfo struct {
 - Redis (for Authelia session storage, optional)
 - LDAP server (optional backend)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -251,8 +216,6 @@ auth:
         use_pkce: true                    # Enable PKCE (recommended)
         require_mfa: false                # Require two-factor auth
 ```
-
-
 
 ## API Endpoints
 **OIDC Endpoints** (Revenge):
@@ -313,13 +276,6 @@ Content-Type: application/json
   "expires_in": 3600
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

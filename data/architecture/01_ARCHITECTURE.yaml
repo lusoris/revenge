@@ -16,32 +16,21 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Modern media server architecture with Go backend, SvelteKit
-  frontend, PostgreSQL database
-
+technical_summary: |
+  > Modern media server architecture with Go backend, SvelteKit frontend, PostgreSQL database
 
   Core components:
-
   - **Backend**: Go with fx dependency injection, ogen OpenAPI generation
-
   - **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
-
   - **Database**: PostgreSQL 18 with pgx driver (no SQLite)
-
   - **Cache**: Dragonfly (Redis-compatible) via rueidis + otter L1 cache
-
   - **Search**: Typesense for full-text search
-
   - **Jobs**: River queue for background processing
-
-  '
 wiki_tagline: '> How Revenge is built - the technical foundation'
-wiki_overview: Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL
-  stores all data (no SQLite), with Dragonfly providing fast caching and Typesense
-  powering search. Background jobs run through River queue. The backend uses fx for
-  dependency injection and ogen for type-safe API generation. The frontend uses Svelte
-  5 with shadcn-svelte components. All components are designed for self-hosting with
-  Docker or bare metal deployment.
+wiki_overview: Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL stores all data (no SQLite), with Dragonfly
+  providing fast caching and Typesense powering search. Background jobs run through River queue. The backend uses fx for dependency
+  injection and ogen for type-safe API generation. The frontend uses Svelte 5 with shadcn-svelte components. All components
+  are designed for self-hosting with Docker or bare metal deployment.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -156,52 +145,23 @@ design_refs:
   path: ../features/adult/ADULT_METADATA.md
 - title: DATA_RECONCILIATION
   path: ../features/adult/DATA_RECONCILIATION.md
-
-# Architecture
-architecture_diagram: |
+architecture_diagram: |-
   Revenge follows a **layered architecture** with clear separation of concerns:
 
+  ```mermaid
+  flowchart TD
+      node1["Client Layer<br/>(Web/Mobile/TV Apps - SvelteKit Frontend)"]
+      node2["API Layer<br/>(ogen-generated handlers + validation)"]
+      node3["Service Layer<br/>(Business logic, orchestration, caching)<br/>Content"]
+      node4["tory<br/>Metada<br/>er"]
+      node5["PostgreSQL<br/>Database<br/>(pgx pool)"]
+      node6["L1 Cache L2 Cache<br/>Arr Services External<br/>(otter Dragonfly"]
+      node5 --> node6
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌─────────────────────────────────────────────────────────────────┐
-  │                        Client Layer                              │
-  │          (Web/Mobile/TV Apps - SvelteKit Frontend)              │
-  └────────────────────────┬────────────────────────────────────────┘
-                           │ HTTP/WebSocket
-                           ▼
-  ┌─────────────────────────────────────────────────────────────────┐
-  │                         API Layer                                │
-  │              (ogen-generated handlers + validation)             │
-  └────────────────────────┬────────────────────────────────────────┘
-                           │
-                           ▼
-  ┌─────────────────────────────────────────────────────────────────┐
-  │                      Service Layer                               │
-  │         (Business logic, orchestration, caching)                │
-  │                                                                  │
-  │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌──────────┐ │
-  │  │  Content   │  │  Metadata  │  │   Auth     │  │  Media   │ │
-  │  │  Services  │  │  Services  │  │  Services  │  │Processing│ │
-  │  └────────────┘  └────────────┘  └────────────┘  └──────────┘ │
-  └────────────────────┬────────────────────┬───────────────────────┘
-                       │                    │
-           ┌───────────┴──────────┐        ▼
-           ▼                      ▼    ┌──────────────┐
-  ┌─────────────────┐    ┌───────────────────────┐   │
-  │  Repository     │    │   Metadata Priority   │   │  Background
-  │     Layer       │    │      Chain            │   │    Jobs
-  │  (sqlc + pgx)   │    │                       │   │  (River)
-  └────────┬────────┘    └───────────┬───────────┘   └──────────┘
-           │                         │
-           ▼                         ▼
-  ┌─────────────────┐    ┌──────────────────────────┐
-  │   PostgreSQL    │    │  L1 Cache → L2 Cache →   │
-  │   Database      │    │  Arr Services → External │
-  │   (pgx pool)    │    │  (otter → Dragonfly →    │
-  └─────────────────┘    │   Radarr/Sonarr/etc →    │
-                         │   TMDb/TVDB/etc)          │
-                         └──────────────────────────┘
-  ```
-
 system_components: |
   **1. Client Layer (Frontend)**
   - **Technology**: SvelteKit 2, Svelte 5, Tailwind CSS 4
@@ -305,8 +265,6 @@ system_components: |
   **Configuration**: Disabled by default, must be explicitly enabled per provider
 
   **See**: [HTTP_CLIENT](../services/HTTP_CLIENT.md) for proxy/VPN implementation
-
-# Implementation
 file_structure: |
   ```
   revenge/
@@ -368,7 +326,6 @@ file_structure: |
   ├── docs/                         # Documentation
   └── go.mod
   ```
-
 key_interfaces: |
   **Repository Pattern**:
   ```go
@@ -418,7 +375,6 @@ key_interfaces: |
       CheckProxyHealth(ctx context.Context, proxyURL string) error
   }
   ```
-
 dependencies: |
   **Core**:
   - `go.uber.org/fx` - Dependency injection
@@ -443,8 +399,6 @@ dependencies: |
   - `github.com/asticode/go-astiav` - FFmpeg bindings
 
   **See**: [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md) for complete dependency list with versions
-
-# Configuration
 env_vars: |
   **Core**:
   - `REVENGE_DB_URL` - PostgreSQL connection string (required)
@@ -480,7 +434,6 @@ env_vars: |
   **Media Processing**:
   - `REVENGE_FFMPEG_PATH` - FFmpeg binary path (optional, default: ffmpeg)
   - `REVENGE_TRANSCODE_THREADS` - Transcoding thread count (optional, default: CPU cores)
-
 config_keys: |
   **config.yaml structure**:
   ```yaml
@@ -575,8 +528,6 @@ config_keys: |
         - transcoding
         - cleanup
   ```
-
-# Testing
 unit_tests: |
   **Framework**: Go testing with testify/assert and mockery
 
@@ -618,7 +569,6 @@ unit_tests: |
       }
   }
   ```
-
 integration_tests: |
   **Framework**: testcontainers-go for PostgreSQL, Dragonfly, Typesense
 
@@ -656,7 +606,6 @@ integration_tests: |
       assert.Equal(t, http.StatusOK, rec.Code)
   }
   ```
-
 test_coverage_target: |
   **Overall Target**: **80% minimum**
 

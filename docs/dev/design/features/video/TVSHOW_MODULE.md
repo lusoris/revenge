@@ -55,33 +55,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cache"]
+    node5["arr<br/>TheTVD<br/>ARY)"]
+    node6["TheTVDB<br/>(external)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+    node5 --> node6
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                          ┌──────────────────────┼─────────────────┐
-                          ▼                      ▼                 ▼
-                    ┌──────────┐          ┌───────────┐     ┌────────┐
-                    │Repository│          │ Metadata  │     │  Cache │
-                    │  (sqlc)  │          │  Service  │     │(otter) │
-                    └────┬─────┘          └─────┬─────┘     └────────┘
-                         │                      │
-                         │               ┌──────┴─────────┐
-                         ▼               ▼                ▼
-                  ┌─────────────┐  ┌──────────┐    ┌──────────┐
-                  │ PostgreSQL  │  │  Sonarr  │    │ TheTVDB  │
-                  │   (pgx)     │  │(PRIMARY) │    │(fallback)│
-                  └─────────────┘  └────┬─────┘    └──────────┘
-                                        │
-                                        ▼
-                                  ┌──────────┐
-                                  │ TheTVDB  │
-                                  │(external)│
-                                  └──────────┘
-```
-
 
 ### Database Schema
 
@@ -104,8 +91,6 @@ internal/content/tv_show/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -208,12 +193,6 @@ type MetadataProvider interface {
 **Database**:
 - PostgreSQL 18+ with trigram extension
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -255,19 +234,10 @@ tv:
       sync_interval: 30m
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)

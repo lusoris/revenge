@@ -56,18 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Metadata<br/>Service"]
+    node2["Spotify<br/>Provider"]
+    node3["Spotify<br/>Web API"]
+    node4["Client Creds<br/>OAuth 2.0"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Metadata   │────▶│   Spotify    │────▶│  Spotify    │
-│  Service    │◀────│   Provider   │◀────│  Web API    │
-└─────────────┘     └──────┬───────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │Client Creds  │
-                    │ OAuth 2.0    │
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -86,8 +84,6 @@ internal/integration/spotify/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -161,12 +157,6 @@ type Image struct {
 **External APIs**:
 - Spotify Web API (free with Spotify Developer account)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -191,15 +181,6 @@ metadata:
       client_secret: ${SPOTIFY_CLIENT_SECRET}
       cache_ttl: 168h
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

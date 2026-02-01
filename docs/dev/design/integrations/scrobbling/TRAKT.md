@@ -56,19 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Playback"]
+    node2["Trakt<br/>Integration"]
+    node3["Trakt<br/>API"]
+    node4["Scrobble<br/>Queue (River)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Revenge    │────▶│    Trakt     │────▶│    Trakt    │
-│  Playback   │◀────│ Integration  │◀────│     API     │
-│  Events     │     │              │     └─────────────┘
-└─────────────┘     └──────┬───────┘
-                           │
-                    ┌──────▼────────┐
-                    │ Scrobble      │
-                    │ Queue (River) │
-                    └───────────────┘
-```
-
 
 ### Integration Structure
 
@@ -87,8 +84,6 @@ internal/integration/trakt/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -161,12 +156,6 @@ type EpisodeIdentifiers struct {
 - **Trakt.tv API** - Dual-purpose: Scrobbling + Metadata enrichment provider (via proxy/VPN)
 - Trakt.tv account with OAuth app registration
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -212,15 +201,6 @@ integrations:
       enable_lists: true       # Enable list sync for VIP users
       enable_recommendations: true  # Enable recommendations for VIP users
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

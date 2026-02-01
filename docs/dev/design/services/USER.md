@@ -60,26 +60,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>Storage<br/>Ca"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["File<br/>Storage"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │  Storage  │  │  Cache │
-                │  (sqlc)  │          │  Service  │  │(otter) │
-                └────┬─────┘          └─────┬─────┘  └────────┘
-                     │                      │
-                     ▼                      ▼
-                ┌─────────────┐        ┌──────────┐
-                │ PostgreSQL  │        │ File     │
-                │   (pgx)     │        │ Storage  │
-                └─────────────┘        └──────────┘
-```
-
 
 ### Service Structure
 
@@ -110,8 +104,6 @@ internal/service/user/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -161,12 +153,6 @@ type UserProfile struct {
 - `archive/zip` - Data export ZIP creation
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -192,8 +178,6 @@ user:
   profile:
     default_visibility: private
 ```
-
-
 
 ## API Endpoints
 ```
@@ -233,13 +217,6 @@ DELETE /api/v1/users/me/delete/:id            # Cancel deletion
   "profile_visibility": "friends"
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

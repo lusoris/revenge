@@ -51,16 +51,6 @@ Audio streaming architecture:
 ---
 
 
-
-
-
-
-
-
-
-
-
-
 ## API Endpoints
 ### GET /api/v1/stream/:track_id/playlist.m3u8
 
@@ -127,13 +117,6 @@ Submit scrobble
 ```json
 {}
 ```
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)

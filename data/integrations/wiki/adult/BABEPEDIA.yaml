@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer wiki with biographies and filmographies'
 wiki_tagline: '> Performer biographies from Babepedia'
-wiki_overview: Babepedia provides biographical information for adult performers. Physical
-  attributes, career history, and social media links. Supplements StashDB performer
-  data. Used within the QAR adult content system. Links to performer profiles from
-  content detail pages.
+wiki_overview: Babepedia provides biographical information for adult performers. Physical attributes, career history, and
+  social media links. Supplements StashDB performer data. Used within the QAR adult content system. Links to performer profiles
+  from content detail pages.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -44,32 +43,17 @@ integration_id: babepedia
 external_service: Babepedia
 api_base_url: https://www.babepedia.com
 auth_method: none
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>QAR Module<br/>(Performer)"]
+      node2["Babepedia<br/>Scraper"]
+      node3["Performer Data<br/>- Biography"]
+      node4["Rate Limiter"]
+      node2 --> node3
+      node1 --> node2
+      node3 --> node4
   ```
-  ┌──────────────┐
-  │  Revenge     │
-  │  QAR Module  │
-  │  (Performer) │
-  └──────┬───────┘
-         │ Enrichment request
-         ▼
-  ┌──────────────┐     ┌───────────────────┐
-  │  Babepedia   │────▶│  Performer Data   │
-  │  Scraper     │     │  - Biography      │
-  └──────┬───────┘     │  - Measurements   │
-         │             │  - Career dates   │
-  ┌──────┴───────┐     │  - Social links   │
-  │ Rate Limiter │     │  - Photo URL      │
-  │ + Proxy Pool │     └───────────────────┘
-  └──────────────┘
-
-  Data Flow:
-  Performer Identified → Check Cache → Scrape Profile → Parse HTML → Store Enrichment
-
-  Integration Role: ENRICHMENT (supplements StashDB performer data)
-  ```
-
 api_details: |
   **Method**: Web scraping (no official API)
   **Base URL**: `https://www.babepedia.com`
@@ -94,7 +78,6 @@ api_details: |
   - HTML structure is consistent
   - Profile info in structured `<div>` elements
   - Handle URL encoding for names with spaces/special chars
-
 database_schema: |
   ```sql
   -- Babepedia performer cache (QAR schema)
@@ -130,7 +113,6 @@ database_schema: |
     UNIQUE(performer_id)
   );
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/babepedia/
@@ -143,7 +125,6 @@ module_structure: |
   ├── matching.go                  # Name fuzzy matching
   └── babepedia_test.go
   ```
-
 key_interfaces: |
   ```go
   // Babepedia enrichment provider
@@ -203,7 +184,6 @@ key_interfaces: |
     return profile, nil
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/PuerkitoBio/goquery` - HTML parsing
@@ -217,7 +197,6 @@ dependencies: |
 
   **External**:
   - Babepedia website (no official API)
-
 env_vars: |
   ```bash
   BABEPEDIA_ENABLED=true
@@ -225,7 +204,6 @@ env_vars: |
   BABEPEDIA_CACHE_TTL=720h          # 30 days
   BABEPEDIA_USE_PROXY=true          # Use proxy pool from HTTP_CLIENT
   ```
-
 config_keys: |
   ```yaml
   qar:
@@ -241,7 +219,6 @@ config_keys: |
           use_proxy: true
           retry_on_block: true
   ```
-
 component_interaction: |
   **Performer Enrichment Flow**:
   1. Performer identified via Whisparr/StashDB
@@ -261,7 +238,6 @@ component_interaction: |
     - Social media links
     - Better photos in some cases
   - Merge non-conflicting data only
-
 enrichment_role: |
   **ENRICHMENT-Only Provider**
 
@@ -279,7 +255,6 @@ enrichment_role: |
   - After performer identified by StashDB
   - When user views performer detail page
   - Background enrichment for library
-
 scraping_implementation: |
   **Robust Scraping Pattern**:
   ```go
@@ -310,7 +285,6 @@ scraping_implementation: |
     return p.parseProfile(doc)
   }
   ```
-
 error_handling: |
   **HTTP Errors**:
   - 403 Forbidden → IP blocked, rotate proxy
@@ -322,7 +296,6 @@ error_handling: |
   - Structure changed → Log and skip field
   - Missing data → Return partial result
   - Encoding issues → Handle UTF-8 properly
-
 unit_tests: |
   ```go
   func TestBabepedia_ParseProfile(t *testing.T) {
@@ -347,7 +320,6 @@ unit_tests: |
     assert.True(t, match)
   }
   ```
-
 best_practices: |
   **Scraping Etiquette**:
   - Respect rate limits (1 req/2sec)
@@ -364,4 +336,3 @@ best_practices: |
   - All data flows through QAR access controls
   - Requires `legacy:read` scope
   - Data isolated in qar.* schema
-

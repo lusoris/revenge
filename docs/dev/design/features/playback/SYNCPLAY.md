@@ -73,25 +73,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -114,8 +109,6 @@ internal/content/syncplay_(watch_together)/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -273,12 +266,6 @@ require (
 - **PostgreSQL 18+**: Database
 - **WebSocket**: Real-time communication
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -358,8 +345,6 @@ syncplay:
     expired_invitations_hours: 48
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -428,13 +413,6 @@ Get invitation details
 WebSocket connection for real-time sync
 
 ---
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)

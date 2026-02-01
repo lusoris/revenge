@@ -54,31 +54,14 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    node2["TVTropes<br/>(web)"]
+    node3["Trope Analysis<br/>- Used tropes"]
+    node2 --> node3
+    node1 --> node2
 ```
-┌──────────────┐
-│  Revenge     │
-│  Detail Page │
-│  (Movie/TV)  │
-└──────┬───────┘
-       │ "Tropes" link
-       ▼
-┌──────────────┐     ┌───────────────────┐
-│   TVTropes   │────▶│  Trope Analysis   │
-│   (web)      │     │  - Used tropes    │
-└──────┬───────┘     │  - Character types│
-       │             │  - Plot devices   │
-┌──────┴───────┐     │  - Narrative      │
-│ Rate Limiter │     └───────────────────┘
-│ (0.5/sec)    │
-└──────────────┘
-
-URL Structure:
-- /pmwiki/pmwiki.php/Film/{Title}
-- /pmwiki/pmwiki.php/Series/{Title}
-- /pmwiki/pmwiki.php/WesternAnimation/{Title}
-- /pmwiki/pmwiki.php/Anime/{Title}
-```
-
 
 ### Integration Structure
 
@@ -97,8 +80,6 @@ internal/integration/tvtropes/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -159,12 +140,6 @@ func FormatTropesTitle(title string) string {
 **External**:
 - TVTropes website (no API)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -196,15 +171,6 @@ metadata:
         book: Literature
         game: VideoGame
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

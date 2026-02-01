@@ -54,19 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Watch<br/>History"]
+    node2["Letterboxd<br/>Integration"]
+    node3["Letterboxd<br/>Website"]
+    node4["CSV Export/<br/>Import"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Revenge    │────▶│ Letterboxd   │     │ Letterboxd  │
-│  Watch      │     │ Integration  │     │   Website   │
-│  History    │     │              │     │             │
-└─────────────┘     └──────┬───────┘     └──────┬──────┘
-                           │                    │
-                    ┌──────▼────────┐           │
-                    │  CSV Export/  │◀──────────┘
-                    │  Import       │
-                    └───────────────┘
-```
-
 
 ### Integration Structure
 
@@ -85,8 +82,6 @@ internal/integration/letterboxd/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -146,12 +141,6 @@ type ImportResult struct {
 **External Services**:
 - Letterboxd account (free tier)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -170,15 +159,6 @@ integrations:
     import_reviews: true           # Import reviews from diary
     sync_ratings: true             # Sync Letterboxd ratings to Revenge
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

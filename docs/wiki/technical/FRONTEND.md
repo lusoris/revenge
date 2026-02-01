@@ -23,28 +23,9 @@ The Revenge web interface is built with SvelteKit and Svelte 5 for a fast, react
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

@@ -99,10 +99,19 @@ class ASCIIToMermaid:
                                 # Find text between │ characters
                                 parts = segment.split("│")
                                 for part in parts:
-                                    text = part.strip()
-                                    # Filter out arrows and decorations
-                                    arrow_pattern = r"^[─▶◀→←►]+$"
-                                    if text and not re.match(arrow_pattern, text):
+                                    # Remove ALL box-drawing characters
+                                    box_chars = "┌┐└┘├┤┬┴┼─━═║╔╗╚╝╠╣╦╩╬"
+                                    text = part
+                                    for c in box_chars:
+                                        text = text.replace(c, " ")
+                                    # Remove arrow/decoration characters
+                                    arrow_chars = "▶◀▼▲►◄→←↓↑"
+                                    for c in arrow_chars:
+                                        text = text.replace(c, " ")
+                                    # Clean up whitespace
+                                    text = " ".join(text.split()).strip()
+                                    # Only keep if has actual content
+                                    if text and len(text) > 1:
                                         box_texts.append(text)
 
                         if box_texts:

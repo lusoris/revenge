@@ -18,11 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Library management and access control'
 wiki_tagline: '> Library management and access control'
-wiki_overview: Libraries organize your media by type and location. Create separate
-  libraries for Movies, TV Shows, Music, or Adult content. Each library points to
-  one or more folders on disk. Control which users can see which libraries. Libraries
-  scan automatically on a schedule or manually on demand. Configure refresh intervals,
-  naming conventions, and metadata sources per library.
+wiki_overview: Libraries organize your media by type and location. Create separate libraries for Movies, TV Shows, Music,
+  or Adult content. Each library points to one or more folders on disk. Control which users can see which libraries. Libraries
+  scan automatically on a schedule or manually on demand. Configure refresh intervals, naming conventions, and metadata sources
+  per library.
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
@@ -63,28 +62,19 @@ design_refs:
 service_name: Library Service
 package_path: internal/service/library
 fx_module: library.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["sitory<br/>RBAC<br/>Scan"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                       ┌──────────────────────┼────────────┐
-                       ▼                      ▼            ▼
-                  ┌──────────┐          ┌───────────┐  ┌────────┐
-                  │Repository│          │   RBAC    │  │Scanner │
-                  │  (sqlc)  │          │  Service  │  │(fsnotify)│
-                  └────┬─────┘          └───────────┘  └────────┘
-                       │
-                       ▼
-                  ┌─────────────┐
-                  │ PostgreSQL  │
-                  │   (pgx)     │
-                  └─────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -106,7 +96,6 @@ database_schema: |
   CREATE UNIQUE INDEX idx_library_perms_user ON library_permissions(library_id, user_id, permission);
   CREATE INDEX idx_library_perms_role ON library_permissions(library_id, role_id);
   ```
-
 module_structure: |
   ```
   internal/service/library/
@@ -118,7 +107,6 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── library_test.go
   ```
-
 key_interfaces: |
   ```go
   type LibraryService interface {
@@ -135,26 +123,22 @@ key_interfaces: |
     TriggerScan(ctx context.Context, libraryID uuid.UUID, scanType string) error
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/fsnotify/fsnotify`
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   LIBRARY_DEFAULT_SCAN_INTERVAL=6h
   ```
-
 config_keys: |
   ```yaml
   library:
     default_scan_interval: 6h
     realtime_monitoring: true
   ```
-
 component_interaction: |
   **Check Library Access**:
   1. User requests GET /api/v1/libraries/:id
@@ -162,7 +146,6 @@ component_interaction: |
   3. If no direct permission, check role-based permissions via RBAC
   4. If permitted, return library details
   5. If not, return 403 Forbidden
-
 api_endpoints: |
   ```
   GET    /api/v1/libraries                   # List accessible libraries
@@ -170,14 +153,12 @@ api_endpoints: |
   POST   /api/v1/libraries/:id/permissions   # Grant permission
   DELETE /api/v1/libraries/:id/permissions/:user_id # Revoke permission
   ```
-
 unit_tests: |
   ```go
   func TestLibraryService_CheckPermission(t *testing.T) {
     // Test permission checking
   }
   ```
-
 integration_tests: |
   ```go
   func TestLibrary_PermissionFlow(t *testing.T) {

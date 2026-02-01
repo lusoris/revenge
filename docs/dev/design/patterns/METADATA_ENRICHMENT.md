@@ -42,25 +42,6 @@ Standardized metadata enrichment pattern:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

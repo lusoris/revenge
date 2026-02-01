@@ -56,13 +56,14 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Metadata<br/>Service"]
+    node2["Last.fm<br/>Provider"]
+    node3["Last.fm<br/>API"]
+    node1 --> node2
+    node2 --> node3
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Metadata   │────▶│   Last.fm    │────▶│  Last.fm    │
-│  Service    │◀────│   Provider   │◀────│     API     │
-└─────────────┘     └──────────────┘     └─────────────┘
-```
-
 
 ### Integration Structure
 
@@ -81,8 +82,6 @@ internal/integration/lastfm/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -154,12 +153,6 @@ type SimilarArtist struct {
 **External APIs**:
 - Last.fm API 2.0 (free with API key)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -184,15 +177,6 @@ metadata:
       api_secret: ${LASTFM_API_SECRET}
       cache_ttl: 168h
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

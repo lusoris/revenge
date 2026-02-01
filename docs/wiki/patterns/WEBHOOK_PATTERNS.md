@@ -21,28 +21,9 @@ The Webhook Pattern provides a secure, reliable foundation for receiving and pro
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

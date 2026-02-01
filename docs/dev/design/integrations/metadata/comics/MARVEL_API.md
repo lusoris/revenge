@@ -54,33 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Comics<br/>Library"]
+    node2["ComicVine<br/>(all comics)"]
+    node3["Marvel API<br/>(Marvel only)"]
+    node4["API Auth<br/>(hash-based)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
 ```
-┌──────────────┐
-│  Revenge     │
-│  Comics      │
-│  Library     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────────┐
-       │ PRIMARY                                  │ SUPPLEMENTARY
-       ▼                                          ▼
-┌──────────────┐                           ┌──────────────┐
-│  ComicVine   │                           │  Marvel API  │
-│  (all comics)│                           │ (Marvel only)│
-└──────────────┘                           └──────┬───────┘
-                                                  │
-                                           ┌──────┴───────┐
-                                           │  API Auth    │
-                                           │ (hash-based) │
-                                           └──────────────┘
-
-Coverage:
-- Marvel Comics only (X-Men, Avengers, Spider-Man, etc.)
-- NOT: DC, Image, indie, manga
-- High-quality official images
-- Character/event relationships
-```
-
 
 ### Integration Structure
 
@@ -99,8 +82,6 @@ internal/integration/marvel/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -172,12 +153,6 @@ type Character struct {
 **External**:
 - Marvel Developer API (free account required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -203,15 +178,6 @@ metadata:
       priority: 15          # Between ComicVine (10) and GCD (20)
       daily_limit: 3000     # API limit
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

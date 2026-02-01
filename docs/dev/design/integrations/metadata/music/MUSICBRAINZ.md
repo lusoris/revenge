@@ -58,38 +58,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Metadata<br/>Service"]
+    node2["Lidarr<br/>(LOCAL cache)"]
+    node3["MusicBrainz<br/>API<br/>(fallback +"]
+    node4["MusicBrainz<br/>API<br/>(external)"]
+    node5["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node6["er<br/>AcoustID/<br/>Rate"]
+    node2 --> node3
+    node4 --> node5
+    node1 --> node2
+    node3 --> node4
+    node5 --> node6
 ```
-┌──────────────┐
-│  Revenge     │
-│  Metadata    │
-│  Service     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────┐
-       │ PRIMARY                             │ SUPPLEMENTARY
-       ▼                                     ▼
-┌──────────────┐                      ┌──────────────┐
-│   Lidarr     │                      │ MusicBrainz  │
-│ (LOCAL cache)│                      │     API      │
-│              │                      │  (fallback + │
-└──────┬───────┘                      │  enrichment) │
-       │                              └──────┬───────┘
-       ▼                                     │
-┌──────────────┐                      ┌──────┴────────┐
-│ MusicBrainz  │                      │  HTTP_CLIENT  │
-│     API      │                      │  (optional    │
-│  (external)  │                      │   proxy/VPN)  │
-└──────────────┘                      └───────┬───────┘
-                                             │
-                                      ┌──────┴───────┬──────────────┐
-                                      │              │              │
-                                 ┌────▼────┐  ┌──────▼──────┐  ┌───▼────┐
-                                 │ Cover   │  │ AcoustID/   │  │ Rate   │
-                                 │ Art     │  │ Chromaprint │  │ Limiter│
-                                 │ Archive │  │             │  │(1/sec) │
-                                 └─────────┘  └─────────────┘  └────────┘
-```
-
 
 ### Integration Structure
 
@@ -108,8 +90,6 @@ internal/integration/musicbrainz/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -183,12 +163,6 @@ type AlbumMetadata struct {
 - Cover Art Archive (free)
 - AcoustID API (free with API key)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -229,15 +203,6 @@ metadata:
         enabled: true
         api_key: ${ACOUSTID_API_KEY}
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

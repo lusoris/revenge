@@ -58,22 +58,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Event<br/>Publisher"]
+    node2["Notification<br/>Service"]
+    node3["Channels<br/>(Email,<br/>Push,"]
+    node4["PostgreSQL<br/>(pgx)"]
+    node5["External<br/>Services"]
+    node1 --> node2
+    node2 --> node3
+    node4 --> node5
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Event     │────▶│  Notification│────▶│  Channels   │
-│  Publisher  │     │   Service    │     │  (Email,    │
-│             │     │              │     │   Push,     │
-│             │     │              │     │   Webhook)  │
-└─────────────┘     └──────┬───────┘     └─────┬───────┘
-                           │                   │
-                           ▼                   ▼
-                    ┌─────────────┐     ┌──────────────┐
-                    │ PostgreSQL  │     │   External   │
-                    │   (pgx)     │     │   Services   │
-                    └─────────────┘     │ (SMTP, FCM)  │
-                                        └──────────────┘
-```
-
 
 ### Service Structure
 
@@ -110,8 +106,6 @@ internal/service/notification/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -169,12 +163,6 @@ type NotificationChannel interface {
 - SMTP server for email
 - Firebase Cloud Messaging (FCM) for push notifications
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -207,8 +195,6 @@ notification:
     retry_attempts: 3
     retry_delay: 5m
 ```
-
-
 
 ## API Endpoints
 ```
@@ -256,13 +242,6 @@ View: {{ .ActionURL }}
 --
 Revenge Media Server
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

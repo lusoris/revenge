@@ -16,13 +16,10 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Advanced playback features: trailers, themes, intros, trickplay,
-  cinema mode, and live TV.'
-wiki_tagline: '> Advanced playback features: trailers, themes, intros, trickplay,
-  cinema mode, '
-wiki_overview: Enhanced playback features that make watching more enjoyable. Includes
-  trailer playback before movies (Cinema Mode), theme songs for TV shows, chapter
-  markers for easy navigation, and picture-in-picture support. All features are optional
+technical_summary: '> Advanced playback features: trailers, themes, intros, trickplay, cinema mode, and live TV.'
+wiki_tagline: '> Advanced playback features: trailers, themes, intros, trickplay, cinema mode, '
+wiki_overview: Enhanced playback features that make watching more enjoyable. Includes trailer playback before movies (Cinema
+  Mode), theme songs for TV shows, chapter markers for easy navigation, and picture-in-picture support. All features are optional
   and configurable per-user or per-library.
 sources:
 - name: FFmpeg Documentation
@@ -65,20 +62,21 @@ design_refs:
 feature_name: Revenge - Media Enhancement Features
 module_name: revenge___media_enhancement_features
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -202,7 +200,6 @@ database_schema: |
   CREATE INDEX idx_media_segments_content ON media_segments(content_type, content_id);
   CREATE INDEX idx_media_segments_type ON media_segments(segment_type);
   ```
-
 module_structure: |
   ```
   internal/playback/enhancements/
@@ -258,7 +255,6 @@ module_structure: |
   ├── PictureInPicture.svelte      # PiP controller
   └── ThemePlayer.svelte           # Theme song player
   ```
-
 file_structure: |
   **Key Files**:
   - `internal/playback/enhancements/service.go` - Core enhancement logic
@@ -266,7 +262,6 @@ file_structure: |
   - `internal/playback/enhancements/chapters/detector.go` - Chapter detection
   - `web/src/lib/components/player/CinemaMode.svelte` - Cinema mode UI
   - `migrations/017_media_enhancements.sql` - Database schema
-
 key_interfaces: |
   ```go
   // EnhancementService manages playback enhancements
@@ -427,7 +422,6 @@ key_interfaces: |
     Theme    *Theme          `json:"theme,omitempty"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid` - UUID handling
@@ -449,7 +443,6 @@ dependencies: |
   - TMDb API - Trailer metadata
   - YouTube API - Trailer downloads
   - TV Themes database (optional)
-
 env_vars: |
   ```bash
   # Cinema mode
@@ -472,7 +465,6 @@ env_vars: |
   CHAPTERS_AUTO_DETECT=true                    # Auto-detect chapters
   CHAPTERS_SILENCE_THRESHOLD=-30dB             # Silence detection threshold
   ```
-
 config_keys: |
   ```yaml
   enhancements:
@@ -519,7 +511,6 @@ config_keys: |
         - primary: movie
           pip: [live_tv]
   ```
-
 component_interaction: |
   **Cinema Mode Playback Flow**:
   1. User clicks "Play" on movie with cinema mode enabled
@@ -562,7 +553,6 @@ component_interaction: |
   5. Client renders main player (live TV) + small PiP player (movie)
   6. Both players sync positions to server
   7. User can swap primary/PiP or end PiP
-
 api_endpoints: |
   **Endpoints**:
   ```
@@ -687,7 +677,6 @@ api_endpoints: |
     "started_at": "2026-01-31T15:30:00Z"
   }
   ```
-
 unit_tests: |
   ```go
   // internal/playback/enhancements/enhancements_test.go
@@ -742,7 +731,6 @@ unit_tests: |
   - Chapter detection algorithms
   - PiP session management
   - User preference handling
-
 integration_tests: |
   ```go
   // tests/integration/playback/enhancements_test.go

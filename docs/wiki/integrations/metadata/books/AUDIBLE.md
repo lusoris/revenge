@@ -29,26 +29,9 @@ SUPPLEMENTARY metadata source for audiobooks. Used as: (1) **Fallback** when Cha
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
 ## Configuration
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

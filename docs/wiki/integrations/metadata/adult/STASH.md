@@ -22,31 +22,12 @@ Migration and sync integration for local Stash libraries. GraphQL API enables: (
 
 
 
----
-
 
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

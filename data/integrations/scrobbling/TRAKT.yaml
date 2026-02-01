@@ -18,7 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Social platform for tracking + metadata enrichment provider with multi-source ratings'
 wiki_tagline: '> Track movies/TV and enrich metadata with Trakt'
-wiki_overview: Trakt integration provides DUAL functionality - scrobbling/tracking AND metadata enrichment. Syncs watch history automatically as you watch. Import existing Trakt history to mark content as watched. Sync watchlists bidirectionally. METADATA ENRICHMENT - Provides provider IDs (TMDb, TVDb, IMDb, etc.), multi-source ratings (TMDb, IMDb, Rotten Tomatoes), and links to other services. VIP features include lists, stats, and advanced filtering. OAuth login keeps credentials secure.
+wiki_overview: Trakt integration provides DUAL functionality - scrobbling/tracking AND metadata enrichment. Syncs watch history
+  automatically as you watch. Import existing Trakt history to mark content as watched. Sync watchlists bidirectionally. METADATA
+  ENRICHMENT - Provides provider IDs (TMDb, TVDb, IMDb, etc.), multi-source ratings (TMDb, IMDb, Rotten Tomatoes), and links
+  to other services. VIP features include lists, stats, and advanced filtering. OAuth login keeps credentials secure.
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro
@@ -41,21 +44,17 @@ integration_id: trakt
 external_service: Trakt
 api_base_url: https://api.trakt.tv
 auth_method: oauth
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Playback"]
+      node2["Trakt<br/>Integration"]
+      node3["Trakt<br/>API"]
+      node4["Scrobble<br/>Queue (River)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │  Revenge    │────▶│    Trakt     │────▶│    Trakt    │
-  │  Playback   │◀────│ Integration  │◀────│     API     │
-  │  Events     │     │              │     └─────────────┘
-  └─────────────┘     └──────┬───────┘
-                             │
-                      ┌──────▼────────┐
-                      │ Scrobble      │
-                      │ Queue (River) │
-                      └───────────────┘
-  ```
-
 api_details: |
   **API Version**: v2
   **Base URL**: `https://api.trakt.tv`
@@ -98,7 +97,6 @@ api_details: |
   - `trakt-api-version: 2`
   - `trakt-api-key: {client_id}`
   - `Authorization: Bearer {access_token}`
-
 database_schema: |
   **Schema**: `public`
 
@@ -192,7 +190,6 @@ database_schema: |
     UNIQUE(connection_id, content_type, trakt_id)
   );
   ```
-
 metadata_enrichment: |
   **CRITICAL: Trakt is NOT just scrobbling - it's a metadata enrichment provider**
 
@@ -273,7 +270,6 @@ metadata_enrichment: |
   4. If not in Radarr, use Trakt's full metadata as enrichment
   5. Store Trakt ratings alongside TMDb/IMDb ratings
   6. Use IMDb ID for OMDb API to get RT/Metacritic scores
-
 vip_features: |
   **VIP Status Detection**:
 
@@ -355,7 +351,6 @@ vip_features: |
   - Show VIP badge in Trakt settings if user has VIP
   - Disable VIP-only features with tooltip: "Requires Trakt VIP"
   - Provide upgrade link: https://trakt.tv/vip
-
 module_structure: |
   ```
   internal/integrations/trakt/
@@ -368,7 +363,6 @@ module_structure: |
   ├── types.go                     # Trakt API types
   └── trakt_test.go
   ```
-
 key_interfaces: |
   ```go
   // Trakt integration service
@@ -422,7 +416,6 @@ key_interfaces: |
     IDs    map[string]interface{} `json:"ids"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client
@@ -436,7 +429,6 @@ dependencies: |
   **External Services**:
   - **Trakt.tv API** - Dual-purpose: Scrobbling + Metadata enrichment provider (via proxy/VPN)
   - Trakt.tv account with OAuth app registration
-
 env_vars: |
   ```bash
   # Trakt OAuth app credentials
@@ -448,7 +440,6 @@ env_vars: |
   TRAKT_AUTO_SCROBBLE=true
   TRAKT_SCROBBLE_THRESHOLD=90  # Scrobble at 90% progress
   ```
-
 config_keys: |
   ```yaml
   integrations:
@@ -478,7 +469,6 @@ config_keys: |
         enable_lists: true       # Enable list sync for VIP users
         enable_recommendations: true  # Enable recommendations for VIP users
   ```
-
 component_interaction: |
   **OAuth Flow** (with VIP detection):
   1. User clicks "Connect Trakt" in Revenge settings
@@ -512,7 +502,6 @@ component_interaction: |
   1. GET /sync/watchlist from Trakt
   2. Add items to Revenge requests if not already in library
   3. On new Revenge request, POST /sync/watchlist to add to Trakt
-
 oauth_flow: |
   **Authorization Code Grant**:
 
@@ -567,7 +556,6 @@ oauth_flow: |
     "grant_type": "refresh_token"
   }
   ```
-
 api_request_examples: |
   **Start Scrobble (Movie)**:
   ```
@@ -673,7 +661,6 @@ api_request_examples: |
     }
   ]
   ```
-
 scrobbling_workflow: |
   **Real-Time Scrobbling**:
 
@@ -701,7 +688,6 @@ scrobbling_workflow: |
   - Queue failed scrobbles in trakt_scrobble_queue
   - Retry with exponential backoff (max 5 attempts)
   - If user offline, queue and sync when online
-
 watchlist_sync: |
   **Bidirectional Watchlist Sync**:
 
@@ -722,7 +708,6 @@ watchlist_sync: |
   - Trakt is source of truth for imports
   - Local additions always exported
   - Removals: If item deleted from Trakt, keep in Revenge but mark as "not synced"
-
 history_sync: |
   **Watch History Sync**:
 
@@ -746,7 +731,6 @@ history_sync: |
   - Use trakt_id for history entries
   - Check tmdb_id/imdb_id/tvdb_id matches
   - Ignore plays within 5 minutes of each other
-
 rate_limiting: |
   **Rate Limits**:
   - **Global**: 1000 requests per 5 minutes
@@ -768,7 +752,6 @@ rate_limiting: |
   **Burst Handling**:
   - Allow burst of 10 requests for immediate scrobbles
   - Throttle background syncs to 10 req/min
-
 unit_tests: |
   ```go
   func TestTraktService_OAuth(t *testing.T) {
@@ -794,7 +777,6 @@ unit_tests: |
     // Test 429 retry logic
   }
   ```
-
 integration_tests: |
   ```go
   func TestTrakt_FullWorkflow(t *testing.T) {

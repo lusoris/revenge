@@ -16,17 +16,14 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Complete adult content management with Whisparr and Stash ecosystem
-  integration. > All adult content isolated in PostgreSQL schema `qar` with "Queen
-  Anne''s Revenge" themed obfuscation. > Whisparr PRIMARY metadata source (aggregates
-  StashDB locally).'
+technical_summary: '> Complete adult content management with Whisparr and Stash ecosystem integration. > All adult content
+  isolated in PostgreSQL schema `qar` with "Queen Anne''s Revenge" themed obfuscation. > Whisparr PRIMARY metadata source
+  (aggregates StashDB locally).'
 wiki_tagline: '> Isolated adult library with Stash and StashDB integration'
-wiki_overview: Manage adult content in a completely isolated library (codenamed QAR
-  - Queen Anne Revenge). Uses Whisparr as the PRIMARY metadata source (aggregates
-  from StashDB locally), with direct StashDB/Stash APIs as supplementary enrichment.
-  Whisparr integration provides both metadata caching and download automation. Content
-  is separated in its own database schema for privacy. Requires explicit permission
-  and NSFW toggle to access.
+wiki_overview: Manage adult content in a completely isolated library (codenamed QAR - Queen Anne Revenge). Uses Whisparr as
+  the PRIMARY metadata source (aggregates from StashDB locally), with direct StashDB/Stash APIs as supplementary enrichment.
+  Whisparr integration provides both metadata caching and download automation. Content is separated in its own database schema
+  for privacy. Requires explicit permission and NSFW toggle to access.
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5
@@ -73,20 +70,21 @@ content_types:
 - Scenes
 - Performers
 - Studios
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `qar` (Queen Anne's Revenge - isolated adult content schema)
 
@@ -150,7 +148,6 @@ database_schema: |
   - `idx_crew_appearances_cargo_id` on `cargo_id`
   - `idx_crew_appearances_crew_id` on `crew_id`
   - `idx_voyage_log_user_cargo` on (`user_id`, `cargo_id`)
-
 module_structure: |
   ```
   internal/content/revenge___adult_content_system/
@@ -167,7 +164,6 @@ module_structure: |
       ├── stashdb.go         # StashDB GraphQL integration
       └── enricher.go        # Metadata enrichment logic
   ```
-
 component_interaction: |
   1. **Request Flow**:
      - Client sends HTTP request to `/api/v1/legacy/*` (obfuscated adult endpoints)
@@ -192,8 +188,6 @@ component_interaction: |
      - NSFW toggle must be enabled in user preferences
      - Content is completely isolated in separate schema
      - No cross-references to public schema (privacy protection)
-
-# Implementation
 file_structure: |
   ```
   internal/content/revenge___adult_content_system/
@@ -226,7 +220,6 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (legacy/* endpoints)
   ```
-
 key_interfaces: |
   ```go
   // Repository defines database operations for QAR content
@@ -298,7 +291,6 @@ key_interfaces: |
       DeobfuscateFleet(fleet *Fleet) *Studio
   }
   ```
-
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -318,8 +310,6 @@ dependencies: |
   **Database**:
   - PostgreSQL 18+ with separate `qar` schema for isolation
   - Trigram extension for fuzzy search
-
-# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_QAR_ENABLED` - Enable QAR module (default: false)
@@ -331,7 +321,6 @@ env_vars: |
   - `REVENGE_METADATA_STASH_API_KEY` - Local Stash API key (optional)
   - `REVENGE_WHISPARR_URL` - Whisparr instance URL (optional)
   - `REVENGE_WHISPARR_API_KEY` - Whisparr API key (optional)
-
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -375,7 +364,6 @@ config_keys: |
         studio: fleet
         watch_history: voyage_log
   ```
-
 defaults: |
   - QAR module: Disabled by default (must be explicitly enabled)
   - Cache TTL: 10 minutes
@@ -386,8 +374,6 @@ defaults: |
   - StashDB/Stash proxy: Uses tor proxy from HTTP_CLIENT service
   - API namespace: `/api/v1/legacy/*`
   - Permission scope: `legacy:read`
-
-# API Endpoints
 endpoints: |
   **Cargo (Scenes)**:
   - `GET /api/v1/legacy/cargo` - List scenes with filters
@@ -419,7 +405,6 @@ endpoints: |
   **Voyage Log (Watch History)**:
   - `GET /api/v1/legacy/voyage` - Get user's watch history
   - `GET /api/v1/legacy/cargo/{id}/voyage-status` - Check if viewed by user
-
 request_examples: |
   **List cargo (scenes) with filters**:
   ```http
@@ -453,7 +438,6 @@ request_examples: |
   Authorization: Bearer {token}
   X-Permission-Scope: legacy:read
   ```
-
 response_examples: |
   **Cargo (scene) details response**:
   ```json
@@ -509,8 +493,6 @@ response_examples: |
     "updated_at": "2024-01-15T20:30:00Z"
   }
   ```
-
-# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD operations for cargo (scenes)
@@ -544,7 +526,6 @@ unit_tests: |
   - Test reverse mapping for API responses
   - Test field name obfuscation
   - Test schema namespace isolation
-
 integration_tests: |
   **Full Stack Tests**:
   - Test complete request flow (client → database in `qar` schema)
@@ -568,7 +549,6 @@ integration_tests: |
   - Test `legacy:read` scope enforcement
   - Test unauthorized access rejection
   - Test role-based access (admin vs. user)
-
 test_coverage_target: |
   - **Overall**: 85% minimum (higher due to sensitive content)
   - **Repository**: 95% (critical path, data isolation)

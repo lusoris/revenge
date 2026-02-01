@@ -59,52 +59,24 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Metadata<br/>Service"]
+    node4["Priority<br/>Chain"]
+    node5["L1 Cache<br/>L2 Cache<br/>er"]
+    node6["PRIMARY [local Arr services]<br/>Sonarr<br/>Lidarr"]
+    node7["SUPPLEMENTARY [external APIs]<br/>VDB<br/>MusicBrainz"]
+    node8["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+    node5 --> node6
+    node6 --> node7
+    node7 --> node8
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│  Metadata   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   Service   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                                          ┌──────┴──────┐
-                                          │  Priority   │
-                                          │   Chain     │
-                                          └──────┬──────┘
-                                                 │
-                ┌────────────────────────────────┼──────────────────────────┐
-                │ L1 Cache                       │ L2 Cache                 │
-                ▼                                ▼                          │
-          ┌──────────┐                    ┌──────────┐                     │
-          │  Otter   │                    │Dragonfly │                     │
-          │(in-mem)  │                    │(distrib) │                     │
-          └──────────┘                    └──────────┘                     │
-                                                 │                          │
-                ┌────────────────────────────────┴──────────────────┐      │
-                │ PRIMARY (local Arr services)                      │      │
-                ▼                                                   ▼      │
-       ┌────────────────┐  ┌─────────┐  ┌─────────┐  ┌──────────┐       │
-       │ Radarr/Sonarr  │  │ Lidarr  │  │Chaptarr │  │ Whisparr │       │
-       │ (LOCAL cache)  │  │(music)  │  │(books)  │  │  (QAR)   │       │
-       └────────┬───────┘  └────┬────┘  └────┬────┘  └─────┬────┘       │
-                │               │            │             │             │
-                └───────────────┴────────────┴─────────────┘             │
-                                │                                        │
-                ┌───────────────┴───────────────────────┐                │
-                │ SUPPLEMENTARY (external APIs)          │                │
-                ▼                                        ▼                ▼
-       ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────┐
-       │  TMDb/TVDB   │  │ MusicBrainz  │  │ OpenLibrary  │  │ StashDB  │
-       │ (via proxy)  │  │ (via proxy)  │  │ (via proxy)  │  │(via proxy)│
-       └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └─────┬────┘
-              │                  │                 │                 │
-              └──────────────────┴─────────────────┴─────────────────┘
-                                 │
-                          ┌──────┴────────┐
-                          │ HTTP_CLIENT   │
-                          │ (optional     │
-                          │  proxy/VPN)   │
-                          └───────────────┘
-```
-
 
 ### Service Structure
 
@@ -152,8 +124,6 @@ internal/service/metadata/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -223,12 +193,6 @@ type Metadata struct {
 - OpenLibrary API (https://openlibrary.org/api/)
 - StashDB GraphQL API (https://stashdb.org/graphql)
 - Last.fm API (https://ws.audioscrobbler.com/2.0/)
-
-
-
-
-
-
 
 ## Configuration
 
@@ -307,8 +271,6 @@ metadata:
     l2_ttl: 24h  # Dragonfly cache
 ```
 
-
-
 ## API Endpoints
 ```
 # Search
@@ -341,13 +303,6 @@ PUT    /api/v1/metadata/providers/:name  # Configure provider
   ]
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

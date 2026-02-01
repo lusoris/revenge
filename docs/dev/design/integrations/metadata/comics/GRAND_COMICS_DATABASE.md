@@ -54,33 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Comics<br/>Library"]
+    node2["ComicVine<br/>(modern)"]
+    node3["GCD<br/>(historical)"]
+    node4["Rate Limiter<br/>(polite)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
 ```
-┌──────────────┐
-│  Revenge     │
-│  Comics      │
-│  Library     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────────┐
-       │ PRIMARY                                  │ SUPPLEMENTARY
-       ▼                                          ▼
-┌──────────────┐                           ┌──────────────┐
-│  ComicVine   │                           │     GCD      │
-│  (modern)    │                           │ (historical) │
-└──────────────┘                           └──────┬───────┘
-                                                  │
-                                           ┌──────┴───────┐
-                                           │ Rate Limiter │
-                                           │ (polite)     │
-                                           └──────────────┘
-
-Focus Areas:
-- Golden Age (1938-1956)
-- Silver Age (1956-1970)
-- Defunct publishers
-- Bibliographic details
-```
-
 
 ### Integration Structure
 
@@ -99,8 +82,6 @@ internal/integration/gcd/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -161,12 +142,6 @@ type Issue struct {
 **External**:
 - GCD REST API (free, no key required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -194,15 +169,6 @@ metadata:
         - silver_age        # 1956-1970
         - defunct_publishers
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

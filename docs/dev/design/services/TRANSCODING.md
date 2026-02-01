@@ -66,35 +66,20 @@ Transcoding capabilities:
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>Transc<br/>lc)"]
+    node5["RNAL<br/>EXTER<br/>eg"]
+    node6["Blackbeard"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
+    node5 --> node6
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                ┌────────────────────────────────┴────────────────────────────┐
-                ▼                                                              ▼
-         ┌──────────────┐                                              ┌──────────────┐
-         │  Repository  │                                              │ Transcoding  │
-         │   (sqlc)     │                                              │   Router     │
-         └──────┬───────┘                                              └──────┬───────┘
-                │                                         ┌──────────────────┴───────────────────┐
-                ▼                                         ▼                                       ▼
-         ┌─────────────┐                          ┌──────────────┐                       ┌──────────────┐
-         │ PostgreSQL  │                          │   INTERNAL   │                       │   EXTERNAL   │
-         │   (pgx)     │                          │   FFmpeg     │                       │  (optional)  │
-         └─────────────┘                          │ (go-astiav)  │                       └──────┬───────┘
-                                                  │              │                              │
-                                                  │ HW Accel:    │                              ▼
-                                                  │ NVENC, QSV,  │                       ┌──────────────┐
-                                                  │ VAAPI        │                       │  Blackbeard  │
-                                                  └──────────────┘                       │ (3rd-party)  │
-                                                                                         └──────────────┘
-
-INTERNAL: Always available, uses go-astiav FFmpeg bindings
-EXTERNAL: Optional offloading to Blackbeard (not developed by us)
-```
-
 
 ### Service Structure
 
@@ -129,8 +114,6 @@ internal/service/transcoding/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -181,12 +164,6 @@ type TranscodeJob struct {
 - Blackbeard service (optional, for offloading)
 - FFmpeg (system dependency)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -218,8 +195,6 @@ transcoding:
   hls:
     segment_duration: 6s
 ```
-
-
 
 ## API Endpoints
 ### POST /api/v1/transcode/video/:id
@@ -294,13 +269,6 @@ Get cache statistics
 }
 
 ```
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [services](INDEX.md)

@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Google Cast protocol for streaming to Chromecast devices'
 wiki_tagline: '> Cast media to Chromecast and Google TV'
-wiki_overview: Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled
-  device. Click the cast icon in the player to see available devices on your network.
-  Control playback from your phone or computer while watching on the big screen. Supports
-  subtitles and multiple audio tracks.
+wiki_overview: Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled device. Click the cast icon in the player
+  to see available devices on your network. Control playback from your phone or computer while watching on the big screen.
+  Supports subtitles and multiple audio tracks.
 sources:
 - name: go-chromecast
   url: https://github.com/vishen/go-chromecast
@@ -37,42 +36,17 @@ integration_name: Chromecast
 integration_id: chromecast
 external_service: Chromecast
 api_base_url: https://revenge.example.com/api/v1/stream/movie/123
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>Web App"]
+      node2["Chromecast<br/>Device"]
+      node3["Revenge<br/>Server<br/>(HLS Stream)"]
+      node4["Receiver<br/>Application<br/>(Custom)"]
+      node1 --> node2
+      node3 --> node4
+      node2 --> node3
   ```
-  ┌──────────────┐                    ┌─────────────────┐
-  │   Revenge    │                    │   Chromecast    │
-  │   Web App    │                    │     Device      │
-  └──────┬───────┘                    └────────┬────────┘
-         │                                     │
-         │ 1. Discover devices (mDNS/SSDP)   │
-         │────────────────────────────────────▶│
-         │                                     │
-         │ 2. Connect to device               │
-         │────────────────────────────────────▶│
-         │                                     │
-         │ 3. Load media (Cast SDK)           │
-         │────────────────────────────────────▶│
-         │   {                                 │
-         │     "contentId": "http://...m3u8", │
-         │     "contentType": "video/mp4",     │
-         │     "metadata": {...}               │
-         │   }                                 │
-         │                                     │
-         │ 4. Playback commands               │
-         │    (play/pause/seek)                │
-         │◀────────────────────────────────────▶
-         │                                     │
-         │ 5. Status updates                  │
-         │◀────────────────────────────────────│
-         │                                     │
-  ┌──────▼───────┐                    ┌────────▼────────┐
-  │   Revenge    │                    │   Receiver      │
-  │   Server     │                    │   Application   │
-  │  (HLS Stream)│────Media Data─────▶│   (Custom)      │
-  └──────────────┘                    └─────────────────┘
-  ```
-
 protocol_details: |
   **Google Cast Protocol**:
   - Discovery: mDNS/SSDP (automatic network discovery)
@@ -88,7 +62,6 @@ protocol_details: |
   **Cast SDK**:
   - Browser: Google Cast JavaScript SDK
   - Go backend: go-chromecast library for device control
-
 module_structure: |
   ```
   internal/
@@ -118,7 +91,6 @@ module_structure: |
           CastButton.svelte # Cast button component
           CastController.ts # Session controller
   ```
-
 key_interfaces: |
   ```go
   // ChromecastClient manages Cast devices and sessions
@@ -214,7 +186,6 @@ key_interfaces: |
       StatePaused    PlaybackState = "paused"
   )
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/vishen/go-chromecast` - Cast protocol client
@@ -225,7 +196,6 @@ dependencies: |
   - Google Cast JavaScript SDK (sender)
   - Google Cast Receiver SDK (receiver app)
   - Vidstack player for receiver playback
-
 env_vars: |
   ```bash
   # Chromecast configuration
@@ -234,7 +204,6 @@ env_vars: |
   REVENGE_CAST_DISCOVERY_TIMEOUT=5s
   REVENGE_CAST_AUTO_RECONNECT=true
   ```
-
 config_keys: |
   ```yaml
   casting:
@@ -254,7 +223,6 @@ config_keys: |
         transcode_on_incompatible: true
         max_bitrate: 20000    # Max bitrate in kbps
   ```
-
 component_interaction: |
   **Cast Flow**:
 
@@ -283,7 +251,6 @@ component_interaction: |
   5. **Disconnect**:
      - User stops casting
      - Session closed, receiver app unloads
-
 api_endpoints: |
   **Cast Session Management**:
   ```
@@ -340,7 +307,6 @@ api_endpoints: |
     }
   }
   ```
-
 receiver_app: |
   **Custom Receiver Application**:
 
@@ -371,7 +337,6 @@ receiver_app: |
   **Default Media Receiver**:
   - If no custom app configured, use Google's default
   - Limited features but works for basic playback
-
 transcoding: |
   **Codec Compatibility**:
 
@@ -395,7 +360,6 @@ transcoding: |
         fallback_codec: h264
         fallback_audio: aac
   ```
-
 error_handling: |
   **Common Errors**:
 
@@ -421,7 +385,6 @@ error_handling: |
       ErrUnsupportedCodec   = errors.New("codec not supported by device")
   )
   ```
-
 unit_tests: |
   ```go
   func TestChromecastClient_DiscoverDevices(t *testing.T) {
@@ -454,7 +417,6 @@ unit_tests: |
       }
   }
   ```
-
 integration_tests: |
   ```go
   func TestChromecast_FullWorkflow(t *testing.T) {
@@ -494,7 +456,6 @@ integration_tests: |
       assert.Equal(t, StatePlaying, status.State)
   }
   ```
-
 best_practices: |
   **Network**:
   - Ensure Chromecast and server on same subnet

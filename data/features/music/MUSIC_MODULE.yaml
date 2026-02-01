@@ -16,28 +16,20 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Music content management with metadata enrichment from MusicBrainz
-  and Last.fm
-
+technical_summary: |-
+  > Music content management with metadata enrichment from MusicBrainz and Last.fm
 
   Complete music library management:
-
   - **Lidarr Integration**: Two-way sync for music library automation
-
   - **Metadata Sources**: MusicBrainz (primary), Last.fm (scrobbling, tags)
-
   - **Supported Formats**: MP3, FLAC, AAC, OGG, ALAC, Opus
-
   - **Playback**: HLS adaptive streaming with gapless playback
-
-  - **Features**: Playlists, smart collections, album art, lyrics'
+  - **Features**: Playlists, smart collections, album art, lyrics
 wiki_tagline: '> Your complete music library with beautiful album art and metadata'
-wiki_overview: The Music Module provides a complete music library experience with
-  support for artists, albums, and tracks. It uses Lidarr as the PRIMARY metadata
-  source (aggregates from MusicBrainz locally), with direct MusicBrainz/Last.fm APIs
-  as supplementary enrichment. Lidarr integration provides both metadata caching and
-  download automation. Stream your music in high quality with gapless playback, create
-  playlists, and discover new music through smart collections.
+wiki_overview: The Music Module provides a complete music library experience with support for artists, albums, and tracks.
+  It uses Lidarr as the PRIMARY metadata source (aggregates from MusicBrainz locally), with direct MusicBrainz/Last.fm APIs
+  as supplementary enrichment. Lidarr integration provides both metadata caching and download automation. Stream your music
+  in high quality with gapless playback, create playlists, and discover new music through smart collections.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -288,25 +280,31 @@ api_endpoints:
 - method: GET
   path: /api/v1/music/genres
   description: List all music genres
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
-module_structure: "```\n  internal/content/music/\n  ├── module.go              #\
-  \ fx module definition\n  ├── repository.go          # Database operations (sqlc)\n\
-  \  ├── service.go             # Business logic\n  ├── handler.go             # HTTP\
-  \ handlers (ogen)\n  ├── types.go               # Domain types\n  └── cache.go \
-  \              # Caching layer (otter)\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
+module_structure: |-
+  ```
+    internal/content/music/
+    ├── module.go              # fx module definition
+    ├── repository.go          # Database operations (sqlc)
+    ├── service.go             # Business logic
+    ├── handler.go             # HTTP handlers (ogen)
+    ├── types.go               # Domain types
+    └── cache.go               # Caching layer (otter)
+    ```
 component_interaction: |
   1. **Request Flow**:
      - Client sends HTTP request to `/api/v1/music/*`
@@ -337,8 +335,6 @@ component_interaction: |
      - Background job submits scrobble to Last.fm/ListenBrainz
      - Scrobble stored locally for play count statistics
      - If submission fails, queued for retry
-
-# Implementation
 file_structure: |
   ```
   internal/content/music/
@@ -379,7 +375,6 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (music/* endpoints)
   ```
-
 key_interfaces: |
   ```go
   // Repository defines database operations for music content
@@ -466,7 +461,6 @@ key_interfaces: |
       QueueOffline(track *Track, timestamp time.Time) error
   }
   ```
-
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -489,8 +483,6 @@ dependencies: |
 
   **Database**:
   - PostgreSQL 18+ with trigram extension for fuzzy search
-
-# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_MUSIC_CACHE_TTL` - Cache TTL duration (default: 15m)
@@ -504,7 +496,6 @@ env_vars: |
   - `REVENGE_MUSIC_TRANSCODE_ENABLED` - Enable audio transcoding (default: true)
   - `REVENGE_MUSIC_TRANSCODE_QUALITY` - Transcode quality preset (low, medium, high, lossless)
   - `REVENGE_MUSIC_GAPLESS_ENABLED` - Enable gapless playback (default: true)
-
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -570,7 +561,6 @@ config_keys: |
         - listenbrainz
       offline_queue_size: 1000
   ```
-
 defaults: |
   - Cache TTL: 15 minutes
   - Cache size: 150 MB
@@ -581,8 +571,6 @@ defaults: |
   - Scrobble threshold: 50% or 4 minutes
   - HLS segment duration: 6 seconds
   - ReplayGain: enabled (-18 LUFS fallback)
-
-# API Endpoints (additional to those already listed)
 request_examples: |
   **List artists with filters**:
   ```http
@@ -619,7 +607,6 @@ request_examples: |
     "timestamp": "2024-01-15T20:30:00Z"
   }
   ```
-
 response_examples: |
   **Artist details response**:
   ```json
@@ -682,8 +669,6 @@ response_examples: |
     "expires_at": "2024-01-15T21:30:00Z"
   }
   ```
-
-# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD operations for artists
@@ -720,7 +705,6 @@ unit_tests: |
   - Test offline queue behavior
   - Test retry logic for failed submissions
   - Test concurrent scrobbles
-
 integration_tests: |
   **Full Stack Tests**:
   - Test complete request flow (client → database)
@@ -743,7 +727,6 @@ integration_tests: |
   - Test segment caching
   - Test bandwidth adaptation
   - Test gapless transitions
-
 test_coverage_target: |
   - **Overall**: 80% minimum
   - **Repository**: 90% (critical path)

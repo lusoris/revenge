@@ -16,14 +16,11 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Sync playback data to external services like Trakt, Last.fm,
-  ListenBrainz, etc.'
+technical_summary: '> Sync playback data to external services like Trakt, Last.fm, ListenBrainz, etc.'
 wiki_tagline: '> Track what you watch and listen to across services'
-wiki_overview: Scrobble your viewing and listening history to external services. Connect
-  Trakt to track movies and TV shows. Link Last.fm or ListenBrainz for music listening
-  history. Sync watch status to Simkl, Letterboxd, or AniList. Two-way sync imports
-  existing history and exports new plays automatically. Per-user configuration for
-  each connected service.
+wiki_overview: Scrobble your viewing and listening history to external services. Connect Trakt to track movies and TV shows.
+  Link Last.fm or ListenBrainz for music listening history. Sync watch status to Simkl, Letterboxd, or AniList. Two-way sync
+  imports existing history and exports new plays automatically. Per-user configuration for each connected service.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -53,20 +50,21 @@ design_refs:
 feature_name: Revenge - External Scrobbling & Sync
 module_name: revenge___external_scrobbling_&_sync
 schema_name: public
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `public`
 
@@ -254,7 +252,6 @@ key_interfaces: |
     RefreshToken(refreshToken string) (*OAuthTokens, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -269,7 +266,6 @@ dependencies: |
   - ListenBrainz API
   - Simkl API
   - AniList GraphQL API
-
 env_vars: |
   ```bash
   TRAKT_CLIENT_ID=your_client_id
@@ -287,7 +283,6 @@ env_vars: |
   ANILIST_CLIENT_ID=your_client_id
   ANILIST_CLIENT_SECRET=your_client_secret
   ```
-
 config_keys: |
   ```yaml
   scrobble:
@@ -314,7 +309,6 @@ config_keys: |
         enabled: true
         client_id: ${ANILIST_CLIENT_ID}
   ```
-
 component_interaction: |
   **OAuth Connection Flow**:
   1. User clicks "Connect Trakt" button
@@ -345,7 +339,6 @@ component_interaction: |
   2. Compare external watch status with local
   3. Sync changes in both directions (configurable)
   4. Handle conflicts (local vs external)
-
 api_endpoints: |
   ```
   GET  /api/v1/scrobble/connections              # List user's connections
@@ -360,7 +353,6 @@ api_endpoints: |
   POST /api/v1/scrobble/import/{service}         # Import history from service
   GET  /api/v1/scrobble/imported                 # List imported items
   ```
-
 unit_tests: |
   ```go
   func TestScrobbleService_QueueScrobble(t *testing.T) {
@@ -405,7 +397,6 @@ unit_tests: |
     // Test mapping internal IDs to Trakt/IMDb/etc.
   }
   ```
-
 integration_tests: |
   ```go
   func TestScrobble_EndToEnd(t *testing.T) {

@@ -21,28 +21,9 @@ Revenge uses a Gitflow-style branching strategy. The main branch contains produc
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

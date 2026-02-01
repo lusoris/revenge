@@ -56,25 +56,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -97,8 +92,6 @@ internal/content/adult_data_reconciliation/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -248,12 +241,6 @@ type ManualOverride struct {
 **External APIs**:
 - None (internal reconciliation logic)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -298,8 +285,6 @@ reconciliation:
     - jaro_winkler     # Jaro-Winkler similarity
     - trigram          # PostgreSQL pg_trgm
 ```
-
-
 
 ## API Endpoints
 
@@ -430,13 +415,6 @@ Response 200 OK:
   ]
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

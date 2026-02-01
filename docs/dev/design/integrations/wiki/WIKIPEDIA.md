@@ -54,29 +54,14 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Detail Page<br/>(Movie/TV)"]
+    node2["Wikipedia<br/>MediaWiki<br/>API"]
+    node3["Article Content<br/>- Summary<br/>- Plot"]
+    node2 --> node3
+    node1 --> node2
 ```
-┌──────────────┐
-│  Revenge     │
-│  Detail Page │
-│  (Movie/TV)  │
-└──────┬───────┘
-       │ Enrichment request
-       ▼
-┌──────────────┐     ┌───────────────────┐
-│  Wikipedia   │────▶│  Article Content  │
-│  MediaWiki   │     │  - Summary        │
-│  API         │     │  - Plot           │
-└──────┬───────┘     │  - Production     │
-       │             │  - Reception      │
-┌──────┴───────┐     │  - Cast info      │
-│ Rate Limiter │     └───────────────────┘
-│ (polite)     │
-└──────────────┘
-
-Languages: en, de, fr, es, ja, etc.
-Content: CC BY-SA license
-```
-
 
 ### Integration Structure
 
@@ -95,8 +80,6 @@ internal/integration/wikipedia/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -153,12 +136,6 @@ type PersonBio struct {
 **External**:
 - Wikipedia MediaWiki API (free, no key)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -189,15 +166,6 @@ metadata:
       role: enrichment
       extract_sentences: 5
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

@@ -57,25 +57,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Browser)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["PostgreSQL"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Browser)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-              │                                  │
-              │ OAuth2 redirect     ┌────────────┼────────────┐
-              │                     ▼            ▼            ▼
-              │              ┌──────────┐  ┌───────────┐  ┌────────┐
-              └─────────────▶│  OIDC    │  │Repository │  │  Auth  │
-                             │ Provider │  │  (sqlc)   │  │Service │
-                             │(Authentik)│  └─────┬─────┘  └────────┘
-                             └──────────┘        │
-                                                 ▼
-                                          ┌─────────────┐
-                                          │ PostgreSQL  │
-                                          └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -105,8 +96,6 @@ internal/service/oidc/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -137,12 +126,6 @@ type OIDCService interface {
 - `golang.org/x/oauth2` - OAuth2 flow
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -158,8 +141,6 @@ oidc:
   callback_url: https://revenge.example.com/api/v1/oidc/callback
 ```
 
-
-
 ## API Endpoints
 ```
 # OAuth flow
@@ -171,13 +152,6 @@ POST /api/v1/oidc/providers              # Add provider
 GET  /api/v1/oidc/providers              # List providers
 PUT  /api/v1/oidc/providers/:id          # Update provider
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

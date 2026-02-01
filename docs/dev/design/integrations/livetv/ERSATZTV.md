@@ -60,41 +60,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Client"]
+    node2["EPG Service<br/>(Revenge)"]
+    node3["ErsatzTV API<br/>/api/channels<br/>/api/xmltv.xml"]
+    node4["Player<br/>(Vidstack)"]
+    node5["Media Files<br/>(your library)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌──────────────┐    1. View EPG      ┌─────────────────┐
-│   Revenge    │────────────────────▶│   EPG Service   │
-│  Web Client  │                     │  (Revenge)      │
-└──────┬───────┘                     └────────┬────────┘
-       │                                      │
-       │ 2. Select channel                   │
-       │                              3. Fetch EPG from
-       │                                 ErsatzTV
-       │                                      ▼
-       │                             ┌────────────────┐
-       │                             │  ErsatzTV API  │
-       │                             │  /api/channels │
-       │                             │  /api/xmltv.xml│
-       │                             └────────┬───────┘
-       │                                      │
-       │ 4. Play channel                     │ 5. Get channel
-       ▼                                      │    stream URL
-┌──────────────┐                             ▼
-│   Player     │    6. Request HLS  ┌────────────────┐
-│  (Vidstack)  │───────────────────▶│  ErsatzTV      │
-└──────────────┘                    │  HLS Endpoint  │
-                                     │  /iptv/{id}.m3u8│
-                                     └────────┬───────┘
-                                              │
-                                      7. Generate HLS
-                                         from scheduled
-                                         media files
-                                              ▼
-                                     ┌────────────────┐
-                                     │  Media Files   │
-                                     │  (your library)│
-                                     └────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -113,8 +90,6 @@ internal/integration/ersatztv/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -219,12 +194,6 @@ type PageMap struct {
 **External Services**:
 - ErsatzTV server (https://ersatztv.org)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -249,8 +218,6 @@ livetv:
     stream_proxy: false        # Proxy HLS through Revenge (or direct)
     logo_cache: true           # Cache channel logos locally
 ```
-
-
 
 ## API Endpoints
 **Revenge API Endpoints**:
@@ -324,13 +291,6 @@ Response:
   ]
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

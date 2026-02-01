@@ -42,25 +42,6 @@ Standard pattern for Arr stack integration:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

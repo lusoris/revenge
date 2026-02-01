@@ -18,12 +18,10 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV series, seasons, and episodes management'
 wiki_tagline: '> Organize TV series with seasons, episodes, and watch progress'
-wiki_overview: Manage TV shows organized by series, season, and episode. Automatic
-  metadata from Sonarr (PRIMARY source, aggregates from TheTVDB locally) with direct
-  TheTVDB/TMDb API as supplementary enrichment. Adds artwork, episode descriptions,
-  and air dates. Track watch progress per user - see where you left off and what
-  episodes are unwatched. Special episode handling for pilots, finales, and specials.
-  Sonarr integration provides both metadata caching and download automation.
+wiki_overview: Manage TV shows organized by series, season, and episode. Automatic metadata from Sonarr (PRIMARY source, aggregates
+  from TheTVDB locally) with direct TheTVDB/TMDb API as supplementary enrichment. Adds artwork, episode descriptions, and
+  air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling
+  for pilots, finales, and specials. Sonarr integration provides both metadata caching and download automation.
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -80,36 +78,21 @@ content_types:
 - TV Shows
 - Seasons
 - Episodes
-
-# Architecture
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cache"]
+      node5["arr<br/>TheTVD<br/>ARY)"]
+      node6["TheTVDB<br/>(external)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
+      node5 --> node6
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼─────────────────┐
-                            ▼                      ▼                 ▼
-                      ┌──────────┐          ┌───────────┐     ┌────────┐
-                      │Repository│          │ Metadata  │     │  Cache │
-                      │  (sqlc)  │          │  Service  │     │(otter) │
-                      └────┬─────┘          └─────┬─────┘     └────────┘
-                           │                      │
-                           │               ┌──────┴─────────┐
-                           ▼               ▼                ▼
-                    ┌─────────────┐  ┌──────────┐    ┌──────────┐
-                    │ PostgreSQL  │  │  Sonarr  │    │ TheTVDB  │
-                    │   (pgx)     │  │(PRIMARY) │    │(fallback)│
-                    └─────────────┘  └────┬─────┘    └──────────┘
-                                          │
-                                          ▼
-                                    ┌──────────┐
-                                    │ TheTVDB  │
-                                    │(external)│
-                                    └──────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -159,7 +142,6 @@ database_schema: |
   - `idx_tv_episodes_show_season` on (`show_id`, `season_number`)
   - `idx_tv_episode_watched_user_episode` on (`user_id`, `episode_id`)
   - `idx_tv_shows_title_trgm` (GIN trigram) for fuzzy search
-
 module_structure: |
   ```
   internal/content/tv_show/
@@ -175,7 +157,6 @@ module_structure: |
       ├── tmdb.go            # TMDb integration (fallback)
       └── enricher.go        # Metadata enrichment
   ```
-
 component_interaction: |
   1. **Request Flow**:
      - Client requests TV show/episode via HTTP
@@ -203,8 +184,6 @@ component_interaction: |
      - Background job syncs episode list daily
      - New episodes added to database automatically
      - Users notified of new unwatched episodes
-
-# Implementation
 file_structure: |
   ```
   internal/content/tv_show/
@@ -231,7 +210,6 @@ file_structure: |
   api/
   └── openapi.yaml           # OpenAPI spec (TV endpoints)
   ```
-
 key_interfaces: |
   ```go
   // Repository defines database operations for TV shows
@@ -282,7 +260,6 @@ key_interfaces: |
       GetShowImages(ctx context.Context, tvdbID int) (*Images, error)
   }
   ```
-
 dependencies: |
   **Go Dependencies**:
   - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
@@ -300,8 +277,6 @@ dependencies: |
 
   **Database**:
   - PostgreSQL 18+ with trigram extension
-
-# Configuration
 env_vars: |
   **Environment Variables**:
   - `REVENGE_TV_CACHE_TTL` - Cache TTL duration (default: 10m)
@@ -310,7 +285,6 @@ env_vars: |
   - `REVENGE_METADATA_TMDB_API_KEY` - TMDb API key (required)
   - `REVENGE_SONARR_URL` - Sonarr instance URL (optional)
   - `REVENGE_SONARR_API_KEY` - Sonarr API key (optional)
-
 config_keys: |
   **config.yaml keys**:
   ```yaml
@@ -338,15 +312,12 @@ config_keys: |
         api_key: ${REVENGE_SONARR_API_KEY}
         sync_interval: 30m
   ```
-
 defaults: |
   - Cache TTL: 10 minutes (longer than movies due to episode data)
   - Cache size: 150 MB (more data than movies)
   - Metadata priority: Sonarr (PRIMARY) → TheTVDB (via proxy) → TMDb
   - Sonarr sync: Enabled by default (required for PRIMARY metadata)
   - TheTVDB/TMDb proxy: Uses tor proxy from HTTP_CLIENT service
-
-# API Endpoints
 endpoints: |
   **Shows**:
   - `GET /api/v1/tv/shows` - List TV shows with filters
@@ -369,7 +340,6 @@ endpoints: |
   **Watch Progress**:
   - `GET /api/v1/tv/continue-watching` - Get user's continue watching list
   - `GET /api/v1/tv/shows/{id}/progress` - Get show watch progress
-
 request_examples: |
   **List TV shows**:
   ```http
@@ -393,7 +363,6 @@ request_examples: |
     "watched_at": "2024-01-15T20:30:00Z"
   }
   ```
-
 response_examples: |
   **Show details response**:
   ```json
@@ -426,8 +395,6 @@ response_examples: |
     "created_at": "2024-01-01T00:00:00Z"
   }
   ```
-
-# Testing
 unit_tests: |
   **Repository Tests** (with testcontainers):
   - Test CRUD for shows, seasons, episodes
@@ -448,7 +415,6 @@ unit_tests: |
   - Test episode marking with auth
   - Test progress calculations
   - Test next unwatched endpoint
-
 integration_tests: |
   **Full Stack Tests**:
   - Test complete show addition flow
@@ -462,7 +428,6 @@ integration_tests: |
   - Test foreign key cascades
   - Test season/episode ordering
   - Test progress calculation queries
-
 test_coverage_target: |
   - **Overall**: 80% minimum
   - **Repository**: 90% (complex queries)

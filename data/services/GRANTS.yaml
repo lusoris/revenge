@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Polymorphic resource access grants for fine-grained sharing'
 wiki_tagline: '> Polymorphic resource access grants for fine-grained sharing'
-wiki_overview: The Grants service enables sharing specific items with other users.
-  Share a movie, playlist, or library with friends without giving them full access.
-  Grants can be time-limited (expires in 7 days) or permanent. Revoke access anytime.
+wiki_overview: The Grants service enables sharing specific items with other users. Share a movie, playlist, or library with
+  friends without giving them full access. Grants can be time-limited (expires in 7 days) or permanent. Revoke access anytime.
   Works with all resource types through polymorphic references.
 sources:
 - name: Casbin
@@ -53,28 +52,19 @@ design_refs:
 service_name: Grants Service
 package_path: internal/service/grants
 fx_module: grants.Module
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["sitory<br/>RBAC<br/>Ca"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
+      node4 --> node5
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                       ┌──────────────────────┼────────────┐
-                       ▼                      ▼            ▼
-                  ┌──────────┐          ┌───────────┐  ┌────────┐
-                  │Repository│          │   RBAC    │  │  Cache │
-                  │  (sqlc)  │          │  Service  │  │(otter) │
-                  └────┬─────┘          └───────────┘  └────────┘
-                       │
-                       ▼
-                  ┌─────────────┐
-                  │ PostgreSQL  │
-                  │   (pgx)     │
-                  └─────────────┘
-  ```
-
 database_schema: |
   **Schema**: `public`
 
@@ -106,7 +96,6 @@ database_schema: |
   CREATE INDEX idx_access_grants_resource ON access_grants(resource_type, resource_id);
   CREATE INDEX idx_access_grants_expires ON access_grants(expires_at) WHERE expires_at IS NOT NULL;
   ```
-
 module_structure: |
   ```
   internal/service/grants/
@@ -118,7 +107,6 @@ module_structure: |
   ├── handler.go                   # HTTP API handlers
   └── grants_test.go
   ```
-
 key_interfaces: |
   ```go
   type GrantsService interface {
@@ -143,7 +131,6 @@ key_interfaces: |
     ExpiresAt       *time.Time `json:"expires_at,omitempty"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
@@ -151,20 +138,17 @@ dependencies: |
   - `github.com/riverqueue/river` - Cleanup jobs
   - `github.com/maypok86/otter` - Grant cache
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   GRANTS_CLEANUP_INTERVAL=1h
   GRANTS_DEFAULT_EXPIRY=168h  # 7 days
   ```
-
 config_keys: |
   ```yaml
   grants:
     cleanup_interval: 1h
     default_expiry: 168h
   ```
-
 component_interaction: |
   **Share Resource**:
   1. User A shares movie with User B
@@ -179,7 +163,6 @@ component_interaction: |
   3. Query access_grants WHERE granted_to_user_id = B AND resource_type = 'movie' AND resource_id = :id
   4. If found and not expired, allow access
   5. If not found, fallback to RBAC/library permissions
-
 api_endpoints: |
   ```
   POST   /api/v1/grants                       # Grant access
@@ -187,7 +170,6 @@ api_endpoints: |
   GET    /api/v1/grants/me                    # Get my grants
   GET    /api/v1/grants/resource/:type/:id    # Get resource grants
   ```
-
 unit_tests: |
   ```go
   func TestGrantsService_GrantAccess(t *testing.T) {
@@ -198,7 +180,6 @@ unit_tests: |
     // Test access checking (active, expired)
   }
   ```
-
 integration_tests: |
   ```go
   func TestGrants_ExpiryCleanup(t *testing.T) {

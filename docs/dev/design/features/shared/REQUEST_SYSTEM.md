@@ -54,25 +54,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -95,8 +90,6 @@ internal/content/native_request_system/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -198,12 +191,6 @@ type MetadataFetcher interface {
 - MusicBrainz API (for music metadata when Lidarr doesn't have it)
 - GoodReads/OpenLibrary API (for book metadata when Chaptarr doesn't have it)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -247,8 +234,6 @@ requests:
       api_key: ${LIDARR_API_KEY}
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -271,13 +256,6 @@ GET    /api/v1/requests/search/movies?q=        # Search TMDb for movies
 GET    /api/v1/requests/search/tvshows?q=       # Search TVDB for TV shows
 GET    /api/v1/requests/search/music?q=         # Search MusicBrainz for albums
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

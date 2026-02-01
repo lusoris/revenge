@@ -55,26 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>RBAC<br/>Ca"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │   RBAC    │  │  Cache │
-                │  (sqlc)  │          │  Service  │  │(otter) │
-                └────┬─────┘          └───────────┘  └────────┘
-                     │
-                     ▼
-                ┌─────────────┐
-                │ PostgreSQL  │
-                │   (pgx)     │
-                └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -104,8 +96,6 @@ internal/service/grants/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -143,12 +133,6 @@ type GrantRequest struct {
 - `github.com/maypok86/otter` - Grant cache
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -166,8 +150,6 @@ grants:
   default_expiry: 168h
 ```
 
-
-
 ## API Endpoints
 ```
 POST   /api/v1/grants                       # Grant access
@@ -175,13 +157,6 @@ DELETE /api/v1/grants/:id                   # Revoke grant
 GET    /api/v1/grants/me                    # Get my grants
 GET    /api/v1/grants/resource/:type/:id    # Get resource grants
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

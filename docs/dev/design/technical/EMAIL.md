@@ -50,16 +50,6 @@ Complete email infrastructure:
 ---
 
 
-
-
-
-
-
-
-
-
-
-
 ## API Endpoints
 ### POST /api/v1/admin/email/send
 
@@ -113,13 +103,6 @@ Unsubscribe from emails (public, no auth)
 ```json
 {}
 ```
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [technical](INDEX.md)

@@ -16,14 +16,11 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Image gallery management for adult content with performer links
-  and Prowlarr integration'
+technical_summary: '> Image gallery management for adult content with performer links and Prowlarr integration'
 wiki_tagline: '> Browse and organize adult image galleries'
-wiki_overview: Organize adult image sets and galleries with full metadata support.
-  Link galleries to performers and studios. Browse by performer, date, or custom tags.
-  Slideshow mode for viewing. Prowlarr integration finds and downloads new galleries.
-  Respects all QAR privacy and access controls. Thumbnails generated automatically
-  during library scan.
+wiki_overview: Organize adult image sets and galleries with full metadata support. Link galleries to performers and studios.
+  Browse by performer, date, or custom tags. Slideshow mode for viewing. Prowlarr integration finds and downloads new galleries.
+  Respects all QAR privacy and access controls. Thumbnails generated automatically during library scan.
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash
@@ -72,20 +69,21 @@ content_types:
 - Scenes
 - Performers
 - Studios
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `qar`
 
@@ -215,7 +213,6 @@ database_schema: |
   );
   CREATE INDEX idx_treasure_favorites_user ON qar.treasure_favorites(user_id, created_at DESC);
   ```
-
 module_structure: |
   ```
   internal/content/adult/gallery/
@@ -268,14 +265,12 @@ module_structure: |
   └── qar/
       └── 015_galleries.sql        # Schema creation
   ```
-
 file_structure: |
   **Key Files**:
   - `internal/content/adult/gallery/service.go` - Gallery management logic
   - `internal/content/adult/gallery/scanner/*.go` - Folder scanning and EXIF extraction
   - `internal/content/adult/gallery/prowlarr/*.go` - Prowlarr integration
   - `migrations/qar/015_galleries.sql` - Database schema
-
 key_interfaces: |
   ```go
   // GalleryService manages adult image galleries
@@ -432,7 +427,6 @@ key_interfaces: |
     CompletedAt     *time.Time      `db:"completed_at" json:"completed_at,omitempty"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid` - UUID handling
@@ -448,7 +442,6 @@ dependencies: |
 
   **External APIs**:
   - Prowlarr API - Gallery indexing and downloads
-
 env_vars: |
   ```bash
   # Gallery settings
@@ -464,7 +457,6 @@ env_vars: |
   PROWLARR_ENABLED=true                             # Enable Prowlarr integration
   PROWLARR_CATEGORIES=2030,2040                     # Adult image categories
   ```
-
 config_keys: |
   ```yaml
   gallery:
@@ -497,7 +489,6 @@ config_keys: |
       sync_interval: 1h
       max_concurrent_downloads: 3
   ```
-
 component_interaction: |
   **Gallery Scan Flow**:
   1. Background job triggers library scan (every 24h)
@@ -537,7 +528,6 @@ component_interaction: |
   7. Downloaded files extracted to library_path
   8. Gallery scanner detects new folder
   9. Gallery created automatically
-
 api_endpoints: |
   **Endpoints**:
   ```
@@ -665,7 +655,6 @@ api_endpoints: |
     "queued_at": "2024-06-15T15:00:00Z"
   }
   ```
-
 unit_tests: |
   ```go
   // internal/content/adult/gallery/gallery_test.go
@@ -732,7 +721,6 @@ unit_tests: |
   - Performer linking
   - Search filtering
   - Prowlarr integration
-
 integration_tests: |
   ```go
   // tests/integration/adult/gallery_test.go

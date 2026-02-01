@@ -57,34 +57,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Metadata<br/>Service"]
+    node2["Radarr/Sonarr<br/>(LOCAL cache)"]
+    node3["TMDb API<br/>(fallback +<br/>enrichment)"]
+    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node5["Rate Limiter<br/>(40 req/10s)"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+    node4 --> node5
 ```
-┌──────────────┐
-│  Revenge     │
-│  Metadata    │
-│  Service     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────┐
-       │ PRIMARY                             │ SUPPLEMENTARY
-       ▼                                     ▼
-┌──────────────┐                      ┌──────────────┐
-│ Radarr/Sonarr│                      │   TMDb API   │
-│ (LOCAL cache)│                      │  (fallback + │
-│              │                      │  enrichment) │
-└──────┬───────┘                      └──────┬───────┘
-       │                                     │
-       ▼                              ┌──────┴────────┐
-┌──────────────┐                     │  HTTP_CLIENT  │
-│  TMDb API    │                     │  (optional    │
-│  (external)  │                     │   proxy/VPN)  │
-└──────────────┘                     └───────────────┘
-                                            │
-                                     ┌──────┴───────┐
-                                     │ Rate Limiter │
-                                     │ (40 req/10s) │
-                                     └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -103,8 +87,6 @@ internal/integration/tmdb_the_movie_database/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -166,12 +148,6 @@ type MovieMetadata struct {
 **External APIs**:
 - TMDb API v3 (free tier: 40 requests per 10 seconds)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -214,15 +190,6 @@ metadata:
         url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
         interface: tun0          # VPN interface (if type=vpn)
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

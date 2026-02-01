@@ -21,28 +21,9 @@ Navigation adapts to your device. Desktop uses a collapsible sidebar rail with m
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

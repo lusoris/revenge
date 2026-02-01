@@ -57,19 +57,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["Middleware<br/>(Auth)"]
+    node3["Casbin<br/>Enforcer"]
+    node4["PostgreSQL<br/>casbin_rule"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  Middleware  │────▶│   Casbin    │
-│  (Web/App)  │◀────│   (Auth)     │◀────│  Enforcer   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                                                 ▼
-                                          ┌─────────────┐
-                                          │ PostgreSQL  │
-                                          │casbin_rule  │
-                                          └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -99,8 +96,6 @@ internal/service/rbac/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -132,12 +127,6 @@ type RBACService interface {
 - `github.com/casbin/pgx-adapter`
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -155,8 +144,6 @@ rbac:
   policy_reload_interval: 5m
 ```
 
-
-
 ## API Endpoints
 ```
 # Policy management (admin only)
@@ -169,13 +156,6 @@ POST   /api/v1/rbac/users/:id/roles       # Assign role
 DELETE /api/v1/rbac/users/:id/roles/:role # Remove role
 GET    /api/v1/rbac/users/:id/roles       # Get user roles
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

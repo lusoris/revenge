@@ -24,25 +24,8 @@ The Audio Streaming system delivers high-quality music playback using HLS (HTTP 
 ---
 
 
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

@@ -16,34 +16,19 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> User-created collections and playlists for organizing media
-  across content types
-
+technical_summary: |
+  > User-created collections and playlists for organizing media across content types
 
   Collections allow users to group media items together:
-
   - **Manual Collections**: User-curated lists (e.g., "Best Sci-Fi Movies")
-
   - **Smart Collections**: Filter-based dynamic lists (e.g., "All 4K Movies")
-
   - **Cross-Type Collections**: Mix movies, TV shows, music in one collection
-
   - **User-Specific**: Each user can create their own collections
-
   - **Shared Collections**: Optional sharing between users
-
-  '
-wiki_tagline: '> Organize your media with custom collections and playlists
-
-  '
-wiki_overview: 'The Collections system lets you group any media into custom collections.
-  Create manual collections by hand-picking items, or smart collections that automatically
-  update based on filters. Mix and match movies, TV shows, albums, and more in a single
-  collection. Share collections publicly or collaborate with other users. Perfect
-  for creating themed collections like "Best of 2023", "Oscar Winners", or "Workout
-  Music".
-
-  '
+wiki_tagline: |
+  > Organize your media with custom collections and playlists
+wiki_overview: |
+  The Collections system lets you group any media into custom collections. Create manual collections by hand-picking items, or smart collections that automatically update based on filters. Mix and match movies, TV shows, albums, and more in a single collection. Share collections publicly or collaborate with other users. Perfect for creating themed collections like "Best of 2023", "Oscar Winners", or "Workout Music".
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
@@ -154,12 +139,21 @@ api_endpoints:
   path: /api/v1/collections
   description: Create a new collection
   auth_required: true
-  request_example: "{\n  \"name\": \"Best Sci-Fi\",\n  \"description\": \"My favorite\
-    \ science fiction movies\",\n  \"type\": \"manual\",\n  \"is_public\": false\n\
-    }\n"
-  response_example: "{\n  \"id\": \"uuid-123\",\n  \"name\": \"Best Sci-Fi\",\n  \"\
-    type\": \"manual\",\n  \"is_public\": false,\n  \"created_at\": \"2026-01-31T12:00:00Z\"\
-    \n}\n"
+  request_example: |
+    {
+      "name": "Best Sci-Fi",
+      "description": "My favorite science fiction movies",
+      "type": "manual",
+      "is_public": false
+    }
+  response_example: |
+    {
+      "id": "uuid-123",
+      "name": "Best Sci-Fi",
+      "type": "manual",
+      "is_public": false,
+      "created_at": "2026-01-31T12:00:00Z"
+    }
 - method: GET
   path: /api/v1/collections
   description: List user's collections
@@ -168,24 +162,40 @@ api_endpoints:
   - type (optional): Filter by manual/smart
   - public (optional): Show only public collections
   request_example: '{}'
-  response_example: "{\n  \"collections\": [\n    {\"id\": \"uuid-123\", \"name\"\
-    : \"Best Sci-Fi\", \"type\": \"manual\", \"item_count\": 12}\n  ]\n}\n"
+  response_example: |
+    {
+      "collections": [
+        {"id": "uuid-123", "name": "Best Sci-Fi", "type": "manual", "item_count": 12}
+      ]
+    }
 - method: GET
   path: /api/v1/collections/{id}
   description: Get collection details with items
   auth_required: true
   request_example: '{}'
-  response_example: "{\n  \"id\": \"uuid-123\",\n  \"name\": \"Best Sci-Fi\",\n  \"\
-    items\": [\n    {\"type\": \"movie\", \"id\": \"uuid-456\", \"title\": \"Inception\"\
-    }\n  ]\n}\n"
+  response_example: |
+    {
+      "id": "uuid-123",
+      "name": "Best Sci-Fi",
+      "items": [
+        {"type": "movie", "id": "uuid-456", "title": "Inception"}
+      ]
+    }
 - method: PUT
   path: /api/v1/collections/{id}
   description: Update collection metadata
   auth_required: true
-  request_example: "{\n  \"name\": \"Updated Name\",\n  \"description\": \"New description\"\
-    \n}\n"
-  response_example: "{\n  \"id\": \"uuid-123\",\n  \"name\": \"Updated Name\",\n \
-    \ \"updated_at\": \"2026-01-31T13:00:00Z\"\n}\n"
+  request_example: |
+    {
+      "name": "Updated Name",
+      "description": "New description"
+    }
+  response_example: |
+    {
+      "id": "uuid-123",
+      "name": "Updated Name",
+      "updated_at": "2026-01-31T13:00:00Z"
+    }
 - method: DELETE
   path: /api/v1/collections/{id}
   description: Delete collection
@@ -196,79 +206,90 @@ api_endpoints:
   path: /api/v1/collections/{id}/items
   description: Add items to collection
   auth_required: true
-  request_example: "{\n  \"items\": [\n    {\"type\": \"movie\", \"id\": \"uuid-123\"\
-    },\n    {\"type\": \"tvshow\", \"id\": \"uuid-456\"}\n  ]\n}\n"
-  response_example: "{\n  \"added\": 2,\n  \"item_count\": 14\n}\n"
+  request_example: |
+    {
+      "items": [
+        {"type": "movie", "id": "uuid-123"},
+        {"type": "tvshow", "id": "uuid-456"}
+      ]
+    }
+  response_example: |
+    {
+      "added": 2,
+      "item_count": 14
+    }
 - method: DELETE
   path: /api/v1/collections/{id}/items/{item_id}
   description: Remove item from collection
   auth_required: true
   request_example: '{}'
   response_example: 204 No Content
-implementation_notes: '**Service Layer** (`internal/service/collections`):
-
+implementation_notes: |
+  **Service Layer** (`internal/service/collections`):
   - `CreateCollection(ctx, userID, name, type, filters)`
-
   - `ListCollections(ctx, userID, filters)`
-
   - `GetCollection(ctx, collectionID)`
-
   - `AddItems(ctx, collectionID, items)`
-
   - `RemoveItem(ctx, collectionID, itemID)`
-
   - `GetCollectionItems(ctx, collectionID)` - resolve polymorphic refs
 
-
   **Smart Collection Evaluation**:
-
   - Filters stored as JSONB
-
   - Evaluated at query time (no pre-materialization)
-
   - Cache results for 5 minutes (otter L1)
 
-
   **Permissions**:
-
   - Users can only CRUD their own collections
-
   - Public collections readable by all authenticated users
-
   - Admin can view/delete any collection
+smart_collection_filter_examples: |
+  ```json
+  // All 4K movies
+  {
+    "item_type": "movie",
+    "filters": {
+      "resolution": "4K",
+      "video_codec": "HEVC"
+    }
+  }
 
-  '
-smart_collection_filter_examples: "```json\n// All 4K movies\n{\n  \"item_type\":\
-  \ \"movie\",\n  \"filters\": {\n    \"resolution\": \"4K\",\n    \"video_codec\"\
-  : \"HEVC\"\n  }\n}\n\n// Recently added (last 30 days)\n{\n  \"filters\": {\n  \
-  \  \"added_after\": \"2026-01-01T00:00:00Z\"\n  }\n}\n\n// Unwatched high-rated\
-  \ movies\n{\n  \"item_type\": \"movie\",\n  \"filters\": {\n    \"watched\": false,\n\
-  \    \"user_rating_min\": 4.0\n  }\n}\n```\n"
-frontend_integration: '- Collections page: `/collections`
+  // Recently added (last 30 days)
+  {
+    "filters": {
+      "added_after": "2026-01-01T00:00:00Z"
+    }
+  }
 
+  // Unwatched high-rated movies
+  {
+    "item_type": "movie",
+    "filters": {
+      "watched": false,
+      "user_rating_min": 4.0
+    }
+  }
+  ```
+frontend_integration: |
+  - Collections page: `/collections`
   - Create collection modal
-
   - Drag-and-drop to reorder items
-
   - Filter builder UI for smart collections
-
   - Share collection URL: `/collections/{id}/share`
-
-  '
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 module_structure: |
   ```
   internal/collections/
@@ -341,26 +362,22 @@ key_interfaces: |
     Evaluate(ctx context.Context, filters map[string]interface{}) ([]uuid.UUID, error)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid`
   - `github.com/jackc/pgx/v5`
   - `github.com/jackc/pgx/v5/pgtype` - JSONB handling
   - `go.uber.org/fx`
-
 env_vars: |
   ```bash
   # No specific env vars required
   ```
-
 config_keys: |
   ```yaml
   collections:
     max_items_per_collection: 5000
     smart_collection_cache_ttl: 5m
   ```
-
 component_interaction: |
   **Manual Collection Flow**:
   1. User creates collection via POST /api/v1/collections
@@ -380,7 +397,6 @@ component_interaction: |
   1. Owner shares collection with user
   2. Recipient sees collection in shared collections list
   3. Permission enforced at service layer (read/write/admin)
-
 unit_tests: |
   ```go
   func TestCollectionService_CreateCollection(t *testing.T) {
@@ -424,7 +440,6 @@ unit_tests: |
     // Test collection sharing permissions
   }
   ```
-
 integration_tests: |
   ```go
   func TestCollections_EndToEnd(t *testing.T) {

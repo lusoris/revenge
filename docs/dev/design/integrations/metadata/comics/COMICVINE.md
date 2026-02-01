@@ -54,30 +54,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Comics<br/>Library"]
+    node2["ComicVine<br/>API"]
+    node3["Metadata<br/>- Series"]
+    node4["Rate Limiter"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
 ```
-┌──────────────┐
-│  Revenge     │
-│  Comics      │
-│  Library     │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐     ┌──────────────┐
-│  ComicVine   │────▶│  Metadata    │
-│  API         │     │  - Series    │
-└──────┬───────┘     │  - Issues    │
-       │             │  - Characters│
-┌──────┴───────┐     │  - Creators  │
-│ Rate Limiter │     │  - Story Arcs│
-│ (200/hour)   │     └──────────────┘
-└──────────────┘
-
-Hierarchy:
-Publisher → Volume (Series) → Issue → Story Arc
-                                ↓
-                          Characters, Creators
-```
-
 
 ### Integration Structure
 
@@ -96,8 +82,6 @@ internal/integration/comicvine/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -160,12 +144,6 @@ type Issue struct {
 **External**:
 - ComicVine API (free API key required)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -190,15 +168,6 @@ metadata:
       role: primary
       priority: 10
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

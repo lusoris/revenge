@@ -55,26 +55,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>Metadata<br/>Ca"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │ Metadata  │  │  Cache │
-                │  (sqlc)  │          │  Service  │  │(otter) │
-                └────┬─────┘          └─────┬─────┘  └────────┘
-                     │                      │
-                     ▼                      ▼
-                ┌─────────────┐        ┌──────────┐
-                │ PostgreSQL  │        │ External │
-                │   (pgx)     │        │   APIs   │
-                └─────────────┘        └──────────┘
-```
-
 
 ### Service Structure
 
@@ -109,8 +103,6 @@ internal/service/auth/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -169,12 +161,6 @@ type User struct {
 **External Services**:
 - Email service (SMTP) for verification and password reset emails
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -211,8 +197,6 @@ auth:
     max_login_attempts: 5
     lockout_duration: 15m
 ```
-
-
 
 ## API Endpoints
 ```
@@ -268,13 +252,6 @@ POST   /api/v1/auth/change-password   # Change password (authenticated)
   "session_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

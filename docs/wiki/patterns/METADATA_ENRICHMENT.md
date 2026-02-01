@@ -21,28 +21,9 @@ The Metadata Enrichment Pattern ensures fast UI response times while maintaining
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

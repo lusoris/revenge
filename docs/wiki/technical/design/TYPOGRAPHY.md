@@ -21,28 +21,9 @@ Typography in Revenge uses a modern + serif accent approach. Inter handles all b
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

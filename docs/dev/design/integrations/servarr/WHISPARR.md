@@ -48,18 +48,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>QAR Module"]
+    node2["Whisparr<br/>Integration"]
+    node3["Whisparr<br/>(eros)"]
+    node4["Webhook<br/>Handler"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Revenge    │────▶│  Whisparr    │────▶│  Whisparr   │
-│  QAR Module │◀────│ Integration  │◀────│  (eros)     │
-└─────────────┘     └──────┬───────┘     └─────────────┘
-                           │
-                    ┌──────▼────────┐
-                    │   Webhook     │
-                    │   Handler     │
-                    └───────────────┘
-```
-
 
 ### Integration Structure
 
@@ -78,23 +76,6 @@ internal/integration/whisparr_v3/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)

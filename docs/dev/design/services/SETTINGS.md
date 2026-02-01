@@ -55,26 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>Koanf<br/>Ca"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │  Koanf    │  │  Cache │
-                │  (sqlc)  │          │ (Config)  │  │(otter) │
-                └────┬─────┘          └───────────┘  └────────┘
-                     │
-                     ▼
-                ┌─────────────┐
-                │ PostgreSQL  │
-                │   (pgx)     │
-                └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -104,8 +96,6 @@ internal/service/settings/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -144,12 +134,6 @@ type Setting struct {
 - `github.com/maypok86/otter` - Settings cache
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -165,8 +149,6 @@ settings:
   cache_ttl: 5m
 ```
 
-
-
 ## API Endpoints
 ```
 GET    /api/v1/settings               # List all settings
@@ -176,13 +158,6 @@ POST   /api/v1/settings/bulk          # Bulk update
 POST   /api/v1/settings/:key/reset    # Reset to default
 GET    /api/v1/settings/:key/history  # Get change history
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

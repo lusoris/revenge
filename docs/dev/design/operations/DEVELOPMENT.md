@@ -42,25 +42,6 @@ Complete guide for setting up Revenge development environment:
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

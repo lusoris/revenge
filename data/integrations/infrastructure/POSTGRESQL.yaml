@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary database for all Revenge data'
 wiki_tagline: '> PostgreSQL stores all your media data'
-wiki_overview: PostgreSQL is the only supported database for Revenge (no SQLite).
-  Stores all metadata, user data, watch history, and configuration. Version 18+ required
-  for modern features. Supports automatic schema migrations on upgrade. Backup your
+wiki_overview: PostgreSQL is the only supported database for Revenge (no SQLite). Stores all metadata, user data, watch history,
+  and configuration. Version 18+ required for modern features. Supports automatic schema migrations on upgrade. Backup your
   database regularly using standard PostgreSQL tools.
 sources:
 - name: Dragonfly Documentation
@@ -69,21 +68,17 @@ design_refs:
 integration_name: PostgreSQL
 integration_id: postgresql
 external_service: PostgreSQL
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Server<br/>(Services)"]
+      node2["pgxpool<br/>(Connection"]
+      node3["PostgreSQL<br/>Server 18+"]
+      node4["sqlc<br/>(Query Gen)"]
+      node1 --> node2
+      node2 --> node3
+      node3 --> node4
   ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Server    │────▶│   pgxpool    │────▶│ PostgreSQL  │
-  │ (Services)  │◀────│ (Connection  │◀────│  Server 18+ │
-  └─────────────┘     │     Pool)    │     └─────────────┘
-                      └──────┬───────┘
-                             │
-                      ┌──────┴───────┐
-                      │   sqlc       │
-                      │ (Query Gen)  │
-                      └──────────────┘
-  ```
-
 connection_details: |
   **Driver**: pgx v5 (pure Go PostgreSQL driver)
   **Connection Pool**: pgxpool with automatic connection management
@@ -94,7 +89,6 @@ connection_details: |
   ```
   postgres://username:password@host:port/database?sslmode=require
   ```
-
 database_schema: |
   **Primary Schemas**:
   - `public` - Default schema for main tables (users, libraries, content)
@@ -110,7 +104,6 @@ database_schema: |
   - Foreign keys with CASCADE for referential integrity
   - gen_random_uuid() for UUID generation
   - Triggers for updated_at timestamps
-
 module_structure: |
   ```
   internal/database/
@@ -126,7 +119,6 @@ module_structure: |
       ├── models.go
       └── queries.sql.go
   ```
-
 key_interfaces: |
   ```go
   // Database connection interface
@@ -150,7 +142,6 @@ key_interfaces: |
     MaxConnIdleTime time.Duration `yaml:"max_conn_idle_time"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/jackc/pgx/v5` - PostgreSQL driver
@@ -161,7 +152,6 @@ dependencies: |
 
   **External Services**:
   - PostgreSQL 18.0+ server (required)
-
 env_vars: |
   ```bash
   # Connection
@@ -178,7 +168,6 @@ env_vars: |
   POSTGRES_MAX_CONN_LIFETIME=1h
   POSTGRES_MAX_CONN_IDLE_TIME=30m
   ```
-
 config_keys: |
   ```yaml
   database:
@@ -194,7 +183,6 @@ config_keys: |
       max_conn_lifetime: 1h
       max_conn_idle_time: 30m
   ```
-
 component_interaction: |
   **Application Startup**:
   1. fx lifecycle starts
@@ -226,7 +214,6 @@ component_interaction: |
     return err
   }
   ```
-
 api_endpoints: |
   **Health Check**:
   ```
@@ -245,7 +232,6 @@ api_endpoints: |
     }
   }
   ```
-
 migration_strategy: |
   **Migration Tool**: golang-migrate or custom SQL migration runner
 
@@ -262,7 +248,6 @@ migration_strategy: |
   ```
 
   **Execution**: Migrations run automatically on server startup, idempotent
-
 unit_tests: |
   ```go
   func TestPostgresConnection(t *testing.T) {
@@ -273,7 +258,6 @@ unit_tests: |
     // Test pool configuration
   }
   ```
-
 integration_tests: |
   ```go
   func TestPostgres_FullWorkflow(t *testing.T) {
@@ -281,7 +265,6 @@ integration_tests: |
     // Test migrations, queries, transactions
   }
   ```
-
 backup_restore: |
   **Backup**:
   ```bash
@@ -294,7 +277,6 @@ backup_restore: |
   ```
 
   **Automated Backups**: Configure via cron or Kubernetes CronJob for daily backups
-
 performance_tuning: |
   **Connection Pool Sizing**:
   - `max_conns` should be ~2-3x CPU cores

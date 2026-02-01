@@ -55,25 +55,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -96,8 +91,6 @@ internal/content/release_calendar_system/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -139,12 +132,6 @@ type CalendarEvent struct {
 - `github.com/riverqueue/river`
 - `github.com/arran4/golang-ical` - iCal generation
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -169,8 +156,6 @@ calendar:
       url: http://localhost:8989
 ```
 
-
-
 ## API Endpoints
 
 ### Content Management
@@ -179,13 +164,6 @@ GET /api/v1/calendar/events?start=2026-01-01&end=2026-01-31
 POST /api/v1/calendar/subscriptions
 GET /api/v1/calendar/ical/:token
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

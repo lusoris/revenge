@@ -50,19 +50,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Request"]
+    node2["Sonarr<br/>Integration"]
+    node3["Sonarr<br/>Server"]
+    node4["Webhook<br/>Handler"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Revenge    │────▶│   Sonarr     │────▶│   Sonarr    │
-│  Request    │◀────│ Integration  │◀────│   Server    │
-│  System     │     │              │     └─────────────┘
-└─────────────┘     └──────┬───────┘
-                           │
-                    ┌──────▼────────┐
-                    │   Webhook     │
-                    │   Handler     │
-                    └───────────────┘
-```
-
 
 ### Integration Structure
 
@@ -81,8 +78,6 @@ internal/integration/sonarr/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -127,21 +122,6 @@ type SonarrEpisode struct {
   Monitored       bool     `json:"monitored"`
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

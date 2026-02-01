@@ -3,7 +3,7 @@ doc_category: integration
 created_date: '2026-01-31'
 overall_status: ✅ Complete
 status_design: ✅
-status_design_notes: 'External integration design complete'
+status_design_notes: External integration design complete
 status_sources: ✅
 status_sources_notes: '-'
 status_instructions: ✅
@@ -16,9 +16,13 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> EXTERNAL transcoding service integration - offload CPU/GPU-intensive transcoding to dedicated Blackbeard instances'
+technical_summary: '> EXTERNAL transcoding service integration - offload CPU/GPU-intensive transcoding to dedicated Blackbeard
+  instances'
 wiki_tagline: '> Blackbeard - External transcoding offloading'
-wiki_overview: 'EXTERNAL transcoding service integration. Blackbeard is a **third-party distributed transcoding service** (not developed by us) that Revenge can optionally integrate with to offload CPU/GPU-intensive video processing. Revenge has **INTERNAL basic transcoding** via go-astiav/FFmpeg bindings. Blackbeard integration is OPTIONAL for users who want dedicated transcoding hardware. Further implementation details will be provided by Blackbeard project.'
+wiki_overview: EXTERNAL transcoding service integration. Blackbeard is a **third-party distributed transcoding service** (not
+  developed by us) that Revenge can optionally integrate with to offload CPU/GPU-intensive video processing. Revenge has **INTERNAL
+  basic transcoding** via go-astiav/FFmpeg bindings. Blackbeard integration is OPTIONAL for users who want dedicated transcoding
+  hardware. Further implementation details will be provided by Blackbeard project.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -47,47 +51,15 @@ external_service: Blackbeard
 api_protocol: rest
 is_external: true
 developed_by_us: false
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge Server<br/>Playback<br/>Transcoding"]
+      node2["Transcoding Router<br/>(choose internal vs external)"]
+      node3["EXTERNAL: Blackbeard Service<br/>(Third-party, NOT developed by us)<br/>Distributed Transcoding Workers"]
+      node1 --> node2
+      node2 --> node3
   ```
-  ┌──────────────────────────────────────────────────────────────────┐
-  │                        Revenge Server                             │
-  │  ┌────────────────┐    ┌────────────────┐    ┌────────────────┐  │
-  │  │   Playback     │    │   Transcoding  │    │   INTERNAL     │  │
-  │  │   Service      │───▶│   Service      │───▶│   FFmpeg       │  │
-  │  └────────────────┘    └───────┬────────┘    │  (go-astiav)   │  │
-  │                                │             └────────────────┘  │
-  │                                │                                  │
-  │              ┌─────────────────┴──────────────────┐              │
-  │              │      Transcoding Router            │              │
-  │              │   (choose internal vs external)    │              │
-  │              └─────────────────┬──────────────────┘              │
-  │                                │                                  │
-  └────────────────────────────────┼──────────────────────────────────┘
-                                   │
-                                   │ OPTIONAL External Offloading
-                                   │ (via REST API)
-                                   ▼
-  ┌────────────────────────────────────────────────────────────────────┐
-  │                   EXTERNAL: Blackbeard Service                      │
-  │                   (Third-party, NOT developed by us)                │
-  │  ┌──────────────────────────────────────────────────────────────┐  │
-  │  │  Distributed Transcoding Workers                              │  │
-  │  │  - GPU acceleration (NVENC, QSV, VAAPI)                       │  │
-  │  │  - Multiple worker instances                                   │  │
-  │  │  - Job queue and coordination                                  │  │
-  │  │  - API for job submission and status                           │  │
-  │  └──────────────────────────────────────────────────────────────┘  │
-  │                                                                      │
-  │  NOTE: Blackbeard is developed externally.                          │
-  │  Details about its architecture will come from the Blackbeard team. │
-  └────────────────────────────────────────────────────────────────────┘
-
-  Transcoding Strategy:
-  1. INTERNAL (default): go-astiav FFmpeg bindings
-  2. EXTERNAL (optional): Offload to Blackbeard if configured
-  ```
-
 system_overview: |
   **Transcoding Architecture**:
 
@@ -109,7 +81,6 @@ system_overview: |
 
   **This document** covers the integration with external Blackbeard service.
   For internal transcoding, see the TRANSCODING service documentation.
-
 integration_scope: |
   **WHAT THIS INTEGRATION DOES**:
   - ✅ Connects Revenge to external Blackbeard service
@@ -127,7 +98,6 @@ integration_scope: |
   - Users deploy Blackbeard independently
   - Revenge integrates via API
   - Implementation details from Blackbeard documentation
-
 api_details: |
   **Protocol**: REST API (expected)
   **Base URL**: User-configured Blackbeard instance
@@ -142,7 +112,6 @@ api_details: |
 
   **NOTE**: Actual API endpoints will be defined by Blackbeard project.
   This is a placeholder based on expected functionality.
-
 database_schema: |
   **Schema**: `public`
 
@@ -182,7 +151,6 @@ database_schema: |
   CREATE INDEX idx_ext_transcode_external ON external_transcode_jobs(external_provider, external_job_id);
   CREATE INDEX idx_ext_transcode_media ON external_transcode_jobs(media_id);
   ```
-
 module_structure: |
   ```
   internal/transcoding/
@@ -201,7 +169,6 @@ module_structure: |
   │   └── provider.go              # External provider interface
   └── transcoding_test.go
   ```
-
 key_interfaces: |
   ```go
   // External transcoding provider interface
@@ -268,7 +235,6 @@ key_interfaces: |
     return r.internal.Transcode(ctx, job)
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `net/http` - HTTP client for Blackbeard API
@@ -283,7 +249,6 @@ dependencies: |
 
   **External**:
   - Blackbeard service (user-deployed, not developed by us)
-
 env_vars: |
   ```bash
   # Blackbeard external integration (OPTIONAL)
@@ -295,7 +260,6 @@ env_vars: |
   TRANSCODING_PREFER_EXTERNAL=false    # Prefer Blackbeard over internal
   TRANSCODING_EXTERNAL_TIMEOUT=60s     # Timeout for external API calls
   ```
-
 config_keys: |
   ```yaml
   transcoding:
@@ -322,7 +286,6 @@ config_keys: |
       segment_duration: 6s
       target_duration: 6
   ```
-
 component_interaction: |
   **Transcoding Flow (with optional Blackbeard)**:
   1. User requests playback requiring transcoding
@@ -347,7 +310,6 @@ component_interaction: |
   3. Calls BlackbeardClient.GetJobStatus() for each
   4. Updates local status from Blackbeard response
   5. On completion: marks ready for serving
-
 internal_vs_external: |
   **INTERNAL Transcoding** (default, always available):
   - Built into Revenge using go-astiav (FFmpeg bindings)
@@ -374,7 +336,6 @@ internal_vs_external: |
   - Server has good CPU/GPU
   - Simpler deployment
   - No need for distributed transcoding
-
 error_handling: |
   **Blackbeard Integration Errors**:
   - Connection refused → Blackbeard not running
@@ -398,7 +359,6 @@ error_handling: |
     return fmt.Errorf("external transcoding failed and fallback disabled: %w", err)
   }
   ```
-
 unit_tests: |
   ```go
   func TestBlackbeardClient_IsAvailable(t *testing.T) {
@@ -431,7 +391,6 @@ unit_tests: |
     assert.False(t, mockExternal.submitCalled)
   }
   ```
-
 best_practices: |
   **Deployment**:
   - Start with internal transcoding (default)

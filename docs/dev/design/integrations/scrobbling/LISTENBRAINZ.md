@@ -55,19 +55,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Playback"]
+    node2["ListenBrainz<br/>Integration"]
+    node3["ListenBrainz<br/>API"]
+    node4["Listen<br/>Queue (River)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Revenge    │────▶│ ListenBrainz │────▶│ListenBrainz │
-│  Playback   │◀────│ Integration  │◀────│     API     │
-│  Events     │     │              │     └─────────────┘
-└─────────────┘     └──────┬───────┘
-                           │
-                    ┌──────▼────────┐
-                    │  Listen       │
-                    │  Queue (River)│
-                    └───────────────┘
-```
-
 
 ### Integration Structure
 
@@ -86,8 +83,6 @@ internal/integration/listenbrainz/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -139,12 +134,6 @@ type TrackMetadata struct {
 **External Services**:
 - ListenBrainz account (free, open-source)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -164,15 +153,6 @@ integrations:
     import_on_connect: true        # Import existing history when user connects
     max_import_age_days: 365       # Only import listens from last year
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

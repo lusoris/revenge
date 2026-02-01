@@ -16,14 +16,12 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: '> Custom UI/UX approach for adult content scenes using Whisparr
-  cache'
+technical_summary: '> Custom UI/UX approach for adult content scenes using Whisparr cache'
 wiki_tagline: '> Scene browsing powered by Whisparr and StashDB data'
-wiki_overview: Browse adult scenes with rich metadata from StashDB via Whisparr integration.
-  Scene details include performer info, studio, release date, and tags. Whisparr caches
-  data locally for fast browsing. Custom UI designed specifically for scene-based
-  content. Filter by performer, studio, or any combination of tags. Integrates with
-  the broader QAR adult content system.
+wiki_overview: Browse adult scenes with rich metadata from StashDB via Whisparr integration. Scene details include performer
+  info, studio, release date, and tags. Whisparr caches data locally for fast browsing. Custom UI designed specifically for
+  scene-based content. Filter by performer, studio, or any combination of tags. Integrates with the broader QAR adult content
+  system.
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html
@@ -80,20 +78,21 @@ design_refs:
 feature_name: Whisparr v3 & StashDB Schema Integration
 module_name: whisparr_v3_&_stashdb_schema_integration
 schema_name: qar
-architecture_diagram: "```\n  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐\n\
-  \  │   Client    │────▶│  API Handler │────▶│   Service   │\n  │  (Web/App)  │◀────│\
-  \   (ogen)     │◀────│   (Logic)   │\n  └─────────────┘     └──────────────┘   \
-  \  └──────┬──────┘\n                                                   │\n     \
-  \                       ┌──────────────────────┼────────────┐\n                \
-  \            ▼                      ▼            ▼\n                      ┌──────────┐\
-  \          ┌───────────┐  ┌────────┐\n                      │Repository│       \
-  \   │ Metadata  │  │  Cache │\n                      │  (sqlc)  │          │  Service\
-  \  │  │(otter) │\n                      └────┬─────┘          └─────┬─────┘  └────────┘\n\
-  \                           │                      │\n                         \
-  \  ▼                      ▼\n                    ┌─────────────┐        ┌──────────┐\n\
-  \                    │ PostgreSQL  │        │ External │\n                    │\
-  \   (pgx)     │        │   APIs   │\n                    └─────────────┘       \
-  \ └──────────┘\n  ```"
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Client<br/>(Web/App)"]
+      node2["API Handler<br/>(ogen)"]
+      node3["Service<br/>(Logic)"]
+      node4["itory<br/>Metadata<br/>Cac"]
+      node5["PostgreSQL<br/>(pgx)"]
+      node6["External<br/>APIs"]
+      node1 --> node2
+      node2 --> node3
+      node5 --> node6
+      node3 --> node4
+      node4 --> node5
+  ```
 database_schema: |
   **Schema**: `qar`
 
@@ -239,7 +238,6 @@ database_schema: |
   CREATE INDEX idx_whisparr_webhooks_processed ON qar.whisparr_webhooks(processed) WHERE processed = false;
   CREATE INDEX idx_whisparr_webhooks_created ON qar.whisparr_webhooks(created_at DESC);
   ```
-
 module_structure: |
   ```
   internal/content/adult/whisparr/
@@ -299,7 +297,6 @@ module_structure: |
       ├── SceneFilter.svelte       # Filter sidebar
       └── PerformerChip.svelte     # Performer tag
   ```
-
 file_structure: |
   **Key Files**:
   - `internal/content/adult/whisparr/service.go` - Whisparr sync and StashDB integration
@@ -307,7 +304,6 @@ file_structure: |
   - `internal/content/adult/whisparr/stashdb/client.go` - StashDB GraphQL client
   - `web/src/routes/(app)/legacy/scenes/+page.svelte` - Custom scene browsing UI
   - `migrations/qar/016_whisparr_stashdb.sql` - Database schema
-
 key_interfaces: |
   ```go
   // WhisparrService manages Whisparr and StashDB integration
@@ -461,7 +457,6 @@ key_interfaces: |
     CreatedAt   time.Time       `db:"created_at" json:"created_at"`
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/google/uuid` - UUID handling
@@ -482,7 +477,6 @@ dependencies: |
   **External APIs**:
   - Whisparr API v3 - Adult content management
   - StashDB GraphQL API - Collaborative metadata database
-
 env_vars: |
   ```bash
   # Whisparr configuration
@@ -499,7 +493,6 @@ env_vars: |
   # Webhook
   WHISPARR_WEBHOOK_SECRET=random-secret             # Webhook authentication
   ```
-
 config_keys: |
   ```yaml
   whisparr:
@@ -527,7 +520,6 @@ config_keys: |
     # Rate limiting
     requests_per_minute: 30
   ```
-
 component_interaction: |
   **Whisparr Sync Flow**:
   1. Background job triggers every 24h (configurable)
@@ -577,7 +569,6 @@ component_interaction: |
      b. If "Download" event, sync that specific scene
      c. If "SceneFileDelete" event, mark scene as deleted
   6. Mark webhook as processed
-
 api_endpoints: |
   **Endpoints**:
   ```
@@ -684,7 +675,6 @@ api_endpoints: |
     "local_id": "aa0e8400-e29b-41d4-a716-446655440005"
   }
   ```
-
 unit_tests: |
   ```go
   // internal/content/adult/whisparr/whisparr_test.go
@@ -746,7 +736,6 @@ unit_tests: |
   - Performer/studio linking
   - Webhook handling
   - Fuzzy matching for entity linking
-
 integration_tests: |
   ```go
   // tests/integration/adult/whisparr_test.go

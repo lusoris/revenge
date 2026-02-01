@@ -21,28 +21,9 @@ Complete design system themed around Queen Anne's Revenge - Blackbeard's legenda
 
 
 
----
-
-
-
-
-
 
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

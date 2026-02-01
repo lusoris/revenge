@@ -55,38 +55,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Client"]
+    node2["EPG Service<br/>(Revenge)"]
+    node3["TVHeadend API<br/>/api/channel/<br/>/api/epg/"]
+    node4["Player<br/>(Vidstack)"]
+    node5["TVHeadend<br/>Streaming"]
+    node6["DVB Adapter/<br/>IPTV/DVR Files"]
+    node1 --> node2
+    node4 --> node5
+    node2 --> node3
+    node3 --> node4
+    node5 --> node6
 ```
-┌──────────────┐    1. View EPG      ┌─────────────────┐
-│   Revenge    │────────────────────▶│   EPG Service   │
-│  Web Client  │                     │  (Revenge)      │
-└──────┬───────┘                     └────────┬────────┘
-       │                                      │
-       │ 2. Select channel                   │ 3. Fetch EPG from
-       │                                      │    TVHeadend
-       │                                      ▼
-       │                             ┌────────────────┐
-       │                             │  TVHeadend API │
-       │                             │  /api/channel/ │
-       │                             │  /api/epg/     │
-       │                             └────────┬───────┘
-       │                                      │
-       │ 4. Play live/DVR                    │ 5. Get stream
-       ▼                                      ▼
-┌──────────────┐                     ┌────────────────┐
-│   Player     │    6. Request       │  TVHeadend     │
-│  (Vidstack)  │────HLS/MPEG-TS─────▶│  Streaming     │
-└──────────────┘                     │  /stream/...   │
-                                      └────────┬───────┘
-                                               │
-                                       7. Stream from
-                                          adapter/DVR
-                                               ▼
-                                      ┌────────────────┐
-                                      │ DVB Adapter/   │
-                                      │ IPTV/DVR Files │
-                                      └────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -105,8 +87,6 @@ internal/integration/tvheadend/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -219,12 +199,6 @@ type GridResponse struct {
 **External Services**:
 - TVHeadend server (https://tvheadend.org)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -252,8 +226,6 @@ livetv:
     use_channel_icons: true
     epg_days: 7
 ```
-
-
 
 ## API Endpoints
 **Revenge API Endpoints**:
@@ -301,13 +273,6 @@ Response:
   "uuid": "dvr-xyz789"
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

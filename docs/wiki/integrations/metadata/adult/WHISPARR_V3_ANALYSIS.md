@@ -21,31 +21,12 @@ Technical analysis of Whisparr v3 (eros branch) structure. Documents how Whispar
 
 
 
----
-
 
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

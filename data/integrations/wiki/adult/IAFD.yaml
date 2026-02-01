@@ -18,10 +18,9 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Internet Adult Film Database - Adult performer and scene database'
 wiki_tagline: '> Industry database from IAFD'
-wiki_overview: Internet Adult Film Database (IAFD) provides comprehensive industry
-  data. Performer filmographies, studio information, and scene credits. Authoritative
-  source used to verify and supplement other metadata. Links to IAFD profiles from
-  performer pages. Part of the QAR adult metadata system.
+wiki_overview: Internet Adult Film Database (IAFD) provides comprehensive industry data. Performer filmographies, studio information,
+  and scene credits. Authoritative source used to verify and supplement other metadata. Links to IAFD profiles from performer
+  pages. Part of the QAR adult metadata system.
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
@@ -44,31 +43,17 @@ integration_id: iafd
 external_service: IAFD
 api_base_url: https://www.iafd.com
 auth_method: none
-
-architecture_diagram: |
+architecture_diagram: |-
+  ```mermaid
+  flowchart TD
+      node1["Revenge<br/>QAR Module<br/>(Metadata)"]
+      node2["IAFD<br/>Scraper"]
+      node3["Industry Data<br/>- Performer bio"]
+      node4["Rate Limiter"]
+      node2 --> node3
+      node1 --> node2
+      node3 --> node4
   ```
-  ┌──────────────┐
-  │  Revenge     │
-  │  QAR Module  │
-  │  (Metadata)  │
-  └──────┬───────┘
-         │ Lookup request
-         ▼
-  ┌──────────────┐     ┌───────────────────┐
-  │    IAFD      │────▶│  Industry Data    │
-  │   Scraper    │     │  - Performer bio  │
-  └──────┬───────┘     │  - Filmography    │
-         │             │  - Scene credits  │
-  ┌──────┴───────┐     │  - Studio info    │
-  │ Rate Limiter │     │  - Release dates  │
-  │ + Proxy Pool │     └───────────────────┘
-  └──────────────┘
-
-  IAFD = Internet Adult Film Database
-  Industry standard reference for professional content
-  Integration Role: SUPPLEMENTARY (authoritative for filmography/scene credits)
-  ```
-
 api_details: |
   **Method**: Web scraping (no official API)
   **Base URL**: `https://www.iafd.com`
@@ -91,7 +76,6 @@ api_details: |
   - Performer IDs are name-based slugs (e.g., "johnsmith")
   - Gender flag required for performer lookups
   - Title IDs are studio-based slugs
-
 database_schema: |
   ```sql
   -- IAFD performer cache (QAR schema)
@@ -152,7 +136,6 @@ database_schema: |
     UNIQUE(scene_id)
   );
   ```
-
 module_structure: |
   ```
   internal/metadata/providers/iafd/
@@ -166,7 +149,6 @@ module_structure: |
   ├── matching.go                  # Name/title matching
   └── iafd_test.go
   ```
-
 key_interfaces: |
   ```go
   // IAFD metadata provider
@@ -254,7 +236,6 @@ key_interfaces: |
     return performer, nil
   }
   ```
-
 dependencies: |
   **Go Packages**:
   - `github.com/PuerkitoBio/goquery` - HTML parsing
@@ -268,7 +249,6 @@ dependencies: |
 
   **External**:
   - IAFD website (no official API)
-
 env_vars: |
   ```bash
   IAFD_ENABLED=true
@@ -276,7 +256,6 @@ env_vars: |
   IAFD_CACHE_TTL=720h              # 30 days
   IAFD_USE_PROXY=true              # Use proxy pool from HTTP_CLIENT
   ```
-
 config_keys: |
   ```yaml
   qar:
@@ -292,7 +271,6 @@ config_keys: |
           use_proxy: true
           scrape_filmography: true
   ```
-
 component_interaction: |
   **Performer Lookup Flow**:
   1. Performer identified via StashDB
@@ -317,7 +295,6 @@ component_interaction: |
   3. Display career timeline
   4. Link to scene records in library
   5. Show co-star relationships
-
 supplementary_role: |
   **SUPPLEMENTARY Metadata Provider**
 
@@ -344,7 +321,6 @@ supplementary_role: |
   2. Boobpedia (20) - Bio
   3. Babepedia (30) - Stats
   4. IAFD (40) - Filmography
-
 scraping_implementation: |
   **Performer Page Scraping**:
   ```go
@@ -415,7 +391,6 @@ scraping_implementation: |
     return credits, nil
   }
   ```
-
 error_handling: |
   **HTTP Errors**:
   - 403 Forbidden → IP blocked, rotate proxy
@@ -432,7 +407,6 @@ error_handling: |
   - Page structure changed → Log and graceful degrade
   - Missing filmography → Return performer without credits
   - Malformed data → Skip field
-
 unit_tests: |
   ```go
   func TestIAFD_ParsePerformer(t *testing.T) {
@@ -461,7 +435,6 @@ unit_tests: |
     assert.Equal(t, "https://www.iafd.com/person.rme/perfid=johnsmith/gender=m", url)
   }
   ```
-
 best_practices: |
   **Scraping Etiquette**:
   - Respect rate limits (1 req/2sec)
@@ -483,4 +456,3 @@ best_practices: |
   - All data flows through QAR access controls
   - Requires `legacy:read` scope
   - Data isolated in qar.* schema
-

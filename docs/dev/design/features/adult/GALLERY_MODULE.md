@@ -57,25 +57,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["itory<br/>Metadata<br/>Cac"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node6["External<br/>APIs"]
+    node1 --> node2
+    node2 --> node3
+    node5 --> node6
+    node3 --> node4
+    node4 --> node5
 ```
-  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-  │   Client    │────▶│  API Handler │────▶│   Service   │
-  │  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-  └─────────────┘     └──────────────┘     └──────┬──────┘
-                                                   │
-                            ┌──────────────────────┼────────────┐
-                            ▼                      ▼            ▼
-                      ┌──────────┐          ┌───────────┐  ┌────────┐
-                      │Repository│          │ Metadata  │  │  Cache │
-                      │  (sqlc)  │          │  Service  │  │(otter) │
-                      └────┬─────┘          └─────┬─────┘  └────────┘
-                           │                      │
-                           ▼                      ▼
-                    ┌─────────────┐        ┌──────────┐
-                    │ PostgreSQL  │        │ External │
-                    │   (pgx)     │        │   APIs   │
-                    └─────────────┘        └──────────┘
-  ```
 
 ### Database Schema
 
@@ -98,8 +93,6 @@ internal/content/adult_gallery_(qar:_treasures)/
 ### Component Interaction
 
 <!-- Component interaction diagram -->
-
-
 ## Implementation
 
 ### File Structure
@@ -286,12 +279,6 @@ type Download struct {
 **External APIs**:
 - Prowlarr API - Gallery indexing and downloads
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -344,8 +331,6 @@ gallery:
     sync_interval: 1h
     max_concurrent_downloads: 3
 ```
-
-
 
 ## API Endpoints
 
@@ -476,13 +461,6 @@ Response 201 Created:
   "queued_at": "2024-06-15T15:00:00Z"
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

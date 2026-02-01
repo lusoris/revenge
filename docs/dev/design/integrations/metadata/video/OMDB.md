@@ -56,18 +56,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Metadata<br/>Service"]
+    node2["OMDb<br/>Provider"]
+    node3["OMDb API<br/>(External)"]
+    node4["Rate Limiter<br/>(1000/day)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Metadata   │────▶│   OMDb       │────▶│  OMDb API   │
-│  Service    │◀────│   Provider   │◀────│ (External)  │
-└─────────────┘     └──────┬───────┘     └─────────────┘
-                           │
-                    ┌──────┴───────┐
-                    │ Rate Limiter │
-                    │ (1000/day)   │
-                    └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -86,8 +84,6 @@ internal/integration/omdb_open_movie_database/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -156,12 +152,6 @@ type Rating struct {
 **External APIs**:
 - OMDb API (free tier: 1,000 requests/day)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -188,15 +178,6 @@ metadata:
       daily_limit: 1000
       cache_ttl: 168h  # 7 days
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

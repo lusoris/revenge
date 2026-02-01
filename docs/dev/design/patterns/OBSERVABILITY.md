@@ -43,25 +43,6 @@ All integrated via OpenTelemetry SDK for unified observability.
 
 
 
----
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

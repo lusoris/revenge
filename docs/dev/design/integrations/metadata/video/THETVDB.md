@@ -56,34 +56,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Metadata<br/>Service"]
+    node2["Sonarr<br/>(LOCAL cache)"]
+    node3["TheTVDB API<br/>(fallback +<br/>enrichment)"]
+    node4["HTTP_CLIENT<br/>(optional<br/>proxy/VPN)"]
+    node5["JWT Token<br/>Manager"]
+    node2 --> node3
+    node1 --> node2
+    node3 --> node4
+    node4 --> node5
 ```
-┌──────────────┐
-│  Revenge     │
-│  Metadata    │
-│  Service     │
-└──────┬───────┘
-       │
-       ├─────────────────────────────────────┐
-       │ PRIMARY                             │ SUPPLEMENTARY
-       ▼                                     ▼
-┌──────────────┐                      ┌──────────────┐
-│   Sonarr     │                      │ TheTVDB API  │
-│ (LOCAL cache)│                      │  (fallback + │
-│              │                      │  enrichment) │
-└──────┬───────┘                      └──────┬───────┘
-       │                                     │
-       ▼                              ┌──────┴────────┐
-┌──────────────┐                     │  HTTP_CLIENT  │
-│ TheTVDB API  │                     │  (optional    │
-│  (external)  │                     │   proxy/VPN)  │
-└──────────────┘                     └───────┬───────┘
-                                            │
-                                     ┌──────┴───────┐
-                                     │  JWT Token   │
-                                     │   Manager    │
-                                     └──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -102,8 +86,6 @@ internal/integration/thetvdb/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -185,12 +167,6 @@ type EpisodeMetadata struct {
 **External APIs**:
 - TheTVDB API v4 (free tier with API key)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -229,15 +205,6 @@ metadata:
         url: socks5://127.0.0.1:9050  # Tor SOCKS5 proxy (if type=tor/socks5)
         interface: tun0          # VPN interface (if type=vpn)
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

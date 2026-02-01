@@ -55,40 +55,16 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web App"]
+    node2["Chromecast<br/>Device"]
+    node3["Revenge<br/>Server<br/>(HLS Stream)"]
+    node4["Receiver<br/>Application<br/>(Custom)"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
 ```
-┌──────────────┐                    ┌─────────────────┐
-│   Revenge    │                    │   Chromecast    │
-│   Web App    │                    │     Device      │
-└──────┬───────┘                    └────────┬────────┘
-       │                                     │
-       │ 1. Discover devices (mDNS/SSDP)   │
-       │────────────────────────────────────▶│
-       │                                     │
-       │ 2. Connect to device               │
-       │────────────────────────────────────▶│
-       │                                     │
-       │ 3. Load media (Cast SDK)           │
-       │────────────────────────────────────▶│
-       │   {                                 │
-       │     "contentId": "http://...m3u8", │
-       │     "contentType": "video/mp4",     │
-       │     "metadata": {...}               │
-       │   }                                 │
-       │                                     │
-       │ 4. Playback commands               │
-       │    (play/pause/seek)                │
-       │◀────────────────────────────────────▶
-       │                                     │
-       │ 5. Status updates                  │
-       │◀────────────────────────────────────│
-       │                                     │
-┌──────▼───────┐                    ┌────────▼────────┐
-│   Revenge    │                    │   Receiver      │
-│   Server     │                    │   Application   │
-│  (HLS Stream)│────Media Data─────▶│   (Custom)      │
-└──────────────┘                    └─────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -107,8 +83,6 @@ internal/integration/chromecast/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -220,12 +194,6 @@ const (
 - Google Cast Receiver SDK (receiver app)
 - Vidstack player for receiver playback
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -258,8 +226,6 @@ casting:
       transcode_on_incompatible: true
       max_bitrate: 20000    # Max bitrate in kbps
 ```
-
-
 
 ## API Endpoints
 **Cast Session Management**:
@@ -317,13 +283,6 @@ POST /api/v1/cast/sessions
   }
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

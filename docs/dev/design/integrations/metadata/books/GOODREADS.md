@@ -42,8 +42,6 @@
 
 
 
----
-
 
 ## Architecture
 
@@ -64,23 +62,6 @@ internal/integration/goodreads/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [BOOK_MODULE](../../../features/book/BOOK_MODULE.md)

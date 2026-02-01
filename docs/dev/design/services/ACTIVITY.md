@@ -55,26 +55,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Client<br/>(Web/App)"]
+    node2["API Handler<br/>(ogen)"]
+    node3["Service<br/>(Logic)"]
+    node4["sitory<br/>River<br/>Ca"]
+    node5["PostgreSQL<br/>(pgx)"]
+    node1 --> node2
+    node2 --> node3
+    node3 --> node4
+    node4 --> node5
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Client    │────▶│  API Handler │────▶│   Service   │
-│  (Web/App)  │◀────│   (ogen)     │◀────│   (Logic)   │
-└─────────────┘     └──────────────┘     └──────┬──────┘
-                                                 │
-                     ┌──────────────────────┼────────────┐
-                     ▼                      ▼            ▼
-                ┌──────────┐          ┌───────────┐  ┌────────┐
-                │Repository│          │  River    │  │  Cache │
-                │  (sqlc)  │          │  Queue    │  │(otter) │
-                └────┬─────┘          └───────────┘  └────────┘
-                     │
-                     ▼
-                ┌─────────────┐
-                │ PostgreSQL  │
-                │   (pgx)     │
-                └─────────────┘
-```
-
 
 ### Service Structure
 
@@ -103,8 +95,6 @@ internal/service/activity/
 ### Component Diagram
 
 <!-- Component diagram -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -146,12 +136,6 @@ type ActivityEntry struct {
 - `github.com/riverqueue/river` - Cleanup jobs
 - `go.uber.org/fx`
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -169,8 +153,6 @@ activity:
   cleanup_interval: 24h
   log_failed_attempts: true
 ```
-
-
 
 ## API Endpoints
 ```
@@ -205,13 +187,6 @@ GET    /api/v1/activity/resources/:type/:id # Get resource activity
   "page": 1
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

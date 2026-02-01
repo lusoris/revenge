@@ -56,40 +56,18 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["User<br/>Browser"]
+    node2["OIDC Provider<br/>(Any Provider)"]
+    node3["Revenge<br/>Server"]
+    node4["Provider<br/>Token API"]
+    node5["User<br/>Session"]
+    node1 --> node2
+    node3 --> node4
+    node2 --> node3
+    node4 --> node5
 ```
-┌──────────────┐    1. Auth Request   ┌─────────────────┐
-│    User      │─────(redirect)──────▶│   OIDC Provider │
-│   Browser    │                      │  (Any Provider) │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │ 2. Login page                        │
-       │◀──────────────────────────────────────│
-       │                                       │
-       │ 3. Submit credentials                │
-       │──────────────────────────────────────▶│
-       │                                       │
-       │ 4. Authorization code                │
-       │◀──────────────────────────────────────│
-       │   (redirect to callback)              │
-       ▼                                       │
-┌──────────────┐    5. Exchange code  ┌────────┴────────┐
-│   Revenge    │─────for tokens──────▶│   Provider      │
-│   Server     │                      │   Token API     │
-│              │◀─────────────────────│                 │
-│              │  6. ID + access +    │                 │
-└──────┬───────┘     refresh tokens   └─────────────────┘
-       │
-       │ 7. Verify token (JWKS)
-       │ 8. Get user info
-       │ 9. Map claims → roles
-       │ 10. Create session
-       ▼
-┌──────────────┐
-│   User       │
-│  Session     │
-└──────────────┘
-```
-
 
 ### Integration Structure
 
@@ -108,8 +86,6 @@ internal/integration/generic_oidc/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -228,12 +204,6 @@ type UserInfo struct {
 **External Services**:
 - Any OIDC-compliant identity provider
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -290,8 +260,6 @@ auth:
           # resource: "https://graph.microsoft.com"
 ```
 
-
-
 ## API Endpoints
 **OIDC Endpoints** (Revenge):
 ```
@@ -331,13 +299,6 @@ GET /api/v1/auth/oidc/callback?
 6. Sets session cookie
 7. Redirects to /
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

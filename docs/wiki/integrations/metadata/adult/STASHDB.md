@@ -22,31 +22,12 @@ SUPPLEMENTARY metadata source for QAR (adult) content. Used as: (1) **Fallback**
 
 
 
----
-
 
 ## How It Works
 
 <!-- How it works -->
-
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### Related Pages
 <!-- Related wiki pages -->

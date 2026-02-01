@@ -58,42 +58,20 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Performer<br/>Profile Page<br/>(Revenge UI)"]
+    node2["Pornhub Link<br/>(verified URL)"]
+    node3["Pornhub.com<br/>(Cloudflare)"]
+    node4["View Count<br/>Subscribers"]
+    node5["HTTP_CLIENT<br/>(REQUIRED<br/>proxy/VPN)"]
+    node6["Headless<br/>Browser<br/>(Cloudflare)"]
+    node3 --> node4
+    node1 --> node2
+    node2 --> node3
+    node4 --> node5
+    node5 --> node6
 ```
-┌───────────────────┐
-│   Performer       │
-│   Profile Page    │
-│   (Revenge UI)    │
-└─────────┬─────────┘
-          │ Display external links
-          ▼
-┌───────────────────┐
-│   Pornhub Link    │───→ Opens in new tab
-│   (verified URL)  │     (user's browser)
-└─────────┬─────────┘
-          │ Metadata only
-          │ (NO streaming)
-          ▼
-┌───────────────────┐     ┌──────────────┐
-│   Pornhub.com     │────▶│  View Count  │
-│   (Cloudflare)    │     │  Subscribers │
-└───────────────────┘     │  Video Count │
-          │               └──────────────┘
-   ┌──────┴────────┐
-   │  HTTP_CLIENT  │
-   │  (REQUIRED    │
-   │   proxy/VPN)  │
-   └───────────────┘
-          │
-   ┌──────┴───────┐
-   │  Headless    │
-   │  Browser     │
-   │  (Cloudflare)│
-   └──────────────┘
-
-IMPORTANT: This integration does NOT stream any content.
-Only stores verified links and basic metrics.
-```
-
 
 ### Integration Structure
 
@@ -112,8 +90,6 @@ internal/integration/pornhub/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -191,12 +167,6 @@ type LinkStatus struct {
 **Internal Services**:
 - HTTP_CLIENT - Proxy/VPN routing (REQUIRED)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -255,15 +225,6 @@ metadata:
         check_interval: 168h      # Re-verify weekly
         remove_broken_links: false  # Keep but mark as broken
 ```
-
-
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents

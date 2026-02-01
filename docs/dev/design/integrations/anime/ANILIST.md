@@ -60,43 +60,24 @@
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    node1["Revenge<br/>Web Player"]
+    node2["Anime Item<br/>(TV Show)"]
+    node3["Scrobbling<br/>Service"]
+    node4["River Queue<br/>(Background)"]
+    node5["AniList<br/>Scrobbler"]
+    node6["Database<br/>(history)"]
+    node7["AniList API<br/>(GraphQL)"]
+    node8["AniList<br/>User Profile"]
+    node1 --> node2
+    node3 --> node4
+    node6 --> node7
+    node2 --> node3
+    node4 --> node5
+    node5 --> node6
+    node7 --> node8
 ```
-┌──────────────┐    1. Watch anime   ┌─────────────────┐
-│   Revenge    │────episode──────────▶│   Anime Item    │
-│  Web Player  │                      │   (TV Show)     │
-└──────┬───────┘                      └────────┬────────┘
-       │                                       │
-       │ 2. Update progress                   │
-       ▼                                       ▼
-┌──────────────┐    3. Queue job     ┌────────────────┐
-│  Scrobbling  │────────────────────▶│  River Queue   │
-│   Service    │                     │  (Background)  │
-└──────┬───────┘                     └────────┬───────┘
-       │                                      │
-       │                              4. Process job
-       │                                      ▼
-       │                             ┌────────────────┐
-       │                             │  AniList       │
-       │                             │  Scrobbler     │
-       │                             └────────┬───────┘
-       │                                      │
-       │                              5. GraphQL mutation
-       │                              (SaveMediaListEntry)
-       │                                      ▼
-┌──────┴───────┐                     ┌────────────────┐
-│  Database    │                     │   AniList API  │
-│  (history)   │                     │   (GraphQL)    │
-└──────────────┘                     └────────┬───────┘
-                                              │
-                                      6. Update user's
-                                         anime list
-                                              ▼
-                                     ┌────────────────┐
-                                     │  AniList       │
-                                     │  User Profile  │
-                                     └────────────────┘
-```
-
 
 ### Integration Structure
 
@@ -115,8 +96,6 @@ internal/integration/anilist/
 
 ### Provides
 <!-- Data provided by integration -->
-
-
 ## Implementation
 
 ### Key Interfaces
@@ -331,12 +310,6 @@ type GraphQLError struct {
 **External Services**:
 - AniList API (https://anilist.co)
 
-
-
-
-
-
-
 ## Configuration
 
 ### Environment Variables
@@ -368,8 +341,6 @@ scrobbling:
     metadata_enabled: true      # Use for anime metadata
     metadata_priority: 10       # Priority in metadata chain (lower = higher priority)
 ```
-
-
 
 ## API Endpoints
 **Revenge API Endpoints**:
@@ -419,13 +390,6 @@ Response:
   "errors": 0
 }
 ```
-
-
-
-
-
-
-
 
 ## Related Documentation
 ### Design Documents
