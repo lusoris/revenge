@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Go Testing Package

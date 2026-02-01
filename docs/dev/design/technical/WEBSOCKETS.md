@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: coder/websocket GitHub README

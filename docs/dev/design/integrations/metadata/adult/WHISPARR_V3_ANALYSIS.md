@@ -1,5 +1,3 @@
-
-
 ---
 design_refs:
   - title: 01_ARCHITECTURE

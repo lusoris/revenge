@@ -1,4 +1,4 @@
-{#
+{#-
   Base Template for Design Documentation
 
   This template provides the foundation for all design docs with block-based inheritance.
@@ -12,8 +12,8 @@
   - status_*: str - Status for each dimension
   - sources: list - External documentation sources
   - design_refs: list - Cross-references to other design docs
-#}
-{%- block frontmatter %}
+-#}
+{%- block frontmatter -%}
 {%- if claude %}
 ---
 {%- if sources is defined and sources %}

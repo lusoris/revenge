@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: go-mail GitHub README

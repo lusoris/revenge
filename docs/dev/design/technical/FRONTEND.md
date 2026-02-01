@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Svelte 5 Documentation

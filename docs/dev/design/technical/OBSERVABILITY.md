@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Prometheus Go Client

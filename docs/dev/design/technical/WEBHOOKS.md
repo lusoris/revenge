@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Radarr API Docs

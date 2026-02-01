@@ -8,9 +8,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
-
 # Grand Comics Database (GCD)
 
 

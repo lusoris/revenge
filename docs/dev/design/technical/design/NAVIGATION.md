@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Lucide Icons

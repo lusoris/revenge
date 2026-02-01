@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: WCAG 2.1 Guidelines

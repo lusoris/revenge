@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: To be added during design phase

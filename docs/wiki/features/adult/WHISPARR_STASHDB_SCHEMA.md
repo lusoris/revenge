@@ -9,9 +9,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
-
 # Whisparr v3 & StashDB Schema Integration
 
 

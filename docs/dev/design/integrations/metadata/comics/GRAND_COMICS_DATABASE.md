@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: GCD REST API

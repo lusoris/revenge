@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Netflix Brand Guidelines

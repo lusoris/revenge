@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: FFmpeg Documentation

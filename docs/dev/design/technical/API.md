@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: ogen OpenAPI Generator

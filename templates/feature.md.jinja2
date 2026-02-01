@@ -1,4 +1,4 @@
-{#
+{#-
   Feature Module Template
 
   For content modules (Movie, TV Show, Music, etc.)
@@ -10,8 +10,8 @@
   - arr_integration: str - Arr service integration (e.g., "Radarr")
   - schema_name: str - Database schema (e.g., "public" or "qar")
   - content_types: list - Types of content (e.g., ["Movies", "Collections"])
-#}
-{% extends "base.md.jinja2" %}
+-#}
+{%- extends "base.md.jinja2" -%}
 
 {% block title -%}
 # {{ feature_name }}

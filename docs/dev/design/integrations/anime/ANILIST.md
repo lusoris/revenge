@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: AniList GraphQL API

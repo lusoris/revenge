@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: pgx PostgreSQL Driver

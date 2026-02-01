@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: golang.org/x/time

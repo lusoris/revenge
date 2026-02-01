@@ -8,9 +8,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
-
 # OMDb (Open Movie Database)
 
 

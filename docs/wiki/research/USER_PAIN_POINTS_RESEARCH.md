@@ -8,9 +8,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
-
 # User Pain Points Research - Existing Media Servers
 
 

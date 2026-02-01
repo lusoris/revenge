@@ -100,21 +100,20 @@ class TOCGenerator:
         Returns:
             Tuple of (frontmatter, body)
         """
-        # Strip leading blank lines and check for YAML frontmatter
-        stripped = content.lstrip("\n")
-        leading_blanks = content[: len(content) - len(stripped)]
+        # Strip leading whitespace - frontmatter must start at line 1
+        stripped = content.lstrip()
 
         if stripped.startswith("---\n"):
             # Find closing ---
             parts = stripped.split("---\n", 2)
             if len(parts) >= 3:
-                # Include leading blanks with frontmatter
-                frontmatter = f"{leading_blanks}---\n{parts[1]}---\n"
+                # Frontmatter without leading blanks
+                frontmatter = f"---\n{parts[1]}---\n"
                 body = parts[2]
                 return frontmatter, body
 
-        # No frontmatter
-        return "", content
+        # No frontmatter - strip leading whitespace from content
+        return "", stripped
 
     def has_toc(self, content: str) -> bool:
         """Check if content already has a TOC.

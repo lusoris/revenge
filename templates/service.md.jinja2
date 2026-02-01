@@ -1,4 +1,4 @@
-{#
+{#-
   Service Template
 
   For backend services (Auth, User, Session, RBAC, etc.)
@@ -10,8 +10,8 @@
   - fx_module: str - fx module name (e.g., "auth.Module")
   - dependencies: list - Service dependencies
   - provides: list - What this service provides to other modules
-#}
-{% extends "base.md.jinja2" %}
+-#}
+{%- extends "base.md.jinja2" -%}
 
 {% block title -%}
 # {{ service_name }}

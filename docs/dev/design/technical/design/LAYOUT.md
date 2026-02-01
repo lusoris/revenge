@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: Tailwind CSS Spacing

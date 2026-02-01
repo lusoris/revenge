@@ -9,9 +9,6 @@
     - [Related Pages](#related-pages)
     - [Learn More](#learn-more)
 
-
-
-
 # Revenge - NSFW Toggle
 
 

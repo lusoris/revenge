@@ -1,4 +1,4 @@
-{#
+{#-
   Integration Template
 
   For external service integrations (TMDb, StashDB, Radarr, etc.)
@@ -11,8 +11,8 @@
   - auth_method: str - Authentication method (API key, OAuth, etc.)
   - rate_limits: dict - Rate limiting information
   - provides_data: list - What data this integration provides
-#}
-{% extends "base.md.jinja2" %}
+-#}
+{%- extends "base.md.jinja2" -%}
 
 {% block title -%}
 # {{ integration_name }}

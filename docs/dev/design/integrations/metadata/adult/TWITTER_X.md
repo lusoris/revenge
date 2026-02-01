@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: River Job Queue

@@ -1,5 +1,3 @@
-
-
 ---
 sources:
   - name: MyAnimeList API
