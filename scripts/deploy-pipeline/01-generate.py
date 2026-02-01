@@ -279,6 +279,12 @@ class DeployGenerator:
                 "pullPolicy": "IfNotPresent",
                 "tag": "",
             },
+            "serviceAccount": {
+                "create": True,
+                "automount": True,
+                "annotations": {},
+                "name": "",
+            },
             "service": {
                 "type": "ClusterIP",
                 "port": 8080,
