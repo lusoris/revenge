@@ -16,9 +16,20 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > Modern media server architecture with Go backend, SvelteKit frontend, PostgreSQL database
+
+  Core components:
+  - **Backend**: Go with fx dependency injection, ogen OpenAPI generation
+  - **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
+  - **Database**: PostgreSQL 18 with pgx driver (no SQLite)
+  - **Cache**: Dragonfly (Redis-compatible) via rueidis + otter L1 cache
+  - **Search**: Typesense for full-text search
+  - **Jobs**: River queue for background processing
+
+wiki_tagline: '> How Revenge is built - the technical foundation'
+
+wiki_overview: 'Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL stores all data (no SQLite), with Dragonfly providing fast caching and Typesense powering search. Background jobs run through River queue. The backend uses fx for dependency injection and ogen for type-safe API generation. The frontend uses Svelte 5 with shadcn-svelte components. All components are designed for self-hosting with Docker or bare metal deployment.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

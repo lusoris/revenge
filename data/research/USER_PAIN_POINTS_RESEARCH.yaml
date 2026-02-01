@@ -16,9 +16,19 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > Research into problems users face with existing media servers
+
+  Pain points identified:
+  - **Slow Libraries**: Scanning takes hours on large collections
+  - **Metadata Mismatch**: Wrong matches, missing posters
+  - **Complex Setup**: Difficult initial configuration
+  - **Poor Mobile**: Mobile apps are afterthoughts
+  - **Transcoding Issues**: Buffering, quality problems
+
+wiki_tagline: '> What users hate about existing media servers'
+
+wiki_overview: 'This research documents common complaints about Jellyfin, Plex, and Emby from Reddit, forums, and GitHub issues. Key pain points include slow library scans, incorrect metadata matching, complicated setup processes, poor mobile experiences, and transcoding problems. Revenge addresses each issue with local-first metadata caching, smart matching algorithms, streamlined setup wizards, mobile-first design, and hardware-accelerated transcoding.'
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/

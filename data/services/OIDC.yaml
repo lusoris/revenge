@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> OpenID Connect / SSO provider management'
 wiki_tagline: '> OpenID Connect / SSO provider management'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'The OIDC service enables Single Sign-On with external identity providers. Connect Authentik, Keycloak, Authelia, or any OIDC-compliant provider. Users can link multiple providers to one account. Auto-create users on first login or require admin approval. Supports standard claims for profile info and group mapping for automatic role assignment.'
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/

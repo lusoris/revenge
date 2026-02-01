@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Role-based access control with Casbin'
 wiki_tagline: '> Role-based access control with Casbin'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'The RBAC service controls who can do what in Revenge. Built on Casbin, it supports roles (Admin, User, Guest) and fine-grained permissions. Admins define policies like "Users can view movies" or "Guests cannot access adult content". Policies are stored in PostgreSQL and cached for fast authorization checks on every request.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

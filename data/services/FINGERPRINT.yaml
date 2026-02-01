@@ -19,7 +19,7 @@ status_integration_testing_notes: '-'
 technical_summary: '> Media file identification via perceptual hashing and acoustic
   fingerprinting'
 wiki_tagline: '> Media file identification via perceptual hashing and acoustic fingerprinting'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'Fingerprinting identifies media files by their content, not just filenames. Perceptual hashes match images and video frames even after re-encoding. Acoustic fingerprints identify music tracks. This enables duplicate detection, automatic metadata matching, and skip intro detection. Fingerprints are computed on library scan and stored for fast lookups.'
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html

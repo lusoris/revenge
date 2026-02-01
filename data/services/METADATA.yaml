@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> External metadata providers for media enrichment'
 wiki_tagline: '> External metadata providers for media enrichment'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'The Metadata service fetches information about your media from external sources like TMDb, TheTVDB, and MusicBrainz. Configure which providers to use per library. Automatic matching uses filenames and folder structure. Manual matching lets you fix incorrect matches. Metadata includes titles, descriptions, posters, cast, crew, and ratings. Background jobs keep metadata fresh.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

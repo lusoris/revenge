@@ -16,9 +16,21 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > Complete technology stack powering Revenge
+
+  Stack overview:
+  - **Backend**: Go 1.25+ with fx, ogen, pgx, rueidis
+  - **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
+  - **Database**: PostgreSQL 18 (only supported database)
+  - **Cache**: Dragonfly via rueidis, otter for L1 memory cache
+  - **Search**: Typesense for full-text search
+  - **Queue**: River for PostgreSQL-backed job processing
+  - **Observability**: slog/tint (dev), zap (prod), OpenTelemetry
+
+wiki_tagline: '> The technologies that power Revenge'
+
+wiki_overview: 'Revenge is built with modern, proven technologies. The Go backend uses fx for dependency injection, ogen for type-safe API generation, and pgx for PostgreSQL access. The SvelteKit frontend delivers fast, reactive UIs with shadcn-svelte components. Dragonfly provides Redis-compatible caching, Typesense powers instant search, and River handles background jobs. All tools are chosen for performance, reliability, and active maintenance.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

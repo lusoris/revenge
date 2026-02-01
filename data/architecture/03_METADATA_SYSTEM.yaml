@@ -16,9 +16,19 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > Multi-source metadata system with caching and priority chain
+
+  Metadata handling:
+  - **Priority Chain**: Local cache → Arr services → Internal (Stash) → External APIs
+  - **Providers**: TMDb, TheTVDB, MusicBrainz, StashDB, and many more
+  - **Caching**: Two-tier with otter (L1 memory) and rueidis (L2 distributed)
+  - **Enrichment**: Background jobs for additional metadata, thumbnails, blurhash
+  - **Matching**: Fingerprinting for audio, hash matching for media
+
+wiki_tagline: '> How Revenge finds and stores information about your media'
+
+wiki_overview: 'The metadata system gathers information about your media from multiple sources. It always checks local cache first for instant display, then queries Arr services (Radarr, Sonarr) which already have metadata, then external APIs like TMDb or MusicBrainz. Background jobs enrich media with additional data like cast info, thumbnails, and blurhash placeholders. Two-tier caching (memory + distributed) ensures fast lookups even for large libraries.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Polymorphic resource access grants for fine-grained sharing'
 wiki_tagline: '> Polymorphic resource access grants for fine-grained sharing'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'The Grants service enables sharing specific items with other users. Share a movie, playlist, or library with friends without giving them full access. Grants can be time-limited (expires in 7 days) or permanent. Revoke access anytime. Works with all resource types through polymorphic references.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

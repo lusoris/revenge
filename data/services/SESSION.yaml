@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Session token management and device tracking'
 wiki_tagline: '> Session token management and device tracking'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'The Session service tracks active login sessions across devices. Each login creates a session with device info (browser, OS, IP). Users can view all active sessions and revoke access to specific devices. Sessions expire automatically after inactivity. Admins can forcibly terminate sessions for security incidents.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

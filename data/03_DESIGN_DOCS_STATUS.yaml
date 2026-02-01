@@ -11,9 +11,19 @@ created_date: '2026-01-31'
 overall_status: ✅ Complete
 status_design: ✅
 status_design_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > Overview of all design documentation status
+
+  Tracks completion across:
+  - Architecture documents
+  - Feature specifications
+  - Service designs
+  - Integration guides
+  - Operations documentation
+
+wiki_tagline: '> Progress dashboard for all design documents'
+
+wiki_overview: 'This dashboard shows the completion status of all design documentation. Each document is tracked across multiple dimensions: design completeness, external sources, implementation status, and test coverage. Use this to identify gaps in documentation and prioritize work. Status indicators show complete, in-progress, and not-started states.'
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/

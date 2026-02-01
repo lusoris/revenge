@@ -16,9 +16,19 @@ status_unit_testing: ⚪
 status_unit_testing_notes: '-'
 status_integration_testing: ⚪
 status_integration_testing_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > ADR: Decision to use integrations over plugins
+
+  Decision rationale:
+  - **No Plugin System**: Revenge uses direct integrations instead of plugins
+  - **Why**: Simpler maintenance, better security, faster development
+  - **Integrations**: First-class support for common services (Arr stack, metadata providers)
+  - **Webhooks**: External systems can integrate via webhooks
+  - **Future**: May add scripting for power users (Lua or Starlark)
+
+wiki_tagline: '> Why Revenge uses integrations instead of plugins'
+
+wiki_overview: 'Revenge deliberately chose not to implement a plugin system. Instead, common integrations (Radarr, Sonarr, TMDb, etc.) are built directly into the codebase with first-class support. This means faster development, better security (no arbitrary code execution), and simpler maintenance. External systems can still integrate via webhooks and the REST API. For power users who need custom automation, scripting support (Lua or Starlark) may be added in the future.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

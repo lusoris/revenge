@@ -16,9 +16,19 @@ status_unit_testing: 🔴
 status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
-technical_summary: 'PLACEHOLDER: Brief technical summary'
-wiki_tagline: 'PLACEHOLDER: User-friendly tagline'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+technical_summary: |
+  > Media playback system with HLS streaming and Vidstack player
+
+  Player components:
+  - **Backend**: gohlslib for HLS manifest generation, FFmpeg for transcoding
+  - **Frontend**: Vidstack player with HLS.js for adaptive streaming
+  - **Features**: Skip intro, trickplay thumbnails, chapter markers, subtitles
+  - **Casting**: Chromecast and DLNA support
+  - **Sync**: SyncPlay for watching together remotely
+
+wiki_tagline: '> How Revenge plays your media across all devices'
+
+wiki_overview: 'The player architecture handles media playback across web, mobile, and TV clients. Videos stream via HLS for adaptive quality based on your connection. The backend generates HLS manifests and handles transcoding when needed (using FFmpeg). The web player (Vidstack) supports chapters, subtitles, skip intro, and trickplay thumbnails. Chromecast lets you cast to TV, and SyncPlay lets multiple users watch together in sync.'
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html

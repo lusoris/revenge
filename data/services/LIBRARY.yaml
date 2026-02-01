@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Library management and access control'
 wiki_tagline: '> Library management and access control'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'Libraries organize your media by type and location. Create separate libraries for Movies, TV Shows, Music, or Adult content. Each library points to one or more folders on disk. Control which users can see which libraries. Libraries scan automatically on a schedule or manually on demand. Configure refresh intervals, naming conventions, and metadata sources per library.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2
