@@ -25,16 +25,16 @@
 ---
 sources:
 - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
 - title: services

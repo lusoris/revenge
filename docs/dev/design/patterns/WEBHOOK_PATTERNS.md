@@ -22,16 +22,16 @@
 ---
 sources:
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Background job processing
 - name: crypto/hmac
     url: https://pkg.go.dev/crypto/hmac
     note: HMAC signature validation
 - name: resty
-    url: ../sources/tooling/resty.md
+    url: ../../sources/tooling/resty.md
     note: HTTP client for webhook delivery
 - name: gobreaker
-    url: ../sources/tooling/gobreaker.md
+    url: ../../sources/tooling/gobreaker.md
     note: Circuit breaker pattern
 design_refs:
 - title: patterns

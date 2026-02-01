@@ -22,19 +22,19 @@
 ---
 sources:
 - name: Go Testing Package
-    url: ../sources/go/stdlib/testing.md
+    url: ../../sources/go/stdlib/testing.md
     note: Standard library testing
 - name: testify
-    url: ../sources/testing/testify.md
+    url: ../../sources/testing/testify.md
     note: Assertion and mocking toolkit
 - name: mockery
-    url: ../sources/testing/mockery-guide.md
+    url: ../../sources/testing/mockery-guide.md
     note: Mock generation from interfaces
 - name: testcontainers-go
     url: https://pkg.go.dev/github.com/testcontainers/testcontainers-go
     note: Docker containers for integration tests
 - name: embedded-postgres
-    url: ../sources/testing/embedded-postgres.md
+    url: ../../sources/testing/embedded-postgres.md
     note: Embedded PostgreSQL for testing
 design_refs:
 - title: technical

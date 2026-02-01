@@ -24,19 +24,19 @@
 ---
 sources:
 - name: ErsatzTV Documentation
-    url: ../sources/livetv/ersatztv-guide.md
+    url: ../../sources/livetv/ersatztv-guide.md
     note: Auto-resolved from ersatztv-docs
 - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
 - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 - name: XMLTV Format
-    url: ../sources/protocols/xmltv.md
+    url: ../../sources/protocols/xmltv.md
     note: Auto-resolved from xmltv
 design_refs:
 - title: integrations/livetv

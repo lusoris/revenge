@@ -24,16 +24,16 @@
 ---
 sources:
 - name: AniList GraphQL API
-    url: ../sources/apis/anilist.md
+    url: ../../sources/apis/anilist.md
     note: Auto-resolved from anilist
 - name: AniList GraphQL Schema
-    url: ../sources/apis/anilist-schema.graphql
+    url: ../../sources/apis/anilist-schema.graphql
     note: Auto-resolved from anilist-graphql
 - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
 - title: integrations/anime

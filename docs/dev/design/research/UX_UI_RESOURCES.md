@@ -22,16 +22,16 @@
 ---
 sources:
 - name: shadcn-svelte
-    url: ../sources/frontend/shadcn-svelte.md
+    url: ../../sources/frontend/shadcn-svelte.md
     note: Auto-resolved from shadcn-svelte
 - name: Svelte 5 Runes
-    url: ../sources/frontend/svelte-runes.md
+    url: ../../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
 - name: Svelte 5 Documentation
-    url: ../sources/frontend/svelte5.md
+    url: ../../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
 - name: SvelteKit Documentation
-    url: ../sources/frontend/sveltekit.md
+    url: ../../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
 - title: research

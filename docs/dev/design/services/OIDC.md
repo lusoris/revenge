@@ -25,25 +25,25 @@
 ---
 sources:
 - name: Authelia Documentation
-    url: ../sources/security/authelia.md
+    url: ../../sources/security/authelia.md
     note: Auto-resolved from authelia
 - name: Authentik Documentation
-    url: ../sources/security/authentik.md
+    url: ../../sources/security/authentik.md
     note: Auto-resolved from authentik
 - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
+    url: ../../sources/security/keycloak.md
     note: Auto-resolved from keycloak
 - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
 - title: services

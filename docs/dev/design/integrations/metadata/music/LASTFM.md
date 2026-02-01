@@ -24,10 +24,10 @@
 ---
 sources:
 - name: Go context
-    url: ../sources/go/stdlib/context.md
+    url: ../../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
 - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
 - title: integrations/metadata/music

@@ -35,13 +35,13 @@ sources:
     url: http://wiki.xmltv.org/index.php/XMLTVFormat
     note: EPG data format standard
 - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
+    url: ../../sources/infrastructure/typesense-go.md
     note: Full-text search for programs
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Scheduled EPG refresh jobs
 - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Dependency injection
 design_refs:
 - title: services

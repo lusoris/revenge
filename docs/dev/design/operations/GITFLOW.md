@@ -22,13 +22,13 @@
 ---
 sources:
 - name: Conventional Commits
-    url: ../sources/standards/conventional-commits.md
+    url: ../../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
 - name: Git Flow
-    url: ../sources/standards/gitflow.md
+    url: ../../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
 - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
 design_refs:
 - title: operations

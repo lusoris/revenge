@@ -24,13 +24,13 @@
 ---
 sources:
 - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
 - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 - name: MusicBrainz API
-    url: ../sources/apis/musicbrainz.md
+    url: ../../sources/apis/musicbrainz.md
     note: Auto-resolved from musicbrainz
 design_refs:
 - title: integrations/metadata/music

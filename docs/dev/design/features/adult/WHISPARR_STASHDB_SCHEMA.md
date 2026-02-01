@@ -26,49 +26,49 @@
 ---
 sources:
 - name: FFmpeg Documentation
-    url: ../sources/media/ffmpeg.md
+    url: ../../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
 - name: FFmpeg Codecs
-    url: ../sources/media/ffmpeg-codecs.md
+    url: ../../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
 - name: FFmpeg Formats
-    url: ../sources/media/ffmpeg-formats.md
+    url: ../../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
 - name: go-astiav (FFmpeg bindings)
-    url: ../sources/media/go-astiav.md
+    url: ../../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
 - name: go-astiav GitHub README
-    url: ../sources/media/go-astiav-guide.md
+    url: ../../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
 - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
 - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
 - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 - name: shadcn-svelte
-    url: ../sources/frontend/shadcn-svelte.md
+    url: ../../sources/frontend/shadcn-svelte.md
     note: Auto-resolved from shadcn-svelte
 - name: StashDB GraphQL API
-    url: ../sources/apis/stashdb-schema.graphql
+    url: ../../sources/apis/stashdb-schema.graphql
     note: Auto-resolved from stashdb
 - name: Svelte 5 Runes
-    url: ../sources/frontend/svelte-runes.md
+    url: ../../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
 - name: Svelte 5 Documentation
-    url: ../sources/frontend/svelte5.md
+    url: ../../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
 - name: SvelteKit Documentation
-    url: ../sources/frontend/sveltekit.md
+    url: ../../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 - name: Whisparr OpenAPI Spec
-    url: ../sources/apis/whisparr-openapi.json
+    url: ../../sources/apis/whisparr-openapi.json
     note: Auto-resolved from whisparr
 design_refs:
 - title: features/adult

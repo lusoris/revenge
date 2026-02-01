@@ -24,16 +24,16 @@
 ---
 sources:
 - name: Authelia Documentation
-    url: ../sources/security/authelia.md
+    url: ../../sources/security/authelia.md
     note: Auto-resolved from authelia
 - name: Authentik Documentation
-    url: ../sources/security/authentik.md
+    url: ../../sources/security/authentik.md
     note: Auto-resolved from authentik
 - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
+    url: ../../sources/security/keycloak.md
     note: Auto-resolved from keycloak
 - name: OpenID Connect Core
-    url: ../sources/security/oidc-core.md
+    url: ../../sources/security/oidc-core.md
     note: Auto-resolved from oidc
 design_refs:
 - title: integrations/auth

@@ -24,10 +24,10 @@
 ---
 sources:
 - name: Go io
-    url: ../sources/go/stdlib/io.md
+    url: ../../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
 - title: integrations/metadata/adult

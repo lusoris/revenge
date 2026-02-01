@@ -38,37 +38,37 @@
 ---
 sources:
 - name: AniList GraphQL API
-    url: ../sources/apis/anilist.md
+    url: ../../sources/apis/anilist.md
     note: Auto-resolved from anilist
 - name: ComicVine API
-    url: ../sources/apis/comicvine.md
+    url: ../../sources/apis/comicvine.md
     note: Auto-resolved from comicvine
 - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 - name: MyAnimeList API
-    url: ../sources/apis/myanimelist.md
+    url: ../../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
 - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 - name: sqlc
-    url: ../sources/database/sqlc.md
+    url: ../../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
+    url: ../../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 - name: Svelte 5 Runes
-    url: ../sources/frontend/svelte-runes.md
+    url: ../../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
 - name: Svelte 5 Documentation
-    url: ../sources/frontend/svelte5.md
+    url: ../../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
 - name: SvelteKit Documentation
-    url: ../sources/frontend/sveltekit.md
+    url: ../../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
 - title: features/comics

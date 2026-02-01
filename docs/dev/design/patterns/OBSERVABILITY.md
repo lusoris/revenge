@@ -25,13 +25,13 @@ sources:
     url: https://prometheus.io/docs/introduction/overview/
     note: Metrics collection
 - name: Prometheus Metrics Types
-    url: ../sources/observability/prometheus-metrics.md
+    url: ../../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
 - name: OpenTelemetry Go
-    url: ../sources/observability/opentelemetry.md
+    url: ../../sources/observability/opentelemetry.md
     note: Tracing SDK
 - name: slog
-    url: ../sources/go/stdlib/slog.md
+    url: ../../sources/go/stdlib/slog.md
     note: Structured logging
 - name: tint
     url: https://github.com/lmittmann/tint
@@ -40,7 +40,7 @@ sources:
     url: https://github.com/uber-go/zap
     note: High-performance JSON logs (prod)
 - name: Jaeger
-    url: ../sources/observability/jaeger.md
+    url: ../../sources/observability/jaeger.md
     note: Distributed tracing backend
 design_refs:
 - title: patterns

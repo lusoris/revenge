@@ -26,10 +26,10 @@
 ---
 sources:
 - name: Go sync
-    url: ../sources/go/stdlib/sync.md
+    url: ../../sources/go/stdlib/sync.md
     note: Auto-resolved from go-sync
 - name: Jellyfin SyncPlay
-    url: ../sources/apis/jellyfin-syncplay.md
+    url: ../../sources/apis/jellyfin-syncplay.md
     note: Auto-resolved from jellyfin-syncplay
 design_refs:
 - title: features/playback

@@ -24,10 +24,10 @@
 ---
 sources:
 - name: Discogs API
-    url: ../sources/apis/discogs.md
+    url: ../../sources/apis/discogs.md
     note: Auto-resolved from discogs
 - name: Last.fm API
-    url: ../sources/apis/lastfm.md
+    url: ../../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
 - title: integrations/metadata/music

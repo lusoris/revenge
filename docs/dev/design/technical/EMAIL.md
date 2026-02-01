@@ -27,13 +27,13 @@
 ---
 sources:
 - name: go-mail GitHub README
-    url: ../sources/tooling/go-mail-guide.md
+    url: ../../sources/tooling/go-mail-guide.md
     note: Auto-resolved from go-mail-docs
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
 - title: technical

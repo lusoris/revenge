@@ -24,7 +24,7 @@
 ---
 sources:
 - name: go-chromecast
-    url: ../sources/casting/go-chromecast.md
+    url: ../../sources/casting/go-chromecast.md
     note: Auto-resolved from go-chromecast
 design_refs:
 - title: integrations/casting

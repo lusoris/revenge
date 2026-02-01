@@ -22,10 +22,10 @@
 ---
 sources:
 - name: koanf
-    url: ../sources/tooling/koanf.md
+    url: ../../sources/tooling/koanf.md
     note: Configuration management
 - name: go-playground/validator
-    url: ../sources/tooling/validator.md
+    url: ../../sources/tooling/validator.md
     note: Config validation
 design_refs:
 - title: technical

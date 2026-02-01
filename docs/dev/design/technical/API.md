@@ -22,10 +22,10 @@
 ---
 sources:
 - name: ogen OpenAPI Generator
-    url: ../sources/tooling/ogen.md
+    url: ../../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 - name: OpenAPI 3.1 Specification
-    url: ../sources/apis/openapi-spec.md
+    url: ../../sources/apis/openapi-spec.md
     note: API spec standard
 - name: RFC 7807 Problem Details
     url: https://datatracker.ietf.org/doc/html/rfc7807

@@ -24,10 +24,10 @@
 ---
 sources:
 - name: go-blurhash
-    url: ../sources/media/go-blurhash.md
+    url: ../../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
 - name: Open Library API
-    url: ../sources/apis/openlibrary.md
+    url: ../../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
 - title: integrations/metadata/books

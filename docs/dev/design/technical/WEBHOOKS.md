@@ -22,19 +22,19 @@
 ---
 sources:
 - name: Radarr API Docs
-    url: ../sources/apis/radarr-docs.md
+    url: ../../sources/apis/radarr-docs.md
     note: Auto-resolved from radarr-docs
 - name: Sonarr API Docs
-    url: ../sources/apis/sonarr-docs.md
+    url: ../../sources/apis/sonarr-docs.md
     note: Auto-resolved from sonarr-docs
 - name: Lidarr API Docs
-    url: ../sources/apis/lidarr-docs.md
+    url: ../../sources/apis/lidarr-docs.md
     note: Auto-resolved from lidarr-docs
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 - name: Uber fx
-    url: ../sources/tooling/fx.md
+    url: ../../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
 - title: technical

@@ -22,37 +22,37 @@
 ---
 sources:
 - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
+    url: ../../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
 - name: gohlslib (HLS)
-    url: ../sources/media/gohlslib.md
+    url: ../../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
 - name: M3U8 Extended Format
-    url: ../sources/protocols/m3u8.md
+    url: ../../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
 - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
+    url: ../../sources/database/pgx.md
     note: Auto-resolved from pgx
 - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
+    url: ../../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
 - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
+    url: ../../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
 - name: Prometheus Go Client
-    url: ../sources/observability/prometheus.md
+    url: ../../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
 - name: Prometheus Metric Types
-    url: ../sources/observability/prometheus-metrics.md
+    url: ../../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
 - name: River Job Queue
-    url: ../sources/tooling/river.md
+    url: ../../sources/tooling/river.md
     note: Auto-resolved from river
 - name: rueidis
-    url: ../sources/tooling/rueidis.md
+    url: ../../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
 - name: rueidis GitHub README
-    url: ../sources/tooling/rueidis-guide.md
+    url: ../../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
 - title: operations
