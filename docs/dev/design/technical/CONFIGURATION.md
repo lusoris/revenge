@@ -140,8 +140,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](TECH_STACK.md)
+- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [koanf](../../sources/tooling/koanf.md) - Configuration management

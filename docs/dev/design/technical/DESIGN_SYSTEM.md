@@ -200,8 +200,8 @@ Target: **80% minimum**
 
 ## Related Documentation
 ### Design Documents
-- [FRONTEND](technical/FRONTEND.md)
-- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
+- [FRONTEND](FRONTEND.md)
+- [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
 - [USER_EXPERIENCE_FEATURES](features/shared/USER_EXPERIENCE_FEATURES.md)
 
 ### External Sources

@@ -146,8 +146,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
-- [FRONTEND](technical/FRONTEND.md)
-- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
+- [FRONTEND](../../technical/FRONTEND.md)
+- [04_PLAYER_ARCHITECTURE](../../architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
 - [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md) - Component library

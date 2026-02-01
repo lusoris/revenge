@@ -149,8 +149,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns/INDEX.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
-- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
+- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
 - [Go Testing](../../sources/go/stdlib/testing.md) - Standard library testing

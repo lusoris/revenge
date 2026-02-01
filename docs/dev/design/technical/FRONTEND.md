@@ -168,8 +168,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
-- [TECH_STACK](technical/TECH_STACK.md)
-- [04_PLAYER_ARCHITECTURE](architecture/04_PLAYER_ARCHITECTURE.md)
+- [TECH_STACK](TECH_STACK.md)
+- [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
 - [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Component framework

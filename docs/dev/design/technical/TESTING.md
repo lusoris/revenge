@@ -149,8 +149,8 @@ Target: **80% minimum**
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
-- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
+- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
 
 ### External Sources
 - [Go Testing Package](../../sources/go/stdlib/testing.md) - Standard library testing
