@@ -166,3 +166,58 @@ def project_root() -> Path:
 def scripts_dir(project_root: Path) -> Path:
     """Get the scripts directory."""
     return project_root / "scripts"
+
+
+@pytest.fixture
+def data_dir(project_root: Path) -> Path:
+    """Get the YAML data directory."""
+    return project_root / "data"
+
+
+@pytest.fixture
+def yaml_data_files(data_dir: Path) -> list[Path]:
+    """Get all YAML data files (excluding templates and shared-sot.yaml).
+
+    This fixture provides the canonical list of YAML files that should be
+    validated and used for documentation generation.
+    """
+    yaml_files = list(data_dir.rglob("*.yaml"))
+    return [
+        f for f in yaml_files
+        if ".templates" not in str(f) and "shared-sot.yaml" not in str(f)
+    ]
+
+
+@pytest.fixture
+def feature_yaml_files(data_dir: Path) -> list[Path]:
+    """Get feature YAML files (excluding INDEX files)."""
+    files = list(data_dir.glob("features/**/*.yaml"))
+    return [f for f in files if "INDEX.yaml" not in f.name]
+
+
+@pytest.fixture
+def service_yaml_files(data_dir: Path) -> list[Path]:
+    """Get service YAML files."""
+    return list(data_dir.glob("services/*.yaml"))
+
+
+@pytest.fixture
+def integration_yaml_files(data_dir: Path) -> list[Path]:
+    """Get integration YAML files (excluding INDEX files)."""
+    files = list(data_dir.glob("integrations/**/*.yaml"))
+    return [f for f in files if "INDEX.yaml" not in f.name]
+
+
+@pytest.fixture
+def priority_yaml_patterns() -> list[str]:
+    """Get glob patterns for priority documentation files.
+
+    Priority 1-2 docs are critical for contributor onboarding and deployment.
+    These must have no PLACEHOLDER content.
+    """
+    return [
+        "operations/*.yaml",
+        "technical/API.yaml",
+        "technical/CONFIGURATION.yaml",
+        "technical/FRONTEND.yaml",
+    ]
