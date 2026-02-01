@@ -281,7 +281,12 @@ jobs:
           REVENGE_REDIS_ADDR: localhost:6379
           GOEXPERIMENT: ${{ needs.versions.outputs.goexperiment }}
         run: |
-          go test -v -tags=integration ./tests/integration/...
+          # Skip if no Go integration tests exist yet
+          if go list -tags=integration ./tests/integration/... 2>/dev/null | grep -q .; then
+            go test -v -tags=integration ./tests/integration/...
+          else
+            echo "No Go integration tests found, skipping"
+          fi
 
   pr-comment:
     name: PR Comment with Build Info

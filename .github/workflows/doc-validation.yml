@@ -120,7 +120,7 @@ jobs:
   dry-run-pipelines:
     name: Dry Run Pipelines
     runs-on: ubuntu-latest
-    needs: [lint-scripts, test-scripts]
+    needs: [versions, lint-scripts, test-scripts]
 
     steps:
       - name: Checkout repository
