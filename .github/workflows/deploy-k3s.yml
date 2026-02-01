@@ -68,7 +68,7 @@ jobs:
 
       - name: Deploy Dragonfly (for testing)
         run: |
-          helm repo add dragonfly https://dragonflydb.github.io/dragonfly-operator
+          helm repo add dragonfly https://dragonflydb.github.io/helm-charts
           helm install dragonfly dragonfly/dragonfly \
             --namespace revenge-test \
             --wait --timeout 5m

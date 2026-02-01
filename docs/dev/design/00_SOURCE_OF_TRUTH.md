@@ -268,6 +268,102 @@ Tools used for development, with exact versions synced to configs.
 | **Coder** | v2.17.2+ | `.coder/template.tf` | Dev environments |
 | **markdownlint** | 0.39+ | `.markdownlint.json`, `.github/workflows/*.yml` | Markdown linter |
 | **gitleaks** | 8.18+ | `.github/workflows/security.yml`, `.gitleaksignore` | Secret scanner |
+| **Helm** | v3.16.0 | `.github/workflows/deploy*.yml` | Kubernetes package manager |
+| **kubectl** | v1.28.0 | `.github/workflows/deploy*.yml` | Kubernetes CLI |
+
+---
+
+## GitHub Actions
+
+GitHub Actions used in CI/CD workflows, with pinned versions for reproducibility.
+
+### Core Actions
+
+| Action | Version | Purpose | Workflows |
+|--------|---------|---------|-----------|
+| `actions/checkout` | v4 | Checkout repository | All workflows |
+| `actions/setup-go` | v6 | Set up Go environment | `ci.yml`, `release.yml`, `codeql.yml` |
+| `actions/setup-python` | v5 | Set up Python environment | `ci.yml`, `deploy.yml` |
+| `actions/setup-node` | v4 | Set up Node.js environment | `ci.yml`, `release.yml` |
+| `actions/upload-artifact` | v4 | Upload build artifacts | `deploy.yml`, `release.yml` |
+| `actions/github-script` | v8 | Run GitHub API scripts | Various |
+
+### Docker Actions
+
+| Action | Version | Purpose | Workflows |
+|--------|---------|---------|-----------|
+| `docker/setup-buildx-action` | v3 | Set up Docker Buildx | `docker.yml`, `release.yml` |
+| `docker/setup-qemu-action` | v3 | Set up QEMU for multi-arch | `docker.yml`, `release.yml` |
+| `docker/login-action` | v3 | Login to container registry | `docker.yml`, `release.yml` |
+| `docker/metadata-action` | v5 | Extract Docker metadata | `docker.yml`, `release.yml` |
+| `docker/build-push-action` | v6 | Build and push images | `docker.yml`, `release.yml` |
+
+### Kubernetes Actions
+
+| Action | Version | Purpose | Workflows |
+|--------|---------|---------|-----------|
+| `azure/setup-helm` | v4 | Set up Helm | `deploy*.yml` |
+| `azure/setup-kubectl` | v4 | Set up kubectl | `deploy*.yml` |
+| `helm/kind-action` | v1 | Create kind cluster | `deploy-k8s.yml` |
+| `helm/chart-testing-action` | v2 | Helm chart testing | `deploy-k8s.yml` |
+| `AbsaOSS/k3d-action` | v2 | Create k3d cluster | `deploy-k3s.yml` |
+| `instrumenta/kubeval-action` | master | Validate Kubernetes manifests | `deploy-k3s.yml` |
+
+### Code Quality Actions
+
+| Action | Version | Purpose | Workflows |
+|--------|---------|---------|-----------|
+| `golangci/golangci-lint-action` | v4 | Run golangci-lint | `ci.yml` |
+| `github/codeql-action/init` | v4 | Initialize CodeQL | `codeql.yml` |
+| `github/codeql-action/autobuild` | v4 | CodeQL autobuild | `codeql.yml` |
+| `github/codeql-action/analyze` | v4 | Analyze with CodeQL | `codeql.yml` |
+| `github/codeql-action/upload-sarif` | v4 | Upload SARIF results | `security.yml` |
+| `aquasecurity/trivy-action` | master | Security scanning | `security.yml` |
+| `securego/gosec` | master | Go security checker | `security.yml` |
+| `codecov/codecov-action` | v5 | Upload coverage | `coverage.yml` |
+
+### Release & Versioning Actions
+
+| Action | Version | Purpose | Workflows |
+|--------|---------|---------|-----------|
+| `googleapis/release-please-action` | v4 | Automated releases | `release.yml` |
+| `goreleaser/goreleaser-action` | v6 | Build release artifacts | `release.yml` |
+| `amannn/action-semantic-pull-request` | v5 | Validate PR titles | `pr-checks.yml` |
+| `bcoe/conventional-release-labels` | v1 | Auto-label PRs | `pr-checks.yml` |
+
+### Repository Management Actions
+
+| Action | Version | Purpose | Workflows |
+|--------|---------|---------|-----------|
+| `actions/labeler` | v5 | Auto-label PRs | `labeler.yml` |
+| `EndBug/label-sync` | v2 | Sync label definitions | `labels.yml` |
+| `actions/stale` | v10 | Mark stale issues/PRs | `stale.yml` |
+| `actions/first-interaction` | v3 | Welcome first-time contributors | `welcome.yml` |
+| `eps1lon/actions-label-merge-conflict` | releases/2.x | Label merge conflicts | `pr-checks.yml` |
+| `codelytv/pr-size-labeler` | v1 | Label PR by size | `pr-checks.yml` |
+| `deepakputhraya/action-branch-name` | master | Validate branch names | `pr-checks.yml` |
+| `hmarr/auto-approve-action` | v3 | Auto-approve Dependabot PRs | `dependabot.yml` |
+| `peter-evans/create-pull-request` | v6 | Create PRs | `update-dependencies.yml` |
+| `actions/dependency-review-action` | v4 | Review dependency changes | `dependency-review.yml` |
+| `tj-actions/changed-files` | v47 | Detect changed files | `ci.yml` |
+
+### Notes
+
+- **Version Pinning**: All actions use major version tags (e.g., `v4`) for automatic minor/patch updates while maintaining compatibility
+- **Security**: `master` branch pins are only used for mature, stable actions (trivy, gosec, kubeval)
+- **Deprecation**: Deprecated actions are flagged and replaced during quarterly reviews
+- **Updates**: Dependabot automatically creates PRs for action updates
+
+---
+
+## Helm Repositories
+
+Helm chart repositories used for deployment and testing.
+
+| Repository | URL | Charts Used | Purpose |
+|------------|-----|-------------|---------|
+| **Bitnami** | `https://charts.bitnami.com/bitnami` | `postgresql` | PostgreSQL for testing/deployment |
+| **Dragonfly** | `https://dragonflydb.github.io/helm-charts` | `dragonfly` | Redis-compatible cache |
 
 ---
 

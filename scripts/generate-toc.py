@@ -135,15 +135,34 @@ def update_toc(content: str, headings: list[dict]) -> tuple[str, bool]:
         new_content = toc_pattern.sub(new_toc, content)
         return new_content, new_content != content
 
-    # Insert TOC after first heading and description
-    # Find position after title and optional blockquote
+    # Insert TOC after frontmatter, title, and optional blockquote
     lines = content.split("\n")
     insert_pos = 0
+    in_frontmatter = False
+    frontmatter_closed = False
 
     for i, line in enumerate(lines):
+        # Detect frontmatter start
+        if i == 0 and line.strip() == "---":
+            in_frontmatter = True
+            continue
+        # Detect frontmatter end
+        if in_frontmatter and line.strip() == "---":
+            in_frontmatter = False
+            frontmatter_closed = True
+            insert_pos = i + 1
+            continue
+        # Skip frontmatter lines
+        if in_frontmatter:
+            continue
+        # Skip empty lines after frontmatter
+        if frontmatter_closed and not line.strip():
+            insert_pos = i + 1
+            continue
         # Skip title
         if line.startswith("# "):
             insert_pos = i + 1
+            frontmatter_closed = True  # Even if no frontmatter, proceed normally
             continue
         # Skip empty lines after title
         if insert_pos > 0 and not line.strip():

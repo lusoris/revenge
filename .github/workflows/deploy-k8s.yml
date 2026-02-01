@@ -70,7 +70,7 @@ jobs:
       - name: Add Helm repos
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm repo add dragonfly https://dragonflydb.github.io/dragonfly-operator
+          helm repo add dragonfly https://dragonflydb.github.io/helm-charts
           helm repo update
 
       - name: Create namespace

@@ -2365,6 +2365,171 @@ sources:
       type: github_readme
       output: "git_tools/release-please/action.md"
 
+    # ========================================================================
+    # Helm Repositories
+    # ========================================================================
+
+    # Bitnami Charts
+    - id: bitnami-helm
+      name: "Bitnami Helm Charts"
+      url: "https://github.com/bitnami/charts"
+      type: github_readme
+      output: "helm/bitnami/main.md"
+
+    - id: bitnami-postgresql
+      name: "Bitnami PostgreSQL Helm Chart"
+      url: "https://github.com/bitnami/charts/tree/main/bitnami/postgresql"
+      type: html
+      output: "helm/bitnami/postgresql.md"
+
+    # Dragonfly Charts
+    - id: dragonfly-helm
+      name: "Dragonfly Helm Charts"
+      url: "https://github.com/dragonflydb/dragonfly"
+      type: github_readme
+      output: "helm/dragonfly/main.md"
+
+    - id: dragonfly-helm-chart
+      name: "Dragonfly Helm Chart Values"
+      url: "https://artifacthub.io/packages/helm/dragonflydb/dragonfly"
+      type: html
+      output: "helm/dragonfly/chart.md"
+
+    # ========================================================================
+    # Kubernetes Tools
+    # ========================================================================
+
+    # Helm
+    - id: helm-docs
+      name: "Helm Documentation"
+      url: "https://helm.sh/docs/"
+      type: html
+      output: "kubernetes/helm/main.md"
+
+    - id: helm-charts
+      name: "Helm Charts Guide"
+      url: "https://helm.sh/docs/topics/charts/"
+      type: html
+      output: "kubernetes/helm/charts.md"
+
+    - id: helm-values
+      name: "Helm Values Files"
+      url: "https://helm.sh/docs/chart_template_guide/values_files/"
+      type: html
+      output: "kubernetes/helm/values.md"
+
+    # kubectl
+    - id: kubectl-docs
+      name: "kubectl Documentation"
+      url: "https://kubernetes.io/docs/reference/kubectl/"
+      type: html
+      output: "kubernetes/kubectl/main.md"
+
+    - id: kubectl-cheatsheet
+      name: "kubectl Cheatsheet"
+      url: "https://kubernetes.io/docs/reference/kubectl/quick-reference/"
+      type: html
+      output: "kubernetes/kubectl/cheatsheet.md"
+
+    # ========================================================================
+    # GitHub Actions
+    # ========================================================================
+
+    # Core Actions
+    - id: github-actions-docs
+      name: "GitHub Actions Documentation"
+      url: "https://docs.github.com/en/actions"
+      type: html
+      output: "github_actions/main.md"
+
+    - id: actions-checkout
+      name: "actions/checkout"
+      url: "https://github.com/actions/checkout"
+      type: github_readme
+      output: "github_actions/checkout.md"
+
+    - id: actions-setup-go
+      name: "actions/setup-go"
+      url: "https://github.com/actions/setup-go"
+      type: github_readme
+      output: "github_actions/setup-go.md"
+
+    - id: actions-setup-python
+      name: "actions/setup-python"
+      url: "https://github.com/actions/setup-python"
+      type: github_readme
+      output: "github_actions/setup-python.md"
+
+    - id: actions-setup-node
+      name: "actions/setup-node"
+      url: "https://github.com/actions/setup-node"
+      type: github_readme
+      output: "github_actions/setup-node.md"
+
+    # Docker Actions
+    - id: docker-build-push-action
+      name: "docker/build-push-action"
+      url: "https://github.com/docker/build-push-action"
+      type: github_readme
+      output: "github_actions/docker-build-push.md"
+
+    - id: docker-login-action
+      name: "docker/login-action"
+      url: "https://github.com/docker/login-action"
+      type: github_readme
+      output: "github_actions/docker-login.md"
+
+    - id: docker-metadata-action
+      name: "docker/metadata-action"
+      url: "https://github.com/docker/metadata-action"
+      type: github_readme
+      output: "github_actions/docker-metadata.md"
+
+    # Kubernetes Actions
+    - id: helm-kind-action
+      name: "helm/kind-action"
+      url: "https://github.com/helm/kind-action"
+      type: github_readme
+      output: "github_actions/kind-action.md"
+
+    - id: helm-chart-testing-action
+      name: "helm/chart-testing-action"
+      url: "https://github.com/helm/chart-testing-action"
+      type: github_readme
+      output: "github_actions/chart-testing.md"
+
+    - id: k3d-action
+      name: "AbsaOSS/k3d-action"
+      url: "https://github.com/AbsaOSS/k3d-action"
+      type: github_readme
+      output: "github_actions/k3d-action.md"
+
+    # Code Quality Actions
+    - id: golangci-lint-action
+      name: "golangci/golangci-lint-action"
+      url: "https://github.com/golangci/golangci-lint-action"
+      type: github_readme
+      output: "github_actions/golangci-lint.md"
+
+    - id: codeql-action
+      name: "github/codeql-action"
+      url: "https://github.com/github/codeql-action"
+      type: github_readme
+      output: "github_actions/codeql.md"
+
+    - id: codecov-action
+      name: "codecov/codecov-action"
+      url: "https://github.com/codecov/codecov-action"
+      type: github_readme
+      output: "github_actions/codecov.md"
+
+    # Release Actions
+    - id: goreleaser-action
+      name: "goreleaser/goreleaser-action"
+      url: "https://github.com/goreleaser/goreleaser-action"
+      type: github_readme
+      output: "github_actions/goreleaser.md"
+
 # ============================================================================
 # FETCH STATUS TRACKING
 # ============================================================================
