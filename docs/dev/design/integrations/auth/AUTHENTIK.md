@@ -21,35 +21,37 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Authelia Documentation
-    url: ../../sources/security/authelia.md
+  - name: Authelia Documentation
+    url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
-- name: Authentik Documentation
-    url: ../../sources/security/authentik.md
+  - name: Authentik Documentation
+    url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
-- name: Keycloak Documentation
-    url: ../../sources/security/keycloak.md
+  - name: Keycloak Documentation
+    url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
 design_refs:
-- title: integrations/auth
+  - title: integrations/auth
     path: integrations/auth.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Authentik
 
-<!-- DESIGN: integrations/auth, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
+
 
 > Integration with Authentik
 
@@ -58,6 +60,7 @@ design_refs:
 **Authentication**: api_key
 
 ---
+
 
 ## Status
 
@@ -70,9 +73,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -96,6 +103,7 @@ internal/integration/authentik/
 This integration provides:
 <!-- Data provided by integration -->
 
+
 ## Implementation
 
 ### File Structure
@@ -110,6 +118,10 @@ This integration provides:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -118,6 +130,9 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -133,14 +148,21 @@ This integration provides:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [integrations/auth](integrations/auth.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../../sources/security/authelia.md) - Auto-resolved from authelia
-- [Authentik Documentation](../../sources/security/authentik.md) - Auto-resolved from authentik
-- [Keycloak Documentation](../../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
+- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
+

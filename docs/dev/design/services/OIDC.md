@@ -22,47 +22,49 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Authelia Documentation
-    url: ../../sources/security/authelia.md
+  - name: Authelia Documentation
+    url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
-- name: Authentik Documentation
-    url: ../../sources/security/authentik.md
+  - name: Authentik Documentation
+    url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: Keycloak Documentation
-    url: ../../sources/security/keycloak.md
+  - name: Keycloak Documentation
+    url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
-- name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
+  - name: ogen OpenAPI Generator
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: sqlc
-    url: ../../sources/database/sqlc.md
+  - name: sqlc
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
+  - name: sqlc Configuration
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-- title: services
+  - title: services
     path: services/INDEX.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # OIDC Service
 
-<!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: service
+
 
 > > OpenID Connect / SSO provider management
 
@@ -70,6 +72,7 @@ design_refs:
 **fx Module**: `oidc.Module`
 
 ---
+
 
 ## Status
 
@@ -82,9 +85,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -111,6 +118,7 @@ No external service dependencies.
 
 <!-- Component diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -125,6 +133,10 @@ No external service dependencies.
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -133,6 +145,9 @@ No external service dependencies.
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -148,18 +163,25 @@ No external service dependencies.
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [services](services/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../../sources/security/authelia.md) - Auto-resolved from authelia
-- [Authentik Documentation](../../sources/security/authentik.md) - Auto-resolved from authentik
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [Keycloak Documentation](../../sources/security/keycloak.md) - Auto-resolved from keycloak
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+

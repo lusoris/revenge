@@ -8,7 +8,7 @@
 **Go Version**: 1.25.6
 **Node.js**: 20.x (LTS)
 **Python**: 3.12
-**PostgreSQL**: 18.1 (ONLY - no SQLite support)
+**PostgreSQL**: 18.1
 **Build Command**: `GOEXPERIMENT=greenteagc,jsonv2 go build ./...`
 
 ---

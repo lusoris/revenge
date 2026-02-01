@@ -90,7 +90,9 @@
       "Bash(golangci-lint:*)",
       "Bash(GOEXPERIMENT=greenteagc,jsonv2 golangci-lint run:*)",
       "Bash(GOEXPERIMENT=greenteagc,jsonv2 golangci-lint linters:*)",
-      "Bash(npx markdownlint-cli2:*)"
+      "Bash(npx markdownlint-cli2:*)",
+      "Bash(go test:*)",
+      "Bash(unknown flag: --out-format\"\n\nAlso documented CI/CD findings from previous push:\n- ISSUE-006: golangci-lint --out-format not supported in v2.8.0\n- ISSUE-007: 1,122 broken internal links in documentation\n\nVerified locally:\n- All tests passing \\(10/10\\)\n- golangci-lint runs successfully with --timeout=5m\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

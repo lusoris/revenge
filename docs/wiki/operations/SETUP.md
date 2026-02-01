@@ -13,71 +13,81 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Dragonfly Documentation
+  - name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-- name: FFmpeg Documentation
+  - name: FFmpeg Documentation
     url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-- name: FFmpeg Codecs
+  - name: FFmpeg Codecs
     url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-- name: FFmpeg Formats
+  - name: FFmpeg Formats
     url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-- name: go-astiav (FFmpeg bindings)
+  - name: go-astiav (FFmpeg bindings)
     url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-- name: go-astiav GitHub README
+  - name: go-astiav GitHub README
     url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-- name: Go io
+  - name: Go io
     url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
+  - name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
+  - name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: rueidis
+  - name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-- name: rueidis GitHub README
+  - name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
-- name: Typesense API
+  - name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-- name: Typesense Go Client
+  - name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-- title: operations
+  - title: operations
     path: operations/INDEX.md
-- title: TECH_STACK
+  - title: TECH_STACK
     path: technical/TECH_STACK.md
-- title: REVERSE_PROXY
+  - title: REVERSE_PROXY
     path: operations/REVERSE_PROXY.md
-- title: 00_SOURCE_OF_TRUTH
+  - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
 
 # Production Deployment Setup
 
+
+
+
 > Deploy Revenge to your homelab or server with Docker, Kubernetes, or bare metal
+
 
 This guide covers everything you need to deploy Revenge in production. The recommended approach uses Docker Compose for simple homelab setups - just create a docker-compose.yml, set a few environment variables, and run docker compose up. For larger deployments, Kubernetes (K3s) provides high availability and auto-scaling. Includes reverse proxy configuration (Traefik, Caddy, nginx), SSL setup with LetsEncrypt, backup strategies, and security hardening tips.
 
+
 ---
+
+
+
 
 ## Contents
 
@@ -85,15 +95,28 @@ This guide covers everything you need to deploy Revenge in production. The recom
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
 
+
+
 ## Configuration
 <!-- User-friendly configuration guide -->
+
+
+
+
+
+
+
 
 ## Troubleshooting
 ### Container won't start
@@ -129,9 +152,12 @@ This guide covers everything you need to deploy Revenge in production. The recom
 3. Increase dragonfly cache size
 4. Consider offloading transcoding to Blackbeard
 
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

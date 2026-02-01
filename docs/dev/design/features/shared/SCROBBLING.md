@@ -23,50 +23,53 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: Last.fm API
-    url: ../../sources/apis/lastfm.md
+  - name: Last.fm API
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-- name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
+  - name: ogen OpenAPI Generator
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: sqlc
-    url: ../../sources/database/sqlc.md
+  - name: sqlc
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
+  - name: sqlc Configuration
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/shared
+  - title: features/shared
     path: features/shared.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Revenge - External Scrobbling & Sync
 
-<!-- DESIGN: features/shared, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
 
-> Content module for
+
+> Content module for 
 
 > Sync playback data to external services like Trakt, Last.fm, ListenBrainz, etc.
 
 ---
+
 
 ## Status
 
@@ -79,9 +82,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -107,6 +114,7 @@ internal/content/revenge___external_scrobbling_&_sync/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -121,6 +129,10 @@ internal/content/revenge___external_scrobbling_&_sync/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -130,10 +142,12 @@ internal/content/revenge___external_scrobbling_&_sync/
 
 <!-- Configuration keys -->
 
+
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
+
 
 ## Testing Strategy
 
@@ -149,17 +163,24 @@ internal/content/revenge___external_scrobbling_&_sync/
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+

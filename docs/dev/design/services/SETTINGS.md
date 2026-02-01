@@ -22,53 +22,55 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: koanf
-    url: ../../sources/tooling/koanf.md
+  - name: koanf
+    url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
-- name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
+  - name: ogen OpenAPI Generator
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
+  - name: pgx PostgreSQL Driver
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
+  - name: PostgreSQL Arrays
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
+  - name: PostgreSQL JSON Functions
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: sqlc
-    url: ../../sources/database/sqlc.md
+  - name: sqlc
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
+  - name: sqlc Configuration
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-- title: services
+  - title: services
     path: services/INDEX.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Settings Service
 
-<!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: service
+
 
 > > Server settings persistence and retrieval
 
@@ -76,6 +78,7 @@ design_refs:
 **fx Module**: `settings.Module`
 
 ---
+
 
 ## Status
 
@@ -88,9 +91,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -117,6 +124,7 @@ No external service dependencies.
 
 <!-- Component diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -131,6 +139,10 @@ No external service dependencies.
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -139,6 +151,9 @@ No external service dependencies.
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -154,20 +169,27 @@ No external service dependencies.
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [services](services/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [koanf](../../sources/tooling/koanf.md) - Auto-resolved from koanf
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [koanf](../sources/tooling/koanf.md) - Auto-resolved from koanf
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+

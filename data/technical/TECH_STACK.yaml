@@ -1,112 +1,411 @@
 doc_title: Revenge - Technology Stack
 doc_category: technical
 created_date: '2026-01-31'
-overall_status: 🔴 Not Started
-status_design: 🔴
-status_design_notes: '-'
-status_sources: 🔴
-status_sources_notes: '-'
-status_instructions: 🔴
-status_instructions_notes: '-'
-status_code: 🔴
-status_code_notes: '-'
-status_linting: 🔴
-status_linting_notes: '-'
-status_unit_testing: 🔴
-status_unit_testing_notes: '-'
-status_integration_testing: 🔴
-status_integration_testing_notes: '-'
+overall_status: 🟢 Complete
+status_design: 🟢
+status_design_notes: Complete stack documented
+status_sources: ✅
+status_sources_notes: All sources documented
+status_instructions: 🟢
+status_instructions_notes: Implementation patterns included
+status_code: 🟢
+status_code_notes: Stack implemented in codebase
+status_linting: ✅
+status_linting_notes: golangci-lint v2.8.0
+status_unit_testing: 🟢
+status_unit_testing_notes: 80%+ coverage target
+status_integration_testing: 🟢
+status_integration_testing_notes: testcontainers in use
+
 technical_summary: |
   > Complete technology stack powering Revenge
 
   Stack overview:
-  - **Backend**: Go 1.25+ with fx, ogen, pgx, rueidis
+  - **Backend**: Go 1.25.6 with GOEXPERIMENT=greenteagc,jsonv2
+  - **DI Framework**: fx v1.24.0 for dependency injection and lifecycle management
+  - **API Layer**: ogen v1.18.0 for type-safe OpenAPI code generation
+  - **Database**: PostgreSQL 18+ with pgx v5.8.0 driver, sqlc v1.30.0 code generation
+  - **Caching**: L1 (otter v2.3.1 in-memory), L2 (Dragonfly v1.26.1 via rueidis v1.0.54)
+  - **Search**: Typesense 27.1 for full-text search with typo tolerance
+  - **Jobs**: River v0.20.1 for PostgreSQL-backed job queue
+  - **Logging**: slog/tint v1.1.2 (dev), zap v1.27.1 (prod)
   - **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
-  - **Database**: PostgreSQL 18 (only supported database)
-  - **Cache**: Dragonfly via rueidis, otter for L1 memory cache
-  - **Search**: Typesense for full-text search
-  - **Queue**: River for PostgreSQL-backed job processing
-  - **Observability**: slog/tint (dev), zap (prod), OpenTelemetry
+  - **Testing**: testify v1.11.1, mockery v3.3.0, testcontainers v0.40.0
 
-wiki_tagline: '> The technologies that power Revenge'
+wiki_tagline: '> Modern, performant stack for self-hosted media serving'
 
-wiki_overview: 'Revenge is built with modern, proven technologies. The Go backend uses fx for dependency injection, ogen for type-safe API generation, and pgx for PostgreSQL access. The SvelteKit frontend delivers fast, reactive UIs with shadcn-svelte components. Dragonfly provides Redis-compatible caching, Typesense powers instant search, and River handles background jobs. All tools are chosen for performance, reliability, and active maintenance.'
+wiki_overview: 'Revenge uses a carefully selected stack optimized for performance and maintainability. The Go backend leverages fx for dependency injection, ogen for type-safe API generation from OpenAPI specs, and pgx for high-performance PostgreSQL access. Multi-tier caching with otter (L1) and Dragonfly (L2) ensures low latency. Typesense provides instant full-text search. River handles background jobs using PostgreSQL for ACID guarantees. The SvelteKit frontend with Svelte 5 runes delivers reactive UIs with minimal overhead.'
+
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs
-  note: Auto-resolved from dragonfly
+  note: L2 cache backend
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx
-  note: Auto-resolved from fx
+  note: Dependency injection framework
 - name: Go log/slog
   url: https://pkg.go.dev/log/slog
-  note: Auto-resolved from go-slog
+  note: Structured logging (dev)
 - name: gohlslib (HLS)
   url: https://pkg.go.dev/github.com/bluenviron/gohlslib/v2
-  note: Auto-resolved from gohlslib
+  note: HLS streaming support
 - name: koanf
   url: https://pkg.go.dev/github.com/knadh/koanf/v2
-  note: Auto-resolved from koanf
+  note: Configuration management
 - name: ogen OpenAPI Generator
   url: https://pkg.go.dev/github.com/ogen-go/ogen
-  note: Auto-resolved from ogen
+  note: Type-safe API code generation
 - name: ogen Documentation
   url: https://ogen.dev/docs/intro
-  note: Auto-resolved from ogen-docs
+  note: Official ogen docs
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5
-  note: Auto-resolved from pgx
+  note: PostgreSQL native driver
 - name: PostgreSQL Arrays
   url: https://www.postgresql.org/docs/current/arrays.html
-  note: Auto-resolved from postgresql-arrays
+  note: Array type support
 - name: PostgreSQL JSON Functions
   url: https://www.postgresql.org/docs/current/functions-json.html
-  note: Auto-resolved from postgresql-json
+  note: JSON/JSONB operations
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river
-  note: Auto-resolved from river
+  note: PostgreSQL-backed jobs
 - name: River Documentation
   url: https://riverqueue.com/docs
-  note: Auto-resolved from river-docs
+  note: Official River docs
 - name: rueidis
   url: https://pkg.go.dev/github.com/redis/rueidis
-  note: Auto-resolved from rueidis
+  note: Redis/Dragonfly client
 - name: rueidis GitHub README
   url: https://github.com/redis/rueidis
-  note: Auto-resolved from rueidis-docs
+  note: Client documentation
 - name: shadcn-svelte
   url: https://www.shadcn-svelte.com/docs
-  note: Auto-resolved from shadcn-svelte
+  note: UI component library
 - name: sqlc
   url: https://docs.sqlc.dev/en/stable/
-  note: Auto-resolved from sqlc
+  note: SQL code generator
 - name: sqlc Configuration
   url: https://docs.sqlc.dev/en/stable/reference/config.html
-  note: Auto-resolved from sqlc-config
+  note: sqlc.yaml reference
 - name: Svelte 5 Runes
   url: https://svelte.dev/docs/svelte/$state
-  note: Auto-resolved from svelte-runes
+  note: Runes-based reactivity
 - name: Svelte 5 Documentation
   url: https://svelte.dev/docs/svelte/overview
-  note: Auto-resolved from svelte5
+  note: Svelte 5 API reference
 - name: SvelteKit Documentation
   url: https://svelte.dev/docs/kit/introduction
-  note: Auto-resolved from sveltekit
+  note: SvelteKit framework
 - name: TanStack Query
   url: https://tanstack.com/query/latest/docs/framework/svelte/overview
-  note: Auto-resolved from tanstack-query
+  note: Server state management
 - name: Typesense API
   url: https://typesense.org/docs/latest/api/
-  note: Auto-resolved from typesense
+  note: Search engine API
 - name: Typesense Go Client
   url: https://github.com/typesense/typesense-go
-  note: Auto-resolved from typesense-go
+  note: Go client library
+- name: otter Cache
+  url: https://pkg.go.dev/github.com/maypok86/otter
+  note: In-memory L1 cache
+- name: sturdyc
+  url: https://pkg.go.dev/github.com/viccon/sturdyc
+  note: Request coalescing
+- name: zap Logger
+  url: https://pkg.go.dev/go.uber.org/zap
+  note: Production logging
+- name: tint Logger
+  url: https://pkg.go.dev/github.com/lmittmann/tint
+  note: Development logging
+- name: golang-migrate
+  url: https://pkg.go.dev/github.com/golang-migrate/migrate/v4
+  note: Database migrations
+- name: testify
+  url: https://pkg.go.dev/github.com/stretchr/testify
+  note: Testing framework
+- name: mockery
+  url: https://vektra.github.io/mockery/
+  note: Mock generation
+- name: testcontainers-go
+  url: https://golang.testcontainers.org/
+  note: Integration testing
+- name: golangci-lint
+  url: https://golangci-lint.run/
+  note: Go linting
+- name: markdownlint-cli2
+  url: https://github.com/DavidAnson/markdownlint-cli2
+  note: Markdown linting
+
 design_refs:
-- title: technical
-  path: technical.md
 - title: 01_ARCHITECTURE
   path: architecture/01_ARCHITECTURE.md
 - title: 02_DESIGN_PRINCIPLES
   path: architecture/02_DESIGN_PRINCIPLES.md
 - title: 03_METADATA_SYSTEM
   path: architecture/03_METADATA_SYSTEM.md
+- title: 00_SOURCE_OF_TRUTH
+  path: 00_SOURCE_OF_TRUTH.md
+
+# Backend Stack
+backend:
+  language: Go
+  version: 1.25.6
+  experiments: greenteagc,jsonv2
+
+  core_frameworks:
+    - name: fx
+      version: v1.24.0
+      import: go.uber.org/fx
+      purpose: Dependency injection framework
+      why: Type-safe DI, lifecycle management, module system
+
+    - name: ogen
+      version: v1.18.0
+      import: github.com/ogen-go/ogen
+      purpose: OpenAPI code generation
+      why: Type-safe API handlers from OpenAPI spec, zero reflection
+
+    - name: koanf
+      version: v2.3.0
+      import: github.com/knadh/koanf/v2
+      purpose: Configuration management
+      why: Provider-based config with env/file/etc, type-safe unmarshaling
+
+  database:
+    driver: pgx
+    driver_version: v5.8.0
+    driver_import: github.com/jackc/pgx/v5
+    database: PostgreSQL
+    database_version: 18+
+    why_pgx: Native PostgreSQL driver, best performance, array/JSON support
+    why_postgresql: ACID compliance, advanced features, mature ecosystem
+    codegen: sqlc v1.30.0
+    codegen_purpose: Type-safe SQL queries from SQL files
+    migrations: golang-migrate/migrate v4.19.1
+
+  caching:
+    l1_cache: otter
+    l1_version: v2.3.1
+    l1_import: github.com/maypok86/otter
+    l1_purpose: In-memory cache (S3-FIFO algorithm)
+
+    l2_cache: Dragonfly via rueidis
+    l2_backend: Dragonfly
+    l2_backend_version: v1.26.1
+    l2_client: rueidis
+    l2_version: v1.0.54
+    l2_import: github.com/redis/rueidis
+    l2_purpose: Distributed Redis-compatible cache
+
+    coalescing: sturdyc
+    coalescing_version: v1.4.0
+    coalescing_import: github.com/viccon/sturdyc
+    coalescing_purpose: Request coalescing to prevent thundering herd
+
+  search:
+    engine: Typesense
+    version: 27.1
+    client_version: v2.0.0
+    client_import: github.com/typesense/typesense-go/v2
+    purpose: Full-text search with typo tolerance
+    why: Fast, typo-tolerant, easy to use, self-hosted
+
+  jobs:
+    queue: River
+    version: v0.20.1
+    import: github.com/riverqueue/river
+    driver: riverpgxv5
+    driver_version: v0.20.1
+    driver_import: github.com/riverqueue/river/riverdriver/riverpgxv5
+    purpose: PostgreSQL-backed job queue
+    why: Uses existing PostgreSQL, ACID guarantees, no extra infra
+
+  logging:
+    dev: slog/tint
+    dev_import: github.com/lmittmann/tint
+    dev_version: v1.1.2
+    prod: zap
+    prod_import: go.uber.org/zap
+    prod_version: v1.27.1
+    purpose: Structured logging
+
+  observability:
+    metrics: OpenTelemetry
+    tracing: OpenTelemetry
+    why: Industry standard, vendor-neutral
+
+# Frontend Stack
+frontend:
+  framework: SvelteKit
+  framework_version: 2.x
+  framework_purpose: Full-stack web framework
+
+  ui_library: Svelte
+  ui_version: 5.x
+  ui_features: Runes-based reactivity, better performance
+
+  styling: Tailwind CSS
+  styling_version: 4.x
+  styling_purpose: Utility-first CSS framework
+
+  components: shadcn-svelte
+  components_purpose: Pre-built accessible components
+
+  state_management:
+    server_state: TanStack Query
+    server_state_purpose: Server state caching, mutations
+    local_state: Svelte stores
+    local_state_purpose: Client-side reactive state
+
+# Development Tools
+dev_tools:
+  - name: golangci-lint
+    version: v2.8.0
+    purpose: Go linting
+    config: .golangci.yml
+    notes: First version with Go 1.25 support
+
+  - name: sqlc
+    version: v1.30.0
+    purpose: SQL code generation
+    config: sqlc.yaml
+
+  - name: mockery
+    version: v3.3.0
+    purpose: Mock generation
+    config: .mockery.yaml
+
+  - name: testify
+    version: v1.11.1
+    purpose: Test assertions
+
+  - name: testcontainers
+    version: v0.40.0
+    purpose: Integration testing with real containers
+
+  - name: markdownlint-cli2
+    version: v0.20.0
+    purpose: Markdown linting
+    config: .markdownlint.json
+
+# Architecture Components
+components:
+  - name: API Layer
+    description: ogen-generated OpenAPI handlers
+    file_path: internal/api/
+    dependencies: [Service Layer, Auth Middleware]
+
+  - name: Service Layer
+    description: Business logic orchestration
+    file_path: internal/content/*/service.go
+    dependencies: [Repository Layer, Cache, Search, Jobs]
+
+  - name: Repository Layer
+    description: Data access abstraction
+    file_path: internal/content/*/repository.go
+    dependencies: [Database, sqlc]
+
+  - name: Infrastructure
+    description: Cross-cutting concerns
+    file_path: internal/infra/
+    sub_components:
+      - Database (pgx pool)
+      - Cache (otter + rueidis)
+      - Search (typesense client)
+      - Jobs (river queue)
+      - Logging (slog/zap)
+
+# Architecture Diagram
+architecture_diagram: |
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    SvelteKit Frontend                           │
+  │          (Svelte 5 + Tailwind 4 + shadcn-svelte)               │
+  └─────────────────────┬───────────────────────────────────────────┘
+                        │ HTTP/JSON
+  ┌─────────────────────▼───────────────────────────────────────────┐
+  │                  ogen OpenAPI Handlers                          │
+  │             (Type-safe from openapi.yaml)                       │
+  └─────────────────────┬───────────────────────────────────────────┘
+                        │
+  ┌─────────────────────▼───────────────────────────────────────────┐
+  │                   Service Layer (fx)                            │
+  │         Movies │ TV │ Music │ QAR │ User │ Auth                 │
+  └─────┬───────┬──┴──┬────────┬──────┬──────────────────────┬─────┘
+        │       │     │        │      │                      │
+  ┌─────▼───┐ ┌─▼─────▼──┐ ┌──▼──────▼───┐          ┌───────▼──────┐
+  │  Cache  │ │  Search  │ │   Jobs      │          │  Repository  │
+  │  (L1+L2)│ │(Typesense)│ │   (River)   │          │   (sqlc)     │
+  └─────────┘ └──────────┘ └─────────────┘          └───────┬──────┘
+                                                              │
+                                                    ┌─────────▼──────┐
+                                                    │  PostgreSQL 18 │
+                                                    └────────────────┘
+
+# Configuration
+env_vars:
+  - name: REVENGE_SERVER_HOST
+    type: string
+    default: 0.0.0.0
+    description: Server bind address
+
+  - name: REVENGE_SERVER_PORT
+    type: int
+    default: 8080
+    description: Server listen port
+
+  - name: REVENGE_DATABASE_URL
+    type: string
+    required: true
+    description: PostgreSQL connection string (postgres://user:pass@host:5432/db)
+
+  - name: REVENGE_CACHE_REDIS_ADDR
+    type: string
+    default: localhost:6379
+    description: Dragonfly/Redis address for L2 cache
+
+  - name: REVENGE_SEARCH_HOST
+    type: string
+    default: localhost:8108
+    description: Typesense server host
+
+  - name: REVENGE_JOBS_ENABLED
+    type: bool
+    default: true
+    description: Enable River job queue
+
+# Testing Strategy
+testing_approach: |
+  ### Unit Tests
+  - **Framework**: testify/assert, testify/require
+  - **Mocking**: mockery v3 for interface mocks
+  - **Database**: embedded-postgres for fast in-memory tests
+  - **Coverage**: 80% minimum (enforced in CI)
+  - **Pattern**: Table-driven tests
+
+  ### Integration Tests
+  - **Framework**: testcontainers-go v0.40.0
+  - **Services**: Real PostgreSQL 18, Dragonfly, Typesense containers
+  - **Scope**: Full stack with real dependencies
+  - **CI Matrix**: ubuntu-latest, macos-latest, windows-latest
+
+  ### Test Coverage Target
+  **80% minimum** - enforced in CI
+
+# Performance Considerations
+expected_load: 1000+ concurrent users, 10k+ req/min
+
+performance_optimizations:
+  - Multi-tier caching (L1 memory + L2 distributed)
+  - Request coalescing with sturdyc
+  - Connection pooling with pgx
+  - Prepared statements via sqlc
+  - Index optimization in PostgreSQL
+  - Search offloading to Typesense
+
+monitoring_metrics:
+  - API request latency (p50, p95, p99)
+  - Cache hit ratios (L1, L2)
+  - Database connection pool utilization
+  - Job queue processing rate
+  - Search query performance

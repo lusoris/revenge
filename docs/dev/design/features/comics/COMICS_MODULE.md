@@ -35,59 +35,61 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: AniList GraphQL API
-    url: ../../sources/apis/anilist.md
+  - name: AniList GraphQL API
+    url: ../sources/apis/anilist.md
     note: Auto-resolved from anilist
-- name: ComicVine API
-    url: ../../sources/apis/comicvine.md
+  - name: ComicVine API
+    url: ../sources/apis/comicvine.md
     note: Auto-resolved from comicvine
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: MyAnimeList API
-    url: ../../sources/apis/myanimelist.md
+  - name: MyAnimeList API
+    url: ../sources/apis/myanimelist.md
     note: Auto-resolved from myanimelist
-- name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
+  - name: ogen OpenAPI Generator
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: sqlc
-    url: ../../sources/database/sqlc.md
+  - name: sqlc
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
+  - name: sqlc Configuration
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
-- name: Svelte 5 Runes
-    url: ../../sources/frontend/svelte-runes.md
+  - name: Svelte 5 Runes
+    url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
-- name: Svelte 5 Documentation
-    url: ../../sources/frontend/svelte5.md
+  - name: Svelte 5 Documentation
+    url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
-- name: SvelteKit Documentation
-    url: ../../sources/frontend/sveltekit.md
+  - name: SvelteKit Documentation
+    url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
-- title: features/comics
+  - title: features/comics
     path: features/comics.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Comics Module
 
-<!-- DESIGN: features/comics, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
+
 
 > Content module for Comics, Issues, Series
 
@@ -102,6 +104,7 @@ Complete comics library:
 
 ---
 
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -113,9 +116,13 @@ Complete comics library:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -141,6 +148,7 @@ internal/content/comics/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -155,6 +163,10 @@ internal/content/comics/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -163,6 +175,7 @@ internal/content/comics/
 ### Config Keys
 
 <!-- Configuration keys -->
+
 
 ## API Endpoints
 
@@ -228,6 +241,7 @@ Get user pull list of series
 
 ---
 
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -242,22 +256,29 @@ Get user pull list of series
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [features/comics](features/comics.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](../../sources/apis/anilist.md) - Auto-resolved from anilist
-- [ComicVine API](../../sources/apis/comicvine.md) - Auto-resolved from comicvine
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [MyAnimeList API](../../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Auto-resolved from svelte5
-- [SvelteKit Documentation](../../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+- [AniList GraphQL API](../sources/apis/anilist.md) - Auto-resolved from anilist
+- [ComicVine API](../sources/apis/comicvine.md) - Auto-resolved from comicvine
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+

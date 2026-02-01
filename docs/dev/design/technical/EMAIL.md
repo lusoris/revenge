@@ -24,35 +24,37 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: go-mail GitHub README
-    url: ../../sources/tooling/go-mail-guide.md
+  - name: go-mail GitHub README
+    url: ../sources/tooling/go-mail-guide.md
     note: Auto-resolved from go-mail-docs
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
-- title: technical
+  - title: technical
     path: technical.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: NOTIFICATIONS
+  - title: NOTIFICATIONS
     path: technical/NOTIFICATIONS.md
 ---
 
 # Email System
 
-<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
+
 
 > > SMTP email system with go-mail, TLS/STARTTLS, templates, async delivery
 
@@ -65,6 +67,7 @@ Complete email infrastructure:
 
 ---
 
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -76,9 +79,13 @@ Complete email infrastructure:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -87,6 +94,7 @@ Complete email infrastructure:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -102,6 +110,10 @@ Complete email infrastructure:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -110,6 +122,7 @@ Complete email infrastructure:
 ### Config Keys
 
 <!-- Configuration keys -->
+
 
 ## API Endpoints
 ### POST /api/v1/admin/email/send
@@ -165,6 +178,7 @@ Unsubscribe from emails (public, no auth)
 {}
 ```
 
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -179,14 +193,21 @@ Unsubscribe from emails (public, no auth)
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 - [NOTIFICATIONS](technical/NOTIFICATIONS.md)
 
 ### External Sources
-- [go-mail GitHub README](../../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail-docs
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [go-mail GitHub README](../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail-docs
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+

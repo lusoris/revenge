@@ -23,35 +23,38 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Jellyfin API
-    url: ../../sources/apis/jellyfin.md
+  - name: Jellyfin API
+    url: ../sources/apis/jellyfin.md
     note: Auto-resolved from jellyfin-api
 design_refs:
-- title: features/playback
+  - title: features/playback
     path: features/playback.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Watch Next & Continue Watching System
 
-<!-- DESIGN: features/playback, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
 
-> Content module for
+
+> Content module for 
 
 > Intelligent playback continuation and recommendation system
 
 ---
+
 
 ## Status
 
@@ -64,9 +67,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -92,6 +99,7 @@ internal/content/watch_next_&_continue_watching_system/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -106,6 +114,10 @@ internal/content/watch_next_&_continue_watching_system/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -115,10 +127,12 @@ internal/content/watch_next_&_continue_watching_system/
 
 <!-- Configuration keys -->
 
+
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
+
 
 ## Testing Strategy
 
@@ -134,12 +148,19 @@ internal/content/watch_next_&_continue_watching_system/
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [features/playback](features/playback.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Jellyfin API](../../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api
+- [Jellyfin API](../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api
+

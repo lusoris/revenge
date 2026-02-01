@@ -19,47 +19,49 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Go Installation
+  - name: Go Installation
     url: https://go.dev/doc/install
     note: Official Go installation guide
-- name: air Hot Reload
-    url: ../../sources/go_dev_tools/air/main.md
+  - name: air Hot Reload
+    url: ../sources/go_dev_tools/air/main.md
     note: Go hot reload tool
-- name: Vite
+  - name: Vite
     url: https://vitejs.dev/guide/
     note: Frontend build tool
-- name: PostgreSQL Downloads
+  - name: PostgreSQL Downloads
     url: https://www.postgresql.org/download/
     note: PostgreSQL installation
-- name: Node.js Downloads
+  - name: Node.js Downloads
     url: https://nodejs.org/
     note: Node.js LTS releases
-- name: sqlc
-    url: ../../sources/database/sqlc.md
+  - name: sqlc
+    url: ../sources/database/sqlc.md
     note: SQL code generation
-- name: Conventional Commits
-    url: ../../sources/standards/conventional-commits.md
+  - name: Conventional Commits
+    url: ../sources/standards/conventional-commits.md
     note: Commit message format
 design_refs:
-- title: operations
+  - title: operations
     path: operations/INDEX.md
-- title: TECH_STACK
+  - title: TECH_STACK
     path: technical/TECH_STACK.md
-- title: BEST_PRACTICES
+  - title: BEST_PRACTICES
     path: operations/BEST_PRACTICES.md
-- title: 00_SOURCE_OF_TRUTH
+  - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
 
 # Development Environment Setup
 
-<!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: operations
+
 
 > > Local development environment setup with Go, Node.js, PostgreSQL, and hot reload
 
@@ -69,7 +71,9 @@ Complete guide for setting up Revenge development environment:
 - **Database**: PostgreSQL only (no SQLite support)
 - **Build Flags**: GOEXPERIMENT=greenteagc,jsonv2
 
+
 ---
+
 
 ## Status
 
@@ -82,9 +86,13 @@ Complete guide for setting up Revenge development environment:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -93,6 +101,7 @@ Complete guide for setting up Revenge development environment:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -108,6 +117,10 @@ Complete guide for setting up Revenge development environment:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -116,6 +129,9 @@ Complete guide for setting up Revenge development environment:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -131,18 +147,25 @@ Complete guide for setting up Revenge development environment:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [TECH_STACK](../technical/TECH_STACK.md)
-- [BEST_PRACTICES](BEST_PRACTICES.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide
-- [air Hot Reload](../../sources/go_dev_tools/air/main.md) - Go hot reload tool
+- [air Hot Reload](../sources/go_dev_tools/air/main.md) - Go hot reload tool
 - [Vite](https://vitejs.dev/guide/) - Frontend build tool
 - [PostgreSQL Downloads](https://www.postgresql.org/download/) - PostgreSQL installation
 - [Node.js Downloads](https://nodejs.org/) - Node.js LTS releases
-- [sqlc](../../sources/database/sqlc.md) - SQL code generation
-- [Conventional Commits](../../sources/standards/conventional-commits.md) - Commit message format
+- [sqlc](../sources/database/sqlc.md) - SQL code generation
+- [Conventional Commits](../sources/standards/conventional-commits.md) - Commit message format
+

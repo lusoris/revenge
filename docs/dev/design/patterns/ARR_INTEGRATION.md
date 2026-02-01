@@ -19,38 +19,40 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Radarr API Docs
-    url: ../../sources/apis/radarr-docs.md
+  - name: Radarr API Docs
+    url: ../sources/apis/radarr-docs.md
     note: Radarr webhook events
-- name: Sonarr API Docs
-    url: ../../sources/apis/sonarr-docs.md
+  - name: Sonarr API Docs
+    url: ../sources/apis/sonarr-docs.md
     note: Sonarr webhook events
-- name: Lidarr API Docs
-    url: ../../sources/apis/lidarr-docs.md
+  - name: Lidarr API Docs
+    url: ../sources/apis/lidarr-docs.md
     note: Lidarr webhook events
-- name: Servarr Wiki
-    url: ../../sources/apis/servarr-wiki.md
+  - name: Servarr Wiki
+    url: ../sources/apis/servarr-wiki.md
     note: Shared Arr stack documentation
 design_refs:
-- title: patterns
+  - title: patterns
     path: patterns.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Arr Integration Pattern
 
-<!-- DESIGN: patterns, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: pattern
+
 
 > > Webhook-based integration pattern with Radarr, Sonarr, Lidarr, and Whisparr
 
@@ -63,6 +65,7 @@ Standard pattern for Arr stack integration:
 
 ---
 
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -74,9 +77,13 @@ Standard pattern for Arr stack integration:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -85,6 +92,7 @@ Standard pattern for Arr stack integration:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -100,6 +108,10 @@ Standard pattern for Arr stack integration:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -108,6 +120,9 @@ Standard pattern for Arr stack integration:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -123,15 +138,22 @@ Standard pattern for Arr stack integration:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Radarr API Docs](../../sources/apis/radarr-docs.md) - Radarr webhook events
-- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Sonarr webhook events
-- [Lidarr API Docs](../../sources/apis/lidarr-docs.md) - Lidarr webhook events
-- [Servarr Wiki](../../sources/apis/servarr-wiki.md) - Shared Arr stack documentation
+- [Radarr API Docs](../sources/apis/radarr-docs.md) - Radarr webhook events
+- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Sonarr webhook events
+- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Lidarr webhook events
+- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Shared Arr stack documentation
+

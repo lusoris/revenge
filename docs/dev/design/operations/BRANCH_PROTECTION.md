@@ -19,43 +19,46 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Conventional Commits
-    url: ../../sources/standards/conventional-commits.md
+  - name: Conventional Commits
+    url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
-- name: Git Flow
-    url: ../../sources/standards/gitflow.md
+  - name: Git Flow
+    url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
 design_refs:
-- title: operations
+  - title: operations
     path: operations/INDEX.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Branch Protection Rules
 
-<!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: operations
 
-> > GitHub branch protection rules for main and develop
+
+>   > GitHub branch protection rules for main and develop
 
   Protection rules:
-- **Required Reviews**: 1 approval for PRs to main/develop
-- **Status Checks**: CI must pass (tests, lint, coverage)
-- **No Force Push**: Prevent history rewriting on protected branches
-- **Linear History**: Require merge commits or squash
-- **Up-to-date**: Branch must be current with base before merge
+  - **Required Reviews**: 1 approval for PRs to main/develop
+  - **Status Checks**: CI must pass (tests, lint, coverage)
+  - **No Force Push**: Prevent history rewriting on protected branches
+  - **Linear History**: Require merge commits or squash
+  - **Up-to-date**: Branch must be current with base before merge
 
 ---
+
 
 ## Status
 
@@ -68,9 +71,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -79,6 +86,7 @@ design_refs:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -94,6 +102,10 @@ design_refs:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -102,6 +114,9 @@ design_refs:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -117,13 +132,20 @@ design_refs:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Conventional Commits](../../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
-- [Git Flow](../../sources/standards/gitflow.md) - Auto-resolved from gitflow
+- [Conventional Commits](../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
+- [Git Flow](../sources/standards/gitflow.md) - Auto-resolved from gitflow
+

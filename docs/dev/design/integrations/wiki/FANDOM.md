@@ -21,29 +21,31 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-- title: integrations/wiki
+  - title: integrations/wiki
     path: integrations/wiki.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # FANDOM
 
-<!-- DESIGN: integrations/wiki, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
+
 
 > Integration with FANDOM
 
@@ -51,6 +53,7 @@ design_refs:
 **Authentication**: api_key
 
 ---
+
 
 ## Status
 
@@ -63,9 +66,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -89,6 +96,7 @@ internal/integration/fandom/
 This integration provides:
 <!-- Data provided by integration -->
 
+
 ## Implementation
 
 ### File Structure
@@ -103,6 +111,10 @@ This integration provides:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -111,6 +123,9 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -126,12 +141,19 @@ This integration provides:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [integrations/wiki](integrations/wiki.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+

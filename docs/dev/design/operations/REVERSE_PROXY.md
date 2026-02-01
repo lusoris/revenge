@@ -19,69 +19,72 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
+  - name: Dragonfly Documentation
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-- name: gohlslib (HLS)
-    url: ../../sources/media/gohlslib.md
+  - name: gohlslib (HLS)
+    url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-- name: M3U8 Extended Format
-    url: ../../sources/protocols/m3u8.md
+  - name: M3U8 Extended Format
+    url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
-- name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
+  - name: pgx PostgreSQL Driver
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
+  - name: PostgreSQL Arrays
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
+  - name: PostgreSQL JSON Functions
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: Prometheus Go Client
-    url: ../../sources/observability/prometheus.md
+  - name: Prometheus Go Client
+    url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
-- name: Prometheus Metric Types
-    url: ../../sources/observability/prometheus-metrics.md
+  - name: Prometheus Metric Types
+    url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: rueidis
-    url: ../../sources/tooling/rueidis.md
+  - name: rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-- name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
+  - name: rueidis GitHub README
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
-- title: operations
+  - title: operations
     path: operations/INDEX.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Reverse Proxy Configuration
 
-<!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: operations
 
-> > Reverse proxy setup with Traefik, Caddy, or nginx
+
+>   > Reverse proxy setup with Traefik, Caddy, or nginx
 
   Reverse proxy options:
-- **Traefik**: Recommended for Docker, automatic SSL with Let's Encrypt
-- **Caddy**: Simplest config, automatic HTTPS
-- **nginx**: Most performant, manual SSL setup
-- **Features**: WebSocket support, gzip compression, rate limiting
+  - **Traefik**: Recommended for Docker, automatic SSL with Let's Encrypt
+  - **Caddy**: Simplest config, automatic HTTPS
+  - **nginx**: Most performant, manual SSL setup
+  - **Features**: WebSocket support, gzip compression, rate limiting
 
 ---
+
 
 ## Status
 
@@ -94,9 +97,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -105,6 +112,7 @@ design_refs:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -120,6 +128,10 @@ design_refs:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -128,6 +140,9 @@ design_refs:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -143,22 +158,29 @@ design_refs:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [Prometheus Go Client](../../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+

@@ -10,50 +10,55 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Uber fx
+  - name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: Google Books API
+  - name: Google Books API
     url: ../sources/apis/google-books.md
     note: Auto-resolved from google-books
-- name: ogen OpenAPI Generator
+  - name: ogen OpenAPI Generator
     url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: Open Library API
+  - name: Open Library API
     url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
+  - name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
+  - name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: sqlc
+  - name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
+  - name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/book
+  - title: features/book
     path: features/book.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Book Module
+
+
+
 
 # Book Module
 
@@ -63,11 +68,15 @@ The Book Module provides a comprehensive eBook library with support for multiple
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
+
 
 ## How It Works
 
@@ -80,15 +89,30 @@ The Book Module provides a comprehensive eBook library with support for multiple
 3. **Library**: Organized by folder structure
 4. **Playback**: Stream directly or use external player
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

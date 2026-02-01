@@ -8,24 +8,29 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Netflix Brand Guidelines
+  - name: Netflix Brand Guidelines
     url: https://brand.netflix.com/
     note: Design inspiration
-- name: Apple Human Interface Guidelines
+  - name: Apple Human Interface Guidelines
     url: https://developer.apple.com/design/human-interface-guidelines/
     note: Design inspiration
 design_refs:
-- title: DESIGN_SYSTEM
+  - title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-- title: COLOR_SYSTEM
+  - title: COLOR_SYSTEM
     path: technical/design/COLOR_SYSTEM.md
-- title: PIRATE_MODE
+  - title: PIRATE_MODE
     path: technical/design/PIRATE_MODE.md
 ---
 
 # Brand Identity
+
+
+
 
 > The visual identity behind Revenge
 
@@ -33,25 +38,44 @@ Revenge takes its name and visual identity from Queen Anne's Revenge - Blackbear
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

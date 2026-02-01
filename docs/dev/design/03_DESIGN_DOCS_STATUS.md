@@ -19,51 +19,55 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Authelia Documentation
+  - name: Authelia Documentation
     url: ../sources/security/authelia.md
     note: Auto-resolved from authelia
-- name: Authentik Documentation
+  - name: Authentik Documentation
     url: ../sources/security/authentik.md
     note: Auto-resolved from authentik
-- name: Casbin
+  - name: Casbin
     url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
-- name: Dragonfly Documentation
+  - name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-- name: Keycloak Documentation
+  - name: Keycloak Documentation
     url: ../sources/security/keycloak.md
     note: Auto-resolved from keycloak
-- name: Last.fm API
+  - name: Last.fm API
     url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
+  - name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
+  - name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: Typesense API
+  - name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-- name: Typesense Go Client
+  - name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 ---
 
 # Design Documentation Status
 
+
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: other
+
 
 > > Overview of all design documentation status
 
@@ -74,7 +78,9 @@ Tracks completion across:
 - Integration guides
 - Operations documentation
 
+
 ---
+
 
 ## Status
 
@@ -90,7 +96,10 @@ Tracks completion across:
 
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -99,6 +108,7 @@ Tracks completion across:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -114,6 +124,10 @@ Tracks completion across:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -122,6 +136,9 @@ Tracks completion across:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -136,6 +153,12 @@ Tracks completion across:
 ### Test Coverage
 
 Target: **80% minimum**
+
+
+
+
+
+
 
 ## Related Documentation
 ### Design Documents
@@ -154,3 +177,4 @@ Target: **80% minimum**
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 - [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
 - [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+

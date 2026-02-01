@@ -8,29 +8,34 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: coder/websocket GitHub README
+  - name: coder/websocket GitHub README
     url: ../sources/tooling/websocket-guide.md
     note: Auto-resolved from coder-websocket-docs
-- name: nhooyr.io/websocket
+  - name: nhooyr.io/websocket
     url: https://pkg.go.dev/nhooyr.io/websocket
     note: WebSocket library (coder/websocket)
-- name: Uber fx
+  - name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
-- title: technical
+  - title: technical
     path: technical.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: WEBSOCKETS (Syncplay)
+  - title: WEBSOCKETS (Syncplay)
     path: features/playback/SYNCPLAY.md
 ---
 
 # WebSockets
+
+
+
 
 > Real-time updates for playback, notifications, and live server events
 
@@ -38,25 +43,44 @@ The WebSocket System enables real-time bidirectional communication between the s
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

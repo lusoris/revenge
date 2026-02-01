@@ -9,35 +9,40 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: ErsatzTV Documentation
+  - name: ErsatzTV Documentation
     url: ../sources/livetv/ersatztv-guide.md
     note: Auto-resolved from ersatztv-docs
-- name: gohlslib (HLS)
+  - name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-- name: M3U8 Extended Format
+  - name: M3U8 Extended Format
     url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: XMLTV Format
+  - name: XMLTV Format
     url: ../sources/protocols/xmltv.md
     note: Auto-resolved from xmltv
 design_refs:
-- title: integrations/livetv
+  - title: integrations/livetv
     path: integrations/livetv.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # ErsatzTV
+
+
+
 
 # ErsatzTV
 
@@ -47,25 +52,44 @@ ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 mov
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- How it works -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

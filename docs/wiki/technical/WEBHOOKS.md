@@ -8,39 +8,44 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Radarr API Docs
+  - name: Radarr API Docs
     url: ../sources/apis/radarr-docs.md
     note: Auto-resolved from radarr-docs
-- name: Sonarr API Docs
+  - name: Sonarr API Docs
     url: ../sources/apis/sonarr-docs.md
     note: Auto-resolved from sonarr-docs
-- name: Lidarr API Docs
+  - name: Lidarr API Docs
     url: ../sources/apis/lidarr-docs.md
     note: Auto-resolved from lidarr-docs
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: Uber fx
+  - name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
-- title: technical
+  - title: technical
     path: technical.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: WEBHOOK_PATTERNS
+  - title: WEBHOOK_PATTERNS
     path: patterns/WEBHOOK_PATTERNS.md
-- title: ARR_INTEGRATION
+  - title: ARR_INTEGRATION
     path: patterns/ARR_INTEGRATION.md
-- title: NOTIFICATIONS
+  - title: NOTIFICATIONS
     path: technical/NOTIFICATIONS.md
 ---
 
 # Webhooks
+
+
+
 
 > Real-time event integration with external services
 
@@ -48,25 +53,44 @@ The Webhook System enables bidirectional event-driven integration. Receive webho
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

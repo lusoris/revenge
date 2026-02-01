@@ -8,25 +8,30 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Uber fx
+  - name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: sqlc
+  - name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 design_refs:
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # Example Feature
+
+
+
 
 PLACEHOLDER: User-friendly tagline
 
@@ -34,25 +39,44 @@ PLACEHOLDER: User-friendly overview
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

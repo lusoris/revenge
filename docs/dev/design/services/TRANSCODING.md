@@ -27,38 +27,40 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: go-astiav (FFmpeg)
-    url: ../../sources/media/go-astiav.md
+  - name: go-astiav (FFmpeg)
+    url: ../sources/media/go-astiav.md
     note: FFmpeg Go bindings
-- name: gohlslib
-    url: ../../sources/media/gohlslib.md
+  - name: gohlslib
+    url: ../sources/media/gohlslib.md
     note: HLS streaming library
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Background job processing
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Dependency injection
 design_refs:
-- title: services
+  - title: services
     path: services.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: OFFLOADING
+  - title: OFFLOADING
     path: technical/OFFLOADING.md
-- title: AUDIO_STREAMING
+  - title: AUDIO_STREAMING
     path: technical/AUDIO_STREAMING.md
 ---
 
 # Transcoding Service
 
-<!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: service
+
 
 > > On-demand video/audio transcoding service with hardware acceleration
 
@@ -74,6 +76,7 @@ Transcoding capabilities:
 
 ---
 
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -85,9 +88,13 @@ Transcoding capabilities:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -114,6 +121,7 @@ No external service dependencies.
 
 <!-- Component diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -128,6 +136,10 @@ No external service dependencies.
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -136,6 +148,7 @@ No external service dependencies.
 ### Config Keys
 
 <!-- Configuration keys -->
+
 
 ## API Endpoints
 ### POST /api/v1/transcode/video/:id
@@ -191,6 +204,7 @@ Get cache statistics
 {}
 ```
 
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -205,15 +219,22 @@ Get cache statistics
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [services](services.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [OFFLOADING](../technical/OFFLOADING.md)
-- [AUDIO_STREAMING](../technical/AUDIO_STREAMING.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [OFFLOADING](technical/OFFLOADING.md)
+- [AUDIO_STREAMING](technical/AUDIO_STREAMING.md)
 
 ### External Sources
-- [go-astiav (FFmpeg)](../../sources/media/go-astiav.md) - FFmpeg Go bindings
-- [gohlslib](../../sources/media/gohlslib.md) - HLS streaming library
-- [River Job Queue](../../sources/tooling/river.md) - Background job processing
-- [Uber fx](../../sources/tooling/fx.md) - Dependency injection
+- [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - FFmpeg Go bindings
+- [gohlslib](../sources/media/gohlslib.md) - HLS streaming library
+- [River Job Queue](../sources/tooling/river.md) - Background job processing
+- [Uber fx](../sources/tooling/fx.md) - Dependency injection
+

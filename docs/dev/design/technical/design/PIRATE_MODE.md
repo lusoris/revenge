@@ -19,25 +19,27 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Lucide Icons
+  - name: Lucide Icons
     url: https://lucide.dev/icons/
     note: Base icons to customize
 design_refs:
-- title: DESIGN_SYSTEM
+  - title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-- title: BRAND_IDENTITY
+  - title: BRAND_IDENTITY
     path: technical/design/BRAND_IDENTITY.md
 ---
 
 # Pirate Mode Easter Eggs
 
-<!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
 **Category**: technical
+
 
 > > Achievement-unlocked pirate theming easter eggs
 
@@ -47,7 +49,9 @@ Pirate mode features:
 - **Customizable**: Users pick which elements to enable
 - **Theme**: Queen Anne's Revenge - Blackbeard's legendary ship
 
+
 ---
+
 
 ## Status
 
@@ -60,9 +64,13 @@ Pirate mode features:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -71,6 +79,7 @@ Pirate mode features:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -86,6 +95,10 @@ Pirate mode features:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -94,6 +107,9 @@ Pirate mode features:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -109,6 +125,12 @@ Pirate mode features:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
@@ -116,3 +138,4 @@ Target: **80% minimum**
 
 ### External Sources
 - [Lucide Icons](https://lucide.dev/icons/) - Base icons to customize
+

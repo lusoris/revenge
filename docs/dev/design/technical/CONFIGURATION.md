@@ -19,30 +19,32 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: koanf
-    url: ../../sources/tooling/koanf.md
+  - name: koanf
+    url: ../sources/tooling/koanf.md
     note: Configuration management
-- name: go-playground/validator
-    url: ../../sources/tooling/validator.md
+  - name: go-playground/validator
+    url: ../sources/tooling/validator.md
     note: Config validation
 design_refs:
-- title: technical
+  - title: technical
     path: technical/INDEX.md
-- title: TECH_STACK
+  - title: TECH_STACK
     path: technical/TECH_STACK.md
-- title: 00_SOURCE_OF_TRUTH
+  - title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
 
 # Configuration Reference
 
-<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
+
 
 > > Configuration system using koanf (YAML + environment variables + hot reload)
 
@@ -53,7 +55,9 @@ Revenge configuration management:
 - **Secrets**: Environment variable expansion and file-based secrets
 - **Env Prefix**: All env vars use `REVENGE_` prefix
 
+
 ---
+
 
 ## Status
 
@@ -66,9 +70,13 @@ Revenge configuration management:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -77,6 +85,7 @@ Revenge configuration management:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -92,6 +101,10 @@ Revenge configuration management:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -100,6 +113,9 @@ Revenge configuration management:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -115,12 +131,19 @@ Revenge configuration management:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
-- [TECH_STACK](TECH_STACK.md)
-- [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [00_SOURCE_OF_TRUTH](00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
-- [koanf](../../sources/tooling/koanf.md) - Configuration management
-- [go-playground/validator](../../sources/tooling/validator.md) - Config validation
+- [koanf](../sources/tooling/koanf.md) - Configuration management
+- [go-playground/validator](../sources/tooling/validator.md) - Config validation
+

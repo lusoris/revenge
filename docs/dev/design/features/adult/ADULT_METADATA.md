@@ -23,65 +23,68 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: FFmpeg Documentation
-    url: ../../sources/media/ffmpeg.md
+  - name: FFmpeg Documentation
+    url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-- name: FFmpeg Codecs
-    url: ../../sources/media/ffmpeg-codecs.md
+  - name: FFmpeg Codecs
+    url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-- name: FFmpeg Formats
-    url: ../../sources/media/ffmpeg-formats.md
+  - name: FFmpeg Formats
+    url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-- name: go-astiav (FFmpeg bindings)
-    url: ../../sources/media/go-astiav.md
+  - name: go-astiav (FFmpeg bindings)
+    url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-- name: go-astiav GitHub README
-    url: ../../sources/media/go-astiav-guide.md
+  - name: go-astiav GitHub README
+    url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-- name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
+  - name: pgx PostgreSQL Driver
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
+  - name: PostgreSQL Arrays
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
+  - name: PostgreSQL JSON Functions
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: StashDB GraphQL API
-    url: ../../sources/apis/stashdb-schema.graphql
+  - name: StashDB GraphQL API
+    url: ../sources/apis/stashdb-schema.graphql
     note: Auto-resolved from stashdb
-- name: ThePornDB API
-    url: ../../sources/apis/theporndb.md
+  - name: ThePornDB API
+    url: ../sources/apis/theporndb.md
     note: Auto-resolved from theporndb
 design_refs:
-- title: features/adult
+  - title: features/adult
     path: features/adult.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Revenge - Adult Content Metadata System
 
-<!-- DESIGN: features/adult, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
+
 
 > Content module for Scenes, Performers, Studios
 
 > ⚠️ **DEPRECATED**: This document has been merged into [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md). > See that document for the complete adult content architecture including metadata, privacy,
 
 ---
+
 
 ## Status
 
@@ -94,9 +97,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -122,6 +129,7 @@ internal/content/revenge___adult_content_metadata_system/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -136,6 +144,10 @@ internal/content/revenge___adult_content_metadata_system/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -145,10 +157,12 @@ internal/content/revenge___adult_content_metadata_system/
 
 <!-- Configuration keys -->
 
+
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
+
 
 ## Testing Strategy
 
@@ -164,22 +178,29 @@ internal/content/revenge___adult_content_metadata_system/
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [features/adult](features/adult.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [StashDB GraphQL API](../../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
-- [ThePornDB API](../../sources/apis/theporndb.md) - Auto-resolved from theporndb
+- [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [StashDB GraphQL API](../sources/apis/stashdb-schema.graphql) - Auto-resolved from stashdb
+- [ThePornDB API](../sources/apis/theporndb.md) - Auto-resolved from theporndb
+

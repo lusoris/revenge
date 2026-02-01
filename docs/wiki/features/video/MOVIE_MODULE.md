@@ -10,10 +10,15 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 ---
 
 # Movie Module
+
+
+
 
 # Movie Module
 
@@ -23,11 +28,15 @@ Manage your movie collection with automatic metadata from TMDB, TheTVDB, and oth
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
+
 
 ## How It Works
 
@@ -40,15 +49,30 @@ Manage your movie collection with automatic metadata from TMDB, TheTVDB, and oth
 3. **Library**: Organized by folder structure
 4. **Playback**: Stream directly or use external player
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

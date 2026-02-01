@@ -19,45 +19,47 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Prometheus
+  - name: Prometheus
     url: https://prometheus.io/docs/introduction/overview/
     note: Metrics collection
-- name: Prometheus Metrics Types
-    url: ../../sources/observability/prometheus-metrics.md
+  - name: Prometheus Metrics Types
+    url: ../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
-- name: OpenTelemetry Go
-    url: ../../sources/observability/opentelemetry.md
+  - name: OpenTelemetry Go
+    url: ../sources/observability/opentelemetry.md
     note: Tracing SDK
-- name: slog
-    url: ../../sources/go/stdlib/slog.md
+  - name: slog
+    url: ../sources/go/stdlib/slog.md
     note: Structured logging
-- name: tint
+  - name: tint
     url: https://github.com/lmittmann/tint
     note: Colorized slog handler (dev)
-- name: zap
+  - name: zap
     url: https://github.com/uber-go/zap
     note: High-performance JSON logs (prod)
-- name: Jaeger
-    url: ../../sources/observability/jaeger.md
+  - name: Jaeger
+    url: ../sources/observability/jaeger.md
     note: Distributed tracing backend
 design_refs:
-- title: patterns
+  - title: patterns
     path: patterns/INDEX.md
-- title: TECH_STACK
+  - title: TECH_STACK
     path: technical/TECH_STACK.md
-- title: BEST_PRACTICES
+  - title: BEST_PRACTICES
     path: operations/BEST_PRACTICES.md
 ---
 
 # Observability Pattern
 
-<!-- DESIGN: patterns, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: pattern
+
 
 > > Metrics, tracing, and logging patterns with Prometheus, OpenTelemetry, and structured logging
 
@@ -68,7 +70,9 @@ Three pillars of observability:
 
 All integrated via OpenTelemetry SDK for unified observability.
 
+
 ---
+
 
 ## Status
 
@@ -81,9 +85,13 @@ All integrated via OpenTelemetry SDK for unified observability.
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -92,6 +100,7 @@ All integrated via OpenTelemetry SDK for unified observability.
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -107,6 +116,10 @@ All integrated via OpenTelemetry SDK for unified observability.
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -115,6 +128,9 @@ All integrated via OpenTelemetry SDK for unified observability.
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -130,17 +146,24 @@ All integrated via OpenTelemetry SDK for unified observability.
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns/INDEX.md)
-- [TECH_STACK](../technical/TECH_STACK.md)
-- [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
+- [TECH_STACK](technical/TECH_STACK.md)
+- [BEST_PRACTICES](operations/BEST_PRACTICES.md)
 
 ### External Sources
 - [Prometheus](https://prometheus.io/docs/introduction/overview/) - Metrics collection
-- [Prometheus Metrics Types](../../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
-- [OpenTelemetry Go](../../sources/observability/opentelemetry.md) - Tracing SDK
-- [slog](../../sources/go/stdlib/slog.md) - Structured logging
+- [Prometheus Metrics Types](../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
+- [OpenTelemetry Go](../sources/observability/opentelemetry.md) - Tracing SDK
+- [slog](../sources/go/stdlib/slog.md) - Structured logging
 - [tint](https://github.com/lmittmann/tint) - Colorized slog handler (dev)
 - [zap](https://github.com/uber-go/zap) - High-performance JSON logs (prod)
-- [Jaeger](../../sources/observability/jaeger.md) - Distributed tracing backend
+- [Jaeger](../sources/observability/jaeger.md) - Distributed tracing backend
+

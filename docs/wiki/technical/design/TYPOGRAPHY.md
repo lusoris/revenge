@@ -8,25 +8,30 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Inter
+  - name: Inter
     url: https://fonts.google.com/specimen/Inter
     note: UI body font
-- name: Playfair Display
+  - name: Playfair Display
     url: https://fonts.google.com/specimen/Playfair+Display
     note: Serif accent font
-- name: JetBrains Mono
+  - name: JetBrains Mono
     url: https://fonts.google.com/specimen/JetBrains+Mono
     note: Monospace font
 design_refs:
-- title: DESIGN_SYSTEM
+  - title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-- title: BRAND_IDENTITY
+  - title: BRAND_IDENTITY
     path: technical/design/BRAND_IDENTITY.md
 ---
 
 # Typography
+
+
+
 
 > Inter for clarity, Playfair for elegance
 
@@ -34,25 +39,44 @@ Typography in Revenge uses a modern + serif accent approach. Inter handles all b
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

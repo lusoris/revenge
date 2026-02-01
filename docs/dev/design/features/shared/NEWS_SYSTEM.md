@@ -23,56 +23,59 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Casbin
-    url: ../../sources/security/casbin.md
+  - name: Casbin
+    url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: mmcdole/gofeed
-    url: ../../sources/tooling/gofeed.md
+  - name: mmcdole/gofeed
+    url: ../sources/tooling/gofeed.md
     note: Auto-resolved from gofeed
-- name: gofeed GitHub README
-    url: ../../sources/tooling/gofeed-guide.md
+  - name: gofeed GitHub README
+    url: ../sources/tooling/gofeed-guide.md
     note: Auto-resolved from gofeed-docs
-- name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
+  - name: ogen OpenAPI Generator
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: sqlc
-    url: ../../sources/database/sqlc.md
+  - name: sqlc
+    url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
+  - name: sqlc Configuration
+    url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-- title: features/shared
+  - title: features/shared
     path: features/shared.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # News System
 
-<!-- DESIGN: features/shared, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
 
-> Content module for
+
+> Content module for 
 
 > External news aggregation and internal announcements
 
 ---
+
 
 ## Status
 
@@ -85,9 +88,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -113,6 +120,7 @@ internal/content/news_system/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -127,6 +135,10 @@ internal/content/news_system/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -136,10 +148,12 @@ internal/content/news_system/
 
 <!-- Configuration keys -->
 
+
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
+
 
 ## Testing Strategy
 
@@ -155,19 +169,26 @@ internal/content/news_system/
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](../../sources/security/casbin.md) - Auto-resolved from casbin
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [mmcdole/gofeed](../../sources/tooling/gofeed.md) - Auto-resolved from gofeed
-- [gofeed GitHub README](../../sources/tooling/gofeed-guide.md) - Auto-resolved from gofeed-docs
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Casbin](../sources/security/casbin.md) - Auto-resolved from casbin
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [mmcdole/gofeed](../sources/tooling/gofeed.md) - Auto-resolved from gofeed
+- [gofeed GitHub README](../sources/tooling/gofeed-guide.md) - Auto-resolved from gofeed-docs
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+

@@ -21,32 +21,34 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Google Books API
-    url: ../../sources/apis/google-books.md
+  - name: Google Books API
+    url: ../sources/apis/google-books.md
     note: Auto-resolved from google-books
-- name: Open Library API
-    url: ../../sources/apis/openlibrary.md
+  - name: Open Library API
+    url: ../sources/apis/openlibrary.md
     note: Auto-resolved from openlibrary
 design_refs:
-- title: integrations/metadata/books
+  - title: integrations/metadata/books
     path: integrations/metadata/books.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Goodreads
 
-<!-- DESIGN: integrations/metadata/books, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
+
 
 > Integration with Goodreads
 
@@ -54,6 +56,7 @@ design_refs:
 **Authentication**: api_key
 
 ---
+
 
 ## Status
 
@@ -66,9 +69,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -92,6 +99,7 @@ internal/integration/goodreads/
 This integration provides:
 <!-- Data provided by integration -->
 
+
 ## Implementation
 
 ### File Structure
@@ -106,6 +114,10 @@ This integration provides:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -114,6 +126,9 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -129,13 +144,20 @@ This integration provides:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/books](integrations/metadata/books.md)
-- [01_ARCHITECTURE](../../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Google Books API](../../sources/apis/google-books.md) - Auto-resolved from google-books
-- [Open Library API](../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [Google Books API](../sources/apis/google-books.md) - Auto-resolved from google-books
+- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+

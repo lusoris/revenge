@@ -10,62 +10,67 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: FFmpeg Documentation
+  - name: FFmpeg Documentation
     url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-- name: FFmpeg Codecs
+  - name: FFmpeg Codecs
     url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-- name: FFmpeg Formats
+  - name: FFmpeg Formats
     url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-- name: Uber fx
+  - name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: go-astiav (FFmpeg bindings)
+  - name: go-astiav (FFmpeg bindings)
     url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-- name: go-astiav GitHub README
+  - name: go-astiav GitHub README
     url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-- name: gohlslib (HLS)
+  - name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-- name: M3U8 Extended Format
+  - name: M3U8 Extended Format
     url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
-- name: ogen OpenAPI Generator
+  - name: ogen OpenAPI Generator
     url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: sqlc
+  - name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-- name: sqlc Configuration
+  - name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
-- name: XMLTV Format
+  - name: XMLTV Format
     url: ../sources/protocols/xmltv.md
     note: Auto-resolved from xmltv
-- name: XMLTV Wiki
+  - name: XMLTV Wiki
     url: ../sources/protocols/xmltv-format.md
     note: Auto-resolved from xmltv-wiki
 design_refs:
-- title: features/livetv
+  - title: features/livetv
     path: features/livetv.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Live TV & DVR
+
+
+
 
 # Live TV & DVR
 
@@ -75,11 +80,15 @@ Stream live TV channels through Revenge with support for multiple backends (TVHe
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
+
 
 ## How It Works
 
@@ -92,15 +101,30 @@ Stream live TV channels through Revenge with support for multiple backends (TVHe
 3. **Library**: Organized by folder structure
 4. **Playback**: Stream directly or use external player
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

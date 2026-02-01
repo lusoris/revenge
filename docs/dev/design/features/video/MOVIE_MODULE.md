@@ -23,22 +23,25 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 ---
 
 # Movie Module
 
-<!-- DESIGN: features/video, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
+
 
 > Content module for Movies, Collections
 
 > Movie content management with metadata enrichment
 
 ---
+
 
 ## Status
 
@@ -51,9 +54,13 @@
 | Linting | 🔴 Not Started | - |
 | Unit Testing | 🔴 Not Started | - |
 | Integration Testing | 🔴 Not Started | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -79,6 +86,7 @@ internal/content/movie/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -93,6 +101,10 @@ internal/content/movie/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -102,10 +114,12 @@ internal/content/movie/
 
 <!-- Configuration keys -->
 
+
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
+
 
 ## Testing Strategy
 
@@ -121,9 +135,16 @@ internal/content/movie/
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 <!-- Related design docs -->
 
 ### External Sources
 <!-- External documentation sources -->
+

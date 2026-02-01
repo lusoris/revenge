@@ -19,35 +19,38 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Uber fx
+  - name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: sqlc
+  - name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
 design_refs:
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # Example Feature
 
-<!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
 **Created**: 2026-01-31
 **Status**: 🟡 In Progress
 **Category**: other
 
+
 > PLACEHOLDER: Brief technical summary
 
 ---
+
 
 ## Status
 
@@ -60,9 +63,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: 🟡 In Progress
 
+
+
 ---
+
 
 ## Architecture
 
@@ -71,6 +78,7 @@ design_refs:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -86,6 +94,10 @@ design_refs:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -94,6 +106,9 @@ design_refs:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -109,12 +124,19 @@ design_refs:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
 - [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
 - [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
 - [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
+

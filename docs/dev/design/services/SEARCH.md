@@ -22,38 +22,40 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: Typesense API
-    url: ../../sources/infrastructure/typesense.md
+  - name: Typesense API
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-- name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
+  - name: Typesense Go Client
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-- title: services
+  - title: services
     path: services/INDEX.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Search Service
 
-<!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: service
+
 
 > > Full-text search via Typesense with per-module collections
 
@@ -61,6 +63,7 @@ design_refs:
 **fx Module**: `search.Module`
 
 ---
+
 
 ## Status
 
@@ -73,9 +76,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -102,6 +109,7 @@ No external service dependencies.
 
 <!-- Component diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -116,6 +124,10 @@ No external service dependencies.
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -124,6 +136,9 @@ No external service dependencies.
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -139,15 +154,22 @@ No external service dependencies.
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [services](services/INDEX.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+

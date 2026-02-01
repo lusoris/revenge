@@ -8,19 +8,24 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Lucide Icons
+  - name: Lucide Icons
     url: https://lucide.dev/icons/
     note: Navigation icons
 design_refs:
-- title: DESIGN_SYSTEM
+  - title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-- title: CLIENT_SUPPORT
+  - title: CLIENT_SUPPORT
     path: features/shared/CLIENT_SUPPORT.md
 ---
 
 # Navigation System
+
+
+
 
 > Navigate Revenge on any device
 
@@ -28,25 +33,44 @@ Navigation adapts to your device. Desktop uses a collapsible sidebar rail with m
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

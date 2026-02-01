@@ -8,47 +8,52 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Dragonfly Documentation
+  - name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-- name: go-blurhash
+  - name: go-blurhash
     url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
-- name: Last.fm API
+  - name: Last.fm API
     url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
+  - name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
+  - name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: rueidis
+  - name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-- name: rueidis GitHub README
+  - name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
-- title: architecture
+  - title: architecture
     path: architecture/INDEX.md
-- title: ADULT_CONTENT_SYSTEM
+  - title: ADULT_CONTENT_SYSTEM
     path: ADULT_CONTENT_SYSTEM.md
-- title: ADULT_METADATA
+  - title: ADULT_METADATA
     path: ADULT_METADATA.md
-- title: DATA_RECONCILIATION
+  - title: DATA_RECONCILIATION
     path: DATA_RECONCILIATION.md
 ---
 
 # Revenge - Metadata System
+
+
+
 
 > How Revenge finds and stores information about your media
 
@@ -56,25 +61,44 @@ The metadata system gathers information about your media from multiple sources. 
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 

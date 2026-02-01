@@ -19,50 +19,52 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Prometheus Go Client
-    url: ../../sources/observability/prometheus.md
+  - name: Prometheus Go Client
+    url: ../sources/observability/prometheus.md
     note: Metrics instrumentation
-- name: Prometheus Metric Types
-    url: ../../sources/observability/prometheus-metrics.md
+  - name: Prometheus Metric Types
+    url: ../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
-- name: Jaeger Go Client
-    url: ../../sources/observability/jaeger-go.md
+  - name: Jaeger Go Client
+    url: ../sources/observability/jaeger-go.md
     note: Distributed tracing client
-- name: OpenTelemetry Go
+  - name: OpenTelemetry Go
     url: https://pkg.go.dev/go.opentelemetry.io/otel
     note: Tracing and metrics SDK
-- name: Loki
-    url: ../../sources/observability/loki.md
+  - name: Loki
+    url: ../sources/observability/loki.md
     note: Log aggregation system
-- name: Grafana
-    url: ../../sources/observability/grafana.md
+  - name: Grafana
+    url: ../sources/observability/grafana.md
     note: Visualization and dashboards
-- name: slog-multi
-    url: ../../sources/observability/slog-multi.md
+  - name: slog-multi
+    url: ../sources/observability/slog-multi.md
     note: Multi-handler slog setup
-- name: Go slog
-    url: ../../sources/go/stdlib/slog.md
+  - name: Go slog
+    url: ../sources/go/stdlib/slog.md
     note: Structured logging
 design_refs:
-- title: technical
+  - title: technical
     path: technical.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: OFFLOADING
+  - title: OFFLOADING
     path: technical/OFFLOADING.md
 ---
 
 # Observability - Metrics, Tracing, and Logging
 
-<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
+
 
 > > Complete observability stack with metrics, distributed tracing, and structured logging
 
@@ -75,6 +77,7 @@ Three pillars of observability:
 
 ---
 
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -86,9 +89,13 @@ Three pillars of observability:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -97,6 +104,7 @@ Three pillars of observability:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -112,6 +120,10 @@ Three pillars of observability:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -120,6 +132,9 @@ Three pillars of observability:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -135,19 +150,26 @@ Three pillars of observability:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [OFFLOADING](OFFLOADING.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [OFFLOADING](technical/OFFLOADING.md)
 
 ### External Sources
-- [Prometheus Go Client](../../sources/observability/prometheus.md) - Metrics instrumentation
-- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
-- [Jaeger Go Client](../../sources/observability/jaeger-go.md) - Distributed tracing client
+- [Prometheus Go Client](../sources/observability/prometheus.md) - Metrics instrumentation
+- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
+- [Jaeger Go Client](../sources/observability/jaeger-go.md) - Distributed tracing client
 - [OpenTelemetry Go](https://pkg.go.dev/go.opentelemetry.io/otel) - Tracing and metrics SDK
-- [Loki](../../sources/observability/loki.md) - Log aggregation system
-- [Grafana](../../sources/observability/grafana.md) - Visualization and dashboards
-- [slog-multi](../../sources/observability/slog-multi.md) - Multi-handler slog setup
-- [Go slog](../../sources/go/stdlib/slog.md) - Structured logging
+- [Loki](../sources/observability/loki.md) - Log aggregation system
+- [Grafana](../sources/observability/grafana.md) - Visualization and dashboards
+- [slog-multi](../sources/observability/slog-multi.md) - Multi-handler slog setup
+- [Go slog](../sources/go/stdlib/slog.md) - Structured logging
+

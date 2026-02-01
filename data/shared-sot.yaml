@@ -3,7 +3,7 @@ metadata:
   go_version: 1.25.6
   nodejs_version: 20.x (LTS)
   python_version: '3.12'
-  postgresql_version: 18.1 (ONLY - no SQLite support)
+  postgresql_version: '18.1'
   build_command: GOEXPERIMENT=greenteagc,jsonv2 go build ./...
 content_modules:
 - name: Movie
@@ -193,11 +193,11 @@ infrastructure:
 go_dependencies:
   core:
   - package: go.uber.org/fx
-    version: v1.23.0
+    version: v1.24.0
     purpose: Dependency injection
     notes: Lifecycle hooks, graceful shutdown
   - package: github.com/jackc/pgx/v5
-    version: v5.7.5
+    version: v5.8.0
     purpose: PostgreSQL driver
     notes: Self-healing pool via pgxpool
   - package: github.com/riverqueue/river
@@ -208,8 +208,8 @@ go_dependencies:
     version: v1.0.49
     purpose: Redis/Dragonfly client
     notes: Pipelining, client-side cache
-  - package: github.com/maypok86/otter/v2
-    version: v2.x
+  - package: github.com/maypok86/otter
+    version: v1.2.4
     purpose: In-memory cache
     notes: W-TinyLFU, faster than Ristretto
   - package: github.com/knadh/koanf/v2
@@ -263,7 +263,7 @@ go_dependencies:
     purpose: Structured logging (dev)
     notes: Colorized slog handler
   - package: go.uber.org/zap
-    version: v1.28.0
+    version: v1.27.1
     purpose: Structured logging (prod)
     notes: High-performance JSON logs
   - package: go.opentelemetry.io/otel

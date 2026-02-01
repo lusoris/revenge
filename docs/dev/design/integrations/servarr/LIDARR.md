@@ -21,56 +21,58 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: Last.fm API
-    url: ../../sources/apis/lastfm.md
+  - name: Last.fm API
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-- name: Lidarr API Docs
-    url: ../../sources/apis/lidarr-docs.md
+  - name: Lidarr API Docs
+    url: ../sources/apis/lidarr-docs.md
     note: Auto-resolved from lidarr-docs
-- name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
+  - name: pgx PostgreSQL Driver
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
+  - name: PostgreSQL Arrays
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
+  - name: PostgreSQL JSON Functions
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: Servarr Wiki
-    url: ../../sources/apis/servarr-wiki.md
+  - name: Servarr Wiki
+    url: ../sources/apis/servarr-wiki.md
     note: Auto-resolved from servarr-wiki
-- name: Typesense API
-    url: ../../sources/infrastructure/typesense.md
+  - name: Typesense API
+    url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-- name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
+  - name: Typesense Go Client
+    url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-- title: integrations/servarr
+  - title: integrations/servarr
     path: integrations/servarr.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Lidarr
 
-<!-- DESIGN: integrations/servarr, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
+
 
 > Integration with Lidarr
 
@@ -78,6 +80,7 @@ design_refs:
 **Authentication**: api_key
 
 ---
+
 
 ## Status
 
@@ -90,9 +93,13 @@ design_refs:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -116,6 +123,7 @@ internal/integration/lidarr/
 This integration provides:
 <!-- Data provided by integration -->
 
+
 ## Implementation
 
 ### File Structure
@@ -130,6 +138,10 @@ This integration provides:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -138,6 +150,9 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -153,21 +168,28 @@ This integration provides:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [integrations/servarr](integrations/servarr.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [Lidarr API Docs](../../sources/apis/lidarr-docs.md) - Auto-resolved from lidarr-docs
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [Servarr Wiki](../../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
-- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Auto-resolved from lidarr-docs
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Auto-resolved from servarr-wiki
+- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+

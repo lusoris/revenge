@@ -19,53 +19,55 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
+  - name: Dragonfly Documentation
+    url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-- name: go-blurhash
-    url: ../../sources/media/go-blurhash.md
+  - name: go-blurhash
+    url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
-- name: Last.fm API
-    url: ../../sources/apis/lastfm.md
+  - name: Last.fm API
+    url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-- name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
+  - name: pgx PostgreSQL Driver
+    url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
+  - name: PostgreSQL Arrays
+    url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
+  - name: PostgreSQL JSON Functions
+    url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
-    url: ../../sources/tooling/river.md
+  - name: River Job Queue
+    url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: rueidis
-    url: ../../sources/tooling/rueidis.md
+  - name: rueidis
+    url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-- name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
+  - name: rueidis GitHub README
+    url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
-- title: architecture
+  - title: architecture
     path: architecture/INDEX.md
-- title: ADULT_CONTENT_SYSTEM
+  - title: ADULT_CONTENT_SYSTEM
     path: ADULT_CONTENT_SYSTEM.md
-- title: ADULT_METADATA
+  - title: ADULT_METADATA
     path: ADULT_METADATA.md
-- title: DATA_RECONCILIATION
+  - title: DATA_RECONCILIATION
     path: DATA_RECONCILIATION.md
 ---
 
 # Revenge - Metadata System
 
-<!-- DESIGN: architecture, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: architecture
+
 
 > > Multi-source metadata system with caching and priority chain
 
@@ -76,7 +78,9 @@ Metadata handling:
 - **Enrichment**: Background jobs for additional metadata, thumbnails, blurhash
 - **Matching**: Fingerprinting for audio, hash matching for media
 
+
 ---
+
 
 ## Status
 
@@ -89,9 +93,13 @@ Metadata handling:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -100,6 +108,7 @@ Metadata handling:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -115,6 +124,10 @@ Metadata handling:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -123,6 +136,9 @@ Metadata handling:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -138,6 +154,12 @@ Metadata handling:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [architecture](architecture/INDEX.md)
@@ -146,12 +168,13 @@ Target: **80% minimum**
 - [DATA_RECONCILIATION](DATA_RECONCILIATION.md)
 
 ### External Sources
-- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
-- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+

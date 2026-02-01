@@ -25,35 +25,37 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: gohlslib (HLS)
-    url: ../../sources/media/gohlslib.md
+  - name: gohlslib (HLS)
+    url: ../sources/media/gohlslib.md
     note: HLS server implementation
-- name: go-astiav (FFmpeg)
-    url: ../../sources/media/go-astiav.md
+  - name: go-astiav (FFmpeg)
+    url: ../sources/media/go-astiav.md
     note: Audio transcoding
-- name: Dragonfly
-    url: ../../sources/infrastructure/dragonfly.md
+  - name: Dragonfly
+    url: ../sources/infrastructure/dragonfly.md
     note: Progress tracking cache
 design_refs:
-- title: technical
+  - title: technical
     path: technical.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: 02_DESIGN_PRINCIPLES
+  - title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-- title: 03_METADATA_SYSTEM
+  - title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Audio Streaming & Progress Tracking
 
-<!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
+
 
 > > HLS audio streaming with adaptive bitrate and progress tracking
 
@@ -66,6 +68,7 @@ Audio streaming architecture:
 
 ---
 
+
 ## Status
 
 | Dimension | Status | Notes |
@@ -77,9 +80,13 @@ Audio streaming architecture:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -88,6 +95,7 @@ Audio streaming architecture:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -103,6 +111,10 @@ Audio streaming architecture:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -111,6 +123,7 @@ Audio streaming architecture:
 ### Config Keys
 
 <!-- Configuration keys -->
+
 
 ## API Endpoints
 ### GET /api/v1/stream/:track_id/playlist.m3u8
@@ -179,6 +192,7 @@ Submit scrobble
 {}
 ```
 
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -193,14 +207,21 @@ Submit scrobble
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
-- [01_ARCHITECTURE](../architecture/01_ARCHITECTURE.md)
-- [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
-- [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
+- [02_DESIGN_PRINCIPLES](architecture/02_DESIGN_PRINCIPLES.md)
+- [03_METADATA_SYSTEM](architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [gohlslib (HLS)](../../sources/media/gohlslib.md) - HLS server implementation
-- [go-astiav (FFmpeg)](../../sources/media/go-astiav.md) - Audio transcoding
-- [Dragonfly](../../sources/infrastructure/dragonfly.md) - Progress tracking cache
+- [gohlslib (HLS)](../sources/media/gohlslib.md) - HLS server implementation
+- [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - Audio transcoding
+- [Dragonfly](../sources/infrastructure/dragonfly.md) - Progress tracking cache
+

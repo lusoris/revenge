@@ -30,30 +30,32 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Uber fx
-    url: ../../sources/tooling/fx.md
+  - name: Uber fx
+    url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-- name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
+  - name: ogen OpenAPI Generator
+    url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
 design_refs:
-- title: features/shared
+  - title: features/shared
     path: features/shared/INDEX.md
-- title: 01_ARCHITECTURE
+  - title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-- title: LIBRARY_TYPES
+  - title: LIBRARY_TYPES
     path: features/shared/LIBRARY_TYPES.md
 ---
 
 # Collections & Playlists
 
-<!-- DESIGN: features/shared, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
+
 
 > Content module for Movies, TV Shows, Music, All media types
 
@@ -66,7 +68,9 @@ Collections allow users to group media items together:
 - **User-Specific**: Each user can create their own collections
 - **Shared Collections**: Optional sharing between users
 
+
 ---
+
 
 ## Status
 
@@ -79,9 +83,13 @@ Collections allow users to group media items together:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -107,6 +115,7 @@ internal/content/collections/
 
 <!-- Component interaction diagram -->
 
+
 ## Implementation
 
 ### File Structure
@@ -121,6 +130,10 @@ internal/content/collections/
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -129,6 +142,7 @@ internal/content/collections/
 ### Config Keys
 
 <!-- Configuration keys -->
+
 
 ## API Endpoints
 
@@ -269,6 +283,7 @@ Remove item from collection
 
 ---
 
+
 ## Testing Strategy
 
 ### Unit Tests
@@ -283,12 +298,19 @@ Remove item from collection
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [features/shared](features/shared/INDEX.md)
-- [01_ARCHITECTURE](../../architecture/01_ARCHITECTURE.md)
+- [01_ARCHITECTURE](architecture/01_ARCHITECTURE.md)
 - [LIBRARY_TYPES](features/shared/LIBRARY_TYPES.md)
 
 ### External Sources
-- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+

@@ -19,28 +19,30 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
+
+
 ---
 sources:
-- name: Svelte Transitions
+  - name: Svelte Transitions
     url: https://svelte.dev/docs/svelte-transition
     note: Built-in transitions
-- name: Motion One
+  - name: Motion One
     url: https://motion.dev/
     note: Animation library option
 design_refs:
-- title: DESIGN_SYSTEM
+  - title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-- title: ACCESSIBILITY
+  - title: ACCESSIBILITY
     path: technical/design/ACCESSIBILITY.md
 ---
 
 # Motion & Animation
 
-<!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
 **Created**: 2026-02-01
 **Status**: ✅ Complete
 **Category**: technical
+
 
 > > Expressive micro-interactions and delightful details
 
@@ -51,7 +53,9 @@ Motion system features:
 - **Loading**: Skeleton + shimmer + blurhash patterns
 - **Accessibility**: Respects prefers-reduced-motion
 
+
 ---
+
 
 ## Status
 
@@ -64,9 +68,13 @@ Motion system features:
 | Linting | 🔴 | - |
 | Unit Testing | 🔴 | - |
 | Integration Testing | 🔴 | - |
+
 **Overall**: ✅ Complete
 
+
+
 ---
+
 
 ## Architecture
 
@@ -75,6 +83,7 @@ Motion system features:
 ### Components
 
 <!-- Component description -->
+
 
 ## Implementation
 
@@ -90,6 +99,10 @@ Motion system features:
 
 <!-- Dependency list -->
 
+
+
+
+
 ## Configuration
 ### Environment Variables
 
@@ -98,6 +111,9 @@ Motion system features:
 ### Config Keys
 
 <!-- Configuration keys -->
+
+
+
 
 ## Testing Strategy
 
@@ -113,6 +129,12 @@ Motion system features:
 
 Target: **80% minimum**
 
+
+
+
+
+
+
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
@@ -121,3 +143,4 @@ Target: **80% minimum**
 ### External Sources
 - [Svelte Transitions](https://svelte.dev/docs/svelte-transition) - Built-in transitions
 - [Motion One](https://motion.dev/) - Animation library option
+

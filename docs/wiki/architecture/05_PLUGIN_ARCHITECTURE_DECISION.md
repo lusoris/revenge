@@ -8,47 +8,52 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
+
+
 ---
 sources:
-- name: Dragonfly Documentation
+  - name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-- name: pgx PostgreSQL Driver
+  - name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-- name: PostgreSQL Arrays
+  - name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-- name: PostgreSQL JSON Functions
+  - name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-- name: River Job Queue
+  - name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-- name: rueidis
+  - name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-- name: rueidis GitHub README
+  - name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
-- name: Typesense API
+  - name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-- name: Typesense Go Client
+  - name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-- title: architecture
+  - title: architecture
     path: architecture/INDEX.md
-- title: ADULT_CONTENT_SYSTEM
+  - title: ADULT_CONTENT_SYSTEM
     path: ADULT_CONTENT_SYSTEM.md
-- title: ADULT_METADATA
+  - title: ADULT_METADATA
     path: ADULT_METADATA.md
-- title: DATA_RECONCILIATION
+  - title: DATA_RECONCILIATION
     path: DATA_RECONCILIATION.md
 ---
 
 # Plugin Architecture Decision
+
+
+
 
 > Why Revenge uses integrations instead of plugins
 
@@ -56,25 +61,44 @@ Revenge deliberately chose not to implement a plugin system. Instead, common int
 
 ---
 
+
+
+
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
+
 ## How It Works
 
 <!-- User-friendly explanation -->
 
+
+
+
 ## Features
 <!-- Feature list placeholder -->
+
+
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
+
+
+
+
+
+
+
+
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
+
+
 
 ---
 
