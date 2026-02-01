@@ -77,7 +77,8 @@
       "Bash(go mod tidy:*)",
       "Bash(go list:*)",
       "Bash(GOEXPERIMENT=greenteagc,jsonv2 go build:*)",
-      "Bash(./bin/revenge version:*)"
+      "Bash(./bin/revenge version:*)",
+      "Bash(git mv:*)"
     ]
   }
 }
