@@ -84,18 +84,18 @@ func NewPool(ctx context.Context, cfg *config.Config, logger *slog.Logger) (*pgx
 func Stats(pool *pgxpool.Pool) map[string]interface{} {
 	stat := pool.Stat()
 	return map[string]interface{}{
-		"acquire_count":            stat.AcquireCount(),
-		"acquire_duration_ms":      stat.AcquireDuration().Milliseconds(),
-		"acquired_conns":           stat.AcquiredConns(),
-		"canceled_acquire_count":   stat.CanceledAcquireCount(),
-		"constructing_conns":       stat.ConstructingConns(),
-		"empty_acquire_count":      stat.EmptyAcquireCount(),
-		"idle_conns":               stat.IdleConns(),
-		"max_conns":                stat.MaxConns(),
-		"total_conns":              stat.TotalConns(),
-		"new_conns_count":          stat.NewConnsCount(),
+		"acquire_count":              stat.AcquireCount(),
+		"acquire_duration_ms":        stat.AcquireDuration().Milliseconds(),
+		"acquired_conns":             stat.AcquiredConns(),
+		"canceled_acquire_count":     stat.CanceledAcquireCount(),
+		"constructing_conns":         stat.ConstructingConns(),
+		"empty_acquire_count":        stat.EmptyAcquireCount(),
+		"idle_conns":                 stat.IdleConns(),
+		"max_conns":                  stat.MaxConns(),
+		"total_conns":                stat.TotalConns(),
+		"new_conns_count":            stat.NewConnsCount(),
 		"max_lifetime_destroy_count": stat.MaxLifetimeDestroyCount(),
-		"max_idle_destroy_count":   stat.MaxIdleDestroyCount(),
+		"max_idle_destroy_count":     stat.MaxIdleDestroyCount(),
 	}
 }
 

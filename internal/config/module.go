@@ -52,8 +52,8 @@ func Default() *Config {
 		},
 		Jobs: JobsConfig{
 			MaxWorkers:           100,
-			FetchCooldown:        200000000,   // 200ms
-			FetchPollInterval:    2000000000,  // 2s
+			FetchCooldown:        200000000,     // 200ms
+			FetchPollInterval:    2000000000,    // 2s
 			RescueStuckJobsAfter: 1800000000000, // 30m
 		},
 		Logging: LoggingConfig{
@@ -70,7 +70,7 @@ func Default() *Config {
 			Enabled:       false,
 			EncryptionKey: "",
 			Privacy: LegacyPrivacyConfig{
-				RequirePIN:      true,
+				RequirePIN:     true,
 				AuditAllAccess: true,
 			},
 		},
