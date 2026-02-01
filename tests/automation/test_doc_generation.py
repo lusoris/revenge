@@ -32,18 +32,16 @@ class TestBatchRegenerateScript:
 
     def test_script_runs_without_arguments(self):
         """Script must run successfully without arguments."""
-        # This is a smoke test - just verify it starts and doesn't crash immediately
-        # We don't wait for full execution as that takes too long
+        # Full regeneration of 158+ YAML files - need adequate timeout
         result = subprocess.run(
             ["python", "scripts/automation/batch_regenerate.py"],
             capture_output=True,
             text=True,
-            timeout=5,
+            timeout=120,
             check=False,
         )
-        # Should start successfully (exit 0 if no errors, or timeout is fine)
-        # Main thing is it shouldn't crash with argument errors
-        assert "Error" not in result.stderr or result.returncode in [0, 1]
+        # Should complete successfully
+        assert result.returncode == 0, f"Script failed: {result.stderr}"
 
 
 class TestDocPipelineIntegration:
