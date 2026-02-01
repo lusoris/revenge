@@ -95,7 +95,7 @@ class ASCIIToMermaid:
                         for content_line in content_lines:
                             # Extract text between │ at column range
                             if len(content_line) > start_col:
-                                segment = content_line[start_col:end_col + 1]
+                                segment = content_line[start_col : end_col + 1]
                                 # Find text between │ characters
                                 parts = segment.split("│")
                                 for part in parts:
