@@ -7,28 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: Last.fm API
-    url: ../../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: MusicBrainz API
-    url: ../../../../sources/apis/musicbrainz.md
-    note: Auto-resolved from musicbrainz
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # MusicBrainz
@@ -78,8 +62,15 @@ MusicBrainz is the primary source for music metadata. Open database with artist,
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [go-blurhash](../../../../sources/media/go-blurhash.md)
+- [Last.fm API](../../../../sources/apis/lastfm.md)
+- [MusicBrainz API](../../../../sources/apis/musicbrainz.md)
 
 
 

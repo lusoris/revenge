@@ -7,42 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Authelia Documentation
-    url: ../../sources/security/authelia.md
-    note: Auto-resolved from authelia
-  - name: Authentik Documentation
-    url: ../../sources/security/authentik.md
-    note: Auto-resolved from authentik
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: Keycloak Documentation
-    url: ../../sources/security/keycloak.md
-    note: Auto-resolved from keycloak
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
 ---
 
 # OIDC Service
@@ -92,8 +62,19 @@ The OIDC service enables Single Sign-On with external identity providers. Connec
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Authelia Documentation](../../sources/security/authelia.md)
+- [Authentik Documentation](../../sources/security/authentik.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [Keycloak Documentation](../../sources/security/keycloak.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

@@ -6,42 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Go Installation
-    url: https://go.dev/doc/install
-    note: Official Go installation guide
-  - name: air Hot Reload
-    url: ../../sources/go_dev_tools/air/main.md
-    note: Go hot reload tool
-  - name: Vite
-    url: https://vitejs.dev/guide/
-    note: Frontend build tool
-  - name: PostgreSQL Downloads
-    url: https://www.postgresql.org/download/
-    note: PostgreSQL installation
-  - name: Node.js Downloads
-    url: https://nodejs.org/
-    note: Node.js LTS releases
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: SQL code generation
-  - name: Conventional Commits
-    url: ../../sources/standards/conventional-commits.md
-    note: Commit message format
-design_refs:
-  - title: operations
-    path: INDEX.md
-  - title: TECH_STACK
-    path: ../technical/TECH_STACK.md
-  - title: BEST_PRACTICES
-    path: ../operations/BEST_PRACTICES.md
-  - title: 00_SOURCE_OF_TRUTH
-    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Development Environment Setup
@@ -91,8 +61,19 @@ This guide walks you through setting up Revenge for local development. You will 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Go Installation](https://go.dev/doc/install)
+- [air Hot Reload](../../sources/go_dev_tools/air/main.md)
+- [Vite](https://vitejs.dev/guide/)
+- [PostgreSQL Downloads](https://www.postgresql.org/download/)
+- [Node.js Downloads](https://nodejs.org/)
+- [sqlc](../../sources/database/sqlc.md)
+- [Conventional Commits](../../sources/standards/conventional-commits.md)
 
 
 

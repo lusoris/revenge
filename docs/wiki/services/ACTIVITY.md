@@ -7,33 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Activity Service
@@ -83,8 +62,16 @@ The Activity service logs important events for security and debugging. Track log
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Uber fx](../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
 
 
 

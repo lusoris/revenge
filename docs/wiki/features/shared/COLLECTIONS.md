@@ -8,25 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: ogen OpenAPI Generator
-    url: ../../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-design_refs:
-  - title: features/shared
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: LIBRARY_TYPES
-    path: ../../features/shared/LIBRARY_TYPES.md
 ---
 
 # Collections & Playlists
@@ -85,8 +72,14 @@ The Collections system lets you group any media into custom collections. Create 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Uber fx](../../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
 
 
 

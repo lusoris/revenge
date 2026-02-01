@@ -7,31 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: ThePornDB API
-    url: ../../../../sources/apis/theporndb.md
-    note: Auto-resolved from theporndb
-  - name: Typesense API
-    url: ../../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # ThePornDB
@@ -81,8 +62,16 @@ ThePornDB provides adult metadata as an alternative to StashDB. Scene matching b
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [River Job Queue](../../../../sources/tooling/river.md)
+- [ThePornDB API](../../../../sources/apis/theporndb.md)
+- [Typesense API](../../../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../../../sources/infrastructure/typesense-go.md)
 
 
 

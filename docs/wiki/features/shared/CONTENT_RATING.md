@@ -8,40 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Casbin
-    url: ../../../sources/security/casbin.md
-    note: Auto-resolved from casbin
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: rueidis
-    url: ../../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Content Rating System
@@ -98,8 +70,19 @@ Unified content rating system covering movies, TV shows, music, and games. Suppo
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Casbin](../../../sources/security/casbin.md)
+- [Uber fx](../../../sources/tooling/fx.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [rueidis](../../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
+- [sqlc](../../../sources/database/sqlc.md)
+- [sqlc Configuration](../../../sources/database/sqlc-config.md)
 
 
 

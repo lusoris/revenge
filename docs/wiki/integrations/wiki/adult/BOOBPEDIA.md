@@ -7,25 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Dragonfly Documentation
-    url: ../../../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Boobpedia
@@ -75,8 +62,14 @@ Boobpedia provides detailed performer profiles for the adult content system. Car
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Dragonfly Documentation](../../../../sources/infrastructure/dragonfly.md)
+- [River Job Queue](../../../../sources/tooling/river.md)
 
 
 

@@ -6,7 +6,7 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
 
 
 
@@ -58,7 +58,7 @@ This document tracks unresolved design questions and gaps that need team discuss
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
 
 

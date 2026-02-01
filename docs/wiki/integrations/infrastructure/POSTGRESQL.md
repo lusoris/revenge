@@ -7,55 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Dragonfly Documentation
-    url: ../../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: Prometheus Go Client
-    url: ../../../sources/observability/prometheus.md
-    note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
-    url: ../../../sources/observability/prometheus-metrics.md
-    note: Auto-resolved from prometheus-metrics
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: River Documentation
-    url: ../../../sources/tooling/river-guide.md
-    note: Auto-resolved from river-docs
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: Typesense API
-    url: ../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # PostgreSQL
@@ -105,8 +62,24 @@ PostgreSQL is the only supported database for Revenge (no SQLite). Stores all me
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
+- [Prometheus Go Client](../../../sources/observability/prometheus.md)
+- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [River Documentation](../../../sources/tooling/river-guide.md)
+- [sqlc](../../../sources/database/sqlc.md)
+- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Typesense API](../../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
 
 
 

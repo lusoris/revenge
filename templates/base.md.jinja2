@@ -15,6 +15,7 @@
 #}
 ---
 {%- block frontmatter %}
+{%- if claude %}
 {%- if sources is defined and sources %}
 sources:
 {%- for source in sources %}
@@ -31,6 +32,7 @@ design_refs:
   - title: {{ ref.title }}
     path: {{ ref.path }}
 {%- endfor %}
+{%- endif %}
 {%- endif %}
 {%- endblock %}
 ---
@@ -265,7 +267,7 @@ Target: **80% minimum**
 <!-- External documentation sources -->
 {%- endif %}
 {%- elif wiki %}
-### See Also
+### Related Pages
 
 {%- if related_wiki_pages is defined and related_wiki_pages %}
 {%- for page in related_wiki_pages %}
@@ -273,6 +275,17 @@ Target: **80% minimum**
 {%- endfor %}
 {%- else %}
 <!-- Related wiki pages -->
+{%- endif %}
+
+{%- if sources is defined and sources %}
+
+### Learn More
+
+Official documentation and guides:
+
+{%- for source in sources %}
+- [{{ source.name }}]({{ source.url|to_local_source }})
+{%- endfor %}
 {%- endif %}
 {%- endif %}
 {%- endblock %}

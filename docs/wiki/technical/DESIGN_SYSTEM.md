@@ -6,43 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: shadcn-svelte
-    url: ../../sources/frontend/shadcn-svelte.md
-    note: Component library
-  - name: Bits UI
-    url: ../../sources/frontend/bits-ui.md
-    note: Headless UI primitives
-  - name: Tailwind CSS 4
-    url: ../../sources/frontend/tailwindcss.md
-    note: Utility-first CSS
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Icon library (standard mode)
-  - name: Vidstack Player
-    url: https://www.vidstack.io/docs/player
-    note: Video player components
-  - name: WCAG 2.1 Guidelines
-    url: https://www.w3.org/WAI/WCAG21/quickref/
-    note: Accessibility standards (targeting AAA)
-  - name: Playfair Display
-    url: https://fonts.google.com/specimen/Playfair+Display
-    note: Serif accent font
-  - name: Inter
-    url: https://fonts.google.com/specimen/Inter
-    note: UI body font
-design_refs:
-  - title: FRONTEND
-    path: ../technical/FRONTEND.md
-  - title: 04_PLAYER_ARCHITECTURE
-    path: ../architecture/04_PLAYER_ARCHITECTURE.md
-  - title: USER_EXPERIENCE_FEATURES
-    path: ../features/shared/USER_EXPERIENCE_FEATURES.md
 ---
 
 # Design System
@@ -90,8 +59,20 @@ Complete design system themed around Queen Anne's Revenge - Blackbeard's legenda
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md)
+- [Bits UI](../../sources/frontend/bits-ui.md)
+- [Tailwind CSS 4](../../sources/frontend/tailwindcss.md)
+- [Lucide Icons](https://lucide.dev/icons/)
+- [Vidstack Player](https://www.vidstack.io/docs/player)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Playfair Display](https://fonts.google.com/specimen/Playfair+Display)
+- [Inter](https://fonts.google.com/specimen/Inter)
 
 
 

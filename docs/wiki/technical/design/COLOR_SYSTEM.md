@@ -6,23 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Tailwind CSS Colors
-    url: https://tailwindcss.com/docs/customizing-colors
-    note: Color system foundation
-  - name: Radix Colors
-    url: https://www.radix-ui.com/colors
-    note: Accessible color scales
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
-    path: ../../technical/design/BRAND_IDENTITY.md
 ---
 
 # Color System
@@ -70,8 +59,14 @@ The Revenge color system aligns with the Arr ecosystem you already know. Movies 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Tailwind CSS Colors](https://tailwindcss.com/docs/customizing-colors)
+- [Radix Colors](https://www.radix-ui.com/colors)
 
 
 

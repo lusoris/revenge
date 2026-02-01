@@ -8,49 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: FFmpeg Documentation
-    url: ../../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: M3U8 Extended Format
-    url: ../../../sources/protocols/m3u8.md
-    note: Auto-resolved from m3u8
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Svelte 5 Runes
-    url: ../../../sources/frontend/svelte-runes.md
-    note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
-    url: ../../../sources/frontend/svelte5.md
-    note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
-    url: ../../../sources/frontend/sveltekit.md
-    note: Auto-resolved from sveltekit
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Revenge - Media Enhancement Features
@@ -107,8 +70,22 @@ Enhanced playback features that make watching more enjoyable. Includes trailer p
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
+- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
 
 
 

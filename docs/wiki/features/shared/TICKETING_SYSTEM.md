@@ -8,61 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: ogen OpenAPI Generator
-    url: ../../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: rueidis
-    url: ../../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-  - name: shadcn-svelte
-    url: ../../../sources/frontend/shadcn-svelte.md
-    note: Auto-resolved from shadcn-svelte
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: Svelte 5 Runes
-    url: ../../../sources/frontend/svelte-runes.md
-    note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
-    url: ../../../sources/frontend/svelte5.md
-    note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
-    url: ../../../sources/frontend/sveltekit.md
-    note: Auto-resolved from sveltekit
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Ticketing System
@@ -119,8 +70,26 @@ Built-in support system for your media server. Users can submit bug reports, req
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Uber fx](../../../sources/tooling/fx.md)
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [rueidis](../../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
+- [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md)
+- [sqlc](../../../sources/database/sqlc.md)
+- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Svelte 5 Runes](../../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../../sources/frontend/sveltekit.md)
 
 
 

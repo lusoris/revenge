@@ -7,37 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: XMLTV Format
-    url: http://wiki.xmltv.org/index.php/XMLTVFormat
-    note: EPG data format standard
-  - name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
-    note: Full-text search for programs
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Scheduled EPG refresh jobs
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Dependency injection
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: LIVE_TV_DVR
-    path: ../features/livetv/LIVE_TV_DVR.md
-  - title: TVHEADEND
-    path: ../integrations/livetv/TVHEADEND.md
-  - title: NEXTPVR
-    path: ../integrations/livetv/NEXTPVR.md
-  - title: ERSATZTV
-    path: ../integrations/livetv/ERSATZTV.md
 ---
 
 # EPG Service
@@ -87,8 +62,16 @@ The Electronic Program Guide (EPG) Service provides comprehensive TV program sch
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [XMLTV Format](http://wiki.xmltv.org/index.php/XMLTVFormat)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Uber fx](../../sources/tooling/fx.md)
 
 
 

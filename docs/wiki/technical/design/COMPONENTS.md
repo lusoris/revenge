@@ -6,31 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: shadcn-svelte
-    url: ../../../sources/frontend/shadcn-svelte.md
-    note: Component library
-  - name: Bits UI
-    url: ../../../sources/frontend/bits-ui.md
-    note: Headless UI primitives
-  - name: Vidstack Player
-    url: https://www.vidstack.io/docs/player
-    note: Video player components
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Icon library
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: FRONTEND
-    path: ../../technical/FRONTEND.md
-  - title: 04_PLAYER_ARCHITECTURE
-    path: ../../architecture/04_PLAYER_ARCHITECTURE.md
 ---
 
 # UI Components
@@ -78,8 +59,16 @@ Component library built on shadcn-svelte and Bits UI. Media cards with hover inf
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [shadcn-svelte](../../../sources/frontend/shadcn-svelte.md)
+- [Bits UI](../../../sources/frontend/bits-ui.md)
+- [Vidstack Player](https://www.vidstack.io/docs/player)
+- [Lucide Icons](https://lucide.dev/icons/)
 
 
 

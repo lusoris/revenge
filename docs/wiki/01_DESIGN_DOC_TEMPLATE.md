@@ -6,36 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Uber fx
-    url: ../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: sqlc
-    url: ../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: testcontainers-go
-    url: ../sources/testing/testcontainers.md
-    note: Auto-resolved from testcontainers
 ---
 
 # Design Document Template
@@ -83,8 +59,20 @@ This template provides the standard structure for all Revenge design documents. 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Uber fx](../sources/tooling/fx.md)
+- [pgx PostgreSQL Driver](../sources/database/pgx.md)
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md)
+- [River Job Queue](../sources/tooling/river.md)
+- [sqlc](../sources/database/sqlc.md)
+- [sqlc Configuration](../sources/database/sqlc-config.md)
+- [testcontainers-go](../sources/testing/testcontainers.md)
 
 
 

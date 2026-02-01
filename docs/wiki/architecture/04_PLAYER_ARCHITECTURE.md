@@ -6,51 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: FFmpeg Documentation
-    url: ../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: gohlslib (HLS)
-    url: ../../sources/media/gohlslib.md
-    note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
-    url: ../../sources/protocols/m3u8.md
-    note: Auto-resolved from m3u8
-  - name: Svelte 5 Runes
-    url: ../../sources/frontend/svelte-runes.md
-    note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
-    url: ../../sources/frontend/svelte5.md
-    note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
-    url: ../../sources/frontend/sveltekit.md
-    note: Auto-resolved from sveltekit
-design_refs:
-  - title: architecture
-    path: INDEX.md
-  - title: ADULT_CONTENT_SYSTEM
-    path: ../features/adult/ADULT_CONTENT_SYSTEM.md
-  - title: ADULT_METADATA
-    path: ../features/adult/ADULT_METADATA.md
-  - title: DATA_RECONCILIATION
-    path: ../features/adult/DATA_RECONCILIATION.md
 ---
 
 # Revenge - Player Architecture
@@ -98,8 +59,22 @@ The player architecture handles media playback across web, mobile, and TV client
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
 
 
 

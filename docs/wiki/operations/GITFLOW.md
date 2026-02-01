@@ -6,30 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Conventional Commits
-    url: ../../sources/standards/conventional-commits.md
-    note: Auto-resolved from conventional-commits
-  - name: Git Flow
-    url: ../../sources/standards/gitflow.md
-    note: Auto-resolved from gitflow
-  - name: Go io
-    url: ../../sources/go/stdlib/io.md
-    note: Auto-resolved from go-io
-design_refs:
-  - title: operations
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Git Workflow & Branching Strategy
@@ -77,8 +59,15 @@ Revenge uses a Gitflow-style branching strategy. The main branch contains produc
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Conventional Commits](../../sources/standards/conventional-commits.md)
+- [Git Flow](../../sources/standards/gitflow.md)
+- [Go io](../../sources/go/stdlib/io.md)
 
 
 

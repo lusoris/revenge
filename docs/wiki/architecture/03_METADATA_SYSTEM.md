@@ -6,48 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: go-blurhash
-    url: ../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: Last.fm API
-    url: ../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-design_refs:
-  - title: architecture
-    path: INDEX.md
-  - title: ADULT_CONTENT_SYSTEM
-    path: ../features/adult/ADULT_CONTENT_SYSTEM.md
-  - title: ADULT_METADATA
-    path: ../features/adult/ADULT_METADATA.md
-  - title: DATA_RECONCILIATION
-    path: ../features/adult/DATA_RECONCILIATION.md
 ---
 
 # Revenge - Metadata System
@@ -95,8 +59,21 @@ The metadata system gathers information about your media from multiple sources. 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [go-blurhash](../../sources/media/go-blurhash.md)
+- [Last.fm API](../../sources/apis/lastfm.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
 
 
 

@@ -6,18 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: To be added during design phase
-    url: PLACEHOLDER_URL
-    note: ⚠️ Source 'To be added during design phase' not found - needs manual resolution
-design_refs:
-  - title: Complete design documentation pending
-    path: Complete design documentation pending.md
 ---
 
 # {{ FEATURE_NAME }}
@@ -65,8 +59,13 @@ PLACEHOLDER: User-friendly overview
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [To be added during design phase](PLACEHOLDER_URL)
 
 
 

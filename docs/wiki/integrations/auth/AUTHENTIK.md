@@ -7,28 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Authelia Documentation
-    url: ../../../sources/security/authelia.md
-    note: Auto-resolved from authelia
-  - name: Authentik Documentation
-    url: ../../../sources/security/authentik.md
-    note: Auto-resolved from authentik
-  - name: Keycloak Documentation
-    url: ../../../sources/security/keycloak.md
-    note: Auto-resolved from keycloak
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Authentik
@@ -78,8 +62,15 @@ Connect Revenge to your Authentik identity provider for centralized user managem
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Authelia Documentation](../../../sources/security/authelia.md)
+- [Authentik Documentation](../../../sources/security/authentik.md)
+- [Keycloak Documentation](../../../sources/security/keycloak.md)
 
 
 

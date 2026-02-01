@@ -7,33 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: go-astiav (FFmpeg)
-    url: ../../sources/media/go-astiav.md
-    note: FFmpeg Go bindings
-  - name: gohlslib
-    url: ../../sources/media/gohlslib.md
-    note: HLS streaming library
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Background job processing
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Dependency injection
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: OFFLOADING
-    path: ../technical/OFFLOADING.md
-  - title: AUDIO_STREAMING
-    path: ../technical/AUDIO_STREAMING.md
 ---
 
 # Transcoding Service
@@ -83,8 +62,16 @@ The Transcoding Service converts media files on-demand to ensure compatibility a
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [go-astiav (FFmpeg)](../../sources/media/go-astiav.md)
+- [gohlslib](../../sources/media/gohlslib.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Uber fx](../../sources/tooling/fx.md)
 
 
 

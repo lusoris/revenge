@@ -6,120 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
-    note: L2 cache backend
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Dependency injection framework
-  - name: Go log/slog
-    url: ../../sources/go/stdlib/slog.md
-    note: Structured logging (dev)
-  - name: gohlslib (HLS)
-    url: ../../sources/media/gohlslib.md
-    note: HLS streaming support
-  - name: koanf
-    url: ../../sources/tooling/koanf.md
-    note: Configuration management
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Type-safe API code generation
-  - name: ogen Documentation
-    url: ../../sources/tooling/ogen-guide.md
-    note: Official ogen docs
-  - name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
-    note: PostgreSQL native driver
-  - name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
-    note: Array type support
-  - name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
-    note: JSON/JSONB operations
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: PostgreSQL-backed jobs
-  - name: River Documentation
-    url: ../../sources/tooling/river-guide.md
-    note: Official River docs
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Redis/Dragonfly client
-  - name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
-    note: Client documentation
-  - name: shadcn-svelte
-    url: ../../sources/frontend/shadcn-svelte.md
-    note: UI component library
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: SQL code generator
-  - name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
-    note: sqlc.yaml reference
-  - name: Svelte 5 Runes
-    url: ../../sources/frontend/svelte-runes.md
-    note: Runes-based reactivity
-  - name: Svelte 5 Documentation
-    url: ../../sources/frontend/svelte5.md
-    note: Svelte 5 API reference
-  - name: SvelteKit Documentation
-    url: ../../sources/frontend/sveltekit.md
-    note: SvelteKit framework
-  - name: TanStack Query
-    url: ../../sources/frontend/tanstack-query.md
-    note: Server state management
-  - name: Typesense API
-    url: ../../sources/infrastructure/typesense.md
-    note: Search engine API
-  - name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
-    note: Go client library
-  - name: otter Cache
-    url: https://pkg.go.dev/github.com/maypok86/otter
-    note: In-memory L1 cache
-  - name: sturdyc
-    url: ../../sources/tooling/sturdyc.md
-    note: Request coalescing
-  - name: zap Logger
-    url: ../../sources/tooling/zap.md
-    note: Production logging
-  - name: tint Logger
-    url: ../../sources/tooling/tint.md
-    note: Development logging
-  - name: golang-migrate
-    url: https://pkg.go.dev/github.com/golang-migrate/migrate/v4
-    note: Database migrations
-  - name: testify
-    url: ../../sources/testing/testify.md
-    note: Testing framework
-  - name: mockery
-    url: ../../sources/testing/mockery-guide.md
-    note: Mock generation
-  - name: testcontainers-go
-    url: ../../sources/testing/testcontainers.md
-    note: Integration testing
-  - name: golangci-lint
-    url: ../../sources/go_dev_tools/golangci-lint/main.md
-    note: Go linting
-  - name: markdownlint-cli2
-    url: https://github.com/DavidAnson/markdownlint-cli2
-    note: Markdown linting
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
-  - title: 00_SOURCE_OF_TRUTH
-    path: ../00_SOURCE_OF_TRUTH.md
 ---
 
 # Revenge - Technology Stack
@@ -167,8 +59,45 @@ Revenge uses a carefully selected stack optimized for performance and maintainab
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md)
+- [Uber fx](../../sources/tooling/fx.md)
+- [Go log/slog](../../sources/go/stdlib/slog.md)
+- [gohlslib (HLS)](../../sources/media/gohlslib.md)
+- [koanf](../../sources/tooling/koanf.md)
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [ogen Documentation](../../sources/tooling/ogen-guide.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [River Documentation](../../sources/tooling/river-guide.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md)
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md)
+- [sqlc](../../sources/database/sqlc.md)
+- [sqlc Configuration](../../sources/database/sqlc-config.md)
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md)
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md)
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md)
+- [TanStack Query](../../sources/frontend/tanstack-query.md)
+- [Typesense API](../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md)
+- [otter Cache](https://pkg.go.dev/github.com/maypok86/otter)
+- [sturdyc](../../sources/tooling/sturdyc.md)
+- [zap Logger](../../sources/tooling/zap.md)
+- [tint Logger](../../sources/tooling/tint.md)
+- [golang-migrate](https://pkg.go.dev/github.com/golang-migrate/migrate/v4)
+- [testify](../../sources/testing/testify.md)
+- [mockery](../../sources/testing/mockery-guide.md)
+- [testcontainers-go](../../sources/testing/testcontainers.md)
+- [golangci-lint](../../sources/go_dev_tools/golangci-lint/main.md)
+- [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2)
 
 
 

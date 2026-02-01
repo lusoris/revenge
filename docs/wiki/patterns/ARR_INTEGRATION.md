@@ -6,33 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Radarr API Docs
-    url: ../../sources/apis/radarr-docs.md
-    note: Radarr webhook events
-  - name: Sonarr API Docs
-    url: ../../sources/apis/sonarr-docs.md
-    note: Sonarr webhook events
-  - name: Lidarr API Docs
-    url: ../../sources/apis/lidarr-docs.md
-    note: Lidarr webhook events
-  - name: Servarr Wiki
-    url: ../../sources/apis/servarr-wiki.md
-    note: Shared Arr stack documentation
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Arr Integration Pattern
@@ -80,8 +59,16 @@ The Arr Integration Pattern provides a consistent approach for integrating with 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Radarr API Docs](../../sources/apis/radarr-docs.md)
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md)
+- [Lidarr API Docs](../../sources/apis/lidarr-docs.md)
+- [Servarr Wiki](../../sources/apis/servarr-wiki.md)
 
 
 

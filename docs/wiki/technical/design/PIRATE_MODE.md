@@ -6,20 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Base icons to customize
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
-    path: ../../technical/design/BRAND_IDENTITY.md
 ---
 
 # Pirate Mode Easter Eggs
@@ -67,8 +59,13 @@ Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's le
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Lucide Icons](https://lucide.dev/icons/)
 
 
 

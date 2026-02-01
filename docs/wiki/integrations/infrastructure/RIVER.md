@@ -7,64 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Dragonfly Documentation
-    url: ../../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: google/uuid
-    url: ../../../sources/tooling/uuid.md
-    note: Auto-resolved from google-uuid
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: pgxpool Connection Pool
-    url: ../../../sources/database/pgxpool.md
-    note: Auto-resolved from pgxpool
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: Prometheus Go Client
-    url: ../../../sources/observability/prometheus.md
-    note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
-    url: ../../../sources/observability/prometheus-metrics.md
-    note: Auto-resolved from prometheus-metrics
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: River Documentation
-    url: ../../../sources/tooling/river-guide.md
-    note: Auto-resolved from river-docs
-  - name: rueidis
-    url: ../../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-  - name: Typesense API
-    url: ../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # River
@@ -114,8 +62,27 @@ River handles background tasks like library scanning, metadata fetching, and tra
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
+- [Uber fx](../../../sources/tooling/fx.md)
+- [google/uuid](../../../sources/tooling/uuid.md)
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
+- [pgxpool Connection Pool](../../../sources/database/pgxpool.md)
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
+- [Prometheus Go Client](../../../sources/observability/prometheus.md)
+- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [River Documentation](../../../sources/tooling/river-guide.md)
+- [rueidis](../../../sources/tooling/rueidis.md)
+- [rueidis GitHub README](../../../sources/tooling/rueidis-guide.md)
+- [Typesense API](../../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
 
 
 

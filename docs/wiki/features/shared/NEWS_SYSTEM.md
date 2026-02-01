@@ -8,43 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Casbin
-    url: ../../../sources/security/casbin.md
-    note: Auto-resolved from casbin
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: mmcdole/gofeed
-    url: ../../../sources/tooling/gofeed.md
-    note: Auto-resolved from gofeed
-  - name: gofeed GitHub README
-    url: ../../../sources/tooling/gofeed-guide.md
-    note: Auto-resolved from gofeed-docs
-  - name: ogen OpenAPI Generator
-    url: ../../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # News System
@@ -101,8 +70,20 @@ Stay informed with server announcements and entertainment news. Admins can post 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Casbin](../../../sources/security/casbin.md)
+- [Uber fx](../../../sources/tooling/fx.md)
+- [mmcdole/gofeed](../../../sources/tooling/gofeed.md)
+- [gofeed GitHub README](../../../sources/tooling/gofeed-guide.md)
+- [ogen OpenAPI Generator](../../../sources/tooling/ogen.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [sqlc](../../../sources/database/sqlc.md)
+- [sqlc Configuration](../../../sources/database/sqlc-config.md)
 
 
 

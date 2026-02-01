@@ -6,34 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Go Testing
-    url: ../../sources/go/stdlib/testing.md
-    note: Standard library testing
-  - name: Testify
-    url: https://github.com/stretchr/testify
-    note: Assertions and test suites
-  - name: Mockery
-    url: ../../sources/testing/mockery-guide.md
-    note: Mock generation
-  - name: Testcontainers Go
-    url: ../../sources/testing/testcontainers.md
-    note: Integration testing with containers
-  - name: Embedded Postgres
-    url: ../../sources/testing/embedded-postgres-guide.md
-    note: Fast PostgreSQL for unit tests
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: BEST_PRACTICES
-    path: ../operations/BEST_PRACTICES.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # Testing Patterns
@@ -83,8 +61,17 @@ Revenge maintains high code quality through comprehensive testing. All new code 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Go Testing](../../sources/go/stdlib/testing.md)
+- [Testify](https://github.com/stretchr/testify)
+- [Mockery](../../sources/testing/mockery-guide.md)
+- [Testcontainers Go](../../sources/testing/testcontainers.md)
+- [Embedded Postgres](../../sources/testing/embedded-postgres-guide.md)
 
 
 

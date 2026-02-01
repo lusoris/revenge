@@ -6,28 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: OpenAPI 3.1 Specification
-    url: ../../sources/apis/openapi-spec.md
-    note: API spec standard
-  - name: RFC 7807 Problem Details
-    url: https://datatracker.ietf.org/doc/html/rfc7807
-    note: Standardized error format
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # API Reference
@@ -77,8 +61,15 @@ The Revenge API lets you build custom clients and integrations. All endpoints us
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md)
+- [OpenAPI 3.1 Specification](../../sources/apis/openapi-spec.md)
+- [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807)
 
 
 

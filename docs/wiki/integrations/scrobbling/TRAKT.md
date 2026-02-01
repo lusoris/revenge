@@ -7,28 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Last.fm API
-    url: ../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Trakt API
-    url: ../../../sources/apis/trakt.md
-    note: Auto-resolved from trakt
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Trakt
@@ -78,8 +62,15 @@ Trakt integration syncs your watch history for movies and TV shows. Scrobble pla
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Last.fm API](../../../sources/apis/lastfm.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [Trakt API](../../../sources/apis/trakt.md)
 
 
 

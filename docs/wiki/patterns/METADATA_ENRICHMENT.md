@@ -6,33 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Background job processing
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Distributed cache (L2)
-  - name: Otter
-    url: https://pkg.go.dev/github.com/maypok86/otter
-    note: In-memory cache (L1)
-  - name: Sturdyc
-    url: ../../sources/tooling/sturdyc-guide.md
-    note: Request coalescing cache
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Metadata Enrichment Pattern
@@ -80,8 +59,16 @@ The Metadata Enrichment Pattern ensures fast UI response times while maintaining
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [River Job Queue](../../sources/tooling/river.md)
+- [rueidis](../../sources/tooling/rueidis.md)
+- [Otter](https://pkg.go.dev/github.com/maypok86/otter)
+- [Sturdyc](../../sources/tooling/sturdyc-guide.md)
 
 
 

@@ -6,26 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # Example Feature
@@ -73,8 +59,15 @@ PLACEHOLDER: User-friendly overview
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Uber fx](../../sources/tooling/fx.md)
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md)
+- [sqlc](../../sources/database/sqlc.md)
 
 
 

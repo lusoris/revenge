@@ -6,48 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Authelia Documentation
-    url: ../sources/security/authelia.md
-    note: Auto-resolved from authelia
-  - name: Authentik Documentation
-    url: ../sources/security/authentik.md
-    note: Auto-resolved from authentik
-  - name: Casbin
-    url: ../sources/security/casbin.md
-    note: Auto-resolved from casbin
-  - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
-    note: Auto-resolved from keycloak
-  - name: Last.fm API
-    url: ../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Typesense API
-    url: ../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
 ---
 
 # Design Documentation Status
@@ -95,8 +59,24 @@ This dashboard shows the completion status of all design documentation. Each doc
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Authelia Documentation](../sources/security/authelia.md)
+- [Authentik Documentation](../sources/security/authentik.md)
+- [Casbin](../sources/security/casbin.md)
+- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md)
+- [Keycloak Documentation](../sources/security/keycloak.md)
+- [Last.fm API](../sources/apis/lastfm.md)
+- [pgx PostgreSQL Driver](../sources/database/pgx.md)
+- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md)
+- [River Job Queue](../sources/tooling/river.md)
+- [Typesense API](../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../sources/infrastructure/typesense-go.md)
 
 
 

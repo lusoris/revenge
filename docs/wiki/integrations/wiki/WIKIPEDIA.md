@@ -7,28 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Dragonfly Documentation
-    url: ../../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: MediaWiki API
-    url: ../../../sources/wiki/mediawiki.md
-    note: Auto-resolved from mediawiki-api
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Wikipedia
@@ -78,8 +62,15 @@ Wikipedia integration provides encyclopedic context for your media. Plot summari
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Dragonfly Documentation](../../../sources/infrastructure/dragonfly.md)
+- [MediaWiki API](../../../sources/wiki/mediawiki.md)
+- [River Job Queue](../../../sources/tooling/river.md)
 
 
 

@@ -8,37 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Go context
-    url: ../../../sources/go/stdlib/context.md
-    note: Auto-resolved from go-context
-  - name: Radarr API Docs
-    url: ../../../sources/apis/radarr-docs.md
-    note: Auto-resolved from radarr-docs
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Sonarr API Docs
-    url: ../../../sources/apis/sonarr-docs.md
-    note: Auto-resolved from sonarr-docs
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Release Calendar System
@@ -95,8 +70,18 @@ See upcoming releases and recent additions at a glance. The calendar pulls data 
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Go context](../../../sources/go/stdlib/context.md)
+- [Radarr API Docs](../../../sources/apis/radarr-docs.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [Sonarr API Docs](../../../sources/apis/sonarr-docs.md)
+- [sqlc](../../../sources/database/sqlc.md)
+- [sqlc Configuration](../../../sources/database/sqlc-config.md)
 
 
 

@@ -6,23 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Svelte Transitions
-    url: https://svelte.dev/docs/svelte-transition
-    note: Built-in transitions
-  - name: Motion One
-    url: https://motion.dev/
-    note: Animation library option
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: ACCESSIBILITY
-    path: ../../technical/design/ACCESSIBILITY.md
 ---
 
 # Motion & Animation
@@ -70,8 +59,14 @@ Motion in Revenge is expressive but purposeful. Cards scale on hover, overlays f
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Svelte Transitions](https://svelte.dev/docs/svelte-transition)
+- [Motion One](https://motion.dev/)
 
 
 

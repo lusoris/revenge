@@ -8,7 +8,7 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
 
 
 
@@ -69,7 +69,7 @@ Manage your movie collection with automatic metadata from TMDB, TheTVDB, and oth
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
 
 

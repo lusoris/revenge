@@ -6,30 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: go-mail GitHub README
-    url: ../../sources/tooling/go-mail-guide.md
-    note: Auto-resolved from go-mail-docs
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: NOTIFICATIONS
-    path: ../technical/NOTIFICATIONS.md
 ---
 
 # Email System
@@ -77,8 +59,15 @@ The Email System provides reliable SMTP email delivery with support for HTML tem
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [go-mail GitHub README](../../sources/tooling/go-mail-guide.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Uber fx](../../sources/tooling/fx.md)
 
 
 

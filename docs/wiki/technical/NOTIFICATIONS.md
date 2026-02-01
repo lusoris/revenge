@@ -6,35 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: go-mail GitHub README
-    url: ../../sources/tooling/go-mail-guide.md
-    note: Auto-resolved from go-mail
-  - name: go-fcm
-    url: ../../sources/tooling/go-fcm.md
-    note: FCM push notifications
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: EMAIL
-    path: ../technical/EMAIL.md
-  - title: WEBHOOKS
-    path: ../technical/WEBHOOKS.md
 ---
 
 # Notifications System
@@ -82,8 +59,16 @@ The Notifications System delivers real-time alerts across multiple channels. Use
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [go-mail GitHub README](../../sources/tooling/go-mail-guide.md)
+- [go-fcm](../../sources/tooling/go-fcm.md)
+- [River Job Queue](../../sources/tooling/river.md)
+- [Uber fx](../../sources/tooling/fx.md)
 
 
 

@@ -8,52 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: go-blurhash
-    url: ../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: google/uuid
-    url: ../../../sources/tooling/uuid.md
-    note: Auto-resolved from google-uuid
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Servarr Wiki
-    url: ../../../sources/apis/servarr-wiki.md
-    note: Auto-resolved from servarr-wiki
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: Typesense API
-    url: ../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Adult Gallery Module (QAR: Treasures)
@@ -110,8 +70,23 @@ Organize adult image sets and galleries with full metadata support. Link galleri
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [go-blurhash](../../../sources/media/go-blurhash.md)
+- [google/uuid](../../../sources/tooling/uuid.md)
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [Servarr Wiki](../../../sources/apis/servarr-wiki.md)
+- [sqlc](../../../sources/database/sqlc.md)
+- [sqlc Configuration](../../../sources/database/sqlc-config.md)
+- [Typesense API](../../../sources/infrastructure/typesense.md)
+- [Typesense Go Client](../../../sources/infrastructure/typesense-go.md)
 
 
 

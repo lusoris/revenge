@@ -8,52 +8,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: FFmpeg Documentation
-    url: ../../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: StashDB GraphQL API
-    url: ../../../sources/apis/stashdb-schema.graphql
-    note: Auto-resolved from stashdb
-  - name: ThePornDB API
-    url: ../../../sources/apis/theporndb.md
-    note: Auto-resolved from theporndb
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Revenge - Adult Content Metadata System
@@ -110,8 +70,23 @@ This document has been merged into ADULT_CONTENT_SYSTEM.md. See that document fo
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
+- [pgx PostgreSQL Driver](../../../sources/database/pgx.md)
+- [PostgreSQL Arrays](../../../sources/database/postgresql-arrays.md)
+- [PostgreSQL JSON Functions](../../../sources/database/postgresql-json.md)
+- [River Job Queue](../../../sources/tooling/river.md)
+- [StashDB GraphQL API](../../../sources/apis/stashdb-schema.graphql)
+- [ThePornDB API](../../../sources/apis/theporndb.md)
 
 
 

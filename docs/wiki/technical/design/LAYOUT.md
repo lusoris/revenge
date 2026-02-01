@@ -6,25 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Tailwind CSS Spacing
-    url: https://tailwindcss.com/docs/customizing-spacing
-    note: Spacing scale reference
-  - name: Tailwind CSS Breakpoints
-    url: https://tailwindcss.com/docs/responsive-design
-    note: Breakpoint system
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: NAVIGATION
-    path: ../../technical/design/NAVIGATION.md
-  - title: COMPONENTS
-    path: ../../technical/design/COMPONENTS.md
 ---
 
 # Layout System
@@ -72,8 +59,14 @@ The layout system uses a 4px base unit for all spacing, ensuring visual consiste
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Tailwind CSS Spacing](https://tailwindcss.com/docs/customizing-spacing)
+- [Tailwind CSS Breakpoints](https://tailwindcss.com/docs/responsive-design)
 
 
 

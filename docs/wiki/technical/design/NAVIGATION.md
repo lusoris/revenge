@@ -6,20 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: Lucide Icons
-    url: https://lucide.dev/icons/
-    note: Navigation icons
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: CLIENT_SUPPORT
-    path: ../../features/shared/CLIENT_SUPPORT.md
 ---
 
 # Navigation System
@@ -67,8 +59,13 @@ Navigation adapts to your device. Desktop uses a collapsible sidebar rail with m
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [Lucide Icons](https://lucide.dev/icons/)
 
 
 

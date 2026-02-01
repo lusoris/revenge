@@ -7,28 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: gohlslib (HLS)
-    url: ../../../sources/media/gohlslib.md
-    note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
-    url: ../../../sources/protocols/m3u8.md
-    note: Auto-resolved from m3u8
-  - name: NextPVR Documentation
-    url: ../../../sources/livetv/nextpvr.md
-    note: Auto-resolved from nextpvr
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # NextPVR
@@ -78,8 +62,15 @@ Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRu
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
+- [NextPVR Documentation](../../../sources/livetv/nextpvr.md)
 
 
 

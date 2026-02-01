@@ -6,23 +6,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: WCAG 2.1 Guidelines
-    url: https://www.w3.org/WAI/WCAG21/quickref/
-    note: Accessibility standards
-  - name: ARIA Authoring Practices
-    url: https://www.w3.org/WAI/ARIA/apg/
-    note: ARIA patterns
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: MOTION
-    path: ../../technical/design/MOTION.md
 ---
 
 # Accessibility
@@ -70,8 +59,14 @@ Revenge targets WCAG 2.1 AAA, the highest accessibility standard. Color contrast
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 
 
 

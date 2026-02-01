@@ -7,46 +7,12 @@
   - [Features](#features)
   - [Configuration](#configuration)
   - [Related Documentation](#related-documentation)
-    - [See Also](#see-also)
+    - [Related Pages](#related-pages)
+    - [Learn More](#learn-more)
 
 
 
 ---
-sources:
-  - name: FFmpeg Documentation
-    url: ../../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: gohlslib (HLS)
-    url: ../../../sources/media/gohlslib.md
-    note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
-    url: ../../../sources/protocols/m3u8.md
-    note: Auto-resolved from m3u8
-  - name: Prometheus Go Client
-    url: ../../../sources/observability/prometheus.md
-    note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
-    url: ../../../sources/observability/prometheus-metrics.md
-    note: Auto-resolved from prometheus-metrics
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
 ---
 
 # Blackbeard
@@ -96,8 +62,21 @@ Blackbeard handles video transcoding on dedicated hardware. Offload CPU-intensiv
 
 
 ## Related Documentation
-### See Also
+### Related Pages
 <!-- Related wiki pages -->
+
+### Learn More
+
+Official documentation and guides:
+- [FFmpeg Documentation](../../../sources/media/ffmpeg.md)
+- [FFmpeg Codecs](../../../sources/media/ffmpeg-codecs.md)
+- [FFmpeg Formats](../../../sources/media/ffmpeg-formats.md)
+- [go-astiav (FFmpeg bindings)](../../../sources/media/go-astiav.md)
+- [go-astiav GitHub README](../../../sources/media/go-astiav-guide.md)
+- [gohlslib (HLS)](../../../sources/media/gohlslib.md)
+- [M3U8 Extended Format](../../../sources/protocols/m3u8.md)
+- [Prometheus Go Client](../../../sources/observability/prometheus.md)
+- [Prometheus Metric Types](../../../sources/observability/prometheus-metrics.md)
 
 
 
