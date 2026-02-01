@@ -44,7 +44,7 @@ jobs:
         uses: golangci/golangci-lint-action@v4
         with:
           version: v2.8.0  # Go 1.25 support added in v2.8.0
-          args: --timeout=5m --out-format=github-actions
+          args: --timeout=5m
 
       - name: Check Go formatting
         run: |

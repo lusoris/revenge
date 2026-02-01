@@ -60,3 +60,37 @@
 - [internal/testutil/containers.go:112](internal/testutil/containers.go#L112)
 
 ---
+
+### [ISSUE-006] golangci-lint v2.8.0 doesn't support --out-format flag
+**Problem**: CI/CD "Lint & Code Quality" job fails with "Error: unknown flag: --out-format"
+**Cause**: golangci-lint v2.8.0 doesn't support the `--out-format` flag that the golangci-lint-action@v4 tries to use
+**Root Cause**: v2.8.0 uses `--output.<format>.path` instead of `--out-format`
+**Available Formats**: text, json, tab, html, checkstyle, code-climate, junit-xml, teamcity, sarif (no github-actions format)
+**Fix**: Need to either:
+  1. Remove the `args: --timeout=5m --out-format=github-actions` from workflow and let action use defaults
+  2. Update to newer golangci-lint version that supports --out-format
+  3. Use `--output.json.path=stdout` or similar format instead
+**Test Hint**: Verify CI workflow completes successfully with proper output formatting
+**Files Changed**:
+- [.github/workflows/dev.yml](../.github/workflows/dev.yml) (needs fix)
+**Workflow Run**: [21563257750](https://github.com/lusoris/revenge/actions/runs/21563257750)
+**Status**: BLOCKING - CI/CD pipeline failing
+
+---
+
+### [ISSUE-007] 1,122 broken internal links in documentation
+**Problem**: Documentation validation found 1,122 broken internal links out of 2,359 total links (47.5% broken)
+**Cause**: Massive markdown restructuring and fixes may have broken relative links between documents
+**Details**:
+  - Files scanned: 214
+  - Total internal links: 2,359
+  - Broken links: 1,122
+  - Auto-fixable (high confidence): 0
+  - Placeholders found: 0
+**Fix**: Need to review and fix broken links manually or improve auto-fix script
+**Report Location**: docs/dev/design/.analysis/FIXES_REPORT.md (generated in CI, not available locally)
+**Test Hint**: Run `python scripts/doc-pipeline/05-fix.py --report` to generate report locally
+**Status**: WARNING - Not blocking but needs attention
+**Workflow Run**: [21563257717](https://github.com/lusoris/revenge/actions/runs/21563257717)
+
+---
