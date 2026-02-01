@@ -29,31 +29,30 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: go-mail GitHub README
+- name: go-mail GitHub README
     url: ../sources/tooling/go-mail-guide.md
     note: Auto-resolved from go-mail
-  - name: go-fcm
+- name: go-fcm
     url: ../sources/tooling/go-fcm.md
     note: FCM push notifications
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: EMAIL
+- title: EMAIL
     path: technical/EMAIL.md
-  - title: WEBHOOKS
+- title: WEBHOOKS
     path: technical/WEBHOOKS.md
 ---
 
@@ -61,11 +60,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Multi-channel notification system: Email, Push (FCM), Webhooks
 
@@ -78,7 +75,6 @@ Unified notification delivery:
 - **Features**: Rate limiting, deduplication, batching
 
 ---
-
 
 ## Status
 
@@ -93,9 +89,7 @@ Unified notification delivery:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -104,7 +98,6 @@ Unified notification delivery:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -120,7 +113,6 @@ Unified notification delivery:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -129,7 +121,6 @@ Unified notification delivery:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## API Endpoints
 ### GET /api/v1/user/notifications/preferences
@@ -250,7 +241,6 @@ Send test notification (admin only)
 {}
 ```
 
-
 ## Testing Strategy
 
 ### Unit Tests
@@ -265,7 +255,6 @@ Send test notification (admin only)
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
@@ -279,4 +268,3 @@ Target: **80% minimum**
 - [go-fcm](../sources/tooling/go-fcm.md) - FCM push notifications
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 - [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-

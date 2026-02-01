@@ -30,12 +30,11 @@ jobs:
           go-version: ${{ needs.versions.outputs.go-version }}
           cache: true  # Enabled - go.sum now exists
 
-      # NOTE: golangci-lint skipped until it supports Go 1.25+
-      # - name: Run golangci-lint
-      #   uses: golangci/golangci-lint-action@v4
-      #   with:
-      #     version: latest
-      #     args: --timeout=5m
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: v2.8.0  # Go 1.25 support added in v2.8.0
+          args: --timeout=5m
 
       - name: Run go vet
         run: go vet ./...

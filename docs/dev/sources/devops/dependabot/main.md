@@ -1,7 +1,7 @@
 # Dependabot Documentation
 
 > Source: https://docs.github.com/en/code-security/dependabot
-> Fetched: 2026-01-31T16:05:09.566373+00:00
+> Fetched: 2026-02-01T11:52:38.179123+00:00
 > Content-Hash: 7df62bb26a35ca9f
 > Type: html
 

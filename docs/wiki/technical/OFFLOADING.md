@@ -8,55 +8,50 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Dragonfly Documentation
+- name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: koanf
+- name: koanf
     url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
-  - name: Prometheus Go Client
+- name: Prometheus Go Client
     url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
+- name: Prometheus Metric Types
     url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
+- name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
-  - name: Typesense API
+- name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: METADATA_ENRICHMENT
+- title: METADATA_ENRICHMENT
     path: patterns/METADATA_ENRICHMENT.md
 ---
 
 # Advanced Offloading Architecture
-
-
-
 
 > Keep your API fast by offloading heavy work to specialized services
 
@@ -64,44 +59,25 @@ The Advanced Offloading Architecture ensures fast API response times by delegati
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

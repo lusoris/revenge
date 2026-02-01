@@ -19,19 +19,18 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Tailwind CSS Colors
+- name: Tailwind CSS Colors
     url: https://tailwindcss.com/docs/customizing-colors
     note: Color system foundation
-  - name: Radix Colors
+- name: Radix Colors
     url: https://www.radix-ui.com/colors
     note: Accessible color scales
 design_refs:
-  - title: DESIGN_SYSTEM
+- title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
+- title: BRAND_IDENTITY
     path: technical/design/BRAND_IDENTITY.md
 ---
 
@@ -39,11 +38,9 @@ design_refs:
 
 <!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-02-01
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Arr-aligned module color system with full theme shift
 
@@ -53,9 +50,7 @@ Color system features:
 - **Theme Shift**: Full UI color shift per module (sidebar, header, cards)
 - **Semantic Tokens**: Consistent naming across themes
 
-
 ---
-
 
 ## Status
 
@@ -70,9 +65,7 @@ Color system features:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -81,7 +74,6 @@ Color system features:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -97,7 +89,6 @@ Color system features:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -106,7 +97,6 @@ Color system features:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -122,7 +112,6 @@ Color system features:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
@@ -131,4 +120,3 @@ Target: **80% minimum**
 ### External Sources
 - [Tailwind CSS Colors](https://tailwindcss.com/docs/customizing-colors) - Color system foundation
 - [Radix Colors](https://www.radix-ui.com/colors) - Accessible color scales
-

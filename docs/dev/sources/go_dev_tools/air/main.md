@@ -1,7 +1,7 @@
 # Air Live Reload
 
 > Source: https://github.com/air-verse/air
-> Fetched: 2026-01-31T11:06:06.859841+00:00
+> Fetched: 2026-02-01T11:54:20.475998+00:00
 > Content-Hash: 6eef63860a5a6893
 > Type: github_readme
 

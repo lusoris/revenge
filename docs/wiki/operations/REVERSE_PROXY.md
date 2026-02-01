@@ -8,58 +8,53 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Dragonfly Documentation
+- name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-  - name: gohlslib (HLS)
+- name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
+- name: M3U8 Extended Format
     url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: Prometheus Go Client
+- name: Prometheus Go Client
     url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
+- name: Prometheus Metric Types
     url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
+- name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
-  - title: operations
+- title: operations
     path: operations/INDEX.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Reverse Proxy Configuration
-
-
-
 
 > Configure Traefik, Caddy, or nginx for HTTPS access to Revenge
 
@@ -67,44 +62,25 @@ A reverse proxy sits between the internet and Revenge, handling HTTPS encryption
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

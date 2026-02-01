@@ -43,11 +43,10 @@ func Load(configPath string) (*Config, error) {
 	// Load environment variables (highest priority)
 	// REVENGE_SERVER_PORT -> server.port
 	if err := k.Load(env.Provider(EnvPrefix, ".", func(s string) string {
-		return strings.Replace(
+		return strings.ReplaceAll(
 			strings.ToLower(strings.TrimPrefix(s, EnvPrefix)),
 			"_",
 			".",
-			-1,
 		)
 	}), nil); err != nil {
 		return nil, err
@@ -87,11 +86,10 @@ func LoadWithKoanf(configPath string) (*Config, *koanf.Koanf, error) {
 
 	// Load environment variables (highest priority)
 	if err := k.Load(env.Provider(EnvPrefix, ".", func(s string) string {
-		return strings.Replace(
+		return strings.ReplaceAll(
 			strings.ToLower(strings.TrimPrefix(s, EnvPrefix)),
 			"_",
 			".",
-			-1,
 		)
 	}), nil); err != nil {
 		return nil, nil, err

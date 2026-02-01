@@ -13,7 +13,7 @@ The headless components for Svelte.
 
 This is a documentation section that potentially contains examples, demos, and other useful information related to a specific part of Bits UI. When helping users with this documentation, you can ignore the classnames applied to the demos unless they are relevant to the user's issue.
 
-Copy Page 
+Copy Page
 
 Bits UI is a headless component library for Svelte focused on developer experience, accessibility, and full creative control. Use it to build high-quality, accessible UIs without giving up styling freedom or performance.
 
@@ -29,35 +29,29 @@ Most components ship completely unstyled, with the exception of those required f
 
 Everything is designed to stay out of your way:
 
-  * Full TypeScript coverage
-  * Stable, predictable APIs
-  * Flexible event override system
-  * Great defaults, easily overridden
-  * Comprehensive documentation and examples
-
-
+- Full TypeScript coverage
+- Stable, predictable APIs
+- Flexible event override system
+- Great defaults, easily overridden
+- Comprehensive documentation and examples
 
 ### Production-Ready Accessibility
 
 Accessibility isn't just an afterthought - it's baked in:
 
-  * WAI-ARIA compliance
-  * Keyboard navigation by default
-  * Focus management handled for you
-  * Screen reader support built-in
-
-
+- WAI-ARIA compliance
+- Keyboard navigation by default
+- Focus management handled for you
+- Screen reader support built-in
 
 ### Composable by Design
 
 Components are primitives, not black boxes. They compose cleanly and play well together:
 
-  * [Render Delegation](/docs/child-snippet) for total flexibility
-  * Chainable events and callbacks
-  * Override-friendly defaults
-  * Minimal dependencies
-
-
+- [Render Delegation](/docs/child-snippet) for total flexibility
+- Chainable events and callbacks
+- Override-friendly defaults
+- Minimal dependencies
 
 ## Community
 
@@ -69,11 +63,9 @@ Found an issue? [Open one](https://github.com/huntabyte/bits-ui/issues/new). Hav
 
 Built on the shoulders of giants:
 
-  * [Melt UI](https://melt-ui.com) - inspired the internal architecture
-  * [Radix UI](https://radix-ui.com) - API design inspiration
-  * [React Spectrum](https://react-spectrum.adobe.com) - inspiration for the date/time components and excellence in accessibility
-
-
+- [Melt UI](https://melt-ui.com) - inspired the internal architecture
+- [Radix UI](https://radix-ui.com) - API design inspiration
+- [React Spectrum](https://react-spectrum.adobe.com) - inspiration for the date/time components and excellence in accessibility
 
 [Next Getting Started](/docs/getting-started)
   *[↑]: Back to Top

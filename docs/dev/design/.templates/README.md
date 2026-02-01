@@ -2,7 +2,6 @@
 
 <!-- DESIGN: .templates, 01_ARCHITECTURE, 02_DESIGN_PRINCIPLES, 03_METADATA_SYSTEM -->
 
-
 **Purpose**: Jinja2 templates for generating both Claude-optimized and Wiki documentation from a single source.
 
 **Master Reference**: [00_SOURCE_OF_TRUTH.md](../00_SOURCE_OF_TRUTH.md) - All versions, dependencies, and architecture decisions

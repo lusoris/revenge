@@ -26,39 +26,38 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: shadcn-svelte
+- name: shadcn-svelte
     url: ../sources/frontend/shadcn-svelte.md
     note: Component library
-  - name: Bits UI
+- name: Bits UI
     url: ../sources/frontend/bits-ui.md
     note: Headless UI primitives
-  - name: Tailwind CSS 4
+- name: Tailwind CSS 4
     url: ../sources/frontend/tailwindcss.md
     note: Utility-first CSS
-  - name: Lucide Icons
+- name: Lucide Icons
     url: https://lucide.dev/icons/
     note: Icon library (standard mode)
-  - name: Vidstack Player
+- name: Vidstack Player
     url: https://www.vidstack.io/docs/player
     note: Video player components
-  - name: WCAG 2.1 Guidelines
+- name: WCAG 2.1 Guidelines
     url: https://www.w3.org/WAI/WCAG21/quickref/
     note: Accessibility standards (targeting AAA)
-  - name: Playfair Display
+- name: Playfair Display
     url: https://fonts.google.com/specimen/Playfair+Display
     note: Serif accent font
-  - name: Inter
+- name: Inter
     url: https://fonts.google.com/specimen/Inter
     note: UI body font
 design_refs:
-  - title: FRONTEND
+- title: FRONTEND
     path: technical/FRONTEND.md
-  - title: 04_PLAYER_ARCHITECTURE
+- title: 04_PLAYER_ARCHITECTURE
     path: architecture/04_PLAYER_ARCHITECTURE.md
-  - title: USER_EXPERIENCE_FEATURES
+- title: USER_EXPERIENCE_FEATURES
     path: features/shared/USER_EXPERIENCE_FEATURES.md
 ---
 
@@ -66,11 +65,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Queen Anne's Revenge themed design system for Revenge frontend
 
@@ -82,9 +79,7 @@ Design system index with pirate-themed elegance:
 - **Accessibility**: WCAG 2.1 AAA compliant
 - **Easter Eggs**: Achievement-unlocked pirate mode
 
-
 ---
-
 
 ## Status
 
@@ -99,9 +94,7 @@ Design system index with pirate-themed elegance:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -110,7 +103,6 @@ Design system index with pirate-themed elegance:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -126,7 +118,6 @@ Design system index with pirate-themed elegance:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -135,7 +126,6 @@ Design system index with pirate-themed elegance:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -150,7 +140,6 @@ Design system index with pirate-themed elegance:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Implementation Checklist
 ### Phase 1: Foundation
@@ -188,7 +177,6 @@ Target: **80% minimum**
 - [ ] Pirate-speak translation
 - [ ] Celebration animations
 
-
 ## Related Documentation
 ### Design Documents
 - [FRONTEND](FRONTEND.md)
@@ -204,4 +192,3 @@ Target: **80% minimum**
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/) - Accessibility standards (targeting AAA)
 - [Playfair Display](https://fonts.google.com/specimen/Playfair+Display) - Serif accent font
 - [Inter](https://fonts.google.com/specimen/Inter) - UI body font
-

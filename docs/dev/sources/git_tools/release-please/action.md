@@ -1,7 +1,7 @@
 # release-please GitHub Action
 
 > Source: https://github.com/google-github-actions/release-please-action
-> Fetched: 2026-01-31T11:07:15.446071+00:00
+> Fetched: 2026-02-01T11:55:58.011943+00:00
 > Content-Hash: f57fc649ca663635
 > Type: github_readme
 

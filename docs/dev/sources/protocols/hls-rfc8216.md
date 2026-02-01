@@ -9,18 +9,12 @@
 
 __
 
-  * __Light __
-  * __Dark __
-  * __Auto __
-
-
+- __Light__
+- __Dark__
+- __Auto__
 
 ____
 
-  
-
-    
-    
     Independent Submission                                    R. Pantos, Ed.
     Request for Comments: 8216                                   Apple, Inc.
     Category: Informational                                           W. May
@@ -75,8 +69,7 @@ ____
     Pantos & May                  Informational                     [Page 1]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -134,8 +127,7 @@ ____
     Pantos & May                  Informational                     [Page 2]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -193,8 +185,7 @@ ____
     Pantos & May                  Informational                     [Page 3]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -252,8 +243,7 @@ ____
     Pantos & May                  Informational                     [Page 4]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -311,8 +301,7 @@ ____
     Pantos & May                  Informational                     [Page 5]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -370,8 +359,7 @@ ____
     Pantos & May                  Informational                     [Page 6]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -429,8 +417,7 @@ ____
     Pantos & May                  Informational                     [Page 7]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -488,8 +475,7 @@ ____
     Pantos & May                  Informational                     [Page 8]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -547,8 +533,7 @@ ____
     Pantos & May                  Informational                     [Page 9]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -606,8 +591,7 @@ ____
     Pantos & May                  Informational                    [Page 10]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -665,8 +649,7 @@ ____
     Pantos & May                  Informational                    [Page 11]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -724,8 +707,7 @@ ____
     Pantos & May                  Informational                    [Page 12]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -783,8 +765,7 @@ ____
     Pantos & May                  Informational                    [Page 13]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -842,8 +823,7 @@ ____
     Pantos & May                  Informational                    [Page 14]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -901,8 +881,7 @@ ____
     Pantos & May                  Informational                    [Page 15]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -960,8 +939,7 @@ ____
     Pantos & May                  Informational                    [Page 16]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1019,8 +997,7 @@ ____
     Pantos & May                  Informational                    [Page 17]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1078,8 +1055,7 @@ ____
     Pantos & May                  Informational                    [Page 18]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1137,8 +1113,7 @@ ____
     Pantos & May                  Informational                    [Page 19]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1196,8 +1171,7 @@ ____
     Pantos & May                  Informational                    [Page 20]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1255,8 +1229,7 @@ ____
     Pantos & May                  Informational                    [Page 21]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1314,8 +1287,7 @@ ____
     Pantos & May                  Informational                    [Page 22]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1373,8 +1345,7 @@ ____
     Pantos & May                  Informational                    [Page 23]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1432,8 +1403,7 @@ ____
     Pantos & May                  Informational                    [Page 24]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1491,8 +1461,7 @@ ____
     Pantos & May                  Informational                    [Page 25]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1550,8 +1519,7 @@ ____
     Pantos & May                  Informational                    [Page 26]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1609,8 +1577,7 @@ ____
     Pantos & May                  Informational                    [Page 27]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1668,8 +1635,7 @@ ____
     Pantos & May                  Informational                    [Page 28]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1727,8 +1693,7 @@ ____
     Pantos & May                  Informational                    [Page 29]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1786,8 +1751,7 @@ ____
     Pantos & May                  Informational                    [Page 30]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1845,8 +1809,7 @@ ____
     Pantos & May                  Informational                    [Page 31]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1904,8 +1867,7 @@ ____
     Pantos & May                  Informational                    [Page 32]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -1963,8 +1925,7 @@ ____
     Pantos & May                  Informational                    [Page 33]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2022,8 +1983,7 @@ ____
     Pantos & May                  Informational                    [Page 34]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2081,8 +2041,7 @@ ____
     Pantos & May                  Informational                    [Page 35]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2140,8 +2099,7 @@ ____
     Pantos & May                  Informational                    [Page 36]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2199,8 +2157,7 @@ ____
     Pantos & May                  Informational                    [Page 37]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2258,8 +2215,7 @@ ____
     Pantos & May                  Informational                    [Page 38]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2317,8 +2273,7 @@ ____
     Pantos & May                  Informational                    [Page 39]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2376,8 +2331,7 @@ ____
     Pantos & May                  Informational                    [Page 40]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2435,8 +2389,7 @@ ____
     Pantos & May                  Informational                    [Page 41]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2494,8 +2447,7 @@ ____
     Pantos & May                  Informational                    [Page 42]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2553,8 +2505,7 @@ ____
     Pantos & May                  Informational                    [Page 43]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2612,8 +2563,7 @@ ____
     Pantos & May                  Informational                    [Page 44]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2671,8 +2621,7 @@ ____
     Pantos & May                  Informational                    [Page 45]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2730,8 +2679,7 @@ ____
     Pantos & May                  Informational                    [Page 46]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2789,8 +2737,7 @@ ____
     Pantos & May                  Informational                    [Page 47]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2848,8 +2795,7 @@ ____
     Pantos & May                  Informational                    [Page 48]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2907,8 +2853,7 @@ ____
     Pantos & May                  Informational                    [Page 49]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -2966,8 +2911,7 @@ ____
     Pantos & May                  Informational                    [Page 50]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3025,8 +2969,7 @@ ____
     Pantos & May                  Informational                    [Page 51]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3084,8 +3027,7 @@ ____
     Pantos & May                  Informational                    [Page 52]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3143,8 +3085,7 @@ ____
     Pantos & May                  Informational                    [Page 53]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3202,8 +3143,7 @@ ____
     Pantos & May                  Informational                    [Page 54]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3261,8 +3201,7 @@ ____
     Pantos & May                  Informational                    [Page 55]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3320,8 +3259,7 @@ ____
     Pantos & May                  Informational                    [Page 56]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3379,8 +3317,7 @@ ____
     Pantos & May                  Informational                    [Page 57]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3438,8 +3375,7 @@ ____
     Pantos & May                  Informational                    [Page 58]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3497,8 +3433,7 @@ ____
     Pantos & May                  Informational                    [Page 59]
 
 * * *
-    
-    
+
     [RFC 8216](/doc/html/rfc8216)                   HTTP Live Streaming               August 2017
     
     
@@ -3558,47 +3493,44 @@ ____
 
 [Datatracker](/doc/rfc8216/)
 
-RFC 8216   
-RFC \- Informational 
+RFC 8216
+RFC \- Informational
 
-  * __Info
-  * __Contents
-  * __Prefs
+- __Info
+- __Contents
+- __Prefs
 
-
-
-Document | Document type |  |  RFC \- Informational    
-August 2017   
-[ View errata ](https://www.rfc-editor.org/errata_search.php?rfc=8216 "Click to view errata.") [ Report errata ](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") [IPR](/ipr/search/?submit=draft&id=rfc8216 "Click to view IPR declarations.") Was [draft-pantos-http-live-streaming](/doc/draft-pantos-http-live-streaming/23/) (individual)  This RFC was published on the Independent Submission stream. This RFC is **not endorsed by the IETF** and has **no formal standing** in the [IETF standards process](/doc/rfc2026/).   
+Document | Document type |  |  RFC \- Informational
+August 2017
+[View errata](https://www.rfc-editor.org/errata_search.php?rfc=8216 "Click to view errata.") [Report errata](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") [IPR](/ipr/search/?submit=draft&id=rfc8216 "Click to view IPR declarations.") Was [draft-pantos-http-live-streaming](/doc/draft-pantos-http-live-streaming/23/) (individual)  This RFC was published on the Independent Submission stream. This RFC is **not endorsed by the IETF** and has **no formal standing** in the [IETF standards process](/doc/rfc2026/).
 ---|---|---|---  
-| Select version |  | 
+| Select version |  |
 
-  * [ 07 ](/doc/html/draft-pantos-http-live-streaming-07)
-  * [ 08 ](/doc/html/draft-pantos-http-live-streaming-08)
-  * [ 09 ](/doc/html/draft-pantos-http-live-streaming-09)
-  * [ 10 ](/doc/html/draft-pantos-http-live-streaming-10)
-  * [ 11 ](/doc/html/draft-pantos-http-live-streaming-11)
-  * [ 12 ](/doc/html/draft-pantos-http-live-streaming-12)
-  * [ 13 ](/doc/html/draft-pantos-http-live-streaming-13)
-  * [ 14 ](/doc/html/draft-pantos-http-live-streaming-14)
-  * [ 15 ](/doc/html/draft-pantos-http-live-streaming-15)
-  * [ 16 ](/doc/html/draft-pantos-http-live-streaming-16)
-  * [ 17 ](/doc/html/draft-pantos-http-live-streaming-17)
-  * [ 18 ](/doc/html/draft-pantos-http-live-streaming-18)
-  * [ 19 ](/doc/html/draft-pantos-http-live-streaming-19)
-  * [ 20 ](/doc/html/draft-pantos-http-live-streaming-20)
-  * [ 21 ](/doc/html/draft-pantos-http-live-streaming-21)
-  * [ 22 ](/doc/html/draft-pantos-http-live-streaming-22)
-  * [ 23 ](/doc/html/draft-pantos-http-live-streaming-23)
-  * [ RFC 8216 ](/doc/html/rfc8216)
+- [07](/doc/html/draft-pantos-http-live-streaming-07)
+- [08](/doc/html/draft-pantos-http-live-streaming-08)
+- [09](/doc/html/draft-pantos-http-live-streaming-09)
+- [10](/doc/html/draft-pantos-http-live-streaming-10)
+- [11](/doc/html/draft-pantos-http-live-streaming-11)
+- [12](/doc/html/draft-pantos-http-live-streaming-12)
+- [13](/doc/html/draft-pantos-http-live-streaming-13)
+- [14](/doc/html/draft-pantos-http-live-streaming-14)
+- [15](/doc/html/draft-pantos-http-live-streaming-15)
+- [16](/doc/html/draft-pantos-http-live-streaming-16)
+- [17](/doc/html/draft-pantos-http-live-streaming-17)
+- [18](/doc/html/draft-pantos-http-live-streaming-18)
+- [19](/doc/html/draft-pantos-http-live-streaming-19)
+- [20](/doc/html/draft-pantos-http-live-streaming-20)
+- [21](/doc/html/draft-pantos-http-live-streaming-21)
+- [22](/doc/html/draft-pantos-http-live-streaming-22)
+- [23](/doc/html/draft-pantos-http-live-streaming-23)
+- [RFC 8216](/doc/html/rfc8216)
 
-  
-| Compare versions |  |  RFC 8216  draft-pantos-http-live-streaming-23  draft-pantos-http-live-streaming-22  draft-pantos-http-live-streaming-21  draft-pantos-http-live-streaming-20  draft-pantos-http-live-streaming-19  draft-pantos-http-live-streaming-18  draft-pantos-http-live-streaming-17  draft-pantos-http-live-streaming-16  draft-pantos-http-live-streaming-15  draft-pantos-http-live-streaming-14  draft-pantos-http-live-streaming-13  draft-pantos-http-live-streaming-12  draft-pantos-http-live-streaming-11  draft-pantos-http-live-streaming-10  draft-pantos-http-live-streaming-09  draft-pantos-http-live-streaming-08  draft-pantos-http-live-streaming-07  draft-pantos-http-live-streaming-06  draft-pantos-http-live-streaming-05  draft-pantos-http-live-streaming-04  draft-pantos-http-live-streaming-03  draft-pantos-http-live-streaming-02  draft-pantos-http-live-streaming-01  draft-pantos-http-live-streaming-00  RFC 8216  draft-pantos-http-live-streaming-23  draft-pantos-http-live-streaming-22  draft-pantos-http-live-streaming-21  draft-pantos-http-live-streaming-20  draft-pantos-http-live-streaming-19  draft-pantos-http-live-streaming-18  draft-pantos-http-live-streaming-17  draft-pantos-http-live-streaming-16  draft-pantos-http-live-streaming-15  draft-pantos-http-live-streaming-14  draft-pantos-http-live-streaming-13  draft-pantos-http-live-streaming-12  draft-pantos-http-live-streaming-11  draft-pantos-http-live-streaming-10  draft-pantos-http-live-streaming-09  draft-pantos-http-live-streaming-08  draft-pantos-http-live-streaming-07  draft-pantos-http-live-streaming-06  draft-pantos-http-live-streaming-05  draft-pantos-http-live-streaming-04  draft-pantos-http-live-streaming-03  draft-pantos-http-live-streaming-02  draft-pantos-http-live-streaming-01  draft-pantos-http-live-streaming-00  Side-by-side  Inline   
-| Authors |  |  [Roger Pantos](/person/http-live-streaming-review@group.apple.com "Datatracker profile of Roger Pantos") [ __](mailto:http-live-streaming-review%40group.apple.com "Compose email to http-live-streaming-review@group.apple.com"),[William May](/person/bill.may@mlb.com "Datatracker profile of William May") [ __](mailto:bill.may%40mlb.com "Compose email to bill.may@mlb.com")  
+| Compare versions |  |  RFC 8216  draft-pantos-http-live-streaming-23  draft-pantos-http-live-streaming-22  draft-pantos-http-live-streaming-21  draft-pantos-http-live-streaming-20  draft-pantos-http-live-streaming-19  draft-pantos-http-live-streaming-18  draft-pantos-http-live-streaming-17  draft-pantos-http-live-streaming-16  draft-pantos-http-live-streaming-15  draft-pantos-http-live-streaming-14  draft-pantos-http-live-streaming-13  draft-pantos-http-live-streaming-12  draft-pantos-http-live-streaming-11  draft-pantos-http-live-streaming-10  draft-pantos-http-live-streaming-09  draft-pantos-http-live-streaming-08  draft-pantos-http-live-streaming-07  draft-pantos-http-live-streaming-06  draft-pantos-http-live-streaming-05  draft-pantos-http-live-streaming-04  draft-pantos-http-live-streaming-03  draft-pantos-http-live-streaming-02  draft-pantos-http-live-streaming-01  draft-pantos-http-live-streaming-00  RFC 8216  draft-pantos-http-live-streaming-23  draft-pantos-http-live-streaming-22  draft-pantos-http-live-streaming-21  draft-pantos-http-live-streaming-20  draft-pantos-http-live-streaming-19  draft-pantos-http-live-streaming-18  draft-pantos-http-live-streaming-17  draft-pantos-http-live-streaming-16  draft-pantos-http-live-streaming-15  draft-pantos-http-live-streaming-14  draft-pantos-http-live-streaming-13  draft-pantos-http-live-streaming-12  draft-pantos-http-live-streaming-11  draft-pantos-http-live-streaming-10  draft-pantos-http-live-streaming-09  draft-pantos-http-live-streaming-08  draft-pantos-http-live-streaming-07  draft-pantos-http-live-streaming-06  draft-pantos-http-live-streaming-05  draft-pantos-http-live-streaming-04  draft-pantos-http-live-streaming-03  draft-pantos-http-live-streaming-02  draft-pantos-http-live-streaming-01  draft-pantos-http-live-streaming-00  Side-by-side  Inline
+| Authors |  |  [Roger Pantos](/person/http-live-streaming-review@group.apple.com "Datatracker profile of Roger Pantos") [__](mailto:http-live-streaming-review%40group.apple.com "Compose email to http-live-streaming-review@group.apple.com"),[William May](/person/bill.may@mlb.com "Datatracker profile of William May") [__](mailto:bill.may%40mlb.com "Compose email to bill.may@mlb.com")  
 [Email authors](mailto:rfc8216@ietf.org?subject=rfc8216 "Send email to the document authors")  
-|  RFC stream  |  |  [ Independent Submission ](/stream/ise/)  
-|  Other formats  |  |  [ __txt](https://www.rfc-editor.org/rfc/rfc8216.txt) [ __html](https://www.rfc-editor.org/rfc/rfc8216.html) [ __pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc8216.txt.pdf) [ __w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc8216.html) [ __bibtex](/doc/rfc8216/bibtex/)  
-[ Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
+|  RFC stream  |  |  [Independent Submission](/stream/ise/)  
+|  Other formats  |  |  [__txt](https://www.rfc-editor.org/rfc/rfc8216.txt) [__html](https://www.rfc-editor.org/rfc/rfc8216.html) [__pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc8216.txt.pdf) [__w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc8216.html) [__bibtex](/doc/rfc8216/bibtex/)  
+[Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
 
 Show sidebar by default
 
@@ -3606,17 +3538,17 @@ Yes No
 
 Tab to show by default
 
-__Info __Contents
+__Info__Contents
 
 HTMLization configuration
 
-__HTMLize the plaintext __Plaintextify the HTML
+__HTMLize the plaintext__Plaintextify the HTML
 
 Maximum font size Page dependencies
 
-__Inline __Reference
+__Inline__Reference
 
 Citation links
 
-__Go to reference section __Go to linked document
+__Go to reference section__Go to linked document
   *[↑]: Back to Top

@@ -38,8 +38,7 @@ func CheckDatabase(ctx context.Context, pool *pgxpool.Pool) CheckResult {
 // CheckCache checks if the Dragonfly/Redis cache is healthy.
 // This is a stub for v0.1.0 skeleton.
 func CheckCache(ctx context.Context, client *cache.Client) CheckResult {
-	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-	defer cancel()
+	_ = ctx // Unused in stub implementation
 
 	// TODO: Implement actual cache health check when cache client is implemented
 	return CheckResult{
@@ -52,8 +51,7 @@ func CheckCache(ctx context.Context, client *cache.Client) CheckResult {
 // CheckSearch checks if the Typesense search service is healthy.
 // This is a stub for v0.1.0 skeleton.
 func CheckSearch(ctx context.Context, client *search.Client) CheckResult {
-	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-	defer cancel()
+	_ = ctx // Unused in stub implementation
 
 	// TODO: Implement actual search health check when search client is implemented
 	return CheckResult{
@@ -66,8 +64,7 @@ func CheckSearch(ctx context.Context, client *search.Client) CheckResult {
 // CheckJobs checks if the River job queue workers are healthy.
 // This is a stub for v0.1.0 skeleton.
 func CheckJobs(ctx context.Context, workers *jobs.Workers) CheckResult {
-	ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
-	defer cancel()
+	_ = ctx // Unused in stub implementation
 
 	// TODO: Implement actual job workers health check when workers are implemented
 	return CheckResult{

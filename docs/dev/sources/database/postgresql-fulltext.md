@@ -7,7 +7,7 @@
 
 ---
 
-November 13, 2025: [ PostgreSQL 18.1, 17.7, 16.11, 15.15, 14.20, and 13.23 Released! ](/about/news/postgresql-181-177-1611-1515-1420-and-1323-released-3171/)
+November 13, 2025: [PostgreSQL 18.1, 17.7, 16.11, 15.15, 14.20, and 13.23 Released!](/about/news/postgresql-181-177-1611-1515-1420-and-1323-released-3171/)
 
 [Documentation](/docs/ "Documentation") → [PostgreSQL 18](/docs/18/index.html)
 
@@ -30,25 +30,21 @@ Chapter 12. Full Text Search
 **Table of Contents**
 
 [12.1. Introduction](textsearch-intro.html)
-    
 
 [12.1.1. What Is a Document?](textsearch-intro.html#TEXTSEARCH-DOCUMENT)
 [12.1.2. Basic Text Matching](textsearch-intro.html#TEXTSEARCH-MATCHING)
 [12.1.3. Configurations](textsearch-intro.html#TEXTSEARCH-INTRO-CONFIGURATIONS)
 [12.2. Tables and Indexes](textsearch-tables.html)
-    
 
 [12.2.1. Searching a Table](textsearch-tables.html#TEXTSEARCH-TABLES-SEARCH)
 [12.2.2. Creating Indexes](textsearch-tables.html#TEXTSEARCH-TABLES-INDEX)
 [12.3. Controlling Text Search](textsearch-controls.html)
-    
 
 [12.3.1. Parsing Documents](textsearch-controls.html#TEXTSEARCH-PARSING-DOCUMENTS)
 [12.3.2. Parsing Queries](textsearch-controls.html#TEXTSEARCH-PARSING-QUERIES)
 [12.3.3. Ranking Search Results](textsearch-controls.html#TEXTSEARCH-RANKING)
 [12.3.4. Highlighting Results](textsearch-controls.html#TEXTSEARCH-HEADLINE)
 [12.4. Additional Features](textsearch-features.html)
-    
 
 [12.4.1. Manipulating Documents](textsearch-features.html#TEXTSEARCH-MANIPULATE-TSVECTOR)
 [12.4.2. Manipulating Queries](textsearch-features.html#TEXTSEARCH-MANIPULATE-TSQUERY)
@@ -56,7 +52,6 @@ Chapter 12. Full Text Search
 [12.4.4. Gathering Document Statistics](textsearch-features.html#TEXTSEARCH-STATISTICS)
 [12.5. Parsers](textsearch-parsers.html)
 [12.6. Dictionaries](textsearch-dictionaries.html)
-    
 
 [12.6.1. Stop Words](textsearch-dictionaries.html#TEXTSEARCH-STOPWORDS)
 [12.6.2. Simple Dictionary](textsearch-dictionaries.html#TEXTSEARCH-SIMPLE-DICTIONARY)
@@ -66,7 +61,6 @@ Chapter 12. Full Text Search
 [12.6.6. Snowball Dictionary](textsearch-dictionaries.html#TEXTSEARCH-SNOWBALL-DICTIONARY)
 [12.7. Configuration Example](textsearch-configuration.html)
 [12.8. Testing and Debugging Text Search](textsearch-debugging.html)
-    
 
 [12.8.1. Configuration Testing](textsearch-debugging.html#TEXTSEARCH-CONFIGURATION-TESTING)
 [12.8.2. Parser Testing](textsearch-debugging.html#TEXTSEARCH-PARSER-TESTING)
@@ -83,4 +77,4 @@ Chapter 12. Full Text Search
   
 ## Submit correction
 
-If you see anything in the documentation that is not correct, does not match your experience with the particular feature or requires further clarification, please use [this form](/account/comments/new/18/textsearch.html/) to report a documentation issue. 
+If you see anything in the documentation that is not correct, does not match your experience with the particular feature or requires further clarification, please use [this form](/account/comments/new/18/textsearch.html/) to report a documentation issue.

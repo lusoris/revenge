@@ -1,7 +1,7 @@
 # Coder Workspaces
 
 > Source: https://coder.com/docs/workspaces
-> Fetched: 2026-01-31T16:05:24.809599+00:00
+> Fetched: 2026-02-01T11:52:54.811408+00:00
 > Content-Hash: c440f7d349926f16
 > Type: html
 
@@ -25,7 +25,7 @@ You can also create a workspace from the command line:
 
 Each Coder user has their own workspaces created from [templates](/docs/admin/templates):
 
-``# create a workspace from the template; specify any variables coder create --template="<templateName>" <workspaceName> # show the resources behind the workspace and how to connect coder show <workspace-name> ``
+``# create a workspace from the template; specify any variables coder create --template="<templateName>" <workspaceName> # show the resources behind the workspace and how to connect coder show <workspace-name>``
 
 ### Workspace name rules and restrictions
 
@@ -44,16 +44,14 @@ In the Coder UI, you can filter your workspaces using pre-defined filters or Cod
 
 The following filters are supported:
 
-  * `owner` - Represents the `username` of the owner. You can also use `me` as a convenient alias for the logged-in user, e.g., `owner:me`
-  * `name` - Name of the workspace.
-  * `template` - Name of the template.
-  * `status` - Indicates the status of the workspace, e.g, `status:failed` For a list of supported statuses, see [WorkspaceStatus documentation](https://pkg.go.dev/github.com/coder/coder/codersdk#WorkspaceStatus).
-  * `outdated` - Filters workspaces using an outdated template version, e.g, `outdated:true`
-  * `dormant` - Filters workspaces based on the dormant state, e.g `dormant:true`
-  * `has-agent` - Only applicable for workspaces in "start" transition. Stopped and deleted workspaces don't have agents. List of supported values `connecting|connected|timeout`, e.g, `has-agent:connecting`
-  * `id` - Workspace UUID
-
-
+- `owner` - Represents the `username` of the owner. You can also use `me` as a convenient alias for the logged-in user, e.g., `owner:me`
+- `name` - Name of the workspace.
+- `template` - Name of the template.
+- `status` - Indicates the status of the workspace, e.g, `status:failed` For a list of supported statuses, see [WorkspaceStatus documentation](https://pkg.go.dev/github.com/coder/coder/codersdk#WorkspaceStatus).
+- `outdated` - Filters workspaces using an outdated template version, e.g, `outdated:true`
+- `dormant` - Filters workspaces based on the dormant state, e.g `dormant:true`
+- `has-agent` - Only applicable for workspaces in "start" transition. Stopped and deleted workspaces don't have agents. List of supported values `connecting|connected|timeout`, e.g, `has-agent:connecting`
+- `id` - Workspace UUID
 
 ## Updating workspaces
 
@@ -65,7 +63,7 @@ If the workspace is running, Coder stops it, updates it, then starts the workspa
 
 Update a workspace through the command line:
 
-``coder update <workspace-name> ``
+``coder update <workspace-name>``
 
 ### Automatic updates
 
@@ -103,22 +101,20 @@ Resources are often destroyed and re-created when a workspace is restarted, thou
 
 Use the following command to re-enter template input variables in an existing workspace. This command is useful when a workspace fails to build because its state is out of sync with the template.
 
-``coder update <your workspace name> --always-prompt ``
+``coder update <your workspace name> --always-prompt``
 
 First, try re-entering parameters from a workspace. In the Coder UI, you can filter your workspaces using pre-defined filters or employing the Coder's filter query. Take a look at the following examples to understand how to use the Coder's filter query:
 
-  * To find the workspaces that you own, use the filter `owner:me`.
-  * To find workspaces that are currently running, use the filter `status:running`.
-
-
+- To find the workspaces that you own, use the filter `owner:me`.
+- To find workspaces that are currently running, use the filter `status:running`.
 
 You can also do this in the CLI with the following command:
 
-``coder update <your workspace name> --always-prompt ``
+``coder update <your workspace name> --always-prompt``
 
 If that does not work, a Coder admin can manually push and pull the Terraform state for a given workspace. This can lead to state corruption or deleted resources if you do not know what you are doing.
 
-``coder state pull <username>/<workspace name> # Make changes coder state push <username>/<workspace name> ``
+``coder state pull <username>/<workspace name> # Make changes coder state push <username>/<workspace name>``
 
 ## Logging
 

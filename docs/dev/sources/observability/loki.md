@@ -9,7 +9,7 @@
 
 [Documentation](/docs/) Grafana Loki
 
-Open source 
+Open source
 
 # Grafana Loki
 
@@ -29,7 +29,7 @@ Unlike other logging systems, Loki is built around the idea of only indexing met
 
 Yes No
 
-[Suggest an edit in GitHub ](https://github.com/grafana/loki/edit/main/docs/sources/_index.md)[Create a GitHub issue ](https://github.com/grafana/loki/issues/new?title=Documentation%20feedback:%20/docs/sources/_index.md)[Email docs@grafana.com ](mailto:docs@grafana.com)[Help and support ](/help/)[Community](/community/)
+[Suggest an edit in GitHub](https://github.com/grafana/loki/edit/main/docs/sources/_index.md)[Create a GitHub issue](https://github.com/grafana/loki/issues/new?title=Documentation%20feedback:%20/docs/sources/_index.md)[Email docs@grafana.com](mailto:docs@grafana.com)[Help and support](/help/)[Community](/community/)
 
 ## Related resources from Grafana Labs
 

@@ -23,14 +23,11 @@ We offer two versions of authentik: the forever-free open source project upon wh
 
 The authentik product provides the following consoles:
 
-  * **Flow interface** : [_Flows_](/add-secure-apps/flows-stages/flow/) are the steps by which the various _Stages_ of a login and authentication process occurs. A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
+- **Flow interface** : [_Flows_](/add-secure-apps/flows-stages/flow/) are the steps by which the various _Stages_ of a login and authentication process occurs. A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
 
-  * **User interface** : this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to access to open it, or drill down to edit its configuration in the admin interface.
+- **User interface** : this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to access to open it, or drill down to edit its configuration in the admin interface.
 
-  * **Admin interface** : a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
-
-
-
+- **Admin interface** : a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
 
 In authentik, you can use Light or Dark mode for the Flow interface, User interface, and the Admin interface.
 
@@ -38,12 +35,9 @@ In authentik, you can use Light or Dark mode for the Flow interface, User interf
 
 Our tech docs cover the typical topics, from installation to configuration, adding providers, defining policies and creating login flows, event monitoring, security, and attributes. [Enterprise](/enterprise/) version documentation is included here, within our standard tech docs.
 
-  * For information about integrating a specific application or software into authentik, refer to our **Integrations** section, accessible from the top menu bar.
+- For information about integrating a specific application or software into authentik, refer to our **Integrations** section, accessible from the top menu bar.
 
-  * For developer-focused documentation, such as using our APIs and blueprints, setting up your development environment, translations, or how to contribute, refer to the [**Developer**](/developer-docs/) area, accessible from the top menu bar.
-
-
-
+- For developer-focused documentation, such as using our APIs and blueprints, setting up your development environment, translations, or how to contribute, refer to the [**Developer**](/developer-docs/) area, accessible from the top menu bar.
 
 ## Installation​
 
@@ -51,11 +45,10 @@ Refer to the installation steps for either [Docker Compose](/install-config/inst
 
 For more information about configuration, beta versions, and additional installation options, see our main [Installation](/install-config/) section.
 
-  * What is authentik?
-  * User-focused & task-oriented dashboards
-  * Documentation
-  * Installation
-
+- What is authentik?
+- User-focused & task-oriented dashboards
+- Documentation
+- Installation
 
   *[↑]: Back to Top
   *[v]: View this template

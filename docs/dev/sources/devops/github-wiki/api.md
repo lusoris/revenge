@@ -1,7 +1,7 @@
 # GitHub REST API - Wikis
 
 > Source: https://docs.github.com/en/rest/gists/gists
-> Fetched: 2026-01-31T16:05:45.958472+00:00
+> Fetched: 2026-02-01T11:53:17.826682+00:00
 > Content-Hash: 5276ab6aa46f7138
 > Type: html
 
@@ -37,10 +37,8 @@ Lists the authenticated user's gists or if called anonymously, this endpoint ret
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -69,29 +67,23 @@ Status code| Description
 
 get/gists
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -109,16 +101,12 @@ Don't name your files "gistfile" with a numerical suffix. This is the format of 
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token must have the following permission set:
 
-  * "Gists" user permissions (write)
-
-
+- "Gists" user permissions (write)
 
 ### Parameters for "Create a gist"
 
@@ -153,29 +141,23 @@ Status code| Description
 
 post/gists
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -X POST \ -H "Accept: application/vnd.github+json" \ -H "Authorization: Bearer <YOUR-TOKEN>" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists \ -d '{"description":"Example of a gist","public":false,"files":{"README.md":{"content":"Hello World"}}}'`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 201`
 
@@ -191,10 +173,8 @@ Note: With [pagination](https://docs.github.com/rest/guides/using-pagination-in-
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -224,29 +204,23 @@ Status code| Description
 
 get/gists/public
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/public`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -260,10 +234,8 @@ List the authenticated user's starred gists:
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -293,29 +265,23 @@ Status code| Description
 
 get/gists/starred
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/starred`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -327,19 +293,15 @@ Gets a specified gist.
 
 This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
 
-  * **`application/vnd.github.raw+json`** : Returns the raw markdown. This is the default if you do not pass any specific media type.
-  * **`application/vnd.github.base64+json`** : Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
-
-
+- **`application/vnd.github.raw+json`** : Returns the raw markdown. This is the default if you do not pass any specific media type.
+- **`application/vnd.github.base64+json`** : Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
 
 ### Fine-grained access tokens for "Get a gist"
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -367,29 +329,23 @@ Status code| Description
 
 get/gists/{gist_id}
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -403,25 +359,19 @@ At least one of `description` or `files` is required.
 
 This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
 
-  * **`application/vnd.github.raw+json`** : Returns the raw markdown. This is the default if you do not pass any specific media type.
-  * **`application/vnd.github.base64+json`** : Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
-
-
+- **`application/vnd.github.raw+json`** : Returns the raw markdown. This is the default if you do not pass any specific media type.
+- **`application/vnd.github.base64+json`** : Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
 
 ### Fine-grained access tokens for "Update a gist"
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token must have the following permission set:
 
-  * "Gists" user permissions (write)
-
-
+- "Gists" user permissions (write)
 
 ### Parameters for "Update a gist"
 
@@ -459,29 +409,23 @@ Select the example typeUpdating a gistDeleting a gist fileRenaming a gist file
 
 patch/gists/{gist_id}
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -X PATCH \ -H "Accept: application/vnd.github+json" \ -H "Authorization: Bearer <YOUR-TOKEN>" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID \ -d '{"description":"An updated gist description","files":{"README.md":{"content":"Hello World from GitHub"}}}'`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -493,16 +437,12 @@ Response
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token must have the following permission set:
 
-  * "Gists" user permissions (write)
-
-
+- "Gists" user permissions (write)
 
 ### Parameters for "Delete a gist"
 
@@ -528,20 +468,17 @@ Status code| Description
 
 delete/gists/{gist_id}
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -X DELETE \ -H "Accept: application/vnd.github+json" \ -H "Authorization: Bearer <YOUR-TOKEN>" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID`
 
-#### 
+####
 
 Response
 
@@ -553,10 +490,8 @@ Response
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -588,29 +523,23 @@ Status code| Description
 
 get/gists/{gist_id}/commits
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/commits`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -622,10 +551,8 @@ Response
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -657,29 +584,23 @@ Status code| Description
 
 get/gists/{gist_id}/forks
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/forks`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -691,16 +612,12 @@ Response
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token must have the following permission set:
 
-  * "Gists" user permissions (write)
-
-
+- "Gists" user permissions (write)
 
 ### Parameters for "Fork a gist"
 
@@ -727,29 +644,23 @@ Status code| Description
 
 post/gists/{gist_id}/forks
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -X POST \ -H "Accept: application/vnd.github+json" \ -H "Authorization: Bearer <YOUR-TOKEN>" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/forks`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 201`
 
@@ -761,10 +672,8 @@ Response
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -792,20 +701,17 @@ Status code| Description
 
 get/gists/{gist_id}/star
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/star`
 
-#### 
+####
 
 Response if gist is starred
 
@@ -819,16 +725,12 @@ Note that you'll need to set `Content-Length` to zero when calling out to this e
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token must have the following permission set:
 
-  * "Gists" user permissions (write)
-
-
+- "Gists" user permissions (write)
 
 ### Parameters for "Star a gist"
 
@@ -854,20 +756,17 @@ Status code| Description
 
 put/gists/{gist_id}/star
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -X PUT \ -H "Accept: application/vnd.github+json" \ -H "Authorization: Bearer <YOUR-TOKEN>" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/star`
 
-#### 
+####
 
 Response
 
@@ -879,16 +778,12 @@ Response
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token must have the following permission set:
 
-  * "Gists" user permissions (write)
-
-
+- "Gists" user permissions (write)
 
 ### Parameters for "Unstar a gist"
 
@@ -914,20 +809,17 @@ Status code| Description
 
 delete/gists/{gist_id}/star
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -X DELETE \ -H "Accept: application/vnd.github+json" \ -H "Authorization: Bearer <YOUR-TOKEN>" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/star`
 
-#### 
+####
 
 Response
 
@@ -939,19 +831,15 @@ Gets a specified gist revision.
 
 This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
 
-  * **`application/vnd.github.raw+json`** : Returns the raw markdown. This is the default if you do not pass any specific media type.
-  * **`application/vnd.github.base64+json`** : Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
-
-
+- **`application/vnd.github.raw+json`** : Returns the raw markdown. This is the default if you do not pass any specific media type.
+- **`application/vnd.github.base64+json`** : Returns the base64-encoded contents. This can be useful if your gist contains any invalid UTF-8 sequences.
 
 ### Fine-grained access tokens for "Get a gist revision"
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -980,29 +868,23 @@ Status code| Description
 
 get/gists/{gist_id}/{sha}
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/gists/GIST_ID/SHA`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 
@@ -1016,10 +898,8 @@ Lists public gists for the specified user:
 
 This endpoint works with the following fine-grained token types:
 
-  * [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
-  * [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
-
-
+- [GitHub App user access tokens](/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)
+- [Fine-grained personal access tokens](/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
 
 The fine-grained token does not require any permissions.
 
@@ -1050,29 +930,23 @@ Status code| Description
 
 get/users/{username}/gists
 
-  * cURL
+- cURL
 
-  * JavaScript
+- JavaScript
 
-  * GitHub CLI
-
-
-
+- GitHub CLI
 
 Copy to clipboard curl request example
 
 `curl -L \ -H "Accept: application/vnd.github+json" \ -H "X-GitHub-Api-Version: 2022-11-28" \ https://api.github.com/users/USERNAME/gists`
 
-#### 
+####
 
 Response
 
-  * Example response
+- Example response
 
-  * Response schema
-
-
-
+- Response schema
 
 `Status: 200`
 

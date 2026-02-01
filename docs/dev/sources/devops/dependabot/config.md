@@ -1,7 +1,7 @@
 # Dependabot Configuration
 
 > Source: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-> Fetched: 2026-01-31T16:05:11.654237+00:00
+> Fetched: 2026-02-01T11:52:41.751713+00:00
 > Content-Hash: a0906c0915077881
 > Type: html
 
@@ -34,8 +34,7 @@ Key| Location| Purpose
 `schedule.interval`| Under each `package-ecosystem` entry| Define whether to look for version updates: `daily`, `weekly`, or `monthly`.  
   
 Optionally, you can also include a top-level `registries` key to define access details for private registries, see Top-level `registries` key.
-    
-    
+
     # Basic `dependabot.yml` file with
     # minimum configuration for two package managers
     
@@ -66,10 +65,8 @@ Use to define exactly which dependencies to maintain for a package ecosystem. Of
 
 Dependabot default behavior:
 
-  * All dependencies explicitly defined in a manifest are kept up to date by version updates.
-  * All dependencies defined in lock files with vulnerable dependencies are updated by security updates.
-
-
+- All dependencies explicitly defined in a manifest are kept up to date by version updates.
+- All dependencies defined in lock files with vulnerable dependencies are updated by security updates.
 
 When `allow` is specified Dependabot uses the following process:
 
@@ -78,7 +75,6 @@ When `allow` is specified Dependabot uses the following process:
   2. Then filter out any **ignored** dependencies or versions.
 
 If a dependency is matched by an `allow` and an `ignore` statement, then it is **ignored**.
-
 
 Parameters| Purpose  
 ---|---  
@@ -110,16 +106,12 @@ Specify individual assignees for all pull requests raised for a package ecosyste
 
 Dependabot default behavior:
 
-  * Pull requests are created without any assignees.
-
-
+- Pull requests are created without any assignees.
 
 When `assignees` is defined:
 
-  * All pull requests for version updates are created with the chosen assignees.
-  * All pull requests for security updates are created with the chosen assignees, unless `target-branch` defines updates to a non-default branch.
-
-
+- All pull requests for version updates are created with the chosen assignees.
+- All pull requests for security updates are created with the chosen assignees, unless `target-branch` defines updates to a non-default branch.
 
 Assignees must have write access to the repository. For organization-owned repositories, organization members with read access are also valid assignees.
 
@@ -129,14 +121,12 @@ Define the format for commit messages. Since the titles of pull requests are wri
 
 Dependabot default behavior:
 
-  * Commit messages follow similar patterns to those detected in the repository.
-
-
+- Commit messages follow similar patterns to those detected in the repository.
 
 When `commit-message` is defined:
 
-  * All commit messages follow the defined pattern.
-  * All commit messages follow the defined pattern, unless `target-branch` defines updates to a non-default branch.
+- All commit messages follow the defined pattern.
+- All commit messages follow the defined pattern, unless `target-branch` defines updates to a non-default branch.
 
 Parameters| Purpose  
 ---|---  
@@ -150,28 +140,22 @@ When pull requests are raised for grouped updates, the branch name and pull requ
 
 ### `prefix`
 
-  * Used for all commit messages unless `prefix-development` is also defined.
-  * Value can be up to 50 characters.
-  * Dependabot inserts a colon after the prefix before adding the main commit message when the value ends with a letter, number, closing parenthesis, or closing bracket.
-  * End the value with a whitespace character to stop a colon being added.
-
-
+- Used for all commit messages unless `prefix-development` is also defined.
+- Value can be up to 50 characters.
+- Dependabot inserts a colon after the prefix before adding the main commit message when the value ends with a letter, number, closing parenthesis, or closing bracket.
+- End the value with a whitespace character to stop a colon being added.
 
 ### `prefix-development`
 
 Supported by: `bundler`, `composer`, `mix`, `maven`, `npm`, and `pip`.
 
-  * Used only for commit messages that update dependencies in the Development dependency group.
-  * Otherwise, the parameter behaves exactly as the `prefix` parameter.
-
-
+- Used only for commit messages that update dependencies in the Development dependency group.
+- Otherwise, the parameter behaves exactly as the `prefix` parameter.
 
 ### `include`
 
-  * Supports only the value `scope`
-  * When defined any prefix is followed by the type of dependencies updated in the commit: `deps` or `deps-dev`.
-
-
+- Supports only the value `scope`
+- When defined any prefix is followed by the type of dependencies updated in the commit: `deps` or `deps-dev`.
 
 ## `cooldown`
 
@@ -181,10 +165,8 @@ This feature enables users to customize how often Dependabot generates new versi
 
 Dependabot default behavior:
 
-  * Check for updates according to the scheduled defined via `schedule.interval`.
-  * Consider all new versions **immediately** for updates.
-
-
+- Check for updates according to the scheduled defined via `schedule.interval`.
+- Consider all new versions **immediately** for updates.
 
 When **`cooldown`** is defined:
 
@@ -193,8 +175,6 @@ When **`cooldown`** is defined:
   3. If a dependency’s new release falls within its cooldown period, Dependabot skips updating the version for that dependency.
   4. Dependencies without a cooldown period, or those past their cooldown period, are updated to the latest version as per the configured `versioning-strategy` setting.
   5. After a cooldown ends for a dependency, Dependabot resumes updating the dependency following the standard update strategy defined in `dependabot.yml`.
-
-
 
 ### **Configuration of`cooldown`**
 
@@ -213,54 +193,49 @@ The table below shows the package managers for which SemVer is supported.
 
 Package manager| SemVer supported  
 ---|---  
-Bazel|   
-Bundler|   
-Bun|   
-Cargo|   
-Composer|   
-Devcontainers|   
-Docker|   
-Docker Compose|   
-Dotnet SDK|   
-Elm|   
-GitHub Actions|   
-Gitsubmodule|   
-Gomod (Go Modules)|   
-Gradle|   
-Helm|   
-Hex (Hex)|   
-Julia|   
-Maven|   
-NPM and Yarn|   
-NuGet|   
-OpenTofu|   
-Pip|   
-Pub|   
-Swift|   
-Terraform|   
-UV|   
+Bazel|
+Bundler|
+Bun|
+Cargo|
+Composer|
+Devcontainers|
+Docker|
+Docker Compose|
+Dotnet SDK|
+Elm|
+GitHub Actions|
+Gitsubmodule|
+Gomod (Go Modules)|
+Gradle|
+Helm|
+Hex (Hex)|
+Julia|
+Maven|
+NPM and Yarn|
+NuGet|
+OpenTofu|
+Pip|
+Pub|
+Swift|
+Terraform|
+UV|
   
 Note
 
-  * If `semver-major-days`, `semver-minor-days`, or `semver-patch-days` are not defined, the `default-days` settings will take precedence for cooldown-based updates.
-  * The `exclude` list always take precedence over the `include` list. If a dependency is specified in both lists, it is **excluded from cooldown** and will be updated immediately.
-
-
+- If `semver-major-days`, `semver-minor-days`, or `semver-patch-days` are not defined, the `default-days` settings will take precedence for cooldown-based updates.
+- The `exclude` list always take precedence over the `include` list. If a dependency is specified in both lists, it is **excluded from cooldown** and will be updated immediately.
 
 ## `directories` or `directory`
 
 **Required option**. Use to define the location of the package manifests for each package manager (for example, the _package.json_ or _Gemfile_). Without this information Dependabot cannot create pull requests for version updates. For examples, see [Defining multiple locations for manifest files](/en/code-security/dependabot/dependabot-version-updates/controlling-dependencies-updated#defining-multiple-locations-for-manifest-files).
 
-  * Use `directory` to define a single directory of manifests.
+- Use `directory` to define a single directory of manifests.
 
-  * Use `directories` to define a list of multiple directories of manifests.
+- Use `directories` to define a list of multiple directories of manifests.
 
-  * Define directories relative to the root of the repository for most package managers.
+- Define directories relative to the root of the repository for most package managers.
 
-  * For GitHub Actions, use the value `/`. Dependabot will search the `/.github/workflows` directory, as well as the `action.yml/action.yaml` file from the root directory.
-
-
-
+- For GitHub Actions, use the value `/`. Dependabot will search the `/.github/workflows` directory, as well as the `action.yml/action.yaml` file from the root directory.
 
 If you need to use more than one block in the configuration file to define updates for a single target branch of an ecosystem, you must ensure that all values are unique and there is no overlap in directories defined.
 
@@ -278,19 +253,17 @@ Define rules to create one or more sets of dependencies managed by a package man
 
 Dependabot default behavior:
 
-  * Open a single pull request for each dependency that needs to be updated to a newer version for version updates and for security updates.
-
-
+- Open a single pull request for each dependency that needs to be updated to a newer version for version updates and for security updates.
 
 When `groups` is used to define rules:
 
-  * All updates for dependencies that match a rule are combined in a single pull request.
-  * If a dependency matches more than one rule, it's included in the first group that it matches.
-  * Any outdated dependencies that do not match a rule are updated in individual pull requests.
+- All updates for dependencies that match a rule are combined in a single pull request.
+- If a dependency matches more than one rule, it's included in the first group that it matches.
+- Any outdated dependencies that do not match a rule are updated in individual pull requests.
 
 Parameters| Purpose  
 ---|---  
-`IDENTIFIER`| Define an identifier for the group to use in branch names and pull request titles. This must start and end with a letter, and can contain letters, pipes `|`, underscores `_`, or hyphens `-`.  
+`IDENTIFIER`| Define an identifier for the group to use in branch names and pull request titles. This must start and end with a letter, and can contain letters, pipes `|`, underscores`_`, or hyphens`-`.  
 `applies-to`| Specify which type of update the group applies to. When undefined, defaults to version updates. Supported values: `version-updates` or `security-updates`.  
 `dependency-type`| Limit the group to a type. Supported values: `development` or `production`.  
 `patterns`| Define one or more patterns to include dependencies with matching names.  
@@ -303,10 +276,8 @@ Supported by: `bundler`, `composer`, `mix`, `maven`, `npm`, and `pip`.
 
 By default, a group will include all types of dependencies.
 
-  * Use `development` to include only dependencies in the "Development dependency group."
-  * Use `production` to include only dependencies in the "Production dependency group."
-
-
+- Use `development` to include only dependencies in the "Development dependency group."
+- Use `production` to include only dependencies in the "Production dependency group."
 
 ### `patterns` and `exclude-patterns` (`groups`)
 
@@ -316,11 +287,9 @@ Both options support using `*` as a wild card to define matches with dependency 
 
 By default, a group will include updates for all semantic versions (SemVer). SemVer is an accepted standard for defining versions of software packages, in the form `x.y.z`. Dependabot assumes that versions in this form are always `major.minor.patch`.
 
-  * Use `patch` to include patch releases.
-  * Use `minor` to include minor releases.
-  * Use `major` to include major releases.
-
-
+- Use `patch` to include patch releases.
+- Use `minor` to include minor releases.
+- Use `major` to include major releases.
 
 For examples, see [Controlling which dependencies are updated by Dependabot](/en/code-security/dependabot/dependabot-version-updates/controlling-dependencies-updated#specifying-the-semantic-versioning-level-to-ignore).
 
@@ -330,10 +299,8 @@ Use with the `allow` option to define exactly which dependencies to maintain for
 
 Dependabot default behavior:
 
-  * All dependencies explicitly defined in a manifest are kept up to date by version updates.
-  * All dependencies defined in lock files with vulnerable dependencies are updated by security updates.
-
-
+- All dependencies explicitly defined in a manifest are kept up to date by version updates.
+- All dependencies defined in lock files with vulnerable dependencies are updated by security updates.
 
 When `ignore` is used Dependabot uses the following process:
 
@@ -342,7 +309,6 @@ When `ignore` is used Dependabot uses the following process:
   2. Then filter out any **ignored** dependencies or versions.
 
 If a dependency is matched by an `allow` and an `ignore` statement, then it is **ignored**.
-
 
 Parameters| Purpose  
 ---|---  
@@ -363,13 +329,11 @@ Docker for image tags| The full name of the repository| For an image tag of `<ac
 
 Use to ignore specific versions or ranges of versions. If you want to define a range, use the standard pattern for the package manager. For example:
 
-  * npm: use `^1.0.0`
-  * Bundler: use `~> 2.0`
-  * Docker: use Bundler version syntax
-  * NuGet: use `7.*`
-  * Maven: use `[1.4,)`
-
-
+- npm: use `^1.0.0`
+- Bundler: use `~> 2.0`
+- Docker: use Bundler version syntax
+- NuGet: use `7.*`
+- Maven: use `[1.4,)`
 
 For examples, see [Controlling which dependencies are updated by Dependabot](/en/code-security/dependabot/dependabot-version-updates/controlling-dependencies-updated#ignoring-specific-versions-or-ranges-of-versions).
 
@@ -377,11 +341,9 @@ For examples, see [Controlling which dependencies are updated by Dependabot](/en
 
 Specify which semantic versions (SemVer) to ignore. SemVer is an accepted standard for defining versions of software packages, in the form `x.y.z`. Dependabot assumes that versions in this form are always `major.minor.patch`.
 
-  * Use `version-update:semver-patch` to include patch releases.
-  * Use `version-update:semver-minor` to include minor releases.
-  * Use `version-update:semver-major` to include major releases.
-
-
+- Use `version-update:semver-patch` to include patch releases.
+- Use `version-update:semver-minor` to include minor releases.
+- Use `version-update:semver-major` to include major releases.
 
 ## `insecure-external-code-execution`
 
@@ -391,18 +353,14 @@ Allow Dependabot to execute external code in the manifest during updates. For ex
 
 Dependabot default behavior:
 
-  * When you give Dependabot access to one or more registries, external code execution is automatically disabled to protect your code from compromised packages.
-  * Version updates may fail without the ability to execute code.
-
-
+- When you give Dependabot access to one or more registries, external code execution is automatically disabled to protect your code from compromised packages.
+- Version updates may fail without the ability to execute code.
 
 When you allow `insecure-external-code-execution`:
 
-  * Dependabot will execute code in the manifest as part of the version update process.
-  * The code has access to only the package managers in the registries associated with that `updates`setting. There is no access allowed to any of the registries defined in the top level `registries` configuration.
-  * This should enable the update to succeed but also could allow a compromised package to steal credentials or gain access to configured registries.
-
-
+- Dependabot will execute code in the manifest as part of the version update process.
+- The code has access to only the package managers in the registries associated with that `updates`setting. There is no access allowed to any of the registries defined in the top level `registries` configuration.
+- This should enable the update to succeed but also could allow a compromised package to steal credentials or gain access to configured registries.
 
 Supported value: `allow`.
 
@@ -412,21 +370,17 @@ Specify your own labels for all pull requests raised for a package manager. For 
 
 Dependabot default behavior:
 
-  * All pull requests have a `dependencies` label.
-  * If you define more than one package manager, an additional label for the ecosystem or language is added to each pull request. For example: `java` for Gradle updates and `submodules` for git submodule updates.
-  * If semantic version (SemVer) labels are present in the repository, they will be applied automatically to indicate the type of version update (`major`, `minor`, or `patch`).
-  * Dependabot creates these default labels automatically, as necessary in your repository.
-
-
+- All pull requests have a `dependencies` label.
+- If you define more than one package manager, an additional label for the ecosystem or language is added to each pull request. For example: `java` for Gradle updates and `submodules` for git submodule updates.
+- If semantic version (SemVer) labels are present in the repository, they will be applied automatically to indicate the type of version update (`major`, `minor`, or `patch`).
+- Dependabot creates these default labels automatically, as necessary in your repository.
 
 When `labels` is defined:
 
-  * The labels specified are used instead of the default labels.
-  * SemVer labels (if present in the repository) will still be applied in addition to any custom labels defined.
-  * If any of these labels is not defined in the repository, it is ignored.
-  * You can disable all labels, including the default labels, using `labels: [ ]`.
-
-
+- The labels specified are used instead of the default labels.
+- SemVer labels (if present in the repository) will still be applied in addition to any custom labels defined.
+- If any of these labels is not defined in the repository, it is ignored.
+- You can disable all labels, including the default labels, using `labels: [ ]`.
 
 Setting this option will also affect pull requests for security updates to the manifest files of this package manager, unless you use `target-branch` to check for version updates on a non-default branch.
 
@@ -436,15 +390,11 @@ Associate all pull requests raised for a package manager with a milestone. For e
 
 Dependabot default behavior:
 
-  * No milestones are used.
-
-
+- No milestones are used.
 
 When `milestone` is defined:
 
-  * All pull requests for the package manager are added to the milestone.
-
-
+- All pull requests for the package manager are added to the milestone.
 
 Supported value: the numeric identifier of a milestone.
 
@@ -458,16 +408,12 @@ Define groups that span multiple package ecosystems to get a single Dependabot p
 
 Dependabot default behavior:
 
-  * Create separate pull requests for each package ecosystem that has dependency updates.
-
-
+- Create separate pull requests for each package ecosystem that has dependency updates.
 
 When `multi-ecosystem-groups` is used:
 
-  * Updates across multiple package ecosystems in the same group are combined into a single pull request.
-  * Groups have their own schedules and can inherit or override individual ecosystem settings.
-
-
+- Updates across multiple package ecosystems in the same group are combined into a single pull request.
+- Groups have their own schedules and can inherit or override individual ecosystem settings.
 
 ### `multi-ecosystem-group`
 
@@ -476,8 +422,7 @@ Assign individual package ecosystems to a multi-ecosystem group using the `multi
 Important
 
 Multi-ecosystem updates require specific configuration patterns and have unique parameter merging behavior. For complete setup instructions, configuration examples, and detailed parameter reference, see [Configuring multi-ecosystem updates for Dependabot](/en/code-security/dependabot/working-with-dependabot/configuring-multi-ecosystem-updates).
-    
-    
+
     # Basic `dependabot.yml` file defining a multi-ecosystem-group
     version: 2
     
@@ -504,17 +449,13 @@ Change the limit on the maximum number of pull requests for version updates open
 
 Dependabot default behavior:
 
-  * If five pull requests with version updates are open, no further pull requests are raised until some of those open requests are merged or closed.
-  * Security updates have a separate, internal limit of ten open pull requests which cannot be changed.
-
-
+- If five pull requests with version updates are open, no further pull requests are raised until some of those open requests are merged or closed.
+- Security updates have a separate, internal limit of ten open pull requests which cannot be changed.
 
 When `open-pull-requests-limit` is defined:
 
-  * Dependabot opens pull requests up to the defined integer value. A large value can be set to effectively remove the open pull request limit.
-  * You can temporarily disable version updates for a package manager by setting this option to zero, see [Disabling Dependabot version updates](/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates#disabling-dependabot-version-updates).
-
-
+- Dependabot opens pull requests up to the defined integer value. A large value can be set to effectively remove the open pull request limit.
+- You can temporarily disable version updates for a package manager by setting this option to zero, see [Disabling Dependabot version updates](/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates#disabling-dependabot-version-updates).
 
 ## `package-ecosystem`
 
@@ -547,7 +488,7 @@ OpenTofu| `opentofu`| Not applicable
 pip| `pip`| v24.2  
 pip-compile| `pip`| 7.4.1  
 pipenv| `pip`| <= 2024.4.1  
-pnpm| `npm`| v7, v8   
+pnpm| `npm`| v7, v8
 v9, v10 (version updates only)  
 poetry| `pip`| v2  
 pub| `pub`| v2  
@@ -564,15 +505,11 @@ Specify a separator to use when generating branch names. For examples, see [Cust
 
 Dependabot default behavior:
 
-  * Generate branch names of the form: `dependabot/PACKAGE_MANAGER/DEPENDENCY`
-
-
+- Generate branch names of the form: `dependabot/PACKAGE_MANAGER/DEPENDENCY`
 
 When `pull-request-branch-name.separator` is defined:
 
-  * Use the specified character in place of `/`.
-
-
+- Use the specified character in place of `/`.
 
 Supported values: `"-"`, `_`, `/`
 
@@ -586,12 +523,10 @@ Disable automatic rebasing of pull requests raised by Dependabot.
 
 Dependabot default behavior is to rebase open pull requests when Dependabot detects any changes to a version or security update pull request. Dependabot checks for changes when:
 
-  * Your schedule runs to check for version updates.
-  * You reopen a closed Dependabot pull request.
-  * You change the value of `target-branch` in the Dependabot configuration file, see `target-branch`.
-  * A Dependabot pull request is in conflict after a recent push to the target branch.
-
-
+- Your schedule runs to check for version updates.
+- You reopen a closed Dependabot pull request.
+- You change the value of `target-branch` in the Dependabot configuration file, see `target-branch`.
+- A Dependabot pull request is in conflict after a recent push to the target branch.
 
 When `rebase-strategy` is set to `disabled`, Dependabot stops rebasing pull requests.
 
@@ -608,18 +543,14 @@ There are 2 locations in the `dependabot.yml` file where you can use the `regist
   1. At the top level, where you define the private registries you want to use and their access information, see [Configuring access to private registries for Dependabot](/en/code-security/dependabot/working-with-dependabot/configuring-access-to-private-registries-for-dependabot).
   2. Within the `updates` blocks, where you can specify which private registries each package manager should use.
 
-
-
 Dependabot default behavior is to raise pull requests only to update dependencies stored in publicly accessible registries.
 
 When the Dependabot configuration file has a top-level `registries` section, defining access to one or more private registries, you can configure each `package-ecosystem` to use one or more of these private registries.
 
 When `registries` is defined for a package manager:
 
-  * Each private registry specified for a package manager is checked for version and security updates.
-  * Dependabot uses the access details defined in the top-level `registries` section.
-
-
+- Each private registry specified for a package manager is checked for version and security updates.
+- Dependabot uses the access details defined in the top-level `registries` section.
 
 Supported values: `REGISTRY_NAME` or `"*"`
 
@@ -641,15 +572,13 @@ Supported values: `daily`, `weekly`, `monthly`, `quarterly`, `semiannually`, `ye
 
 Each package manager **must** define a schedule interval.
 
-  * Use `daily` to run on every weekday, Monday to Friday.
-  * Use `weekly` to run once a week, by default on Monday.
-  * Use `monthly` to run on the first day of each month.
-  * Use `quarterly` to run on the first day of each quarter (January, April, July, and October).
-  * Use `semiannually` to run every six months, on the first day of January and July.
-  * Use `yearly` to run on the first day of January.
-  * Use `cron` for cron expression based scheduling option. See `cronjob`.
-
-
+- Use `daily` to run on every weekday, Monday to Friday.
+- Use `weekly` to run once a week, by default on Monday.
+- Use `monthly` to run on the first day of each month.
+- Use `quarterly` to run on the first day of each quarter (January, April, July, and October).
+- Use `semiannually` to run every six months, on the first day of January and July.
+- Use `yearly` to run on the first day of January.
+- Use `cron` for cron expression based scheduling option. See `cronjob`.
 
 By default, Dependabot randomly assigns a time to apply all the updates in the configuration file. You can use the `time` and `timezone` parameters to set a specific runtime for all intervals. If you use a `cron` interval, you can define the update time with a `cronjob` expression.
 
@@ -670,8 +599,7 @@ Optionally, run all updates for a package manager at a specific time of day. By 
 Supported values: Valid cron expression in cron syntax or natural expression.
 
 Cron syntax has five fields separated by a space, and each field represents a unit of time.
-    
-    
+
     ┌───────────── minute (0 - 59)
     │ ┌───────────── hour (0 - 23)
     │ │ ┌───────────── day of the month (1 - 31)
@@ -687,25 +615,21 @@ Examples : `0 9 * * *`, `every day at 5pm`
 
 Note
 
-  * Timezones must be specified in the `timezone` parameter and not in the `cronjob`.
-  * A `cronjob` type schedule is required to use a `cron` interval.
+- Timezones must be specified in the `timezone` parameter and not in the `cronjob`.
+- A `cronjob` type schedule is required to use a `cron` interval.
 
-
-    
-    
     # Basic `dependabot.yml` file for cronjob
-    
+
     version: 2
     updates:
-      # Enable version updates for npm
-      - package-ecosystem: "npm"
+    # Enable version updates for npm
+  - package-ecosystem: "npm"
         # Look for `package.json` and `lock` files in the `root` directory
         directory: "/"
         # Check the npm registry for updates based on `cronjob` value
         schedule:
           interval: "cron"
-          cronjob: "0 9 * * *"
-    
+          cronjob: "0 9 ** *"
 
 ### `timezone`
 
@@ -719,17 +643,13 @@ Define a specific branch to check for version updates and to target pull request
 
 Dependabot default behavior:
 
-  * Dependabot uses the default branch for the repository, see [About the default branch](/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches#about-the-default-branch).
-
-
+- Dependabot uses the default branch for the repository, see [About the default branch](/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches#about-the-default-branch).
 
 When `target-branch` is defined:
 
-  * Only manifest files on the target branch are checked for version updates.
-  * All pull requests for version updates are opened targeting the specified branch.
-  * Options defined for this `package-ecosystem` no longer apply to security updates because security updates always use the default branch for the repository.
-
-
+- Only manifest files on the target branch are checked for version updates.
+- All pull requests for version updates are opened targeting the specified branch.
+- Options defined for this `package-ecosystem` no longer apply to security updates because security updates always use the default branch for the repository.
 
 ## `exclude-paths`
 
@@ -737,13 +657,11 @@ Use to specify paths of directories and files that Dependabot should ignore when
 
 Dependabot default behavior:
 
-  * All directories and files in the specified `directory` are included in the update scan unless excluded by this option.
-
-
+- All directories and files in the specified `directory` are included in the update scan unless excluded by this option.
 
 When `exclude-paths` is defined:
 
-  * All files and directories matching the specified paths are ignored during update scans for the given `package-ecosystem` entry.
+- All files and directories matching the specified paths are ignored during update scans for the given `package-ecosystem` entry.
 
 Parameter| Purpose  
 ---|---  
@@ -752,8 +670,7 @@ Parameter| Purpose
 Glob patterns are supported, such as `**` for recursive matching and `*` for single-segment wildcards. Patterns are relative to the `directory` specified for the update configuration. Each ecosystem can have its own `exclude-paths` settings.
 
 ### Example
-    
-    
+
     version: 2
     updates:
       - package-ecosystem: "npm"
@@ -803,18 +720,14 @@ For examples, see [Controlling which dependencies are updated by Dependabot](/en
 
 Dependabot default behavior:
 
-  * Maintain only dependencies recorded in the manifest and lock files identified for Bundler.
-  * Raise security and version update pull requests that update the version numbers recorded in the manifest and lock files.
-  * For Go modules, any vendored dependencies are automatically identified and maintained as if `vendor` was enabled.
-
-
+- Maintain only dependencies recorded in the manifest and lock files identified for Bundler.
+- Raise security and version update pull requests that update the version numbers recorded in the manifest and lock files.
+- For Go modules, any vendored dependencies are automatically identified and maintained as if `vendor` was enabled.
 
 When `vendor` is enabled:
 
-  * Dependabot also maintains dependencies for Bundler that are stored in the `_vendor/cache_` directory in the repository.
-  * Pull requests will sometimes contain updates to a dependency that is stored in the repository.
-
-
+- Dependabot also maintains dependencies for Bundler that are stored in the `_vendor/cache_` directory in the repository.
+- Pull requests will sometimes contain updates to a dependency that is stored in the repository.
 
 Supported values: `true` or `false`
 
@@ -826,11 +739,9 @@ Define how Dependabot should edit manifest files. For examples, see [Controlling
 
 Dependabot default behavior:
 
-  * Try to differentiate between app and library dependencies.
-  * For apps, always increase the minimum version requirement to match the new version. The `increase` strategy.
-  * For libraries, widen the allowed version requirements to include both the new and old versions, when possible. The `widen` strategy.
-
-
+- Try to differentiate between app and library dependencies.
+- For apps, always increase the minimum version requirement to match the new version. The `increase` strategy.
+- For libraries, widen the allowed version requirements to include both the new and old versions, when possible. The `widen` strategy.
 
 When `versioning-strategy` is defined, Dependabot uses the strategy specified.
 
@@ -846,19 +757,15 @@ For example, if the current version is `1.0.0` and the current constraint is `^1
 
 New version `1.2.0`
 
-  * `increase`: new constraint `^1.2.0`
-  * `increase-if-necessary`: new constraint `^1.0.0`
-  * `widen`: new constraint `^1.0.0`
-
-
+- `increase`: new constraint `^1.2.0`
+- `increase-if-necessary`: new constraint `^1.0.0`
+- `widen`: new constraint `^1.0.0`
 
 New version `2.0.0`
 
-  * `increase`: new constraint `^2.0.0`
-  * `increase-if-necessary`: new constraint `^2.0.0 `
-  * `widen`: new constraint `>=1.0.0 <3.0.0`
-
-
+- `increase`: new constraint `^2.0.0`
+- `increase-if-necessary`: new constraint `^2.0.0`
+- `widen`: new constraint `>=1.0.0 <3.0.0`
 
 Note
 
@@ -866,11 +773,9 @@ If the package manager you use does not yet support configuring the `versioning-
 
 ### Versioning tags
 
-  * Represent stages in the software release lifecycle, such as alpha, beta, and stable versions.
-  * Allow publishers to distribute their packages more effectively.
-  * Indicate the stability of a version and communicate what users should expect in terms of features and stability.
-
-
+- Represent stages in the software release lifecycle, such as alpha, beta, and stable versions.
+- Allow publishers to distribute their packages more effectively.
+- Indicate the stability of a version and communicate what users should expect in terms of features and stability.
 
 Dependabot recognizes a variety of versioning tags for pre-releases, stable versions, and custom tags across different ecosystems.
 
@@ -887,28 +792,25 @@ yarn| `npm`| `alpha`, `beta`, `canary`, `dev`, `experimental`, `latest`, `legacy
   
 #### Versioning tag glossary
 
-  * **`alpha`:** Early version, may be unstable and have incomplete features.
-  * **`beta`:** More stable than alpha but may still have bugs.
-  * **`canary`:** Regularly updated pre-release version for testing.
-  * **`dev`:** Represents development versions.
-  * **`experimental`:** Versions with experimental features.
-  * **`latest`:** The latest stable release.
-  * **`legacy`:** Older or deprecated versions.
-  * **`next`:** Upcoming release version.
-  * **`nightly`:** Versions built nightly; often includes the latest changes.
-  * **`rc`:** Release candidate, close to stable release.
-  * **`release`:** The official release version.
-  * **`stable`:** The most reliable, production-ready version.
-
-
+- **`alpha`:** Early version, may be unstable and have incomplete features.
+- **`beta`:** More stable than alpha but may still have bugs.
+- **`canary`:** Regularly updated pre-release version for testing.
+- **`dev`:** Represents development versions.
+- **`experimental`:** Versions with experimental features.
+- **`latest`:** The latest stable release.
+- **`legacy`:** Older or deprecated versions.
+- **`next`:** Upcoming release version.
+- **`nightly`:** Versions built nightly; often includes the latest changes.
+- **`rc`:** Release candidate, close to stable release.
+- **`release`:** The official release version.
+- **`stable`:** The most reliable, production-ready version.
 
 ## Top-level `registries` key
 
 Specify authentication details that Dependabot can use to access private package registries, including registries hosted by GitLab or Bitbucket.
 
 The value of the `registries` key is an associative array, each element of which consists of a key that identifies a particular registry and a value which is an associative array that specifies the settings required to access that registry. The following `dependabot.yml` file configures a registry identified as `dockerhub` in the `registries` section of the file and then references this in the `updates` section of the file.
-    
-    
+
     # Minimal settings to update dependencies stored in one private registry
     
     version: 2

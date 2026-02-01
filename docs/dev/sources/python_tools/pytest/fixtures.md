@@ -1,7 +1,7 @@
 # pytest Fixtures
 
 > Source: https://docs.pytest.org/en/stable/fixture.html
-> Fetched: 2026-01-31T16:07:41.629980+00:00
+> Fetched: 2026-02-01T11:55:07.423728+00:00
 > Content-Hash: fd215fd8c60779bb
 > Type: html
 
@@ -28,8 +28,7 @@ Fixtures define the steps and data that constitute the _arrange_ phase of a test
 The services, state, or other operating environments set up by fixtures are accessed by test functions through arguments. For each fixture used by a test function there is typically a parameter (named after the fixture) in the test function’s definition.
 
 We can tell pytest that a particular function is a fixture by decorating it with [`@pytest.fixture`](../reference/reference.html#pytest.fixture "pytest.fixture"). Here’s a simple example of what a fixture in pytest might look like:
-    
-    
+
     import pytest
     
     
@@ -61,16 +60,13 @@ Tests don’t have to be limited to a single fixture, either. They can depend on
 
 pytest fixtures offer dramatic improvements over the classic xUnit style of setup/teardown functions:
 
-  * fixtures have explicit names and are activated by declaring their use from test functions, modules, classes or whole projects.
+- fixtures have explicit names and are activated by declaring their use from test functions, modules, classes or whole projects.
 
-  * fixtures are implemented in a modular manner, as each fixture name triggers a _fixture function_ which can itself use other fixtures.
+- fixtures are implemented in a modular manner, as each fixture name triggers a _fixture function_ which can itself use other fixtures.
 
-  * fixture management scales from simple unit to complex functional testing, allowing to parametrize fixtures and tests according to configuration and component options, or to reuse fixtures across function, class, module or whole test session scopes.
+- fixture management scales from simple unit to complex functional testing, allowing to parametrize fixtures and tests according to configuration and component options, or to reuse fixtures across function, class, module or whole test session scopes.
 
-  * teardown logic can be easily, and safely managed, no matter how many fixtures are used, without the need to carefully handle errors by hand or micromanage the order that cleanup steps are added.
-
-
-
+- teardown logic can be easily, and safely managed, no matter how many fixtures are used, without the need to carefully handle errors by hand or micromanage the order that cleanup steps are added.
 
 In addition, pytest continues to support [How to implement xunit-style set-up](../how-to/xunit_setup.html#xunitsetup). You can mix both styles, moving incrementally from classic to new style, as you prefer. You can also start out from existing [unittest.TestCase style](../how-to/unittest.html#unittest-testcase).
 
@@ -83,8 +79,7 @@ When a test is marked as having an error, it doesn’t mean the test failed, tho
 This is one reason why it’s a good idea to cut out as many unnecessary dependencies as possible for a given test. That way a problem in something unrelated isn’t causing us to have an incomplete picture of what may or may not have issues.
 
 Here’s a quick example to help explain:
-    
-    
+
     import pytest
     
     

@@ -19,8 +19,7 @@ Dragonfly is fully compatible with the Redis ecosystem and requires no code chan
 
 Visit the [getting started section](/docs/getting-started) to explore deployment options and try Dragonfly yourself.
 
-  * About Dragonfly
-
+- About Dragonfly
 
   *[↑]: Back to Top
   *[v]: View this template

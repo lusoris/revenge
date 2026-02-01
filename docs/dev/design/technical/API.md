@@ -19,24 +19,23 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: ogen OpenAPI Generator
+- name: ogen OpenAPI Generator
     url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-  - name: OpenAPI 3.1 Specification
+- name: OpenAPI 3.1 Specification
     url: ../sources/apis/openapi-spec.md
     note: API spec standard
-  - name: RFC 7807 Problem Details
+- name: RFC 7807 Problem Details
     url: https://datatracker.ietf.org/doc/html/rfc7807
     note: Standardized error format
 design_refs:
-  - title: technical
+- title: technical
     path: technical/INDEX.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
 ---
 
@@ -44,11 +43,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > REST API reference with OpenAPI specification and ogen code generation
 
@@ -59,9 +56,7 @@ Complete API documentation for Revenge:
 - **Rate Limiting**: User-based and IP-based limits
 - **Error Handling**: Standardized RFC 7807 Problem Details
 
-
 ---
-
 
 ## Status
 
@@ -76,9 +71,7 @@ Complete API documentation for Revenge:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -87,7 +80,6 @@ Complete API documentation for Revenge:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -103,7 +95,6 @@ Complete API documentation for Revenge:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -112,7 +103,6 @@ Complete API documentation for Revenge:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -128,7 +118,6 @@ Complete API documentation for Revenge:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical/INDEX.md)
@@ -139,4 +128,3 @@ Target: **80% minimum**
 - [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
 - [OpenAPI 3.1 Specification](../sources/apis/openapi-spec.md) - API spec standard
 - [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807) - Standardized error format
-

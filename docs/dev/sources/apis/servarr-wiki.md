@@ -17,47 +17,35 @@ At times, one may be able to edit on the Wiki directly, just authenticate with G
 
 ## ¶ Media Automation
 
-  * [ Lidarr _Music_](/lidarr)
-  * [ Radarr _Movies_](/radarr)
-  * [ Readarr _Books_](/readarr)
-  * [ Sonarr _TV_](/sonarr)
-  * [ Whisparr _Adult Videos_](/whisparr)
-
-
+- [Lidarr _Music_](/lidarr)
+- [Radarr _Movies_](/radarr)
+- [Readarr _Books_](/readarr)
+- [Sonarr _TV_](/sonarr)
+- [Whisparr _Adult Videos_](/whisparr)
 
 ## ¶ Indexer Management
 
-  * [ Prowlarr _Indexers_](/prowlarr)
-
-
+- [Prowlarr _Indexers_](/prowlarr)
 
 # ¶ Other
 
 ## ¶ General Troubleshooting
 
-  * [__General Permissions & Network Troubleshooting](/permissions-and-networking)
-  * [__VPN Guide _When and how to use VPNs properly_](/vpn)
-
-
+- [__General Permissions & Network Troubleshooting](/permissions-and-networking)
+- [__VPN Guide _When and how to use VPNs properly_](/vpn)
 
 ## ¶ Docker
 
-  * [__Docker Guide](/docker-guide)
-  * [__Installing Docker on an ARM-based Synology NAS](/docker-arm-synology)
-
-
+- [__Docker Guide](/docker-guide)
+- [__Installing Docker on an ARM-based Synology NAS](/docker-arm-synology)
 
 ## ¶ XEM
 
-  * [__XEM Moderation Guide _Guide for how to map various scenarios in XEM_](/sonarr/xem-guide)
-
-
+- [__XEM Moderation Guide _Guide for how to map various scenarios in XEM_](/sonarr/xem-guide)
 
 ## ¶ Guides & Tools
 
-  * [__Useful Tools _Servarr list of related apps and tools_](/useful-tools)
-  * [__TRaSH's Guides _Tutorials and Guides for Radarr, Sonarr, Docker, and Download Clients_](https://trash-guides.info/)
-  * [__Lidarr Community Guide _Davo's TRaSH Guide for Lidarr_](/lidarr/community-guide)
-  * [ Community *Arr Install Script _Unofficial Community Script for Servarr Apps_](/install-script)
-
-
+- [__Useful Tools _Servarr list of related apps and tools_](/useful-tools)
+- [__TRaSH's Guides _Tutorials and Guides for Radarr, Sonarr, Docker, and Download Clients_](https://trash-guides.info/)
+- [__Lidarr Community Guide _Davo's TRaSH Guide for Lidarr_](/lidarr/community-guide)
+- [Community *Arr Install Script _Unofficial Community Script for Servarr Apps_](/install-script)

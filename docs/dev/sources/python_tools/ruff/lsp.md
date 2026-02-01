@@ -1,7 +1,7 @@
 # ruff-lsp
 
 > Source: https://github.com/astral-sh/ruff-lsp
-> Fetched: 2026-01-31T11:06:39.899482+00:00
+> Fetched: 2026-02-01T11:55:02.713689+00:00
 > Content-Hash: 2812e5902dfc9bb6
 > Type: github_readme
 
@@ -300,7 +300,7 @@ the following settings are supported:
 - Run `python -m pip install pip-tools` to install `pip-tools`.
 - Run `rm requirements.txt requirements-dev.txt` and then `just lock` to update ruff.
 - Create a new PR and merge it.
-- [Create a new Release](https://github.com/astral-sh/ruff-lsp/releases/new), enter `v0.0.x` (where `x` is the new version) into the *Choose a tag* selector. Click *Generate release notes*, curate the release notes and publish the release.
+- [Create a new Release](https://github.com/astral-sh/ruff-lsp/releases/new), enter `v0.0.x` (where `x` is the new version) into the _Choose a tag_ selector. Click _Generate release notes_, curate the release notes and publish the release.
 - The Release workflow publishes the LSP to PyPI.
 
 ## License

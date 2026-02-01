@@ -18,8 +18,7 @@ The most basic config file looks like this:
 vite.config.js
 
 js
-    
-    
+
     export default {
       // config options
     }
@@ -29,8 +28,7 @@ Note Vite supports using ES modules syntax in the config file even if the projec
 You can also explicitly specify a config file to use with the `\--config` CLI option (resolved relative to `cwd`):
 
 bash
-    
-    
+
     vite --config my-config.js
 
 CONFIG LOADING
@@ -44,8 +42,7 @@ Alternatively, if you're using an environment that supports TypeScript (e.g. `no
 Since Vite ships with TypeScript typings, you can leverage your IDE's intellisense with jsdoc type hints:
 
 js
-    
-    
+
     /** @type {import('vite').UserConfig} */
     export default {
       // ...
@@ -54,8 +51,7 @@ js
 Alternatively, you can use the `defineConfig` helper which should provide intellisense without the need for jsdoc annotations:
 
 js
-    
-    
+
     import { defineConfig } from 'vite'
     
     export default defineConfig({
@@ -65,8 +61,7 @@ js
 Vite also supports TypeScript config files. You can use `vite.config.ts` with the `defineConfig` helper function above, or with the `satisfies` operator:
 
 ts
-    
-    
+
     import type { UserConfig } from 'vite'
     
     export default {
@@ -78,8 +73,7 @@ ts
 If the config needs to conditionally determine options based on the command (`serve` or `build`), the [mode](/guide/env-and-mode#modes) being used, if it's an SSR build (`isSsrBuild`), or is previewing the build (`isPreview`), it can export a function instead:
 
 js
-    
-    
+
     export default (({ , , ,  }) => {
       if ( === 'serve') {
         return {
@@ -102,8 +96,7 @@ It is important to note that in Vite's API the `command` value is `serve` during
 If the config needs to call async functions, it can export an async function instead. And this async function can also be passed through `defineConfig` for improved intellisense support:
 
 js
-    
-    
+
     export default (async ({ ,  }) => {
       const  = await asyncFunction()
       return {
@@ -120,8 +113,7 @@ This means: variables defined in `.env`, `.env.local`, `.env.[mode]`, or `.env.[
 If, however, values from `.env*` files must influence the config itself (for example to set `server.port`, conditionally enable plugins, or compute `define` replacements), you can load them manually using the exported [`loadEnv`](/guide/api-javascript#loadenv) helper.
 
 js
-    
-    
+
     import { ,  } from 'vite'
     
     export default (({  }) => {
@@ -146,8 +138,7 @@ js
 With the default `\--configLoader bundle` behavior, Vite writes the generated temporary configuration file to the `node_modules/.vite-temp` folder and a file not found error will occur when setting breakpoint debugging in the Vite config file. To fix the issue, add the following configuration to `.vscode/settings.json`:
 
 json
-    
-    
+
     {
       "debug.javascript.terminalOptions": {
         "resolveSourceMapLocations": [

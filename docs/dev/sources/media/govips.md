@@ -7,7 +7,6 @@
 
 ---
 
-
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

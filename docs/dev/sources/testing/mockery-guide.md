@@ -7,7 +7,7 @@
 
 ---
 
-Redirecting to [latest/](latest/)... 
+Redirecting to [latest/](latest/)...
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

@@ -1,7 +1,7 @@
 # goimports
 
 > Source: https://pkg.go.dev/golang.org/x/tools/cmd/goimports
-> Fetched: 2026-01-31T16:07:00.913614+00:00
+> Fetched: 2026-02-01T11:54:38.561642+00:00
 > Content-Hash: eb0cf02699287e36
 > Type: html
 
@@ -9,52 +9,46 @@
 
 ### Overview ¶
 
-Command goimports updates your Go import lines, adding missing ones and removing unreferenced ones. 
-    
-    
-    $ go install golang.org/x/tools/cmd/goimports@latest
+Command goimports updates your Go import lines, adding missing ones and removing unreferenced ones.
+
+    go install golang.org/x/tools/cmd/goimports@latest
     
 
-In addition to fixing imports, goimports also formats your code in the same style as gofmt so it can be used as a replacement for your editor's gofmt-on-save hook. 
+In addition to fixing imports, goimports also formats your code in the same style as gofmt so it can be used as a replacement for your editor's gofmt-on-save hook.
 
-For emacs, make sure you have the latest go-mode.el: 
-    
-    
+For emacs, make sure you have the latest go-mode.el:
+
     https://github.com/dominikh/go-mode.el
     
 
-Then in your .emacs file: 
-    
-    
+Then in your .emacs file:
+
     (setq gofmt-command "goimports")
     (add-hook 'before-save-hook 'gofmt-before-save)
     
 
-For vim, set "gofmt_command" to "goimports": 
-    
-    
+For vim, set "gofmt_command" to "goimports":
+
     https://golang.org/change/39c724dd7f252
     https://golang.org/wiki/IDEsAndTextEditorPlugins
     etc
     
 
-For GoSublime, follow the steps described here: 
-    
-    
+For GoSublime, follow the steps described here:
+
     http://michaelwhatcott.com/gosublime-goimports/
     
 
-For other editors, you probably know what to do. 
+For other editors, you probably know what to do.
 
-To exclude directories in your $GOPATH from being scanned for Go files, goimports respects a configuration file at $GOPATH/src/.goimportsignore which may contain blank lines, comment lines (beginning with '#'), or lines naming a directory relative to the configuration file to ignore when scanning. No globbing or regex patterns are allowed. Use the "-v" verbose flag to verify it's working and see what goimports is doing. 
+To exclude directories in your $GOPATH from being scanned for Go files, goimports respects a configuration file at $GOPATH/src/.goimportsignore which may contain blank lines, comment lines (beginning with '#'), or lines naming a directory relative to the configuration file to ignore when scanning. No globbing or regex patterns are allowed. Use the "-v" verbose flag to verify it's working and see what goimports is doing.
 
-File bugs or feature requests at: 
-    
-    
+File bugs or feature requests at:
+
     https://golang.org/issues/new?title=x/tools/cmd/goimports:+
     
 
-Happy hacking! 
+Happy hacking!
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

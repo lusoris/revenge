@@ -22,7 +22,7 @@ func MigrateUp(databaseURL string, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	defer m.Close()
+	defer m.Close() //nolint:errcheck // Deferred cleanup, error not actionable
 
 	version, dirty, err := m.Version()
 	if err != nil && err != migrate.ErrNilVersion {
@@ -56,7 +56,7 @@ func MigrateDown(databaseURL string, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	defer m.Close()
+	defer m.Close() //nolint:errcheck // Deferred cleanup, error not actionable
 
 	version, dirty, err := m.Version()
 	if err != nil && err != migrate.ErrNilVersion {
@@ -90,7 +90,7 @@ func MigrateVersion(databaseURL string) (uint, bool, error) {
 	if err != nil {
 		return 0, false, err
 	}
-	defer m.Close()
+	defer m.Close() //nolint:errcheck // Deferred cleanup, error not actionable
 
 	version, dirty, err := m.Version()
 	if err != nil && err != migrate.ErrNilVersion {
@@ -106,7 +106,7 @@ func MigrateTo(databaseURL string, version uint, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	defer m.Close()
+	defer m.Close() //nolint:errcheck // Deferred cleanup, error not actionable
 
 	currentVersion, dirty, err := m.Version()
 	if err != nil && err != migrate.ErrNilVersion {
@@ -141,21 +141,21 @@ func newMigrate(databaseURL string) (*migrate.Migrate, error) {
 	// Create postgres driver instance
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
-		db.Close()
+		_ = db.Close() // Best-effort cleanup
 		return nil, errors.Wrap(err, "failed to create postgres driver")
 	}
 
 	// Create source from embedded filesystem
 	sourceDriver, err := iofs.New(migrationsFS, "migrations")
 	if err != nil {
-		db.Close()
+		_ = db.Close() // Best-effort cleanup
 		return nil, errors.Wrap(err, "failed to create source driver")
 	}
 
 	// Create migrate instance
 	m, err := migrate.NewWithInstance("iofs", sourceDriver, "postgres", driver)
 	if err != nil {
-		db.Close()
+		_ = db.Close() // Best-effort cleanup
 		return nil, errors.Wrap(err, "failed to create migrate instance")
 	}
 

@@ -8,37 +8,32 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: shadcn-svelte
+- name: shadcn-svelte
     url: ../sources/frontend/shadcn-svelte.md
     note: Auto-resolved from shadcn-svelte
-  - name: Svelte 5 Runes
+- name: Svelte 5 Runes
     url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
+- name: Svelte 5 Documentation
     url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
+- name: SvelteKit Documentation
     url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
-  - title: research
+- title: research
     path: research.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # UX/UI Design & Frontend Resources
-
-
-
 
 > Design resources for building the Revenge UI
 
@@ -46,44 +41,25 @@ This document collects UI/UX resources used in designing Revenge. The component 
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

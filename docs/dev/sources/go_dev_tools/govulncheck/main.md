@@ -1,7 +1,7 @@
 # govulncheck
 
 > Source: https://go.dev/blog/vuln
-> Fetched: 2026-01-31T16:06:53.882220+00:00
+> Fetched: 2026-02-01T11:54:34.086514+00:00
 > Content-Hash: 8fbd49e3d183fa64
 > Type: html
 
@@ -12,7 +12,7 @@
 # Vulnerability Management for Go
 
 Julie Qiu, for the Go security team  
-6 September 2022 
+6 September 2022
 
 We are excited to announce Go’s new support for vulnerability management, our first step towards helping Go developers learn about known vulnerabilities that may affect them.
 
@@ -37,15 +37,13 @@ The Go vulnerability database can be viewed in your browser at [pkg.go.dev/vuln]
 The new [govulncheck command](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck) is a low-noise, reliable way for Go users to learn about known vulnerabilities that may affect their projects. Govulncheck analyzes your codebase and only surfaces vulnerabilities that actually affect you, based on which functions in your code are transitively calling vulnerable functions.
 
 You can install the latest version of govulncheck using [go install](https://pkg.go.dev/cmd/go#hdr-Compile_and_install_packages_and_dependencies):
-    
-    
-    $ go install golang.org/x/vuln/cmd/govulncheck@latest
+
+    go install golang.org/x/vuln/cmd/govulncheck@latest
     
 
 Then, run govulncheck inside your project directory:
-    
-    
-    $ govulncheck ./...
+
+    govulncheck ./...
     
 
 Govulncheck is a standalone tool to allow frequent updates and rapid iteration while we gather feedback from users. In the long term, we plan to integrate the govulncheck tool into the main Go distribution.
@@ -64,11 +62,9 @@ Go’s support for vulnerability management is a new feature that is under activ
 
 We would love for you to contribute and help us make improvements in the following ways:
 
-  * [Contribute new](/s/vulndb-report-new) and [update existing](/s/vulndb-report-feedback) information about public vulnerabilities for Go packages that you maintain
-  * [Take this survey](/s/govulncheck-feedback) to share your experience using govulncheck
-  * [Send us feedback](/s/vuln-feedback) about issues and feature requests
-
-
+- [Contribute new](/s/vulndb-report-new) and [update existing](/s/vulndb-report-feedback) information about public vulnerabilities for Go packages that you maintain
+- [Take this survey](/s/govulncheck-feedback) to share your experience using govulncheck
+- [Send us feedback](/s/vuln-feedback) about issues and feature requests
 
 We are excited to work with you to build a better and more secure Go ecosystem.
 

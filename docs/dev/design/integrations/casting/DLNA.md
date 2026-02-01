@@ -21,16 +21,15 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 design_refs:
-  - title: integrations/casting
+- title: integrations/casting
     path: integrations/casting.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -38,18 +37,15 @@ design_refs:
 
 <!-- DESIGN: integrations/casting, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
-
 
 > Integration with DLNA/UPnP
 
 > Universal Plug and Play streaming to compatible devices
 
 ---
-
 
 ## Status
 
@@ -64,9 +60,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -90,7 +84,6 @@ internal/integration/dlnaupnp/
 This integration provides:
 <!-- Data provided by integration -->
 
-
 ## Implementation
 
 ### File Structure
@@ -105,7 +98,6 @@ This integration provides:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -114,7 +106,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -130,7 +121,6 @@ This integration provides:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [integrations/casting](integrations/casting.md)
@@ -140,4 +130,3 @@ Target: **80% minimum**
 
 ### External Sources
 <!-- External documentation sources -->
-

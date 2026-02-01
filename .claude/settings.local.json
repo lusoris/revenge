@@ -78,7 +78,19 @@
       "Bash(go list:*)",
       "Bash(GOEXPERIMENT=greenteagc,jsonv2 go build:*)",
       "Bash(./bin/revenge version:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(gofmt:*)",
+      "Bash(go get:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 go test:*)",
+      "Bash(go tool cover:*)",
+      "Bash(docker compose up:*)",
+      "Bash(docker run:*)",
+      "Bash(./bin/revenge:*)",
+      "Bash(go fmt:*)",
+      "Bash(golangci-lint:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 golangci-lint run:*)",
+      "Bash(GOEXPERIMENT=greenteagc,jsonv2 golangci-lint linters:*)",
+      "Bash(npx markdownlint-cli2:*)"
     ]
   }
 }

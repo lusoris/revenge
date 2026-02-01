@@ -23,7 +23,7 @@ If you are coming to TypeScript without a JavaScript background, with the intent
 
 The handbook is split into two sections:
 
-  * **The Handbook**
+- **The Handbook**
 
 The TypeScript Handbook is intended to be a comprehensive document that explains TypeScript to everyday programmers. You can read the handbook by going from top to bottom in the left-hand navigation.
 
@@ -37,12 +37,9 @@ A reader who completes the walkthrough should be able to:
 
 In the interests of clarity and brevity, the main content of the Handbook will not explore every edge case or minutiae of the features being covered. You can find more details on particular concepts in the reference articles.
 
-  * **Reference Files**
+- **Reference Files**
 
 The reference section below the handbook in the navigation is built to provide a richer understanding of how a particular part of TypeScript works. You can read it top-to-bottom, but each section aims to provide a deeper explanation of a single concept - meaning there is no aim for continuity.
-
-
-
 
 ### Non-Goals
 
@@ -58,12 +55,10 @@ Finally, the Handbook won’t cover how TypeScript interacts with other tools, e
 
 Before getting started with [The Basics](/docs/handbook/2/basic-types.html), we recommend reading one of the following introductory pages. These introductions are intended to highlight key similarities and differences between TypeScript and your favored programming language, and clear up common misconceptions specific to those languages.
 
-  * [TypeScript for the New Programmer](/docs/handbook/typescript-from-scratch.html)
-  * [TypeScript for JavaScript Programmers](/docs/handbook/typescript-in-5-minutes.html)
-  * [TypeScript for Java/C# Programmers](/docs/handbook/typescript-in-5-minutes-oop.html)
-  * [TypeScript for Functional Programmers](/docs/handbook/typescript-in-5-minutes-func.html)
-
-
+- [TypeScript for the New Programmer](/docs/handbook/typescript-from-scratch.html)
+- [TypeScript for JavaScript Programmers](/docs/handbook/typescript-in-5-minutes.html)
+- [TypeScript for Java/C# Programmers](/docs/handbook/typescript-in-5-minutes-oop.html)
+- [TypeScript for Functional Programmers](/docs/handbook/typescript-in-5-minutes-func.html)
 
 Otherwise, jump to [The Basics](/docs/handbook/2/basic-types.html).
 
@@ -72,7 +67,6 @@ Otherwise, jump to [The Basics](/docs/handbook/2/basic-types.html).
 The TypeScript docs are an open source project. Help us improve these pages [by sending a Pull Request](https://github.com/microsoft/TypeScript-Website/blob/v2/packages/documentation/copy/en/handbook-v2/The Handbook.md) ❤
 
 Contributors to this page:  
-
 
 OT
 
@@ -88,7 +82,6 @@ N
 
 Last updated: Jan 27, 2026  
   
-
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

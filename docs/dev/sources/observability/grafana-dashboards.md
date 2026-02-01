@@ -9,7 +9,7 @@
 
 [Documentation](/docs/) [Grafana documentation](/docs/grafana/latest/) [Visualize data](/docs/grafana/latest/visualizations/) [Dashboards](/docs/grafana/latest/visualizations/dashboards/) [Build dashboards](/docs/grafana/latest/visualizations/dashboards/build-dashboards/) JSON model
 
-Grafana Cloud  Enterprise  Open source 
+Grafana Cloud  Enterprise  Open source
 
 # Dashboard JSON model
 
@@ -22,19 +22,16 @@ To view the JSON of a dashboard:
   3. Go to the **JSON Model** tab.
   4. When you’ve finished viewing the JSON, click **Back to dashboard** and **Exit edit**.
 
-
-
 ## JSON fields
 
 When a user creates a new dashboard, a new dashboard JSON object is initialized with the following fields:
 
 > Note
-> 
+>
 > In the following JSON, id is shown as null which is the default value assigned to it until a dashboard is saved. Once a dashboard is saved, an integer value is assigned to the `id` field.
 
 JSON Copy
-    
-    
+
     {
       "id": null,
       "uid": "cLV5GDCkz",
@@ -91,8 +88,7 @@ Name| Usage
 Panels are the building blocks of a dashboard. It consists of data source queries, type of graphs, aliases, etc. Panel JSON consists of an array of JSON objects, each representing a different panel. Most of the fields are common for all panels but some fields depend on the panel type. Following is an example of panel JSON of a text panel.
 
 JSON Copy
-    
-    
+
     "panels": [
       {
         "type": "text",
@@ -112,20 +108,17 @@ JSON Copy
 
 The gridPos property describes the panel size and position in grid coordinates.
 
-  * `w` 1-24 (the width of the dashboard is divided into 24 columns)
-  * `h` In grid height units, each represents 30 pixels.
-  * `x` The x position, in same unit as `w`.
-  * `y` The y position, in same unit as `h`.
-
-
+- `w` 1-24 (the width of the dashboard is divided into 24 columns)
+- `h` In grid height units, each represents 30 pixels.
+- `x` The x position, in same unit as `w`.
+- `y` The y position, in same unit as `h`.
 
 The grid has a negative gravity that moves panels up if there is empty space above a panel.
 
 ### timepicker
 
 JSON Copy
-    
-    
+
     "timepicker": {
         "collapse": false,
         "enable": true,
@@ -169,22 +162,21 @@ Name| Usage
 ---|---  
 **collapse**|  whether timepicker is collapsed or not  
 **enable**|  whether timepicker is enabled or not  
-**notice**|   
-**now**|   
+**notice**|
+**now**|
 **hidden**|  whether timepicker is hidden or not  
 **nowDelay**|  override the now time by entering a time delay. Use this option to accommodate known delays in data aggregation to avoid null values.  
 **quick_ranges**|  custom quick ranges  
 **refresh_intervals**|  interval options available in the refresh picker dropdown  
-**status**|   
-**type**|   
+**status**|
+**type**|
   
 ### templating
 
 The `templating` field contains an array of template variables with their saved values along with some other metadata, for example:
 
 JSON Copy
-    
-    
+
      "templating": {
         "enable": true,
         "list": [
@@ -275,7 +267,7 @@ Name| Usage
 
 Yes No
 
-[Suggest an edit in GitHub ](https://github.com/grafana/grafana/edit/main/docs/sources/visualizations/dashboards/build-dashboards/view-dashboard-json-model/index.md)[Create a GitHub issue ](https://github.com/grafana/grafana/issues/new?title=Documentation%20feedback:%20/docs/sources/visualizations/dashboards/build-dashboards/view-dashboard-json-model/index.md)[Email docs@grafana.com ](mailto:docs@grafana.com)[Help and support ](/help/)[Community](/community/)
+[Suggest an edit in GitHub](https://github.com/grafana/grafana/edit/main/docs/sources/visualizations/dashboards/build-dashboards/view-dashboard-json-model/index.md)[Create a GitHub issue](https://github.com/grafana/grafana/issues/new?title=Documentation%20feedback:%20/docs/sources/visualizations/dashboards/build-dashboards/view-dashboard-json-model/index.md)[Email docs@grafana.com](mailto:docs@grafana.com)[Help and support](/help/)[Community](/community/)
 
 ## Related resources from Grafana Labs
 

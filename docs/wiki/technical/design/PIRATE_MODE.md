@@ -8,24 +8,19 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Lucide Icons
+- name: Lucide Icons
     url: https://lucide.dev/icons/
     note: Base icons to customize
 design_refs:
-  - title: DESIGN_SYSTEM
+- title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-  - title: BRAND_IDENTITY
+- title: BRAND_IDENTITY
     path: technical/design/BRAND_IDENTITY.md
 ---
 
 # Pirate Mode Easter Eggs
-
-
-
 
 > Unlock the spirit of the Queen Anne's Revenge
 
@@ -33,44 +28,25 @@ Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's le
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

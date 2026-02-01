@@ -21,29 +21,28 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: ThePornDB API
+- name: ThePornDB API
     url: ../sources/apis/theporndb.md
     note: Auto-resolved from theporndb
-  - name: Typesense API
+- name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: integrations/metadata/adult
+- title: integrations/metadata/adult
     path: integrations/metadata/adult.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -51,11 +50,9 @@ design_refs:
 
 <!-- DESIGN: integrations/metadata/adult, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
-
 
 > Integration with ThePornDB
 
@@ -64,7 +61,6 @@ design_refs:
 **Authentication**: api_key
 
 ---
-
 
 ## Status
 
@@ -79,9 +75,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -105,7 +99,6 @@ internal/integration/theporndb/
 This integration provides:
 <!-- Data provided by integration -->
 
-
 ## Implementation
 
 ### File Structure
@@ -120,7 +113,6 @@ This integration provides:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -129,7 +121,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -145,7 +136,6 @@ This integration provides:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/adult](integrations/metadata/adult.md)
@@ -158,4 +148,3 @@ Target: **80% minimum**
 - [ThePornDB API](../sources/apis/theporndb.md) - Auto-resolved from theporndb
 - [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
 - [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-

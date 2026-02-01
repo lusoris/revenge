@@ -13,7 +13,7 @@
 
 # Gofeed: A Robust Feed Parser for Golang
 
-<img src="https://github.com/mmcdole/gofeed/assets/3767096/ab4e7b0e-1472-4249-880c-c6784000ed31" width="150" height="150"> 
+<img src="https://github.com/mmcdole/gofeed/assets/3767096/ab4e7b0e-1472-4249-880c-c6784000ed31" width="150" height="150">
 <br /><br />
 
 `gofeed` is a powerful and flexible library designed for parsing **RSS**, **Atom**, and **JSON** feeds across various formats and versions. It effectively manages non-standard elements and known extensions, and demonstrates resilience against common feed issues.
@@ -56,8 +56,7 @@ For added convenience, gofeed includes native support for parsing certain well-k
 
 In `gofeed`, you have two primary choices for feed parsing: a universal parser for handling multiple feed types seamlessly, and specialized parsers for more granular control over individual feed types.
 
-
-### Universal Feed Parser 
+### Universal Feed Parser
 
 The universal `gofeed.Parser` is designed to make it easy to work with various types of feeds—RSS, Atom, JSON—by converting them into a unified `gofeed.Feed` model. This is especially useful when you're dealing with multiple feed formats and you want to treat them the same way.
 
@@ -232,10 +231,10 @@ fmt.Println(feed.Author) // Valentine Wiggin
 
 ## Dependencies
 
-* [goxpp](https://github.com/mmcdole/goxpp) - XML Pull Parser
-* [goquery](https://github.com/PuerkitoBio/goquery) - Go jQuery-like interface
-* [testify](https://github.com/stretchr/testify) - Unit test enhancements
-* [jsoniter](https://github.com/json-iterator/go) - Faster JSON Parsing
+- [goxpp](https://github.com/mmcdole/goxpp) - XML Pull Parser
+- [goquery](https://github.com/PuerkitoBio/goquery) - Go jQuery-like interface
+- [testify](https://github.com/stretchr/testify) - Unit test enhancements
+- [jsoniter](https://github.com/json-iterator/go) - Faster JSON Parsing
 
 ## License
 
@@ -243,9 +242,9 @@ This project is licensed under the [MIT License](https://raw.githubusercontent.c
 
 ## Credits
 
-* [cristoper](https://github.com/cristoper) for his work on implementing xml:base relative URI handling.
-* [Mark Pilgrim](https://en.wikipedia.org/wiki/Mark_Pilgrim) and [Kurt McKee](http://kurtmckee.org) for their work on the excellent [Universal Feed Parser](https://github.com/kurtmckee/feedparser) Python library. This library was the inspiration for the `gofeed` library.
-* [Dan MacTough](http://blog.mact.me) for his work on [node-feedparser](https://github.com/danmactough/node-feedparser). It provided inspiration for the set of fields that should be covered in the hybrid `gofeed.Feed` model.
-* [Matt Jibson](https://mattjibson.com/) for his date parsing function in the [goread](https://github.com/mjibson/goread) project.
-* [Jim Teeuwen](https://github.com/jteeuwen) for his method of representing arbitrary feed extensions in the [go-pkg-rss](https://github.com/jteeuwen/go-pkg-rss) library.
-* [Sudhanshu Raheja](https://revolt.ist) for supporting JSON Feed parser
+- [cristoper](https://github.com/cristoper) for his work on implementing xml:base relative URI handling.
+- [Mark Pilgrim](https://en.wikipedia.org/wiki/Mark_Pilgrim) and [Kurt McKee](http://kurtmckee.org) for their work on the excellent [Universal Feed Parser](https://github.com/kurtmckee/feedparser) Python library. This library was the inspiration for the `gofeed` library.
+- [Dan MacTough](http://blog.mact.me) for his work on [node-feedparser](https://github.com/danmactough/node-feedparser). It provided inspiration for the set of fields that should be covered in the hybrid `gofeed.Feed` model.
+- [Matt Jibson](https://mattjibson.com/) for his date parsing function in the [goread](https://github.com/mjibson/goread) project.
+- [Jim Teeuwen](https://github.com/jteeuwen) for his method of representing arbitrary feed extensions in the [go-pkg-rss](https://github.com/jteeuwen/go-pkg-rss) library.
+- [Sudhanshu Raheja](https://revolt.ist) for supporting JSON Feed parser

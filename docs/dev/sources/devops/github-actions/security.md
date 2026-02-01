@@ -1,7 +1,7 @@
 # GitHub Actions Security Best Practices
 
 > Source: https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
-> Fetched: 2026-01-31T16:05:07.498447+00:00
+> Fetched: 2026-02-01T11:52:36.078580+00:00
 > Content-Hash: 51aa7663731cd3ce
 > Type: html
 
@@ -23,28 +23,26 @@ Find information about security best practices when you are writing workflows an
 
 Because there are multiple ways a secret value can be transformed, automatic redaction is not guaranteed. Adhere to the following best practices to limit risks associated with secrets.
 
-  * **Principle of least privilege**
-    * Any user with write access to your repository has read access to all secrets configured in your repository. Therefore, you should ensure that the credentials being used within workflows have the least privileges required.
-    * Actions can use the `GITHUB_TOKEN` by accessing it from the `github.token` context. For more information, see [Contexts reference](/en/actions/learn-github-actions/contexts#github-context). You should therefore make sure that the `GITHUB_TOKEN` is granted the minimum required permissions. It's good security practice to set the default permission for the `GITHUB_TOKEN` to read access only for repository contents. The permissions can then be increased, as required, for individual jobs within the workflow file. For more information, see [Use GITHUB_TOKEN for authentication in workflows](/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token).
-  * **Mask sensitive data**
-    * Sensitive data should **never** be stored as plaintext in workflow files. Mask all sensitive information that is not a GitHub secret by using `::add-mask::VALUE`. This causes the value to be treated as a secret and redacted from logs. For more information about masking data, see [Workflow commands for GitHub Actions](/en/actions/using-workflows/workflow-commands-for-github-actions#masking-a-value-in-a-log).
-  * **Delete and rotate exposed secrets**
-    * Redacting of secrets is performed by your workflow runners. This means a secret will only be redacted if it was used within a job and is accessible by the runner. If an unredacted secret is sent to a workflow run log, you should delete the log and rotate the secret. For information on deleting logs, see [Using workflow run logs](/en/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs#deleting-logs).
-  * **Never use structured data as a secret**
-    * Structured data can cause secret redaction within logs to fail, because redaction largely relies on finding an exact match for the specific secret value. For example, do not use a blob of JSON, XML, or YAML (or similar) to encapsulate a secret value, as this significantly reduces the probability the secrets will be properly redacted. Instead, create individual secrets for each sensitive value.
-  * **Register all secrets used within workflows**
-    * If a secret is used to generate another sensitive value within a workflow, that generated value should be formally [registered as a secret](https://github.com/actions/toolkit/tree/main/packages/core#setting-a-secret), so that it will be redacted if it ever appears in the logs. For example, if using a private key to generate a signed JWT to access a web API, be sure to register that JWT as a secret or else it won’t be redacted if it ever enters the log output.
-    * Registering secrets applies to any sort of transformation/encoding as well. If your secret is transformed in some way (such as Base64 or URL-encoded), be sure to register the new value as a secret too.
-  * **Audit how secrets are handled**
-    * Audit how secrets are used, to help ensure they’re being handled as expected. You can do this by reviewing the source code of the repository executing the workflow, and checking any actions used in the workflow. For example, check that they’re not sent to unintended hosts, or explicitly being printed to log output.
-    * View the run logs for your workflow after testing valid/invalid inputs, and check that secrets are properly redacted, or not shown. It's not always obvious how a command or tool you’re invoking will send errors to `STDOUT` and `STDERR`, and secrets might subsequently end up in error logs. As a result, it is good practice to manually review the workflow logs after testing valid and invalid inputs. For information on how to clean up workflow logs that may unintentionally contain sensitive data, see [Using workflow run logs](/en/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs#deleting-logs).
-  * **Audit and rotate registered secrets**
-    * Periodically review the registered secrets to confirm they are still required. Remove those that are no longer needed.
-    * Rotate secrets periodically to reduce the window of time during which a compromised secret is valid.
-  * **Consider requiring review for access to secrets**
-    * You can use required reviewers to protect environment secrets. A workflow job cannot access environment secrets until approval is granted by a reviewer. For more information about storing secrets in environments or requiring reviews for environments, see [Using secrets in GitHub Actions](/en/actions/security-guides/using-secrets-in-github-actions) and [Managing environments for deployment](/en/actions/deployment/targeting-different-environments/managing-environments-for-deployment).
-
-
+- **Principle of least privilege**
+  - Any user with write access to your repository has read access to all secrets configured in your repository. Therefore, you should ensure that the credentials being used within workflows have the least privileges required.
+  - Actions can use the `GITHUB_TOKEN` by accessing it from the `github.token` context. For more information, see [Contexts reference](/en/actions/learn-github-actions/contexts#github-context). You should therefore make sure that the `GITHUB_TOKEN` is granted the minimum required permissions. It's good security practice to set the default permission for the `GITHUB_TOKEN` to read access only for repository contents. The permissions can then be increased, as required, for individual jobs within the workflow file. For more information, see [Use GITHUB_TOKEN for authentication in workflows](/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token).
+- **Mask sensitive data**
+  - Sensitive data should **never** be stored as plaintext in workflow files. Mask all sensitive information that is not a GitHub secret by using `::add-mask::VALUE`. This causes the value to be treated as a secret and redacted from logs. For more information about masking data, see [Workflow commands for GitHub Actions](/en/actions/using-workflows/workflow-commands-for-github-actions#masking-a-value-in-a-log).
+- **Delete and rotate exposed secrets**
+  - Redacting of secrets is performed by your workflow runners. This means a secret will only be redacted if it was used within a job and is accessible by the runner. If an unredacted secret is sent to a workflow run log, you should delete the log and rotate the secret. For information on deleting logs, see [Using workflow run logs](/en/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs#deleting-logs).
+- **Never use structured data as a secret**
+  - Structured data can cause secret redaction within logs to fail, because redaction largely relies on finding an exact match for the specific secret value. For example, do not use a blob of JSON, XML, or YAML (or similar) to encapsulate a secret value, as this significantly reduces the probability the secrets will be properly redacted. Instead, create individual secrets for each sensitive value.
+- **Register all secrets used within workflows**
+  - If a secret is used to generate another sensitive value within a workflow, that generated value should be formally [registered as a secret](https://github.com/actions/toolkit/tree/main/packages/core#setting-a-secret), so that it will be redacted if it ever appears in the logs. For example, if using a private key to generate a signed JWT to access a web API, be sure to register that JWT as a secret or else it won’t be redacted if it ever enters the log output.
+  - Registering secrets applies to any sort of transformation/encoding as well. If your secret is transformed in some way (such as Base64 or URL-encoded), be sure to register the new value as a secret too.
+- **Audit how secrets are handled**
+  - Audit how secrets are used, to help ensure they’re being handled as expected. You can do this by reviewing the source code of the repository executing the workflow, and checking any actions used in the workflow. For example, check that they’re not sent to unintended hosts, or explicitly being printed to log output.
+  - View the run logs for your workflow after testing valid/invalid inputs, and check that secrets are properly redacted, or not shown. It's not always obvious how a command or tool you’re invoking will send errors to `STDOUT` and `STDERR`, and secrets might subsequently end up in error logs. As a result, it is good practice to manually review the workflow logs after testing valid and invalid inputs. For information on how to clean up workflow logs that may unintentionally contain sensitive data, see [Using workflow run logs](/en/actions/monitoring-and-troubleshooting-workflows/using-workflow-run-logs#deleting-logs).
+- **Audit and rotate registered secrets**
+  - Periodically review the registered secrets to confirm they are still required. Remove those that are no longer needed.
+  - Rotate secrets periodically to reduce the window of time during which a compromised secret is valid.
+- **Consider requiring review for access to secrets**
+  - You can use required reviewers to protect environment secrets. A workflow job cannot access environment secrets until approval is granted by a reviewer. For more information about storing secrets in environments or requiring reviews for environments, see [Using secrets in GitHub Actions](/en/actions/security-guides/using-secrets-in-github-actions) and [Managing environments for deployment](/en/actions/deployment/targeting-different-environments/managing-environments-for-deployment).
 
 ### Good practices for mitigating script injection attacks
 
@@ -53,8 +51,7 @@ Recommended approaches for mitigating the risk of script injection in your workf
 #### Use an action instead of an inline script
 
 The recommended approach is to create a JavaScript action that processes the context value as an argument. This approach is not vulnerable to the injection attack, since the context value is not used to generate a shell script, but is instead passed to the action as an argument:
-    
-    
+
     uses: fakeaction/checktitle@v3
     with:
       title: ${{ github.event.pull_request.title }}
@@ -63,8 +60,7 @@ The recommended approach is to create a JavaScript action that processes the con
 #### Use an intermediate environment variable
 
 For inline scripts, the preferred approach to handling untrusted input is to set the value of the expression to an intermediate environment variable. The following example uses Bash to process the `github.event.pull_request.title` value as an environment variable:
-    
-    
+
           - name: Check PR title
             env:
               TITLE: ${{ github.event.pull_request.title }}
@@ -79,8 +75,7 @@ For inline scripts, the preferred approach to handling untrusted input is to set
     
 
 In this example, the attempted script injection is unsuccessful, which is reflected by the following lines in the log:
-    
-    
+
        env:
          TITLE: a"; ls $GITHUB_WORKSPACE"
     PR title did not start with 'octocat'
@@ -106,7 +101,7 @@ This means that a compromise of a single action within a workflow can be very si
 
 You can help mitigate this risk by following these good practices:
 
-  * **Pin actions to a full-length commit SHA**
+- **Pin actions to a full-length commit SHA**
 
 Pinning an action to a full-length commit SHA is currently the only way to use an action as an immutable release. Pinning to a particular SHA helps mitigate the risk of a bad actor adding a backdoor to the action's repository, as they would need to generate a SHA-1 collision for a valid Git object payload. When selecting a SHA, you should verify it is from the action's repository and not a repository fork.
 
@@ -116,16 +111,13 @@ GitHub offers policies at the repository and organization level to require actio
 
     * To configure the policy at the repository level, see [Managing GitHub Actions settings for a repository](/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#managing-github-actions-permissions-for-your-repository).
     * To configure the policy at the organization level, see [Disabling or limiting GitHub Actions for your organization](/en/organizations/managing-organization-settings/disabling-or-limiting-github-actions-for-your-organization#managing-github-actions-permissions-for-your-organization).
-  * **Audit the source code of the action**
+- **Audit the source code of the action**
 
 Ensure that the action is handling the content of your repository and secrets as expected. For example, check that secrets are not sent to unintended hosts, or are not inadvertently logged.
 
-  * **Pin actions to a tag only if you trust the creator**
+- **Pin actions to a tag only if you trust the creator**
 
 Although pinning to a commit SHA is the most secure option, specifying a tag is more convenient and is widely used. If you’d like to specify a tag, then be sure that you trust the action's creators. The ‘Verified creator’ badge on GitHub Marketplace is a useful signal, as it indicates that the action was written by a team whose identity has been verified by GitHub. Note that there is risk to this approach even if you trust the author, because a tag can be moved or deleted if a bad actor gains access to the repository storing the action.
-
-
-
 
 ### Reusing third-party workflows
 
@@ -199,10 +191,8 @@ When a self-hosted runner is defined at the organization or enterprise level, Gi
 
 You should also consider the environment of the self-hosted runner machines:
 
-  * What sensitive information resides on the machine configured as a self-hosted runner? For example, private SSH keys, API access tokens, among others.
-  * Does the machine have network access to sensitive services? For example, Azure or AWS metadata services. The amount of sensitive information in this environment should be kept to a minimum, and you should always be mindful that any user capable of invoking workflows has access to this environment.
-
-
+- What sensitive information resides on the machine configured as a self-hosted runner? For example, private SSH keys, API access tokens, among others.
+- Does the machine have network access to sensitive services? For example, Azure or AWS metadata services. The amount of sensitive information in this environment should be kept to a minimum, and you should always be mindful that any user capable of invoking workflows has access to this environment.
 
 Some customers might attempt to partially mitigate these risks by implementing systems that automatically destroy the self-hosted runner after each job execution. However, this approach might not be as effective as intended, as there is no way to guarantee that a self-hosted runner only runs one job. Some jobs will use secrets as command-line arguments which can be seen by another job running on the same runner, such as `ps x -w`. This can lead to secret leaks.
 
@@ -215,8 +205,7 @@ Note
 Re-using hardware to host JIT runners can risk exposing information from the environment. Use automation to ensure the JIT runner uses a clean environment. For more information, see [Self-hosted runners reference](/en/actions/hosting-your-own-runners/managing-self-hosted-runners/autoscaling-with-self-hosted-runners#using-ephemeral-runners-for-autoscaling).
 
 Once you have the config file from the REST API response, you can pass it to the runner at startup.
-    
-    
+
     ./run.sh --jitconfig ${encoded_jit_config}
     
 
@@ -226,17 +215,13 @@ A self-hosted runner can be added to various levels in your GitHub hierarchy: th
 
 **Centralized management:**
 
-  * If you plan to have a centralized team own the self-hosted runners, then the recommendation is to add your runners at the highest mutual organization or enterprise level. This gives your team a single location to view and manage your runners.
-  * If you only have a single organization, then adding your runners at the organization level is effectively the same approach, but you might encounter difficulties if you add another organization in the future.
-
-
+- If you plan to have a centralized team own the self-hosted runners, then the recommendation is to add your runners at the highest mutual organization or enterprise level. This gives your team a single location to view and manage your runners.
+- If you only have a single organization, then adding your runners at the organization level is effectively the same approach, but you might encounter difficulties if you add another organization in the future.
 
 **Decentralized management:**
 
-  * If each team will manage their own self-hosted runners, then the recommendation is to add the runners at the highest level of team ownership. For example, if each team owns their own organization, then it will be simplest if the runners are added at the organization level too.
-  * You could also add runners at the repository level, but this will add management overhead and also increases the numbers of runners you need, since you cannot share runners between repositories.
-
-
+- If each team will manage their own self-hosted runners, then the recommendation is to add the runners at the highest level of team ownership. For example, if each team owns their own organization, then it will be simplest if the runners are added at the organization level too.
+- You could also add runners at the repository level, but this will add management overhead and also increases the numbers of runners you need, since you cannot share runners between repositories.
 
 #### Authenticating to your cloud provider
 
@@ -250,10 +235,8 @@ For example, you can use the audit log to track the `org.update_actions_secret` 
 
 For the full list of events that you can find in the audit log for each account type, see the following articles:
 
-  * [Security log events](/en/authentication/keeping-your-account-and-data-secure/security-log-events)
-  * [Audit log events for your organization](/en/organizations/keeping-your-organization-secure/managing-security-settings-for-your-organization/audit-log-events-for-your-organization)
-
-
+- [Security log events](/en/authentication/keeping-your-account-and-data-secure/security-log-events)
+- [Audit log events for your organization](/en/organizations/keeping-your-organization-secure/managing-security-settings-for-your-organization/audit-log-events-for-your-organization)
 
 ### Understanding dependencies in your workflows
 
@@ -261,11 +244,9 @@ You can use the dependency graph to explore the actions that the workflows in yo
 
 The dependency graph shows the following information about actions used in workflows:
 
-  * The account or organization that owns the action.
-  * The workflow file that references the action.
-  * The version or SHA the action is pinned to.
-
-
+- The account or organization that owns the action.
+- The workflow file that references the action.
+- The version or SHA the action is pinned to.
 
 In the dependency graph, dependencies are automatically sorted by vulnerability severity. If any of the actions you use have security advisories, they will display at the top of the list. You can navigate to the advisory from the dependency graph and access instructions for resolving the vulnerability.
 
@@ -277,10 +258,8 @@ For actions available on the marketplace, GitHub reviews related security adviso
 
 You can set up your repositories so that you:
 
-  * Receive alerts when actions used in your workflows receive a vulnerability report. For more information, see Monitoring the actions in your workflows.
-  * Are warned about existing advisories when you add or update an action in a workflow. For more information, see Screening actions for vulnerabilities in new or updated workflows.
-
-
+- Receive alerts when actions used in your workflows receive a vulnerability report. For more information, see Monitoring the actions in your workflows.
+- Are warned about existing advisories when you add or update an action in a workflow. For more information, see Screening actions for vulnerabilities in new or updated workflows.
 
 #### Monitoring the actions in your workflows
 
@@ -298,11 +277,9 @@ You can view all open and closed Dependabot alerts and corresponding Dependabot 
 
 When you open pull requests to update your workflows, it is good practice to use dependency review to understand the security impact of changes you've made to the actions you use. Dependency review helps you understand dependency changes and the security impact of these changes at every pull request. It provides an easily understandable visualization of dependency changes with a rich diff on the "Files Changed" tab of a pull request. Dependency review informs you of:
 
-  * Which dependencies were added, removed, or updated, along with the release dates
-  * How many projects use these components
-  * Vulnerability data for these dependencies
-
-
+- Which dependencies were added, removed, or updated, along with the release dates
+- How many projects use these components
+- Vulnerability data for these dependencies
 
 If any of the changes you made to your workflows are flagged as vulnerable, you can avoid adding them to your project or update them to a secure version.
 
@@ -316,20 +293,16 @@ You can use Dependabot to ensure that references to actions and reusable workflo
 
 The following features can automatically update the actions in your workflows.
 
-  * **Dependabot version updates** open pull requests to update actions to the latest version when a new version is released.
-  * **Dependabot security updates** open pull requests to update actions with reported vulnerabilities to the minimum patched version.
-
-
+- **Dependabot version updates** open pull requests to update actions to the latest version when a new version is released.
+- **Dependabot security updates** open pull requests to update actions with reported vulnerabilities to the minimum patched version.
 
 Note
 
-  * Dependabot only supports updates to GitHub Actions using the GitHub repository syntax, such as `actions/checkout@v5` or `actions/checkout@<commit>` . Dependabot will ignore actions or reusable workflows referenced locally (for example, `./.github/actions/foo.yml`).
-  * Dependabot updates the version documentation of GitHub Actions when the comment is on the same line, such as `actions/checkout@<commit> #<tag or link>` or `actions/checkout@<tag> #<tag or link>`.
-  * If the commit you use is not associated with any tag, Dependabot will update the GitHub Actions to the latest commit (which might differ from the latest release).
-  * Docker Hub and GitHub Packages Container registry URLs are currently not supported. For example, references to Docker container actions using `docker://` syntax aren't supported.
-  * Dependabot supports both public and private repositories for GitHub Actions. For private registry configuration options, see "`git`" in [Dependabot options reference](/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#git).
-
-
+- Dependabot only supports updates to GitHub Actions using the GitHub repository syntax, such as `actions/checkout@v5` or `actions/checkout@<commit>` . Dependabot will ignore actions or reusable workflows referenced locally (for example, `./.github/actions/foo.yml`).
+- Dependabot updates the version documentation of GitHub Actions when the comment is on the same line, such as `actions/checkout@<commit> #<tag or link>` or `actions/checkout@<tag> #<tag or link>`.
+- If the commit you use is not associated with any tag, Dependabot will update the GitHub Actions to the latest commit (which might differ from the latest release).
+- Docker Hub and GitHub Packages Container registry URLs are currently not supported. For example, references to Docker container actions using `docker://` syntax aren't supported.
+- Dependabot supports both public and private repositories for GitHub Actions. For private registry configuration options, see "`git`" in [Dependabot options reference](/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#git).
 
 For information on how to configure Dependabot version updates, see [Configuring Dependabot version updates](/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates).
 
@@ -341,9 +314,8 @@ GitHub enables collaboration between people who publish and maintain actions and
 
 If you are someone who maintains an action that is used in other projects, you can use the following GitHub features to enhance the security of the actions you've published.
 
-  * Use the dependants view in the Dependency graph to see which projects depend on your code. If you receive a vulnerability report, this will give you an idea of who you need to communicate with about the vulnerability and how to fix it. For more information, see [Exploring the dependencies of a repository](/en/code-security/supply-chain-security/understanding-your-software-supply-chain/exploring-the-dependencies-of-a-repository#dependents-view).
-  * Use repository security advisories to create a security advisory, privately collaborate to fix the vulnerability in a temporary private fork, and publish a security advisory to alert your community of the vulnerability once a patch is released. For more information, see [Configuring private vulnerability reporting for a repository](/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository) and [Creating a repository security advisory](/en/code-security/security-advisories/working-with-repository-security-advisories/creating-a-repository-security-advisory).
-
+- Use the dependants view in the Dependency graph to see which projects depend on your code. If you receive a vulnerability report, this will give you an idea of who you need to communicate with about the vulnerability and how to fix it. For more information, see [Exploring the dependencies of a repository](/en/code-security/supply-chain-security/understanding-your-software-supply-chain/exploring-the-dependencies-of-a-repository#dependents-view).
+- Use repository security advisories to create a security advisory, privately collaborate to fix the vulnerability in a temporary private fork, and publish a security advisory to alert your community of the vulnerability once a patch is released. For more information, see [Configuring private vulnerability reporting for a repository](/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository) and [Creating a repository security advisory](/en/code-security/security-advisories/working-with-repository-security-advisories/creating-a-repository-security-advisory).
 
   *[↑]: Back to Top
   *[v]: View this template

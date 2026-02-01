@@ -21,23 +21,22 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Go io
+- name: Go io
     url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: integrations/metadata/adult
+- title: integrations/metadata/adult
     path: integrations/metadata/adult.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -45,18 +44,15 @@ design_refs:
 
 <!-- DESIGN: integrations/metadata/adult, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
-
 
 > Integration with TheNude
 
 > Adult performer database with aliases and measurements
 
 ---
-
 
 ## Status
 
@@ -71,9 +67,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -97,7 +91,6 @@ internal/integration/thenude/
 This integration provides:
 <!-- Data provided by integration -->
 
-
 ## Implementation
 
 ### File Structure
@@ -112,7 +105,6 @@ This integration provides:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -121,7 +113,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -137,7 +128,6 @@ This integration provides:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/adult](integrations/metadata/adult.md)
@@ -148,4 +138,3 @@ Target: **80% minimum**
 ### External Sources
 - [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-

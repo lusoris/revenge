@@ -9,52 +9,47 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Khan/genqlient
+- name: Khan/genqlient
     url: ../sources/tooling/genqlient.md
     note: Auto-resolved from genqlient
-  - name: genqlient GitHub README
+- name: genqlient GitHub README
     url: ../sources/tooling/genqlient-guide.md
     note: Auto-resolved from genqlient-docs
-  - name: gohlslib (HLS)
+- name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: Typesense API
+- name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: integrations/metadata/adult
+- title: integrations/metadata/adult
     path: integrations/metadata/adult.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Stash
-
-
-
 
 # Stash
 
@@ -64,44 +59,25 @@ Stash is a self-hosted adult media organizer. Import your existing Stash library
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- How it works -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

@@ -9,18 +9,12 @@
 
 __
 
-  * __Light __
-  * __Dark __
-  * __Auto __
-
-
+- __Light__
+- __Dark__
+- __Auto__
 
 ____
 
-  
-
-    
-    
     Internet Engineering Task Force (IETF)                          M. Jones
     Request for Comments: 7519                                     Microsoft
     Category: Standards Track                                     J. Bradley
@@ -75,8 +69,7 @@ ____
     Jones, et al.                Standards Track                    [Page 1]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -134,8 +127,7 @@ ____
     Jones, et al.                Standards Track                    [Page 2]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -193,8 +185,7 @@ ____
     Jones, et al.                Standards Track                    [Page 3]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -252,8 +243,7 @@ ____
     Jones, et al.                Standards Track                    [Page 4]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -311,8 +301,7 @@ ____
     Jones, et al.                Standards Track                    [Page 5]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -370,8 +359,7 @@ ____
     Jones, et al.                Standards Track                    [Page 6]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -429,8 +417,7 @@ ____
     Jones, et al.                Standards Track                    [Page 7]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -488,8 +475,7 @@ ____
     Jones, et al.                Standards Track                    [Page 8]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -547,8 +533,7 @@ ____
     Jones, et al.                Standards Track                    [Page 9]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -606,8 +591,7 @@ ____
     Jones, et al.                Standards Track                   [Page 10]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -665,8 +649,7 @@ ____
     Jones, et al.                Standards Track                   [Page 11]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -724,8 +707,7 @@ ____
     Jones, et al.                Standards Track                   [Page 12]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -783,8 +765,7 @@ ____
     Jones, et al.                Standards Track                   [Page 13]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -842,8 +823,7 @@ ____
     Jones, et al.                Standards Track                   [Page 14]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -901,8 +881,7 @@ ____
     Jones, et al.                Standards Track                   [Page 15]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -960,8 +939,7 @@ ____
     Jones, et al.                Standards Track                   [Page 16]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1019,8 +997,7 @@ ____
     Jones, et al.                Standards Track                   [Page 17]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1078,8 +1055,7 @@ ____
     Jones, et al.                Standards Track                   [Page 18]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1137,8 +1113,7 @@ ____
     Jones, et al.                Standards Track                   [Page 19]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1196,8 +1171,7 @@ ____
     Jones, et al.                Standards Track                   [Page 20]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1255,8 +1229,7 @@ ____
     Jones, et al.                Standards Track                   [Page 21]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1314,8 +1287,7 @@ ____
     Jones, et al.                Standards Track                   [Page 22]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1373,8 +1345,7 @@ ____
     Jones, et al.                Standards Track                   [Page 23]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1432,8 +1403,7 @@ ____
     Jones, et al.                Standards Track                   [Page 24]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1491,8 +1461,7 @@ ____
     Jones, et al.                Standards Track                   [Page 25]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1550,8 +1519,7 @@ ____
     Jones, et al.                Standards Track                   [Page 26]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1609,8 +1577,7 @@ ____
     Jones, et al.                Standards Track                   [Page 27]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1668,8 +1635,7 @@ ____
     Jones, et al.                Standards Track                   [Page 28]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1727,8 +1693,7 @@ ____
     Jones, et al.                Standards Track                   [Page 29]
 
 * * *
-    
-    
+
     [RFC 7519](/doc/html/rfc7519)                  JSON Web Token (JWT)                  May 2015
     
     
@@ -1788,64 +1753,61 @@ ____
 
 [Datatracker](/doc/rfc7519/)
 
-RFC 7519   
-RFC - Proposed Standard 
+RFC 7519
+RFC - Proposed Standard
 
-  * __Info
-  * __Contents
-  * __Prefs
+- __Info
+- __Contents
+- __Prefs
 
-
-
-Document | Document type |  |  RFC - Proposed Standard    
-May 2015   
-[ View errata ](https://www.rfc-editor.org/errata_search.php?rfc=7519 "Click to view errata.") [ Report errata ](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") Updated by [RFC 8725](/doc/html/rfc8725 "JSON Web Token Best Current Practices"), [RFC 7797](/doc/html/rfc7797 "JSON Web Signature \(JWS\) Unencoded Payload Option") Was [draft-ietf-oauth-json-web-token](/doc/draft-ietf-oauth-json-web-token/32/) ([oauth WG](/wg/oauth/about/))   
+Document | Document type |  |  RFC - Proposed Standard
+May 2015
+[View errata](https://www.rfc-editor.org/errata_search.php?rfc=7519 "Click to view errata.") [Report errata](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") Updated by [RFC 8725](/doc/html/rfc8725 "JSON Web Token Best Current Practices"), [RFC 7797](/doc/html/rfc7797 "JSON Web Signature \(JWS\) Unencoded Payload Option") Was [draft-ietf-oauth-json-web-token](/doc/draft-ietf-oauth-json-web-token/32/) ([oauth WG](/wg/oauth/about/))
 ---|---|---|---  
-| Select version |  | 
+| Select version |  |
 
-  * [ 00 ](/doc/html/draft-ietf-oauth-json-web-token-00)
-  * [ 01 ](/doc/html/draft-ietf-oauth-json-web-token-01)
-  * [ 02 ](/doc/html/draft-ietf-oauth-json-web-token-02)
-  * [ 03 ](/doc/html/draft-ietf-oauth-json-web-token-03)
-  * [ 04 ](/doc/html/draft-ietf-oauth-json-web-token-04)
-  * [ 05 ](/doc/html/draft-ietf-oauth-json-web-token-05)
-  * [ 06 ](/doc/html/draft-ietf-oauth-json-web-token-06)
-  * [ 07 ](/doc/html/draft-ietf-oauth-json-web-token-07)
-  * [ 08 ](/doc/html/draft-ietf-oauth-json-web-token-08)
-  * [ 09 ](/doc/html/draft-ietf-oauth-json-web-token-09)
-  * [ 10 ](/doc/html/draft-ietf-oauth-json-web-token-10)
-  * [ 11 ](/doc/html/draft-ietf-oauth-json-web-token-11)
-  * [ 12 ](/doc/html/draft-ietf-oauth-json-web-token-12)
-  * [ 13 ](/doc/html/draft-ietf-oauth-json-web-token-13)
-  * [ 14 ](/doc/html/draft-ietf-oauth-json-web-token-14)
-  * [ 15 ](/doc/html/draft-ietf-oauth-json-web-token-15)
-  * [ 16 ](/doc/html/draft-ietf-oauth-json-web-token-16)
-  * [ 17 ](/doc/html/draft-ietf-oauth-json-web-token-17)
-  * [ 18 ](/doc/html/draft-ietf-oauth-json-web-token-18)
-  * [ 19 ](/doc/html/draft-ietf-oauth-json-web-token-19)
-  * [ 20 ](/doc/html/draft-ietf-oauth-json-web-token-20)
-  * [ 21 ](/doc/html/draft-ietf-oauth-json-web-token-21)
-  * [ 22 ](/doc/html/draft-ietf-oauth-json-web-token-22)
-  * [ 23 ](/doc/html/draft-ietf-oauth-json-web-token-23)
-  * [ 24 ](/doc/html/draft-ietf-oauth-json-web-token-24)
-  * [ 25 ](/doc/html/draft-ietf-oauth-json-web-token-25)
-  * [ 26 ](/doc/html/draft-ietf-oauth-json-web-token-26)
-  * [ 27 ](/doc/html/draft-ietf-oauth-json-web-token-27)
-  * [ 28 ](/doc/html/draft-ietf-oauth-json-web-token-28)
-  * [ 29 ](/doc/html/draft-ietf-oauth-json-web-token-29)
-  * [ 30 ](/doc/html/draft-ietf-oauth-json-web-token-30)
-  * [ 31 ](/doc/html/draft-ietf-oauth-json-web-token-31)
-  * [ 32 ](/doc/html/draft-ietf-oauth-json-web-token-32)
-  * [ RFC 7519 ](/doc/html/rfc7519)
+- [00](/doc/html/draft-ietf-oauth-json-web-token-00)
+- [01](/doc/html/draft-ietf-oauth-json-web-token-01)
+- [02](/doc/html/draft-ietf-oauth-json-web-token-02)
+- [03](/doc/html/draft-ietf-oauth-json-web-token-03)
+- [04](/doc/html/draft-ietf-oauth-json-web-token-04)
+- [05](/doc/html/draft-ietf-oauth-json-web-token-05)
+- [06](/doc/html/draft-ietf-oauth-json-web-token-06)
+- [07](/doc/html/draft-ietf-oauth-json-web-token-07)
+- [08](/doc/html/draft-ietf-oauth-json-web-token-08)
+- [09](/doc/html/draft-ietf-oauth-json-web-token-09)
+- [10](/doc/html/draft-ietf-oauth-json-web-token-10)
+- [11](/doc/html/draft-ietf-oauth-json-web-token-11)
+- [12](/doc/html/draft-ietf-oauth-json-web-token-12)
+- [13](/doc/html/draft-ietf-oauth-json-web-token-13)
+- [14](/doc/html/draft-ietf-oauth-json-web-token-14)
+- [15](/doc/html/draft-ietf-oauth-json-web-token-15)
+- [16](/doc/html/draft-ietf-oauth-json-web-token-16)
+- [17](/doc/html/draft-ietf-oauth-json-web-token-17)
+- [18](/doc/html/draft-ietf-oauth-json-web-token-18)
+- [19](/doc/html/draft-ietf-oauth-json-web-token-19)
+- [20](/doc/html/draft-ietf-oauth-json-web-token-20)
+- [21](/doc/html/draft-ietf-oauth-json-web-token-21)
+- [22](/doc/html/draft-ietf-oauth-json-web-token-22)
+- [23](/doc/html/draft-ietf-oauth-json-web-token-23)
+- [24](/doc/html/draft-ietf-oauth-json-web-token-24)
+- [25](/doc/html/draft-ietf-oauth-json-web-token-25)
+- [26](/doc/html/draft-ietf-oauth-json-web-token-26)
+- [27](/doc/html/draft-ietf-oauth-json-web-token-27)
+- [28](/doc/html/draft-ietf-oauth-json-web-token-28)
+- [29](/doc/html/draft-ietf-oauth-json-web-token-29)
+- [30](/doc/html/draft-ietf-oauth-json-web-token-30)
+- [31](/doc/html/draft-ietf-oauth-json-web-token-31)
+- [32](/doc/html/draft-ietf-oauth-json-web-token-32)
+- [RFC 7519](/doc/html/rfc7519)
 
-  
-| Compare versions |  |  RFC 7519  draft-ietf-oauth-json-web-token-32  draft-ietf-oauth-json-web-token-31  draft-ietf-oauth-json-web-token-30  draft-ietf-oauth-json-web-token-29  draft-ietf-oauth-json-web-token-28  draft-ietf-oauth-json-web-token-27  draft-ietf-oauth-json-web-token-26  draft-ietf-oauth-json-web-token-25  draft-ietf-oauth-json-web-token-24  draft-ietf-oauth-json-web-token-23  draft-ietf-oauth-json-web-token-22  draft-ietf-oauth-json-web-token-21  draft-ietf-oauth-json-web-token-20  draft-ietf-oauth-json-web-token-19  draft-ietf-oauth-json-web-token-18  draft-ietf-oauth-json-web-token-17  draft-ietf-oauth-json-web-token-16  draft-ietf-oauth-json-web-token-15  draft-ietf-oauth-json-web-token-14  draft-ietf-oauth-json-web-token-13  draft-ietf-oauth-json-web-token-12  draft-ietf-oauth-json-web-token-11  draft-ietf-oauth-json-web-token-10  draft-ietf-oauth-json-web-token-09  draft-ietf-oauth-json-web-token-08  draft-ietf-oauth-json-web-token-07  draft-ietf-oauth-json-web-token-06  draft-ietf-oauth-json-web-token-05  draft-ietf-oauth-json-web-token-04  draft-ietf-oauth-json-web-token-03  draft-ietf-oauth-json-web-token-02  draft-ietf-oauth-json-web-token-01  draft-ietf-oauth-json-web-token-00  RFC 7519  draft-ietf-oauth-json-web-token-32  draft-ietf-oauth-json-web-token-31  draft-ietf-oauth-json-web-token-30  draft-ietf-oauth-json-web-token-29  draft-ietf-oauth-json-web-token-28  draft-ietf-oauth-json-web-token-27  draft-ietf-oauth-json-web-token-26  draft-ietf-oauth-json-web-token-25  draft-ietf-oauth-json-web-token-24  draft-ietf-oauth-json-web-token-23  draft-ietf-oauth-json-web-token-22  draft-ietf-oauth-json-web-token-21  draft-ietf-oauth-json-web-token-20  draft-ietf-oauth-json-web-token-19  draft-ietf-oauth-json-web-token-18  draft-ietf-oauth-json-web-token-17  draft-ietf-oauth-json-web-token-16  draft-ietf-oauth-json-web-token-15  draft-ietf-oauth-json-web-token-14  draft-ietf-oauth-json-web-token-13  draft-ietf-oauth-json-web-token-12  draft-ietf-oauth-json-web-token-11  draft-ietf-oauth-json-web-token-10  draft-ietf-oauth-json-web-token-09  draft-ietf-oauth-json-web-token-08  draft-ietf-oauth-json-web-token-07  draft-ietf-oauth-json-web-token-06  draft-ietf-oauth-json-web-token-05  draft-ietf-oauth-json-web-token-04  draft-ietf-oauth-json-web-token-03  draft-ietf-oauth-json-web-token-02  draft-ietf-oauth-json-web-token-01  draft-ietf-oauth-json-web-token-00  Side-by-side  Inline   
-| Authors |  |  [Michael B. Jones](/person/michael_b_jones@hotmail.com "Datatracker profile of Michael B. Jones") [ __](mailto:michael_b_jones%40hotmail.com "Compose email to michael_b_jones@hotmail.com"),[John Bradley](/person/ve7jtb@ve7jtb.com "Datatracker profile of John Bradley") [ __](mailto:ve7jtb%40ve7jtb.com "Compose email to ve7jtb@ve7jtb.com"),[Nat Sakimura](/person/nat@nat.consulting "Datatracker profile of Nat Sakimura") [ __](mailto:nat%40nat.consulting "Compose email to nat@nat.consulting")  
+| Compare versions |  |  RFC 7519  draft-ietf-oauth-json-web-token-32  draft-ietf-oauth-json-web-token-31  draft-ietf-oauth-json-web-token-30  draft-ietf-oauth-json-web-token-29  draft-ietf-oauth-json-web-token-28  draft-ietf-oauth-json-web-token-27  draft-ietf-oauth-json-web-token-26  draft-ietf-oauth-json-web-token-25  draft-ietf-oauth-json-web-token-24  draft-ietf-oauth-json-web-token-23  draft-ietf-oauth-json-web-token-22  draft-ietf-oauth-json-web-token-21  draft-ietf-oauth-json-web-token-20  draft-ietf-oauth-json-web-token-19  draft-ietf-oauth-json-web-token-18  draft-ietf-oauth-json-web-token-17  draft-ietf-oauth-json-web-token-16  draft-ietf-oauth-json-web-token-15  draft-ietf-oauth-json-web-token-14  draft-ietf-oauth-json-web-token-13  draft-ietf-oauth-json-web-token-12  draft-ietf-oauth-json-web-token-11  draft-ietf-oauth-json-web-token-10  draft-ietf-oauth-json-web-token-09  draft-ietf-oauth-json-web-token-08  draft-ietf-oauth-json-web-token-07  draft-ietf-oauth-json-web-token-06  draft-ietf-oauth-json-web-token-05  draft-ietf-oauth-json-web-token-04  draft-ietf-oauth-json-web-token-03  draft-ietf-oauth-json-web-token-02  draft-ietf-oauth-json-web-token-01  draft-ietf-oauth-json-web-token-00  RFC 7519  draft-ietf-oauth-json-web-token-32  draft-ietf-oauth-json-web-token-31  draft-ietf-oauth-json-web-token-30  draft-ietf-oauth-json-web-token-29  draft-ietf-oauth-json-web-token-28  draft-ietf-oauth-json-web-token-27  draft-ietf-oauth-json-web-token-26  draft-ietf-oauth-json-web-token-25  draft-ietf-oauth-json-web-token-24  draft-ietf-oauth-json-web-token-23  draft-ietf-oauth-json-web-token-22  draft-ietf-oauth-json-web-token-21  draft-ietf-oauth-json-web-token-20  draft-ietf-oauth-json-web-token-19  draft-ietf-oauth-json-web-token-18  draft-ietf-oauth-json-web-token-17  draft-ietf-oauth-json-web-token-16  draft-ietf-oauth-json-web-token-15  draft-ietf-oauth-json-web-token-14  draft-ietf-oauth-json-web-token-13  draft-ietf-oauth-json-web-token-12  draft-ietf-oauth-json-web-token-11  draft-ietf-oauth-json-web-token-10  draft-ietf-oauth-json-web-token-09  draft-ietf-oauth-json-web-token-08  draft-ietf-oauth-json-web-token-07  draft-ietf-oauth-json-web-token-06  draft-ietf-oauth-json-web-token-05  draft-ietf-oauth-json-web-token-04  draft-ietf-oauth-json-web-token-03  draft-ietf-oauth-json-web-token-02  draft-ietf-oauth-json-web-token-01  draft-ietf-oauth-json-web-token-00  Side-by-side  Inline
+| Authors |  |  [Michael B. Jones](/person/michael_b_jones@hotmail.com "Datatracker profile of Michael B. Jones") [__](mailto:michael_b_jones%40hotmail.com "Compose email to michael_b_jones@hotmail.com"),[John Bradley](/person/ve7jtb@ve7jtb.com "Datatracker profile of John Bradley") [__](mailto:ve7jtb%40ve7jtb.com "Compose email to ve7jtb@ve7jtb.com"),[Nat Sakimura](/person/nat@nat.consulting "Datatracker profile of Nat Sakimura") [__](mailto:nat%40nat.consulting "Compose email to nat@nat.consulting")  
 [Email authors](mailto:rfc7519@ietf.org?subject=rfc7519 "Send email to the document authors")  
-|  RFC stream  |  |   
-|  Other formats  |  |  [ __txt](https://www.rfc-editor.org/rfc/rfc7519.txt) [ __html](https://www.rfc-editor.org/rfc/rfc7519.html) [ __pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc7519.txt.pdf) [ __w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc7519.html) [ __bibtex](/doc/rfc7519/bibtex/)  
+|  RFC stream  |  |
+|  Other formats  |  |  [__txt](https://www.rfc-editor.org/rfc/rfc7519.txt) [__html](https://www.rfc-editor.org/rfc/rfc7519.html) [__pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc7519.txt.pdf) [__w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc7519.html) [__bibtex](/doc/rfc7519/bibtex/)  
 |  Additional resources  |  |  [ Mailing list discussion ](https://mailarchive.ietf.org/arch/browse/oauth/?q=rfc7519 OR %22draft-ietf-oauth-json-web-token%22)  
-[ Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
+[Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
 
 Show sidebar by default
 
@@ -1853,19 +1815,19 @@ Yes No
 
 Tab to show by default
 
-__Info __Contents
+__Info__Contents
 
 HTMLization configuration
 
-__HTMLize the plaintext __Plaintextify the HTML
+__HTMLize the plaintext__Plaintextify the HTML
 
 Maximum font size Page dependencies
 
-__Inline __Reference
+__Inline__Reference
 
 Citation links
 
-__Go to reference section __Go to linked document
+__Go to reference section__Go to linked document
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

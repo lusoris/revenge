@@ -1,13 +1,13 @@
 # Markdown Guide
 
 > Source: https://www.markdownguide.org/basic-syntax/
-> Fetched: 2026-01-31T16:06:15.788073+00:00
+> Fetched: 2026-02-01T11:53:49.210889+00:00
 > Content-Hash: 7d6f2a792c9d8bcd
 > Type: html
 
 ---
 
-[ Introducing JotBird â instantly publish Markdown as a shareable web page. â¨ Ã ](https://www.jotbird.com)
+[Introducing JotBird â instantly publish Markdown as a shareable web page. â¨ Ã](https://www.jotbird.com)
 
 # Basic Syntax
 
@@ -23,27 +23,27 @@ To create a heading, add number signs (`#`) in front of a word or phrase. The nu
 
 Markdown | HTML | Rendered Output  
 ---|---|---  
-`# Heading level 1` | `<h1>Heading level 1</h1>` | 
+`# Heading level 1` | `<h1>Heading level 1</h1>` |
 
 # Heading level 1  
   
-`## Heading level 2` | `<h2>Heading level 2</h2>` | 
+`## Heading level 2` | `<h2>Heading level 2</h2>` |
 
 ## Heading level 2  
   
-`### Heading level 3` | `<h3>Heading level 3</h3>` | 
+`### Heading level 3` | `<h3>Heading level 3</h3>` |
 
 ### Heading level 3  
   
-`#### Heading level 4` | `<h4>Heading level 4</h4>` | 
+`#### Heading level 4` | `<h4>Heading level 4</h4>` |
 
 #### Heading level 4  
   
-`##### Heading level 5` | `<h5>Heading level 5</h5>` | 
+`##### Heading level 5` | `<h5>Heading level 5</h5>` |
 
 ##### Heading level 5  
   
-`###### Heading level 6` | `<h6>Heading level 6</h6>` | 
+`###### Heading level 6` | `<h6>Heading level 6</h6>` |
 
 ###### Heading level 6  
   
@@ -54,12 +54,12 @@ Alternatively, on the line below the text, add any number of `==` characters for
 Markdown | HTML | Rendered Output  
 ---|---|---  
 `Heading level 1  
-===============` | `<h1>Heading level 1</h1>` | 
+===============` | `<h1>Heading level 1</h1>` |
 
 # Heading level 1  
   
 `Heading level 2  
-\---------------` | `<h2>Heading level 2</h2>` | 
+\---------------` | `<h2>Heading level 2</h2>` |
 
 ## Heading level 2  
   
@@ -71,7 +71,7 @@ Markdown applications donât agree on how to handle a missing space between 
 ---|---  
 ` # Here's a Heading  
   
-` |  ` #Here's a Heading `  
+` | ` #Here's a Heading `  
   
 You should also put blank lines before and after a heading for compatibility.
 
@@ -81,7 +81,7 @@ You should also put blank lines before and after a heading for compatibility.
   
 # Heading  
   
-...and after a heading. ` |  ` Without blank lines, this might not look right.  
+...and after a heading. ` | ` Without blank lines, this might not look right.  
 # Heading  
 Don't do this! `  
   
@@ -93,7 +93,7 @@ Markdown | HTML | Rendered Output
 ---|---|---  
 ` I really like using Markdown.  
   
-I think I'll use it to format all of my documents from now on. ` |  `<p>I really like using Markdown.</p>  
+I think I'll use it to format all of my documents from now on. ` | `<p>I really like using Markdown.</p>  
   
 <p>I think I'll use it to format all of my documents from now on.</p>` |  I really like using Markdown. I think I'll use it to format all of my documents from now on.  
   
@@ -101,7 +101,7 @@ I think I'll use it to format all of my documents from now on. ` |  `<p>I really
 
 Unless the [paragraph is in a list](/basic-syntax/#paragraphs), donât indent paragraphs with spaces or tabs.
 
-__**Note:** If you need to indent paragraphs in the output, see the section on how to [indent (tab)](/hacks/#indent-tab). 
+__**Note:** If you need to indent paragraphs in the output, see the section on how to [indent (tab)](/hacks/#indent-tab).
 
 â Do this | â Don't do this  
 ---|---  
@@ -109,7 +109,7 @@ __**Note:** If you need to indent paragraphs in the output, see the section on h
   
 Keep lines left-aligned like this.  
   
-` |  ` This can result in unexpected formatting problems.  
+` | ` This can result in unexpected formatting problems.  
   
 Don't add tabs or spaces in front of paragraphs. `  
   
@@ -119,7 +119,7 @@ To create a line break or new line (`<br>`), end a line with two or more spaces,
 
 Markdown | HTML | Rendered Output  
 ---|---|---  
-` This is the first line.   
+` This is the first line.
 And this is the second line. ` |  `<p>This is the first line.<br>  
 And this is the second line.</p>` |  This is the first line.  
 And this is the second line.  
@@ -134,13 +134,13 @@ There are two other options I donât recommend using. CommonMark and a few o
 
 â Do this | â Don't do this  
 ---|---  
-` First line with two spaces after.   
+` First line with two spaces after.
 And the next line.  
   
 First line with the HTML tag after.<br>  
 And the next line.  
   
-` |  ` First line with a backslash after.\  
+` | ` First line with a backslash after.\  
 And the next line.  
   
 First line with nothing after.  
@@ -200,7 +200,7 @@ Markdown | HTML | Rendered Output
 `This text is **_really important_**.` | `This text is <em><strong>really important</strong></em>.` | This text is _**really important**_.  
 `This is really***very***important text.` | `This is really<em><strong>very</strong></em>important text.` | This is really _**very**_ important text.  
   
-__**Note:** The order of the `em` and `strong` tags might be reversed depending on the Markdown processor you're using. 
+__**Note:** The order of the `em` and `strong` tags might be reversed depending on the Markdown processor you're using.
 
 #### Bold and Italic Best Practices
 
@@ -213,8 +213,7 @@ Markdown applications donât agree on how to handle underscores in the middl
 ## Blockquotes
 
 To create a blockquote, add a `>` in front of a paragraph.
-    
-    
+
     > Dorothy followed her through many of the beautiful rooms in her castle.
     
 
@@ -225,8 +224,7 @@ The rendered output looks like this:
 ### Blockquotes with Multiple Paragraphs
 
 Blockquotes can contain multiple paragraphs. Add a `>` on the blank lines between the paragraphs.
-    
-    
+
     > Dorothy followed her through many of the beautiful rooms in her castle.
     >
     > The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
@@ -235,14 +233,13 @@ Blockquotes can contain multiple paragraphs. Add a `>` on the blank lines betwee
 The rendered output looks like this:
 
 > Dorothy followed her through many of the beautiful rooms in her castle.
-> 
+>
 > The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
 
 ### Nested Blockquotes
 
 Blockquotes can be nested. Add a `>>` in front of the paragraph you want to nest.
-    
-    
+
     > Dorothy followed her through many of the beautiful rooms in her castle.
     >
     >> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.
@@ -257,8 +254,7 @@ The rendered output looks like this:
 ### Blockquotes with Other Elements
 
 Blockquotes can contain other Markdown formatted elements. Not all elements can be used â youâll need to experiment to see which ones work.
-    
-    
+
     > #### The quarterly results look great!
     >
     > - Revenue was off the chart.
@@ -269,13 +265,13 @@ Blockquotes can contain other Markdown formatted elements. Not all elements can 
 
 The rendered output looks like this:
 
-> #### The quarterly results look great!
-> 
->   * Revenue was off the chart.
->   * Profits were higher than ever.
-> 
+> #### The quarterly results look great
+>
+> - Revenue was off the chart.
+> - Profits were higher than ever.
+>
 
-> 
+>
 > _Everything_ is going according to **plan**.
 
 ### Blockquotes Best Practices
@@ -288,7 +284,7 @@ For compatibility, put blank lines before and after blockquotes.
   
 > This is a blockquote  
   
-...and after a blockquote. ` |  ` Without blank lines, this might not look right.  
+...and after a blockquote. ` | ` Without blank lines, this might not look right.  
 > This is a blockquote  
 Don't do this! `  
   
@@ -306,18 +302,18 @@ Markdown | HTML | Rendered Output
 2\. Second item  
 3\. Third item  
 4\. Fourth item ` |  ` <ol>  
+
 <li>First item</li>  
 <li>Second item</li>  
 <li>Third item</li>  
 <li>Fourth item</li>  
-</ol> ` | 
+</ol> ` |
 
   1. First item
   2. Second item
   3. Third item
   4. Fourth item
 
-  
 ` 1\. First item  
 1\. Second item  
 1\. Third item  
@@ -326,14 +322,13 @@ Markdown | HTML | Rendered Output
 <li>Second item</li>  
 <li>Third item</li>  
 <li>Fourth item</li>  
-</ol> ` | 
+</ol> ` |
 
   1. First item
   2. Second item
   3. Third item
   4. Fourth item
 
-  
 ` 1\. First item  
 8\. Second item  
 3\. Third item  
@@ -342,14 +337,13 @@ Markdown | HTML | Rendered Output
 <li>Second item</li>  
 <li>Third item</li>  
 <li>Fourth item</li>  
-</ol> ` | 
+</ol> ` |
 
   1. First item
   2. Second item
   3. Third item
   4. Fourth item
 
-  
 ` 1\. First item  
 2\. Second item  
 3\. Third item  
@@ -365,17 +359,15 @@ Markdown | HTML | Rendered Output
 </ol>  
 </li>  
 <li>Fourth item</li>  
-</ol> ` | 
+</ol> ` |
 
   1. First item
   2. Second item
-  3. Third item 
+  3. Third item
      1. Indented item
      2. Indented item
   4. Fourth item
 
-  
-  
 #### Ordered List Best Practices
 
 CommonMark and a few other lightweight markup languages let you use a parenthesis (`)`) as a delimiter (e.g., `1) First item`), but not all Markdown applications support this, so it isnât a great option from a compatibility perspective. For compatibility, use periods only.
@@ -384,7 +376,7 @@ CommonMark and a few other lightweight markup languages let you use a parenthesi
 ---|---  
 ` 1\. First item  
 2\. Second item ` |  ` 1) First item  
-2) Second item `  
+1) Second item `  
   
 ### Unordered Lists
 
@@ -396,34 +388,33 @@ Markdown | HTML | Rendered Output
 \- Second item  
 \- Third item  
 \- Fourth item ` |  ` <ul>  
+
 <li>First item</li>  
 <li>Second item</li>  
 <li>Third item</li>  
 <li>Fourth item</li>  
-</ul> ` | 
+</ul> ` |
 
-  * First item
-  * Second item
-  * Third item
-  * Fourth item
+- First item
+- Second item
+- Third item
+- Fourth item
 
-  
 ` * First item  
-* Second item  
-* Third item  
-* Fourth item ` |  ` <ul>  
+- Second item  
+- Third item  
+- Fourth item ` | ` <ul>  
 <li>First item</li>  
 <li>Second item</li>  
 <li>Third item</li>  
 <li>Fourth item</li>  
-</ul> ` | 
+</ul> ` |
 
-  * First item
-  * Second item
-  * Third item
-  * Fourth item
+- First item
+- Second item
+- Third item
+- Fourth item
 
-  
 ` \+ First item  
 \+ Second item  
 \+ Third item  
@@ -432,14 +423,13 @@ Markdown | HTML | Rendered Output
 <li>Second item</li>  
 <li>Third item</li>  
 <li>Fourth item</li>  
-</ul> ` | 
+</ul> ` |
 
-  * First item
-  * Second item
-  * Third item
-  * Fourth item
+- First item
+- Second item
+- Third item
+- Fourth item
 
-  
 ` \- First item  
 \- Second item  
 \- Third item  
@@ -455,17 +445,15 @@ Markdown | HTML | Rendered Output
 </ul>  
 </li>  
 <li>Fourth item</li>  
-</ul> ` | 
+</ul> ` |
 
-  * First item
-  * Second item
-  * Third item 
-    * Indented item
-    * Indented item
-  * Fourth item
+- First item
+- Second item
+- Third item
+  - Indented item
+  - Indented item
+- Fourth item
 
-  
-  
 #### Starting Unordered List Items With Numbers
 
 If you need to start an unordered list item with a number followed by a period, you can use a backslash (`\`) to escape the period.
@@ -474,15 +462,14 @@ Markdown | HTML | Rendered Output
 ---|---|---  
 ` \- 1968\\. A great year!  
 \- I think 1969 was second best. ` |  ` <ul>  
+
 <li>1968\. A great year!</li>  
 <li>I think 1969 was second best.</li>  
-</ul> ` | 
+</ul> ` |
 
-  * 1968. A great year!
-  * I think 1969 was second best.
+- 1. A great year!
+- I think 1969 was second best.
 
-  
-  
 #### Unordered List Best Practices
 
 Markdown applications donât agree on how to handle different delimiters in the same list. For compatibility, donât mix and match delimiters in the same list â pick one and stick with it.
@@ -493,7 +480,7 @@ Markdown applications donât agree on how to handle different delimiters in 
 \- Second item  
 \- Third item  
 \- Fourth item ` |  ` \+ First item  
-* Second item  
+- Second item  
 \- Third item  
 \+ Fourth item `  
   
@@ -501,11 +488,10 @@ Markdown applications donât agree on how to handle different delimiters in 
 
 To add another element in a list while preserving the continuity of the list, indent the element four spaces or one tab, as shown in the following examples.
 
-__**Tip:** If things don't appear the way you expect, double check that you've indented the elements in the list four spaces or one tab. 
+__**Tip:** If things don't appear the way you expect, double check that you've indented the elements in the list four spaces or one tab.
 
 #### Paragraphs
-    
-    
+
     * This is the first list item.
     * Here's the second list item.
     
@@ -516,18 +502,15 @@ __**Tip:** If things don't appear the way you expect, double check that you've i
 
 The rendered output looks like this:
 
-  * This is the first list item.
-  * Hereâs the second list item.
+- This is the first list item.
+- Hereâs the second list item.
 
 I need to add another paragraph below the second list item.
 
-  * And hereâs the third list item.
-
-
+- And hereâs the third list item.
 
 #### Blockquotes
-    
-    
+
     * This is the first list item.
     * Here's the second list item.
     
@@ -538,20 +521,17 @@ I need to add another paragraph below the second list item.
 
 The rendered output looks like this:
 
-  * This is the first list item.
-  * Hereâs the second list item.
+- This is the first list item.
+- Hereâs the second list item.
 
 > A blockquote would look great below the second list item.
 
-  * And hereâs the third list item.
-
-
+- And hereâs the third list item.
 
 #### Code Blocks
 
 Code blocks are normally indented four spaces or one tab. When theyâre in a list, indent them eight spaces or two tabs.
-    
-    
+
     1. Open the file.
     2. Find the following code block on line 21:
     
@@ -567,7 +547,7 @@ The rendered output looks like this:
 
   1. Open the file.
   2. Find the following code block on line 21:
-         
+
          <html>
             <head>
               <title>Test</title>
@@ -576,11 +556,8 @@ The rendered output looks like this:
 
   3. Update the title to match the name of your website.
 
-
-
 #### Images
-    
-    
+
     1. Open the file containing the Linux mascot.
     2. Marvel at its beauty.
     
@@ -596,13 +573,10 @@ The rendered output looks like this:
 
   3. Close the file.
 
-
-
 #### Lists
 
 You can nest an unordered list in an ordered list, or vice versa.
-    
-    
+
     1. First item
     2. Second item
     3. Third item
@@ -615,12 +589,10 @@ The rendered output looks like this:
 
   1. First item
   2. Second item
-  3. Third item 
-     * Indented item
-     * Indented item
+  3. Third item
+     - Indented item
+     - Indented item
   4. Fourth item
-
-
 
 ## Code
 
@@ -628,7 +600,7 @@ To denote a word or phrase as code, enclose it in backticks (```).
 
 Markdown | HTML | Rendered Output  
 ---|---|---  
-`At the command prompt, type `nano`.` | `At the command prompt, type <code>nano</code>. ` | At the command prompt, type `nano`.  
+`At the command prompt, type`nano`.` | `At the command prompt, type <code>nano</code>.` | At the command prompt, type `nano`.  
   
 ### Escaping Backticks
 
@@ -636,13 +608,12 @@ If the word or phrase you want to denote as code includes one or more backticks,
 
 Markdown | HTML | Rendered Output  
 ---|---|---  
-```Use `code` in your Markdown file.``` | `<code>Use `code` in your Markdown file.</code>` | `Use `code` in your Markdown file.`  
+```Use `code` in your Markdown file.``` | `<code>Use`code`in your Markdown file.</code>` | `Use`code`in your Markdown file.`  
   
 ### Code Blocks
 
 To create code blocks, indent every line of the block by at least four spaces or one tab.
-    
-    
+
         <html>
           <head>
           </head>
@@ -650,21 +621,19 @@ To create code blocks, indent every line of the block by at least four spaces or
     
 
 The rendered output looks like this:
-    
-    
+
     <html>
       <head>
       </head>
     </html>
     
 
-__**Note:** To create code blocks without indenting lines, use [fenced code blocks](/extended-syntax/#fenced-code-blocks). 
+__**Note:** To create code blocks without indenting lines, use [fenced code blocks](/extended-syntax/#fenced-code-blocks).
 
 ## Horizontal Rules
 
 To create a horizontal rule, use three or more asterisks (`***`), dashes (`\---`), or underscores (`___`) on a line by themselves.
-    
-    
+
     ***
     
     ---
@@ -686,15 +655,14 @@ For compatibility, put blank lines before and after horizontal rules.
   
 \---  
   
-...and after a horizontal rule. ` |  ` Without blank lines, this would be a heading.  
+...and after a horizontal rule. ` | ` Without blank lines, this would be a heading.  
 \---  
 Don't do this! `  
   
 ## Links
 
 To create a link, enclose the link text in brackets (e.g., `[Duck Duck Go]`) and then follow it immediately with the URL in parentheses (e.g., `(https://duckduckgo.com)`).
-    
-    
+
     My favorite search engine is [Duck Duck Go](https://duckduckgo.com).
     
 
@@ -702,13 +670,12 @@ The rendered output looks like this:
 
 My favorite search engine is [Duck Duck Go](https://duckduckgo.com).
 
-__**Note:** To link to an element on the same page, see [linking to heading IDs](/extended-syntax/#linking-to-heading-ids). To create a link that opens in a new tab or window, see the section on [link targets](/hacks/#link-targets). 
+__**Note:** To link to an element on the same page, see [linking to heading IDs](/extended-syntax/#linking-to-heading-ids). To create a link that opens in a new tab or window, see the section on [link targets](/hacks/#link-targets).
 
 ### Adding Titles
 
 You can optionally add a title for a link. This will appear as a tooltip when the user hovers over the link. To add a title, enclose it in quotation marks after the URL.
-    
-    
+
     My favorite search engine is [Duck Duck Go](https://duckduckgo.com "The best search engine for privacy").
     
 
@@ -719,8 +686,7 @@ My favorite search engine is [Duck Duck Go](https://duckduckgo.com "The best sea
 ### URLs and Email Addresses
 
 To quickly turn a URL or email address into a link, enclose it in angle brackets.
-    
-    
+
     <https://www.markdownguide.org>
     <fake@example.com>
     
@@ -733,8 +699,7 @@ The rendered output looks like this:
 ### Formatting Links
 
 To emphasize links, add asterisks before and after the brackets and parentheses. To denote links as code, add backticks in the brackets.
-    
-    
+
     I love supporting the **[EFF](https://eff.org)**.
     This is the *[Markdown Guide](https://www.markdownguide.org)*.
     See the section on [`code`](#code).
@@ -758,48 +723,40 @@ Although not required, you can include a space between the first and second set 
 
 This means the following example formats are roughly equivalent for the first part of the link:
 
-  * `[hobbit-hole][1]`
-  * `[hobbit-hole] [1]`
-
-
+- `[hobbit-hole][1]`
+- `[hobbit-hole] [1]`
 
 #### Formatting the Second Part of the Link
 
 The second part of a reference-style link is formatted with the following attributes:
 
-  1. The label, in brackets, followed immediately by a colon and at least one space (e.g., `[label]: `).
+  1. The label, in brackets, followed immediately by a colon and at least one space (e.g., `[label]:`).
   2. The URL for the link, which you can optionally enclose in angle brackets.
   3. The optional title for the link, which you can enclose in double quotes, single quotes, or parentheses.
 
-
-
 This means the following example formats are all roughly equivalent for the second part of the link:
 
-  * `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle`
-  * `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"`
-  * `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle 'Hobbit lifestyles'`
-  * `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle (Hobbit lifestyles)`
-  * `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"`
-  * `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> 'Hobbit lifestyles'`
-  * `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> (Hobbit lifestyles)`
-
-
+- `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle`
+- `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"`
+- `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle 'Hobbit lifestyles'`
+- `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle (Hobbit lifestyles)`
+- `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"`
+- `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> 'Hobbit lifestyles'`
+- `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> (Hobbit lifestyles)`
 
 You can place this second part of the link anywhere in your Markdown document. Some people place them immediately after the paragraph in which they appear while other people place them at the end of the document (like endnotes or footnotes).
 
 #### An Example Putting the Parts Together
 
 Say you add a URL as a standard URL link to a paragraph and it looks like this in Markdown:
-    
-    
+
     In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
     of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
     eat: it was a [hobbit-hole](https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"), and that means comfort.
     
 
 Though it may point to interesting additional information, the URL as displayed really doesnât add much to the existing raw text other than making it harder to read. To fix that, you could format the URL like this instead:
-    
-    
+
     In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
     of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
     eat: it was a [hobbit-hole][1], and that means comfort.
@@ -812,8 +769,7 @@ In both instances above, the rendered output would be identical:
 > In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a [hobbit-hole](https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"), and that means comfort.
 
 and the HTML for the link would be:
-    
-    
+
     <a href="https://en.wikipedia.org/wiki/Hobbit#Lifestyle" title="Hobbit lifestyles">hobbit-hole</a>
     
 
@@ -827,7 +783,7 @@ Markdown applications donât agree on how to handle spaces in the middle of 
   
 <a href="https://www.example.com/my great page">link</a>  
   
-` |  ` [link](https://www.example.com/my great page)  
+` | ` [link](https://www.example.com/my great page)  
   
 `  
   
@@ -839,43 +795,40 @@ Parentheses in the middle of a URL can also be problematic. For compatibility, t
   
 <a href="https://en.wikipedia.org/wiki/The_Milagro_Beanfield_War_(novel)">a novel</a>  
   
-` |  ` [a novel](https://en.wikipedia.org/wiki/The_Milagro_Beanfield_War_(novel)) `  
+` | ` [a novel](https://en.wikipedia.org/wiki/The_Milagro_Beanfield_War_(novel)) `  
   
 ## Images
 
 To add an image, add an exclamation mark (`!`), followed by alt text in brackets, and the path or URL to the image asset in parentheses. You can optionally add a title in quotation marks after the path or URL.
-    
-    
+
     ![The San Juan Mountains are beautiful](/assets/images/san-juan-mountains.jpg "San Juan Mountains")
     
 
 The rendered output looks like this:
 
-__**Note:** To resize an image, see the section on [image size](/hacks/#image-size). To add a caption, see the section on [image captions](/hacks/#image-captions). 
+__**Note:** To resize an image, see the section on [image size](/hacks/#image-size). To add a caption, see the section on [image captions](/hacks/#image-captions).
 
 ### Linking Images
 
 To add a link to an image, enclose the Markdown for the image in brackets, and then add the link in parentheses.
-    
-    
+
     [![An old rock in the desert](/assets/images/shiprock.jpg "Shiprock, New Mexico by Beau Rogers")](https://www.flickr.com/photos/beaurogers/31833779864/in/photolist-Qv3rFw-34mt9F-a9Cmfy-5Ha3Zi-9msKdv-o3hgjr-hWpUte-4WMsJ1-KUQ8N-deshUb-vssBD-6CQci6-8AFCiD-zsJWT-nNfsgB-dPDwZJ-bn9JGn-5HtSXY-6CUhAL-a4UTXB-ugPum-KUPSo-fBLNm-6CUmpy-4WMsc9-8a7D3T-83KJev-6CQ2bK-nNusHJ-a78rQH-nw3NvT-7aq2qf-8wwBso-3nNceh-ugSKP-4mh4kh-bbeeqH-a7biME-q3PtTf-brFpgb-cg38zw-bXMZc-nJPELD-f58Lmo-bXMYG-bz8AAi-bxNtNT-bXMYi-bXMY6-bXMYv)
     
 
 The rendered output looks like this:
 
-[ ](https://www.flickr.com/photos/beaurogers/31833779864/in/photolist-Qv3rFw-34mt9F-a9Cmfy-5Ha3Zi-9msKdv-o3hgjr-hWpUte-4WMsJ1-KUQ8N-deshUb-vssBD-6CQci6-8AFCiD-zsJWT-nNfsgB-dPDwZJ-bn9JGn-5HtSXY-6CUhAL-a4UTXB-ugPum-KUPSo-fBLNm-6CUmpy-4WMsc9-8a7D3T-83KJev-6CQ2bK-nNusHJ-a78rQH-nw3NvT-7aq2qf-8wwBso-3nNceh-ugSKP-4mh4kh-bbeeqH-a7biME-q3PtTf-brFpgb-cg38zw-bXMZc-nJPELD-f58Lmo-bXMYG-bz8AAi-bxNtNT-bXMYi-bXMY6-bXMYv)
+[](https://www.flickr.com/photos/beaurogers/31833779864/in/photolist-Qv3rFw-34mt9F-a9Cmfy-5Ha3Zi-9msKdv-o3hgjr-hWpUte-4WMsJ1-KUQ8N-deshUb-vssBD-6CQci6-8AFCiD-zsJWT-nNfsgB-dPDwZJ-bn9JGn-5HtSXY-6CUhAL-a4UTXB-ugPum-KUPSo-fBLNm-6CUmpy-4WMsc9-8a7D3T-83KJev-6CQ2bK-nNusHJ-a78rQH-nw3NvT-7aq2qf-8wwBso-3nNceh-ugSKP-4mh4kh-bbeeqH-a7biME-q3PtTf-brFpgb-cg38zw-bXMZc-nJPELD-f58Lmo-bXMYG-bz8AAi-bxNtNT-bXMYi-bXMY6-bXMYv)
 
 ## Escaping Characters
 
 To display a literal character that would otherwise be used to format text in a Markdown document, add a backslash (`\`) in front of the character.
-    
-    
+
     \* Without the backslash, this would be a bullet in an unordered list.
     
 
 The rendered output looks like this:
 
-* Without the backslash, this would be a bullet in an unordered list.
+- Without the backslash, this would be a bullet in an unordered list.
 
 ### Characters You Can Escape
 
@@ -885,14 +838,14 @@ Character | Name
 ---|---  
 \ | backslash  
 ` | backtick (see also escaping backticks in code)  
-* | asterisk  
+- | asterisk  
 _ | underscore  
 { } | curly braces  
 [ ] | brackets  
 < > | angle brackets  
 ( ) | parentheses  
 # | pound sign  
-+ | plus sign  
+- | plus sign  
 - | minus sign (hyphen)  
 . | dot  
 ! | exclamation mark  
@@ -903,8 +856,7 @@ _ | underscore
 Many Markdown applications allow you to use HTML tags in Markdown-formatted text. This is helpful if you prefer certain HTML tags to Markdown syntax. For example, some people find it easier to use HTML tags for images. Using HTML is also helpful when you need to change the attributes of an element, like specifying the [color of text](/hacks/#color) or changing the width of an image.
 
 To use HTML, place the tags in the text of your Markdown-formatted file.
-    
-    
+
     This **word** is bold. This <em>word</em> is italic.
     
 
@@ -920,9 +872,9 @@ Use blank lines to separate block-level HTML elements like `<div>`, `<table>`, `
 
 You canât use Markdown syntax inside block-level HTML tags. For example, `<p>italic and **bold**</p>` wonât work.
 
-[ ](/book/)
+[](/book/)
 
-##### Take your Markdown skills to the next level.
+##### Take your Markdown skills to the next level
 
 Learn Markdown in 60 pages. Designed for both novices and experts, _The Markdown Guide_ book is a comprehensive reference that has everything you need to get started and master Markdown syntax.
 

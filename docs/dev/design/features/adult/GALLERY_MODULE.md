@@ -23,50 +23,49 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: go-blurhash
+- name: go-blurhash
     url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
-  - name: google/uuid
+- name: google/uuid
     url: ../sources/tooling/uuid.md
     note: Auto-resolved from google-uuid
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: Servarr Wiki
+- name: Servarr Wiki
     url: ../sources/apis/servarr-wiki.md
     note: Auto-resolved from servarr-wiki
-  - name: sqlc
+- name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-  - name: sqlc Configuration
+- name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
-  - name: Typesense API
+- name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: features/adult
+- title: features/adult
     path: features/adult.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -74,18 +73,15 @@ design_refs:
 
 <!-- DESIGN: features/adult, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
-
 
 > Content module for Scenes, Performers, Studios
 
 > Image gallery management for adult content with performer links and Prowlarr integration
 
 ---
-
 
 ## Status
 
@@ -100,9 +96,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -128,7 +122,6 @@ internal/content/adult_gallery_(qar:_treasures)/
 
 <!-- Component interaction diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -143,7 +136,6 @@ internal/content/adult_gallery_(qar:_treasures)/
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -153,12 +145,10 @@ internal/content/adult_gallery_(qar:_treasures)/
 
 <!-- Configuration keys -->
 
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
 
 ## Testing Strategy
 
@@ -173,7 +163,6 @@ internal/content/adult_gallery_(qar:_treasures)/
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -194,4 +183,3 @@ Target: **80% minimum**
 - [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 - [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
 - [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-

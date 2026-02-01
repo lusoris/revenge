@@ -29,33 +29,32 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: XMLTV Format
+- name: XMLTV Format
     url: http://wiki.xmltv.org/index.php/XMLTVFormat
     note: EPG data format standard
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Full-text search for programs
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Scheduled EPG refresh jobs
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Dependency injection
 design_refs:
-  - title: services
+- title: services
     path: services.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: LIVE_TV_DVR
+- title: LIVE_TV_DVR
     path: features/livetv/LIVE_TV_DVR.md
-  - title: TVHEADEND
+- title: TVHEADEND
     path: integrations/livetv/TVHEADEND.md
-  - title: NEXTPVR
+- title: NEXTPVR
     path: integrations/livetv/NEXTPVR.md
-  - title: ERSATZTV
+- title: ERSATZTV
     path: integrations/livetv/ERSATZTV.md
 ---
 
@@ -63,11 +62,9 @@ design_refs:
 
 <!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: service
-
 
 > > TV program schedule and guide data management service
 
@@ -84,7 +81,6 @@ EPG capabilities:
 
 ---
 
-
 ## Status
 
 | Dimension | Status | Notes |
@@ -98,9 +94,7 @@ EPG capabilities:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -127,7 +121,6 @@ No external service dependencies.
 
 <!-- Component diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -142,7 +135,6 @@ No external service dependencies.
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -151,7 +143,6 @@ No external service dependencies.
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## API Endpoints
 ### GET /api/v1/epg/channels
@@ -233,7 +224,6 @@ Get EPG statistics
 {}
 ```
 
-
 ## Testing Strategy
 
 ### Unit Tests
@@ -247,7 +237,6 @@ Get EPG statistics
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -263,4 +252,3 @@ Target: **80% minimum**
 - [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Full-text search for programs
 - [River Job Queue](../sources/tooling/river.md) - Scheduled EPG refresh jobs
 - [Uber fx](../sources/tooling/fx.md) - Dependency injection
-

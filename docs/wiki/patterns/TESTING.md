@@ -8,49 +8,39 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Go Testing
+- name: Go Testing
     url: ../sources/go/stdlib/testing.md
     note: Standard library testing
-  - name: Testify
+- name: Testify
     url: https://github.com/stretchr/testify
     note: Assertions and test suites
-  - name: Mockery
+- name: Mockery
     url: ../sources/testing/mockery-guide.md
     note: Mock generation
-  - name: Testcontainers Go
+- name: Testcontainers Go
     url: ../sources/testing/testcontainers.md
     note: Integration testing with containers
-  - name: Embedded Postgres
+- name: Embedded Postgres
     url: ../sources/testing/embedded-postgres-guide.md
     note: Fast PostgreSQL for unit tests
 design_refs:
-  - title: patterns
+- title: patterns
     path: patterns/INDEX.md
-  - title: BEST_PRACTICES
+- title: BEST_PRACTICES
     path: operations/BEST_PRACTICES.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
 ---
 
 # Testing Patterns
 
-
-
-
 > Testing standards and patterns for code quality
-
 
 Revenge maintains high code quality through comprehensive testing. All new code requires 80% test coverage minimum. Unit tests use table-driven patterns for clarity and completeness, with mocks generated automatically via Mockery. Integration tests run against real PostgreSQL using embedded-postgres for speed or testcontainers for full fidelity. The CI pipeline runs all tests on every pull request, blocking merges that reduce coverage or introduce failing tests.
 
-
 ---
-
-
-
 
 ## Contents
 
@@ -58,35 +48,19 @@ Revenge maintains high code quality through comprehensive testing. All new code 
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

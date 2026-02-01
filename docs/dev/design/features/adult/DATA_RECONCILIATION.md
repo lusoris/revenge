@@ -23,29 +23,28 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Casbin
+- name: Casbin
     url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: sqlc
+- name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-  - name: sqlc Configuration
+- name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-  - title: features/adult
+- title: features/adult
     path: features/adult.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -53,18 +52,15 @@ design_refs:
 
 <!-- DESIGN: features/adult, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
-
 
 > Content module for Scenes, Performers, Studios
 
 > Fuzzy logic and confidence scoring for conflicting metadata
 
 ---
-
 
 ## Status
 
@@ -79,9 +75,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -107,7 +101,6 @@ internal/content/adult_data_reconciliation/
 
 <!-- Component interaction diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -122,7 +115,6 @@ internal/content/adult_data_reconciliation/
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -132,12 +124,10 @@ internal/content/adult_data_reconciliation/
 
 <!-- Configuration keys -->
 
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
 
 ## Testing Strategy
 
@@ -153,7 +143,6 @@ internal/content/adult_data_reconciliation/
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [features/adult](features/adult.md)
@@ -166,4 +155,3 @@ Target: **80% minimum**
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 - [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
 - [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-

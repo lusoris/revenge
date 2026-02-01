@@ -7,14 +7,11 @@
 
 ---
 
-Initializing search 
+Initializing search
 
+[GitHub](https://github.com/traefik/traefik "Go to repository")
 
-
-
-[ GitHub  ](https://github.com/traefik/traefik "Go to repository")
-
-[ ](https://github.com/traefik/traefik/edit/v3.6/docs/content/index.md "Edit this page")
+[](https://github.com/traefik/traefik/edit/v3.6/docs/content/index.md "Edit this page")
 
 # What is Traefik?¶
 
@@ -38,32 +35,26 @@ When developing Traefik, our main goal is to make it easy to use, and we're sure
 
 Traefik supports different needs depending on your background. We keep three user personas in mind as we build and organize these docs:
 
-  * **Beginners** : You are new to Traefik or new to reverse proxies. You want simple, guided steps to set things up without diving too deep into advanced topics.
-  * **DevOps Engineers** : You manage infrastructure or clusters (Docker, Kubernetes, or other orchestrators). You integrate Traefik into your environment and value reliability, performance, and streamlined deployments.
-  * **Developers** : You create and deploy applications or APIs. You focus on how to expose your services through Traefik, apply routing rules, and integrate it with your development workflow.
-
-
+- **Beginners** : You are new to Traefik or new to reverse proxies. You want simple, guided steps to set things up without diving too deep into advanced topics.
+- **DevOps Engineers** : You manage infrastructure or clusters (Docker, Kubernetes, or other orchestrators). You integrate Traefik into your environment and value reliability, performance, and streamlined deployments.
+- **Developers** : You create and deploy applications or APIs. You focus on how to expose your services through Traefik, apply routing rules, and integrate it with your development workflow.
 
 ## Core Concepts¶
 
 Traefik’s main concepts help you understand how requests flow to your services:
 
-  * [Entrypoints](reference/install-configuration/entrypoints/) are the network entry points into Traefik. They define the port that will receive the packets and whether to listen for TCP or UDP.
-  * [Routers](reference/routing-configuration/http/routing/rules-and-priority/) are in charge of connecting incoming requests to the services that can handle them. In the process, routers may use pieces of [middleware](reference/routing-configuration/http/middlewares/overview/) to update the request or act before forwarding the request to the service.
-  * [Services](reference/routing-configuration/http/load-balancing/service/) are responsible for configuring how to reach the actual services that will eventually handle the incoming requests.
-  * [Providers](reference/install-configuration/providers/overview/) are infrastructure components, whether orchestrators, container engines, cloud providers, or key-value stores. The idea is that Traefik queries the provider APIs in order to find relevant information about routing, and when Traefik detects a change, it dynamically updates the routes.
-
-
+- [Entrypoints](reference/install-configuration/entrypoints/) are the network entry points into Traefik. They define the port that will receive the packets and whether to listen for TCP or UDP.
+- [Routers](reference/routing-configuration/http/routing/rules-and-priority/) are in charge of connecting incoming requests to the services that can handle them. In the process, routers may use pieces of [middleware](reference/routing-configuration/http/middlewares/overview/) to update the request or act before forwarding the request to the service.
+- [Services](reference/routing-configuration/http/load-balancing/service/) are responsible for configuring how to reach the actual services that will eventually handle the incoming requests.
+- [Providers](reference/install-configuration/providers/overview/) are infrastructure components, whether orchestrators, container engines, cloud providers, or key-value stores. The idea is that Traefik queries the provider APIs in order to find relevant information about routing, and when Traefik detects a change, it dynamically updates the routes.
 
 These concepts work together to manage your traffic from the moment a request arrives until it reaches your application.
 
 ## How to Use the Documentation¶
 
-  * **Navigation** : Each main section focuses on a specific stage of working with Traefik - installing, exposing services, observing, extending & migrating. Use the sidebar to navigate to the section that is most appropriate for your needs.
-  * **Practical Examples** : You will see code snippets and configuration examples for different environments (YAML/TOML, Labels, & Tags).
-  * **Reference** : When you need to look up technical details, our reference section provides a deep dive into configuration options and key terms.
-
-
+- **Navigation** : Each main section focuses on a specific stage of working with Traefik - installing, exposing services, observing, extending & migrating. Use the sidebar to navigate to the section that is most appropriate for your needs.
+- **Practical Examples** : You will see code snippets and configuration examples for different environments (YAML/TOML, Labels, & Tags).
+- **Reference** : When you need to look up technical details, our reference section provides a deep dive into configuration options and key terms.
 
 Info
 

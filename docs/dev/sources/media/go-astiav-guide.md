@@ -19,10 +19,10 @@ It's only compatible with `ffmpeg` `n8.0`.
 Its main goals are to:
 
 - [x] provide a better GO idiomatic API
-    - standard error pattern
-    - typed constants and flags
-    - struct-based functions
-    - ...
+  - standard error pattern
+  - typed constants and flags
+  - struct-based functions
+  - ...
 - [x] provide the GO version of [ffmpeg examples](https://github.com/FFmpeg/FFmpeg/tree/n8.0/doc/examples)
 - [x] be fully tested
 

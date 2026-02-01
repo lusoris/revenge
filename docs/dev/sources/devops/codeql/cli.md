@@ -1,7 +1,7 @@
 # CodeQL CLI Reference
 
 > Source: https://codeql.github.com/docs/codeql-cli/
-> Fetched: 2026-01-31T16:06:08.660897+00:00
+> Fetched: 2026-02-01T11:53:42.241223+00:00
 > Content-Hash: dbd4cc0e6622e7f8
 > Type: html
 

@@ -1,7 +1,7 @@
 # Coder Docker
 
 > Source: https://coder.com/docs/platforms/docker
-> Fetched: 2026-01-31T16:05:29.137685+00:00
+> Fetched: 2026-02-01T11:52:59.304118+00:00
 > Content-Hash: 8a5332aa2894565c
 > Type: html
 
@@ -15,10 +15,8 @@ AWSGCPAzureOther
 
 We publish an EC2 image with Coder pre-installed. Follow the tutorial here:
 
-  * [Install Coder on AWS EC2](/docs/install/cloud/ec2)
-  * [Install Coder on AWS EKS](/docs/install/kubernetes#aws)
-
-
+- [Install Coder on AWS EC2](/docs/install/cloud/ec2)
+- [Install Coder on AWS EKS](/docs/install/kubernetes#aws)
 
 Alternatively, install the [CLI binary](/docs/install/cli) on any Linux machine or follow our [Kubernetes](/docs/install/kubernetes) documentation to install Coder on an existing Kubernetes cluster.
 

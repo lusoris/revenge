@@ -7,12 +7,10 @@
 
 ---
 
-[ XMLTV ](/XMLTV) / **[xmltv](/XMLTV/xmltv) ** Public
+[XMLTV](/XMLTV) / **[xmltv](/XMLTV/xmltv)** Public
 
-  * [ Notifications ](/login?return_to=%2FXMLTV%2Fxmltv) You must be signed in to change notification settings
-  * [ Fork 106 ](/login?return_to=%2FXMLTV%2Fxmltv)
-  * [ Star  390 ](/login?return_to=%2FXMLTV%2Fxmltv)
-
-
+- [Notifications](/login?return_to=%2FXMLTV%2Fxmltv) You must be signed in to change notification settings
+- [Fork 106](/login?return_to=%2FXMLTV%2Fxmltv)
+- [Star  390](/login?return_to=%2FXMLTV%2Fxmltv)
 
   *[↑]: Back to Top

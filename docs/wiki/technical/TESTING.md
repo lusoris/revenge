@@ -8,38 +8,33 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Go Testing Package
+- name: Go Testing Package
     url: ../sources/go/stdlib/testing.md
     note: Standard library testing
-  - name: testify
+- name: testify
     url: ../sources/testing/testify.md
     note: Assertion and mocking toolkit
-  - name: mockery
+- name: mockery
     url: ../sources/testing/mockery-guide.md
     note: Mock generation from interfaces
-  - name: testcontainers-go
+- name: testcontainers-go
     url: https://pkg.go.dev/github.com/testcontainers/testcontainers-go
     note: Docker containers for integration tests
-  - name: embedded-postgres
+- name: embedded-postgres
     url: ../sources/testing/embedded-postgres.md
     note: Embedded PostgreSQL for testing
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: BEST_PRACTICES
+- title: BEST_PRACTICES
     path: operations/BEST_PRACTICES.md
 ---
 
 # Testing Patterns and Practices
-
-
-
 
 > Ensure code quality with comprehensive automated testing
 
@@ -47,44 +42,25 @@ The Testing Strategy ensures code quality through multiple test layers. Unit tes
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

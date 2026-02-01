@@ -7,7 +7,7 @@
 
 ---
 
-November 13, 2025: [ PostgreSQL 18.1, 17.7, 16.11, 15.15, 14.20, and 13.23 Released! ](/about/news/postgresql-181-177-1611-1515-1420-and-1323-released-3171/)
+November 13, 2025: [PostgreSQL 18.1, 17.7, 16.11, 15.15, 14.20, and 13.23 Released!](/about/news/postgresql-181-177-1611-1515-1420-and-1323-released-3171/)
 
 [Documentation](/docs/ "Documentation") → [PostgreSQL 18](/docs/18/index.html)
 
@@ -39,8 +39,7 @@ PostgreSQL allows columns of a table to be defined as variable-length multidimen
 ### 8.15.1. Declaration of Array Types #
 
 To illustrate the use of array types, we create this table:
-    
-    
+
     CREATE TABLE sal_emp (
         name            text,
         pay_by_quarter  integer[],
@@ -51,8 +50,7 @@ To illustrate the use of array types, we create this table:
 As shown, an array data type is named by appending square brackets (`[]`) to the data type name of the array elements. The above command will create a table named `sal_emp` with a column of type `text` (`name`), a one-dimensional array of type `integer` (`pay_by_quarter`), which represents the employee's salary by quarter, and a two-dimensional array of `text` (`schedule`), which represents the employee's weekly schedule.
 
 The syntax for `CREATE TABLE` allows the exact size of arrays to be specified, for example:
-    
-    
+
     CREATE TABLE tictactoe (
         squares   integer[3][3]
     );
@@ -63,14 +61,12 @@ However, the current implementation ignores any supplied array size limits, i.e.
 The current implementation does not enforce the declared number of dimensions either. Arrays of a particular element type are all considered to be of the same type, regardless of size or number of dimensions. So, declaring the array size or number of dimensions in `CREATE TABLE` is simply documentation; it does not affect run-time behavior.
 
 An alternative syntax, which conforms to the SQL standard by using the keyword `ARRAY`, can be used for one-dimensional arrays. `pay_by_quarter` could have been defined as:
-    
-    
+
         pay_by_quarter  integer ARRAY[4],
     
 
 Or, if no array size is to be specified:
-    
-    
+
         pay_by_quarter  integer ARRAY,
     
 
@@ -79,14 +75,12 @@ As before, however, PostgreSQL does not enforce the size restriction in any case
 ### 8.15.2. Array Value Input #
 
 To write an array value as a literal constant, enclose the element values within curly braces and separate them by commas. (If you know C, this is not unlike the C syntax for initializing structures.) You can put double quotes around any element value, and must do so if it contains commas or curly braces. (More details appear below.) Thus, the general format of an array constant is the following:
-    
-    
+
     '{ _val1_ _delim_ _val2_ _delim_ ... }'
     
 
 where _`delim`_ is the delimiter character for the type, as recorded in its `pg_type` entry. Among the standard data types provided in the PostgreSQL distribution, all use a comma (`,`), except for type `box` which uses a semicolon (`;`). Each _`val`_ is either a constant of the array element type, or a subarray. An example of an array constant is:
-    
-    
+
     '{{1,2,3},{4,5,6},{7,8,9}}'
     
 
@@ -97,8 +91,7 @@ To set an element of an array constant to NULL, write `NULL` for the element val
 (These kinds of array constants are actually only a special case of the generic type constants discussed in [Section 4.1.2.7](sql-syntax-lexical.html#SQL-SYNTAX-CONSTANTS-GENERIC "4.1.2.7. Constants of Other Types"). The constant is initially treated as a string and passed to the array input conversion routine. An explicit type specification might be necessary.)
 
 Now we can show some `INSERT` statements:
-    
-    
+
     INSERT INTO sal_emp
         VALUES ('Bill',
         '{10000, 10000, 10000, 10000}',
@@ -111,8 +104,7 @@ Now we can show some `INSERT` statements:
     
 
 The result of the previous two inserts looks like this:
-    
-    
+
     SELECT * FROM sal_emp;
      name  |      pay_by_quarter       |                 schedule
     -------+---------------------------+-------------------------------------------
@@ -122,8 +114,7 @@ The result of the previous two inserts looks like this:
     
 
 Multidimensional arrays must have matching extents for each dimension. A mismatch causes an error, for example:
-    
-    
+
     INSERT INTO sal_emp
         VALUES ('Bill',
         '{10000, 10000, 10000, 10000}',
@@ -133,8 +124,7 @@ Multidimensional arrays must have matching extents for each dimension. A mismatc
     
 
 The `ARRAY` constructor syntax can also be used:
-    
-    
+
     INSERT INTO sal_emp
         VALUES ('Bill',
         ARRAY[10000, 10000, 10000, 10000],
@@ -151,8 +141,7 @@ Notice that the array elements are ordinary SQL constants or expressions; for in
 ### 8.15.3. Accessing Arrays #
 
 Now, we can run some queries on the table. First, we show how to access a single element of an array. This query retrieves the names of the employees whose pay changed in the second quarter:
-    
-    
+
     SELECT name FROM sal_emp WHERE pay_by_quarter[1] <> pay_by_quarter[2];
     
      name
@@ -164,8 +153,7 @@ Now, we can run some queries on the table. First, we show how to access a single
 The array subscript numbers are written within square brackets. By default PostgreSQL uses a one-based numbering convention for arrays, that is, an array of _`n`_ elements starts with `array[1]` and ends with `array[_`n`_]`.
 
 This query retrieves the third quarter pay of all employees:
-    
-    
+
     SELECT pay_by_quarter[3] FROM sal_emp;
     
      pay_by_quarter
@@ -176,8 +164,7 @@ This query retrieves the third quarter pay of all employees:
     
 
 We can also access arbitrary rectangular slices of an array, or subarrays. An array slice is denoted by writing `_`lower-bound`_ :_`upper-bound`_` for one or more array dimensions. For example, this query retrieves the first item on Bill's schedule for the first two days of the week:
-    
-    
+
     SELECT schedule[1:2][1:1] FROM sal_emp WHERE name = 'Bill';
     
             schedule
@@ -187,8 +174,7 @@ We can also access arbitrary rectangular slices of an array, or subarrays. An ar
     
 
 If any dimension is written as a slice, i.e., contains a colon, then all dimensions are treated as slices. Any dimension that has only a single number (no colon) is treated as being from 1 to the number specified. For example, `[2]` is treated as `[1:2]`, as in this example:
-    
-    
+
     SELECT schedule[1:2][2] FROM sal_emp WHERE name = 'Bill';
     
                      schedule
@@ -200,8 +186,7 @@ If any dimension is written as a slice, i.e., contains a colon, then all dimensi
 To avoid confusion with the non-slice case, it's best to use slice syntax for all dimensions, e.g., `[1:2][1:1]`, not `[2][1:1]`.
 
 It is possible to omit the _`lower-bound`_ and/or _`upper-bound`_ of a slice specifier; the missing bound is replaced by the lower or upper limit of the array's subscripts. For example:
-    
-    
+
     SELECT schedule[:2][2:] FROM sal_emp WHERE name = 'Bill';
     
             schedule
@@ -222,8 +207,7 @@ An array subscript expression will return null if either the array itself or any
 An array slice expression likewise yields null if the array itself or any of the subscript expressions are null. However, in other cases such as selecting an array slice that is completely outside the current array bounds, a slice expression yields an empty (zero-dimensional) array instead of null. (This does not match non-slice behavior and is done for historical reasons.) If the requested slice partially overlaps the array bounds, then it is silently reduced to just the overlapping region instead of returning null.
 
 The current dimensions of any array value can be retrieved with the `array_dims` function:
-    
-    
+
     SELECT array_dims(schedule) FROM sal_emp WHERE name = 'Carol';
     
      array_dims
@@ -233,8 +217,7 @@ The current dimensions of any array value can be retrieved with the `array_dims`
     
 
 `array_dims` produces a `text` result, which is convenient for people to read but perhaps inconvenient for programs. Dimensions can also be retrieved with `array_upper` and `array_lower`, which return the upper and lower bound of a specified array dimension, respectively:
-    
-    
+
     SELECT array_upper(schedule, 1) FROM sal_emp WHERE name = 'Carol';
     
      array_upper
@@ -244,8 +227,7 @@ The current dimensions of any array value can be retrieved with the `array_dims`
     
 
 `array_length` will return the length of a specified array dimension:
-    
-    
+
     SELECT array_length(schedule, 1) FROM sal_emp WHERE name = 'Carol';
     
      array_length
@@ -255,8 +237,7 @@ The current dimensions of any array value can be retrieved with the `array_dims`
     
 
 `cardinality` returns the total number of elements in an array across all dimensions. It is effectively the number of rows a call to `unnest` would yield:
-    
-    
+
     SELECT cardinality(schedule) FROM sal_emp WHERE name = 'Carol';
     
      cardinality
@@ -268,29 +249,25 @@ The current dimensions of any array value can be retrieved with the `array_dims`
 ### 8.15.4. Modifying Arrays #
 
 An array value can be replaced completely:
-    
-    
+
     UPDATE sal_emp SET pay_by_quarter = '{25000,25000,27000,27000}'
         WHERE name = 'Carol';
     
 
 or using the `ARRAY` expression syntax:
-    
-    
+
     UPDATE sal_emp SET pay_by_quarter = ARRAY[25000,25000,27000,27000]
         WHERE name = 'Carol';
     
 
 An array can also be updated at a single element:
-    
-    
+
     UPDATE sal_emp SET pay_by_quarter[4] = 15000
         WHERE name = 'Bill';
     
 
 or updated in a slice:
-    
-    
+
     UPDATE sal_emp SET pay_by_quarter[1:2] = '{27000,27000}'
         WHERE name = 'Carol';
     
@@ -302,8 +279,7 @@ A stored array value can be enlarged by assigning to elements not already presen
 Subscripted assignment allows creation of arrays that do not use one-based subscripts. For example one might assign to `myarray[-2:7]` to create an array with subscript values from -2 to 7.
 
 New array values can also be constructed using the concatenation operator, `||`:
-    
-    
+
     SELECT ARRAY[1,2] || ARRAY[3,4];
      ?column?
     -----------
@@ -320,8 +296,7 @@ New array values can also be constructed using the concatenation operator, `||`:
 The concatenation operator allows a single element to be pushed onto the beginning or end of a one-dimensional array. It also accepts two _`N`_ -dimensional arrays, or an _`N`_ -dimensional and an _`N+1`_ -dimensional array.
 
 When a single element is pushed onto either the beginning or end of a one-dimensional array, the result is an array with the same lower bound subscript as the array operand. For example:
-    
-    
+
     SELECT array_dims(1 || '[0:1]={2,3}'::int[]);
      array_dims
     ------------
@@ -336,8 +311,7 @@ When a single element is pushed onto either the beginning or end of a one-dimens
     
 
 When two arrays with an equal number of dimensions are concatenated, the result retains the lower bound subscript of the left-hand operand's outer dimension. The result is an array comprising every element of the left-hand operand followed by every element of the right-hand operand. For example:
-    
-    
+
     SELECT array_dims(ARRAY[1,2] || ARRAY[3,4,5]);
      array_dims
     ------------
@@ -352,8 +326,7 @@ When two arrays with an equal number of dimensions are concatenated, the result 
     
 
 When an _`N`_ -dimensional array is pushed onto the beginning or end of an _`N+1`_ -dimensional array, the result is analogous to the element-array case above. Each _`N`_ -dimensional sub-array is essentially an element of the _`N+1`_ -dimensional array's outer dimension. For example:
-    
-    
+
     SELECT array_dims(ARRAY[1,2] || ARRAY[[3,4],[5,6]]);
      array_dims
     ------------
@@ -362,8 +335,7 @@ When an _`N`_ -dimensional array is pushed onto the beginning or end of an _`N+1
     
 
 An array can also be constructed by using the functions `array_prepend`, `array_append`, or `array_cat`. The first two only support one-dimensional arrays, but `array_cat` supports multidimensional arrays. Some examples:
-    
-    
+
     SELECT array_prepend(1, ARRAY[2,3]);
      array_prepend
     ---------------
@@ -395,8 +367,7 @@ An array can also be constructed by using the functions `array_prepend`, `array_
     
 
 In simple cases, the concatenation operator discussed above is preferred over direct use of these functions. However, because the concatenation operator is overloaded to serve all three cases, there are situations where use of one of the functions is helpful to avoid ambiguity. For example consider:
-    
-    
+
     SELECT ARRAY[1, 2] || '{3, 4}';  -- the untyped literal is taken as an array
      ?column?
     -----------
@@ -422,8 +393,7 @@ In the examples above, the parser sees an integer array on one side of the conca
 ### 8.15.5. Searching in Arrays #
 
 To search for a value in an array, each value must be checked. This can be done manually, if you know the size of the array. For example:
-    
-    
+
     SELECT * FROM sal_emp WHERE pay_by_quarter[1] = 10000 OR
                                 pay_by_quarter[2] = 10000 OR
                                 pay_by_quarter[3] = 10000 OR
@@ -431,20 +401,17 @@ To search for a value in an array, each value must be checked. This can be done 
     
 
 However, this quickly becomes tedious for large arrays, and is not helpful if the size of the array is unknown. An alternative method is described in [Section 9.25](functions-comparisons.html "9.25. Row and Array Comparisons"). The above query could be replaced by:
-    
-    
+
     SELECT * FROM sal_emp WHERE 10000 = ANY (pay_by_quarter);
     
 
 In addition, you can find rows where the array has all values equal to 10000 with:
-    
-    
+
     SELECT * FROM sal_emp WHERE 10000 = ALL (pay_by_quarter);
     
 
 Alternatively, the `generate_subscripts` function can be used. For example:
-    
-    
+
     SELECT * FROM
        (SELECT pay_by_quarter,
                generate_subscripts(pay_by_quarter, 1) AS s
@@ -455,16 +422,14 @@ Alternatively, the `generate_subscripts` function can be used. For example:
 This function is described in [Table 9.70](functions-srf.html#FUNCTIONS-SRF-SUBSCRIPTS "Table 9.70. Subscript Generating Functions").
 
 You can also search an array using the `&&` operator, which checks whether the left operand overlaps with the right operand. For instance:
-    
-    
+
     SELECT * FROM sal_emp WHERE pay_by_quarter && ARRAY[10000];
     
 
 This and other array operators are further described in [Section 9.19](functions-array.html "9.19. Array Functions and Operators"). It can be accelerated by an appropriate index, as described in [Section 11.2](indexes-types.html "11.2. Index Types").
 
 You can also search for specific values in an array using the `array_position` and `array_positions` functions. The former returns the subscript of the first occurrence of a value in an array; the latter returns an array with the subscripts of all occurrences of the value in the array. For example:
-    
-    
+
     SELECT array_position(ARRAY['sun','mon','tue','wed','thu','fri','sat'], 'mon');
      array_position
     ----------------
@@ -489,8 +454,7 @@ The external text representation of an array value consists of items that are in
 The array output routine will put double quotes around element values if they are empty strings, contain curly braces, delimiter characters, double quotes, backslashes, or white space, or match the word `NULL`. Double quotes and backslashes embedded in element values will be backslash-escaped. For numeric data types it is safe to assume that double quotes will never appear, but for textual data types one should be prepared to cope with either the presence or absence of quotes.
 
 By default, the lower bound index value of an array's dimensions is set to one. To represent arrays with other lower bounds, the array subscript ranges can be specified explicitly before writing the array contents. This decoration consists of square brackets (`[]`) around each array dimension's lower and upper bounds, with a colon (`:`) delimiter character in between. The array dimension decoration is followed by an equal sign (`=`). For example:
-    
-    
+
     SELECT f1[1][-2][3] AS e1, f1[1][-1][5] AS e2
      FROM (SELECT '[1:1][-2:-1][3:5]={{{1,2,3},{4,5,6}}}'::int[] AS f1) AS ss;
     
@@ -520,4 +484,4 @@ The `ARRAY` constructor syntax (see [Section 4.2.12](sql-expressions.html#SQL-SY
   
 ## Submit correction
 
-If you see anything in the documentation that is not correct, does not match your experience with the particular feature or requires further clarification, please use [this form](/account/comments/new/18/arrays.html/) to report a documentation issue. 
+If you see anything in the documentation that is not correct, does not match your experience with the particular feature or requires further clarification, please use [this form](/account/comments/new/18/arrays.html/) to report a documentation issue.

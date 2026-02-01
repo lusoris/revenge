@@ -1,7 +1,7 @@
 # GitHub Actions Matrix Builds
 
 > Source: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
-> Fetched: 2026-01-31T16:05:05.433961+00:00
+> Fetched: 2026-02-01T11:52:33.561833+00:00
 > Content-Hash: 2934014b4ed135d2
 > Type: html
 
@@ -22,8 +22,7 @@ A matrix strategy lets you use variables in a single job definition to automatic
 ## Adding a matrix strategy to your workflow job
 
 Use `jobs.<job_id>.strategy.matrix` to define a matrix of different job configurations. Within your matrix, define one or more variables followed by an array of values. For example, the following matrix has a variable called `version` with the value `[10, 12, 14]` and a variable called `os` with the value `[ubuntu-latest, windows-latest]`:
-    
-    
+
     jobs:
       example_matrix:
         strategy:
@@ -36,14 +35,12 @@ A job will run for each possible combination of the variables. In this example, 
 
 The above matrix will create the jobs in the following order.
 
-  * `{version: 10, os: ubuntu-latest}`
-  * `{version: 10, os: windows-latest}`
-  * `{version: 12, os: ubuntu-latest}`
-  * `{version: 12, os: windows-latest}`
-  * `{version: 14, os: ubuntu-latest}`
-  * `{version: 14, os: windows-latest}`
-
-
+- `{version: 10, os: ubuntu-latest}`
+- `{version: 10, os: windows-latest}`
+- `{version: 12, os: ubuntu-latest}`
+- `{version: 12, os: windows-latest}`
+- `{version: 14, os: ubuntu-latest}`
+- `{version: 14, os: windows-latest}`
 
 For reference information and examples, see [Workflow syntax for GitHub Actions](/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix).
 
@@ -52,8 +49,7 @@ For reference information and examples, see [Workflow syntax for GitHub Actions]
 To create matrices with information about workflow runs, variables, runner environments, jobs, and steps, access contexts using the `${{ <context> }}` expression syntax. For more information about contexts, see [Contexts reference](/en/actions/learn-github-actions/contexts).
 
 For example, the following workflow triggers on the `repository_dispatch` event and uses information from the event payload to build the matrix. When a repository dispatch event is created with a payload like the one below, the matrix `version` variable will have a value of `[12, 14, 16]`. For more information about the `repository_dispatch` trigger, see [Events that trigger workflows](/en/actions/using-workflows/events-that-trigger-workflows#repository_dispatch).
-    
-    
+
     {
       "event_type": "test",
       "client_payload": {
@@ -85,8 +81,7 @@ For example, the following workflow triggers on the `repository_dispatch` event 
 To expand existing matrix configurations or to add new configurations, use `jobs.<job_id>.strategy.matrix.include`. The value of `include` is a list of objects.
 
 For example, consider the following matrix.
-    
-    
+
     strategy:
       matrix:
         fruit: [apple, pear]
@@ -104,24 +99,20 @@ For example, consider the following matrix.
 
 This will result in six jobs with the following matrix combinations.
 
-  * `{fruit: apple, animal: cat, color: pink, shape: circle}`
-  * `{fruit: apple, animal: dog, color: green, shape: circle}`
-  * `{fruit: pear, animal: cat, color: pink}`
-  * `{fruit: pear, animal: dog, color: green}`
-  * `{fruit: banana}`
-  * `{fruit: banana, animal: cat}`
-
-
+- `{fruit: apple, animal: cat, color: pink, shape: circle}`
+- `{fruit: apple, animal: dog, color: green, shape: circle}`
+- `{fruit: pear, animal: cat, color: pink}`
+- `{fruit: pear, animal: dog, color: green}`
+- `{fruit: banana}`
+- `{fruit: banana, animal: cat}`
 
 Each `include` entry was applied in the following ways.
 
-  * `{color: green}` is added to all of the original matrix combinations because it can be added without overwriting any part of the original combinations.
-  * `{color: pink, animal: cat}` adds `color:pink` only to the original matrix combinations that include `animal: cat`. This overwrites the `color: green` that was added by the previous `include` entry.
-  * `{fruit: apple, shape: circle}` adds `shape: circle` only to the original matrix combinations that include `fruit: apple`.
-  * `{fruit: banana}` cannot be added to any original matrix combination without overwriting a value, so it is added as an additional matrix combination.
-  * `{fruit: banana, animal: cat}` cannot be added to any original matrix combination without overwriting a value, so it is added as an additional matrix combination. It does not add to the `{fruit: banana}` matrix combination because that combination was not one of the original matrix combinations.
-
-
+- `{color: green}` is added to all of the original matrix combinations because it can be added without overwriting any part of the original combinations.
+- `{color: pink, animal: cat}` adds `color:pink` only to the original matrix combinations that include `animal: cat`. This overwrites the `color: green` that was added by the previous `include` entry.
+- `{fruit: apple, shape: circle}` adds `shape: circle` only to the original matrix combinations that include `fruit: apple`.
+- `{fruit: banana}` cannot be added to any original matrix combination without overwriting a value, so it is added as an additional matrix combination.
+- `{fruit: banana, animal: cat}` cannot be added to any original matrix combination without overwriting a value, so it is added as an additional matrix combination. It does not add to the `{fruit: banana}` matrix combination because that combination was not one of the original matrix combinations.
 
 For reference and example configurations, see [Workflow syntax for GitHub Actions](/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymatrixinclude).
 
@@ -130,8 +121,7 @@ For reference and example configurations, see [Workflow syntax for GitHub Action
 To remove specific configurations defined in the matrix, use `jobs.<job_id>.strategy.matrix.exclude`.
 
 For example, the following workflow will run nine jobs: one job for each of the 12 configurations, minus the one excluded job that matches `{os: macos-latest, version: 12, environment: production}`, and the two excluded jobs that match `{os: windows-latest, version: 16}`.
-    
-    
+
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
@@ -153,8 +143,7 @@ For reference information, see [Workflow syntax for GitHub Actions](/en/actions/
 You can use the output from one job to define matrices for multiple jobs.
 
 For example, the following workflow demonstrates how to define a matrix of values in one job, use that matrix in a second jobs to produce artifacts, and then consume those artifacts in a third job. Each artifact is associated with a value from the matrix.
-    
-    
+
     name: shared matrix
     on:
       push:
@@ -217,8 +206,7 @@ For example, the following workflow demonstrates how to define a matrix of value
 To control how job failures are handled, use `jobs.<job_id>.strategy.fail-fast` and `jobs.<job_id>.continue-on-error`.
 
 You can use `jobs.<job_id>.strategy.fail-fast` and `jobs.<job_id>.continue-on-error` together. For example, the following workflow will start four jobs. For each job, `continue-on-error` is determined by the value of `matrix.experimental`. If any of the jobs with `continue-on-error: false` fail, all jobs that are in progress or queued will be cancelled. If the job with `continue-on-error: true` fails, the other jobs will not be affected.
-    
-    
+
     jobs:
       test:
         runs-on: ubuntu-latest
@@ -240,8 +228,7 @@ For reference information see [`jobs.<job_id>.strategy.fail-fast`](/en/actions/r
 To set the maximum number of jobs that can run simultaneously when using a `matrix` job strategy, use `jobs.<job_id>.strategy.max-parallel`.
 
 For example, the following workflow will run a maximum of two jobs at a time, even if there are runners available to run all six jobs at once.
-    
-    
+
     jobs:
       example_matrix:
         strategy:

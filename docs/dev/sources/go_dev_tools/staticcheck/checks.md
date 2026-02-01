@@ -1,7 +1,7 @@
 # staticcheck Checks
 
 > Source: https://staticcheck.io/docs/checks/
-> Fetched: 2026-01-31T16:07:05.695345+00:00
+> Fetched: 2026-02-01T11:54:44.216591+00:00
 > Content-Hash: 09e1ee4b44496a15
 > Type: html
 
@@ -234,20 +234,17 @@ Available since
 #### SA1005 - Invalid first argument to `exec.Command`
 
 `os/exec` runs programs directly (using variants of the fork and exec system calls on Unix systems). This shouldn’t be confused with running a command in a shell. The shell will allow for features such as input redirection, pipes, and general scripting. The shell is also responsible for splitting the user’s input into a program name and its arguments. For example, the equivalent to
-    
-    
+
     ls / /tmp
     
 
 would be
-    
-    
+
     exec.Command("ls", "/", "/tmp")
     
 
 If you want to run a command in a shell, consider using something like the following – but be aware that not all systems, particularly Windows, will have a `/bin/sh` program:
-    
-    
+
     exec.Command("/bin/sh", "-c", "ls | grep Awesome")
     
 
@@ -257,20 +254,17 @@ Available since
 #### SA1006 - `Printf` with dynamic first argument and no further arguments
 
 Using `fmt.Printf` with a dynamic first argument can lead to unexpected output. The first argument is a format string, where certain character combinations have special meaning. If, for example, a user were to enter a string such as
-    
-    
+
     Interest rate: 5%
     
 
 and you printed it with
-    
-    
+
     fmt.Printf(s)
     
 
 it would lead to the following output:
-    
-    
+
     Interest rate: 5%!(NOVERB).
     
 
@@ -289,8 +283,7 @@ Available since
 Keys in `http.Header` maps are canonical, meaning they follow a specific combination of uppercase and lowercase letters. Methods such as `http.Header.Add` and `http.Header.Del` convert inputs into this canonical form before manipulating the map.
 
 When manipulating `http.Header` maps directly, as opposed to using the provided methods, care should be taken to stick to canonical form in order to avoid inconsistencies. The following piece of code demonstrates one such inconsistency:
-    
-    
+
     h := http.Header{}
     h["etag"] = []string{"1234"}
     h.Add("etag", "5678")
@@ -389,8 +382,7 @@ Available since
 #### SA1024 - A string cutset contains duplicate characters
 
 The `strings.TrimLeft` and `strings.TrimRight` functions take cutsets, not prefixes. A cutset is treated as a set of characters to remove from a string. For example,
-    
-    
+
     strings.TrimLeft("42133word", "1234")
     
 
@@ -453,14 +445,12 @@ Available since
 #### SA1032 - Wrong order of arguments to `errors.Is`
 
 The first argument of the function `errors.Is` is the error that we have and the second argument is the error we’re trying to match against. For example:
-    
-    
+
     if errors.Is(err, io.EOF) { ... }
     
 
 This check detects some cases where the two arguments have been swapped. It flags any calls where the first argument is referring to a package-level error variable, such as
-    
-    
+
     if errors.Is(io.EOF, err) { /* this is wrong */ }
 
 Available since
@@ -478,15 +468,13 @@ Available since
 #### SA2001 - Empty critical section, did you mean to defer the unlock?
 
 Empty critical sections of the kind
-    
-    
+
     mu.Lock()
     mu.Unlock()
     
 
 are very often a typo, and the following was intended instead:
-    
-    
+
     mu.Lock()
     defer mu.Unlock()
     
@@ -561,23 +549,21 @@ Available since
 #### SA4008 - The variable in the loop condition never changes, are you incrementing the wrong variable?
 
 For example:
-    
-    
+
     for i := 0; i < 10; j++ { ... }
     
 
 This may also occur when a loop can only execute once because of unconditional control flow that terminates the loop. For example, when a loop body contains an unconditional break, return, or panic:
-    
-    
+
     func f() {
-    	panic("oops")
+     panic("oops")
     }
     func g() {
-    	for i := 0; i < 10; i++ {
-    		// f unconditionally calls panic, which means "i" is
-    		// never incremented.
-    		f()
-    	}
+     for i := 0; i < 10; i++ {
+      // f unconditionally calls panic, which means "i" is
+      // never incremented.
+      f()
+     }
     }
 
 Available since
@@ -603,7 +589,7 @@ Available since
 Available since
     2017.1
 
-#### SA4013 - Negating a boolean twice (`!!b`) is the same as writing `b`. This is either redundant, or a typo.
+#### SA4013 - Negating a boolean twice (`!!b`) is the same as writing `b`. This is either redundant, or a typo
 
 Available since
     2017.1
@@ -641,8 +627,7 @@ Available since
 #### SA4020 - Unreachable case clause in a type switch
 
 In a type switch like the following
-    
-    
+
     type T struct{}
     func (T) Read(b []byte) (int, error) { return 0, nil }
     
@@ -659,8 +644,7 @@ In a type switch like the following
 the second case clause can never be reached because `T` implements `io.Reader` and case clauses are evaluated in source order.
 
 Another example:
-    
-    
+
     type T struct{}
     func (T) Read(b []byte) (int, error) { return 0, nil }
     func (T) Close() error { return nil }
@@ -680,8 +664,7 @@ Even though `T` has a `Close` method and thus implements `io.ReadCloser`, `io.Re
 #### Structurally equivalent interfaces
 
 A special case of the previous example are structurally identical interfaces. Given these declarations
-    
-    
+
     type T error
     type V error
     
@@ -696,8 +679,7 @@ A special case of the previous example are structurally identical interfaces. Gi
     
 
 the following type switch will have an unreachable case clause:
-    
-    
+
     switch doSomething().(type) {
     case T:
         // ...
@@ -727,11 +709,10 @@ Available since
 
 Under the covers, interfaces are implemented as two elements, a type T and a value V. V is a concrete value such as an int, struct or pointer, never an interface itself, and has type T. For instance, if we store the int value 3 in an interface, the resulting interface value has, schematically, (T=int, V=3). The value V is also known as the interface’s dynamic value, since a given interface variable might hold different values V (and corresponding types T) during the execution of the program.
 
-An interface value is nil only if the V and T are both unset, (T=nil, V is not set), In particular, a nil interface will always hold a nil type. If we store a nil pointer of type *int inside an interface value, the inner type will be *int regardless of the value of the pointer: (T=*int, V=nil). Such an interface value will therefore be non-nil even when the pointer value V inside is nil.
+An interface value is nil only if the V and T are both unset, (T=nil, V is not set), In particular, a nil interface will always hold a nil type. If we store a nil pointer of type *int inside an interface value, the inner type will be*int regardless of the value of the pointer: (T=*int, V=nil). Such an interface value will therefore be non-nil even when the pointer value V inside is nil.
 
 This situation can be confusing, and arises when a nil value is stored inside an interface value such as an error return:
-    
-    
+
     func returnsError() error {
         var p *MyError = nil
         if bad() {
@@ -742,8 +723,7 @@ This situation can be confusing, and arises when a nil value is stored inside an
     
 
 If all goes well, the function returns a nil p, so the return value is an error interface value holding (T=*MyError, V=nil). This means that if the caller compares the returned error to nil, it will always look as if there was an error even if nothing bad happened. To return a proper nil error to the caller, the function must return an explicit nil:
-    
-    
+
     func returnsError() error {
         if bad() {
             return ErrBad
@@ -768,8 +748,7 @@ Return values of the `len` and `cap` builtins cannot be negative.
 See <https://golang.org/pkg/builtin/#len> and <https://golang.org/pkg/builtin/#cap>.
 
 Example:
-    
-    
+
     if len(slice) < 0 {
         fmt.Println("unreachable code")
     }
@@ -781,8 +760,7 @@ Available since
 #### SA4025 - Integer division of literals that results in zero
 
 When dividing two integer constants, the result will also be an integer. Thus, a division such as `2 / 3` results in `0`. This is true for all of the following examples:
-    
-    
+
     _ = 2 / 3
     const _ = 2 / 3
     const _ float64 = 2 / 3
@@ -916,8 +894,7 @@ Available since
 #### SA5011 - Possible nil pointer dereference
 
 A pointer is being dereferenced unconditionally, while also being checked against nil in another place. This suggests that the pointer may be nil and dereferencing it may panic. This is commonly a result of improperly ordered code or missing return statements. Consider the following examples:
-    
-    
+
     func fn(x *int) {
         fmt.Println(*x)
     
@@ -939,8 +916,7 @@ A pointer is being dereferenced unconditionally, while also being checked agains
     
 
 Staticcheck tries to deduce which functions abort control flow. For example, it is aware that a function will not continue execution after a call to `panic` or `log.Fatal`. However, sometimes this detection fails, in particular in the presence of conditionals. Consider the following example:
-    
-    
+
     func Log(msg string, level int) {
         fmt.Println(msg)
         if level == levelFatal {
@@ -961,8 +937,7 @@ Staticcheck tries to deduce which functions abort control flow. For example, it 
     
 
 Staticcheck will flag the dereference of `x`, even though it is perfectly safe. Staticcheck is not able to deduce that a call to Fatal will exit the program. For the time being, the easiest workaround is to modify the definition of Fatal like so:
-    
-    
+
     func Fatal(msg string) {
         Log(msg, levelFatal)
         panic("unreachable")
@@ -995,16 +970,14 @@ Available since
 Map keys must be comparable, which precludes the use of byte slices. This usually leads to using string keys and converting byte slices to strings.
 
 Normally, a conversion of a byte slice to a string needs to copy the data and causes allocations. The compiler, however, recognizes `m[string(b)]` and uses the data of `b` directly, without copying it, because it knows that the data can’t change during the map lookup. This leads to the counter-intuitive situation that
-    
-    
+
     k := string(b)
     println(m[k])
     println(m[k])
     
 
 will be less efficient than
-    
-    
+
     println(m[string(b)])
     println(m[string(b)])
     
@@ -1030,14 +1003,12 @@ Available since
 #### SA6003 - Converting a string to a slice of runes before ranging over it
 
 You may want to loop over the runes in a string. Instead of converting the string to a slice of runes and looping over that, you can loop over the string itself. That is,
-    
-    
+
     for _, r := range s {}
     
 
 and
-    
-    
+
     for _, r := range []rune(s) {}
     
 
@@ -1051,8 +1022,7 @@ Available since
 #### SA6005 - Inefficient string comparison with `strings.ToLower` or `strings.ToUpper`
 
 Converting two strings to the same case and comparing them like so
-    
-    
+
     if strings.ToLower(s1) == strings.ToLower(s2) {
         ...
     }
@@ -1070,8 +1040,7 @@ Available since
 #### SA6006 - Using io.WriteString to write `[]byte`
 
 Using io.WriteString to write a slice of bytes, as in
-    
-    
+
     io.WriteString(w, string(b))
     
 
@@ -1089,7 +1058,7 @@ Checks in this category find code that is probably wrong. Unlike checks in the o
 Available since
     2017.1
 
-#### SA9002 - Using a non-octal `os.FileMode` that looks like it was meant to be in octal.
+#### SA9002 - Using a non-octal `os.FileMode` that looks like it was meant to be in octal
 
 Available since
     2017.1
@@ -1102,8 +1071,7 @@ Available since
 #### SA9004 - Only the first constant has an explicit type
 
 In a constant declaration such as the following:
-    
-    
+
     const (
         First byte = 1
         Second     = 2
@@ -1111,8 +1079,7 @@ In a constant declaration such as the following:
     
 
 the constant Second does not have the same type as the constant First. This construct shouldn’t be confused with
-    
-    
+
     const (
         First byte = iota
         Second
@@ -1122,8 +1089,7 @@ the constant Second does not have the same type as the constant First. This cons
 where `First` and `Second` do indeed have the same type. The type is only passed on when no explicit value is assigned to the constant.
 
 When declaring enumerations with explicit values it is therefore important not to write
-    
-    
+
     const (
           EnumFirst EnumType = 1
           EnumSecond         = 2
@@ -1136,8 +1102,7 @@ This discrepancy in types can cause various confusing behaviors and bugs.
 #### Wrong type in variable declarations
 
 The most obvious issue with such incorrect enumerations expresses itself as a compile error:
-    
-    
+
     package pkg
     
     const (
@@ -1154,16 +1119,14 @@ The most obvious issue with such incorrect enumerations expresses itself as a co
     
 
 fails to compile with
-    
-    
+
     ./const.go:11:5: cannot use EnumFirst (type uint8) as type int in assignment
     
 
 #### Losing method sets
 
 A more subtle issue occurs with types that have methods and optional interfaces. Consider the following:
-    
-    
+
     package main
     
     import "fmt"
@@ -1186,8 +1149,7 @@ A more subtle issue occurs with types that have methods and optional interfaces.
     
 
 This code will output
-    
-    
+
     an enum
     2
     
@@ -1211,8 +1173,7 @@ Available since
 Bit shifting a value past its size will always clear the value.
 
 For instance:
-    
-    
+
     v := int8(42)
     v >>= 8
     
@@ -1220,8 +1181,7 @@ For instance:
 will always result in 0.
 
 This check flags bit shifting operations on fixed size integer values only. That is, int, uint and uintptr are never flagged to avoid potential false positives in somewhat exotic but valid bit twiddling tricks:
-    
-    
+
     // Clear any value above 32 bits if integers are more than 32 bits.
     func f(i int) int {
         v := i >> 32
@@ -1238,8 +1198,7 @@ Available since
 It is virtually never correct to delete system directories such as /tmp or the user’s home directory. However, it can be fairly easy to do by mistake, for example by mistakenly using `os.TempDir` instead of `ioutil.TempDir`, or by forgetting to add a suffix to the result of `os.UserHomeDir`.
 
 Writing
-    
-    
+
     d := os.TempDir()
     defer os.RemoveAll(d)
     
@@ -1248,12 +1207,10 @@ in your unit tests will have a devastating effect on the stability of your syste
 
 This check flags attempts at deleting the following directories:
 
-  * os.TempDir
-  * os.UserCacheDir
-  * os.UserConfigDir
-  * os.UserHomeDir
-
-
+- os.TempDir
+- os.UserCacheDir
+- os.UserConfigDir
+- os.UserHomeDir
 
 Available since
     2022.1
@@ -1261,8 +1218,7 @@ Available since
 #### SA9008 - `else` branch of a type assertion is probably not reading the right value
 
 When declaring variables as part of an `if` statement (like in `if foo := ...; foo {`), the same variables will also be in the scope of the `else` branch. This means that in the following example
-    
-    
+
     if x, ok := x.(int); ok {
         // ...
     } else {
@@ -1295,16 +1251,14 @@ Checks in this category find code that is unnecessarily complex and that can be 
 Select statements with a single case can be replaced with a simple send or receive.
 
 **Before:**
-    
-    
+
      select {
     case x := <-ch:
         fmt.Println(x)
     }
 
 **After:**
-    
-    
+
      x := <-ch
     fmt.Println(x)
 
@@ -1316,15 +1270,13 @@ Available since
 Use `copy()` for copying elements from one slice to another. For arrays of identical size, you can use simple assignment.
 
 **Before:**
-    
-    
+
      for i, x := range src {
         dst[i] = x
     }
 
 **After:**
-    
-    
+
      copy(dst, src)
 
 Available since
@@ -1333,13 +1285,11 @@ Available since
 #### S1002 - Omit comparison with boolean constant
 
 **Before:**
-    
-    
+
      if x == true {}
 
 **After:**
-    
-    
+
      if x {}
 
 Available since
@@ -1348,13 +1298,11 @@ Available since
 #### S1003 - Replace call to `strings.Index` with `strings.Contains`
 
 **Before:**
-    
-    
+
      if strings.Index(x, y) != -1 {}
 
 **After:**
-    
-    
+
      if strings.Contains(x, y) {}
 
 Available since
@@ -1363,13 +1311,11 @@ Available since
 #### S1004 - Replace call to `bytes.Compare` with `bytes.Equal`
 
 **Before:**
-    
-    
+
      if bytes.Compare(x, y) == 0 {}
 
 **After:**
-    
-    
+
      if bytes.Equal(x, y) {}
 
 Available since
@@ -1380,15 +1326,13 @@ Available since
 In many cases, assigning to the blank identifier is unnecessary.
 
 **Before:**
-    
-    
+
      for _ = range s {}
     x, _ = someMap[key]
     _ = <-ch
 
 **After:**
-    
-    
+
      for range s{}
     x = someMap[key]
     <-ch
@@ -1410,13 +1354,11 @@ Raw string literals use backticks instead of quotation marks and do not support 
 Since regular expressions have their own escape sequences, raw strings can improve their readability.
 
 **Before:**
-    
-    
+
      regexp.Compile("\\A(\\w+) profile: total \\d+\\n\\z")
 
 **After:**
-    
-    
+
      regexp.Compile(`\A(\w+) profile: total \d+\n\z`)
 
 Available since
@@ -1425,16 +1367,14 @@ Available since
 #### S1008 - Simplify returning boolean expression
 
 **Before:**
-    
-    
+
      if <expr> {
         return true
     }
     return false
 
 **After:**
-    
-    
+
      return <expr>
 
 Available since
@@ -1445,13 +1385,11 @@ Available since
 The `len` function is defined for all slices, maps, and channels, even nil ones, which have a length of zero. It is not necessary to check for nil before checking that their length is not zero.
 
 **Before:**
-    
-    
+
      if x != nil && len(x) != 0 {}
 
 **After:**
-    
-    
+
      if len(x) != 0 {}
 
 Available since
@@ -1467,8 +1405,7 @@ Available since
 #### S1011 - Use a single `append` to concatenate two slices
 
 **Before:**
-    
-    
+
      for _, e := range y {
         x = append(x, e)
     }
@@ -1483,8 +1420,7 @@ Available since
     }
 
 **After:**
-    
-    
+
      x = append(x, y...)
     x = append(x, y...)
     x = append(x, y...)
@@ -1497,13 +1433,11 @@ Available since
 The `time.Since` helper has the same effect as using `time.Now().Sub(x)` but is easier to read.
 
 **Before:**
-    
-    
+
      time.Now().Sub(x)
 
 **After:**
-    
-    
+
      time.Since(x)
 
 Available since
@@ -1514,8 +1448,7 @@ Available since
 Two struct types with identical fields can be converted between each other. In older versions of Go, the fields had to have identical struct tags. Since Go 1.8, however, struct tags are ignored during conversions. It is thus not necessary to manually copy every field individually.
 
 **Before:**
-    
-    
+
      var x T1
     y := T2{
         Field1: x.Field1,
@@ -1523,8 +1456,7 @@ Two struct types with identical fields can be converted between each other. In o
     }
 
 **After:**
-    
-    
+
      var x T1
     y := T2(x)
 
@@ -1536,15 +1468,13 @@ Available since
 Instead of using `strings.HasPrefix` and manual slicing, use the `strings.TrimPrefix` function. If the string doesn’t start with the prefix, the original string will be returned. Using `strings.TrimPrefix` reduces complexity, and avoids common bugs, such as off-by-one mistakes.
 
 **Before:**
-    
-    
+
      if strings.HasPrefix(str, prefix) {
         str = str[len(prefix):]
     }
 
 **After:**
-    
-    
+
      str = strings.TrimPrefix(str, prefix)
 
 Available since
@@ -1555,15 +1485,13 @@ Available since
 `copy()` permits using the same source and destination slice, even with overlapping ranges. This makes it ideal for sliding elements in a slice.
 
 **Before:**
-    
-    
+
      for i := 0; i < n; i++ {
         bs[i] = bs[offset+i]
     }
 
 **After:**
-    
-    
+
      copy(bs[:n], bs[offset:])
 
 Available since
@@ -1579,13 +1507,11 @@ Available since
 #### S1020 - Omit redundant nil check in type assertion
 
 **Before:**
-    
-    
+
      if _, ok := i.(T); ok && i != nil {}
 
 **After:**
-    
-    
+
      if _, ok := i.(T); ok {}
 
 Available since
@@ -1594,14 +1520,12 @@ Available since
 #### S1021 - Merge variable declaration and assignment
 
 **Before:**
-    
-    
+
      var x uint
     x = 1
 
 **After:**
-    
-    
+
      var x uint = 1
 
 Available since
@@ -1621,13 +1545,11 @@ Available since
 The `time.Until` helper has the same effect as using `x.Sub(time.Now())` but is easier to read.
 
 **Before:**
-    
-    
+
      x.Sub(time.Now())
 
 **After:**
-    
-    
+
      time.Until(x)
 
 Available since
@@ -1638,8 +1560,7 @@ Available since
 In many instances, there are easier and more efficient ways of getting a value’s string representation. Whenever a value’s underlying type is a string already, or the type has a String method, they should be used directly.
 
 Given the following shared definitions
-    
-    
+
     type T1 string
     type T2 int
     
@@ -1651,16 +1572,14 @@ Given the following shared definitions
     
 
 we can simplify
-    
-    
+
     fmt.Sprintf("%s", x)
     fmt.Sprintf("%s", y)
     fmt.Sprintf("%s", z)
     
 
 to
-    
-    
+
     x
     string(y)
     z.String()
@@ -1672,13 +1591,11 @@ Available since
 #### S1028 - Simplify error construction with `fmt.Errorf`
 
 **Before:**
-    
-    
+
      errors.New(fmt.Sprintf(...))
 
 **After:**
-    
-    
+
      fmt.Errorf(...)
 
 Available since
@@ -1689,13 +1606,11 @@ Available since
 Ranging over a string will yield byte offsets and runes. If the offset isn’t used, this is functionally equivalent to converting the string to a slice of runes and ranging over that. Ranging directly over the string will be more performant, however, as it avoids allocating a new slice, the size of which depends on the length of the string.
 
 **Before:**
-    
-    
+
      for _, r := range []rune(s) {}
 
 **After:**
-    
-    
+
      for _, r := range s {}
 
 Available since
@@ -1715,8 +1630,7 @@ Available since
 You can use range on nil slices and maps, the loop will simply never execute. This makes an additional nil check around the loop unnecessary.
 
 **Before:**
-    
-    
+
      if s != nil {
         for _, x := range s {
             ...
@@ -1724,8 +1638,7 @@ You can use range on nil slices and maps, the loop will simply never execute. Th
     }
 
 **After:**
-    
-    
+
      for _, x := range s {
         ...
     }
@@ -1738,13 +1651,11 @@ Available since
 The `sort.Ints`, `sort.Float64s` and `sort.Strings` functions are easier to read than `sort.Sort(sort.IntSlice(x))`, `sort.Sort(sort.Float64Slice(x))` and `sort.Sort(sort.StringSlice(x))`.
 
 **Before:**
-    
-    
+
      sort.Sort(sort.StringSlice(x))
 
 **After:**
-    
-    
+
      sort.Strings(x)
 
 Available since
@@ -1774,8 +1685,7 @@ Available since
 When accessing a map key that doesn’t exist yet, one receives a zero value. Often, the zero value is a suitable value, for example when using append or doing integer math.
 
 The following
-    
-    
+
     if _, ok := m["foo"]; ok {
         m["foo"] = append(m["foo"], "bar")
     } else {
@@ -1784,14 +1694,12 @@ The following
     
 
 can be simplified to
-    
-    
+
     m["foo"] = append(m["foo"], "bar")
     
 
 and
-    
-    
+
     if _, ok := m2["k"]; ok {
         m2["k"] += 4
     } else {
@@ -1800,8 +1708,7 @@ and
     
 
 can be simplified to
-    
-    
+
     m["k"] += 4
     
 
@@ -1862,8 +1769,8 @@ The `dot_import_whitelist` option can be used to whitelist certain imports.
 Quoting Go Code Review Comments:
 
 > The `import .` form can be useful in tests that, due to circular dependencies, cannot be made part of the package being tested:
->     
->     
+> 
+> 
 >     package foo_test
 >     
 >     import (
@@ -1871,17 +1778,14 @@ Quoting Go Code Review Comments:
 >         . "foo"
 >     )
 >     
-> 
+>
 > In this case, the test file cannot be in package foo because it uses `bar/testutil`, which imports `foo`. So we use the `import .` form to let the file pretend to be part of package foo even though it is not. Except for this one case, do not use `import .` in your programs. It makes the programs much harder to read because it is unclear whether a name like `Quux` is a top-level identifier in the current package or in an imported package.
 
 Available since
     2019.1
 Options
-    
 
-  * [dot_import_whitelist](/docs/configuration/options/#dot_import_whitelist)
-
-
+- [dot_import_whitelist](/docs/configuration/options/#dot_import_whitelist)
 
 #### ST1003 - Poorly chosen identifier non-default
 
@@ -1889,21 +1793,16 @@ Identifiers, such as variable and package names, follow certain rules.
 
 See the following links for details:
 
-  * <https://go.dev/doc/effective_go#package-names>
-  * <https://go.dev/doc/effective_go#mixed-caps>
-  * <https://go.dev/wiki/CodeReviewComments#initialisms>
-  * <https://go.dev/wiki/CodeReviewComments#variable-names>
-
-
+- <https://go.dev/doc/effective_go#package-names>
+- <https://go.dev/doc/effective_go#mixed-caps>
+- <https://go.dev/wiki/CodeReviewComments#initialisms>
+- <https://go.dev/wiki/CodeReviewComments#variable-names>
 
 Available since
     2019.1
 Options
-    
 
-  * [initialisms](/docs/configuration/options/#initialisms)
-
-
+- [initialisms](/docs/configuration/options/#initialisms)
 
 #### ST1005 - Incorrectly formatted error string
 
@@ -1953,11 +1852,8 @@ HTTP has a tremendous number of status codes. While some of those are well known
 Available since
     2019.1
 Options
-    
 
-  * [http_status_code_whitelist](/docs/configuration/options/#http_status_code_whitelist)
-
-
+- [http_status_code_whitelist](/docs/configuration/options/#http_status_code_whitelist)
 
 #### ST1015 - A switch’s default case should be the first or last case
 
@@ -1984,8 +1880,7 @@ Available since
 #### ST1019 - Importing the same package multiple times
 
 Go allows importing the same package multiple times, as long as different import aliases are being used. That is, the following bit of code is valid:
-    
-    
+
     import (
         "fmt"
         fumpt "fmt"
@@ -2055,8 +1950,7 @@ Available since
 An untagged switch that compares a single variable against a series of values can be replaced with a tagged switch.
 
 **Before:**
-    
-    
+
      switch {
     case x == 1 || x == 2, x == 3:
         ...
@@ -2067,8 +1961,7 @@ An untagged switch that compares a single variable against a series of values ca
     }
 
 **After:**
-    
-    
+
      switch x {
     case 1, 2, 3:
         ...
@@ -2086,8 +1979,7 @@ Available since
 A series of if/else-if checks comparing the same variable against values can be replaced with a tagged switch.
 
 **Before:**
-    
-    
+
      if x == 1 || x == 2 {
         ...
     } else if x == 3 {
@@ -2097,8 +1989,7 @@ A series of if/else-if checks comparing the same variable against values can be 
     }
 
 **After:**
-    
-    
+
      switch x {
     case 1, 2:
         ...
@@ -2121,13 +2012,11 @@ Available since
 Some uses of `math.Pow` can be simplified to basic multiplication.
 
 **Before:**
-    
-    
+
      math.Pow(x, 2)
 
 **After:**
-    
-    
+
      x * x
 
 Available since
@@ -2136,8 +2025,7 @@ Available since
 #### QF1006 - Lift `if`+`break` into loop condition
 
 **Before:**
-    
-    
+
      for {
         if done {
             break
@@ -2146,8 +2034,7 @@ Available since
     }
 
 **After:**
-    
-    
+
      for !done {
         ...
     }
@@ -2158,16 +2045,14 @@ Available since
 #### QF1007 - Merge conditional assignment into variable declaration
 
 **Before:**
-    
-    
+
      x := false
     if someCondition {
         x = true
     }
 
 **After:**
-    
-    
+
      x := someCondition
 
 Available since

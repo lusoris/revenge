@@ -1,7 +1,7 @@
 # GitHub Actions Encrypted Secrets
 
 > Source: https://docs.github.com/en/actions/security-guides/encrypted-secrets
-> Fetched: 2026-01-31T16:05:01.315767+00:00
+> Fetched: 2026-02-01T11:52:28.010346+00:00
 > Content-Hash: 6d9e0f550700a6d3
 > Type: html
 
@@ -27,7 +27,7 @@ To create secrets or variables on GitHub for an organization repository, you mus
 
   3. In the "Security" section of the sidebar, select **Secrets and variables** , then click **Actions**.
 
-  4. Click the **Secrets** tab. 
+  4. Click the **Secrets** tab.
 
   5. Click **New repository secret**.
 
@@ -37,20 +37,15 @@ To create secrets or variables on GitHub for an organization repository, you mus
 
   8. Click **Add secret**.
 
-
-
-
 If your repository has environment secrets or can access secrets from the parent organization, then those secrets are also listed on this page.
 
 To add a repository secret, use the `gh secret set` subcommand. Replace `secret-name` with the name of your secret.
-    
-    
+
     gh secret set SECRET_NAME
     
 
 The CLI will prompt you to enter a secret value. Alternatively, you can read the value of the secret from a file.
-    
-    
+
     gh secret set SECRET_NAME < secret.txt
     
 
@@ -76,18 +71,13 @@ To create secrets or variables for an environment in a personal account reposito
 
   8. Click **Add secret**.
 
-
-
-
 To add a secret for an environment, use the `gh secret set` subcommand with the `\--env` or `-e` flag followed by the environment name.
-    
-    
+
     gh secret set --env ENV_NAME SECRET_NAME
     
 
 To list all secrets for an environment, use the `gh secret list` subcommand with the `\--env` or `-e` flag followed by the environment name.
-    
-    
+
     gh secret list --env ENV_NAME
     
 
@@ -119,38 +109,30 @@ Organization owners can create secrets or variables at the organization level.
 
   9. Click **Add secret**.
 
-
-
-
 Note
 
 By default, GitHub CLI authenticates with the `repo` and `read:org` scopes. To manage organization secrets, you must additionally authorize the `admin:org` scope.
-    
-    
+
     gh auth login --scopes "admin:org"
     
 
 To add a secret for an organization, use the `gh secret set` subcommand with the `\--org` or `-o` flag followed by the organization name.
-    
-    
+
     gh secret set --org ORG_NAME SECRET_NAME
     
 
 By default, the secret is only available to private repositories. To specify that the secret should be available to all repositories within the organization, use the `\--visibility` or `-v` flag.
-    
-    
+
     gh secret set --org ORG_NAME SECRET_NAME --visibility all
     
 
 To specify that the secret should be available to selected repositories within the organization, use the `\--repos` or `-r` flag.
-    
-    
+
     gh secret set --org ORG_NAME SECRET_NAME --repos REPO-NAME-1, REPO-NAME-2
     
 
 To list all secrets for an organization, use the `gh secret list` subcommand with the `\--org` or `-o` flag followed by the organization name.
-    
-    
+
     gh secret list --org ORG_NAME
     
 
@@ -166,27 +148,21 @@ You can check which access policies are being applied to a secret in your organi
 
   4. The list of secrets includes any configured permissions and policies. For more details about the configured permissions for each secret, click **Update**.
 
-
-
-
 ## Using secrets in a workflow
 
 Note
 
-  * With the exception of `GITHUB_TOKEN`, secrets are not passed to the runner when a workflow is triggered from a forked repository.
-  * Secrets are not automatically passed to reusable workflows. For more information, see [Reuse workflows](/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow).
-  * Secrets are not available to workflows triggered by Dependabot events. For more information, see [Troubleshooting Dependabot on GitHub Actions](/en/code-security/dependabot/troubleshooting-dependabot/troubleshooting-dependabot-on-github-actions#accessing-secrets).
-  * If your GitHub Actions workflows need to access resources from a cloud provider that supports OpenID Connect (OIDC), you can configure your workflows to authenticate directly to the cloud provider. This will let you stop storing these credentials as long-lived secrets and provide other security benefits. For more information, see [OpenID Connect](/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
-
-
+- With the exception of `GITHUB_TOKEN`, secrets are not passed to the runner when a workflow is triggered from a forked repository.
+- Secrets are not automatically passed to reusable workflows. For more information, see [Reuse workflows](/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow).
+- Secrets are not available to workflows triggered by Dependabot events. For more information, see [Troubleshooting Dependabot on GitHub Actions](/en/code-security/dependabot/troubleshooting-dependabot/troubleshooting-dependabot-on-github-actions#accessing-secrets).
+- If your GitHub Actions workflows need to access resources from a cloud provider that supports OpenID Connect (OIDC), you can configure your workflows to authenticate directly to the cloud provider. This will let you stop storing these credentials as long-lived secrets and provide other security benefits. For more information, see [OpenID Connect](/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect).
 
 Warning
 
 Mask all sensitive information that is not a GitHub secret by using `::add-mask::VALUE`. This causes the value to be treated as a secret and redacted from logs.
 
 To provide an action with a secret as an input or environment variable, you can use the `secrets` context to access secrets you've created in your repository. For more information, see [Contexts reference](/en/actions/learn-github-actions/contexts) and [Workflow syntax for GitHub Actions](/en/actions/using-workflows/workflow-syntax-for-github-actions).
-    
-    
+
     steps:
       - name: Hello world action
         with: # Set the secret as an input
@@ -204,8 +180,7 @@ Avoid passing secrets between processes from the command line, whenever possible
 If you must pass secrets within a command line, then enclose them within the proper quoting rules. Secrets often contain special characters that may unintentionally affect your shell. To escape these special characters, use quoting with your environment variables. For example:
 
 ### Example using Bash
-    
-    
+
     steps:
       - shell: bash
         env:
@@ -215,8 +190,7 @@ If you must pass secrets within a command line, then enclose them within the pro
     
 
 ### Example using PowerShell
-    
-    
+
     steps:
       - shell: pwsh
         env:
@@ -226,8 +200,7 @@ If you must pass secrets within a command line, then enclose them within the pro
     
 
 ### Example using Cmd.exe
-    
-    
+
     steps:
       - shell: cmd
         env:
@@ -245,7 +218,7 @@ Warning
 Be careful that your secrets do not get printed when your workflow runs. When using this workaround, GitHub does not redact secrets that are printed in logs.
 
   1. Run the following command from your terminal to encrypt the file containing your secret using `gpg` and the AES256 cipher algorithm. In this example, `my_secret.json` is the file containing the secret.
-         
+
          gpg --symmetric --cipher-algo AES256 my_secret.json
          
 
@@ -258,13 +231,13 @@ Be careful that your secrets do not get printed when your workflow runs. When us
 Warning
 
 Make sure to copy the encrypted `my_secret.json.gpg` file ending with the `.gpg` file extension, and **not** the unencrypted `my_secret.json` file.
-         
+
          git add my_secret.json.gpg
          git commit -m "Add new secret JSON file"
          
 
   5. Create a shell script in your repository to decrypt the secret file. In this example, the script is named `decrypt_secret.sh`.
-         
+
          #!/bin/sh
          
          # Decrypt the file
@@ -276,7 +249,7 @@ Make sure to copy the encrypted `my_secret.json.gpg` file ending with the `.gpg`
          
 
   6. Ensure your shell script is executable before checking it in to your repository.
-         
+
          chmod +x decrypt_secret.sh
          git add decrypt_secret.sh
          git commit -m "Add new decryption script"
@@ -284,7 +257,7 @@ Make sure to copy the encrypted `my_secret.json.gpg` file ending with the `.gpg`
          
 
   7. In your GitHub Actions workflow, use a `step` to call the shell script and decrypt the secret. To have a copy of your repository in the environment that your workflow runs in, you'll need to use the [`actions/checkout`](https://github.com/actions/checkout) action. Reference your shell script using the `run` command relative to the root of your repository.
-         
+
          name: Workflows with large secrets
          
          on: push
@@ -306,40 +279,35 @@ Make sure to copy the encrypted `my_secret.json.gpg` file ending with the `.gpg`
                  run: cat $HOME/secrets/my_secret.json
          
 
-
-
-
 ## Storing Base64 binary blobs as secrets
 
 You can use Base64 encoding to store small binary blobs as secrets. You can then reference the secret in your workflow and decode it for use on the runner. For the size limits, see [Using secrets in GitHub Actions](/en/actions/security-guides/using-secrets-in-github-actions#limits-for-secrets).
 
 Note
 
-  * Note that Base64 only converts binary to text, and is not a substitute for actual encryption.
-  * Using another shell might require different commands for decoding the secret to a file. On Windows runners, we recommend [using a bash shell](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell) with `shell: bash` to use the commands in the `run` step above.
-
-
+- Note that Base64 only converts binary to text, and is not a substitute for actual encryption.
+- Using another shell might require different commands for decoding the secret to a file. On Windows runners, we recommend [using a bash shell](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell) with `shell: bash` to use the commands in the `run` step above.
 
   1. Use `base64` to encode your file into a Base64 string. For example:
 
 On macOS, you could run:
-         
+
          base64 -i cert.der -o cert.base64
          
 
 On Linux, you could run:
-         
+
          base64 -w 0 cert.der > cert.base64
          
 
   2. Create a secret that contains the Base64 string. For example:
-         
+
          $ gh secret set CERTIFICATE_BASE64 < cert.base64
          ✓ Set secret CERTIFICATE_BASE64 for octocat/octorepo
          
 
   3. To access the Base64 string from your runner, pipe the secret to `base64 --decode`. For example:
-         
+
          name: Retrieve Base64 secret
          on:
            push:
@@ -358,9 +326,6 @@ On Linux, you could run:
                  run: |
                    openssl x509 -in cert.der -inform DER -text -noout
          
-
-
-
 
 ## Next steps
 

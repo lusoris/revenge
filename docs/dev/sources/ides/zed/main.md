@@ -1,7 +1,7 @@
 # Zed Documentation
 
 > Source: https://zed.dev/docs
-> Fetched: 2026-01-31T16:04:25.529815+00:00
+> Fetched: 2026-02-01T11:51:50.242222+00:00
 > Content-Hash: 806a82279b5ff9a4
 > Type: html
 
@@ -18,8 +18,7 @@ This guide gets you from zero to productive in Zed. You'll learn the essential c
 ### 1. Open a Project
 
 Open a folder from the command line:
-    
-    
+
     zed ~/projects/my-app
     
 
@@ -44,11 +43,9 @@ Open the Settings Editor with `Cmd+,` (macOS) or `Ctrl+,` (Linux/Windows). Searc
 
 Common first changes:
 
-  * **Theme** : Press `Cmd+K Cmd+T` (macOS) or `Ctrl+K Ctrl+T` (Linux/Windows) to open the theme selector
-  * **Font** : Search for `buffer_font_family` in Settings
-  * **Format on save** : Search for `format_on_save` and set to `on`
-
-
+- **Theme** : Press `Cmd+K Cmd+T` (macOS) or `Ctrl+K Ctrl+T` (Linux/Windows) to open the theme selector
+- **Font** : Search for `buffer_font_family` in Settings
+- **Format on save** : Search for `format_on_save` and set to `on`
 
 ### 4. Set Up Your Language
 
@@ -57,8 +54,6 @@ Zed includes built-in support for many languages. For others, install the extens
   1. Open Extensions with `Cmd+Shift+X` (macOS) or `Ctrl+Shift+X` (Linux/Windows)
   2. Search for your language
   3. Click Install
-
-
 
 See [Languages](./languages.html) for language-specific setup instructions.
 
@@ -72,32 +67,26 @@ See [AI Overview](./ai/overview.html) to configure providers and learn what's po
 
 We have dedicated guides for switching from other editors:
 
-  * [VS Code](./migrate/vs-code.html) — Import settings, map keybindings, find equivalent features
-  * [IntelliJ IDEA](./migrate/intellij.html) — Adapt to Zed's approach to navigation and refactoring
-  * [PyCharm](./migrate/pycharm.html) — Set up Python development in Zed
-  * [WebStorm](./migrate/webstorm.html) — Configure JavaScript/TypeScript workflows
-  * [RustRover](./migrate/rustrover.html) — Rust development in Zed
-
-
+- [VS Code](./migrate/vs-code.html) — Import settings, map keybindings, find equivalent features
+- [IntelliJ IDEA](./migrate/intellij.html) — Adapt to Zed's approach to navigation and refactoring
+- [PyCharm](./migrate/pycharm.html) — Set up Python development in Zed
+- [WebStorm](./migrate/webstorm.html) — Configure JavaScript/TypeScript workflows
+- [RustRover](./migrate/rustrover.html) — Rust development in Zed
 
 You can also enable familiar keybindings:
 
-  * **Vim** : Enable `vim_mode` in settings. See [Vim Mode](./vim.html).
-  * **Helix** : Enable `helix_mode` in settings. See [Helix Mode](./helix.html).
-
-
+- **Vim** : Enable `vim_mode` in settings. See [Vim Mode](./vim.html).
+- **Helix** : Enable `helix_mode` in settings. See [Helix Mode](./helix.html).
 
 ## Join the Community
 
 Zed is proudly open source, and we get better with every contribution. Join us on GitHub or in Discord to contribute code, report bugs, or suggest features.
 
-  * [Discord](https://discord.com/invite/zedindustries)
-  * [GitHub Discussions](https://github.com/zed-industries/zed/discussions)
-  * [Zed Reddit](https://www.reddit.com/r/ZedEditor)
+- [Discord](https://discord.com/invite/zedindustries)
+- [GitHub Discussions](https://github.com/zed-industries/zed/discussions)
+- [Zed Reddit](https://www.reddit.com/r/ZedEditor)
 
-
-
-[ Installation __](installation.html "Installation")
+[Installation __](installation.html "Installation")
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

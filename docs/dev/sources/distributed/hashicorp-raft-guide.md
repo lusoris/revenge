@@ -48,21 +48,19 @@ A pure Go backend using [Bbolt](https://github.com/etcd-io/bbolt) is also availa
 [raft-boltdb](https://github.com/hashicorp/raft-boltdb). It can also be used as a `LogStore`
 and `StableStore`.
 
-
-## Community Contributed Examples 
+## Community Contributed Examples
 - [Raft gRPC Example](https://github.com/Jille/raft-grpc-example) - Utilizing the Raft repository with gRPC
 - [Raft-based KV-store Example](https://github.com/otoolep/hraftd) - Uses Hashicorp Raft to build a distributed key-value store
-
 
 ## Tagged Releases
 
 As of September 2017, HashiCorp will start using tags for this library to clearly indicate
 major version updates. We recommend you vendor your application's dependency on this library.
 
-* v0.1.0 is the original stable version of the library that was in main and has been maintained
+- v0.1.0 is the original stable version of the library that was in main and has been maintained
 with no breaking API changes. This was in use by Consul prior to version 0.7.0.
 
-* v1.0.0 takes the changes that were staged in the library-v2-stage-one branch. This version
+- v1.0.0 takes the changes that were staged in the library-v2-stage-one branch. This version
 manages server identities using a UUID, so introduces some breaking API changes. It also versions
 the Raft protocol, and requires some special steps when interoperating with Raft servers running
 older versions of the library (see the detailed comment in config.go about version compatibility).
@@ -127,16 +125,15 @@ In terms of performance, Raft is comparable to Paxos. Assuming stable leadership
 committing a log entry requires a single round trip to half of the cluster.
 Thus performance is bound by disk I/O and network latency.
 
+## Metrics Emission and Compatibility
 
-  ## Metrics Emission and Compatibility
-
-  This library can emit metrics using either `github.com/armon/go-metrics` or `github.com/hashicorp/go-metrics`. Choosing between the libraries is controlled via build tags. 
+  This library can emit metrics using either `github.com/armon/go-metrics` or `github.com/hashicorp/go-metrics`. Choosing between the libraries is controlled via build tags.
 
   **Build Tags**
-  * `armonmetrics` - Using this tag will cause metrics to be routed to `armon/go-metrics`
-  * `hashicorpmetrics` - Using this tag will cause all metrics to be routed to `hashicorp/go-metrics`
+- `armonmetrics` - Using this tag will cause metrics to be routed to `armon/go-metrics`
+- `hashicorpmetrics` - Using this tag will cause all metrics to be routed to `hashicorp/go-metrics`
 
-  If no build tag is specified, the default behavior is to use `armon/go-metrics`. 
+  If no build tag is specified, the default behavior is to use `armon/go-metrics`.
 
   **Deprecating `armon/go-metrics`**
 
@@ -148,7 +145,7 @@ Thus performance is bound by disk I/O and network latency.
   1. Upgrade libraries using `armon/go-metrics` to consume `hashicorp/go-metrics/compat` instead. This should involve only changing import statements. All repositories in the `hashicorp` namespace
   2. Update an applications library dependencies to those that have the compatibility layer configured.
   3. Update the application to use `hashicorp/go-metrics` for configuring metrics export instead of `armon/go-metrics`
-     * Replace all application imports of `github.com/armon/go-metrics` with `github.com/hashicorp/go-metrics`
-     * Instrument your build system to build with the `hashicorpmetrics` tag.
+     - Replace all application imports of `github.com/armon/go-metrics` with `github.com/hashicorp/go-metrics`
+     - Instrument your build system to build with the `hashicorpmetrics` tag.
 
   Eventually once the default behavior changes to use `hashicorp/go-metrics` by default (mid-2025), you can drop the `hashicorpmetrics` build tag.

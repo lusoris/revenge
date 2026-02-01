@@ -1,7 +1,7 @@
 # Design Documents ↔ Sources Cross-Reference
 
 > Auto-generated mapping between design documents and external sources
-> 
+>
 > Run `python scripts/generate-crossref.py` to regenerate
 
 ---

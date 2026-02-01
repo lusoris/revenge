@@ -9,18 +9,12 @@
 
 __  
   
-  * __Light __
-  * __Dark __
-  * __Auto __
-
-
+- __Light__
+- __Dark__
+- __Auto__
 
 ____
 
-  
-
-    
-    
     Internet Engineering Task Force (IETF)                     D. Hardt, Ed.
     Request for Comments: 6749                                     Microsoft
     Obsoletes: [5849](/doc/html/rfc5849)                                             October 2012
@@ -75,8 +69,7 @@ ____
     Hardt                        Standards Track                    [Page 1]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -134,8 +127,7 @@ ____
     Hardt                        Standards Track                    [Page 2]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -193,8 +185,7 @@ ____
     Hardt                        Standards Track                    [Page 3]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -252,8 +243,7 @@ ____
     Hardt                        Standards Track                    [Page 4]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -311,8 +301,7 @@ ____
     Hardt                        Standards Track                    [Page 5]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -370,8 +359,7 @@ ____
     Hardt                        Standards Track                    [Page 6]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -429,8 +417,7 @@ ____
     Hardt                        Standards Track                    [Page 7]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -488,8 +475,7 @@ ____
     Hardt                        Standards Track                    [Page 8]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -547,8 +533,7 @@ ____
     Hardt                        Standards Track                    [Page 9]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -606,8 +591,7 @@ ____
     Hardt                        Standards Track                   [Page 10]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -665,8 +649,7 @@ ____
     Hardt                        Standards Track                   [Page 11]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -724,8 +707,7 @@ ____
     Hardt                        Standards Track                   [Page 12]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -783,8 +765,7 @@ ____
     Hardt                        Standards Track                   [Page 13]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -842,8 +823,7 @@ ____
     Hardt                        Standards Track                   [Page 14]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -901,8 +881,7 @@ ____
     Hardt                        Standards Track                   [Page 15]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -960,8 +939,7 @@ ____
     Hardt                        Standards Track                   [Page 16]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1019,8 +997,7 @@ ____
     Hardt                        Standards Track                   [Page 17]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1078,8 +1055,7 @@ ____
     Hardt                        Standards Track                   [Page 18]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1137,8 +1113,7 @@ ____
     Hardt                        Standards Track                   [Page 19]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1196,8 +1171,7 @@ ____
     Hardt                        Standards Track                   [Page 20]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1255,8 +1229,7 @@ ____
     Hardt                        Standards Track                   [Page 21]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1314,8 +1287,7 @@ ____
     Hardt                        Standards Track                   [Page 22]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1373,8 +1345,7 @@ ____
     Hardt                        Standards Track                   [Page 23]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1432,8 +1403,7 @@ ____
     Hardt                        Standards Track                   [Page 24]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1491,8 +1461,7 @@ ____
     Hardt                        Standards Track                   [Page 25]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1550,8 +1519,7 @@ ____
     Hardt                        Standards Track                   [Page 26]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1609,8 +1577,7 @@ ____
     Hardt                        Standards Track                   [Page 27]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1668,8 +1635,7 @@ ____
     Hardt                        Standards Track                   [Page 28]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1727,8 +1693,7 @@ ____
     Hardt                        Standards Track                   [Page 29]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1786,8 +1751,7 @@ ____
     Hardt                        Standards Track                   [Page 30]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1845,8 +1809,7 @@ ____
     Hardt                        Standards Track                   [Page 31]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1904,8 +1867,7 @@ ____
     Hardt                        Standards Track                   [Page 32]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -1963,8 +1925,7 @@ ____
     Hardt                        Standards Track                   [Page 33]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2022,8 +1983,7 @@ ____
     Hardt                        Standards Track                   [Page 34]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2081,8 +2041,7 @@ ____
     Hardt                        Standards Track                   [Page 35]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2140,8 +2099,7 @@ ____
     Hardt                        Standards Track                   [Page 36]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2199,8 +2157,7 @@ ____
     Hardt                        Standards Track                   [Page 37]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2258,8 +2215,7 @@ ____
     Hardt                        Standards Track                   [Page 38]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2317,8 +2273,7 @@ ____
     Hardt                        Standards Track                   [Page 39]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2376,8 +2331,7 @@ ____
     Hardt                        Standards Track                   [Page 40]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2435,8 +2389,7 @@ ____
     Hardt                        Standards Track                   [Page 41]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2494,8 +2447,7 @@ ____
     Hardt                        Standards Track                   [Page 42]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2553,8 +2505,7 @@ ____
     Hardt                        Standards Track                   [Page 43]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2612,8 +2563,7 @@ ____
     Hardt                        Standards Track                   [Page 44]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2671,8 +2621,7 @@ ____
     Hardt                        Standards Track                   [Page 45]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2730,8 +2679,7 @@ ____
     Hardt                        Standards Track                   [Page 46]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2789,8 +2737,7 @@ ____
     Hardt                        Standards Track                   [Page 47]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2848,8 +2795,7 @@ ____
     Hardt                        Standards Track                   [Page 48]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2907,8 +2853,7 @@ ____
     Hardt                        Standards Track                   [Page 49]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -2966,8 +2911,7 @@ ____
     Hardt                        Standards Track                   [Page 50]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3025,8 +2969,7 @@ ____
     Hardt                        Standards Track                   [Page 51]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3084,8 +3027,7 @@ ____
     Hardt                        Standards Track                   [Page 52]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3143,8 +3085,7 @@ ____
     Hardt                        Standards Track                   [Page 53]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3202,8 +3143,7 @@ ____
     Hardt                        Standards Track                   [Page 54]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3261,8 +3201,7 @@ ____
     Hardt                        Standards Track                   [Page 55]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3320,8 +3259,7 @@ ____
     Hardt                        Standards Track                   [Page 56]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3379,8 +3317,7 @@ ____
     Hardt                        Standards Track                   [Page 57]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3438,8 +3375,7 @@ ____
     Hardt                        Standards Track                   [Page 58]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3497,8 +3433,7 @@ ____
     Hardt                        Standards Track                   [Page 59]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3556,8 +3491,7 @@ ____
     Hardt                        Standards Track                   [Page 60]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3615,8 +3549,7 @@ ____
     Hardt                        Standards Track                   [Page 61]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3674,8 +3607,7 @@ ____
     Hardt                        Standards Track                   [Page 62]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3733,8 +3665,7 @@ ____
     Hardt                        Standards Track                   [Page 63]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3792,8 +3723,7 @@ ____
     Hardt                        Standards Track                   [Page 64]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3851,8 +3781,7 @@ ____
     Hardt                        Standards Track                   [Page 65]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3910,8 +3839,7 @@ ____
     Hardt                        Standards Track                   [Page 66]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -3969,8 +3897,7 @@ ____
     Hardt                        Standards Track                   [Page 67]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4028,8 +3955,7 @@ ____
     Hardt                        Standards Track                   [Page 68]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4087,8 +4013,7 @@ ____
     Hardt                        Standards Track                   [Page 69]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4146,8 +4071,7 @@ ____
     Hardt                        Standards Track                   [Page 70]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4205,8 +4129,7 @@ ____
     Hardt                        Standards Track                   [Page 71]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4264,8 +4187,7 @@ ____
     Hardt                        Standards Track                   [Page 72]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4323,8 +4245,7 @@ ____
     Hardt                        Standards Track                   [Page 73]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4382,8 +4303,7 @@ ____
     Hardt                        Standards Track                   [Page 74]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4441,8 +4361,7 @@ ____
     Hardt                        Standards Track                   [Page 75]
 
 * * *
-    
-    
+
     [RFC 6749](/doc/html/rfc6749)                        OAuth 2.0                   October 2012
     
     
@@ -4502,40 +4421,37 @@ ____
 
 [Datatracker](/doc/rfc6749/)
 
-RFC 6749   
-RFC - Proposed Standard 
+RFC 6749
+RFC - Proposed Standard
 
-  * __Info
-  * __Contents
-  * __Prefs
+- __Info
+- __Contents
+- __Prefs
 
-
-
-Document | Document type |  |  RFC - Proposed Standard    
-October 2012   
-[ View errata ](https://www.rfc-editor.org/errata_search.php?rfc=6749 "Click to view errata.") [ Report errata ](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") [IPR](/ipr/search/?submit=draft&id=rfc6749 "Click to view IPR declarations.") Updated by [RFC 8252](/doc/html/rfc8252 "OAuth 2.0 for Native Apps"), [RFC 8996](/doc/html/rfc8996 "Deprecating TLS 1.0 and TLS 1.1"), [RFC 9700](/doc/html/rfc9700 "Best Current Practice for OAuth 2.0 Security") Obsoletes [RFC 5849](/doc/html/rfc5849 "The OAuth 1.0 Protocol") Was [draft-ietf-oauth-v2](/doc/draft-ietf-oauth-v2/31/) ([oauth WG](/wg/oauth/about/))   
+Document | Document type |  |  RFC - Proposed Standard
+October 2012
+[View errata](https://www.rfc-editor.org/errata_search.php?rfc=6749 "Click to view errata.") [Report errata](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") [IPR](/ipr/search/?submit=draft&id=rfc6749 "Click to view IPR declarations.") Updated by [RFC 8252](/doc/html/rfc8252 "OAuth 2.0 for Native Apps"), [RFC 8996](/doc/html/rfc8996 "Deprecating TLS 1.0 and TLS 1.1"), [RFC 9700](/doc/html/rfc9700 "Best Current Practice for OAuth 2.0 Security") Obsoletes [RFC 5849](/doc/html/rfc5849 "The OAuth 1.0 Protocol") Was [draft-ietf-oauth-v2](/doc/draft-ietf-oauth-v2/31/) ([oauth WG](/wg/oauth/about/))
 ---|---|---|---  
-| Select version |  | 
+| Select version |  |
 
-  * [ 23 ](/doc/html/draft-ietf-oauth-v2-23)
-  * [ 24 ](/doc/html/draft-ietf-oauth-v2-24)
-  * [ 25 ](/doc/html/draft-ietf-oauth-v2-25)
-  * [ 26 ](/doc/html/draft-ietf-oauth-v2-26)
-  * [ 27 ](/doc/html/draft-ietf-oauth-v2-27)
-  * [ 28 ](/doc/html/draft-ietf-oauth-v2-28)
-  * [ 29 ](/doc/html/draft-ietf-oauth-v2-29)
-  * [ 30 ](/doc/html/draft-ietf-oauth-v2-30)
-  * [ 31 ](/doc/html/draft-ietf-oauth-v2-31)
-  * [ RFC 6749 ](/doc/html/rfc6749)
+- [23](/doc/html/draft-ietf-oauth-v2-23)
+- [24](/doc/html/draft-ietf-oauth-v2-24)
+- [25](/doc/html/draft-ietf-oauth-v2-25)
+- [26](/doc/html/draft-ietf-oauth-v2-26)
+- [27](/doc/html/draft-ietf-oauth-v2-27)
+- [28](/doc/html/draft-ietf-oauth-v2-28)
+- [29](/doc/html/draft-ietf-oauth-v2-29)
+- [30](/doc/html/draft-ietf-oauth-v2-30)
+- [31](/doc/html/draft-ietf-oauth-v2-31)
+- [RFC 6749](/doc/html/rfc6749)
 
-  
-| Compare versions |  |  RFC 6749  draft-ietf-oauth-v2-31  draft-ietf-oauth-v2-30  draft-ietf-oauth-v2-29  draft-ietf-oauth-v2-28  draft-ietf-oauth-v2-27  draft-ietf-oauth-v2-26  draft-ietf-oauth-v2-25  draft-ietf-oauth-v2-24  draft-ietf-oauth-v2-23  draft-ietf-oauth-v2-22  draft-ietf-oauth-v2-21  draft-ietf-oauth-v2-20  draft-ietf-oauth-v2-19  draft-ietf-oauth-v2-18  draft-ietf-oauth-v2-17  draft-ietf-oauth-v2-16  draft-ietf-oauth-v2-15  draft-ietf-oauth-v2-14  draft-ietf-oauth-v2-13  draft-ietf-oauth-v2-12  draft-ietf-oauth-v2-11  draft-ietf-oauth-v2-10  draft-ietf-oauth-v2-09  draft-ietf-oauth-v2-08  draft-ietf-oauth-v2-07  draft-ietf-oauth-v2-06  draft-ietf-oauth-v2-05  draft-ietf-oauth-v2-04  draft-ietf-oauth-v2-03  draft-ietf-oauth-v2-02  draft-ietf-oauth-v2-01  draft-ietf-oauth-v2-00  RFC 6749  draft-ietf-oauth-v2-31  draft-ietf-oauth-v2-30  draft-ietf-oauth-v2-29  draft-ietf-oauth-v2-28  draft-ietf-oauth-v2-27  draft-ietf-oauth-v2-26  draft-ietf-oauth-v2-25  draft-ietf-oauth-v2-24  draft-ietf-oauth-v2-23  draft-ietf-oauth-v2-22  draft-ietf-oauth-v2-21  draft-ietf-oauth-v2-20  draft-ietf-oauth-v2-19  draft-ietf-oauth-v2-18  draft-ietf-oauth-v2-17  draft-ietf-oauth-v2-16  draft-ietf-oauth-v2-15  draft-ietf-oauth-v2-14  draft-ietf-oauth-v2-13  draft-ietf-oauth-v2-12  draft-ietf-oauth-v2-11  draft-ietf-oauth-v2-10  draft-ietf-oauth-v2-09  draft-ietf-oauth-v2-08  draft-ietf-oauth-v2-07  draft-ietf-oauth-v2-06  draft-ietf-oauth-v2-05  draft-ietf-oauth-v2-04  draft-ietf-oauth-v2-03  draft-ietf-oauth-v2-02  draft-ietf-oauth-v2-01  draft-ietf-oauth-v2-00  Side-by-side  Inline   
-| Author |  |  [Dick Hardt](/person/dick.hardt@gmail.com "Datatracker profile of Dick Hardt") [ __](mailto:dick.hardt%40gmail.com "Compose email to dick.hardt@gmail.com")  
+| Compare versions |  |  RFC 6749  draft-ietf-oauth-v2-31  draft-ietf-oauth-v2-30  draft-ietf-oauth-v2-29  draft-ietf-oauth-v2-28  draft-ietf-oauth-v2-27  draft-ietf-oauth-v2-26  draft-ietf-oauth-v2-25  draft-ietf-oauth-v2-24  draft-ietf-oauth-v2-23  draft-ietf-oauth-v2-22  draft-ietf-oauth-v2-21  draft-ietf-oauth-v2-20  draft-ietf-oauth-v2-19  draft-ietf-oauth-v2-18  draft-ietf-oauth-v2-17  draft-ietf-oauth-v2-16  draft-ietf-oauth-v2-15  draft-ietf-oauth-v2-14  draft-ietf-oauth-v2-13  draft-ietf-oauth-v2-12  draft-ietf-oauth-v2-11  draft-ietf-oauth-v2-10  draft-ietf-oauth-v2-09  draft-ietf-oauth-v2-08  draft-ietf-oauth-v2-07  draft-ietf-oauth-v2-06  draft-ietf-oauth-v2-05  draft-ietf-oauth-v2-04  draft-ietf-oauth-v2-03  draft-ietf-oauth-v2-02  draft-ietf-oauth-v2-01  draft-ietf-oauth-v2-00  RFC 6749  draft-ietf-oauth-v2-31  draft-ietf-oauth-v2-30  draft-ietf-oauth-v2-29  draft-ietf-oauth-v2-28  draft-ietf-oauth-v2-27  draft-ietf-oauth-v2-26  draft-ietf-oauth-v2-25  draft-ietf-oauth-v2-24  draft-ietf-oauth-v2-23  draft-ietf-oauth-v2-22  draft-ietf-oauth-v2-21  draft-ietf-oauth-v2-20  draft-ietf-oauth-v2-19  draft-ietf-oauth-v2-18  draft-ietf-oauth-v2-17  draft-ietf-oauth-v2-16  draft-ietf-oauth-v2-15  draft-ietf-oauth-v2-14  draft-ietf-oauth-v2-13  draft-ietf-oauth-v2-12  draft-ietf-oauth-v2-11  draft-ietf-oauth-v2-10  draft-ietf-oauth-v2-09  draft-ietf-oauth-v2-08  draft-ietf-oauth-v2-07  draft-ietf-oauth-v2-06  draft-ietf-oauth-v2-05  draft-ietf-oauth-v2-04  draft-ietf-oauth-v2-03  draft-ietf-oauth-v2-02  draft-ietf-oauth-v2-01  draft-ietf-oauth-v2-00  Side-by-side  Inline
+| Author |  |  [Dick Hardt](/person/dick.hardt@gmail.com "Datatracker profile of Dick Hardt") [__](mailto:dick.hardt%40gmail.com "Compose email to dick.hardt@gmail.com")  
 [Email authors](mailto:rfc6749@ietf.org?subject=rfc6749 "Send email to the document authors")  
-|  RFC stream  |  |   
-|  Other formats  |  |  [ __txt](https://www.rfc-editor.org/rfc/rfc6749.txt) [ __html](https://www.rfc-editor.org/rfc/rfc6749.html) [ __pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc6749.txt.pdf) [ __w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc6749.html) [ __bibtex](/doc/rfc6749/bibtex/)  
+|  RFC stream  |  |
+|  Other formats  |  |  [__txt](https://www.rfc-editor.org/rfc/rfc6749.txt) [__html](https://www.rfc-editor.org/rfc/rfc6749.html) [__pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc6749.txt.pdf) [__w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc6749.html) [__bibtex](/doc/rfc6749/bibtex/)  
 |  Additional resources  |  |  [ Mailing list discussion ](https://mailarchive.ietf.org/arch/browse/oauth/?q=rfc6749 OR %22draft-ietf-oauth-v2%22)  
-[ Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
+[Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
 
 Show sidebar by default
 
@@ -4543,19 +4459,19 @@ Yes No
 
 Tab to show by default
 
-__Info __Contents
+__Info__Contents
 
 HTMLization configuration
 
-__HTMLize the plaintext __Plaintextify the HTML
+__HTMLize the plaintext__Plaintextify the HTML
 
 Maximum font size Page dependencies
 
-__Inline __Reference
+__Inline__Reference
 
 Citation links
 
-__Go to reference section __Go to linked document
+__Go to reference section__Go to linked document
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

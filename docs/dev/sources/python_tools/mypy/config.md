@@ -1,7 +1,7 @@
 # mypy Configuration
 
 > Source: https://mypy.readthedocs.io/en/stable/config_file.html
-> Fetched: 2026-01-31T16:07:50.866875+00:00
+> Fetched: 2026-02-01T11:55:16.224671+00:00
 > Content-Hash: 57777fe3d90ebbaa
 > Type: html
 
@@ -13,27 +13,25 @@ Mypy is very configurable. This is most useful when introducing typing to an exi
 
 Mypy supports reading configuration settings from a file. By default, mypy will discover configuration files by walking up the file system (up until the root of a repository or the root of the filesystem). In each directory, it will look for the following configuration files (in this order):
 
->   1. `mypy.ini`
-> 
->   2. `.mypy.ini`
-> 
->   3. `pyproject.toml` (containing a `[tool.mypy]` section)
-> 
->   4. `setup.cfg` (containing a `[mypy]` section)
-> 
-> 
-
+> 1. `mypy.ini`
+>
+> 2. `.mypy.ini`
+>
+> 3. `pyproject.toml` (containing a `[tool.mypy]` section)
+>
+> 4. `setup.cfg` (containing a `[mypy]` section)
+>
+>
 
 If no configuration file is found by this method, mypy will then look for configuration files in the following locations (in this order):
 
->   1. `$XDG_CONFIG_HOME/mypy/config`
-> 
->   2. `~/.config/mypy/config`
-> 
->   3. `~/.mypy.ini`
-> 
-> 
-
+> 1. `$XDG_CONFIG_HOME/mypy/config`
+>
+> 2. `~/.config/mypy/config`
+>
+> 3. `~/.mypy.ini`
+>
+>
 
 The [`\--config-file`](command_line.html#cmdoption-mypy-config-file) command-line flag has the highest precedence and must point towards a valid configuration file; otherwise mypy will report an error and exit. Without the command line option, mypy will look for configuration files in the precedence order above.
 
@@ -47,9 +45,9 @@ Some flags support user home directory and environment variable expansion. To re
 
 The configuration file format is the usual [ini file](https://docs.python.org/3/library/configparser.html "\(in Python v3.14\)") format. It should contain section names in square brackets and flag settings of the form NAME = VALUE. Comments start with `#` characters.
 
-  * A section named `[mypy]` must be present. This specifies the global flags.
+- A section named `[mypy]` must be present. This specifies the global flags.
 
-  * Additional sections named `[mypy-PATTERN1,PATTERN2,...]` may be present, where `PATTERN1`, `PATTERN2`, etc., are comma-separated patterns of fully-qualified module names, with some components optionally replaced by the ‘*’ character (e.g. `foo.bar`, `foo.bar.*`, `foo.*.baz`). These sections specify additional flags that only apply to _modules_ whose name matches at least one of the patterns.
+- Additional sections named `[mypy-PATTERN1,PATTERN2,...]` may be present, where `PATTERN1`, `PATTERN2`, etc., are comma-separated patterns of fully-qualified module names, with some components optionally replaced by the ‘*’ character (e.g. `foo.bar`, `foo.bar.*`, `foo.*.baz`). These sections specify additional flags that only apply to _modules_ whose name matches at least one of the patterns.
 
 A pattern of the form `qualified_module_name` matches only the named module, while `dotted_module_name.*` matches `dotted_module_name` and any submodules (so `foo.bar.*` would match all of `foo.bar`, `foo.bar.baz`, and `foo.bar.baz.quux`).
 
@@ -68,9 +66,6 @@ When options conflict, the precedence order for configuration is:
 >     5. Command line options.
 > 
 >     6. Top-level configuration file options.
-
-
-
 
 The difference in precedence order between “structured” patterns (by specificity) and “unstructured” patterns (by order in the file) is unfortunate, and is subject to change in future versions.
 
@@ -97,8 +92,7 @@ Options that take a boolean value may be inverted by adding `no_` to their name 
 ## Example `mypy.ini`¶
 
 Here is an example of a `mypy.ini` file. To use this config file, place it at the root of your repo and run mypy.
-    
-    
+
     # Global options:
     
     [mypy]
@@ -123,9 +117,6 @@ This config file specifies two global options in the `[mypy]` section. These two
 
   2. Report any config options that are unused by mypy. (This will help us catch typos when making changes to our config file).
 
-
-
-
 Next, this module specifies three per-module options. The first two options change how mypy type checks code in `mycode.foo.*` and `mycode.bar`, which we assume here are two modules that you wrote. The final config option changes how mypy type checks `somelibrary`, which we assume here is some 3rd party library you’ve installed and are importing. These options will:
 
   1. Selectively disallow untyped function definitions only within the `mycode.foo` package – that is, only for function definitions defined in the `mycode/foo` directory.
@@ -134,18 +125,13 @@ Next, this module specifies three per-module options. The first two options chan
 
   3. Suppress any error messages generated when your codebase tries importing the module `somelibrary`. This is useful if `somelibrary` is some 3rd party library missing type hints.
 
-
-
-
 ## Import discovery¶
 
 For more information, see the [Import discovery](command_line.html#import-discovery) section of the command line docs.
 
 mypy_path¶
-    
 
 Type:
-    
 
 string
 
@@ -158,10 +144,8 @@ This option may only be set in the global section (`[mypy]`).
 **Note:** On Windows, use UNC paths to avoid using `:` (e.g. `\\\127.0.0.1\X$\MyDir` where `X` is the drive letter).
 
 files¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
@@ -170,10 +154,8 @@ A comma-separated list of paths which should be checked by mypy if none are give
 This option may only be set in the global section (`[mypy]`).
 
 modules¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
@@ -182,10 +164,8 @@ A comma-separated list of packages which should be checked by mypy if none are g
 This option may only be set in the global section (`[mypy]`).
 
 packages¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
@@ -194,16 +174,13 @@ A comma-separated list of packages which should be checked by mypy if none are g
 This option may only be set in the global section (`[mypy]`).
 
 exclude¶
-    
 
 Type:
-    
 
 regular expression
 
 A regular expression that matches file names, directory names and paths which mypy should ignore while recursively discovering files to check. Use forward slashes (`/`) as directory separators on all platforms.
-    
-    
+
     [mypy]
     exclude = (?x)(
         ^one\.py$    # files named "one.py"
@@ -223,8 +200,7 @@ Note
 Note that the TOML equivalent differs slightly. It can be either a single string (including a multi-line string) – which is treated as a single regular expression – or an array of such strings. The following TOML examples are equivalent to the above INI example.
 
 Array of strings:
-    
-    
+
     [tool.mypy]
     exclude = [
         "^one\\.py$",  # TOML's double-quoted strings require escaping backslashes
@@ -234,8 +210,7 @@ Array of strings:
     
 
 A single, multi-line string:
-    
-    
+
     [tool.mypy]
     exclude = '''(?x)(
         ^one\.py$    # files named "one.py"
@@ -247,30 +222,24 @@ A single, multi-line string:
 See Using a pyproject.toml file.
 
 exclude_gitignore¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 This flag will add everything that matches `.gitignore` file(s) to `exclude`. This option may only be set in the global section (`[mypy]`).
 
 namespace_packages¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
@@ -279,32 +248,26 @@ Enables [**PEP 420**](https://peps.python.org/pep-0420/) style namespace package
 This option may only be set in the global section (`[mypy]`).
 
 explicit_package_bases¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
-This flag tells mypy that top-level packages will be based in either the current directory, or a member of the `MYPYPATH` environment variable or `mypy_path` config option. This option is only useful in the absence of __init__.py. See [Mapping file paths to modules](running_mypy.html#mapping-paths-to-modules) for details.
+This flag tells mypy that top-level packages will be based in either the current directory, or a member of the `MYPYPATH` environment variable or `mypy_path` config option. This option is only useful in the absence of **init**.py. See [Mapping file paths to modules](running_mypy.html#mapping-paths-to-modules) for details.
 
 This option may only be set in the global section (`[mypy]`).
 
 ignore_missing_imports¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -313,15 +276,12 @@ Suppresses error messages about imports that cannot be resolved.
 If this option is used in a per-module section, the module name should match the name of the _imported_ module, not the module containing the import statement.
 
 follow_untyped_imports¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -334,15 +294,12 @@ Warning
 Note that analyzing all unannotated modules might result in issues when analyzing code not designed to be type checked and may significantly increase how long mypy takes to run.
 
 follow_imports¶
-    
 
 Type:
-    
 
 string
 
 Default:
-    
 
 `normal`
 
@@ -355,15 +312,12 @@ Using this option in a per-module section (potentially with a wildcard, as descr
 If this option is used in a per-module section, the module name should match the name of the _imported_ module, not the module containing the import statement.
 
 follow_imports_for_stubs¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -378,10 +332,8 @@ Note
 This is not supported by the mypy daemon.
 
 python_executable¶
-    
 
 Type:
-    
 
 string
 
@@ -390,30 +342,24 @@ Specifies the path to the Python executable to inspect to collect a list of avai
 This option may only be set in the global section (`[mypy]`).
 
 no_site_packages¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disables using type information in installed packages (see [**PEP 561**](https://peps.python.org/pep-0561/)). This will also disable searching for a usable Python executable. This acts the same as [`\--no-site-packages`](command_line.html#cmdoption-mypy-no-site-packages) command line flag.
 
 no_silence_site_packages¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -424,10 +370,8 @@ This option may only be set in the global section (`[mypy]`).
 ## Platform configuration¶
 
 python_version¶
-    
 
 Type:
-    
 
 string
 
@@ -436,10 +380,8 @@ Specifies the Python version used to parse and check the target program. The str
 This option may only be set in the global section (`[mypy]`).
 
 platform¶
-    
 
 Type:
-    
 
 string
 
@@ -448,20 +390,16 @@ Specifies the OS platform for the target program, for example `darwin` or `win32
 This option may only be set in the global section (`[mypy]`).
 
 always_true¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
 Specifies a list of variables that mypy will treat as compile-time constants that are always true.
 
 always_false¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
@@ -472,90 +410,72 @@ Specifies a list of variables that mypy will treat as compile-time constants tha
 For more information, see the [Disallow dynamic typing](command_line.html#disallow-dynamic-typing) section of the command line docs.
 
 disallow_any_unimported¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows usage of types that come from unfollowed imports (anything imported from an unfollowed import is automatically given a type of `Any`).
 
 disallow_any_expr¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows all expressions in the module that have type `Any`.
 
 disallow_any_decorated¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows functions that have `Any` in their signature after decorator transformation.
 
 disallow_any_explicit¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows explicit `Any` in type positions such as type annotations and generic type parameters.
 
 disallow_any_generics¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows usage of generic types that do not specify explicit type parameters.
 
 disallow_subclassing_any¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -566,21 +486,17 @@ Disallows subclassing a value of type `Any`.
 For more information, see the [Untyped definitions and calls](command_line.html#untyped-definitions-and-calls) section of the command line docs.
 
 disallow_untyped_calls¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows calling functions without type annotations from functions with type annotations. Note that when used in per-module options, it enables/disables this check **inside** the module(s) specified, not for functions that come from that module(s), for example config like this:
-    
-    
+
     [mypy]
     disallow_untyped_calls = True
     
@@ -589,33 +505,27 @@ Disallows calling functions without type annotations from functions with type an
     
 
 will disable this check inside `some.library`, not for your code that imports `some.library`. If you want to selectively disable this check for all your code that imports `some.library` you should instead use `untyped_calls_exclude`, for example:
-    
-    
+
     [mypy]
     disallow_untyped_calls = True
     untyped_calls_exclude = some.library
     
 
 untyped_calls_exclude¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
 Selectively excludes functions and methods defined in specific packages, modules, and classes from action of `disallow_untyped_calls`. This also applies to all submodules of packages (i.e. everything inside a given prefix). Note, this option does not support per-file configuration, the exclusions list is defined globally for all your code.
 
 disallow_untyped_defs¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -624,15 +534,12 @@ Disallows defining functions without type annotations or with incomplete type an
 For example, it would report an error for `def f(a, b)` and `def f(a: int, b)`.
 
 disallow_incomplete_defs¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -641,30 +548,24 @@ Disallows defining functions with incomplete type annotations, while still allow
 For example, it would report an error for `def f(a: int, b)` but not `def f(a, b)`.
 
 check_untyped_defs¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Type-checks the interior of functions without type annotations.
 
 disallow_untyped_decorators¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -675,15 +576,12 @@ Reports an error whenever a function with type annotations is decorated with a d
 For more information, see the [None and Optional handling](command_line.html#none-and-optional-handling) section of the command line docs.
 
 implicit_optional¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -692,15 +590,12 @@ Causes mypy to treat parameters with a `None` default value as having an implici
 **Note:** This was True by default in mypy versions 0.980 and earlier.
 
 strict_optional¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
@@ -715,15 +610,12 @@ Warning
 For more information, see the [Configuring warnings](command_line.html#configuring-warnings) section of the command line docs.
 
 warn_redundant_casts¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -732,70 +624,56 @@ Warns about casting an expression to its inferred type.
 This option may only be set in the global section (`[mypy]`).
 
 warn_unused_ignores¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Warns about unneeded `# type: ignore` comments.
 
 warn_no_return¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
 Shows errors for missing return statements on some execution paths.
 
 warn_return_any¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Shows a warning when returning a value with type `Any` from a function declared with a non- `Any` return type.
 
 warn_unreachable¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Shows a warning when encountering any code inferred to be unreachable or redundant after performing type analysis.
 
 deprecated_calls_exclude¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
@@ -806,15 +684,12 @@ Selectively excludes functions and methods defined in specific packages, modules
 Note: these configuration options are available in the config file only. There is no analog available via the command line options.
 
 ignore_errors¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -825,36 +700,29 @@ Ignores all non-fatal errors.
 For more information, see the [Miscellaneous strictness flags](command_line.html#miscellaneous-strictness-flags) section of the command line docs.
 
 allow_untyped_globals¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Causes mypy to suppress errors caused by not being able to fully infer the types of global and class variables.
 
 allow_redefinition_new¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 By default, mypy won’t allow a variable to be redefined with an unrelated type. This _experimental_ flag enables the redefinition of unannotated variables with an arbitrary type. You will also need to enable `local_partial_types`. Example:
-    
-    
+
     def maybe_convert(n: int, b: bool) -> int | str:
         if b:
             x = str(n)  # Assign "str"
@@ -865,8 +733,7 @@ By default, mypy won’t allow a variable to be redefined with an unrelated type
     
 
 This also enables an unannotated variable to have different types in different code locations:
-    
-    
+
     if check():
         for x in range(n):
             # Type of "x" is "int" here.
@@ -880,21 +747,17 @@ This also enables an unannotated variable to have different types in different c
 Note: We are planning to turn this flag on by default in a future mypy release, along with `local_partial_types`.
 
 allow_redefinition¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Allows variables to be redefined with an arbitrary type, as long as the redefinition is in the same block and nesting level as the original definition. Example where this can be useful:
-    
-    
+
     def process(items: list[str]) -> None:
         # 'items' has type list[str]
         items = [item.split() for item in items]
@@ -902,8 +765,7 @@ Allows variables to be redefined with an arbitrary type, as long as the redefini
     
 
 The variable must be used before it can be redefined:
-    
-    
+
     def process(items: list[str]) -> None:
        items = "mypy"  # invalid redefinition to str because the variable hasn't been used yet
        print(items)
@@ -912,35 +774,28 @@ The variable must be used before it can be redefined:
     
 
 local_partial_types¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disallows inferring variable type for `None` from two assignments in different scopes. This is always implicitly enabled when using the [mypy daemon](mypy_daemon.html#mypy-daemon). This will be enabled by default in a future mypy release.
 
 disable_error_code¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
 Allows disabling one or multiple error codes globally.
 
 enable_error_code¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
@@ -949,36 +804,29 @@ Allows enabling one or multiple error codes globally.
 Note: This option will override disabled error codes from the disable_error_code option.
 
 extra_checks¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 This flag enables additional checks that are technically correct but may be impractical. See [`mypy \--extra-checks`](command_line.html#cmdoption-mypy-extra-checks) for more info.
 
 implicit_reexport¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
 By default, imported values to a module are treated as exported and mypy allows other modules to import them. When false, mypy will not re-export unless the item is imported using from-as or is included in `__all__`. Note that mypy treats stub files as if this is always disabled. For example:
-    
-    
+
     # This won't re-export the value
     from foo import bar
     # This will re-export it as bar and allow other modules to import it
@@ -989,60 +837,48 @@ By default, imported values to a module are treated as exported and mypy allows 
     
 
 strict_equality¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Prohibit equality checks, identity checks, and container checks between non-overlapping types (except `None`).
 
 strict_equality_for_none¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Include `None` in strict equality checks (requires `strict_equality` to be activated).
 
 strict_bytes¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Disable treating `bytearray` and `memoryview` as subtypes of `bytes`. This will be enabled by default in _mypy 2.0_.
 
 strict¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -1057,135 +893,108 @@ For more information, see the [Configuring error messages](command_line.html#con
 These options may only be set in the global section (`[mypy]`).
 
 show_error_context¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Prefixes each error with the relevant context.
 
 show_column_numbers¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Shows column numbers in error messages.
 
 show_error_code_links¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Shows documentation link to corresponding error code.
 
 hide_error_codes¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Hides error codes in error messages. See [Error codes](error_codes.html#error-codes) for more information.
 
 pretty¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Use visually nicer output in error messages: use soft word wrap, show source code snippets, and show error location markers.
 
 color_output¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
 Shows error messages with color enabled.
 
 error_summary¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
 Shows a short summary line after error messages.
 
 show_absolute_path¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Show absolute paths to files.
 
 force_union_syntax¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -1196,30 +1005,24 @@ Always use `Union[]` and `Optional[]` for union types in error messages (instead
 These options may only be set in the global section (`[mypy]`).
 
 incremental¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 True
 
 Enables [incremental mode](command_line.html#incremental).
 
 cache_dir¶
-    
 
 Type:
-    
 
 string
 
 Default:
-    
 
 `.mypy_cache`
 
@@ -1228,60 +1031,48 @@ Specifies the location where mypy stores incremental cache info. User home direc
 Note that the cache is only read when incremental mode is enabled but is always written to, unless the value is set to `/dev/null` (UNIX) or `nul` (Windows).
 
 sqlite_cache¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Use an [SQLite](https://www.sqlite.org/) database to store the cache.
 
 cache_fine_grained¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Include fine-grained dependency information in the cache for the mypy daemon.
 
 skip_version_check¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Makes mypy use incremental cache data even if it was generated by a different version of mypy. (By default, mypy will perform a version check and regenerate the cache if it was written by older versions of mypy.)
 
 skip_cache_mtime_checks¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -1292,75 +1083,60 @@ Skip cache internal consistency checks based on mtime.
 These options may only be set in the global section (`[mypy]`).
 
 plugins¶
-    
 
 Type:
-    
 
 comma-separated list of strings
 
 A comma-separated list of mypy plugins. See [Extending mypy using plugins](extending_mypy.html#extending-mypy-using-plugins).
 
 pdb¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Invokes [`pdb`](https://docs.python.org/3/library/pdb.html#module-pdb "\(in Python v3.14\)") on fatal error.
 
 show_traceback¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Shows traceback on fatal error.
 
 raise_exceptions¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Raise exception on fatal error.
 
 custom_typing_module¶
-    
 
 Type:
-    
 
 string
 
 Specifies a custom module to use as a substitute for the [`typing`](https://docs.python.org/3/library/typing.html#module-typing "\(in Python v3.14\)") module.
 
 custom_typeshed_dir¶
-    
 
 Type:
-    
 
 string
 
@@ -1371,15 +1147,12 @@ User home directory and environment variables will be expanded.
 Note that this doesn’t affect third-party library stubs. To test third-party stubs, for example try `MYPYPATH=stubs/six mypy ...`.
 
 warn_incomplete_stub¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
@@ -1394,20 +1167,16 @@ Warning
 Generating reports disables incremental mode and can significantly slow down your workflow. It is recommended to enable reporting only for specific runs (e.g. in CI).
 
 any_exprs_report¶
-    
 
 Type:
-    
 
 string
 
 Causes mypy to generate a text file report documenting how many expressions of type `Any` are present within your codebase.
 
 cobertura_xml_report¶
-    
 
 Type:
-    
 
 string
 
@@ -1416,10 +1185,8 @@ Causes mypy to generate a Cobertura XML type checking coverage report.
 To generate this report, you must either manually install the [lxml](https://pypi.org/project/lxml/) library or specify mypy installation with the setuptools extra `mypy[reports]`.
 
 html_report / xslt_html_report¶
-    
 
 Type:
-    
 
 string
 
@@ -1428,40 +1195,32 @@ Causes mypy to generate an HTML type checking coverage report.
 To generate this report, you must either manually install the [lxml](https://pypi.org/project/lxml/) library or specify mypy installation with the setuptools extra `mypy[reports]`.
 
 linecount_report¶
-    
 
 Type:
-    
 
 string
 
 Causes mypy to generate a text file report documenting the functions and lines that are typed and untyped within your codebase.
 
 linecoverage_report¶
-    
 
 Type:
-    
 
 string
 
 Causes mypy to generate a JSON file that maps each source file’s absolute filename to a list of line numbers that belong to typed functions in that file.
 
 lineprecision_report¶
-    
 
 Type:
-    
 
 string
 
 Causes mypy to generate a flat text file report with per-module statistics of how many lines are typechecked etc.
 
 txt_report / xslt_txt_report¶
-    
 
 Type:
-    
 
 string
 
@@ -1470,10 +1229,8 @@ Causes mypy to generate a text file type checking coverage report.
 To generate this report, you must either manually install the [lxml](https://pypi.org/project/lxml/) library or specify mypy installation with the setuptools extra `mypy[reports]`.
 
 xml_report¶
-    
 
 Type:
-    
 
 string
 
@@ -1486,70 +1243,56 @@ To generate this report, you must either manually install the [lxml](https://pyp
 These options may only be set in the global section (`[mypy]`).
 
 junit_xml¶
-    
 
 Type:
-    
 
 string
 
 Causes mypy to generate a JUnit XML test result document with type checking results. This can make it easier to integrate mypy with continuous integration (CI) tools.
 
 junit_format¶
-    
 
 Type:
-    
 
 string
 
 Default:
-    
 
 `global`
 
 If junit_xml is set, specifies format. global (default): single test with all errors; per_file: one test entry per file with failures.
 
 scripts_are_modules¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Makes script `x` become module `x` instead of `__main__`. This is useful when checking multiple scripts in a single run.
 
 warn_unused_configs¶
-    
 
 Type:
-    
 
 boolean
 
 Default:
-    
 
 False
 
 Warns about per-module sections in the config file that do not match any files processed when invoking mypy. (This requires turning off incremental mode using `incremental = False`.)
 
 verbosity¶
-    
 
 Type:
-    
 
 integer
 
 Default:
-    
 
 0
 
@@ -1559,55 +1302,41 @@ Controls how much debug output will be generated. Higher numbers are more verbos
 
 Instead of using a `mypy.ini` file, a `pyproject.toml` file (as specified by [PEP 518](https://www.python.org/dev/peps/pep-0518/)) may be used instead. A few notes on doing so:
 
-  * The `[mypy]` section should have `tool.` prepended to its name:
+- The `[mypy]` section should have `tool.` prepended to its name:
 
-    * I.e., `[mypy]` would become `[tool.mypy]`
+  - I.e., `[mypy]` would become `[tool.mypy]`
 
-  * The module specific sections should be moved into `[[tool.mypy.overrides]]` sections:
+- The module specific sections should be moved into `[[tool.mypy.overrides]]` sections:
 
-    * For example, `[mypy-packagename]` would become:
+  - For example, `[mypy-packagename]` would become:
 
-
-
-    
-    
     [[tool.mypy.overrides]]
     module = 'packagename'
     ...
-    
 
-  * Multi-module specific sections can be moved into a single `[[tool.mypy.overrides]]` section with a module property set to an array of modules:
+- Multi-module specific sections can be moved into a single `[[tool.mypy.overrides]]` section with a module property set to an array of modules:
 
-    * For example, `[mypy-packagename,packagename2]` would become:
+  - For example, `[mypy-packagename,packagename2]` would become:
 
-
-
-    
-    
     [[tool.mypy.overrides]]
     module = [
         'packagename',
         'packagename2'
     ]
     ...
-    
 
-  * The following care should be given to values in the `pyproject.toml` files as compared to `ini` files:
+- The following care should be given to values in the `pyproject.toml` files as compared to `ini` files:
 
-    * Strings must be wrapped in double quotes, or single quotes if the string contains special characters
+  - Strings must be wrapped in double quotes, or single quotes if the string contains special characters
 
-    * Boolean values should be all lower case
-
-
-
+  - Boolean values should be all lower case
 
 Please see the [TOML Documentation](https://toml.io/) for more details and information on what is allowed in a `toml` file. See [PEP 518](https://www.python.org/dev/peps/pep-0518/) for more information on the layout and structure of the `pyproject.toml` file.
 
 ## Example `pyproject.toml`¶
 
 Here is an example of a `pyproject.toml` file. To use this config file, place it at the root of your repo (or append it to the end of an existing `pyproject.toml` file) and run mypy.
-    
-    
+
     # mypy global options:
     
     [tool.mypy]

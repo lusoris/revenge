@@ -1,7 +1,7 @@
 # release-please
 
 > Source: https://github.com/googleapis/release-please
-> Fetched: 2026-01-31T11:07:13.279033+00:00
+> Fetched: 2026-02-01T11:55:55.863685+00:00
 > Content-Hash: 4ffb3999c6d6c2e3
 > Type: github_readme
 
@@ -55,10 +55,10 @@ Release Please assumes you are using [Conventional Commit messages](https://www.
 
 The most important prefixes you should have in mind are:
 
-* `fix:` which represents bug fixes, and correlates to a [SemVer](https://semver.org/)
+- `fix:` which represents bug fixes, and correlates to a [SemVer](https://semver.org/)
   patch.
-* `feat:` which represents a new feature, and correlates to a SemVer minor.
-* `feat!:`,  or `fix!:`, `refactor!:`, etc., which represent a breaking change
+- `feat:` which represents a new feature, and correlates to a SemVer minor.
+- `feat!:`,  or `fix!:`, `refactor!:`, etc., which represent a breaking change
   (indicated by the `!`) and will result in a SemVer major.
 
 ### Linear git commit history (use squash-merge)
@@ -66,17 +66,17 @@ The most important prefixes you should have in mind are:
 We **highly** recommend that you use squash-merges when merging pull requests.
 A linear git history makes it much easier to:
 
-* Follow history - commits are sorted by merge date and are not mixed between
+- Follow history - commits are sorted by merge date and are not mixed between
   pull requests
-* Find and revert bugs - `git bisect` is helpful for tracking down which
+- Find and revert bugs - `git bisect` is helpful for tracking down which
   change introduced a bug
-* Control the release-please changelog - when you merge a PR, you may have
+- Control the release-please changelog - when you merge a PR, you may have
   commit messages that make sense within the scope of the PR, but don't
   make sense when merged in the main branch. For example, you may have
   `feat: introduce feature A` and then `fix: some bugfix introduced in
   the first commit`. The `fix` commit is actually irrelevant to the release
   notes as there was never a bug experienced in the main branch.
-* Keep a clean main branch - if you use something like red/green development
+- Keep a clean main branch - if you use something like red/green development
   (create a failing test in commit A, then fix in commit B) and merge (or
   rebase-merge), then there will be points in time in your main branch where
   tests do not pass.
@@ -213,7 +213,7 @@ Release Please automates releases for the following flavors of repositories:
 
 ## Setting up Release Please
 
-There are a variety of ways you can deploy release-please: 
+There are a variety of ways you can deploy release-please:
 
 ### GitHub Action (recommended)
 
@@ -251,13 +251,13 @@ The dist-tags follow the naming convention `legacy-(version)`.
 
 _Legacy Node.js versions are supported as a best effort:_
 
-* Legacy versions will not be tested in continuous integration.
-* Some security patches may not be able to be backported.
-* Dependencies will not be kept up-to-date, and features will not be backported.
+- Legacy versions will not be tested in continuous integration.
+- Some security patches may not be able to be backported.
+- Dependencies will not be kept up-to-date, and features will not be backported.
 
 #### Legacy tags available
 
-* `legacy-8`: install client libraries from this dist-tag for versions
+- `legacy-8`: install client libraries from this dist-tag for versions
   compatible with Node.js 8.
 
 ## Versioning

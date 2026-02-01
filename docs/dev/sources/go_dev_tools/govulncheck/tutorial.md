@@ -1,17 +1,15 @@
 # govulncheck Tutorial
 
 > Source: https://go.dev/doc/tutorial/govulncheck
-> Fetched: 2026-01-31T16:06:56.059516+00:00
+> Fetched: 2026-02-01T11:54:36.250732+00:00
 > Content-Hash: a7f18000061d9b9e
 > Type: html
 
 ---
 
-  1. [ Documentation ](/doc/)
-  2. [ Tutorials ](/doc/tutorial/)
-  3. [ Tutorial: Find and fix vulnerable dependencies with govulncheck ](/doc/tutorial/govulncheck)
-
-
+  1. [Documentation](/doc/)
+  2. [Tutorials](/doc/tutorial/)
+  3. [Tutorial: Find and fix vulnerable dependencies with govulncheck](/doc/tutorial/govulncheck)
 
 # Tutorial: Find and fix vulnerable dependencies with govulncheck
 
@@ -23,11 +21,9 @@ To learn more about govulncheck, see the [govulncheck documentation](https://pkg
 
 ## Prerequisites
 
-  * **Go.** We recommend using the latest version of Go to follow this tutorial. (For installation instructions, see [Installing Go](/doc/install).)
-  * **A code editor.** Any editor you have will work fine.
-  * **A command terminal.** Go works well using any terminal on Linux and Mac, and on PowerShell or cmd in Windows.
-
-
+- **Go.** We recommend using the latest version of Go to follow this tutorial. (For installation instructions, see [Installing Go](/doc/install).)
+- **A code editor.** Any editor you have will work fine.
+- **A command terminal.** Go works well using any terminal on Linux and Mac, and on PowerShell or cmd in Windows.
 
 The tutorial will take you through the following steps:
 
@@ -36,23 +32,19 @@ The tutorial will take you through the following steps:
   3. Evaluate vulnerabilities
   4. Upgrade vulnerable dependencies
 
-
-
 ## Create a sample Go module with a vulnerable dependency
 
 **Step 1.** To begin, create a new folder called `vuln-tutorial` and initialize a Go module. (If you are new to Go modules, check out [go.dev/doc/tutorial/create-module](/doc/tutorial/create-module).
 
 For example, from your home directory, run the following:
-    
-    
-    $ mkdir vuln-tutorial
-    $ cd vuln-tutorial
-    $ go mod init vuln.tutorial
+
+    mkdir vuln-tutorial
+    cd vuln-tutorial
+    go mod init vuln.tutorial
     
 
 **Step 2.** Create a file called `main.go` within the `vuln-tutorial` folder, and copy the following code into it:
-    
-    
+
     package main
     
     import (
@@ -81,22 +73,19 @@ This sample program takes a list of language tags as command line arguments and 
 **Step 3.** Run `go mod tidy`, which will populate the `go.mod` file with all the dependencies required by the code you added to `main.go` in the previous step.
 
 From the `vuln-tutorial` folder, run:
-    
-    
-    $ go mod tidy
+
+    go mod tidy
     
 
 You should see this output:
-    
-    
+
     go: finding module for package golang.org/x/text/language
     go: downloading golang.org/x/text v0.9.0
     go: found golang.org/x/text/language in golang.org/x/text v0.9.0
     
 
 **Step 4.** Open your `go.mod` file to verify that it looks like this:
-    
-    
+
     module vuln.tutorial
     
     go 1.20
@@ -105,20 +94,17 @@ You should see this output:
     
 
 **Step 5.** Downgrade the version of `golang.org/x/text` to v0.3.5, which contains known vulnerabilities. Run:
-    
-    
-    $ go get golang.org/x/text@v0.3.5
+
+    go get golang.org/x/text@v0.3.5
     
 
 You should see this output:
-    
-    
+
     go: downgraded golang.org/x/text v0.9.0 => v0.3.5
     
 
 The `go.mod` file should now read:
-    
-    
+
     module vuln.tutorial
     
     go 1.20
@@ -131,20 +117,17 @@ Now, let’s see govulncheck in action.
 ## Install and run govulncheck
 
 **Step 6.** Install govulncheck with the `go install` command:
-    
-    
-    $ go install golang.org/x/vuln/cmd/govulncheck@latest
+
+    go install golang.org/x/vuln/cmd/govulncheck@latest
     
 
 **Step 7.** From the folder you want to analyze (in this case, `vuln-tutorial`). Run:
-    
-    
-    $ govulncheck ./...
+
+    govulncheck ./...
     
 
 You should see this output:
-    
-    
+
     govulncheck is an experimental tool. Share feedback at https://go.dev/s/govulncheck-feedback.
     
     Using go1.20.3 and govulncheck@v0.0.0 with
@@ -187,7 +170,7 @@ You should see this output:
 
 ### Interpreting the output
 
-*Note: If you are not using the latest version of Go, you may see additional vulnerabilities from the standard library. 
+*Note: If you are not using the latest version of Go, you may see additional vulnerabilities from the standard library.
 
 Our code is affected by one vulnerability, [GO-2021-0113](https://pkg.go.dev/vuln/GO-2021-0113), because it directly calls the `Parse` function of `golang.org/x/text/language` at a vulnerable version (v0.3.5).
 
@@ -209,10 +192,8 @@ b. Decide on an action.
 
 To mitigate GO-2021-0113, we have a few options:
 
-  * **Option 1: Upgrade to a fixed version.** If there is a fix available, we can remove a vulnerable dependency by upgrading to a fixed version of the module.
-  * **Option 2: Stop using the vulnerable symbol(s).** We could choose to remove all calls to the vulnerable function in our code. We would need to find an alternative or implement it ourselves.
-
-
+- **Option 1: Upgrade to a fixed version.** If there is a fix available, we can remove a vulnerable dependency by upgrading to a fixed version of the module.
+- **Option 2: Stop using the vulnerable symbol(s).** We could choose to remove all calls to the vulnerable function in our code. We would need to find an alternative or implement it ourselves.
 
 In this case, a fix is available, and the `Parse` function is integral to our program. Let’s upgrade our dependency to the “fixed in” version, v0.3.7.
 
@@ -223,28 +204,24 @@ We decided to deprioritize fixing the informational vulnerability, GO-2022-1059,
 Luckily, upgrading vulnerable dependencies is quite simple.
 
 **Step 8.** Upgrade `golang.org/x/text` to v0.3.8:
-    
-    
-    $ go get golang.org/x/text@v0.3.8
+
+    go get golang.org/x/text@v0.3.8
     
 
 You should see this output:
-    
-    
+
     go: upgraded golang.org/x/text v0.3.5 => v0.3.8
     
 
 (Note that we could have also chosen to upgrade to `latest`, or any other version after v0.3.8).
 
 **Step 9.** Now run govulncheck again:
-    
-    
-    $ govulncheck ./...
+
+    govulncheck ./...
     
 
 You will now see this output:
-    
-    
+
     govulncheck is an experimental tool. Share feedback at https://go.dev/s/govulncheck-feedback.
     
     Using go1.20.3 and govulncheck@v0.0.0 with

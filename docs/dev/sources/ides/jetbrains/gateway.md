@@ -1,7 +1,7 @@
 # JetBrains Gateway
 
 > Source: https://www.jetbrains.com/help/idea/remote-development-overview.html
-> Fetched: 2026-01-31T16:04:50.797207+00:00
+> Fetched: 2026-02-01T11:52:15.747788+00:00
 > Content-Hash: d5924ba5748ab34b
 > Type: html
 
@@ -13,16 +13,13 @@ Remote development lets you use a remote machine, development container, WSL, or
 
 With Remote development you can do the following:
 
-  * Edit, build, or debug applications on a different OS than you are running locally.
+- Edit, build, or debug applications on a different OS than you are running locally.
 
-  * Use larger or more powerful hardware than your local machine for development.
+- Use larger or more powerful hardware than your local machine for development.
 
-  * Use a laptop as a thin client, no source code needs to be hosted on your local machine.
+- Use a laptop as a thin client, no source code needs to be hosted on your local machine.
 
-  * Work from anywhere, while the sensitive intelligence is hosted on the companyâs servers only.
-
-
-
+- Work from anywhere, while the sensitive intelligence is hosted on the companyâs servers only.
 
 ## Connections
 
@@ -36,16 +33,13 @@ SSH connection from a local machine into a remote server or vice versa (from an 
 
 You can use one of the following ways:
 
-  * JetBrains Toolbox App: supports the connection on Linux, macOS, and Windows. For more information, refer to the [Toolbox App](https://www.jetbrains.com/help/toolbox-app/about-the-instance.html) page.
+- JetBrains Toolbox App: supports the connection on Linux, macOS, and Windows. For more information, refer to the [Toolbox App](https://www.jetbrains.com/help/toolbox-app/about-the-instance.html) page.
 
-  * IntelliJ IDEA: connects to your remote project from the IntelliJ IDEA welcome screen. For more information, refer to [Connect to a remote server from IntelliJ IDEA](remote-development-starting-page.html).
+- IntelliJ IDEA: connects to your remote project from the IntelliJ IDEA welcome screen. For more information, refer to [Connect to a remote server from IntelliJ IDEA](remote-development-starting-page.html).
 
-  * JetBrains Gateway: you can use JetBrains Gateway for the SSH connection to a Linux machine. You can also connect to various development environments. 
+- JetBrains Gateway: you can use JetBrains Gateway for the SSH connection to a Linux machine. You can also connect to various development environments.
 
 For more information, refer to [Connect and work with JetBrains Gateway](remote-development-a.html).
-
-
-
 
 ### Dev Container connection
 
@@ -71,18 +65,15 @@ For more information on how to connect to each of the environments, refer to [Co
 
 The backend can be extended with all the diversity of IntelliJ IDEA plugins in the following ways:
 
-  * By unpacking required plugins into the [appropriate directories](https://intellij-support.jetbrains.com/hc/en-us/articles/206544519-Directories-used-by-the-IDE-to-store-settings-caches-plugins-and-logs?page=3)
+- By unpacking required plugins into the [appropriate directories](https://intellij-support.jetbrains.com/hc/en-us/articles/206544519-Directories-used-by-the-IDE-to-store-settings-caches-plugins-and-logs?page=3)
 
-  * By running the following code (requires network connection to [JetBrains Marketplace](https://plugins.jetbrains.com/)): 
+- By running the following code (requires network connection to [JetBrains Marketplace](https://plugins.jetbrains.com/)):
 
-remote-dev-server installPlugins <PLUGIN_ID1> <PLUGIN_ID2> ... 
+remote-dev-server installPlugins <PLUGIN_ID1> <PLUGIN_ID2> ...
 
 Check the following example:
 
 remote-dev-server installPlugins IdeaVIM
-
-
-
 
 If a plugin provides a new set of inspections and features, all of those will be shown on JetBrains Client.
 
@@ -94,22 +85,19 @@ JetBrains Gateway can be extended like any other IntelliJ platform-based product
 
 You can use one of the following ways:
 
-  * Set up a new project with <https://github.com/JetBrains/gradle-intellij-plugin/> (`gradle-intellij-plugin` should be >= 1.1.4)
+- Set up a new project with <https://github.com/JetBrains/gradle-intellij-plugin/> (`gradle-intellij-plugin` should be >= 1.1.4)
 
-  * Use the following settings to build your plugin against JetBrains Gateway:
+- Use the following settings to build your plugin against JetBrains Gateway:
 
-intellij { version.set("213.2667-CUSTOM-SNAPSHOT") type.set("GW") instrumentCode.set(false) } 
+intellij { version.set("213.2667-CUSTOM-SNAPSHOT") type.set("GW") instrumentCode.set(false) }
 
 You may see available versions at <https://www.jetbrains.com/intellij-repository/snapshots> (see group com.jetbrains.gateway)
-
-
-
 
 ### Orchestration
 
 Apart from the basic SSH and Code With Me connections, a vendor can customize JetBrains Gateway for its own orchestration service. This can be done within the custom deal between the JetBrains and the vendor.
 
-JetBrains Gateway is based on the IntelliJ platform, it has APIs for connections and interactions with JetBrains Client. 
+JetBrains Gateway is based on the IntelliJ platform, it has APIs for connections and interactions with JetBrains Client.
 
 Check the following example:
 

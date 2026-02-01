@@ -1,7 +1,7 @@
 # Ruff Configuration
 
 > Source: https://docs.astral.sh/ruff/configuration/
-> Fetched: 2026-01-31T16:07:32.413746+00:00
+> Fetched: 2026-02-01T11:54:58.394687+00:00
 > Content-Hash: 20ab5a2c1a4103e2
 > Type: html
 
@@ -18,8 +18,7 @@ For a complete enumeration of the available configuration options, see [_Setting
 If left unspecified, Ruff's default configuration is equivalent to:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff]
     # Exclude a variety of commonly ignored directories.
     exclude = [
@@ -183,8 +182,7 @@ pyproject.tomlruff.toml
 As an example, the following would configure Ruff to:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.lint]
     # 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
     select = ["E4", "E7", "E9", "F", "B"]
@@ -229,8 +227,7 @@ pyproject.tomlruff.toml
 Linter plugin configurations are expressed as subsections, e.g.:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.lint]
     # Add "Q" to the list of enabled codes.
     select = ["E4", "E7", "E9", "F", "Q"]
@@ -263,13 +260,10 @@ There are a few exceptions to these rules:
   3. If no config file is found in the filesystem hierarchy, Ruff will fall back to using a default configuration. If a user-specific configuration file exists at `${config_dir}/ruff/pyproject.toml`, that file will be used instead of the default configuration, with `${config_dir}` being determined via [`etcetera`'s base strategy](https://docs.rs/etcetera/latest/etcetera/#native-strategy), and all relative paths being again resolved relative to the _current working directory_.
   4. Any config-file-supported settings that are provided on the command-line (e.g., via `\--select`) will override the settings in _every_ resolved configuration file.
 
-
-
 Unlike [ESLint](https://eslint.org/docs/latest/use/configure/configuration-files#cascading-configuration-objects), Ruff does not merge settings across configuration files; instead, the "closest" configuration file is used, and any parent configuration files are ignored. In lieu of this implicit cascade, Ruff supports an [`extend`](../settings/#extend) field, which allows you to inherit the settings from another config file, like so:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff]
     # Extend the `pyproject.toml` file in the parent directory...
     extend = "../pyproject.toml"
@@ -297,8 +291,6 @@ When no discovered configuration specifies a [`target-version`](../settings/#tar
   3. If we are using a user-level configuration from `${config_dir}/ruff/pyproject.toml`, the `requires-python` field in the first `pyproject.toml` file found in an ancestor of the current working directory takes precedence over the `target-version` in the user-level configuration.
   4. If no configuration files are found, Ruff will infer the `target-version` from the `requires-python` field in the first `pyproject.toml` file found in an ancestor of the current working directory.
 
-
-
 Note that in these last two cases, the behavior of Ruff may differ depending on the working directory from which it is invoked.
 
 ## Python file discovery
@@ -308,8 +300,7 @@ When passed a path on the command-line, Ruff will automatically discover all Pyt
 Files can also be selectively excluded from linting or formatting by scoping the `exclude` setting to the tool-specific configuration tables. For example, the following would prevent `ruff` from formatting `.pyi` files, but would continue to include them in linting:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.format]
     exclude = ["*.pyi"]
     
@@ -330,8 +321,7 @@ By default, Ruff will discover files matching `*.py`, `*.pyi`, `*.ipynb`, or `py
 To lint or format files with additional file extensions, use the [`extend-include`](../settings/#extend-include) setting. You can also change the default selection using the [`include`](../settings/#include) setting.
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff]
     include = ["pyproject.toml", "src/**/*.py", "scripts/**/*.py"]
     
@@ -351,8 +341,7 @@ Ruff has built-in support for linting and formatting [Jupyter Notebooks](https:/
 If you'd prefer to either only lint or only format Jupyter Notebook files, you can use the section-specific `exclude` option to do so. For example, the following would only lint Jupyter Notebook files and not format them:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.format]
     exclude = ["*.ipynb"]
     
@@ -365,8 +354,7 @@ pyproject.tomlruff.toml
 And, conversely, the following would only format Jupyter Notebook files and not lint them:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.lint]
     exclude = ["*.ipynb"]
     
@@ -379,8 +367,7 @@ pyproject.tomlruff.toml
 You can completely disable Jupyter Notebook support by updating the [`extend-exclude`](../settings/#extend-exclude) setting:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff]
     extend-exclude = ["*.ipynb"]
     
@@ -392,8 +379,7 @@ pyproject.tomlruff.toml
 If you'd like to ignore certain rules specifically for Jupyter Notebook files, you can do so by using the [`per-file-ignores`](../settings/#per-file-ignores) setting:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.lint.per-file-ignores]
     "*.ipynb" = ["T20"]
     
@@ -408,9 +394,8 @@ Some rules have different behavior when applied to Jupyter Notebook files. For e
 ## Command-line interface
 
 Some configuration options can be provided or overridden via dedicated flags on the command line. This includes those related to rule enablement and disablement, file discovery, logging level, and more:
-    
-    
-    $ ruff check path/to/code/ --select F401 --select F403 --quiet
+
+    ruff check path/to/code/ --select F401 --select F403 --quiet
     
 
 All other configuration options can be set via the command line using the `\--config` flag, detailed below.
@@ -418,25 +403,22 @@ All other configuration options can be set via the command line using the `\--co
 ### The `\--config` CLI flag
 
 The `\--config` flag has two uses. It is most often used to point to the configuration file that you would like Ruff to use, for example:
-    
-    
-    $ ruff check path/to/directory --config path/to/ruff.toml
+
+    ruff check path/to/directory --config path/to/ruff.toml
     
 
 However, the `\--config` flag can also be used to provide arbitrary overrides of configuration settings using TOML `<KEY> = <VALUE>` pairs. This is mostly useful in situations where you wish to override a configuration setting that does not have a dedicated command-line flag.
 
 In the below example, the `\--config` flag is the only way of overriding the `dummy-variable-rgx` configuration setting from the command line, since this setting has no dedicated CLI flag. The `per-file-ignores` setting could also have been overridden via the `\--per-file-ignores` dedicated flag, but using `\--config` to override the setting is also fine:
-    
-    
-    $ ruff check path/to/file --config path/to/ruff.toml --config "lint.dummy-variable-rgx = '__.*'" --config "lint.per-file-ignores = {'some_file.py' = ['F841']}"
+
+    ruff check path/to/file --config path/to/ruff.toml --config "lint.dummy-variable-rgx = '__.*'" --config "lint.per-file-ignores = {'some_file.py' = ['F841']}"
     
 
 Configuration options passed to `\--config` are parsed in the same way as configuration options in a `ruff.toml` file. As such, options specific to the Ruff linter need to be prefixed with `lint.` (`\--config "lint.dummy-variable-rgx = '__.*'"` rather than simply `\--config "dummy-variable-rgx = '__.*'"`), and options specific to the Ruff formatter need to be prefixed with `format.`.
 
 If a specific configuration option is simultaneously overridden by a dedicated flag and by the `\--config` flag, the dedicated flag takes priority. In this example, the maximum permitted line length will be set to 90, not 100:
-    
-    
-    $ ruff format path/to/file --line-length=90 --config "line-length=100"
+
+    ruff format path/to/file --line-length=90 --config "line-length=100"
     
 
 Specifying `\--config "line-length=90"` will override the `line-length` setting from _all_ configuration files detected by Ruff, including configuration files discovered in subdirectories. In this respect, specifying `\--config "line-length=90"` has the same effect as specifying `\--line-length=90`, which will similarly override the `line-length` setting from all configuration files detected by Ruff, regardless of where a specific configuration file is located.
@@ -444,8 +426,7 @@ Specifying `\--config "line-length=90"` will override the `line-length` setting 
 ### Full command-line interface
 
 See `ruff help` for the full list of Ruff's top-level commands:
-    
-    
+
     Ruff: An extremely fast Python linter and code formatter.
     
     Usage: ruff [OPTIONS] <COMMAND>
@@ -487,8 +468,7 @@ See `ruff help` for the full list of Ruff's top-level commands:
     
 
 Or `ruff help check` for more on the linting command:
-    
-    
+
     Run Ruff on the given files or directories
     
     Usage: ruff check [OPTIONS] [FILES]...
@@ -618,8 +598,7 @@ Or `ruff help check` for more on the linting command:
     
 
 Or `ruff help format` for more on the formatting command:
-    
-    
+
     Run the Ruff formatter on the given files or directories
     
     Usage: ruff format [OPTIONS] [FILES]...
@@ -710,13 +689,12 @@ Ruff supports autocompletion for most shells. A shell-specific completion script
 The exact steps required to enable autocompletion will vary by shell. For example instructions, see the [Poetry](https://python-poetry.org/docs/#enable-tab-completion-for-bash-fish-or-zsh) or [ripgrep](https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#complete) documentation.
 
 As an example: to enable autocompletion for Zsh, run `ruff generate-shell-completion zsh > ~/.zfunc/_ruff`. Then add the following line to your `~/.zshrc` file, if they're not already present:
-    
-    
+
     fpath+=~/.zfunc
     autoload -Uz compinit && compinit
     
 
-Back to top 
+Back to top
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

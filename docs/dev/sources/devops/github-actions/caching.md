@@ -1,7 +1,7 @@
 # GitHub Actions Caching
 
 > Source: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
-> Fetched: 2026-01-31T16:05:03.372384+00:00
+> Fetched: 2026-02-01T11:52:30.445066+00:00
 > Content-Hash: c4057ed38ddd89b2
 > Type: html
 
@@ -23,20 +23,18 @@ The [`cache` action](https://github.com/actions/cache) will attempt the followin
   2. If no exact match is found, it will search for partial matches of the `key`.
   3. If there is still no match found, and you've provided `restore-keys`, these keys will be checked sequentially for partial matches. For more information, see Cache key matching.
 
-
-
 If there is an exact match to the provided `key`, this is considered a cache hit. If no cache exactly matches the provided `key`, this is considered a cache miss. On a cache miss, the action automatically creates a new cache if the job completes successfully. The new cache will use the `key` you provided and contains the files you specify in `path`. For more information about how this is handled, see Cache hits and misses.
 
 You cannot change the contents of an existing cache. Instead, you can create a new cache with a new key.
 
 ### Input parameters for the `cache` action
 
-  * `key`: **Required** The key created when saving a cache and the key used to search for a cache. It can be any combination of variables, context values, static strings, and functions. Keys have a maximum length of 512 characters, and keys longer than the maximum length will cause the action to fail.
+- `key`: **Required** The key created when saving a cache and the key used to search for a cache. It can be any combination of variables, context values, static strings, and functions. Keys have a maximum length of 512 characters, and keys longer than the maximum length will cause the action to fail.
 
-  * `path`: **Required** The path(s) on the runner to cache or restore.
+- `path`: **Required** The path(s) on the runner to cache or restore.
 
-    * You can specify a single path, or you can add multiple paths on separate lines. For example:
-          
+  - You can specify a single path, or you can add multiple paths on separate lines. For example:
+
           - name: Cache Gradle packages
             uses: actions/cache@v4
             with:
@@ -45,22 +43,19 @@ You cannot change the contents of an existing cache. Instead, you can create a n
                 ~/.gradle/wrapper
           
 
-    * You can specify either directories or single files, and glob patterns are supported.
+  - You can specify either directories or single files, and glob patterns are supported.
 
-    * You can specify absolute paths, or paths relative to the workspace directory.
+  - You can specify absolute paths, or paths relative to the workspace directory.
 
-  * `restore-keys`: **Optional** A string containing alternative restore keys, with each restore key placed on a new line. If no cache hit occurs for `key`, these restore keys are used sequentially in the order provided to find and restore a cache. For example:
-        
+- `restore-keys`: **Optional** A string containing alternative restore keys, with each restore key placed on a new line. If no cache hit occurs for `key`, these restore keys are used sequentially in the order provided to find and restore a cache. For example:
+
         restore-keys: |
           npm-feature-${{ hashFiles('package-lock.json') }}
           npm-feature-
           npm-
         
 
-  * `enableCrossOsArchive`: **Optional** A boolean value that when enabled, allows Windows runners to save or restore caches independent of the operating system the cache was created on. If this parameter is not set, it defaults to `false`. For more information, see [Cross OS cache](https://github.com/actions/cache/blob/main/tips-and-workarounds.md#cross-os-cache) in the Actions Cache documentation.
-
-
-
+- `enableCrossOsArchive`: **Optional** A boolean value that when enabled, allows Windows runners to save or restore caches independent of the operating system the cache was created on. If this parameter is not set, it defaults to `false`. For more information, see [Cross OS cache](https://github.com/actions/cache/blob/main/tips-and-workarounds.md#cross-os-cache) in the Actions Cache documentation.
 
 Note
 
@@ -68,9 +63,7 @@ We recommend that you don't store any sensitive information, such as access toke
 
 ### Output parameters for the `cache` action
 
-  * `cache-hit`: A boolean value to indicate an exact match was found for the key.
-
-
+- `cache-hit`: A boolean value to indicate an exact match was found for the key.
 
 ### Cache hits and misses
 
@@ -80,21 +73,18 @@ When `key` doesn't match an existing cache, it's called a _cache miss_ , and a n
 
 When a cache miss occurs, the action also searches your specified `restore-keys` for any matches:
 
-  1. If you provide `restore-keys`, the `cache` action sequentially searches for any caches that match the list of `restore-keys`. 
-     * When there is an exact match, the action restores the files in the cache to the `path` directory.
-     * If there are no exact matches, the action searches for partial matches of the restore keys. When the action finds a partial match, the most recent cache is restored to the `path` directory.
+  1. If you provide `restore-keys`, the `cache` action sequentially searches for any caches that match the list of `restore-keys`.
+     - When there is an exact match, the action restores the files in the cache to the `path` directory.
+     - If there are no exact matches, the action searches for partial matches of the restore keys. When the action finds a partial match, the most recent cache is restored to the `path` directory.
   2. The `cache` action completes and the next step in the job runs.
   3. If the job completes successfully, the action automatically creates a new cache with the contents of the `path` directory.
-
-
 
 For a more detailed explanation of the cache matching process, see Cache key matching.
 
 ### Example using the `cache` action
 
 This example creates a new cache when the packages in `package-lock.json` file change, or when the runner's operating system changes. The cache key uses contexts and expressions to generate a key that includes the runner's operating system and a SHA-256 hash of the `package-lock.json` file.
-    
-    
+
     name: Caching with npm
     on: push
     jobs:
@@ -139,14 +129,12 @@ A cache key can include any of the contexts, functions, literals, and operators 
 Using expressions to create a `key` allows you to automatically create a new cache when dependencies change.
 
 For example, you can create a `key` using an expression that calculates the hash of an npm `package-lock.json` file. So, when the dependencies that make up the `package-lock.json` file change, the cache key changes and a new cache is automatically created.
-    
-    
+
     npm-${{ hashFiles('package-lock.json') }}
     
 
 GitHub evaluates the expression `hash "package-lock.json"` to derive the final `key`.
-    
-    
+
     npm-d5ea0750
     
 
@@ -155,8 +143,7 @@ GitHub evaluates the expression `hash "package-lock.json"` to derive the final `
 You can use the output of the `cache` action to do something based on whether a cache hit or miss occurred. When an exact match is found for a cache for the specified `key`, the `cache-hit` output is set to `true`.
 
 In the example workflow above, there is a step that lists the state of the Node modules if a cache miss occurred:
-    
-    
+
     - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
       name: List the state of node modules
       continue-on-error: true
@@ -172,8 +159,7 @@ Cache version is a way to stamp a cache with metadata of the `path` and the comp
 `restore-keys` allows you to specify a list of alternate restore keys to use when there is a cache miss on `key`. You can create multiple restore keys ordered from the most specific to least specific. The `cache` action searches the `restore-keys` in sequential order. When a key doesn't match directly, the action searches for keys prefixed with the restore key. If there are multiple partial matches for a restore key, the action returns the most recently created cache.
 
 ### Example using multiple restore keys
-    
-    
+
     restore-keys: |
       npm-feature-${{ hashFiles('package-lock.json') }}
       npm-feature-
@@ -181,8 +167,7 @@ Cache version is a way to stamp a cache with metadata of the `path` and the comp
     
 
 The runner evaluates the expressions, which resolve to these `restore-keys`:
-    
-    
+
     restore-keys: |
       npm-feature-d5ea0750
       npm-feature-
@@ -195,11 +180,8 @@ The restore key `npm-feature-` matches any key that starts with the string `npm-
   2. **`npm-feature-`** matches cache keys prefixed with `npm-feature-`.
   3. **`npm-`** matches any keys prefixed with `npm-`.
 
-
-
 #### Example of search priority
-    
-    
+
     key:
       npm-feature-d5ea0750
     restore-keys: |
@@ -215,8 +197,6 @@ For example, if a pull request contains a `feature` branch and targets the defau
   4. Key `npm-feature-d5ea0750` in the `main` branch
   5. Key `npm-feature-` in the `main` branch
   6. Key `npm-` in the `main` branch
-
-
 
 ## `setup-*` actions for specific package managers
 
@@ -259,11 +239,9 @@ If you want to reduce the rate at which cache entries are evicted, you can incre
 
 For more information, see:
 
-  * [Managing GitHub Actions settings for a repository](/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-cache-settings-for-your-repository)
-  * [Disabling or limiting GitHub Actions for your organization](/en/organizations/managing-organization-settings/disabling-or-limiting-github-actions-for-your-organization#managing-github-actions-cache-storage-for-your-organization)
-  * [Enforcing policies for GitHub Actions in your enterprise](/en/enterprise-cloud@latest/admin/enforcing-policies/enforcing-policies-for-your-enterprise/enforcing-policies-for-github-actions-in-your-enterprise#artifact-and-log-retention)
-
-
+- [Managing GitHub Actions settings for a repository](/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-cache-settings-for-your-repository)
+- [Disabling or limiting GitHub Actions for your organization](/en/organizations/managing-organization-settings/disabling-or-limiting-github-actions-for-your-organization#managing-github-actions-cache-storage-for-your-organization)
+- [Enforcing policies for GitHub Actions in your enterprise](/en/enterprise-cloud@latest/admin/enforcing-policies/enforcing-policies-for-your-enterprise/enforcing-policies-for-github-actions-in-your-enterprise#artifact-and-log-retention)
 
 ## Next steps
 

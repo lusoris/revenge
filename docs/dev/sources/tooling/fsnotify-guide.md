@@ -179,7 +179,6 @@ distro's documentation):
     fs.inotify.max_user_watches=200000
     fs.inotify.max_user_instances=256
 
-
 ### kqueue (macOS, all BSD systems)
 kqueue requires opening a file descriptor for every file that's being watched;
 so if you're watching a directory with five files then that's six file

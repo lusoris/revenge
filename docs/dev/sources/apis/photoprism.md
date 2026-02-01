@@ -7,7 +7,7 @@
 
 ---
 
-[ ](https://github.com/photoprism/photoprism-docs/tree/develop/docs/developer-guide/api/index.md "Edit this page")
+[](https://github.com/photoprism/photoprism-docs/tree/develop/docs/developer-guide/api/index.md "Edit this page")
 
 # Web Service API¶
 
@@ -15,10 +15,8 @@
 
 For the currently implemented REST request endpoints available under `/api/v1`, please refer to the automatically generated [backend API documentation](https://github.com/photoprism/photoprism/issues/2132#issuecomment-2227337416) as well as the [request forms](https://pkg.go.dev/github.com/photoprism/photoprism/internal/form) and [entity models](https://pkg.go.dev/github.com/photoprism/photoprism/internal/entity) in our [public repository](https://github.com/photoprism/photoprism/tree/develop/internal):
 
-  * <https://pkg.go.dev/github.com/photoprism/photoprism/internal/api>
-  * <https://github.com/photoprism/photoprism/tree/develop/internal/api>
-
-
+- <https://pkg.go.dev/github.com/photoprism/photoprism/internal/api>
+- <https://github.com/photoprism/photoprism/tree/develop/internal/api>
 
 API request bodies and responses are usually JSON-encoded, except for [binary data](thumbnails/) and some of the [OAuth2 endpoints](oauth2/#server-endpoints). Note that the [`Content-Type`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type) header must be set to `application/json` for this, as the request may otherwise fail with [error 400](https://github.com/photoprism/photoprism/issues/4354).
 
@@ -27,14 +25,12 @@ API request bodies and responses are usually JSON-encoded, except for [binary da
 ## Client Authentication¶
 
 When clients have a valid [access token](auth/#access-tokens), e.g. obtained through the `POST /api/v1/session` or `POST /api/v1/oauth/token` endpoint, they can use a standard _Bearer Authorization_ header to authenticate their requests:
-    
-    
+
     Authorization: Bearer <token>
     
 
 Submitting the [access token](auth/#access-tokens) with a custom `X-Auth-Token` header is supported as well:
-    
-    
+
     curl -H "X-Auth-Token: 7dbfa37b5a3db2a9e9dd186479018bfe2e3ce5a71fc2f955" \
     http://localhost:2342/api/v1/photos?count=10
     
@@ -48,8 +44,7 @@ Besides using the API endpoints provided for this, you can also generate valid [
 ## Service Discovery Endpoints¶
 
 ### OAuth2 Authorization Server¶
-    
-    
+
     /.well-known/oauth-authorization-server
     
 
@@ -71,4 +66,4 @@ Our REST API endpoints are currently not covered by an official deprecation poli
 
 However, we avoid making breaking changes, especially to endpoints that we know other developers are using.
 
-Back to top 
+Back to top

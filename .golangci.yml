@@ -1,37 +1,23 @@
+version: "2"
+
 linters:
   enable:
-    - errcheck       # Check for unchecked errors
-    - gosimple       # Simplify code
-    - govet          # Report suspicious constructs
-    - ineffassign    # Detect ineffectual assignments
-    - staticcheck    # Static analysis
-    - unused         # Check for unused constants, variables, functions and types
-    - gofmt          # Check formatting
-    - goimports      # Check import ordering
-    - misspell       # Check for misspelled English words
-    - revive         # Replacement for golint
-    - typecheck      # Type-check code
-    - bodyclose      # Check HTTP response body is closed
-    - gosec          # Security problems
-    - gocritic       # Opinionated checks
-    - unconvert      # Remove unnecessary type conversions
-    - unparam        # Unused function parameters
-    - prealloc       # Find slice declarations that could be preallocated
-    - nolintlint     # Ill-formed or insufficient nolint directives
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
 
 linters-settings:
   errcheck:
     check-type-assertions: true
-    check-blank: false  # We intentionally use _ = ... for non-critical errors
+    check-blank: false
 
   govet:
     enable-all: true
     disable:
       - shadow
-      - fieldalignment   # Struct alignment is not worth the readability tradeoff
-
-  goimports:
-    local-prefixes: github.com/revenge/revenge
+      - fieldalignment
 
   revive:
     rules:
@@ -53,10 +39,10 @@ linters-settings:
 
   gosec:
     excludes:
-      - G104 # Audit errors not checked
-      - G115 # Integer overflow conversion - safe for API params (Limit, Offset, Year)
-      - G304 # File path provided as taint input
-      - G404 # Use of weak random number generator
+      - G104
+      - G115
+      - G304
+      - G404
 
   gocritic:
     enabled-tags:
@@ -66,21 +52,19 @@ linters-settings:
     disabled-checks:
       - whyNoLint
       - unnamedResult
-      - hugeParam        # Interface signatures can't always use pointers
-      - rangeValCopy     # Minor optimization, not worth interface changes
-      - paramTypeCombine # Stylistic preference - explicit params are clearer
-      - ifElseChain      # Stylistic preference - if-else can be clearer than switch
+      - hugeParam
+      - rangeValCopy
+      - paramTypeCombine
+      - ifElseChain
 
 issues:
   exclude-rules:
-    # Exclude some linters from running on tests files
     - path: _test\.go
       linters:
         - gosec
         - errcheck
         - gocritic
 
-    # Exclude known issues
     - text: "weak cryptographic primitive"
       linters:
         - gosec
@@ -92,9 +76,3 @@ run:
   timeout: 5m
   tests: true
   modules-download-mode: readonly
-
-output:
-  formats:
-    - format: colored-line-number
-  print-issued-lines: true
-  print-linter-name: true

@@ -71,13 +71,13 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 	// Get connection details
 	host, err := container.Host(ctx)
 	if err != nil {
-		container.Terminate(ctx)
+		_ = container.Terminate(ctx) // Best-effort cleanup
 		t.Fatalf("failed to get container host: %v", err)
 	}
 
 	port, err := container.MappedPort(ctx, "5432")
 	if err != nil {
-		container.Terminate(ctx)
+		_ = container.Terminate(ctx) // Best-effort cleanup
 		t.Fatalf("failed to get container port: %v", err)
 	}
 
@@ -87,7 +87,7 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 
 	// Run migrations
 	if err := runMigrations(dbURL); err != nil {
-		container.Terminate(ctx)
+		_ = container.Terminate(ctx) // Best-effort cleanup
 		t.Fatalf("failed to run migrations: %v", err)
 	}
 
@@ -118,7 +118,7 @@ func NewPostgreSQLContainer(t *testing.T) *PostgreSQLContainer {
 	// Create database pool (NewPool creates its own context internally)
 	pool, err := database.NewPool(cfg, logger)
 	if err != nil {
-		container.Terminate(ctx)
+		_ = container.Terminate(ctx) // Best-effort cleanup
 		t.Fatalf("failed to create database pool: %v", err)
 	}
 
@@ -137,7 +137,7 @@ func (c *PostgreSQLContainer) Close() {
 	}
 	if c.container != nil {
 		ctx := context.Background()
-		c.container.Terminate(ctx)
+		_ = c.container.Terminate(ctx) // Best-effort cleanup
 	}
 }
 
@@ -159,8 +159,7 @@ func (c *PostgreSQLContainer) Reset(t *testing.T) {
 
 // DragonflyContainer represents a Dragonfly (Redis-compatible) container for integration testing.
 type DragonflyContainer struct {
-	container testcontainers.Container
-	URL       string
+	URL string
 }
 
 // NewDragonflyContainer starts a Dragonfly container for integration testing.
@@ -173,9 +172,8 @@ func NewDragonflyContainer(t *testing.T) *DragonflyContainer {
 
 // TypesenseContainer represents a Typesense container for integration testing.
 type TypesenseContainer struct {
-	container testcontainers.Container
-	URL       string
-	APIKey    string
+	URL    string
+	APIKey string
 }
 
 // NewTypesenseContainer starts a Typesense container for integration testing.

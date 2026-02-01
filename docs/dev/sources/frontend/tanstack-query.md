@@ -151,77 +151,67 @@ K
 
 Menu
 
-  * [Home](/query/latest)
-  * [Frameworks](/query/latest/docs/framework)
-  * [Contributors](/query/latest/docs/contributors)
-  * [NPM Stats](/query/latest/docs/npm-stats)
-  * [Community Resources](/query/latest/docs/community-resources)
-  * [GitHub ](https://github.com/tanstack/query)
-  * [Discord ](https://tlinz.com/discord)
-
-
+- [Home](/query/latest)
+- [Frameworks](/query/latest/docs/framework)
+- [Contributors](/query/latest/docs/contributors)
+- [NPM Stats](/query/latest/docs/npm-stats)
+- [Community Resources](/query/latest/docs/community-resources)
+- [GitHub](https://github.com/tanstack/query)
+- [Discord](https://tlinz.com/discord)
 
 Getting Started
 
-  * [Overview](/query/latest/docs/framework/svelte/overview)
-  * [Installation](/query/latest/docs/framework/svelte/installation)
-  * [Devtools](/query/latest/docs/framework/svelte/devtools)
-  * [SSR & SvelteKit](/query/latest/docs/framework/svelte/ssr)
-  * [Migrate from v5 to v6](/query/latest/docs/framework/svelte/migrate-from-v5-to-v6)
-
-
+- [Overview](/query/latest/docs/framework/svelte/overview)
+- [Installation](/query/latest/docs/framework/svelte/installation)
+- [Devtools](/query/latest/docs/framework/svelte/devtools)
+- [SSR & SvelteKit](/query/latest/docs/framework/svelte/ssr)
+- [Migrate from v5 to v6](/query/latest/docs/framework/svelte/migrate-from-v5-to-v6)
 
 API Reference
 
-  * [QueryClient](/query/latest/docs/reference/QueryClient)
-  * [QueryCache](/query/latest/docs/reference/QueryCache)
-  * [MutationCache](/query/latest/docs/reference/MutationCache)
-  * [QueryObserver](/query/latest/docs/reference/QueryObserver)
-  * [InfiniteQueryObserver](/query/latest/docs/reference/InfiniteQueryObserver)
-  * [QueriesObserver](/query/latest/docs/reference/QueriesObserver)
-  * [streamedQuery](/query/latest/docs/reference/streamedQuery)
-  * [focusManager](/query/latest/docs/reference/focusManager)
-  * [onlineManager](/query/latest/docs/reference/onlineManager)
-  * [notifyManager](/query/latest/docs/reference/notifyManager)
-  * [timeoutManager](/query/latest/docs/reference/timeoutManager)
-  * [Svelte Reference](/query/latest/docs/framework/svelte/reference/index)
-  * [Functions / createQuery](/query/latest/docs/framework/svelte/reference/functions/createQuery)
-  * [Functions / createQueries](/query/latest/docs/framework/svelte/reference/functions/createQueries)
-  * [Functions / createInfiniteQuery](/query/latest/docs/framework/svelte/reference/functions/createInfiniteQuery)
-  * [Functions / createMutation](/query/latest/docs/framework/svelte/reference/functions/createMutation)
-  * [Functions / useIsFetching](/query/latest/docs/framework/svelte/reference/functions/useIsFetching)
-  * [Functions / useIsMutating](/query/latest/docs/framework/svelte/reference/functions/useIsMutating)
-  * [Functions / useMutationState](/query/latest/docs/framework/svelte/reference/functions/useMutationState)
-  * [Functions / queryOptions](/query/latest/docs/framework/svelte/reference/functions/queryOptions)
-  * [Functions / infiniteQueryOptions](/query/latest/docs/framework/svelte/reference/functions/infiniteQueryOptions)
-
-
+- [QueryClient](/query/latest/docs/reference/QueryClient)
+- [QueryCache](/query/latest/docs/reference/QueryCache)
+- [MutationCache](/query/latest/docs/reference/MutationCache)
+- [QueryObserver](/query/latest/docs/reference/QueryObserver)
+- [InfiniteQueryObserver](/query/latest/docs/reference/InfiniteQueryObserver)
+- [QueriesObserver](/query/latest/docs/reference/QueriesObserver)
+- [streamedQuery](/query/latest/docs/reference/streamedQuery)
+- [focusManager](/query/latest/docs/reference/focusManager)
+- [onlineManager](/query/latest/docs/reference/onlineManager)
+- [notifyManager](/query/latest/docs/reference/notifyManager)
+- [timeoutManager](/query/latest/docs/reference/timeoutManager)
+- [Svelte Reference](/query/latest/docs/framework/svelte/reference/index)
+- [Functions / createQuery](/query/latest/docs/framework/svelte/reference/functions/createQuery)
+- [Functions / createQueries](/query/latest/docs/framework/svelte/reference/functions/createQueries)
+- [Functions / createInfiniteQuery](/query/latest/docs/framework/svelte/reference/functions/createInfiniteQuery)
+- [Functions / createMutation](/query/latest/docs/framework/svelte/reference/functions/createMutation)
+- [Functions / useIsFetching](/query/latest/docs/framework/svelte/reference/functions/useIsFetching)
+- [Functions / useIsMutating](/query/latest/docs/framework/svelte/reference/functions/useIsMutating)
+- [Functions / useMutationState](/query/latest/docs/framework/svelte/reference/functions/useMutationState)
+- [Functions / queryOptions](/query/latest/docs/framework/svelte/reference/functions/queryOptions)
+- [Functions / infiniteQueryOptions](/query/latest/docs/framework/svelte/reference/functions/infiniteQueryOptions)
 
 ESLint
 
-  * [ESLint Plugin Query](/query/latest/docs/eslint/eslint-plugin-query)
-  * [Exhaustive Deps](/query/latest/docs/eslint/exhaustive-deps)
-  * [Stable Query Client](/query/latest/docs/eslint/stable-query-client)
-  * [No Rest Destructuring](/query/latest/docs/eslint/no-rest-destructuring)
-  * [No Unstable Deps](/query/latest/docs/eslint/no-unstable-deps)
-  * [Infinite Query Property Order](/query/latest/docs/eslint/infinite-query-property-order)
-  * [No void Query Functions](/query/latest/docs/eslint/no-void-query-fn)
-  * [Mutation Property Order](/query/latest/docs/eslint/mutation-property-order)
-
-
+- [ESLint Plugin Query](/query/latest/docs/eslint/eslint-plugin-query)
+- [Exhaustive Deps](/query/latest/docs/eslint/exhaustive-deps)
+- [Stable Query Client](/query/latest/docs/eslint/stable-query-client)
+- [No Rest Destructuring](/query/latest/docs/eslint/no-rest-destructuring)
+- [No Unstable Deps](/query/latest/docs/eslint/no-unstable-deps)
+- [Infinite Query Property Order](/query/latest/docs/eslint/infinite-query-property-order)
+- [No void Query Functions](/query/latest/docs/eslint/no-void-query-fn)
+- [Mutation Property Order](/query/latest/docs/eslint/mutation-property-order)
 
 Examples
 
-  * [Simple](/query/latest/docs/framework/svelte/examples/simple)
-  * [Basic](/query/latest/docs/framework/svelte/examples/basic)
-  * [Auto Refetching / Polling / Realtime](/query/latest/docs/framework/svelte/examples/auto-refetching)
-  * [SSR](/query/latest/docs/framework/svelte/examples/ssr)
-  * [Optimistic Updates](/query/latest/docs/framework/svelte/examples/optimistic-updates)
-  * [Playground](/query/latest/docs/framework/svelte/examples/playground)
-  * [Star Wars](/query/latest/docs/framework/svelte/examples/star-wars)
-  * [Infinite Queries](/query/latest/docs/framework/svelte/examples/load-more-infinite-scroll)
-
-
+- [Simple](/query/latest/docs/framework/svelte/examples/simple)
+- [Basic](/query/latest/docs/framework/svelte/examples/basic)
+- [Auto Refetching / Polling / Realtime](/query/latest/docs/framework/svelte/examples/auto-refetching)
+- [SSR](/query/latest/docs/framework/svelte/examples/ssr)
+- [Optimistic Updates](/query/latest/docs/framework/svelte/examples/optimistic-updates)
+- [Playground](/query/latest/docs/framework/svelte/examples/playground)
+- [Star Wars](/query/latest/docs/framework/svelte/examples/star-wars)
+- [Infinite Queries](/query/latest/docs/framework/svelte/examples/load-more-infinite-scroll)
 
 latest
 
@@ -231,77 +221,67 @@ Latest
 
 Menu
 
-  * [Home](/query/latest)
-  * [Frameworks](/query/latest/docs/framework)
-  * [Contributors](/query/latest/docs/contributors)
-  * [NPM Stats](/query/latest/docs/npm-stats)
-  * [Community Resources](/query/latest/docs/community-resources)
-  * [GitHub ](https://github.com/tanstack/query)
-  * [Discord ](https://tlinz.com/discord)
-
-
+- [Home](/query/latest)
+- [Frameworks](/query/latest/docs/framework)
+- [Contributors](/query/latest/docs/contributors)
+- [NPM Stats](/query/latest/docs/npm-stats)
+- [Community Resources](/query/latest/docs/community-resources)
+- [GitHub](https://github.com/tanstack/query)
+- [Discord](https://tlinz.com/discord)
 
 Getting Started
 
-  * [Overview](/query/latest/docs/framework/svelte/overview)
-  * [Installation](/query/latest/docs/framework/svelte/installation)
-  * [Devtools](/query/latest/docs/framework/svelte/devtools)
-  * [SSR & SvelteKit](/query/latest/docs/framework/svelte/ssr)
-  * [Migrate from v5 to v6](/query/latest/docs/framework/svelte/migrate-from-v5-to-v6)
-
-
+- [Overview](/query/latest/docs/framework/svelte/overview)
+- [Installation](/query/latest/docs/framework/svelte/installation)
+- [Devtools](/query/latest/docs/framework/svelte/devtools)
+- [SSR & SvelteKit](/query/latest/docs/framework/svelte/ssr)
+- [Migrate from v5 to v6](/query/latest/docs/framework/svelte/migrate-from-v5-to-v6)
 
 API Reference
 
-  * [QueryClient](/query/latest/docs/reference/QueryClient)
-  * [QueryCache](/query/latest/docs/reference/QueryCache)
-  * [MutationCache](/query/latest/docs/reference/MutationCache)
-  * [QueryObserver](/query/latest/docs/reference/QueryObserver)
-  * [InfiniteQueryObserver](/query/latest/docs/reference/InfiniteQueryObserver)
-  * [QueriesObserver](/query/latest/docs/reference/QueriesObserver)
-  * [streamedQuery](/query/latest/docs/reference/streamedQuery)
-  * [focusManager](/query/latest/docs/reference/focusManager)
-  * [onlineManager](/query/latest/docs/reference/onlineManager)
-  * [notifyManager](/query/latest/docs/reference/notifyManager)
-  * [timeoutManager](/query/latest/docs/reference/timeoutManager)
-  * [Svelte Reference](/query/latest/docs/framework/svelte/reference/index)
-  * [Functions / createQuery](/query/latest/docs/framework/svelte/reference/functions/createQuery)
-  * [Functions / createQueries](/query/latest/docs/framework/svelte/reference/functions/createQueries)
-  * [Functions / createInfiniteQuery](/query/latest/docs/framework/svelte/reference/functions/createInfiniteQuery)
-  * [Functions / createMutation](/query/latest/docs/framework/svelte/reference/functions/createMutation)
-  * [Functions / useIsFetching](/query/latest/docs/framework/svelte/reference/functions/useIsFetching)
-  * [Functions / useIsMutating](/query/latest/docs/framework/svelte/reference/functions/useIsMutating)
-  * [Functions / useMutationState](/query/latest/docs/framework/svelte/reference/functions/useMutationState)
-  * [Functions / queryOptions](/query/latest/docs/framework/svelte/reference/functions/queryOptions)
-  * [Functions / infiniteQueryOptions](/query/latest/docs/framework/svelte/reference/functions/infiniteQueryOptions)
-
-
+- [QueryClient](/query/latest/docs/reference/QueryClient)
+- [QueryCache](/query/latest/docs/reference/QueryCache)
+- [MutationCache](/query/latest/docs/reference/MutationCache)
+- [QueryObserver](/query/latest/docs/reference/QueryObserver)
+- [InfiniteQueryObserver](/query/latest/docs/reference/InfiniteQueryObserver)
+- [QueriesObserver](/query/latest/docs/reference/QueriesObserver)
+- [streamedQuery](/query/latest/docs/reference/streamedQuery)
+- [focusManager](/query/latest/docs/reference/focusManager)
+- [onlineManager](/query/latest/docs/reference/onlineManager)
+- [notifyManager](/query/latest/docs/reference/notifyManager)
+- [timeoutManager](/query/latest/docs/reference/timeoutManager)
+- [Svelte Reference](/query/latest/docs/framework/svelte/reference/index)
+- [Functions / createQuery](/query/latest/docs/framework/svelte/reference/functions/createQuery)
+- [Functions / createQueries](/query/latest/docs/framework/svelte/reference/functions/createQueries)
+- [Functions / createInfiniteQuery](/query/latest/docs/framework/svelte/reference/functions/createInfiniteQuery)
+- [Functions / createMutation](/query/latest/docs/framework/svelte/reference/functions/createMutation)
+- [Functions / useIsFetching](/query/latest/docs/framework/svelte/reference/functions/useIsFetching)
+- [Functions / useIsMutating](/query/latest/docs/framework/svelte/reference/functions/useIsMutating)
+- [Functions / useMutationState](/query/latest/docs/framework/svelte/reference/functions/useMutationState)
+- [Functions / queryOptions](/query/latest/docs/framework/svelte/reference/functions/queryOptions)
+- [Functions / infiniteQueryOptions](/query/latest/docs/framework/svelte/reference/functions/infiniteQueryOptions)
 
 ESLint
 
-  * [ESLint Plugin Query](/query/latest/docs/eslint/eslint-plugin-query)
-  * [Exhaustive Deps](/query/latest/docs/eslint/exhaustive-deps)
-  * [Stable Query Client](/query/latest/docs/eslint/stable-query-client)
-  * [No Rest Destructuring](/query/latest/docs/eslint/no-rest-destructuring)
-  * [No Unstable Deps](/query/latest/docs/eslint/no-unstable-deps)
-  * [Infinite Query Property Order](/query/latest/docs/eslint/infinite-query-property-order)
-  * [No void Query Functions](/query/latest/docs/eslint/no-void-query-fn)
-  * [Mutation Property Order](/query/latest/docs/eslint/mutation-property-order)
-
-
+- [ESLint Plugin Query](/query/latest/docs/eslint/eslint-plugin-query)
+- [Exhaustive Deps](/query/latest/docs/eslint/exhaustive-deps)
+- [Stable Query Client](/query/latest/docs/eslint/stable-query-client)
+- [No Rest Destructuring](/query/latest/docs/eslint/no-rest-destructuring)
+- [No Unstable Deps](/query/latest/docs/eslint/no-unstable-deps)
+- [Infinite Query Property Order](/query/latest/docs/eslint/infinite-query-property-order)
+- [No void Query Functions](/query/latest/docs/eslint/no-void-query-fn)
+- [Mutation Property Order](/query/latest/docs/eslint/mutation-property-order)
 
 Examples
 
-  * [Simple](/query/latest/docs/framework/svelte/examples/simple)
-  * [Basic](/query/latest/docs/framework/svelte/examples/basic)
-  * [Auto Refetching / Polling / Realtime](/query/latest/docs/framework/svelte/examples/auto-refetching)
-  * [SSR](/query/latest/docs/framework/svelte/examples/ssr)
-  * [Optimistic Updates](/query/latest/docs/framework/svelte/examples/optimistic-updates)
-  * [Playground](/query/latest/docs/framework/svelte/examples/playground)
-  * [Star Wars](/query/latest/docs/framework/svelte/examples/star-wars)
-  * [Infinite Queries](/query/latest/docs/framework/svelte/examples/load-more-infinite-scroll)
-
-
+- [Simple](/query/latest/docs/framework/svelte/examples/simple)
+- [Basic](/query/latest/docs/framework/svelte/examples/basic)
+- [Auto Refetching / Polling / Realtime](/query/latest/docs/framework/svelte/examples/auto-refetching)
+- [SSR](/query/latest/docs/framework/svelte/examples/ssr)
+- [Optimistic Updates](/query/latest/docs/framework/svelte/examples/optimistic-updates)
+- [Playground](/query/latest/docs/framework/svelte/examples/playground)
+- [Star Wars](/query/latest/docs/framework/svelte/examples/star-wars)
+- [Infinite Queries](/query/latest/docs/framework/svelte/examples/load-more-infinite-scroll)
 
 [AI/LLM: This documentation page is available in plain markdown format at/query/latest/docs/framework/svelte/overview.md](/query/latest/docs/framework/svelte/overview.md)
 
@@ -322,8 +302,7 @@ Example
 Include the QueryClientProvider near the root of your project:
 
 svelte
-    
-    
+
     <script lang="ts">
       import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
       import Example from './lib/Example.svelte'
@@ -339,8 +318,7 @@ svelte
 Then call any function (e.g. createQuery) from any component:
 
 svelte
-    
-    
+
     <script lang="ts">
       import { createQuery } from '@tanstack/svelte-query'
     
@@ -371,26 +349,24 @@ Available Functions
 
 Svelte Query offers useful functions and components that will make managing server state in Svelte apps easier.
 
-  * createQuery
-  * createQueries
-  * createInfiniteQuery
-  * createMutation
-  * useQueryClient
-  * useIsFetching
-  * useIsMutating
-  * useMutationState
-  * useIsRestoring
-  * useHydrate
-  * <QueryClientProvider>
-  * <HydrationBoundary>
+- createQuery
+- createQueries
+- createInfiniteQuery
+- createMutation
+- useQueryClient
+- useIsFetching
+- useIsMutating
+- useMutationState
+- useIsRestoring
+- useHydrate
+- <QueryClientProvider>
+- <HydrationBoundary>
 
 Important Differences between Svelte Query & React Query
 
 Svelte Query offers an API similar to React Query, but there are some key differences to be mindful of.
 
-  * The arguments to the create* functions must be wrapped in a function to preserve reactivity.
-
-
+- The arguments to the create* functions must be wrapped in a function to preserve reactivity.
 
 [Edit on GitHub](https://github.com/tanstack/query/edit/main/docs/framework/svelte/overview.md)
 
@@ -411,8 +387,6 @@ Svelte Query offers an API similar to React Query, but there are some key differ
 > “If you’re serious about *really* understanding React Query, there’s no better way than with query.gg”—Tanner Linsley
 
 Learn More](https://query.gg?s=tanstack)
-
-
 
   *[↑]: Back to Top
   *[v]: View this template

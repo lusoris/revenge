@@ -10,7 +10,7 @@ Overview
 Package redis implements a Redis client.
 Example (CustomCommand)
 ¶
-Get := func(ctx context.Context, rdb *redis.Client, key string) *redis.StringCmd {
+Get := func(ctx context.Context, rdb *redis.Client, key string)*redis.StringCmd {
 cmd := redis.NewStringCmd(ctx, "get", key)
 rdb.Process(ctx, cmd)
 return cmd
@@ -70,2065 +70,2065 @@ func Version() string
 type ACLCatArgs
 type ACLCmdable
 type ACLLogCmd
-func NewACLLogCmd(ctx context.Context, args ...interface{}) *ACLLogCmd
+func NewACLLogCmd(ctx context.Context, args ...interface{})*ACLLogCmd
 func (cmd *ACLLogCmd) Args() []interface{}
-func (cmd *ACLLogCmd) Err() error
+func (cmd*ACLLogCmd) Err() error
 func (cmd *ACLLogCmd) FullName() string
-func (cmd *ACLLogCmd) Name() string
+func (cmd*ACLLogCmd) Name() string
 func (cmd *ACLLogCmd) Result() ([]*ACLLogEntry, error)
 func (cmd *ACLLogCmd) SetErr(e error)
-func (cmd *ACLLogCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*ACLLogCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *ACLLogCmd) SetVal(val []*ACLLogEntry)
 func (cmd *ACLLogCmd) String() string
-func (cmd *ACLLogCmd) Val() []*ACLLogEntry
+func (cmd*ACLLogCmd) Val() []*ACLLogEntry
 type ACLLogEntry
 type AggregateBuilder
-func (b *AggregateBuilder) AddScores() *AggregateBuilder
-func (b *AggregateBuilder) Apply(field string, alias ...string) *AggregateBuilder
-func (b *AggregateBuilder) Dialect(version int) *AggregateBuilder
-func (b *AggregateBuilder) Filter(expr string) *AggregateBuilder
-func (b *AggregateBuilder) GroupBy(fields ...interface{}) *AggregateBuilder
-func (b *AggregateBuilder) Load(field string, alias ...string) *AggregateBuilder
-func (b *AggregateBuilder) LoadAll() *AggregateBuilder
-func (b *AggregateBuilder) Params(p map[string]interface{}) *AggregateBuilder
-func (b *AggregateBuilder) Reduce(fn SearchAggregator, args ...interface{}) *AggregateBuilder
-func (b *AggregateBuilder) ReduceAs(fn SearchAggregator, alias string, args ...interface{}) *AggregateBuilder
-func (b *AggregateBuilder) Run() (*FTAggregateResult, error)
-func (b *AggregateBuilder) Scorer(s string) *AggregateBuilder
-func (b *AggregateBuilder) SortBy(field string, asc bool) *AggregateBuilder
-func (b *AggregateBuilder) SortByMax(max int) *AggregateBuilder
-func (b *AggregateBuilder) Timeout(ms int) *AggregateBuilder
-func (b *AggregateBuilder) Verbatim() *AggregateBuilder
-func (b *AggregateBuilder) WithCursor(count, maxIdle int) *AggregateBuilder
+func (b*AggregateBuilder) AddScores() *AggregateBuilder
+func (b*AggregateBuilder) Apply(field string, alias ...string) *AggregateBuilder
+func (b*AggregateBuilder) Dialect(version int) *AggregateBuilder
+func (b*AggregateBuilder) Filter(expr string) *AggregateBuilder
+func (b*AggregateBuilder) GroupBy(fields ...interface{}) *AggregateBuilder
+func (b*AggregateBuilder) Load(field string, alias ...string) *AggregateBuilder
+func (b*AggregateBuilder) LoadAll() *AggregateBuilder
+func (b*AggregateBuilder) Params(p map[string]interface{}) *AggregateBuilder
+func (b*AggregateBuilder) Reduce(fn SearchAggregator, args ...interface{}) *AggregateBuilder
+func (b*AggregateBuilder) ReduceAs(fn SearchAggregator, alias string, args ...interface{}) *AggregateBuilder
+func (b*AggregateBuilder) Run() (*FTAggregateResult, error)
+func (b*AggregateBuilder) Scorer(s string) *AggregateBuilder
+func (b*AggregateBuilder) SortBy(field string, asc bool) *AggregateBuilder
+func (b*AggregateBuilder) SortByMax(max int) *AggregateBuilder
+func (b*AggregateBuilder) Timeout(ms int) *AggregateBuilder
+func (b*AggregateBuilder) Verbatim() *AggregateBuilder
+func (b*AggregateBuilder) WithCursor(count, maxIdle int) *AggregateBuilder
 type AggregateCmd
-func NewAggregateCmd(ctx context.Context, args ...interface{}) *AggregateCmd
+func NewAggregateCmd(ctx context.Context, args ...interface{})*AggregateCmd
 func (cmd *AggregateCmd) Args() []interface{}
-func (cmd *AggregateCmd) Err() error
+func (cmd*AggregateCmd) Err() error
 func (cmd *AggregateCmd) FullName() string
-func (cmd *AggregateCmd) Name() string
+func (cmd*AggregateCmd) Name() string
 func (cmd *AggregateCmd) RawResult() (interface{}, error)
-func (cmd *AggregateCmd) RawVal() interface{}
+func (cmd*AggregateCmd) RawVal() interface{}
 func (cmd *AggregateCmd) Result() (*FTAggregateResult, error)
 func (cmd *AggregateCmd) SetErr(e error)
-func (cmd *AggregateCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *AggregateCmd) SetVal(val *FTAggregateResult)
+func (cmd*AggregateCmd) SetFirstKeyPos(keyPos int8)
+func (cmd *AggregateCmd) SetVal(val*FTAggregateResult)
 func (cmd *AggregateCmd) String() string
-func (cmd *AggregateCmd) Val() *FTAggregateResult
+func (cmd*AggregateCmd) Val() *FTAggregateResult
 type AggregateQuery
-func FTAggregateQuery(query string, options *FTAggregateOptions) (AggregateQuery, error)
+func FTAggregateQuery(query string, options*FTAggregateOptions) (AggregateQuery, error)
 type AggregateRow
 type Aggregator
 func (a Aggregator) String() string
 type AliasBuilder
-func (b *AliasBuilder) Action(action string) *AliasBuilder
-func (b *AliasBuilder) Add(index string) *AliasBuilder
-func (b *AliasBuilder) Del() *AliasBuilder
+func (b *AliasBuilder) Action(action string)*AliasBuilder
+func (b *AliasBuilder) Add(index string)*AliasBuilder
+func (b *AliasBuilder) Del()*AliasBuilder
 func (b *AliasBuilder) Run() (string, error)
-func (b *AliasBuilder) Update(index string) *AliasBuilder
+func (b*AliasBuilder) Update(index string) *AliasBuilder
 type BFInfo
 type BFInfoCmd
-func NewBFInfoCmd(ctx context.Context, args ...interface{}) *BFInfoCmd
+func NewBFInfoCmd(ctx context.Context, args ...interface{})*BFInfoCmd
 func (cmd *BFInfoCmd) Args() []interface{}
-func (cmd *BFInfoCmd) Err() error
+func (cmd*BFInfoCmd) Err() error
 func (cmd *BFInfoCmd) FullName() string
-func (cmd *BFInfoCmd) Name() string
+func (cmd*BFInfoCmd) Name() string
 func (cmd *BFInfoCmd) Result() (BFInfo, error)
-func (cmd *BFInfoCmd) SetErr(e error)
+func (cmd*BFInfoCmd) SetErr(e error)
 func (cmd *BFInfoCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *BFInfoCmd) SetVal(val BFInfo)
+func (cmd*BFInfoCmd) SetVal(val BFInfo)
 func (cmd *BFInfoCmd) String() string
-func (cmd *BFInfoCmd) Val() BFInfo
+func (cmd*BFInfoCmd) Val() BFInfo
 type BFInsertOptions
 type BFReserveOptions
 type BitCount
 type BitMapCmdable
 type BoolCmd
 func NewBoolCmd(ctx context.Context, args ...interface{}) *BoolCmd
-func NewBoolResult(val bool, err error) *BoolCmd
+func NewBoolResult(val bool, err error)*BoolCmd
 func (cmd *BoolCmd) Args() []interface{}
-func (cmd *BoolCmd) Err() error
+func (cmd*BoolCmd) Err() error
 func (cmd *BoolCmd) FullName() string
-func (cmd *BoolCmd) Name() string
+func (cmd*BoolCmd) Name() string
 func (cmd *BoolCmd) Result() (bool, error)
-func (cmd *BoolCmd) SetErr(e error)
+func (cmd*BoolCmd) SetErr(e error)
 func (cmd *BoolCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *BoolCmd) SetVal(val bool)
+func (cmd*BoolCmd) SetVal(val bool)
 func (cmd *BoolCmd) String() string
-func (cmd *BoolCmd) Val() bool
+func (cmd*BoolCmd) Val() bool
 type BoolSliceCmd
 func NewBoolSliceCmd(ctx context.Context, args ...interface{}) *BoolSliceCmd
-func NewBoolSliceResult(val []bool, err error) *BoolSliceCmd
+func NewBoolSliceResult(val []bool, err error)*BoolSliceCmd
 func (cmd *BoolSliceCmd) Args() []interface{}
-func (cmd *BoolSliceCmd) Err() error
+func (cmd*BoolSliceCmd) Err() error
 func (cmd *BoolSliceCmd) FullName() string
-func (cmd *BoolSliceCmd) Name() string
+func (cmd*BoolSliceCmd) Name() string
 func (cmd *BoolSliceCmd) Result() ([]bool, error)
-func (cmd *BoolSliceCmd) SetErr(e error)
+func (cmd*BoolSliceCmd) SetErr(e error)
 func (cmd *BoolSliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *BoolSliceCmd) SetVal(val []bool)
+func (cmd*BoolSliceCmd) SetVal(val []bool)
 func (cmd *BoolSliceCmd) String() string
-func (cmd *BoolSliceCmd) Val() []bool
+func (cmd*BoolSliceCmd) Val() []bool
 type CFInfo
 type CFInfoCmd
 func NewCFInfoCmd(ctx context.Context, args ...interface{}) *CFInfoCmd
-func (cmd *CFInfoCmd) Args() []interface{}
+func (cmd*CFInfoCmd) Args() []interface{}
 func (cmd *CFInfoCmd) Err() error
-func (cmd *CFInfoCmd) FullName() string
+func (cmd*CFInfoCmd) FullName() string
 func (cmd *CFInfoCmd) Name() string
-func (cmd *CFInfoCmd) Result() (CFInfo, error)
+func (cmd*CFInfoCmd) Result() (CFInfo, error)
 func (cmd *CFInfoCmd) SetErr(e error)
-func (cmd *CFInfoCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*CFInfoCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *CFInfoCmd) SetVal(val CFInfo)
-func (cmd *CFInfoCmd) String() string
+func (cmd*CFInfoCmd) String() string
 func (cmd *CFInfoCmd) Val() CFInfo
 type CFInsertOptions
 type CFReserveOptions
 type CMSInfo
 type CMSInfoCmd
-func NewCMSInfoCmd(ctx context.Context, args ...interface{}) *CMSInfoCmd
+func NewCMSInfoCmd(ctx context.Context, args ...interface{})*CMSInfoCmd
 func (cmd *CMSInfoCmd) Args() []interface{}
-func (cmd *CMSInfoCmd) Err() error
+func (cmd*CMSInfoCmd) Err() error
 func (cmd *CMSInfoCmd) FullName() string
-func (cmd *CMSInfoCmd) Name() string
+func (cmd*CMSInfoCmd) Name() string
 func (cmd *CMSInfoCmd) Result() (CMSInfo, error)
-func (cmd *CMSInfoCmd) SetErr(e error)
+func (cmd*CMSInfoCmd) SetErr(e error)
 func (cmd *CMSInfoCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *CMSInfoCmd) SetVal(val CMSInfo)
+func (cmd*CMSInfoCmd) SetVal(val CMSInfo)
 func (cmd *CMSInfoCmd) String() string
-func (cmd *CMSInfoCmd) Val() CMSInfo
+func (cmd*CMSInfoCmd) Val() CMSInfo
 type ChannelOption
 func WithChannelHealthCheckInterval(d time.Duration) ChannelOption
 func WithChannelSendTimeout(d time.Duration) ChannelOption
 func WithChannelSize(size int) ChannelOption
 type Client
-func NewClient(opt *Options) *Client
-func NewFailoverClient(failoverOpt *FailoverOptions) *Client
+func NewClient(opt *Options)*Client
+func NewFailoverClient(failoverOpt *FailoverOptions)*Client
 func (c Client) ACLCat(ctx context.Context) *StringSliceCmd
-func (c Client) ACLCatArgs(ctx context.Context, options *ACLCatArgs) *StringSliceCmd
-func (c Client) ACLDelUser(ctx context.Context, username string) *IntCmd
+func (c Client) ACLCatArgs(ctx context.Context, options*ACLCatArgs) *StringSliceCmd
+func (c Client) ACLDelUser(ctx context.Context, username string)*IntCmd
 func (c Client) ACLDryRun(ctx context.Context, username string, command ...interface{}) *StringCmd
-func (c Client) ACLGenPass(ctx context.Context, bit int) *StringCmd
+func (c Client) ACLGenPass(ctx context.Context, bit int)*StringCmd
 func (c Client) ACLList(ctx context.Context) *StringSliceCmd
-func (c Client) ACLLog(ctx context.Context, count int64) *ACLLogCmd
+func (c Client) ACLLog(ctx context.Context, count int64)*ACLLogCmd
 func (c Client) ACLLogReset(ctx context.Context) *StatusCmd
-func (c Client) ACLSetUser(ctx context.Context, username string, rules ...string) *StatusCmd
+func (c Client) ACLSetUser(ctx context.Context, username string, rules ...string)*StatusCmd
 func (c Client) ACLUsers(ctx context.Context) *StringSliceCmd
-func (c Client) ACLWhoAmI(ctx context.Context) *StringCmd
+func (c Client) ACLWhoAmI(ctx context.Context)*StringCmd
 func (c Client) Append(ctx context.Context, key, value string) *IntCmd
-func (c Client) BFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Client) BFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Client) BFCard(ctx context.Context, key string) *IntCmd
-func (c Client) BFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Client) BFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Client) BFInfo(ctx context.Context, key string) *BFInfoCmd
-func (c Client) BFInfoArg(ctx context.Context, key, option string) *BFInfoCmd
+func (c Client) BFInfoArg(ctx context.Context, key, option string)*BFInfoCmd
 func (c Client) BFInfoCapacity(ctx context.Context, key string) *BFInfoCmd
-func (c Client) BFInfoExpansion(ctx context.Context, key string) *BFInfoCmd
+func (c Client) BFInfoExpansion(ctx context.Context, key string)*BFInfoCmd
 func (c Client) BFInfoFilters(ctx context.Context, key string) *BFInfoCmd
-func (c Client) BFInfoItems(ctx context.Context, key string) *BFInfoCmd
+func (c Client) BFInfoItems(ctx context.Context, key string)*BFInfoCmd
 func (c Client) BFInfoSize(ctx context.Context, key string) *BFInfoCmd
-func (c Client) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...) *BoolSliceCmd
-func (c Client) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c Client) BFInsert(ctx context.Context, key string, options*BFInsertOptions, ...) *BoolSliceCmd
+func (c Client) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c Client) BFMAdd(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Client) BFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Client) BFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Client) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Client) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64) *StatusCmd
+func (c Client) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64)*StatusCmd
 func (c Client) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Client) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions) *StatusCmd
-func (c Client) BFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c Client) BFReserveWithArgs(ctx context.Context, key string, options*BFReserveOptions) *StatusCmd
+func (c Client) BFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c Client) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...) *KeyValuesCmd
-func (c Client) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...) *StringCmd
+func (c Client) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...)*StringCmd
 func (c Client) BLPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
-func (c Client) BRPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
+func (c Client) BRPop(ctx context.Context, timeout time.Duration, keys ...string)*StringSliceCmd
 func (c Client) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration) *StringCmd
-func (c Client) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...) *ZSliceWithKeyCmd
+func (c Client) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...)*ZSliceWithKeyCmd
 func (c Client) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
-func (c Client) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
+func (c Client) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string)*ZWithKeyCmd
 func (c Client) BgRewriteAOF(ctx context.Context) *StatusCmd
-func (c Client) BgSave(ctx context.Context) *StatusCmd
-func (c Client) BitCount(ctx context.Context, key string, bitCount *BitCount) *IntCmd
+func (c Client) BgSave(ctx context.Context)*StatusCmd
+func (c Client) BitCount(ctx context.Context, key string, bitCount *BitCount)*IntCmd
 func (c Client) BitField(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
-func (c Client) BitFieldRO(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
+func (c Client) BitFieldRO(ctx context.Context, key string, values ...interface{})*IntSliceCmd
 func (c Client) BitOpAnd(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Client) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Client) BitOpAndOr(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Client) BitOpDiff(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Client) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Client) BitOpDiff1(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Client) BitOpNot(ctx context.Context, destKey string, key string) *IntCmd
-func (c Client) BitOpOne(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Client) BitOpOne(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Client) BitOpOr(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Client) BitOpXor(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Client) BitOpXor(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Client) BitPos(ctx context.Context, key string, bit int64, pos ...int64) *IntCmd
-func (c Client) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string) *IntCmd
+func (c Client) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string)*IntCmd
 func (c Client) CFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Client) CFAddNX(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Client) CFAddNX(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Client) CFCount(ctx context.Context, key string, element interface{}) *IntCmd
-func (c Client) CFDel(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Client) CFDel(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Client) CFExists(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Client) CFInfo(ctx context.Context, key string) *CFInfoCmd
-func (c Client) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...) *BoolSliceCmd
-func (c Client) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...) *IntSliceCmd
+func (c Client) CFInfo(ctx context.Context, key string)*CFInfoCmd
+func (c Client) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...)*BoolSliceCmd
+func (c Client) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...)*IntSliceCmd
 func (c Client) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
-func (c Client) CFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Client) CFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Client) CFReserve(ctx context.Context, key string, capacity int64) *StatusCmd
-func (c Client) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64) *StatusCmd
+func (c Client) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64)*StatusCmd
 func (c Client) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64) *StatusCmd
-func (c Client) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64) *StatusCmd
-func (c Client) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions) *StatusCmd
+func (c Client) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64)*StatusCmd
+func (c Client) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions)*StatusCmd
 func (c Client) CFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
-func (c Client) CMSIncrBy(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Client) CMSIncrBy(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Client) CMSInfo(ctx context.Context, key string) *CMSInfoCmd
-func (c Client) CMSInitByDim(ctx context.Context, key string, width, depth int64) *StatusCmd
+func (c Client) CMSInitByDim(ctx context.Context, key string, width, depth int64)*StatusCmd
 func (c Client) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64) *StatusCmd
-func (c Client) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string) *StatusCmd
+func (c Client) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string)*StatusCmd
 func (c Client) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64) *StatusCmd
-func (c Client) CMSQuery(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Client) CMSQuery(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Client) ClientGetName(ctx context.Context) *StringCmd
-func (c Client) ClientID(ctx context.Context) *IntCmd
+func (c Client) ClientID(ctx context.Context)*IntCmd
 func (c Client) ClientInfo(ctx context.Context) *ClientInfoCmd
-func (c Client) ClientKill(ctx context.Context, ipPort string) *StatusCmd
+func (c Client) ClientKill(ctx context.Context, ipPort string)*StatusCmd
 func (c Client) ClientKillByFilter(ctx context.Context, keys ...string) *IntCmd
-func (c Client) ClientList(ctx context.Context) *StringCmd
+func (c Client) ClientList(ctx context.Context)*StringCmd
 func (c Client) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *StatusCmd
-func (c Client) ClientPause(ctx context.Context, dur time.Duration) *BoolCmd
+func (c Client) ClientPause(ctx context.Context, dur time.Duration)*BoolCmd
 func (c Client) ClientUnblock(ctx context.Context, id int64) *IntCmd
-func (c Client) ClientUnblockWithError(ctx context.Context, id int64) *IntCmd
+func (c Client) ClientUnblockWithError(ctx context.Context, id int64)*IntCmd
 func (c Client) ClientUnpause(ctx context.Context) *BoolCmd
 func (c Client) Close() error
-func (c Client) ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
+func (c Client) ClusterAddSlots(ctx context.Context, slots ...int)*StatusCmd
 func (c Client) ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
-func (c Client) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd
+func (c Client) ClusterCountFailureReports(ctx context.Context, nodeID string)*IntCmd
 func (c Client) ClusterCountKeysInSlot(ctx context.Context, slot int) *IntCmd
-func (c Client) ClusterDelSlots(ctx context.Context, slots ...int) *StatusCmd
+func (c Client) ClusterDelSlots(ctx context.Context, slots ...int)*StatusCmd
 func (c Client) ClusterDelSlotsRange(ctx context.Context, min, max int) *StatusCmd
-func (c Client) ClusterFailover(ctx context.Context) *StatusCmd
+func (c Client) ClusterFailover(ctx context.Context)*StatusCmd
 func (c Client) ClusterForget(ctx context.Context, nodeID string) *StatusCmd
-func (c Client) ClusterGetKeysInSlot(ctx context.Context, slot int, count int) *StringSliceCmd
+func (c Client) ClusterGetKeysInSlot(ctx context.Context, slot int, count int)*StringSliceCmd
 func (c Client) ClusterInfo(ctx context.Context) *StringCmd
-func (c Client) ClusterKeySlot(ctx context.Context, key string) *IntCmd
+func (c Client) ClusterKeySlot(ctx context.Context, key string)*IntCmd
 func (c Client) ClusterLinks(ctx context.Context) *ClusterLinksCmd
-func (c Client) ClusterMeet(ctx context.Context, host, port string) *StatusCmd
+func (c Client) ClusterMeet(ctx context.Context, host, port string)*StatusCmd
 func (c Client) ClusterMyID(ctx context.Context) *StringCmd
-func (c Client) ClusterMyShardID(ctx context.Context) *StringCmd
+func (c Client) ClusterMyShardID(ctx context.Context)*StringCmd
 func (c Client) ClusterNodes(ctx context.Context) *StringCmd
-func (c Client) ClusterReplicate(ctx context.Context, nodeID string) *StatusCmd
+func (c Client) ClusterReplicate(ctx context.Context, nodeID string)*StatusCmd
 func (c Client) ClusterResetHard(ctx context.Context) *StatusCmd
-func (c Client) ClusterResetSoft(ctx context.Context) *StatusCmd
+func (c Client) ClusterResetSoft(ctx context.Context)*StatusCmd
 func (c Client) ClusterSaveConfig(ctx context.Context) *StatusCmd
-func (c Client) ClusterShards(ctx context.Context) *ClusterShardsCmd
+func (c Client) ClusterShards(ctx context.Context)*ClusterShardsCmd
 func (c Client) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
-func (c Client) ClusterSlots(ctx context.Context) *ClusterSlotsCmd
+func (c Client) ClusterSlots(ctx context.Context)*ClusterSlotsCmd
 func (c Client) Command(ctx context.Context) *CommandsInfoCmd
-func (c Client) CommandGetKeys(ctx context.Context, commands ...interface{}) *StringSliceCmd
+func (c Client) CommandGetKeys(ctx context.Context, commands ...interface{})*StringSliceCmd
 func (c Client) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{}) *KeyFlagsCmd
-func (c Client) CommandList(ctx context.Context, filter *FilterBy) *StringSliceCmd
-func (c Client) ConfigGet(ctx context.Context, parameter string) *MapStringStringCmd
+func (c Client) CommandList(ctx context.Context, filter*FilterBy) *StringSliceCmd
+func (c Client) ConfigGet(ctx context.Context, parameter string)*MapStringStringCmd
 func (c Client) ConfigResetStat(ctx context.Context) *StatusCmd
-func (c Client) ConfigRewrite(ctx context.Context) *StatusCmd
+func (c Client) ConfigRewrite(ctx context.Context)*StatusCmd
 func (c Client) ConfigSet(ctx context.Context, parameter, value string) *StatusCmd
-func (c *Client) Conn() *Conn
-func (c Client) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd
+func (c*Client) Conn() *Conn
+func (c Client) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool)*IntCmd
 func (c Client) DBSize(ctx context.Context) *IntCmd
-func (c Client) DebugObject(ctx context.Context, key string) *StringCmd
+func (c Client) DebugObject(ctx context.Context, key string)*StringCmd
 func (c Client) Decr(ctx context.Context, key string) *IntCmd
-func (c Client) DecrBy(ctx context.Context, key string, decrement int64) *IntCmd
+func (c Client) DecrBy(ctx context.Context, key string, decrement int64)*IntCmd
 func (c Client) Del(ctx context.Context, keys ...string) *IntCmd
-func (c Client) DelExArgs(ctx context.Context, key string, a DelExArgs) *IntCmd
+func (c Client) DelExArgs(ctx context.Context, key string, a DelExArgs)*IntCmd
 func (c Client) Digest(ctx context.Context, key string) *DigestCmd
-func (c Client) Do(ctx context.Context, args ...interface{}) *Cmd
+func (c Client) Do(ctx context.Context, args ...interface{})*Cmd
 func (c Client) Dump(ctx context.Context, key string) *StringCmd
-func (c Client) Echo(ctx context.Context, message interface{}) *StringCmd
+func (c Client) Echo(ctx context.Context, message interface{})*StringCmd
 func (c Client) Eval(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
-func (c Client) EvalRO(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
+func (c Client) EvalRO(ctx context.Context, script string, keys []string, args ...interface{})*Cmd
 func (c Client) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
-func (c Client) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
+func (c Client) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{})*Cmd
 func (c Client) Exists(ctx context.Context, keys ...string) *IntCmd
-func (c Client) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Client) Expire(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Client) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
-func (c Client) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Client) ExpireGT(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Client) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Client) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Client) ExpireNX(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Client) ExpireTime(ctx context.Context, key string) *DurationCmd
-func (c Client) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Client) ExpireXX(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Client) FCall(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Client) FCallRO(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Client) FCallRO(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Client) FCallRo(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Client) FTAggregate(ctx context.Context, index string, query string) *MapStringInterfaceCmd
-func (c Client) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions) *AggregateCmd
+func (c Client) FTAggregate(ctx context.Context, index string, query string)*MapStringInterfaceCmd
+func (c Client) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions)*AggregateCmd
 func (c Client) FTAliasAdd(ctx context.Context, index string, alias string) *StatusCmd
-func (c Client) FTAliasDel(ctx context.Context, alias string) *StatusCmd
+func (c Client) FTAliasDel(ctx context.Context, alias string)*StatusCmd
 func (c Client) FTAliasUpdate(ctx context.Context, index string, alias string) *StatusCmd
-func (c Client) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...) *StatusCmd
+func (c Client) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...)*StatusCmd
 func (c Client) FTConfigGet(ctx context.Context, option string) *MapMapStringInterfaceCmd
 deprecated
-func (c Client) FTConfigSet(ctx context.Context, option string, value interface{}) *StatusCmd
+func (c Client) FTConfigSet(ctx context.Context, option string, value interface{})*StatusCmd
 deprecated
-func (c Client) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...) *StatusCmd
+func (c Client) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...)*StatusCmd
 func (c Client) FTCursorDel(ctx context.Context, index string, cursorId int) *StatusCmd
-func (c Client) FTCursorRead(ctx context.Context, index string, cursorId int, count int) *MapStringInterfaceCmd
+func (c Client) FTCursorRead(ctx context.Context, index string, cursorId int, count int)*MapStringInterfaceCmd
 func (c Client) FTDictAdd(ctx context.Context, dict string, term ...interface{}) *IntCmd
-func (c Client) FTDictDel(ctx context.Context, dict string, term ...interface{}) *IntCmd
+func (c Client) FTDictDel(ctx context.Context, dict string, term ...interface{})*IntCmd
 func (c Client) FTDictDump(ctx context.Context, dict string) *StringSliceCmd
-func (c Client) FTDropIndex(ctx context.Context, index string) *StatusCmd
-func (c Client) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions) *StatusCmd
+func (c Client) FTDropIndex(ctx context.Context, index string)*StatusCmd
+func (c Client) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions)*StatusCmd
 func (c Client) FTExplain(ctx context.Context, index string, query string) *StringCmd
 func (c Client) FTExplainCli(ctx context.Context, key, path string) error
-func (c Client) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions) *StringCmd
-func (c Client) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...) *FTHybridCmd
-func (c Client) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions) *FTHybridCmd
+func (c Client) FTExplainWithArgs(ctx context.Context, index string, query string, options*FTExplainOptions) *StringCmd
+func (c Client) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...)*FTHybridCmd
+func (c Client) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions)*FTHybridCmd
 func (c Client) FTInfo(ctx context.Context, index string) *FTInfoCmd
-func (c Client) FTSearch(ctx context.Context, index string, query string) *FTSearchCmd
-func (c Client) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions) *FTSearchCmd
+func (c Client) FTSearch(ctx context.Context, index string, query string)*FTSearchCmd
+func (c Client) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions)*FTSearchCmd
 func (c Client) FTSpellCheck(ctx context.Context, index string, query string) *FTSpellCheckCmd
-func (c Client) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions) *FTSpellCheckCmd
-func (c Client) FTSynDump(ctx context.Context, index string) *FTSynDumpCmd
+func (c Client) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options*FTSpellCheckOptions) *FTSpellCheckCmd
+func (c Client) FTSynDump(ctx context.Context, index string)*FTSynDumpCmd
 func (c Client) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{}) *StatusCmd
-func (c Client) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...) *StatusCmd
+func (c Client) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...)*StatusCmd
 func (c Client) FTTagVals(ctx context.Context, index string, field string) *StringSliceCmd
-func (c Client) FT_List(ctx context.Context) *StringSliceCmd
+func (c Client) FT_List(ctx context.Context)*StringSliceCmd
 func (c Client) FlushAll(ctx context.Context) *StatusCmd
-func (c Client) FlushAllAsync(ctx context.Context) *StatusCmd
+func (c Client) FlushAllAsync(ctx context.Context)*StatusCmd
 func (c Client) FlushDB(ctx context.Context) *StatusCmd
-func (c Client) FlushDBAsync(ctx context.Context) *StatusCmd
+func (c Client) FlushDBAsync(ctx context.Context)*StatusCmd
 func (c Client) FunctionDelete(ctx context.Context, libName string) *StringCmd
-func (c Client) FunctionDump(ctx context.Context) *StringCmd
+func (c Client) FunctionDump(ctx context.Context)*StringCmd
 func (c Client) FunctionFlush(ctx context.Context) *StringCmd
-func (c Client) FunctionFlushAsync(ctx context.Context) *StringCmd
+func (c Client) FunctionFlushAsync(ctx context.Context)*StringCmd
 func (c Client) FunctionKill(ctx context.Context) *StringCmd
-func (c Client) FunctionList(ctx context.Context, q FunctionListQuery) *FunctionListCmd
+func (c Client) FunctionList(ctx context.Context, q FunctionListQuery)*FunctionListCmd
 func (c Client) FunctionLoad(ctx context.Context, code string) *StringCmd
-func (c Client) FunctionLoadReplace(ctx context.Context, code string) *StringCmd
+func (c Client) FunctionLoadReplace(ctx context.Context, code string)*StringCmd
 func (c Client) FunctionRestore(ctx context.Context, libDump string) *StringCmd
-func (c Client) FunctionStats(ctx context.Context) *FunctionStatsCmd
-func (c Client) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation) *IntCmd
+func (c Client) FunctionStats(ctx context.Context)*FunctionStatsCmd
+func (c Client) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation)*IntCmd
 func (c Client) GeoDist(ctx context.Context, key string, member1, member2, unit string) *FloatCmd
-func (c Client) GeoHash(ctx context.Context, key string, members ...string) *StringSliceCmd
+func (c Client) GeoHash(ctx context.Context, key string, members ...string)*StringSliceCmd
 func (c Client) GeoPos(ctx context.Context, key string, members ...string) *GeoPosCmd
-func (c Client) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...) *GeoLocationCmd
-func (c Client) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery) *GeoLocationCmd
-func (c Client) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery) *IntCmd
+func (c Client) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...)*GeoLocationCmd
+func (c Client) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery)*GeoLocationCmd
+func (c Client) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery)*IntCmd
 func (c Client) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...) *IntCmd
-func (c Client) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery) *StringSliceCmd
-func (c Client) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery) *GeoSearchLocationCmd
-func (c Client) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery) *IntCmd
-func (c Client) Get(ctx context.Context, key string) *StringCmd
+func (c Client) GeoSearch(ctx context.Context, key string, q*GeoSearchQuery) *StringSliceCmd
+func (c Client) GeoSearchLocation(ctx context.Context, key string, q*GeoSearchLocationQuery) *GeoSearchLocationCmd
+func (c Client) GeoSearchStore(ctx context.Context, key, store string, q*GeoSearchStoreQuery) *IntCmd
+func (c Client) Get(ctx context.Context, key string)*StringCmd
 func (c Client) GetBit(ctx context.Context, key string, offset int64) *IntCmd
-func (c Client) GetDel(ctx context.Context, key string) *StringCmd
+func (c Client) GetDel(ctx context.Context, key string)*StringCmd
 func (c Client) GetEx(ctx context.Context, key string, expiration time.Duration) *StringCmd
-func (c *Client) GetMaintNotificationsManager() *maintnotifications.Manager
-func (c *Client) GetPushNotificationHandler(pushNotificationName string) push.NotificationHandler
+func (c*Client) GetMaintNotificationsManager() *maintnotifications.Manager
+func (c*Client) GetPushNotificationHandler(pushNotificationName string) push.NotificationHandler
 func (c Client) GetRange(ctx context.Context, key string, start, end int64) *StringCmd
-func (c Client) GetSet(ctx context.Context, key string, value interface{}) *StringCmd
+func (c Client) GetSet(ctx context.Context, key string, value interface{})*StringCmd
 func (c Client) HDel(ctx context.Context, key string, fields ...string) *IntCmd
-func (c Client) HExists(ctx context.Context, key, field string) *BoolCmd
+func (c Client) HExists(ctx context.Context, key, field string)*BoolCmd
 func (c Client) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
-func (c Client) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
+func (c Client) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string)*IntSliceCmd
 func (c Client) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
-func (c Client) HExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Client) HExpireTime(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Client) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
-func (c Client) HGet(ctx context.Context, key, field string) *StringCmd
+func (c Client) HGet(ctx context.Context, key, field string)*StringCmd
 func (c Client) HGetAll(ctx context.Context, key string) *MapStringStringCmd
-func (c Client) HGetDel(ctx context.Context, key string, fields ...string) *StringSliceCmd
+func (c Client) HGetDel(ctx context.Context, key string, fields ...string)*StringSliceCmd
 func (c Client) HGetEX(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c Client) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string) *StringSliceCmd
-func (c Client) HIncrBy(ctx context.Context, key, field string, incr int64) *IntCmd
+func (c Client) HGetEXWithArgs(ctx context.Context, key string, options*HGetEXOptions, fields ...string) *StringSliceCmd
+func (c Client) HIncrBy(ctx context.Context, key, field string, incr int64)*IntCmd
 func (c Client) HIncrByFloat(ctx context.Context, key, field string, incr float64) *FloatCmd
-func (c Client) HKeys(ctx context.Context, key string) *StringSliceCmd
+func (c Client) HKeys(ctx context.Context, key string)*StringSliceCmd
 func (c Client) HLen(ctx context.Context, key string) *IntCmd
-func (c Client) HMGet(ctx context.Context, key string, fields ...string) *SliceCmd
+func (c Client) HMGet(ctx context.Context, key string, fields ...string)*SliceCmd
 func (c Client) HMSet(ctx context.Context, key string, values ...interface{}) *BoolCmd
-func (c Client) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
+func (c Client) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string)*IntSliceCmd
 func (c Client) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
-func (c Client) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
+func (c Client) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...)*IntSliceCmd
 func (c Client) HPExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Client) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
+func (c Client) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...)*IntSliceCmd
 func (c Client) HPTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Client) HPersist(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Client) HPersist(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Client) HRandField(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Client) HRandFieldWithValues(ctx context.Context, key string, count int) *KeyValueSliceCmd
+func (c Client) HRandFieldWithValues(ctx context.Context, key string, count int)*KeyValueSliceCmd
 func (c Client) HScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Client) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Client) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Client) HSet(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Client) HSetEX(ctx context.Context, key string, fieldsAndValues ...string) *IntCmd
-func (c Client) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...) *IntCmd
+func (c Client) HSetEX(ctx context.Context, key string, fieldsAndValues ...string)*IntCmd
+func (c Client) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...)*IntCmd
 func (c Client) HSetNX(ctx context.Context, key, field string, value interface{}) *BoolCmd
-func (c Client) HStrLen(ctx context.Context, key, field string) *IntCmd
+func (c Client) HStrLen(ctx context.Context, key, field string)*IntCmd
 func (c Client) HTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Client) HVals(ctx context.Context, key string) *StringSliceCmd
+func (c Client) HVals(ctx context.Context, key string)*StringSliceCmd
 func (c Client) Incr(ctx context.Context, key string) *IntCmd
-func (c Client) IncrBy(ctx context.Context, key string, value int64) *IntCmd
+func (c Client) IncrBy(ctx context.Context, key string, value int64)*IntCmd
 func (c Client) IncrByFloat(ctx context.Context, key string, value float64) *FloatCmd
-func (c Client) Info(ctx context.Context, sections ...string) *StringCmd
+func (c Client) Info(ctx context.Context, sections ...string)*StringCmd
 func (c Client) InfoMap(ctx context.Context, sections ...string) *InfoCmd
-func (c Client) JSONArrAppend(ctx context.Context, key, path string, values ...interface{}) *IntSliceCmd
+func (c Client) JSONArrAppend(ctx context.Context, key, path string, values ...interface{})*IntSliceCmd
 func (c Client) JSONArrIndex(ctx context.Context, key, path string, value ...interface{}) *IntSliceCmd
-func (c Client) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...) *IntSliceCmd
-func (c Client) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{}) *IntSliceCmd
+func (c Client) JSONArrIndexWithArgs(ctx context.Context, key, path string, options*JSONArrIndexArgs, ...) *IntSliceCmd
+func (c Client) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{})*IntSliceCmd
 func (c Client) JSONArrLen(ctx context.Context, key, path string) *IntSliceCmd
-func (c Client) JSONArrPop(ctx context.Context, key, path string, index int) *StringSliceCmd
+func (c Client) JSONArrPop(ctx context.Context, key, path string, index int)*StringSliceCmd
 func (c Client) JSONArrTrim(ctx context.Context, key, path string) *IntSliceCmd
-func (c Client) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs) *IntSliceCmd
-func (c Client) JSONClear(ctx context.Context, key, path string) *IntCmd
+func (c Client) JSONArrTrimWithArgs(ctx context.Context, key, path string, options*JSONArrTrimArgs) *IntSliceCmd
+func (c Client) JSONClear(ctx context.Context, key, path string)*IntCmd
 func (c Client) JSONDebugMemory(ctx context.Context, key, path string) *IntCmd
-func (c Client) JSONDel(ctx context.Context, key, path string) *IntCmd
+func (c Client) JSONDel(ctx context.Context, key, path string)*IntCmd
 func (c Client) JSONForget(ctx context.Context, key, path string) *IntCmd
-func (c Client) JSONGet(ctx context.Context, key string, paths ...string) *JSONCmd
-func (c Client) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string) *JSONCmd
+func (c Client) JSONGet(ctx context.Context, key string, paths ...string)*JSONCmd
+func (c Client) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string)*JSONCmd
 func (c Client) JSONMGet(ctx context.Context, path string, keys ...string) *JSONSliceCmd
-func (c Client) JSONMSet(ctx context.Context, params ...interface{}) *StatusCmd
+func (c Client) JSONMSet(ctx context.Context, params ...interface{})*StatusCmd
 func (c Client) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs) *StatusCmd
-func (c Client) JSONMerge(ctx context.Context, key, path string, value string) *StatusCmd
+func (c Client) JSONMerge(ctx context.Context, key, path string, value string)*StatusCmd
 func (c Client) JSONNumIncrBy(ctx context.Context, key, path string, value float64) *JSONCmd
-func (c Client) JSONObjKeys(ctx context.Context, key, path string) *SliceCmd
+func (c Client) JSONObjKeys(ctx context.Context, key, path string)*SliceCmd
 func (c Client) JSONObjLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Client) JSONSet(ctx context.Context, key, path string, value interface{}) *StatusCmd
+func (c Client) JSONSet(ctx context.Context, key, path string, value interface{})*StatusCmd
 func (c Client) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string) *StatusCmd
-func (c Client) JSONStrAppend(ctx context.Context, key, path, value string) *IntPointerSliceCmd
+func (c Client) JSONStrAppend(ctx context.Context, key, path, value string)*IntPointerSliceCmd
 func (c Client) JSONStrLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Client) JSONToggle(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Client) JSONToggle(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Client) JSONType(ctx context.Context, key, path string) *JSONSliceCmd
-func (c Client) Keys(ctx context.Context, pattern string) *StringSliceCmd
-func (c Client) LCS(ctx context.Context, q *LCSQuery) *LCSCmd
+func (c Client) Keys(ctx context.Context, pattern string)*StringSliceCmd
+func (c Client) LCS(ctx context.Context, q *LCSQuery)*LCSCmd
 func (c Client) LIndex(ctx context.Context, key string, index int64) *StringCmd
-func (c Client) LInsert(ctx context.Context, key, op string, pivot, value interface{}) *IntCmd
+func (c Client) LInsert(ctx context.Context, key, op string, pivot, value interface{})*IntCmd
 func (c Client) LInsertAfter(ctx context.Context, key string, pivot, value interface{}) *IntCmd
-func (c Client) LInsertBefore(ctx context.Context, key string, pivot, value interface{}) *IntCmd
+func (c Client) LInsertBefore(ctx context.Context, key string, pivot, value interface{})*IntCmd
 func (c Client) LLen(ctx context.Context, key string) *IntCmd
-func (c Client) LMPop(ctx context.Context, direction string, count int64, keys ...string) *KeyValuesCmd
+func (c Client) LMPop(ctx context.Context, direction string, count int64, keys ...string)*KeyValuesCmd
 func (c Client) LMove(ctx context.Context, source, destination, srcpos, destpos string) *StringCmd
-func (c Client) LPop(ctx context.Context, key string) *StringCmd
+func (c Client) LPop(ctx context.Context, key string)*StringCmd
 func (c Client) LPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Client) LPos(ctx context.Context, key string, value string, a LPosArgs) *IntCmd
+func (c Client) LPos(ctx context.Context, key string, value string, a LPosArgs)*IntCmd
 func (c Client) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs) *IntSliceCmd
-func (c Client) LPush(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Client) LPush(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Client) LPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Client) LRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c Client) LRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c Client) LRem(ctx context.Context, key string, count int64, value interface{}) *IntCmd
-func (c Client) LSet(ctx context.Context, key string, index int64, value interface{}) *StatusCmd
+func (c Client) LSet(ctx context.Context, key string, index int64, value interface{})*StatusCmd
 func (c Client) LTrim(ctx context.Context, key string, start, stop int64) *StatusCmd
-func (c Client) LastSave(ctx context.Context) *IntCmd
+func (c Client) LastSave(ctx context.Context)*IntCmd
 func (c Client) Latency(ctx context.Context) *LatencyCmd
-func (c Client) LatencyReset(ctx context.Context, events ...interface{}) *StatusCmd
+func (c Client) LatencyReset(ctx context.Context, events ...interface{})*StatusCmd
 func (c Client) MGet(ctx context.Context, keys ...string) *SliceCmd
-func (c Client) MSet(ctx context.Context, values ...interface{}) *StatusCmd
+func (c Client) MSet(ctx context.Context, values ...interface{})*StatusCmd
 func (c Client) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{}) *IntCmd
-func (c Client) MSetNX(ctx context.Context, values ...interface{}) *BoolCmd
+func (c Client) MSetNX(ctx context.Context, values ...interface{})*BoolCmd
 func (c Client) MemoryUsage(ctx context.Context, key string, samples ...int) *IntCmd
-func (c Client) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd
-func (c Client) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig) *StringCmd
+func (c Client) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration)*StatusCmd
+func (c Client) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig)*StringCmd
 func (c Client) Monitor(ctx context.Context, ch chan string) *MonitorCmd
-func (c Client) Move(ctx context.Context, key string, db int) *BoolCmd
-func (c *Client) NewAggregateBuilder(ctx context.Context, index, query string) *AggregateBuilder
-func (c *Client) NewAliasBuilder(ctx context.Context, alias string) *AliasBuilder
-func (c *Client) NewCreateIndexBuilder(ctx context.Context, index string) *CreateIndexBuilder
-func (c *Client) NewCursorBuilder(ctx context.Context, index string, cursorId int64) *CursorBuilder
-func (c *Client) NewDictBuilder(ctx context.Context, dict string) *DictBuilder
-func (c *Client) NewDropIndexBuilder(ctx context.Context, index string) *DropIndexBuilder
-func (c *Client) NewExplainBuilder(ctx context.Context, index, query string) *ExplainBuilder
-func (c *Client) NewSearchBuilder(ctx context.Context, index, query string) *SearchBuilder
-func (c *Client) NewSearchInfoBuilder(ctx context.Context, index string) *FTInfoBuilder
-func (c *Client) NewSpellCheckBuilder(ctx context.Context, index, query string) *SpellCheckBuilder
-func (c *Client) NewSynUpdateBuilder(ctx context.Context, index string, groupId interface{}) *SynUpdateBuilder
-func (c *Client) NewTagValsBuilder(ctx context.Context, index, field string) *TagValsBuilder
+func (c Client) Move(ctx context.Context, key string, db int)*BoolCmd
+func (c *Client) NewAggregateBuilder(ctx context.Context, index, query string)*AggregateBuilder
+func (c *Client) NewAliasBuilder(ctx context.Context, alias string)*AliasBuilder
+func (c *Client) NewCreateIndexBuilder(ctx context.Context, index string)*CreateIndexBuilder
+func (c *Client) NewCursorBuilder(ctx context.Context, index string, cursorId int64)*CursorBuilder
+func (c *Client) NewDictBuilder(ctx context.Context, dict string)*DictBuilder
+func (c *Client) NewDropIndexBuilder(ctx context.Context, index string)*DropIndexBuilder
+func (c *Client) NewExplainBuilder(ctx context.Context, index, query string)*ExplainBuilder
+func (c *Client) NewSearchBuilder(ctx context.Context, index, query string)*SearchBuilder
+func (c *Client) NewSearchInfoBuilder(ctx context.Context, index string)*FTInfoBuilder
+func (c *Client) NewSpellCheckBuilder(ctx context.Context, index, query string)*SpellCheckBuilder
+func (c *Client) NewSynUpdateBuilder(ctx context.Context, index string, groupId interface{})*SynUpdateBuilder
+func (c *Client) NewTagValsBuilder(ctx context.Context, index, field string)*TagValsBuilder
 func (c Client) ObjectEncoding(ctx context.Context, key string) *StringCmd
-func (c Client) ObjectFreq(ctx context.Context, key string) *IntCmd
+func (c Client) ObjectFreq(ctx context.Context, key string)*IntCmd
 func (c Client) ObjectIdleTime(ctx context.Context, key string) *DurationCmd
-func (c Client) ObjectRefCount(ctx context.Context, key string) *IntCmd
-func (c *Client) Options() *Options
+func (c Client) ObjectRefCount(ctx context.Context, key string)*IntCmd
+func (c *Client) Options()*Options
 func (c Client) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Client) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c Client) PExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c Client) PExpireTime(ctx context.Context, key string) *DurationCmd
-func (c Client) PFAdd(ctx context.Context, key string, els ...interface{}) *IntCmd
+func (c Client) PFAdd(ctx context.Context, key string, els ...interface{})*IntCmd
 func (c Client) PFCount(ctx context.Context, keys ...string) *IntCmd
-func (c Client) PFMerge(ctx context.Context, dest string, keys ...string) *StatusCmd
-func (c *Client) PSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c Client) PFMerge(ctx context.Context, dest string, keys ...string)*StatusCmd
+func (c *Client) PSubscribe(ctx context.Context, channels ...string)*PubSub
 func (c Client) PTTL(ctx context.Context, key string) *DurationCmd
-func (c Client) Persist(ctx context.Context, key string) *BoolCmd
+func (c Client) Persist(ctx context.Context, key string)*BoolCmd
 func (c Client) Ping(ctx context.Context) *StatusCmd
-func (c *Client) Pipeline() Pipeliner
+func (c*Client) Pipeline() Pipeliner
 func (c *Client) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c *Client) PoolStats() *PoolStats
-func (c *Client) Process(ctx context.Context, cmd Cmder) error
+func (c*Client) PoolStats() *PoolStats
+func (c*Client) Process(ctx context.Context, cmd Cmder) error
 func (c Client) PubSubChannels(ctx context.Context, pattern string) *StringSliceCmd
-func (c Client) PubSubNumPat(ctx context.Context) *IntCmd
+func (c Client) PubSubNumPat(ctx context.Context)*IntCmd
 func (c Client) PubSubNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c Client) PubSubShardChannels(ctx context.Context, pattern string) *StringSliceCmd
+func (c Client) PubSubShardChannels(ctx context.Context, pattern string)*StringSliceCmd
 func (c Client) PubSubShardNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c Client) Publish(ctx context.Context, channel string, message interface{}) *IntCmd
+func (c Client) Publish(ctx context.Context, channel string, message interface{})*IntCmd
 func (c Client) Quit(_ context.Context) *StatusCmd
-func (c Client) RPop(ctx context.Context, key string) *StringCmd
+func (c Client) RPop(ctx context.Context, key string)*StringCmd
 func (c Client) RPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Client) RPopLPush(ctx context.Context, source, destination string) *StringCmd
+func (c Client) RPopLPush(ctx context.Context, source, destination string)*StringCmd
 func (c Client) RPush(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Client) RPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Client) RPushX(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Client) RandomKey(ctx context.Context) *StringCmd
-func (c Client) ReadOnly(ctx context.Context) *StatusCmd
+func (c Client) ReadOnly(ctx context.Context)*StatusCmd
 func (c Client) ReadWrite(ctx context.Context) *StatusCmd
-func (c *Client) RegisterPushNotificationHandler(pushNotificationName string, handler push.NotificationHandler, protected bool) error
+func (c*Client) RegisterPushNotificationHandler(pushNotificationName string, handler push.NotificationHandler, protected bool) error
 func (c Client) Rename(ctx context.Context, key, newkey string) *StatusCmd
-func (c Client) RenameNX(ctx context.Context, key, newkey string) *BoolCmd
+func (c Client) RenameNX(ctx context.Context, key, newkey string)*BoolCmd
 func (c Client) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
-func (c Client) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
+func (c Client) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string)*StatusCmd
 func (c Client) SAdd(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Client) SCard(ctx context.Context, key string) *IntCmd
+func (c Client) SCard(ctx context.Context, key string)*IntCmd
 func (c Client) SDiff(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Client) SDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Client) SDiffStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Client) SInter(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Client) SInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
+func (c Client) SInterCard(ctx context.Context, limit int64, keys ...string)*IntCmd
 func (c Client) SInterStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Client) SIsMember(ctx context.Context, key string, member interface{}) *BoolCmd
+func (c Client) SIsMember(ctx context.Context, key string, member interface{})*BoolCmd
 func (c Client) SMIsMember(ctx context.Context, key string, members ...interface{}) *BoolSliceCmd
-func (c Client) SMembers(ctx context.Context, key string) *StringSliceCmd
+func (c Client) SMembers(ctx context.Context, key string)*StringSliceCmd
 func (c Client) SMembersMap(ctx context.Context, key string) *StringStructMapCmd
-func (c Client) SMove(ctx context.Context, source, destination string, member interface{}) *BoolCmd
+func (c Client) SMove(ctx context.Context, source, destination string, member interface{})*BoolCmd
 func (c Client) SPop(ctx context.Context, key string) *StringCmd
-func (c Client) SPopN(ctx context.Context, key string, count int64) *StringSliceCmd
+func (c Client) SPopN(ctx context.Context, key string, count int64)*StringSliceCmd
 func (c Client) SPublish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c Client) SRandMember(ctx context.Context, key string) *StringCmd
+func (c Client) SRandMember(ctx context.Context, key string)*StringCmd
 func (c Client) SRandMemberN(ctx context.Context, key string, count int64) *StringSliceCmd
-func (c Client) SRem(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Client) SRem(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Client) SScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c *Client) SSubscribe(ctx context.Context, channels ...string) *PubSub
-func (c Client) SUnion(ctx context.Context, keys ...string) *StringSliceCmd
+func (c*Client) SSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c Client) SUnion(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Client) SUnionStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Client) Save(ctx context.Context) *StatusCmd
+func (c Client) Save(ctx context.Context)*StatusCmd
 func (c Client) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd
-func (c Client) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd
+func (c Client) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string)*ScanCmd
 func (c Client) ScriptExists(ctx context.Context, hashes ...string) *BoolSliceCmd
-func (c Client) ScriptFlush(ctx context.Context) *StatusCmd
+func (c Client) ScriptFlush(ctx context.Context)*StatusCmd
 func (c Client) ScriptKill(ctx context.Context) *StatusCmd
-func (c Client) ScriptLoad(ctx context.Context, script string) *StringCmd
+func (c Client) ScriptLoad(ctx context.Context, script string)*StringCmd
 func (c Client) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c Client) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs) *StatusCmd
+func (c Client) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs)*StatusCmd
 func (c Client) SetBit(ctx context.Context, key string, offset int64, value int) *IntCmd
-func (c Client) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
+func (c Client) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration)*StatusCmd
 func (c Client) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Client) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Client) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Client) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Client) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Client) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Client) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Client) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Client) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Client) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Client) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Client) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Client) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Client) SetRange(ctx context.Context, key string, offset int64, value string) *IntCmd
+func (c Client) SetRange(ctx context.Context, key string, offset int64, value string)*IntCmd
 func (c Client) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Client) Shutdown(ctx context.Context) *StatusCmd
+func (c Client) Shutdown(ctx context.Context)*StatusCmd
 func (c Client) ShutdownNoSave(ctx context.Context) *StatusCmd
-func (c Client) ShutdownSave(ctx context.Context) *StatusCmd
+func (c Client) ShutdownSave(ctx context.Context)*StatusCmd
 func (c Client) SlaveOf(ctx context.Context, host, port string) *StatusCmd
-func (c Client) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd
+func (c Client) SlowLogGet(ctx context.Context, num int64)*SlowLogCmd
 func (c Client) SlowLogLen(ctx context.Context) *IntCmd
-func (c Client) SlowLogReset(ctx context.Context) *StatusCmd
-func (c Client) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Client) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd
-func (c Client) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Client) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd
+func (c Client) SlowLogReset(ctx context.Context)*StatusCmd
+func (c Client) Sort(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Client) SortInterfaces(ctx context.Context, key string, sort *Sort)*SliceCmd
+func (c Client) SortRO(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Client) SortStore(ctx context.Context, key, store string, sort *Sort)*IntCmd
 func (c Client) StrLen(ctx context.Context, key string) *IntCmd
 func (c Client) String() string
-func (c *Client) Subscribe(ctx context.Context, channels ...string) *PubSub
-func (c Client) Sync(_ context.Context)
-func (c Client) TDigestAdd(ctx context.Context, key string, elements ...float64) *StatusCmd
+func (c*Client) Subscribe(ctx context.Context, channels ...string) *PubSub
+func (c Client) Sync(_context.Context)
+func (c Client) TDigestAdd(ctx context.Context, key string, elements ...float64)*StatusCmd
 func (c Client) TDigestByRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
-func (c Client) TDigestByRevRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
+func (c Client) TDigestByRevRank(ctx context.Context, key string, rank ...uint64)*FloatSliceCmd
 func (c Client) TDigestCDF(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
-func (c Client) TDigestCreate(ctx context.Context, key string) *StatusCmd
+func (c Client) TDigestCreate(ctx context.Context, key string)*StatusCmd
 func (c Client) TDigestCreateWithCompression(ctx context.Context, key string, compression int64) *StatusCmd
-func (c Client) TDigestInfo(ctx context.Context, key string) *TDigestInfoCmd
+func (c Client) TDigestInfo(ctx context.Context, key string)*TDigestInfoCmd
 func (c Client) TDigestMax(ctx context.Context, key string) *FloatCmd
-func (c Client) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...) *StatusCmd
-func (c Client) TDigestMin(ctx context.Context, key string) *FloatCmd
+func (c Client) TDigestMerge(ctx context.Context, destKey string, options*TDigestMergeOptions, ...) *StatusCmd
+func (c Client) TDigestMin(ctx context.Context, key string)*FloatCmd
 func (c Client) TDigestQuantile(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
-func (c Client) TDigestRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
+func (c Client) TDigestRank(ctx context.Context, key string, values ...float64)*IntSliceCmd
 func (c Client) TDigestReset(ctx context.Context, key string) *StatusCmd
-func (c Client) TDigestRevRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
+func (c Client) TDigestRevRank(ctx context.Context, key string, values ...float64)*IntSliceCmd
 func (c Client) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64) *FloatCmd
-func (c Client) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd
+func (c Client) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64)*IntCmd
 func (c Client) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...) *IntCmd
-func (c Client) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd
-func (c Client) TSCreate(ctx context.Context, key string) *StatusCmd
+func (c Client) TSAlter(ctx context.Context, key string, options*TSAlterOptions) *StatusCmd
+func (c Client) TSCreate(ctx context.Context, key string)*StatusCmd
 func (c Client) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Client) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Client) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd
+func (c Client) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...)*StatusCmd
+func (c Client) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions)*StatusCmd
 func (c Client) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Client) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
-func (c Client) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd
+func (c Client) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options*TSIncrDecrOptions) *IntCmd
+func (c Client) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int)*IntCmd
 func (c Client) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd
-func (c Client) TSGet(ctx context.Context, key string) *TSTimestampValueCmd
-func (c Client) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd
+func (c Client) TSGet(ctx context.Context, key string)*TSTimestampValueCmd
+func (c Client) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions)*TSTimestampValueCmd
 func (c Client) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Client) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
-func (c Client) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Client) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd
+func (c Client) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options*TSIncrDecrOptions) *IntCmd
+func (c Client) TSInfo(ctx context.Context, key string)*MapStringInterfaceCmd
+func (c Client) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions)*MapStringInterfaceCmd
 func (c Client) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd
-func (c Client) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd
-func (c Client) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd
+func (c Client) TSMGet(ctx context.Context, filters []string)*MapStringSliceInterfaceCmd
+func (c Client) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions)*MapStringSliceInterfaceCmd
 func (c Client) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
-func (c Client) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
+func (c Client) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...)*MapStringSliceInterfaceCmd
 func (c Client) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
-func (c Client) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
+func (c Client) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...)*MapStringSliceInterfaceCmd
 func (c Client) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd
-func (c Client) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
+func (c Client) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int)*TSTimestampValueSliceCmd
 func (c Client) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
-func (c Client) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
+func (c Client) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int)*TSTimestampValueSliceCmd
 func (c Client) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
-func (c Client) TTL(ctx context.Context, key string) *DurationCmd
+func (c Client) TTL(ctx context.Context, key string)*DurationCmd
 func (c Client) Time(ctx context.Context) *TimeCmd
-func (c Client) TopKAdd(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
+func (c Client) TopKAdd(ctx context.Context, key string, elements ...interface{})*StringSliceCmd
 func (c Client) TopKCount(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Client) TopKIncrBy(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
+func (c Client) TopKIncrBy(ctx context.Context, key string, elements ...interface{})*StringSliceCmd
 func (c Client) TopKInfo(ctx context.Context, key string) *TopKInfoCmd
-func (c Client) TopKList(ctx context.Context, key string) *StringSliceCmd
+func (c Client) TopKList(ctx context.Context, key string)*StringSliceCmd
 func (c Client) TopKListWithCount(ctx context.Context, key string) *MapStringIntCmd
-func (c Client) TopKQuery(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Client) TopKQuery(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Client) TopKReserve(ctx context.Context, key string, k int64) *StatusCmd
-func (c Client) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64) *StatusCmd
+func (c Client) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64)*StatusCmd
 func (c Client) Touch(ctx context.Context, keys ...string) *IntCmd
-func (c *Client) TxPipeline() Pipeliner
+func (c*Client) TxPipeline() Pipeliner
 func (c *Client) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c Client) Type(ctx context.Context, key string) *StatusCmd
+func (c Client) Type(ctx context.Context, key string)*StatusCmd
 func (c Client) Unlink(ctx context.Context, keys ...string) *IntCmd
-func (c Client) VAdd(ctx context.Context, key, element string, val Vector) *BoolCmd
-func (c Client) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs) *BoolCmd
+func (c Client) VAdd(ctx context.Context, key, element string, val Vector)*BoolCmd
+func (c Client) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs)*BoolCmd
 func (c Client) VCard(ctx context.Context, key string) *IntCmd
-func (c Client) VClearAttributes(ctx context.Context, key, element string) *BoolCmd
+func (c Client) VClearAttributes(ctx context.Context, key, element string)*BoolCmd
 func (c Client) VDim(ctx context.Context, key string) *IntCmd
-func (c Client) VEmb(ctx context.Context, key, element string, raw bool) *SliceCmd
+func (c Client) VEmb(ctx context.Context, key, element string, raw bool)*SliceCmd
 func (c Client) VGetAttr(ctx context.Context, key, element string) *StringCmd
-func (c Client) VInfo(ctx context.Context, key string) *MapStringInterfaceCmd
+func (c Client) VInfo(ctx context.Context, key string)*MapStringInterfaceCmd
 func (c Client) VLinks(ctx context.Context, key, element string) *StringSliceCmd
-func (c Client) VLinksWithScores(ctx context.Context, key, element string) *VectorScoreSliceCmd
+func (c Client) VLinksWithScores(ctx context.Context, key, element string)*VectorScoreSliceCmd
 func (c Client) VRandMember(ctx context.Context, key string) *StringCmd
-func (c Client) VRandMemberCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Client) VRandMemberCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Client) VRange(ctx context.Context, key, start, end string, count int64) *StringSliceCmd
-func (c Client) VRem(ctx context.Context, key, element string) *BoolCmd
+func (c Client) VRem(ctx context.Context, key, element string)*BoolCmd
 func (c Client) VSetAttr(ctx context.Context, key, element string, attr interface{}) *BoolCmd
-func (c Client) VSim(ctx context.Context, key string, val Vector) *StringSliceCmd
-func (c Client) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *StringSliceCmd
-func (c Client) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *VectorScoreSliceCmd
+func (c Client) VSim(ctx context.Context, key string, val Vector)*StringSliceCmd
+func (c Client) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs)*StringSliceCmd
+func (c Client) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs)*VectorScoreSliceCmd
 func (c Client) VSimWithScores(ctx context.Context, key string, val Vector) *VectorScoreSliceCmd
-func (c Client) Wait(ctx context.Context, numSlaves int, timeout time.Duration) *IntCmd
+func (c Client) Wait(ctx context.Context, numSlaves int, timeout time.Duration)*IntCmd
 func (c Client) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration) *IntCmd
-func (c *Client) Watch(ctx context.Context, fn func(*Tx) error, keys ...string) error
-func (c *Client) WithTimeout(timeout time.Duration) *Client
-func (c Client) XAck(ctx context.Context, stream, group string, ids ...string) *IntCmd
+func (c*Client) Watch(ctx context.Context, fn func(*Tx) error, keys ...string) error
+func (c*Client) WithTimeout(timeout time.Duration) *Client
+func (c Client) XAck(ctx context.Context, stream, group string, ids ...string)*IntCmd
 func (c Client) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *SliceCmd
-func (c Client) XAdd(ctx context.Context, a *XAddArgs) *StringCmd
-func (c Client) XAutoClaim(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimCmd
-func (c Client) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimJustIDCmd
-func (c Client) XClaim(ctx context.Context, a *XClaimArgs) *XMessageSliceCmd
-func (c Client) XClaimJustID(ctx context.Context, a *XClaimArgs) *StringSliceCmd
-func (c Client) XDel(ctx context.Context, stream string, ids ...string) *IntCmd
+func (c Client) XAdd(ctx context.Context, a*XAddArgs) *StringCmd
+func (c Client) XAutoClaim(ctx context.Context, a*XAutoClaimArgs) *XAutoClaimCmd
+func (c Client) XAutoClaimJustID(ctx context.Context, a*XAutoClaimArgs) *XAutoClaimJustIDCmd
+func (c Client) XClaim(ctx context.Context, a*XClaimArgs) *XMessageSliceCmd
+func (c Client) XClaimJustID(ctx context.Context, a*XClaimArgs) *StringSliceCmd
+func (c Client) XDel(ctx context.Context, stream string, ids ...string)*IntCmd
 func (c Client) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *SliceCmd
-func (c Client) XGroupCreate(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Client) XGroupCreate(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Client) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
-func (c Client) XGroupCreateMkStream(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Client) XGroupCreateMkStream(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Client) XGroupDelConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
-func (c Client) XGroupDestroy(ctx context.Context, stream, group string) *IntCmd
+func (c Client) XGroupDestroy(ctx context.Context, stream, group string)*IntCmd
 func (c Client) XGroupSetID(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Client) XInfoConsumers(ctx context.Context, key string, group string) *XInfoConsumersCmd
+func (c Client) XInfoConsumers(ctx context.Context, key string, group string)*XInfoConsumersCmd
 func (c Client) XInfoGroups(ctx context.Context, key string) *XInfoGroupsCmd
-func (c Client) XInfoStream(ctx context.Context, key string) *XInfoStreamCmd
+func (c Client) XInfoStream(ctx context.Context, key string)*XInfoStreamCmd
 func (c Client) XInfoStreamFull(ctx context.Context, key string, count int) *XInfoStreamFullCmd
-func (c Client) XLen(ctx context.Context, stream string) *IntCmd
+func (c Client) XLen(ctx context.Context, stream string)*IntCmd
 func (c Client) XPending(ctx context.Context, stream, group string) *XPendingCmd
-func (c Client) XPendingExt(ctx context.Context, a *XPendingExtArgs) *XPendingExtCmd
-func (c Client) XRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
+func (c Client) XPendingExt(ctx context.Context, a*XPendingExtArgs) *XPendingExtCmd
+func (c Client) XRange(ctx context.Context, stream, start, stop string)*XMessageSliceCmd
 func (c Client) XRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Client) XRead(ctx context.Context, a *XReadArgs) *XStreamSliceCmd
-func (c Client) XReadGroup(ctx context.Context, a *XReadGroupArgs) *XStreamSliceCmd
-func (c Client) XReadStreams(ctx context.Context, streams ...string) *XStreamSliceCmd
+func (c Client) XRead(ctx context.Context, a*XReadArgs) *XStreamSliceCmd
+func (c Client) XReadGroup(ctx context.Context, a*XReadGroupArgs) *XStreamSliceCmd
+func (c Client) XReadStreams(ctx context.Context, streams ...string)*XStreamSliceCmd
 func (c Client) XRevRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
-func (c Client) XRevRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
+func (c Client) XRevRangeN(ctx context.Context, stream, start, stop string, count int64)*XMessageSliceCmd
 func (c Client) XTrimMaxLen(ctx context.Context, key string, maxLen int64) *IntCmd
-func (c Client) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64) *IntCmd
+func (c Client) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64)*IntCmd
 func (c Client) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string) *IntCmd
-func (c Client) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *IntCmd
+func (c Client) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string)*IntCmd
 func (c Client) XTrimMinID(ctx context.Context, key string, minID string) *IntCmd
-func (c Client) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64) *IntCmd
+func (c Client) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64)*IntCmd
 func (c Client) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *IntCmd
-func (c Client) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *IntCmd
+func (c Client) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string)*IntCmd
 func (c Client) ZAdd(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Client) ZAddArgs(ctx context.Context, key string, args ZAddArgs) *IntCmd
+func (c Client) ZAddArgs(ctx context.Context, key string, args ZAddArgs)*IntCmd
 func (c Client) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs) *FloatCmd
-func (c Client) ZAddGT(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Client) ZAddGT(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Client) ZAddLT(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Client) ZAddNX(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Client) ZAddNX(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Client) ZAddXX(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Client) ZCard(ctx context.Context, key string) *IntCmd
+func (c Client) ZCard(ctx context.Context, key string)*IntCmd
 func (c Client) ZCount(ctx context.Context, key, min, max string) *IntCmd
-func (c Client) ZDiff(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Client) ZDiff(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Client) ZDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Client) ZDiffWithScores(ctx context.Context, keys ...string) *ZSliceCmd
+func (c Client) ZDiffWithScores(ctx context.Context, keys ...string)*ZSliceCmd
 func (c Client) ZIncrBy(ctx context.Context, key string, increment float64, member string) *FloatCmd
-func (c Client) ZInter(ctx context.Context, store *ZStore) *StringSliceCmd
-func (c Client) ZInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Client) ZInterStore(ctx context.Context, destination string, store *ZStore) *IntCmd
-func (c Client) ZInterWithScores(ctx context.Context, store *ZStore) *ZSliceCmd
+func (c Client) ZInter(ctx context.Context, store*ZStore) *StringSliceCmd
+func (c Client) ZInterCard(ctx context.Context, limit int64, keys ...string)*IntCmd
+func (c Client) ZInterStore(ctx context.Context, destination string, store *ZStore)*IntCmd
+func (c Client) ZInterWithScores(ctx context.Context, store *ZStore)*ZSliceCmd
 func (c Client) ZLexCount(ctx context.Context, key, min, max string) *IntCmd
-func (c Client) ZMPop(ctx context.Context, order string, count int64, keys ...string) *ZSliceWithKeyCmd
+func (c Client) ZMPop(ctx context.Context, order string, count int64, keys ...string)*ZSliceWithKeyCmd
 func (c Client) ZMScore(ctx context.Context, key string, members ...string) *FloatSliceCmd
-func (c Client) ZPopMax(ctx context.Context, key string, count ...int64) *ZSliceCmd
+func (c Client) ZPopMax(ctx context.Context, key string, count ...int64)*ZSliceCmd
 func (c Client) ZPopMin(ctx context.Context, key string, count ...int64) *ZSliceCmd
-func (c Client) ZRandMember(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Client) ZRandMember(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Client) ZRandMemberWithScores(ctx context.Context, key string, count int) *ZSliceCmd
-func (c Client) ZRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c Client) ZRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c Client) ZRangeArgs(ctx context.Context, z ZRangeArgs) *StringSliceCmd
-func (c Client) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs) *ZSliceCmd
-func (c Client) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Client) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Client) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
+func (c Client) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs)*ZSliceCmd
+func (c Client) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Client) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Client) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy)*ZSliceCmd
 func (c Client) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs) *IntCmd
-func (c Client) ZRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
+func (c Client) ZRangeWithScores(ctx context.Context, key string, start, stop int64)*ZSliceCmd
 func (c Client) ZRank(ctx context.Context, key, member string) *IntCmd
-func (c Client) ZRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
+func (c Client) ZRankWithScore(ctx context.Context, key, member string)*RankWithScoreCmd
 func (c Client) ZRem(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Client) ZRemRangeByLex(ctx context.Context, key, min, max string) *IntCmd
+func (c Client) ZRemRangeByLex(ctx context.Context, key, min, max string)*IntCmd
 func (c Client) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) *IntCmd
-func (c Client) ZRemRangeByScore(ctx context.Context, key, min, max string) *IntCmd
+func (c Client) ZRemRangeByScore(ctx context.Context, key, min, max string)*IntCmd
 func (c Client) ZRevRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Client) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Client) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Client) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
-func (c Client) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
+func (c Client) ZRevRangeByLex(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Client) ZRevRangeByScore(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Client) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt*ZRangeBy) *ZSliceCmd
+func (c Client) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64)*ZSliceCmd
 func (c Client) ZRevRank(ctx context.Context, key, member string) *IntCmd
-func (c Client) ZRevRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
+func (c Client) ZRevRankWithScore(ctx context.Context, key, member string)*RankWithScoreCmd
 func (c Client) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Client) ZScore(ctx context.Context, key, member string) *FloatCmd
+func (c Client) ZScore(ctx context.Context, key, member string)*FloatCmd
 func (c Client) ZUnion(ctx context.Context, store ZStore) *StringSliceCmd
-func (c Client) ZUnionStore(ctx context.Context, dest string, store *ZStore) *IntCmd
-func (c Client) ZUnionWithScores(ctx context.Context, store ZStore) *ZSliceCmd
+func (c Client) ZUnionStore(ctx context.Context, dest string, store*ZStore) *IntCmd
+func (c Client) ZUnionWithScores(ctx context.Context, store ZStore)*ZSliceCmd
 type ClientFlags
 type ClientInfo
 type ClientInfoCmd
 func NewClientInfoCmd(ctx context.Context, args ...interface{}) *ClientInfoCmd
-func (cmd *ClientInfoCmd) Args() []interface{}
+func (cmd*ClientInfoCmd) Args() []interface{}
 func (cmd *ClientInfoCmd) Err() error
-func (cmd *ClientInfoCmd) FullName() string
+func (cmd*ClientInfoCmd) FullName() string
 func (cmd *ClientInfoCmd) Name() string
-func (cmd *ClientInfoCmd) Result() (*ClientInfo, error)
-func (cmd *ClientInfoCmd) SetErr(e error)
+func (cmd*ClientInfoCmd) Result() (*ClientInfo, error)
+func (cmd*ClientInfoCmd) SetErr(e error)
 func (cmd *ClientInfoCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *ClientInfoCmd) SetVal(val *ClientInfo)
-func (cmd *ClientInfoCmd) String() string
-func (cmd *ClientInfoCmd) Val() *ClientInfo
+func (cmd*ClientInfoCmd) SetVal(val *ClientInfo)
+func (cmd*ClientInfoCmd) String() string
+func (cmd *ClientInfoCmd) Val()*ClientInfo
 type ClusterClient
-func NewClusterClient(opt *ClusterOptions) *ClusterClient
-func NewFailoverClusterClient(failoverOpt *FailoverOptions) *ClusterClient
+func NewClusterClient(opt *ClusterOptions)*ClusterClient
+func NewFailoverClusterClient(failoverOpt *FailoverOptions)*ClusterClient
 func (c ClusterClient) ACLCat(ctx context.Context) *StringSliceCmd
-func (c ClusterClient) ACLCatArgs(ctx context.Context, options *ACLCatArgs) *StringSliceCmd
-func (c ClusterClient) ACLDelUser(ctx context.Context, username string) *IntCmd
+func (c ClusterClient) ACLCatArgs(ctx context.Context, options*ACLCatArgs) *StringSliceCmd
+func (c ClusterClient) ACLDelUser(ctx context.Context, username string)*IntCmd
 func (c ClusterClient) ACLDryRun(ctx context.Context, username string, command ...interface{}) *StringCmd
-func (c ClusterClient) ACLGenPass(ctx context.Context, bit int) *StringCmd
+func (c ClusterClient) ACLGenPass(ctx context.Context, bit int)*StringCmd
 func (c ClusterClient) ACLList(ctx context.Context) *StringSliceCmd
-func (c ClusterClient) ACLLog(ctx context.Context, count int64) *ACLLogCmd
+func (c ClusterClient) ACLLog(ctx context.Context, count int64)*ACLLogCmd
 func (c ClusterClient) ACLLogReset(ctx context.Context) *StatusCmd
-func (c ClusterClient) ACLSetUser(ctx context.Context, username string, rules ...string) *StatusCmd
+func (c ClusterClient) ACLSetUser(ctx context.Context, username string, rules ...string)*StatusCmd
 func (c ClusterClient) ACLUsers(ctx context.Context) *StringSliceCmd
-func (c ClusterClient) ACLWhoAmI(ctx context.Context) *StringCmd
+func (c ClusterClient) ACLWhoAmI(ctx context.Context)*StringCmd
 func (hs *ClusterClient) AddHook(hook Hook)
-func (c ClusterClient) Append(ctx context.Context, key, value string) *IntCmd
+func (c ClusterClient) Append(ctx context.Context, key, value string)*IntCmd
 func (c ClusterClient) BFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c ClusterClient) BFCard(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) BFCard(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) BFExists(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c ClusterClient) BFInfo(ctx context.Context, key string) *BFInfoCmd
+func (c ClusterClient) BFInfo(ctx context.Context, key string)*BFInfoCmd
 func (c ClusterClient) BFInfoArg(ctx context.Context, key, option string) *BFInfoCmd
-func (c ClusterClient) BFInfoCapacity(ctx context.Context, key string) *BFInfoCmd
+func (c ClusterClient) BFInfoCapacity(ctx context.Context, key string)*BFInfoCmd
 func (c ClusterClient) BFInfoExpansion(ctx context.Context, key string) *BFInfoCmd
-func (c ClusterClient) BFInfoFilters(ctx context.Context, key string) *BFInfoCmd
+func (c ClusterClient) BFInfoFilters(ctx context.Context, key string)*BFInfoCmd
 func (c ClusterClient) BFInfoItems(ctx context.Context, key string) *BFInfoCmd
-func (c ClusterClient) BFInfoSize(ctx context.Context, key string) *BFInfoCmd
-func (c ClusterClient) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...) *BoolSliceCmd
+func (c ClusterClient) BFInfoSize(ctx context.Context, key string)*BFInfoCmd
+func (c ClusterClient) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...)*BoolSliceCmd
 func (c ClusterClient) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
-func (c ClusterClient) BFMAdd(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c ClusterClient) BFMAdd(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c ClusterClient) BFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c ClusterClient) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
+func (c ClusterClient) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64)*StatusCmd
 func (c ClusterClient) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64) *StatusCmd
-func (c ClusterClient) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c ClusterClient) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions) *StatusCmd
+func (c ClusterClient) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64)*StatusCmd
+func (c ClusterClient) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions)*StatusCmd
 func (c ClusterClient) BFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
-func (c ClusterClient) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...) *KeyValuesCmd
+func (c ClusterClient) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...)*KeyValuesCmd
 func (c ClusterClient) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...) *StringCmd
-func (c ClusterClient) BLPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
+func (c ClusterClient) BLPop(ctx context.Context, timeout time.Duration, keys ...string)*StringSliceCmd
 func (c ClusterClient) BRPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
-func (c ClusterClient) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration) *StringCmd
+func (c ClusterClient) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration)*StringCmd
 func (c ClusterClient) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...) *ZSliceWithKeyCmd
-func (c ClusterClient) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
+func (c ClusterClient) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string)*ZWithKeyCmd
 func (c ClusterClient) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
-func (c ClusterClient) BgRewriteAOF(ctx context.Context) *StatusCmd
+func (c ClusterClient) BgRewriteAOF(ctx context.Context)*StatusCmd
 func (c ClusterClient) BgSave(ctx context.Context) *StatusCmd
-func (c ClusterClient) BitCount(ctx context.Context, key string, bitCount *BitCount) *IntCmd
-func (c ClusterClient) BitField(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
+func (c ClusterClient) BitCount(ctx context.Context, key string, bitCount*BitCount) *IntCmd
+func (c ClusterClient) BitField(ctx context.Context, key string, values ...interface{})*IntSliceCmd
 func (c ClusterClient) BitFieldRO(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
-func (c ClusterClient) BitOpAnd(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c ClusterClient) BitOpAnd(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c ClusterClient) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c ClusterClient) BitOpDiff(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c ClusterClient) BitOpDiff(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c ClusterClient) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c ClusterClient) BitOpNot(ctx context.Context, destKey string, key string) *IntCmd
+func (c ClusterClient) BitOpNot(ctx context.Context, destKey string, key string)*IntCmd
 func (c ClusterClient) BitOpOne(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c ClusterClient) BitOpOr(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c ClusterClient) BitOpOr(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c ClusterClient) BitOpXor(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c ClusterClient) BitPos(ctx context.Context, key string, bit int64, pos ...int64) *IntCmd
+func (c ClusterClient) BitPos(ctx context.Context, key string, bit int64, pos ...int64)*IntCmd
 func (c ClusterClient) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string) *IntCmd
-func (c ClusterClient) CFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c ClusterClient) CFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c ClusterClient) CFAddNX(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c ClusterClient) CFCount(ctx context.Context, key string, element interface{}) *IntCmd
+func (c ClusterClient) CFCount(ctx context.Context, key string, element interface{})*IntCmd
 func (c ClusterClient) CFDel(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c ClusterClient) CFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c ClusterClient) CFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c ClusterClient) CFInfo(ctx context.Context, key string) *CFInfoCmd
-func (c ClusterClient) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...) *BoolSliceCmd
-func (c ClusterClient) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...) *IntSliceCmd
-func (c ClusterClient) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c ClusterClient) CFInsert(ctx context.Context, key string, options*CFInsertOptions, ...) *BoolSliceCmd
+func (c ClusterClient) CFInsertNX(ctx context.Context, key string, options*CFInsertOptions, ...) *IntSliceCmd
+func (c ClusterClient) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c ClusterClient) CFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c ClusterClient) CFReserve(ctx context.Context, key string, capacity int64) *StatusCmd
+func (c ClusterClient) CFReserve(ctx context.Context, key string, capacity int64)*StatusCmd
 func (c ClusterClient) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64) *StatusCmd
-func (c ClusterClient) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64) *StatusCmd
+func (c ClusterClient) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64)*StatusCmd
 func (c ClusterClient) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64) *StatusCmd
-func (c ClusterClient) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions) *StatusCmd
-func (c ClusterClient) CFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c ClusterClient) CFReserveWithArgs(ctx context.Context, key string, options*CFReserveOptions) *StatusCmd
+func (c ClusterClient) CFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c ClusterClient) CMSIncrBy(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c ClusterClient) CMSInfo(ctx context.Context, key string) *CMSInfoCmd
+func (c ClusterClient) CMSInfo(ctx context.Context, key string)*CMSInfoCmd
 func (c ClusterClient) CMSInitByDim(ctx context.Context, key string, width, depth int64) *StatusCmd
-func (c ClusterClient) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64) *StatusCmd
+func (c ClusterClient) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64)*StatusCmd
 func (c ClusterClient) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string) *StatusCmd
-func (c ClusterClient) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64) *StatusCmd
+func (c ClusterClient) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64)*StatusCmd
 func (c ClusterClient) CMSQuery(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c ClusterClient) ClientGetName(ctx context.Context) *StringCmd
+func (c ClusterClient) ClientGetName(ctx context.Context)*StringCmd
 func (c ClusterClient) ClientID(ctx context.Context) *IntCmd
-func (c ClusterClient) ClientInfo(ctx context.Context) *ClientInfoCmd
+func (c ClusterClient) ClientInfo(ctx context.Context)*ClientInfoCmd
 func (c ClusterClient) ClientKill(ctx context.Context, ipPort string) *StatusCmd
-func (c ClusterClient) ClientKillByFilter(ctx context.Context, keys ...string) *IntCmd
+func (c ClusterClient) ClientKillByFilter(ctx context.Context, keys ...string)*IntCmd
 func (c ClusterClient) ClientList(ctx context.Context) *StringCmd
-func (c ClusterClient) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *StatusCmd
+func (c ClusterClient) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string)*StatusCmd
 func (c ClusterClient) ClientPause(ctx context.Context, dur time.Duration) *BoolCmd
-func (c ClusterClient) ClientUnblock(ctx context.Context, id int64) *IntCmd
+func (c ClusterClient) ClientUnblock(ctx context.Context, id int64)*IntCmd
 func (c ClusterClient) ClientUnblockWithError(ctx context.Context, id int64) *IntCmd
-func (c ClusterClient) ClientUnpause(ctx context.Context) *BoolCmd
+func (c ClusterClient) ClientUnpause(ctx context.Context)*BoolCmd
 func (c *ClusterClient) Close() error
-func (c ClusterClient) ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
+func (c ClusterClient) ClusterAddSlots(ctx context.Context, slots ...int)*StatusCmd
 func (c ClusterClient) ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
-func (c ClusterClient) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd
+func (c ClusterClient) ClusterCountFailureReports(ctx context.Context, nodeID string)*IntCmd
 func (c ClusterClient) ClusterCountKeysInSlot(ctx context.Context, slot int) *IntCmd
-func (c ClusterClient) ClusterDelSlots(ctx context.Context, slots ...int) *StatusCmd
+func (c ClusterClient) ClusterDelSlots(ctx context.Context, slots ...int)*StatusCmd
 func (c ClusterClient) ClusterDelSlotsRange(ctx context.Context, min, max int) *StatusCmd
-func (c ClusterClient) ClusterFailover(ctx context.Context) *StatusCmd
+func (c ClusterClient) ClusterFailover(ctx context.Context)*StatusCmd
 func (c ClusterClient) ClusterForget(ctx context.Context, nodeID string) *StatusCmd
-func (c ClusterClient) ClusterGetKeysInSlot(ctx context.Context, slot int, count int) *StringSliceCmd
+func (c ClusterClient) ClusterGetKeysInSlot(ctx context.Context, slot int, count int)*StringSliceCmd
 func (c ClusterClient) ClusterInfo(ctx context.Context) *StringCmd
-func (c ClusterClient) ClusterKeySlot(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) ClusterKeySlot(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) ClusterLinks(ctx context.Context) *ClusterLinksCmd
-func (c ClusterClient) ClusterMeet(ctx context.Context, host, port string) *StatusCmd
+func (c ClusterClient) ClusterMeet(ctx context.Context, host, port string)*StatusCmd
 func (c ClusterClient) ClusterMyID(ctx context.Context) *StringCmd
-func (c ClusterClient) ClusterMyShardID(ctx context.Context) *StringCmd
+func (c ClusterClient) ClusterMyShardID(ctx context.Context)*StringCmd
 func (c ClusterClient) ClusterNodes(ctx context.Context) *StringCmd
-func (c ClusterClient) ClusterReplicate(ctx context.Context, nodeID string) *StatusCmd
+func (c ClusterClient) ClusterReplicate(ctx context.Context, nodeID string)*StatusCmd
 func (c ClusterClient) ClusterResetHard(ctx context.Context) *StatusCmd
-func (c ClusterClient) ClusterResetSoft(ctx context.Context) *StatusCmd
+func (c ClusterClient) ClusterResetSoft(ctx context.Context)*StatusCmd
 func (c ClusterClient) ClusterSaveConfig(ctx context.Context) *StatusCmd
-func (c ClusterClient) ClusterShards(ctx context.Context) *ClusterShardsCmd
+func (c ClusterClient) ClusterShards(ctx context.Context)*ClusterShardsCmd
 func (c ClusterClient) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
-func (c ClusterClient) ClusterSlots(ctx context.Context) *ClusterSlotsCmd
+func (c ClusterClient) ClusterSlots(ctx context.Context)*ClusterSlotsCmd
 func (c ClusterClient) Command(ctx context.Context) *CommandsInfoCmd
-func (c ClusterClient) CommandGetKeys(ctx context.Context, commands ...interface{}) *StringSliceCmd
+func (c ClusterClient) CommandGetKeys(ctx context.Context, commands ...interface{})*StringSliceCmd
 func (c ClusterClient) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{}) *KeyFlagsCmd
-func (c ClusterClient) CommandList(ctx context.Context, filter *FilterBy) *StringSliceCmd
-func (c ClusterClient) ConfigGet(ctx context.Context, parameter string) *MapStringStringCmd
+func (c ClusterClient) CommandList(ctx context.Context, filter*FilterBy) *StringSliceCmd
+func (c ClusterClient) ConfigGet(ctx context.Context, parameter string)*MapStringStringCmd
 func (c ClusterClient) ConfigResetStat(ctx context.Context) *StatusCmd
-func (c ClusterClient) ConfigRewrite(ctx context.Context) *StatusCmd
+func (c ClusterClient) ConfigRewrite(ctx context.Context)*StatusCmd
 func (c ClusterClient) ConfigSet(ctx context.Context, parameter, value string) *StatusCmd
-func (c ClusterClient) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd
-func (c *ClusterClient) DBSize(ctx context.Context) *IntCmd
+func (c ClusterClient) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool)*IntCmd
+func (c *ClusterClient) DBSize(ctx context.Context)*IntCmd
 func (c ClusterClient) DebugObject(ctx context.Context, key string) *StringCmd
-func (c ClusterClient) Decr(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) Decr(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) DecrBy(ctx context.Context, key string, decrement int64) *IntCmd
-func (c ClusterClient) Del(ctx context.Context, keys ...string) *IntCmd
+func (c ClusterClient) Del(ctx context.Context, keys ...string)*IntCmd
 func (c ClusterClient) DelExArgs(ctx context.Context, key string, a DelExArgs) *IntCmd
-func (c ClusterClient) Digest(ctx context.Context, key string) *DigestCmd
+func (c ClusterClient) Digest(ctx context.Context, key string)*DigestCmd
 func (c ClusterClient) Do(ctx context.Context, args ...interface{}) *Cmd
-func (c ClusterClient) Dump(ctx context.Context, key string) *StringCmd
+func (c ClusterClient) Dump(ctx context.Context, key string)*StringCmd
 func (c ClusterClient) Echo(ctx context.Context, message interface{}) *StringCmd
-func (c ClusterClient) Eval(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
+func (c ClusterClient) Eval(ctx context.Context, script string, keys []string, args ...interface{})*Cmd
 func (c ClusterClient) EvalRO(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
-func (c ClusterClient) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
+func (c ClusterClient) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{})*Cmd
 func (c ClusterClient) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
-func (c ClusterClient) Exists(ctx context.Context, keys ...string) *IntCmd
+func (c ClusterClient) Exists(ctx context.Context, keys ...string)*IntCmd
 func (c ClusterClient) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c ClusterClient) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c ClusterClient) ExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c ClusterClient) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c ClusterClient) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c ClusterClient) ExpireLT(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c ClusterClient) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c ClusterClient) ExpireTime(ctx context.Context, key string) *DurationCmd
+func (c ClusterClient) ExpireTime(ctx context.Context, key string)*DurationCmd
 func (c ClusterClient) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c ClusterClient) FCall(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c ClusterClient) FCall(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c ClusterClient) FCallRO(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c ClusterClient) FCallRo(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c ClusterClient) FCallRo(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c ClusterClient) FTAggregate(ctx context.Context, index string, query string) *MapStringInterfaceCmd
-func (c ClusterClient) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions) *AggregateCmd
-func (c ClusterClient) FTAliasAdd(ctx context.Context, index string, alias string) *StatusCmd
+func (c ClusterClient) FTAggregateWithArgs(ctx context.Context, index string, query string, options*FTAggregateOptions) *AggregateCmd
+func (c ClusterClient) FTAliasAdd(ctx context.Context, index string, alias string)*StatusCmd
 func (c ClusterClient) FTAliasDel(ctx context.Context, alias string) *StatusCmd
-func (c ClusterClient) FTAliasUpdate(ctx context.Context, index string, alias string) *StatusCmd
+func (c ClusterClient) FTAliasUpdate(ctx context.Context, index string, alias string)*StatusCmd
 func (c ClusterClient) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...) *StatusCmd
-func (c ClusterClient) FTConfigGet(ctx context.Context, option string) *MapMapStringInterfaceCmd
+func (c ClusterClient) FTConfigGet(ctx context.Context, option string)*MapMapStringInterfaceCmd
 deprecated
 func (c ClusterClient) FTConfigSet(ctx context.Context, option string, value interface{}) *StatusCmd
 deprecated
-func (c ClusterClient) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...) *StatusCmd
-func (c ClusterClient) FTCursorDel(ctx context.Context, index string, cursorId int) *StatusCmd
+func (c ClusterClient) FTCreate(ctx context.Context, index string, options*FTCreateOptions, ...) *StatusCmd
+func (c ClusterClient) FTCursorDel(ctx context.Context, index string, cursorId int)*StatusCmd
 func (c ClusterClient) FTCursorRead(ctx context.Context, index string, cursorId int, count int) *MapStringInterfaceCmd
-func (c ClusterClient) FTDictAdd(ctx context.Context, dict string, term ...interface{}) *IntCmd
+func (c ClusterClient) FTDictAdd(ctx context.Context, dict string, term ...interface{})*IntCmd
 func (c ClusterClient) FTDictDel(ctx context.Context, dict string, term ...interface{}) *IntCmd
-func (c ClusterClient) FTDictDump(ctx context.Context, dict string) *StringSliceCmd
+func (c ClusterClient) FTDictDump(ctx context.Context, dict string)*StringSliceCmd
 func (c ClusterClient) FTDropIndex(ctx context.Context, index string) *StatusCmd
-func (c ClusterClient) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions) *StatusCmd
-func (c ClusterClient) FTExplain(ctx context.Context, index string, query string) *StringCmd
+func (c ClusterClient) FTDropIndexWithArgs(ctx context.Context, index string, options*FTDropIndexOptions) *StatusCmd
+func (c ClusterClient) FTExplain(ctx context.Context, index string, query string)*StringCmd
 func (c ClusterClient) FTExplainCli(ctx context.Context, key, path string) error
-func (c ClusterClient) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions) *StringCmd
+func (c ClusterClient) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions)*StringCmd
 func (c ClusterClient) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...) *FTHybridCmd
-func (c ClusterClient) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions) *FTHybridCmd
-func (c ClusterClient) FTInfo(ctx context.Context, index string) *FTInfoCmd
+func (c ClusterClient) FTHybridWithArgs(ctx context.Context, index string, options*FTHybridOptions) *FTHybridCmd
+func (c ClusterClient) FTInfo(ctx context.Context, index string)*FTInfoCmd
 func (c ClusterClient) FTSearch(ctx context.Context, index string, query string) *FTSearchCmd
-func (c ClusterClient) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions) *FTSearchCmd
-func (c ClusterClient) FTSpellCheck(ctx context.Context, index string, query string) *FTSpellCheckCmd
-func (c ClusterClient) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions) *FTSpellCheckCmd
+func (c ClusterClient) FTSearchWithArgs(ctx context.Context, index string, query string, options*FTSearchOptions) *FTSearchCmd
+func (c ClusterClient) FTSpellCheck(ctx context.Context, index string, query string)*FTSpellCheckCmd
+func (c ClusterClient) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions)*FTSpellCheckCmd
 func (c ClusterClient) FTSynDump(ctx context.Context, index string) *FTSynDumpCmd
-func (c ClusterClient) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{}) *StatusCmd
+func (c ClusterClient) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{})*StatusCmd
 func (c ClusterClient) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...) *StatusCmd
-func (c ClusterClient) FTTagVals(ctx context.Context, index string, field string) *StringSliceCmd
+func (c ClusterClient) FTTagVals(ctx context.Context, index string, field string)*StringSliceCmd
 func (c ClusterClient) FT_List(ctx context.Context) *StringSliceCmd
-func (c ClusterClient) FlushAll(ctx context.Context) *StatusCmd
+func (c ClusterClient) FlushAll(ctx context.Context)*StatusCmd
 func (c ClusterClient) FlushAllAsync(ctx context.Context) *StatusCmd
-func (c ClusterClient) FlushDB(ctx context.Context) *StatusCmd
+func (c ClusterClient) FlushDB(ctx context.Context)*StatusCmd
 func (c ClusterClient) FlushDBAsync(ctx context.Context) *StatusCmd
-func (c *ClusterClient) ForEachMaster(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
-func (c *ClusterClient) ForEachShard(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
-func (c *ClusterClient) ForEachSlave(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
-func (c ClusterClient) FunctionDelete(ctx context.Context, libName string) *StringCmd
+func (c*ClusterClient) ForEachMaster(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
+func (c*ClusterClient) ForEachShard(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
+func (c*ClusterClient) ForEachSlave(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
+func (c ClusterClient) FunctionDelete(ctx context.Context, libName string)*StringCmd
 func (c ClusterClient) FunctionDump(ctx context.Context) *StringCmd
-func (c ClusterClient) FunctionFlush(ctx context.Context) *StringCmd
+func (c ClusterClient) FunctionFlush(ctx context.Context)*StringCmd
 func (c ClusterClient) FunctionFlushAsync(ctx context.Context) *StringCmd
-func (c ClusterClient) FunctionKill(ctx context.Context) *StringCmd
+func (c ClusterClient) FunctionKill(ctx context.Context)*StringCmd
 func (c ClusterClient) FunctionList(ctx context.Context, q FunctionListQuery) *FunctionListCmd
-func (c ClusterClient) FunctionLoad(ctx context.Context, code string) *StringCmd
+func (c ClusterClient) FunctionLoad(ctx context.Context, code string)*StringCmd
 func (c ClusterClient) FunctionLoadReplace(ctx context.Context, code string) *StringCmd
-func (c ClusterClient) FunctionRestore(ctx context.Context, libDump string) *StringCmd
+func (c ClusterClient) FunctionRestore(ctx context.Context, libDump string)*StringCmd
 func (c ClusterClient) FunctionStats(ctx context.Context) *FunctionStatsCmd
 func (c ClusterClient) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation) *IntCmd
-func (c ClusterClient) GeoDist(ctx context.Context, key string, member1, member2, unit string) *FloatCmd
+func (c ClusterClient) GeoDist(ctx context.Context, key string, member1, member2, unit string)*FloatCmd
 func (c ClusterClient) GeoHash(ctx context.Context, key string, members ...string) *StringSliceCmd
-func (c ClusterClient) GeoPos(ctx context.Context, key string, members ...string) *GeoPosCmd
+func (c ClusterClient) GeoPos(ctx context.Context, key string, members ...string)*GeoPosCmd
 func (c ClusterClient) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...) *GeoLocationCmd
-func (c ClusterClient) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery) *GeoLocationCmd
-func (c ClusterClient) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery) *IntCmd
-func (c ClusterClient) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...) *IntCmd
-func (c ClusterClient) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery) *StringSliceCmd
-func (c ClusterClient) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery) *GeoSearchLocationCmd
-func (c ClusterClient) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery) *IntCmd
+func (c ClusterClient) GeoRadiusByMember(ctx context.Context, key, member string, query*GeoRadiusQuery) *GeoLocationCmd
+func (c ClusterClient) GeoRadiusByMemberStore(ctx context.Context, key, member string, query*GeoRadiusQuery) *IntCmd
+func (c ClusterClient) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...)*IntCmd
+func (c ClusterClient) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery)*StringSliceCmd
+func (c ClusterClient) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery)*GeoSearchLocationCmd
+func (c ClusterClient) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery)*IntCmd
 func (c ClusterClient) Get(ctx context.Context, key string) *StringCmd
-func (c ClusterClient) GetBit(ctx context.Context, key string, offset int64) *IntCmd
+func (c ClusterClient) GetBit(ctx context.Context, key string, offset int64)*IntCmd
 func (c ClusterClient) GetDel(ctx context.Context, key string) *StringCmd
-func (c ClusterClient) GetEx(ctx context.Context, key string, expiration time.Duration) *StringCmd
+func (c ClusterClient) GetEx(ctx context.Context, key string, expiration time.Duration)*StringCmd
 func (c ClusterClient) GetRange(ctx context.Context, key string, start, end int64) *StringCmd
-func (c ClusterClient) GetSet(ctx context.Context, key string, value interface{}) *StringCmd
+func (c ClusterClient) GetSet(ctx context.Context, key string, value interface{})*StringCmd
 func (c ClusterClient) HDel(ctx context.Context, key string, fields ...string) *IntCmd
-func (c ClusterClient) HExists(ctx context.Context, key, field string) *BoolCmd
+func (c ClusterClient) HExists(ctx context.Context, key, field string)*BoolCmd
 func (c ClusterClient) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
-func (c ClusterClient) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
+func (c ClusterClient) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string)*IntSliceCmd
 func (c ClusterClient) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
-func (c ClusterClient) HExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c ClusterClient) HExpireTime(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c ClusterClient) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
-func (c ClusterClient) HGet(ctx context.Context, key, field string) *StringCmd
+func (c ClusterClient) HGet(ctx context.Context, key, field string)*StringCmd
 func (c ClusterClient) HGetAll(ctx context.Context, key string) *MapStringStringCmd
-func (c ClusterClient) HGetDel(ctx context.Context, key string, fields ...string) *StringSliceCmd
+func (c ClusterClient) HGetDel(ctx context.Context, key string, fields ...string)*StringSliceCmd
 func (c ClusterClient) HGetEX(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c ClusterClient) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string) *StringSliceCmd
-func (c ClusterClient) HIncrBy(ctx context.Context, key, field string, incr int64) *IntCmd
+func (c ClusterClient) HGetEXWithArgs(ctx context.Context, key string, options*HGetEXOptions, fields ...string) *StringSliceCmd
+func (c ClusterClient) HIncrBy(ctx context.Context, key, field string, incr int64)*IntCmd
 func (c ClusterClient) HIncrByFloat(ctx context.Context, key, field string, incr float64) *FloatCmd
-func (c ClusterClient) HKeys(ctx context.Context, key string) *StringSliceCmd
+func (c ClusterClient) HKeys(ctx context.Context, key string)*StringSliceCmd
 func (c ClusterClient) HLen(ctx context.Context, key string) *IntCmd
-func (c ClusterClient) HMGet(ctx context.Context, key string, fields ...string) *SliceCmd
+func (c ClusterClient) HMGet(ctx context.Context, key string, fields ...string)*SliceCmd
 func (c ClusterClient) HMSet(ctx context.Context, key string, values ...interface{}) *BoolCmd
-func (c ClusterClient) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
+func (c ClusterClient) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string)*IntSliceCmd
 func (c ClusterClient) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
-func (c ClusterClient) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
+func (c ClusterClient) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...)*IntSliceCmd
 func (c ClusterClient) HPExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c ClusterClient) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
+func (c ClusterClient) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...)*IntSliceCmd
 func (c ClusterClient) HPTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c ClusterClient) HPersist(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c ClusterClient) HPersist(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c ClusterClient) HRandField(ctx context.Context, key string, count int) *StringSliceCmd
-func (c ClusterClient) HRandFieldWithValues(ctx context.Context, key string, count int) *KeyValueSliceCmd
+func (c ClusterClient) HRandFieldWithValues(ctx context.Context, key string, count int)*KeyValueSliceCmd
 func (c ClusterClient) HScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c ClusterClient) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c ClusterClient) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c ClusterClient) HSet(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c ClusterClient) HSetEX(ctx context.Context, key string, fieldsAndValues ...string) *IntCmd
-func (c ClusterClient) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...) *IntCmd
+func (c ClusterClient) HSetEX(ctx context.Context, key string, fieldsAndValues ...string)*IntCmd
+func (c ClusterClient) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...)*IntCmd
 func (c ClusterClient) HSetNX(ctx context.Context, key, field string, value interface{}) *BoolCmd
-func (c ClusterClient) HStrLen(ctx context.Context, key, field string) *IntCmd
+func (c ClusterClient) HStrLen(ctx context.Context, key, field string)*IntCmd
 func (c ClusterClient) HTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c ClusterClient) HVals(ctx context.Context, key string) *StringSliceCmd
+func (c ClusterClient) HVals(ctx context.Context, key string)*StringSliceCmd
 func (c ClusterClient) Incr(ctx context.Context, key string) *IntCmd
-func (c ClusterClient) IncrBy(ctx context.Context, key string, value int64) *IntCmd
+func (c ClusterClient) IncrBy(ctx context.Context, key string, value int64)*IntCmd
 func (c ClusterClient) IncrByFloat(ctx context.Context, key string, value float64) *FloatCmd
-func (c ClusterClient) Info(ctx context.Context, sections ...string) *StringCmd
+func (c ClusterClient) Info(ctx context.Context, sections ...string)*StringCmd
 func (c ClusterClient) InfoMap(ctx context.Context, sections ...string) *InfoCmd
-func (c ClusterClient) JSONArrAppend(ctx context.Context, key, path string, values ...interface{}) *IntSliceCmd
+func (c ClusterClient) JSONArrAppend(ctx context.Context, key, path string, values ...interface{})*IntSliceCmd
 func (c ClusterClient) JSONArrIndex(ctx context.Context, key, path string, value ...interface{}) *IntSliceCmd
-func (c ClusterClient) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...) *IntSliceCmd
-func (c ClusterClient) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{}) *IntSliceCmd
+func (c ClusterClient) JSONArrIndexWithArgs(ctx context.Context, key, path string, options*JSONArrIndexArgs, ...) *IntSliceCmd
+func (c ClusterClient) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{})*IntSliceCmd
 func (c ClusterClient) JSONArrLen(ctx context.Context, key, path string) *IntSliceCmd
-func (c ClusterClient) JSONArrPop(ctx context.Context, key, path string, index int) *StringSliceCmd
+func (c ClusterClient) JSONArrPop(ctx context.Context, key, path string, index int)*StringSliceCmd
 func (c ClusterClient) JSONArrTrim(ctx context.Context, key, path string) *IntSliceCmd
-func (c ClusterClient) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs) *IntSliceCmd
-func (c ClusterClient) JSONClear(ctx context.Context, key, path string) *IntCmd
+func (c ClusterClient) JSONArrTrimWithArgs(ctx context.Context, key, path string, options*JSONArrTrimArgs) *IntSliceCmd
+func (c ClusterClient) JSONClear(ctx context.Context, key, path string)*IntCmd
 func (c ClusterClient) JSONDebugMemory(ctx context.Context, key, path string) *IntCmd
-func (c ClusterClient) JSONDel(ctx context.Context, key, path string) *IntCmd
+func (c ClusterClient) JSONDel(ctx context.Context, key, path string)*IntCmd
 func (c ClusterClient) JSONForget(ctx context.Context, key, path string) *IntCmd
-func (c ClusterClient) JSONGet(ctx context.Context, key string, paths ...string) *JSONCmd
-func (c ClusterClient) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string) *JSONCmd
+func (c ClusterClient) JSONGet(ctx context.Context, key string, paths ...string)*JSONCmd
+func (c ClusterClient) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string)*JSONCmd
 func (c ClusterClient) JSONMGet(ctx context.Context, path string, keys ...string) *JSONSliceCmd
-func (c ClusterClient) JSONMSet(ctx context.Context, params ...interface{}) *StatusCmd
+func (c ClusterClient) JSONMSet(ctx context.Context, params ...interface{})*StatusCmd
 func (c ClusterClient) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs) *StatusCmd
-func (c ClusterClient) JSONMerge(ctx context.Context, key, path string, value string) *StatusCmd
+func (c ClusterClient) JSONMerge(ctx context.Context, key, path string, value string)*StatusCmd
 func (c ClusterClient) JSONNumIncrBy(ctx context.Context, key, path string, value float64) *JSONCmd
-func (c ClusterClient) JSONObjKeys(ctx context.Context, key, path string) *SliceCmd
+func (c ClusterClient) JSONObjKeys(ctx context.Context, key, path string)*SliceCmd
 func (c ClusterClient) JSONObjLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c ClusterClient) JSONSet(ctx context.Context, key, path string, value interface{}) *StatusCmd
+func (c ClusterClient) JSONSet(ctx context.Context, key, path string, value interface{})*StatusCmd
 func (c ClusterClient) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string) *StatusCmd
-func (c ClusterClient) JSONStrAppend(ctx context.Context, key, path, value string) *IntPointerSliceCmd
+func (c ClusterClient) JSONStrAppend(ctx context.Context, key, path, value string)*IntPointerSliceCmd
 func (c ClusterClient) JSONStrLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c ClusterClient) JSONToggle(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c ClusterClient) JSONToggle(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c ClusterClient) JSONType(ctx context.Context, key, path string) *JSONSliceCmd
-func (c ClusterClient) Keys(ctx context.Context, pattern string) *StringSliceCmd
-func (c ClusterClient) LCS(ctx context.Context, q *LCSQuery) *LCSCmd
+func (c ClusterClient) Keys(ctx context.Context, pattern string)*StringSliceCmd
+func (c ClusterClient) LCS(ctx context.Context, q *LCSQuery)*LCSCmd
 func (c ClusterClient) LIndex(ctx context.Context, key string, index int64) *StringCmd
-func (c ClusterClient) LInsert(ctx context.Context, key, op string, pivot, value interface{}) *IntCmd
+func (c ClusterClient) LInsert(ctx context.Context, key, op string, pivot, value interface{})*IntCmd
 func (c ClusterClient) LInsertAfter(ctx context.Context, key string, pivot, value interface{}) *IntCmd
-func (c ClusterClient) LInsertBefore(ctx context.Context, key string, pivot, value interface{}) *IntCmd
+func (c ClusterClient) LInsertBefore(ctx context.Context, key string, pivot, value interface{})*IntCmd
 func (c ClusterClient) LLen(ctx context.Context, key string) *IntCmd
-func (c ClusterClient) LMPop(ctx context.Context, direction string, count int64, keys ...string) *KeyValuesCmd
+func (c ClusterClient) LMPop(ctx context.Context, direction string, count int64, keys ...string)*KeyValuesCmd
 func (c ClusterClient) LMove(ctx context.Context, source, destination, srcpos, destpos string) *StringCmd
-func (c ClusterClient) LPop(ctx context.Context, key string) *StringCmd
+func (c ClusterClient) LPop(ctx context.Context, key string)*StringCmd
 func (c ClusterClient) LPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c ClusterClient) LPos(ctx context.Context, key string, value string, a LPosArgs) *IntCmd
+func (c ClusterClient) LPos(ctx context.Context, key string, value string, a LPosArgs)*IntCmd
 func (c ClusterClient) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs) *IntSliceCmd
-func (c ClusterClient) LPush(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c ClusterClient) LPush(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c ClusterClient) LPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c ClusterClient) LRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c ClusterClient) LRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c ClusterClient) LRem(ctx context.Context, key string, count int64, value interface{}) *IntCmd
-func (c ClusterClient) LSet(ctx context.Context, key string, index int64, value interface{}) *StatusCmd
+func (c ClusterClient) LSet(ctx context.Context, key string, index int64, value interface{})*StatusCmd
 func (c ClusterClient) LTrim(ctx context.Context, key string, start, stop int64) *StatusCmd
-func (c ClusterClient) LastSave(ctx context.Context) *IntCmd
+func (c ClusterClient) LastSave(ctx context.Context)*IntCmd
 func (c ClusterClient) Latency(ctx context.Context) *LatencyCmd
-func (c ClusterClient) LatencyReset(ctx context.Context, events ...interface{}) *StatusCmd
+func (c ClusterClient) LatencyReset(ctx context.Context, events ...interface{})*StatusCmd
 func (c ClusterClient) MGet(ctx context.Context, keys ...string) *SliceCmd
-func (c ClusterClient) MSet(ctx context.Context, values ...interface{}) *StatusCmd
+func (c ClusterClient) MSet(ctx context.Context, values ...interface{})*StatusCmd
 func (c ClusterClient) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{}) *IntCmd
-func (c ClusterClient) MSetNX(ctx context.Context, values ...interface{}) *BoolCmd
+func (c ClusterClient) MSetNX(ctx context.Context, values ...interface{})*BoolCmd
 func (c *ClusterClient) MasterForKey(ctx context.Context, key string) (*Client, error)
 func (c ClusterClient) MemoryUsage(ctx context.Context, key string, samples ...int) *IntCmd
-func (c ClusterClient) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd
-func (c ClusterClient) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig) *StringCmd
+func (c ClusterClient) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration)*StatusCmd
+func (c ClusterClient) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig)*StringCmd
 func (c ClusterClient) Monitor(ctx context.Context, ch chan string) *MonitorCmd
-func (c ClusterClient) Move(ctx context.Context, key string, db int) *BoolCmd
+func (c ClusterClient) Move(ctx context.Context, key string, db int)*BoolCmd
 func (c ClusterClient) ObjectEncoding(ctx context.Context, key string) *StringCmd
-func (c ClusterClient) ObjectFreq(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) ObjectFreq(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) ObjectIdleTime(ctx context.Context, key string) *DurationCmd
-func (c ClusterClient) ObjectRefCount(ctx context.Context, key string) *IntCmd
-func (c *ClusterClient) OnNewNode(fn func(rdb *Client))
-func (c *ClusterClient) Options() *ClusterOptions
+func (c ClusterClient) ObjectRefCount(ctx context.Context, key string)*IntCmd
+func (c *ClusterClient) OnNewNode(fn func(rdb*Client))
+func (c *ClusterClient) Options()*ClusterOptions
 func (c ClusterClient) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c ClusterClient) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c ClusterClient) PExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c ClusterClient) PExpireTime(ctx context.Context, key string) *DurationCmd
-func (c ClusterClient) PFAdd(ctx context.Context, key string, els ...interface{}) *IntCmd
+func (c ClusterClient) PFAdd(ctx context.Context, key string, els ...interface{})*IntCmd
 func (c ClusterClient) PFCount(ctx context.Context, keys ...string) *IntCmd
-func (c ClusterClient) PFMerge(ctx context.Context, dest string, keys ...string) *StatusCmd
-func (c *ClusterClient) PSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c ClusterClient) PFMerge(ctx context.Context, dest string, keys ...string)*StatusCmd
+func (c *ClusterClient) PSubscribe(ctx context.Context, channels ...string)*PubSub
 func (c ClusterClient) PTTL(ctx context.Context, key string) *DurationCmd
-func (c ClusterClient) Persist(ctx context.Context, key string) *BoolCmd
+func (c ClusterClient) Persist(ctx context.Context, key string)*BoolCmd
 func (c ClusterClient) Ping(ctx context.Context) *StatusCmd
-func (c *ClusterClient) Pipeline() Pipeliner
+func (c*ClusterClient) Pipeline() Pipeliner
 func (c *ClusterClient) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c *ClusterClient) PoolStats() *PoolStats
-func (c *ClusterClient) Process(ctx context.Context, cmd Cmder) error
+func (c*ClusterClient) PoolStats() *PoolStats
+func (c*ClusterClient) Process(ctx context.Context, cmd Cmder) error
 func (c ClusterClient) PubSubChannels(ctx context.Context, pattern string) *StringSliceCmd
-func (c ClusterClient) PubSubNumPat(ctx context.Context) *IntCmd
+func (c ClusterClient) PubSubNumPat(ctx context.Context)*IntCmd
 func (c ClusterClient) PubSubNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c ClusterClient) PubSubShardChannels(ctx context.Context, pattern string) *StringSliceCmd
+func (c ClusterClient) PubSubShardChannels(ctx context.Context, pattern string)*StringSliceCmd
 func (c ClusterClient) PubSubShardNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c ClusterClient) Publish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c ClusterClient) Quit(_ context.Context) *StatusCmd
-func (c ClusterClient) RPop(ctx context.Context, key string) *StringCmd
+func (c ClusterClient) Publish(ctx context.Context, channel string, message interface{})*IntCmd
+func (c ClusterClient) Quit(_context.Context) *StatusCmd
+func (c ClusterClient) RPop(ctx context.Context, key string)*StringCmd
 func (c ClusterClient) RPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c ClusterClient) RPopLPush(ctx context.Context, source, destination string) *StringCmd
+func (c ClusterClient) RPopLPush(ctx context.Context, source, destination string)*StringCmd
 func (c ClusterClient) RPush(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c ClusterClient) RPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c ClusterClient) RPushX(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c ClusterClient) RandomKey(ctx context.Context) *StringCmd
-func (c ClusterClient) ReadOnly(ctx context.Context) *StatusCmd
+func (c ClusterClient) ReadOnly(ctx context.Context)*StatusCmd
 func (c ClusterClient) ReadWrite(ctx context.Context) *StatusCmd
-func (c *ClusterClient) ReloadState(ctx context.Context)
+func (c*ClusterClient) ReloadState(ctx context.Context)
 func (c ClusterClient) Rename(ctx context.Context, key, newkey string) *StatusCmd
-func (c ClusterClient) RenameNX(ctx context.Context, key, newkey string) *BoolCmd
+func (c ClusterClient) RenameNX(ctx context.Context, key, newkey string)*BoolCmd
 func (c ClusterClient) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
-func (c ClusterClient) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
+func (c ClusterClient) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string)*StatusCmd
 func (c ClusterClient) SAdd(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c ClusterClient) SCard(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) SCard(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) SDiff(ctx context.Context, keys ...string) *StringSliceCmd
-func (c ClusterClient) SDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c ClusterClient) SDiffStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c ClusterClient) SInter(ctx context.Context, keys ...string) *StringSliceCmd
-func (c ClusterClient) SInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
+func (c ClusterClient) SInterCard(ctx context.Context, limit int64, keys ...string)*IntCmd
 func (c ClusterClient) SInterStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c ClusterClient) SIsMember(ctx context.Context, key string, member interface{}) *BoolCmd
+func (c ClusterClient) SIsMember(ctx context.Context, key string, member interface{})*BoolCmd
 func (c ClusterClient) SMIsMember(ctx context.Context, key string, members ...interface{}) *BoolSliceCmd
-func (c ClusterClient) SMembers(ctx context.Context, key string) *StringSliceCmd
+func (c ClusterClient) SMembers(ctx context.Context, key string)*StringSliceCmd
 func (c ClusterClient) SMembersMap(ctx context.Context, key string) *StringStructMapCmd
-func (c ClusterClient) SMove(ctx context.Context, source, destination string, member interface{}) *BoolCmd
+func (c ClusterClient) SMove(ctx context.Context, source, destination string, member interface{})*BoolCmd
 func (c ClusterClient) SPop(ctx context.Context, key string) *StringCmd
-func (c ClusterClient) SPopN(ctx context.Context, key string, count int64) *StringSliceCmd
+func (c ClusterClient) SPopN(ctx context.Context, key string, count int64)*StringSliceCmd
 func (c ClusterClient) SPublish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c ClusterClient) SRandMember(ctx context.Context, key string) *StringCmd
+func (c ClusterClient) SRandMember(ctx context.Context, key string)*StringCmd
 func (c ClusterClient) SRandMemberN(ctx context.Context, key string, count int64) *StringSliceCmd
-func (c ClusterClient) SRem(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c ClusterClient) SRem(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c ClusterClient) SScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c *ClusterClient) SSubscribe(ctx context.Context, channels ...string) *PubSub
-func (c ClusterClient) SUnion(ctx context.Context, keys ...string) *StringSliceCmd
+func (c*ClusterClient) SSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c ClusterClient) SUnion(ctx context.Context, keys ...string)*StringSliceCmd
 func (c ClusterClient) SUnionStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c ClusterClient) Save(ctx context.Context) *StatusCmd
+func (c ClusterClient) Save(ctx context.Context)*StatusCmd
 func (c ClusterClient) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd
-func (c ClusterClient) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd
-func (c *ClusterClient) ScriptExists(ctx context.Context, hashes ...string) *BoolSliceCmd
-func (c *ClusterClient) ScriptFlush(ctx context.Context) *StatusCmd
+func (c ClusterClient) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string)*ScanCmd
+func (c *ClusterClient) ScriptExists(ctx context.Context, hashes ...string)*BoolSliceCmd
+func (c *ClusterClient) ScriptFlush(ctx context.Context)*StatusCmd
 func (c ClusterClient) ScriptKill(ctx context.Context) *StatusCmd
-func (c *ClusterClient) ScriptLoad(ctx context.Context, script string) *StringCmd
-func (c ClusterClient) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
+func (c*ClusterClient) ScriptLoad(ctx context.Context, script string) *StringCmd
+func (c ClusterClient) Set(ctx context.Context, key string, value interface{}, expiration time.Duration)*StatusCmd
 func (c ClusterClient) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs) *StatusCmd
-func (c ClusterClient) SetBit(ctx context.Context, key string, offset int64, value int) *IntCmd
+func (c ClusterClient) SetBit(ctx context.Context, key string, offset int64, value int)*IntCmd
 func (c ClusterClient) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c ClusterClient) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
+func (c ClusterClient) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StatusCmd
 func (c ClusterClient) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
-func (c ClusterClient) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
+func (c ClusterClient) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StatusCmd
 func (c ClusterClient) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
-func (c ClusterClient) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
+func (c ClusterClient) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StatusCmd
 func (c ClusterClient) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
-func (c ClusterClient) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
+func (c ClusterClient) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StatusCmd
 func (c ClusterClient) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
-func (c ClusterClient) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
+func (c ClusterClient) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration)*BoolCmd
 func (c ClusterClient) SetRange(ctx context.Context, key string, offset int64, value string) *IntCmd
-func (c ClusterClient) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
+func (c ClusterClient) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration)*BoolCmd
 func (c ClusterClient) Shutdown(ctx context.Context) *StatusCmd
-func (c ClusterClient) ShutdownNoSave(ctx context.Context) *StatusCmd
+func (c ClusterClient) ShutdownNoSave(ctx context.Context)*StatusCmd
 func (c ClusterClient) ShutdownSave(ctx context.Context) *StatusCmd
-func (c *ClusterClient) SlaveForKey(ctx context.Context, key string) (*Client, error)
-func (c ClusterClient) SlaveOf(ctx context.Context, host, port string) *StatusCmd
+func (c*ClusterClient) SlaveForKey(ctx context.Context, key string) (*Client, error)
+func (c ClusterClient) SlaveOf(ctx context.Context, host, port string)*StatusCmd
 func (c ClusterClient) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd
-func (c ClusterClient) SlowLogLen(ctx context.Context) *IntCmd
+func (c ClusterClient) SlowLogLen(ctx context.Context)*IntCmd
 func (c ClusterClient) SlowLogReset(ctx context.Context) *StatusCmd
-func (c ClusterClient) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c ClusterClient) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd
-func (c ClusterClient) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c ClusterClient) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd
-func (c ClusterClient) StrLen(ctx context.Context, key string) *IntCmd
-func (c *ClusterClient) Subscribe(ctx context.Context, channels ...string) *PubSub
+func (c ClusterClient) Sort(ctx context.Context, key string, sort*Sort) *StringSliceCmd
+func (c ClusterClient) SortInterfaces(ctx context.Context, key string, sort*Sort) *SliceCmd
+func (c ClusterClient) SortRO(ctx context.Context, key string, sort*Sort) *StringSliceCmd
+func (c ClusterClient) SortStore(ctx context.Context, key, store string, sort*Sort) *IntCmd
+func (c ClusterClient) StrLen(ctx context.Context, key string)*IntCmd
+func (c *ClusterClient) Subscribe(ctx context.Context, channels ...string)*PubSub
 func (c ClusterClient) Sync(_ context.Context)
 func (c ClusterClient) TDigestAdd(ctx context.Context, key string, elements ...float64) *StatusCmd
-func (c ClusterClient) TDigestByRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
+func (c ClusterClient) TDigestByRank(ctx context.Context, key string, rank ...uint64)*FloatSliceCmd
 func (c ClusterClient) TDigestByRevRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
-func (c ClusterClient) TDigestCDF(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
+func (c ClusterClient) TDigestCDF(ctx context.Context, key string, elements ...float64)*FloatSliceCmd
 func (c ClusterClient) TDigestCreate(ctx context.Context, key string) *StatusCmd
-func (c ClusterClient) TDigestCreateWithCompression(ctx context.Context, key string, compression int64) *StatusCmd
+func (c ClusterClient) TDigestCreateWithCompression(ctx context.Context, key string, compression int64)*StatusCmd
 func (c ClusterClient) TDigestInfo(ctx context.Context, key string) *TDigestInfoCmd
-func (c ClusterClient) TDigestMax(ctx context.Context, key string) *FloatCmd
-func (c ClusterClient) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...) *StatusCmd
+func (c ClusterClient) TDigestMax(ctx context.Context, key string)*FloatCmd
+func (c ClusterClient) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...)*StatusCmd
 func (c ClusterClient) TDigestMin(ctx context.Context, key string) *FloatCmd
-func (c ClusterClient) TDigestQuantile(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
+func (c ClusterClient) TDigestQuantile(ctx context.Context, key string, elements ...float64)*FloatSliceCmd
 func (c ClusterClient) TDigestRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
-func (c ClusterClient) TDigestReset(ctx context.Context, key string) *StatusCmd
+func (c ClusterClient) TDigestReset(ctx context.Context, key string)*StatusCmd
 func (c ClusterClient) TDigestRevRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
-func (c ClusterClient) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64) *FloatCmd
+func (c ClusterClient) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64)*FloatCmd
 func (c ClusterClient) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd
-func (c ClusterClient) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...) *IntCmd
-func (c ClusterClient) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd
+func (c ClusterClient) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...)*IntCmd
+func (c ClusterClient) TSAlter(ctx context.Context, key string, options *TSAlterOptions)*StatusCmd
 func (c ClusterClient) TSCreate(ctx context.Context, key string) *StatusCmd
-func (c ClusterClient) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
+func (c ClusterClient) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...)*StatusCmd
 func (c ClusterClient) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c ClusterClient) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd
-func (c ClusterClient) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c ClusterClient) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
+func (c ClusterClient) TSCreateWithArgs(ctx context.Context, key string, options*TSOptions) *StatusCmd
+func (c ClusterClient) TSDecrBy(ctx context.Context, Key string, timestamp float64)*IntCmd
+func (c ClusterClient) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions)*IntCmd
 func (c ClusterClient) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd
-func (c ClusterClient) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd
+func (c ClusterClient) TSDeleteRule(ctx context.Context, sourceKey string, destKey string)*StatusCmd
 func (c ClusterClient) TSGet(ctx context.Context, key string) *TSTimestampValueCmd
-func (c ClusterClient) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd
-func (c ClusterClient) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c ClusterClient) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
+func (c ClusterClient) TSGetWithArgs(ctx context.Context, key string, options*TSGetOptions) *TSTimestampValueCmd
+func (c ClusterClient) TSIncrBy(ctx context.Context, Key string, timestamp float64)*IntCmd
+func (c ClusterClient) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions)*IntCmd
 func (c ClusterClient) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c ClusterClient) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd
-func (c ClusterClient) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd
+func (c ClusterClient) TSInfoWithArgs(ctx context.Context, key string, options*TSInfoOptions) *MapStringInterfaceCmd
+func (c ClusterClient) TSMAdd(ctx context.Context, ktvSlices [][]interface{})*IntSliceCmd
 func (c ClusterClient) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd
-func (c ClusterClient) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd
-func (c ClusterClient) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
+func (c ClusterClient) TSMGetWithArgs(ctx context.Context, filters []string, options*TSMGetOptions) *MapStringSliceInterfaceCmd
+func (c ClusterClient) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string)*MapStringSliceInterfaceCmd
 func (c ClusterClient) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
-func (c ClusterClient) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
+func (c ClusterClient) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string)*MapStringSliceInterfaceCmd
 func (c ClusterClient) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
-func (c ClusterClient) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd
+func (c ClusterClient) TSQueryIndex(ctx context.Context, filterExpr []string)*StringSliceCmd
 func (c ClusterClient) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
-func (c ClusterClient) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
+func (c ClusterClient) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...)*TSTimestampValueSliceCmd
 func (c ClusterClient) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
-func (c ClusterClient) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
+func (c ClusterClient) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...)*TSTimestampValueSliceCmd
 func (c ClusterClient) TTL(ctx context.Context, key string) *DurationCmd
-func (c ClusterClient) Time(ctx context.Context) *TimeCmd
+func (c ClusterClient) Time(ctx context.Context)*TimeCmd
 func (c ClusterClient) TopKAdd(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
-func (c ClusterClient) TopKCount(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c ClusterClient) TopKCount(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c ClusterClient) TopKIncrBy(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
-func (c ClusterClient) TopKInfo(ctx context.Context, key string) *TopKInfoCmd
+func (c ClusterClient) TopKInfo(ctx context.Context, key string)*TopKInfoCmd
 func (c ClusterClient) TopKList(ctx context.Context, key string) *StringSliceCmd
-func (c ClusterClient) TopKListWithCount(ctx context.Context, key string) *MapStringIntCmd
+func (c ClusterClient) TopKListWithCount(ctx context.Context, key string)*MapStringIntCmd
 func (c ClusterClient) TopKQuery(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c ClusterClient) TopKReserve(ctx context.Context, key string, k int64) *StatusCmd
+func (c ClusterClient) TopKReserve(ctx context.Context, key string, k int64)*StatusCmd
 func (c ClusterClient) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64) *StatusCmd
-func (c ClusterClient) Touch(ctx context.Context, keys ...string) *IntCmd
+func (c ClusterClient) Touch(ctx context.Context, keys ...string)*IntCmd
 func (c *ClusterClient) TxPipeline() Pipeliner
-func (c *ClusterClient) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
+func (c*ClusterClient) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
 func (c ClusterClient) Type(ctx context.Context, key string) *StatusCmd
-func (c ClusterClient) Unlink(ctx context.Context, keys ...string) *IntCmd
+func (c ClusterClient) Unlink(ctx context.Context, keys ...string)*IntCmd
 func (c ClusterClient) VAdd(ctx context.Context, key, element string, val Vector) *BoolCmd
-func (c ClusterClient) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs) *BoolCmd
-func (c ClusterClient) VCard(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs*VAddArgs) *BoolCmd
+func (c ClusterClient) VCard(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) VClearAttributes(ctx context.Context, key, element string) *BoolCmd
-func (c ClusterClient) VDim(ctx context.Context, key string) *IntCmd
+func (c ClusterClient) VDim(ctx context.Context, key string)*IntCmd
 func (c ClusterClient) VEmb(ctx context.Context, key, element string, raw bool) *SliceCmd
-func (c ClusterClient) VGetAttr(ctx context.Context, key, element string) *StringCmd
+func (c ClusterClient) VGetAttr(ctx context.Context, key, element string)*StringCmd
 func (c ClusterClient) VInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c ClusterClient) VLinks(ctx context.Context, key, element string) *StringSliceCmd
+func (c ClusterClient) VLinks(ctx context.Context, key, element string)*StringSliceCmd
 func (c ClusterClient) VLinksWithScores(ctx context.Context, key, element string) *VectorScoreSliceCmd
-func (c ClusterClient) VRandMember(ctx context.Context, key string) *StringCmd
+func (c ClusterClient) VRandMember(ctx context.Context, key string)*StringCmd
 func (c ClusterClient) VRandMemberCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c ClusterClient) VRange(ctx context.Context, key, start, end string, count int64) *StringSliceCmd
+func (c ClusterClient) VRange(ctx context.Context, key, start, end string, count int64)*StringSliceCmd
 func (c ClusterClient) VRem(ctx context.Context, key, element string) *BoolCmd
-func (c ClusterClient) VSetAttr(ctx context.Context, key, element string, attr interface{}) *BoolCmd
+func (c ClusterClient) VSetAttr(ctx context.Context, key, element string, attr interface{})*BoolCmd
 func (c ClusterClient) VSim(ctx context.Context, key string, val Vector) *StringSliceCmd
-func (c ClusterClient) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *StringSliceCmd
-func (c ClusterClient) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *VectorScoreSliceCmd
-func (c ClusterClient) VSimWithScores(ctx context.Context, key string, val Vector) *VectorScoreSliceCmd
+func (c ClusterClient) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs*VSimArgs) *StringSliceCmd
+func (c ClusterClient) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs*VSimArgs) *VectorScoreSliceCmd
+func (c ClusterClient) VSimWithScores(ctx context.Context, key string, val Vector)*VectorScoreSliceCmd
 func (c ClusterClient) Wait(ctx context.Context, numSlaves int, timeout time.Duration) *IntCmd
-func (c ClusterClient) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration) *IntCmd
+func (c ClusterClient) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration)*IntCmd
 func (c *ClusterClient) Watch(ctx context.Context, fn func(*Tx) error, keys ...string) error
 func (c ClusterClient) XAck(ctx context.Context, stream, group string, ids ...string) *IntCmd
-func (c ClusterClient) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *SliceCmd
-func (c ClusterClient) XAdd(ctx context.Context, a *XAddArgs) *StringCmd
-func (c ClusterClient) XAutoClaim(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimCmd
-func (c ClusterClient) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimJustIDCmd
-func (c ClusterClient) XClaim(ctx context.Context, a *XClaimArgs) *XMessageSliceCmd
-func (c ClusterClient) XClaimJustID(ctx context.Context, a *XClaimArgs) *StringSliceCmd
+func (c ClusterClient) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string)*SliceCmd
+func (c ClusterClient) XAdd(ctx context.Context, a *XAddArgs)*StringCmd
+func (c ClusterClient) XAutoClaim(ctx context.Context, a *XAutoClaimArgs)*XAutoClaimCmd
+func (c ClusterClient) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs)*XAutoClaimJustIDCmd
+func (c ClusterClient) XClaim(ctx context.Context, a *XClaimArgs)*XMessageSliceCmd
+func (c ClusterClient) XClaimJustID(ctx context.Context, a *XClaimArgs)*StringSliceCmd
 func (c ClusterClient) XDel(ctx context.Context, stream string, ids ...string) *IntCmd
-func (c ClusterClient) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *SliceCmd
+func (c ClusterClient) XDelEx(ctx context.Context, stream string, mode string, ids ...string)*SliceCmd
 func (c ClusterClient) XGroupCreate(ctx context.Context, stream, group, start string) *StatusCmd
-func (c ClusterClient) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
+func (c ClusterClient) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string)*IntCmd
 func (c ClusterClient) XGroupCreateMkStream(ctx context.Context, stream, group, start string) *StatusCmd
-func (c ClusterClient) XGroupDelConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
+func (c ClusterClient) XGroupDelConsumer(ctx context.Context, stream, group, consumer string)*IntCmd
 func (c ClusterClient) XGroupDestroy(ctx context.Context, stream, group string) *IntCmd
-func (c ClusterClient) XGroupSetID(ctx context.Context, stream, group, start string) *StatusCmd
+func (c ClusterClient) XGroupSetID(ctx context.Context, stream, group, start string)*StatusCmd
 func (c ClusterClient) XInfoConsumers(ctx context.Context, key string, group string) *XInfoConsumersCmd
-func (c ClusterClient) XInfoGroups(ctx context.Context, key string) *XInfoGroupsCmd
+func (c ClusterClient) XInfoGroups(ctx context.Context, key string)*XInfoGroupsCmd
 func (c ClusterClient) XInfoStream(ctx context.Context, key string) *XInfoStreamCmd
-func (c ClusterClient) XInfoStreamFull(ctx context.Context, key string, count int) *XInfoStreamFullCmd
+func (c ClusterClient) XInfoStreamFull(ctx context.Context, key string, count int)*XInfoStreamFullCmd
 func (c ClusterClient) XLen(ctx context.Context, stream string) *IntCmd
-func (c ClusterClient) XPending(ctx context.Context, stream, group string) *XPendingCmd
-func (c ClusterClient) XPendingExt(ctx context.Context, a *XPendingExtArgs) *XPendingExtCmd
+func (c ClusterClient) XPending(ctx context.Context, stream, group string)*XPendingCmd
+func (c ClusterClient) XPendingExt(ctx context.Context, a *XPendingExtArgs)*XPendingExtCmd
 func (c ClusterClient) XRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
-func (c ClusterClient) XRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c ClusterClient) XRead(ctx context.Context, a *XReadArgs) *XStreamSliceCmd
-func (c ClusterClient) XReadGroup(ctx context.Context, a *XReadGroupArgs) *XStreamSliceCmd
+func (c ClusterClient) XRangeN(ctx context.Context, stream, start, stop string, count int64)*XMessageSliceCmd
+func (c ClusterClient) XRead(ctx context.Context, a *XReadArgs)*XStreamSliceCmd
+func (c ClusterClient) XReadGroup(ctx context.Context, a *XReadGroupArgs)*XStreamSliceCmd
 func (c ClusterClient) XReadStreams(ctx context.Context, streams ...string) *XStreamSliceCmd
-func (c ClusterClient) XRevRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
+func (c ClusterClient) XRevRange(ctx context.Context, stream, start, stop string)*XMessageSliceCmd
 func (c ClusterClient) XRevRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c ClusterClient) XTrimMaxLen(ctx context.Context, key string, maxLen int64) *IntCmd
+func (c ClusterClient) XTrimMaxLen(ctx context.Context, key string, maxLen int64)*IntCmd
 func (c ClusterClient) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64) *IntCmd
-func (c ClusterClient) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string) *IntCmd
+func (c ClusterClient) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string)*IntCmd
 func (c ClusterClient) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *IntCmd
-func (c ClusterClient) XTrimMinID(ctx context.Context, key string, minID string) *IntCmd
+func (c ClusterClient) XTrimMinID(ctx context.Context, key string, minID string)*IntCmd
 func (c ClusterClient) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64) *IntCmd
-func (c ClusterClient) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *IntCmd
+func (c ClusterClient) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string)*IntCmd
 func (c ClusterClient) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *IntCmd
-func (c ClusterClient) ZAdd(ctx context.Context, key string, members ...Z) *IntCmd
+func (c ClusterClient) ZAdd(ctx context.Context, key string, members ...Z)*IntCmd
 func (c ClusterClient) ZAddArgs(ctx context.Context, key string, args ZAddArgs) *IntCmd
-func (c ClusterClient) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs) *FloatCmd
+func (c ClusterClient) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs)*FloatCmd
 func (c ClusterClient) ZAddGT(ctx context.Context, key string, members ...Z) *IntCmd
-func (c ClusterClient) ZAddLT(ctx context.Context, key string, members ...Z) *IntCmd
+func (c ClusterClient) ZAddLT(ctx context.Context, key string, members ...Z)*IntCmd
 func (c ClusterClient) ZAddNX(ctx context.Context, key string, members ...Z) *IntCmd
-func (c ClusterClient) ZAddXX(ctx context.Context, key string, members ...Z) *IntCmd
+func (c ClusterClient) ZAddXX(ctx context.Context, key string, members ...Z)*IntCmd
 func (c ClusterClient) ZCard(ctx context.Context, key string) *IntCmd
-func (c ClusterClient) ZCount(ctx context.Context, key, min, max string) *IntCmd
+func (c ClusterClient) ZCount(ctx context.Context, key, min, max string)*IntCmd
 func (c ClusterClient) ZDiff(ctx context.Context, keys ...string) *StringSliceCmd
-func (c ClusterClient) ZDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c ClusterClient) ZDiffStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c ClusterClient) ZDiffWithScores(ctx context.Context, keys ...string) *ZSliceCmd
-func (c ClusterClient) ZIncrBy(ctx context.Context, key string, increment float64, member string) *FloatCmd
-func (c ClusterClient) ZInter(ctx context.Context, store *ZStore) *StringSliceCmd
+func (c ClusterClient) ZIncrBy(ctx context.Context, key string, increment float64, member string)*FloatCmd
+func (c ClusterClient) ZInter(ctx context.Context, store *ZStore)*StringSliceCmd
 func (c ClusterClient) ZInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c ClusterClient) ZInterStore(ctx context.Context, destination string, store *ZStore) *IntCmd
-func (c ClusterClient) ZInterWithScores(ctx context.Context, store *ZStore) *ZSliceCmd
-func (c ClusterClient) ZLexCount(ctx context.Context, key, min, max string) *IntCmd
+func (c ClusterClient) ZInterStore(ctx context.Context, destination string, store*ZStore) *IntCmd
+func (c ClusterClient) ZInterWithScores(ctx context.Context, store*ZStore) *ZSliceCmd
+func (c ClusterClient) ZLexCount(ctx context.Context, key, min, max string)*IntCmd
 func (c ClusterClient) ZMPop(ctx context.Context, order string, count int64, keys ...string) *ZSliceWithKeyCmd
-func (c ClusterClient) ZMScore(ctx context.Context, key string, members ...string) *FloatSliceCmd
+func (c ClusterClient) ZMScore(ctx context.Context, key string, members ...string)*FloatSliceCmd
 func (c ClusterClient) ZPopMax(ctx context.Context, key string, count ...int64) *ZSliceCmd
-func (c ClusterClient) ZPopMin(ctx context.Context, key string, count ...int64) *ZSliceCmd
+func (c ClusterClient) ZPopMin(ctx context.Context, key string, count ...int64)*ZSliceCmd
 func (c ClusterClient) ZRandMember(ctx context.Context, key string, count int) *StringSliceCmd
-func (c ClusterClient) ZRandMemberWithScores(ctx context.Context, key string, count int) *ZSliceCmd
+func (c ClusterClient) ZRandMemberWithScores(ctx context.Context, key string, count int)*ZSliceCmd
 func (c ClusterClient) ZRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c ClusterClient) ZRangeArgs(ctx context.Context, z ZRangeArgs) *StringSliceCmd
+func (c ClusterClient) ZRangeArgs(ctx context.Context, z ZRangeArgs)*StringSliceCmd
 func (c ClusterClient) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs) *ZSliceCmd
-func (c ClusterClient) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c ClusterClient) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c ClusterClient) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
-func (c ClusterClient) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs) *IntCmd
+func (c ClusterClient) ZRangeByLex(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c ClusterClient) ZRangeByScore(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c ClusterClient) ZRangeByScoreWithScores(ctx context.Context, key string, opt*ZRangeBy) *ZSliceCmd
+func (c ClusterClient) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs)*IntCmd
 func (c ClusterClient) ZRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
-func (c ClusterClient) ZRank(ctx context.Context, key, member string) *IntCmd
+func (c ClusterClient) ZRank(ctx context.Context, key, member string)*IntCmd
 func (c ClusterClient) ZRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
-func (c ClusterClient) ZRem(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c ClusterClient) ZRem(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c ClusterClient) ZRemRangeByLex(ctx context.Context, key, min, max string) *IntCmd
-func (c ClusterClient) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) *IntCmd
+func (c ClusterClient) ZRemRangeByRank(ctx context.Context, key string, start, stop int64)*IntCmd
 func (c ClusterClient) ZRemRangeByScore(ctx context.Context, key, min, max string) *IntCmd
-func (c ClusterClient) ZRevRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c ClusterClient) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c ClusterClient) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c ClusterClient) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
+func (c ClusterClient) ZRevRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
+func (c ClusterClient) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c ClusterClient) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c ClusterClient) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy)*ZSliceCmd
 func (c ClusterClient) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
-func (c ClusterClient) ZRevRank(ctx context.Context, key, member string) *IntCmd
+func (c ClusterClient) ZRevRank(ctx context.Context, key, member string)*IntCmd
 func (c ClusterClient) ZRevRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
-func (c ClusterClient) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c ClusterClient) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c ClusterClient) ZScore(ctx context.Context, key, member string) *FloatCmd
-func (c ClusterClient) ZUnion(ctx context.Context, store ZStore) *StringSliceCmd
-func (c ClusterClient) ZUnionStore(ctx context.Context, dest string, store *ZStore) *IntCmd
+func (c ClusterClient) ZUnion(ctx context.Context, store ZStore)*StringSliceCmd
+func (c ClusterClient) ZUnionStore(ctx context.Context, dest string, store *ZStore)*IntCmd
 func (c ClusterClient) ZUnionWithScores(ctx context.Context, store ZStore) *ZSliceCmd
 type ClusterCmdable
 type ClusterLink
 type ClusterLinksCmd
-func NewClusterLinksCmd(ctx context.Context, args ...interface{}) *ClusterLinksCmd
+func NewClusterLinksCmd(ctx context.Context, args ...interface{})*ClusterLinksCmd
 func (cmd *ClusterLinksCmd) Args() []interface{}
-func (cmd *ClusterLinksCmd) Err() error
+func (cmd*ClusterLinksCmd) Err() error
 func (cmd *ClusterLinksCmd) FullName() string
-func (cmd *ClusterLinksCmd) Name() string
+func (cmd*ClusterLinksCmd) Name() string
 func (cmd *ClusterLinksCmd) Result() ([]ClusterLink, error)
-func (cmd *ClusterLinksCmd) SetErr(e error)
+func (cmd*ClusterLinksCmd) SetErr(e error)
 func (cmd *ClusterLinksCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *ClusterLinksCmd) SetVal(val []ClusterLink)
+func (cmd*ClusterLinksCmd) SetVal(val []ClusterLink)
 func (cmd *ClusterLinksCmd) String() string
-func (cmd *ClusterLinksCmd) Val() []ClusterLink
+func (cmd*ClusterLinksCmd) Val() []ClusterLink
 type ClusterNode
 type ClusterOptions
 func ParseClusterURL(redisURL string) (*ClusterOptions, error)
 type ClusterShard
 type ClusterShardsCmd
-func NewClusterShardsCmd(ctx context.Context, args ...interface{}) *ClusterShardsCmd
+func NewClusterShardsCmd(ctx context.Context, args ...interface{})*ClusterShardsCmd
 func (cmd *ClusterShardsCmd) Args() []interface{}
-func (cmd *ClusterShardsCmd) Err() error
+func (cmd*ClusterShardsCmd) Err() error
 func (cmd *ClusterShardsCmd) FullName() string
-func (cmd *ClusterShardsCmd) Name() string
+func (cmd*ClusterShardsCmd) Name() string
 func (cmd *ClusterShardsCmd) Result() ([]ClusterShard, error)
-func (cmd *ClusterShardsCmd) SetErr(e error)
+func (cmd*ClusterShardsCmd) SetErr(e error)
 func (cmd *ClusterShardsCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *ClusterShardsCmd) SetVal(val []ClusterShard)
+func (cmd*ClusterShardsCmd) SetVal(val []ClusterShard)
 func (cmd *ClusterShardsCmd) String() string
-func (cmd *ClusterShardsCmd) Val() []ClusterShard
+func (cmd*ClusterShardsCmd) Val() []ClusterShard
 type ClusterSlot
 type ClusterSlotsCmd
 func NewClusterSlotsCmd(ctx context.Context, args ...interface{}) *ClusterSlotsCmd
-func NewClusterSlotsCmdResult(val []ClusterSlot, err error) *ClusterSlotsCmd
+func NewClusterSlotsCmdResult(val []ClusterSlot, err error)*ClusterSlotsCmd
 func (cmd *ClusterSlotsCmd) Args() []interface{}
-func (cmd *ClusterSlotsCmd) Err() error
+func (cmd*ClusterSlotsCmd) Err() error
 func (cmd *ClusterSlotsCmd) FullName() string
-func (cmd *ClusterSlotsCmd) Name() string
+func (cmd*ClusterSlotsCmd) Name() string
 func (cmd *ClusterSlotsCmd) Result() ([]ClusterSlot, error)
-func (cmd *ClusterSlotsCmd) SetErr(e error)
+func (cmd*ClusterSlotsCmd) SetErr(e error)
 func (cmd *ClusterSlotsCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *ClusterSlotsCmd) SetVal(val []ClusterSlot)
+func (cmd*ClusterSlotsCmd) SetVal(val []ClusterSlot)
 func (cmd *ClusterSlotsCmd) String() string
-func (cmd *ClusterSlotsCmd) Val() []ClusterSlot
+func (cmd*ClusterSlotsCmd) Val() []ClusterSlot
 type Cmd
 func NewCmd(ctx context.Context, args ...interface{}) *Cmd
-func NewCmdResult(val interface{}, err error) *Cmd
+func NewCmdResult(val interface{}, err error)*Cmd
 func (cmd *Cmd) Args() []interface{}
-func (cmd *Cmd) Bool() (bool, error)
+func (cmd*Cmd) Bool() (bool, error)
 func (cmd *Cmd) BoolSlice() ([]bool, error)
-func (cmd *Cmd) Err() error
+func (cmd*Cmd) Err() error
 func (cmd *Cmd) Float32() (float32, error)
-func (cmd *Cmd) Float32Slice() ([]float32, error)
+func (cmd*Cmd) Float32Slice() ([]float32, error)
 func (cmd *Cmd) Float64() (float64, error)
-func (cmd *Cmd) Float64Slice() ([]float64, error)
+func (cmd*Cmd) Float64Slice() ([]float64, error)
 func (cmd *Cmd) FullName() string
-func (cmd *Cmd) Int() (int, error)
+func (cmd*Cmd) Int() (int, error)
 func (cmd *Cmd) Int64() (int64, error)
-func (cmd *Cmd) Int64Slice() ([]int64, error)
+func (cmd*Cmd) Int64Slice() ([]int64, error)
 func (cmd *Cmd) Name() string
-func (cmd *Cmd) Result() (interface{}, error)
+func (cmd*Cmd) Result() (interface{}, error)
 func (cmd *Cmd) SetErr(e error)
-func (cmd *Cmd) SetFirstKeyPos(keyPos int8)
+func (cmd*Cmd) SetFirstKeyPos(keyPos int8)
 func (cmd *Cmd) SetVal(val interface{})
-func (cmd *Cmd) Slice() ([]interface{}, error)
+func (cmd*Cmd) Slice() ([]interface{}, error)
 func (cmd *Cmd) String() string
-func (cmd *Cmd) StringSlice() ([]string, error)
+func (cmd*Cmd) StringSlice() ([]string, error)
 func (cmd *Cmd) Text() (string, error)
-func (cmd *Cmd) Uint64() (uint64, error)
+func (cmd*Cmd) Uint64() (uint64, error)
 func (cmd *Cmd) Uint64Slice() ([]uint64, error)
-func (cmd *Cmd) Val() interface{}
+func (cmd*Cmd) Val() interface{}
 type Cmdable
 type Cmder
 type CommandInfo
 type CommandsInfoCmd
 func NewCommandsInfoCmd(ctx context.Context, args ...interface{}) *CommandsInfoCmd
 func NewCommandsInfoCmdResult(val map[string]*CommandInfo, err error) *CommandsInfoCmd
-func (cmd *CommandsInfoCmd) Args() []interface{}
+func (cmd*CommandsInfoCmd) Args() []interface{}
 func (cmd *CommandsInfoCmd) Err() error
-func (cmd *CommandsInfoCmd) FullName() string
+func (cmd*CommandsInfoCmd) FullName() string
 func (cmd *CommandsInfoCmd) Name() string
-func (cmd *CommandsInfoCmd) Result() (map[string]*CommandInfo, error)
-func (cmd *CommandsInfoCmd) SetErr(e error)
+func (cmd*CommandsInfoCmd) Result() (map[string]*CommandInfo, error)
+func (cmd*CommandsInfoCmd) SetErr(e error)
 func (cmd *CommandsInfoCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *CommandsInfoCmd) SetVal(val map[string]*CommandInfo)
-func (cmd *CommandsInfoCmd) String() string
+func (cmd*CommandsInfoCmd) SetVal(val map[string]*CommandInfo)
+func (cmd*CommandsInfoCmd) String() string
 func (cmd *CommandsInfoCmd) Val() map[string]*CommandInfo
 type Conn
 func (c Conn) ACLCat(ctx context.Context) *StringSliceCmd
-func (c Conn) ACLCatArgs(ctx context.Context, options *ACLCatArgs) *StringSliceCmd
-func (c Conn) ACLDelUser(ctx context.Context, username string) *IntCmd
+func (c Conn) ACLCatArgs(ctx context.Context, options*ACLCatArgs) *StringSliceCmd
+func (c Conn) ACLDelUser(ctx context.Context, username string)*IntCmd
 func (c Conn) ACLDryRun(ctx context.Context, username string, command ...interface{}) *StringCmd
-func (c Conn) ACLGenPass(ctx context.Context, bit int) *StringCmd
+func (c Conn) ACLGenPass(ctx context.Context, bit int)*StringCmd
 func (c Conn) ACLList(ctx context.Context) *StringSliceCmd
-func (c Conn) ACLLog(ctx context.Context, count int64) *ACLLogCmd
+func (c Conn) ACLLog(ctx context.Context, count int64)*ACLLogCmd
 func (c Conn) ACLLogReset(ctx context.Context) *StatusCmd
-func (c Conn) ACLSetUser(ctx context.Context, username string, rules ...string) *StatusCmd
+func (c Conn) ACLSetUser(ctx context.Context, username string, rules ...string)*StatusCmd
 func (c Conn) ACLUsers(ctx context.Context) *StringSliceCmd
-func (c Conn) ACLWhoAmI(ctx context.Context) *StringCmd
+func (c Conn) ACLWhoAmI(ctx context.Context)*StringCmd
 func (c Conn) Append(ctx context.Context, key, value string) *IntCmd
-func (c Conn) Auth(ctx context.Context, password string) *StatusCmd
+func (c Conn) Auth(ctx context.Context, password string)*StatusCmd
 func (c Conn) AuthACL(ctx context.Context, username, password string) *StatusCmd
-func (c Conn) BFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Conn) BFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Conn) BFCard(ctx context.Context, key string) *IntCmd
-func (c Conn) BFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Conn) BFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Conn) BFInfo(ctx context.Context, key string) *BFInfoCmd
-func (c Conn) BFInfoArg(ctx context.Context, key, option string) *BFInfoCmd
+func (c Conn) BFInfoArg(ctx context.Context, key, option string)*BFInfoCmd
 func (c Conn) BFInfoCapacity(ctx context.Context, key string) *BFInfoCmd
-func (c Conn) BFInfoExpansion(ctx context.Context, key string) *BFInfoCmd
+func (c Conn) BFInfoExpansion(ctx context.Context, key string)*BFInfoCmd
 func (c Conn) BFInfoFilters(ctx context.Context, key string) *BFInfoCmd
-func (c Conn) BFInfoItems(ctx context.Context, key string) *BFInfoCmd
+func (c Conn) BFInfoItems(ctx context.Context, key string)*BFInfoCmd
 func (c Conn) BFInfoSize(ctx context.Context, key string) *BFInfoCmd
-func (c Conn) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...) *BoolSliceCmd
-func (c Conn) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c Conn) BFInsert(ctx context.Context, key string, options*BFInsertOptions, ...) *BoolSliceCmd
+func (c Conn) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c Conn) BFMAdd(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Conn) BFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Conn) BFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Conn) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Conn) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64) *StatusCmd
+func (c Conn) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64)*StatusCmd
 func (c Conn) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Conn) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions) *StatusCmd
-func (c Conn) BFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c Conn) BFReserveWithArgs(ctx context.Context, key string, options*BFReserveOptions) *StatusCmd
+func (c Conn) BFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c Conn) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...) *KeyValuesCmd
-func (c Conn) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...) *StringCmd
+func (c Conn) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...)*StringCmd
 func (c Conn) BLPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
-func (c Conn) BRPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
+func (c Conn) BRPop(ctx context.Context, timeout time.Duration, keys ...string)*StringSliceCmd
 func (c Conn) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration) *StringCmd
-func (c Conn) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...) *ZSliceWithKeyCmd
+func (c Conn) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...)*ZSliceWithKeyCmd
 func (c Conn) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
-func (c Conn) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
+func (c Conn) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string)*ZWithKeyCmd
 func (c Conn) BgRewriteAOF(ctx context.Context) *StatusCmd
-func (c Conn) BgSave(ctx context.Context) *StatusCmd
-func (c Conn) BitCount(ctx context.Context, key string, bitCount *BitCount) *IntCmd
+func (c Conn) BgSave(ctx context.Context)*StatusCmd
+func (c Conn) BitCount(ctx context.Context, key string, bitCount *BitCount)*IntCmd
 func (c Conn) BitField(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
-func (c Conn) BitFieldRO(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
+func (c Conn) BitFieldRO(ctx context.Context, key string, values ...interface{})*IntSliceCmd
 func (c Conn) BitOpAnd(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Conn) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Conn) BitOpAndOr(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Conn) BitOpDiff(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Conn) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Conn) BitOpDiff1(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Conn) BitOpNot(ctx context.Context, destKey string, key string) *IntCmd
-func (c Conn) BitOpOne(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Conn) BitOpOne(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Conn) BitOpOr(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Conn) BitOpXor(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Conn) BitOpXor(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Conn) BitPos(ctx context.Context, key string, bit int64, pos ...int64) *IntCmd
-func (c Conn) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string) *IntCmd
+func (c Conn) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string)*IntCmd
 func (c Conn) CFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Conn) CFAddNX(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Conn) CFAddNX(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Conn) CFCount(ctx context.Context, key string, element interface{}) *IntCmd
-func (c Conn) CFDel(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Conn) CFDel(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Conn) CFExists(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Conn) CFInfo(ctx context.Context, key string) *CFInfoCmd
-func (c Conn) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...) *BoolSliceCmd
-func (c Conn) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...) *IntSliceCmd
+func (c Conn) CFInfo(ctx context.Context, key string)*CFInfoCmd
+func (c Conn) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...)*BoolSliceCmd
+func (c Conn) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...)*IntSliceCmd
 func (c Conn) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
-func (c Conn) CFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Conn) CFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Conn) CFReserve(ctx context.Context, key string, capacity int64) *StatusCmd
-func (c Conn) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64) *StatusCmd
+func (c Conn) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64)*StatusCmd
 func (c Conn) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64) *StatusCmd
-func (c Conn) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64) *StatusCmd
-func (c Conn) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions) *StatusCmd
+func (c Conn) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64)*StatusCmd
+func (c Conn) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions)*StatusCmd
 func (c Conn) CFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
-func (c Conn) CMSIncrBy(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Conn) CMSIncrBy(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Conn) CMSInfo(ctx context.Context, key string) *CMSInfoCmd
-func (c Conn) CMSInitByDim(ctx context.Context, key string, width, depth int64) *StatusCmd
+func (c Conn) CMSInitByDim(ctx context.Context, key string, width, depth int64)*StatusCmd
 func (c Conn) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64) *StatusCmd
-func (c Conn) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string) *StatusCmd
+func (c Conn) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string)*StatusCmd
 func (c Conn) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64) *StatusCmd
-func (c Conn) CMSQuery(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Conn) CMSQuery(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Conn) ClientGetName(ctx context.Context) *StringCmd
-func (c Conn) ClientID(ctx context.Context) *IntCmd
+func (c Conn) ClientID(ctx context.Context)*IntCmd
 func (c Conn) ClientInfo(ctx context.Context) *ClientInfoCmd
-func (c Conn) ClientKill(ctx context.Context, ipPort string) *StatusCmd
+func (c Conn) ClientKill(ctx context.Context, ipPort string)*StatusCmd
 func (c Conn) ClientKillByFilter(ctx context.Context, keys ...string) *IntCmd
-func (c Conn) ClientList(ctx context.Context) *StringCmd
+func (c Conn) ClientList(ctx context.Context)*StringCmd
 func (c Conn) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *StatusCmd
-func (c Conn) ClientPause(ctx context.Context, dur time.Duration) *BoolCmd
+func (c Conn) ClientPause(ctx context.Context, dur time.Duration)*BoolCmd
 func (c Conn) ClientSetInfo(ctx context.Context, info LibraryInfo) *StatusCmd
-func (c Conn) ClientSetName(ctx context.Context, name string) *BoolCmd
+func (c Conn) ClientSetName(ctx context.Context, name string)*BoolCmd
 func (c Conn) ClientUnblock(ctx context.Context, id int64) *IntCmd
-func (c Conn) ClientUnblockWithError(ctx context.Context, id int64) *IntCmd
+func (c Conn) ClientUnblockWithError(ctx context.Context, id int64)*IntCmd
 func (c Conn) ClientUnpause(ctx context.Context) *BoolCmd
-func (c *Conn) Close() error
+func (c*Conn) Close() error
 func (c Conn) ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
-func (c Conn) ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
+func (c Conn) ClusterAddSlotsRange(ctx context.Context, min, max int)*StatusCmd
 func (c Conn) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd
-func (c Conn) ClusterCountKeysInSlot(ctx context.Context, slot int) *IntCmd
+func (c Conn) ClusterCountKeysInSlot(ctx context.Context, slot int)*IntCmd
 func (c Conn) ClusterDelSlots(ctx context.Context, slots ...int) *StatusCmd
-func (c Conn) ClusterDelSlotsRange(ctx context.Context, min, max int) *StatusCmd
+func (c Conn) ClusterDelSlotsRange(ctx context.Context, min, max int)*StatusCmd
 func (c Conn) ClusterFailover(ctx context.Context) *StatusCmd
-func (c Conn) ClusterForget(ctx context.Context, nodeID string) *StatusCmd
+func (c Conn) ClusterForget(ctx context.Context, nodeID string)*StatusCmd
 func (c Conn) ClusterGetKeysInSlot(ctx context.Context, slot int, count int) *StringSliceCmd
-func (c Conn) ClusterInfo(ctx context.Context) *StringCmd
+func (c Conn) ClusterInfo(ctx context.Context)*StringCmd
 func (c Conn) ClusterKeySlot(ctx context.Context, key string) *IntCmd
-func (c Conn) ClusterLinks(ctx context.Context) *ClusterLinksCmd
+func (c Conn) ClusterLinks(ctx context.Context)*ClusterLinksCmd
 func (c Conn) ClusterMeet(ctx context.Context, host, port string) *StatusCmd
-func (c Conn) ClusterMyID(ctx context.Context) *StringCmd
+func (c Conn) ClusterMyID(ctx context.Context)*StringCmd
 func (c Conn) ClusterMyShardID(ctx context.Context) *StringCmd
-func (c Conn) ClusterNodes(ctx context.Context) *StringCmd
+func (c Conn) ClusterNodes(ctx context.Context)*StringCmd
 func (c Conn) ClusterReplicate(ctx context.Context, nodeID string) *StatusCmd
-func (c Conn) ClusterResetHard(ctx context.Context) *StatusCmd
+func (c Conn) ClusterResetHard(ctx context.Context)*StatusCmd
 func (c Conn) ClusterResetSoft(ctx context.Context) *StatusCmd
-func (c Conn) ClusterSaveConfig(ctx context.Context) *StatusCmd
+func (c Conn) ClusterSaveConfig(ctx context.Context)*StatusCmd
 func (c Conn) ClusterShards(ctx context.Context) *ClusterShardsCmd
-func (c Conn) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
+func (c Conn) ClusterSlaves(ctx context.Context, nodeID string)*StringSliceCmd
 func (c Conn) ClusterSlots(ctx context.Context) *ClusterSlotsCmd
-func (c Conn) Command(ctx context.Context) *CommandsInfoCmd
+func (c Conn) Command(ctx context.Context)*CommandsInfoCmd
 func (c Conn) CommandGetKeys(ctx context.Context, commands ...interface{}) *StringSliceCmd
-func (c Conn) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{}) *KeyFlagsCmd
-func (c Conn) CommandList(ctx context.Context, filter *FilterBy) *StringSliceCmd
+func (c Conn) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{})*KeyFlagsCmd
+func (c Conn) CommandList(ctx context.Context, filter *FilterBy)*StringSliceCmd
 func (c Conn) ConfigGet(ctx context.Context, parameter string) *MapStringStringCmd
-func (c Conn) ConfigResetStat(ctx context.Context) *StatusCmd
+func (c Conn) ConfigResetStat(ctx context.Context)*StatusCmd
 func (c Conn) ConfigRewrite(ctx context.Context) *StatusCmd
-func (c Conn) ConfigSet(ctx context.Context, parameter, value string) *StatusCmd
+func (c Conn) ConfigSet(ctx context.Context, parameter, value string)*StatusCmd
 func (c Conn) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd
-func (c Conn) DBSize(ctx context.Context) *IntCmd
+func (c Conn) DBSize(ctx context.Context)*IntCmd
 func (c Conn) DebugObject(ctx context.Context, key string) *StringCmd
-func (c Conn) Decr(ctx context.Context, key string) *IntCmd
+func (c Conn) Decr(ctx context.Context, key string)*IntCmd
 func (c Conn) DecrBy(ctx context.Context, key string, decrement int64) *IntCmd
-func (c Conn) Del(ctx context.Context, keys ...string) *IntCmd
+func (c Conn) Del(ctx context.Context, keys ...string)*IntCmd
 func (c Conn) DelExArgs(ctx context.Context, key string, a DelExArgs) *IntCmd
-func (c Conn) Digest(ctx context.Context, key string) *DigestCmd
+func (c Conn) Digest(ctx context.Context, key string)*DigestCmd
 func (c Conn) Do(ctx context.Context, args ...interface{}) *Cmd
-func (c Conn) Dump(ctx context.Context, key string) *StringCmd
+func (c Conn) Dump(ctx context.Context, key string)*StringCmd
 func (c Conn) Echo(ctx context.Context, message interface{}) *StringCmd
-func (c Conn) Eval(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
+func (c Conn) Eval(ctx context.Context, script string, keys []string, args ...interface{})*Cmd
 func (c Conn) EvalRO(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
-func (c Conn) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
+func (c Conn) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{})*Cmd
 func (c Conn) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
-func (c Conn) Exists(ctx context.Context, keys ...string) *IntCmd
+func (c Conn) Exists(ctx context.Context, keys ...string)*IntCmd
 func (c Conn) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Conn) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c Conn) ExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c Conn) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Conn) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Conn) ExpireLT(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Conn) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Conn) ExpireTime(ctx context.Context, key string) *DurationCmd
+func (c Conn) ExpireTime(ctx context.Context, key string)*DurationCmd
 func (c Conn) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Conn) FCall(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Conn) FCall(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Conn) FCallRO(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Conn) FCallRo(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Conn) FCallRo(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Conn) FTAggregate(ctx context.Context, index string, query string) *MapStringInterfaceCmd
-func (c Conn) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions) *AggregateCmd
-func (c Conn) FTAliasAdd(ctx context.Context, index string, alias string) *StatusCmd
+func (c Conn) FTAggregateWithArgs(ctx context.Context, index string, query string, options*FTAggregateOptions) *AggregateCmd
+func (c Conn) FTAliasAdd(ctx context.Context, index string, alias string)*StatusCmd
 func (c Conn) FTAliasDel(ctx context.Context, alias string) *StatusCmd
-func (c Conn) FTAliasUpdate(ctx context.Context, index string, alias string) *StatusCmd
+func (c Conn) FTAliasUpdate(ctx context.Context, index string, alias string)*StatusCmd
 func (c Conn) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...) *StatusCmd
-func (c Conn) FTConfigGet(ctx context.Context, option string) *MapMapStringInterfaceCmd
+func (c Conn) FTConfigGet(ctx context.Context, option string)*MapMapStringInterfaceCmd
 deprecated
 func (c Conn) FTConfigSet(ctx context.Context, option string, value interface{}) *StatusCmd
 deprecated
-func (c Conn) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...) *StatusCmd
-func (c Conn) FTCursorDel(ctx context.Context, index string, cursorId int) *StatusCmd
+func (c Conn) FTCreate(ctx context.Context, index string, options*FTCreateOptions, ...) *StatusCmd
+func (c Conn) FTCursorDel(ctx context.Context, index string, cursorId int)*StatusCmd
 func (c Conn) FTCursorRead(ctx context.Context, index string, cursorId int, count int) *MapStringInterfaceCmd
-func (c Conn) FTDictAdd(ctx context.Context, dict string, term ...interface{}) *IntCmd
+func (c Conn) FTDictAdd(ctx context.Context, dict string, term ...interface{})*IntCmd
 func (c Conn) FTDictDel(ctx context.Context, dict string, term ...interface{}) *IntCmd
-func (c Conn) FTDictDump(ctx context.Context, dict string) *StringSliceCmd
+func (c Conn) FTDictDump(ctx context.Context, dict string)*StringSliceCmd
 func (c Conn) FTDropIndex(ctx context.Context, index string) *StatusCmd
-func (c Conn) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions) *StatusCmd
-func (c Conn) FTExplain(ctx context.Context, index string, query string) *StringCmd
+func (c Conn) FTDropIndexWithArgs(ctx context.Context, index string, options*FTDropIndexOptions) *StatusCmd
+func (c Conn) FTExplain(ctx context.Context, index string, query string)*StringCmd
 func (c Conn) FTExplainCli(ctx context.Context, key, path string) error
-func (c Conn) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions) *StringCmd
+func (c Conn) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions)*StringCmd
 func (c Conn) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...) *FTHybridCmd
-func (c Conn) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions) *FTHybridCmd
-func (c Conn) FTInfo(ctx context.Context, index string) *FTInfoCmd
+func (c Conn) FTHybridWithArgs(ctx context.Context, index string, options*FTHybridOptions) *FTHybridCmd
+func (c Conn) FTInfo(ctx context.Context, index string)*FTInfoCmd
 func (c Conn) FTSearch(ctx context.Context, index string, query string) *FTSearchCmd
-func (c Conn) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions) *FTSearchCmd
-func (c Conn) FTSpellCheck(ctx context.Context, index string, query string) *FTSpellCheckCmd
-func (c Conn) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions) *FTSpellCheckCmd
+func (c Conn) FTSearchWithArgs(ctx context.Context, index string, query string, options*FTSearchOptions) *FTSearchCmd
+func (c Conn) FTSpellCheck(ctx context.Context, index string, query string)*FTSpellCheckCmd
+func (c Conn) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions)*FTSpellCheckCmd
 func (c Conn) FTSynDump(ctx context.Context, index string) *FTSynDumpCmd
-func (c Conn) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{}) *StatusCmd
+func (c Conn) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{})*StatusCmd
 func (c Conn) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...) *StatusCmd
-func (c Conn) FTTagVals(ctx context.Context, index string, field string) *StringSliceCmd
+func (c Conn) FTTagVals(ctx context.Context, index string, field string)*StringSliceCmd
 func (c Conn) FT_List(ctx context.Context) *StringSliceCmd
-func (c Conn) FlushAll(ctx context.Context) *StatusCmd
+func (c Conn) FlushAll(ctx context.Context)*StatusCmd
 func (c Conn) FlushAllAsync(ctx context.Context) *StatusCmd
-func (c Conn) FlushDB(ctx context.Context) *StatusCmd
+func (c Conn) FlushDB(ctx context.Context)*StatusCmd
 func (c Conn) FlushDBAsync(ctx context.Context) *StatusCmd
-func (c Conn) FunctionDelete(ctx context.Context, libName string) *StringCmd
+func (c Conn) FunctionDelete(ctx context.Context, libName string)*StringCmd
 func (c Conn) FunctionDump(ctx context.Context) *StringCmd
-func (c Conn) FunctionFlush(ctx context.Context) *StringCmd
+func (c Conn) FunctionFlush(ctx context.Context)*StringCmd
 func (c Conn) FunctionFlushAsync(ctx context.Context) *StringCmd
-func (c Conn) FunctionKill(ctx context.Context) *StringCmd
+func (c Conn) FunctionKill(ctx context.Context)*StringCmd
 func (c Conn) FunctionList(ctx context.Context, q FunctionListQuery) *FunctionListCmd
-func (c Conn) FunctionLoad(ctx context.Context, code string) *StringCmd
+func (c Conn) FunctionLoad(ctx context.Context, code string)*StringCmd
 func (c Conn) FunctionLoadReplace(ctx context.Context, code string) *StringCmd
-func (c Conn) FunctionRestore(ctx context.Context, libDump string) *StringCmd
+func (c Conn) FunctionRestore(ctx context.Context, libDump string)*StringCmd
 func (c Conn) FunctionStats(ctx context.Context) *FunctionStatsCmd
 func (c Conn) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation) *IntCmd
-func (c Conn) GeoDist(ctx context.Context, key string, member1, member2, unit string) *FloatCmd
+func (c Conn) GeoDist(ctx context.Context, key string, member1, member2, unit string)*FloatCmd
 func (c Conn) GeoHash(ctx context.Context, key string, members ...string) *StringSliceCmd
-func (c Conn) GeoPos(ctx context.Context, key string, members ...string) *GeoPosCmd
+func (c Conn) GeoPos(ctx context.Context, key string, members ...string)*GeoPosCmd
 func (c Conn) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...) *GeoLocationCmd
-func (c Conn) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery) *GeoLocationCmd
-func (c Conn) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery) *IntCmd
-func (c Conn) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...) *IntCmd
-func (c Conn) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery) *StringSliceCmd
-func (c Conn) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery) *GeoSearchLocationCmd
-func (c Conn) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery) *IntCmd
+func (c Conn) GeoRadiusByMember(ctx context.Context, key, member string, query*GeoRadiusQuery) *GeoLocationCmd
+func (c Conn) GeoRadiusByMemberStore(ctx context.Context, key, member string, query*GeoRadiusQuery) *IntCmd
+func (c Conn) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...)*IntCmd
+func (c Conn) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery)*StringSliceCmd
+func (c Conn) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery)*GeoSearchLocationCmd
+func (c Conn) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery)*IntCmd
 func (c Conn) Get(ctx context.Context, key string) *StringCmd
-func (c Conn) GetBit(ctx context.Context, key string, offset int64) *IntCmd
+func (c Conn) GetBit(ctx context.Context, key string, offset int64)*IntCmd
 func (c Conn) GetDel(ctx context.Context, key string) *StringCmd
-func (c Conn) GetEx(ctx context.Context, key string, expiration time.Duration) *StringCmd
+func (c Conn) GetEx(ctx context.Context, key string, expiration time.Duration)*StringCmd
 func (c Conn) GetRange(ctx context.Context, key string, start, end int64) *StringCmd
-func (c Conn) GetSet(ctx context.Context, key string, value interface{}) *StringCmd
+func (c Conn) GetSet(ctx context.Context, key string, value interface{})*StringCmd
 func (c Conn) HDel(ctx context.Context, key string, fields ...string) *IntCmd
-func (c Conn) HExists(ctx context.Context, key, field string) *BoolCmd
+func (c Conn) HExists(ctx context.Context, key, field string)*BoolCmd
 func (c Conn) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
-func (c Conn) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
+func (c Conn) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string)*IntSliceCmd
 func (c Conn) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
-func (c Conn) HExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Conn) HExpireTime(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Conn) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
-func (c Conn) HGet(ctx context.Context, key, field string) *StringCmd
+func (c Conn) HGet(ctx context.Context, key, field string)*StringCmd
 func (c Conn) HGetAll(ctx context.Context, key string) *MapStringStringCmd
-func (c Conn) HGetDel(ctx context.Context, key string, fields ...string) *StringSliceCmd
+func (c Conn) HGetDel(ctx context.Context, key string, fields ...string)*StringSliceCmd
 func (c Conn) HGetEX(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c Conn) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string) *StringSliceCmd
-func (c Conn) HIncrBy(ctx context.Context, key, field string, incr int64) *IntCmd
+func (c Conn) HGetEXWithArgs(ctx context.Context, key string, options*HGetEXOptions, fields ...string) *StringSliceCmd
+func (c Conn) HIncrBy(ctx context.Context, key, field string, incr int64)*IntCmd
 func (c Conn) HIncrByFloat(ctx context.Context, key, field string, incr float64) *FloatCmd
-func (c Conn) HKeys(ctx context.Context, key string) *StringSliceCmd
+func (c Conn) HKeys(ctx context.Context, key string)*StringSliceCmd
 func (c Conn) HLen(ctx context.Context, key string) *IntCmd
-func (c Conn) HMGet(ctx context.Context, key string, fields ...string) *SliceCmd
+func (c Conn) HMGet(ctx context.Context, key string, fields ...string)*SliceCmd
 func (c Conn) HMSet(ctx context.Context, key string, values ...interface{}) *BoolCmd
-func (c Conn) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
+func (c Conn) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string)*IntSliceCmd
 func (c Conn) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
-func (c Conn) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
+func (c Conn) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...)*IntSliceCmd
 func (c Conn) HPExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Conn) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
+func (c Conn) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...)*IntSliceCmd
 func (c Conn) HPTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Conn) HPersist(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Conn) HPersist(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Conn) HRandField(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Conn) HRandFieldWithValues(ctx context.Context, key string, count int) *KeyValueSliceCmd
+func (c Conn) HRandFieldWithValues(ctx context.Context, key string, count int)*KeyValueSliceCmd
 func (c Conn) HScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Conn) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Conn) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Conn) HSet(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Conn) HSetEX(ctx context.Context, key string, fieldsAndValues ...string) *IntCmd
-func (c Conn) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...) *IntCmd
+func (c Conn) HSetEX(ctx context.Context, key string, fieldsAndValues ...string)*IntCmd
+func (c Conn) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...)*IntCmd
 func (c Conn) HSetNX(ctx context.Context, key, field string, value interface{}) *BoolCmd
-func (c Conn) HStrLen(ctx context.Context, key, field string) *IntCmd
+func (c Conn) HStrLen(ctx context.Context, key, field string)*IntCmd
 func (c Conn) HTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Conn) HVals(ctx context.Context, key string) *StringSliceCmd
+func (c Conn) HVals(ctx context.Context, key string)*StringSliceCmd
 func (c Conn) Hello(ctx context.Context, ver int, username, password, clientName string) *MapStringInterfaceCmd
-func (c Conn) Incr(ctx context.Context, key string) *IntCmd
+func (c Conn) Incr(ctx context.Context, key string)*IntCmd
 func (c Conn) IncrBy(ctx context.Context, key string, value int64) *IntCmd
-func (c Conn) IncrByFloat(ctx context.Context, key string, value float64) *FloatCmd
+func (c Conn) IncrByFloat(ctx context.Context, key string, value float64)*FloatCmd
 func (c Conn) Info(ctx context.Context, sections ...string) *StringCmd
-func (c Conn) InfoMap(ctx context.Context, sections ...string) *InfoCmd
+func (c Conn) InfoMap(ctx context.Context, sections ...string)*InfoCmd
 func (c Conn) JSONArrAppend(ctx context.Context, key, path string, values ...interface{}) *IntSliceCmd
-func (c Conn) JSONArrIndex(ctx context.Context, key, path string, value ...interface{}) *IntSliceCmd
-func (c Conn) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...) *IntSliceCmd
+func (c Conn) JSONArrIndex(ctx context.Context, key, path string, value ...interface{})*IntSliceCmd
+func (c Conn) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...)*IntSliceCmd
 func (c Conn) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{}) *IntSliceCmd
-func (c Conn) JSONArrLen(ctx context.Context, key, path string) *IntSliceCmd
+func (c Conn) JSONArrLen(ctx context.Context, key, path string)*IntSliceCmd
 func (c Conn) JSONArrPop(ctx context.Context, key, path string, index int) *StringSliceCmd
-func (c Conn) JSONArrTrim(ctx context.Context, key, path string) *IntSliceCmd
-func (c Conn) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs) *IntSliceCmd
+func (c Conn) JSONArrTrim(ctx context.Context, key, path string)*IntSliceCmd
+func (c Conn) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs)*IntSliceCmd
 func (c Conn) JSONClear(ctx context.Context, key, path string) *IntCmd
-func (c Conn) JSONDebugMemory(ctx context.Context, key, path string) *IntCmd
+func (c Conn) JSONDebugMemory(ctx context.Context, key, path string)*IntCmd
 func (c Conn) JSONDel(ctx context.Context, key, path string) *IntCmd
-func (c Conn) JSONForget(ctx context.Context, key, path string) *IntCmd
+func (c Conn) JSONForget(ctx context.Context, key, path string)*IntCmd
 func (c Conn) JSONGet(ctx context.Context, key string, paths ...string) *JSONCmd
-func (c Conn) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string) *JSONCmd
-func (c Conn) JSONMGet(ctx context.Context, path string, keys ...string) *JSONSliceCmd
+func (c Conn) JSONGetWithArgs(ctx context.Context, key string, options*JSONGetArgs, paths ...string) *JSONCmd
+func (c Conn) JSONMGet(ctx context.Context, path string, keys ...string)*JSONSliceCmd
 func (c Conn) JSONMSet(ctx context.Context, params ...interface{}) *StatusCmd
-func (c Conn) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs) *StatusCmd
+func (c Conn) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs)*StatusCmd
 func (c Conn) JSONMerge(ctx context.Context, key, path string, value string) *StatusCmd
-func (c Conn) JSONNumIncrBy(ctx context.Context, key, path string, value float64) *JSONCmd
+func (c Conn) JSONNumIncrBy(ctx context.Context, key, path string, value float64)*JSONCmd
 func (c Conn) JSONObjKeys(ctx context.Context, key, path string) *SliceCmd
-func (c Conn) JSONObjLen(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Conn) JSONObjLen(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Conn) JSONSet(ctx context.Context, key, path string, value interface{}) *StatusCmd
-func (c Conn) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string) *StatusCmd
+func (c Conn) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string)*StatusCmd
 func (c Conn) JSONStrAppend(ctx context.Context, key, path, value string) *IntPointerSliceCmd
-func (c Conn) JSONStrLen(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Conn) JSONStrLen(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Conn) JSONToggle(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Conn) JSONType(ctx context.Context, key, path string) *JSONSliceCmd
+func (c Conn) JSONType(ctx context.Context, key, path string)*JSONSliceCmd
 func (c Conn) Keys(ctx context.Context, pattern string) *StringSliceCmd
-func (c Conn) LCS(ctx context.Context, q *LCSQuery) *LCSCmd
-func (c Conn) LIndex(ctx context.Context, key string, index int64) *StringCmd
+func (c Conn) LCS(ctx context.Context, q*LCSQuery) *LCSCmd
+func (c Conn) LIndex(ctx context.Context, key string, index int64)*StringCmd
 func (c Conn) LInsert(ctx context.Context, key, op string, pivot, value interface{}) *IntCmd
-func (c Conn) LInsertAfter(ctx context.Context, key string, pivot, value interface{}) *IntCmd
+func (c Conn) LInsertAfter(ctx context.Context, key string, pivot, value interface{})*IntCmd
 func (c Conn) LInsertBefore(ctx context.Context, key string, pivot, value interface{}) *IntCmd
-func (c Conn) LLen(ctx context.Context, key string) *IntCmd
+func (c Conn) LLen(ctx context.Context, key string)*IntCmd
 func (c Conn) LMPop(ctx context.Context, direction string, count int64, keys ...string) *KeyValuesCmd
-func (c Conn) LMove(ctx context.Context, source, destination, srcpos, destpos string) *StringCmd
+func (c Conn) LMove(ctx context.Context, source, destination, srcpos, destpos string)*StringCmd
 func (c Conn) LPop(ctx context.Context, key string) *StringCmd
-func (c Conn) LPopCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Conn) LPopCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Conn) LPos(ctx context.Context, key string, value string, a LPosArgs) *IntCmd
-func (c Conn) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs) *IntSliceCmd
+func (c Conn) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs)*IntSliceCmd
 func (c Conn) LPush(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Conn) LPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Conn) LPushX(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Conn) LRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Conn) LRem(ctx context.Context, key string, count int64, value interface{}) *IntCmd
+func (c Conn) LRem(ctx context.Context, key string, count int64, value interface{})*IntCmd
 func (c Conn) LSet(ctx context.Context, key string, index int64, value interface{}) *StatusCmd
-func (c Conn) LTrim(ctx context.Context, key string, start, stop int64) *StatusCmd
+func (c Conn) LTrim(ctx context.Context, key string, start, stop int64)*StatusCmd
 func (c Conn) LastSave(ctx context.Context) *IntCmd
-func (c Conn) Latency(ctx context.Context) *LatencyCmd
+func (c Conn) Latency(ctx context.Context)*LatencyCmd
 func (c Conn) LatencyReset(ctx context.Context, events ...interface{}) *StatusCmd
-func (c Conn) MGet(ctx context.Context, keys ...string) *SliceCmd
+func (c Conn) MGet(ctx context.Context, keys ...string)*SliceCmd
 func (c Conn) MSet(ctx context.Context, values ...interface{}) *StatusCmd
-func (c Conn) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{}) *IntCmd
+func (c Conn) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{})*IntCmd
 func (c Conn) MSetNX(ctx context.Context, values ...interface{}) *BoolCmd
-func (c Conn) MemoryUsage(ctx context.Context, key string, samples ...int) *IntCmd
+func (c Conn) MemoryUsage(ctx context.Context, key string, samples ...int)*IntCmd
 func (c Conn) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd
-func (c Conn) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig) *StringCmd
-func (c Conn) Monitor(ctx context.Context, ch chan string) *MonitorCmd
+func (c Conn) ModuleLoadex(ctx context.Context, conf*ModuleLoadexConfig) *StringCmd
+func (c Conn) Monitor(ctx context.Context, ch chan string)*MonitorCmd
 func (c Conn) Move(ctx context.Context, key string, db int) *BoolCmd
-func (c Conn) ObjectEncoding(ctx context.Context, key string) *StringCmd
+func (c Conn) ObjectEncoding(ctx context.Context, key string)*StringCmd
 func (c Conn) ObjectFreq(ctx context.Context, key string) *IntCmd
-func (c Conn) ObjectIdleTime(ctx context.Context, key string) *DurationCmd
+func (c Conn) ObjectIdleTime(ctx context.Context, key string)*DurationCmd
 func (c Conn) ObjectRefCount(ctx context.Context, key string) *IntCmd
-func (c Conn) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Conn) PExpire(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Conn) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
-func (c Conn) PExpireTime(ctx context.Context, key string) *DurationCmd
+func (c Conn) PExpireTime(ctx context.Context, key string)*DurationCmd
 func (c Conn) PFAdd(ctx context.Context, key string, els ...interface{}) *IntCmd
-func (c Conn) PFCount(ctx context.Context, keys ...string) *IntCmd
+func (c Conn) PFCount(ctx context.Context, keys ...string)*IntCmd
 func (c Conn) PFMerge(ctx context.Context, dest string, keys ...string) *StatusCmd
-func (c Conn) PTTL(ctx context.Context, key string) *DurationCmd
+func (c Conn) PTTL(ctx context.Context, key string)*DurationCmd
 func (c Conn) Persist(ctx context.Context, key string) *BoolCmd
-func (c Conn) Ping(ctx context.Context) *StatusCmd
+func (c Conn) Ping(ctx context.Context)*StatusCmd
 func (c *Conn) Pipeline() Pipeliner
-func (c *Conn) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
+func (c*Conn) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
 func (c *Conn) Process(ctx context.Context, cmd Cmder) error
-func (c Conn) PubSubChannels(ctx context.Context, pattern string) *StringSliceCmd
+func (c Conn) PubSubChannels(ctx context.Context, pattern string)*StringSliceCmd
 func (c Conn) PubSubNumPat(ctx context.Context) *IntCmd
-func (c Conn) PubSubNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
+func (c Conn) PubSubNumSub(ctx context.Context, channels ...string)*MapStringIntCmd
 func (c Conn) PubSubShardChannels(ctx context.Context, pattern string) *StringSliceCmd
-func (c Conn) PubSubShardNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
+func (c Conn) PubSubShardNumSub(ctx context.Context, channels ...string)*MapStringIntCmd
 func (c Conn) Publish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c Conn) Quit(_ context.Context) *StatusCmd
+func (c Conn) Quit(_ context.Context)*StatusCmd
 func (c Conn) RPop(ctx context.Context, key string) *StringCmd
-func (c Conn) RPopCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Conn) RPopCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Conn) RPopLPush(ctx context.Context, source, destination string) *StringCmd
-func (c Conn) RPush(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Conn) RPush(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Conn) RPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Conn) RandomKey(ctx context.Context) *StringCmd
+func (c Conn) RandomKey(ctx context.Context)*StringCmd
 func (c Conn) ReadOnly(ctx context.Context) *StatusCmd
-func (c Conn) ReadWrite(ctx context.Context) *StatusCmd
+func (c Conn) ReadWrite(ctx context.Context)*StatusCmd
 func (c *Conn) RegisterPushNotificationHandler(pushNotificationName string, handler push.NotificationHandler, protected bool) error
-func (c Conn) Rename(ctx context.Context, key, newkey string) *StatusCmd
+func (c Conn) Rename(ctx context.Context, key, newkey string)*StatusCmd
 func (c Conn) RenameNX(ctx context.Context, key, newkey string) *BoolCmd
-func (c Conn) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
+func (c Conn) Restore(ctx context.Context, key string, ttl time.Duration, value string)*StatusCmd
 func (c Conn) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
-func (c Conn) SAdd(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Conn) SAdd(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Conn) SCard(ctx context.Context, key string) *IntCmd
-func (c Conn) SDiff(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Conn) SDiff(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Conn) SDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Conn) SInter(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Conn) SInter(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Conn) SInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Conn) SInterStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Conn) SInterStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Conn) SIsMember(ctx context.Context, key string, member interface{}) *BoolCmd
-func (c Conn) SMIsMember(ctx context.Context, key string, members ...interface{}) *BoolSliceCmd
+func (c Conn) SMIsMember(ctx context.Context, key string, members ...interface{})*BoolSliceCmd
 func (c Conn) SMembers(ctx context.Context, key string) *StringSliceCmd
-func (c Conn) SMembersMap(ctx context.Context, key string) *StringStructMapCmd
+func (c Conn) SMembersMap(ctx context.Context, key string)*StringStructMapCmd
 func (c Conn) SMove(ctx context.Context, source, destination string, member interface{}) *BoolCmd
-func (c Conn) SPop(ctx context.Context, key string) *StringCmd
+func (c Conn) SPop(ctx context.Context, key string)*StringCmd
 func (c Conn) SPopN(ctx context.Context, key string, count int64) *StringSliceCmd
-func (c Conn) SPublish(ctx context.Context, channel string, message interface{}) *IntCmd
+func (c Conn) SPublish(ctx context.Context, channel string, message interface{})*IntCmd
 func (c Conn) SRandMember(ctx context.Context, key string) *StringCmd
-func (c Conn) SRandMemberN(ctx context.Context, key string, count int64) *StringSliceCmd
+func (c Conn) SRandMemberN(ctx context.Context, key string, count int64)*StringSliceCmd
 func (c Conn) SRem(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Conn) SScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Conn) SScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Conn) SUnion(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Conn) SUnionStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Conn) SUnionStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Conn) Save(ctx context.Context) *StatusCmd
-func (c Conn) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd
+func (c Conn) Scan(ctx context.Context, cursor uint64, match string, count int64)*ScanCmd
 func (c Conn) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd
-func (c Conn) ScriptExists(ctx context.Context, hashes ...string) *BoolSliceCmd
+func (c Conn) ScriptExists(ctx context.Context, hashes ...string)*BoolSliceCmd
 func (c Conn) ScriptFlush(ctx context.Context) *StatusCmd
-func (c Conn) ScriptKill(ctx context.Context) *StatusCmd
+func (c Conn) ScriptKill(ctx context.Context)*StatusCmd
 func (c Conn) ScriptLoad(ctx context.Context, script string) *StringCmd
-func (c Conn) Select(ctx context.Context, index int) *StatusCmd
+func (c Conn) Select(ctx context.Context, index int)*StatusCmd
 func (c Conn) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c Conn) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs) *StatusCmd
+func (c Conn) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs)*StatusCmd
 func (c Conn) SetBit(ctx context.Context, key string, offset int64, value int) *IntCmd
-func (c Conn) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
+func (c Conn) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration)*StatusCmd
 func (c Conn) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Conn) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Conn) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Conn) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Conn) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Conn) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Conn) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Conn) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Conn) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Conn) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Conn) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Conn) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Conn) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Conn) SetRange(ctx context.Context, key string, offset int64, value string) *IntCmd
+func (c Conn) SetRange(ctx context.Context, key string, offset int64, value string)*IntCmd
 func (c Conn) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Conn) Shutdown(ctx context.Context) *StatusCmd
+func (c Conn) Shutdown(ctx context.Context)*StatusCmd
 func (c Conn) ShutdownNoSave(ctx context.Context) *StatusCmd
-func (c Conn) ShutdownSave(ctx context.Context) *StatusCmd
+func (c Conn) ShutdownSave(ctx context.Context)*StatusCmd
 func (c Conn) SlaveOf(ctx context.Context, host, port string) *StatusCmd
-func (c Conn) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd
+func (c Conn) SlowLogGet(ctx context.Context, num int64)*SlowLogCmd
 func (c Conn) SlowLogLen(ctx context.Context) *IntCmd
-func (c Conn) SlowLogReset(ctx context.Context) *StatusCmd
-func (c Conn) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Conn) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd
-func (c Conn) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Conn) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd
+func (c Conn) SlowLogReset(ctx context.Context)*StatusCmd
+func (c Conn) Sort(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Conn) SortInterfaces(ctx context.Context, key string, sort *Sort)*SliceCmd
+func (c Conn) SortRO(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Conn) SortStore(ctx context.Context, key, store string, sort *Sort)*IntCmd
 func (c Conn) StrLen(ctx context.Context, key string) *IntCmd
-func (c *Conn) String() string
+func (c*Conn) String() string
 func (c Conn) SwapDB(ctx context.Context, index1, index2 int) *StatusCmd
-func (c Conn) Sync(_ context.Context)
-func (c Conn) TDigestAdd(ctx context.Context, key string, elements ...float64) *StatusCmd
+func (c Conn) Sync(_context.Context)
+func (c Conn) TDigestAdd(ctx context.Context, key string, elements ...float64)*StatusCmd
 func (c Conn) TDigestByRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
-func (c Conn) TDigestByRevRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
+func (c Conn) TDigestByRevRank(ctx context.Context, key string, rank ...uint64)*FloatSliceCmd
 func (c Conn) TDigestCDF(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
-func (c Conn) TDigestCreate(ctx context.Context, key string) *StatusCmd
+func (c Conn) TDigestCreate(ctx context.Context, key string)*StatusCmd
 func (c Conn) TDigestCreateWithCompression(ctx context.Context, key string, compression int64) *StatusCmd
-func (c Conn) TDigestInfo(ctx context.Context, key string) *TDigestInfoCmd
+func (c Conn) TDigestInfo(ctx context.Context, key string)*TDigestInfoCmd
 func (c Conn) TDigestMax(ctx context.Context, key string) *FloatCmd
-func (c Conn) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...) *StatusCmd
-func (c Conn) TDigestMin(ctx context.Context, key string) *FloatCmd
+func (c Conn) TDigestMerge(ctx context.Context, destKey string, options*TDigestMergeOptions, ...) *StatusCmd
+func (c Conn) TDigestMin(ctx context.Context, key string)*FloatCmd
 func (c Conn) TDigestQuantile(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
-func (c Conn) TDigestRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
+func (c Conn) TDigestRank(ctx context.Context, key string, values ...float64)*IntSliceCmd
 func (c Conn) TDigestReset(ctx context.Context, key string) *StatusCmd
-func (c Conn) TDigestRevRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
+func (c Conn) TDigestRevRank(ctx context.Context, key string, values ...float64)*IntSliceCmd
 func (c Conn) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64) *FloatCmd
-func (c Conn) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd
+func (c Conn) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64)*IntCmd
 func (c Conn) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...) *IntCmd
-func (c Conn) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd
-func (c Conn) TSCreate(ctx context.Context, key string) *StatusCmd
+func (c Conn) TSAlter(ctx context.Context, key string, options*TSAlterOptions) *StatusCmd
+func (c Conn) TSCreate(ctx context.Context, key string)*StatusCmd
 func (c Conn) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Conn) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Conn) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd
+func (c Conn) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...)*StatusCmd
+func (c Conn) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions)*StatusCmd
 func (c Conn) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Conn) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
-func (c Conn) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd
+func (c Conn) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options*TSIncrDecrOptions) *IntCmd
+func (c Conn) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int)*IntCmd
 func (c Conn) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd
-func (c Conn) TSGet(ctx context.Context, key string) *TSTimestampValueCmd
-func (c Conn) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd
+func (c Conn) TSGet(ctx context.Context, key string)*TSTimestampValueCmd
+func (c Conn) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions)*TSTimestampValueCmd
 func (c Conn) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Conn) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
-func (c Conn) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Conn) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd
+func (c Conn) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options*TSIncrDecrOptions) *IntCmd
+func (c Conn) TSInfo(ctx context.Context, key string)*MapStringInterfaceCmd
+func (c Conn) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions)*MapStringInterfaceCmd
 func (c Conn) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd
-func (c Conn) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd
-func (c Conn) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd
+func (c Conn) TSMGet(ctx context.Context, filters []string)*MapStringSliceInterfaceCmd
+func (c Conn) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions)*MapStringSliceInterfaceCmd
 func (c Conn) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
-func (c Conn) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
+func (c Conn) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...)*MapStringSliceInterfaceCmd
 func (c Conn) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
-func (c Conn) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
+func (c Conn) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...)*MapStringSliceInterfaceCmd
 func (c Conn) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd
-func (c Conn) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
+func (c Conn) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int)*TSTimestampValueSliceCmd
 func (c Conn) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
-func (c Conn) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
+func (c Conn) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int)*TSTimestampValueSliceCmd
 func (c Conn) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
-func (c Conn) TTL(ctx context.Context, key string) *DurationCmd
+func (c Conn) TTL(ctx context.Context, key string)*DurationCmd
 func (c Conn) Time(ctx context.Context) *TimeCmd
-func (c Conn) TopKAdd(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
+func (c Conn) TopKAdd(ctx context.Context, key string, elements ...interface{})*StringSliceCmd
 func (c Conn) TopKCount(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Conn) TopKIncrBy(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
+func (c Conn) TopKIncrBy(ctx context.Context, key string, elements ...interface{})*StringSliceCmd
 func (c Conn) TopKInfo(ctx context.Context, key string) *TopKInfoCmd
-func (c Conn) TopKList(ctx context.Context, key string) *StringSliceCmd
+func (c Conn) TopKList(ctx context.Context, key string)*StringSliceCmd
 func (c Conn) TopKListWithCount(ctx context.Context, key string) *MapStringIntCmd
-func (c Conn) TopKQuery(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Conn) TopKQuery(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Conn) TopKReserve(ctx context.Context, key string, k int64) *StatusCmd
-func (c Conn) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64) *StatusCmd
+func (c Conn) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64)*StatusCmd
 func (c Conn) Touch(ctx context.Context, keys ...string) *IntCmd
-func (c *Conn) TxPipeline() Pipeliner
+func (c*Conn) TxPipeline() Pipeliner
 func (c *Conn) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c Conn) Type(ctx context.Context, key string) *StatusCmd
+func (c Conn) Type(ctx context.Context, key string)*StatusCmd
 func (c Conn) Unlink(ctx context.Context, keys ...string) *IntCmd
-func (c Conn) VAdd(ctx context.Context, key, element string, val Vector) *BoolCmd
-func (c Conn) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs) *BoolCmd
+func (c Conn) VAdd(ctx context.Context, key, element string, val Vector)*BoolCmd
+func (c Conn) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs)*BoolCmd
 func (c Conn) VCard(ctx context.Context, key string) *IntCmd
-func (c Conn) VClearAttributes(ctx context.Context, key, element string) *BoolCmd
+func (c Conn) VClearAttributes(ctx context.Context, key, element string)*BoolCmd
 func (c Conn) VDim(ctx context.Context, key string) *IntCmd
-func (c Conn) VEmb(ctx context.Context, key, element string, raw bool) *SliceCmd
+func (c Conn) VEmb(ctx context.Context, key, element string, raw bool)*SliceCmd
 func (c Conn) VGetAttr(ctx context.Context, key, element string) *StringCmd
-func (c Conn) VInfo(ctx context.Context, key string) *MapStringInterfaceCmd
+func (c Conn) VInfo(ctx context.Context, key string)*MapStringInterfaceCmd
 func (c Conn) VLinks(ctx context.Context, key, element string) *StringSliceCmd
-func (c Conn) VLinksWithScores(ctx context.Context, key, element string) *VectorScoreSliceCmd
+func (c Conn) VLinksWithScores(ctx context.Context, key, element string)*VectorScoreSliceCmd
 func (c Conn) VRandMember(ctx context.Context, key string) *StringCmd
-func (c Conn) VRandMemberCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Conn) VRandMemberCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Conn) VRange(ctx context.Context, key, start, end string, count int64) *StringSliceCmd
-func (c Conn) VRem(ctx context.Context, key, element string) *BoolCmd
+func (c Conn) VRem(ctx context.Context, key, element string)*BoolCmd
 func (c Conn) VSetAttr(ctx context.Context, key, element string, attr interface{}) *BoolCmd
-func (c Conn) VSim(ctx context.Context, key string, val Vector) *StringSliceCmd
-func (c Conn) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *StringSliceCmd
-func (c Conn) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *VectorScoreSliceCmd
+func (c Conn) VSim(ctx context.Context, key string, val Vector)*StringSliceCmd
+func (c Conn) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs)*StringSliceCmd
+func (c Conn) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs)*VectorScoreSliceCmd
 func (c Conn) VSimWithScores(ctx context.Context, key string, val Vector) *VectorScoreSliceCmd
-func (c Conn) Wait(ctx context.Context, numSlaves int, timeout time.Duration) *IntCmd
+func (c Conn) Wait(ctx context.Context, numSlaves int, timeout time.Duration)*IntCmd
 func (c Conn) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration) *IntCmd
-func (c Conn) XAck(ctx context.Context, stream, group string, ids ...string) *IntCmd
+func (c Conn) XAck(ctx context.Context, stream, group string, ids ...string)*IntCmd
 func (c Conn) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *SliceCmd
-func (c Conn) XAdd(ctx context.Context, a *XAddArgs) *StringCmd
-func (c Conn) XAutoClaim(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimCmd
-func (c Conn) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimJustIDCmd
-func (c Conn) XClaim(ctx context.Context, a *XClaimArgs) *XMessageSliceCmd
-func (c Conn) XClaimJustID(ctx context.Context, a *XClaimArgs) *StringSliceCmd
-func (c Conn) XDel(ctx context.Context, stream string, ids ...string) *IntCmd
+func (c Conn) XAdd(ctx context.Context, a*XAddArgs) *StringCmd
+func (c Conn) XAutoClaim(ctx context.Context, a*XAutoClaimArgs) *XAutoClaimCmd
+func (c Conn) XAutoClaimJustID(ctx context.Context, a*XAutoClaimArgs) *XAutoClaimJustIDCmd
+func (c Conn) XClaim(ctx context.Context, a*XClaimArgs) *XMessageSliceCmd
+func (c Conn) XClaimJustID(ctx context.Context, a*XClaimArgs) *StringSliceCmd
+func (c Conn) XDel(ctx context.Context, stream string, ids ...string)*IntCmd
 func (c Conn) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *SliceCmd
-func (c Conn) XGroupCreate(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Conn) XGroupCreate(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Conn) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
-func (c Conn) XGroupCreateMkStream(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Conn) XGroupCreateMkStream(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Conn) XGroupDelConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
-func (c Conn) XGroupDestroy(ctx context.Context, stream, group string) *IntCmd
+func (c Conn) XGroupDestroy(ctx context.Context, stream, group string)*IntCmd
 func (c Conn) XGroupSetID(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Conn) XInfoConsumers(ctx context.Context, key string, group string) *XInfoConsumersCmd
+func (c Conn) XInfoConsumers(ctx context.Context, key string, group string)*XInfoConsumersCmd
 func (c Conn) XInfoGroups(ctx context.Context, key string) *XInfoGroupsCmd
-func (c Conn) XInfoStream(ctx context.Context, key string) *XInfoStreamCmd
+func (c Conn) XInfoStream(ctx context.Context, key string)*XInfoStreamCmd
 func (c Conn) XInfoStreamFull(ctx context.Context, key string, count int) *XInfoStreamFullCmd
-func (c Conn) XLen(ctx context.Context, stream string) *IntCmd
+func (c Conn) XLen(ctx context.Context, stream string)*IntCmd
 func (c Conn) XPending(ctx context.Context, stream, group string) *XPendingCmd
-func (c Conn) XPendingExt(ctx context.Context, a *XPendingExtArgs) *XPendingExtCmd
-func (c Conn) XRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
+func (c Conn) XPendingExt(ctx context.Context, a*XPendingExtArgs) *XPendingExtCmd
+func (c Conn) XRange(ctx context.Context, stream, start, stop string)*XMessageSliceCmd
 func (c Conn) XRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Conn) XRead(ctx context.Context, a *XReadArgs) *XStreamSliceCmd
-func (c Conn) XReadGroup(ctx context.Context, a *XReadGroupArgs) *XStreamSliceCmd
-func (c Conn) XReadStreams(ctx context.Context, streams ...string) *XStreamSliceCmd
+func (c Conn) XRead(ctx context.Context, a*XReadArgs) *XStreamSliceCmd
+func (c Conn) XReadGroup(ctx context.Context, a*XReadGroupArgs) *XStreamSliceCmd
+func (c Conn) XReadStreams(ctx context.Context, streams ...string)*XStreamSliceCmd
 func (c Conn) XRevRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
-func (c Conn) XRevRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
+func (c Conn) XRevRangeN(ctx context.Context, stream, start, stop string, count int64)*XMessageSliceCmd
 func (c Conn) XTrimMaxLen(ctx context.Context, key string, maxLen int64) *IntCmd
-func (c Conn) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64) *IntCmd
+func (c Conn) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64)*IntCmd
 func (c Conn) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string) *IntCmd
-func (c Conn) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *IntCmd
+func (c Conn) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string)*IntCmd
 func (c Conn) XTrimMinID(ctx context.Context, key string, minID string) *IntCmd
-func (c Conn) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64) *IntCmd
+func (c Conn) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64)*IntCmd
 func (c Conn) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *IntCmd
-func (c Conn) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *IntCmd
+func (c Conn) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string)*IntCmd
 func (c Conn) ZAdd(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Conn) ZAddArgs(ctx context.Context, key string, args ZAddArgs) *IntCmd
+func (c Conn) ZAddArgs(ctx context.Context, key string, args ZAddArgs)*IntCmd
 func (c Conn) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs) *FloatCmd
-func (c Conn) ZAddGT(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Conn) ZAddGT(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Conn) ZAddLT(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Conn) ZAddNX(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Conn) ZAddNX(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Conn) ZAddXX(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Conn) ZCard(ctx context.Context, key string) *IntCmd
+func (c Conn) ZCard(ctx context.Context, key string)*IntCmd
 func (c Conn) ZCount(ctx context.Context, key, min, max string) *IntCmd
-func (c Conn) ZDiff(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Conn) ZDiff(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Conn) ZDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Conn) ZDiffWithScores(ctx context.Context, keys ...string) *ZSliceCmd
+func (c Conn) ZDiffWithScores(ctx context.Context, keys ...string)*ZSliceCmd
 func (c Conn) ZIncrBy(ctx context.Context, key string, increment float64, member string) *FloatCmd
-func (c Conn) ZInter(ctx context.Context, store *ZStore) *StringSliceCmd
-func (c Conn) ZInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Conn) ZInterStore(ctx context.Context, destination string, store *ZStore) *IntCmd
-func (c Conn) ZInterWithScores(ctx context.Context, store *ZStore) *ZSliceCmd
+func (c Conn) ZInter(ctx context.Context, store*ZStore) *StringSliceCmd
+func (c Conn) ZInterCard(ctx context.Context, limit int64, keys ...string)*IntCmd
+func (c Conn) ZInterStore(ctx context.Context, destination string, store *ZStore)*IntCmd
+func (c Conn) ZInterWithScores(ctx context.Context, store *ZStore)*ZSliceCmd
 func (c Conn) ZLexCount(ctx context.Context, key, min, max string) *IntCmd
-func (c Conn) ZMPop(ctx context.Context, order string, count int64, keys ...string) *ZSliceWithKeyCmd
+func (c Conn) ZMPop(ctx context.Context, order string, count int64, keys ...string)*ZSliceWithKeyCmd
 func (c Conn) ZMScore(ctx context.Context, key string, members ...string) *FloatSliceCmd
-func (c Conn) ZPopMax(ctx context.Context, key string, count ...int64) *ZSliceCmd
+func (c Conn) ZPopMax(ctx context.Context, key string, count ...int64)*ZSliceCmd
 func (c Conn) ZPopMin(ctx context.Context, key string, count ...int64) *ZSliceCmd
-func (c Conn) ZRandMember(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Conn) ZRandMember(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Conn) ZRandMemberWithScores(ctx context.Context, key string, count int) *ZSliceCmd
-func (c Conn) ZRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c Conn) ZRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c Conn) ZRangeArgs(ctx context.Context, z ZRangeArgs) *StringSliceCmd
-func (c Conn) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs) *ZSliceCmd
-func (c Conn) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Conn) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Conn) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
+func (c Conn) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs)*ZSliceCmd
+func (c Conn) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Conn) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Conn) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy)*ZSliceCmd
 func (c Conn) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs) *IntCmd
-func (c Conn) ZRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
+func (c Conn) ZRangeWithScores(ctx context.Context, key string, start, stop int64)*ZSliceCmd
 func (c Conn) ZRank(ctx context.Context, key, member string) *IntCmd
-func (c Conn) ZRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
+func (c Conn) ZRankWithScore(ctx context.Context, key, member string)*RankWithScoreCmd
 func (c Conn) ZRem(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Conn) ZRemRangeByLex(ctx context.Context, key, min, max string) *IntCmd
+func (c Conn) ZRemRangeByLex(ctx context.Context, key, min, max string)*IntCmd
 func (c Conn) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) *IntCmd
-func (c Conn) ZRemRangeByScore(ctx context.Context, key, min, max string) *IntCmd
+func (c Conn) ZRemRangeByScore(ctx context.Context, key, min, max string)*IntCmd
 func (c Conn) ZRevRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Conn) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Conn) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Conn) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
-func (c Conn) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
+func (c Conn) ZRevRangeByLex(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Conn) ZRevRangeByScore(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Conn) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt*ZRangeBy) *ZSliceCmd
+func (c Conn) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64)*ZSliceCmd
 func (c Conn) ZRevRank(ctx context.Context, key, member string) *IntCmd
-func (c Conn) ZRevRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
+func (c Conn) ZRevRankWithScore(ctx context.Context, key, member string)*RankWithScoreCmd
 func (c Conn) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Conn) ZScore(ctx context.Context, key, member string) *FloatCmd
+func (c Conn) ZScore(ctx context.Context, key, member string)*FloatCmd
 func (c Conn) ZUnion(ctx context.Context, store ZStore) *StringSliceCmd
-func (c Conn) ZUnionStore(ctx context.Context, dest string, store *ZStore) *IntCmd
-func (c Conn) ZUnionWithScores(ctx context.Context, store ZStore) *ZSliceCmd
+func (c Conn) ZUnionStore(ctx context.Context, dest string, store*ZStore) *IntCmd
+func (c Conn) ZUnionWithScores(ctx context.Context, store ZStore)*ZSliceCmd
 type ConsistentHash
 type CreateIndexBuilder
-func (b *CreateIndexBuilder) DefaultLanguage(lang string) *CreateIndexBuilder
-func (b *CreateIndexBuilder) Filter(filter string) *CreateIndexBuilder
-func (b *CreateIndexBuilder) LanguageField(field string) *CreateIndexBuilder
-func (b *CreateIndexBuilder) NoFields() *CreateIndexBuilder
-func (b *CreateIndexBuilder) NoFreqs() *CreateIndexBuilder
-func (b *CreateIndexBuilder) NoHL() *CreateIndexBuilder
-func (b *CreateIndexBuilder) NoOffsets() *CreateIndexBuilder
-func (b *CreateIndexBuilder) OnHash() *CreateIndexBuilder
-func (b *CreateIndexBuilder) OnJSON() *CreateIndexBuilder
-func (b *CreateIndexBuilder) PayloadField(field string) *CreateIndexBuilder
-func (b *CreateIndexBuilder) Prefix(prefixes ...interface{}) *CreateIndexBuilder
+func (b *CreateIndexBuilder) DefaultLanguage(lang string)*CreateIndexBuilder
+func (b *CreateIndexBuilder) Filter(filter string)*CreateIndexBuilder
+func (b *CreateIndexBuilder) LanguageField(field string)*CreateIndexBuilder
+func (b *CreateIndexBuilder) NoFields()*CreateIndexBuilder
+func (b *CreateIndexBuilder) NoFreqs()*CreateIndexBuilder
+func (b *CreateIndexBuilder) NoHL()*CreateIndexBuilder
+func (b *CreateIndexBuilder) NoOffsets()*CreateIndexBuilder
+func (b *CreateIndexBuilder) OnHash()*CreateIndexBuilder
+func (b *CreateIndexBuilder) OnJSON()*CreateIndexBuilder
+func (b *CreateIndexBuilder) PayloadField(field string)*CreateIndexBuilder
+func (b *CreateIndexBuilder) Prefix(prefixes ...interface{})*CreateIndexBuilder
 func (b *CreateIndexBuilder) Run() (string, error)
-func (b *CreateIndexBuilder) Schema(field *FieldSchema) *CreateIndexBuilder
-func (b *CreateIndexBuilder) Score(score float64) *CreateIndexBuilder
-func (b *CreateIndexBuilder) ScoreField(field string) *CreateIndexBuilder
-func (b *CreateIndexBuilder) SkipInitialScan() *CreateIndexBuilder
-func (b *CreateIndexBuilder) StopWords(words ...interface{}) *CreateIndexBuilder
-func (b *CreateIndexBuilder) Temporary(sec int) *CreateIndexBuilder
+func (b*CreateIndexBuilder) Schema(field *FieldSchema)*CreateIndexBuilder
+func (b *CreateIndexBuilder) Score(score float64)*CreateIndexBuilder
+func (b *CreateIndexBuilder) ScoreField(field string)*CreateIndexBuilder
+func (b *CreateIndexBuilder) SkipInitialScan()*CreateIndexBuilder
+func (b *CreateIndexBuilder) StopWords(words ...interface{})*CreateIndexBuilder
+func (b *CreateIndexBuilder) Temporary(sec int)*CreateIndexBuilder
 type CursorBuilder
-func (b *CursorBuilder) Action(action string) *CursorBuilder
-func (b *CursorBuilder) Count(count int) *CursorBuilder
-func (b *CursorBuilder) Del() *CursorBuilder
-func (b *CursorBuilder) Read() *CursorBuilder
+func (b *CursorBuilder) Action(action string)*CursorBuilder
+func (b *CursorBuilder) Count(count int)*CursorBuilder
+func (b *CursorBuilder) Del()*CursorBuilder
+func (b *CursorBuilder) Read()*CursorBuilder
 func (b *CursorBuilder) Run() (interface{}, error)
 type CursorStats
 type DelExArgs
 type DialHook
 type DictBuilder
-func (b *DictBuilder) Action(action string) *DictBuilder
-func (b *DictBuilder) Add(terms ...interface{}) *DictBuilder
-func (b *DictBuilder) Del(terms ...interface{}) *DictBuilder
-func (b *DictBuilder) Dump() *DictBuilder
-func (b *DictBuilder) Run() (interface{}, error)
+func (b*DictBuilder) Action(action string) *DictBuilder
+func (b*DictBuilder) Add(terms ...interface{}) *DictBuilder
+func (b*DictBuilder) Del(terms ...interface{}) *DictBuilder
+func (b*DictBuilder) Dump() *DictBuilder
+func (b*DictBuilder) Run() (interface{}, error)
 type DigestCmd
 func NewDigestCmd(ctx context.Context, args ...interface{}) *DigestCmd
-func (cmd *DigestCmd) Args() []interface{}
+func (cmd*DigestCmd) Args() []interface{}
 func (cmd *DigestCmd) Err() error
-func (cmd *DigestCmd) FullName() string
+func (cmd*DigestCmd) FullName() string
 func (cmd *DigestCmd) Name() string
-func (cmd *DigestCmd) Result() (uint64, error)
+func (cmd*DigestCmd) Result() (uint64, error)
 func (cmd *DigestCmd) SetErr(e error)
-func (cmd *DigestCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*DigestCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *DigestCmd) SetVal(val uint64)
-func (cmd *DigestCmd) String() string
+func (cmd*DigestCmd) String() string
 func (cmd *DigestCmd) Val() uint64
 type Document
 type DropIndexBuilder
-func (b *DropIndexBuilder) DeleteDocs() *DropIndexBuilder
-func (b *DropIndexBuilder) Run() (string, error)
+func (b*DropIndexBuilder) DeleteDocs() *DropIndexBuilder
+func (b*DropIndexBuilder) Run() (string, error)
 type DurationCmd
 func NewDurationCmd(ctx context.Context, precision time.Duration, args ...interface{}) *DurationCmd
-func NewDurationResult(val time.Duration, err error) *DurationCmd
+func NewDurationResult(val time.Duration, err error)*DurationCmd
 func (cmd *DurationCmd) Args() []interface{}
-func (cmd *DurationCmd) Err() error
+func (cmd*DurationCmd) Err() error
 func (cmd *DurationCmd) FullName() string
-func (cmd *DurationCmd) Name() string
+func (cmd*DurationCmd) Name() string
 func (cmd *DurationCmd) Result() (time.Duration, error)
-func (cmd *DurationCmd) SetErr(e error)
+func (cmd*DurationCmd) SetErr(e error)
 func (cmd *DurationCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *DurationCmd) SetVal(val time.Duration)
+func (cmd*DurationCmd) SetVal(val time.Duration)
 func (cmd *DurationCmd) String() string
-func (cmd *DurationCmd) Val() time.Duration
+func (cmd*DurationCmd) Val() time.Duration
 type Engine
 type Error
 type ExpirationMode
 type ExpirationOption
 type ExplainBuilder
-func (b *ExplainBuilder) Dialect(d string) *ExplainBuilder
+func (b *ExplainBuilder) Dialect(d string)*ExplainBuilder
 func (b *ExplainBuilder) Run() (string, error)
 type FTAggregateApply
 type FTAggregateGroupBy
@@ -2148,19 +2148,19 @@ type FTHNSWOptions
 type FTHybridApply
 type FTHybridCmd
 func (cmd *FTHybridCmd) Args() []interface{}
-func (cmd *FTHybridCmd) CursorResult() (*FTHybridCursorResult, error)
-func (cmd *FTHybridCmd) CursorVal() *FTHybridCursorResult
-func (cmd *FTHybridCmd) Err() error
+func (cmd*FTHybridCmd) CursorResult() (*FTHybridCursorResult, error)
+func (cmd*FTHybridCmd) CursorVal() *FTHybridCursorResult
+func (cmd*FTHybridCmd) Err() error
 func (cmd *FTHybridCmd) FullName() string
-func (cmd *FTHybridCmd) Name() string
+func (cmd*FTHybridCmd) Name() string
 func (cmd *FTHybridCmd) RawResult() (interface{}, error)
-func (cmd *FTHybridCmd) RawVal() interface{}
+func (cmd*FTHybridCmd) RawVal() interface{}
 func (cmd *FTHybridCmd) Result() (FTHybridResult, error)
-func (cmd *FTHybridCmd) SetErr(e error)
+func (cmd*FTHybridCmd) SetErr(e error)
 func (cmd *FTHybridCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *FTHybridCmd) SetVal(val FTHybridResult)
+func (cmd*FTHybridCmd) SetVal(val FTHybridResult)
 func (cmd *FTHybridCmd) String() string
-func (cmd *FTHybridCmd) Val() FTHybridResult
+func (cmd*FTHybridCmd) Val() FTHybridResult
 type FTHybridCombineMethod
 type FTHybridCombineOptions
 type FTHybridCursorResult
@@ -2174,31 +2174,31 @@ type FTHybridWithCursor
 type FTInfoBuilder
 func (b *FTInfoBuilder) Run() (FTInfoResult, error)
 type FTInfoCmd
-func (cmd *FTInfoCmd) Args() []interface{}
+func (cmd*FTInfoCmd) Args() []interface{}
 func (cmd *FTInfoCmd) Err() error
-func (cmd *FTInfoCmd) FullName() string
+func (cmd*FTInfoCmd) FullName() string
 func (cmd *FTInfoCmd) Name() string
-func (cmd *FTInfoCmd) RawResult() (interface{}, error)
+func (cmd*FTInfoCmd) RawResult() (interface{}, error)
 func (cmd *FTInfoCmd) RawVal() interface{}
-func (cmd *FTInfoCmd) Result() (FTInfoResult, error)
+func (cmd*FTInfoCmd) Result() (FTInfoResult, error)
 func (cmd *FTInfoCmd) SetErr(e error)
-func (cmd *FTInfoCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*FTInfoCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *FTInfoCmd) SetVal(val FTInfoResult)
-func (cmd *FTInfoCmd) String() string
+func (cmd*FTInfoCmd) String() string
 func (cmd *FTInfoCmd) Val() FTInfoResult
 type FTInfoResult
 type FTSearchCmd
-func (cmd *FTSearchCmd) Args() []interface{}
+func (cmd*FTSearchCmd) Args() []interface{}
 func (cmd *FTSearchCmd) Err() error
-func (cmd *FTSearchCmd) FullName() string
+func (cmd*FTSearchCmd) FullName() string
 func (cmd *FTSearchCmd) Name() string
-func (cmd *FTSearchCmd) RawResult() (interface{}, error)
+func (cmd*FTSearchCmd) RawResult() (interface{}, error)
 func (cmd *FTSearchCmd) RawVal() interface{}
-func (cmd *FTSearchCmd) Result() (FTSearchResult, error)
+func (cmd*FTSearchCmd) Result() (FTSearchResult, error)
 func (cmd *FTSearchCmd) SetErr(e error)
-func (cmd *FTSearchCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*FTSearchCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *FTSearchCmd) SetVal(val FTSearchResult)
-func (cmd *FTSearchCmd) String() string
+func (cmd*FTSearchCmd) String() string
 func (cmd *FTSearchCmd) Val() FTSearchResult
 type FTSearchFilter
 type FTSearchGeoFilter
@@ -2207,34 +2207,34 @@ type FTSearchResult
 type FTSearchReturn
 type FTSearchSortBy
 type FTSpellCheckCmd
-func (cmd *FTSpellCheckCmd) Args() []interface{}
+func (cmd*FTSpellCheckCmd) Args() []interface{}
 func (cmd *FTSpellCheckCmd) Err() error
-func (cmd *FTSpellCheckCmd) FullName() string
+func (cmd*FTSpellCheckCmd) FullName() string
 func (cmd *FTSpellCheckCmd) Name() string
-func (cmd *FTSpellCheckCmd) RawResult() (interface{}, error)
+func (cmd*FTSpellCheckCmd) RawResult() (interface{}, error)
 func (cmd *FTSpellCheckCmd) RawVal() interface{}
-func (cmd *FTSpellCheckCmd) Result() ([]SpellCheckResult, error)
+func (cmd*FTSpellCheckCmd) Result() ([]SpellCheckResult, error)
 func (cmd *FTSpellCheckCmd) SetErr(e error)
-func (cmd *FTSpellCheckCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*FTSpellCheckCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *FTSpellCheckCmd) SetVal(val []SpellCheckResult)
-func (cmd *FTSpellCheckCmd) String() string
+func (cmd*FTSpellCheckCmd) String() string
 func (cmd *FTSpellCheckCmd) Val() []SpellCheckResult
 type FTSpellCheckOptions
 type FTSpellCheckTerms
 type FTSynDumpCmd
-func NewFTSynDumpCmd(ctx context.Context, args ...interface{}) *FTSynDumpCmd
+func NewFTSynDumpCmd(ctx context.Context, args ...interface{})*FTSynDumpCmd
 func (cmd *FTSynDumpCmd) Args() []interface{}
-func (cmd *FTSynDumpCmd) Err() error
+func (cmd*FTSynDumpCmd) Err() error
 func (cmd *FTSynDumpCmd) FullName() string
-func (cmd *FTSynDumpCmd) Name() string
+func (cmd*FTSynDumpCmd) Name() string
 func (cmd *FTSynDumpCmd) RawResult() (interface{}, error)
-func (cmd *FTSynDumpCmd) RawVal() interface{}
+func (cmd*FTSynDumpCmd) RawVal() interface{}
 func (cmd *FTSynDumpCmd) Result() ([]FTSynDumpResult, error)
-func (cmd *FTSynDumpCmd) SetErr(e error)
+func (cmd*FTSynDumpCmd) SetErr(e error)
 func (cmd *FTSynDumpCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *FTSynDumpCmd) SetVal(val []FTSynDumpResult)
+func (cmd*FTSynDumpCmd) SetVal(val []FTSynDumpResult)
 func (cmd *FTSynDumpCmd) String() string
-func (cmd *FTSynDumpCmd) Val() []FTSynDumpResult
+func (cmd*FTSynDumpCmd) Val() []FTSynDumpResult
 type FTSynDumpResult
 type FTSynUpdateOptions
 type FTVamanaOptions
@@ -2245,105 +2245,105 @@ type FieldSchema
 type FieldStatistic
 type FilterBy
 type FloatCmd
-func NewFloatCmd(ctx context.Context, args ...interface{}) *FloatCmd
+func NewFloatCmd(ctx context.Context, args ...interface{})*FloatCmd
 func NewFloatResult(val float64, err error) *FloatCmd
-func (cmd *FloatCmd) Args() []interface{}
+func (cmd*FloatCmd) Args() []interface{}
 func (cmd *FloatCmd) Err() error
-func (cmd *FloatCmd) FullName() string
+func (cmd*FloatCmd) FullName() string
 func (cmd *FloatCmd) Name() string
-func (cmd *FloatCmd) Result() (float64, error)
+func (cmd*FloatCmd) Result() (float64, error)
 func (cmd *FloatCmd) SetErr(e error)
-func (cmd *FloatCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*FloatCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *FloatCmd) SetVal(val float64)
-func (cmd *FloatCmd) String() string
+func (cmd*FloatCmd) String() string
 func (cmd *FloatCmd) Val() float64
 type FloatSliceCmd
-func NewFloatSliceCmd(ctx context.Context, args ...interface{}) *FloatSliceCmd
+func NewFloatSliceCmd(ctx context.Context, args ...interface{})*FloatSliceCmd
 func NewFloatSliceResult(val []float64, err error) *FloatSliceCmd
-func (cmd *FloatSliceCmd) Args() []interface{}
+func (cmd*FloatSliceCmd) Args() []interface{}
 func (cmd *FloatSliceCmd) Err() error
-func (cmd *FloatSliceCmd) FullName() string
+func (cmd*FloatSliceCmd) FullName() string
 func (cmd *FloatSliceCmd) Name() string
-func (cmd *FloatSliceCmd) Result() ([]float64, error)
+func (cmd*FloatSliceCmd) Result() ([]float64, error)
 func (cmd *FloatSliceCmd) SetErr(e error)
-func (cmd *FloatSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*FloatSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *FloatSliceCmd) SetVal(val []float64)
-func (cmd *FloatSliceCmd) String() string
+func (cmd*FloatSliceCmd) String() string
 func (cmd *FloatSliceCmd) Val() []float64
 type Function
 type FunctionListCmd
-func NewFunctionListCmd(ctx context.Context, args ...interface{}) *FunctionListCmd
+func NewFunctionListCmd(ctx context.Context, args ...interface{})*FunctionListCmd
 func (cmd *FunctionListCmd) Args() []interface{}
-func (cmd *FunctionListCmd) Err() error
+func (cmd*FunctionListCmd) Err() error
 func (cmd *FunctionListCmd) First() (*Library, error)
 func (cmd *FunctionListCmd) FullName() string
-func (cmd *FunctionListCmd) Name() string
+func (cmd*FunctionListCmd) Name() string
 func (cmd *FunctionListCmd) Result() ([]Library, error)
-func (cmd *FunctionListCmd) SetErr(e error)
+func (cmd*FunctionListCmd) SetErr(e error)
 func (cmd *FunctionListCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *FunctionListCmd) SetVal(val []Library)
+func (cmd*FunctionListCmd) SetVal(val []Library)
 func (cmd *FunctionListCmd) String() string
-func (cmd *FunctionListCmd) Val() []Library
+func (cmd*FunctionListCmd) Val() []Library
 type FunctionListQuery
 type FunctionStats
 func (fs *FunctionStats) AllRunningScripts() []RunningScript
-func (fs *FunctionStats) Running() bool
+func (fs*FunctionStats) Running() bool
 func (fs *FunctionStats) RunningScript() (RunningScript, bool)
 type FunctionStatsCmd
-func NewFunctionStatsCmd(ctx context.Context, args ...interface{}) *FunctionStatsCmd
+func NewFunctionStatsCmd(ctx context.Context, args ...interface{})*FunctionStatsCmd
 func (cmd *FunctionStatsCmd) Args() []interface{}
-func (cmd *FunctionStatsCmd) Err() error
+func (cmd*FunctionStatsCmd) Err() error
 func (cmd *FunctionStatsCmd) FullName() string
-func (cmd *FunctionStatsCmd) Name() string
+func (cmd*FunctionStatsCmd) Name() string
 func (cmd *FunctionStatsCmd) Result() (FunctionStats, error)
-func (cmd *FunctionStatsCmd) SetErr(e error)
+func (cmd*FunctionStatsCmd) SetErr(e error)
 func (cmd *FunctionStatsCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *FunctionStatsCmd) SetVal(val FunctionStats)
+func (cmd*FunctionStatsCmd) SetVal(val FunctionStats)
 func (cmd *FunctionStatsCmd) String() string
-func (cmd *FunctionStatsCmd) Val() FunctionStats
+func (cmd*FunctionStatsCmd) Val() FunctionStats
 type GCStats
 type GenericCmdable
 type GeoCmdable
 type GeoLocation
 type GeoLocationCmd
-func NewGeoLocationCmd(ctx context.Context, q *GeoRadiusQuery, args ...interface{}) *GeoLocationCmd
+func NewGeoLocationCmd(ctx context.Context, q *GeoRadiusQuery, args ...interface{})*GeoLocationCmd
 func NewGeoLocationCmdResult(val []GeoLocation, err error) *GeoLocationCmd
-func (cmd *GeoLocationCmd) Args() []interface{}
+func (cmd*GeoLocationCmd) Args() []interface{}
 func (cmd *GeoLocationCmd) Err() error
-func (cmd *GeoLocationCmd) FullName() string
+func (cmd*GeoLocationCmd) FullName() string
 func (cmd *GeoLocationCmd) Name() string
-func (cmd *GeoLocationCmd) Result() ([]GeoLocation, error)
+func (cmd*GeoLocationCmd) Result() ([]GeoLocation, error)
 func (cmd *GeoLocationCmd) SetErr(e error)
-func (cmd *GeoLocationCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*GeoLocationCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *GeoLocationCmd) SetVal(locations []GeoLocation)
-func (cmd *GeoLocationCmd) String() string
+func (cmd*GeoLocationCmd) String() string
 func (cmd *GeoLocationCmd) Val() []GeoLocation
 type GeoPos
 type GeoPosCmd
-func NewGeoPosCmd(ctx context.Context, args ...interface{}) *GeoPosCmd
-func NewGeoPosCmdResult(val []*GeoPos, err error) *GeoPosCmd
+func NewGeoPosCmd(ctx context.Context, args ...interface{})*GeoPosCmd
+func NewGeoPosCmdResult(val []*GeoPos, err error)*GeoPosCmd
 func (cmd *GeoPosCmd) Args() []interface{}
-func (cmd *GeoPosCmd) Err() error
+func (cmd*GeoPosCmd) Err() error
 func (cmd *GeoPosCmd) FullName() string
-func (cmd *GeoPosCmd) Name() string
+func (cmd*GeoPosCmd) Name() string
 func (cmd *GeoPosCmd) Result() ([]*GeoPos, error)
 func (cmd *GeoPosCmd) SetErr(e error)
-func (cmd *GeoPosCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*GeoPosCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *GeoPosCmd) SetVal(val []*GeoPos)
 func (cmd *GeoPosCmd) String() string
-func (cmd *GeoPosCmd) Val() []*GeoPos
+func (cmd*GeoPosCmd) Val() []*GeoPos
 type GeoRadiusQuery
 type GeoSearchLocationCmd
-func NewGeoSearchLocationCmd(ctx context.Context, opt *GeoSearchLocationQuery, args ...interface{}) *GeoSearchLocationCmd
-func (cmd *GeoSearchLocationCmd) Args() []interface{}
+func NewGeoSearchLocationCmd(ctx context.Context, opt*GeoSearchLocationQuery, args ...interface{}) *GeoSearchLocationCmd
+func (cmd*GeoSearchLocationCmd) Args() []interface{}
 func (cmd *GeoSearchLocationCmd) Err() error
-func (cmd *GeoSearchLocationCmd) FullName() string
+func (cmd*GeoSearchLocationCmd) FullName() string
 func (cmd *GeoSearchLocationCmd) Name() string
-func (cmd *GeoSearchLocationCmd) Result() ([]GeoLocation, error)
+func (cmd*GeoSearchLocationCmd) Result() ([]GeoLocation, error)
 func (cmd *GeoSearchLocationCmd) SetErr(e error)
-func (cmd *GeoSearchLocationCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*GeoSearchLocationCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *GeoSearchLocationCmd) SetVal(val []GeoLocation)
-func (cmd *GeoSearchLocationCmd) String() string
+func (cmd*GeoSearchLocationCmd) String() string
 func (cmd *GeoSearchLocationCmd) Val() []GeoLocation
 type GeoSearchLocationQuery
 type GeoSearchQuery
@@ -2360,135 +2360,135 @@ type HyperLogLogCmdable
 type IndexDefinition
 type IndexErrors
 type InfoCmd
-func NewInfoCmd(ctx context.Context, args ...interface{}) *InfoCmd
+func NewInfoCmd(ctx context.Context, args ...interface{})*InfoCmd
 func (cmd *InfoCmd) Args() []interface{}
-func (cmd *InfoCmd) Err() error
+func (cmd*InfoCmd) Err() error
 func (cmd *InfoCmd) FullName() string
-func (cmd *InfoCmd) Item(section, key string) string
+func (cmd*InfoCmd) Item(section, key string) string
 func (cmd *InfoCmd) Name() string
-func (cmd *InfoCmd) Result() (map[string]map[string]string, error)
+func (cmd*InfoCmd) Result() (map[string]map[string]string, error)
 func (cmd *InfoCmd) SetErr(e error)
-func (cmd *InfoCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*InfoCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *InfoCmd) SetVal(val map[string]map[string]string)
-func (cmd *InfoCmd) String() string
+func (cmd*InfoCmd) String() string
 func (cmd *InfoCmd) Val() map[string]map[string]string
 type IntCmd
-func NewIntCmd(ctx context.Context, args ...interface{}) *IntCmd
+func NewIntCmd(ctx context.Context, args ...interface{})*IntCmd
 func NewIntResult(val int64, err error) *IntCmd
-func (cmd *IntCmd) Args() []interface{}
+func (cmd*IntCmd) Args() []interface{}
 func (cmd *IntCmd) Err() error
-func (cmd *IntCmd) FullName() string
+func (cmd*IntCmd) FullName() string
 func (cmd *IntCmd) Name() string
-func (cmd *IntCmd) Result() (int64, error)
+func (cmd*IntCmd) Result() (int64, error)
 func (cmd *IntCmd) SetErr(e error)
-func (cmd *IntCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*IntCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *IntCmd) SetVal(val int64)
-func (cmd *IntCmd) String() string
+func (cmd*IntCmd) String() string
 func (cmd *IntCmd) Uint64() (uint64, error)
-func (cmd *IntCmd) Val() int64
+func (cmd*IntCmd) Val() int64
 type IntPointerSliceCmd
 func NewIntPointerSliceCmd(ctx context.Context, args ...interface{}) *IntPointerSliceCmd
-func (cmd *IntPointerSliceCmd) Args() []interface{}
+func (cmd*IntPointerSliceCmd) Args() []interface{}
 func (cmd *IntPointerSliceCmd) Err() error
-func (cmd *IntPointerSliceCmd) FullName() string
+func (cmd*IntPointerSliceCmd) FullName() string
 func (cmd *IntPointerSliceCmd) Name() string
-func (cmd *IntPointerSliceCmd) Result() ([]*int64, error)
-func (cmd *IntPointerSliceCmd) SetErr(e error)
+func (cmd*IntPointerSliceCmd) Result() ([]*int64, error)
+func (cmd*IntPointerSliceCmd) SetErr(e error)
 func (cmd *IntPointerSliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *IntPointerSliceCmd) SetVal(val []*int64)
-func (cmd *IntPointerSliceCmd) String() string
+func (cmd*IntPointerSliceCmd) SetVal(val []*int64)
+func (cmd*IntPointerSliceCmd) String() string
 func (cmd *IntPointerSliceCmd) Val() []*int64
 type IntSliceCmd
 func NewIntSliceCmd(ctx context.Context, args ...interface{}) *IntSliceCmd
-func (cmd *IntSliceCmd) Args() []interface{}
+func (cmd*IntSliceCmd) Args() []interface{}
 func (cmd *IntSliceCmd) Err() error
-func (cmd *IntSliceCmd) FullName() string
+func (cmd*IntSliceCmd) FullName() string
 func (cmd *IntSliceCmd) Name() string
-func (cmd *IntSliceCmd) Result() ([]int64, error)
+func (cmd*IntSliceCmd) Result() ([]int64, error)
 func (cmd *IntSliceCmd) SetErr(e error)
-func (cmd *IntSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*IntSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *IntSliceCmd) SetVal(val []int64)
-func (cmd *IntSliceCmd) String() string
+func (cmd*IntSliceCmd) String() string
 func (cmd *IntSliceCmd) Val() []int64
 type JSONArrIndexArgs
 type JSONArrTrimArgs
 type JSONCmd
-func (cmd *JSONCmd) Args() []interface{}
+func (cmd*JSONCmd) Args() []interface{}
 func (cmd *JSONCmd) Err() error
-func (cmd *JSONCmd) Expanded() (interface{}, error)
+func (cmd*JSONCmd) Expanded() (interface{}, error)
 func (cmd *JSONCmd) FullName() string
-func (cmd *JSONCmd) Name() string
+func (cmd*JSONCmd) Name() string
 func (cmd *JSONCmd) Result() (string, error)
-func (cmd *JSONCmd) SetErr(e error)
+func (cmd*JSONCmd) SetErr(e error)
 func (cmd *JSONCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *JSONCmd) SetVal(val string)
+func (cmd*JSONCmd) SetVal(val string)
 func (cmd *JSONCmd) String() string
-func (cmd *JSONCmd) Val() string
+func (cmd*JSONCmd) Val() string
 type JSONCmdable
 type JSONGetArgs
 type JSONSetArgs
 type JSONSliceCmd
 func NewJSONSliceCmd(ctx context.Context, args ...interface{}) *JSONSliceCmd
-func (cmd *JSONSliceCmd) Args() []interface{}
+func (cmd*JSONSliceCmd) Args() []interface{}
 func (cmd *JSONSliceCmd) Err() error
-func (cmd *JSONSliceCmd) FullName() string
+func (cmd*JSONSliceCmd) FullName() string
 func (cmd *JSONSliceCmd) Name() string
-func (cmd *JSONSliceCmd) Result() ([]interface{}, error)
+func (cmd*JSONSliceCmd) Result() ([]interface{}, error)
 func (cmd *JSONSliceCmd) SetErr(e error)
-func (cmd *JSONSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*JSONSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *JSONSliceCmd) SetVal(val []interface{})
-func (cmd *JSONSliceCmd) String() string
+func (cmd*JSONSliceCmd) String() string
 func (cmd *JSONSliceCmd) Val() []interface{}
 type KeyFlags
 type KeyFlagsCmd
-func NewKeyFlagsCmd(ctx context.Context, args ...interface{}) *KeyFlagsCmd
+func NewKeyFlagsCmd(ctx context.Context, args ...interface{})*KeyFlagsCmd
 func (cmd *KeyFlagsCmd) Args() []interface{}
-func (cmd *KeyFlagsCmd) Err() error
+func (cmd*KeyFlagsCmd) Err() error
 func (cmd *KeyFlagsCmd) FullName() string
-func (cmd *KeyFlagsCmd) Name() string
+func (cmd*KeyFlagsCmd) Name() string
 func (cmd *KeyFlagsCmd) Result() ([]KeyFlags, error)
-func (cmd *KeyFlagsCmd) SetErr(e error)
+func (cmd*KeyFlagsCmd) SetErr(e error)
 func (cmd *KeyFlagsCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *KeyFlagsCmd) SetVal(val []KeyFlags)
+func (cmd*KeyFlagsCmd) SetVal(val []KeyFlags)
 func (cmd *KeyFlagsCmd) String() string
-func (cmd *KeyFlagsCmd) Val() []KeyFlags
+func (cmd*KeyFlagsCmd) Val() []KeyFlags
 type KeyValue
 type KeyValueSliceCmd
 func NewKeyValueSliceCmd(ctx context.Context, args ...interface{}) *KeyValueSliceCmd
-func (cmd *KeyValueSliceCmd) Args() []interface{}
+func (cmd*KeyValueSliceCmd) Args() []interface{}
 func (cmd *KeyValueSliceCmd) Err() error
-func (cmd *KeyValueSliceCmd) FullName() string
+func (cmd*KeyValueSliceCmd) FullName() string
 func (cmd *KeyValueSliceCmd) Name() string
-func (cmd *KeyValueSliceCmd) Result() ([]KeyValue, error)
+func (cmd*KeyValueSliceCmd) Result() ([]KeyValue, error)
 func (cmd *KeyValueSliceCmd) SetErr(e error)
-func (cmd *KeyValueSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*KeyValueSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *KeyValueSliceCmd) SetVal(val []KeyValue)
-func (cmd *KeyValueSliceCmd) String() string
+func (cmd*KeyValueSliceCmd) String() string
 func (cmd *KeyValueSliceCmd) Val() []KeyValue
 type KeyValuesCmd
-func NewKeyValuesCmd(ctx context.Context, args ...interface{}) *KeyValuesCmd
+func NewKeyValuesCmd(ctx context.Context, args ...interface{})*KeyValuesCmd
 func (cmd *KeyValuesCmd) Args() []interface{}
-func (cmd *KeyValuesCmd) Err() error
+func (cmd*KeyValuesCmd) Err() error
 func (cmd *KeyValuesCmd) FullName() string
-func (cmd *KeyValuesCmd) Name() string
+func (cmd*KeyValuesCmd) Name() string
 func (cmd *KeyValuesCmd) Result() (string, []string, error)
-func (cmd *KeyValuesCmd) SetErr(e error)
+func (cmd*KeyValuesCmd) SetErr(e error)
 func (cmd *KeyValuesCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *KeyValuesCmd) SetVal(key string, val []string)
+func (cmd*KeyValuesCmd) SetVal(key string, val []string)
 func (cmd *KeyValuesCmd) String() string
-func (cmd *KeyValuesCmd) Val() (string, []string)
+func (cmd*KeyValuesCmd) Val() (string, []string)
 type LCSCmd
-func NewLCSCmd(ctx context.Context, q *LCSQuery) *LCSCmd
+func NewLCSCmd(ctx context.Context, q *LCSQuery)*LCSCmd
 func (cmd *LCSCmd) Args() []interface{}
-func (cmd *LCSCmd) Err() error
+func (cmd*LCSCmd) Err() error
 func (cmd *LCSCmd) FullName() string
-func (cmd *LCSCmd) Name() string
+func (cmd*LCSCmd) Name() string
 func (cmd *LCSCmd) Result() (*LCSMatch, error)
 func (cmd *LCSCmd) SetErr(e error)
-func (cmd *LCSCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *LCSCmd) SetVal(val *LCSMatch)
+func (cmd*LCSCmd) SetFirstKeyPos(keyPos int8)
+func (cmd *LCSCmd) SetVal(val*LCSMatch)
 func (cmd *LCSCmd) String() string
-func (cmd *LCSCmd) Val() *LCSMatch
+func (cmd*LCSCmd) Val() *LCSMatch
 type LCSMatch
 type LCSMatchedPosition
 type LCSPosition
@@ -2496,17 +2496,17 @@ type LCSQuery
 type LPosArgs
 type Latency
 type LatencyCmd
-func NewLatencyCmd(ctx context.Context, args ...interface{}) *LatencyCmd
+func NewLatencyCmd(ctx context.Context, args ...interface{})*LatencyCmd
 func (cmd *LatencyCmd) Args() []interface{}
-func (cmd *LatencyCmd) Err() error
+func (cmd*LatencyCmd) Err() error
 func (cmd *LatencyCmd) FullName() string
-func (cmd *LatencyCmd) Name() string
+func (cmd*LatencyCmd) Name() string
 func (cmd *LatencyCmd) Result() ([]Latency, error)
-func (cmd *LatencyCmd) SetErr(e error)
+func (cmd*LatencyCmd) SetErr(e error)
 func (cmd *LatencyCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *LatencyCmd) SetVal(val []Latency)
+func (cmd*LatencyCmd) SetVal(val []Latency)
 func (cmd *LatencyCmd) String() string
-func (cmd *LatencyCmd) Val() []Latency
+func (cmd*LatencyCmd) Val() []Latency
 type Library
 type LibraryInfo
 func WithLibraryName(libName string) LibraryInfo
@@ -2517,1538 +2517,1538 @@ type ListCmdable
 type MSetEXArgs
 type MapMapStringInterfaceCmd
 func NewMapMapStringInterfaceCmd(ctx context.Context, args ...interface{}) *MapMapStringInterfaceCmd
-func (cmd *MapMapStringInterfaceCmd) Args() []interface{}
+func (cmd*MapMapStringInterfaceCmd) Args() []interface{}
 func (cmd *MapMapStringInterfaceCmd) Err() error
-func (cmd *MapMapStringInterfaceCmd) FullName() string
+func (cmd*MapMapStringInterfaceCmd) FullName() string
 func (cmd *MapMapStringInterfaceCmd) Name() string
-func (cmd *MapMapStringInterfaceCmd) Result() (map[string]interface{}, error)
+func (cmd*MapMapStringInterfaceCmd) Result() (map[string]interface{}, error)
 func (cmd *MapMapStringInterfaceCmd) SetErr(e error)
-func (cmd *MapMapStringInterfaceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*MapMapStringInterfaceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *MapMapStringInterfaceCmd) SetVal(val map[string]interface{})
-func (cmd *MapMapStringInterfaceCmd) String() string
+func (cmd*MapMapStringInterfaceCmd) String() string
 func (cmd *MapMapStringInterfaceCmd) Val() map[string]interface{}
 type MapStringIntCmd
-func NewMapStringIntCmd(ctx context.Context, args ...interface{}) *MapStringIntCmd
+func NewMapStringIntCmd(ctx context.Context, args ...interface{})*MapStringIntCmd
 func NewMapStringIntCmdResult(val map[string]int64, err error) *MapStringIntCmd
-func (cmd *MapStringIntCmd) Args() []interface{}
+func (cmd*MapStringIntCmd) Args() []interface{}
 func (cmd *MapStringIntCmd) Err() error
-func (cmd *MapStringIntCmd) FullName() string
+func (cmd*MapStringIntCmd) FullName() string
 func (cmd *MapStringIntCmd) Name() string
-func (cmd *MapStringIntCmd) Result() (map[string]int64, error)
+func (cmd*MapStringIntCmd) Result() (map[string]int64, error)
 func (cmd *MapStringIntCmd) SetErr(e error)
-func (cmd *MapStringIntCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*MapStringIntCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *MapStringIntCmd) SetVal(val map[string]int64)
-func (cmd *MapStringIntCmd) String() string
+func (cmd*MapStringIntCmd) String() string
 func (cmd *MapStringIntCmd) Val() map[string]int64
 type MapStringInterfaceCmd
-func NewMapStringInterfaceCmd(ctx context.Context, args ...interface{}) *MapStringInterfaceCmd
+func NewMapStringInterfaceCmd(ctx context.Context, args ...interface{})*MapStringInterfaceCmd
 func (cmd *MapStringInterfaceCmd) Args() []interface{}
-func (cmd *MapStringInterfaceCmd) Err() error
+func (cmd*MapStringInterfaceCmd) Err() error
 func (cmd *MapStringInterfaceCmd) FullName() string
-func (cmd *MapStringInterfaceCmd) Name() string
+func (cmd*MapStringInterfaceCmd) Name() string
 func (cmd *MapStringInterfaceCmd) Result() (map[string]interface{}, error)
-func (cmd *MapStringInterfaceCmd) SetErr(e error)
+func (cmd*MapStringInterfaceCmd) SetErr(e error)
 func (cmd *MapStringInterfaceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *MapStringInterfaceCmd) SetVal(val map[string]interface{})
+func (cmd*MapStringInterfaceCmd) SetVal(val map[string]interface{})
 func (cmd *MapStringInterfaceCmd) String() string
-func (cmd *MapStringInterfaceCmd) Val() map[string]interface{}
+func (cmd*MapStringInterfaceCmd) Val() map[string]interface{}
 type MapStringInterfaceSliceCmd
 func NewMapStringInterfaceSliceCmd(ctx context.Context, args ...interface{}) *MapStringInterfaceSliceCmd
-func (cmd *MapStringInterfaceSliceCmd) Args() []interface{}
+func (cmd*MapStringInterfaceSliceCmd) Args() []interface{}
 func (cmd *MapStringInterfaceSliceCmd) Err() error
-func (cmd *MapStringInterfaceSliceCmd) FullName() string
+func (cmd*MapStringInterfaceSliceCmd) FullName() string
 func (cmd *MapStringInterfaceSliceCmd) Name() string
-func (cmd *MapStringInterfaceSliceCmd) Result() ([]map[string]interface{}, error)
+func (cmd*MapStringInterfaceSliceCmd) Result() ([]map[string]interface{}, error)
 func (cmd *MapStringInterfaceSliceCmd) SetErr(e error)
-func (cmd *MapStringInterfaceSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*MapStringInterfaceSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *MapStringInterfaceSliceCmd) SetVal(val []map[string]interface{})
-func (cmd *MapStringInterfaceSliceCmd) String() string
+func (cmd*MapStringInterfaceSliceCmd) String() string
 func (cmd *MapStringInterfaceSliceCmd) Val() []map[string]interface{}
 type MapStringSliceInterfaceCmd
-func NewMapStringSliceInterfaceCmd(ctx context.Context, args ...interface{}) *MapStringSliceInterfaceCmd
+func NewMapStringSliceInterfaceCmd(ctx context.Context, args ...interface{})*MapStringSliceInterfaceCmd
 func (cmd *MapStringSliceInterfaceCmd) Args() []interface{}
-func (cmd *MapStringSliceInterfaceCmd) Err() error
+func (cmd*MapStringSliceInterfaceCmd) Err() error
 func (cmd *MapStringSliceInterfaceCmd) FullName() string
-func (cmd *MapStringSliceInterfaceCmd) Name() string
+func (cmd*MapStringSliceInterfaceCmd) Name() string
 func (cmd *MapStringSliceInterfaceCmd) Result() (map[string][]interface{}, error)
-func (cmd *MapStringSliceInterfaceCmd) SetErr(e error)
+func (cmd*MapStringSliceInterfaceCmd) SetErr(e error)
 func (cmd *MapStringSliceInterfaceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *MapStringSliceInterfaceCmd) SetVal(val map[string][]interface{})
+func (cmd*MapStringSliceInterfaceCmd) SetVal(val map[string][]interface{})
 func (cmd *MapStringSliceInterfaceCmd) String() string
-func (cmd *MapStringSliceInterfaceCmd) Val() map[string][]interface{}
+func (cmd*MapStringSliceInterfaceCmd) Val() map[string][]interface{}
 type MapStringStringCmd
 func NewMapStringStringCmd(ctx context.Context, args ...interface{}) *MapStringStringCmd
-func NewMapStringStringResult(val map[string]string, err error) *MapStringStringCmd
+func NewMapStringStringResult(val map[string]string, err error)*MapStringStringCmd
 func (cmd *MapStringStringCmd) Args() []interface{}
-func (cmd *MapStringStringCmd) Err() error
+func (cmd*MapStringStringCmd) Err() error
 func (cmd *MapStringStringCmd) FullName() string
-func (cmd *MapStringStringCmd) Name() string
+func (cmd*MapStringStringCmd) Name() string
 func (cmd *MapStringStringCmd) Result() (map[string]string, error)
-func (cmd *MapStringStringCmd) Scan(dest interface{}) error
+func (cmd*MapStringStringCmd) Scan(dest interface{}) error
 func (cmd *MapStringStringCmd) SetErr(e error)
-func (cmd *MapStringStringCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*MapStringStringCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *MapStringStringCmd) SetVal(val map[string]string)
-func (cmd *MapStringStringCmd) String() string
+func (cmd*MapStringStringCmd) String() string
 func (cmd *MapStringStringCmd) Val() map[string]string
 type MapStringStringSliceCmd
-func NewMapStringStringSliceCmd(ctx context.Context, args ...interface{}) *MapStringStringSliceCmd
+func NewMapStringStringSliceCmd(ctx context.Context, args ...interface{})*MapStringStringSliceCmd
 func (cmd *MapStringStringSliceCmd) Args() []interface{}
-func (cmd *MapStringStringSliceCmd) Err() error
+func (cmd*MapStringStringSliceCmd) Err() error
 func (cmd *MapStringStringSliceCmd) FullName() string
-func (cmd *MapStringStringSliceCmd) Name() string
+func (cmd*MapStringStringSliceCmd) Name() string
 func (cmd *MapStringStringSliceCmd) Result() ([]map[string]string, error)
-func (cmd *MapStringStringSliceCmd) SetErr(e error)
+func (cmd*MapStringStringSliceCmd) SetErr(e error)
 func (cmd *MapStringStringSliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *MapStringStringSliceCmd) SetVal(val []map[string]string)
+func (cmd*MapStringStringSliceCmd) SetVal(val []map[string]string)
 func (cmd *MapStringStringSliceCmd) String() string
-func (cmd *MapStringStringSliceCmd) Val() []map[string]string
+func (cmd*MapStringStringSliceCmd) Val() []map[string]string
 type Message
 func (m *Message) String() string
 type ModuleLoadexConfig
 type MonitorCmd
-func (cmd *MonitorCmd) Args() []interface{}
+func (cmd*MonitorCmd) Args() []interface{}
 func (cmd *MonitorCmd) Err() error
-func (cmd *MonitorCmd) FullName() string
+func (cmd*MonitorCmd) FullName() string
 func (cmd *MonitorCmd) Name() string
-func (cmd *MonitorCmd) SetErr(e error)
+func (cmd*MonitorCmd) SetErr(e error)
 func (cmd *MonitorCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *MonitorCmd) Start()
+func (cmd*MonitorCmd) Start()
 func (cmd *MonitorCmd) Stop()
-func (cmd *MonitorCmd) String() string
+func (cmd*MonitorCmd) String() string
 type MonitorStatus
 type Node
 type Options
 func ParseURL(redisURL string) (*Options, error)
-func (opt *Options) NewDialer() func(context.Context, string, string) (net.Conn, error)
+func (opt*Options) NewDialer() func(context.Context, string, string) (net.Conn, error)
 type Pipeline
 func (c Pipeline) ACLCat(ctx context.Context) *StringSliceCmd
-func (c Pipeline) ACLCatArgs(ctx context.Context, options *ACLCatArgs) *StringSliceCmd
-func (c Pipeline) ACLDelUser(ctx context.Context, username string) *IntCmd
+func (c Pipeline) ACLCatArgs(ctx context.Context, options*ACLCatArgs) *StringSliceCmd
+func (c Pipeline) ACLDelUser(ctx context.Context, username string)*IntCmd
 func (c Pipeline) ACLDryRun(ctx context.Context, username string, command ...interface{}) *StringCmd
-func (c Pipeline) ACLGenPass(ctx context.Context, bit int) *StringCmd
+func (c Pipeline) ACLGenPass(ctx context.Context, bit int)*StringCmd
 func (c Pipeline) ACLList(ctx context.Context) *StringSliceCmd
-func (c Pipeline) ACLLog(ctx context.Context, count int64) *ACLLogCmd
+func (c Pipeline) ACLLog(ctx context.Context, count int64)*ACLLogCmd
 func (c Pipeline) ACLLogReset(ctx context.Context) *StatusCmd
-func (c Pipeline) ACLSetUser(ctx context.Context, username string, rules ...string) *StatusCmd
+func (c Pipeline) ACLSetUser(ctx context.Context, username string, rules ...string)*StatusCmd
 func (c Pipeline) ACLUsers(ctx context.Context) *StringSliceCmd
-func (c Pipeline) ACLWhoAmI(ctx context.Context) *StringCmd
+func (c Pipeline) ACLWhoAmI(ctx context.Context)*StringCmd
 func (c Pipeline) Append(ctx context.Context, key, value string) *IntCmd
-func (c Pipeline) Auth(ctx context.Context, password string) *StatusCmd
+func (c Pipeline) Auth(ctx context.Context, password string)*StatusCmd
 func (c Pipeline) AuthACL(ctx context.Context, username, password string) *StatusCmd
-func (c Pipeline) BFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Pipeline) BFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Pipeline) BFCard(ctx context.Context, key string) *IntCmd
-func (c Pipeline) BFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Pipeline) BFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Pipeline) BFInfo(ctx context.Context, key string) *BFInfoCmd
-func (c Pipeline) BFInfoArg(ctx context.Context, key, option string) *BFInfoCmd
+func (c Pipeline) BFInfoArg(ctx context.Context, key, option string)*BFInfoCmd
 func (c Pipeline) BFInfoCapacity(ctx context.Context, key string) *BFInfoCmd
-func (c Pipeline) BFInfoExpansion(ctx context.Context, key string) *BFInfoCmd
+func (c Pipeline) BFInfoExpansion(ctx context.Context, key string)*BFInfoCmd
 func (c Pipeline) BFInfoFilters(ctx context.Context, key string) *BFInfoCmd
-func (c Pipeline) BFInfoItems(ctx context.Context, key string) *BFInfoCmd
+func (c Pipeline) BFInfoItems(ctx context.Context, key string)*BFInfoCmd
 func (c Pipeline) BFInfoSize(ctx context.Context, key string) *BFInfoCmd
-func (c Pipeline) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...) *BoolSliceCmd
-func (c Pipeline) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c Pipeline) BFInsert(ctx context.Context, key string, options*BFInsertOptions, ...) *BoolSliceCmd
+func (c Pipeline) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c Pipeline) BFMAdd(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Pipeline) BFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Pipeline) BFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Pipeline) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Pipeline) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64) *StatusCmd
+func (c Pipeline) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64)*StatusCmd
 func (c Pipeline) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Pipeline) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions) *StatusCmd
-func (c Pipeline) BFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c Pipeline) BFReserveWithArgs(ctx context.Context, key string, options*BFReserveOptions) *StatusCmd
+func (c Pipeline) BFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c Pipeline) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...) *KeyValuesCmd
-func (c Pipeline) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...) *StringCmd
+func (c Pipeline) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...)*StringCmd
 func (c Pipeline) BLPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
-func (c Pipeline) BRPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
+func (c Pipeline) BRPop(ctx context.Context, timeout time.Duration, keys ...string)*StringSliceCmd
 func (c Pipeline) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration) *StringCmd
-func (c Pipeline) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...) *ZSliceWithKeyCmd
+func (c Pipeline) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...)*ZSliceWithKeyCmd
 func (c Pipeline) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
-func (c Pipeline) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
+func (c Pipeline) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string)*ZWithKeyCmd
 func (c *Pipeline) BatchProcess(ctx context.Context, cmd ...Cmder) error
-func (c Pipeline) BgRewriteAOF(ctx context.Context) *StatusCmd
+func (c Pipeline) BgRewriteAOF(ctx context.Context)*StatusCmd
 func (c Pipeline) BgSave(ctx context.Context) *StatusCmd
-func (c Pipeline) BitCount(ctx context.Context, key string, bitCount *BitCount) *IntCmd
-func (c Pipeline) BitField(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
+func (c Pipeline) BitCount(ctx context.Context, key string, bitCount*BitCount) *IntCmd
+func (c Pipeline) BitField(ctx context.Context, key string, values ...interface{})*IntSliceCmd
 func (c Pipeline) BitFieldRO(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
-func (c Pipeline) BitOpAnd(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Pipeline) BitOpAnd(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Pipeline) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Pipeline) BitOpDiff(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Pipeline) BitOpDiff(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Pipeline) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Pipeline) BitOpNot(ctx context.Context, destKey string, key string) *IntCmd
+func (c Pipeline) BitOpNot(ctx context.Context, destKey string, key string)*IntCmd
 func (c Pipeline) BitOpOne(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Pipeline) BitOpOr(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Pipeline) BitOpOr(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Pipeline) BitOpXor(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Pipeline) BitPos(ctx context.Context, key string, bit int64, pos ...int64) *IntCmd
+func (c Pipeline) BitPos(ctx context.Context, key string, bit int64, pos ...int64)*IntCmd
 func (c Pipeline) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string) *IntCmd
-func (c Pipeline) CFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Pipeline) CFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Pipeline) CFAddNX(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Pipeline) CFCount(ctx context.Context, key string, element interface{}) *IntCmd
+func (c Pipeline) CFCount(ctx context.Context, key string, element interface{})*IntCmd
 func (c Pipeline) CFDel(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Pipeline) CFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Pipeline) CFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Pipeline) CFInfo(ctx context.Context, key string) *CFInfoCmd
-func (c Pipeline) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...) *BoolSliceCmd
-func (c Pipeline) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...) *IntSliceCmd
-func (c Pipeline) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c Pipeline) CFInsert(ctx context.Context, key string, options*CFInsertOptions, ...) *BoolSliceCmd
+func (c Pipeline) CFInsertNX(ctx context.Context, key string, options*CFInsertOptions, ...) *IntSliceCmd
+func (c Pipeline) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c Pipeline) CFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Pipeline) CFReserve(ctx context.Context, key string, capacity int64) *StatusCmd
+func (c Pipeline) CFReserve(ctx context.Context, key string, capacity int64)*StatusCmd
 func (c Pipeline) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64) *StatusCmd
-func (c Pipeline) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64) *StatusCmd
+func (c Pipeline) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64)*StatusCmd
 func (c Pipeline) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64) *StatusCmd
-func (c Pipeline) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions) *StatusCmd
-func (c Pipeline) CFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c Pipeline) CFReserveWithArgs(ctx context.Context, key string, options*CFReserveOptions) *StatusCmd
+func (c Pipeline) CFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c Pipeline) CMSIncrBy(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Pipeline) CMSInfo(ctx context.Context, key string) *CMSInfoCmd
+func (c Pipeline) CMSInfo(ctx context.Context, key string)*CMSInfoCmd
 func (c Pipeline) CMSInitByDim(ctx context.Context, key string, width, depth int64) *StatusCmd
-func (c Pipeline) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64) *StatusCmd
+func (c Pipeline) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64)*StatusCmd
 func (c Pipeline) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string) *StatusCmd
-func (c Pipeline) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64) *StatusCmd
+func (c Pipeline) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64)*StatusCmd
 func (c Pipeline) CMSQuery(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Pipeline) ClientGetName(ctx context.Context) *StringCmd
+func (c Pipeline) ClientGetName(ctx context.Context)*StringCmd
 func (c Pipeline) ClientID(ctx context.Context) *IntCmd
-func (c Pipeline) ClientInfo(ctx context.Context) *ClientInfoCmd
+func (c Pipeline) ClientInfo(ctx context.Context)*ClientInfoCmd
 func (c Pipeline) ClientKill(ctx context.Context, ipPort string) *StatusCmd
-func (c Pipeline) ClientKillByFilter(ctx context.Context, keys ...string) *IntCmd
+func (c Pipeline) ClientKillByFilter(ctx context.Context, keys ...string)*IntCmd
 func (c Pipeline) ClientList(ctx context.Context) *StringCmd
-func (c Pipeline) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *StatusCmd
+func (c Pipeline) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string)*StatusCmd
 func (c Pipeline) ClientPause(ctx context.Context, dur time.Duration) *BoolCmd
-func (c Pipeline) ClientSetInfo(ctx context.Context, info LibraryInfo) *StatusCmd
+func (c Pipeline) ClientSetInfo(ctx context.Context, info LibraryInfo)*StatusCmd
 func (c Pipeline) ClientSetName(ctx context.Context, name string) *BoolCmd
-func (c Pipeline) ClientUnblock(ctx context.Context, id int64) *IntCmd
+func (c Pipeline) ClientUnblock(ctx context.Context, id int64)*IntCmd
 func (c Pipeline) ClientUnblockWithError(ctx context.Context, id int64) *IntCmd
-func (c Pipeline) ClientUnpause(ctx context.Context) *BoolCmd
+func (c Pipeline) ClientUnpause(ctx context.Context)*BoolCmd
 func (c Pipeline) ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
-func (c Pipeline) ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
+func (c Pipeline) ClusterAddSlotsRange(ctx context.Context, min, max int)*StatusCmd
 func (c Pipeline) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd
-func (c Pipeline) ClusterCountKeysInSlot(ctx context.Context, slot int) *IntCmd
+func (c Pipeline) ClusterCountKeysInSlot(ctx context.Context, slot int)*IntCmd
 func (c Pipeline) ClusterDelSlots(ctx context.Context, slots ...int) *StatusCmd
-func (c Pipeline) ClusterDelSlotsRange(ctx context.Context, min, max int) *StatusCmd
+func (c Pipeline) ClusterDelSlotsRange(ctx context.Context, min, max int)*StatusCmd
 func (c Pipeline) ClusterFailover(ctx context.Context) *StatusCmd
-func (c Pipeline) ClusterForget(ctx context.Context, nodeID string) *StatusCmd
+func (c Pipeline) ClusterForget(ctx context.Context, nodeID string)*StatusCmd
 func (c Pipeline) ClusterGetKeysInSlot(ctx context.Context, slot int, count int) *StringSliceCmd
-func (c Pipeline) ClusterInfo(ctx context.Context) *StringCmd
+func (c Pipeline) ClusterInfo(ctx context.Context)*StringCmd
 func (c Pipeline) ClusterKeySlot(ctx context.Context, key string) *IntCmd
-func (c Pipeline) ClusterLinks(ctx context.Context) *ClusterLinksCmd
+func (c Pipeline) ClusterLinks(ctx context.Context)*ClusterLinksCmd
 func (c Pipeline) ClusterMeet(ctx context.Context, host, port string) *StatusCmd
-func (c Pipeline) ClusterMyID(ctx context.Context) *StringCmd
+func (c Pipeline) ClusterMyID(ctx context.Context)*StringCmd
 func (c Pipeline) ClusterMyShardID(ctx context.Context) *StringCmd
-func (c Pipeline) ClusterNodes(ctx context.Context) *StringCmd
+func (c Pipeline) ClusterNodes(ctx context.Context)*StringCmd
 func (c Pipeline) ClusterReplicate(ctx context.Context, nodeID string) *StatusCmd
-func (c Pipeline) ClusterResetHard(ctx context.Context) *StatusCmd
+func (c Pipeline) ClusterResetHard(ctx context.Context)*StatusCmd
 func (c Pipeline) ClusterResetSoft(ctx context.Context) *StatusCmd
-func (c Pipeline) ClusterSaveConfig(ctx context.Context) *StatusCmd
+func (c Pipeline) ClusterSaveConfig(ctx context.Context)*StatusCmd
 func (c Pipeline) ClusterShards(ctx context.Context) *ClusterShardsCmd
-func (c Pipeline) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
+func (c Pipeline) ClusterSlaves(ctx context.Context, nodeID string)*StringSliceCmd
 func (c Pipeline) ClusterSlots(ctx context.Context) *ClusterSlotsCmd
-func (c *Pipeline) Cmds() []Cmder
+func (c*Pipeline) Cmds() []Cmder
 func (c Pipeline) Command(ctx context.Context) *CommandsInfoCmd
-func (c Pipeline) CommandGetKeys(ctx context.Context, commands ...interface{}) *StringSliceCmd
+func (c Pipeline) CommandGetKeys(ctx context.Context, commands ...interface{})*StringSliceCmd
 func (c Pipeline) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{}) *KeyFlagsCmd
-func (c Pipeline) CommandList(ctx context.Context, filter *FilterBy) *StringSliceCmd
-func (c Pipeline) ConfigGet(ctx context.Context, parameter string) *MapStringStringCmd
+func (c Pipeline) CommandList(ctx context.Context, filter*FilterBy) *StringSliceCmd
+func (c Pipeline) ConfigGet(ctx context.Context, parameter string)*MapStringStringCmd
 func (c Pipeline) ConfigResetStat(ctx context.Context) *StatusCmd
-func (c Pipeline) ConfigRewrite(ctx context.Context) *StatusCmd
+func (c Pipeline) ConfigRewrite(ctx context.Context)*StatusCmd
 func (c Pipeline) ConfigSet(ctx context.Context, parameter, value string) *StatusCmd
-func (c Pipeline) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd
+func (c Pipeline) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool)*IntCmd
 func (c Pipeline) DBSize(ctx context.Context) *IntCmd
-func (c Pipeline) DebugObject(ctx context.Context, key string) *StringCmd
+func (c Pipeline) DebugObject(ctx context.Context, key string)*StringCmd
 func (c Pipeline) Decr(ctx context.Context, key string) *IntCmd
-func (c Pipeline) DecrBy(ctx context.Context, key string, decrement int64) *IntCmd
+func (c Pipeline) DecrBy(ctx context.Context, key string, decrement int64)*IntCmd
 func (c Pipeline) Del(ctx context.Context, keys ...string) *IntCmd
-func (c Pipeline) DelExArgs(ctx context.Context, key string, a DelExArgs) *IntCmd
+func (c Pipeline) DelExArgs(ctx context.Context, key string, a DelExArgs)*IntCmd
 func (c Pipeline) Digest(ctx context.Context, key string) *DigestCmd
-func (c *Pipeline) Discard()
-func (c *Pipeline) Do(ctx context.Context, args ...interface{}) *Cmd
+func (c*Pipeline) Discard()
+func (c *Pipeline) Do(ctx context.Context, args ...interface{})*Cmd
 func (c Pipeline) Dump(ctx context.Context, key string) *StringCmd
-func (c Pipeline) Echo(ctx context.Context, message interface{}) *StringCmd
+func (c Pipeline) Echo(ctx context.Context, message interface{})*StringCmd
 func (c Pipeline) Eval(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
-func (c Pipeline) EvalRO(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
+func (c Pipeline) EvalRO(ctx context.Context, script string, keys []string, args ...interface{})*Cmd
 func (c Pipeline) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
-func (c Pipeline) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
+func (c Pipeline) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{})*Cmd
 func (c *Pipeline) Exec(ctx context.Context) ([]Cmder, error)
-func (c Pipeline) Exists(ctx context.Context, keys ...string) *IntCmd
+func (c Pipeline) Exists(ctx context.Context, keys ...string)*IntCmd
 func (c Pipeline) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Pipeline) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c Pipeline) ExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c Pipeline) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Pipeline) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Pipeline) ExpireLT(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Pipeline) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Pipeline) ExpireTime(ctx context.Context, key string) *DurationCmd
+func (c Pipeline) ExpireTime(ctx context.Context, key string)*DurationCmd
 func (c Pipeline) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Pipeline) FCall(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Pipeline) FCall(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Pipeline) FCallRO(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Pipeline) FCallRo(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Pipeline) FCallRo(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Pipeline) FTAggregate(ctx context.Context, index string, query string) *MapStringInterfaceCmd
-func (c Pipeline) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions) *AggregateCmd
-func (c Pipeline) FTAliasAdd(ctx context.Context, index string, alias string) *StatusCmd
+func (c Pipeline) FTAggregateWithArgs(ctx context.Context, index string, query string, options*FTAggregateOptions) *AggregateCmd
+func (c Pipeline) FTAliasAdd(ctx context.Context, index string, alias string)*StatusCmd
 func (c Pipeline) FTAliasDel(ctx context.Context, alias string) *StatusCmd
-func (c Pipeline) FTAliasUpdate(ctx context.Context, index string, alias string) *StatusCmd
+func (c Pipeline) FTAliasUpdate(ctx context.Context, index string, alias string)*StatusCmd
 func (c Pipeline) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...) *StatusCmd
-func (c Pipeline) FTConfigGet(ctx context.Context, option string) *MapMapStringInterfaceCmd
+func (c Pipeline) FTConfigGet(ctx context.Context, option string)*MapMapStringInterfaceCmd
 deprecated
 func (c Pipeline) FTConfigSet(ctx context.Context, option string, value interface{}) *StatusCmd
 deprecated
-func (c Pipeline) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...) *StatusCmd
-func (c Pipeline) FTCursorDel(ctx context.Context, index string, cursorId int) *StatusCmd
+func (c Pipeline) FTCreate(ctx context.Context, index string, options*FTCreateOptions, ...) *StatusCmd
+func (c Pipeline) FTCursorDel(ctx context.Context, index string, cursorId int)*StatusCmd
 func (c Pipeline) FTCursorRead(ctx context.Context, index string, cursorId int, count int) *MapStringInterfaceCmd
-func (c Pipeline) FTDictAdd(ctx context.Context, dict string, term ...interface{}) *IntCmd
+func (c Pipeline) FTDictAdd(ctx context.Context, dict string, term ...interface{})*IntCmd
 func (c Pipeline) FTDictDel(ctx context.Context, dict string, term ...interface{}) *IntCmd
-func (c Pipeline) FTDictDump(ctx context.Context, dict string) *StringSliceCmd
+func (c Pipeline) FTDictDump(ctx context.Context, dict string)*StringSliceCmd
 func (c Pipeline) FTDropIndex(ctx context.Context, index string) *StatusCmd
-func (c Pipeline) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions) *StatusCmd
-func (c Pipeline) FTExplain(ctx context.Context, index string, query string) *StringCmd
+func (c Pipeline) FTDropIndexWithArgs(ctx context.Context, index string, options*FTDropIndexOptions) *StatusCmd
+func (c Pipeline) FTExplain(ctx context.Context, index string, query string)*StringCmd
 func (c Pipeline) FTExplainCli(ctx context.Context, key, path string) error
-func (c Pipeline) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions) *StringCmd
+func (c Pipeline) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions)*StringCmd
 func (c Pipeline) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...) *FTHybridCmd
-func (c Pipeline) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions) *FTHybridCmd
-func (c Pipeline) FTInfo(ctx context.Context, index string) *FTInfoCmd
+func (c Pipeline) FTHybridWithArgs(ctx context.Context, index string, options*FTHybridOptions) *FTHybridCmd
+func (c Pipeline) FTInfo(ctx context.Context, index string)*FTInfoCmd
 func (c Pipeline) FTSearch(ctx context.Context, index string, query string) *FTSearchCmd
-func (c Pipeline) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions) *FTSearchCmd
-func (c Pipeline) FTSpellCheck(ctx context.Context, index string, query string) *FTSpellCheckCmd
-func (c Pipeline) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions) *FTSpellCheckCmd
+func (c Pipeline) FTSearchWithArgs(ctx context.Context, index string, query string, options*FTSearchOptions) *FTSearchCmd
+func (c Pipeline) FTSpellCheck(ctx context.Context, index string, query string)*FTSpellCheckCmd
+func (c Pipeline) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions)*FTSpellCheckCmd
 func (c Pipeline) FTSynDump(ctx context.Context, index string) *FTSynDumpCmd
-func (c Pipeline) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{}) *StatusCmd
+func (c Pipeline) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{})*StatusCmd
 func (c Pipeline) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...) *StatusCmd
-func (c Pipeline) FTTagVals(ctx context.Context, index string, field string) *StringSliceCmd
+func (c Pipeline) FTTagVals(ctx context.Context, index string, field string)*StringSliceCmd
 func (c Pipeline) FT_List(ctx context.Context) *StringSliceCmd
-func (c Pipeline) FlushAll(ctx context.Context) *StatusCmd
+func (c Pipeline) FlushAll(ctx context.Context)*StatusCmd
 func (c Pipeline) FlushAllAsync(ctx context.Context) *StatusCmd
-func (c Pipeline) FlushDB(ctx context.Context) *StatusCmd
+func (c Pipeline) FlushDB(ctx context.Context)*StatusCmd
 func (c Pipeline) FlushDBAsync(ctx context.Context) *StatusCmd
-func (c Pipeline) FunctionDelete(ctx context.Context, libName string) *StringCmd
+func (c Pipeline) FunctionDelete(ctx context.Context, libName string)*StringCmd
 func (c Pipeline) FunctionDump(ctx context.Context) *StringCmd
-func (c Pipeline) FunctionFlush(ctx context.Context) *StringCmd
+func (c Pipeline) FunctionFlush(ctx context.Context)*StringCmd
 func (c Pipeline) FunctionFlushAsync(ctx context.Context) *StringCmd
-func (c Pipeline) FunctionKill(ctx context.Context) *StringCmd
+func (c Pipeline) FunctionKill(ctx context.Context)*StringCmd
 func (c Pipeline) FunctionList(ctx context.Context, q FunctionListQuery) *FunctionListCmd
-func (c Pipeline) FunctionLoad(ctx context.Context, code string) *StringCmd
+func (c Pipeline) FunctionLoad(ctx context.Context, code string)*StringCmd
 func (c Pipeline) FunctionLoadReplace(ctx context.Context, code string) *StringCmd
-func (c Pipeline) FunctionRestore(ctx context.Context, libDump string) *StringCmd
+func (c Pipeline) FunctionRestore(ctx context.Context, libDump string)*StringCmd
 func (c Pipeline) FunctionStats(ctx context.Context) *FunctionStatsCmd
 func (c Pipeline) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation) *IntCmd
-func (c Pipeline) GeoDist(ctx context.Context, key string, member1, member2, unit string) *FloatCmd
+func (c Pipeline) GeoDist(ctx context.Context, key string, member1, member2, unit string)*FloatCmd
 func (c Pipeline) GeoHash(ctx context.Context, key string, members ...string) *StringSliceCmd
-func (c Pipeline) GeoPos(ctx context.Context, key string, members ...string) *GeoPosCmd
+func (c Pipeline) GeoPos(ctx context.Context, key string, members ...string)*GeoPosCmd
 func (c Pipeline) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...) *GeoLocationCmd
-func (c Pipeline) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery) *GeoLocationCmd
-func (c Pipeline) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery) *IntCmd
-func (c Pipeline) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...) *IntCmd
-func (c Pipeline) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery) *StringSliceCmd
-func (c Pipeline) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery) *GeoSearchLocationCmd
-func (c Pipeline) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery) *IntCmd
+func (c Pipeline) GeoRadiusByMember(ctx context.Context, key, member string, query*GeoRadiusQuery) *GeoLocationCmd
+func (c Pipeline) GeoRadiusByMemberStore(ctx context.Context, key, member string, query*GeoRadiusQuery) *IntCmd
+func (c Pipeline) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...)*IntCmd
+func (c Pipeline) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery)*StringSliceCmd
+func (c Pipeline) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery)*GeoSearchLocationCmd
+func (c Pipeline) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery)*IntCmd
 func (c Pipeline) Get(ctx context.Context, key string) *StringCmd
-func (c Pipeline) GetBit(ctx context.Context, key string, offset int64) *IntCmd
+func (c Pipeline) GetBit(ctx context.Context, key string, offset int64)*IntCmd
 func (c Pipeline) GetDel(ctx context.Context, key string) *StringCmd
-func (c Pipeline) GetEx(ctx context.Context, key string, expiration time.Duration) *StringCmd
+func (c Pipeline) GetEx(ctx context.Context, key string, expiration time.Duration)*StringCmd
 func (c Pipeline) GetRange(ctx context.Context, key string, start, end int64) *StringCmd
-func (c Pipeline) GetSet(ctx context.Context, key string, value interface{}) *StringCmd
+func (c Pipeline) GetSet(ctx context.Context, key string, value interface{})*StringCmd
 func (c Pipeline) HDel(ctx context.Context, key string, fields ...string) *IntCmd
-func (c Pipeline) HExists(ctx context.Context, key, field string) *BoolCmd
+func (c Pipeline) HExists(ctx context.Context, key, field string)*BoolCmd
 func (c Pipeline) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
-func (c Pipeline) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
+func (c Pipeline) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string)*IntSliceCmd
 func (c Pipeline) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
-func (c Pipeline) HExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Pipeline) HExpireTime(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Pipeline) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
-func (c Pipeline) HGet(ctx context.Context, key, field string) *StringCmd
+func (c Pipeline) HGet(ctx context.Context, key, field string)*StringCmd
 func (c Pipeline) HGetAll(ctx context.Context, key string) *MapStringStringCmd
-func (c Pipeline) HGetDel(ctx context.Context, key string, fields ...string) *StringSliceCmd
+func (c Pipeline) HGetDel(ctx context.Context, key string, fields ...string)*StringSliceCmd
 func (c Pipeline) HGetEX(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c Pipeline) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string) *StringSliceCmd
-func (c Pipeline) HIncrBy(ctx context.Context, key, field string, incr int64) *IntCmd
+func (c Pipeline) HGetEXWithArgs(ctx context.Context, key string, options*HGetEXOptions, fields ...string) *StringSliceCmd
+func (c Pipeline) HIncrBy(ctx context.Context, key, field string, incr int64)*IntCmd
 func (c Pipeline) HIncrByFloat(ctx context.Context, key, field string, incr float64) *FloatCmd
-func (c Pipeline) HKeys(ctx context.Context, key string) *StringSliceCmd
+func (c Pipeline) HKeys(ctx context.Context, key string)*StringSliceCmd
 func (c Pipeline) HLen(ctx context.Context, key string) *IntCmd
-func (c Pipeline) HMGet(ctx context.Context, key string, fields ...string) *SliceCmd
+func (c Pipeline) HMGet(ctx context.Context, key string, fields ...string)*SliceCmd
 func (c Pipeline) HMSet(ctx context.Context, key string, values ...interface{}) *BoolCmd
-func (c Pipeline) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
+func (c Pipeline) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string)*IntSliceCmd
 func (c Pipeline) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
-func (c Pipeline) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
+func (c Pipeline) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...)*IntSliceCmd
 func (c Pipeline) HPExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Pipeline) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
+func (c Pipeline) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...)*IntSliceCmd
 func (c Pipeline) HPTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Pipeline) HPersist(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Pipeline) HPersist(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Pipeline) HRandField(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Pipeline) HRandFieldWithValues(ctx context.Context, key string, count int) *KeyValueSliceCmd
+func (c Pipeline) HRandFieldWithValues(ctx context.Context, key string, count int)*KeyValueSliceCmd
 func (c Pipeline) HScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Pipeline) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Pipeline) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Pipeline) HSet(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Pipeline) HSetEX(ctx context.Context, key string, fieldsAndValues ...string) *IntCmd
-func (c Pipeline) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...) *IntCmd
+func (c Pipeline) HSetEX(ctx context.Context, key string, fieldsAndValues ...string)*IntCmd
+func (c Pipeline) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...)*IntCmd
 func (c Pipeline) HSetNX(ctx context.Context, key, field string, value interface{}) *BoolCmd
-func (c Pipeline) HStrLen(ctx context.Context, key, field string) *IntCmd
+func (c Pipeline) HStrLen(ctx context.Context, key, field string)*IntCmd
 func (c Pipeline) HTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Pipeline) HVals(ctx context.Context, key string) *StringSliceCmd
+func (c Pipeline) HVals(ctx context.Context, key string)*StringSliceCmd
 func (c Pipeline) Hello(ctx context.Context, ver int, username, password, clientName string) *MapStringInterfaceCmd
-func (c Pipeline) Incr(ctx context.Context, key string) *IntCmd
+func (c Pipeline) Incr(ctx context.Context, key string)*IntCmd
 func (c Pipeline) IncrBy(ctx context.Context, key string, value int64) *IntCmd
-func (c Pipeline) IncrByFloat(ctx context.Context, key string, value float64) *FloatCmd
+func (c Pipeline) IncrByFloat(ctx context.Context, key string, value float64)*FloatCmd
 func (c Pipeline) Info(ctx context.Context, sections ...string) *StringCmd
-func (c Pipeline) InfoMap(ctx context.Context, sections ...string) *InfoCmd
+func (c Pipeline) InfoMap(ctx context.Context, sections ...string)*InfoCmd
 func (c Pipeline) JSONArrAppend(ctx context.Context, key, path string, values ...interface{}) *IntSliceCmd
-func (c Pipeline) JSONArrIndex(ctx context.Context, key, path string, value ...interface{}) *IntSliceCmd
-func (c Pipeline) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...) *IntSliceCmd
+func (c Pipeline) JSONArrIndex(ctx context.Context, key, path string, value ...interface{})*IntSliceCmd
+func (c Pipeline) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...)*IntSliceCmd
 func (c Pipeline) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{}) *IntSliceCmd
-func (c Pipeline) JSONArrLen(ctx context.Context, key, path string) *IntSliceCmd
+func (c Pipeline) JSONArrLen(ctx context.Context, key, path string)*IntSliceCmd
 func (c Pipeline) JSONArrPop(ctx context.Context, key, path string, index int) *StringSliceCmd
-func (c Pipeline) JSONArrTrim(ctx context.Context, key, path string) *IntSliceCmd
-func (c Pipeline) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs) *IntSliceCmd
+func (c Pipeline) JSONArrTrim(ctx context.Context, key, path string)*IntSliceCmd
+func (c Pipeline) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs)*IntSliceCmd
 func (c Pipeline) JSONClear(ctx context.Context, key, path string) *IntCmd
-func (c Pipeline) JSONDebugMemory(ctx context.Context, key, path string) *IntCmd
+func (c Pipeline) JSONDebugMemory(ctx context.Context, key, path string)*IntCmd
 func (c Pipeline) JSONDel(ctx context.Context, key, path string) *IntCmd
-func (c Pipeline) JSONForget(ctx context.Context, key, path string) *IntCmd
+func (c Pipeline) JSONForget(ctx context.Context, key, path string)*IntCmd
 func (c Pipeline) JSONGet(ctx context.Context, key string, paths ...string) *JSONCmd
-func (c Pipeline) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string) *JSONCmd
-func (c Pipeline) JSONMGet(ctx context.Context, path string, keys ...string) *JSONSliceCmd
+func (c Pipeline) JSONGetWithArgs(ctx context.Context, key string, options*JSONGetArgs, paths ...string) *JSONCmd
+func (c Pipeline) JSONMGet(ctx context.Context, path string, keys ...string)*JSONSliceCmd
 func (c Pipeline) JSONMSet(ctx context.Context, params ...interface{}) *StatusCmd
-func (c Pipeline) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs) *StatusCmd
+func (c Pipeline) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs)*StatusCmd
 func (c Pipeline) JSONMerge(ctx context.Context, key, path string, value string) *StatusCmd
-func (c Pipeline) JSONNumIncrBy(ctx context.Context, key, path string, value float64) *JSONCmd
+func (c Pipeline) JSONNumIncrBy(ctx context.Context, key, path string, value float64)*JSONCmd
 func (c Pipeline) JSONObjKeys(ctx context.Context, key, path string) *SliceCmd
-func (c Pipeline) JSONObjLen(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Pipeline) JSONObjLen(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Pipeline) JSONSet(ctx context.Context, key, path string, value interface{}) *StatusCmd
-func (c Pipeline) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string) *StatusCmd
+func (c Pipeline) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string)*StatusCmd
 func (c Pipeline) JSONStrAppend(ctx context.Context, key, path, value string) *IntPointerSliceCmd
-func (c Pipeline) JSONStrLen(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Pipeline) JSONStrLen(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Pipeline) JSONToggle(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Pipeline) JSONType(ctx context.Context, key, path string) *JSONSliceCmd
+func (c Pipeline) JSONType(ctx context.Context, key, path string)*JSONSliceCmd
 func (c Pipeline) Keys(ctx context.Context, pattern string) *StringSliceCmd
-func (c Pipeline) LCS(ctx context.Context, q *LCSQuery) *LCSCmd
-func (c Pipeline) LIndex(ctx context.Context, key string, index int64) *StringCmd
+func (c Pipeline) LCS(ctx context.Context, q*LCSQuery) *LCSCmd
+func (c Pipeline) LIndex(ctx context.Context, key string, index int64)*StringCmd
 func (c Pipeline) LInsert(ctx context.Context, key, op string, pivot, value interface{}) *IntCmd
-func (c Pipeline) LInsertAfter(ctx context.Context, key string, pivot, value interface{}) *IntCmd
+func (c Pipeline) LInsertAfter(ctx context.Context, key string, pivot, value interface{})*IntCmd
 func (c Pipeline) LInsertBefore(ctx context.Context, key string, pivot, value interface{}) *IntCmd
-func (c Pipeline) LLen(ctx context.Context, key string) *IntCmd
+func (c Pipeline) LLen(ctx context.Context, key string)*IntCmd
 func (c Pipeline) LMPop(ctx context.Context, direction string, count int64, keys ...string) *KeyValuesCmd
-func (c Pipeline) LMove(ctx context.Context, source, destination, srcpos, destpos string) *StringCmd
+func (c Pipeline) LMove(ctx context.Context, source, destination, srcpos, destpos string)*StringCmd
 func (c Pipeline) LPop(ctx context.Context, key string) *StringCmd
-func (c Pipeline) LPopCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Pipeline) LPopCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Pipeline) LPos(ctx context.Context, key string, value string, a LPosArgs) *IntCmd
-func (c Pipeline) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs) *IntSliceCmd
+func (c Pipeline) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs)*IntSliceCmd
 func (c Pipeline) LPush(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Pipeline) LPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Pipeline) LPushX(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Pipeline) LRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Pipeline) LRem(ctx context.Context, key string, count int64, value interface{}) *IntCmd
+func (c Pipeline) LRem(ctx context.Context, key string, count int64, value interface{})*IntCmd
 func (c Pipeline) LSet(ctx context.Context, key string, index int64, value interface{}) *StatusCmd
-func (c Pipeline) LTrim(ctx context.Context, key string, start, stop int64) *StatusCmd
+func (c Pipeline) LTrim(ctx context.Context, key string, start, stop int64)*StatusCmd
 func (c Pipeline) LastSave(ctx context.Context) *IntCmd
-func (c Pipeline) Latency(ctx context.Context) *LatencyCmd
+func (c Pipeline) Latency(ctx context.Context)*LatencyCmd
 func (c Pipeline) LatencyReset(ctx context.Context, events ...interface{}) *StatusCmd
-func (c *Pipeline) Len() int
+func (c*Pipeline) Len() int
 func (c Pipeline) MGet(ctx context.Context, keys ...string) *SliceCmd
-func (c Pipeline) MSet(ctx context.Context, values ...interface{}) *StatusCmd
+func (c Pipeline) MSet(ctx context.Context, values ...interface{})*StatusCmd
 func (c Pipeline) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{}) *IntCmd
-func (c Pipeline) MSetNX(ctx context.Context, values ...interface{}) *BoolCmd
+func (c Pipeline) MSetNX(ctx context.Context, values ...interface{})*BoolCmd
 func (c Pipeline) MemoryUsage(ctx context.Context, key string, samples ...int) *IntCmd
-func (c Pipeline) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd
-func (c Pipeline) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig) *StringCmd
+func (c Pipeline) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration)*StatusCmd
+func (c Pipeline) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig)*StringCmd
 func (c Pipeline) Monitor(ctx context.Context, ch chan string) *MonitorCmd
-func (c Pipeline) Move(ctx context.Context, key string, db int) *BoolCmd
+func (c Pipeline) Move(ctx context.Context, key string, db int)*BoolCmd
 func (c Pipeline) ObjectEncoding(ctx context.Context, key string) *StringCmd
-func (c Pipeline) ObjectFreq(ctx context.Context, key string) *IntCmd
+func (c Pipeline) ObjectFreq(ctx context.Context, key string)*IntCmd
 func (c Pipeline) ObjectIdleTime(ctx context.Context, key string) *DurationCmd
-func (c Pipeline) ObjectRefCount(ctx context.Context, key string) *IntCmd
+func (c Pipeline) ObjectRefCount(ctx context.Context, key string)*IntCmd
 func (c Pipeline) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Pipeline) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c Pipeline) PExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c Pipeline) PExpireTime(ctx context.Context, key string) *DurationCmd
-func (c Pipeline) PFAdd(ctx context.Context, key string, els ...interface{}) *IntCmd
+func (c Pipeline) PFAdd(ctx context.Context, key string, els ...interface{})*IntCmd
 func (c Pipeline) PFCount(ctx context.Context, keys ...string) *IntCmd
-func (c Pipeline) PFMerge(ctx context.Context, dest string, keys ...string) *StatusCmd
+func (c Pipeline) PFMerge(ctx context.Context, dest string, keys ...string)*StatusCmd
 func (c Pipeline) PTTL(ctx context.Context, key string) *DurationCmd
-func (c Pipeline) Persist(ctx context.Context, key string) *BoolCmd
+func (c Pipeline) Persist(ctx context.Context, key string)*BoolCmd
 func (c Pipeline) Ping(ctx context.Context) *StatusCmd
-func (c *Pipeline) Pipeline() Pipeliner
+func (c*Pipeline) Pipeline() Pipeliner
 func (c *Pipeline) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c *Pipeline) Process(ctx context.Context, cmd Cmder) error
+func (c*Pipeline) Process(ctx context.Context, cmd Cmder) error
 func (c Pipeline) PubSubChannels(ctx context.Context, pattern string) *StringSliceCmd
-func (c Pipeline) PubSubNumPat(ctx context.Context) *IntCmd
+func (c Pipeline) PubSubNumPat(ctx context.Context)*IntCmd
 func (c Pipeline) PubSubNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c Pipeline) PubSubShardChannels(ctx context.Context, pattern string) *StringSliceCmd
+func (c Pipeline) PubSubShardChannels(ctx context.Context, pattern string)*StringSliceCmd
 func (c Pipeline) PubSubShardNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c Pipeline) Publish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c Pipeline) Quit(_ context.Context) *StatusCmd
-func (c Pipeline) RPop(ctx context.Context, key string) *StringCmd
+func (c Pipeline) Publish(ctx context.Context, channel string, message interface{})*IntCmd
+func (c Pipeline) Quit(_context.Context) *StatusCmd
+func (c Pipeline) RPop(ctx context.Context, key string)*StringCmd
 func (c Pipeline) RPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Pipeline) RPopLPush(ctx context.Context, source, destination string) *StringCmd
+func (c Pipeline) RPopLPush(ctx context.Context, source, destination string)*StringCmd
 func (c Pipeline) RPush(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Pipeline) RPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Pipeline) RPushX(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Pipeline) RandomKey(ctx context.Context) *StringCmd
-func (c Pipeline) ReadOnly(ctx context.Context) *StatusCmd
+func (c Pipeline) ReadOnly(ctx context.Context)*StatusCmd
 func (c Pipeline) ReadWrite(ctx context.Context) *StatusCmd
-func (c Pipeline) Rename(ctx context.Context, key, newkey string) *StatusCmd
+func (c Pipeline) Rename(ctx context.Context, key, newkey string)*StatusCmd
 func (c Pipeline) RenameNX(ctx context.Context, key, newkey string) *BoolCmd
-func (c Pipeline) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
+func (c Pipeline) Restore(ctx context.Context, key string, ttl time.Duration, value string)*StatusCmd
 func (c Pipeline) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
-func (c Pipeline) SAdd(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Pipeline) SAdd(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Pipeline) SCard(ctx context.Context, key string) *IntCmd
-func (c Pipeline) SDiff(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Pipeline) SDiff(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Pipeline) SDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Pipeline) SInter(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Pipeline) SInter(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Pipeline) SInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Pipeline) SInterStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Pipeline) SInterStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Pipeline) SIsMember(ctx context.Context, key string, member interface{}) *BoolCmd
-func (c Pipeline) SMIsMember(ctx context.Context, key string, members ...interface{}) *BoolSliceCmd
+func (c Pipeline) SMIsMember(ctx context.Context, key string, members ...interface{})*BoolSliceCmd
 func (c Pipeline) SMembers(ctx context.Context, key string) *StringSliceCmd
-func (c Pipeline) SMembersMap(ctx context.Context, key string) *StringStructMapCmd
+func (c Pipeline) SMembersMap(ctx context.Context, key string)*StringStructMapCmd
 func (c Pipeline) SMove(ctx context.Context, source, destination string, member interface{}) *BoolCmd
-func (c Pipeline) SPop(ctx context.Context, key string) *StringCmd
+func (c Pipeline) SPop(ctx context.Context, key string)*StringCmd
 func (c Pipeline) SPopN(ctx context.Context, key string, count int64) *StringSliceCmd
-func (c Pipeline) SPublish(ctx context.Context, channel string, message interface{}) *IntCmd
+func (c Pipeline) SPublish(ctx context.Context, channel string, message interface{})*IntCmd
 func (c Pipeline) SRandMember(ctx context.Context, key string) *StringCmd
-func (c Pipeline) SRandMemberN(ctx context.Context, key string, count int64) *StringSliceCmd
+func (c Pipeline) SRandMemberN(ctx context.Context, key string, count int64)*StringSliceCmd
 func (c Pipeline) SRem(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Pipeline) SScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Pipeline) SScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Pipeline) SUnion(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Pipeline) SUnionStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Pipeline) SUnionStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Pipeline) Save(ctx context.Context) *StatusCmd
-func (c Pipeline) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd
+func (c Pipeline) Scan(ctx context.Context, cursor uint64, match string, count int64)*ScanCmd
 func (c Pipeline) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd
-func (c Pipeline) ScriptExists(ctx context.Context, hashes ...string) *BoolSliceCmd
+func (c Pipeline) ScriptExists(ctx context.Context, hashes ...string)*BoolSliceCmd
 func (c Pipeline) ScriptFlush(ctx context.Context) *StatusCmd
-func (c Pipeline) ScriptKill(ctx context.Context) *StatusCmd
+func (c Pipeline) ScriptKill(ctx context.Context)*StatusCmd
 func (c Pipeline) ScriptLoad(ctx context.Context, script string) *StringCmd
-func (c Pipeline) Select(ctx context.Context, index int) *StatusCmd
+func (c Pipeline) Select(ctx context.Context, index int)*StatusCmd
 func (c Pipeline) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c Pipeline) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs) *StatusCmd
+func (c Pipeline) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs)*StatusCmd
 func (c Pipeline) SetBit(ctx context.Context, key string, offset int64, value int) *IntCmd
-func (c Pipeline) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
+func (c Pipeline) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration)*StatusCmd
 func (c Pipeline) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Pipeline) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Pipeline) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Pipeline) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Pipeline) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Pipeline) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Pipeline) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Pipeline) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Pipeline) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Pipeline) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Pipeline) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Pipeline) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Pipeline) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Pipeline) SetRange(ctx context.Context, key string, offset int64, value string) *IntCmd
+func (c Pipeline) SetRange(ctx context.Context, key string, offset int64, value string)*IntCmd
 func (c Pipeline) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Pipeline) Shutdown(ctx context.Context) *StatusCmd
+func (c Pipeline) Shutdown(ctx context.Context)*StatusCmd
 func (c Pipeline) ShutdownNoSave(ctx context.Context) *StatusCmd
-func (c Pipeline) ShutdownSave(ctx context.Context) *StatusCmd
+func (c Pipeline) ShutdownSave(ctx context.Context)*StatusCmd
 func (c Pipeline) SlaveOf(ctx context.Context, host, port string) *StatusCmd
-func (c Pipeline) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd
+func (c Pipeline) SlowLogGet(ctx context.Context, num int64)*SlowLogCmd
 func (c Pipeline) SlowLogLen(ctx context.Context) *IntCmd
-func (c Pipeline) SlowLogReset(ctx context.Context) *StatusCmd
-func (c Pipeline) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Pipeline) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd
-func (c Pipeline) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Pipeline) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd
+func (c Pipeline) SlowLogReset(ctx context.Context)*StatusCmd
+func (c Pipeline) Sort(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Pipeline) SortInterfaces(ctx context.Context, key string, sort *Sort)*SliceCmd
+func (c Pipeline) SortRO(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Pipeline) SortStore(ctx context.Context, key, store string, sort *Sort)*IntCmd
 func (c Pipeline) StrLen(ctx context.Context, key string) *IntCmd
-func (c Pipeline) SwapDB(ctx context.Context, index1, index2 int) *StatusCmd
+func (c Pipeline) SwapDB(ctx context.Context, index1, index2 int)*StatusCmd
 func (c Pipeline) Sync(_ context.Context)
 func (c Pipeline) TDigestAdd(ctx context.Context, key string, elements ...float64) *StatusCmd
-func (c Pipeline) TDigestByRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
+func (c Pipeline) TDigestByRank(ctx context.Context, key string, rank ...uint64)*FloatSliceCmd
 func (c Pipeline) TDigestByRevRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
-func (c Pipeline) TDigestCDF(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
+func (c Pipeline) TDigestCDF(ctx context.Context, key string, elements ...float64)*FloatSliceCmd
 func (c Pipeline) TDigestCreate(ctx context.Context, key string) *StatusCmd
-func (c Pipeline) TDigestCreateWithCompression(ctx context.Context, key string, compression int64) *StatusCmd
+func (c Pipeline) TDigestCreateWithCompression(ctx context.Context, key string, compression int64)*StatusCmd
 func (c Pipeline) TDigestInfo(ctx context.Context, key string) *TDigestInfoCmd
-func (c Pipeline) TDigestMax(ctx context.Context, key string) *FloatCmd
-func (c Pipeline) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...) *StatusCmd
+func (c Pipeline) TDigestMax(ctx context.Context, key string)*FloatCmd
+func (c Pipeline) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...)*StatusCmd
 func (c Pipeline) TDigestMin(ctx context.Context, key string) *FloatCmd
-func (c Pipeline) TDigestQuantile(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
+func (c Pipeline) TDigestQuantile(ctx context.Context, key string, elements ...float64)*FloatSliceCmd
 func (c Pipeline) TDigestRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
-func (c Pipeline) TDigestReset(ctx context.Context, key string) *StatusCmd
+func (c Pipeline) TDigestReset(ctx context.Context, key string)*StatusCmd
 func (c Pipeline) TDigestRevRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
-func (c Pipeline) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64) *FloatCmd
+func (c Pipeline) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64)*FloatCmd
 func (c Pipeline) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd
-func (c Pipeline) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...) *IntCmd
-func (c Pipeline) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd
+func (c Pipeline) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...)*IntCmd
+func (c Pipeline) TSAlter(ctx context.Context, key string, options *TSAlterOptions)*StatusCmd
 func (c Pipeline) TSCreate(ctx context.Context, key string) *StatusCmd
-func (c Pipeline) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
+func (c Pipeline) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...)*StatusCmd
 func (c Pipeline) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Pipeline) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd
-func (c Pipeline) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Pipeline) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
+func (c Pipeline) TSCreateWithArgs(ctx context.Context, key string, options*TSOptions) *StatusCmd
+func (c Pipeline) TSDecrBy(ctx context.Context, Key string, timestamp float64)*IntCmd
+func (c Pipeline) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions)*IntCmd
 func (c Pipeline) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd
-func (c Pipeline) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd
+func (c Pipeline) TSDeleteRule(ctx context.Context, sourceKey string, destKey string)*StatusCmd
 func (c Pipeline) TSGet(ctx context.Context, key string) *TSTimestampValueCmd
-func (c Pipeline) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd
-func (c Pipeline) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Pipeline) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
+func (c Pipeline) TSGetWithArgs(ctx context.Context, key string, options*TSGetOptions) *TSTimestampValueCmd
+func (c Pipeline) TSIncrBy(ctx context.Context, Key string, timestamp float64)*IntCmd
+func (c Pipeline) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions)*IntCmd
 func (c Pipeline) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Pipeline) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd
-func (c Pipeline) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd
+func (c Pipeline) TSInfoWithArgs(ctx context.Context, key string, options*TSInfoOptions) *MapStringInterfaceCmd
+func (c Pipeline) TSMAdd(ctx context.Context, ktvSlices [][]interface{})*IntSliceCmd
 func (c Pipeline) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd
-func (c Pipeline) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd
-func (c Pipeline) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
+func (c Pipeline) TSMGetWithArgs(ctx context.Context, filters []string, options*TSMGetOptions) *MapStringSliceInterfaceCmd
+func (c Pipeline) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string)*MapStringSliceInterfaceCmd
 func (c Pipeline) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
-func (c Pipeline) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
+func (c Pipeline) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string)*MapStringSliceInterfaceCmd
 func (c Pipeline) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
-func (c Pipeline) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd
+func (c Pipeline) TSQueryIndex(ctx context.Context, filterExpr []string)*StringSliceCmd
 func (c Pipeline) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
-func (c Pipeline) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
+func (c Pipeline) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...)*TSTimestampValueSliceCmd
 func (c Pipeline) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
-func (c Pipeline) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
+func (c Pipeline) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...)*TSTimestampValueSliceCmd
 func (c Pipeline) TTL(ctx context.Context, key string) *DurationCmd
-func (c Pipeline) Time(ctx context.Context) *TimeCmd
+func (c Pipeline) Time(ctx context.Context)*TimeCmd
 func (c Pipeline) TopKAdd(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
-func (c Pipeline) TopKCount(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Pipeline) TopKCount(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Pipeline) TopKIncrBy(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
-func (c Pipeline) TopKInfo(ctx context.Context, key string) *TopKInfoCmd
+func (c Pipeline) TopKInfo(ctx context.Context, key string)*TopKInfoCmd
 func (c Pipeline) TopKList(ctx context.Context, key string) *StringSliceCmd
-func (c Pipeline) TopKListWithCount(ctx context.Context, key string) *MapStringIntCmd
+func (c Pipeline) TopKListWithCount(ctx context.Context, key string)*MapStringIntCmd
 func (c Pipeline) TopKQuery(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Pipeline) TopKReserve(ctx context.Context, key string, k int64) *StatusCmd
+func (c Pipeline) TopKReserve(ctx context.Context, key string, k int64)*StatusCmd
 func (c Pipeline) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64) *StatusCmd
-func (c Pipeline) Touch(ctx context.Context, keys ...string) *IntCmd
+func (c Pipeline) Touch(ctx context.Context, keys ...string)*IntCmd
 func (c *Pipeline) TxPipeline() Pipeliner
-func (c *Pipeline) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
+func (c*Pipeline) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
 func (c Pipeline) Type(ctx context.Context, key string) *StatusCmd
-func (c Pipeline) Unlink(ctx context.Context, keys ...string) *IntCmd
+func (c Pipeline) Unlink(ctx context.Context, keys ...string)*IntCmd
 func (c Pipeline) VAdd(ctx context.Context, key, element string, val Vector) *BoolCmd
-func (c Pipeline) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs) *BoolCmd
-func (c Pipeline) VCard(ctx context.Context, key string) *IntCmd
+func (c Pipeline) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs*VAddArgs) *BoolCmd
+func (c Pipeline) VCard(ctx context.Context, key string)*IntCmd
 func (c Pipeline) VClearAttributes(ctx context.Context, key, element string) *BoolCmd
-func (c Pipeline) VDim(ctx context.Context, key string) *IntCmd
+func (c Pipeline) VDim(ctx context.Context, key string)*IntCmd
 func (c Pipeline) VEmb(ctx context.Context, key, element string, raw bool) *SliceCmd
-func (c Pipeline) VGetAttr(ctx context.Context, key, element string) *StringCmd
+func (c Pipeline) VGetAttr(ctx context.Context, key, element string)*StringCmd
 func (c Pipeline) VInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Pipeline) VLinks(ctx context.Context, key, element string) *StringSliceCmd
+func (c Pipeline) VLinks(ctx context.Context, key, element string)*StringSliceCmd
 func (c Pipeline) VLinksWithScores(ctx context.Context, key, element string) *VectorScoreSliceCmd
-func (c Pipeline) VRandMember(ctx context.Context, key string) *StringCmd
+func (c Pipeline) VRandMember(ctx context.Context, key string)*StringCmd
 func (c Pipeline) VRandMemberCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Pipeline) VRange(ctx context.Context, key, start, end string, count int64) *StringSliceCmd
+func (c Pipeline) VRange(ctx context.Context, key, start, end string, count int64)*StringSliceCmd
 func (c Pipeline) VRem(ctx context.Context, key, element string) *BoolCmd
-func (c Pipeline) VSetAttr(ctx context.Context, key, element string, attr interface{}) *BoolCmd
+func (c Pipeline) VSetAttr(ctx context.Context, key, element string, attr interface{})*BoolCmd
 func (c Pipeline) VSim(ctx context.Context, key string, val Vector) *StringSliceCmd
-func (c Pipeline) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *StringSliceCmd
-func (c Pipeline) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *VectorScoreSliceCmd
-func (c Pipeline) VSimWithScores(ctx context.Context, key string, val Vector) *VectorScoreSliceCmd
+func (c Pipeline) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs*VSimArgs) *StringSliceCmd
+func (c Pipeline) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs*VSimArgs) *VectorScoreSliceCmd
+func (c Pipeline) VSimWithScores(ctx context.Context, key string, val Vector)*VectorScoreSliceCmd
 func (c Pipeline) Wait(ctx context.Context, numSlaves int, timeout time.Duration) *IntCmd
-func (c Pipeline) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration) *IntCmd
+func (c Pipeline) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration)*IntCmd
 func (c Pipeline) XAck(ctx context.Context, stream, group string, ids ...string) *IntCmd
-func (c Pipeline) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *SliceCmd
-func (c Pipeline) XAdd(ctx context.Context, a *XAddArgs) *StringCmd
-func (c Pipeline) XAutoClaim(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimCmd
-func (c Pipeline) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimJustIDCmd
-func (c Pipeline) XClaim(ctx context.Context, a *XClaimArgs) *XMessageSliceCmd
-func (c Pipeline) XClaimJustID(ctx context.Context, a *XClaimArgs) *StringSliceCmd
+func (c Pipeline) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string)*SliceCmd
+func (c Pipeline) XAdd(ctx context.Context, a *XAddArgs)*StringCmd
+func (c Pipeline) XAutoClaim(ctx context.Context, a *XAutoClaimArgs)*XAutoClaimCmd
+func (c Pipeline) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs)*XAutoClaimJustIDCmd
+func (c Pipeline) XClaim(ctx context.Context, a *XClaimArgs)*XMessageSliceCmd
+func (c Pipeline) XClaimJustID(ctx context.Context, a *XClaimArgs)*StringSliceCmd
 func (c Pipeline) XDel(ctx context.Context, stream string, ids ...string) *IntCmd
-func (c Pipeline) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *SliceCmd
+func (c Pipeline) XDelEx(ctx context.Context, stream string, mode string, ids ...string)*SliceCmd
 func (c Pipeline) XGroupCreate(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Pipeline) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
+func (c Pipeline) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string)*IntCmd
 func (c Pipeline) XGroupCreateMkStream(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Pipeline) XGroupDelConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
+func (c Pipeline) XGroupDelConsumer(ctx context.Context, stream, group, consumer string)*IntCmd
 func (c Pipeline) XGroupDestroy(ctx context.Context, stream, group string) *IntCmd
-func (c Pipeline) XGroupSetID(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Pipeline) XGroupSetID(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Pipeline) XInfoConsumers(ctx context.Context, key string, group string) *XInfoConsumersCmd
-func (c Pipeline) XInfoGroups(ctx context.Context, key string) *XInfoGroupsCmd
+func (c Pipeline) XInfoGroups(ctx context.Context, key string)*XInfoGroupsCmd
 func (c Pipeline) XInfoStream(ctx context.Context, key string) *XInfoStreamCmd
-func (c Pipeline) XInfoStreamFull(ctx context.Context, key string, count int) *XInfoStreamFullCmd
+func (c Pipeline) XInfoStreamFull(ctx context.Context, key string, count int)*XInfoStreamFullCmd
 func (c Pipeline) XLen(ctx context.Context, stream string) *IntCmd
-func (c Pipeline) XPending(ctx context.Context, stream, group string) *XPendingCmd
-func (c Pipeline) XPendingExt(ctx context.Context, a *XPendingExtArgs) *XPendingExtCmd
+func (c Pipeline) XPending(ctx context.Context, stream, group string)*XPendingCmd
+func (c Pipeline) XPendingExt(ctx context.Context, a *XPendingExtArgs)*XPendingExtCmd
 func (c Pipeline) XRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
-func (c Pipeline) XRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Pipeline) XRead(ctx context.Context, a *XReadArgs) *XStreamSliceCmd
-func (c Pipeline) XReadGroup(ctx context.Context, a *XReadGroupArgs) *XStreamSliceCmd
+func (c Pipeline) XRangeN(ctx context.Context, stream, start, stop string, count int64)*XMessageSliceCmd
+func (c Pipeline) XRead(ctx context.Context, a *XReadArgs)*XStreamSliceCmd
+func (c Pipeline) XReadGroup(ctx context.Context, a *XReadGroupArgs)*XStreamSliceCmd
 func (c Pipeline) XReadStreams(ctx context.Context, streams ...string) *XStreamSliceCmd
-func (c Pipeline) XRevRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
+func (c Pipeline) XRevRange(ctx context.Context, stream, start, stop string)*XMessageSliceCmd
 func (c Pipeline) XRevRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Pipeline) XTrimMaxLen(ctx context.Context, key string, maxLen int64) *IntCmd
+func (c Pipeline) XTrimMaxLen(ctx context.Context, key string, maxLen int64)*IntCmd
 func (c Pipeline) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64) *IntCmd
-func (c Pipeline) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string) *IntCmd
+func (c Pipeline) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string)*IntCmd
 func (c Pipeline) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *IntCmd
-func (c Pipeline) XTrimMinID(ctx context.Context, key string, minID string) *IntCmd
+func (c Pipeline) XTrimMinID(ctx context.Context, key string, minID string)*IntCmd
 func (c Pipeline) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64) *IntCmd
-func (c Pipeline) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *IntCmd
+func (c Pipeline) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string)*IntCmd
 func (c Pipeline) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *IntCmd
-func (c Pipeline) ZAdd(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Pipeline) ZAdd(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Pipeline) ZAddArgs(ctx context.Context, key string, args ZAddArgs) *IntCmd
-func (c Pipeline) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs) *FloatCmd
+func (c Pipeline) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs)*FloatCmd
 func (c Pipeline) ZAddGT(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Pipeline) ZAddLT(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Pipeline) ZAddLT(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Pipeline) ZAddNX(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Pipeline) ZAddXX(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Pipeline) ZAddXX(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Pipeline) ZCard(ctx context.Context, key string) *IntCmd
-func (c Pipeline) ZCount(ctx context.Context, key, min, max string) *IntCmd
+func (c Pipeline) ZCount(ctx context.Context, key, min, max string)*IntCmd
 func (c Pipeline) ZDiff(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Pipeline) ZDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Pipeline) ZDiffStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Pipeline) ZDiffWithScores(ctx context.Context, keys ...string) *ZSliceCmd
-func (c Pipeline) ZIncrBy(ctx context.Context, key string, increment float64, member string) *FloatCmd
-func (c Pipeline) ZInter(ctx context.Context, store *ZStore) *StringSliceCmd
+func (c Pipeline) ZIncrBy(ctx context.Context, key string, increment float64, member string)*FloatCmd
+func (c Pipeline) ZInter(ctx context.Context, store *ZStore)*StringSliceCmd
 func (c Pipeline) ZInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Pipeline) ZInterStore(ctx context.Context, destination string, store *ZStore) *IntCmd
-func (c Pipeline) ZInterWithScores(ctx context.Context, store *ZStore) *ZSliceCmd
-func (c Pipeline) ZLexCount(ctx context.Context, key, min, max string) *IntCmd
+func (c Pipeline) ZInterStore(ctx context.Context, destination string, store*ZStore) *IntCmd
+func (c Pipeline) ZInterWithScores(ctx context.Context, store*ZStore) *ZSliceCmd
+func (c Pipeline) ZLexCount(ctx context.Context, key, min, max string)*IntCmd
 func (c Pipeline) ZMPop(ctx context.Context, order string, count int64, keys ...string) *ZSliceWithKeyCmd
-func (c Pipeline) ZMScore(ctx context.Context, key string, members ...string) *FloatSliceCmd
+func (c Pipeline) ZMScore(ctx context.Context, key string, members ...string)*FloatSliceCmd
 func (c Pipeline) ZPopMax(ctx context.Context, key string, count ...int64) *ZSliceCmd
-func (c Pipeline) ZPopMin(ctx context.Context, key string, count ...int64) *ZSliceCmd
+func (c Pipeline) ZPopMin(ctx context.Context, key string, count ...int64)*ZSliceCmd
 func (c Pipeline) ZRandMember(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Pipeline) ZRandMemberWithScores(ctx context.Context, key string, count int) *ZSliceCmd
+func (c Pipeline) ZRandMemberWithScores(ctx context.Context, key string, count int)*ZSliceCmd
 func (c Pipeline) ZRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Pipeline) ZRangeArgs(ctx context.Context, z ZRangeArgs) *StringSliceCmd
+func (c Pipeline) ZRangeArgs(ctx context.Context, z ZRangeArgs)*StringSliceCmd
 func (c Pipeline) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs) *ZSliceCmd
-func (c Pipeline) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Pipeline) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Pipeline) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
-func (c Pipeline) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs) *IntCmd
+func (c Pipeline) ZRangeByLex(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Pipeline) ZRangeByScore(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Pipeline) ZRangeByScoreWithScores(ctx context.Context, key string, opt*ZRangeBy) *ZSliceCmd
+func (c Pipeline) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs)*IntCmd
 func (c Pipeline) ZRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
-func (c Pipeline) ZRank(ctx context.Context, key, member string) *IntCmd
+func (c Pipeline) ZRank(ctx context.Context, key, member string)*IntCmd
 func (c Pipeline) ZRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
-func (c Pipeline) ZRem(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Pipeline) ZRem(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Pipeline) ZRemRangeByLex(ctx context.Context, key, min, max string) *IntCmd
-func (c Pipeline) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) *IntCmd
+func (c Pipeline) ZRemRangeByRank(ctx context.Context, key string, start, stop int64)*IntCmd
 func (c Pipeline) ZRemRangeByScore(ctx context.Context, key, min, max string) *IntCmd
-func (c Pipeline) ZRevRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Pipeline) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Pipeline) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Pipeline) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
+func (c Pipeline) ZRevRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
+func (c Pipeline) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Pipeline) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Pipeline) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy)*ZSliceCmd
 func (c Pipeline) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
-func (c Pipeline) ZRevRank(ctx context.Context, key, member string) *IntCmd
+func (c Pipeline) ZRevRank(ctx context.Context, key, member string)*IntCmd
 func (c Pipeline) ZRevRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
-func (c Pipeline) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Pipeline) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Pipeline) ZScore(ctx context.Context, key, member string) *FloatCmd
-func (c Pipeline) ZUnion(ctx context.Context, store ZStore) *StringSliceCmd
-func (c Pipeline) ZUnionStore(ctx context.Context, dest string, store *ZStore) *IntCmd
+func (c Pipeline) ZUnion(ctx context.Context, store ZStore)*StringSliceCmd
+func (c Pipeline) ZUnionStore(ctx context.Context, dest string, store *ZStore)*IntCmd
 func (c Pipeline) ZUnionWithScores(ctx context.Context, store ZStore) *ZSliceCmd
 type Pipeliner
 type Pong
-func (p *Pong) String() string
+func (p*Pong) String() string
 type PoolStats
 type ProbabilisticCmdable
 type ProcessHook
 type ProcessPipelineHook
 type PubSub
-func (c *PubSub) Channel(opts ...ChannelOption) <-chan *Message
-func (c *PubSub) ChannelSize(size int) <-chan *Message
+func (c *PubSub) Channel(opts ...ChannelOption) <-chan*Message
+func (c *PubSub) ChannelSize(size int) <-chan*Message
 deprecated
 func (c *PubSub) ChannelWithSubscriptions(opts ...ChannelOption) <-chan interface{}
-func (c *PubSub) Close() error
+func (c*PubSub) Close() error
 func (c *PubSub) PSubscribe(ctx context.Context, patterns ...string) error
-func (c *PubSub) PUnsubscribe(ctx context.Context, patterns ...string) error
+func (c*PubSub) PUnsubscribe(ctx context.Context, patterns ...string) error
 func (c *PubSub) Ping(ctx context.Context, payload ...string) error
-func (c *PubSub) Receive(ctx context.Context) (interface{}, error)
+func (c*PubSub) Receive(ctx context.Context) (interface{}, error)
 func (c *PubSub) ReceiveMessage(ctx context.Context) (*Message, error)
 func (c *PubSub) ReceiveTimeout(ctx context.Context, timeout time.Duration) (interface{}, error)
-func (c *PubSub) SSubscribe(ctx context.Context, channels ...string) error
+func (c*PubSub) SSubscribe(ctx context.Context, channels ...string) error
 func (c *PubSub) SUnsubscribe(ctx context.Context, channels ...string) error
-func (c *PubSub) String() string
+func (c*PubSub) String() string
 func (c *PubSub) Subscribe(ctx context.Context, channels ...string) error
-func (c *PubSub) Unsubscribe(ctx context.Context, channels ...string) error
+func (c*PubSub) Unsubscribe(ctx context.Context, channels ...string) error
 type PubSubCmdable
 type RankScore
 type RankWithScoreCmd
 func NewRankWithScoreCmd(ctx context.Context, args ...interface{}) *RankWithScoreCmd
-func (cmd *RankWithScoreCmd) Args() []interface{}
+func (cmd*RankWithScoreCmd) Args() []interface{}
 func (cmd *RankWithScoreCmd) Err() error
-func (cmd *RankWithScoreCmd) FullName() string
+func (cmd*RankWithScoreCmd) FullName() string
 func (cmd *RankWithScoreCmd) Name() string
-func (cmd *RankWithScoreCmd) Result() (RankScore, error)
+func (cmd*RankWithScoreCmd) Result() (RankScore, error)
 func (cmd *RankWithScoreCmd) SetErr(e error)
-func (cmd *RankWithScoreCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*RankWithScoreCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *RankWithScoreCmd) SetVal(val RankScore)
-func (cmd *RankWithScoreCmd) String() string
+func (cmd*RankWithScoreCmd) String() string
 func (cmd *RankWithScoreCmd) Val() RankScore
 type Ring
-func NewRing(opt *RingOptions) *Ring
-func (c Ring) ACLCat(ctx context.Context) *StringSliceCmd
-func (c Ring) ACLCatArgs(ctx context.Context, options *ACLCatArgs) *StringSliceCmd
+func NewRing(opt*RingOptions) *Ring
+func (c Ring) ACLCat(ctx context.Context)*StringSliceCmd
+func (c Ring) ACLCatArgs(ctx context.Context, options *ACLCatArgs)*StringSliceCmd
 func (c Ring) ACLDelUser(ctx context.Context, username string) *IntCmd
-func (c Ring) ACLDryRun(ctx context.Context, username string, command ...interface{}) *StringCmd
+func (c Ring) ACLDryRun(ctx context.Context, username string, command ...interface{})*StringCmd
 func (c Ring) ACLGenPass(ctx context.Context, bit int) *StringCmd
-func (c Ring) ACLList(ctx context.Context) *StringSliceCmd
+func (c Ring) ACLList(ctx context.Context)*StringSliceCmd
 func (c Ring) ACLLog(ctx context.Context, count int64) *ACLLogCmd
-func (c Ring) ACLLogReset(ctx context.Context) *StatusCmd
+func (c Ring) ACLLogReset(ctx context.Context)*StatusCmd
 func (c Ring) ACLSetUser(ctx context.Context, username string, rules ...string) *StatusCmd
-func (c Ring) ACLUsers(ctx context.Context) *StringSliceCmd
+func (c Ring) ACLUsers(ctx context.Context)*StringSliceCmd
 func (c Ring) ACLWhoAmI(ctx context.Context) *StringCmd
-func (hs *Ring) AddHook(hook Hook)
+func (hs*Ring) AddHook(hook Hook)
 func (c Ring) Append(ctx context.Context, key, value string) *IntCmd
-func (c Ring) BFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Ring) BFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Ring) BFCard(ctx context.Context, key string) *IntCmd
-func (c Ring) BFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Ring) BFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Ring) BFInfo(ctx context.Context, key string) *BFInfoCmd
-func (c Ring) BFInfoArg(ctx context.Context, key, option string) *BFInfoCmd
+func (c Ring) BFInfoArg(ctx context.Context, key, option string)*BFInfoCmd
 func (c Ring) BFInfoCapacity(ctx context.Context, key string) *BFInfoCmd
-func (c Ring) BFInfoExpansion(ctx context.Context, key string) *BFInfoCmd
+func (c Ring) BFInfoExpansion(ctx context.Context, key string)*BFInfoCmd
 func (c Ring) BFInfoFilters(ctx context.Context, key string) *BFInfoCmd
-func (c Ring) BFInfoItems(ctx context.Context, key string) *BFInfoCmd
+func (c Ring) BFInfoItems(ctx context.Context, key string)*BFInfoCmd
 func (c Ring) BFInfoSize(ctx context.Context, key string) *BFInfoCmd
-func (c Ring) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...) *BoolSliceCmd
-func (c Ring) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c Ring) BFInsert(ctx context.Context, key string, options*BFInsertOptions, ...) *BoolSliceCmd
+func (c Ring) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c Ring) BFMAdd(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Ring) BFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Ring) BFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Ring) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Ring) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64) *StatusCmd
+func (c Ring) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64)*StatusCmd
 func (c Ring) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Ring) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions) *StatusCmd
-func (c Ring) BFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c Ring) BFReserveWithArgs(ctx context.Context, key string, options*BFReserveOptions) *StatusCmd
+func (c Ring) BFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c Ring) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...) *KeyValuesCmd
-func (c Ring) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...) *StringCmd
+func (c Ring) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...)*StringCmd
 func (c Ring) BLPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
-func (c Ring) BRPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
+func (c Ring) BRPop(ctx context.Context, timeout time.Duration, keys ...string)*StringSliceCmd
 func (c Ring) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration) *StringCmd
-func (c Ring) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...) *ZSliceWithKeyCmd
+func (c Ring) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...)*ZSliceWithKeyCmd
 func (c Ring) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
-func (c Ring) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
+func (c Ring) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string)*ZWithKeyCmd
 func (c Ring) BgRewriteAOF(ctx context.Context) *StatusCmd
-func (c Ring) BgSave(ctx context.Context) *StatusCmd
-func (c Ring) BitCount(ctx context.Context, key string, bitCount *BitCount) *IntCmd
+func (c Ring) BgSave(ctx context.Context)*StatusCmd
+func (c Ring) BitCount(ctx context.Context, key string, bitCount *BitCount)*IntCmd
 func (c Ring) BitField(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
-func (c Ring) BitFieldRO(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
+func (c Ring) BitFieldRO(ctx context.Context, key string, values ...interface{})*IntSliceCmd
 func (c Ring) BitOpAnd(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Ring) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Ring) BitOpAndOr(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Ring) BitOpDiff(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Ring) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Ring) BitOpDiff1(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Ring) BitOpNot(ctx context.Context, destKey string, key string) *IntCmd
-func (c Ring) BitOpOne(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Ring) BitOpOne(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Ring) BitOpOr(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Ring) BitOpXor(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Ring) BitOpXor(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Ring) BitPos(ctx context.Context, key string, bit int64, pos ...int64) *IntCmd
-func (c Ring) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string) *IntCmd
+func (c Ring) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string)*IntCmd
 func (c Ring) CFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Ring) CFAddNX(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Ring) CFAddNX(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Ring) CFCount(ctx context.Context, key string, element interface{}) *IntCmd
-func (c Ring) CFDel(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Ring) CFDel(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Ring) CFExists(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Ring) CFInfo(ctx context.Context, key string) *CFInfoCmd
-func (c Ring) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...) *BoolSliceCmd
-func (c Ring) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...) *IntSliceCmd
+func (c Ring) CFInfo(ctx context.Context, key string)*CFInfoCmd
+func (c Ring) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...)*BoolSliceCmd
+func (c Ring) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...)*IntSliceCmd
 func (c Ring) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
-func (c Ring) CFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Ring) CFMExists(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Ring) CFReserve(ctx context.Context, key string, capacity int64) *StatusCmd
-func (c Ring) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64) *StatusCmd
+func (c Ring) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64)*StatusCmd
 func (c Ring) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64) *StatusCmd
-func (c Ring) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64) *StatusCmd
-func (c Ring) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions) *StatusCmd
+func (c Ring) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64)*StatusCmd
+func (c Ring) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions)*StatusCmd
 func (c Ring) CFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
-func (c Ring) CMSIncrBy(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Ring) CMSIncrBy(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Ring) CMSInfo(ctx context.Context, key string) *CMSInfoCmd
-func (c Ring) CMSInitByDim(ctx context.Context, key string, width, depth int64) *StatusCmd
+func (c Ring) CMSInitByDim(ctx context.Context, key string, width, depth int64)*StatusCmd
 func (c Ring) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64) *StatusCmd
-func (c Ring) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string) *StatusCmd
+func (c Ring) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string)*StatusCmd
 func (c Ring) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64) *StatusCmd
-func (c Ring) CMSQuery(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Ring) CMSQuery(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Ring) ClientGetName(ctx context.Context) *StringCmd
-func (c Ring) ClientID(ctx context.Context) *IntCmd
+func (c Ring) ClientID(ctx context.Context)*IntCmd
 func (c Ring) ClientInfo(ctx context.Context) *ClientInfoCmd
-func (c Ring) ClientKill(ctx context.Context, ipPort string) *StatusCmd
+func (c Ring) ClientKill(ctx context.Context, ipPort string)*StatusCmd
 func (c Ring) ClientKillByFilter(ctx context.Context, keys ...string) *IntCmd
-func (c Ring) ClientList(ctx context.Context) *StringCmd
+func (c Ring) ClientList(ctx context.Context)*StringCmd
 func (c Ring) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *StatusCmd
-func (c Ring) ClientPause(ctx context.Context, dur time.Duration) *BoolCmd
+func (c Ring) ClientPause(ctx context.Context, dur time.Duration)*BoolCmd
 func (c Ring) ClientUnblock(ctx context.Context, id int64) *IntCmd
-func (c Ring) ClientUnblockWithError(ctx context.Context, id int64) *IntCmd
+func (c Ring) ClientUnblockWithError(ctx context.Context, id int64)*IntCmd
 func (c Ring) ClientUnpause(ctx context.Context) *BoolCmd
-func (c *Ring) Close() error
+func (c*Ring) Close() error
 func (c Ring) ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
-func (c Ring) ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
+func (c Ring) ClusterAddSlotsRange(ctx context.Context, min, max int)*StatusCmd
 func (c Ring) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd
-func (c Ring) ClusterCountKeysInSlot(ctx context.Context, slot int) *IntCmd
+func (c Ring) ClusterCountKeysInSlot(ctx context.Context, slot int)*IntCmd
 func (c Ring) ClusterDelSlots(ctx context.Context, slots ...int) *StatusCmd
-func (c Ring) ClusterDelSlotsRange(ctx context.Context, min, max int) *StatusCmd
+func (c Ring) ClusterDelSlotsRange(ctx context.Context, min, max int)*StatusCmd
 func (c Ring) ClusterFailover(ctx context.Context) *StatusCmd
-func (c Ring) ClusterForget(ctx context.Context, nodeID string) *StatusCmd
+func (c Ring) ClusterForget(ctx context.Context, nodeID string)*StatusCmd
 func (c Ring) ClusterGetKeysInSlot(ctx context.Context, slot int, count int) *StringSliceCmd
-func (c Ring) ClusterInfo(ctx context.Context) *StringCmd
+func (c Ring) ClusterInfo(ctx context.Context)*StringCmd
 func (c Ring) ClusterKeySlot(ctx context.Context, key string) *IntCmd
-func (c Ring) ClusterLinks(ctx context.Context) *ClusterLinksCmd
+func (c Ring) ClusterLinks(ctx context.Context)*ClusterLinksCmd
 func (c Ring) ClusterMeet(ctx context.Context, host, port string) *StatusCmd
-func (c Ring) ClusterMyID(ctx context.Context) *StringCmd
+func (c Ring) ClusterMyID(ctx context.Context)*StringCmd
 func (c Ring) ClusterMyShardID(ctx context.Context) *StringCmd
-func (c Ring) ClusterNodes(ctx context.Context) *StringCmd
+func (c Ring) ClusterNodes(ctx context.Context)*StringCmd
 func (c Ring) ClusterReplicate(ctx context.Context, nodeID string) *StatusCmd
-func (c Ring) ClusterResetHard(ctx context.Context) *StatusCmd
+func (c Ring) ClusterResetHard(ctx context.Context)*StatusCmd
 func (c Ring) ClusterResetSoft(ctx context.Context) *StatusCmd
-func (c Ring) ClusterSaveConfig(ctx context.Context) *StatusCmd
+func (c Ring) ClusterSaveConfig(ctx context.Context)*StatusCmd
 func (c Ring) ClusterShards(ctx context.Context) *ClusterShardsCmd
-func (c Ring) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
+func (c Ring) ClusterSlaves(ctx context.Context, nodeID string)*StringSliceCmd
 func (c Ring) ClusterSlots(ctx context.Context) *ClusterSlotsCmd
-func (c Ring) Command(ctx context.Context) *CommandsInfoCmd
+func (c Ring) Command(ctx context.Context)*CommandsInfoCmd
 func (c Ring) CommandGetKeys(ctx context.Context, commands ...interface{}) *StringSliceCmd
-func (c Ring) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{}) *KeyFlagsCmd
-func (c Ring) CommandList(ctx context.Context, filter *FilterBy) *StringSliceCmd
+func (c Ring) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{})*KeyFlagsCmd
+func (c Ring) CommandList(ctx context.Context, filter *FilterBy)*StringSliceCmd
 func (c Ring) ConfigGet(ctx context.Context, parameter string) *MapStringStringCmd
-func (c Ring) ConfigResetStat(ctx context.Context) *StatusCmd
+func (c Ring) ConfigResetStat(ctx context.Context)*StatusCmd
 func (c Ring) ConfigRewrite(ctx context.Context) *StatusCmd
-func (c Ring) ConfigSet(ctx context.Context, parameter, value string) *StatusCmd
+func (c Ring) ConfigSet(ctx context.Context, parameter, value string)*StatusCmd
 func (c Ring) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd
-func (c Ring) DBSize(ctx context.Context) *IntCmd
+func (c Ring) DBSize(ctx context.Context)*IntCmd
 func (c Ring) DebugObject(ctx context.Context, key string) *StringCmd
-func (c Ring) Decr(ctx context.Context, key string) *IntCmd
+func (c Ring) Decr(ctx context.Context, key string)*IntCmd
 func (c Ring) DecrBy(ctx context.Context, key string, decrement int64) *IntCmd
-func (c Ring) Del(ctx context.Context, keys ...string) *IntCmd
+func (c Ring) Del(ctx context.Context, keys ...string)*IntCmd
 func (c Ring) DelExArgs(ctx context.Context, key string, a DelExArgs) *IntCmd
-func (c Ring) Digest(ctx context.Context, key string) *DigestCmd
+func (c Ring) Digest(ctx context.Context, key string)*DigestCmd
 func (c Ring) Do(ctx context.Context, args ...interface{}) *Cmd
-func (c Ring) Dump(ctx context.Context, key string) *StringCmd
+func (c Ring) Dump(ctx context.Context, key string)*StringCmd
 func (c Ring) Echo(ctx context.Context, message interface{}) *StringCmd
-func (c Ring) Eval(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
+func (c Ring) Eval(ctx context.Context, script string, keys []string, args ...interface{})*Cmd
 func (c Ring) EvalRO(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
-func (c Ring) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
+func (c Ring) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{})*Cmd
 func (c Ring) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
-func (c Ring) Exists(ctx context.Context, keys ...string) *IntCmd
+func (c Ring) Exists(ctx context.Context, keys ...string)*IntCmd
 func (c Ring) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Ring) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c Ring) ExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c Ring) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Ring) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Ring) ExpireLT(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Ring) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Ring) ExpireTime(ctx context.Context, key string) *DurationCmd
+func (c Ring) ExpireTime(ctx context.Context, key string)*DurationCmd
 func (c Ring) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Ring) FCall(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Ring) FCall(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Ring) FCallRO(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Ring) FCallRo(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Ring) FCallRo(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Ring) FTAggregate(ctx context.Context, index string, query string) *MapStringInterfaceCmd
-func (c Ring) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions) *AggregateCmd
-func (c Ring) FTAliasAdd(ctx context.Context, index string, alias string) *StatusCmd
+func (c Ring) FTAggregateWithArgs(ctx context.Context, index string, query string, options*FTAggregateOptions) *AggregateCmd
+func (c Ring) FTAliasAdd(ctx context.Context, index string, alias string)*StatusCmd
 func (c Ring) FTAliasDel(ctx context.Context, alias string) *StatusCmd
-func (c Ring) FTAliasUpdate(ctx context.Context, index string, alias string) *StatusCmd
+func (c Ring) FTAliasUpdate(ctx context.Context, index string, alias string)*StatusCmd
 func (c Ring) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...) *StatusCmd
-func (c Ring) FTConfigGet(ctx context.Context, option string) *MapMapStringInterfaceCmd
+func (c Ring) FTConfigGet(ctx context.Context, option string)*MapMapStringInterfaceCmd
 deprecated
 func (c Ring) FTConfigSet(ctx context.Context, option string, value interface{}) *StatusCmd
 deprecated
-func (c Ring) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...) *StatusCmd
-func (c Ring) FTCursorDel(ctx context.Context, index string, cursorId int) *StatusCmd
+func (c Ring) FTCreate(ctx context.Context, index string, options*FTCreateOptions, ...) *StatusCmd
+func (c Ring) FTCursorDel(ctx context.Context, index string, cursorId int)*StatusCmd
 func (c Ring) FTCursorRead(ctx context.Context, index string, cursorId int, count int) *MapStringInterfaceCmd
-func (c Ring) FTDictAdd(ctx context.Context, dict string, term ...interface{}) *IntCmd
+func (c Ring) FTDictAdd(ctx context.Context, dict string, term ...interface{})*IntCmd
 func (c Ring) FTDictDel(ctx context.Context, dict string, term ...interface{}) *IntCmd
-func (c Ring) FTDictDump(ctx context.Context, dict string) *StringSliceCmd
+func (c Ring) FTDictDump(ctx context.Context, dict string)*StringSliceCmd
 func (c Ring) FTDropIndex(ctx context.Context, index string) *StatusCmd
-func (c Ring) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions) *StatusCmd
-func (c Ring) FTExplain(ctx context.Context, index string, query string) *StringCmd
+func (c Ring) FTDropIndexWithArgs(ctx context.Context, index string, options*FTDropIndexOptions) *StatusCmd
+func (c Ring) FTExplain(ctx context.Context, index string, query string)*StringCmd
 func (c Ring) FTExplainCli(ctx context.Context, key, path string) error
-func (c Ring) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions) *StringCmd
+func (c Ring) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions)*StringCmd
 func (c Ring) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...) *FTHybridCmd
-func (c Ring) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions) *FTHybridCmd
-func (c Ring) FTInfo(ctx context.Context, index string) *FTInfoCmd
+func (c Ring) FTHybridWithArgs(ctx context.Context, index string, options*FTHybridOptions) *FTHybridCmd
+func (c Ring) FTInfo(ctx context.Context, index string)*FTInfoCmd
 func (c Ring) FTSearch(ctx context.Context, index string, query string) *FTSearchCmd
-func (c Ring) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions) *FTSearchCmd
-func (c Ring) FTSpellCheck(ctx context.Context, index string, query string) *FTSpellCheckCmd
-func (c Ring) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions) *FTSpellCheckCmd
+func (c Ring) FTSearchWithArgs(ctx context.Context, index string, query string, options*FTSearchOptions) *FTSearchCmd
+func (c Ring) FTSpellCheck(ctx context.Context, index string, query string)*FTSpellCheckCmd
+func (c Ring) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions)*FTSpellCheckCmd
 func (c Ring) FTSynDump(ctx context.Context, index string) *FTSynDumpCmd
-func (c Ring) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{}) *StatusCmd
+func (c Ring) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{})*StatusCmd
 func (c Ring) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...) *StatusCmd
-func (c Ring) FTTagVals(ctx context.Context, index string, field string) *StringSliceCmd
+func (c Ring) FTTagVals(ctx context.Context, index string, field string)*StringSliceCmd
 func (c Ring) FT_List(ctx context.Context) *StringSliceCmd
-func (c Ring) FlushAll(ctx context.Context) *StatusCmd
+func (c Ring) FlushAll(ctx context.Context)*StatusCmd
 func (c Ring) FlushAllAsync(ctx context.Context) *StatusCmd
-func (c Ring) FlushDB(ctx context.Context) *StatusCmd
+func (c Ring) FlushDB(ctx context.Context)*StatusCmd
 func (c Ring) FlushDBAsync(ctx context.Context) *StatusCmd
-func (c *Ring) ForEachShard(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
-func (c Ring) FunctionDelete(ctx context.Context, libName string) *StringCmd
+func (c*Ring) ForEachShard(ctx context.Context, fn func(ctx context.Context, client *Client) error) error
+func (c Ring) FunctionDelete(ctx context.Context, libName string)*StringCmd
 func (c Ring) FunctionDump(ctx context.Context) *StringCmd
-func (c Ring) FunctionFlush(ctx context.Context) *StringCmd
+func (c Ring) FunctionFlush(ctx context.Context)*StringCmd
 func (c Ring) FunctionFlushAsync(ctx context.Context) *StringCmd
-func (c Ring) FunctionKill(ctx context.Context) *StringCmd
+func (c Ring) FunctionKill(ctx context.Context)*StringCmd
 func (c Ring) FunctionList(ctx context.Context, q FunctionListQuery) *FunctionListCmd
-func (c Ring) FunctionLoad(ctx context.Context, code string) *StringCmd
+func (c Ring) FunctionLoad(ctx context.Context, code string)*StringCmd
 func (c Ring) FunctionLoadReplace(ctx context.Context, code string) *StringCmd
-func (c Ring) FunctionRestore(ctx context.Context, libDump string) *StringCmd
+func (c Ring) FunctionRestore(ctx context.Context, libDump string)*StringCmd
 func (c Ring) FunctionStats(ctx context.Context) *FunctionStatsCmd
 func (c Ring) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation) *IntCmd
-func (c Ring) GeoDist(ctx context.Context, key string, member1, member2, unit string) *FloatCmd
+func (c Ring) GeoDist(ctx context.Context, key string, member1, member2, unit string)*FloatCmd
 func (c Ring) GeoHash(ctx context.Context, key string, members ...string) *StringSliceCmd
-func (c Ring) GeoPos(ctx context.Context, key string, members ...string) *GeoPosCmd
+func (c Ring) GeoPos(ctx context.Context, key string, members ...string)*GeoPosCmd
 func (c Ring) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...) *GeoLocationCmd
-func (c Ring) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery) *GeoLocationCmd
-func (c Ring) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery) *IntCmd
-func (c Ring) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...) *IntCmd
-func (c Ring) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery) *StringSliceCmd
-func (c Ring) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery) *GeoSearchLocationCmd
-func (c Ring) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery) *IntCmd
+func (c Ring) GeoRadiusByMember(ctx context.Context, key, member string, query*GeoRadiusQuery) *GeoLocationCmd
+func (c Ring) GeoRadiusByMemberStore(ctx context.Context, key, member string, query*GeoRadiusQuery) *IntCmd
+func (c Ring) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...)*IntCmd
+func (c Ring) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery)*StringSliceCmd
+func (c Ring) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery)*GeoSearchLocationCmd
+func (c Ring) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery)*IntCmd
 func (c Ring) Get(ctx context.Context, key string) *StringCmd
-func (c Ring) GetBit(ctx context.Context, key string, offset int64) *IntCmd
+func (c Ring) GetBit(ctx context.Context, key string, offset int64)*IntCmd
 func (c Ring) GetDel(ctx context.Context, key string) *StringCmd
-func (c Ring) GetEx(ctx context.Context, key string, expiration time.Duration) *StringCmd
+func (c Ring) GetEx(ctx context.Context, key string, expiration time.Duration)*StringCmd
 func (c Ring) GetRange(ctx context.Context, key string, start, end int64) *StringCmd
-func (c Ring) GetSet(ctx context.Context, key string, value interface{}) *StringCmd
+func (c Ring) GetSet(ctx context.Context, key string, value interface{})*StringCmd
 func (c *Ring) GetShardClientForKey(key string) (*Client, error)
 func (c *Ring) GetShardClients() []*Client
 func (c Ring) HDel(ctx context.Context, key string, fields ...string) *IntCmd
-func (c Ring) HExists(ctx context.Context, key, field string) *BoolCmd
+func (c Ring) HExists(ctx context.Context, key, field string)*BoolCmd
 func (c Ring) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
-func (c Ring) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
+func (c Ring) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string)*IntSliceCmd
 func (c Ring) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
-func (c Ring) HExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Ring) HExpireTime(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Ring) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
-func (c Ring) HGet(ctx context.Context, key, field string) *StringCmd
+func (c Ring) HGet(ctx context.Context, key, field string)*StringCmd
 func (c Ring) HGetAll(ctx context.Context, key string) *MapStringStringCmd
-func (c Ring) HGetDel(ctx context.Context, key string, fields ...string) *StringSliceCmd
+func (c Ring) HGetDel(ctx context.Context, key string, fields ...string)*StringSliceCmd
 func (c Ring) HGetEX(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c Ring) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string) *StringSliceCmd
-func (c Ring) HIncrBy(ctx context.Context, key, field string, incr int64) *IntCmd
+func (c Ring) HGetEXWithArgs(ctx context.Context, key string, options*HGetEXOptions, fields ...string) *StringSliceCmd
+func (c Ring) HIncrBy(ctx context.Context, key, field string, incr int64)*IntCmd
 func (c Ring) HIncrByFloat(ctx context.Context, key, field string, incr float64) *FloatCmd
-func (c Ring) HKeys(ctx context.Context, key string) *StringSliceCmd
+func (c Ring) HKeys(ctx context.Context, key string)*StringSliceCmd
 func (c Ring) HLen(ctx context.Context, key string) *IntCmd
-func (c Ring) HMGet(ctx context.Context, key string, fields ...string) *SliceCmd
+func (c Ring) HMGet(ctx context.Context, key string, fields ...string)*SliceCmd
 func (c Ring) HMSet(ctx context.Context, key string, values ...interface{}) *BoolCmd
-func (c Ring) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
+func (c Ring) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string)*IntSliceCmd
 func (c Ring) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
-func (c Ring) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
+func (c Ring) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...)*IntSliceCmd
 func (c Ring) HPExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Ring) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
+func (c Ring) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...)*IntSliceCmd
 func (c Ring) HPTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Ring) HPersist(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Ring) HPersist(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Ring) HRandField(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Ring) HRandFieldWithValues(ctx context.Context, key string, count int) *KeyValueSliceCmd
+func (c Ring) HRandFieldWithValues(ctx context.Context, key string, count int)*KeyValueSliceCmd
 func (c Ring) HScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Ring) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Ring) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Ring) HSet(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Ring) HSetEX(ctx context.Context, key string, fieldsAndValues ...string) *IntCmd
-func (c Ring) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...) *IntCmd
+func (c Ring) HSetEX(ctx context.Context, key string, fieldsAndValues ...string)*IntCmd
+func (c Ring) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...)*IntCmd
 func (c Ring) HSetNX(ctx context.Context, key, field string, value interface{}) *BoolCmd
-func (c Ring) HStrLen(ctx context.Context, key, field string) *IntCmd
+func (c Ring) HStrLen(ctx context.Context, key, field string)*IntCmd
 func (c Ring) HTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Ring) HVals(ctx context.Context, key string) *StringSliceCmd
+func (c Ring) HVals(ctx context.Context, key string)*StringSliceCmd
 func (c Ring) Incr(ctx context.Context, key string) *IntCmd
-func (c Ring) IncrBy(ctx context.Context, key string, value int64) *IntCmd
+func (c Ring) IncrBy(ctx context.Context, key string, value int64)*IntCmd
 func (c Ring) IncrByFloat(ctx context.Context, key string, value float64) *FloatCmd
-func (c Ring) Info(ctx context.Context, sections ...string) *StringCmd
+func (c Ring) Info(ctx context.Context, sections ...string)*StringCmd
 func (c Ring) InfoMap(ctx context.Context, sections ...string) *InfoCmd
-func (c Ring) JSONArrAppend(ctx context.Context, key, path string, values ...interface{}) *IntSliceCmd
+func (c Ring) JSONArrAppend(ctx context.Context, key, path string, values ...interface{})*IntSliceCmd
 func (c Ring) JSONArrIndex(ctx context.Context, key, path string, value ...interface{}) *IntSliceCmd
-func (c Ring) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...) *IntSliceCmd
-func (c Ring) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{}) *IntSliceCmd
+func (c Ring) JSONArrIndexWithArgs(ctx context.Context, key, path string, options*JSONArrIndexArgs, ...) *IntSliceCmd
+func (c Ring) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{})*IntSliceCmd
 func (c Ring) JSONArrLen(ctx context.Context, key, path string) *IntSliceCmd
-func (c Ring) JSONArrPop(ctx context.Context, key, path string, index int) *StringSliceCmd
+func (c Ring) JSONArrPop(ctx context.Context, key, path string, index int)*StringSliceCmd
 func (c Ring) JSONArrTrim(ctx context.Context, key, path string) *IntSliceCmd
-func (c Ring) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs) *IntSliceCmd
-func (c Ring) JSONClear(ctx context.Context, key, path string) *IntCmd
+func (c Ring) JSONArrTrimWithArgs(ctx context.Context, key, path string, options*JSONArrTrimArgs) *IntSliceCmd
+func (c Ring) JSONClear(ctx context.Context, key, path string)*IntCmd
 func (c Ring) JSONDebugMemory(ctx context.Context, key, path string) *IntCmd
-func (c Ring) JSONDel(ctx context.Context, key, path string) *IntCmd
+func (c Ring) JSONDel(ctx context.Context, key, path string)*IntCmd
 func (c Ring) JSONForget(ctx context.Context, key, path string) *IntCmd
-func (c Ring) JSONGet(ctx context.Context, key string, paths ...string) *JSONCmd
-func (c Ring) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string) *JSONCmd
+func (c Ring) JSONGet(ctx context.Context, key string, paths ...string)*JSONCmd
+func (c Ring) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string)*JSONCmd
 func (c Ring) JSONMGet(ctx context.Context, path string, keys ...string) *JSONSliceCmd
-func (c Ring) JSONMSet(ctx context.Context, params ...interface{}) *StatusCmd
+func (c Ring) JSONMSet(ctx context.Context, params ...interface{})*StatusCmd
 func (c Ring) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs) *StatusCmd
-func (c Ring) JSONMerge(ctx context.Context, key, path string, value string) *StatusCmd
+func (c Ring) JSONMerge(ctx context.Context, key, path string, value string)*StatusCmd
 func (c Ring) JSONNumIncrBy(ctx context.Context, key, path string, value float64) *JSONCmd
-func (c Ring) JSONObjKeys(ctx context.Context, key, path string) *SliceCmd
+func (c Ring) JSONObjKeys(ctx context.Context, key, path string)*SliceCmd
 func (c Ring) JSONObjLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Ring) JSONSet(ctx context.Context, key, path string, value interface{}) *StatusCmd
+func (c Ring) JSONSet(ctx context.Context, key, path string, value interface{})*StatusCmd
 func (c Ring) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string) *StatusCmd
-func (c Ring) JSONStrAppend(ctx context.Context, key, path, value string) *IntPointerSliceCmd
+func (c Ring) JSONStrAppend(ctx context.Context, key, path, value string)*IntPointerSliceCmd
 func (c Ring) JSONStrLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Ring) JSONToggle(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Ring) JSONToggle(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Ring) JSONType(ctx context.Context, key, path string) *JSONSliceCmd
-func (c Ring) Keys(ctx context.Context, pattern string) *StringSliceCmd
-func (c Ring) LCS(ctx context.Context, q *LCSQuery) *LCSCmd
+func (c Ring) Keys(ctx context.Context, pattern string)*StringSliceCmd
+func (c Ring) LCS(ctx context.Context, q *LCSQuery)*LCSCmd
 func (c Ring) LIndex(ctx context.Context, key string, index int64) *StringCmd
-func (c Ring) LInsert(ctx context.Context, key, op string, pivot, value interface{}) *IntCmd
+func (c Ring) LInsert(ctx context.Context, key, op string, pivot, value interface{})*IntCmd
 func (c Ring) LInsertAfter(ctx context.Context, key string, pivot, value interface{}) *IntCmd
-func (c Ring) LInsertBefore(ctx context.Context, key string, pivot, value interface{}) *IntCmd
+func (c Ring) LInsertBefore(ctx context.Context, key string, pivot, value interface{})*IntCmd
 func (c Ring) LLen(ctx context.Context, key string) *IntCmd
-func (c Ring) LMPop(ctx context.Context, direction string, count int64, keys ...string) *KeyValuesCmd
+func (c Ring) LMPop(ctx context.Context, direction string, count int64, keys ...string)*KeyValuesCmd
 func (c Ring) LMove(ctx context.Context, source, destination, srcpos, destpos string) *StringCmd
-func (c Ring) LPop(ctx context.Context, key string) *StringCmd
+func (c Ring) LPop(ctx context.Context, key string)*StringCmd
 func (c Ring) LPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Ring) LPos(ctx context.Context, key string, value string, a LPosArgs) *IntCmd
+func (c Ring) LPos(ctx context.Context, key string, value string, a LPosArgs)*IntCmd
 func (c Ring) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs) *IntSliceCmd
-func (c Ring) LPush(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Ring) LPush(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Ring) LPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Ring) LRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c Ring) LRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c Ring) LRem(ctx context.Context, key string, count int64, value interface{}) *IntCmd
-func (c Ring) LSet(ctx context.Context, key string, index int64, value interface{}) *StatusCmd
+func (c Ring) LSet(ctx context.Context, key string, index int64, value interface{})*StatusCmd
 func (c Ring) LTrim(ctx context.Context, key string, start, stop int64) *StatusCmd
-func (c Ring) LastSave(ctx context.Context) *IntCmd
+func (c Ring) LastSave(ctx context.Context)*IntCmd
 func (c Ring) Latency(ctx context.Context) *LatencyCmd
-func (c Ring) LatencyReset(ctx context.Context, events ...interface{}) *StatusCmd
+func (c Ring) LatencyReset(ctx context.Context, events ...interface{})*StatusCmd
 func (c *Ring) Len() int
-func (c Ring) MGet(ctx context.Context, keys ...string) *SliceCmd
+func (c Ring) MGet(ctx context.Context, keys ...string)*SliceCmd
 func (c Ring) MSet(ctx context.Context, values ...interface{}) *StatusCmd
-func (c Ring) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{}) *IntCmd
+func (c Ring) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{})*IntCmd
 func (c Ring) MSetNX(ctx context.Context, values ...interface{}) *BoolCmd
-func (c Ring) MemoryUsage(ctx context.Context, key string, samples ...int) *IntCmd
+func (c Ring) MemoryUsage(ctx context.Context, key string, samples ...int)*IntCmd
 func (c Ring) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd
-func (c Ring) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig) *StringCmd
-func (c Ring) Monitor(ctx context.Context, ch chan string) *MonitorCmd
+func (c Ring) ModuleLoadex(ctx context.Context, conf*ModuleLoadexConfig) *StringCmd
+func (c Ring) Monitor(ctx context.Context, ch chan string)*MonitorCmd
 func (c Ring) Move(ctx context.Context, key string, db int) *BoolCmd
-func (c Ring) ObjectEncoding(ctx context.Context, key string) *StringCmd
+func (c Ring) ObjectEncoding(ctx context.Context, key string)*StringCmd
 func (c Ring) ObjectFreq(ctx context.Context, key string) *IntCmd
-func (c Ring) ObjectIdleTime(ctx context.Context, key string) *DurationCmd
+func (c Ring) ObjectIdleTime(ctx context.Context, key string)*DurationCmd
 func (c Ring) ObjectRefCount(ctx context.Context, key string) *IntCmd
-func (c *Ring) OnNewNode(fn func(rdb *Client))
-func (c *Ring) Options() *RingOptions
-func (c Ring) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c*Ring) OnNewNode(fn func(rdb *Client))
+func (c*Ring) Options() *RingOptions
+func (c Ring) PExpire(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Ring) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
-func (c Ring) PExpireTime(ctx context.Context, key string) *DurationCmd
+func (c Ring) PExpireTime(ctx context.Context, key string)*DurationCmd
 func (c Ring) PFAdd(ctx context.Context, key string, els ...interface{}) *IntCmd
-func (c Ring) PFCount(ctx context.Context, keys ...string) *IntCmd
+func (c Ring) PFCount(ctx context.Context, keys ...string)*IntCmd
 func (c Ring) PFMerge(ctx context.Context, dest string, keys ...string) *StatusCmd
-func (c *Ring) PSubscribe(ctx context.Context, channels ...string) *PubSub
-func (c Ring) PTTL(ctx context.Context, key string) *DurationCmd
+func (c*Ring) PSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c Ring) PTTL(ctx context.Context, key string)*DurationCmd
 func (c Ring) Persist(ctx context.Context, key string) *BoolCmd
-func (c Ring) Ping(ctx context.Context) *StatusCmd
+func (c Ring) Ping(ctx context.Context)*StatusCmd
 func (c *Ring) Pipeline() Pipeliner
-func (c *Ring) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c *Ring) PoolStats() *PoolStats
+func (c*Ring) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
+func (c *Ring) PoolStats()*PoolStats
 func (c *Ring) Process(ctx context.Context, cmd Cmder) error
-func (c Ring) PubSubChannels(ctx context.Context, pattern string) *StringSliceCmd
+func (c Ring) PubSubChannels(ctx context.Context, pattern string)*StringSliceCmd
 func (c Ring) PubSubNumPat(ctx context.Context) *IntCmd
-func (c Ring) PubSubNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
+func (c Ring) PubSubNumSub(ctx context.Context, channels ...string)*MapStringIntCmd
 func (c Ring) PubSubShardChannels(ctx context.Context, pattern string) *StringSliceCmd
-func (c Ring) PubSubShardNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
+func (c Ring) PubSubShardNumSub(ctx context.Context, channels ...string)*MapStringIntCmd
 func (c Ring) Publish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c Ring) Quit(_ context.Context) *StatusCmd
+func (c Ring) Quit(_ context.Context)*StatusCmd
 func (c Ring) RPop(ctx context.Context, key string) *StringCmd
-func (c Ring) RPopCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Ring) RPopCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Ring) RPopLPush(ctx context.Context, source, destination string) *StringCmd
-func (c Ring) RPush(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Ring) RPush(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Ring) RPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Ring) RandomKey(ctx context.Context) *StringCmd
+func (c Ring) RandomKey(ctx context.Context)*StringCmd
 func (c Ring) ReadOnly(ctx context.Context) *StatusCmd
-func (c Ring) ReadWrite(ctx context.Context) *StatusCmd
+func (c Ring) ReadWrite(ctx context.Context)*StatusCmd
 func (c Ring) Rename(ctx context.Context, key, newkey string) *StatusCmd
-func (c Ring) RenameNX(ctx context.Context, key, newkey string) *BoolCmd
+func (c Ring) RenameNX(ctx context.Context, key, newkey string)*BoolCmd
 func (c Ring) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
-func (c Ring) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
+func (c Ring) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string)*StatusCmd
 func (c Ring) SAdd(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Ring) SCard(ctx context.Context, key string) *IntCmd
+func (c Ring) SCard(ctx context.Context, key string)*IntCmd
 func (c Ring) SDiff(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Ring) SDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Ring) SDiffStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Ring) SInter(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Ring) SInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
+func (c Ring) SInterCard(ctx context.Context, limit int64, keys ...string)*IntCmd
 func (c Ring) SInterStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Ring) SIsMember(ctx context.Context, key string, member interface{}) *BoolCmd
+func (c Ring) SIsMember(ctx context.Context, key string, member interface{})*BoolCmd
 func (c Ring) SMIsMember(ctx context.Context, key string, members ...interface{}) *BoolSliceCmd
-func (c Ring) SMembers(ctx context.Context, key string) *StringSliceCmd
+func (c Ring) SMembers(ctx context.Context, key string)*StringSliceCmd
 func (c Ring) SMembersMap(ctx context.Context, key string) *StringStructMapCmd
-func (c Ring) SMove(ctx context.Context, source, destination string, member interface{}) *BoolCmd
+func (c Ring) SMove(ctx context.Context, source, destination string, member interface{})*BoolCmd
 func (c Ring) SPop(ctx context.Context, key string) *StringCmd
-func (c Ring) SPopN(ctx context.Context, key string, count int64) *StringSliceCmd
+func (c Ring) SPopN(ctx context.Context, key string, count int64)*StringSliceCmd
 func (c Ring) SPublish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c Ring) SRandMember(ctx context.Context, key string) *StringCmd
+func (c Ring) SRandMember(ctx context.Context, key string)*StringCmd
 func (c Ring) SRandMemberN(ctx context.Context, key string, count int64) *StringSliceCmd
-func (c Ring) SRem(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Ring) SRem(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Ring) SScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c *Ring) SSubscribe(ctx context.Context, channels ...string) *PubSub
-func (c Ring) SUnion(ctx context.Context, keys ...string) *StringSliceCmd
+func (c*Ring) SSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c Ring) SUnion(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Ring) SUnionStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Ring) Save(ctx context.Context) *StatusCmd
+func (c Ring) Save(ctx context.Context)*StatusCmd
 func (c Ring) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd
-func (c Ring) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd
+func (c Ring) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string)*ScanCmd
 func (c Ring) ScriptExists(ctx context.Context, hashes ...string) *BoolSliceCmd
-func (c Ring) ScriptFlush(ctx context.Context) *StatusCmd
+func (c Ring) ScriptFlush(ctx context.Context)*StatusCmd
 func (c Ring) ScriptKill(ctx context.Context) *StatusCmd
-func (c Ring) ScriptLoad(ctx context.Context, script string) *StringCmd
+func (c Ring) ScriptLoad(ctx context.Context, script string)*StringCmd
 func (c Ring) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c *Ring) SetAddrs(addrs map[string]string)
+func (c*Ring) SetAddrs(addrs map[string]string)
 func (c Ring) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs) *StatusCmd
-func (c Ring) SetBit(ctx context.Context, key string, offset int64, value int) *IntCmd
+func (c Ring) SetBit(ctx context.Context, key string, offset int64, value int)*IntCmd
 func (c Ring) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c Ring) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
+func (c Ring) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StatusCmd
 func (c Ring) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
-func (c Ring) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
+func (c Ring) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StatusCmd
 func (c Ring) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
-func (c Ring) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
+func (c Ring) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StatusCmd
 func (c Ring) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
-func (c Ring) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
+func (c Ring) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StatusCmd
 func (c Ring) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
-func (c Ring) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
+func (c Ring) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration)*BoolCmd
 func (c Ring) SetRange(ctx context.Context, key string, offset int64, value string) *IntCmd
-func (c Ring) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
+func (c Ring) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration)*BoolCmd
 func (c Ring) Shutdown(ctx context.Context) *StatusCmd
-func (c Ring) ShutdownNoSave(ctx context.Context) *StatusCmd
+func (c Ring) ShutdownNoSave(ctx context.Context)*StatusCmd
 func (c Ring) ShutdownSave(ctx context.Context) *StatusCmd
-func (c Ring) SlaveOf(ctx context.Context, host, port string) *StatusCmd
+func (c Ring) SlaveOf(ctx context.Context, host, port string)*StatusCmd
 func (c Ring) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd
-func (c Ring) SlowLogLen(ctx context.Context) *IntCmd
+func (c Ring) SlowLogLen(ctx context.Context)*IntCmd
 func (c Ring) SlowLogReset(ctx context.Context) *StatusCmd
-func (c Ring) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Ring) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd
-func (c Ring) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Ring) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd
-func (c Ring) StrLen(ctx context.Context, key string) *IntCmd
-func (c *Ring) Subscribe(ctx context.Context, channels ...string) *PubSub
-func (c Ring) Sync(_ context.Context)
+func (c Ring) Sort(ctx context.Context, key string, sort*Sort) *StringSliceCmd
+func (c Ring) SortInterfaces(ctx context.Context, key string, sort*Sort) *SliceCmd
+func (c Ring) SortRO(ctx context.Context, key string, sort*Sort) *StringSliceCmd
+func (c Ring) SortStore(ctx context.Context, key, store string, sort*Sort) *IntCmd
+func (c Ring) StrLen(ctx context.Context, key string)*IntCmd
+func (c *Ring) Subscribe(ctx context.Context, channels ...string)*PubSub
+func (c Ring) Sync(_context.Context)
 func (c Ring) TDigestAdd(ctx context.Context, key string, elements ...float64) *StatusCmd
-func (c Ring) TDigestByRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
+func (c Ring) TDigestByRank(ctx context.Context, key string, rank ...uint64)*FloatSliceCmd
 func (c Ring) TDigestByRevRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
-func (c Ring) TDigestCDF(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
+func (c Ring) TDigestCDF(ctx context.Context, key string, elements ...float64)*FloatSliceCmd
 func (c Ring) TDigestCreate(ctx context.Context, key string) *StatusCmd
-func (c Ring) TDigestCreateWithCompression(ctx context.Context, key string, compression int64) *StatusCmd
+func (c Ring) TDigestCreateWithCompression(ctx context.Context, key string, compression int64)*StatusCmd
 func (c Ring) TDigestInfo(ctx context.Context, key string) *TDigestInfoCmd
-func (c Ring) TDigestMax(ctx context.Context, key string) *FloatCmd
-func (c Ring) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...) *StatusCmd
+func (c Ring) TDigestMax(ctx context.Context, key string)*FloatCmd
+func (c Ring) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...)*StatusCmd
 func (c Ring) TDigestMin(ctx context.Context, key string) *FloatCmd
-func (c Ring) TDigestQuantile(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
+func (c Ring) TDigestQuantile(ctx context.Context, key string, elements ...float64)*FloatSliceCmd
 func (c Ring) TDigestRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
-func (c Ring) TDigestReset(ctx context.Context, key string) *StatusCmd
+func (c Ring) TDigestReset(ctx context.Context, key string)*StatusCmd
 func (c Ring) TDigestRevRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
-func (c Ring) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64) *FloatCmd
+func (c Ring) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64)*FloatCmd
 func (c Ring) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd
-func (c Ring) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...) *IntCmd
-func (c Ring) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd
+func (c Ring) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...)*IntCmd
+func (c Ring) TSAlter(ctx context.Context, key string, options *TSAlterOptions)*StatusCmd
 func (c Ring) TSCreate(ctx context.Context, key string) *StatusCmd
-func (c Ring) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
+func (c Ring) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...)*StatusCmd
 func (c Ring) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Ring) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd
-func (c Ring) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Ring) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
+func (c Ring) TSCreateWithArgs(ctx context.Context, key string, options*TSOptions) *StatusCmd
+func (c Ring) TSDecrBy(ctx context.Context, Key string, timestamp float64)*IntCmd
+func (c Ring) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions)*IntCmd
 func (c Ring) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd
-func (c Ring) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd
+func (c Ring) TSDeleteRule(ctx context.Context, sourceKey string, destKey string)*StatusCmd
 func (c Ring) TSGet(ctx context.Context, key string) *TSTimestampValueCmd
-func (c Ring) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd
-func (c Ring) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Ring) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
+func (c Ring) TSGetWithArgs(ctx context.Context, key string, options*TSGetOptions) *TSTimestampValueCmd
+func (c Ring) TSIncrBy(ctx context.Context, Key string, timestamp float64)*IntCmd
+func (c Ring) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions)*IntCmd
 func (c Ring) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Ring) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd
-func (c Ring) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd
+func (c Ring) TSInfoWithArgs(ctx context.Context, key string, options*TSInfoOptions) *MapStringInterfaceCmd
+func (c Ring) TSMAdd(ctx context.Context, ktvSlices [][]interface{})*IntSliceCmd
 func (c Ring) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd
-func (c Ring) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd
-func (c Ring) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
+func (c Ring) TSMGetWithArgs(ctx context.Context, filters []string, options*TSMGetOptions) *MapStringSliceInterfaceCmd
+func (c Ring) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string)*MapStringSliceInterfaceCmd
 func (c Ring) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
-func (c Ring) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
+func (c Ring) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string)*MapStringSliceInterfaceCmd
 func (c Ring) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
-func (c Ring) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd
+func (c Ring) TSQueryIndex(ctx context.Context, filterExpr []string)*StringSliceCmd
 func (c Ring) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
-func (c Ring) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
+func (c Ring) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...)*TSTimestampValueSliceCmd
 func (c Ring) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
-func (c Ring) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
+func (c Ring) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...)*TSTimestampValueSliceCmd
 func (c Ring) TTL(ctx context.Context, key string) *DurationCmd
-func (c Ring) Time(ctx context.Context) *TimeCmd
+func (c Ring) Time(ctx context.Context)*TimeCmd
 func (c Ring) TopKAdd(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
-func (c Ring) TopKCount(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
+func (c Ring) TopKCount(ctx context.Context, key string, elements ...interface{})*IntSliceCmd
 func (c Ring) TopKIncrBy(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
-func (c Ring) TopKInfo(ctx context.Context, key string) *TopKInfoCmd
+func (c Ring) TopKInfo(ctx context.Context, key string)*TopKInfoCmd
 func (c Ring) TopKList(ctx context.Context, key string) *StringSliceCmd
-func (c Ring) TopKListWithCount(ctx context.Context, key string) *MapStringIntCmd
+func (c Ring) TopKListWithCount(ctx context.Context, key string)*MapStringIntCmd
 func (c Ring) TopKQuery(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Ring) TopKReserve(ctx context.Context, key string, k int64) *StatusCmd
+func (c Ring) TopKReserve(ctx context.Context, key string, k int64)*StatusCmd
 func (c Ring) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64) *StatusCmd
-func (c Ring) Touch(ctx context.Context, keys ...string) *IntCmd
+func (c Ring) Touch(ctx context.Context, keys ...string)*IntCmd
 func (c *Ring) TxPipeline() Pipeliner
-func (c *Ring) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
+func (c*Ring) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
 func (c Ring) Type(ctx context.Context, key string) *StatusCmd
-func (c Ring) Unlink(ctx context.Context, keys ...string) *IntCmd
+func (c Ring) Unlink(ctx context.Context, keys ...string)*IntCmd
 func (c Ring) VAdd(ctx context.Context, key, element string, val Vector) *BoolCmd
-func (c Ring) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs) *BoolCmd
-func (c Ring) VCard(ctx context.Context, key string) *IntCmd
+func (c Ring) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs*VAddArgs) *BoolCmd
+func (c Ring) VCard(ctx context.Context, key string)*IntCmd
 func (c Ring) VClearAttributes(ctx context.Context, key, element string) *BoolCmd
-func (c Ring) VDim(ctx context.Context, key string) *IntCmd
+func (c Ring) VDim(ctx context.Context, key string)*IntCmd
 func (c Ring) VEmb(ctx context.Context, key, element string, raw bool) *SliceCmd
-func (c Ring) VGetAttr(ctx context.Context, key, element string) *StringCmd
+func (c Ring) VGetAttr(ctx context.Context, key, element string)*StringCmd
 func (c Ring) VInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Ring) VLinks(ctx context.Context, key, element string) *StringSliceCmd
+func (c Ring) VLinks(ctx context.Context, key, element string)*StringSliceCmd
 func (c Ring) VLinksWithScores(ctx context.Context, key, element string) *VectorScoreSliceCmd
-func (c Ring) VRandMember(ctx context.Context, key string) *StringCmd
+func (c Ring) VRandMember(ctx context.Context, key string)*StringCmd
 func (c Ring) VRandMemberCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Ring) VRange(ctx context.Context, key, start, end string, count int64) *StringSliceCmd
+func (c Ring) VRange(ctx context.Context, key, start, end string, count int64)*StringSliceCmd
 func (c Ring) VRem(ctx context.Context, key, element string) *BoolCmd
-func (c Ring) VSetAttr(ctx context.Context, key, element string, attr interface{}) *BoolCmd
+func (c Ring) VSetAttr(ctx context.Context, key, element string, attr interface{})*BoolCmd
 func (c Ring) VSim(ctx context.Context, key string, val Vector) *StringSliceCmd
-func (c Ring) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *StringSliceCmd
-func (c Ring) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *VectorScoreSliceCmd
-func (c Ring) VSimWithScores(ctx context.Context, key string, val Vector) *VectorScoreSliceCmd
+func (c Ring) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs*VSimArgs) *StringSliceCmd
+func (c Ring) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs*VSimArgs) *VectorScoreSliceCmd
+func (c Ring) VSimWithScores(ctx context.Context, key string, val Vector)*VectorScoreSliceCmd
 func (c Ring) Wait(ctx context.Context, numSlaves int, timeout time.Duration) *IntCmd
-func (c Ring) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration) *IntCmd
+func (c Ring) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration)*IntCmd
 func (c *Ring) Watch(ctx context.Context, fn func(*Tx) error, keys ...string) error
 func (c Ring) XAck(ctx context.Context, stream, group string, ids ...string) *IntCmd
-func (c Ring) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *SliceCmd
-func (c Ring) XAdd(ctx context.Context, a *XAddArgs) *StringCmd
-func (c Ring) XAutoClaim(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimCmd
-func (c Ring) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimJustIDCmd
-func (c Ring) XClaim(ctx context.Context, a *XClaimArgs) *XMessageSliceCmd
-func (c Ring) XClaimJustID(ctx context.Context, a *XClaimArgs) *StringSliceCmd
+func (c Ring) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string)*SliceCmd
+func (c Ring) XAdd(ctx context.Context, a *XAddArgs)*StringCmd
+func (c Ring) XAutoClaim(ctx context.Context, a *XAutoClaimArgs)*XAutoClaimCmd
+func (c Ring) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs)*XAutoClaimJustIDCmd
+func (c Ring) XClaim(ctx context.Context, a *XClaimArgs)*XMessageSliceCmd
+func (c Ring) XClaimJustID(ctx context.Context, a *XClaimArgs)*StringSliceCmd
 func (c Ring) XDel(ctx context.Context, stream string, ids ...string) *IntCmd
-func (c Ring) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *SliceCmd
+func (c Ring) XDelEx(ctx context.Context, stream string, mode string, ids ...string)*SliceCmd
 func (c Ring) XGroupCreate(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Ring) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
+func (c Ring) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string)*IntCmd
 func (c Ring) XGroupCreateMkStream(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Ring) XGroupDelConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
+func (c Ring) XGroupDelConsumer(ctx context.Context, stream, group, consumer string)*IntCmd
 func (c Ring) XGroupDestroy(ctx context.Context, stream, group string) *IntCmd
-func (c Ring) XGroupSetID(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Ring) XGroupSetID(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Ring) XInfoConsumers(ctx context.Context, key string, group string) *XInfoConsumersCmd
-func (c Ring) XInfoGroups(ctx context.Context, key string) *XInfoGroupsCmd
+func (c Ring) XInfoGroups(ctx context.Context, key string)*XInfoGroupsCmd
 func (c Ring) XInfoStream(ctx context.Context, key string) *XInfoStreamCmd
-func (c Ring) XInfoStreamFull(ctx context.Context, key string, count int) *XInfoStreamFullCmd
+func (c Ring) XInfoStreamFull(ctx context.Context, key string, count int)*XInfoStreamFullCmd
 func (c Ring) XLen(ctx context.Context, stream string) *IntCmd
-func (c Ring) XPending(ctx context.Context, stream, group string) *XPendingCmd
-func (c Ring) XPendingExt(ctx context.Context, a *XPendingExtArgs) *XPendingExtCmd
+func (c Ring) XPending(ctx context.Context, stream, group string)*XPendingCmd
+func (c Ring) XPendingExt(ctx context.Context, a *XPendingExtArgs)*XPendingExtCmd
 func (c Ring) XRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
-func (c Ring) XRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Ring) XRead(ctx context.Context, a *XReadArgs) *XStreamSliceCmd
-func (c Ring) XReadGroup(ctx context.Context, a *XReadGroupArgs) *XStreamSliceCmd
+func (c Ring) XRangeN(ctx context.Context, stream, start, stop string, count int64)*XMessageSliceCmd
+func (c Ring) XRead(ctx context.Context, a *XReadArgs)*XStreamSliceCmd
+func (c Ring) XReadGroup(ctx context.Context, a *XReadGroupArgs)*XStreamSliceCmd
 func (c Ring) XReadStreams(ctx context.Context, streams ...string) *XStreamSliceCmd
-func (c Ring) XRevRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
+func (c Ring) XRevRange(ctx context.Context, stream, start, stop string)*XMessageSliceCmd
 func (c Ring) XRevRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Ring) XTrimMaxLen(ctx context.Context, key string, maxLen int64) *IntCmd
+func (c Ring) XTrimMaxLen(ctx context.Context, key string, maxLen int64)*IntCmd
 func (c Ring) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64) *IntCmd
-func (c Ring) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string) *IntCmd
+func (c Ring) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string)*IntCmd
 func (c Ring) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *IntCmd
-func (c Ring) XTrimMinID(ctx context.Context, key string, minID string) *IntCmd
+func (c Ring) XTrimMinID(ctx context.Context, key string, minID string)*IntCmd
 func (c Ring) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64) *IntCmd
-func (c Ring) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *IntCmd
+func (c Ring) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string)*IntCmd
 func (c Ring) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *IntCmd
-func (c Ring) ZAdd(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Ring) ZAdd(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Ring) ZAddArgs(ctx context.Context, key string, args ZAddArgs) *IntCmd
-func (c Ring) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs) *FloatCmd
+func (c Ring) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs)*FloatCmd
 func (c Ring) ZAddGT(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Ring) ZAddLT(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Ring) ZAddLT(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Ring) ZAddNX(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Ring) ZAddXX(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Ring) ZAddXX(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Ring) ZCard(ctx context.Context, key string) *IntCmd
-func (c Ring) ZCount(ctx context.Context, key, min, max string) *IntCmd
+func (c Ring) ZCount(ctx context.Context, key, min, max string)*IntCmd
 func (c Ring) ZDiff(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Ring) ZDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Ring) ZDiffStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Ring) ZDiffWithScores(ctx context.Context, keys ...string) *ZSliceCmd
-func (c Ring) ZIncrBy(ctx context.Context, key string, increment float64, member string) *FloatCmd
-func (c Ring) ZInter(ctx context.Context, store *ZStore) *StringSliceCmd
+func (c Ring) ZIncrBy(ctx context.Context, key string, increment float64, member string)*FloatCmd
+func (c Ring) ZInter(ctx context.Context, store *ZStore)*StringSliceCmd
 func (c Ring) ZInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Ring) ZInterStore(ctx context.Context, destination string, store *ZStore) *IntCmd
-func (c Ring) ZInterWithScores(ctx context.Context, store *ZStore) *ZSliceCmd
-func (c Ring) ZLexCount(ctx context.Context, key, min, max string) *IntCmd
+func (c Ring) ZInterStore(ctx context.Context, destination string, store*ZStore) *IntCmd
+func (c Ring) ZInterWithScores(ctx context.Context, store*ZStore) *ZSliceCmd
+func (c Ring) ZLexCount(ctx context.Context, key, min, max string)*IntCmd
 func (c Ring) ZMPop(ctx context.Context, order string, count int64, keys ...string) *ZSliceWithKeyCmd
-func (c Ring) ZMScore(ctx context.Context, key string, members ...string) *FloatSliceCmd
+func (c Ring) ZMScore(ctx context.Context, key string, members ...string)*FloatSliceCmd
 func (c Ring) ZPopMax(ctx context.Context, key string, count ...int64) *ZSliceCmd
-func (c Ring) ZPopMin(ctx context.Context, key string, count ...int64) *ZSliceCmd
+func (c Ring) ZPopMin(ctx context.Context, key string, count ...int64)*ZSliceCmd
 func (c Ring) ZRandMember(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Ring) ZRandMemberWithScores(ctx context.Context, key string, count int) *ZSliceCmd
+func (c Ring) ZRandMemberWithScores(ctx context.Context, key string, count int)*ZSliceCmd
 func (c Ring) ZRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Ring) ZRangeArgs(ctx context.Context, z ZRangeArgs) *StringSliceCmd
+func (c Ring) ZRangeArgs(ctx context.Context, z ZRangeArgs)*StringSliceCmd
 func (c Ring) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs) *ZSliceCmd
-func (c Ring) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Ring) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Ring) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
-func (c Ring) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs) *IntCmd
+func (c Ring) ZRangeByLex(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Ring) ZRangeByScore(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Ring) ZRangeByScoreWithScores(ctx context.Context, key string, opt*ZRangeBy) *ZSliceCmd
+func (c Ring) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs)*IntCmd
 func (c Ring) ZRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
-func (c Ring) ZRank(ctx context.Context, key, member string) *IntCmd
+func (c Ring) ZRank(ctx context.Context, key, member string)*IntCmd
 func (c Ring) ZRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
-func (c Ring) ZRem(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Ring) ZRem(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Ring) ZRemRangeByLex(ctx context.Context, key, min, max string) *IntCmd
-func (c Ring) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) *IntCmd
+func (c Ring) ZRemRangeByRank(ctx context.Context, key string, start, stop int64)*IntCmd
 func (c Ring) ZRemRangeByScore(ctx context.Context, key, min, max string) *IntCmd
-func (c Ring) ZRevRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Ring) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Ring) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Ring) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
+func (c Ring) ZRevRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
+func (c Ring) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Ring) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Ring) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy)*ZSliceCmd
 func (c Ring) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
-func (c Ring) ZRevRank(ctx context.Context, key, member string) *IntCmd
+func (c Ring) ZRevRank(ctx context.Context, key, member string)*IntCmd
 func (c Ring) ZRevRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
-func (c Ring) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Ring) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Ring) ZScore(ctx context.Context, key, member string) *FloatCmd
-func (c Ring) ZUnion(ctx context.Context, store ZStore) *StringSliceCmd
-func (c Ring) ZUnionStore(ctx context.Context, dest string, store *ZStore) *IntCmd
+func (c Ring) ZUnion(ctx context.Context, store ZStore)*StringSliceCmd
+func (c Ring) ZUnionStore(ctx context.Context, dest string, store *ZStore)*IntCmd
 func (c Ring) ZUnionWithScores(ctx context.Context, store ZStore) *ZSliceCmd
 type RingOptions
 type RunningScript
 type ScanCmd
-func NewScanCmd(ctx context.Context, process cmdable, args ...interface{}) *ScanCmd
+func NewScanCmd(ctx context.Context, process cmdable, args ...interface{})*ScanCmd
 func NewScanCmdResult(keys []string, cursor uint64, err error) *ScanCmd
-func (cmd *ScanCmd) Args() []interface{}
+func (cmd*ScanCmd) Args() []interface{}
 func (cmd *ScanCmd) Err() error
-func (cmd *ScanCmd) FullName() string
-func (cmd *ScanCmd) Iterator() *ScanIterator
+func (cmd*ScanCmd) FullName() string
+func (cmd *ScanCmd) Iterator()*ScanIterator
 func (cmd *ScanCmd) Name() string
-func (cmd *ScanCmd) Result() (keys []string, cursor uint64, err error)
+func (cmd*ScanCmd) Result() (keys []string, cursor uint64, err error)
 func (cmd *ScanCmd) SetErr(e error)
-func (cmd *ScanCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*ScanCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *ScanCmd) SetVal(page []string, cursor uint64)
-func (cmd *ScanCmd) String() string
+func (cmd*ScanCmd) String() string
 func (cmd *ScanCmd) Val() (keys []string, cursor uint64)
 type ScanDump
 type ScanDumpCmd
-func (cmd *ScanDumpCmd) Args() []interface{}
+func (cmd*ScanDumpCmd) Args() []interface{}
 func (cmd *ScanDumpCmd) Err() error
-func (cmd *ScanDumpCmd) FullName() string
+func (cmd*ScanDumpCmd) FullName() string
 func (cmd *ScanDumpCmd) Name() string
-func (cmd *ScanDumpCmd) Result() (ScanDump, error)
+func (cmd*ScanDumpCmd) Result() (ScanDump, error)
 func (cmd *ScanDumpCmd) SetErr(e error)
-func (cmd *ScanDumpCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*ScanDumpCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *ScanDumpCmd) SetVal(val ScanDump)
-func (cmd *ScanDumpCmd) String() string
+func (cmd*ScanDumpCmd) String() string
 func (cmd *ScanDumpCmd) Val() ScanDump
 type ScanIterator
-func (it *ScanIterator) Err() error
+func (it*ScanIterator) Err() error
 func (it *ScanIterator) Next(ctx context.Context) bool
-func (it *ScanIterator) Val() string
+func (it*ScanIterator) Val() string
 type Scanner
 type Script
 func NewScript(src string) *Script
-func (s *Script) Eval(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
-func (s *Script) EvalRO(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
-func (s *Script) EvalSha(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
-func (s *Script) EvalShaRO(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
-func (s *Script) Exists(ctx context.Context, c Scripter) *BoolSliceCmd
-func (s *Script) Hash() string
-func (s *Script) Load(ctx context.Context, c Scripter) *StringCmd
-func (s *Script) Run(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
-func (s *Script) RunRO(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
+func (s*Script) Eval(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
+func (s*Script) EvalRO(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
+func (s*Script) EvalSha(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
+func (s*Script) EvalShaRO(ctx context.Context, c Scripter, keys []string, args ...interface{}) *Cmd
+func (s*Script) Exists(ctx context.Context, c Scripter) *BoolSliceCmd
+func (s*Script) Hash() string
+func (s *Script) Load(ctx context.Context, c Scripter)*StringCmd
+func (s *Script) Run(ctx context.Context, c Scripter, keys []string, args ...interface{})*Cmd
+func (s *Script) RunRO(ctx context.Context, c Scripter, keys []string, args ...interface{})*Cmd
 type Scripter
 type ScriptingFunctionsCmdable
 type SearchAggregator
 func (a SearchAggregator) String() string
 type SearchBuilder
-func (b *SearchBuilder) CountOnly() *SearchBuilder
-func (b *SearchBuilder) Dialect(version int) *SearchBuilder
-func (b *SearchBuilder) Expander(expander string) *SearchBuilder
-func (b *SearchBuilder) ExplainScore() *SearchBuilder
-func (b *SearchBuilder) Filter(field string, min, max interface{}) *SearchBuilder
-func (b *SearchBuilder) GeoFilter(field string, lon, lat, radius float64, unit string) *SearchBuilder
-func (b *SearchBuilder) InFields(fields ...interface{}) *SearchBuilder
-func (b *SearchBuilder) InKeys(keys ...interface{}) *SearchBuilder
-func (b *SearchBuilder) InOrder() *SearchBuilder
-func (b *SearchBuilder) Language(lang string) *SearchBuilder
-func (b *SearchBuilder) Limit(offset, count int) *SearchBuilder
-func (b *SearchBuilder) NoContent() *SearchBuilder
-func (b *SearchBuilder) NoStopWords() *SearchBuilder
-func (b *SearchBuilder) Param(key string, value interface{}) *SearchBuilder
-func (b *SearchBuilder) ParamsMap(p map[string]interface{}) *SearchBuilder
-func (b *SearchBuilder) Payload(payload string) *SearchBuilder
-func (b *SearchBuilder) ReturnAs(field, alias string) *SearchBuilder
-func (b *SearchBuilder) ReturnFields(fields ...string) *SearchBuilder
+func (b *SearchBuilder) CountOnly()*SearchBuilder
+func (b *SearchBuilder) Dialect(version int)*SearchBuilder
+func (b *SearchBuilder) Expander(expander string)*SearchBuilder
+func (b *SearchBuilder) ExplainScore()*SearchBuilder
+func (b *SearchBuilder) Filter(field string, min, max interface{})*SearchBuilder
+func (b *SearchBuilder) GeoFilter(field string, lon, lat, radius float64, unit string)*SearchBuilder
+func (b *SearchBuilder) InFields(fields ...interface{})*SearchBuilder
+func (b *SearchBuilder) InKeys(keys ...interface{})*SearchBuilder
+func (b *SearchBuilder) InOrder()*SearchBuilder
+func (b *SearchBuilder) Language(lang string)*SearchBuilder
+func (b *SearchBuilder) Limit(offset, count int)*SearchBuilder
+func (b *SearchBuilder) NoContent()*SearchBuilder
+func (b *SearchBuilder) NoStopWords()*SearchBuilder
+func (b *SearchBuilder) Param(key string, value interface{})*SearchBuilder
+func (b *SearchBuilder) ParamsMap(p map[string]interface{})*SearchBuilder
+func (b *SearchBuilder) Payload(payload string)*SearchBuilder
+func (b *SearchBuilder) ReturnAs(field, alias string)*SearchBuilder
+func (b *SearchBuilder) ReturnFields(fields ...string)*SearchBuilder
 func (b *SearchBuilder) Run() (FTSearchResult, error)
-func (b *SearchBuilder) Scorer(scorer string) *SearchBuilder
-func (b *SearchBuilder) Slop(slop int) *SearchBuilder
-func (b *SearchBuilder) SortBy(field string, asc bool) *SearchBuilder
-func (b *SearchBuilder) Timeout(timeout int) *SearchBuilder
-func (b *SearchBuilder) Verbatim() *SearchBuilder
-func (b *SearchBuilder) WithPayloads() *SearchBuilder
-func (b *SearchBuilder) WithScores() *SearchBuilder
-func (b *SearchBuilder) WithSortByCount() *SearchBuilder
-func (b *SearchBuilder) WithSortKeys() *SearchBuilder
+func (b*SearchBuilder) Scorer(scorer string) *SearchBuilder
+func (b*SearchBuilder) Slop(slop int) *SearchBuilder
+func (b*SearchBuilder) SortBy(field string, asc bool) *SearchBuilder
+func (b*SearchBuilder) Timeout(timeout int) *SearchBuilder
+func (b*SearchBuilder) Verbatim() *SearchBuilder
+func (b*SearchBuilder) WithPayloads() *SearchBuilder
+func (b*SearchBuilder) WithScores() *SearchBuilder
+func (b*SearchBuilder) WithSortByCount() *SearchBuilder
+func (b*SearchBuilder) WithSortKeys() *SearchBuilder
 type SearchCmdable
 type SearchFieldType
 func (t SearchFieldType) String() string
 type SearchQuery
-func FTSearchQuery(query string, options *FTSearchOptions) (SearchQuery, error)
+func FTSearchQuery(query string, options*FTSearchOptions) (SearchQuery, error)
 type SentinelClient
-func NewSentinelClient(opt *Options) *SentinelClient
-func (c *SentinelClient) CkQuorum(ctx context.Context, name string) *StringCmd
+func NewSentinelClient(opt *Options)*SentinelClient
+func (c *SentinelClient) CkQuorum(ctx context.Context, name string)*StringCmd
 func (c SentinelClient) Close() error
-func (c *SentinelClient) Failover(ctx context.Context, name string) *StatusCmd
-func (c *SentinelClient) FlushConfig(ctx context.Context) *StatusCmd
-func (c *SentinelClient) GetMasterAddrByName(ctx context.Context, name string) *StringSliceCmd
+func (c *SentinelClient) Failover(ctx context.Context, name string)*StatusCmd
+func (c *SentinelClient) FlushConfig(ctx context.Context)*StatusCmd
+func (c *SentinelClient) GetMasterAddrByName(ctx context.Context, name string)*StringSliceCmd
 func (c *SentinelClient) GetPushNotificationHandler(pushNotificationName string) push.NotificationHandler
-func (c *SentinelClient) Master(ctx context.Context, name string) *MapStringStringCmd
-func (c *SentinelClient) Masters(ctx context.Context) *SliceCmd
-func (c *SentinelClient) Monitor(ctx context.Context, name, ip, port, quorum string) *StringCmd
-func (c *SentinelClient) PSubscribe(ctx context.Context, channels ...string) *PubSub
-func (c *SentinelClient) Ping(ctx context.Context) *StringCmd
-func (c *SentinelClient) Process(ctx context.Context, cmd Cmder) error
+func (c*SentinelClient) Master(ctx context.Context, name string) *MapStringStringCmd
+func (c*SentinelClient) Masters(ctx context.Context) *SliceCmd
+func (c*SentinelClient) Monitor(ctx context.Context, name, ip, port, quorum string) *StringCmd
+func (c*SentinelClient) PSubscribe(ctx context.Context, channels ...string) *PubSub
+func (c*SentinelClient) Ping(ctx context.Context) *StringCmd
+func (c*SentinelClient) Process(ctx context.Context, cmd Cmder) error
 func (c *SentinelClient) RegisterPushNotificationHandler(pushNotificationName string, handler push.NotificationHandler, protected bool) error
-func (c *SentinelClient) Remove(ctx context.Context, name string) *StringCmd
-func (c *SentinelClient) Replicas(ctx context.Context, name string) *MapStringStringSliceCmd
-func (c *SentinelClient) Reset(ctx context.Context, pattern string) *IntCmd
-func (c *SentinelClient) Sentinels(ctx context.Context, name string) *MapStringStringSliceCmd
-func (c *SentinelClient) Set(ctx context.Context, name, option, value string) *StringCmd
+func (c*SentinelClient) Remove(ctx context.Context, name string) *StringCmd
+func (c*SentinelClient) Replicas(ctx context.Context, name string) *MapStringStringSliceCmd
+func (c*SentinelClient) Reset(ctx context.Context, pattern string) *IntCmd
+func (c*SentinelClient) Sentinels(ctx context.Context, name string) *MapStringStringSliceCmd
+func (c*SentinelClient) Set(ctx context.Context, name, option, value string) *StringCmd
 func (c SentinelClient) String() string
-func (c *SentinelClient) Subscribe(ctx context.Context, channels ...string) *PubSub
+func (c*SentinelClient) Subscribe(ctx context.Context, channels ...string) *PubSub
 type SetArgs
 type SetCmdable
 type SetCondition
 type SliceCmd
-func NewSliceCmd(ctx context.Context, args ...interface{}) *SliceCmd
+func NewSliceCmd(ctx context.Context, args ...interface{})*SliceCmd
 func NewSliceResult(val []interface{}, err error) *SliceCmd
-func (cmd *SliceCmd) Args() []interface{}
+func (cmd*SliceCmd) Args() []interface{}
 func (cmd *SliceCmd) Err() error
-func (cmd *SliceCmd) FullName() string
+func (cmd*SliceCmd) FullName() string
 func (cmd *SliceCmd) Name() string
-func (cmd *SliceCmd) Result() ([]interface{}, error)
+func (cmd*SliceCmd) Result() ([]interface{}, error)
 func (cmd *SliceCmd) Scan(dst interface{}) error
-func (cmd *SliceCmd) SetErr(e error)
+func (cmd*SliceCmd) SetErr(e error)
 func (cmd *SliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *SliceCmd) SetVal(val []interface{})
+func (cmd*SliceCmd) SetVal(val []interface{})
 func (cmd *SliceCmd) String() string
-func (cmd *SliceCmd) Val() []interface{}
+func (cmd*SliceCmd) Val() []interface{}
 type SlotRange
 type SlowLog
 type SlowLogCmd
 func NewSlowLogCmd(ctx context.Context, args ...interface{}) *SlowLogCmd
-func (cmd *SlowLogCmd) Args() []interface{}
+func (cmd*SlowLogCmd) Args() []interface{}
 func (cmd *SlowLogCmd) Err() error
-func (cmd *SlowLogCmd) FullName() string
+func (cmd*SlowLogCmd) FullName() string
 func (cmd *SlowLogCmd) Name() string
-func (cmd *SlowLogCmd) Result() ([]SlowLog, error)
+func (cmd*SlowLogCmd) Result() ([]SlowLog, error)
 func (cmd *SlowLogCmd) SetErr(e error)
-func (cmd *SlowLogCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*SlowLogCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *SlowLogCmd) SetVal(val []SlowLog)
-func (cmd *SlowLogCmd) String() string
+func (cmd*SlowLogCmd) String() string
 func (cmd *SlowLogCmd) Val() []SlowLog
 type Sort
 type SortedSetCmdable
 type SpellCheckBuilder
-func (b *SpellCheckBuilder) Dialect(d int) *SpellCheckBuilder
-func (b *SpellCheckBuilder) Distance(d int) *SpellCheckBuilder
-func (b *SpellCheckBuilder) Run() ([]SpellCheckResult, error)
-func (b *SpellCheckBuilder) Terms(include bool, dictionary string, terms ...interface{}) *SpellCheckBuilder
+func (b*SpellCheckBuilder) Dialect(d int) *SpellCheckBuilder
+func (b*SpellCheckBuilder) Distance(d int) *SpellCheckBuilder
+func (b*SpellCheckBuilder) Run() ([]SpellCheckResult, error)
+func (b *SpellCheckBuilder) Terms(include bool, dictionary string, terms ...interface{})*SpellCheckBuilder
 type SpellCheckResult
 type SpellCheckSuggestion
 type SpellCheckTerms
 type StatefulCmdable
 type StatusCmd
 func NewStatusCmd(ctx context.Context, args ...interface{}) *StatusCmd
-func NewStatusResult(val string, err error) *StatusCmd
+func NewStatusResult(val string, err error)*StatusCmd
 func (cmd *StatusCmd) Args() []interface{}
-func (cmd *StatusCmd) Bytes() ([]byte, error)
+func (cmd*StatusCmd) Bytes() ([]byte, error)
 func (cmd *StatusCmd) Err() error
-func (cmd *StatusCmd) FullName() string
+func (cmd*StatusCmd) FullName() string
 func (cmd *StatusCmd) Name() string
-func (cmd *StatusCmd) Result() (string, error)
+func (cmd*StatusCmd) Result() (string, error)
 func (cmd *StatusCmd) SetErr(e error)
-func (cmd *StatusCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*StatusCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *StatusCmd) SetVal(val string)
-func (cmd *StatusCmd) String() string
+func (cmd*StatusCmd) String() string
 func (cmd *StatusCmd) Val() string
 type StreamCmdable
 type StringCmd
-func NewStringCmd(ctx context.Context, args ...interface{}) *StringCmd
+func NewStringCmd(ctx context.Context, args ...interface{})*StringCmd
 func NewStringResult(val string, err error) *StringCmd
-func (cmd *StringCmd) Args() []interface{}
+func (cmd*StringCmd) Args() []interface{}
 func (cmd *StringCmd) Bool() (bool, error)
-func (cmd *StringCmd) Bytes() ([]byte, error)
+func (cmd*StringCmd) Bytes() ([]byte, error)
 func (cmd *StringCmd) Err() error
-func (cmd *StringCmd) Float32() (float32, error)
+func (cmd*StringCmd) Float32() (float32, error)
 func (cmd *StringCmd) Float64() (float64, error)
-func (cmd *StringCmd) FullName() string
+func (cmd*StringCmd) FullName() string
 func (cmd *StringCmd) Int() (int, error)
-func (cmd *StringCmd) Int64() (int64, error)
+func (cmd*StringCmd) Int64() (int64, error)
 func (cmd *StringCmd) Name() string
-func (cmd *StringCmd) Result() (string, error)
+func (cmd*StringCmd) Result() (string, error)
 func (cmd *StringCmd) Scan(val interface{}) error
-func (cmd *StringCmd) SetErr(e error)
+func (cmd*StringCmd) SetErr(e error)
 func (cmd *StringCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *StringCmd) SetVal(val string)
+func (cmd*StringCmd) SetVal(val string)
 func (cmd *StringCmd) String() string
-func (cmd *StringCmd) Time() (time.Time, error)
+func (cmd*StringCmd) Time() (time.Time, error)
 func (cmd *StringCmd) Uint64() (uint64, error)
-func (cmd *StringCmd) Val() string
+func (cmd*StringCmd) Val() string
 type StringCmdable
 type StringSliceCmd
 func NewStringSliceCmd(ctx context.Context, args ...interface{}) *StringSliceCmd
-func NewStringSliceResult(val []string, err error) *StringSliceCmd
+func NewStringSliceResult(val []string, err error)*StringSliceCmd
 func (cmd *StringSliceCmd) Args() []interface{}
-func (cmd *StringSliceCmd) Err() error
+func (cmd*StringSliceCmd) Err() error
 func (cmd *StringSliceCmd) FullName() string
-func (cmd *StringSliceCmd) Name() string
+func (cmd*StringSliceCmd) Name() string
 func (cmd *StringSliceCmd) Result() ([]string, error)
-func (cmd *StringSliceCmd) ScanSlice(container interface{}) error
+func (cmd*StringSliceCmd) ScanSlice(container interface{}) error
 func (cmd *StringSliceCmd) SetErr(e error)
-func (cmd *StringSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*StringSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *StringSliceCmd) SetVal(val []string)
-func (cmd *StringSliceCmd) String() string
+func (cmd*StringSliceCmd) String() string
 func (cmd *StringSliceCmd) Val() []string
 type StringStructMapCmd
-func NewStringStructMapCmd(ctx context.Context, args ...interface{}) *StringStructMapCmd
+func NewStringStructMapCmd(ctx context.Context, args ...interface{})*StringStructMapCmd
 func (cmd *StringStructMapCmd) Args() []interface{}
-func (cmd *StringStructMapCmd) Err() error
+func (cmd*StringStructMapCmd) Err() error
 func (cmd *StringStructMapCmd) FullName() string
-func (cmd *StringStructMapCmd) Name() string
+func (cmd*StringStructMapCmd) Name() string
 func (cmd *StringStructMapCmd) Result() (map[string]struct{}, error)
-func (cmd *StringStructMapCmd) SetErr(e error)
+func (cmd*StringStructMapCmd) SetErr(e error)
 func (cmd *StringStructMapCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *StringStructMapCmd) SetVal(val map[string]struct{})
+func (cmd*StringStructMapCmd) SetVal(val map[string]struct{})
 func (cmd *StringStructMapCmd) String() string
-func (cmd *StringStructMapCmd) Val() map[string]struct{}
+func (cmd*StringStructMapCmd) Val() map[string]struct{}
 type Subscription
 func (m *Subscription) String() string
 type SynUpdateBuilder
-func (b *SynUpdateBuilder) Run() (string, error)
-func (b *SynUpdateBuilder) SkipInitialScan() *SynUpdateBuilder
-func (b *SynUpdateBuilder) Terms(terms ...interface{}) *SynUpdateBuilder
+func (b*SynUpdateBuilder) Run() (string, error)
+func (b *SynUpdateBuilder) SkipInitialScan()*SynUpdateBuilder
+func (b *SynUpdateBuilder) Terms(terms ...interface{})*SynUpdateBuilder
 type TDigestInfo
 type TDigestInfoCmd
 func NewTDigestInfoCmd(ctx context.Context, args ...interface{}) *TDigestInfoCmd
-func (cmd *TDigestInfoCmd) Args() []interface{}
+func (cmd*TDigestInfoCmd) Args() []interface{}
 func (cmd *TDigestInfoCmd) Err() error
-func (cmd *TDigestInfoCmd) FullName() string
+func (cmd*TDigestInfoCmd) FullName() string
 func (cmd *TDigestInfoCmd) Name() string
-func (cmd *TDigestInfoCmd) Result() (TDigestInfo, error)
+func (cmd*TDigestInfoCmd) Result() (TDigestInfo, error)
 func (cmd *TDigestInfoCmd) SetErr(e error)
-func (cmd *TDigestInfoCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*TDigestInfoCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *TDigestInfoCmd) SetVal(val TDigestInfo)
-func (cmd *TDigestInfoCmd) String() string
+func (cmd*TDigestInfoCmd) String() string
 func (cmd *TDigestInfoCmd) Val() TDigestInfo
 type TDigestMergeOptions
 type TSAlterOptions
@@ -4064,849 +4064,849 @@ type TSRangeOptions
 type TSRevRangeOptions
 type TSTimestampValue
 type TSTimestampValueCmd
-func (cmd *TSTimestampValueCmd) Args() []interface{}
+func (cmd*TSTimestampValueCmd) Args() []interface{}
 func (cmd *TSTimestampValueCmd) Err() error
-func (cmd *TSTimestampValueCmd) FullName() string
+func (cmd*TSTimestampValueCmd) FullName() string
 func (cmd *TSTimestampValueCmd) Name() string
-func (cmd *TSTimestampValueCmd) Result() (TSTimestampValue, error)
+func (cmd*TSTimestampValueCmd) Result() (TSTimestampValue, error)
 func (cmd *TSTimestampValueCmd) SetErr(e error)
-func (cmd *TSTimestampValueCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*TSTimestampValueCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *TSTimestampValueCmd) SetVal(val TSTimestampValue)
-func (cmd *TSTimestampValueCmd) String() string
+func (cmd*TSTimestampValueCmd) String() string
 func (cmd *TSTimestampValueCmd) Val() TSTimestampValue
 type TSTimestampValueSliceCmd
-func (cmd *TSTimestampValueSliceCmd) Args() []interface{}
+func (cmd*TSTimestampValueSliceCmd) Args() []interface{}
 func (cmd *TSTimestampValueSliceCmd) Err() error
-func (cmd *TSTimestampValueSliceCmd) FullName() string
+func (cmd*TSTimestampValueSliceCmd) FullName() string
 func (cmd *TSTimestampValueSliceCmd) Name() string
-func (cmd *TSTimestampValueSliceCmd) Result() ([]TSTimestampValue, error)
+func (cmd*TSTimestampValueSliceCmd) Result() ([]TSTimestampValue, error)
 func (cmd *TSTimestampValueSliceCmd) SetErr(e error)
-func (cmd *TSTimestampValueSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*TSTimestampValueSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *TSTimestampValueSliceCmd) SetVal(val []TSTimestampValue)
-func (cmd *TSTimestampValueSliceCmd) String() string
+func (cmd*TSTimestampValueSliceCmd) String() string
 func (cmd *TSTimestampValueSliceCmd) Val() []TSTimestampValue
 type TagValsBuilder
-func (b *TagValsBuilder) Run() ([]string, error)
+func (b*TagValsBuilder) Run() ([]string, error)
 type TimeCmd
 func NewTimeCmd(ctx context.Context, args ...interface{}) *TimeCmd
-func NewTimeCmdResult(val time.Time, err error) *TimeCmd
+func NewTimeCmdResult(val time.Time, err error)*TimeCmd
 func (cmd *TimeCmd) Args() []interface{}
-func (cmd *TimeCmd) Err() error
+func (cmd*TimeCmd) Err() error
 func (cmd *TimeCmd) FullName() string
-func (cmd *TimeCmd) Name() string
+func (cmd*TimeCmd) Name() string
 func (cmd *TimeCmd) Result() (time.Time, error)
-func (cmd *TimeCmd) SetErr(e error)
+func (cmd*TimeCmd) SetErr(e error)
 func (cmd *TimeCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *TimeCmd) SetVal(val time.Time)
+func (cmd*TimeCmd) SetVal(val time.Time)
 func (cmd *TimeCmd) String() string
-func (cmd *TimeCmd) Val() time.Time
+func (cmd*TimeCmd) Val() time.Time
 type TimeseriesCmdable
 type TopKInfo
 type TopKInfoCmd
 func NewTopKInfoCmd(ctx context.Context, args ...interface{}) *TopKInfoCmd
-func (cmd *TopKInfoCmd) Args() []interface{}
+func (cmd*TopKInfoCmd) Args() []interface{}
 func (cmd *TopKInfoCmd) Err() error
-func (cmd *TopKInfoCmd) FullName() string
+func (cmd*TopKInfoCmd) FullName() string
 func (cmd *TopKInfoCmd) Name() string
-func (cmd *TopKInfoCmd) Result() (TopKInfo, error)
+func (cmd*TopKInfoCmd) Result() (TopKInfo, error)
 func (cmd *TopKInfoCmd) SetErr(e error)
-func (cmd *TopKInfoCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*TopKInfoCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *TopKInfoCmd) SetVal(val TopKInfo)
-func (cmd *TopKInfoCmd) String() string
+func (cmd*TopKInfoCmd) String() string
 func (cmd *TopKInfoCmd) Val() TopKInfo
 type Tx
-func (c Tx) ACLCat(ctx context.Context) *StringSliceCmd
-func (c Tx) ACLCatArgs(ctx context.Context, options *ACLCatArgs) *StringSliceCmd
+func (c Tx) ACLCat(ctx context.Context)*StringSliceCmd
+func (c Tx) ACLCatArgs(ctx context.Context, options *ACLCatArgs)*StringSliceCmd
 func (c Tx) ACLDelUser(ctx context.Context, username string) *IntCmd
-func (c Tx) ACLDryRun(ctx context.Context, username string, command ...interface{}) *StringCmd
+func (c Tx) ACLDryRun(ctx context.Context, username string, command ...interface{})*StringCmd
 func (c Tx) ACLGenPass(ctx context.Context, bit int) *StringCmd
-func (c Tx) ACLList(ctx context.Context) *StringSliceCmd
+func (c Tx) ACLList(ctx context.Context)*StringSliceCmd
 func (c Tx) ACLLog(ctx context.Context, count int64) *ACLLogCmd
-func (c Tx) ACLLogReset(ctx context.Context) *StatusCmd
+func (c Tx) ACLLogReset(ctx context.Context)*StatusCmd
 func (c Tx) ACLSetUser(ctx context.Context, username string, rules ...string) *StatusCmd
-func (c Tx) ACLUsers(ctx context.Context) *StringSliceCmd
+func (c Tx) ACLUsers(ctx context.Context)*StringSliceCmd
 func (c Tx) ACLWhoAmI(ctx context.Context) *StringCmd
-func (c Tx) Append(ctx context.Context, key, value string) *IntCmd
+func (c Tx) Append(ctx context.Context, key, value string)*IntCmd
 func (c Tx) Auth(ctx context.Context, password string) *StatusCmd
-func (c Tx) AuthACL(ctx context.Context, username, password string) *StatusCmd
+func (c Tx) AuthACL(ctx context.Context, username, password string)*StatusCmd
 func (c Tx) BFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Tx) BFCard(ctx context.Context, key string) *IntCmd
+func (c Tx) BFCard(ctx context.Context, key string)*IntCmd
 func (c Tx) BFExists(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Tx) BFInfo(ctx context.Context, key string) *BFInfoCmd
+func (c Tx) BFInfo(ctx context.Context, key string)*BFInfoCmd
 func (c Tx) BFInfoArg(ctx context.Context, key, option string) *BFInfoCmd
-func (c Tx) BFInfoCapacity(ctx context.Context, key string) *BFInfoCmd
+func (c Tx) BFInfoCapacity(ctx context.Context, key string)*BFInfoCmd
 func (c Tx) BFInfoExpansion(ctx context.Context, key string) *BFInfoCmd
-func (c Tx) BFInfoFilters(ctx context.Context, key string) *BFInfoCmd
+func (c Tx) BFInfoFilters(ctx context.Context, key string)*BFInfoCmd
 func (c Tx) BFInfoItems(ctx context.Context, key string) *BFInfoCmd
-func (c Tx) BFInfoSize(ctx context.Context, key string) *BFInfoCmd
-func (c Tx) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...) *BoolSliceCmd
+func (c Tx) BFInfoSize(ctx context.Context, key string)*BFInfoCmd
+func (c Tx) BFInsert(ctx context.Context, key string, options *BFInsertOptions, ...)*BoolSliceCmd
 func (c Tx) BFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
-func (c Tx) BFMAdd(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Tx) BFMAdd(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Tx) BFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Tx) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
+func (c Tx) BFReserve(ctx context.Context, key string, errorRate float64, capacity int64)*StatusCmd
 func (c Tx) BFReserveExpansion(ctx context.Context, key string, errorRate float64, capacity, expansion int64) *StatusCmd
-func (c Tx) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64) *StatusCmd
-func (c Tx) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions) *StatusCmd
+func (c Tx) BFReserveNonScaling(ctx context.Context, key string, errorRate float64, capacity int64)*StatusCmd
+func (c Tx) BFReserveWithArgs(ctx context.Context, key string, options *BFReserveOptions)*StatusCmd
 func (c Tx) BFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
-func (c Tx) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...) *KeyValuesCmd
+func (c Tx) BLMPop(ctx context.Context, timeout time.Duration, direction string, count int64, ...)*KeyValuesCmd
 func (c Tx) BLMove(ctx context.Context, source, destination, srcpos, destpos string, ...) *StringCmd
-func (c Tx) BLPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
+func (c Tx) BLPop(ctx context.Context, timeout time.Duration, keys ...string)*StringSliceCmd
 func (c Tx) BRPop(ctx context.Context, timeout time.Duration, keys ...string) *StringSliceCmd
-func (c Tx) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration) *StringCmd
+func (c Tx) BRPopLPush(ctx context.Context, source, destination string, timeout time.Duration)*StringCmd
 func (c Tx) BZMPop(ctx context.Context, timeout time.Duration, order string, count int64, ...) *ZSliceWithKeyCmd
-func (c Tx) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
+func (c Tx) BZPopMax(ctx context.Context, timeout time.Duration, keys ...string)*ZWithKeyCmd
 func (c Tx) BZPopMin(ctx context.Context, timeout time.Duration, keys ...string) *ZWithKeyCmd
-func (c Tx) BgRewriteAOF(ctx context.Context) *StatusCmd
+func (c Tx) BgRewriteAOF(ctx context.Context)*StatusCmd
 func (c Tx) BgSave(ctx context.Context) *StatusCmd
-func (c Tx) BitCount(ctx context.Context, key string, bitCount *BitCount) *IntCmd
-func (c Tx) BitField(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
+func (c Tx) BitCount(ctx context.Context, key string, bitCount*BitCount) *IntCmd
+func (c Tx) BitField(ctx context.Context, key string, values ...interface{})*IntSliceCmd
 func (c Tx) BitFieldRO(ctx context.Context, key string, values ...interface{}) *IntSliceCmd
-func (c Tx) BitOpAnd(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Tx) BitOpAnd(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Tx) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Tx) BitOpDiff(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Tx) BitOpDiff(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Tx) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Tx) BitOpNot(ctx context.Context, destKey string, key string) *IntCmd
+func (c Tx) BitOpNot(ctx context.Context, destKey string, key string)*IntCmd
 func (c Tx) BitOpOne(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Tx) BitOpOr(ctx context.Context, destKey string, keys ...string) *IntCmd
+func (c Tx) BitOpOr(ctx context.Context, destKey string, keys ...string)*IntCmd
 func (c Tx) BitOpXor(ctx context.Context, destKey string, keys ...string) *IntCmd
-func (c Tx) BitPos(ctx context.Context, key string, bit int64, pos ...int64) *IntCmd
+func (c Tx) BitPos(ctx context.Context, key string, bit int64, pos ...int64)*IntCmd
 func (c Tx) BitPosSpan(ctx context.Context, key string, bit int8, start, end int64, span string) *IntCmd
-func (c Tx) CFAdd(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Tx) CFAdd(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Tx) CFAddNX(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Tx) CFCount(ctx context.Context, key string, element interface{}) *IntCmd
+func (c Tx) CFCount(ctx context.Context, key string, element interface{})*IntCmd
 func (c Tx) CFDel(ctx context.Context, key string, element interface{}) *BoolCmd
-func (c Tx) CFExists(ctx context.Context, key string, element interface{}) *BoolCmd
+func (c Tx) CFExists(ctx context.Context, key string, element interface{})*BoolCmd
 func (c Tx) CFInfo(ctx context.Context, key string) *CFInfoCmd
-func (c Tx) CFInsert(ctx context.Context, key string, options *CFInsertOptions, ...) *BoolSliceCmd
-func (c Tx) CFInsertNX(ctx context.Context, key string, options *CFInsertOptions, ...) *IntSliceCmd
-func (c Tx) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{}) *StatusCmd
+func (c Tx) CFInsert(ctx context.Context, key string, options*CFInsertOptions, ...) *BoolSliceCmd
+func (c Tx) CFInsertNX(ctx context.Context, key string, options*CFInsertOptions, ...) *IntSliceCmd
+func (c Tx) CFLoadChunk(ctx context.Context, key string, iterator int64, data interface{})*StatusCmd
 func (c Tx) CFMExists(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
-func (c Tx) CFReserve(ctx context.Context, key string, capacity int64) *StatusCmd
+func (c Tx) CFReserve(ctx context.Context, key string, capacity int64)*StatusCmd
 func (c Tx) CFReserveBucketSize(ctx context.Context, key string, capacity int64, bucketsize int64) *StatusCmd
-func (c Tx) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64) *StatusCmd
+func (c Tx) CFReserveExpansion(ctx context.Context, key string, capacity int64, expansion int64)*StatusCmd
 func (c Tx) CFReserveMaxIterations(ctx context.Context, key string, capacity int64, maxiterations int64) *StatusCmd
-func (c Tx) CFReserveWithArgs(ctx context.Context, key string, options *CFReserveOptions) *StatusCmd
-func (c Tx) CFScanDump(ctx context.Context, key string, iterator int64) *ScanDumpCmd
+func (c Tx) CFReserveWithArgs(ctx context.Context, key string, options*CFReserveOptions) *StatusCmd
+func (c Tx) CFScanDump(ctx context.Context, key string, iterator int64)*ScanDumpCmd
 func (c Tx) CMSIncrBy(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Tx) CMSInfo(ctx context.Context, key string) *CMSInfoCmd
+func (c Tx) CMSInfo(ctx context.Context, key string)*CMSInfoCmd
 func (c Tx) CMSInitByDim(ctx context.Context, key string, width, depth int64) *StatusCmd
-func (c Tx) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64) *StatusCmd
+func (c Tx) CMSInitByProb(ctx context.Context, key string, errorRate, probability float64)*StatusCmd
 func (c Tx) CMSMerge(ctx context.Context, destKey string, sourceKeys ...string) *StatusCmd
-func (c Tx) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64) *StatusCmd
+func (c Tx) CMSMergeWithWeight(ctx context.Context, destKey string, sourceKeys map[string]int64)*StatusCmd
 func (c Tx) CMSQuery(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Tx) ClientGetName(ctx context.Context) *StringCmd
+func (c Tx) ClientGetName(ctx context.Context)*StringCmd
 func (c Tx) ClientID(ctx context.Context) *IntCmd
-func (c Tx) ClientInfo(ctx context.Context) *ClientInfoCmd
+func (c Tx) ClientInfo(ctx context.Context)*ClientInfoCmd
 func (c Tx) ClientKill(ctx context.Context, ipPort string) *StatusCmd
-func (c Tx) ClientKillByFilter(ctx context.Context, keys ...string) *IntCmd
+func (c Tx) ClientKillByFilter(ctx context.Context, keys ...string)*IntCmd
 func (c Tx) ClientList(ctx context.Context) *StringCmd
-func (c Tx) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *StatusCmd
+func (c Tx) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string)*StatusCmd
 func (c Tx) ClientPause(ctx context.Context, dur time.Duration) *BoolCmd
-func (c Tx) ClientSetInfo(ctx context.Context, info LibraryInfo) *StatusCmd
+func (c Tx) ClientSetInfo(ctx context.Context, info LibraryInfo)*StatusCmd
 func (c Tx) ClientSetName(ctx context.Context, name string) *BoolCmd
-func (c Tx) ClientUnblock(ctx context.Context, id int64) *IntCmd
+func (c Tx) ClientUnblock(ctx context.Context, id int64)*IntCmd
 func (c Tx) ClientUnblockWithError(ctx context.Context, id int64) *IntCmd
-func (c Tx) ClientUnpause(ctx context.Context) *BoolCmd
+func (c Tx) ClientUnpause(ctx context.Context)*BoolCmd
 func (c *Tx) Close(ctx context.Context) error
-func (c Tx) ClusterAddSlots(ctx context.Context, slots ...int) *StatusCmd
+func (c Tx) ClusterAddSlots(ctx context.Context, slots ...int)*StatusCmd
 func (c Tx) ClusterAddSlotsRange(ctx context.Context, min, max int) *StatusCmd
-func (c Tx) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd
+func (c Tx) ClusterCountFailureReports(ctx context.Context, nodeID string)*IntCmd
 func (c Tx) ClusterCountKeysInSlot(ctx context.Context, slot int) *IntCmd
-func (c Tx) ClusterDelSlots(ctx context.Context, slots ...int) *StatusCmd
+func (c Tx) ClusterDelSlots(ctx context.Context, slots ...int)*StatusCmd
 func (c Tx) ClusterDelSlotsRange(ctx context.Context, min, max int) *StatusCmd
-func (c Tx) ClusterFailover(ctx context.Context) *StatusCmd
+func (c Tx) ClusterFailover(ctx context.Context)*StatusCmd
 func (c Tx) ClusterForget(ctx context.Context, nodeID string) *StatusCmd
-func (c Tx) ClusterGetKeysInSlot(ctx context.Context, slot int, count int) *StringSliceCmd
+func (c Tx) ClusterGetKeysInSlot(ctx context.Context, slot int, count int)*StringSliceCmd
 func (c Tx) ClusterInfo(ctx context.Context) *StringCmd
-func (c Tx) ClusterKeySlot(ctx context.Context, key string) *IntCmd
+func (c Tx) ClusterKeySlot(ctx context.Context, key string)*IntCmd
 func (c Tx) ClusterLinks(ctx context.Context) *ClusterLinksCmd
-func (c Tx) ClusterMeet(ctx context.Context, host, port string) *StatusCmd
+func (c Tx) ClusterMeet(ctx context.Context, host, port string)*StatusCmd
 func (c Tx) ClusterMyID(ctx context.Context) *StringCmd
-func (c Tx) ClusterMyShardID(ctx context.Context) *StringCmd
+func (c Tx) ClusterMyShardID(ctx context.Context)*StringCmd
 func (c Tx) ClusterNodes(ctx context.Context) *StringCmd
-func (c Tx) ClusterReplicate(ctx context.Context, nodeID string) *StatusCmd
+func (c Tx) ClusterReplicate(ctx context.Context, nodeID string)*StatusCmd
 func (c Tx) ClusterResetHard(ctx context.Context) *StatusCmd
-func (c Tx) ClusterResetSoft(ctx context.Context) *StatusCmd
+func (c Tx) ClusterResetSoft(ctx context.Context)*StatusCmd
 func (c Tx) ClusterSaveConfig(ctx context.Context) *StatusCmd
-func (c Tx) ClusterShards(ctx context.Context) *ClusterShardsCmd
+func (c Tx) ClusterShards(ctx context.Context)*ClusterShardsCmd
 func (c Tx) ClusterSlaves(ctx context.Context, nodeID string) *StringSliceCmd
-func (c Tx) ClusterSlots(ctx context.Context) *ClusterSlotsCmd
+func (c Tx) ClusterSlots(ctx context.Context)*ClusterSlotsCmd
 func (c Tx) Command(ctx context.Context) *CommandsInfoCmd
-func (c Tx) CommandGetKeys(ctx context.Context, commands ...interface{}) *StringSliceCmd
+func (c Tx) CommandGetKeys(ctx context.Context, commands ...interface{})*StringSliceCmd
 func (c Tx) CommandGetKeysAndFlags(ctx context.Context, commands ...interface{}) *KeyFlagsCmd
-func (c Tx) CommandList(ctx context.Context, filter *FilterBy) *StringSliceCmd
-func (c Tx) ConfigGet(ctx context.Context, parameter string) *MapStringStringCmd
+func (c Tx) CommandList(ctx context.Context, filter*FilterBy) *StringSliceCmd
+func (c Tx) ConfigGet(ctx context.Context, parameter string)*MapStringStringCmd
 func (c Tx) ConfigResetStat(ctx context.Context) *StatusCmd
-func (c Tx) ConfigRewrite(ctx context.Context) *StatusCmd
+func (c Tx) ConfigRewrite(ctx context.Context)*StatusCmd
 func (c Tx) ConfigSet(ctx context.Context, parameter, value string) *StatusCmd
-func (c Tx) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd
+func (c Tx) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool)*IntCmd
 func (c Tx) DBSize(ctx context.Context) *IntCmd
-func (c Tx) DebugObject(ctx context.Context, key string) *StringCmd
+func (c Tx) DebugObject(ctx context.Context, key string)*StringCmd
 func (c Tx) Decr(ctx context.Context, key string) *IntCmd
-func (c Tx) DecrBy(ctx context.Context, key string, decrement int64) *IntCmd
+func (c Tx) DecrBy(ctx context.Context, key string, decrement int64)*IntCmd
 func (c Tx) Del(ctx context.Context, keys ...string) *IntCmd
-func (c Tx) DelExArgs(ctx context.Context, key string, a DelExArgs) *IntCmd
+func (c Tx) DelExArgs(ctx context.Context, key string, a DelExArgs)*IntCmd
 func (c Tx) Digest(ctx context.Context, key string) *DigestCmd
-func (c Tx) Do(ctx context.Context, args ...interface{}) *Cmd
+func (c Tx) Do(ctx context.Context, args ...interface{})*Cmd
 func (c Tx) Dump(ctx context.Context, key string) *StringCmd
-func (c Tx) Echo(ctx context.Context, message interface{}) *StringCmd
+func (c Tx) Echo(ctx context.Context, message interface{})*StringCmd
 func (c Tx) Eval(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
-func (c Tx) EvalRO(ctx context.Context, script string, keys []string, args ...interface{}) *Cmd
+func (c Tx) EvalRO(ctx context.Context, script string, keys []string, args ...interface{})*Cmd
 func (c Tx) EvalSha(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
-func (c Tx) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{}) *Cmd
+func (c Tx) EvalShaRO(ctx context.Context, sha1 string, keys []string, args ...interface{})*Cmd
 func (c Tx) Exists(ctx context.Context, keys ...string) *IntCmd
-func (c Tx) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Tx) Expire(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Tx) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
-func (c Tx) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Tx) ExpireGT(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Tx) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Tx) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Tx) ExpireNX(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Tx) ExpireTime(ctx context.Context, key string) *DurationCmd
-func (c Tx) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd
+func (c Tx) ExpireXX(ctx context.Context, key string, expiration time.Duration)*BoolCmd
 func (c Tx) FCall(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Tx) FCallRO(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
+func (c Tx) FCallRO(ctx context.Context, function string, keys []string, args ...interface{})*Cmd
 func (c Tx) FCallRo(ctx context.Context, function string, keys []string, args ...interface{}) *Cmd
-func (c Tx) FTAggregate(ctx context.Context, index string, query string) *MapStringInterfaceCmd
-func (c Tx) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions) *AggregateCmd
+func (c Tx) FTAggregate(ctx context.Context, index string, query string)*MapStringInterfaceCmd
+func (c Tx) FTAggregateWithArgs(ctx context.Context, index string, query string, options *FTAggregateOptions)*AggregateCmd
 func (c Tx) FTAliasAdd(ctx context.Context, index string, alias string) *StatusCmd
-func (c Tx) FTAliasDel(ctx context.Context, alias string) *StatusCmd
+func (c Tx) FTAliasDel(ctx context.Context, alias string)*StatusCmd
 func (c Tx) FTAliasUpdate(ctx context.Context, index string, alias string) *StatusCmd
-func (c Tx) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...) *StatusCmd
+func (c Tx) FTAlter(ctx context.Context, index string, skipInitialScan bool, ...)*StatusCmd
 func (c Tx) FTConfigGet(ctx context.Context, option string) *MapMapStringInterfaceCmd
 deprecated
-func (c Tx) FTConfigSet(ctx context.Context, option string, value interface{}) *StatusCmd
+func (c Tx) FTConfigSet(ctx context.Context, option string, value interface{})*StatusCmd
 deprecated
-func (c Tx) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...) *StatusCmd
+func (c Tx) FTCreate(ctx context.Context, index string, options *FTCreateOptions, ...)*StatusCmd
 func (c Tx) FTCursorDel(ctx context.Context, index string, cursorId int) *StatusCmd
-func (c Tx) FTCursorRead(ctx context.Context, index string, cursorId int, count int) *MapStringInterfaceCmd
+func (c Tx) FTCursorRead(ctx context.Context, index string, cursorId int, count int)*MapStringInterfaceCmd
 func (c Tx) FTDictAdd(ctx context.Context, dict string, term ...interface{}) *IntCmd
-func (c Tx) FTDictDel(ctx context.Context, dict string, term ...interface{}) *IntCmd
+func (c Tx) FTDictDel(ctx context.Context, dict string, term ...interface{})*IntCmd
 func (c Tx) FTDictDump(ctx context.Context, dict string) *StringSliceCmd
-func (c Tx) FTDropIndex(ctx context.Context, index string) *StatusCmd
-func (c Tx) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions) *StatusCmd
+func (c Tx) FTDropIndex(ctx context.Context, index string)*StatusCmd
+func (c Tx) FTDropIndexWithArgs(ctx context.Context, index string, options *FTDropIndexOptions)*StatusCmd
 func (c Tx) FTExplain(ctx context.Context, index string, query string) *StringCmd
 func (c Tx) FTExplainCli(ctx context.Context, key, path string) error
-func (c Tx) FTExplainWithArgs(ctx context.Context, index string, query string, options *FTExplainOptions) *StringCmd
-func (c Tx) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...) *FTHybridCmd
-func (c Tx) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions) *FTHybridCmd
+func (c Tx) FTExplainWithArgs(ctx context.Context, index string, query string, options*FTExplainOptions) *StringCmd
+func (c Tx) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, ...)*FTHybridCmd
+func (c Tx) FTHybridWithArgs(ctx context.Context, index string, options *FTHybridOptions)*FTHybridCmd
 func (c Tx) FTInfo(ctx context.Context, index string) *FTInfoCmd
-func (c Tx) FTSearch(ctx context.Context, index string, query string) *FTSearchCmd
-func (c Tx) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions) *FTSearchCmd
+func (c Tx) FTSearch(ctx context.Context, index string, query string)*FTSearchCmd
+func (c Tx) FTSearchWithArgs(ctx context.Context, index string, query string, options *FTSearchOptions)*FTSearchCmd
 func (c Tx) FTSpellCheck(ctx context.Context, index string, query string) *FTSpellCheckCmd
-func (c Tx) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options *FTSpellCheckOptions) *FTSpellCheckCmd
-func (c Tx) FTSynDump(ctx context.Context, index string) *FTSynDumpCmd
+func (c Tx) FTSpellCheckWithArgs(ctx context.Context, index string, query string, options*FTSpellCheckOptions) *FTSpellCheckCmd
+func (c Tx) FTSynDump(ctx context.Context, index string)*FTSynDumpCmd
 func (c Tx) FTSynUpdate(ctx context.Context, index string, synGroupId interface{}, terms []interface{}) *StatusCmd
-func (c Tx) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...) *StatusCmd
+func (c Tx) FTSynUpdateWithArgs(ctx context.Context, index string, synGroupId interface{}, ...)*StatusCmd
 func (c Tx) FTTagVals(ctx context.Context, index string, field string) *StringSliceCmd
-func (c Tx) FT_List(ctx context.Context) *StringSliceCmd
+func (c Tx) FT_List(ctx context.Context)*StringSliceCmd
 func (c Tx) FlushAll(ctx context.Context) *StatusCmd
-func (c Tx) FlushAllAsync(ctx context.Context) *StatusCmd
+func (c Tx) FlushAllAsync(ctx context.Context)*StatusCmd
 func (c Tx) FlushDB(ctx context.Context) *StatusCmd
-func (c Tx) FlushDBAsync(ctx context.Context) *StatusCmd
+func (c Tx) FlushDBAsync(ctx context.Context)*StatusCmd
 func (c Tx) FunctionDelete(ctx context.Context, libName string) *StringCmd
-func (c Tx) FunctionDump(ctx context.Context) *StringCmd
+func (c Tx) FunctionDump(ctx context.Context)*StringCmd
 func (c Tx) FunctionFlush(ctx context.Context) *StringCmd
-func (c Tx) FunctionFlushAsync(ctx context.Context) *StringCmd
+func (c Tx) FunctionFlushAsync(ctx context.Context)*StringCmd
 func (c Tx) FunctionKill(ctx context.Context) *StringCmd
-func (c Tx) FunctionList(ctx context.Context, q FunctionListQuery) *FunctionListCmd
+func (c Tx) FunctionList(ctx context.Context, q FunctionListQuery)*FunctionListCmd
 func (c Tx) FunctionLoad(ctx context.Context, code string) *StringCmd
-func (c Tx) FunctionLoadReplace(ctx context.Context, code string) *StringCmd
+func (c Tx) FunctionLoadReplace(ctx context.Context, code string)*StringCmd
 func (c Tx) FunctionRestore(ctx context.Context, libDump string) *StringCmd
-func (c Tx) FunctionStats(ctx context.Context) *FunctionStatsCmd
-func (c Tx) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation) *IntCmd
+func (c Tx) FunctionStats(ctx context.Context)*FunctionStatsCmd
+func (c Tx) GeoAdd(ctx context.Context, key string, geoLocation ...*GeoLocation)*IntCmd
 func (c Tx) GeoDist(ctx context.Context, key string, member1, member2, unit string) *FloatCmd
-func (c Tx) GeoHash(ctx context.Context, key string, members ...string) *StringSliceCmd
+func (c Tx) GeoHash(ctx context.Context, key string, members ...string)*StringSliceCmd
 func (c Tx) GeoPos(ctx context.Context, key string, members ...string) *GeoPosCmd
-func (c Tx) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...) *GeoLocationCmd
-func (c Tx) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery) *GeoLocationCmd
-func (c Tx) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery) *IntCmd
+func (c Tx) GeoRadius(ctx context.Context, key string, longitude, latitude float64, ...)*GeoLocationCmd
+func (c Tx) GeoRadiusByMember(ctx context.Context, key, member string, query *GeoRadiusQuery)*GeoLocationCmd
+func (c Tx) GeoRadiusByMemberStore(ctx context.Context, key, member string, query *GeoRadiusQuery)*IntCmd
 func (c Tx) GeoRadiusStore(ctx context.Context, key string, longitude, latitude float64, ...) *IntCmd
-func (c Tx) GeoSearch(ctx context.Context, key string, q *GeoSearchQuery) *StringSliceCmd
-func (c Tx) GeoSearchLocation(ctx context.Context, key string, q *GeoSearchLocationQuery) *GeoSearchLocationCmd
-func (c Tx) GeoSearchStore(ctx context.Context, key, store string, q *GeoSearchStoreQuery) *IntCmd
-func (c Tx) Get(ctx context.Context, key string) *StringCmd
+func (c Tx) GeoSearch(ctx context.Context, key string, q*GeoSearchQuery) *StringSliceCmd
+func (c Tx) GeoSearchLocation(ctx context.Context, key string, q*GeoSearchLocationQuery) *GeoSearchLocationCmd
+func (c Tx) GeoSearchStore(ctx context.Context, key, store string, q*GeoSearchStoreQuery) *IntCmd
+func (c Tx) Get(ctx context.Context, key string)*StringCmd
 func (c Tx) GetBit(ctx context.Context, key string, offset int64) *IntCmd
-func (c Tx) GetDel(ctx context.Context, key string) *StringCmd
+func (c Tx) GetDel(ctx context.Context, key string)*StringCmd
 func (c Tx) GetEx(ctx context.Context, key string, expiration time.Duration) *StringCmd
-func (c Tx) GetRange(ctx context.Context, key string, start, end int64) *StringCmd
+func (c Tx) GetRange(ctx context.Context, key string, start, end int64)*StringCmd
 func (c Tx) GetSet(ctx context.Context, key string, value interface{}) *StringCmd
-func (c Tx) HDel(ctx context.Context, key string, fields ...string) *IntCmd
+func (c Tx) HDel(ctx context.Context, key string, fields ...string)*IntCmd
 func (c Tx) HExists(ctx context.Context, key, field string) *BoolCmd
-func (c Tx) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
+func (c Tx) HExpire(ctx context.Context, key string, expiration time.Duration, fields ...string)*IntSliceCmd
 func (c Tx) HExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
-func (c Tx) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
+func (c Tx) HExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...)*IntSliceCmd
 func (c Tx) HExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Tx) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
+func (c Tx) HExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...)*IntSliceCmd
 func (c Tx) HGet(ctx context.Context, key, field string) *StringCmd
-func (c Tx) HGetAll(ctx context.Context, key string) *MapStringStringCmd
+func (c Tx) HGetAll(ctx context.Context, key string)*MapStringStringCmd
 func (c Tx) HGetDel(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c Tx) HGetEX(ctx context.Context, key string, fields ...string) *StringSliceCmd
-func (c Tx) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string) *StringSliceCmd
+func (c Tx) HGetEX(ctx context.Context, key string, fields ...string)*StringSliceCmd
+func (c Tx) HGetEXWithArgs(ctx context.Context, key string, options *HGetEXOptions, fields ...string)*StringSliceCmd
 func (c Tx) HIncrBy(ctx context.Context, key, field string, incr int64) *IntCmd
-func (c Tx) HIncrByFloat(ctx context.Context, key, field string, incr float64) *FloatCmd
+func (c Tx) HIncrByFloat(ctx context.Context, key, field string, incr float64)*FloatCmd
 func (c Tx) HKeys(ctx context.Context, key string) *StringSliceCmd
-func (c Tx) HLen(ctx context.Context, key string) *IntCmd
+func (c Tx) HLen(ctx context.Context, key string)*IntCmd
 func (c Tx) HMGet(ctx context.Context, key string, fields ...string) *SliceCmd
-func (c Tx) HMSet(ctx context.Context, key string, values ...interface{}) *BoolCmd
+func (c Tx) HMSet(ctx context.Context, key string, values ...interface{})*BoolCmd
 func (c Tx) HPExpire(ctx context.Context, key string, expiration time.Duration, fields ...string) *IntSliceCmd
-func (c Tx) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string) *IntSliceCmd
+func (c Tx) HPExpireAt(ctx context.Context, key string, tm time.Time, fields ...string)*IntSliceCmd
 func (c Tx) HPExpireAtWithArgs(ctx context.Context, key string, tm time.Time, expirationArgs HExpireArgs, ...) *IntSliceCmd
-func (c Tx) HPExpireTime(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Tx) HPExpireTime(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Tx) HPExpireWithArgs(ctx context.Context, key string, expiration time.Duration, ...) *IntSliceCmd
-func (c Tx) HPTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Tx) HPTTL(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Tx) HPersist(ctx context.Context, key string, fields ...string) *IntSliceCmd
-func (c Tx) HRandField(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Tx) HRandField(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Tx) HRandFieldWithValues(ctx context.Context, key string, count int) *KeyValueSliceCmd
-func (c Tx) HScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Tx) HScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Tx) HScanNoValues(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Tx) HSet(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Tx) HSet(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Tx) HSetEX(ctx context.Context, key string, fieldsAndValues ...string) *IntCmd
-func (c Tx) HSetEXWithArgs(ctx context.Context, key string, options *HSetEXOptions, ...) *IntCmd
-func (c Tx) HSetNX(ctx context.Context, key, field string, value interface{}) *BoolCmd
+func (c Tx) HSetEXWithArgs(ctx context.Context, key string, options*HSetEXOptions, ...) *IntCmd
+func (c Tx) HSetNX(ctx context.Context, key, field string, value interface{})*BoolCmd
 func (c Tx) HStrLen(ctx context.Context, key, field string) *IntCmd
-func (c Tx) HTTL(ctx context.Context, key string, fields ...string) *IntSliceCmd
+func (c Tx) HTTL(ctx context.Context, key string, fields ...string)*IntSliceCmd
 func (c Tx) HVals(ctx context.Context, key string) *StringSliceCmd
-func (c Tx) Hello(ctx context.Context, ver int, username, password, clientName string) *MapStringInterfaceCmd
+func (c Tx) Hello(ctx context.Context, ver int, username, password, clientName string)*MapStringInterfaceCmd
 func (c Tx) Incr(ctx context.Context, key string) *IntCmd
-func (c Tx) IncrBy(ctx context.Context, key string, value int64) *IntCmd
+func (c Tx) IncrBy(ctx context.Context, key string, value int64)*IntCmd
 func (c Tx) IncrByFloat(ctx context.Context, key string, value float64) *FloatCmd
-func (c Tx) Info(ctx context.Context, sections ...string) *StringCmd
+func (c Tx) Info(ctx context.Context, sections ...string)*StringCmd
 func (c Tx) InfoMap(ctx context.Context, sections ...string) *InfoCmd
-func (c Tx) JSONArrAppend(ctx context.Context, key, path string, values ...interface{}) *IntSliceCmd
+func (c Tx) JSONArrAppend(ctx context.Context, key, path string, values ...interface{})*IntSliceCmd
 func (c Tx) JSONArrIndex(ctx context.Context, key, path string, value ...interface{}) *IntSliceCmd
-func (c Tx) JSONArrIndexWithArgs(ctx context.Context, key, path string, options *JSONArrIndexArgs, ...) *IntSliceCmd
-func (c Tx) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{}) *IntSliceCmd
+func (c Tx) JSONArrIndexWithArgs(ctx context.Context, key, path string, options*JSONArrIndexArgs, ...) *IntSliceCmd
+func (c Tx) JSONArrInsert(ctx context.Context, key, path string, index int64, values ...interface{})*IntSliceCmd
 func (c Tx) JSONArrLen(ctx context.Context, key, path string) *IntSliceCmd
-func (c Tx) JSONArrPop(ctx context.Context, key, path string, index int) *StringSliceCmd
+func (c Tx) JSONArrPop(ctx context.Context, key, path string, index int)*StringSliceCmd
 func (c Tx) JSONArrTrim(ctx context.Context, key, path string) *IntSliceCmd
-func (c Tx) JSONArrTrimWithArgs(ctx context.Context, key, path string, options *JSONArrTrimArgs) *IntSliceCmd
-func (c Tx) JSONClear(ctx context.Context, key, path string) *IntCmd
+func (c Tx) JSONArrTrimWithArgs(ctx context.Context, key, path string, options*JSONArrTrimArgs) *IntSliceCmd
+func (c Tx) JSONClear(ctx context.Context, key, path string)*IntCmd
 func (c Tx) JSONDebugMemory(ctx context.Context, key, path string) *IntCmd
-func (c Tx) JSONDel(ctx context.Context, key, path string) *IntCmd
+func (c Tx) JSONDel(ctx context.Context, key, path string)*IntCmd
 func (c Tx) JSONForget(ctx context.Context, key, path string) *IntCmd
-func (c Tx) JSONGet(ctx context.Context, key string, paths ...string) *JSONCmd
-func (c Tx) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string) *JSONCmd
+func (c Tx) JSONGet(ctx context.Context, key string, paths ...string)*JSONCmd
+func (c Tx) JSONGetWithArgs(ctx context.Context, key string, options *JSONGetArgs, paths ...string)*JSONCmd
 func (c Tx) JSONMGet(ctx context.Context, path string, keys ...string) *JSONSliceCmd
-func (c Tx) JSONMSet(ctx context.Context, params ...interface{}) *StatusCmd
+func (c Tx) JSONMSet(ctx context.Context, params ...interface{})*StatusCmd
 func (c Tx) JSONMSetArgs(ctx context.Context, docs []JSONSetArgs) *StatusCmd
-func (c Tx) JSONMerge(ctx context.Context, key, path string, value string) *StatusCmd
+func (c Tx) JSONMerge(ctx context.Context, key, path string, value string)*StatusCmd
 func (c Tx) JSONNumIncrBy(ctx context.Context, key, path string, value float64) *JSONCmd
-func (c Tx) JSONObjKeys(ctx context.Context, key, path string) *SliceCmd
+func (c Tx) JSONObjKeys(ctx context.Context, key, path string)*SliceCmd
 func (c Tx) JSONObjLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Tx) JSONSet(ctx context.Context, key, path string, value interface{}) *StatusCmd
+func (c Tx) JSONSet(ctx context.Context, key, path string, value interface{})*StatusCmd
 func (c Tx) JSONSetMode(ctx context.Context, key, path string, value interface{}, mode string) *StatusCmd
-func (c Tx) JSONStrAppend(ctx context.Context, key, path, value string) *IntPointerSliceCmd
+func (c Tx) JSONStrAppend(ctx context.Context, key, path, value string)*IntPointerSliceCmd
 func (c Tx) JSONStrLen(ctx context.Context, key, path string) *IntPointerSliceCmd
-func (c Tx) JSONToggle(ctx context.Context, key, path string) *IntPointerSliceCmd
+func (c Tx) JSONToggle(ctx context.Context, key, path string)*IntPointerSliceCmd
 func (c Tx) JSONType(ctx context.Context, key, path string) *JSONSliceCmd
-func (c Tx) Keys(ctx context.Context, pattern string) *StringSliceCmd
-func (c Tx) LCS(ctx context.Context, q *LCSQuery) *LCSCmd
+func (c Tx) Keys(ctx context.Context, pattern string)*StringSliceCmd
+func (c Tx) LCS(ctx context.Context, q *LCSQuery)*LCSCmd
 func (c Tx) LIndex(ctx context.Context, key string, index int64) *StringCmd
-func (c Tx) LInsert(ctx context.Context, key, op string, pivot, value interface{}) *IntCmd
+func (c Tx) LInsert(ctx context.Context, key, op string, pivot, value interface{})*IntCmd
 func (c Tx) LInsertAfter(ctx context.Context, key string, pivot, value interface{}) *IntCmd
-func (c Tx) LInsertBefore(ctx context.Context, key string, pivot, value interface{}) *IntCmd
+func (c Tx) LInsertBefore(ctx context.Context, key string, pivot, value interface{})*IntCmd
 func (c Tx) LLen(ctx context.Context, key string) *IntCmd
-func (c Tx) LMPop(ctx context.Context, direction string, count int64, keys ...string) *KeyValuesCmd
+func (c Tx) LMPop(ctx context.Context, direction string, count int64, keys ...string)*KeyValuesCmd
 func (c Tx) LMove(ctx context.Context, source, destination, srcpos, destpos string) *StringCmd
-func (c Tx) LPop(ctx context.Context, key string) *StringCmd
+func (c Tx) LPop(ctx context.Context, key string)*StringCmd
 func (c Tx) LPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Tx) LPos(ctx context.Context, key string, value string, a LPosArgs) *IntCmd
+func (c Tx) LPos(ctx context.Context, key string, value string, a LPosArgs)*IntCmd
 func (c Tx) LPosCount(ctx context.Context, key string, value string, count int64, a LPosArgs) *IntSliceCmd
-func (c Tx) LPush(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Tx) LPush(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Tx) LPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Tx) LRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c Tx) LRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c Tx) LRem(ctx context.Context, key string, count int64, value interface{}) *IntCmd
-func (c Tx) LSet(ctx context.Context, key string, index int64, value interface{}) *StatusCmd
+func (c Tx) LSet(ctx context.Context, key string, index int64, value interface{})*StatusCmd
 func (c Tx) LTrim(ctx context.Context, key string, start, stop int64) *StatusCmd
-func (c Tx) LastSave(ctx context.Context) *IntCmd
+func (c Tx) LastSave(ctx context.Context)*IntCmd
 func (c Tx) Latency(ctx context.Context) *LatencyCmd
-func (c Tx) LatencyReset(ctx context.Context, events ...interface{}) *StatusCmd
+func (c Tx) LatencyReset(ctx context.Context, events ...interface{})*StatusCmd
 func (c Tx) MGet(ctx context.Context, keys ...string) *SliceCmd
-func (c Tx) MSet(ctx context.Context, values ...interface{}) *StatusCmd
+func (c Tx) MSet(ctx context.Context, values ...interface{})*StatusCmd
 func (c Tx) MSetEX(ctx context.Context, args MSetEXArgs, values ...interface{}) *IntCmd
-func (c Tx) MSetNX(ctx context.Context, values ...interface{}) *BoolCmd
+func (c Tx) MSetNX(ctx context.Context, values ...interface{})*BoolCmd
 func (c Tx) MemoryUsage(ctx context.Context, key string, samples ...int) *IntCmd
-func (c Tx) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd
-func (c Tx) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig) *StringCmd
+func (c Tx) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration)*StatusCmd
+func (c Tx) ModuleLoadex(ctx context.Context, conf *ModuleLoadexConfig)*StringCmd
 func (c Tx) Monitor(ctx context.Context, ch chan string) *MonitorCmd
-func (c Tx) Move(ctx context.Context, key string, db int) *BoolCmd
+func (c Tx) Move(ctx context.Context, key string, db int)*BoolCmd
 func (c Tx) ObjectEncoding(ctx context.Context, key string) *StringCmd
-func (c Tx) ObjectFreq(ctx context.Context, key string) *IntCmd
+func (c Tx) ObjectFreq(ctx context.Context, key string)*IntCmd
 func (c Tx) ObjectIdleTime(ctx context.Context, key string) *DurationCmd
-func (c Tx) ObjectRefCount(ctx context.Context, key string) *IntCmd
+func (c Tx) ObjectRefCount(ctx context.Context, key string)*IntCmd
 func (c Tx) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd
-func (c Tx) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd
+func (c Tx) PExpireAt(ctx context.Context, key string, tm time.Time)*BoolCmd
 func (c Tx) PExpireTime(ctx context.Context, key string) *DurationCmd
-func (c Tx) PFAdd(ctx context.Context, key string, els ...interface{}) *IntCmd
+func (c Tx) PFAdd(ctx context.Context, key string, els ...interface{})*IntCmd
 func (c Tx) PFCount(ctx context.Context, keys ...string) *IntCmd
-func (c Tx) PFMerge(ctx context.Context, dest string, keys ...string) *StatusCmd
+func (c Tx) PFMerge(ctx context.Context, dest string, keys ...string)*StatusCmd
 func (c Tx) PTTL(ctx context.Context, key string) *DurationCmd
-func (c Tx) Persist(ctx context.Context, key string) *BoolCmd
+func (c Tx) Persist(ctx context.Context, key string)*BoolCmd
 func (c Tx) Ping(ctx context.Context) *StatusCmd
-func (c *Tx) Pipeline() Pipeliner
+func (c*Tx) Pipeline() Pipeliner
 func (c *Tx) Pipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c *Tx) Process(ctx context.Context, cmd Cmder) error
+func (c*Tx) Process(ctx context.Context, cmd Cmder) error
 func (c Tx) PubSubChannels(ctx context.Context, pattern string) *StringSliceCmd
-func (c Tx) PubSubNumPat(ctx context.Context) *IntCmd
+func (c Tx) PubSubNumPat(ctx context.Context)*IntCmd
 func (c Tx) PubSubNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c Tx) PubSubShardChannels(ctx context.Context, pattern string) *StringSliceCmd
+func (c Tx) PubSubShardChannels(ctx context.Context, pattern string)*StringSliceCmd
 func (c Tx) PubSubShardNumSub(ctx context.Context, channels ...string) *MapStringIntCmd
-func (c Tx) Publish(ctx context.Context, channel string, message interface{}) *IntCmd
-func (c Tx) Quit(_ context.Context) *StatusCmd
-func (c Tx) RPop(ctx context.Context, key string) *StringCmd
+func (c Tx) Publish(ctx context.Context, channel string, message interface{})*IntCmd
+func (c Tx) Quit(_context.Context) *StatusCmd
+func (c Tx) RPop(ctx context.Context, key string)*StringCmd
 func (c Tx) RPopCount(ctx context.Context, key string, count int) *StringSliceCmd
-func (c Tx) RPopLPush(ctx context.Context, source, destination string) *StringCmd
+func (c Tx) RPopLPush(ctx context.Context, source, destination string)*StringCmd
 func (c Tx) RPush(ctx context.Context, key string, values ...interface{}) *IntCmd
-func (c Tx) RPushX(ctx context.Context, key string, values ...interface{}) *IntCmd
+func (c Tx) RPushX(ctx context.Context, key string, values ...interface{})*IntCmd
 func (c Tx) RandomKey(ctx context.Context) *StringCmd
-func (c Tx) ReadOnly(ctx context.Context) *StatusCmd
+func (c Tx) ReadOnly(ctx context.Context)*StatusCmd
 func (c Tx) ReadWrite(ctx context.Context) *StatusCmd
-func (c Tx) Rename(ctx context.Context, key, newkey string) *StatusCmd
+func (c Tx) Rename(ctx context.Context, key, newkey string)*StatusCmd
 func (c Tx) RenameNX(ctx context.Context, key, newkey string) *BoolCmd
-func (c Tx) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
+func (c Tx) Restore(ctx context.Context, key string, ttl time.Duration, value string)*StatusCmd
 func (c Tx) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd
-func (c Tx) SAdd(ctx context.Context, key string, members ...interface{}) *IntCmd
+func (c Tx) SAdd(ctx context.Context, key string, members ...interface{})*IntCmd
 func (c Tx) SCard(ctx context.Context, key string) *IntCmd
-func (c Tx) SDiff(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Tx) SDiff(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Tx) SDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Tx) SInter(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Tx) SInter(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Tx) SInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Tx) SInterStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Tx) SInterStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Tx) SIsMember(ctx context.Context, key string, member interface{}) *BoolCmd
-func (c Tx) SMIsMember(ctx context.Context, key string, members ...interface{}) *BoolSliceCmd
+func (c Tx) SMIsMember(ctx context.Context, key string, members ...interface{})*BoolSliceCmd
 func (c Tx) SMembers(ctx context.Context, key string) *StringSliceCmd
-func (c Tx) SMembersMap(ctx context.Context, key string) *StringStructMapCmd
+func (c Tx) SMembersMap(ctx context.Context, key string)*StringStructMapCmd
 func (c Tx) SMove(ctx context.Context, source, destination string, member interface{}) *BoolCmd
-func (c Tx) SPop(ctx context.Context, key string) *StringCmd
+func (c Tx) SPop(ctx context.Context, key string)*StringCmd
 func (c Tx) SPopN(ctx context.Context, key string, count int64) *StringSliceCmd
-func (c Tx) SPublish(ctx context.Context, channel string, message interface{}) *IntCmd
+func (c Tx) SPublish(ctx context.Context, channel string, message interface{})*IntCmd
 func (c Tx) SRandMember(ctx context.Context, key string) *StringCmd
-func (c Tx) SRandMemberN(ctx context.Context, key string, count int64) *StringSliceCmd
+func (c Tx) SRandMemberN(ctx context.Context, key string, count int64)*StringSliceCmd
 func (c Tx) SRem(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Tx) SScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
+func (c Tx) SScan(ctx context.Context, key string, cursor uint64, match string, count int64)*ScanCmd
 func (c Tx) SUnion(ctx context.Context, keys ...string) *StringSliceCmd
-func (c Tx) SUnionStore(ctx context.Context, destination string, keys ...string) *IntCmd
+func (c Tx) SUnionStore(ctx context.Context, destination string, keys ...string)*IntCmd
 func (c Tx) Save(ctx context.Context) *StatusCmd
-func (c Tx) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd
+func (c Tx) Scan(ctx context.Context, cursor uint64, match string, count int64)*ScanCmd
 func (c Tx) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd
-func (c Tx) ScriptExists(ctx context.Context, hashes ...string) *BoolSliceCmd
+func (c Tx) ScriptExists(ctx context.Context, hashes ...string)*BoolSliceCmd
 func (c Tx) ScriptFlush(ctx context.Context) *StatusCmd
-func (c Tx) ScriptKill(ctx context.Context) *StatusCmd
+func (c Tx) ScriptKill(ctx context.Context)*StatusCmd
 func (c Tx) ScriptLoad(ctx context.Context, script string) *StringCmd
-func (c Tx) Select(ctx context.Context, index int) *StatusCmd
+func (c Tx) Select(ctx context.Context, index int)*StatusCmd
 func (c Tx) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
-func (c Tx) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs) *StatusCmd
+func (c Tx) SetArgs(ctx context.Context, key string, value interface{}, a SetArgs)*StatusCmd
 func (c Tx) SetBit(ctx context.Context, key string, offset int64, value int) *IntCmd
-func (c Tx) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration) *StatusCmd
+func (c Tx) SetEx(ctx context.Context, key string, value interface{}, expiration time.Duration)*StatusCmd
 func (c Tx) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Tx) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Tx) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Tx) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StatusCmd
-func (c Tx) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...) *StringCmd
+func (c Tx) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, ...)*StringCmd
 func (c Tx) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Tx) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Tx) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Tx) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StatusCmd
-func (c Tx) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...) *StringCmd
+func (c Tx) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, ...)*StringCmd
 func (c Tx) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Tx) SetRange(ctx context.Context, key string, offset int64, value string) *IntCmd
+func (c Tx) SetRange(ctx context.Context, key string, offset int64, value string)*IntCmd
 func (c Tx) SetXX(ctx context.Context, key string, value interface{}, expiration time.Duration) *BoolCmd
-func (c Tx) Shutdown(ctx context.Context) *StatusCmd
+func (c Tx) Shutdown(ctx context.Context)*StatusCmd
 func (c Tx) ShutdownNoSave(ctx context.Context) *StatusCmd
-func (c Tx) ShutdownSave(ctx context.Context) *StatusCmd
+func (c Tx) ShutdownSave(ctx context.Context)*StatusCmd
 func (c Tx) SlaveOf(ctx context.Context, host, port string) *StatusCmd
-func (c Tx) SlowLogGet(ctx context.Context, num int64) *SlowLogCmd
+func (c Tx) SlowLogGet(ctx context.Context, num int64)*SlowLogCmd
 func (c Tx) SlowLogLen(ctx context.Context) *IntCmd
-func (c Tx) SlowLogReset(ctx context.Context) *StatusCmd
-func (c Tx) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Tx) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd
-func (c Tx) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd
-func (c Tx) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd
+func (c Tx) SlowLogReset(ctx context.Context)*StatusCmd
+func (c Tx) Sort(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Tx) SortInterfaces(ctx context.Context, key string, sort *Sort)*SliceCmd
+func (c Tx) SortRO(ctx context.Context, key string, sort *Sort)*StringSliceCmd
+func (c Tx) SortStore(ctx context.Context, key, store string, sort *Sort)*IntCmd
 func (c Tx) StrLen(ctx context.Context, key string) *IntCmd
-func (c *Tx) String() string
+func (c*Tx) String() string
 func (c Tx) SwapDB(ctx context.Context, index1, index2 int) *StatusCmd
 func (c Tx) Sync(_ context.Context)
-func (c Tx) TDigestAdd(ctx context.Context, key string, elements ...float64) *StatusCmd
+func (c Tx) TDigestAdd(ctx context.Context, key string, elements ...float64)*StatusCmd
 func (c Tx) TDigestByRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
-func (c Tx) TDigestByRevRank(ctx context.Context, key string, rank ...uint64) *FloatSliceCmd
+func (c Tx) TDigestByRevRank(ctx context.Context, key string, rank ...uint64)*FloatSliceCmd
 func (c Tx) TDigestCDF(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
-func (c Tx) TDigestCreate(ctx context.Context, key string) *StatusCmd
+func (c Tx) TDigestCreate(ctx context.Context, key string)*StatusCmd
 func (c Tx) TDigestCreateWithCompression(ctx context.Context, key string, compression int64) *StatusCmd
-func (c Tx) TDigestInfo(ctx context.Context, key string) *TDigestInfoCmd
+func (c Tx) TDigestInfo(ctx context.Context, key string)*TDigestInfoCmd
 func (c Tx) TDigestMax(ctx context.Context, key string) *FloatCmd
-func (c Tx) TDigestMerge(ctx context.Context, destKey string, options *TDigestMergeOptions, ...) *StatusCmd
-func (c Tx) TDigestMin(ctx context.Context, key string) *FloatCmd
+func (c Tx) TDigestMerge(ctx context.Context, destKey string, options*TDigestMergeOptions, ...) *StatusCmd
+func (c Tx) TDigestMin(ctx context.Context, key string)*FloatCmd
 func (c Tx) TDigestQuantile(ctx context.Context, key string, elements ...float64) *FloatSliceCmd
-func (c Tx) TDigestRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
+func (c Tx) TDigestRank(ctx context.Context, key string, values ...float64)*IntSliceCmd
 func (c Tx) TDigestReset(ctx context.Context, key string) *StatusCmd
-func (c Tx) TDigestRevRank(ctx context.Context, key string, values ...float64) *IntSliceCmd
+func (c Tx) TDigestRevRank(ctx context.Context, key string, values ...float64)*IntSliceCmd
 func (c Tx) TDigestTrimmedMean(ctx context.Context, key string, lowCutQuantile, highCutQuantile float64) *FloatCmd
-func (c Tx) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd
+func (c Tx) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64)*IntCmd
 func (c Tx) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, ...) *IntCmd
-func (c Tx) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd
-func (c Tx) TSCreate(ctx context.Context, key string) *StatusCmd
+func (c Tx) TSAlter(ctx context.Context, key string, options*TSAlterOptions) *StatusCmd
+func (c Tx) TSCreate(ctx context.Context, key string)*StatusCmd
 func (c Tx) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Tx) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...) *StatusCmd
-func (c Tx) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd
+func (c Tx) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, ...)*StatusCmd
+func (c Tx) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions)*StatusCmd
 func (c Tx) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Tx) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
-func (c Tx) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd
+func (c Tx) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options*TSIncrDecrOptions) *IntCmd
+func (c Tx) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int)*IntCmd
 func (c Tx) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd
-func (c Tx) TSGet(ctx context.Context, key string) *TSTimestampValueCmd
-func (c Tx) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd
+func (c Tx) TSGet(ctx context.Context, key string)*TSTimestampValueCmd
+func (c Tx) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions)*TSTimestampValueCmd
 func (c Tx) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd
-func (c Tx) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd
-func (c Tx) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd
-func (c Tx) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd
+func (c Tx) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options*TSIncrDecrOptions) *IntCmd
+func (c Tx) TSInfo(ctx context.Context, key string)*MapStringInterfaceCmd
+func (c Tx) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions)*MapStringInterfaceCmd
 func (c Tx) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd
-func (c Tx) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd
-func (c Tx) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd
+func (c Tx) TSMGet(ctx context.Context, filters []string)*MapStringSliceInterfaceCmd
+func (c Tx) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions)*MapStringSliceInterfaceCmd
 func (c Tx) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
-func (c Tx) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
+func (c Tx) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...)*MapStringSliceInterfaceCmd
 func (c Tx) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd
-func (c Tx) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...) *MapStringSliceInterfaceCmd
+func (c Tx) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, ...)*MapStringSliceInterfaceCmd
 func (c Tx) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd
-func (c Tx) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
+func (c Tx) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int)*TSTimestampValueSliceCmd
 func (c Tx) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
-func (c Tx) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd
+func (c Tx) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int)*TSTimestampValueSliceCmd
 func (c Tx) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, ...) *TSTimestampValueSliceCmd
-func (c Tx) TTL(ctx context.Context, key string) *DurationCmd
+func (c Tx) TTL(ctx context.Context, key string)*DurationCmd
 func (c Tx) Time(ctx context.Context) *TimeCmd
-func (c Tx) TopKAdd(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
+func (c Tx) TopKAdd(ctx context.Context, key string, elements ...interface{})*StringSliceCmd
 func (c Tx) TopKCount(ctx context.Context, key string, elements ...interface{}) *IntSliceCmd
-func (c Tx) TopKIncrBy(ctx context.Context, key string, elements ...interface{}) *StringSliceCmd
+func (c Tx) TopKIncrBy(ctx context.Context, key string, elements ...interface{})*StringSliceCmd
 func (c Tx) TopKInfo(ctx context.Context, key string) *TopKInfoCmd
-func (c Tx) TopKList(ctx context.Context, key string) *StringSliceCmd
+func (c Tx) TopKList(ctx context.Context, key string)*StringSliceCmd
 func (c Tx) TopKListWithCount(ctx context.Context, key string) *MapStringIntCmd
-func (c Tx) TopKQuery(ctx context.Context, key string, elements ...interface{}) *BoolSliceCmd
+func (c Tx) TopKQuery(ctx context.Context, key string, elements ...interface{})*BoolSliceCmd
 func (c Tx) TopKReserve(ctx context.Context, key string, k int64) *StatusCmd
-func (c Tx) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64) *StatusCmd
+func (c Tx) TopKReserveWithOptions(ctx context.Context, key string, k int64, width, depth int64, decay float64)*StatusCmd
 func (c Tx) Touch(ctx context.Context, keys ...string) *IntCmd
-func (c *Tx) TxPipeline() Pipeliner
+func (c*Tx) TxPipeline() Pipeliner
 func (c *Tx) TxPipelined(ctx context.Context, fn func(Pipeliner) error) ([]Cmder, error)
-func (c Tx) Type(ctx context.Context, key string) *StatusCmd
+func (c Tx) Type(ctx context.Context, key string)*StatusCmd
 func (c Tx) Unlink(ctx context.Context, keys ...string) *IntCmd
-func (c *Tx) Unwatch(ctx context.Context, keys ...string) *StatusCmd
-func (c Tx) VAdd(ctx context.Context, key, element string, val Vector) *BoolCmd
-func (c Tx) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs) *BoolCmd
+func (c*Tx) Unwatch(ctx context.Context, keys ...string) *StatusCmd
+func (c Tx) VAdd(ctx context.Context, key, element string, val Vector)*BoolCmd
+func (c Tx) VAddWithArgs(ctx context.Context, key, element string, val Vector, addArgs *VAddArgs)*BoolCmd
 func (c Tx) VCard(ctx context.Context, key string) *IntCmd
-func (c Tx) VClearAttributes(ctx context.Context, key, element string) *BoolCmd
+func (c Tx) VClearAttributes(ctx context.Context, key, element string)*BoolCmd
 func (c Tx) VDim(ctx context.Context, key string) *IntCmd
-func (c Tx) VEmb(ctx context.Context, key, element string, raw bool) *SliceCmd
+func (c Tx) VEmb(ctx context.Context, key, element string, raw bool)*SliceCmd
 func (c Tx) VGetAttr(ctx context.Context, key, element string) *StringCmd
-func (c Tx) VInfo(ctx context.Context, key string) *MapStringInterfaceCmd
+func (c Tx) VInfo(ctx context.Context, key string)*MapStringInterfaceCmd
 func (c Tx) VLinks(ctx context.Context, key, element string) *StringSliceCmd
-func (c Tx) VLinksWithScores(ctx context.Context, key, element string) *VectorScoreSliceCmd
+func (c Tx) VLinksWithScores(ctx context.Context, key, element string)*VectorScoreSliceCmd
 func (c Tx) VRandMember(ctx context.Context, key string) *StringCmd
-func (c Tx) VRandMemberCount(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Tx) VRandMemberCount(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Tx) VRange(ctx context.Context, key, start, end string, count int64) *StringSliceCmd
-func (c Tx) VRem(ctx context.Context, key, element string) *BoolCmd
+func (c Tx) VRem(ctx context.Context, key, element string)*BoolCmd
 func (c Tx) VSetAttr(ctx context.Context, key, element string, attr interface{}) *BoolCmd
-func (c Tx) VSim(ctx context.Context, key string, val Vector) *StringSliceCmd
-func (c Tx) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *StringSliceCmd
-func (c Tx) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs) *VectorScoreSliceCmd
+func (c Tx) VSim(ctx context.Context, key string, val Vector)*StringSliceCmd
+func (c Tx) VSimWithArgs(ctx context.Context, key string, val Vector, simArgs *VSimArgs)*StringSliceCmd
+func (c Tx) VSimWithArgsWithScores(ctx context.Context, key string, val Vector, simArgs *VSimArgs)*VectorScoreSliceCmd
 func (c Tx) VSimWithScores(ctx context.Context, key string, val Vector) *VectorScoreSliceCmd
-func (c Tx) Wait(ctx context.Context, numSlaves int, timeout time.Duration) *IntCmd
+func (c Tx) Wait(ctx context.Context, numSlaves int, timeout time.Duration)*IntCmd
 func (c Tx) WaitAOF(ctx context.Context, numLocal, numSlaves int, timeout time.Duration) *IntCmd
-func (c *Tx) Watch(ctx context.Context, keys ...string) *StatusCmd
-func (c Tx) XAck(ctx context.Context, stream, group string, ids ...string) *IntCmd
+func (c*Tx) Watch(ctx context.Context, keys ...string) *StatusCmd
+func (c Tx) XAck(ctx context.Context, stream, group string, ids ...string)*IntCmd
 func (c Tx) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *SliceCmd
-func (c Tx) XAdd(ctx context.Context, a *XAddArgs) *StringCmd
-func (c Tx) XAutoClaim(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimCmd
-func (c Tx) XAutoClaimJustID(ctx context.Context, a *XAutoClaimArgs) *XAutoClaimJustIDCmd
-func (c Tx) XClaim(ctx context.Context, a *XClaimArgs) *XMessageSliceCmd
-func (c Tx) XClaimJustID(ctx context.Context, a *XClaimArgs) *StringSliceCmd
-func (c Tx) XDel(ctx context.Context, stream string, ids ...string) *IntCmd
+func (c Tx) XAdd(ctx context.Context, a*XAddArgs) *StringCmd
+func (c Tx) XAutoClaim(ctx context.Context, a*XAutoClaimArgs) *XAutoClaimCmd
+func (c Tx) XAutoClaimJustID(ctx context.Context, a*XAutoClaimArgs) *XAutoClaimJustIDCmd
+func (c Tx) XClaim(ctx context.Context, a*XClaimArgs) *XMessageSliceCmd
+func (c Tx) XClaimJustID(ctx context.Context, a*XClaimArgs) *StringSliceCmd
+func (c Tx) XDel(ctx context.Context, stream string, ids ...string)*IntCmd
 func (c Tx) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *SliceCmd
-func (c Tx) XGroupCreate(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Tx) XGroupCreate(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Tx) XGroupCreateConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
-func (c Tx) XGroupCreateMkStream(ctx context.Context, stream, group, start string) *StatusCmd
+func (c Tx) XGroupCreateMkStream(ctx context.Context, stream, group, start string)*StatusCmd
 func (c Tx) XGroupDelConsumer(ctx context.Context, stream, group, consumer string) *IntCmd
-func (c Tx) XGroupDestroy(ctx context.Context, stream, group string) *IntCmd
+func (c Tx) XGroupDestroy(ctx context.Context, stream, group string)*IntCmd
 func (c Tx) XGroupSetID(ctx context.Context, stream, group, start string) *StatusCmd
-func (c Tx) XInfoConsumers(ctx context.Context, key string, group string) *XInfoConsumersCmd
+func (c Tx) XInfoConsumers(ctx context.Context, key string, group string)*XInfoConsumersCmd
 func (c Tx) XInfoGroups(ctx context.Context, key string) *XInfoGroupsCmd
-func (c Tx) XInfoStream(ctx context.Context, key string) *XInfoStreamCmd
+func (c Tx) XInfoStream(ctx context.Context, key string)*XInfoStreamCmd
 func (c Tx) XInfoStreamFull(ctx context.Context, key string, count int) *XInfoStreamFullCmd
-func (c Tx) XLen(ctx context.Context, stream string) *IntCmd
+func (c Tx) XLen(ctx context.Context, stream string)*IntCmd
 func (c Tx) XPending(ctx context.Context, stream, group string) *XPendingCmd
-func (c Tx) XPendingExt(ctx context.Context, a *XPendingExtArgs) *XPendingExtCmd
-func (c Tx) XRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
+func (c Tx) XPendingExt(ctx context.Context, a*XPendingExtArgs) *XPendingExtCmd
+func (c Tx) XRange(ctx context.Context, stream, start, stop string)*XMessageSliceCmd
 func (c Tx) XRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
-func (c Tx) XRead(ctx context.Context, a *XReadArgs) *XStreamSliceCmd
-func (c Tx) XReadGroup(ctx context.Context, a *XReadGroupArgs) *XStreamSliceCmd
-func (c Tx) XReadStreams(ctx context.Context, streams ...string) *XStreamSliceCmd
+func (c Tx) XRead(ctx context.Context, a*XReadArgs) *XStreamSliceCmd
+func (c Tx) XReadGroup(ctx context.Context, a*XReadGroupArgs) *XStreamSliceCmd
+func (c Tx) XReadStreams(ctx context.Context, streams ...string)*XStreamSliceCmd
 func (c Tx) XRevRange(ctx context.Context, stream, start, stop string) *XMessageSliceCmd
-func (c Tx) XRevRangeN(ctx context.Context, stream, start, stop string, count int64) *XMessageSliceCmd
+func (c Tx) XRevRangeN(ctx context.Context, stream, start, stop string, count int64)*XMessageSliceCmd
 func (c Tx) XTrimMaxLen(ctx context.Context, key string, maxLen int64) *IntCmd
-func (c Tx) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64) *IntCmd
+func (c Tx) XTrimMaxLenApprox(ctx context.Context, key string, maxLen, limit int64)*IntCmd
 func (c Tx) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen, limit int64, mode string) *IntCmd
-func (c Tx) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *IntCmd
+func (c Tx) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string)*IntCmd
 func (c Tx) XTrimMinID(ctx context.Context, key string, minID string) *IntCmd
-func (c Tx) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64) *IntCmd
+func (c Tx) XTrimMinIDApprox(ctx context.Context, key string, minID string, limit int64)*IntCmd
 func (c Tx) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *IntCmd
-func (c Tx) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *IntCmd
+func (c Tx) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string)*IntCmd
 func (c Tx) ZAdd(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Tx) ZAddArgs(ctx context.Context, key string, args ZAddArgs) *IntCmd
+func (c Tx) ZAddArgs(ctx context.Context, key string, args ZAddArgs)*IntCmd
 func (c Tx) ZAddArgsIncr(ctx context.Context, key string, args ZAddArgs) *FloatCmd
-func (c Tx) ZAddGT(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Tx) ZAddGT(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Tx) ZAddLT(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Tx) ZAddNX(ctx context.Context, key string, members ...Z) *IntCmd
+func (c Tx) ZAddNX(ctx context.Context, key string, members ...Z)*IntCmd
 func (c Tx) ZAddXX(ctx context.Context, key string, members ...Z) *IntCmd
-func (c Tx) ZCard(ctx context.Context, key string) *IntCmd
+func (c Tx) ZCard(ctx context.Context, key string)*IntCmd
 func (c Tx) ZCount(ctx context.Context, key, min, max string) *IntCmd
-func (c Tx) ZDiff(ctx context.Context, keys ...string) *StringSliceCmd
+func (c Tx) ZDiff(ctx context.Context, keys ...string)*StringSliceCmd
 func (c Tx) ZDiffStore(ctx context.Context, destination string, keys ...string) *IntCmd
-func (c Tx) ZDiffWithScores(ctx context.Context, keys ...string) *ZSliceCmd
+func (c Tx) ZDiffWithScores(ctx context.Context, keys ...string)*ZSliceCmd
 func (c Tx) ZIncrBy(ctx context.Context, key string, increment float64, member string) *FloatCmd
-func (c Tx) ZInter(ctx context.Context, store *ZStore) *StringSliceCmd
-func (c Tx) ZInterCard(ctx context.Context, limit int64, keys ...string) *IntCmd
-func (c Tx) ZInterStore(ctx context.Context, destination string, store *ZStore) *IntCmd
-func (c Tx) ZInterWithScores(ctx context.Context, store *ZStore) *ZSliceCmd
+func (c Tx) ZInter(ctx context.Context, store*ZStore) *StringSliceCmd
+func (c Tx) ZInterCard(ctx context.Context, limit int64, keys ...string)*IntCmd
+func (c Tx) ZInterStore(ctx context.Context, destination string, store *ZStore)*IntCmd
+func (c Tx) ZInterWithScores(ctx context.Context, store *ZStore)*ZSliceCmd
 func (c Tx) ZLexCount(ctx context.Context, key, min, max string) *IntCmd
-func (c Tx) ZMPop(ctx context.Context, order string, count int64, keys ...string) *ZSliceWithKeyCmd
+func (c Tx) ZMPop(ctx context.Context, order string, count int64, keys ...string)*ZSliceWithKeyCmd
 func (c Tx) ZMScore(ctx context.Context, key string, members ...string) *FloatSliceCmd
-func (c Tx) ZPopMax(ctx context.Context, key string, count ...int64) *ZSliceCmd
+func (c Tx) ZPopMax(ctx context.Context, key string, count ...int64)*ZSliceCmd
 func (c Tx) ZPopMin(ctx context.Context, key string, count ...int64) *ZSliceCmd
-func (c Tx) ZRandMember(ctx context.Context, key string, count int) *StringSliceCmd
+func (c Tx) ZRandMember(ctx context.Context, key string, count int)*StringSliceCmd
 func (c Tx) ZRandMemberWithScores(ctx context.Context, key string, count int) *ZSliceCmd
-func (c Tx) ZRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
+func (c Tx) ZRange(ctx context.Context, key string, start, stop int64)*StringSliceCmd
 func (c Tx) ZRangeArgs(ctx context.Context, z ZRangeArgs) *StringSliceCmd
-func (c Tx) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs) *ZSliceCmd
-func (c Tx) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Tx) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Tx) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
+func (c Tx) ZRangeArgsWithScores(ctx context.Context, z ZRangeArgs)*ZSliceCmd
+func (c Tx) ZRangeByLex(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Tx) ZRangeByScore(ctx context.Context, key string, opt *ZRangeBy)*StringSliceCmd
+func (c Tx) ZRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy)*ZSliceCmd
 func (c Tx) ZRangeStore(ctx context.Context, dst string, z ZRangeArgs) *IntCmd
-func (c Tx) ZRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
+func (c Tx) ZRangeWithScores(ctx context.Context, key string, start, stop int64)*ZSliceCmd
 func (c Tx) ZRank(ctx context.Context, key, member string) *IntCmd
-func (c Tx) ZRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
+func (c Tx) ZRankWithScore(ctx context.Context, key, member string)*RankWithScoreCmd
 func (c Tx) ZRem(ctx context.Context, key string, members ...interface{}) *IntCmd
-func (c Tx) ZRemRangeByLex(ctx context.Context, key, min, max string) *IntCmd
+func (c Tx) ZRemRangeByLex(ctx context.Context, key, min, max string)*IntCmd
 func (c Tx) ZRemRangeByRank(ctx context.Context, key string, start, stop int64) *IntCmd
-func (c Tx) ZRemRangeByScore(ctx context.Context, key, min, max string) *IntCmd
+func (c Tx) ZRemRangeByScore(ctx context.Context, key, min, max string)*IntCmd
 func (c Tx) ZRevRange(ctx context.Context, key string, start, stop int64) *StringSliceCmd
-func (c Tx) ZRevRangeByLex(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Tx) ZRevRangeByScore(ctx context.Context, key string, opt *ZRangeBy) *StringSliceCmd
-func (c Tx) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt *ZRangeBy) *ZSliceCmd
-func (c Tx) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64) *ZSliceCmd
+func (c Tx) ZRevRangeByLex(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Tx) ZRevRangeByScore(ctx context.Context, key string, opt*ZRangeBy) *StringSliceCmd
+func (c Tx) ZRevRangeByScoreWithScores(ctx context.Context, key string, opt*ZRangeBy) *ZSliceCmd
+func (c Tx) ZRevRangeWithScores(ctx context.Context, key string, start, stop int64)*ZSliceCmd
 func (c Tx) ZRevRank(ctx context.Context, key, member string) *IntCmd
-func (c Tx) ZRevRankWithScore(ctx context.Context, key, member string) *RankWithScoreCmd
+func (c Tx) ZRevRankWithScore(ctx context.Context, key, member string)*RankWithScoreCmd
 func (c Tx) ZScan(ctx context.Context, key string, cursor uint64, match string, count int64) *ScanCmd
-func (c Tx) ZScore(ctx context.Context, key, member string) *FloatCmd
+func (c Tx) ZScore(ctx context.Context, key, member string)*FloatCmd
 func (c Tx) ZUnion(ctx context.Context, store ZStore) *StringSliceCmd
-func (c Tx) ZUnionStore(ctx context.Context, dest string, store *ZStore) *IntCmd
-func (c Tx) ZUnionWithScores(ctx context.Context, store ZStore) *ZSliceCmd
+func (c Tx) ZUnionStore(ctx context.Context, dest string, store*ZStore) *IntCmd
+func (c Tx) ZUnionWithScores(ctx context.Context, store ZStore)*ZSliceCmd
 type UniversalClient
 func NewUniversalClient(opts *UniversalOptions) UniversalClient
 type UniversalOptions
-func (o *UniversalOptions) Cluster() *ClusterOptions
-func (o *UniversalOptions) Failover() *FailoverOptions
-func (o *UniversalOptions) Simple() *Options
+func (o*UniversalOptions) Cluster() *ClusterOptions
+func (o*UniversalOptions) Failover() *FailoverOptions
+func (o*UniversalOptions) Simple() *Options
 type VAddArgs
 type VSimArgs
 type Vector
 type VectorFP32
-func (v *VectorFP32) Value() []any
+func (v*VectorFP32) Value() []any
 type VectorRef
 func (v *VectorRef) Value() []any
 type VectorScore
 type VectorScoreSliceCmd
-func NewVectorInfoSliceCmd(ctx context.Context, args ...any) *VectorScoreSliceCmd
+func NewVectorInfoSliceCmd(ctx context.Context, args ...any)*VectorScoreSliceCmd
 func (cmd *VectorScoreSliceCmd) Args() []interface{}
-func (cmd *VectorScoreSliceCmd) Err() error
+func (cmd*VectorScoreSliceCmd) Err() error
 func (cmd *VectorScoreSliceCmd) FullName() string
-func (cmd *VectorScoreSliceCmd) Name() string
+func (cmd*VectorScoreSliceCmd) Name() string
 func (cmd *VectorScoreSliceCmd) Result() ([]VectorScore, error)
-func (cmd *VectorScoreSliceCmd) SetErr(e error)
+func (cmd*VectorScoreSliceCmd) SetErr(e error)
 func (cmd *VectorScoreSliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *VectorScoreSliceCmd) SetVal(val []VectorScore)
+func (cmd*VectorScoreSliceCmd) SetVal(val []VectorScore)
 func (cmd *VectorScoreSliceCmd) String() string
-func (cmd *VectorScoreSliceCmd) Val() []VectorScore
+func (cmd*VectorScoreSliceCmd) Val() []VectorScore
 type VectorSetCmdable
 type VectorValues
 func (v *VectorValues) Value() []any
 type XAddArgs
 type XAutoClaimArgs
 type XAutoClaimCmd
-func NewXAutoClaimCmd(ctx context.Context, args ...interface{}) *XAutoClaimCmd
+func NewXAutoClaimCmd(ctx context.Context, args ...interface{})*XAutoClaimCmd
 func (cmd *XAutoClaimCmd) Args() []interface{}
-func (cmd *XAutoClaimCmd) Err() error
+func (cmd*XAutoClaimCmd) Err() error
 func (cmd *XAutoClaimCmd) FullName() string
-func (cmd *XAutoClaimCmd) Name() string
+func (cmd*XAutoClaimCmd) Name() string
 func (cmd *XAutoClaimCmd) Result() (messages []XMessage, start string, err error)
-func (cmd *XAutoClaimCmd) SetErr(e error)
+func (cmd*XAutoClaimCmd) SetErr(e error)
 func (cmd *XAutoClaimCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XAutoClaimCmd) SetVal(val []XMessage, start string)
+func (cmd*XAutoClaimCmd) SetVal(val []XMessage, start string)
 func (cmd *XAutoClaimCmd) String() string
-func (cmd *XAutoClaimCmd) Val() (messages []XMessage, start string)
+func (cmd*XAutoClaimCmd) Val() (messages []XMessage, start string)
 type XAutoClaimJustIDCmd
 func NewXAutoClaimJustIDCmd(ctx context.Context, args ...interface{}) *XAutoClaimJustIDCmd
-func (cmd *XAutoClaimJustIDCmd) Args() []interface{}
+func (cmd*XAutoClaimJustIDCmd) Args() []interface{}
 func (cmd *XAutoClaimJustIDCmd) Err() error
-func (cmd *XAutoClaimJustIDCmd) FullName() string
+func (cmd*XAutoClaimJustIDCmd) FullName() string
 func (cmd *XAutoClaimJustIDCmd) Name() string
-func (cmd *XAutoClaimJustIDCmd) Result() (ids []string, start string, err error)
+func (cmd*XAutoClaimJustIDCmd) Result() (ids []string, start string, err error)
 func (cmd *XAutoClaimJustIDCmd) SetErr(e error)
-func (cmd *XAutoClaimJustIDCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*XAutoClaimJustIDCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *XAutoClaimJustIDCmd) SetVal(val []string, start string)
-func (cmd *XAutoClaimJustIDCmd) String() string
+func (cmd*XAutoClaimJustIDCmd) String() string
 func (cmd *XAutoClaimJustIDCmd) Val() (ids []string, start string)
 type XClaimArgs
 type XInfoConsumer
 type XInfoConsumersCmd
-func NewXInfoConsumersCmd(ctx context.Context, stream string, group string) *XInfoConsumersCmd
+func NewXInfoConsumersCmd(ctx context.Context, stream string, group string)*XInfoConsumersCmd
 func (cmd *XInfoConsumersCmd) Args() []interface{}
-func (cmd *XInfoConsumersCmd) Err() error
+func (cmd*XInfoConsumersCmd) Err() error
 func (cmd *XInfoConsumersCmd) FullName() string
-func (cmd *XInfoConsumersCmd) Name() string
+func (cmd*XInfoConsumersCmd) Name() string
 func (cmd *XInfoConsumersCmd) Result() ([]XInfoConsumer, error)
-func (cmd *XInfoConsumersCmd) SetErr(e error)
+func (cmd*XInfoConsumersCmd) SetErr(e error)
 func (cmd *XInfoConsumersCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XInfoConsumersCmd) SetVal(val []XInfoConsumer)
+func (cmd*XInfoConsumersCmd) SetVal(val []XInfoConsumer)
 func (cmd *XInfoConsumersCmd) String() string
-func (cmd *XInfoConsumersCmd) Val() []XInfoConsumer
+func (cmd*XInfoConsumersCmd) Val() []XInfoConsumer
 type XInfoGroup
 type XInfoGroupsCmd
 func NewXInfoGroupsCmd(ctx context.Context, stream string) *XInfoGroupsCmd
-func (cmd *XInfoGroupsCmd) Args() []interface{}
+func (cmd*XInfoGroupsCmd) Args() []interface{}
 func (cmd *XInfoGroupsCmd) Err() error
-func (cmd *XInfoGroupsCmd) FullName() string
+func (cmd*XInfoGroupsCmd) FullName() string
 func (cmd *XInfoGroupsCmd) Name() string
-func (cmd *XInfoGroupsCmd) Result() ([]XInfoGroup, error)
+func (cmd*XInfoGroupsCmd) Result() ([]XInfoGroup, error)
 func (cmd *XInfoGroupsCmd) SetErr(e error)
-func (cmd *XInfoGroupsCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*XInfoGroupsCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *XInfoGroupsCmd) SetVal(val []XInfoGroup)
-func (cmd *XInfoGroupsCmd) String() string
+func (cmd*XInfoGroupsCmd) String() string
 func (cmd *XInfoGroupsCmd) Val() []XInfoGroup
 type XInfoStream
 type XInfoStreamCmd
-func NewXInfoStreamCmd(ctx context.Context, stream string) *XInfoStreamCmd
+func NewXInfoStreamCmd(ctx context.Context, stream string)*XInfoStreamCmd
 func (cmd *XInfoStreamCmd) Args() []interface{}
-func (cmd *XInfoStreamCmd) Err() error
+func (cmd*XInfoStreamCmd) Err() error
 func (cmd *XInfoStreamCmd) FullName() string
-func (cmd *XInfoStreamCmd) Name() string
+func (cmd*XInfoStreamCmd) Name() string
 func (cmd *XInfoStreamCmd) Result() (*XInfoStream, error)
 func (cmd *XInfoStreamCmd) SetErr(e error)
-func (cmd *XInfoStreamCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XInfoStreamCmd) SetVal(val *XInfoStream)
+func (cmd*XInfoStreamCmd) SetFirstKeyPos(keyPos int8)
+func (cmd *XInfoStreamCmd) SetVal(val*XInfoStream)
 func (cmd *XInfoStreamCmd) String() string
-func (cmd *XInfoStreamCmd) Val() *XInfoStream
+func (cmd*XInfoStreamCmd) Val() *XInfoStream
 type XInfoStreamConsumer
 type XInfoStreamConsumerPending
 type XInfoStreamFull
 type XInfoStreamFullCmd
-func NewXInfoStreamFullCmd(ctx context.Context, args ...interface{}) *XInfoStreamFullCmd
+func NewXInfoStreamFullCmd(ctx context.Context, args ...interface{})*XInfoStreamFullCmd
 func (cmd *XInfoStreamFullCmd) Args() []interface{}
-func (cmd *XInfoStreamFullCmd) Err() error
+func (cmd*XInfoStreamFullCmd) Err() error
 func (cmd *XInfoStreamFullCmd) FullName() string
-func (cmd *XInfoStreamFullCmd) Name() string
+func (cmd*XInfoStreamFullCmd) Name() string
 func (cmd *XInfoStreamFullCmd) Result() (*XInfoStreamFull, error)
 func (cmd *XInfoStreamFullCmd) SetErr(e error)
-func (cmd *XInfoStreamFullCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XInfoStreamFullCmd) SetVal(val *XInfoStreamFull)
+func (cmd*XInfoStreamFullCmd) SetFirstKeyPos(keyPos int8)
+func (cmd *XInfoStreamFullCmd) SetVal(val*XInfoStreamFull)
 func (cmd *XInfoStreamFullCmd) String() string
-func (cmd *XInfoStreamFullCmd) Val() *XInfoStreamFull
+func (cmd*XInfoStreamFullCmd) Val() *XInfoStreamFull
 type XInfoStreamGroup
 type XInfoStreamGroupPending
 type XMessage
 type XMessageSliceCmd
-func NewXMessageSliceCmd(ctx context.Context, args ...interface{}) *XMessageSliceCmd
+func NewXMessageSliceCmd(ctx context.Context, args ...interface{})*XMessageSliceCmd
 func NewXMessageSliceCmdResult(val []XMessage, err error) *XMessageSliceCmd
-func (cmd *XMessageSliceCmd) Args() []interface{}
+func (cmd*XMessageSliceCmd) Args() []interface{}
 func (cmd *XMessageSliceCmd) Err() error
-func (cmd *XMessageSliceCmd) FullName() string
+func (cmd*XMessageSliceCmd) FullName() string
 func (cmd *XMessageSliceCmd) Name() string
-func (cmd *XMessageSliceCmd) Result() ([]XMessage, error)
+func (cmd*XMessageSliceCmd) Result() ([]XMessage, error)
 func (cmd *XMessageSliceCmd) SetErr(e error)
-func (cmd *XMessageSliceCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*XMessageSliceCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *XMessageSliceCmd) SetVal(val []XMessage)
-func (cmd *XMessageSliceCmd) String() string
+func (cmd*XMessageSliceCmd) String() string
 func (cmd *XMessageSliceCmd) Val() []XMessage
 type XPending
 type XPendingCmd
-func NewXPendingCmd(ctx context.Context, args ...interface{}) *XPendingCmd
-func NewXPendingResult(val *XPending, err error) *XPendingCmd
+func NewXPendingCmd(ctx context.Context, args ...interface{})*XPendingCmd
+func NewXPendingResult(val *XPending, err error)*XPendingCmd
 func (cmd *XPendingCmd) Args() []interface{}
-func (cmd *XPendingCmd) Err() error
+func (cmd*XPendingCmd) Err() error
 func (cmd *XPendingCmd) FullName() string
-func (cmd *XPendingCmd) Name() string
+func (cmd*XPendingCmd) Name() string
 func (cmd *XPendingCmd) Result() (*XPending, error)
 func (cmd *XPendingCmd) SetErr(e error)
-func (cmd *XPendingCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XPendingCmd) SetVal(val *XPending)
+func (cmd*XPendingCmd) SetFirstKeyPos(keyPos int8)
+func (cmd *XPendingCmd) SetVal(val*XPending)
 func (cmd *XPendingCmd) String() string
-func (cmd *XPendingCmd) Val() *XPending
+func (cmd*XPendingCmd) Val() *XPending
 type XPendingExt
 type XPendingExtArgs
 type XPendingExtCmd
-func NewXPendingExtCmd(ctx context.Context, args ...interface{}) *XPendingExtCmd
+func NewXPendingExtCmd(ctx context.Context, args ...interface{})*XPendingExtCmd
 func (cmd *XPendingExtCmd) Args() []interface{}
-func (cmd *XPendingExtCmd) Err() error
+func (cmd*XPendingExtCmd) Err() error
 func (cmd *XPendingExtCmd) FullName() string
-func (cmd *XPendingExtCmd) Name() string
+func (cmd*XPendingExtCmd) Name() string
 func (cmd *XPendingExtCmd) Result() ([]XPendingExt, error)
-func (cmd *XPendingExtCmd) SetErr(e error)
+func (cmd*XPendingExtCmd) SetErr(e error)
 func (cmd *XPendingExtCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XPendingExtCmd) SetVal(val []XPendingExt)
+func (cmd*XPendingExtCmd) SetVal(val []XPendingExt)
 func (cmd *XPendingExtCmd) String() string
-func (cmd *XPendingExtCmd) Val() []XPendingExt
+func (cmd*XPendingExtCmd) Val() []XPendingExt
 type XReadArgs
 type XReadGroupArgs
 type XStream
 type XStreamSliceCmd
 func NewXStreamSliceCmd(ctx context.Context, args ...interface{}) *XStreamSliceCmd
-func NewXStreamSliceCmdResult(val []XStream, err error) *XStreamSliceCmd
+func NewXStreamSliceCmdResult(val []XStream, err error)*XStreamSliceCmd
 func (cmd *XStreamSliceCmd) Args() []interface{}
-func (cmd *XStreamSliceCmd) Err() error
+func (cmd*XStreamSliceCmd) Err() error
 func (cmd *XStreamSliceCmd) FullName() string
-func (cmd *XStreamSliceCmd) Name() string
+func (cmd*XStreamSliceCmd) Name() string
 func (cmd *XStreamSliceCmd) Result() ([]XStream, error)
-func (cmd *XStreamSliceCmd) SetErr(e error)
+func (cmd*XStreamSliceCmd) SetErr(e error)
 func (cmd *XStreamSliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *XStreamSliceCmd) SetVal(val []XStream)
+func (cmd*XStreamSliceCmd) SetVal(val []XStream)
 func (cmd *XStreamSliceCmd) String() string
-func (cmd *XStreamSliceCmd) Val() []XStream
+func (cmd*XStreamSliceCmd) Val() []XStream
 type Z
 type ZAddArgs
 type ZRangeArgs
 type ZRangeBy
 type ZSliceCmd
 func NewZSliceCmd(ctx context.Context, args ...interface{}) *ZSliceCmd
-func NewZSliceCmdResult(val []Z, err error) *ZSliceCmd
+func NewZSliceCmdResult(val []Z, err error)*ZSliceCmd
 func (cmd *ZSliceCmd) Args() []interface{}
-func (cmd *ZSliceCmd) Err() error
+func (cmd*ZSliceCmd) Err() error
 func (cmd *ZSliceCmd) FullName() string
-func (cmd *ZSliceCmd) Name() string
+func (cmd*ZSliceCmd) Name() string
 func (cmd *ZSliceCmd) Result() ([]Z, error)
-func (cmd *ZSliceCmd) SetErr(e error)
+func (cmd*ZSliceCmd) SetErr(e error)
 func (cmd *ZSliceCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *ZSliceCmd) SetVal(val []Z)
+func (cmd*ZSliceCmd) SetVal(val []Z)
 func (cmd *ZSliceCmd) String() string
-func (cmd *ZSliceCmd) Val() []Z
+func (cmd*ZSliceCmd) Val() []Z
 type ZSliceWithKeyCmd
 func NewZSliceWithKeyCmd(ctx context.Context, args ...interface{}) *ZSliceWithKeyCmd
-func (cmd *ZSliceWithKeyCmd) Args() []interface{}
+func (cmd*ZSliceWithKeyCmd) Args() []interface{}
 func (cmd *ZSliceWithKeyCmd) Err() error
-func (cmd *ZSliceWithKeyCmd) FullName() string
+func (cmd*ZSliceWithKeyCmd) FullName() string
 func (cmd *ZSliceWithKeyCmd) Name() string
-func (cmd *ZSliceWithKeyCmd) Result() (string, []Z, error)
+func (cmd*ZSliceWithKeyCmd) Result() (string, []Z, error)
 func (cmd *ZSliceWithKeyCmd) SetErr(e error)
-func (cmd *ZSliceWithKeyCmd) SetFirstKeyPos(keyPos int8)
+func (cmd*ZSliceWithKeyCmd) SetFirstKeyPos(keyPos int8)
 func (cmd *ZSliceWithKeyCmd) SetVal(key string, val []Z)
-func (cmd *ZSliceWithKeyCmd) String() string
+func (cmd*ZSliceWithKeyCmd) String() string
 func (cmd *ZSliceWithKeyCmd) Val() (string, []Z)
 type ZStore
 type ZWithKey
 type ZWithKeyCmd
-func NewZWithKeyCmd(ctx context.Context, args ...interface{}) *ZWithKeyCmd
-func NewZWithKeyCmdResult(val *ZWithKey, err error) *ZWithKeyCmd
+func NewZWithKeyCmd(ctx context.Context, args ...interface{})*ZWithKeyCmd
+func NewZWithKeyCmdResult(val *ZWithKey, err error)*ZWithKeyCmd
 func (cmd *ZWithKeyCmd) Args() []interface{}
-func (cmd *ZWithKeyCmd) Err() error
+func (cmd*ZWithKeyCmd) Err() error
 func (cmd *ZWithKeyCmd) FullName() string
-func (cmd *ZWithKeyCmd) Name() string
+func (cmd*ZWithKeyCmd) Name() string
 func (cmd *ZWithKeyCmd) Result() (*ZWithKey, error)
 func (cmd *ZWithKeyCmd) SetErr(e error)
-func (cmd *ZWithKeyCmd) SetFirstKeyPos(keyPos int8)
-func (cmd *ZWithKeyCmd) SetVal(val *ZWithKey)
+func (cmd*ZWithKeyCmd) SetFirstKeyPos(keyPos int8)
+func (cmd *ZWithKeyCmd) SetVal(val*ZWithKey)
 func (cmd *ZWithKeyCmd) String() string
-func (cmd *ZWithKeyCmd) Val() *ZWithKey
+func (cmd*ZWithKeyCmd) Val() *ZWithKey
 Examples
 ¶
 Package (CustomCommand)
@@ -5329,7 +5329,7 @@ context
 Context
 , username
 string
-, command ...interface{}) *
+, command ...interface{})*
 StringCmd
 ACLLog(ctx
 context
@@ -5343,7 +5343,7 @@ ACLLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 ACLGenPass(ctx
 context
@@ -5361,7 +5361,7 @@ Context
 string
 , rules ...
 string
-) *
+)*
 StatusCmd
 ACLDelUser(ctx
 context
@@ -5375,7 +5375,7 @@ ACLUsers(ctx
 context
 .
 Context
-) *
+)*
 StringSliceCmd
 ACLWhoAmI(ctx
 context
@@ -5387,7 +5387,7 @@ ACLList(ctx
 context
 .
 Context
-) *
+)*
 StringSliceCmd
 ACLCat(ctx
 context
@@ -5399,7 +5399,7 @@ ACLCatArgs(ctx
 context
 .
 Context
-, options *
+, options*
 ACLCatArgs
 ) *
 StringSliceCmd
@@ -5421,34 +5421,34 @@ func NewACLLogCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 ACLLogCmd
 func (*ACLLogCmd)
 Args
 ¶
 added in
 v9.0.5
-func (cmd *ACLLogCmd) Args() []interface{}
+func (cmd*ACLLogCmd) Args() []interface{}
 func (*ACLLogCmd)
 Err
 ¶
 added in
 v9.0.5
-func (cmd *ACLLogCmd) Err()
+func (cmd*ACLLogCmd) Err()
 error
 func (*ACLLogCmd)
 FullName
 ¶
 added in
 v9.0.5
-func (cmd *ACLLogCmd) FullName()
+func (cmd*ACLLogCmd) FullName()
 string
 func (*ACLLogCmd)
 Name
 ¶
 added in
 v9.0.5
-func (cmd *ACLLogCmd) Name()
+func (cmd*ACLLogCmd) Name()
 string
 func (*ACLLogCmd)
 Result
@@ -5467,7 +5467,7 @@ SetErr
 ¶
 added in
 v9.0.5
-func (cmd *ACLLogCmd) SetErr(e
+func (cmd*ACLLogCmd) SetErr(e
 error
 )
 func (*ACLLogCmd)
@@ -5475,7 +5475,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.0.5
-func (cmd *ACLLogCmd) SetFirstKeyPos(keyPos
+func (cmd*ACLLogCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*ACLLogCmd)
@@ -5493,7 +5493,7 @@ String
 ¶
 added in
 v9.0.5
-func (cmd *
+func (cmd*
 ACLLogCmd
 ) String()
 string
@@ -5548,7 +5548,7 @@ added in
 v9.12.0
 func (b *
 AggregateBuilder
-) AddScores() *
+) AddScores()*
 AggregateBuilder
 AddScores includes ADDSCORES.
 func (*AggregateBuilder)
@@ -5556,7 +5556,7 @@ Apply
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) Apply(field
 string
@@ -5574,7 +5574,7 @@ func (b *
 AggregateBuilder
 ) Dialect(version
 int
-) *
+)*
 AggregateBuilder
 Dialect sets DIALECT <version>.
 func (*AggregateBuilder)
@@ -5582,7 +5582,7 @@ Filter
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) Filter(expr
 string
@@ -5596,7 +5596,7 @@ added in
 v9.12.0
 func (b *
 AggregateBuilder
-) GroupBy(fields ...interface{}) *
+) GroupBy(fields ...interface{})*
 AggregateBuilder
 GroupBy starts a new GROUPBY <fields...> clause.
 func (*AggregateBuilder)
@@ -5604,7 +5604,7 @@ Load
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) Load(field
 string
@@ -5621,9 +5621,9 @@ added in
 v9.12.0
 func (b *
 AggregateBuilder
-) LoadAll() *
+) LoadAll()*
 AggregateBuilder
-LoadAll includes LOAD * (mutually exclusive with Load).
+LoadAll includes LOAD *(mutually exclusive with Load).
 func (*AggregateBuilder)
 Params
 ¶
@@ -5633,7 +5633,7 @@ func (b *
 AggregateBuilder
 ) Params(p map[
 string
-]interface{}) *
+]interface{})*
 AggregateBuilder
 Params adds PARAMS <k v> pairs.
 func (*AggregateBuilder)
@@ -5641,7 +5641,7 @@ Reduce
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) Reduce(fn
 SearchAggregator
@@ -5659,7 +5659,7 @@ AggregateBuilder
 SearchAggregator
 , alias
 string
-, args ...interface{}) *
+, args ...interface{})*
 AggregateBuilder
 ReduceAs does the same but also sets an alias: REDUCE <fn> … AS <alias>
 func (*AggregateBuilder)
@@ -5680,7 +5680,7 @@ Scorer
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) Scorer(s
 string
@@ -5698,7 +5698,7 @@ AggregateBuilder
 string
 , asc
 bool
-) *
+)*
 AggregateBuilder
 SortBy adds SORTBY <field> ASC|DESC.
 func (*AggregateBuilder)
@@ -5706,7 +5706,7 @@ SortByMax
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) SortByMax(max
 int
@@ -5722,7 +5722,7 @@ func (b *
 AggregateBuilder
 ) Timeout(ms
 int
-) *
+)*
 AggregateBuilder
 Timeout sets TIMEOUT <ms>.
 func (*AggregateBuilder)
@@ -5730,7 +5730,7 @@ Verbatim
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AggregateBuilder
 ) Verbatim() *
 AggregateBuilder
@@ -5744,7 +5744,7 @@ func (b *
 AggregateBuilder
 ) WithCursor(count, maxIdle
 int
-) *
+)*
 AggregateBuilder
 WithCursor enables WITHCURSOR [COUNT <n>] [MAXIDLE <ms>].
 type
@@ -5846,7 +5846,7 @@ added in
 v9.5.4
 func (cmd *
 AggregateCmd
-) SetVal(val *
+) SetVal(val*
 FTAggregateResult
 )
 func (*AggregateCmd)
@@ -5854,7 +5854,7 @@ String
 ¶
 added in
 v9.5.4
-func (cmd *
+func (cmd*
 AggregateCmd
 ) String()
 string
@@ -5863,7 +5863,7 @@ Val
 ¶
 added in
 v9.5.4
-func (cmd *
+func (cmd*
 AggregateCmd
 ) Val() *
 FTAggregateResult
@@ -5880,7 +5880,7 @@ added in
 v9.5.4
 func FTAggregateQuery(query
 string
-, options *
+, options*
 FTAggregateOptions
 ) (
 AggregateQuery
@@ -5924,7 +5924,7 @@ type AliasBuilder struct {
 ----------------------
 AliasBuilder for FT.ALIAS* commands
 ----------------------
-AliasBuilder is builder for FT.ALIAS* commands
+AliasBuilder is builder for FT.ALIAS*commands
 EXPERIMENTAL: this API is subject to change, use with caution.
 func (*AliasBuilder)
 Action
@@ -5935,7 +5935,7 @@ func (b *
 AliasBuilder
 ) Action(action
 string
-) *
+)*
 AliasBuilder
 Action sets the action for the alias builder.
 func (*AliasBuilder)
@@ -5943,7 +5943,7 @@ Add
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AliasBuilder
 ) Add(index
 string
@@ -5957,7 +5957,7 @@ added in
 v9.12.0
 func (b *
 AliasBuilder
-) Del() *
+) Del()*
 AliasBuilder
 Del sets the action to "del".
 func (*AliasBuilder)
@@ -5965,7 +5965,7 @@ Run
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AliasBuilder
 ) Run() (
 string
@@ -5978,7 +5978,7 @@ Update
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 AliasBuilder
 ) Update(index
 string
@@ -6019,41 +6019,41 @@ func NewBFInfoCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 BFInfoCmd
 func (*BFInfoCmd)
 Args
 ¶
 added in
 v9.1.0
-func (cmd *BFInfoCmd) Args() []interface{}
+func (cmd*BFInfoCmd) Args() []interface{}
 func (*BFInfoCmd)
 Err
 ¶
 added in
 v9.1.0
-func (cmd *BFInfoCmd) Err()
+func (cmd*BFInfoCmd) Err()
 error
 func (*BFInfoCmd)
 FullName
 ¶
 added in
 v9.1.0
-func (cmd *BFInfoCmd) FullName()
+func (cmd*BFInfoCmd) FullName()
 string
 func (*BFInfoCmd)
 Name
 ¶
 added in
 v9.1.0
-func (cmd *BFInfoCmd) Name()
+func (cmd*BFInfoCmd) Name()
 string
 func (*BFInfoCmd)
 Result
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 BFInfoCmd
 ) Result() (
 BFInfo
@@ -6065,7 +6065,7 @@ SetErr
 ¶
 added in
 v9.1.0
-func (cmd *BFInfoCmd) SetErr(e
+func (cmd*BFInfoCmd) SetErr(e
 error
 )
 func (*BFInfoCmd)
@@ -6073,7 +6073,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.1.0
-func (cmd *BFInfoCmd) SetFirstKeyPos(keyPos
+func (cmd*BFInfoCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*BFInfoCmd)
@@ -6081,7 +6081,7 @@ SetVal
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 BFInfoCmd
 ) SetVal(val
 BFInfo
@@ -6091,7 +6091,7 @@ String
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 BFInfoCmd
 ) String()
 string
@@ -6100,7 +6100,7 @@ Val
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 BFInfoCmd
 ) Val()
 BFInfo
@@ -6172,7 +6172,7 @@ string
 int64
 , value
 int
-) *
+)*
 IntCmd
 BitCount(ctx
 context
@@ -6182,7 +6182,7 @@ Context
 string
 , bitCount *
 BitCount
-) *
+)*
 IntCmd
 BitOpAnd(ctx
 context
@@ -6202,7 +6202,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor(ctx
 context
@@ -6222,7 +6222,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1(ctx
 context
@@ -6242,7 +6242,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne(ctx
 context
@@ -6262,7 +6262,7 @@ Context
 string
 , key
 string
-) *
+)*
 IntCmd
 BitPos(ctx
 context
@@ -6288,7 +6288,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitField(ctx
 context
@@ -6304,7 +6304,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 }
 type
@@ -6329,32 +6329,32 @@ func NewBoolResult(val
 bool
 , err
 error
-) *
+)*
 BoolCmd
 NewBoolResult returns a BoolCmd initialised with val and err for testing.
 func (*BoolCmd)
 Args
 ¶
-func (cmd *BoolCmd) Args() []interface{}
+func (cmd*BoolCmd) Args() []interface{}
 func (*BoolCmd)
 Err
 ¶
-func (cmd *BoolCmd) Err()
+func (cmd*BoolCmd) Err()
 error
 func (*BoolCmd)
 FullName
 ¶
-func (cmd *BoolCmd) FullName()
+func (cmd*BoolCmd) FullName()
 string
 func (*BoolCmd)
 Name
 ¶
-func (cmd *BoolCmd) Name()
+func (cmd*BoolCmd) Name()
 string
 func (*BoolCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 BoolCmd
 ) Result() (
 bool
@@ -6364,19 +6364,19 @@ error
 func (*BoolCmd)
 SetErr
 ¶
-func (cmd *BoolCmd) SetErr(e
+func (cmd*BoolCmd) SetErr(e
 error
 )
 func (*BoolCmd)
 SetFirstKeyPos
 ¶
-func (cmd *BoolCmd) SetFirstKeyPos(keyPos
+func (cmd*BoolCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*BoolCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 BoolCmd
 ) SetVal(val
 bool
@@ -6384,14 +6384,14 @@ bool
 func (*BoolCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 BoolCmd
 ) String()
 string
 func (*BoolCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 BoolCmd
 ) Val()
 bool
@@ -6417,32 +6417,32 @@ func NewBoolSliceResult(val []
 bool
 , err
 error
-) *
+)*
 BoolSliceCmd
 NewBoolSliceResult returns a BoolSliceCmd initialised with val and err for testing.
 func (*BoolSliceCmd)
 Args
 ¶
-func (cmd *BoolSliceCmd) Args() []interface{}
+func (cmd*BoolSliceCmd) Args() []interface{}
 func (*BoolSliceCmd)
 Err
 ¶
-func (cmd *BoolSliceCmd) Err()
+func (cmd*BoolSliceCmd) Err()
 error
 func (*BoolSliceCmd)
 FullName
 ¶
-func (cmd *BoolSliceCmd) FullName()
+func (cmd*BoolSliceCmd) FullName()
 string
 func (*BoolSliceCmd)
 Name
 ¶
-func (cmd *BoolSliceCmd) Name()
+func (cmd*BoolSliceCmd) Name()
 string
 func (*BoolSliceCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 BoolSliceCmd
 ) Result() ([]
 bool
@@ -6452,19 +6452,19 @@ error
 func (*BoolSliceCmd)
 SetErr
 ¶
-func (cmd *BoolSliceCmd) SetErr(e
+func (cmd*BoolSliceCmd) SetErr(e
 error
 )
 func (*BoolSliceCmd)
 SetFirstKeyPos
 ¶
-func (cmd *BoolSliceCmd) SetFirstKeyPos(keyPos
+func (cmd*BoolSliceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*BoolSliceCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 BoolSliceCmd
 ) SetVal(val []
 bool
@@ -6472,14 +6472,14 @@ bool
 func (*BoolSliceCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 BoolSliceCmd
 ) String()
 string
 func (*BoolSliceCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 BoolSliceCmd
 ) Val() []
 bool
@@ -6664,41 +6664,41 @@ func NewCMSInfoCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 CMSInfoCmd
 func (*CMSInfoCmd)
 Args
 ¶
 added in
 v9.1.0
-func (cmd *CMSInfoCmd) Args() []interface{}
+func (cmd*CMSInfoCmd) Args() []interface{}
 func (*CMSInfoCmd)
 Err
 ¶
 added in
 v9.1.0
-func (cmd *CMSInfoCmd) Err()
+func (cmd*CMSInfoCmd) Err()
 error
 func (*CMSInfoCmd)
 FullName
 ¶
 added in
 v9.1.0
-func (cmd *CMSInfoCmd) FullName()
+func (cmd*CMSInfoCmd) FullName()
 string
 func (*CMSInfoCmd)
 Name
 ¶
 added in
 v9.1.0
-func (cmd *CMSInfoCmd) Name()
+func (cmd*CMSInfoCmd) Name()
 string
 func (*CMSInfoCmd)
 Result
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 CMSInfoCmd
 ) Result() (
 CMSInfo
@@ -6710,7 +6710,7 @@ SetErr
 ¶
 added in
 v9.1.0
-func (cmd *CMSInfoCmd) SetErr(e
+func (cmd*CMSInfoCmd) SetErr(e
 error
 )
 func (*CMSInfoCmd)
@@ -6718,7 +6718,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.1.0
-func (cmd *CMSInfoCmd) SetFirstKeyPos(keyPos
+func (cmd*CMSInfoCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*CMSInfoCmd)
@@ -6726,7 +6726,7 @@ SetVal
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 CMSInfoCmd
 ) SetVal(val
 CMSInfo
@@ -6736,7 +6736,7 @@ String
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 CMSInfoCmd
 ) String()
 string
@@ -6745,7 +6745,7 @@ Val
 ¶
 added in
 v9.1.0
-func (cmd *
+func (cmd*
 CMSInfoCmd
 ) Val()
 CMSInfo
@@ -6826,7 +6826,7 @@ NewClient
 ¶
 func NewClient(opt *
 Options
-) *
+)*
 Client
 NewClient returns a client to the Redis Server specified by Options.
 Example
@@ -6846,7 +6846,7 @@ NewFailoverClient
 ¶
 func NewFailoverClient(failoverOpt *
 FailoverOptions
-) *
+)*
 Client
 NewFailoverClient returns a Redis client that uses Redis Sentinel
 for automatic failover. It's safe for concurrent use by multiple
@@ -6880,7 +6880,7 @@ func (c Client) ACLCatArgs(ctx
 context
 .
 Context
-, options *
+, options*
 ACLCatArgs
 ) *
 StringSliceCmd
@@ -6895,7 +6895,7 @@ context
 Context
 , username
 string
-) *
+)*
 IntCmd
 func (Client)
 ACLDryRun
@@ -6921,7 +6921,7 @@ context
 Context
 , bit
 int
-) *
+)*
 StringCmd
 func (Client)
 ACLList
@@ -6945,7 +6945,7 @@ context
 Context
 , count
 int64
-) *
+)*
 ACLLogCmd
 func (Client)
 ACLLogReset
@@ -6971,7 +6971,7 @@ Context
 string
 , rules ...
 string
-) *
+)*
 StatusCmd
 func (Client)
 ACLUsers
@@ -6993,7 +6993,7 @@ func (c Client) ACLWhoAmI(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Client)
 Append
@@ -7017,7 +7017,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFAdd adds an item to a Bloom filter.
 For more information -
@@ -7051,7 +7051,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFExists determines whether a given item was added to a Bloom filter.
 For more information -
@@ -7083,7 +7083,7 @@ context
 Context
 , key, option
 string
-) *
+)*
 BFInfoCmd
 BFInfoArg returns information about a specific option of a Bloom filter.
 For more information -
@@ -7115,7 +7115,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoExpansion returns information about the expansion rate of a Bloom filter.
 For more information -
@@ -7147,7 +7147,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoItems returns information about the items of a Bloom filter.
 For more information -
@@ -7179,7 +7179,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFInsertOptions
 , elements ...interface{}) *
 BoolSliceCmd
@@ -7201,7 +7201,7 @@ Context
 string
 , iterator
 int64
-, data interface{}) *
+, data interface{})*
 StatusCmd
 BFLoadChunk restores a Bloom filter previously saved using BF.SCANDUMP.
 For more information -
@@ -7234,7 +7234,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMExists check if multiple elements exist in a Bloom filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -7276,7 +7276,7 @@ string
 float64
 , capacity, expansion
 int64
-) *
+)*
 StatusCmd
 BFReserveExpansion creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -7316,7 +7316,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFReserveOptions
 ) *
 StatusCmd
@@ -7338,7 +7338,7 @@ Context
 string
 , iterator
 int64
-) *
+)*
 ScanDumpCmd
 Begins an incremental save of the Bloom filter.
 This command is useful for large Bloom filters that cannot fit into the DUMP and RESTORE model.
@@ -7380,7 +7380,7 @@ time
 .
 Duration
 ,
-) *
+)*
 StringCmd
 func (Client)
 BLPop
@@ -7440,7 +7440,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 func (Client)
 BZMPop
@@ -7481,7 +7481,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMax Redis `BZPOPMAX key [key ...] timeout` command.
 func (Client)
@@ -7507,7 +7507,7 @@ func (c Client) BgRewriteAOF(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 BgSave
@@ -7527,7 +7527,7 @@ context
 Context
 , key
 string
-, bitCount *
+, bitCount*
 BitCount
 ) *
 IntCmd
@@ -7540,7 +7540,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 BitField accepts multiple values:
 BitField("set", "i1", "offset1", "value1","cmd2", "type2", "offset2", "value2")
@@ -7589,7 +7589,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpAndOr creates a new bitmap in which users are members of bitmap X and also members of one or more of bitmaps Y1, Y2, …
 Introduced with Redis 8.2
@@ -7623,7 +7623,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1 creates a new bitmap in which users are members of one or more of bitmaps Y1, Y2, … but not members of bitmap X
 Introduced with Redis 8.2
@@ -7654,7 +7654,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne creates a new bitmap in which users are members of exactly one of the given bitmaps
 Introduced with Redis 8.2
@@ -7683,7 +7683,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor creates a new bitmap in which users are the result of XORing all given bitmaps
 func (Client)
@@ -7720,7 +7720,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitPosSpan supports the `byte | bit` parameters in redis version 7.0,
 the bitpos command defaults to using byte type for the `start-end` range,
@@ -7756,7 +7756,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX adds an element to a Cuckoo filter only if it does not already exist in the filter.
 Returns true if the element was added to the filter or false if it already exists in the filter.
@@ -7789,7 +7789,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFDel deletes an item once from the cuckoo filter.
 For more information -
@@ -7821,7 +7821,7 @@ context
 Context
 , key
 string
-) *
+)*
 CFInfoCmd
 CFInfo returns information about a Cuckoo filter.
 For more information -
@@ -7839,7 +7839,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFInsert inserts elements into a Cuckoo filter.
 This function also allows for specifying additional options such as capacity, error rate, expansion rate, and non-scaling behavior.
@@ -7859,7 +7859,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CFInsertNX inserts elements into a Cuckoo filter only if they do not already exist in the filter.
 This function also allows for specifying additional options such as:
@@ -7896,7 +7896,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFMExists check if multiple elements exist in a Cuckoo filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -7935,7 +7935,7 @@ string
 int64
 , bucketsize
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize creates an empty Cuckoo filter with the specified capacity and bucket size.
 For more information -
@@ -7975,7 +7975,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFReserveMaxIterations creates an empty Cuckoo filter with the specified capacity and maximum number of iterations.
 For more information -
@@ -7993,7 +7993,7 @@ Context
 string
 , options *
 CFReserveOptions
-) *
+)*
 StatusCmd
 CFReserveWithArgs creates an empty Cuckoo filter with the specified options.
 This function allows for specifying additional options such as bucket size and maximum number of iterations.
@@ -8028,7 +8028,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSIncrBy increments the count of one or more items in a Count-Min Sketch filter.
 Returns an array of integers representing the updated count of each item.
@@ -8063,7 +8063,7 @@ Context
 string
 , width, depth
 int64
-) *
+)*
 StatusCmd
 CMSInitByDim creates an empty Count-Min Sketch filter with the specified dimensions.
 For more information -
@@ -8099,7 +8099,7 @@ Context
 string
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 CMSMerge merges multiple Count-Min Sketch filters into a single filter.
 The destination filter must not exist and will be created with the dimensions of the first source filter.
@@ -8141,7 +8141,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSQuery returns count for item(s).
 For more information -
@@ -8163,7 +8163,7 @@ func (c Client) ClientID(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Client)
 ClientInfo
@@ -8185,7 +8185,7 @@ context
 Context
 , ipPort
 string
-) *
+)*
 StatusCmd
 func (Client)
 ClientKillByFilter
@@ -8207,7 +8207,7 @@ func (c Client) ClientList(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Client)
 ClientMaintNotifications
@@ -8237,7 +8237,7 @@ Context
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Client)
 ClientUnblock
@@ -8259,7 +8259,7 @@ context
 Context
 , id
 int64
-) *
+)*
 IntCmd
 func (Client)
 ClientUnpause
@@ -8287,7 +8287,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 func (Client)
 ClusterAddSlotsRange
@@ -8309,7 +8309,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 IntCmd
 func (Client)
 ClusterCountKeysInSlot
@@ -8331,7 +8331,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 func (Client)
 ClusterDelSlotsRange
@@ -8351,7 +8351,7 @@ func (c Client) ClusterFailover(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 ClusterForget
@@ -8375,7 +8375,7 @@ Context
 int
 , count
 int
-) *
+)*
 StringSliceCmd
 func (Client)
 ClusterInfo
@@ -8395,7 +8395,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Client)
 ClusterLinks
@@ -8417,7 +8417,7 @@ context
 Context
 , host, port
 string
-) *
+)*
 StatusCmd
 func (Client)
 ClusterMyID
@@ -8439,7 +8439,7 @@ func (c Client) ClusterMyShardID(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Client)
 ClusterNodes
@@ -8459,7 +8459,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 StatusCmd
 func (Client)
 ClusterResetHard
@@ -8477,7 +8477,7 @@ func (c Client) ClusterResetSoft(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 ClusterSaveConfig
@@ -8497,7 +8497,7 @@ func (c Client) ClusterShards(ctx
 context
 .
 Context
-) *
+)*
 ClusterShardsCmd
 func (Client)
 ClusterSlaves
@@ -8517,7 +8517,7 @@ func (c Client) ClusterSlots(ctx
 context
 .
 Context
-) *
+)*
 ClusterSlotsCmd
 func (Client)
 Command
@@ -8537,7 +8537,7 @@ func (c Client) CommandGetKeys(ctx
 context
 .
 Context
-, commands ...interface{}) *
+, commands ...interface{})*
 StringSliceCmd
 func (Client)
 CommandGetKeysAndFlags
@@ -8559,7 +8559,7 @@ func (c Client) CommandList(ctx
 context
 .
 Context
-, filter *
+, filter*
 FilterBy
 ) *
 StringSliceCmd
@@ -8572,7 +8572,7 @@ context
 Context
 , parameter
 string
-) *
+)*
 MapStringStringCmd
 func (Client)
 ConfigResetStat
@@ -8590,7 +8590,7 @@ func (c Client) ConfigRewrite(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 ConfigSet
@@ -9156,7 +9156,7 @@ string
 FTCreateOptions
 , schema ...*
 FieldSchema
-) *
+)*
 StatusCmd
 FTCreate - Creates a new index with the given options and schema.
 The 'index' parameter specifies the name of the index to create.
@@ -9203,7 +9203,7 @@ string
 int
 , count
 int
-) *
+)*
 MapStringInterfaceCmd
 FTCursorRead - Reads the next results from an existing cursor.
 The 'index' parameter specifies the index from which to read the cursor, the 'cursorId' parameter specifies the ID of the cursor to read, and the 'count' parameter specifies the number of results to read.
@@ -9241,7 +9241,7 @@ context
 Context
 , dict
 string
-, term ...interface{}) *
+, term ...interface{})*
 IntCmd
 FTDictDel - Deletes terms from a dictionary.
 The 'dict' parameter specifies the dictionary from which to delete the terms, and the 'term' parameter specifies the terms to delete.
@@ -9279,7 +9279,7 @@ context
 Context
 , index
 string
-) *
+)*
 StatusCmd
 FTDropIndex - Deletes an index.
 The 'index' parameter specifies the index to delete.
@@ -9300,7 +9300,7 @@ Context
 string
 , options *
 FTDropIndexOptions
-) *
+)*
 StatusCmd
 FTDropIndexWithArgs - Deletes an index with options.
 The 'index' parameter specifies the index to delete, and the 'options' parameter specifies the DeleteDocs option for docs deletion.
@@ -9358,7 +9358,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTExplainOptions
 ) *
 StringCmd
@@ -9385,7 +9385,7 @@ string
 string
 , vectorData
 Vector
-) *
+)*
 FTHybridCmd
 FTHybrid - Executes a hybrid search combining full-text search and vector similarity
 The 'index' parameter specifies the index to search, 'searchExpr' is the search query,
@@ -9404,7 +9404,7 @@ Context
 string
 , options *
 FTHybridOptions
-) *
+)*
 FTHybridCmd
 FTHybridWithArgs - Executes a hybrid search with advanced options
 FTHybridWithArgs is still experimental, the command behaviour and signature may change
@@ -9440,7 +9440,7 @@ Context
 string
 , query
 string
-) *
+)*
 FTSearchCmd
 FTSearch - Executes a search query on an index.
 The 'index' parameter specifies the index to search, and the 'query' parameter specifies the search query.
@@ -9463,7 +9463,7 @@ string
 string
 , options *
 FTSearchOptions
-) *
+)*
 FTSearchCmd
 FTSearchWithArgs - Executes a search query on an index with additional options.
 The 'index' parameter specifies the index to search, the 'query' parameter specifies the search query,
@@ -9507,7 +9507,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTSpellCheckOptions
 ) *
 FTSpellCheckCmd
@@ -9529,7 +9529,7 @@ context
 Context
 , index
 string
-) *
+)*
 FTSynDumpCmd
 FTSynDump - Dumps the contents of a synonym group.
 The 'index' parameter specifies the index to dump.
@@ -9567,7 +9567,7 @@ context
 Context
 , index
 string
-, synGroupId interface{}, options *
+, synGroupId interface{}, options*
 FTSynUpdateOptions
 , terms []interface{}) *
 StatusCmd
@@ -9590,7 +9590,7 @@ Context
 string
 , field
 string
-) *
+)*
 StringSliceCmd
 FTTagVals - Returns all distinct values indexed in a tag field.
 The 'index' parameter specifies the index to check, and the 'field' parameter specifies the tag field to retrieve values from.
@@ -9621,7 +9621,7 @@ func (c Client) FlushAll(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 FlushAllAsync
@@ -9639,7 +9639,7 @@ func (c Client) FlushDB(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 FlushDBAsync
@@ -9661,7 +9661,7 @@ context
 Context
 , libName
 string
-) *
+)*
 StringCmd
 func (Client)
 FunctionDump
@@ -9683,7 +9683,7 @@ func (c Client) FunctionFlush(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Client)
 FunctionFlushAsync
@@ -9705,7 +9705,7 @@ func (c Client) FunctionKill(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Client)
 FunctionList
@@ -9731,7 +9731,7 @@ context
 Context
 , code
 string
-) *
+)*
 StringCmd
 func (Client)
 FunctionLoadReplace
@@ -9757,7 +9757,7 @@ context
 Context
 , libDump
 string
-) *
+)*
 StringCmd
 func (Client)
 FunctionStats
@@ -9796,7 +9796,7 @@ string
 , member1, member2, unit
 string
 ,
-) *
+)*
 FloatCmd
 func (Client)
 GeoHash
@@ -9822,7 +9822,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 GeoPosCmd
 func (Client)
 GeoRadius
@@ -9839,7 +9839,7 @@ float64
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 GeoLocationCmd
 GeoRadius is a read-only GEORADIUS_RO command.
 func (Client)
@@ -9855,7 +9855,7 @@ string
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 GeoLocationCmd
 GeoRadiusByMember is a read-only GEORADIUSBYMEMBER_RO command.
 func (Client)
@@ -9871,7 +9871,7 @@ string
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 IntCmd
 GeoRadiusByMemberStore is a writing GEORADIUSBYMEMBER command.
 func (Client)
@@ -9889,7 +9889,7 @@ float64
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 IntCmd
 GeoRadiusStore is a writing GEORADIUS command.
 func (Client)
@@ -9903,7 +9903,7 @@ Context
 string
 , q *
 GeoSearchQuery
-) *
+)*
 StringSliceCmd
 func (Client)
 GeoSearchLocation
@@ -9918,7 +9918,7 @@ string
 , q *
 GeoSearchLocationQuery
 ,
-) *
+)*
 GeoSearchLocationCmd
 func (Client)
 GeoSearchStore
@@ -9931,7 +9931,7 @@ Context
 string
 , q *
 GeoSearchStoreQuery
-) *
+)*
 IntCmd
 func (Client)
 Get
@@ -9956,7 +9956,7 @@ Context
 string
 , offset
 int64
-) *
+)*
 IntCmd
 func (Client)
 GetDel
@@ -9983,7 +9983,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 GetEx An expiration of zero removes the TTL associated with the key (i.e. GETEX key persist).
 Requires Redis >= 6.2.0.
@@ -9992,7 +9992,7 @@ GetMaintNotificationsManager
 ¶
 added in
 v9.15.0
-func (c *
+func (c*
 Client
 ) GetMaintNotificationsManager() *
 maintnotifications
@@ -10026,7 +10026,7 @@ Context
 string
 , start, end
 int64
-) *
+)*
 StringCmd
 func (Client)
 GetSet
@@ -10050,7 +10050,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntCmd
 func (Client)
 HExists
@@ -10080,7 +10080,7 @@ time
 Duration
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpire - Sets the expiration time for specified fields in a hash in seconds.
 The command constructs an argument list starting with "HEXPIRE", followed by the key, duration, any conditional flags, and the specified fields.
@@ -10133,7 +10133,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 func (Client)
 HExpireTime
@@ -10178,7 +10178,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireWithArgs - Sets the expiration time for specified fields in a hash in seconds.
 It requires a key, an expiration duration, a struct with boolean flags for conditional expiration settings (NX, XX, GT, LT), and a list of fields.
@@ -10207,7 +10207,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringStringCmd
 func (Client)
 HGetDel
@@ -10237,7 +10237,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Client)
 HGetEXWithArgs
@@ -10254,7 +10254,7 @@ string
 HGetEXOptions
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Client)
 HIncrBy
@@ -10280,7 +10280,7 @@ Context
 string
 , incr
 float64
-) *
+)*
 FloatCmd
 func (Client)
 HKeys
@@ -10302,7 +10302,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Client)
 HMGet
@@ -10328,7 +10328,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 HMSet is a deprecated version of HSet left for compatibility with Redis 3.
 func (Client)
@@ -10374,7 +10374,7 @@ time
 Time
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireAt - Sets the expiration time for specified fields in a hash to a UNIX timestamp in milliseconds.
 Similar to HExpireAt but for timestamps in milliseconds. It accepts the same parameters and adjusts the UNIX time to milliseconds.
@@ -10416,7 +10416,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireTime - Retrieves the expiration time for specified fields in a hash as a UNIX timestamp in milliseconds.
 Similar to HExpireTime, adjusted for timestamps in milliseconds. It requires the same parameters.
@@ -10468,7 +10468,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPTTL - Retrieves the remaining time to live for specified fields in a hash in milliseconds.
 Similar to HTTL, but returns the TTL in milliseconds. It requires a key and the specified fields.
@@ -10512,7 +10512,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 HRandField redis-server version >= 6.2.0.
 func (Client)
@@ -10544,7 +10544,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Client)
 HScanNoValues
@@ -10574,7 +10574,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 HSet accepts values in following formats:
 HSet(ctx, "myhash", "key1", "value1", "key2", "value2")
@@ -10635,7 +10635,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HSetEXOptions
 , fieldsAndValues ...
 string
@@ -10650,7 +10650,7 @@ context
 Context
 , key, field
 string
-, value interface{}) *
+, value interface{})*
 BoolCmd
 func (Client)
 HStrLen
@@ -10678,7 +10678,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HTTL - Retrieves the remaining time to live for specified fields in a hash in seconds.
 Requires a key and the fields themselves. It returns the TTL for each specified field.
@@ -10707,7 +10707,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 Example
 ¶
@@ -10743,7 +10743,7 @@ Context
 string
 , value
 float64
-) *
+)*
 FloatCmd
 func (Client)
 Info
@@ -10767,7 +10767,7 @@ context
 Context
 , sections ...
 string
-) *
+)*
 InfoCmd
 func (Client)
 JSONArrAppend
@@ -10796,7 +10796,7 @@ context
 Context
 , key, path
 string
-, value ...interface{}) *
+, value ...interface{})*
 IntSliceCmd
 JSONArrIndex searches for the first occurrence of the provided JSON value in the array at the given path.
 For more information, see
@@ -10814,7 +10814,7 @@ Context
 string
 , options *
 JSONArrIndexArgs
-, value ...interface{}) *
+, value ...interface{})*
 IntSliceCmd
 JSONArrIndexWithArgs searches for the first occurrence of a JSON value in an array while allowing the start and
 stop options to be provided.
@@ -10849,7 +10849,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntSliceCmd
 JSONArrLen reports the length of the JSON array at the specified path in the given key.
 For more information, see
@@ -10883,7 +10883,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntSliceCmd
 JSONArrTrim trims an array to contain only the specified inclusive range of elements.
 For more information, see
@@ -10901,7 +10901,7 @@ Context
 string
 , options *
 JSONArrTrimArgs
-) *
+)*
 IntSliceCmd
 JSONArrTrimWithArgs trims an array to contain only the specified inclusive range of elements.
 For more information, see
@@ -10933,7 +10933,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDebugMemory reports a value's memory usage in bytes (unimplemented)
 For more information, see
@@ -10965,7 +10965,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONForget deletes a value.
 For more information, see
@@ -11001,7 +11001,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 JSONGetArgs
 , paths ...
 string
@@ -11025,7 +11025,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 JSONSliceCmd
 JSONMGet returns the values at the specified path from multiple key arguments.
 Note - the arguments are reversed when compared with `JSON.MGET` as we want
@@ -11054,7 +11054,7 @@ context
 Context
 , docs []
 JSONSetArgs
-) *
+)*
 StatusCmd
 JSONMSetArgs sets or updates one or more JSON values according to the specified key-path-value triplets.
 For more information, see
@@ -11090,7 +11090,7 @@ Context
 string
 , value
 float64
-) *
+)*
 JSONCmd
 JSONNumIncrBy increments the number value stored at the specified path by the provided number.
 For more information, see
@@ -11122,7 +11122,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONObjLen reports the number of keys in the JSON object at the specified path in the given key.
 For more information, see
@@ -11158,7 +11158,7 @@ Context
 string
 , value interface{}, mode
 string
-) *
+)*
 StatusCmd
 JSONSetMode sets the JSON value at the given path in the given key and allows the mode to be set
 (the mode value must be "XX" or "NX"). The value must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -11192,7 +11192,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrLen reports the length of the JSON String at the specified path in the given key.
 For more information, see
@@ -11224,7 +11224,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 JSONSliceCmd
 JSONType reports the type of JSON value at the specified path.
 For more information, see
@@ -11249,7 +11249,7 @@ func (c Client) LCS(ctx
 context
 .
 Context
-, q *
+, q*
 LCSQuery
 ) *
 LCSCmd
@@ -11264,7 +11264,7 @@ Context
 string
 , index
 int64
-) *
+)*
 StringCmd
 func (Client)
 LInsert
@@ -11286,7 +11286,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Client)
 LInsertBefore
@@ -11308,7 +11308,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Client)
 LMPop
@@ -11339,7 +11339,7 @@ context
 Context
 , source, destination, srcpos, destpos
 string
-) *
+)*
 StringCmd
 func (Client)
 LPop
@@ -11363,7 +11363,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 func (Client)
 LPos
@@ -11395,7 +11395,7 @@ string
 int64
 , a
 LPosArgs
-) *
+)*
 IntSliceCmd
 func (Client)
 LPush
@@ -11417,7 +11417,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Client)
 LRange
@@ -11443,7 +11443,7 @@ Context
 string
 , count
 int64
-, value interface{}) *
+, value interface{})*
 IntCmd
 func (Client)
 LSet
@@ -11469,7 +11469,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StatusCmd
 func (Client)
 LastSave
@@ -11489,7 +11489,7 @@ func (c Client) Latency(ctx
 context
 .
 Context
-) *
+)*
 LatencyCmd
 func (Client)
 LatencyReset
@@ -11511,7 +11511,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 SliceCmd
 func (Client)
 MSet
@@ -11538,7 +11538,7 @@ context
 Context
 , args
 MSetEXArgs
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 MSetEX sets the given keys to their respective values.
 This command is an extension of the MSETNX that adds expiration and XX options.
@@ -11572,7 +11572,7 @@ Context
 string
 , samples ...
 int
-) *
+)*
 IntCmd
 func (Client)
 Migrate
@@ -11600,7 +11600,7 @@ func (c Client) ModuleLoadex(ctx
 context
 .
 Context
-, conf *
+, conf*
 ModuleLoadexConfig
 ) *
 StringCmd
@@ -11616,7 +11616,7 @@ context
 Context
 , ch chan
 string
-) *
+)*
 MonitorCmd
 Monitor - represents a Redis MONITOR command, allowing the user to capture
 and process all commands sent to a Redis server. This mimics the behavior of
@@ -11653,7 +11653,7 @@ context
 Context
 , index, query
 string
-) *
+)*
 AggregateBuilder
 NewAggregateBuilder creates a new AggregateBuilder for FT.AGGREGATE commands.
 EXPERIMENTAL: this API is subject to change, use with caution.
@@ -11679,7 +11679,7 @@ NewCreateIndexBuilder
 ¶
 added in
 v9.12.0
-func (c *
+func (c*
 Client
 ) NewCreateIndexBuilder(ctx
 context
@@ -11740,7 +11740,7 @@ context
 Context
 , index
 string
-) *
+)*
 DropIndexBuilder
 NewDropIndexBuilder creates a new DropIndexBuilder for FT.DROPINDEX commands.
 EXPERIMENTAL: this API is subject to change, use with caution.
@@ -11749,7 +11749,7 @@ NewExplainBuilder
 ¶
 added in
 v9.12.0
-func (c *
+func (c*
 Client
 ) NewExplainBuilder(ctx
 context
@@ -11774,7 +11774,7 @@ context
 Context
 , index, query
 string
-) *
+)*
 SearchBuilder
 NewSearchBuilder creates a new SearchBuilder for FT.SEARCH commands.
 EXPERIMENTAL: this API is subject to change, use with caution.
@@ -11783,7 +11783,7 @@ NewSearchInfoBuilder
 ¶
 added in
 v9.12.0
-func (c *
+func (c*
 Client
 ) NewSearchInfoBuilder(ctx
 context
@@ -11807,7 +11807,7 @@ context
 Context
 , index, query
 string
-) *
+)*
 SpellCheckBuilder
 NewSpellCheckBuilder creates a new SpellCheckBuilder for FT.SPELLCHECK commands.
 EXPERIMENTAL: this API is subject to change, use with caution.
@@ -11816,7 +11816,7 @@ NewSynUpdateBuilder
 ¶
 added in
 v9.12.0
-func (c *
+func (c*
 Client
 ) NewSynUpdateBuilder(ctx
 context
@@ -11841,7 +11841,7 @@ context
 Context
 , index, field
 string
-) *
+)*
 TagValsBuilder
 NewTagValsBuilder creates a new TagValsBuilder for FT.TAGVALS commands.
 EXPERIMENTAL: this API is subject to change, use with caution.
@@ -11867,7 +11867,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Client)
 ObjectIdleTime
@@ -11889,12 +11889,12 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (*Client)
 Options
 ¶
-func (c *
+func (c*
 Client
 ) Options() *
 Options
@@ -11912,7 +11912,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Client)
 PExpireAt
@@ -11940,7 +11940,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Client)
 PFAdd
@@ -11962,7 +11962,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Client)
 PFMerge
@@ -11988,7 +11988,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 PSubscribe subscribes the client to the given patterns.
 Patterns can be omitted to create empty subscription.
@@ -12012,7 +12012,7 @@ context
 Context
 , key
 string
-) *
+)*
 BoolCmd
 func (Client)
 Ping
@@ -12050,7 +12050,7 @@ Output:
 func (*Client)
 Pipelined
 ¶
-func (c *
+func (c*
 Client
 ) Pipelined(ctx
 context
@@ -12068,7 +12068,7 @@ error
 Example
 ¶
 var incr *redis.IntCmd
-_, err := rdb.Pipelined(ctx, func(pipe redis.Pipeliner) error {
+*, err := rdb.Pipelined(ctx, func(pipe redis.Pipeliner) error {
 incr = pipe.Incr(ctx, "pipelined_counter")
 pipe.Expire(ctx, "pipelined_counter", time.Hour)
 return nil
@@ -12165,11 +12165,11 @@ Publish posts the message to the channel.
 func (Client)
 Quit
 ¶
-func (c Client) Quit(_
+func (c Client) Quit(*
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 RPop
@@ -12193,7 +12193,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 func (Client)
 RPopLPush
@@ -12215,7 +12215,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Client)
 RPushX
@@ -12235,7 +12235,7 @@ func (c Client) RandomKey(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Client)
 ReadOnly
@@ -12253,14 +12253,14 @@ func (c Client) ReadWrite(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (*Client)
 RegisterPushNotificationHandler
 ¶
 added in
 v9.15.0
-func (c *
+func (c*
 Client
 ) RegisterPushNotificationHandler(pushNotificationName
 string
@@ -12295,7 +12295,7 @@ context
 Context
 , key, newkey
 string
-) *
+)*
 BoolCmd
 func (Client)
 Restore
@@ -12329,7 +12329,7 @@ time
 Duration
 , value
 string
-) *
+)*
 StatusCmd
 func (Client)
 SAdd
@@ -12351,7 +12351,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Client)
 SDiff
@@ -12375,7 +12375,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Client)
 SInter
@@ -12399,7 +12399,7 @@ Context
 int64
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Client)
 SInterStore
@@ -12423,7 +12423,7 @@ context
 Context
 , key
 string
-, member interface{}) *
+, member interface{})*
 BoolCmd
 func (Client)
 SMIsMember
@@ -12446,7 +12446,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 SMembers Redis `SMEMBERS key` command output as a slice.
 func (Client)
@@ -12470,7 +12470,7 @@ context
 Context
 , source, destination
 string
-, member interface{}) *
+, member interface{})*
 BoolCmd
 func (Client)
 SPop
@@ -12495,7 +12495,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 SPopN Redis `SPOP key count` command.
 func (Client)
@@ -12518,7 +12518,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SRandMember Redis `SRANDMEMBER key` command.
 func (Client)
@@ -12544,7 +12544,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Client)
 SScan
@@ -12574,7 +12574,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 SSubscribe Subscribes the client to the specified shard channels.
 Channels can be omitted to create empty subscription.
@@ -12600,7 +12600,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Client)
 Save
@@ -12624,7 +12624,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 Example
 ¶
@@ -12737,7 +12737,7 @@ context
 Context
 , hashes ...
 string
-) *
+)*
 BoolSliceCmd
 func (Client)
 ScriptFlush
@@ -12755,7 +12755,7 @@ func (c Client) ScriptKill(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 ScriptLoad
@@ -12781,7 +12781,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 Set Redis `SET key value [expiration]` command.
 Use expiration for `SETEx`-like behavior.
@@ -12831,7 +12831,7 @@ string
 int64
 , value
 int
-) *
+)*
 IntCmd
 func (Client)
 SetEx
@@ -12872,7 +12872,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFDEQ sets the value only if the current value's digest equals matchDigest.
 This is a compare-and-set operation using xxh3 digest for optimistic locking.
@@ -12935,7 +12935,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFDNE sets the value only if the current value's digest does NOT equal matchDigest.
 This is a compare-and-set operation using xxh3 digest for optimistic locking.
@@ -12996,7 +12996,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFEQ Redis `SET key value [expiration] IFEQ match-value` command.
 Compare-and-set: only sets the value if the current value equals matchValue.
@@ -13045,7 +13045,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFNE Redis `SET key value [expiration] IFNE match-value` command.
 Compare-and-set: only sets the value if the current value does not equal matchValue.
@@ -13092,7 +13092,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 SetNX Redis `SET key value [expiration] NX` command.
 Zero expiration means the key has no expiration time.
@@ -13126,7 +13126,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 SetXX Redis `SET key value [expiration] XX` command.
 Zero expiration means the key has no expiration time.
@@ -13148,7 +13148,7 @@ func (c Client) ShutdownNoSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 ShutdownSave
@@ -13168,7 +13168,7 @@ context
 Context
 , host, port
 string
-) *
+)*
 StatusCmd
 func (Client)
 SlowLogGet
@@ -13227,7 +13227,7 @@ func (c Client) SlowLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Client)
 Sort
@@ -13240,7 +13240,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Client)
 SortInterfaces
@@ -13253,7 +13253,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 SliceCmd
 func (Client)
 SortRO
@@ -13266,7 +13266,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Client)
 SortStore
@@ -13279,7 +13279,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 IntCmd
 func (Client)
 StrLen
@@ -13308,7 +13308,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 Subscribe subscribes the client to the specified channels.
 Channels can be omitted to create empty subscription.
@@ -13324,11 +13324,11 @@ if err != nil {
 // Should be *Subscription, but others are possible if other actions have been
 // taken on sub since it was created.
 switch iface.(type) {
-case *Subscription:
+case*Subscription:
 // subscribe succeeded
 case *Message:
 // received first message
-case *Pong:
+case*Pong:
 // pong received
 default:
 // handle error
@@ -13375,7 +13375,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRank returns an array of values from a t-Digest data structure based on their rank.
 The rank of an element is its position in the sorted list of all elements in the t-Digest.
@@ -13415,7 +13415,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCDF returns an array of cumulative distribution function (CDF) values for one or more elements in a t-Digest data structure.
 The CDF value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -13452,7 +13452,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestCreateWithCompression creates an empty t-Digest data structure with a specified compression parameter.
 The compression parameter controls the accuracy and memory usage of the t-Digest.
@@ -13486,7 +13486,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMax returns the maximum value from a t-Digest data structure.
 For more information -
@@ -13506,7 +13506,7 @@ string
 TDigestMergeOptions
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 TDigestMerge merges multiple t-Digest data structures into a single t-Digest.
 This function also allows for specifying additional options such as compression and override behavior.
@@ -13542,7 +13542,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestQuantile returns an array of quantile values for one or more elements in a t-Digest data structure.
 The quantile value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -13580,7 +13580,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestReset resets a t-Digest data structure to its initial state.
 Returns OK on success or an error if the operation could not be completed.
@@ -13619,7 +13619,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 TDigestTrimmedMean returns the trimmed mean value from a t-Digest data structure.
 The trimmed mean is calculated by removing a specified fraction of the highest and lowest values from the t-Digest and then calculating the mean of the remaining values.
@@ -13657,7 +13657,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -13677,7 +13677,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSAlterOptions
 ) *
 StatusCmd
@@ -13697,7 +13697,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreate - Creates a new time-series key.
 For more information -
@@ -13741,7 +13741,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -13761,7 +13761,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSOptions
 ) *
 StatusCmd
@@ -13783,7 +13783,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
 For more information -
@@ -13803,7 +13803,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -13843,7 +13843,7 @@ Context
 string
 , destKey
 string
-) *
+)*
 StatusCmd
 TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
 For more information -
@@ -13875,7 +13875,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSGetOptions
 ) *
 TSTimestampValueCmd
@@ -13897,7 +13897,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrBy - Increments the value of a time-series key by the specified timestamp.
 For more information -
@@ -13917,7 +13917,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -13951,7 +13951,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -13969,7 +13969,7 @@ func (c Client) TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSMAdd - Adds multiple samples to multiple time-series keys.
 It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
@@ -14003,7 +14003,7 @@ context
 Context
 , filters []
 string
-, options *
+, options*
 TSMGetOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -14027,7 +14027,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRange - Returns a range of samples from multiple time-series keys.
 For more information -
@@ -14049,7 +14049,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
 This function allows for specifying additional options such as:
@@ -14093,7 +14093,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -14115,7 +14115,7 @@ context
 Context
 , filterExpr []
 string
-) *
+)*
 StringSliceCmd
 TSQueryIndex - Returns all the keys matching the filter expression.
 For more information -
@@ -14155,7 +14155,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -14180,7 +14180,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRange - Returns a range of samples from a time-series key in reverse order.
 For more information -
@@ -14202,7 +14202,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
 This function allows for specifying additional options such as:
@@ -14228,7 +14228,7 @@ func (c Client) Time(ctx
 context
 .
 Context
-) *
+)*
 TimeCmd
 func (Client)
 TopKAdd
@@ -14258,7 +14258,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 TopKCount returns an estimate of the number of times an item may be in a Top-K filter.
 For more information -
@@ -14290,7 +14290,7 @@ context
 Context
 , key
 string
-) *
+)*
 TopKInfoCmd
 TopKInfo returns information about a Top-K filter.
 For more information -
@@ -14322,7 +14322,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringIntCmd
 TopKListWithCount returns all items in Top-K list with their respective count.
 For more information -
@@ -14357,7 +14357,7 @@ Context
 string
 , k
 int64
-) *
+)*
 StatusCmd
 TopKReserve creates an empty Top-K filter with the specified number of top items to keep.
 For more information -
@@ -14394,12 +14394,12 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*Client)
 TxPipeline
 ¶
-func (c *
+func (c*
 Client
 ) TxPipeline()
 Pipeliner
@@ -14426,7 +14426,7 @@ Output:
 func (*Client)
 TxPipelined
 ¶
-func (c *
+func (c*
 Client
 ) TxPipelined(ctx
 context
@@ -14461,7 +14461,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 func (Client)
 Unlink
@@ -14487,7 +14487,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 BoolCmd
 `VADD key (FP32 | VALUES num) vector element`
 note: the API is experimental and may be subject to change.
@@ -14506,7 +14506,7 @@ string
 Vector
 , addArgs *
 VAddArgs
-) *
+)*
 BoolCmd
 `VADD key [REDUCE dim] (FP32 | VALUES num) vector element [CAS] [NOQUANT | Q8 | BIN] [EF build-exploration-factor] [SETATTR attributes] [M numlinks]`
 note: the API is experimental and may be subject to change.
@@ -14536,7 +14536,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 BoolCmd
 `VClearAttributes` clear attributes on a vector set element.
 The implementation of `VClearAttributes` is execute command `VSETATTR key element ""`.
@@ -14569,7 +14569,7 @@ Context
 string
 , raw
 bool
-) *
+)*
 SliceCmd
 `VEMB key element [RAW]`
 note: the API is experimental and may be subject to change.
@@ -14599,7 +14599,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringInterfaceCmd
 `VINFO key`
 note: the API is experimental and may be subject to change.
@@ -14629,7 +14629,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 VectorScoreSliceCmd
 `VLINKS key element WITHSCORES`
 note: the API is experimental and may be subject to change.
@@ -14661,7 +14661,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 `VRANDMEMBER key [count]`
 note: the API is experimental and may be subject to change.
@@ -14694,7 +14694,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 BoolCmd
 `VREM key element`
 note: the API is experimental and may be subject to change.
@@ -14728,7 +14728,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 StringSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element)`
 note: the API is experimental and may be subject to change.
@@ -14747,7 +14747,7 @@ string
 Vector
 , simArgs *
 VSimArgs
-) *
+)*
 StringSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) [COUNT num] [EPSILON delta]
 [EF search-exploration-factor] [FILTER expression] [FILTER-EF max-filtering-effort] [TRUTH] [NOTHREAD]`
@@ -14767,7 +14767,7 @@ string
 Vector
 , simArgs *
 VSimArgs
-) *
+)*
 VectorScoreSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) [WITHSCORES] [COUNT num] [EPSILON delta]
 [EF search-exploration-factor] [FILTER expression] [FILTER-EF max-filtering-effort] [TRUTH] [NOTHREAD]`
@@ -14802,7 +14802,7 @@ int
 time
 .
 Duration
-) *
+)*
 IntCmd
 func (Client)
 WaitAOF
@@ -16151,7 +16151,7 @@ ClientFlags
 ClientPreventReplProp
 ClientFlags
 = 1 << 20
-/* Don't propagate to slaves. */
+/* Don't propagate to slaves.*/
 ClientPreventProp
 ClientFlags
 =
@@ -16161,7 +16161,7 @@ ClientPreventReplProp
 ClientPendingWrite
 ClientFlags
 = 1 << 21
-/* Client has output to send but a-write handler is yet not installed. */
+/*Client has output to send but a-write handler is yet not installed. */
 ClientReplyOff
 ClientFlags
 = 1 << 22
@@ -16200,7 +16200,7 @@ will try to reprocess the command. */
 ClientPendingCommand
 ClientFlags
 = 1 << 30
-/* Indicates the client has a fully * parsed command ready for execution. */
+/* Indicates the client has a fully* parsed command ready for execution. */
 ClientTracking
 ClientFlags
 = 1 << 31
@@ -16240,7 +16240,7 @@ ClientFlags
 ClientCloseAfterCommand
 ClientFlags
 = 1 << 40
-/* Close after executing commands * and writing entire reply. */
+/* Close after executing commands *and writing entire reply. */
 ClientDenyBlocking
 ClientFlags
 = 1 << 41
@@ -16264,7 +16264,7 @@ ClientFlags
 ClientPushing
 ClientFlags
 = 1 << 46
-/* This client is pushing notifications. */
+/* This client is pushing notifications.*/
 )
 type
 ClientInfo
@@ -16400,34 +16400,34 @@ func NewClientInfoCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 ClientInfoCmd
 func (*ClientInfoCmd)
 Args
 ¶
 added in
 v9.0.4
-func (cmd *ClientInfoCmd) Args() []interface{}
+func (cmd*ClientInfoCmd) Args() []interface{}
 func (*ClientInfoCmd)
 Err
 ¶
 added in
 v9.0.4
-func (cmd *ClientInfoCmd) Err()
+func (cmd*ClientInfoCmd) Err()
 error
 func (*ClientInfoCmd)
 FullName
 ¶
 added in
 v9.0.4
-func (cmd *ClientInfoCmd) FullName()
+func (cmd*ClientInfoCmd) FullName()
 string
 func (*ClientInfoCmd)
 Name
 ¶
 added in
 v9.0.4
-func (cmd *ClientInfoCmd) Name()
+func (cmd*ClientInfoCmd) Name()
 string
 func (*ClientInfoCmd)
 Result
@@ -16446,7 +16446,7 @@ SetErr
 ¶
 added in
 v9.0.4
-func (cmd *ClientInfoCmd) SetErr(e
+func (cmd*ClientInfoCmd) SetErr(e
 error
 )
 func (*ClientInfoCmd)
@@ -16454,7 +16454,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.0.4
-func (cmd *ClientInfoCmd) SetFirstKeyPos(keyPos
+func (cmd*ClientInfoCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*ClientInfoCmd)
@@ -16462,7 +16462,7 @@ SetVal
 ¶
 added in
 v9.0.4
-func (cmd *
+func (cmd*
 ClientInfoCmd
 ) SetVal(val *
 ClientInfo
@@ -16483,7 +16483,7 @@ added in
 v9.0.4
 func (cmd *
 ClientInfoCmd
-) Val() *
+) Val()*
 ClientInfo
 type
 ClusterClient
@@ -16499,7 +16499,7 @@ NewClusterClient
 ¶
 func NewClusterClient(opt *
 ClusterOptions
-) *
+)*
 ClusterClient
 NewClusterClient returns a Redis Cluster client as described in
 http://redis.io/topics/cluster-spec
@@ -16559,7 +16559,7 @@ NewFailoverClusterClient
 ¶
 func NewFailoverClusterClient(failoverOpt *
 FailoverOptions
-) *
+)*
 ClusterClient
 NewFailoverClusterClient returns a client that supports routing read-only commands
 to a replica node.
@@ -16583,7 +16583,7 @@ func (c ClusterClient) ACLCatArgs(ctx
 context
 .
 Context
-, options *
+, options*
 ACLCatArgs
 ) *
 StringSliceCmd
@@ -16598,7 +16598,7 @@ context
 Context
 , username
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ACLDryRun
@@ -16624,7 +16624,7 @@ context
 Context
 , bit
 int
-) *
+)*
 StringCmd
 func (ClusterClient)
 ACLList
@@ -16648,7 +16648,7 @@ context
 Context
 , count
 int64
-) *
+)*
 ACLLogCmd
 func (ClusterClient)
 ACLLogReset
@@ -16674,7 +16674,7 @@ Context
 string
 , rules ...
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ACLUsers
@@ -16696,12 +16696,12 @@ func (c ClusterClient) ACLWhoAmI(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (*ClusterClient)
 AddHook
 ¶
-func (hs *ClusterClient) AddHook(hook
+func (hs*ClusterClient) AddHook(hook
 Hook
 )
 AddHook is to add a hook to the queue.
@@ -16754,7 +16754,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFAdd adds an item to a Bloom filter.
 For more information -
@@ -16788,7 +16788,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFExists determines whether a given item was added to a Bloom filter.
 For more information -
@@ -16820,7 +16820,7 @@ context
 Context
 , key, option
 string
-) *
+)*
 BFInfoCmd
 BFInfoArg returns information about a specific option of a Bloom filter.
 For more information -
@@ -16852,7 +16852,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoExpansion returns information about the expansion rate of a Bloom filter.
 For more information -
@@ -16884,7 +16884,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoItems returns information about the items of a Bloom filter.
 For more information -
@@ -16916,7 +16916,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFInsertOptions
 , elements ...interface{}) *
 BoolSliceCmd
@@ -16938,7 +16938,7 @@ Context
 string
 , iterator
 int64
-, data interface{}) *
+, data interface{})*
 StatusCmd
 BFLoadChunk restores a Bloom filter previously saved using BF.SCANDUMP.
 For more information -
@@ -16971,7 +16971,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMExists check if multiple elements exist in a Bloom filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -17013,7 +17013,7 @@ string
 float64
 , capacity, expansion
 int64
-) *
+)*
 StatusCmd
 BFReserveExpansion creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -17053,7 +17053,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFReserveOptions
 ) *
 StatusCmd
@@ -17075,7 +17075,7 @@ Context
 string
 , iterator
 int64
-) *
+)*
 ScanDumpCmd
 Begins an incremental save of the Bloom filter.
 This command is useful for large Bloom filters that cannot fit into the DUMP and RESTORE model.
@@ -17117,7 +17117,7 @@ time
 .
 Duration
 ,
-) *
+)*
 StringCmd
 func (ClusterClient)
 BLPop
@@ -17147,7 +17147,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 BRPopLPush
@@ -17183,7 +17183,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 ZSliceWithKeyCmd
 BZMPop is the blocking variant of ZMPOP.
 When any of the sorted sets contains elements, this command behaves exactly like ZMPOP.
@@ -17219,7 +17219,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMin Redis `BZPOPMIN key [key ...] timeout` command.
 func (ClusterClient)
@@ -17238,7 +17238,7 @@ func (c ClusterClient) BgSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 BitCount
@@ -17251,7 +17251,7 @@ Context
 string
 , bitCount *
 BitCount
-) *
+)*
 IntCmd
 func (ClusterClient)
 BitField
@@ -17279,7 +17279,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 BitFieldRO - Read-only variant of the BITFIELD command.
 It is like the original BITFIELD but only accepts GET subcommand and can safely be used in read-only replicas.
@@ -17311,7 +17311,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpAndOr creates a new bitmap in which users are members of bitmap X and also members of one or more of bitmaps Y1, Y2, …
 Introduced with Redis 8.2
@@ -17345,7 +17345,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1 creates a new bitmap in which users are members of one or more of bitmaps Y1, Y2, … but not members of bitmap X
 Introduced with Redis 8.2
@@ -17376,7 +17376,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne creates a new bitmap in which users are members of exactly one of the given bitmaps
 Introduced with Redis 8.2
@@ -17405,7 +17405,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor creates a new bitmap in which users are the result of XORing all given bitmaps
 func (ClusterClient)
@@ -17442,7 +17442,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitPosSpan supports the `byte | bit` parameters in redis version 7.0,
 the bitpos command defaults to using byte type for the `start-end` range,
@@ -17478,7 +17478,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX adds an element to a Cuckoo filter only if it does not already exist in the filter.
 Returns true if the element was added to the filter or false if it already exists in the filter.
@@ -17511,7 +17511,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFDel deletes an item once from the cuckoo filter.
 For more information -
@@ -17543,7 +17543,7 @@ context
 Context
 , key
 string
-) *
+)*
 CFInfoCmd
 CFInfo returns information about a Cuckoo filter.
 For more information -
@@ -17561,7 +17561,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFInsert inserts elements into a Cuckoo filter.
 This function also allows for specifying additional options such as capacity, error rate, expansion rate, and non-scaling behavior.
@@ -17581,7 +17581,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CFInsertNX inserts elements into a Cuckoo filter only if they do not already exist in the filter.
 This function also allows for specifying additional options such as:
@@ -17618,7 +17618,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFMExists check if multiple elements exist in a Cuckoo filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -17657,7 +17657,7 @@ string
 int64
 , bucketsize
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize creates an empty Cuckoo filter with the specified capacity and bucket size.
 For more information -
@@ -17697,7 +17697,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFReserveMaxIterations creates an empty Cuckoo filter with the specified capacity and maximum number of iterations.
 For more information -
@@ -17715,7 +17715,7 @@ Context
 string
 , options *
 CFReserveOptions
-) *
+)*
 StatusCmd
 CFReserveWithArgs creates an empty Cuckoo filter with the specified options.
 This function allows for specifying additional options such as bucket size and maximum number of iterations.
@@ -17750,7 +17750,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSIncrBy increments the count of one or more items in a Count-Min Sketch filter.
 Returns an array of integers representing the updated count of each item.
@@ -17785,7 +17785,7 @@ Context
 string
 , width, depth
 int64
-) *
+)*
 StatusCmd
 CMSInitByDim creates an empty Count-Min Sketch filter with the specified dimensions.
 For more information -
@@ -17821,7 +17821,7 @@ Context
 string
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 CMSMerge merges multiple Count-Min Sketch filters into a single filter.
 The destination filter must not exist and will be created with the dimensions of the first source filter.
@@ -17863,7 +17863,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSQuery returns count for item(s).
 For more information -
@@ -17885,7 +17885,7 @@ func (c ClusterClient) ClientID(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (ClusterClient)
 ClientInfo
@@ -17907,7 +17907,7 @@ context
 Context
 , ipPort
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClientKillByFilter
@@ -17929,7 +17929,7 @@ func (c ClusterClient) ClientList(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (ClusterClient)
 ClientMaintNotifications
@@ -17959,7 +17959,7 @@ Context
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (ClusterClient)
 ClientUnblock
@@ -17981,7 +17981,7 @@ context
 Context
 , id
 int64
-) *
+)*
 IntCmd
 func (ClusterClient)
 ClientUnpause
@@ -18011,7 +18011,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClusterAddSlotsRange
@@ -18033,7 +18033,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ClusterCountKeysInSlot
@@ -18055,7 +18055,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClusterDelSlotsRange
@@ -18075,7 +18075,7 @@ func (c ClusterClient) ClusterFailover(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClusterForget
@@ -18099,7 +18099,7 @@ Context
 int
 , count
 int
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ClusterInfo
@@ -18119,7 +18119,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ClusterLinks
@@ -18141,7 +18141,7 @@ context
 Context
 , host, port
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClusterMyID
@@ -18163,7 +18163,7 @@ func (c ClusterClient) ClusterMyShardID(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (ClusterClient)
 ClusterNodes
@@ -18183,7 +18183,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClusterResetHard
@@ -18201,7 +18201,7 @@ func (c ClusterClient) ClusterResetSoft(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ClusterSaveConfig
@@ -18221,7 +18221,7 @@ func (c ClusterClient) ClusterShards(ctx
 context
 .
 Context
-) *
+)*
 ClusterShardsCmd
 func (ClusterClient)
 ClusterSlaves
@@ -18241,7 +18241,7 @@ func (c ClusterClient) ClusterSlots(ctx
 context
 .
 Context
-) *
+)*
 ClusterSlotsCmd
 func (ClusterClient)
 Command
@@ -18261,7 +18261,7 @@ func (c ClusterClient) CommandGetKeys(ctx
 context
 .
 Context
-, commands ...interface{}) *
+, commands ...interface{})*
 StringSliceCmd
 func (ClusterClient)
 CommandGetKeysAndFlags
@@ -18283,7 +18283,7 @@ func (c ClusterClient) CommandList(ctx
 context
 .
 Context
-, filter *
+, filter*
 FilterBy
 ) *
 StringSliceCmd
@@ -18296,7 +18296,7 @@ context
 Context
 , parameter
 string
-) *
+)*
 MapStringStringCmd
 func (ClusterClient)
 ConfigResetStat
@@ -18314,7 +18314,7 @@ func (c ClusterClient) ConfigRewrite(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ConfigSet
@@ -18340,7 +18340,7 @@ string
 int
 , replace
 bool
-) *
+)*
 IntCmd
 func (*ClusterClient)
 DBSize
@@ -18899,7 +18899,7 @@ Context
 string
 , cursorId
 int
-) *
+)*
 StatusCmd
 FTCursorDel - Deletes a cursor from an existing index.
 The 'index' parameter specifies the index from which to delete the cursor, and the 'cursorId' parameter specifies the ID of the cursor to delete.
@@ -18941,7 +18941,7 @@ context
 Context
 , dict
 string
-, term ...interface{}) *
+, term ...interface{})*
 IntCmd
 FTDictAdd - Adds terms to a dictionary.
 The 'dict' parameter specifies the dictionary to which to add the terms, and the 'term' parameter specifies the terms to add.
@@ -18979,7 +18979,7 @@ context
 Context
 , dict
 string
-) *
+)*
 StringSliceCmd
 FTDictDump - Returns all terms in the specified dictionary.
 The 'dict' parameter specifies the dictionary from which to return the terms.
@@ -19017,7 +19017,7 @@ context
 Context
 , index
 string
-, options *
+, options*
 FTDropIndexOptions
 ) *
 StatusCmd
@@ -19040,7 +19040,7 @@ Context
 string
 , query
 string
-) *
+)*
 StringCmd
 FTExplain - Returns the execution plan for a complex query.
 The 'index' parameter specifies the index to query, and the 'query' parameter specifies the query string.
@@ -19079,7 +19079,7 @@ string
 string
 , options *
 FTExplainOptions
-) *
+)*
 StringCmd
 FTExplainWithArgs - Returns the execution plan for a complex query with options.
 The 'index' parameter specifies the index to query, the 'query' parameter specifies the query string, and the 'options' parameter specifies the Dialect for the query.
@@ -19121,7 +19121,7 @@ context
 Context
 , index
 string
-, options *
+, options*
 FTHybridOptions
 ) *
 FTHybridCmd
@@ -19138,7 +19138,7 @@ context
 Context
 , index
 string
-) *
+)*
 FTInfoCmd
 FTInfo - Retrieves information about an index.
 The 'index' parameter specifies the index to retrieve information about.
@@ -19180,7 +19180,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTSearchOptions
 ) *
 FTSearchCmd
@@ -19204,7 +19204,7 @@ Context
 string
 , query
 string
-) *
+)*
 FTSpellCheckCmd
 FTSpellCheck - Checks a query string for spelling errors.
 For more details about spellcheck query please follow:
@@ -19228,7 +19228,7 @@ string
 string
 , options *
 FTSpellCheckOptions
-) *
+)*
 FTSpellCheckCmd
 FTSpellCheckWithArgs - Checks a query string for spelling errors with additional options.
 For more details about spellcheck query please follow:
@@ -19267,7 +19267,7 @@ context
 Context
 , index
 string
-, synGroupId interface{}, terms []interface{}) *
+, synGroupId interface{}, terms []interface{})*
 StatusCmd
 FTSynUpdate - Creates or updates a synonym group with additional terms.
 The 'index' parameter specifies the index to update, the 'synGroupId' parameter specifies the synonym group id, and the 'terms' parameter specifies the additional terms.
@@ -19288,7 +19288,7 @@ Context
 string
 , synGroupId interface{}, options *
 FTSynUpdateOptions
-, terms []interface{}) *
+, terms []interface{})*
 StatusCmd
 FTSynUpdateWithArgs - Creates or updates a synonym group with additional terms and options.
 The 'index' parameter specifies the index to update, the 'synGroupId' parameter specifies the synonym group id, the 'options' parameter specifies additional options for the update, and the 'terms' parameter specifies the additional terms.
@@ -19326,7 +19326,7 @@ func (c ClusterClient) FT_List(ctx
 context
 .
 Context
-) *
+)*
 StringSliceCmd
 FT_List - Lists all the existing indexes in the database.
 For more information, please refer to the Redis documentation:
@@ -19349,7 +19349,7 @@ func (c ClusterClient) FlushAllAsync(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 FlushDB
@@ -19367,12 +19367,12 @@ func (c ClusterClient) FlushDBAsync(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (*ClusterClient)
 ForEachMaster
 ¶
-func (c *
+func (c*
 ClusterClient
 ) ForEachMaster(
 ctx
@@ -19408,7 +19408,7 @@ fn func(ctx
 context
 .
 Context
-, client *
+, client*
 Client
 )
 error
@@ -19587,7 +19587,7 @@ string
 , member1, member2, unit
 string
 ,
-) *
+)*
 FloatCmd
 func (ClusterClient)
 GeoHash
@@ -19613,7 +19613,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 GeoPosCmd
 func (ClusterClient)
 GeoRadius
@@ -19630,7 +19630,7 @@ float64
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 GeoLocationCmd
 GeoRadius is a read-only GEORADIUS_RO command.
 func (ClusterClient)
@@ -19646,7 +19646,7 @@ string
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 GeoLocationCmd
 GeoRadiusByMember is a read-only GEORADIUSBYMEMBER_RO command.
 func (ClusterClient)
@@ -19662,7 +19662,7 @@ string
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 IntCmd
 GeoRadiusByMemberStore is a writing GEORADIUSBYMEMBER command.
 func (ClusterClient)
@@ -19680,7 +19680,7 @@ float64
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 IntCmd
 GeoRadiusStore is a writing GEORADIUS command.
 func (ClusterClient)
@@ -19694,7 +19694,7 @@ Context
 string
 , q *
 GeoSearchQuery
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 GeoSearchLocation
@@ -19709,7 +19709,7 @@ string
 , q *
 GeoSearchLocationQuery
 ,
-) *
+)*
 GeoSearchLocationCmd
 func (ClusterClient)
 GeoSearchStore
@@ -19722,7 +19722,7 @@ Context
 string
 , q *
 GeoSearchStoreQuery
-) *
+)*
 IntCmd
 func (ClusterClient)
 Get
@@ -19747,7 +19747,7 @@ Context
 string
 , offset
 int64
-) *
+)*
 IntCmd
 func (ClusterClient)
 GetDel
@@ -19774,7 +19774,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 GetEx An expiration of zero removes the TTL associated with the key (i.e. GETEX key persist).
 Requires Redis >= 6.2.0.
@@ -19800,7 +19800,7 @@ context
 Context
 , key
 string
-, value interface{}) *
+, value interface{})*
 StringCmd
 func (ClusterClient)
 HDel
@@ -19824,7 +19824,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 BoolCmd
 func (ClusterClient)
 HExpire
@@ -19868,7 +19868,7 @@ time
 Time
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireAt - Sets the expiration time for specified fields in a hash to a UNIX timestamp in seconds.
 Takes a key, a UNIX timestamp, a struct of conditional flags, and a list of fields.
@@ -19911,7 +19911,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireTime - Retrieves the expiration time for specified fields in a hash as a UNIX timestamp in seconds.
 Requires a key and the fields themselves to fetch their expiration timestamps.
@@ -19959,7 +19959,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 HGetAll
@@ -19985,7 +19985,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 HGetEX
@@ -20013,7 +20013,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HGetEXOptions
 , fields ...
 string
@@ -20030,7 +20030,7 @@ Context
 string
 , incr
 int64
-) *
+)*
 IntCmd
 func (ClusterClient)
 HIncrByFloat
@@ -20054,7 +20054,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 HLen
@@ -20078,7 +20078,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 SliceCmd
 HMGet returns the values for the specified fields in the hash stored at key.
 It returns an interface{} to distinguish between empty string and nil value.
@@ -20111,7 +20111,7 @@ time
 Duration
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpire - Sets the expiration time for specified fields in a hash in milliseconds.
 Similar to HExpire, it accepts a key, an expiration duration in milliseconds, a struct with expiration condition flags, and a list of fields.
@@ -20164,7 +20164,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 func (ClusterClient)
 HPExpireTime
@@ -20209,7 +20209,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireWithArgs - Sets the expiration time for specified fields in a hash in milliseconds.
 It requires a key, an expiration duration, a struct with boolean flags for conditional expiration settings (NX, XX, GT, LT), and a list of fields.
@@ -20255,7 +20255,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPersist - Removes the expiration time from specified fields in a hash.
 Accepts a key and the fields themselves.
@@ -20289,7 +20289,7 @@ Context
 string
 , count
 int
-) *
+)*
 KeyValueSliceCmd
 HRandFieldWithValues redis-server version >= 6.2.0.
 func (ClusterClient)
@@ -20326,7 +20326,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (ClusterClient)
 HSet
@@ -20371,7 +20371,7 @@ Context
 string
 , fieldsAndValues ...
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 HSetEXWithArgs
@@ -20388,7 +20388,7 @@ string
 HSetEXOptions
 , fieldsAndValues ...
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 HSetNX
@@ -20412,7 +20412,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 HTTL
@@ -20445,7 +20445,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 Incr
@@ -20469,7 +20469,7 @@ Context
 string
 , value
 int64
-) *
+)*
 IntCmd
 func (ClusterClient)
 IncrByFloat
@@ -20493,7 +20493,7 @@ context
 Context
 , sections ...
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 InfoMap
@@ -20519,7 +20519,7 @@ context
 Context
 , key, path
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrAppend adds the provided JSON values to the end of the array at the given path.
 For more information, see
@@ -20551,7 +20551,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrIndexArgs
 , value ...interface{}) *
 IntSliceCmd
@@ -20572,7 +20572,7 @@ Context
 string
 , index
 int64
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrInsert inserts the JSON values into the array at the specified path before the index (shifts to the right).
 For more information, see
@@ -20606,7 +20606,7 @@ Context
 string
 , index
 int
-) *
+)*
 StringSliceCmd
 JSONArrPop removes and returns an element from the specified index in the array.
 For more information, see
@@ -20638,7 +20638,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrTrimArgs
 ) *
 IntSliceCmd
@@ -20656,7 +20656,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONClear clears container values (arrays/objects) and sets numeric values to 0.
 For more information, see
@@ -20688,7 +20688,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDel deletes a value.
 For more information, see
@@ -20722,7 +20722,7 @@ Context
 string
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGet returns the value at path in JSON serialized form. JSON.GET returns an
 array of strings. This function parses out the wrapping array but leaves the
@@ -20744,7 +20744,7 @@ string
 JSONGetArgs
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGetWithArgs - Retrieves the value of a key from a JSON document.
 This function also allows for specifying additional options such as:
@@ -20780,7 +20780,7 @@ func (c ClusterClient) JSONMSet(ctx
 context
 .
 Context
-, params ...interface{}) *
+, params ...interface{})*
 StatusCmd
 func (ClusterClient)
 JSONMSetArgs
@@ -20811,7 +20811,7 @@ Context
 string
 , value
 string
-) *
+)*
 StatusCmd
 JSONMerge merges a given JSON value into matching paths.
 For more information, see
@@ -20845,7 +20845,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 SliceCmd
 JSONObjKeys returns the keys in the object that's referenced by the specified path.
 For more information, see
@@ -20877,7 +20877,7 @@ context
 Context
 , key, path
 string
-, value interface{}) *
+, value interface{})*
 StatusCmd
 JSONSet sets the JSON value at the given path in the given key. The value must be something that
 can be marshaled to JSON (using encoding/JSON) unless the argument is a string or a []byte when we assume that
@@ -20915,7 +20915,7 @@ context
 Context
 , key, path, value
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrAppend appends the JSON-string values to the string at the specified path.
 For more information, see
@@ -20947,7 +20947,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONToggle toggles a Boolean value stored at the specified path.
 For more information, see
@@ -20977,7 +20977,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 LCS
@@ -20990,7 +20990,7 @@ context
 Context
 , q *
 LCSQuery
-) *
+)*
 LCSCmd
 func (ClusterClient)
 LIndex
@@ -21014,7 +21014,7 @@ context
 Context
 , key, op
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (ClusterClient)
 LInsertAfter
@@ -21036,7 +21036,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (ClusterClient)
 LLen
@@ -21064,7 +21064,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 KeyValuesCmd
 LMPop Pops one or more elements from the first non-empty list key from the list of provided key names.
 direction: left or right, count: > 0
@@ -21089,7 +21089,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 LPopCount
@@ -21117,7 +21117,7 @@ string
 string
 , a
 LPosArgs
-) *
+)*
 IntCmd
 func (ClusterClient)
 LPosCount
@@ -21145,7 +21145,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (ClusterClient)
 LPushX
@@ -21169,7 +21169,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 LRem
@@ -21195,7 +21195,7 @@ Context
 string
 , index
 int64
-, value interface{}) *
+, value interface{})*
 StatusCmd
 func (ClusterClient)
 LTrim
@@ -21217,7 +21217,7 @@ func (c ClusterClient) LastSave(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (ClusterClient)
 Latency
@@ -21239,7 +21239,7 @@ func (c ClusterClient) LatencyReset(ctx
 context
 .
 Context
-, events ...interface{}) *
+, events ...interface{})*
 StatusCmd
 func (ClusterClient)
 MGet
@@ -21259,7 +21259,7 @@ func (c ClusterClient) MSet(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 StatusCmd
 MSet is like Set but accepts multiple values:
 MSet("key1", "value1", "key2", "value2")
@@ -21293,7 +21293,7 @@ func (c ClusterClient) MSetNX(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 MSetNX is like SetNX but accepts multiple values:
 MSetNX("key1", "value1", "key2", "value2")
@@ -21345,7 +21345,7 @@ int
 time
 .
 Duration
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ModuleLoadex
@@ -21358,7 +21358,7 @@ context
 Context
 , conf *
 ModuleLoadexConfig
-) *
+)*
 StringCmd
 ModuleLoadex Redis `MODULE LOADEX path [CONFIG name value [CONFIG name value ...]] [ARGS args [args ...]]` command.
 func (ClusterClient)
@@ -21405,7 +21405,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 ObjectFreq
@@ -21429,7 +21429,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (ClusterClient)
 ObjectRefCount
@@ -21447,13 +21447,13 @@ OnNewNode
 ¶
 func (c *
 ClusterClient
-) OnNewNode(fn func(rdb *
+) OnNewNode(fn func(rdb*
 Client
 ))
 func (*ClusterClient)
 Options
 ¶
-func (c *
+func (c*
 ClusterClient
 ) Options() *
 ClusterOptions
@@ -21471,7 +21471,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (ClusterClient)
 PExpireAt
@@ -21499,7 +21499,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (ClusterClient)
 PFAdd
@@ -21521,7 +21521,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 PFMerge
@@ -21547,7 +21547,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 PSubscribe subscribes the client to the given patterns.
 Patterns can be omitted to create empty subscription.
@@ -21571,7 +21571,7 @@ context
 Context
 , key
 string
-) *
+)*
 BoolCmd
 func (ClusterClient)
 Ping
@@ -21612,13 +21612,13 @@ PoolStats
 ¶
 func (c *
 ClusterClient
-) PoolStats() *
+) PoolStats()*
 PoolStats
 PoolStats returns accumulated connection pool stats.
 func (*ClusterClient)
 Process
 ¶
-func (c *
+func (c*
 ClusterClient
 ) Process(ctx
 context
@@ -21646,7 +21646,7 @@ func (c ClusterClient) PubSubNumPat(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (ClusterClient)
 PubSubNumSub
@@ -21668,7 +21668,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 PubSubShardNumSub
@@ -21690,7 +21690,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 Publish posts the message to the channel.
 func (ClusterClient)
@@ -21711,7 +21711,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 RPopCount
@@ -21735,7 +21735,7 @@ context
 Context
 , source, destination
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 RPush
@@ -21757,7 +21757,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (ClusterClient)
 RandomKey
@@ -21775,7 +21775,7 @@ func (c ClusterClient) ReadOnly(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ReadWrite
@@ -21807,7 +21807,7 @@ context
 Context
 , key, newkey
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 RenameNX
@@ -21835,7 +21835,7 @@ time
 Duration
 , value
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 RestoreReplace
@@ -21863,7 +21863,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (ClusterClient)
 SCard
@@ -21885,7 +21885,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 SDiffStore
@@ -21909,7 +21909,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 SInterCard
@@ -21935,7 +21935,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 SIsMember
@@ -21957,7 +21957,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 BoolSliceCmd
 SMIsMember Redis `SMISMEMBER key member [member ...]` command.
 func (ClusterClient)
@@ -21981,7 +21981,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringStructMapCmd
 SMembersMap Redis `SMEMBERS key` command output as a map.
 func (ClusterClient)
@@ -22004,7 +22004,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SPop Redis `SPOP key` command.
 func (ClusterClient)
@@ -22030,7 +22030,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 func (ClusterClient)
 SRandMember
@@ -22055,7 +22055,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 SRandMemberN Redis `SRANDMEMBER key count` command.
 func (ClusterClient)
@@ -22084,12 +22084,12 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (*ClusterClient)
 SSubscribe
 ¶
-func (c *
+func (c*
 ClusterClient
 ) SSubscribe(ctx
 context
@@ -22109,7 +22109,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 SUnionStore
@@ -22131,7 +22131,7 @@ func (c ClusterClient) Save(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 Scan
@@ -22163,12 +22163,12 @@ string
 int64
 , keyType
 string
-) *
+)*
 ScanCmd
 func (*ClusterClient)
 ScriptExists
 ¶
-func (c *
+func (c*
 ClusterClient
 ) ScriptExists(ctx
 context
@@ -22187,7 +22187,7 @@ ClusterClient
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ScriptKill
@@ -22209,7 +22209,7 @@ context
 Context
 , script
 string
-) *
+)*
 StringCmd
 func (ClusterClient)
 Set
@@ -22242,7 +22242,7 @@ Context
 string
 , value interface{}, a
 SetArgs
-) *
+)*
 StatusCmd
 SetArgs supports all the options that the SET command supports.
 It is the alternative to the Set function when you want
@@ -22275,7 +22275,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetEx Redis `SETEx key expiration value` command.
 func (ClusterClient)
@@ -22326,7 +22326,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDEQGet sets the value only if the current value's digest equals matchDigest,
 and returns the previous value.
@@ -22389,7 +22389,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDNEGet sets the value only if the current value's digest does NOT equal matchDigest,
 and returns the previous value.
@@ -22443,7 +22443,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFEQGet Redis `SET key value [expiration] IFEQ match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value equals matchValue,
@@ -22492,7 +22492,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFNEGet Redis `SET key value [expiration] IFNE match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value does not equal matchValue,
@@ -22534,7 +22534,7 @@ string
 int64
 , value
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 SetXX
@@ -22562,7 +22562,7 @@ func (c ClusterClient) Shutdown(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 ShutdownNoSave
@@ -22580,7 +22580,7 @@ func (c ClusterClient) ShutdownSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (*ClusterClient)
 SlaveForKey
@@ -22624,7 +22624,7 @@ context
 Context
 , num
 int64
-) *
+)*
 SlowLogCmd
 func (ClusterClient)
 SlowLogLen
@@ -22646,7 +22646,7 @@ func (c ClusterClient) SlowLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (ClusterClient)
 Sort
@@ -22659,7 +22659,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 SortInterfaces
@@ -22672,7 +22672,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 SliceCmd
 func (ClusterClient)
 SortRO
@@ -22685,7 +22685,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 SortStore
@@ -22698,7 +22698,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 IntCmd
 func (ClusterClient)
 StrLen
@@ -22722,7 +22722,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 Subscribe subscribes the client to the specified channels.
 Channels can be omitted to create empty subscription.
@@ -22766,7 +22766,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRank returns an array of values from a t-Digest data structure based on their rank.
 The rank of an element is its position in the sorted list of all elements in the t-Digest.
@@ -22806,7 +22806,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCDF returns an array of cumulative distribution function (CDF) values for one or more elements in a t-Digest data structure.
 The CDF value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -22843,7 +22843,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestCreateWithCompression creates an empty t-Digest data structure with a specified compression parameter.
 The compression parameter controls the accuracy and memory usage of the t-Digest.
@@ -22877,7 +22877,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMax returns the maximum value from a t-Digest data structure.
 For more information -
@@ -22897,7 +22897,7 @@ string
 TDigestMergeOptions
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 TDigestMerge merges multiple t-Digest data structures into a single t-Digest.
 This function also allows for specifying additional options such as compression and override behavior.
@@ -22933,7 +22933,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestQuantile returns an array of quantile values for one or more elements in a t-Digest data structure.
 The quantile value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -22971,7 +22971,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestReset resets a t-Digest data structure to its initial state.
 Returns OK on success or an error if the operation could not be completed.
@@ -23010,7 +23010,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 TDigestTrimmedMean returns the trimmed mean value from a t-Digest data structure.
 The trimmed mean is calculated by removing a specified fraction of the highest and lowest values from the t-Digest and then calculating the mean of the remaining values.
@@ -23048,7 +23048,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -23068,7 +23068,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSAlterOptions
 ) *
 StatusCmd
@@ -23088,7 +23088,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreate - Creates a new time-series key.
 For more information -
@@ -23132,7 +23132,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -23152,7 +23152,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSOptions
 ) *
 StatusCmd
@@ -23174,7 +23174,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
 For more information -
@@ -23194,7 +23194,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -23234,7 +23234,7 @@ Context
 string
 , destKey
 string
-) *
+)*
 StatusCmd
 TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
 For more information -
@@ -23266,7 +23266,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSGetOptions
 ) *
 TSTimestampValueCmd
@@ -23288,7 +23288,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrBy - Increments the value of a time-series key by the specified timestamp.
 For more information -
@@ -23308,7 +23308,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -23342,7 +23342,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -23360,7 +23360,7 @@ func (c ClusterClient) TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSMAdd - Adds multiple samples to multiple time-series keys.
 It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
@@ -23394,7 +23394,7 @@ context
 Context
 , filters []
 string
-, options *
+, options*
 TSMGetOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -23418,7 +23418,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRange - Returns a range of samples from multiple time-series keys.
 For more information -
@@ -23440,7 +23440,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
 This function allows for specifying additional options such as:
@@ -23484,7 +23484,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -23506,7 +23506,7 @@ context
 Context
 , filterExpr []
 string
-) *
+)*
 StringSliceCmd
 TSQueryIndex - Returns all the keys matching the filter expression.
 For more information -
@@ -23546,7 +23546,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -23571,7 +23571,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRange - Returns a range of samples from a time-series key in reverse order.
 For more information -
@@ -23593,7 +23593,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
 This function allows for specifying additional options such as:
@@ -23619,7 +23619,7 @@ func (c ClusterClient) Time(ctx
 context
 .
 Context
-) *
+)*
 TimeCmd
 func (ClusterClient)
 TopKAdd
@@ -23649,7 +23649,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 TopKCount returns an estimate of the number of times an item may be in a Top-K filter.
 For more information -
@@ -23681,7 +23681,7 @@ context
 Context
 , key
 string
-) *
+)*
 TopKInfoCmd
 TopKInfo returns information about a Top-K filter.
 For more information -
@@ -23713,7 +23713,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringIntCmd
 TopKListWithCount returns all items in Top-K list with their respective count.
 For more information -
@@ -23748,7 +23748,7 @@ Context
 string
 , k
 int64
-) *
+)*
 StatusCmd
 TopKReserve creates an empty Top-K filter with the specified number of top items to keep.
 For more information -
@@ -23785,12 +23785,12 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*ClusterClient)
 TxPipeline
 ¶
-func (c *
+func (c*
 ClusterClient
 ) TxPipeline()
 Pipeliner
@@ -23798,7 +23798,7 @@ TxPipeline acts like Pipeline, but wraps queued commands with MULTI/EXEC.
 func (*ClusterClient)
 TxPipelined
 ¶
-func (c *
+func (c*
 ClusterClient
 ) TxPipelined(ctx
 context
@@ -23833,7 +23833,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 VAdd
@@ -23865,7 +23865,7 @@ Context
 string
 , val
 Vector
-, addArgs *
+, addArgs*
 VAddArgs
 ) *
 BoolCmd
@@ -23882,7 +23882,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VCARD key`
 note: the API is experimental and may be subject to change.
@@ -23913,7 +23913,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VDIM key`
 note: the API is experimental and may be subject to change.
@@ -23945,7 +23945,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringCmd
 `VGETATTR key element`
 note: the API is experimental and may be subject to change.
@@ -23975,7 +23975,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringSliceCmd
 `VLINKS key element`
 note: the API is experimental and may be subject to change.
@@ -24005,7 +24005,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 `VRANDMEMBER key`
 note: the API is experimental and may be subject to change.
@@ -24039,7 +24039,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 `VRANGE key start end count`
 a negative count means to return all the elements in the vector set.
@@ -24070,7 +24070,7 @@ context
 Context
 , key, element
 string
-, attr interface{}) *
+, attr interface{})*
 BoolCmd
 `VSETATTR key element "{ JSON obj }"`
 The `attr` must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -24106,7 +24106,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 StringSliceCmd
@@ -24126,7 +24126,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 VectorScoreSliceCmd
@@ -24146,7 +24146,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 VectorScoreSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) WITHSCORES`
 note: the API is experimental and may be subject to change.
@@ -24180,7 +24180,7 @@ int
 time
 .
 Duration
-) *
+)*
 IntCmd
 func (*ClusterClient)
 Watch
@@ -24229,7 +24229,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (ClusterClient)
 XAdd
@@ -24240,7 +24240,7 @@ context
 Context
 , a *
 XAddArgs
-) *
+)*
 StringCmd
 func (ClusterClient)
 XAutoClaim
@@ -24251,7 +24251,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimCmd
 func (ClusterClient)
 XAutoClaimJustID
@@ -24262,7 +24262,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimJustIDCmd
 func (ClusterClient)
 XClaim
@@ -24273,7 +24273,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 XMessageSliceCmd
 func (ClusterClient)
 XClaimJustID
@@ -24284,7 +24284,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 XDel
@@ -24314,7 +24314,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (ClusterClient)
 XGroupCreate
@@ -24336,7 +24336,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 XGroupCreateMkStream
@@ -24358,7 +24358,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 XGroupDestroy
@@ -24380,7 +24380,7 @@ context
 Context
 , stream, group, start
 string
-) *
+)*
 StatusCmd
 func (ClusterClient)
 XInfoConsumers
@@ -24404,7 +24404,7 @@ context
 Context
 , key
 string
-) *
+)*
 XInfoGroupsCmd
 func (ClusterClient)
 XInfoStream
@@ -24428,7 +24428,7 @@ Context
 string
 , count
 int
-) *
+)*
 XInfoStreamFullCmd
 XInfoStreamFull XINFO STREAM FULL [COUNT count]
 redis-server >= 6.0.
@@ -24452,7 +24452,7 @@ context
 Context
 , stream, group
 string
-) *
+)*
 XPendingCmd
 func (ClusterClient)
 XPendingExt
@@ -24463,7 +24463,7 @@ context
 Context
 , a *
 XPendingExtArgs
-) *
+)*
 XPendingExtCmd
 func (ClusterClient)
 XRange
@@ -24487,7 +24487,7 @@ Context
 string
 , count
 int64
-) *
+)*
 XMessageSliceCmd
 func (ClusterClient)
 XRead
@@ -24498,7 +24498,7 @@ context
 Context
 , a *
 XReadArgs
-) *
+)*
 XStreamSliceCmd
 func (ClusterClient)
 XReadGroup
@@ -24509,7 +24509,7 @@ context
 Context
 , a *
 XReadGroupArgs
-) *
+)*
 XStreamSliceCmd
 func (ClusterClient)
 XReadStreams
@@ -24531,7 +24531,7 @@ context
 Context
 , stream, start, stop
 string
-) *
+)*
 XMessageSliceCmd
 func (ClusterClient)
 XRevRangeN
@@ -24557,7 +24557,7 @@ Context
 string
 , maxLen
 int64
-) *
+)*
 IntCmd
 XTrimMaxLen No `~` rules are used, `limit` cannot be used.
 cmd: XTRIM key MAXLEN maxLen
@@ -24589,7 +24589,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 XTrimMaxLenMode
@@ -24619,7 +24619,7 @@ Context
 string
 , minID
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 XTrimMinIDApprox
@@ -24653,7 +24653,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 XTrimMinIDMode
@@ -24683,7 +24683,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAdd Redis `ZADD key score member [score member ...]` command.
 func (ClusterClient)
@@ -24710,7 +24710,7 @@ Context
 string
 , args
 ZAddArgs
-) *
+)*
 FloatCmd
 func (ClusterClient)
 ZAddGT
@@ -24741,7 +24741,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddLT Redis `ZADD key LT score member [score member ...]` command.
 func (ClusterClient)
@@ -24769,7 +24769,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddXX Redis `ZADD key XX score member [score member ...]` command.
 func (ClusterClient)
@@ -24792,7 +24792,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZDiff
@@ -24817,7 +24817,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 ZDiffStore redis-server version >=6.2.0.
 func (ClusterClient)
@@ -24845,7 +24845,7 @@ string
 float64
 , member
 string
-) *
+)*
 FloatCmd
 func (ClusterClient)
 ZInter
@@ -24856,7 +24856,7 @@ context
 Context
 , store *
 ZStore
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ZInterCard
@@ -24880,7 +24880,7 @@ context
 Context
 , destination
 string
-, store *
+, store*
 ZStore
 ) *
 IntCmd
@@ -24891,7 +24891,7 @@ func (c ClusterClient) ZInterWithScores(ctx
 context
 .
 Context
-, store *
+, store*
 ZStore
 ) *
 ZSliceCmd
@@ -24904,7 +24904,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZMPop
@@ -24937,7 +24937,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 FloatSliceCmd
 func (ClusterClient)
 ZPopMax
@@ -24963,7 +24963,7 @@ Context
 string
 , count ...
 int64
-) *
+)*
 ZSliceCmd
 func (ClusterClient)
 ZRandMember
@@ -24990,7 +24990,7 @@ Context
 string
 , count
 int
-) *
+)*
 ZSliceCmd
 ZRandMemberWithScores redis-server version >= 6.2.0.
 func (ClusterClient)
@@ -25015,7 +25015,7 @@ context
 Context
 , z
 ZRangeArgs
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ZRangeArgsWithScores
@@ -25037,7 +25037,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -25050,7 +25050,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -25063,7 +25063,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 ZSliceCmd
@@ -25078,7 +25078,7 @@ Context
 string
 , z
 ZRangeArgs
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZRangeWithScores
@@ -25102,7 +25102,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZRankWithScore
@@ -25128,7 +25128,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (ClusterClient)
 ZRemRangeByLex
@@ -25152,7 +25152,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZRemRangeByScore
@@ -25176,7 +25176,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ZRevRangeByLex
@@ -25189,7 +25189,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ZRevRangeByScore
@@ -25202,7 +25202,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ZRevRangeByScoreWithScores
@@ -25215,7 +25215,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 ZSliceCmd
 func (ClusterClient)
 ZRevRangeWithScores
@@ -25241,7 +25241,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZRevRankWithScore
@@ -25271,7 +25271,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (ClusterClient)
 ZScore
@@ -25293,7 +25293,7 @@ context
 Context
 , store
 ZStore
-) *
+)*
 StringSliceCmd
 func (ClusterClient)
 ZUnionStore
@@ -25306,7 +25306,7 @@ Context
 string
 , store *
 ZStore
-) *
+)*
 IntCmd
 func (ClusterClient)
 ZUnionWithScores
@@ -25329,7 +25329,7 @@ ClusterMyShardID(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 ClusterMyID(ctx
 context
@@ -25341,7 +25341,7 @@ ClusterSlots(ctx
 context
 .
 Context
-) *
+)*
 ClusterSlotsCmd
 ClusterShards(ctx
 context
@@ -25353,7 +25353,7 @@ ClusterLinks(ctx
 context
 .
 Context
-) *
+)*
 ClusterLinksCmd
 ClusterNodes(ctx
 context
@@ -25367,7 +25367,7 @@ context
 Context
 , host, port
 string
-) *
+)*
 StatusCmd
 ClusterForget(ctx
 context
@@ -25383,7 +25383,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 StatusCmd
 ClusterResetSoft(ctx
 context
@@ -25395,7 +25395,7 @@ ClusterResetHard(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 ClusterInfo(ctx
 context
@@ -25409,7 +25409,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 ClusterGetKeysInSlot(ctx
 context
@@ -25427,7 +25427,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 IntCmd
 ClusterCountKeysInSlot(ctx
 context
@@ -25443,7 +25443,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 ClusterDelSlotsRange(ctx
 context
@@ -25457,7 +25457,7 @@ ClusterSaveConfig(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 ClusterSlaves(ctx
 context
@@ -25471,7 +25471,7 @@ ClusterFailover(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 ClusterAddSlots(ctx
 context
@@ -25487,7 +25487,7 @@ context
 Context
 , min, max
 int
-) *
+)*
 StatusCmd
 ReadOnly(ctx
 context
@@ -25499,7 +25499,7 @@ ReadWrite(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 }
 type
@@ -25893,8 +25893,8 @@ redis://user:password@localhost:6789?dial_timeout=3&read_timeout=6s&addr=localho
 is equivalent to:
 &ClusterOptions{
 Addr:        ["localhost:6789", "localhost:6790", "localhost:6791"]
-DialTimeout: 3 * time.Second, // no time unit = seconds
-ReadTimeout: 6 * time.Second,
+DialTimeout: 3* time.Second, // no time unit = seconds
+ReadTimeout: 6 *time.Second,
 }
 type
 ClusterShard
@@ -25924,41 +25924,41 @@ func NewClusterShardsCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 ClusterShardsCmd
 func (*ClusterShardsCmd)
 Args
 ¶
 added in
 v9.0.3
-func (cmd *ClusterShardsCmd) Args() []interface{}
+func (cmd*ClusterShardsCmd) Args() []interface{}
 func (*ClusterShardsCmd)
 Err
 ¶
 added in
 v9.0.3
-func (cmd *ClusterShardsCmd) Err()
+func (cmd*ClusterShardsCmd) Err()
 error
 func (*ClusterShardsCmd)
 FullName
 ¶
 added in
 v9.0.3
-func (cmd *ClusterShardsCmd) FullName()
+func (cmd*ClusterShardsCmd) FullName()
 string
 func (*ClusterShardsCmd)
 Name
 ¶
 added in
 v9.0.3
-func (cmd *ClusterShardsCmd) Name()
+func (cmd*ClusterShardsCmd) Name()
 string
 func (*ClusterShardsCmd)
 Result
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ClusterShardsCmd
 ) Result() ([]
 ClusterShard
@@ -25970,7 +25970,7 @@ SetErr
 ¶
 added in
 v9.0.3
-func (cmd *ClusterShardsCmd) SetErr(e
+func (cmd*ClusterShardsCmd) SetErr(e
 error
 )
 func (*ClusterShardsCmd)
@@ -25978,7 +25978,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.0.3
-func (cmd *ClusterShardsCmd) SetFirstKeyPos(keyPos
+func (cmd*ClusterShardsCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*ClusterShardsCmd)
@@ -25986,7 +25986,7 @@ SetVal
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ClusterShardsCmd
 ) SetVal(val []
 ClusterShard
@@ -25996,7 +25996,7 @@ String
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ClusterShardsCmd
 ) String()
 string
@@ -26005,7 +26005,7 @@ Val
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ClusterShardsCmd
 ) Val() []
 ClusterShard
@@ -26042,32 +26042,32 @@ func NewClusterSlotsCmdResult(val []
 ClusterSlot
 , err
 error
-) *
+)*
 ClusterSlotsCmd
 NewClusterSlotsCmdResult returns a ClusterSlotsCmd initialised with val and err for testing.
 func (*ClusterSlotsCmd)
 Args
 ¶
-func (cmd *ClusterSlotsCmd) Args() []interface{}
+func (cmd*ClusterSlotsCmd) Args() []interface{}
 func (*ClusterSlotsCmd)
 Err
 ¶
-func (cmd *ClusterSlotsCmd) Err()
+func (cmd*ClusterSlotsCmd) Err()
 error
 func (*ClusterSlotsCmd)
 FullName
 ¶
-func (cmd *ClusterSlotsCmd) FullName()
+func (cmd*ClusterSlotsCmd) FullName()
 string
 func (*ClusterSlotsCmd)
 Name
 ¶
-func (cmd *ClusterSlotsCmd) Name()
+func (cmd*ClusterSlotsCmd) Name()
 string
 func (*ClusterSlotsCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 ClusterSlotsCmd
 ) Result() ([]
 ClusterSlot
@@ -26077,19 +26077,19 @@ error
 func (*ClusterSlotsCmd)
 SetErr
 ¶
-func (cmd *ClusterSlotsCmd) SetErr(e
+func (cmd*ClusterSlotsCmd) SetErr(e
 error
 )
 func (*ClusterSlotsCmd)
 SetFirstKeyPos
 ¶
-func (cmd *ClusterSlotsCmd) SetFirstKeyPos(keyPos
+func (cmd*ClusterSlotsCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*ClusterSlotsCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 ClusterSlotsCmd
 ) SetVal(val []
 ClusterSlot
@@ -26097,14 +26097,14 @@ ClusterSlot
 func (*ClusterSlotsCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 ClusterSlotsCmd
 ) String()
 string
 func (*ClusterSlotsCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 ClusterSlotsCmd
 ) Val() []
 ClusterSlot
@@ -26128,17 +26128,17 @@ NewCmdResult
 ¶
 func NewCmdResult(val interface{}, err
 error
-) *
+)*
 Cmd
 NewCmdResult returns a Cmd initialised with val and err for testing.
 func (*Cmd)
 Args
 ¶
-func (cmd *Cmd) Args() []interface{}
+func (cmd*Cmd) Args() []interface{}
 func (*Cmd)
 Bool
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Bool() (
 bool
@@ -26148,7 +26148,7 @@ error
 func (*Cmd)
 BoolSlice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) BoolSlice() ([]
 bool
@@ -26158,12 +26158,12 @@ error
 func (*Cmd)
 Err
 ¶
-func (cmd *Cmd) Err()
+func (cmd*Cmd) Err()
 error
 func (*Cmd)
 Float32
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Float32() (
 float32
@@ -26173,7 +26173,7 @@ error
 func (*Cmd)
 Float32Slice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Float32Slice() ([]
 float32
@@ -26183,7 +26183,7 @@ error
 func (*Cmd)
 Float64
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Float64() (
 float64
@@ -26193,7 +26193,7 @@ error
 func (*Cmd)
 Float64Slice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Float64Slice() ([]
 float64
@@ -26203,12 +26203,12 @@ error
 func (*Cmd)
 FullName
 ¶
-func (cmd *Cmd) FullName()
+func (cmd*Cmd) FullName()
 string
 func (*Cmd)
 Int
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Int() (
 int
@@ -26218,7 +26218,7 @@ error
 func (*Cmd)
 Int64
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Int64() (
 int64
@@ -26228,7 +26228,7 @@ error
 func (*Cmd)
 Int64Slice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Int64Slice() ([]
 int64
@@ -26238,12 +26238,12 @@ error
 func (*Cmd)
 Name
 ¶
-func (cmd *Cmd) Name()
+func (cmd*Cmd) Name()
 string
 func (*Cmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Result() (interface{},
 error
@@ -26251,25 +26251,25 @@ error
 func (*Cmd)
 SetErr
 ¶
-func (cmd *Cmd) SetErr(e
+func (cmd*Cmd) SetErr(e
 error
 )
 func (*Cmd)
 SetFirstKeyPos
 ¶
-func (cmd *Cmd) SetFirstKeyPos(keyPos
+func (cmd*Cmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*Cmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) SetVal(val interface{})
 func (*Cmd)
 Slice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Slice() ([]interface{},
 error
@@ -26277,14 +26277,14 @@ error
 func (*Cmd)
 String
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) String()
 string
 func (*Cmd)
 StringSlice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) StringSlice() ([]
 string
@@ -26294,7 +26294,7 @@ error
 func (*Cmd)
 Text
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Text() (
 string
@@ -26304,7 +26304,7 @@ error
 func (*Cmd)
 Uint64
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Uint64() (
 uint64
@@ -26314,7 +26314,7 @@ error
 func (*Cmd)
 Uint64Slice
 ¶
-func (cmd *
+func (cmd*
 Cmd
 ) Uint64Slice() ([]
 uint64
@@ -26913,7 +26913,7 @@ func (c Conn) ACLCatArgs(ctx
 context
 .
 Context
-, options *
+, options*
 ACLCatArgs
 ) *
 StringSliceCmd
@@ -26928,7 +26928,7 @@ context
 Context
 , username
 string
-) *
+)*
 IntCmd
 func (Conn)
 ACLDryRun
@@ -26954,7 +26954,7 @@ context
 Context
 , bit
 int
-) *
+)*
 StringCmd
 func (Conn)
 ACLList
@@ -26978,7 +26978,7 @@ context
 Context
 , count
 int64
-) *
+)*
 ACLLogCmd
 func (Conn)
 ACLLogReset
@@ -27004,7 +27004,7 @@ Context
 string
 , rules ...
 string
-) *
+)*
 StatusCmd
 func (Conn)
 ACLUsers
@@ -27026,7 +27026,7 @@ func (c Conn) ACLWhoAmI(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Conn)
 Append
@@ -27048,7 +27048,7 @@ context
 Context
 , password
 string
-) *
+)*
 StatusCmd
 func (Conn)
 AuthACL
@@ -27075,7 +27075,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFAdd adds an item to a Bloom filter.
 For more information -
@@ -27109,7 +27109,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFExists determines whether a given item was added to a Bloom filter.
 For more information -
@@ -27141,7 +27141,7 @@ context
 Context
 , key, option
 string
-) *
+)*
 BFInfoCmd
 BFInfoArg returns information about a specific option of a Bloom filter.
 For more information -
@@ -27173,7 +27173,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoExpansion returns information about the expansion rate of a Bloom filter.
 For more information -
@@ -27205,7 +27205,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoItems returns information about the items of a Bloom filter.
 For more information -
@@ -27237,7 +27237,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFInsertOptions
 , elements ...interface{}) *
 BoolSliceCmd
@@ -27259,7 +27259,7 @@ Context
 string
 , iterator
 int64
-, data interface{}) *
+, data interface{})*
 StatusCmd
 BFLoadChunk restores a Bloom filter previously saved using BF.SCANDUMP.
 For more information -
@@ -27292,7 +27292,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMExists check if multiple elements exist in a Bloom filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -27334,7 +27334,7 @@ string
 float64
 , capacity, expansion
 int64
-) *
+)*
 StatusCmd
 BFReserveExpansion creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -27374,7 +27374,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFReserveOptions
 ) *
 StatusCmd
@@ -27396,7 +27396,7 @@ Context
 string
 , iterator
 int64
-) *
+)*
 ScanDumpCmd
 Begins an incremental save of the Bloom filter.
 This command is useful for large Bloom filters that cannot fit into the DUMP and RESTORE model.
@@ -27438,7 +27438,7 @@ time
 .
 Duration
 ,
-) *
+)*
 StringCmd
 func (Conn)
 BLPop
@@ -27468,7 +27468,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 BRPopLPush
@@ -27504,7 +27504,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 ZSliceWithKeyCmd
 BZMPop is the blocking variant of ZMPOP.
 When any of the sorted sets contains elements, this command behaves exactly like ZMPOP.
@@ -27540,7 +27540,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMin Redis `BZPOPMIN key [key ...] timeout` command.
 func (Conn)
@@ -27559,7 +27559,7 @@ func (c Conn) BgSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Conn)
 BitCount
@@ -27572,7 +27572,7 @@ Context
 string
 , bitCount *
 BitCount
-) *
+)*
 IntCmd
 func (Conn)
 BitField
@@ -27600,7 +27600,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 BitFieldRO - Read-only variant of the BITFIELD command.
 It is like the original BITFIELD but only accepts GET subcommand and can safely be used in read-only replicas.
@@ -27632,7 +27632,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpAndOr creates a new bitmap in which users are members of bitmap X and also members of one or more of bitmaps Y1, Y2, …
 Introduced with Redis 8.2
@@ -27666,7 +27666,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1 creates a new bitmap in which users are members of one or more of bitmaps Y1, Y2, … but not members of bitmap X
 Introduced with Redis 8.2
@@ -27697,7 +27697,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne creates a new bitmap in which users are members of exactly one of the given bitmaps
 Introduced with Redis 8.2
@@ -27726,7 +27726,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor creates a new bitmap in which users are the result of XORing all given bitmaps
 func (Conn)
@@ -27763,7 +27763,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitPosSpan supports the `byte | bit` parameters in redis version 7.0,
 the bitpos command defaults to using byte type for the `start-end` range,
@@ -27799,7 +27799,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX adds an element to a Cuckoo filter only if it does not already exist in the filter.
 Returns true if the element was added to the filter or false if it already exists in the filter.
@@ -27832,7 +27832,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFDel deletes an item once from the cuckoo filter.
 For more information -
@@ -27864,7 +27864,7 @@ context
 Context
 , key
 string
-) *
+)*
 CFInfoCmd
 CFInfo returns information about a Cuckoo filter.
 For more information -
@@ -27882,7 +27882,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFInsert inserts elements into a Cuckoo filter.
 This function also allows for specifying additional options such as capacity, error rate, expansion rate, and non-scaling behavior.
@@ -27902,7 +27902,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CFInsertNX inserts elements into a Cuckoo filter only if they do not already exist in the filter.
 This function also allows for specifying additional options such as:
@@ -27939,7 +27939,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFMExists check if multiple elements exist in a Cuckoo filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -27978,7 +27978,7 @@ string
 int64
 , bucketsize
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize creates an empty Cuckoo filter with the specified capacity and bucket size.
 For more information -
@@ -28018,7 +28018,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFReserveMaxIterations creates an empty Cuckoo filter with the specified capacity and maximum number of iterations.
 For more information -
@@ -28036,7 +28036,7 @@ Context
 string
 , options *
 CFReserveOptions
-) *
+)*
 StatusCmd
 CFReserveWithArgs creates an empty Cuckoo filter with the specified options.
 This function allows for specifying additional options such as bucket size and maximum number of iterations.
@@ -28071,7 +28071,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSIncrBy increments the count of one or more items in a Count-Min Sketch filter.
 Returns an array of integers representing the updated count of each item.
@@ -28106,7 +28106,7 @@ Context
 string
 , width, depth
 int64
-) *
+)*
 StatusCmd
 CMSInitByDim creates an empty Count-Min Sketch filter with the specified dimensions.
 For more information -
@@ -28142,7 +28142,7 @@ Context
 string
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 CMSMerge merges multiple Count-Min Sketch filters into a single filter.
 The destination filter must not exist and will be created with the dimensions of the first source filter.
@@ -28184,7 +28184,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSQuery returns count for item(s).
 For more information -
@@ -28206,7 +28206,7 @@ func (c Conn) ClientID(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Conn)
 ClientInfo
@@ -28228,7 +28228,7 @@ context
 Context
 , ipPort
 string
-) *
+)*
 StatusCmd
 func (Conn)
 ClientKillByFilter
@@ -28250,7 +28250,7 @@ func (c Conn) ClientList(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Conn)
 ClientMaintNotifications
@@ -28280,7 +28280,7 @@ Context
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Conn)
 ClientSetInfo
@@ -28305,7 +28305,7 @@ context
 Context
 , name
 string
-) *
+)*
 BoolCmd
 ClientSetName assigns a name to the connection.
 func (Conn)
@@ -28328,7 +28328,7 @@ context
 Context
 , id
 int64
-) *
+)*
 IntCmd
 func (Conn)
 ClientUnpause
@@ -29845,7 +29845,7 @@ Context
 string
 , geoLocation ...*
 GeoLocation
-) *
+)*
 IntCmd
 func (Conn)
 GeoDist
@@ -29873,7 +29873,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 GeoPos
@@ -29900,7 +29900,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -29916,7 +29916,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -29932,7 +29932,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -29950,7 +29950,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -29965,7 +29965,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchQuery
 ) *
 StringSliceCmd
@@ -29979,7 +29979,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchLocationQuery
 ,
 ) *
@@ -29993,7 +29993,7 @@ context
 Context
 , key, store
 string
-, q *
+, q*
 GeoSearchStoreQuery
 ) *
 IntCmd
@@ -30006,7 +30006,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 Get Redis `GET key` command. It returns redis.Nil error when key does not exist.
 func (Conn)
@@ -30031,7 +30031,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 GetDel redis-server version >= 6.2.0.
 func (Conn)
@@ -30062,7 +30062,7 @@ Context
 string
 , start, end
 int64
-) *
+)*
 StringCmd
 func (Conn)
 GetSet
@@ -30086,7 +30086,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntCmd
 func (Conn)
 HExists
@@ -30116,7 +30116,7 @@ time
 Duration
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpire - Sets the expiration time for specified fields in a hash in seconds.
 The command constructs an argument list starting with "HEXPIRE", followed by the key, duration, any conditional flags, and the specified fields.
@@ -30169,7 +30169,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 func (Conn)
 HExpireTime
@@ -30214,7 +30214,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireWithArgs - Sets the expiration time for specified fields in a hash in seconds.
 It requires a key, an expiration duration, a struct with boolean flags for conditional expiration settings (NX, XX, GT, LT), and a list of fields.
@@ -30243,7 +30243,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringStringCmd
 func (Conn)
 HGetDel
@@ -30273,7 +30273,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 HGetEXWithArgs
@@ -30290,7 +30290,7 @@ string
 HGetEXOptions
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 HIncrBy
@@ -30316,7 +30316,7 @@ Context
 string
 , incr
 float64
-) *
+)*
 FloatCmd
 func (Conn)
 HKeys
@@ -30338,7 +30338,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Conn)
 HMGet
@@ -30364,7 +30364,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 HMSet is a deprecated version of HSet left for compatibility with Redis 3.
 func (Conn)
@@ -30410,7 +30410,7 @@ time
 Time
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireAt - Sets the expiration time for specified fields in a hash to a UNIX timestamp in milliseconds.
 Similar to HExpireAt but for timestamps in milliseconds. It accepts the same parameters and adjusts the UNIX time to milliseconds.
@@ -30452,7 +30452,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireTime - Retrieves the expiration time for specified fields in a hash as a UNIX timestamp in milliseconds.
 Similar to HExpireTime, adjusted for timestamps in milliseconds. It requires the same parameters.
@@ -30504,7 +30504,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPTTL - Retrieves the remaining time to live for specified fields in a hash in milliseconds.
 Similar to HTTL, but returns the TTL in milliseconds. It requires a key and the specified fields.
@@ -30548,7 +30548,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 HRandField redis-server version >= 6.2.0.
 func (Conn)
@@ -30580,7 +30580,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Conn)
 HScanNoValues
@@ -30610,7 +30610,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 HSet accepts values in following formats:
 HSet(ctx, "myhash", "key1", "value1", "key2", "value2")
@@ -30657,7 +30657,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HSetEXOptions
 , fieldsAndValues ...
 string
@@ -30672,7 +30672,7 @@ context
 Context
 , key, field
 string
-, value interface{}) *
+, value interface{})*
 BoolCmd
 func (Conn)
 HStrLen
@@ -30700,7 +30700,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HTTL - Retrieves the remaining time to live for specified fields in a hash in seconds.
 Requires a key and the fields themselves. It returns the TTL for each specified field.
@@ -30733,7 +30733,7 @@ int
 , username, password, clientName
 string
 ,
-) *
+)*
 MapStringInterfaceCmd
 Hello sets the resp protocol used.
 func (Conn)
@@ -30758,7 +30758,7 @@ Context
 string
 , value
 int64
-) *
+)*
 IntCmd
 func (Conn)
 IncrByFloat
@@ -30782,7 +30782,7 @@ context
 Context
 , sections ...
 string
-) *
+)*
 StringCmd
 func (Conn)
 InfoMap
@@ -30808,7 +30808,7 @@ context
 Context
 , key, path
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrAppend adds the provided JSON values to the end of the array at the given path.
 For more information, see
@@ -30840,7 +30840,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrIndexArgs
 , value ...interface{}) *
 IntSliceCmd
@@ -30861,7 +30861,7 @@ Context
 string
 , index
 int64
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrInsert inserts the JSON values into the array at the specified path before the index (shifts to the right).
 For more information, see
@@ -30895,7 +30895,7 @@ Context
 string
 , index
 int
-) *
+)*
 StringSliceCmd
 JSONArrPop removes and returns an element from the specified index in the array.
 For more information, see
@@ -30927,7 +30927,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrTrimArgs
 ) *
 IntSliceCmd
@@ -30945,7 +30945,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONClear clears container values (arrays/objects) and sets numeric values to 0.
 For more information, see
@@ -30977,7 +30977,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDel deletes a value.
 For more information, see
@@ -31011,7 +31011,7 @@ Context
 string
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGet returns the value at path in JSON serialized form. JSON.GET returns an
 array of strings. This function parses out the wrapping array but leaves the
@@ -31033,7 +31033,7 @@ string
 JSONGetArgs
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGetWithArgs - Retrieves the value of a key from a JSON document.
 This function also allows for specifying additional options such as:
@@ -31069,7 +31069,7 @@ func (c Conn) JSONMSet(ctx
 context
 .
 Context
-, params ...interface{}) *
+, params ...interface{})*
 StatusCmd
 func (Conn)
 JSONMSetArgs
@@ -31100,7 +31100,7 @@ Context
 string
 , value
 string
-) *
+)*
 StatusCmd
 JSONMerge merges a given JSON value into matching paths.
 For more information, see
@@ -31134,7 +31134,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 SliceCmd
 JSONObjKeys returns the keys in the object that's referenced by the specified path.
 For more information, see
@@ -31166,7 +31166,7 @@ context
 Context
 , key, path
 string
-, value interface{}) *
+, value interface{})*
 StatusCmd
 JSONSet sets the JSON value at the given path in the given key. The value must be something that
 can be marshaled to JSON (using encoding/JSON) unless the argument is a string or a []byte when we assume that
@@ -31204,7 +31204,7 @@ context
 Context
 , key, path, value
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrAppend appends the JSON-string values to the string at the specified path.
 For more information, see
@@ -31236,7 +31236,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONToggle toggles a Boolean value stored at the specified path.
 For more information, see
@@ -31266,7 +31266,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 LCS
@@ -31279,7 +31279,7 @@ context
 Context
 , q *
 LCSQuery
-) *
+)*
 LCSCmd
 func (Conn)
 LIndex
@@ -31303,7 +31303,7 @@ context
 Context
 , key, op
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Conn)
 LInsertAfter
@@ -31325,7 +31325,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Conn)
 LLen
@@ -31353,7 +31353,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 KeyValuesCmd
 LMPop Pops one or more elements from the first non-empty list key from the list of provided key names.
 direction: left or right, count: > 0
@@ -31378,7 +31378,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Conn)
 LPopCount
@@ -31406,7 +31406,7 @@ string
 string
 , a
 LPosArgs
-) *
+)*
 IntCmd
 func (Conn)
 LPosCount
@@ -31434,7 +31434,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Conn)
 LPushX
@@ -31458,7 +31458,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (Conn)
 LRem
@@ -31484,7 +31484,7 @@ Context
 string
 , index
 int64
-, value interface{}) *
+, value interface{})*
 StatusCmd
 func (Conn)
 LTrim
@@ -31506,7 +31506,7 @@ func (c Conn) LastSave(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Conn)
 Latency
@@ -31528,7 +31528,7 @@ func (c Conn) LatencyReset(ctx
 context
 .
 Context
-, events ...interface{}) *
+, events ...interface{})*
 StatusCmd
 func (Conn)
 MGet
@@ -31548,7 +31548,7 @@ func (c Conn) MSet(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 StatusCmd
 MSet is like Set but accepts multiple values:
 MSet("key1", "value1", "key2", "value2")
@@ -31582,7 +31582,7 @@ func (c Conn) MSetNX(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 MSetNX is like SetNX but accepts multiple values:
 MSetNX("key1", "value1", "key2", "value2")
@@ -31617,7 +31617,7 @@ int
 time
 .
 Duration
-) *
+)*
 StatusCmd
 func (Conn)
 ModuleLoadex
@@ -31630,7 +31630,7 @@ context
 Context
 , conf *
 ModuleLoadexConfig
-) *
+)*
 StringCmd
 ModuleLoadex Redis `MODULE LOADEX path [CONFIG name value [CONFIG name value ...]] [ARGS args [args ...]]` command.
 func (Conn)
@@ -31677,7 +31677,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Conn)
 ObjectFreq
@@ -31701,7 +31701,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Conn)
 ObjectRefCount
@@ -31727,7 +31727,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Conn)
 PExpireAt
@@ -31755,7 +31755,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Conn)
 PFAdd
@@ -31777,7 +31777,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Conn)
 PFMerge
@@ -31801,7 +31801,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Conn)
 Persist
@@ -31821,19 +31821,19 @@ func (c Conn) Ping(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (*Conn)
 Pipeline
 ¶
-func (c *
+func (c*
 Conn
 ) Pipeline()
 Pipeliner
 func (*Conn)
 Pipelined
 ¶
-func (c *
+func (c*
 Conn
 ) Pipelined(ctx
 context
@@ -31851,7 +31851,7 @@ error
 func (*Conn)
 Process
 ¶
-func (c *
+func (c*
 Conn
 ) Process(ctx
 context
@@ -31879,7 +31879,7 @@ func (c Conn) PubSubNumPat(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Conn)
 PubSubNumSub
@@ -31901,7 +31901,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 PubSubShardNumSub
@@ -31923,7 +31923,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 Publish posts the message to the channel.
 func (Conn)
@@ -31944,7 +31944,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Conn)
 RPopCount
@@ -31968,7 +31968,7 @@ context
 Context
 , source, destination
 string
-) *
+)*
 StringCmd
 func (Conn)
 RPush
@@ -31990,7 +31990,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Conn)
 RandomKey
@@ -32008,7 +32008,7 @@ func (c Conn) ReadOnly(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Conn)
 ReadWrite
@@ -32048,7 +32048,7 @@ context
 Context
 , key, newkey
 string
-) *
+)*
 StatusCmd
 func (Conn)
 RenameNX
@@ -32076,7 +32076,7 @@ time
 Duration
 , value
 string
-) *
+)*
 StatusCmd
 func (Conn)
 RestoreReplace
@@ -32104,7 +32104,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Conn)
 SCard
@@ -32126,7 +32126,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 SDiffStore
@@ -32150,7 +32150,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Conn)
 SInterCard
@@ -32176,7 +32176,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Conn)
 SIsMember
@@ -32198,7 +32198,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 BoolSliceCmd
 SMIsMember Redis `SMISMEMBER key member [member ...]` command.
 func (Conn)
@@ -32222,7 +32222,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringStructMapCmd
 SMembersMap Redis `SMEMBERS key` command output as a map.
 func (Conn)
@@ -32245,7 +32245,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SPop Redis `SPOP key` command.
 func (Conn)
@@ -32271,7 +32271,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 func (Conn)
 SRandMember
@@ -32296,7 +32296,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 SRandMemberN Redis `SRANDMEMBER key count` command.
 func (Conn)
@@ -32325,7 +32325,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Conn)
 SUnion
@@ -32349,7 +32349,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Conn)
 Save
@@ -32373,7 +32373,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Conn)
 ScanType
@@ -32401,7 +32401,7 @@ context
 Context
 , hashes ...
 string
-) *
+)*
 BoolSliceCmd
 func (Conn)
 ScriptFlush
@@ -32419,7 +32419,7 @@ func (c Conn) ScriptKill(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Conn)
 ScriptLoad
@@ -32441,7 +32441,7 @@ context
 Context
 , index
 int
-) *
+)*
 StatusCmd
 func (Conn)
 Set
@@ -32474,7 +32474,7 @@ Context
 string
 , value interface{}, a
 SetArgs
-) *
+)*
 StatusCmd
 SetArgs supports all the options that the SET command supports.
 It is the alternative to the Set function when you want
@@ -32507,7 +32507,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetEx Redis `SETEx key expiration value` command.
 func (Conn)
@@ -32558,7 +32558,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDEQGet sets the value only if the current value's digest equals matchDigest,
 and returns the previous value.
@@ -32621,7 +32621,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDNEGet sets the value only if the current value's digest does NOT equal matchDigest,
 and returns the previous value.
@@ -32675,7 +32675,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFEQGet Redis `SET key value [expiration] IFEQ match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value equals matchValue,
@@ -32724,7 +32724,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFNEGet Redis `SET key value [expiration] IFNE match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value does not equal matchValue,
@@ -32766,7 +32766,7 @@ string
 int64
 , value
 string
-) *
+)*
 IntCmd
 func (Conn)
 SetXX
@@ -32794,7 +32794,7 @@ func (c Conn) Shutdown(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Conn)
 ShutdownNoSave
@@ -32812,7 +32812,7 @@ func (c Conn) ShutdownSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Conn)
 SlaveOf
@@ -32834,7 +32834,7 @@ context
 Context
 , num
 int64
-) *
+)*
 SlowLogCmd
 func (Conn)
 SlowLogLen
@@ -32856,7 +32856,7 @@ func (c Conn) SlowLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Conn)
 Sort
@@ -32869,7 +32869,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Conn)
 SortInterfaces
@@ -32882,7 +32882,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 SliceCmd
 func (Conn)
 SortRO
@@ -32895,7 +32895,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Conn)
 SortStore
@@ -32908,7 +32908,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 IntCmd
 func (Conn)
 StrLen
@@ -32935,7 +32935,7 @@ context
 Context
 , index1, index2
 int
-) *
+)*
 StatusCmd
 func (Conn)
 Sync
@@ -32977,7 +32977,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRank returns an array of values from a t-Digest data structure based on their rank.
 The rank of an element is its position in the sorted list of all elements in the t-Digest.
@@ -33017,7 +33017,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCDF returns an array of cumulative distribution function (CDF) values for one or more elements in a t-Digest data structure.
 The CDF value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -33054,7 +33054,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestCreateWithCompression creates an empty t-Digest data structure with a specified compression parameter.
 The compression parameter controls the accuracy and memory usage of the t-Digest.
@@ -33088,7 +33088,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMax returns the maximum value from a t-Digest data structure.
 For more information -
@@ -33108,7 +33108,7 @@ string
 TDigestMergeOptions
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 TDigestMerge merges multiple t-Digest data structures into a single t-Digest.
 This function also allows for specifying additional options such as compression and override behavior.
@@ -33144,7 +33144,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestQuantile returns an array of quantile values for one or more elements in a t-Digest data structure.
 The quantile value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -33182,7 +33182,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestReset resets a t-Digest data structure to its initial state.
 Returns OK on success or an error if the operation could not be completed.
@@ -33221,7 +33221,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 TDigestTrimmedMean returns the trimmed mean value from a t-Digest data structure.
 The trimmed mean is calculated by removing a specified fraction of the highest and lowest values from the t-Digest and then calculating the mean of the remaining values.
@@ -33259,7 +33259,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -33279,7 +33279,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSAlterOptions
 ) *
 StatusCmd
@@ -33299,7 +33299,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreate - Creates a new time-series key.
 For more information -
@@ -33343,7 +33343,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -33363,7 +33363,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSOptions
 ) *
 StatusCmd
@@ -33385,7 +33385,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
 For more information -
@@ -33405,7 +33405,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -33445,7 +33445,7 @@ Context
 string
 , destKey
 string
-) *
+)*
 StatusCmd
 TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
 For more information -
@@ -33477,7 +33477,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSGetOptions
 ) *
 TSTimestampValueCmd
@@ -33499,7 +33499,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrBy - Increments the value of a time-series key by the specified timestamp.
 For more information -
@@ -33519,7 +33519,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -33553,7 +33553,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -33571,7 +33571,7 @@ func (c Conn) TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSMAdd - Adds multiple samples to multiple time-series keys.
 It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
@@ -33605,7 +33605,7 @@ context
 Context
 , filters []
 string
-, options *
+, options*
 TSMGetOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -33629,7 +33629,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRange - Returns a range of samples from multiple time-series keys.
 For more information -
@@ -33651,7 +33651,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
 This function allows for specifying additional options such as:
@@ -33695,7 +33695,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -33717,7 +33717,7 @@ context
 Context
 , filterExpr []
 string
-) *
+)*
 StringSliceCmd
 TSQueryIndex - Returns all the keys matching the filter expression.
 For more information -
@@ -33757,7 +33757,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -33782,7 +33782,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRange - Returns a range of samples from a time-series key in reverse order.
 For more information -
@@ -33804,7 +33804,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
 This function allows for specifying additional options such as:
@@ -33830,7 +33830,7 @@ func (c Conn) Time(ctx
 context
 .
 Context
-) *
+)*
 TimeCmd
 func (Conn)
 TopKAdd
@@ -33860,7 +33860,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 TopKCount returns an estimate of the number of times an item may be in a Top-K filter.
 For more information -
@@ -33892,7 +33892,7 @@ context
 Context
 , key
 string
-) *
+)*
 TopKInfoCmd
 TopKInfo returns information about a Top-K filter.
 For more information -
@@ -33924,7 +33924,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringIntCmd
 TopKListWithCount returns all items in Top-K list with their respective count.
 For more information -
@@ -33959,7 +33959,7 @@ Context
 string
 , k
 int64
-) *
+)*
 StatusCmd
 TopKReserve creates an empty Top-K filter with the specified number of top items to keep.
 For more information -
@@ -33996,12 +33996,12 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*Conn)
 TxPipeline
 ¶
-func (c *
+func (c*
 Conn
 ) TxPipeline()
 Pipeliner
@@ -34009,7 +34009,7 @@ TxPipeline acts like Pipeline, but wraps queued commands with MULTI/EXEC.
 func (*Conn)
 TxPipelined
 ¶
-func (c *
+func (c*
 Conn
 ) TxPipelined(ctx
 context
@@ -34044,7 +34044,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Conn)
 VAdd
@@ -34076,7 +34076,7 @@ Context
 string
 , val
 Vector
-, addArgs *
+, addArgs*
 VAddArgs
 ) *
 BoolCmd
@@ -34093,7 +34093,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VCARD key`
 note: the API is experimental and may be subject to change.
@@ -34124,7 +34124,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VDIM key`
 note: the API is experimental and may be subject to change.
@@ -34156,7 +34156,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringCmd
 `VGETATTR key element`
 note: the API is experimental and may be subject to change.
@@ -34186,7 +34186,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringSliceCmd
 `VLINKS key element`
 note: the API is experimental and may be subject to change.
@@ -34216,7 +34216,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 `VRANDMEMBER key`
 note: the API is experimental and may be subject to change.
@@ -34250,7 +34250,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 `VRANGE key start end count`
 a negative count means to return all the elements in the vector set.
@@ -34281,7 +34281,7 @@ context
 Context
 , key, element
 string
-, attr interface{}) *
+, attr interface{})*
 BoolCmd
 `VSETATTR key element "{ JSON obj }"`
 The `attr` must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -34317,7 +34317,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 StringSliceCmd
@@ -34337,7 +34337,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 VectorScoreSliceCmd
@@ -34357,7 +34357,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 VectorScoreSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) WITHSCORES`
 note: the API is experimental and may be subject to change.
@@ -34391,7 +34391,7 @@ int
 time
 .
 Duration
-) *
+)*
 IntCmd
 func (Conn)
 XAck
@@ -34423,7 +34423,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (Conn)
 XAdd
@@ -34434,7 +34434,7 @@ context
 Context
 , a *
 XAddArgs
-) *
+)*
 StringCmd
 func (Conn)
 XAutoClaim
@@ -34445,7 +34445,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimCmd
 func (Conn)
 XAutoClaimJustID
@@ -34456,7 +34456,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimJustIDCmd
 func (Conn)
 XClaim
@@ -34467,7 +34467,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 XMessageSliceCmd
 func (Conn)
 XClaimJustID
@@ -34478,7 +34478,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 StringSliceCmd
 func (Conn)
 XDel
@@ -34508,7 +34508,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (Conn)
 XGroupCreate
@@ -34530,7 +34530,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (Conn)
 XGroupCreateMkStream
@@ -34552,7 +34552,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (Conn)
 XGroupDestroy
@@ -34574,7 +34574,7 @@ context
 Context
 , stream, group, start
 string
-) *
+)*
 StatusCmd
 func (Conn)
 XInfoConsumers
@@ -34598,7 +34598,7 @@ context
 Context
 , key
 string
-) *
+)*
 XInfoGroupsCmd
 func (Conn)
 XInfoStream
@@ -34622,7 +34622,7 @@ Context
 string
 , count
 int
-) *
+)*
 XInfoStreamFullCmd
 XInfoStreamFull XINFO STREAM FULL [COUNT count]
 redis-server >= 6.0.
@@ -34646,7 +34646,7 @@ context
 Context
 , stream, group
 string
-) *
+)*
 XPendingCmd
 func (Conn)
 XPendingExt
@@ -34657,7 +34657,7 @@ context
 Context
 , a *
 XPendingExtArgs
-) *
+)*
 XPendingExtCmd
 func (Conn)
 XRange
@@ -34681,7 +34681,7 @@ Context
 string
 , count
 int64
-) *
+)*
 XMessageSliceCmd
 func (Conn)
 XRead
@@ -34692,7 +34692,7 @@ context
 Context
 , a *
 XReadArgs
-) *
+)*
 XStreamSliceCmd
 func (Conn)
 XReadGroup
@@ -34703,7 +34703,7 @@ context
 Context
 , a *
 XReadGroupArgs
-) *
+)*
 XStreamSliceCmd
 func (Conn)
 XReadStreams
@@ -34725,7 +34725,7 @@ context
 Context
 , stream, start, stop
 string
-) *
+)*
 XMessageSliceCmd
 func (Conn)
 XRevRangeN
@@ -34751,7 +34751,7 @@ Context
 string
 , maxLen
 int64
-) *
+)*
 IntCmd
 XTrimMaxLen No `~` rules are used, `limit` cannot be used.
 cmd: XTRIM key MAXLEN maxLen
@@ -34783,7 +34783,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (Conn)
 XTrimMaxLenMode
@@ -34813,7 +34813,7 @@ Context
 string
 , minID
 string
-) *
+)*
 IntCmd
 func (Conn)
 XTrimMinIDApprox
@@ -34847,7 +34847,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (Conn)
 XTrimMinIDMode
@@ -34877,7 +34877,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAdd Redis `ZADD key score member [score member ...]` command.
 func (Conn)
@@ -34904,7 +34904,7 @@ Context
 string
 , args
 ZAddArgs
-) *
+)*
 FloatCmd
 func (Conn)
 ZAddGT
@@ -34935,7 +34935,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddLT Redis `ZADD key LT score member [score member ...]` command.
 func (Conn)
@@ -34963,7 +34963,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddXX Redis `ZADD key XX score member [score member ...]` command.
 func (Conn)
@@ -34986,7 +34986,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (Conn)
 ZDiff
@@ -35011,7 +35011,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 ZDiffStore redis-server version >=6.2.0.
 func (Conn)
@@ -35039,7 +35039,7 @@ string
 float64
 , member
 string
-) *
+)*
 FloatCmd
 func (Conn)
 ZInter
@@ -35050,7 +35050,7 @@ context
 Context
 , store *
 ZStore
-) *
+)*
 StringSliceCmd
 func (Conn)
 ZInterCard
@@ -35074,7 +35074,7 @@ context
 Context
 , destination
 string
-, store *
+, store*
 ZStore
 ) *
 IntCmd
@@ -35085,7 +35085,7 @@ func (c Conn) ZInterWithScores(ctx
 context
 .
 Context
-, store *
+, store*
 ZStore
 ) *
 ZSliceCmd
@@ -35098,7 +35098,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (Conn)
 ZMPop
@@ -35131,7 +35131,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 FloatSliceCmd
 func (Conn)
 ZPopMax
@@ -35157,7 +35157,7 @@ Context
 string
 , count ...
 int64
-) *
+)*
 ZSliceCmd
 func (Conn)
 ZRandMember
@@ -35184,7 +35184,7 @@ Context
 string
 , count
 int
-) *
+)*
 ZSliceCmd
 ZRandMemberWithScores redis-server version >= 6.2.0.
 func (Conn)
@@ -35209,7 +35209,7 @@ context
 Context
 , z
 ZRangeArgs
-) *
+)*
 StringSliceCmd
 func (Conn)
 ZRangeArgsWithScores
@@ -35231,7 +35231,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -35244,7 +35244,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -35257,7 +35257,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 ZSliceCmd
@@ -35272,7 +35272,7 @@ Context
 string
 , z
 ZRangeArgs
-) *
+)*
 IntCmd
 func (Conn)
 ZRangeWithScores
@@ -35296,7 +35296,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (Conn)
 ZRankWithScore
@@ -35322,7 +35322,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Conn)
 ZRemRangeByLex
@@ -35346,7 +35346,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 IntCmd
 func (Conn)
 ZRemRangeByScore
@@ -35370,7 +35370,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (Conn)
 ZRevRangeByLex
@@ -35383,7 +35383,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (Conn)
 ZRevRangeByScore
@@ -35396,7 +35396,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (Conn)
 ZRevRangeByScoreWithScores
@@ -35409,7 +35409,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 ZSliceCmd
 func (Conn)
 ZRevRangeWithScores
@@ -35435,7 +35435,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (Conn)
 ZRevRankWithScore
@@ -35465,7 +35465,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Conn)
 ZScore
@@ -35487,7 +35487,7 @@ context
 Context
 , store
 ZStore
-) *
+)*
 StringSliceCmd
 func (Conn)
 ZUnionStore
@@ -35500,7 +35500,7 @@ Context
 string
 , store *
 ZStore
-) *
+)*
 IntCmd
 func (Conn)
 ZUnionWithScores
@@ -35540,7 +35540,7 @@ DefaultLanguage
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) DefaultLanguage(lang
 string
@@ -35556,7 +35556,7 @@ func (b *
 CreateIndexBuilder
 ) Filter(filter
 string
-) *
+)*
 CreateIndexBuilder
 Filter sets FILTER.
 func (*CreateIndexBuilder)
@@ -35564,7 +35564,7 @@ LanguageField
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) LanguageField(field
 string
@@ -35578,7 +35578,7 @@ added in
 v9.12.0
 func (b *
 CreateIndexBuilder
-) NoFields() *
+) NoFields()*
 CreateIndexBuilder
 NoFields includes NOFIELDS.
 func (*CreateIndexBuilder)
@@ -35586,7 +35586,7 @@ NoFreqs
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) NoFreqs() *
 CreateIndexBuilder
@@ -35598,7 +35598,7 @@ added in
 v9.12.0
 func (b *
 CreateIndexBuilder
-) NoHL() *
+) NoHL()*
 CreateIndexBuilder
 NoHL includes NOHL.
 func (*CreateIndexBuilder)
@@ -35606,7 +35606,7 @@ NoOffsets
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) NoOffsets() *
 CreateIndexBuilder
@@ -35618,7 +35618,7 @@ added in
 v9.12.0
 func (b *
 CreateIndexBuilder
-) OnHash() *
+) OnHash()*
 CreateIndexBuilder
 OnHash sets ON HASH.
 func (*CreateIndexBuilder)
@@ -35626,7 +35626,7 @@ OnJSON
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) OnJSON() *
 CreateIndexBuilder
@@ -35640,7 +35640,7 @@ func (b *
 CreateIndexBuilder
 ) PayloadField(field
 string
-) *
+)*
 CreateIndexBuilder
 PayloadField sets PAYLOAD_FIELD.
 func (*CreateIndexBuilder)
@@ -35648,7 +35648,7 @@ Prefix
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) Prefix(prefixes ...interface{}) *
 CreateIndexBuilder
@@ -35673,7 +35673,7 @@ added in
 v9.12.0
 func (b *
 CreateIndexBuilder
-) Schema(field *
+) Schema(field*
 FieldSchema
 ) *
 CreateIndexBuilder
@@ -35687,7 +35687,7 @@ func (b *
 CreateIndexBuilder
 ) Score(score
 float64
-) *
+)*
 CreateIndexBuilder
 Score sets SCORE.
 func (*CreateIndexBuilder)
@@ -35695,7 +35695,7 @@ ScoreField
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) ScoreField(field
 string
@@ -35709,7 +35709,7 @@ added in
 v9.12.0
 func (b *
 CreateIndexBuilder
-) SkipInitialScan() *
+) SkipInitialScan()*
 CreateIndexBuilder
 SkipInitialScan includes SKIPINITIALSCAN.
 func (*CreateIndexBuilder)
@@ -35717,7 +35717,7 @@ StopWords
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CreateIndexBuilder
 ) StopWords(words ...interface{}) *
 CreateIndexBuilder
@@ -35731,7 +35731,7 @@ func (b *
 CreateIndexBuilder
 ) Temporary(sec
 int
-) *
+)*
 CreateIndexBuilder
 Temporary sets TEMPORARY seconds.
 type
@@ -35745,7 +35745,7 @@ type CursorBuilder struct {
 ----------------------
 CursorBuilder for FT.CURSOR*
 ----------------------
-CursorBuilder is builder for FT.CURSOR* commands
+CursorBuilder is builder for FT.CURSOR*commands
 EXPERIMENTAL: this API is subject to change, use with caution.
 func (*CursorBuilder)
 Action
@@ -35756,7 +35756,7 @@ func (b *
 CursorBuilder
 ) Action(action
 string
-) *
+)*
 CursorBuilder
 Action sets the action for the cursor builder.
 func (*CursorBuilder)
@@ -35764,7 +35764,7 @@ Count
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CursorBuilder
 ) Count(count
 int
@@ -35778,7 +35778,7 @@ added in
 v9.12.0
 func (b *
 CursorBuilder
-) Del() *
+) Del()*
 CursorBuilder
 Del sets the action to "del".
 func (*CursorBuilder)
@@ -35786,7 +35786,7 @@ Read
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 CursorBuilder
 ) Read() *
 CursorBuilder
@@ -35869,7 +35869,7 @@ type DictBuilder struct {
 ----------------------
 DictBuilder for FT.DICT* commands
 ----------------------
-DictBuilder is builder for FT.DICT* commands
+DictBuilder is builder for FT.DICT*commands
 EXPERIMENTAL: this API is subject to change, use with caution.
 func (*DictBuilder)
 Action
@@ -35880,7 +35880,7 @@ func (b *
 DictBuilder
 ) Action(action
 string
-) *
+)*
 DictBuilder
 Action sets the action for the dictionary builder.
 func (*DictBuilder)
@@ -35888,7 +35888,7 @@ Add
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 DictBuilder
 ) Add(terms ...interface{}) *
 DictBuilder
@@ -35900,7 +35900,7 @@ added in
 v9.12.0
 func (b *
 DictBuilder
-) Del(terms ...interface{}) *
+) Del(terms ...interface{})*
 DictBuilder
 Del sets the action to "del" and requires terms.
 func (*DictBuilder)
@@ -35908,7 +35908,7 @@ Dump
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 DictBuilder
 ) Dump() *
 DictBuilder
@@ -35951,41 +35951,41 @@ func NewDigestCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 DigestCmd
 func (*DigestCmd)
 Args
 ¶
 added in
 v9.17.0
-func (cmd *DigestCmd) Args() []interface{}
+func (cmd*DigestCmd) Args() []interface{}
 func (*DigestCmd)
 Err
 ¶
 added in
 v9.17.0
-func (cmd *DigestCmd) Err()
+func (cmd*DigestCmd) Err()
 error
 func (*DigestCmd)
 FullName
 ¶
 added in
 v9.17.0
-func (cmd *DigestCmd) FullName()
+func (cmd*DigestCmd) FullName()
 string
 func (*DigestCmd)
 Name
 ¶
 added in
 v9.17.0
-func (cmd *DigestCmd) Name()
+func (cmd*DigestCmd) Name()
 string
 func (*DigestCmd)
 Result
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 DigestCmd
 ) Result() (
 uint64
@@ -35997,7 +35997,7 @@ SetErr
 ¶
 added in
 v9.17.0
-func (cmd *DigestCmd) SetErr(e
+func (cmd*DigestCmd) SetErr(e
 error
 )
 func (*DigestCmd)
@@ -36005,7 +36005,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.17.0
-func (cmd *DigestCmd) SetFirstKeyPos(keyPos
+func (cmd*DigestCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*DigestCmd)
@@ -36013,7 +36013,7 @@ SetVal
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 DigestCmd
 ) SetVal(val
 uint64
@@ -36023,7 +36023,7 @@ String
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 DigestCmd
 ) String()
 string
@@ -36032,7 +36032,7 @@ Val
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 DigestCmd
 ) Val()
 uint64
@@ -36046,7 +36046,7 @@ ID
 string
 Score   *
 float64
-Payload *
+Payload*
 string
 SortKey *
 string
@@ -36075,7 +36075,7 @@ DeleteDocs
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 DropIndexBuilder
 ) DeleteDocs() *
 DropIndexBuilder
@@ -36110,7 +36110,7 @@ Context
 time
 .
 Duration
-, args ...interface{}) *
+, args ...interface{})*
 DurationCmd
 func
 NewDurationResult
@@ -36275,7 +36275,7 @@ Dialect
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 ExplainBuilder
 ) Dialect(d
 string
@@ -36621,35 +36621,35 @@ added in
 v9.17.0
 func (cmd *
 FTHybridCmd
-) CursorVal() *
+) CursorVal()*
 FTHybridCursorResult
 func (*FTHybridCmd)
 Err
 ¶
 added in
 v9.17.0
-func (cmd *FTHybridCmd) Err()
+func (cmd*FTHybridCmd) Err()
 error
 func (*FTHybridCmd)
 FullName
 ¶
 added in
 v9.17.0
-func (cmd *FTHybridCmd) FullName()
+func (cmd*FTHybridCmd) FullName()
 string
 func (*FTHybridCmd)
 Name
 ¶
 added in
 v9.17.0
-func (cmd *FTHybridCmd) Name()
+func (cmd*FTHybridCmd) Name()
 string
 func (*FTHybridCmd)
 RawResult
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 FTHybridCmd
 ) RawResult() (interface{},
 error
@@ -36659,7 +36659,7 @@ RawVal
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 FTHybridCmd
 ) RawVal() interface{}
 func (*FTHybridCmd)
@@ -36667,7 +36667,7 @@ Result
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 FTHybridCmd
 ) Result() (
 FTHybridResult
@@ -36679,7 +36679,7 @@ SetErr
 ¶
 added in
 v9.17.0
-func (cmd *FTHybridCmd) SetErr(e
+func (cmd*FTHybridCmd) SetErr(e
 error
 )
 func (*FTHybridCmd)
@@ -36687,7 +36687,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.17.0
-func (cmd *FTHybridCmd) SetFirstKeyPos(keyPos
+func (cmd*FTHybridCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*FTHybridCmd)
@@ -36695,7 +36695,7 @@ SetVal
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 FTHybridCmd
 ) SetVal(val
 FTHybridResult
@@ -36705,7 +36705,7 @@ String
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 FTHybridCmd
 ) String()
 string
@@ -36714,7 +36714,7 @@ Val
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 FTHybridCmd
 ) Val()
 FTHybridResult
@@ -36821,7 +36821,7 @@ FTHybridCombineOptions
 Load              []
 string
 // Projected fields
-GroupBy           *
+GroupBy*
 FTHybridGroupBy
 // Aggregation grouping
 Apply             []
@@ -37492,7 +37492,7 @@ v9.5.4
 type FTSpellCheckOptions struct {
 Distance
 int
-Terms    *
+Terms*
 FTSpellCheckTerms
 // Dialect 1,3 and 4 are deprecated since redis 8.0
 Dialect
@@ -37934,8 +37934,8 @@ is equivalent to:
 &FailoverOptions{
 MasterName:  "mymaster",
 Addr:        ["localhost:6789", "localhost:6790", "localhost:6791"]
-DialTimeout: 3 * time.Second, // no time unit = seconds
-ReadTimeout: 6 * time.Second,
+DialTimeout: 3* time.Second, // no time unit = seconds
+ReadTimeout: 6 *time.Second,
 }
 type
 FieldSchema
@@ -37967,7 +37967,7 @@ CaseSensitive
 bool
 WithSuffixtrie
 bool
-VectorArgs        *
+VectorArgs*
 FTVectorArgs
 GeoShapeFieldType
 string
@@ -38025,32 +38025,32 @@ func NewFloatResult(val
 float64
 , err
 error
-) *
+)*
 FloatCmd
 NewFloatResult returns a FloatCmd initialised with val and err for testing.
 func (*FloatCmd)
 Args
 ¶
-func (cmd *FloatCmd) Args() []interface{}
+func (cmd*FloatCmd) Args() []interface{}
 func (*FloatCmd)
 Err
 ¶
-func (cmd *FloatCmd) Err()
+func (cmd*FloatCmd) Err()
 error
 func (*FloatCmd)
 FullName
 ¶
-func (cmd *FloatCmd) FullName()
+func (cmd*FloatCmd) FullName()
 string
 func (*FloatCmd)
 Name
 ¶
-func (cmd *FloatCmd) Name()
+func (cmd*FloatCmd) Name()
 string
 func (*FloatCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 FloatCmd
 ) Result() (
 float64
@@ -38060,19 +38060,19 @@ error
 func (*FloatCmd)
 SetErr
 ¶
-func (cmd *FloatCmd) SetErr(e
+func (cmd*FloatCmd) SetErr(e
 error
 )
 func (*FloatCmd)
 SetFirstKeyPos
 ¶
-func (cmd *FloatCmd) SetFirstKeyPos(keyPos
+func (cmd*FloatCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*FloatCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 FloatCmd
 ) SetVal(val
 float64
@@ -38080,14 +38080,14 @@ float64
 func (*FloatCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 FloatCmd
 ) String()
 string
 func (*FloatCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 FloatCmd
 ) Val()
 float64
@@ -38115,32 +38115,32 @@ func NewFloatSliceResult(val []
 float64
 , err
 error
-) *
+)*
 FloatSliceCmd
 NewFloatSliceResult returns a FloatSliceCmd initialised with val and err for testing.
 func (*FloatSliceCmd)
 Args
 ¶
-func (cmd *FloatSliceCmd) Args() []interface{}
+func (cmd*FloatSliceCmd) Args() []interface{}
 func (*FloatSliceCmd)
 Err
 ¶
-func (cmd *FloatSliceCmd) Err()
+func (cmd*FloatSliceCmd) Err()
 error
 func (*FloatSliceCmd)
 FullName
 ¶
-func (cmd *FloatSliceCmd) FullName()
+func (cmd*FloatSliceCmd) FullName()
 string
 func (*FloatSliceCmd)
 Name
 ¶
-func (cmd *FloatSliceCmd) Name()
+func (cmd*FloatSliceCmd) Name()
 string
 func (*FloatSliceCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 FloatSliceCmd
 ) Result() ([]
 float64
@@ -38150,19 +38150,19 @@ error
 func (*FloatSliceCmd)
 SetErr
 ¶
-func (cmd *FloatSliceCmd) SetErr(e
+func (cmd*FloatSliceCmd) SetErr(e
 error
 )
 func (*FloatSliceCmd)
 SetFirstKeyPos
 ¶
-func (cmd *FloatSliceCmd) SetFirstKeyPos(keyPos
+func (cmd*FloatSliceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*FloatSliceCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 FloatSliceCmd
 ) SetVal(val []
 float64
@@ -38170,14 +38170,14 @@ float64
 func (*FloatSliceCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 FloatSliceCmd
 ) String()
 string
 func (*FloatSliceCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 FloatSliceCmd
 ) Val() []
 float64
@@ -38320,10 +38320,10 @@ WithCode
 bool
 }
 FunctionListQuery is used with FunctionList to query for Redis libraries
-LibraryNamePattern 	- Use an empty string to get all libraries.
+LibraryNamePattern  - Use an empty string to get all libraries.
 - Use a glob-style pattern to match multiple libraries with a matching name
 - Use a library's full name to match a single library
-WithCode			- If true, it will return the code of the library
+WithCode   - If true, it will return the code of the library
 type
 FunctionStats
 ¶
@@ -38349,7 +38349,7 @@ AllRunningScripts
 ¶
 added in
 v9.0.3
-func (fs *
+func (fs*
 FunctionStats
 ) AllRunningScripts() []
 RunningScript
@@ -38360,7 +38360,7 @@ Running
 ¶
 added in
 v9.0.3
-func (fs *
+func (fs*
 FunctionStats
 ) Running()
 bool
@@ -38369,7 +38369,7 @@ RunningScript
 ¶
 added in
 v9.0.3
-func (fs *
+func (fs*
 FunctionStats
 ) RunningScript() (
 RunningScript
@@ -38890,7 +38890,7 @@ Context
 string
 , geoLocation ...*
 GeoLocation
-) *
+)*
 IntCmd
 GeoPos(ctx
 context
@@ -38910,7 +38910,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ) *
 GeoLocationCmd
@@ -38922,7 +38922,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ) *
 IntCmd
@@ -38932,7 +38932,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ) *
 GeoLocationCmd
@@ -38942,7 +38942,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ) *
 IntCmd
@@ -38952,7 +38952,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchQuery
 ) *
 StringSliceCmd
@@ -38962,7 +38962,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchLocationQuery
 ) *
 GeoSearchLocationCmd
@@ -38972,7 +38972,7 @@ context
 Context
 , key, store
 string
-, q *
+, q*
 GeoSearchStoreQuery
 ) *
 IntCmd
@@ -38984,7 +38984,7 @@ Context
 string
 , member1, member2, unit
 string
-) *
+)*
 FloatCmd
 GeoHash(ctx
 context
@@ -39022,7 +39022,7 @@ func NewGeoLocationCmd(ctx
 context
 .
 Context
-, q *
+, q*
 GeoRadiusQuery
 , args ...interface{}) *
 GeoLocationCmd
@@ -39033,32 +39033,32 @@ func NewGeoLocationCmdResult(val []
 GeoLocation
 , err
 error
-) *
+)*
 GeoLocationCmd
 NewGeoLocationCmdResult returns a GeoLocationCmd initialised with val and err for testing.
 func (*GeoLocationCmd)
 Args
 ¶
-func (cmd *GeoLocationCmd) Args() []interface{}
+func (cmd*GeoLocationCmd) Args() []interface{}
 func (*GeoLocationCmd)
 Err
 ¶
-func (cmd *GeoLocationCmd) Err()
+func (cmd*GeoLocationCmd) Err()
 error
 func (*GeoLocationCmd)
 FullName
 ¶
-func (cmd *GeoLocationCmd) FullName()
+func (cmd*GeoLocationCmd) FullName()
 string
 func (*GeoLocationCmd)
 Name
 ¶
-func (cmd *GeoLocationCmd) Name()
+func (cmd*GeoLocationCmd) Name()
 string
 func (*GeoLocationCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 GeoLocationCmd
 ) Result() ([]
 GeoLocation
@@ -39068,19 +39068,19 @@ error
 func (*GeoLocationCmd)
 SetErr
 ¶
-func (cmd *GeoLocationCmd) SetErr(e
+func (cmd*GeoLocationCmd) SetErr(e
 error
 )
 func (*GeoLocationCmd)
 SetFirstKeyPos
 ¶
-func (cmd *GeoLocationCmd) SetFirstKeyPos(keyPos
+func (cmd*GeoLocationCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*GeoLocationCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 GeoLocationCmd
 ) SetVal(locations []
 GeoLocation
@@ -39088,7 +39088,7 @@ GeoLocation
 func (*GeoLocationCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 GeoLocationCmd
 ) String()
 string
@@ -39235,7 +39235,7 @@ ctx
 context
 .
 Context
-, opt *
+, opt*
 GeoSearchLocationQuery
 , args ...interface{},
 ) *
@@ -39479,7 +39479,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntCmd
 HExists(ctx
 context
@@ -39495,7 +39495,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 StringCmd
 HGetAll(ctx
 context
@@ -39513,7 +39513,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 HGetEX(ctx
 context
@@ -39531,7 +39531,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HGetEXOptions
 , fields ...
 string
@@ -39545,7 +39545,7 @@ Context
 string
 , incr
 int64
-) *
+)*
 IntCmd
 HIncrByFloat(ctx
 context
@@ -39563,7 +39563,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 HLen(ctx
 context
@@ -39581,7 +39581,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 SliceCmd
 HSet(ctx
 context
@@ -39597,7 +39597,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 HSetEX(ctx
 context
@@ -39615,7 +39615,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HSetEXOptions
 , fieldsAndValues ...
 string
@@ -39627,7 +39627,7 @@ context
 Context
 , key, field
 string
-, value interface{}) *
+, value interface{})*
 BoolCmd
 HScan(ctx
 context
@@ -39655,7 +39655,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 HVals(ctx
 context
@@ -39673,7 +39673,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 HRandFieldWithValues(ctx
 context
@@ -39691,7 +39691,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 IntCmd
 HExpire(ctx
 context
@@ -39721,7 +39721,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpire(ctx
 context
@@ -39751,7 +39751,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireAt(ctx
 context
@@ -39781,7 +39781,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireAt(ctx
 context
@@ -39811,7 +39811,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPersist(ctx
 context
@@ -39831,7 +39831,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireTime(ctx
 context
@@ -39851,7 +39851,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPTTL(ctx
 context
@@ -39893,7 +39893,7 @@ context
 Context
 , key
 string
-, els ...interface{}) *
+, els ...interface{})*
 IntCmd
 PFCount(ctx
 context
@@ -39911,7 +39911,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 StatusCmd
 }
 type
@@ -40078,7 +40078,7 @@ func NewIntCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 IntCmd
 func
 NewIntResult
@@ -40180,7 +40180,7 @@ func NewIntPointerSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 IntPointerSliceCmd
 NewIntPointerSliceCmd initialises an IntPointerSliceCmd
 func (*IntPointerSliceCmd)
@@ -40188,27 +40188,27 @@ Args
 ¶
 added in
 v9.3.0
-func (cmd *IntPointerSliceCmd) Args() []interface{}
+func (cmd*IntPointerSliceCmd) Args() []interface{}
 func (*IntPointerSliceCmd)
 Err
 ¶
 added in
 v9.3.0
-func (cmd *IntPointerSliceCmd) Err()
+func (cmd*IntPointerSliceCmd) Err()
 error
 func (*IntPointerSliceCmd)
 FullName
 ¶
 added in
 v9.3.0
-func (cmd *IntPointerSliceCmd) FullName()
+func (cmd*IntPointerSliceCmd) FullName()
 string
 func (*IntPointerSliceCmd)
 Name
 ¶
 added in
 v9.3.0
-func (cmd *IntPointerSliceCmd) Name()
+func (cmd*IntPointerSliceCmd) Name()
 string
 func (*IntPointerSliceCmd)
 Result
@@ -40227,7 +40227,7 @@ SetErr
 ¶
 added in
 v9.3.0
-func (cmd *IntPointerSliceCmd) SetErr(e
+func (cmd*IntPointerSliceCmd) SetErr(e
 error
 )
 func (*IntPointerSliceCmd)
@@ -40235,7 +40235,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.3.0
-func (cmd *IntPointerSliceCmd) SetFirstKeyPos(keyPos
+func (cmd*IntPointerSliceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*IntPointerSliceCmd)
@@ -40253,7 +40253,7 @@ String
 ¶
 added in
 v9.3.0
-func (cmd *
+func (cmd*
 IntPointerSliceCmd
 ) String()
 string
@@ -40352,7 +40352,7 @@ v9.3.0
 type JSONArrIndexArgs struct {
 Start
 int
-Stop  *
+Stop*
 int
 }
 type
@@ -40481,7 +40481,7 @@ context
 Context
 , key, path
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrIndex(ctx
 context
@@ -40497,7 +40497,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrIndexArgs
 , value ...interface{}) *
 IntSliceCmd
@@ -40509,7 +40509,7 @@ Context
 string
 , index
 int64
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrLen(ctx
 context
@@ -40527,7 +40527,7 @@ Context
 string
 , index
 int
-) *
+)*
 StringSliceCmd
 JSONArrTrim(ctx
 context
@@ -40543,7 +40543,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrTrimArgs
 ) *
 IntSliceCmd
@@ -40553,7 +40553,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDebugMemory(ctx
 context
@@ -40569,7 +40569,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONForget(ctx
 context
@@ -40587,7 +40587,7 @@ Context
 string
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGetWithArgs(ctx
 context
@@ -40599,7 +40599,7 @@ string
 JSONGetArgs
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONMerge(ctx
 context
@@ -40617,7 +40617,7 @@ context
 Context
 , docs []
 JSONSetArgs
-) *
+)*
 StatusCmd
 JSONMSet(ctx
 context
@@ -40633,7 +40633,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 JSONSliceCmd
 JSONNumIncrBy(ctx
 context
@@ -40651,7 +40651,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 SliceCmd
 JSONObjLen(ctx
 context
@@ -40667,7 +40667,7 @@ context
 Context
 , key, path
 string
-, value interface{}) *
+, value interface{})*
 StatusCmd
 JSONSetMode(ctx
 context
@@ -40685,7 +40685,7 @@ context
 Context
 , key, path, value
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrLen(ctx
 context
@@ -40701,7 +40701,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONType(ctx
 context
@@ -40754,41 +40754,41 @@ func NewJSONSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 JSONSliceCmd
 func (*JSONSliceCmd)
 Args
 ¶
 added in
 v9.3.0
-func (cmd *JSONSliceCmd) Args() []interface{}
+func (cmd*JSONSliceCmd) Args() []interface{}
 func (*JSONSliceCmd)
 Err
 ¶
 added in
 v9.3.0
-func (cmd *JSONSliceCmd) Err()
+func (cmd*JSONSliceCmd) Err()
 error
 func (*JSONSliceCmd)
 FullName
 ¶
 added in
 v9.3.0
-func (cmd *JSONSliceCmd) FullName()
+func (cmd*JSONSliceCmd) FullName()
 string
 func (*JSONSliceCmd)
 Name
 ¶
 added in
 v9.3.0
-func (cmd *JSONSliceCmd) Name()
+func (cmd*JSONSliceCmd) Name()
 string
 func (*JSONSliceCmd)
 Result
 ¶
 added in
 v9.3.0
-func (cmd *
+func (cmd*
 JSONSliceCmd
 ) Result() ([]interface{},
 error
@@ -40798,7 +40798,7 @@ SetErr
 ¶
 added in
 v9.3.0
-func (cmd *JSONSliceCmd) SetErr(e
+func (cmd*JSONSliceCmd) SetErr(e
 error
 )
 func (*JSONSliceCmd)
@@ -40806,7 +40806,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.3.0
-func (cmd *JSONSliceCmd) SetFirstKeyPos(keyPos
+func (cmd*JSONSliceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*JSONSliceCmd)
@@ -40814,7 +40814,7 @@ SetVal
 ¶
 added in
 v9.3.0
-func (cmd *
+func (cmd*
 JSONSliceCmd
 ) SetVal(val []interface{})
 func (*JSONSliceCmd)
@@ -40822,7 +40822,7 @@ String
 ¶
 added in
 v9.3.0
-func (cmd *
+func (cmd*
 JSONSliceCmd
 ) String()
 string
@@ -40831,7 +40831,7 @@ Val
 ¶
 added in
 v9.3.0
-func (cmd *
+func (cmd*
 JSONSliceCmd
 ) Val() []interface{}
 type
@@ -40969,31 +40969,31 @@ func NewKeyValueSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 KeyValueSliceCmd
 func (*KeyValueSliceCmd)
 Args
 ¶
-func (cmd *KeyValueSliceCmd) Args() []interface{}
+func (cmd*KeyValueSliceCmd) Args() []interface{}
 func (*KeyValueSliceCmd)
 Err
 ¶
-func (cmd *KeyValueSliceCmd) Err()
+func (cmd*KeyValueSliceCmd) Err()
 error
 func (*KeyValueSliceCmd)
 FullName
 ¶
-func (cmd *KeyValueSliceCmd) FullName()
+func (cmd*KeyValueSliceCmd) FullName()
 string
 func (*KeyValueSliceCmd)
 Name
 ¶
-func (cmd *KeyValueSliceCmd) Name()
+func (cmd*KeyValueSliceCmd) Name()
 string
 func (*KeyValueSliceCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 KeyValueSliceCmd
 ) Result() ([]
 KeyValue
@@ -41003,19 +41003,19 @@ error
 func (*KeyValueSliceCmd)
 SetErr
 ¶
-func (cmd *KeyValueSliceCmd) SetErr(e
+func (cmd*KeyValueSliceCmd) SetErr(e
 error
 )
 func (*KeyValueSliceCmd)
 SetFirstKeyPos
 ¶
-func (cmd *KeyValueSliceCmd) SetFirstKeyPos(keyPos
+func (cmd*KeyValueSliceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*KeyValueSliceCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 KeyValueSliceCmd
 ) SetVal(val []
 KeyValue
@@ -41023,14 +41023,14 @@ KeyValue
 func (*KeyValueSliceCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 KeyValueSliceCmd
 ) String()
 string
 func (*KeyValueSliceCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 KeyValueSliceCmd
 ) Val() []
 KeyValue
@@ -41160,7 +41160,7 @@ func NewLCSCmd(ctx
 context
 .
 Context
-, q *
+, q*
 LCSQuery
 ) *
 LCSCmd
@@ -41226,7 +41226,7 @@ added in
 v9.0.3
 func (cmd *
 LCSCmd
-) SetVal(val *
+) SetVal(val*
 LCSMatch
 )
 func (*LCSCmd)
@@ -41234,7 +41234,7 @@ String
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 LCSCmd
 ) String()
 string
@@ -41243,7 +41243,7 @@ Val
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 LCSCmd
 ) Val() *
 LCSMatch
@@ -41351,41 +41351,41 @@ func NewLatencyCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 LatencyCmd
 func (*LatencyCmd)
 Args
 ¶
 added in
 v9.17.0
-func (cmd *LatencyCmd) Args() []interface{}
+func (cmd*LatencyCmd) Args() []interface{}
 func (*LatencyCmd)
 Err
 ¶
 added in
 v9.17.0
-func (cmd *LatencyCmd) Err()
+func (cmd*LatencyCmd) Err()
 error
 func (*LatencyCmd)
 FullName
 ¶
 added in
 v9.17.0
-func (cmd *LatencyCmd) FullName()
+func (cmd*LatencyCmd) FullName()
 string
 func (*LatencyCmd)
 Name
 ¶
 added in
 v9.17.0
-func (cmd *LatencyCmd) Name()
+func (cmd*LatencyCmd) Name()
 string
 func (*LatencyCmd)
 Result
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 LatencyCmd
 ) Result() ([]
 Latency
@@ -41397,7 +41397,7 @@ SetErr
 ¶
 added in
 v9.17.0
-func (cmd *LatencyCmd) SetErr(e
+func (cmd*LatencyCmd) SetErr(e
 error
 )
 func (*LatencyCmd)
@@ -41405,7 +41405,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.17.0
-func (cmd *LatencyCmd) SetFirstKeyPos(keyPos
+func (cmd*LatencyCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*LatencyCmd)
@@ -41413,7 +41413,7 @@ SetVal
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 LatencyCmd
 ) SetVal(val []
 Latency
@@ -41423,7 +41423,7 @@ String
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 LatencyCmd
 ) String()
 string
@@ -41432,7 +41432,7 @@ Val
 ¶
 added in
 v9.17.0
-func (cmd *
+func (cmd*
 LatencyCmd
 ) Val() []
 Latency
@@ -41459,7 +41459,7 @@ v9.2.0
 type LibraryInfo struct {
 LibName *
 string
-LibVer  *
+LibVer*
 string
 }
 LibraryInfo holds the library info.
@@ -41541,7 +41541,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 KeyValuesCmd
 BRPop(ctx
 context
@@ -41565,7 +41565,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 LIndex(ctx
 context
@@ -41583,7 +41583,7 @@ context
 Context
 , key, op
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 LInsertBefore(ctx
 context
@@ -41599,7 +41599,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 LLen(ctx
 context
@@ -41619,7 +41619,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 KeyValuesCmd
 LPop(ctx
 context
@@ -41637,7 +41637,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 LPos(ctx
 context
@@ -41663,7 +41663,7 @@ string
 int64
 , args
 LPosArgs
-) *
+)*
 IntSliceCmd
 LPush(ctx
 context
@@ -41679,7 +41679,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 LRange(ctx
 context
@@ -41699,7 +41699,7 @@ Context
 string
 , count
 int64
-, value interface{}) *
+, value interface{})*
 IntCmd
 LSet(ctx
 context
@@ -41719,7 +41719,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StatusCmd
 RPop(ctx
 context
@@ -41737,7 +41737,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 RPopLPush(ctx
 context
@@ -41753,7 +41753,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 RPushX(ctx
 context
@@ -41769,7 +41769,7 @@ context
 Context
 , source, destination, srcpos, destpos
 string
-) *
+)*
 StringCmd
 BLMove(ctx
 context
@@ -41792,7 +41792,7 @@ v9.17.0
 type MSetEXArgs struct {
 Condition
 SetCondition
-Expiration *
+Expiration*
 ExpirationOption
 }
 type
@@ -41912,7 +41912,7 @@ func NewMapStringIntCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 MapStringIntCmd
 func
 NewMapStringIntCmdResult
@@ -42008,31 +42008,31 @@ func NewMapStringInterfaceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 MapStringInterfaceCmd
 func (*MapStringInterfaceCmd)
 Args
 ¶
-func (cmd *MapStringInterfaceCmd) Args() []interface{}
+func (cmd*MapStringInterfaceCmd) Args() []interface{}
 func (*MapStringInterfaceCmd)
 Err
 ¶
-func (cmd *MapStringInterfaceCmd) Err()
+func (cmd*MapStringInterfaceCmd) Err()
 error
 func (*MapStringInterfaceCmd)
 FullName
 ¶
-func (cmd *MapStringInterfaceCmd) FullName()
+func (cmd*MapStringInterfaceCmd) FullName()
 string
 func (*MapStringInterfaceCmd)
 Name
 ¶
-func (cmd *MapStringInterfaceCmd) Name()
+func (cmd*MapStringInterfaceCmd) Name()
 string
 func (*MapStringInterfaceCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 MapStringInterfaceCmd
 ) Result() (map[
 string
@@ -42042,19 +42042,19 @@ error
 func (*MapStringInterfaceCmd)
 SetErr
 ¶
-func (cmd *MapStringInterfaceCmd) SetErr(e
+func (cmd*MapStringInterfaceCmd) SetErr(e
 error
 )
 func (*MapStringInterfaceCmd)
 SetFirstKeyPos
 ¶
-func (cmd *MapStringInterfaceCmd) SetFirstKeyPos(keyPos
+func (cmd*MapStringInterfaceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*MapStringInterfaceCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 MapStringInterfaceCmd
 ) SetVal(val map[
 string
@@ -42062,14 +42062,14 @@ string
 func (*MapStringInterfaceCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 MapStringInterfaceCmd
 ) String()
 string
 func (*MapStringInterfaceCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 MapStringInterfaceCmd
 ) Val() map[
 string
@@ -42294,7 +42294,7 @@ func NewMapStringStringCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 MapStringStringCmd
 func
 NewMapStringStringResult
@@ -42385,19 +42385,19 @@ Output:
 func (*MapStringStringCmd)
 SetErr
 ¶
-func (cmd *MapStringStringCmd) SetErr(e
+func (cmd*MapStringStringCmd) SetErr(e
 error
 )
 func (*MapStringStringCmd)
 SetFirstKeyPos
 ¶
-func (cmd *MapStringStringCmd) SetFirstKeyPos(keyPos
+func (cmd*MapStringStringCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*MapStringStringCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 MapStringStringCmd
 ) SetVal(val map[
 string
@@ -42407,14 +42407,14 @@ string
 func (*MapStringStringCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 MapStringStringCmd
 ) String()
 string
 func (*MapStringStringCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 MapStringStringCmd
 ) Val() map[
 string
@@ -42781,8 +42781,8 @@ Duration
 // ReadTimeout for socket reads. If reached, commands will fail
 // with a timeout instead of blocking. Supported values:
 //
-//	- `-1` - no timeout (block indefinitely).
-//	- `-2` - disables SetReadDeadline calls completely.
+// - `-1` - no timeout (block indefinitely).
+// - `-2` - disables SetReadDeadline calls completely.
 //
 // default: 3 seconds
 ReadTimeout
@@ -42792,8 +42792,8 @@ Duration
 // WriteTimeout for socket writes. If reached, commands will fail
 // with a timeout instead of blocking.  Supported values:
 //
-//	- `-1` - no timeout (block indefinitely).
-//	- `-2` - disables SetWriteDeadline calls completely.
+// - `-1` - no timeout (block indefinitely).
+// - `-2` - disables SetWriteDeadline calls completely.
 //
 // default: 3 seconds
 WriteTimeout
@@ -42821,8 +42821,8 @@ WriteBufferSize
 int
 // PoolFIFO type of connection pool.
 //
-//	- true for FIFO pool
-//	- false for LIFO pool.
+// - true for FIFO pool
+// - false for LIFO pool.
 //
 // Note that FIFO has slightly higher overhead compared to LIFO,
 // but it helps closing idle connections faster reducing the pool size.
@@ -42991,7 +42991,7 @@ is equivalent to:
 Network:     "tcp",
 Addr:        "localhost:6789",
 DB:          1,               // path "/3" was overridden by "&db=1"
-DialTimeout: 3 * time.Second, // no time unit = seconds
+DialTimeout: 3* time.Second, // no time unit = seconds
 ReadTimeout: 6 * time.Second,
 MaxRetries:  2,
 }
@@ -43018,7 +43018,7 @@ NewDialer
 ¶
 added in
 v9.15.0
-func (opt *
+func (opt*
 Options
 ) NewDialer() func(
 context
@@ -43089,7 +43089,7 @@ func (c Pipeline) ACLCatArgs(ctx
 context
 .
 Context
-, options *
+, options*
 ACLCatArgs
 ) *
 StringSliceCmd
@@ -43104,7 +43104,7 @@ context
 Context
 , username
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ACLDryRun
@@ -43130,7 +43130,7 @@ context
 Context
 , bit
 int
-) *
+)*
 StringCmd
 func (Pipeline)
 ACLList
@@ -43154,7 +43154,7 @@ context
 Context
 , count
 int64
-) *
+)*
 ACLLogCmd
 func (Pipeline)
 ACLLogReset
@@ -43180,7 +43180,7 @@ Context
 string
 , rules ...
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 ACLUsers
@@ -43202,7 +43202,7 @@ func (c Pipeline) ACLWhoAmI(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Pipeline)
 Append
@@ -43224,7 +43224,7 @@ context
 Context
 , password
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 AuthACL
@@ -43251,7 +43251,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFAdd adds an item to a Bloom filter.
 For more information -
@@ -43285,7 +43285,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFExists determines whether a given item was added to a Bloom filter.
 For more information -
@@ -43317,7 +43317,7 @@ context
 Context
 , key, option
 string
-) *
+)*
 BFInfoCmd
 BFInfoArg returns information about a specific option of a Bloom filter.
 For more information -
@@ -43349,7 +43349,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoExpansion returns information about the expansion rate of a Bloom filter.
 For more information -
@@ -43381,7 +43381,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoItems returns information about the items of a Bloom filter.
 For more information -
@@ -43413,7 +43413,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFInsertOptions
 , elements ...interface{}) *
 BoolSliceCmd
@@ -43435,7 +43435,7 @@ Context
 string
 , iterator
 int64
-, data interface{}) *
+, data interface{})*
 StatusCmd
 BFLoadChunk restores a Bloom filter previously saved using BF.SCANDUMP.
 For more information -
@@ -43468,7 +43468,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMExists check if multiple elements exist in a Bloom filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -43510,7 +43510,7 @@ string
 float64
 , capacity, expansion
 int64
-) *
+)*
 StatusCmd
 BFReserveExpansion creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -43550,7 +43550,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFReserveOptions
 ) *
 StatusCmd
@@ -43572,7 +43572,7 @@ Context
 string
 , iterator
 int64
-) *
+)*
 ScanDumpCmd
 Begins an incremental save of the Bloom filter.
 This command is useful for large Bloom filters that cannot fit into the DUMP and RESTORE model.
@@ -43614,7 +43614,7 @@ time
 .
 Duration
 ,
-) *
+)*
 StringCmd
 func (Pipeline)
 BLPop
@@ -43644,7 +43644,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 BRPopLPush
@@ -43680,7 +43680,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 ZSliceWithKeyCmd
 BZMPop is the blocking variant of ZMPOP.
 When any of the sorted sets contains elements, this command behaves exactly like ZMPOP.
@@ -43716,7 +43716,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMin Redis `BZPOPMIN key [key ...] timeout` command.
 func (*Pipeline)
@@ -43724,7 +43724,7 @@ BatchProcess
 ¶
 added in
 v9.14.0
-func (c *
+func (c*
 Pipeline
 ) BatchProcess(ctx
 context
@@ -43751,7 +43751,7 @@ func (c Pipeline) BgSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 BitCount
@@ -43764,7 +43764,7 @@ Context
 string
 , bitCount *
 BitCount
-) *
+)*
 IntCmd
 func (Pipeline)
 BitField
@@ -43792,7 +43792,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 BitFieldRO - Read-only variant of the BITFIELD command.
 It is like the original BITFIELD but only accepts GET subcommand and can safely be used in read-only replicas.
@@ -43824,7 +43824,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpAndOr creates a new bitmap in which users are members of bitmap X and also members of one or more of bitmaps Y1, Y2, …
 Introduced with Redis 8.2
@@ -43858,7 +43858,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1 creates a new bitmap in which users are members of one or more of bitmaps Y1, Y2, … but not members of bitmap X
 Introduced with Redis 8.2
@@ -43889,7 +43889,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne creates a new bitmap in which users are members of exactly one of the given bitmaps
 Introduced with Redis 8.2
@@ -43918,7 +43918,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor creates a new bitmap in which users are the result of XORing all given bitmaps
 func (Pipeline)
@@ -43955,7 +43955,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitPosSpan supports the `byte | bit` parameters in redis version 7.0,
 the bitpos command defaults to using byte type for the `start-end` range,
@@ -43991,7 +43991,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX adds an element to a Cuckoo filter only if it does not already exist in the filter.
 Returns true if the element was added to the filter or false if it already exists in the filter.
@@ -44024,7 +44024,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFDel deletes an item once from the cuckoo filter.
 For more information -
@@ -44056,7 +44056,7 @@ context
 Context
 , key
 string
-) *
+)*
 CFInfoCmd
 CFInfo returns information about a Cuckoo filter.
 For more information -
@@ -44074,7 +44074,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFInsert inserts elements into a Cuckoo filter.
 This function also allows for specifying additional options such as capacity, error rate, expansion rate, and non-scaling behavior.
@@ -44094,7 +44094,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CFInsertNX inserts elements into a Cuckoo filter only if they do not already exist in the filter.
 This function also allows for specifying additional options such as:
@@ -44131,7 +44131,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFMExists check if multiple elements exist in a Cuckoo filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -44170,7 +44170,7 @@ string
 int64
 , bucketsize
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize creates an empty Cuckoo filter with the specified capacity and bucket size.
 For more information -
@@ -44210,7 +44210,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFReserveMaxIterations creates an empty Cuckoo filter with the specified capacity and maximum number of iterations.
 For more information -
@@ -44228,7 +44228,7 @@ Context
 string
 , options *
 CFReserveOptions
-) *
+)*
 StatusCmd
 CFReserveWithArgs creates an empty Cuckoo filter with the specified options.
 This function allows for specifying additional options such as bucket size and maximum number of iterations.
@@ -44263,7 +44263,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSIncrBy increments the count of one or more items in a Count-Min Sketch filter.
 Returns an array of integers representing the updated count of each item.
@@ -44298,7 +44298,7 @@ Context
 string
 , width, depth
 int64
-) *
+)*
 StatusCmd
 CMSInitByDim creates an empty Count-Min Sketch filter with the specified dimensions.
 For more information -
@@ -44334,7 +44334,7 @@ Context
 string
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 CMSMerge merges multiple Count-Min Sketch filters into a single filter.
 The destination filter must not exist and will be created with the dimensions of the first source filter.
@@ -44376,7 +44376,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSQuery returns count for item(s).
 For more information -
@@ -44398,7 +44398,7 @@ func (c Pipeline) ClientID(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Pipeline)
 ClientInfo
@@ -44420,7 +44420,7 @@ context
 Context
 , ipPort
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClientKillByFilter
@@ -44442,7 +44442,7 @@ func (c Pipeline) ClientList(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Pipeline)
 ClientMaintNotifications
@@ -44472,7 +44472,7 @@ Context
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Pipeline)
 ClientSetInfo
@@ -44497,7 +44497,7 @@ context
 Context
 , name
 string
-) *
+)*
 BoolCmd
 ClientSetName assigns a name to the connection.
 func (Pipeline)
@@ -44520,7 +44520,7 @@ context
 Context
 , id
 int64
-) *
+)*
 IntCmd
 func (Pipeline)
 ClientUnpause
@@ -44540,7 +44540,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClusterAddSlotsRange
@@ -44562,7 +44562,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ClusterCountKeysInSlot
@@ -44584,7 +44584,7 @@ context
 Context
 , slots ...
 int
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClusterDelSlotsRange
@@ -44604,7 +44604,7 @@ func (c Pipeline) ClusterFailover(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClusterForget
@@ -44628,7 +44628,7 @@ Context
 int
 , count
 int
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ClusterInfo
@@ -44648,7 +44648,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ClusterLinks
@@ -44670,7 +44670,7 @@ context
 Context
 , host, port
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClusterMyID
@@ -44692,7 +44692,7 @@ func (c Pipeline) ClusterMyShardID(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Pipeline)
 ClusterNodes
@@ -44712,7 +44712,7 @@ context
 Context
 , nodeID
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClusterResetHard
@@ -44730,7 +44730,7 @@ func (c Pipeline) ClusterResetSoft(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 ClusterSaveConfig
@@ -44750,7 +44750,7 @@ func (c Pipeline) ClusterShards(ctx
 context
 .
 Context
-) *
+)*
 ClusterShardsCmd
 func (Pipeline)
 ClusterSlaves
@@ -44770,14 +44770,14 @@ func (c Pipeline) ClusterSlots(ctx
 context
 .
 Context
-) *
+)*
 ClusterSlotsCmd
 func (*Pipeline)
 Cmds
 ¶
 added in
 v9.13.0
-func (c *
+func (c*
 Pipeline
 ) Cmds() []
 Cmder
@@ -44799,7 +44799,7 @@ func (c Pipeline) CommandGetKeys(ctx
 context
 .
 Context
-, commands ...interface{}) *
+, commands ...interface{})*
 StringSliceCmd
 func (Pipeline)
 CommandGetKeysAndFlags
@@ -44821,7 +44821,7 @@ func (c Pipeline) CommandList(ctx
 context
 .
 Context
-, filter *
+, filter*
 FilterBy
 ) *
 StringSliceCmd
@@ -44834,7 +44834,7 @@ context
 Context
 , parameter
 string
-) *
+)*
 MapStringStringCmd
 func (Pipeline)
 ConfigResetStat
@@ -44852,7 +44852,7 @@ func (c Pipeline) ConfigRewrite(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 ConfigSet
@@ -44878,7 +44878,7 @@ string
 int
 , replace
 bool
-) *
+)*
 IntCmd
 func (Pipeline)
 DBSize
@@ -44898,7 +44898,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Pipeline)
 Decr
@@ -44922,7 +44922,7 @@ Context
 string
 , decrement
 int64
-) *
+)*
 IntCmd
 func (Pipeline)
 Del
@@ -44948,7 +44948,7 @@ Context
 string
 , a
 DelExArgs
-) *
+)*
 IntCmd
 DelExArgs Redis `DELEX key [IFEQ|IFNE|IFDEQ|IFDNE] match-value` command.
 Compare-and-delete with flexible conditions.
@@ -46064,7 +46064,7 @@ Context
 string
 , geoLocation ...*
 GeoLocation
-) *
+)*
 IntCmd
 func (Pipeline)
 GeoDist
@@ -46092,7 +46092,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 GeoPos
@@ -46119,7 +46119,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -46135,7 +46135,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -46151,7 +46151,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -46169,7 +46169,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -46184,7 +46184,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchQuery
 ) *
 StringSliceCmd
@@ -46198,7 +46198,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchLocationQuery
 ,
 ) *
@@ -46212,7 +46212,7 @@ context
 Context
 , key, store
 string
-, q *
+, q*
 GeoSearchStoreQuery
 ) *
 IntCmd
@@ -46225,7 +46225,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 Get Redis `GET key` command. It returns redis.Nil error when key does not exist.
 func (Pipeline)
@@ -46250,7 +46250,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 GetDel redis-server version >= 6.2.0.
 func (Pipeline)
@@ -46281,7 +46281,7 @@ Context
 string
 , start, end
 int64
-) *
+)*
 StringCmd
 func (Pipeline)
 GetSet
@@ -46305,7 +46305,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 HExists
@@ -46335,7 +46335,7 @@ time
 Duration
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpire - Sets the expiration time for specified fields in a hash in seconds.
 The command constructs an argument list starting with "HEXPIRE", followed by the key, duration, any conditional flags, and the specified fields.
@@ -46388,7 +46388,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 func (Pipeline)
 HExpireTime
@@ -46433,7 +46433,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireWithArgs - Sets the expiration time for specified fields in a hash in seconds.
 It requires a key, an expiration duration, a struct with boolean flags for conditional expiration settings (NX, XX, GT, LT), and a list of fields.
@@ -46462,7 +46462,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringStringCmd
 func (Pipeline)
 HGetDel
@@ -46492,7 +46492,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 HGetEXWithArgs
@@ -46509,7 +46509,7 @@ string
 HGetEXOptions
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 HIncrBy
@@ -46535,7 +46535,7 @@ Context
 string
 , incr
 float64
-) *
+)*
 FloatCmd
 func (Pipeline)
 HKeys
@@ -46557,7 +46557,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 HMGet
@@ -46583,7 +46583,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 HMSet is a deprecated version of HSet left for compatibility with Redis 3.
 func (Pipeline)
@@ -46629,7 +46629,7 @@ time
 Time
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireAt - Sets the expiration time for specified fields in a hash to a UNIX timestamp in milliseconds.
 Similar to HExpireAt but for timestamps in milliseconds. It accepts the same parameters and adjusts the UNIX time to milliseconds.
@@ -46671,7 +46671,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireTime - Retrieves the expiration time for specified fields in a hash as a UNIX timestamp in milliseconds.
 Similar to HExpireTime, adjusted for timestamps in milliseconds. It requires the same parameters.
@@ -46723,7 +46723,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPTTL - Retrieves the remaining time to live for specified fields in a hash in milliseconds.
 Similar to HTTL, but returns the TTL in milliseconds. It requires a key and the specified fields.
@@ -46767,7 +46767,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 HRandField redis-server version >= 6.2.0.
 func (Pipeline)
@@ -46799,7 +46799,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Pipeline)
 HScanNoValues
@@ -46829,7 +46829,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 HSet accepts values in following formats:
 HSet(ctx, "myhash", "key1", "value1", "key2", "value2")
@@ -46876,7 +46876,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HSetEXOptions
 , fieldsAndValues ...
 string
@@ -46891,7 +46891,7 @@ context
 Context
 , key, field
 string
-, value interface{}) *
+, value interface{})*
 BoolCmd
 func (Pipeline)
 HStrLen
@@ -46919,7 +46919,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HTTL - Retrieves the remaining time to live for specified fields in a hash in seconds.
 Requires a key and the fields themselves. It returns the TTL for each specified field.
@@ -46952,7 +46952,7 @@ int
 , username, password, clientName
 string
 ,
-) *
+)*
 MapStringInterfaceCmd
 Hello sets the resp protocol used.
 func (Pipeline)
@@ -46977,7 +46977,7 @@ Context
 string
 , value
 int64
-) *
+)*
 IntCmd
 func (Pipeline)
 IncrByFloat
@@ -47001,7 +47001,7 @@ context
 Context
 , sections ...
 string
-) *
+)*
 StringCmd
 func (Pipeline)
 InfoMap
@@ -47027,7 +47027,7 @@ context
 Context
 , key, path
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrAppend adds the provided JSON values to the end of the array at the given path.
 For more information, see
@@ -47059,7 +47059,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrIndexArgs
 , value ...interface{}) *
 IntSliceCmd
@@ -47080,7 +47080,7 @@ Context
 string
 , index
 int64
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 JSONArrInsert inserts the JSON values into the array at the specified path before the index (shifts to the right).
 For more information, see
@@ -47114,7 +47114,7 @@ Context
 string
 , index
 int
-) *
+)*
 StringSliceCmd
 JSONArrPop removes and returns an element from the specified index in the array.
 For more information, see
@@ -47146,7 +47146,7 @@ context
 Context
 , key, path
 string
-, options *
+, options*
 JSONArrTrimArgs
 ) *
 IntSliceCmd
@@ -47164,7 +47164,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONClear clears container values (arrays/objects) and sets numeric values to 0.
 For more information, see
@@ -47196,7 +47196,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDel deletes a value.
 For more information, see
@@ -47230,7 +47230,7 @@ Context
 string
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGet returns the value at path in JSON serialized form. JSON.GET returns an
 array of strings. This function parses out the wrapping array but leaves the
@@ -47252,7 +47252,7 @@ string
 JSONGetArgs
 , paths ...
 string
-) *
+)*
 JSONCmd
 JSONGetWithArgs - Retrieves the value of a key from a JSON document.
 This function also allows for specifying additional options such as:
@@ -47288,7 +47288,7 @@ func (c Pipeline) JSONMSet(ctx
 context
 .
 Context
-, params ...interface{}) *
+, params ...interface{})*
 StatusCmd
 func (Pipeline)
 JSONMSetArgs
@@ -47319,7 +47319,7 @@ Context
 string
 , value
 string
-) *
+)*
 StatusCmd
 JSONMerge merges a given JSON value into matching paths.
 For more information, see
@@ -47353,7 +47353,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 SliceCmd
 JSONObjKeys returns the keys in the object that's referenced by the specified path.
 For more information, see
@@ -47385,7 +47385,7 @@ context
 Context
 , key, path
 string
-, value interface{}) *
+, value interface{})*
 StatusCmd
 JSONSet sets the JSON value at the given path in the given key. The value must be something that
 can be marshaled to JSON (using encoding/JSON) unless the argument is a string or a []byte when we assume that
@@ -47423,7 +47423,7 @@ context
 Context
 , key, path, value
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrAppend appends the JSON-string values to the string at the specified path.
 For more information, see
@@ -47455,7 +47455,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONToggle toggles a Boolean value stored at the specified path.
 For more information, see
@@ -47485,7 +47485,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 LCS
@@ -47498,7 +47498,7 @@ context
 Context
 , q *
 LCSQuery
-) *
+)*
 LCSCmd
 func (Pipeline)
 LIndex
@@ -47522,7 +47522,7 @@ context
 Context
 , key, op
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Pipeline)
 LInsertAfter
@@ -47544,7 +47544,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Pipeline)
 LLen
@@ -47572,7 +47572,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 KeyValuesCmd
 LMPop Pops one or more elements from the first non-empty list key from the list of provided key names.
 direction: left or right, count: > 0
@@ -47597,7 +47597,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Pipeline)
 LPopCount
@@ -47625,7 +47625,7 @@ string
 string
 , a
 LPosArgs
-) *
+)*
 IntCmd
 func (Pipeline)
 LPosCount
@@ -47653,7 +47653,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Pipeline)
 LPushX
@@ -47677,7 +47677,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 LRem
@@ -47703,7 +47703,7 @@ Context
 string
 , index
 int64
-, value interface{}) *
+, value interface{})*
 StatusCmd
 func (Pipeline)
 LTrim
@@ -47725,7 +47725,7 @@ func (c Pipeline) LastSave(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Pipeline)
 Latency
@@ -47747,12 +47747,12 @@ func (c Pipeline) LatencyReset(ctx
 context
 .
 Context
-, events ...interface{}) *
+, events ...interface{})*
 StatusCmd
 func (*Pipeline)
 Len
 ¶
-func (c *
+func (c*
 Pipeline
 ) Len()
 int
@@ -47775,7 +47775,7 @@ func (c Pipeline) MSet(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 StatusCmd
 MSet is like Set but accepts multiple values:
 MSet("key1", "value1", "key2", "value2")
@@ -47809,7 +47809,7 @@ func (c Pipeline) MSetNX(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 MSetNX is like SetNX but accepts multiple values:
 MSetNX("key1", "value1", "key2", "value2")
@@ -47844,7 +47844,7 @@ int
 time
 .
 Duration
-) *
+)*
 StatusCmd
 func (Pipeline)
 ModuleLoadex
@@ -47857,7 +47857,7 @@ context
 Context
 , conf *
 ModuleLoadexConfig
-) *
+)*
 StringCmd
 ModuleLoadex Redis `MODULE LOADEX path [CONFIG name value [CONFIG name value ...]] [ARGS args [args ...]]` command.
 func (Pipeline)
@@ -47904,7 +47904,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Pipeline)
 ObjectFreq
@@ -47928,7 +47928,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Pipeline)
 ObjectRefCount
@@ -47954,7 +47954,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Pipeline)
 PExpireAt
@@ -47982,7 +47982,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Pipeline)
 PFAdd
@@ -48004,7 +48004,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 PFMerge
@@ -48028,7 +48028,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Pipeline)
 Persist
@@ -48048,19 +48048,19 @@ func (c Pipeline) Ping(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (*Pipeline)
 Pipeline
 ¶
-func (c *
+func (c*
 Pipeline
 ) Pipeline()
 Pipeliner
 func (*Pipeline)
 Pipelined
 ¶
-func (c *
+func (c*
 Pipeline
 ) Pipelined(ctx
 context
@@ -48078,7 +48078,7 @@ error
 func (*Pipeline)
 Process
 ¶
-func (c *
+func (c*
 Pipeline
 ) Process(ctx
 context
@@ -48107,7 +48107,7 @@ func (c Pipeline) PubSubNumPat(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Pipeline)
 PubSubNumSub
@@ -48129,7 +48129,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 PubSubShardNumSub
@@ -48151,7 +48151,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 Publish posts the message to the channel.
 func (Pipeline)
@@ -48172,7 +48172,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Pipeline)
 RPopCount
@@ -48196,7 +48196,7 @@ context
 Context
 , source, destination
 string
-) *
+)*
 StringCmd
 func (Pipeline)
 RPush
@@ -48218,7 +48218,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Pipeline)
 RandomKey
@@ -48236,7 +48236,7 @@ func (c Pipeline) ReadOnly(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 ReadWrite
@@ -48256,7 +48256,7 @@ context
 Context
 , key, newkey
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 RenameNX
@@ -48284,7 +48284,7 @@ time
 Duration
 , value
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 RestoreReplace
@@ -48312,7 +48312,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Pipeline)
 SCard
@@ -48334,7 +48334,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 SDiffStore
@@ -48358,7 +48358,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 SInterCard
@@ -48384,7 +48384,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 SIsMember
@@ -48406,7 +48406,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 BoolSliceCmd
 SMIsMember Redis `SMISMEMBER key member [member ...]` command.
 func (Pipeline)
@@ -48430,7 +48430,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringStructMapCmd
 SMembersMap Redis `SMEMBERS key` command output as a map.
 func (Pipeline)
@@ -48453,7 +48453,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SPop Redis `SPOP key` command.
 func (Pipeline)
@@ -48479,7 +48479,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 func (Pipeline)
 SRandMember
@@ -48504,7 +48504,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 SRandMemberN Redis `SRANDMEMBER key count` command.
 func (Pipeline)
@@ -48533,7 +48533,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Pipeline)
 SUnion
@@ -48557,7 +48557,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 Save
@@ -48581,7 +48581,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Pipeline)
 ScanType
@@ -48609,7 +48609,7 @@ context
 Context
 , hashes ...
 string
-) *
+)*
 BoolSliceCmd
 func (Pipeline)
 ScriptFlush
@@ -48627,7 +48627,7 @@ func (c Pipeline) ScriptKill(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 ScriptLoad
@@ -48649,7 +48649,7 @@ context
 Context
 , index
 int
-) *
+)*
 StatusCmd
 func (Pipeline)
 Set
@@ -48682,7 +48682,7 @@ Context
 string
 , value interface{}, a
 SetArgs
-) *
+)*
 StatusCmd
 SetArgs supports all the options that the SET command supports.
 It is the alternative to the Set function when you want
@@ -48715,7 +48715,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetEx Redis `SETEx key expiration value` command.
 func (Pipeline)
@@ -48766,7 +48766,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDEQGet sets the value only if the current value's digest equals matchDigest,
 and returns the previous value.
@@ -48829,7 +48829,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDNEGet sets the value only if the current value's digest does NOT equal matchDigest,
 and returns the previous value.
@@ -48883,7 +48883,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFEQGet Redis `SET key value [expiration] IFEQ match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value equals matchValue,
@@ -48932,7 +48932,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFNEGet Redis `SET key value [expiration] IFNE match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value does not equal matchValue,
@@ -48974,7 +48974,7 @@ string
 int64
 , value
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 SetXX
@@ -49002,7 +49002,7 @@ func (c Pipeline) Shutdown(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 ShutdownNoSave
@@ -49020,7 +49020,7 @@ func (c Pipeline) ShutdownSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 SlaveOf
@@ -49042,7 +49042,7 @@ context
 Context
 , num
 int64
-) *
+)*
 SlowLogCmd
 func (Pipeline)
 SlowLogLen
@@ -49064,7 +49064,7 @@ func (c Pipeline) SlowLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Pipeline)
 Sort
@@ -49077,7 +49077,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 SortInterfaces
@@ -49090,7 +49090,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 SliceCmd
 func (Pipeline)
 SortRO
@@ -49103,7 +49103,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 SortStore
@@ -49116,7 +49116,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 IntCmd
 func (Pipeline)
 StrLen
@@ -49138,7 +49138,7 @@ context
 Context
 , index1, index2
 int
-) *
+)*
 StatusCmd
 func (Pipeline)
 Sync
@@ -49180,7 +49180,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRank returns an array of values from a t-Digest data structure based on their rank.
 The rank of an element is its position in the sorted list of all elements in the t-Digest.
@@ -49220,7 +49220,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCDF returns an array of cumulative distribution function (CDF) values for one or more elements in a t-Digest data structure.
 The CDF value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -49257,7 +49257,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestCreateWithCompression creates an empty t-Digest data structure with a specified compression parameter.
 The compression parameter controls the accuracy and memory usage of the t-Digest.
@@ -49291,7 +49291,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMax returns the maximum value from a t-Digest data structure.
 For more information -
@@ -49311,7 +49311,7 @@ string
 TDigestMergeOptions
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 TDigestMerge merges multiple t-Digest data structures into a single t-Digest.
 This function also allows for specifying additional options such as compression and override behavior.
@@ -49347,7 +49347,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestQuantile returns an array of quantile values for one or more elements in a t-Digest data structure.
 The quantile value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -49385,7 +49385,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestReset resets a t-Digest data structure to its initial state.
 Returns OK on success or an error if the operation could not be completed.
@@ -49424,7 +49424,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 TDigestTrimmedMean returns the trimmed mean value from a t-Digest data structure.
 The trimmed mean is calculated by removing a specified fraction of the highest and lowest values from the t-Digest and then calculating the mean of the remaining values.
@@ -49462,7 +49462,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -49482,7 +49482,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSAlterOptions
 ) *
 StatusCmd
@@ -49502,7 +49502,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreate - Creates a new time-series key.
 For more information -
@@ -49546,7 +49546,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -49566,7 +49566,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSOptions
 ) *
 StatusCmd
@@ -49588,7 +49588,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
 For more information -
@@ -49608,7 +49608,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -49648,7 +49648,7 @@ Context
 string
 , destKey
 string
-) *
+)*
 StatusCmd
 TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
 For more information -
@@ -49680,7 +49680,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSGetOptions
 ) *
 TSTimestampValueCmd
@@ -49702,7 +49702,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrBy - Increments the value of a time-series key by the specified timestamp.
 For more information -
@@ -49722,7 +49722,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -49756,7 +49756,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -49774,7 +49774,7 @@ func (c Pipeline) TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSMAdd - Adds multiple samples to multiple time-series keys.
 It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
@@ -49808,7 +49808,7 @@ context
 Context
 , filters []
 string
-, options *
+, options*
 TSMGetOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -49832,7 +49832,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRange - Returns a range of samples from multiple time-series keys.
 For more information -
@@ -49854,7 +49854,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
 This function allows for specifying additional options such as:
@@ -49898,7 +49898,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -49920,7 +49920,7 @@ context
 Context
 , filterExpr []
 string
-) *
+)*
 StringSliceCmd
 TSQueryIndex - Returns all the keys matching the filter expression.
 For more information -
@@ -49960,7 +49960,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -49985,7 +49985,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRange - Returns a range of samples from a time-series key in reverse order.
 For more information -
@@ -50007,7 +50007,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
 This function allows for specifying additional options such as:
@@ -50033,7 +50033,7 @@ func (c Pipeline) Time(ctx
 context
 .
 Context
-) *
+)*
 TimeCmd
 func (Pipeline)
 TopKAdd
@@ -50063,7 +50063,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 TopKCount returns an estimate of the number of times an item may be in a Top-K filter.
 For more information -
@@ -50095,7 +50095,7 @@ context
 Context
 , key
 string
-) *
+)*
 TopKInfoCmd
 TopKInfo returns information about a Top-K filter.
 For more information -
@@ -50127,7 +50127,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringIntCmd
 TopKListWithCount returns all items in Top-K list with their respective count.
 For more information -
@@ -50162,7 +50162,7 @@ Context
 string
 , k
 int64
-) *
+)*
 StatusCmd
 TopKReserve creates an empty Top-K filter with the specified number of top items to keep.
 For more information -
@@ -50199,19 +50199,19 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*Pipeline)
 TxPipeline
 ¶
-func (c *
+func (c*
 Pipeline
 ) TxPipeline()
 Pipeliner
 func (*Pipeline)
 TxPipelined
 ¶
-func (c *
+func (c*
 Pipeline
 ) TxPipelined(ctx
 context
@@ -50246,7 +50246,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 VAdd
@@ -50278,7 +50278,7 @@ Context
 string
 , val
 Vector
-, addArgs *
+, addArgs*
 VAddArgs
 ) *
 BoolCmd
@@ -50295,7 +50295,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VCARD key`
 note: the API is experimental and may be subject to change.
@@ -50326,7 +50326,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VDIM key`
 note: the API is experimental and may be subject to change.
@@ -50358,7 +50358,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringCmd
 `VGETATTR key element`
 note: the API is experimental and may be subject to change.
@@ -50388,7 +50388,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringSliceCmd
 `VLINKS key element`
 note: the API is experimental and may be subject to change.
@@ -50418,7 +50418,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 `VRANDMEMBER key`
 note: the API is experimental and may be subject to change.
@@ -50452,7 +50452,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 `VRANGE key start end count`
 a negative count means to return all the elements in the vector set.
@@ -50483,7 +50483,7 @@ context
 Context
 , key, element
 string
-, attr interface{}) *
+, attr interface{})*
 BoolCmd
 `VSETATTR key element "{ JSON obj }"`
 The `attr` must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -50519,7 +50519,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 StringSliceCmd
@@ -50539,7 +50539,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 VectorScoreSliceCmd
@@ -50559,7 +50559,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 VectorScoreSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) WITHSCORES`
 note: the API is experimental and may be subject to change.
@@ -50593,7 +50593,7 @@ int
 time
 .
 Duration
-) *
+)*
 IntCmd
 func (Pipeline)
 XAck
@@ -50625,7 +50625,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (Pipeline)
 XAdd
@@ -50636,7 +50636,7 @@ context
 Context
 , a *
 XAddArgs
-) *
+)*
 StringCmd
 func (Pipeline)
 XAutoClaim
@@ -50647,7 +50647,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimCmd
 func (Pipeline)
 XAutoClaimJustID
@@ -50658,7 +50658,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimJustIDCmd
 func (Pipeline)
 XClaim
@@ -50669,7 +50669,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 XMessageSliceCmd
 func (Pipeline)
 XClaimJustID
@@ -50680,7 +50680,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 XDel
@@ -50710,7 +50710,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (Pipeline)
 XGroupCreate
@@ -50732,7 +50732,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 XGroupCreateMkStream
@@ -50754,7 +50754,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 XGroupDestroy
@@ -50776,7 +50776,7 @@ context
 Context
 , stream, group, start
 string
-) *
+)*
 StatusCmd
 func (Pipeline)
 XInfoConsumers
@@ -50800,7 +50800,7 @@ context
 Context
 , key
 string
-) *
+)*
 XInfoGroupsCmd
 func (Pipeline)
 XInfoStream
@@ -50824,7 +50824,7 @@ Context
 string
 , count
 int
-) *
+)*
 XInfoStreamFullCmd
 XInfoStreamFull XINFO STREAM FULL [COUNT count]
 redis-server >= 6.0.
@@ -50848,7 +50848,7 @@ context
 Context
 , stream, group
 string
-) *
+)*
 XPendingCmd
 func (Pipeline)
 XPendingExt
@@ -50859,7 +50859,7 @@ context
 Context
 , a *
 XPendingExtArgs
-) *
+)*
 XPendingExtCmd
 func (Pipeline)
 XRange
@@ -50883,7 +50883,7 @@ Context
 string
 , count
 int64
-) *
+)*
 XMessageSliceCmd
 func (Pipeline)
 XRead
@@ -50894,7 +50894,7 @@ context
 Context
 , a *
 XReadArgs
-) *
+)*
 XStreamSliceCmd
 func (Pipeline)
 XReadGroup
@@ -50905,7 +50905,7 @@ context
 Context
 , a *
 XReadGroupArgs
-) *
+)*
 XStreamSliceCmd
 func (Pipeline)
 XReadStreams
@@ -50927,7 +50927,7 @@ context
 Context
 , stream, start, stop
 string
-) *
+)*
 XMessageSliceCmd
 func (Pipeline)
 XRevRangeN
@@ -50953,7 +50953,7 @@ Context
 string
 , maxLen
 int64
-) *
+)*
 IntCmd
 XTrimMaxLen No `~` rules are used, `limit` cannot be used.
 cmd: XTRIM key MAXLEN maxLen
@@ -50985,7 +50985,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 XTrimMaxLenMode
@@ -51015,7 +51015,7 @@ Context
 string
 , minID
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 XTrimMinIDApprox
@@ -51049,7 +51049,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 XTrimMinIDMode
@@ -51079,7 +51079,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAdd Redis `ZADD key score member [score member ...]` command.
 func (Pipeline)
@@ -51106,7 +51106,7 @@ Context
 string
 , args
 ZAddArgs
-) *
+)*
 FloatCmd
 func (Pipeline)
 ZAddGT
@@ -51137,7 +51137,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddLT Redis `ZADD key LT score member [score member ...]` command.
 func (Pipeline)
@@ -51165,7 +51165,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddXX Redis `ZADD key XX score member [score member ...]` command.
 func (Pipeline)
@@ -51188,7 +51188,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ZDiff
@@ -51213,7 +51213,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 ZDiffStore redis-server version >=6.2.0.
 func (Pipeline)
@@ -51241,7 +51241,7 @@ string
 float64
 , member
 string
-) *
+)*
 FloatCmd
 func (Pipeline)
 ZInter
@@ -51252,7 +51252,7 @@ context
 Context
 , store *
 ZStore
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ZInterCard
@@ -51276,7 +51276,7 @@ context
 Context
 , destination
 string
-, store *
+, store*
 ZStore
 ) *
 IntCmd
@@ -51287,7 +51287,7 @@ func (c Pipeline) ZInterWithScores(ctx
 context
 .
 Context
-, store *
+, store*
 ZStore
 ) *
 ZSliceCmd
@@ -51300,7 +51300,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ZMPop
@@ -51333,7 +51333,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 FloatSliceCmd
 func (Pipeline)
 ZPopMax
@@ -51359,7 +51359,7 @@ Context
 string
 , count ...
 int64
-) *
+)*
 ZSliceCmd
 func (Pipeline)
 ZRandMember
@@ -51386,7 +51386,7 @@ Context
 string
 , count
 int
-) *
+)*
 ZSliceCmd
 ZRandMemberWithScores redis-server version >= 6.2.0.
 func (Pipeline)
@@ -51411,7 +51411,7 @@ context
 Context
 , z
 ZRangeArgs
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ZRangeArgsWithScores
@@ -51433,7 +51433,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -51446,7 +51446,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -51459,7 +51459,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 ZSliceCmd
@@ -51474,7 +51474,7 @@ Context
 string
 , z
 ZRangeArgs
-) *
+)*
 IntCmd
 func (Pipeline)
 ZRangeWithScores
@@ -51498,7 +51498,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ZRankWithScore
@@ -51524,7 +51524,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Pipeline)
 ZRemRangeByLex
@@ -51548,7 +51548,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 IntCmd
 func (Pipeline)
 ZRemRangeByScore
@@ -51572,7 +51572,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ZRevRangeByLex
@@ -51585,7 +51585,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ZRevRangeByScore
@@ -51598,7 +51598,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ZRevRangeByScoreWithScores
@@ -51611,7 +51611,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 ZSliceCmd
 func (Pipeline)
 ZRevRangeWithScores
@@ -51637,7 +51637,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (Pipeline)
 ZRevRankWithScore
@@ -51667,7 +51667,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Pipeline)
 ZScore
@@ -51689,7 +51689,7 @@ context
 Context
 , store
 ZStore
-) *
+)*
 StringSliceCmd
 func (Pipeline)
 ZUnionStore
@@ -51702,7 +51702,7 @@ Context
 string
 , store *
 ZStore
-) *
+)*
 IntCmd
 func (Pipeline)
 ZUnionWithScores
@@ -51729,7 +51729,7 @@ Do(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 // Process queues the cmd for later execution.
 Process(ctx
@@ -51788,7 +51788,7 @@ Pong received as result of a PING command issued by another client.
 func (*Pong)
 String
 ¶
-func (p *
+func (p*
 Pong
 ) String()
 string
@@ -51819,7 +51819,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 BFExists(ctx
 context
@@ -51835,7 +51835,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoArg(ctx
 context
@@ -51851,7 +51851,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoSize(ctx
 context
@@ -51867,7 +51867,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoItems(ctx
 context
@@ -51883,7 +51883,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInsert(ctx
 context
@@ -51893,7 +51893,7 @@ Context
 string
 , options *
 BFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMAdd(ctx
 context
@@ -51909,7 +51909,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFReserve(ctx
 context
@@ -51933,7 +51933,7 @@ string
 float64
 , capacity, expansion
 int64
-) *
+)*
 StatusCmd
 BFReserveNonScaling(ctx
 context
@@ -51953,7 +51953,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFReserveOptions
 ) *
 StatusCmd
@@ -51965,7 +51965,7 @@ Context
 string
 , iterator
 int64
-) *
+)*
 ScanDumpCmd
 BFLoadChunk(ctx
 context
@@ -51983,7 +51983,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX(ctx
 context
@@ -51999,7 +51999,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 IntCmd
 CFDel(ctx
 context
@@ -52015,7 +52015,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFInfo(ctx
 context
@@ -52031,7 +52031,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 CFInsertOptions
 , elements ...interface{}) *
 BoolSliceCmd
@@ -52041,7 +52041,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 CFInsertOptions
 , elements ...interface{}) *
 IntSliceCmd
@@ -52051,7 +52051,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFReserve(ctx
 context
@@ -52069,7 +52069,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 CFReserveOptions
 ) *
 StatusCmd
@@ -52083,7 +52083,7 @@ string
 int64
 , expansion
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize(ctx
 context
@@ -52107,7 +52107,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFScanDump(ctx
 context
@@ -52127,7 +52127,7 @@ Context
 string
 , iterator
 int64
-, data interface{}) *
+, data interface{})*
 StatusCmd
 CMSIncrBy(ctx
 context
@@ -52143,7 +52143,7 @@ context
 Context
 , key
 string
-) *
+)*
 CMSInfoCmd
 CMSInitByDim(ctx
 context
@@ -52163,7 +52163,7 @@ Context
 string
 , errorRate, probability
 float64
-) *
+)*
 StatusCmd
 CMSMerge(ctx
 context
@@ -52185,7 +52185,7 @@ string
 string
 ]
 int64
-) *
+)*
 StatusCmd
 CMSQuery(ctx
 context
@@ -52201,7 +52201,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 StringSliceCmd
 TopKCount(ctx
 context
@@ -52217,7 +52217,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 StringSliceCmd
 TopKInfo(ctx
 context
@@ -52233,7 +52233,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 TopKListWithCount(ctx
 context
@@ -52249,7 +52249,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 TopKReserve(ctx
 context
@@ -52273,7 +52273,7 @@ int64
 int64
 , decay
 float64
-) *
+)*
 StatusCmd
 TDigestAdd(ctx
 context
@@ -52293,7 +52293,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRevRank(ctx
 context
@@ -52313,7 +52313,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCreate(ctx
 context
@@ -52331,7 +52331,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestInfo(ctx
 context
@@ -52347,7 +52347,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMin(ctx
 context
@@ -52363,7 +52363,7 @@ context
 Context
 , destKey
 string
-, options *
+, options*
 TDigestMergeOptions
 , sourceKeys ...
 string
@@ -52377,7 +52377,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestRank(ctx
 context
@@ -52395,7 +52395,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestRevRank(ctx
 context
@@ -52415,7 +52415,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 }
 type
@@ -52500,7 +52500,7 @@ and re-subscribes if ping can not received for 1 minute.
 func (*PubSub)
 ChannelSize
 deprecated
-func (c *
+func (c*
 PubSub
 ) ChannelSize(size
 int
@@ -52641,7 +52641,7 @@ instead.
 func (*PubSub)
 ReceiveTimeout
 ¶
-func (c *
+func (c*
 PubSub
 ) ReceiveTimeout(ctx
 context
@@ -52660,7 +52660,7 @@ Channel should be used instead.
 func (*PubSub)
 SSubscribe
 ¶
-func (c *
+func (c*
 PubSub
 ) SSubscribe(ctx
 context
@@ -52674,7 +52674,7 @@ SSubscribe Subscribes the client to the specified shard channels.
 func (*PubSub)
 SUnsubscribe
 ¶
-func (c *
+func (c*
 PubSub
 ) SUnsubscribe(ctx
 context
@@ -52689,14 +52689,14 @@ or from all of them if none is given.
 func (*PubSub)
 String
 ¶
-func (c *
+func (c*
 PubSub
 ) String()
 string
 func (*PubSub)
 Subscribe
 ¶
-func (c *
+func (c*
 PubSub
 ) Subscribe(ctx
 context
@@ -52711,7 +52711,7 @@ empty subscription if there are no channels.
 func (*PubSub)
 Unsubscribe
 ¶
-func (c *
+func (c*
 PubSub
 ) Unsubscribe(ctx
 context
@@ -52743,7 +52743,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 PubSubChannels(ctx
 context
@@ -52759,7 +52759,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 MapStringIntCmd
 PubSubNumPat(ctx
 context
@@ -52773,7 +52773,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 PubSubShardNumSub(ctx
 context
@@ -52812,41 +52812,41 @@ func NewRankWithScoreCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 RankWithScoreCmd
 func (*RankWithScoreCmd)
 Args
 ¶
 added in
 v9.0.4
-func (cmd *RankWithScoreCmd) Args() []interface{}
+func (cmd*RankWithScoreCmd) Args() []interface{}
 func (*RankWithScoreCmd)
 Err
 ¶
 added in
 v9.0.4
-func (cmd *RankWithScoreCmd) Err()
+func (cmd*RankWithScoreCmd) Err()
 error
 func (*RankWithScoreCmd)
 FullName
 ¶
 added in
 v9.0.4
-func (cmd *RankWithScoreCmd) FullName()
+func (cmd*RankWithScoreCmd) FullName()
 string
 func (*RankWithScoreCmd)
 Name
 ¶
 added in
 v9.0.4
-func (cmd *RankWithScoreCmd) Name()
+func (cmd*RankWithScoreCmd) Name()
 string
 func (*RankWithScoreCmd)
 Result
 ¶
 added in
 v9.0.4
-func (cmd *
+func (cmd*
 RankWithScoreCmd
 ) Result() (
 RankScore
@@ -52858,7 +52858,7 @@ SetErr
 ¶
 added in
 v9.0.4
-func (cmd *RankWithScoreCmd) SetErr(e
+func (cmd*RankWithScoreCmd) SetErr(e
 error
 )
 func (*RankWithScoreCmd)
@@ -52866,7 +52866,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.0.4
-func (cmd *RankWithScoreCmd) SetFirstKeyPos(keyPos
+func (cmd*RankWithScoreCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*RankWithScoreCmd)
@@ -52874,7 +52874,7 @@ SetVal
 ¶
 added in
 v9.0.4
-func (cmd *
+func (cmd*
 RankWithScoreCmd
 ) SetVal(val
 RankScore
@@ -52884,7 +52884,7 @@ String
 ¶
 added in
 v9.0.4
-func (cmd *
+func (cmd*
 RankWithScoreCmd
 ) String()
 string
@@ -52893,7 +52893,7 @@ Val
 ¶
 added in
 v9.0.4
-func (cmd *
+func (cmd*
 RankWithScoreCmd
 ) Val()
 RankScore
@@ -52920,7 +52920,7 @@ NewRing
 ¶
 func NewRing(opt *
 RingOptions
-) *
+)*
 Ring
 Example
 ¶
@@ -52952,7 +52952,7 @@ func (c Ring) ACLCatArgs(ctx
 context
 .
 Context
-, options *
+, options*
 ACLCatArgs
 ) *
 StringSliceCmd
@@ -52967,7 +52967,7 @@ context
 Context
 , username
 string
-) *
+)*
 IntCmd
 func (Ring)
 ACLDryRun
@@ -52993,7 +52993,7 @@ context
 Context
 , bit
 int
-) *
+)*
 StringCmd
 func (Ring)
 ACLList
@@ -53017,7 +53017,7 @@ context
 Context
 , count
 int64
-) *
+)*
 ACLLogCmd
 func (Ring)
 ACLLogReset
@@ -53043,7 +53043,7 @@ Context
 string
 , rules ...
 string
-) *
+)*
 StatusCmd
 func (Ring)
 ACLUsers
@@ -53065,12 +53065,12 @@ func (c Ring) ACLWhoAmI(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (*Ring)
 AddHook
 ¶
-func (hs *Ring) AddHook(hook
+func (hs*Ring) AddHook(hook
 Hook
 )
 AddHook is to add a hook to the queue.
@@ -53123,7 +53123,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFAdd adds an item to a Bloom filter.
 For more information -
@@ -53157,7 +53157,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 BFExists determines whether a given item was added to a Bloom filter.
 For more information -
@@ -53189,7 +53189,7 @@ context
 Context
 , key, option
 string
-) *
+)*
 BFInfoCmd
 BFInfoArg returns information about a specific option of a Bloom filter.
 For more information -
@@ -53221,7 +53221,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoExpansion returns information about the expansion rate of a Bloom filter.
 For more information -
@@ -53253,7 +53253,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoItems returns information about the items of a Bloom filter.
 For more information -
@@ -53285,7 +53285,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFInsertOptions
 , elements ...interface{}) *
 BoolSliceCmd
@@ -53307,7 +53307,7 @@ Context
 string
 , iterator
 int64
-, data interface{}) *
+, data interface{})*
 StatusCmd
 BFLoadChunk restores a Bloom filter previously saved using BF.SCANDUMP.
 For more information -
@@ -53340,7 +53340,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMExists check if multiple elements exist in a Bloom filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -53382,7 +53382,7 @@ string
 float64
 , capacity, expansion
 int64
-) *
+)*
 StatusCmd
 BFReserveExpansion creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -53422,7 +53422,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 BFReserveOptions
 ) *
 StatusCmd
@@ -53444,7 +53444,7 @@ Context
 string
 , iterator
 int64
-) *
+)*
 ScanDumpCmd
 Begins an incremental save of the Bloom filter.
 This command is useful for large Bloom filters that cannot fit into the DUMP and RESTORE model.
@@ -53486,7 +53486,7 @@ time
 .
 Duration
 ,
-) *
+)*
 StringCmd
 func (Ring)
 BLPop
@@ -53516,7 +53516,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 BRPopLPush
@@ -53552,7 +53552,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 ZSliceWithKeyCmd
 BZMPop is the blocking variant of ZMPOP.
 When any of the sorted sets contains elements, this command behaves exactly like ZMPOP.
@@ -53588,7 +53588,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMin Redis `BZPOPMIN key [key ...] timeout` command.
 func (Ring)
@@ -53607,7 +53607,7 @@ func (c Ring) BgSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 BitCount
@@ -53620,7 +53620,7 @@ Context
 string
 , bitCount *
 BitCount
-) *
+)*
 IntCmd
 func (Ring)
 BitField
@@ -53648,7 +53648,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 BitFieldRO - Read-only variant of the BITFIELD command.
 It is like the original BITFIELD but only accepts GET subcommand and can safely be used in read-only replicas.
@@ -53680,7 +53680,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpAndOr creates a new bitmap in which users are members of bitmap X and also members of one or more of bitmaps Y1, Y2, …
 Introduced with Redis 8.2
@@ -53714,7 +53714,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1 creates a new bitmap in which users are members of one or more of bitmaps Y1, Y2, … but not members of bitmap X
 Introduced with Redis 8.2
@@ -53745,7 +53745,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne creates a new bitmap in which users are members of exactly one of the given bitmaps
 Introduced with Redis 8.2
@@ -53774,7 +53774,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor creates a new bitmap in which users are the result of XORing all given bitmaps
 func (Ring)
@@ -53811,7 +53811,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitPosSpan supports the `byte | bit` parameters in redis version 7.0,
 the bitpos command defaults to using byte type for the `start-end` range,
@@ -53847,7 +53847,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX adds an element to a Cuckoo filter only if it does not already exist in the filter.
 Returns true if the element was added to the filter or false if it already exists in the filter.
@@ -53880,7 +53880,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFDel deletes an item once from the cuckoo filter.
 For more information -
@@ -53912,7 +53912,7 @@ context
 Context
 , key
 string
-) *
+)*
 CFInfoCmd
 CFInfo returns information about a Cuckoo filter.
 For more information -
@@ -53930,7 +53930,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFInsert inserts elements into a Cuckoo filter.
 This function also allows for specifying additional options such as capacity, error rate, expansion rate, and non-scaling behavior.
@@ -53950,7 +53950,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CFInsertNX inserts elements into a Cuckoo filter only if they do not already exist in the filter.
 This function also allows for specifying additional options such as:
@@ -53987,7 +53987,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFMExists check if multiple elements exist in a Cuckoo filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -54026,7 +54026,7 @@ string
 int64
 , bucketsize
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize creates an empty Cuckoo filter with the specified capacity and bucket size.
 For more information -
@@ -54066,7 +54066,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFReserveMaxIterations creates an empty Cuckoo filter with the specified capacity and maximum number of iterations.
 For more information -
@@ -54084,7 +54084,7 @@ Context
 string
 , options *
 CFReserveOptions
-) *
+)*
 StatusCmd
 CFReserveWithArgs creates an empty Cuckoo filter with the specified options.
 This function allows for specifying additional options such as bucket size and maximum number of iterations.
@@ -54119,7 +54119,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSIncrBy increments the count of one or more items in a Count-Min Sketch filter.
 Returns an array of integers representing the updated count of each item.
@@ -54154,7 +54154,7 @@ Context
 string
 , width, depth
 int64
-) *
+)*
 StatusCmd
 CMSInitByDim creates an empty Count-Min Sketch filter with the specified dimensions.
 For more information -
@@ -54190,7 +54190,7 @@ Context
 string
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 CMSMerge merges multiple Count-Min Sketch filters into a single filter.
 The destination filter must not exist and will be created with the dimensions of the first source filter.
@@ -54232,7 +54232,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSQuery returns count for item(s).
 For more information -
@@ -54254,7 +54254,7 @@ func (c Ring) ClientID(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Ring)
 ClientInfo
@@ -54276,7 +54276,7 @@ context
 Context
 , ipPort
 string
-) *
+)*
 StatusCmd
 func (Ring)
 ClientKillByFilter
@@ -54298,7 +54298,7 @@ func (c Ring) ClientList(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Ring)
 ClientMaintNotifications
@@ -54328,7 +54328,7 @@ Context
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Ring)
 ClientUnblock
@@ -54350,7 +54350,7 @@ context
 Context
 , id
 int64
-) *
+)*
 IntCmd
 func (Ring)
 ClientUnpause
@@ -55242,7 +55242,7 @@ string
 FTCreateOptions
 , schema ...*
 FieldSchema
-) *
+)*
 StatusCmd
 FTCreate - Creates a new index with the given options and schema.
 The 'index' parameter specifies the name of the index to create.
@@ -55289,7 +55289,7 @@ string
 int
 , count
 int
-) *
+)*
 MapStringInterfaceCmd
 FTCursorRead - Reads the next results from an existing cursor.
 The 'index' parameter specifies the index from which to read the cursor, the 'cursorId' parameter specifies the ID of the cursor to read, and the 'count' parameter specifies the number of results to read.
@@ -55327,7 +55327,7 @@ context
 Context
 , dict
 string
-, term ...interface{}) *
+, term ...interface{})*
 IntCmd
 FTDictDel - Deletes terms from a dictionary.
 The 'dict' parameter specifies the dictionary from which to delete the terms, and the 'term' parameter specifies the terms to delete.
@@ -55365,7 +55365,7 @@ context
 Context
 , index
 string
-) *
+)*
 StatusCmd
 FTDropIndex - Deletes an index.
 The 'index' parameter specifies the index to delete.
@@ -55386,7 +55386,7 @@ Context
 string
 , options *
 FTDropIndexOptions
-) *
+)*
 StatusCmd
 FTDropIndexWithArgs - Deletes an index with options.
 The 'index' parameter specifies the index to delete, and the 'options' parameter specifies the DeleteDocs option for docs deletion.
@@ -55444,7 +55444,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTExplainOptions
 ) *
 StringCmd
@@ -55471,7 +55471,7 @@ string
 string
 , vectorData
 Vector
-) *
+)*
 FTHybridCmd
 FTHybrid - Executes a hybrid search combining full-text search and vector similarity
 The 'index' parameter specifies the index to search, 'searchExpr' is the search query,
@@ -55490,7 +55490,7 @@ Context
 string
 , options *
 FTHybridOptions
-) *
+)*
 FTHybridCmd
 FTHybridWithArgs - Executes a hybrid search with advanced options
 FTHybridWithArgs is still experimental, the command behaviour and signature may change
@@ -55526,7 +55526,7 @@ Context
 string
 , query
 string
-) *
+)*
 FTSearchCmd
 FTSearch - Executes a search query on an index.
 The 'index' parameter specifies the index to search, and the 'query' parameter specifies the search query.
@@ -55549,7 +55549,7 @@ string
 string
 , options *
 FTSearchOptions
-) *
+)*
 FTSearchCmd
 FTSearchWithArgs - Executes a search query on an index with additional options.
 The 'index' parameter specifies the index to search, the 'query' parameter specifies the search query,
@@ -55593,7 +55593,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTSpellCheckOptions
 ) *
 FTSpellCheckCmd
@@ -55615,7 +55615,7 @@ context
 Context
 , index
 string
-) *
+)*
 FTSynDumpCmd
 FTSynDump - Dumps the contents of a synonym group.
 The 'index' parameter specifies the index to dump.
@@ -55653,7 +55653,7 @@ context
 Context
 , index
 string
-, synGroupId interface{}, options *
+, synGroupId interface{}, options*
 FTSynUpdateOptions
 , terms []interface{}) *
 StatusCmd
@@ -55676,7 +55676,7 @@ Context
 string
 , field
 string
-) *
+)*
 StringSliceCmd
 FTTagVals - Returns all distinct values indexed in a tag field.
 The 'index' parameter specifies the index to check, and the 'field' parameter specifies the tag field to retrieve values from.
@@ -55707,7 +55707,7 @@ func (c Ring) FlushAll(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 FlushAllAsync
@@ -55725,7 +55725,7 @@ func (c Ring) FlushDB(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 FlushDBAsync
@@ -55891,7 +55891,7 @@ Context
 string
 , geoLocation ...*
 GeoLocation
-) *
+)*
 IntCmd
 func (Ring)
 GeoDist
@@ -55919,7 +55919,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 GeoPos
@@ -55946,7 +55946,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -55962,7 +55962,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -55978,7 +55978,7 @@ context
 Context
 , key, member
 string
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -55996,7 +55996,7 @@ Context
 string
 , longitude, latitude
 float64
-, query *
+, query*
 GeoRadiusQuery
 ,
 ) *
@@ -56011,7 +56011,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchQuery
 ) *
 StringSliceCmd
@@ -56025,7 +56025,7 @@ context
 Context
 , key
 string
-, q *
+, q*
 GeoSearchLocationQuery
 ,
 ) *
@@ -56039,7 +56039,7 @@ context
 Context
 , key, store
 string
-, q *
+, q*
 GeoSearchStoreQuery
 ) *
 IntCmd
@@ -56052,7 +56052,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 Get Redis `GET key` command. It returns redis.Nil error when key does not exist.
 func (Ring)
@@ -56077,7 +56077,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 GetDel redis-server version >= 6.2.0.
 func (Ring)
@@ -56108,7 +56108,7 @@ Context
 string
 , start, end
 int64
-) *
+)*
 StringCmd
 func (Ring)
 GetSet
@@ -56159,7 +56159,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntCmd
 func (Ring)
 HExists
@@ -56189,7 +56189,7 @@ time
 Duration
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpire - Sets the expiration time for specified fields in a hash in seconds.
 The command constructs an argument list starting with "HEXPIRE", followed by the key, duration, any conditional flags, and the specified fields.
@@ -56242,7 +56242,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 func (Ring)
 HExpireTime
@@ -56287,7 +56287,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireWithArgs - Sets the expiration time for specified fields in a hash in seconds.
 It requires a key, an expiration duration, a struct with boolean flags for conditional expiration settings (NX, XX, GT, LT), and a list of fields.
@@ -56316,7 +56316,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringStringCmd
 func (Ring)
 HGetDel
@@ -56346,7 +56346,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 HGetEXWithArgs
@@ -56363,7 +56363,7 @@ string
 HGetEXOptions
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 HIncrBy
@@ -56389,7 +56389,7 @@ Context
 string
 , incr
 float64
-) *
+)*
 FloatCmd
 func (Ring)
 HKeys
@@ -56411,7 +56411,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Ring)
 HMGet
@@ -56437,7 +56437,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 BoolCmd
 HMSet is a deprecated version of HSet left for compatibility with Redis 3.
 func (Ring)
@@ -56483,7 +56483,7 @@ time
 Time
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireAt - Sets the expiration time for specified fields in a hash to a UNIX timestamp in milliseconds.
 Similar to HExpireAt but for timestamps in milliseconds. It accepts the same parameters and adjusts the UNIX time to milliseconds.
@@ -56525,7 +56525,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireTime - Retrieves the expiration time for specified fields in a hash as a UNIX timestamp in milliseconds.
 Similar to HExpireTime, adjusted for timestamps in milliseconds. It requires the same parameters.
@@ -56577,7 +56577,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPTTL - Retrieves the remaining time to live for specified fields in a hash in milliseconds.
 Similar to HTTL, but returns the TTL in milliseconds. It requires a key and the specified fields.
@@ -56621,7 +56621,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 HRandField redis-server version >= 6.2.0.
 func (Ring)
@@ -56653,7 +56653,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Ring)
 HScanNoValues
@@ -56683,7 +56683,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 HSet accepts values in following formats:
 HSet(ctx, "myhash", "key1", "value1", "key2", "value2")
@@ -56730,7 +56730,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HSetEXOptions
 , fieldsAndValues ...
 string
@@ -56745,7 +56745,7 @@ context
 Context
 , key, field
 string
-, value interface{}) *
+, value interface{})*
 BoolCmd
 func (Ring)
 HStrLen
@@ -56773,7 +56773,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HTTL - Retrieves the remaining time to live for specified fields in a hash in seconds.
 Requires a key and the fields themselves. It returns the TTL for each specified field.
@@ -56802,7 +56802,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Ring)
 IncrBy
@@ -56828,7 +56828,7 @@ Context
 string
 , value
 float64
-) *
+)*
 FloatCmd
 func (Ring)
 Info
@@ -56852,7 +56852,7 @@ context
 Context
 , sections ...
 string
-) *
+)*
 InfoCmd
 func (Ring)
 JSONArrAppend
@@ -56881,7 +56881,7 @@ context
 Context
 , key, path
 string
-, value ...interface{}) *
+, value ...interface{})*
 IntSliceCmd
 JSONArrIndex searches for the first occurrence of the provided JSON value in the array at the given path.
 For more information, see
@@ -56899,7 +56899,7 @@ Context
 string
 , options *
 JSONArrIndexArgs
-, value ...interface{}) *
+, value ...interface{})*
 IntSliceCmd
 JSONArrIndexWithArgs searches for the first occurrence of a JSON value in an array while allowing the start and
 stop options to be provided.
@@ -56934,7 +56934,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntSliceCmd
 JSONArrLen reports the length of the JSON array at the specified path in the given key.
 For more information, see
@@ -56968,7 +56968,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntSliceCmd
 JSONArrTrim trims an array to contain only the specified inclusive range of elements.
 For more information, see
@@ -56986,7 +56986,7 @@ Context
 string
 , options *
 JSONArrTrimArgs
-) *
+)*
 IntSliceCmd
 JSONArrTrimWithArgs trims an array to contain only the specified inclusive range of elements.
 For more information, see
@@ -57018,7 +57018,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDebugMemory reports a value's memory usage in bytes (unimplemented)
 For more information, see
@@ -57050,7 +57050,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONForget deletes a value.
 For more information, see
@@ -57086,7 +57086,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 JSONGetArgs
 , paths ...
 string
@@ -57110,7 +57110,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 JSONSliceCmd
 JSONMGet returns the values at the specified path from multiple key arguments.
 Note - the arguments are reversed when compared with `JSON.MGET` as we want
@@ -57139,7 +57139,7 @@ context
 Context
 , docs []
 JSONSetArgs
-) *
+)*
 StatusCmd
 JSONMSetArgs sets or updates one or more JSON values according to the specified key-path-value triplets.
 For more information, see
@@ -57175,7 +57175,7 @@ Context
 string
 , value
 float64
-) *
+)*
 JSONCmd
 JSONNumIncrBy increments the number value stored at the specified path by the provided number.
 For more information, see
@@ -57207,7 +57207,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONObjLen reports the number of keys in the JSON object at the specified path in the given key.
 For more information, see
@@ -57243,7 +57243,7 @@ Context
 string
 , value interface{}, mode
 string
-) *
+)*
 StatusCmd
 JSONSetMode sets the JSON value at the given path in the given key and allows the mode to be set
 (the mode value must be "XX" or "NX"). The value must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -57277,7 +57277,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrLen reports the length of the JSON String at the specified path in the given key.
 For more information, see
@@ -57309,7 +57309,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 JSONSliceCmd
 JSONType reports the type of JSON value at the specified path.
 For more information, see
@@ -57334,7 +57334,7 @@ func (c Ring) LCS(ctx
 context
 .
 Context
-, q *
+, q*
 LCSQuery
 ) *
 LCSCmd
@@ -57349,7 +57349,7 @@ Context
 string
 , index
 int64
-) *
+)*
 StringCmd
 func (Ring)
 LInsert
@@ -57371,7 +57371,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Ring)
 LInsertBefore
@@ -57393,7 +57393,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Ring)
 LMPop
@@ -57424,7 +57424,7 @@ context
 Context
 , source, destination, srcpos, destpos
 string
-) *
+)*
 StringCmd
 func (Ring)
 LPop
@@ -57448,7 +57448,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 func (Ring)
 LPos
@@ -57480,7 +57480,7 @@ string
 int64
 , a
 LPosArgs
-) *
+)*
 IntSliceCmd
 func (Ring)
 LPush
@@ -57502,7 +57502,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Ring)
 LRange
@@ -57528,7 +57528,7 @@ Context
 string
 , count
 int64
-, value interface{}) *
+, value interface{})*
 IntCmd
 func (Ring)
 LSet
@@ -57554,7 +57554,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StatusCmd
 func (Ring)
 LastSave
@@ -57574,7 +57574,7 @@ func (c Ring) Latency(ctx
 context
 .
 Context
-) *
+)*
 LatencyCmd
 func (Ring)
 LatencyReset
@@ -57604,7 +57604,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 SliceCmd
 func (Ring)
 MSet
@@ -57631,7 +57631,7 @@ context
 Context
 , args
 MSetEXArgs
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 MSetEX sets the given keys to their respective values.
 This command is an extension of the MSETNX that adds expiration and XX options.
@@ -57665,7 +57665,7 @@ Context
 string
 , samples ...
 int
-) *
+)*
 IntCmd
 func (Ring)
 Migrate
@@ -57693,7 +57693,7 @@ func (c Ring) ModuleLoadex(ctx
 context
 .
 Context
-, conf *
+, conf*
 ModuleLoadexConfig
 ) *
 StringCmd
@@ -57709,7 +57709,7 @@ context
 Context
 , ch chan
 string
-) *
+)*
 MonitorCmd
 Monitor - represents a Redis MONITOR command, allowing the user to capture
 and process all commands sent to a Redis server. This mimics the behavior of
@@ -57742,7 +57742,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Ring)
 ObjectFreq
@@ -57766,7 +57766,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Ring)
 ObjectRefCount
@@ -57784,13 +57784,13 @@ OnNewNode
 ¶
 func (c *
 Ring
-) OnNewNode(fn func(rdb *
+) OnNewNode(fn func(rdb*
 Client
 ))
 func (*Ring)
 Options
 ¶
-func (c *
+func (c*
 Ring
 ) Options() *
 RingOptions
@@ -57808,7 +57808,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Ring)
 PExpireAt
@@ -57836,7 +57836,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Ring)
 PFAdd
@@ -57858,7 +57858,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Ring)
 PFMerge
@@ -57884,7 +57884,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 PSubscribe subscribes the client to the given patterns.
 func (Ring)
@@ -57907,7 +57907,7 @@ context
 Context
 , key
 string
-) *
+)*
 BoolCmd
 func (Ring)
 Ping
@@ -57948,13 +57948,13 @@ PoolStats
 ¶
 func (c *
 Ring
-) PoolStats() *
+) PoolStats()*
 PoolStats
 PoolStats returns accumulated connection pool stats.
 func (*Ring)
 Process
 ¶
-func (c *
+func (c*
 Ring
 ) Process(ctx
 context
@@ -57982,7 +57982,7 @@ func (c Ring) PubSubNumPat(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Ring)
 PubSubNumSub
@@ -58004,7 +58004,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 PubSubShardNumSub
@@ -58026,7 +58026,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 Publish posts the message to the channel.
 func (Ring)
@@ -58047,7 +58047,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Ring)
 RPopCount
@@ -58071,7 +58071,7 @@ context
 Context
 , source, destination
 string
-) *
+)*
 StringCmd
 func (Ring)
 RPush
@@ -58093,7 +58093,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Ring)
 RandomKey
@@ -58111,7 +58111,7 @@ func (c Ring) ReadOnly(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 ReadWrite
@@ -58131,7 +58131,7 @@ context
 Context
 , key, newkey
 string
-) *
+)*
 StatusCmd
 func (Ring)
 RenameNX
@@ -58159,7 +58159,7 @@ time
 Duration
 , value
 string
-) *
+)*
 StatusCmd
 func (Ring)
 RestoreReplace
@@ -58187,7 +58187,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Ring)
 SCard
@@ -58209,7 +58209,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 SDiffStore
@@ -58233,7 +58233,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 SInterCard
@@ -58259,7 +58259,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Ring)
 SIsMember
@@ -58281,7 +58281,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 BoolSliceCmd
 SMIsMember Redis `SMISMEMBER key member [member ...]` command.
 func (Ring)
@@ -58305,7 +58305,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringStructMapCmd
 SMembersMap Redis `SMEMBERS key` command output as a map.
 func (Ring)
@@ -58328,7 +58328,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SPop Redis `SPOP key` command.
 func (Ring)
@@ -58354,7 +58354,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 func (Ring)
 SRandMember
@@ -58379,7 +58379,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 SRandMemberN Redis `SRANDMEMBER key count` command.
 func (Ring)
@@ -58408,12 +58408,12 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (*Ring)
 SSubscribe
 ¶
-func (c *
+func (c*
 Ring
 ) SSubscribe(ctx
 context
@@ -58433,7 +58433,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Ring)
 SUnionStore
@@ -58455,7 +58455,7 @@ func (c Ring) Save(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 Scan
@@ -58487,7 +58487,7 @@ string
 int64
 , keyType
 string
-) *
+)*
 ScanCmd
 func (Ring)
 ScriptExists
@@ -58507,7 +58507,7 @@ func (c Ring) ScriptFlush(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 ScriptKill
@@ -58527,7 +58527,7 @@ context
 Context
 , script
 string
-) *
+)*
 StringCmd
 func (Ring)
 Set
@@ -58570,7 +58570,7 @@ Context
 string
 , value interface{}, a
 SetArgs
-) *
+)*
 StatusCmd
 SetArgs supports all the options that the SET command supports.
 It is the alternative to the Set function when you want
@@ -58603,7 +58603,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetEx Redis `SETEx key expiration value` command.
 func (Ring)
@@ -58654,7 +58654,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDEQGet sets the value only if the current value's digest equals matchDigest,
 and returns the previous value.
@@ -58717,7 +58717,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDNEGet sets the value only if the current value's digest does NOT equal matchDigest,
 and returns the previous value.
@@ -58771,7 +58771,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFEQGet Redis `SET key value [expiration] IFEQ match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value equals matchValue,
@@ -58820,7 +58820,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFNEGet Redis `SET key value [expiration] IFNE match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value does not equal matchValue,
@@ -58862,7 +58862,7 @@ string
 int64
 , value
 string
-) *
+)*
 IntCmd
 func (Ring)
 SetXX
@@ -58890,7 +58890,7 @@ func (c Ring) Shutdown(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 ShutdownNoSave
@@ -58908,7 +58908,7 @@ func (c Ring) ShutdownSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 SlaveOf
@@ -58930,7 +58930,7 @@ context
 Context
 , num
 int64
-) *
+)*
 SlowLogCmd
 func (Ring)
 SlowLogLen
@@ -58952,7 +58952,7 @@ func (c Ring) SlowLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Ring)
 Sort
@@ -58965,7 +58965,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Ring)
 SortInterfaces
@@ -58978,7 +58978,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 SliceCmd
 func (Ring)
 SortRO
@@ -58991,7 +58991,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Ring)
 SortStore
@@ -59004,7 +59004,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 IntCmd
 func (Ring)
 StrLen
@@ -59028,7 +59028,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 Subscribe subscribes the client to the specified channels.
 func (Ring)
@@ -59071,7 +59071,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRank returns an array of values from a t-Digest data structure based on their rank.
 The rank of an element is its position in the sorted list of all elements in the t-Digest.
@@ -59111,7 +59111,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCDF returns an array of cumulative distribution function (CDF) values for one or more elements in a t-Digest data structure.
 The CDF value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -59148,7 +59148,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestCreateWithCompression creates an empty t-Digest data structure with a specified compression parameter.
 The compression parameter controls the accuracy and memory usage of the t-Digest.
@@ -59182,7 +59182,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMax returns the maximum value from a t-Digest data structure.
 For more information -
@@ -59202,7 +59202,7 @@ string
 TDigestMergeOptions
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 TDigestMerge merges multiple t-Digest data structures into a single t-Digest.
 This function also allows for specifying additional options such as compression and override behavior.
@@ -59238,7 +59238,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestQuantile returns an array of quantile values for one or more elements in a t-Digest data structure.
 The quantile value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -59276,7 +59276,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestReset resets a t-Digest data structure to its initial state.
 Returns OK on success or an error if the operation could not be completed.
@@ -59315,7 +59315,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 TDigestTrimmedMean returns the trimmed mean value from a t-Digest data structure.
 The trimmed mean is calculated by removing a specified fraction of the highest and lowest values from the t-Digest and then calculating the mean of the remaining values.
@@ -59353,7 +59353,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -59373,7 +59373,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSAlterOptions
 ) *
 StatusCmd
@@ -59393,7 +59393,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreate - Creates a new time-series key.
 For more information -
@@ -59437,7 +59437,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -59457,7 +59457,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSOptions
 ) *
 StatusCmd
@@ -59479,7 +59479,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
 For more information -
@@ -59499,7 +59499,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -59539,7 +59539,7 @@ Context
 string
 , destKey
 string
-) *
+)*
 StatusCmd
 TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
 For more information -
@@ -59571,7 +59571,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSGetOptions
 ) *
 TSTimestampValueCmd
@@ -59593,7 +59593,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrBy - Increments the value of a time-series key by the specified timestamp.
 For more information -
@@ -59613,7 +59613,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -59647,7 +59647,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -59665,7 +59665,7 @@ func (c Ring) TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSMAdd - Adds multiple samples to multiple time-series keys.
 It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
@@ -59699,7 +59699,7 @@ context
 Context
 , filters []
 string
-, options *
+, options*
 TSMGetOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -59723,7 +59723,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRange - Returns a range of samples from multiple time-series keys.
 For more information -
@@ -59745,7 +59745,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
 This function allows for specifying additional options such as:
@@ -59789,7 +59789,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -59811,7 +59811,7 @@ context
 Context
 , filterExpr []
 string
-) *
+)*
 StringSliceCmd
 TSQueryIndex - Returns all the keys matching the filter expression.
 For more information -
@@ -59851,7 +59851,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -59876,7 +59876,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRange - Returns a range of samples from a time-series key in reverse order.
 For more information -
@@ -59898,7 +59898,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
 This function allows for specifying additional options such as:
@@ -59924,7 +59924,7 @@ func (c Ring) Time(ctx
 context
 .
 Context
-) *
+)*
 TimeCmd
 func (Ring)
 TopKAdd
@@ -59954,7 +59954,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 TopKCount returns an estimate of the number of times an item may be in a Top-K filter.
 For more information -
@@ -59986,7 +59986,7 @@ context
 Context
 , key
 string
-) *
+)*
 TopKInfoCmd
 TopKInfo returns information about a Top-K filter.
 For more information -
@@ -60018,7 +60018,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringIntCmd
 TopKListWithCount returns all items in Top-K list with their respective count.
 For more information -
@@ -60053,7 +60053,7 @@ Context
 string
 , k
 int64
-) *
+)*
 StatusCmd
 TopKReserve creates an empty Top-K filter with the specified number of top items to keep.
 For more information -
@@ -60090,19 +60090,19 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*Ring)
 TxPipeline
 ¶
-func (c *
+func (c*
 Ring
 ) TxPipeline()
 Pipeliner
 func (*Ring)
 TxPipelined
 ¶
-func (c *
+func (c*
 Ring
 ) TxPipelined(ctx
 context
@@ -60137,7 +60137,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Ring)
 VAdd
@@ -60169,7 +60169,7 @@ Context
 string
 , val
 Vector
-, addArgs *
+, addArgs*
 VAddArgs
 ) *
 BoolCmd
@@ -60186,7 +60186,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VCARD key`
 note: the API is experimental and may be subject to change.
@@ -60217,7 +60217,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 `VDIM key`
 note: the API is experimental and may be subject to change.
@@ -60249,7 +60249,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringCmd
 `VGETATTR key element`
 note: the API is experimental and may be subject to change.
@@ -60279,7 +60279,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringSliceCmd
 `VLINKS key element`
 note: the API is experimental and may be subject to change.
@@ -60309,7 +60309,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 `VRANDMEMBER key`
 note: the API is experimental and may be subject to change.
@@ -60343,7 +60343,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 `VRANGE key start end count`
 a negative count means to return all the elements in the vector set.
@@ -60374,7 +60374,7 @@ context
 Context
 , key, element
 string
-, attr interface{}) *
+, attr interface{})*
 BoolCmd
 `VSETATTR key element "{ JSON obj }"`
 The `attr` must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -60410,7 +60410,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 StringSliceCmd
@@ -60430,7 +60430,7 @@ Context
 string
 , val
 Vector
-, simArgs *
+, simArgs*
 VSimArgs
 ) *
 VectorScoreSliceCmd
@@ -60450,7 +60450,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 VectorScoreSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) WITHSCORES`
 note: the API is experimental and may be subject to change.
@@ -60484,7 +60484,7 @@ int
 time
 .
 Duration
-) *
+)*
 IntCmd
 func (*Ring)
 Watch
@@ -60533,7 +60533,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (Ring)
 XAdd
@@ -60544,7 +60544,7 @@ context
 Context
 , a *
 XAddArgs
-) *
+)*
 StringCmd
 func (Ring)
 XAutoClaim
@@ -60555,7 +60555,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimCmd
 func (Ring)
 XAutoClaimJustID
@@ -60566,7 +60566,7 @@ context
 Context
 , a *
 XAutoClaimArgs
-) *
+)*
 XAutoClaimJustIDCmd
 func (Ring)
 XClaim
@@ -60577,7 +60577,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 XMessageSliceCmd
 func (Ring)
 XClaimJustID
@@ -60588,7 +60588,7 @@ context
 Context
 , a *
 XClaimArgs
-) *
+)*
 StringSliceCmd
 func (Ring)
 XDel
@@ -60618,7 +60618,7 @@ string
 string
 , ids ...
 string
-) *
+)*
 SliceCmd
 func (Ring)
 XGroupCreate
@@ -60640,7 +60640,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (Ring)
 XGroupCreateMkStream
@@ -60662,7 +60662,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 func (Ring)
 XGroupDestroy
@@ -60684,7 +60684,7 @@ context
 Context
 , stream, group, start
 string
-) *
+)*
 StatusCmd
 func (Ring)
 XInfoConsumers
@@ -60708,7 +60708,7 @@ context
 Context
 , key
 string
-) *
+)*
 XInfoGroupsCmd
 func (Ring)
 XInfoStream
@@ -60732,7 +60732,7 @@ Context
 string
 , count
 int
-) *
+)*
 XInfoStreamFullCmd
 XInfoStreamFull XINFO STREAM FULL [COUNT count]
 redis-server >= 6.0.
@@ -60756,7 +60756,7 @@ context
 Context
 , stream, group
 string
-) *
+)*
 XPendingCmd
 func (Ring)
 XPendingExt
@@ -60767,7 +60767,7 @@ context
 Context
 , a *
 XPendingExtArgs
-) *
+)*
 XPendingExtCmd
 func (Ring)
 XRange
@@ -60791,7 +60791,7 @@ Context
 string
 , count
 int64
-) *
+)*
 XMessageSliceCmd
 func (Ring)
 XRead
@@ -60802,7 +60802,7 @@ context
 Context
 , a *
 XReadArgs
-) *
+)*
 XStreamSliceCmd
 func (Ring)
 XReadGroup
@@ -60813,7 +60813,7 @@ context
 Context
 , a *
 XReadGroupArgs
-) *
+)*
 XStreamSliceCmd
 func (Ring)
 XReadStreams
@@ -60835,7 +60835,7 @@ context
 Context
 , stream, start, stop
 string
-) *
+)*
 XMessageSliceCmd
 func (Ring)
 XRevRangeN
@@ -60861,7 +60861,7 @@ Context
 string
 , maxLen
 int64
-) *
+)*
 IntCmd
 XTrimMaxLen No `~` rules are used, `limit` cannot be used.
 cmd: XTRIM key MAXLEN maxLen
@@ -60893,7 +60893,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (Ring)
 XTrimMaxLenMode
@@ -60923,7 +60923,7 @@ Context
 string
 , minID
 string
-) *
+)*
 IntCmd
 func (Ring)
 XTrimMinIDApprox
@@ -60957,7 +60957,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 func (Ring)
 XTrimMinIDMode
@@ -60987,7 +60987,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAdd Redis `ZADD key score member [score member ...]` command.
 func (Ring)
@@ -61014,7 +61014,7 @@ Context
 string
 , args
 ZAddArgs
-) *
+)*
 FloatCmd
 func (Ring)
 ZAddGT
@@ -61045,7 +61045,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddLT Redis `ZADD key LT score member [score member ...]` command.
 func (Ring)
@@ -61073,7 +61073,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddXX Redis `ZADD key XX score member [score member ...]` command.
 func (Ring)
@@ -61096,7 +61096,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (Ring)
 ZDiff
@@ -61121,7 +61121,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 ZDiffStore redis-server version >=6.2.0.
 func (Ring)
@@ -61149,7 +61149,7 @@ string
 float64
 , member
 string
-) *
+)*
 FloatCmd
 func (Ring)
 ZInter
@@ -61160,7 +61160,7 @@ context
 Context
 , store *
 ZStore
-) *
+)*
 StringSliceCmd
 func (Ring)
 ZInterCard
@@ -61184,7 +61184,7 @@ context
 Context
 , destination
 string
-, store *
+, store*
 ZStore
 ) *
 IntCmd
@@ -61195,7 +61195,7 @@ func (c Ring) ZInterWithScores(ctx
 context
 .
 Context
-, store *
+, store*
 ZStore
 ) *
 ZSliceCmd
@@ -61208,7 +61208,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 func (Ring)
 ZMPop
@@ -61241,7 +61241,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 FloatSliceCmd
 func (Ring)
 ZPopMax
@@ -61267,7 +61267,7 @@ Context
 string
 , count ...
 int64
-) *
+)*
 ZSliceCmd
 func (Ring)
 ZRandMember
@@ -61294,7 +61294,7 @@ Context
 string
 , count
 int
-) *
+)*
 ZSliceCmd
 ZRandMemberWithScores redis-server version >= 6.2.0.
 func (Ring)
@@ -61319,7 +61319,7 @@ context
 Context
 , z
 ZRangeArgs
-) *
+)*
 StringSliceCmd
 func (Ring)
 ZRangeArgsWithScores
@@ -61341,7 +61341,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -61354,7 +61354,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -61367,7 +61367,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 ZSliceCmd
@@ -61382,7 +61382,7 @@ Context
 string
 , z
 ZRangeArgs
-) *
+)*
 IntCmd
 func (Ring)
 ZRangeWithScores
@@ -61406,7 +61406,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (Ring)
 ZRankWithScore
@@ -61432,7 +61432,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Ring)
 ZRemRangeByLex
@@ -61456,7 +61456,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 IntCmd
 func (Ring)
 ZRemRangeByScore
@@ -61480,7 +61480,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 func (Ring)
 ZRevRangeByLex
@@ -61493,7 +61493,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (Ring)
 ZRevRangeByScore
@@ -61506,7 +61506,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 func (Ring)
 ZRevRangeByScoreWithScores
@@ -61519,7 +61519,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 ZSliceCmd
 func (Ring)
 ZRevRangeWithScores
@@ -61545,7 +61545,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 func (Ring)
 ZRevRankWithScore
@@ -61575,7 +61575,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Ring)
 ZScore
@@ -61597,7 +61597,7 @@ context
 Context
 , store
 ZStore
-) *
+)*
 StringSliceCmd
 func (Ring)
 ZUnionStore
@@ -61610,7 +61610,7 @@ Context
 string
 , store *
 ZStore
-) *
+)*
 IntCmd
 func (Ring)
 ZUnionWithScores
@@ -61633,7 +61633,7 @@ string
 ]
 string
 // NewClient creates a shard client with provided options.
-NewClient func(opt *
+NewClient func(opt*
 Options
 ) *
 Client
@@ -61652,7 +61652,7 @@ HeartbeatFn func(ctx
 context
 .
 Context
-, client *
+, client*
 Client
 )
 bool
@@ -61804,7 +61804,7 @@ int
 // default: 32KiB (32768 bytes)
 WriteBufferSize
 int
-TLSConfig *
+TLSConfig*
 tls
 .
 Config
@@ -61868,27 +61868,27 @@ string
 uint64
 , err
 error
-) *
+)*
 ScanCmd
 NewScanCmdResult returns a ScanCmd initialised with val and err for testing.
 func (*ScanCmd)
 Args
 ¶
-func (cmd *ScanCmd) Args() []interface{}
+func (cmd*ScanCmd) Args() []interface{}
 func (*ScanCmd)
 Err
 ¶
-func (cmd *ScanCmd) Err()
+func (cmd*ScanCmd) Err()
 error
 func (*ScanCmd)
 FullName
 ¶
-func (cmd *ScanCmd) FullName()
+func (cmd*ScanCmd) FullName()
 string
 func (*ScanCmd)
 Iterator
 ¶
-func (cmd *
+func (cmd*
 ScanCmd
 ) Iterator() *
 ScanIterator
@@ -62160,12 +62160,12 @@ Context
 Scripter
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 func (*Script)
 EvalRO
 ¶
-func (s *
+func (s*
 Script
 ) EvalRO(ctx
 context
@@ -62190,12 +62190,12 @@ Context
 Scripter
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 func (*Script)
 EvalShaRO
 ¶
-func (s *
+func (s*
 Script
 ) EvalShaRO(ctx
 context
@@ -62218,19 +62218,19 @@ context
 Context
 , c
 Scripter
-) *
+)*
 BoolSliceCmd
 func (*Script)
 Hash
 ¶
-func (s *
+func (s*
 Script
 ) Hash()
 string
 func (*Script)
 Load
 ¶
-func (s *
+func (s*
 Script
 ) Load(ctx
 context
@@ -62253,14 +62253,14 @@ Context
 Scripter
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 Run optimistically uses EVALSHA to run the script. If script does not exist
 it is retried using EVAL.
 func (*Script)
 RunRO
 ¶
-func (s *
+func (s*
 Script
 ) RunRO(ctx
 context
@@ -62286,7 +62286,7 @@ Context
 string
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 EvalSha(ctx
 context
@@ -62306,7 +62306,7 @@ Context
 string
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 EvalShaRO(ctx
 context
@@ -62324,7 +62324,7 @@ context
 Context
 , hashes ...
 string
-) *
+)*
 BoolSliceCmd
 ScriptLoad(ctx
 context
@@ -62349,7 +62349,7 @@ Context
 string
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 EvalSha(ctx
 context
@@ -62369,7 +62369,7 @@ Context
 string
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 EvalShaRO(ctx
 context
@@ -62387,7 +62387,7 @@ context
 Context
 , hashes ...
 string
-) *
+)*
 BoolSliceCmd
 ScriptFlush(ctx
 context
@@ -62399,7 +62399,7 @@ ScriptKill(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 ScriptLoad(ctx
 context
@@ -62415,7 +62415,7 @@ context
 Context
 , code
 string
-) *
+)*
 StringCmd
 FunctionLoadReplace(ctx
 context
@@ -62431,7 +62431,7 @@ context
 Context
 , libName
 string
-) *
+)*
 StringCmd
 FunctionFlush(ctx
 context
@@ -62443,7 +62443,7 @@ FunctionKill(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 FunctionFlushAsync(ctx
 context
@@ -62457,7 +62457,7 @@ context
 Context
 , q
 FunctionListQuery
-) *
+)*
 FunctionListCmd
 FunctionDump(ctx
 context
@@ -62471,7 +62471,7 @@ context
 Context
 , libDump
 string
-) *
+)*
 StringCmd
 FunctionStats(ctx
 context
@@ -62487,7 +62487,7 @@ Context
 string
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 FCallRo(ctx
 context
@@ -62507,7 +62507,7 @@ Context
 string
 , keys []
 string
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 }
 type
@@ -62542,7 +62542,7 @@ CountOnly
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) CountOnly() *
 SearchBuilder
@@ -62555,7 +62555,7 @@ func (b *
 SearchBuilder
 ) Dialect(version
 int
-) *
+)*
 SearchBuilder
 Dialect sets DIALECT <version>.
 func (*SearchBuilder)
@@ -62563,7 +62563,7 @@ Expander
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) Expander(expander
 string
@@ -62577,7 +62577,7 @@ added in
 v9.12.0
 func (b *
 SearchBuilder
-) ExplainScore() *
+) ExplainScore()*
 SearchBuilder
 ExplainScore includes EXPLAINSCORE.
 func (*SearchBuilder)
@@ -62585,7 +62585,7 @@ Filter
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) Filter(field
 string
@@ -62605,7 +62605,7 @@ string
 float64
 , unit
 string
-) *
+)*
 SearchBuilder
 GeoFilter adds a GEOFILTER clause: GEOFILTER <field> <lon> <lat> <radius> <unit>.
 func (*SearchBuilder)
@@ -62613,7 +62613,7 @@ InFields
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) InFields(fields ...interface{}) *
 SearchBuilder
@@ -62625,7 +62625,7 @@ added in
 v9.12.0
 func (b *
 SearchBuilder
-) InKeys(keys ...interface{}) *
+) InKeys(keys ...interface{})*
 SearchBuilder
 InKeys restricts the search to the given keys.
 func (*SearchBuilder)
@@ -62633,7 +62633,7 @@ InOrder
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) InOrder() *
 SearchBuilder
@@ -62647,7 +62647,7 @@ func (b *
 SearchBuilder
 ) Language(lang
 string
-) *
+)*
 SearchBuilder
 Language sets LANGUAGE <lang>.
 func (*SearchBuilder)
@@ -62655,7 +62655,7 @@ Limit
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) Limit(offset, count
 int
@@ -62669,7 +62669,7 @@ added in
 v9.12.0
 func (b *
 SearchBuilder
-) NoContent() *
+) NoContent()*
 SearchBuilder
 NoContent includes NOCONTENT.
 func (*SearchBuilder)
@@ -62677,7 +62677,7 @@ NoStopWords
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) NoStopWords() *
 SearchBuilder
@@ -62691,7 +62691,7 @@ func (b *
 SearchBuilder
 ) Param(key
 string
-, value interface{}) *
+, value interface{})*
 SearchBuilder
 Param adds a single PARAMS <k> <v>.
 func (*SearchBuilder)
@@ -62699,7 +62699,7 @@ ParamsMap
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) ParamsMap(p map[
 string
@@ -62715,7 +62715,7 @@ func (b *
 SearchBuilder
 ) Payload(payload
 string
-) *
+)*
 SearchBuilder
 Payload sets PAYLOAD <payload>.
 func (*SearchBuilder)
@@ -62723,7 +62723,7 @@ ReturnAs
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) ReturnAs(field, alias
 string
@@ -62739,7 +62739,7 @@ func (b *
 SearchBuilder
 ) ReturnFields(fields ...
 string
-) *
+)*
 SearchBuilder
 ReturnFields adds simple RETURN <n> <field>...
 func (*SearchBuilder)
@@ -62747,7 +62747,7 @@ Run
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) Run() (
 FTSearchResult
@@ -62760,7 +62760,7 @@ Scorer
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) Scorer(scorer
 string
@@ -62776,7 +62776,7 @@ func (b *
 SearchBuilder
 ) Slop(slop
 int
-) *
+)*
 SearchBuilder
 Slop adds SLOP <n>.
 func (*SearchBuilder)
@@ -62784,7 +62784,7 @@ SortBy
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) SortBy(field
 string
@@ -62802,7 +62802,7 @@ func (b *
 SearchBuilder
 ) Timeout(timeout
 int
-) *
+)*
 SearchBuilder
 Timeout adds TIMEOUT <ms>.
 func (*SearchBuilder)
@@ -62810,7 +62810,7 @@ Verbatim
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) Verbatim() *
 SearchBuilder
@@ -62822,7 +62822,7 @@ added in
 v9.12.0
 func (b *
 SearchBuilder
-) WithPayloads() *
+) WithPayloads()*
 SearchBuilder
 WithPayloads includes WITHPAYLOADS.
 func (*SearchBuilder)
@@ -62830,7 +62830,7 @@ WithScores
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SearchBuilder
 ) WithScores() *
 SearchBuilder
@@ -62842,7 +62842,7 @@ added in
 v9.12.0
 func (b *
 SearchBuilder
-) WithSortByCount() *
+) WithSortByCount()*
 SearchBuilder
 WithSortByCount includes WITHCOUNT (when used with SortBy).
 func (*SearchBuilder)
@@ -62963,7 +62963,7 @@ Context
 string
 , cursorId
 int
-) *
+)*
 StatusCmd
 FTCursorRead(ctx
 context
@@ -62983,7 +62983,7 @@ context
 Context
 , dict
 string
-, term ...interface{}) *
+, term ...interface{})*
 IntCmd
 FTDictDel(ctx
 context
@@ -62999,7 +62999,7 @@ context
 Context
 , dict
 string
-) *
+)*
 StringSliceCmd
 FTDropIndex(ctx
 context
@@ -63015,7 +63015,7 @@ context
 Context
 , index
 string
-, options *
+, options*
 FTDropIndexOptions
 ) *
 StatusCmd
@@ -63027,7 +63027,7 @@ Context
 string
 , query
 string
-) *
+)*
 StringCmd
 FTExplainWithArgs(ctx
 context
@@ -63039,7 +63039,7 @@ string
 string
 , options *
 FTExplainOptions
-) *
+)*
 StringCmd
 FTHybrid(ctx
 context
@@ -63061,7 +63061,7 @@ context
 Context
 , index
 string
-, options *
+, options*
 FTHybridOptions
 ) *
 FTHybridCmd
@@ -63071,7 +63071,7 @@ context
 Context
 , index
 string
-) *
+)*
 FTInfoCmd
 FTSpellCheck(ctx
 context
@@ -63091,7 +63091,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTSpellCheckOptions
 ) *
 FTSpellCheckCmd
@@ -63103,7 +63103,7 @@ Context
 string
 , query
 string
-) *
+)*
 FTSearchCmd
 FTSearchWithArgs(ctx
 context
@@ -63115,7 +63115,7 @@ string
 string
 , options *
 FTSearchOptions
-) *
+)*
 FTSearchCmd
 FTSynDump(ctx
 context
@@ -63131,7 +63131,7 @@ context
 Context
 , index
 string
-, synGroupId interface{}, terms []interface{}) *
+, synGroupId interface{}, terms []interface{})*
 StatusCmd
 FTSynUpdateWithArgs(ctx
 context
@@ -63141,7 +63141,7 @@ Context
 string
 , synGroupId interface{}, options *
 FTSynUpdateOptions
-, terms []interface{}) *
+, terms []interface{})*
 StatusCmd
 FTTagVals(ctx
 context
@@ -63183,7 +63183,7 @@ added in
 v9.5.4
 func FTSearchQuery(query
 string
-, options *
+, options*
 FTSearchOptions
 ) (
 SearchQuery
@@ -63209,12 +63209,12 @@ NewSentinelClient
 ¶
 func NewSentinelClient(opt *
 Options
-) *
+)*
 SentinelClient
 func (*SentinelClient)
 CkQuorum
 ¶
-func (c *
+func (c*
 SentinelClient
 ) CkQuorum(ctx
 context
@@ -63247,14 +63247,14 @@ context
 Context
 , name
 string
-) *
+)*
 StatusCmd
 Failover forces a failover as if the master was not reachable, and without
 asking for agreement to other Sentinels.
 func (*SentinelClient)
 FlushConfig
 ¶
-func (c *
+func (c*
 SentinelClient
 ) FlushConfig(ctx
 context
@@ -63275,14 +63275,14 @@ context
 Context
 , name
 string
-) *
+)*
 StringSliceCmd
 func (*SentinelClient)
 GetPushNotificationHandler
 ¶
 added in
 v9.15.0
-func (c *
+func (c*
 SentinelClient
 ) GetPushNotificationHandler(pushNotificationName
 string
@@ -63295,7 +63295,7 @@ Returns nil if no handler is registered for the given name.
 func (*SentinelClient)
 Master
 ¶
-func (c *
+func (c*
 SentinelClient
 ) Master(ctx
 context
@@ -63315,13 +63315,13 @@ SentinelClient
 context
 .
 Context
-) *
+)*
 SliceCmd
 Masters shows a list of monitored masters and their state.
 func (*SentinelClient)
 Monitor
 ¶
-func (c *
+func (c*
 SentinelClient
 ) Monitor(ctx
 context
@@ -63344,14 +63344,14 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 PSubscribe subscribes the client to the given patterns.
 Patterns can be omitted to create empty subscription.
 func (*SentinelClient)
 Ping
 ¶
-func (c *
+func (c*
 SentinelClient
 ) Ping(ctx
 context
@@ -63405,7 +63405,7 @@ context
 Context
 , name
 string
-) *
+)*
 StringCmd
 Remove is used in order to remove the specified master: the master will no
 longer be monitored, and will totally be removed from the internal state of
@@ -63413,7 +63413,7 @@ the Sentinel.
 func (*SentinelClient)
 Replicas
 ¶
-func (c *
+func (c*
 SentinelClient
 ) Replicas(ctx
 context
@@ -63435,7 +63435,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 IntCmd
 Reset resets all the masters with matching name. The pattern argument is a
 glob-style pattern. The reset process clears any previous state in a master
@@ -63444,7 +63444,7 @@ already discovered and associated with the master.
 func (*SentinelClient)
 Sentinels
 ¶
-func (c *
+func (c*
 SentinelClient
 ) Sentinels(ctx
 context
@@ -63465,7 +63465,7 @@ context
 Context
 , name, option, value
 string
-) *
+)*
 StringCmd
 Set is used in order to change configuration parameters of a specific master.
 func (SentinelClient)
@@ -63476,7 +63476,7 @@ string
 func (*SentinelClient)
 Subscribe
 ¶
-func (c *
+func (c*
 SentinelClient
 ) Subscribe(ctx
 context
@@ -63539,7 +63539,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 SCard(ctx
 context
@@ -63555,7 +63555,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 SDiffStore(ctx
 context
@@ -63573,7 +63573,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 SInterCard(ctx
 context
@@ -63593,7 +63593,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 SIsMember(ctx
 context
@@ -63609,7 +63609,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 BoolSliceCmd
 SMembers(ctx
 context
@@ -63625,7 +63625,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringStructMapCmd
 SMove(ctx
 context
@@ -63641,7 +63641,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SPopN(ctx
 context
@@ -63659,7 +63659,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SRandMemberN(ctx
 context
@@ -63677,7 +63677,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 SScan(ctx
 context
@@ -63699,7 +63699,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 SUnionStore(ctx
 context
@@ -63742,7 +63742,7 @@ func NewSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 SliceCmd
 func
 NewSliceResult
@@ -63824,32 +63824,32 @@ Output:
 func (*SliceCmd)
 SetErr
 ¶
-func (cmd *SliceCmd) SetErr(e
+func (cmd*SliceCmd) SetErr(e
 error
 )
 func (*SliceCmd)
 SetFirstKeyPos
 ¶
-func (cmd *SliceCmd) SetFirstKeyPos(keyPos
+func (cmd*SliceCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*SliceCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 SliceCmd
 ) SetVal(val []interface{})
 func (*SliceCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 SliceCmd
 ) String()
 string
 func (*SliceCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 SliceCmd
 ) Val() []interface{}
 type
@@ -63996,7 +63996,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMin(ctx
 context
@@ -64024,7 +64024,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 ZSliceWithKeyCmd
 ZAdd(ctx
 context
@@ -64044,7 +64044,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddGT(ctx
 context
@@ -64064,7 +64064,7 @@ Context
 string
 , members ...
 Z
-) *
+)*
 IntCmd
 ZAddXX(ctx
 context
@@ -64084,7 +64084,7 @@ Context
 string
 , args
 ZAddArgs
-) *
+)*
 IntCmd
 ZAddArgsIncr(ctx
 context
@@ -64102,7 +64102,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 ZCount(ctx
 context
@@ -64118,7 +64118,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 ZIncrBy(ctx
 context
@@ -64136,7 +64136,7 @@ ZInter(ctx
 context
 .
 Context
-, store *
+, store*
 ZStore
 ) *
 StringSliceCmd
@@ -64144,7 +64144,7 @@ ZInterWithScores(ctx
 context
 .
 Context
-, store *
+, store*
 ZStore
 ) *
 ZSliceCmd
@@ -64156,7 +64156,7 @@ Context
 int64
 , keys ...
 string
-) *
+)*
 IntCmd
 ZInterStore(ctx
 context
@@ -64166,7 +64166,7 @@ Context
 string
 , store *
 ZStore
-) *
+)*
 IntCmd
 ZMPop(ctx
 context
@@ -64188,7 +64188,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 FloatSliceCmd
 ZPopMax(ctx
 context
@@ -64208,7 +64208,7 @@ Context
 string
 , count ...
 int64
-) *
+)*
 ZSliceCmd
 ZRange(ctx
 context
@@ -64228,7 +64228,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 ZSliceCmd
 ZRangeByScore(ctx
 context
@@ -64238,7 +64238,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 ZRangeByLex(ctx
 context
@@ -64248,7 +64248,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 StringSliceCmd
 ZRangeByScoreWithScores(ctx
 context
@@ -64258,7 +64258,7 @@ Context
 string
 , opt *
 ZRangeBy
-) *
+)*
 ZSliceCmd
 ZRangeArgs(ctx
 context
@@ -64274,7 +64274,7 @@ context
 Context
 , z
 ZRangeArgs
-) *
+)*
 ZSliceCmd
 ZRangeStore(ctx
 context
@@ -64292,7 +64292,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 ZRankWithScore(ctx
 context
@@ -64308,7 +64308,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 ZRemRangeByRank(ctx
 context
@@ -64326,7 +64326,7 @@ context
 Context
 , key, min, max
 string
-) *
+)*
 IntCmd
 ZRemRangeByLex(ctx
 context
@@ -64344,7 +64344,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StringSliceCmd
 ZRevRangeWithScores(ctx
 context
@@ -64362,7 +64362,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -64372,7 +64372,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 StringSliceCmd
@@ -64382,7 +64382,7 @@ context
 Context
 , key
 string
-, opt *
+, opt*
 ZRangeBy
 ) *
 ZSliceCmd
@@ -64392,7 +64392,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 IntCmd
 ZRevRankWithScore(ctx
 context
@@ -64408,7 +64408,7 @@ context
 Context
 , key, member
 string
-) *
+)*
 FloatCmd
 ZUnionStore(ctx
 context
@@ -64418,7 +64418,7 @@ Context
 string
 , store *
 ZStore
-) *
+)*
 IntCmd
 ZRandMember(ctx
 context
@@ -64438,7 +64438,7 @@ Context
 string
 , count
 int
-) *
+)*
 ZSliceCmd
 ZUnion(ctx
 context
@@ -64454,7 +64454,7 @@ context
 Context
 , store
 ZStore
-) *
+)*
 ZSliceCmd
 ZDiff(ctx
 context
@@ -64470,7 +64470,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 ZSliceCmd
 ZDiffStore(ctx
 context
@@ -64494,7 +64494,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 }
 type
@@ -64515,7 +64515,7 @@ Dialect
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SpellCheckBuilder
 ) Dialect(d
 int
@@ -64531,7 +64531,7 @@ func (b *
 SpellCheckBuilder
 ) Distance(d
 int
-) *
+)*
 SpellCheckBuilder
 Distance sets MAXDISTANCE.
 func (*SpellCheckBuilder)
@@ -64539,7 +64539,7 @@ Run
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SpellCheckBuilder
 ) Run() ([]
 SpellCheckResult
@@ -64552,7 +64552,7 @@ Terms
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SpellCheckBuilder
 ) Terms(include
 bool
@@ -64607,7 +64607,7 @@ context
 Context
 , password
 string
-) *
+)*
 StatusCmd
 AuthACL(ctx
 context
@@ -64623,7 +64623,7 @@ context
 Context
 , index
 int
-) *
+)*
 StatusCmd
 SwapDB(ctx
 context
@@ -64639,7 +64639,7 @@ context
 Context
 , name
 string
-) *
+)*
 BoolCmd
 ClientSetInfo(ctx
 context
@@ -64657,7 +64657,7 @@ Context
 int
 , username, password, clientName
 string
-) *
+)*
 MapStringInterfaceCmd
 }
 type
@@ -64682,19 +64682,19 @@ func NewStatusResult(val
 string
 , err
 error
-) *
+)*
 StatusCmd
 NewStatusResult returns a StatusCmd initialised with val and err for testing.
 func (*StatusCmd)
 Args
 ¶
-func (cmd *StatusCmd) Args() []interface{}
+func (cmd*StatusCmd) Args() []interface{}
 func (*StatusCmd)
 Bytes
 ¶
 added in
 v9.5.4
-func (cmd *
+func (cmd*
 StatusCmd
 ) Bytes() ([]
 byte
@@ -64704,22 +64704,22 @@ error
 func (*StatusCmd)
 Err
 ¶
-func (cmd *StatusCmd) Err()
+func (cmd*StatusCmd) Err()
 error
 func (*StatusCmd)
 FullName
 ¶
-func (cmd *StatusCmd) FullName()
+func (cmd*StatusCmd) FullName()
 string
 func (*StatusCmd)
 Name
 ¶
-func (cmd *StatusCmd) Name()
+func (cmd*StatusCmd) Name()
 string
 func (*StatusCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 StatusCmd
 ) Result() (
 string
@@ -64729,19 +64729,19 @@ error
 func (*StatusCmd)
 SetErr
 ¶
-func (cmd *StatusCmd) SetErr(e
+func (cmd*StatusCmd) SetErr(e
 error
 )
 func (*StatusCmd)
 SetFirstKeyPos
 ¶
-func (cmd *StatusCmd) SetFirstKeyPos(keyPos
+func (cmd*StatusCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*StatusCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 StatusCmd
 ) SetVal(val
 string
@@ -64749,14 +64749,14 @@ string
 func (*StatusCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 StatusCmd
 ) String()
 string
 func (*StatusCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 StatusCmd
 ) Val()
 string
@@ -64772,7 +64772,7 @@ context
 Context
 , a *
 XAddArgs
-) *
+)*
 StringCmd
 XAckDel(ctx
 context
@@ -64796,7 +64796,7 @@ Context
 string
 , ids ...
 string
-) *
+)*
 IntCmd
 XDelEx(ctx
 context
@@ -64816,7 +64816,7 @@ context
 Context
 , stream
 string
-) *
+)*
 IntCmd
 XRange(ctx
 context
@@ -64834,7 +64834,7 @@ Context
 string
 , count
 int64
-) *
+)*
 XMessageSliceCmd
 XRevRange(ctx
 context
@@ -64856,7 +64856,7 @@ string
 string
 , count
 int64
-) *
+)*
 XMessageSliceCmd
 XRead(ctx
 context
@@ -64864,7 +64864,7 @@ context
 Context
 , a *
 XReadArgs
-) *
+)*
 XStreamSliceCmd
 XReadStreams(ctx
 context
@@ -64880,7 +64880,7 @@ context
 Context
 , stream, group, start
 string
-) *
+)*
 StatusCmd
 XGroupCreateMkStream(ctx
 context
@@ -64896,7 +64896,7 @@ context
 Context
 , stream, group, start
 string
-) *
+)*
 StatusCmd
 XGroupDestroy(ctx
 context
@@ -64912,7 +64912,7 @@ context
 Context
 , stream, group, consumer
 string
-) *
+)*
 IntCmd
 XGroupDelConsumer(ctx
 context
@@ -64926,7 +64926,7 @@ XReadGroup(ctx
 context
 .
 Context
-, a *
+, a*
 XReadGroupArgs
 ) *
 XStreamSliceCmd
@@ -64938,7 +64938,7 @@ Context
 string
 , ids ...
 string
-) *
+)*
 IntCmd
 XPending(ctx
 context
@@ -64952,7 +64952,7 @@ XPendingExt(ctx
 context
 .
 Context
-, a *
+, a*
 XPendingExtArgs
 ) *
 XPendingExtCmd
@@ -64960,7 +64960,7 @@ XClaim(ctx
 context
 .
 Context
-, a *
+, a*
 XClaimArgs
 ) *
 XMessageSliceCmd
@@ -64968,7 +64968,7 @@ XClaimJustID(ctx
 context
 .
 Context
-, a *
+, a*
 XClaimArgs
 ) *
 StringSliceCmd
@@ -64976,7 +64976,7 @@ XAutoClaim(ctx
 context
 .
 Context
-, a *
+, a*
 XAutoClaimArgs
 ) *
 XAutoClaimCmd
@@ -64984,7 +64984,7 @@ XAutoClaimJustID(ctx
 context
 .
 Context
-, a *
+, a*
 XAutoClaimArgs
 ) *
 XAutoClaimJustIDCmd
@@ -64996,7 +64996,7 @@ Context
 string
 , maxLen
 int64
-) *
+)*
 IntCmd
 XTrimMaxLenApprox(ctx
 context
@@ -65018,7 +65018,7 @@ string
 int64
 , mode
 string
-) *
+)*
 IntCmd
 XTrimMaxLenApproxMode(ctx
 context
@@ -65040,7 +65040,7 @@ Context
 string
 , minID
 string
-) *
+)*
 IntCmd
 XTrimMinIDApprox(ctx
 context
@@ -65064,7 +65064,7 @@ string
 string
 , mode
 string
-) *
+)*
 IntCmd
 XTrimMinIDApproxMode(ctx
 context
@@ -65086,7 +65086,7 @@ context
 Context
 , key
 string
-) *
+)*
 XInfoGroupsCmd
 XInfoStream(ctx
 context
@@ -65104,7 +65104,7 @@ Context
 string
 , count
 int
-) *
+)*
 XInfoStreamFullCmd
 XInfoConsumers(ctx
 context
@@ -65130,7 +65130,7 @@ func NewStringCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 StringCmd
 func
 NewStringResult
@@ -65306,7 +65306,7 @@ context
 Context
 , key, value
 string
-) *
+)*
 IntCmd
 Decr(ctx
 context
@@ -65324,7 +65324,7 @@ Context
 string
 , decrement
 int64
-) *
+)*
 IntCmd
 DelExArgs(ctx
 context
@@ -65342,7 +65342,7 @@ context
 Context
 , key
 string
-) *
+)*
 DigestCmd
 Get(ctx
 context
@@ -65360,7 +65360,7 @@ Context
 string
 , start, end
 int64
-) *
+)*
 StringCmd
 GetSet(ctx
 context
@@ -65380,7 +65380,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 GetDel(ctx
 context
@@ -65396,7 +65396,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 IncrBy(ctx
 context
@@ -65416,7 +65416,7 @@ Context
 string
 , value
 float64
-) *
+)*
 FloatCmd
 LCS(ctx
 context
@@ -65424,7 +65424,7 @@ context
 Context
 , q *
 LCSQuery
-) *
+)*
 LCSCmd
 MGet(ctx
 context
@@ -65438,7 +65438,7 @@ MSet(ctx
 context
 .
 Context
-, values ...interface{}) *
+, values ...interface{})*
 StatusCmd
 MSetNX(ctx
 context
@@ -65452,7 +65452,7 @@ context
 Context
 , args
 MSetEXArgs
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 Set(ctx
 context
@@ -65474,7 +65474,7 @@ Context
 string
 , value interface{}, a
 SetArgs
-) *
+)*
 StatusCmd
 SetEx(ctx
 context
@@ -65498,7 +65498,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFEQGet(ctx
 context
@@ -65522,7 +65522,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFNEGet(ctx
 context
@@ -65548,7 +65548,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFDEQGet(ctx
 context
@@ -65576,7 +65576,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetIFDNEGet(ctx
 context
@@ -65602,7 +65602,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 SetXX(ctx
 context
@@ -65626,7 +65626,7 @@ string
 int64
 , value
 string
-) *
+)*
 IntCmd
 StrLen(ctx
 context
@@ -65650,7 +65650,7 @@ func NewStringSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 StringSliceCmd
 func
 NewStringSliceResult
@@ -65745,31 +65745,31 @@ func NewStringStructMapCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 StringStructMapCmd
 func (*StringStructMapCmd)
 Args
 ¶
-func (cmd *StringStructMapCmd) Args() []interface{}
+func (cmd*StringStructMapCmd) Args() []interface{}
 func (*StringStructMapCmd)
 Err
 ¶
-func (cmd *StringStructMapCmd) Err()
+func (cmd*StringStructMapCmd) Err()
 error
 func (*StringStructMapCmd)
 FullName
 ¶
-func (cmd *StringStructMapCmd) FullName()
+func (cmd*StringStructMapCmd) FullName()
 string
 func (*StringStructMapCmd)
 Name
 ¶
-func (cmd *StringStructMapCmd) Name()
+func (cmd*StringStructMapCmd) Name()
 string
 func (*StringStructMapCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 StringStructMapCmd
 ) Result() (map[
 string
@@ -65779,19 +65779,19 @@ error
 func (*StringStructMapCmd)
 SetErr
 ¶
-func (cmd *StringStructMapCmd) SetErr(e
+func (cmd*StringStructMapCmd) SetErr(e
 error
 )
 func (*StringStructMapCmd)
 SetFirstKeyPos
 ¶
-func (cmd *StringStructMapCmd) SetFirstKeyPos(keyPos
+func (cmd*StringStructMapCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*StringStructMapCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 StringStructMapCmd
 ) SetVal(val map[
 string
@@ -65799,14 +65799,14 @@ string
 func (*StringStructMapCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 StringStructMapCmd
 ) String()
 string
 func (*StringStructMapCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 StringStructMapCmd
 ) Val() map[
 string
@@ -65829,7 +65829,7 @@ Subscription received after a successful subscription to channel.
 func (*Subscription)
 String
 ¶
-func (m *
+func (m*
 Subscription
 ) String()
 string
@@ -65851,7 +65851,7 @@ Run
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SynUpdateBuilder
 ) Run() (
 string
@@ -65864,7 +65864,7 @@ SkipInitialScan
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 SynUpdateBuilder
 ) SkipInitialScan() *
 SynUpdateBuilder
@@ -65876,7 +65876,7 @@ added in
 v9.12.0
 func (b *
 SynUpdateBuilder
-) Terms(terms ...interface{}) *
+) Terms(terms ...interface{})*
 SynUpdateBuilder
 Terms adds synonyms to the group.
 type
@@ -66437,7 +66437,7 @@ Run
 ¶
 added in
 v9.12.0
-func (b *
+func (b*
 TagValsBuilder
 ) Run() ([]
 string
@@ -66469,32 +66469,32 @@ time
 Time
 , err
 error
-) *
+)*
 TimeCmd
 NewTimeCmdResult returns a TimeCmd initialised with val and err for testing.
 func (*TimeCmd)
 Args
 ¶
-func (cmd *TimeCmd) Args() []interface{}
+func (cmd*TimeCmd) Args() []interface{}
 func (*TimeCmd)
 Err
 ¶
-func (cmd *TimeCmd) Err()
+func (cmd*TimeCmd) Err()
 error
 func (*TimeCmd)
 FullName
 ¶
-func (cmd *TimeCmd) FullName()
+func (cmd*TimeCmd) FullName()
 string
 func (*TimeCmd)
 Name
 ¶
-func (cmd *TimeCmd) Name()
+func (cmd*TimeCmd) Name()
 string
 func (*TimeCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 TimeCmd
 ) Result() (
 time
@@ -66506,19 +66506,19 @@ error
 func (*TimeCmd)
 SetErr
 ¶
-func (cmd *TimeCmd) SetErr(e
+func (cmd*TimeCmd) SetErr(e
 error
 )
 func (*TimeCmd)
 SetFirstKeyPos
 ¶
-func (cmd *TimeCmd) SetFirstKeyPos(keyPos
+func (cmd*TimeCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*TimeCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 TimeCmd
 ) SetVal(val
 time
@@ -66528,14 +66528,14 @@ Time
 func (*TimeCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 TimeCmd
 ) String()
 string
 func (*TimeCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 TimeCmd
 ) Val()
 time
@@ -66565,7 +66565,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -66575,7 +66575,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreateWithArgs(ctx
 context
@@ -66585,7 +66585,7 @@ Context
 string
 , options *
 TSOptions
-) *
+)*
 StatusCmd
 TSAlter(ctx
 context
@@ -66595,7 +66595,7 @@ Context
 string
 , options *
 TSAlterOptions
-) *
+)*
 StatusCmd
 TSCreateRule(ctx
 context
@@ -66623,7 +66623,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -66635,7 +66635,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrByWithArgs(ctx
 context
@@ -66647,7 +66647,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrBy(ctx
 context
@@ -66667,7 +66667,7 @@ Context
 string
 , timestamp
 float64
-, options *
+, options*
 TSIncrDecrOptions
 ) *
 IntCmd
@@ -66681,7 +66681,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 IntCmd
 TSDeleteRule(ctx
 context
@@ -66699,7 +66699,7 @@ context
 Context
 , key
 string
-) *
+)*
 TSTimestampValueCmd
 TSGetWithArgs(ctx
 context
@@ -66709,7 +66709,7 @@ Context
 string
 , options *
 TSGetOptions
-) *
+)*
 TSTimestampValueCmd
 TSInfo(ctx
 context
@@ -66725,7 +66725,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -66733,7 +66733,7 @@ TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSQueryIndex(ctx
 context
@@ -66753,7 +66753,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs(ctx
 context
@@ -66767,7 +66767,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRange(ctx
 context
@@ -66791,7 +66791,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -66805,7 +66805,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs(ctx
 context
@@ -66819,7 +66819,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRevRange(ctx
 context
@@ -66843,7 +66843,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -66853,7 +66853,7 @@ context
 Context
 , filters []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMGetWithArgs(ctx
 context
@@ -66863,7 +66863,7 @@ Context
 string
 , options *
 TSMGetOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 }
 type
@@ -67003,7 +67003,7 @@ func (c Tx) ACLCat(ctx
 context
 .
 Context
-) *
+)*
 StringSliceCmd
 func (Tx)
 ACLCatArgs
@@ -67016,7 +67016,7 @@ context
 Context
 , options *
 ACLCatArgs
-) *
+)*
 StringSliceCmd
 func (Tx)
 ACLDelUser
@@ -67042,7 +67042,7 @@ context
 Context
 , username
 string
-, command ...interface{}) *
+, command ...interface{})*
 StringCmd
 func (Tx)
 ACLGenPass
@@ -67066,7 +67066,7 @@ func (c Tx) ACLList(ctx
 context
 .
 Context
-) *
+)*
 StringSliceCmd
 func (Tx)
 ACLLog
@@ -67090,7 +67090,7 @@ func (c Tx) ACLLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 ACLSetUser
@@ -67116,7 +67116,7 @@ func (c Tx) ACLUsers(ctx
 context
 .
 Context
-) *
+)*
 StringSliceCmd
 func (Tx)
 ACLWhoAmI
@@ -67138,7 +67138,7 @@ context
 Context
 , key, value
 string
-) *
+)*
 IntCmd
 func (Tx)
 Auth
@@ -67160,7 +67160,7 @@ context
 Context
 , username, password
 string
-) *
+)*
 StatusCmd
 AuthACL Perform an AUTH command, using the given user and pass.
 Should be used to authenticate the current connection with one of the connections defined in the ACL list
@@ -67192,7 +67192,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 BFCard returns the cardinality of a Bloom filter -
 number of items that were added to a Bloom filter and detected as unique
@@ -67226,7 +67226,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 Returns information about a Bloom filter.
 For more information -
@@ -67258,7 +67258,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoCapacity returns information about the capacity of a Bloom filter.
 For more information -
@@ -67290,7 +67290,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoFilters returns information about the filters of a Bloom filter.
 For more information -
@@ -67322,7 +67322,7 @@ context
 Context
 , key
 string
-) *
+)*
 BFInfoCmd
 BFInfoSize returns information about the size of a Bloom filter.
 For more information -
@@ -67340,7 +67340,7 @@ Context
 string
 , options *
 BFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFInsert inserts elements into a Bloom filter.
 This function also allows for specifying additional options such as:
@@ -67376,7 +67376,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 BFMAdd adds multiple elements to a Bloom filter.
 Returns an array of booleans indicating whether each element was added to the filter or not.
@@ -67414,7 +67414,7 @@ string
 float64
 , capacity
 int64
-) *
+)*
 StatusCmd
 BFReserve creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -67457,7 +67457,7 @@ string
 float64
 , capacity
 int64
-) *
+)*
 StatusCmd
 BFReserveNonScaling creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -67477,7 +67477,7 @@ Context
 string
 , options *
 BFReserveOptions
-) *
+)*
 StatusCmd
 BFReserveWithArgs creates an empty Bloom filter with a single sub-filter
 for the initial specified capacity and with an upper bound error_rate.
@@ -67522,7 +67522,7 @@ string
 int64
 , keys ...
 string
-) *
+)*
 KeyValuesCmd
 func (Tx)
 BLMove
@@ -67554,7 +67554,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 BRPop
@@ -67584,7 +67584,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 func (Tx)
 BZMPop
@@ -67625,7 +67625,7 @@ time
 Duration
 , keys ...
 string
-) *
+)*
 ZWithKeyCmd
 BZPopMax Redis `BZPOPMAX key [key ...] timeout` command.
 func (Tx)
@@ -67651,7 +67651,7 @@ func (c Tx) BgRewriteAOF(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 BgSave
@@ -67671,7 +67671,7 @@ context
 Context
 , key
 string
-, bitCount *
+, bitCount*
 BitCount
 ) *
 IntCmd
@@ -67684,7 +67684,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntSliceCmd
 BitField accepts multiple values:
 BitField("set", "i1", "offset1", "value1","cmd2", "type2", "offset2", "value2")
@@ -67733,7 +67733,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpAndOr creates a new bitmap in which users are members of bitmap X and also members of one or more of bitmaps Y1, Y2, …
 Introduced with Redis 8.2
@@ -67767,7 +67767,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpDiff1 creates a new bitmap in which users are members of one or more of bitmaps Y1, Y2, … but not members of bitmap X
 Introduced with Redis 8.2
@@ -67798,7 +67798,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpOne creates a new bitmap in which users are members of exactly one of the given bitmaps
 Introduced with Redis 8.2
@@ -67827,7 +67827,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 BitOpXor creates a new bitmap in which users are the result of XORing all given bitmaps
 func (Tx)
@@ -67864,7 +67864,7 @@ int8
 int64
 , span
 string
-) *
+)*
 IntCmd
 BitPosSpan supports the `byte | bit` parameters in redis version 7.0,
 the bitpos command defaults to using byte type for the `start-end` range,
@@ -67900,7 +67900,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFAddNX adds an element to a Cuckoo filter only if it does not already exist in the filter.
 Returns true if the element was added to the filter or false if it already exists in the filter.
@@ -67933,7 +67933,7 @@ context
 Context
 , key
 string
-, element interface{}) *
+, element interface{})*
 BoolCmd
 CFDel deletes an item once from the cuckoo filter.
 For more information -
@@ -67965,7 +67965,7 @@ context
 Context
 , key
 string
-) *
+)*
 CFInfoCmd
 CFInfo returns information about a Cuckoo filter.
 For more information -
@@ -67983,7 +67983,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFInsert inserts elements into a Cuckoo filter.
 This function also allows for specifying additional options such as capacity, error rate, expansion rate, and non-scaling behavior.
@@ -68003,7 +68003,7 @@ Context
 string
 , options *
 CFInsertOptions
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CFInsertNX inserts elements into a Cuckoo filter only if they do not already exist in the filter.
 This function also allows for specifying additional options such as:
@@ -68040,7 +68040,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 BoolSliceCmd
 CFMExists check if multiple elements exist in a Cuckoo filter.
 Returns an array of booleans indicating whether each element exists in the filter or not.
@@ -68079,7 +68079,7 @@ string
 int64
 , bucketsize
 int64
-) *
+)*
 StatusCmd
 CFReserveBucketSize creates an empty Cuckoo filter with the specified capacity and bucket size.
 For more information -
@@ -68119,7 +68119,7 @@ string
 int64
 , maxiterations
 int64
-) *
+)*
 StatusCmd
 CFReserveMaxIterations creates an empty Cuckoo filter with the specified capacity and maximum number of iterations.
 For more information -
@@ -68137,7 +68137,7 @@ Context
 string
 , options *
 CFReserveOptions
-) *
+)*
 StatusCmd
 CFReserveWithArgs creates an empty Cuckoo filter with the specified options.
 This function allows for specifying additional options such as bucket size and maximum number of iterations.
@@ -68172,7 +68172,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSIncrBy increments the count of one or more items in a Count-Min Sketch filter.
 Returns an array of integers representing the updated count of each item.
@@ -68207,7 +68207,7 @@ Context
 string
 , width, depth
 int64
-) *
+)*
 StatusCmd
 CMSInitByDim creates an empty Count-Min Sketch filter with the specified dimensions.
 For more information -
@@ -68243,7 +68243,7 @@ Context
 string
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 CMSMerge merges multiple Count-Min Sketch filters into a single filter.
 The destination filter must not exist and will be created with the dimensions of the first source filter.
@@ -68285,7 +68285,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 CMSQuery returns count for item(s).
 For more information -
@@ -68307,7 +68307,7 @@ func (c Tx) ClientID(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Tx)
 ClientInfo
@@ -68329,7 +68329,7 @@ context
 Context
 , ipPort
 string
-) *
+)*
 StatusCmd
 func (Tx)
 ClientKillByFilter
@@ -68351,7 +68351,7 @@ func (c Tx) ClientList(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Tx)
 ClientMaintNotifications
@@ -68381,7 +68381,7 @@ Context
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Tx)
 ClientSetInfo
@@ -68406,7 +68406,7 @@ context
 Context
 , name
 string
-) *
+)*
 BoolCmd
 ClientSetName assigns a name to the connection.
 func (Tx)
@@ -68429,7 +68429,7 @@ context
 Context
 , id
 int64
-) *
+)*
 IntCmd
 func (Tx)
 ClientUnpause
@@ -69325,7 +69325,7 @@ string
 FTCreateOptions
 , schema ...*
 FieldSchema
-) *
+)*
 StatusCmd
 FTCreate - Creates a new index with the given options and schema.
 The 'index' parameter specifies the name of the index to create.
@@ -69372,7 +69372,7 @@ string
 int
 , count
 int
-) *
+)*
 MapStringInterfaceCmd
 FTCursorRead - Reads the next results from an existing cursor.
 The 'index' parameter specifies the index from which to read the cursor, the 'cursorId' parameter specifies the ID of the cursor to read, and the 'count' parameter specifies the number of results to read.
@@ -69410,7 +69410,7 @@ context
 Context
 , dict
 string
-, term ...interface{}) *
+, term ...interface{})*
 IntCmd
 FTDictDel - Deletes terms from a dictionary.
 The 'dict' parameter specifies the dictionary from which to delete the terms, and the 'term' parameter specifies the terms to delete.
@@ -69448,7 +69448,7 @@ context
 Context
 , index
 string
-) *
+)*
 StatusCmd
 FTDropIndex - Deletes an index.
 The 'index' parameter specifies the index to delete.
@@ -69469,7 +69469,7 @@ Context
 string
 , options *
 FTDropIndexOptions
-) *
+)*
 StatusCmd
 FTDropIndexWithArgs - Deletes an index with options.
 The 'index' parameter specifies the index to delete, and the 'options' parameter specifies the DeleteDocs option for docs deletion.
@@ -69527,7 +69527,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTExplainOptions
 ) *
 StringCmd
@@ -69554,7 +69554,7 @@ string
 string
 , vectorData
 Vector
-) *
+)*
 FTHybridCmd
 FTHybrid - Executes a hybrid search combining full-text search and vector similarity
 The 'index' parameter specifies the index to search, 'searchExpr' is the search query,
@@ -69573,7 +69573,7 @@ Context
 string
 , options *
 FTHybridOptions
-) *
+)*
 FTHybridCmd
 FTHybridWithArgs - Executes a hybrid search with advanced options
 FTHybridWithArgs is still experimental, the command behaviour and signature may change
@@ -69609,7 +69609,7 @@ Context
 string
 , query
 string
-) *
+)*
 FTSearchCmd
 FTSearch - Executes a search query on an index.
 The 'index' parameter specifies the index to search, and the 'query' parameter specifies the search query.
@@ -69632,7 +69632,7 @@ string
 string
 , options *
 FTSearchOptions
-) *
+)*
 FTSearchCmd
 FTSearchWithArgs - Executes a search query on an index with additional options.
 The 'index' parameter specifies the index to search, the 'query' parameter specifies the search query,
@@ -69676,7 +69676,7 @@ Context
 string
 , query
 string
-, options *
+, options*
 FTSpellCheckOptions
 ) *
 FTSpellCheckCmd
@@ -69698,7 +69698,7 @@ context
 Context
 , index
 string
-) *
+)*
 FTSynDumpCmd
 FTSynDump - Dumps the contents of a synonym group.
 The 'index' parameter specifies the index to dump.
@@ -69736,7 +69736,7 @@ context
 Context
 , index
 string
-, synGroupId interface{}, options *
+, synGroupId interface{}, options*
 FTSynUpdateOptions
 , terms []interface{}) *
 StatusCmd
@@ -69759,7 +69759,7 @@ Context
 string
 , field
 string
-) *
+)*
 StringSliceCmd
 FTTagVals - Returns all distinct values indexed in a tag field.
 The 'index' parameter specifies the index to check, and the 'field' parameter specifies the tag field to retrieve values from.
@@ -69790,7 +69790,7 @@ func (c Tx) FlushAll(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 FlushAllAsync
@@ -69808,7 +69808,7 @@ func (c Tx) FlushDB(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 FlushDBAsync
@@ -69830,7 +69830,7 @@ context
 Context
 , libName
 string
-) *
+)*
 StringCmd
 func (Tx)
 FunctionDump
@@ -69852,7 +69852,7 @@ func (c Tx) FunctionFlush(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Tx)
 FunctionFlushAsync
@@ -69874,7 +69874,7 @@ func (c Tx) FunctionKill(ctx
 context
 .
 Context
-) *
+)*
 StringCmd
 func (Tx)
 FunctionList
@@ -69900,7 +69900,7 @@ context
 Context
 , code
 string
-) *
+)*
 StringCmd
 func (Tx)
 FunctionLoadReplace
@@ -69926,7 +69926,7 @@ context
 Context
 , libDump
 string
-) *
+)*
 StringCmd
 func (Tx)
 FunctionStats
@@ -69965,7 +69965,7 @@ string
 , member1, member2, unit
 string
 ,
-) *
+)*
 FloatCmd
 func (Tx)
 GeoHash
@@ -69991,7 +69991,7 @@ Context
 string
 , members ...
 string
-) *
+)*
 GeoPosCmd
 func (Tx)
 GeoRadius
@@ -70008,7 +70008,7 @@ float64
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 GeoLocationCmd
 GeoRadius is a read-only GEORADIUS_RO command.
 func (Tx)
@@ -70024,7 +70024,7 @@ string
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 GeoLocationCmd
 GeoRadiusByMember is a read-only GEORADIUSBYMEMBER_RO command.
 func (Tx)
@@ -70040,7 +70040,7 @@ string
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 IntCmd
 GeoRadiusByMemberStore is a writing GEORADIUSBYMEMBER command.
 func (Tx)
@@ -70058,7 +70058,7 @@ float64
 , query *
 GeoRadiusQuery
 ,
-) *
+)*
 IntCmd
 GeoRadiusStore is a writing GEORADIUS command.
 func (Tx)
@@ -70072,7 +70072,7 @@ Context
 string
 , q *
 GeoSearchQuery
-) *
+)*
 StringSliceCmd
 func (Tx)
 GeoSearchLocation
@@ -70087,7 +70087,7 @@ string
 , q *
 GeoSearchLocationQuery
 ,
-) *
+)*
 GeoSearchLocationCmd
 func (Tx)
 GeoSearchStore
@@ -70100,7 +70100,7 @@ Context
 string
 , q *
 GeoSearchStoreQuery
-) *
+)*
 IntCmd
 func (Tx)
 Get
@@ -70125,7 +70125,7 @@ Context
 string
 , offset
 int64
-) *
+)*
 IntCmd
 func (Tx)
 GetDel
@@ -70152,7 +70152,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 GetEx An expiration of zero removes the TTL associated with the key (i.e. GETEX key persist).
 Requires Redis >= 6.2.0.
@@ -70178,7 +70178,7 @@ context
 Context
 , key
 string
-, value interface{}) *
+, value interface{})*
 StringCmd
 func (Tx)
 HDel
@@ -70202,7 +70202,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 BoolCmd
 func (Tx)
 HExpire
@@ -70246,7 +70246,7 @@ time
 Time
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireAt - Sets the expiration time for specified fields in a hash to a UNIX timestamp in seconds.
 Takes a key, a UNIX timestamp, a struct of conditional flags, and a list of fields.
@@ -70289,7 +70289,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HExpireTime - Retrieves the expiration time for specified fields in a hash as a UNIX timestamp in seconds.
 Requires a key and the fields themselves to fetch their expiration timestamps.
@@ -70337,7 +70337,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 StringCmd
 func (Tx)
 HGetAll
@@ -70363,7 +70363,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 HGetEX
@@ -70391,7 +70391,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 HGetEXOptions
 , fields ...
 string
@@ -70408,7 +70408,7 @@ Context
 string
 , incr
 int64
-) *
+)*
 IntCmd
 func (Tx)
 HIncrByFloat
@@ -70432,7 +70432,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 HLen
@@ -70456,7 +70456,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 SliceCmd
 HMGet returns the values for the specified fields in the hash stored at key.
 It returns an interface{} to distinguish between empty string and nil value.
@@ -70489,7 +70489,7 @@ time
 Duration
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpire - Sets the expiration time for specified fields in a hash in milliseconds.
 Similar to HExpire, it accepts a key, an expiration duration in milliseconds, a struct with expiration condition flags, and a list of fields.
@@ -70542,7 +70542,7 @@ Time
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 func (Tx)
 HPExpireTime
@@ -70587,7 +70587,7 @@ Duration
 HExpireArgs
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPExpireWithArgs - Sets the expiration time for specified fields in a hash in milliseconds.
 It requires a key, an expiration duration, a struct with boolean flags for conditional expiration settings (NX, XX, GT, LT), and a list of fields.
@@ -70633,7 +70633,7 @@ Context
 string
 , fields ...
 string
-) *
+)*
 IntSliceCmd
 HPersist - Removes the expiration time from specified fields in a hash.
 Accepts a key and the fields themselves.
@@ -70667,7 +70667,7 @@ Context
 string
 , count
 int
-) *
+)*
 KeyValueSliceCmd
 HRandFieldWithValues redis-server version >= 6.2.0.
 func (Tx)
@@ -70704,7 +70704,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Tx)
 HSet
@@ -70749,7 +70749,7 @@ Context
 string
 , fieldsAndValues ...
 string
-) *
+)*
 IntCmd
 func (Tx)
 HSetEXWithArgs
@@ -70766,7 +70766,7 @@ string
 HSetEXOptions
 , fieldsAndValues ...
 string
-) *
+)*
 IntCmd
 func (Tx)
 HSetNX
@@ -70790,7 +70790,7 @@ context
 Context
 , key, field
 string
-) *
+)*
 IntCmd
 func (Tx)
 HTTL
@@ -70823,7 +70823,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 Hello
@@ -70850,7 +70850,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Tx)
 IncrBy
@@ -70876,7 +70876,7 @@ Context
 string
 , value
 float64
-) *
+)*
 FloatCmd
 func (Tx)
 Info
@@ -70900,7 +70900,7 @@ context
 Context
 , sections ...
 string
-) *
+)*
 InfoCmd
 func (Tx)
 JSONArrAppend
@@ -70929,7 +70929,7 @@ context
 Context
 , key, path
 string
-, value ...interface{}) *
+, value ...interface{})*
 IntSliceCmd
 JSONArrIndex searches for the first occurrence of the provided JSON value in the array at the given path.
 For more information, see
@@ -70947,7 +70947,7 @@ Context
 string
 , options *
 JSONArrIndexArgs
-, value ...interface{}) *
+, value ...interface{})*
 IntSliceCmd
 JSONArrIndexWithArgs searches for the first occurrence of a JSON value in an array while allowing the start and
 stop options to be provided.
@@ -70982,7 +70982,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntSliceCmd
 JSONArrLen reports the length of the JSON array at the specified path in the given key.
 For more information, see
@@ -71016,7 +71016,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntSliceCmd
 JSONArrTrim trims an array to contain only the specified inclusive range of elements.
 For more information, see
@@ -71034,7 +71034,7 @@ Context
 string
 , options *
 JSONArrTrimArgs
-) *
+)*
 IntSliceCmd
 JSONArrTrimWithArgs trims an array to contain only the specified inclusive range of elements.
 For more information, see
@@ -71066,7 +71066,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONDebugMemory reports a value's memory usage in bytes (unimplemented)
 For more information, see
@@ -71098,7 +71098,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntCmd
 JSONForget deletes a value.
 For more information, see
@@ -71134,7 +71134,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 JSONGetArgs
 , paths ...
 string
@@ -71158,7 +71158,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 JSONSliceCmd
 JSONMGet returns the values at the specified path from multiple key arguments.
 Note - the arguments are reversed when compared with `JSON.MGET` as we want
@@ -71187,7 +71187,7 @@ context
 Context
 , docs []
 JSONSetArgs
-) *
+)*
 StatusCmd
 JSONMSetArgs sets or updates one or more JSON values according to the specified key-path-value triplets.
 For more information, see
@@ -71223,7 +71223,7 @@ Context
 string
 , value
 float64
-) *
+)*
 JSONCmd
 JSONNumIncrBy increments the number value stored at the specified path by the provided number.
 For more information, see
@@ -71255,7 +71255,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONObjLen reports the number of keys in the JSON object at the specified path in the given key.
 For more information, see
@@ -71291,7 +71291,7 @@ Context
 string
 , value interface{}, mode
 string
-) *
+)*
 StatusCmd
 JSONSetMode sets the JSON value at the given path in the given key and allows the mode to be set
 (the mode value must be "XX" or "NX"). The value must be something that can be marshaled to JSON (using encoding/JSON) unless
@@ -71325,7 +71325,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 IntPointerSliceCmd
 JSONStrLen reports the length of the JSON String at the specified path in the given key.
 For more information, see
@@ -71357,7 +71357,7 @@ context
 Context
 , key, path
 string
-) *
+)*
 JSONSliceCmd
 JSONType reports the type of JSON value at the specified path.
 For more information, see
@@ -71382,7 +71382,7 @@ func (c Tx) LCS(ctx
 context
 .
 Context
-, q *
+, q*
 LCSQuery
 ) *
 LCSCmd
@@ -71397,7 +71397,7 @@ Context
 string
 , index
 int64
-) *
+)*
 StringCmd
 func (Tx)
 LInsert
@@ -71419,7 +71419,7 @@ context
 Context
 , key
 string
-, pivot, value interface{}) *
+, pivot, value interface{})*
 IntCmd
 func (Tx)
 LInsertBefore
@@ -71441,7 +71441,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 func (Tx)
 LMPop
@@ -71472,7 +71472,7 @@ context
 Context
 , source, destination, srcpos, destpos
 string
-) *
+)*
 StringCmd
 func (Tx)
 LPop
@@ -71496,7 +71496,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 func (Tx)
 LPos
@@ -71528,7 +71528,7 @@ string
 int64
 , a
 LPosArgs
-) *
+)*
 IntSliceCmd
 func (Tx)
 LPush
@@ -71550,7 +71550,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Tx)
 LRange
@@ -71576,7 +71576,7 @@ Context
 string
 , count
 int64
-, value interface{}) *
+, value interface{})*
 IntCmd
 func (Tx)
 LSet
@@ -71602,7 +71602,7 @@ Context
 string
 , start, stop
 int64
-) *
+)*
 StatusCmd
 func (Tx)
 LastSave
@@ -71622,7 +71622,7 @@ func (c Tx) Latency(ctx
 context
 .
 Context
-) *
+)*
 LatencyCmd
 func (Tx)
 LatencyReset
@@ -71644,7 +71644,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 SliceCmd
 func (Tx)
 MSet
@@ -71671,7 +71671,7 @@ context
 Context
 , args
 MSetEXArgs
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 MSetEX sets the given keys to their respective values.
 This command is an extension of the MSETNX that adds expiration and XX options.
@@ -71705,7 +71705,7 @@ Context
 string
 , samples ...
 int
-) *
+)*
 IntCmd
 func (Tx)
 Migrate
@@ -71733,7 +71733,7 @@ func (c Tx) ModuleLoadex(ctx
 context
 .
 Context
-, conf *
+, conf*
 ModuleLoadexConfig
 ) *
 StringCmd
@@ -71749,7 +71749,7 @@ context
 Context
 , ch chan
 string
-) *
+)*
 MonitorCmd
 Monitor - represents a Redis MONITOR command, allowing the user to capture
 and process all commands sent to a Redis server. This mimics the behavior of
@@ -71782,7 +71782,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Tx)
 ObjectFreq
@@ -71806,7 +71806,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Tx)
 ObjectRefCount
@@ -71832,7 +71832,7 @@ string
 time
 .
 Duration
-) *
+)*
 BoolCmd
 func (Tx)
 PExpireAt
@@ -71860,7 +71860,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Tx)
 PFAdd
@@ -71882,7 +71882,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Tx)
 PFMerge
@@ -71906,7 +71906,7 @@ context
 Context
 , key
 string
-) *
+)*
 DurationCmd
 func (Tx)
 Persist
@@ -71926,12 +71926,12 @@ func (c Tx) Ping(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (*Tx)
 Pipeline
 ¶
-func (c *
+func (c*
 Tx
 ) Pipeline()
 Pipeliner
@@ -71939,7 +71939,7 @@ Pipeline creates a pipeline. Usually it is more convenient to use Pipelined.
 func (*Tx)
 Pipelined
 ¶
-func (c *
+func (c*
 Tx
 ) Pipelined(ctx
 context
@@ -71959,7 +71959,7 @@ Use TxPipelined if you need transactional behavior.
 func (*Tx)
 Process
 ¶
-func (c *
+func (c*
 Tx
 ) Process(ctx
 context
@@ -71987,7 +71987,7 @@ func (c Tx) PubSubNumPat(ctx
 context
 .
 Context
-) *
+)*
 IntCmd
 func (Tx)
 PubSubNumSub
@@ -72009,7 +72009,7 @@ context
 Context
 , pattern
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 PubSubShardNumSub
@@ -72031,7 +72031,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 Publish posts the message to the channel.
 func (Tx)
@@ -72052,7 +72052,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 func (Tx)
 RPopCount
@@ -72076,7 +72076,7 @@ context
 Context
 , source, destination
 string
-) *
+)*
 StringCmd
 func (Tx)
 RPush
@@ -72098,7 +72098,7 @@ context
 Context
 , key
 string
-, values ...interface{}) *
+, values ...interface{})*
 IntCmd
 func (Tx)
 RandomKey
@@ -72116,7 +72116,7 @@ func (c Tx) ReadOnly(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 ReadWrite
@@ -72136,7 +72136,7 @@ context
 Context
 , key, newkey
 string
-) *
+)*
 StatusCmd
 func (Tx)
 RenameNX
@@ -72164,7 +72164,7 @@ time
 Duration
 , value
 string
-) *
+)*
 StatusCmd
 func (Tx)
 RestoreReplace
@@ -72192,7 +72192,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 IntCmd
 func (Tx)
 SCard
@@ -72214,7 +72214,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 SDiffStore
@@ -72238,7 +72238,7 @@ context
 Context
 , keys ...
 string
-) *
+)*
 StringSliceCmd
 func (Tx)
 SInterCard
@@ -72264,7 +72264,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Tx)
 SIsMember
@@ -72286,7 +72286,7 @@ context
 Context
 , key
 string
-, members ...interface{}) *
+, members ...interface{})*
 BoolSliceCmd
 SMIsMember Redis `SMISMEMBER key member [member ...]` command.
 func (Tx)
@@ -72310,7 +72310,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringStructMapCmd
 SMembersMap Redis `SMEMBERS key` command output as a map.
 func (Tx)
@@ -72333,7 +72333,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 SPop Redis `SPOP key` command.
 func (Tx)
@@ -72359,7 +72359,7 @@ context
 Context
 , channel
 string
-, message interface{}) *
+, message interface{})*
 IntCmd
 func (Tx)
 SRandMember
@@ -72384,7 +72384,7 @@ Context
 string
 , count
 int64
-) *
+)*
 StringSliceCmd
 SRandMemberN Redis `SRANDMEMBER key count` command.
 func (Tx)
@@ -72413,7 +72413,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Tx)
 SUnion
@@ -72437,7 +72437,7 @@ Context
 string
 , keys ...
 string
-) *
+)*
 IntCmd
 func (Tx)
 Save
@@ -72461,7 +72461,7 @@ uint64
 string
 , count
 int64
-) *
+)*
 ScanCmd
 func (Tx)
 ScanType
@@ -72489,7 +72489,7 @@ context
 Context
 , hashes ...
 string
-) *
+)*
 BoolSliceCmd
 func (Tx)
 ScriptFlush
@@ -72507,7 +72507,7 @@ func (c Tx) ScriptKill(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 ScriptLoad
@@ -72529,7 +72529,7 @@ context
 Context
 , index
 int
-) *
+)*
 StatusCmd
 func (Tx)
 Set
@@ -72562,7 +72562,7 @@ Context
 string
 , value interface{}, a
 SetArgs
-) *
+)*
 StatusCmd
 SetArgs supports all the options that the SET command supports.
 It is the alternative to the Set function when you want
@@ -72595,7 +72595,7 @@ string
 time
 .
 Duration
-) *
+)*
 StatusCmd
 SetEx Redis `SETEx key expiration value` command.
 func (Tx)
@@ -72646,7 +72646,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDEQGet sets the value only if the current value's digest equals matchDigest,
 and returns the previous value.
@@ -72709,7 +72709,7 @@ uint64
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFDNEGet sets the value only if the current value's digest does NOT equal matchDigest,
 and returns the previous value.
@@ -72763,7 +72763,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFEQGet Redis `SET key value [expiration] IFEQ match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value equals matchValue,
@@ -72812,7 +72812,7 @@ string
 time
 .
 Duration
-) *
+)*
 StringCmd
 SetIFNEGet Redis `SET key value [expiration] IFNE match-value GET` command.
 Compare-and-set with GET: only sets the value if the current value does not equal matchValue,
@@ -72854,7 +72854,7 @@ string
 int64
 , value
 string
-) *
+)*
 IntCmd
 func (Tx)
 SetXX
@@ -72882,7 +72882,7 @@ func (c Tx) Shutdown(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 ShutdownNoSave
@@ -72900,7 +72900,7 @@ func (c Tx) ShutdownSave(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 SlaveOf
@@ -72922,7 +72922,7 @@ context
 Context
 , num
 int64
-) *
+)*
 SlowLogCmd
 func (Tx)
 SlowLogLen
@@ -72944,7 +72944,7 @@ func (c Tx) SlowLogReset(ctx
 context
 .
 Context
-) *
+)*
 StatusCmd
 func (Tx)
 Sort
@@ -72957,7 +72957,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Tx)
 SortInterfaces
@@ -72970,7 +72970,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 SliceCmd
 func (Tx)
 SortRO
@@ -72983,7 +72983,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 StringSliceCmd
 func (Tx)
 SortStore
@@ -72996,7 +72996,7 @@ Context
 string
 , sort *
 Sort
-) *
+)*
 IntCmd
 func (Tx)
 StrLen
@@ -73023,7 +73023,7 @@ context
 Context
 , index1, index2
 int
-) *
+)*
 StatusCmd
 func (Tx)
 Sync
@@ -73065,7 +73065,7 @@ Context
 string
 , rank ...
 uint64
-) *
+)*
 FloatSliceCmd
 TDigestByRank returns an array of values from a t-Digest data structure based on their rank.
 The rank of an element is its position in the sorted list of all elements in the t-Digest.
@@ -73105,7 +73105,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestCDF returns an array of cumulative distribution function (CDF) values for one or more elements in a t-Digest data structure.
 The CDF value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -73142,7 +73142,7 @@ Context
 string
 , compression
 int64
-) *
+)*
 StatusCmd
 TDigestCreateWithCompression creates an empty t-Digest data structure with a specified compression parameter.
 The compression parameter controls the accuracy and memory usage of the t-Digest.
@@ -73176,7 +73176,7 @@ context
 Context
 , key
 string
-) *
+)*
 FloatCmd
 TDigestMax returns the maximum value from a t-Digest data structure.
 For more information -
@@ -73196,7 +73196,7 @@ string
 TDigestMergeOptions
 , sourceKeys ...
 string
-) *
+)*
 StatusCmd
 TDigestMerge merges multiple t-Digest data structures into a single t-Digest.
 This function also allows for specifying additional options such as compression and override behavior.
@@ -73232,7 +73232,7 @@ Context
 string
 , elements ...
 float64
-) *
+)*
 FloatSliceCmd
 TDigestQuantile returns an array of quantile values for one or more elements in a t-Digest data structure.
 The quantile value for an element is the fraction of all elements in the t-Digest that are less than or equal to it.
@@ -73270,7 +73270,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TDigestReset resets a t-Digest data structure to its initial state.
 Returns OK on success or an error if the operation could not be completed.
@@ -73309,7 +73309,7 @@ Context
 string
 , lowCutQuantile, highCutQuantile
 float64
-) *
+)*
 FloatCmd
 TDigestTrimmedMean returns the trimmed mean value from a t-Digest data structure.
 The trimmed mean is calculated by removing a specified fraction of the highest and lowest values from the t-Digest and then calculating the mean of the remaining values.
@@ -73347,7 +73347,7 @@ Context
 string
 , timestamp interface{}, value
 float64
-, options *
+, options*
 TSOptions
 ) *
 IntCmd
@@ -73367,7 +73367,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSAlterOptions
 ) *
 StatusCmd
@@ -73387,7 +73387,7 @@ context
 Context
 , key
 string
-) *
+)*
 StatusCmd
 TSCreate - Creates a new time-series key.
 For more information -
@@ -73431,7 +73431,7 @@ string
 Aggregator
 , bucketDuration
 int
-, options *
+, options*
 TSCreateRuleOptions
 ) *
 StatusCmd
@@ -73451,7 +73451,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSOptions
 ) *
 StatusCmd
@@ -73473,7 +73473,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
 For more information -
@@ -73493,7 +73493,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -73533,7 +73533,7 @@ Context
 string
 , destKey
 string
-) *
+)*
 StatusCmd
 TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
 For more information -
@@ -73565,7 +73565,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSGetOptions
 ) *
 TSTimestampValueCmd
@@ -73587,7 +73587,7 @@ Context
 string
 , timestamp
 float64
-) *
+)*
 IntCmd
 TSIncrBy - Increments the value of a time-series key by the specified timestamp.
 For more information -
@@ -73607,7 +73607,7 @@ string
 float64
 , options *
 TSIncrDecrOptions
-) *
+)*
 IntCmd
 TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
 This function allows for specifying additional options such as:
@@ -73641,7 +73641,7 @@ context
 Context
 , key
 string
-, options *
+, options*
 TSInfoOptions
 ) *
 MapStringInterfaceCmd
@@ -73659,7 +73659,7 @@ func (c Tx) TSMAdd(ctx
 context
 .
 Context
-, ktvSlices [][]interface{}) *
+, ktvSlices [][]interface{})*
 IntSliceCmd
 TSMAdd - Adds multiple samples to multiple time-series keys.
 It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
@@ -73693,7 +73693,7 @@ context
 Context
 , filters []
 string
-, options *
+, options*
 TSMGetOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -73717,7 +73717,7 @@ int
 int
 , filterExpr []
 string
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRange - Returns a range of samples from multiple time-series keys.
 For more information -
@@ -73739,7 +73739,7 @@ int
 string
 , options *
 TSMRangeOptions
-) *
+)*
 MapStringSliceInterfaceCmd
 TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
 This function allows for specifying additional options such as:
@@ -73783,7 +73783,7 @@ int
 int
 , filterExpr []
 string
-, options *
+, options*
 TSMRevRangeOptions
 ) *
 MapStringSliceInterfaceCmd
@@ -73805,7 +73805,7 @@ context
 Context
 , filterExpr []
 string
-) *
+)*
 StringSliceCmd
 TSQueryIndex - Returns all the keys matching the filter expression.
 For more information -
@@ -73845,7 +73845,7 @@ string
 int
 , toTimestamp
 int
-, options *
+, options*
 TSRangeOptions
 ) *
 TSTimestampValueSliceCmd
@@ -73870,7 +73870,7 @@ string
 int
 , toTimestamp
 int
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRange - Returns a range of samples from a time-series key in reverse order.
 For more information -
@@ -73892,7 +73892,7 @@ int
 int
 , options *
 TSRevRangeOptions
-) *
+)*
 TSTimestampValueSliceCmd
 TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
 This function allows for specifying additional options such as:
@@ -73918,7 +73918,7 @@ func (c Tx) Time(ctx
 context
 .
 Context
-) *
+)*
 TimeCmd
 func (Tx)
 TopKAdd
@@ -73948,7 +73948,7 @@ context
 Context
 , key
 string
-, elements ...interface{}) *
+, elements ...interface{})*
 IntSliceCmd
 TopKCount returns an estimate of the number of times an item may be in a Top-K filter.
 For more information -
@@ -73980,7 +73980,7 @@ context
 Context
 , key
 string
-) *
+)*
 TopKInfoCmd
 TopKInfo returns information about a Top-K filter.
 For more information -
@@ -74012,7 +74012,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringIntCmd
 TopKListWithCount returns all items in Top-K list with their respective count.
 For more information -
@@ -74047,7 +74047,7 @@ Context
 string
 , k
 int64
-) *
+)*
 StatusCmd
 TopKReserve creates an empty Top-K filter with the specified number of top items to keep.
 For more information -
@@ -74084,12 +74084,12 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*Tx)
 TxPipeline
 ¶
-func (c *
+func (c*
 Tx
 ) TxPipeline()
 Pipeliner
@@ -74097,7 +74097,7 @@ TxPipeline creates a pipeline. Usually it is more convenient to use TxPipelined.
 func (*Tx)
 TxPipelined
 ¶
-func (c *
+func (c*
 Tx
 ) TxPipelined(ctx
 context
@@ -74138,12 +74138,12 @@ context
 Context
 , keys ...
 string
-) *
+)*
 IntCmd
 func (*Tx)
 Unwatch
 ¶
-func (c *
+func (c*
 Tx
 ) Unwatch(ctx
 context
@@ -74167,7 +74167,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 BoolCmd
 `VADD key (FP32 | VALUES num) vector element`
 note: the API is experimental and may be subject to change.
@@ -74186,7 +74186,7 @@ string
 Vector
 , addArgs *
 VAddArgs
-) *
+)*
 BoolCmd
 `VADD key [REDUCE dim] (FP32 | VALUES num) vector element [CAS] [NOQUANT | Q8 | BIN] [EF build-exploration-factor] [SETATTR attributes] [M numlinks]`
 note: the API is experimental and may be subject to change.
@@ -74216,7 +74216,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 BoolCmd
 `VClearAttributes` clear attributes on a vector set element.
 The implementation of `VClearAttributes` is execute command `VSETATTR key element ""`.
@@ -74249,7 +74249,7 @@ Context
 string
 , raw
 bool
-) *
+)*
 SliceCmd
 `VEMB key element [RAW]`
 note: the API is experimental and may be subject to change.
@@ -74279,7 +74279,7 @@ context
 Context
 , key
 string
-) *
+)*
 MapStringInterfaceCmd
 `VINFO key`
 note: the API is experimental and may be subject to change.
@@ -74309,7 +74309,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 VectorScoreSliceCmd
 `VLINKS key element WITHSCORES`
 note: the API is experimental and may be subject to change.
@@ -74341,7 +74341,7 @@ Context
 string
 , count
 int
-) *
+)*
 StringSliceCmd
 `VRANDMEMBER key [count]`
 note: the API is experimental and may be subject to change.
@@ -74374,7 +74374,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 BoolCmd
 `VREM key element`
 note: the API is experimental and may be subject to change.
@@ -74408,7 +74408,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 StringSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element)`
 note: the API is experimental and may be subject to change.
@@ -74427,7 +74427,7 @@ string
 Vector
 , simArgs *
 VSimArgs
-) *
+)*
 StringSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) [COUNT num] [EPSILON delta]
 [EF search-exploration-factor] [FILTER expression] [FILTER-EF max-filtering-effort] [TRUTH] [NOTHREAD]`
@@ -74447,7 +74447,7 @@ string
 Vector
 , simArgs *
 VSimArgs
-) *
+)*
 VectorScoreSliceCmd
 `VSIM key (ELE | FP32 | VALUES num) (vector | element) [WITHSCORES] [COUNT num] [EPSILON delta]
 [EF search-exploration-factor] [FILTER expression] [FILTER-EF max-filtering-effort] [TRUTH] [NOTHREAD]`
@@ -74482,7 +74482,7 @@ int
 time
 .
 Duration
-) *
+)*
 IntCmd
 func (Tx)
 WaitAOF
@@ -75660,7 +75660,7 @@ Do(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 Cmd
 Process(ctx
 context
@@ -75684,7 +75684,7 @@ context
 Context
 , channels ...
 string
-) *
+)*
 PubSub
 SSubscribe(ctx
 context
@@ -75696,7 +75696,7 @@ string
 PubSub
 Close()
 error
-PoolStats() *
+PoolStats()*
 PoolStats
 }
 UniversalClient is an abstract client which - based on the provided options -
@@ -75887,7 +75887,7 @@ ConnMaxLifetimeJitter
 time
 .
 Duration
-TLSConfig *
+TLSConfig*
 tls
 .
 Config
@@ -75940,13 +75940,13 @@ Cluster
 ¶
 func (o *
 UniversalOptions
-) Cluster() *
+) Cluster()*
 ClusterOptions
 Cluster returns cluster options created from the universal options.
 func (*UniversalOptions)
 Failover
 ¶
-func (o *
+func (o*
 UniversalOptions
 ) Failover() *
 FailoverOptions
@@ -75956,7 +75956,7 @@ Simple
 ¶
 func (o *
 UniversalOptions
-) Simple() *
+) Simple()*
 Options
 Simple returns basic options created from the universal options.
 type
@@ -76028,7 +76028,7 @@ Value
 ¶
 added in
 v9.10.0
-func (v *
+func (v*
 VectorFP32
 ) Value() []
 any
@@ -76047,7 +76047,7 @@ Value
 ¶
 added in
 v9.10.0
-func (v *
+func (v*
 VectorRef
 ) Value() []
 any
@@ -76180,7 +76180,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 BoolCmd
 VAddWithArgs(ctx
 context
@@ -76192,7 +76192,7 @@ string
 Vector
 , addArgs *
 VAddArgs
-) *
+)*
 BoolCmd
 VCard(ctx
 context
@@ -76208,7 +76208,7 @@ context
 Context
 , key
 string
-) *
+)*
 IntCmd
 VEmb(ctx
 context
@@ -76226,7 +76226,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringCmd
 VInfo(ctx
 context
@@ -76242,7 +76242,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 StringSliceCmd
 VLinksWithScores(ctx
 context
@@ -76258,7 +76258,7 @@ context
 Context
 , key
 string
-) *
+)*
 StringCmd
 VRandMemberCount(ctx
 context
@@ -76276,7 +76276,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 BoolCmd
 VSetAttr(ctx
 context
@@ -76292,7 +76292,7 @@ context
 Context
 , key, element
 string
-) *
+)*
 BoolCmd
 VSim(ctx
 context
@@ -76312,7 +76312,7 @@ Context
 string
 , val
 Vector
-) *
+)*
 VectorScoreSliceCmd
 VSimWithArgs(ctx
 context
@@ -76324,7 +76324,7 @@ string
 Vector
 , args *
 VSimArgs
-) *
+)*
 StringSliceCmd
 VSimWithArgsWithScores(ctx
 context
@@ -76336,7 +76336,7 @@ string
 Vector
 , args *
 VSimArgs
-) *
+)*
 VectorScoreSliceCmd
 VRange(ctx
 context
@@ -76430,31 +76430,31 @@ func NewXAutoClaimCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 XAutoClaimCmd
 func (*XAutoClaimCmd)
 Args
 ¶
-func (cmd *XAutoClaimCmd) Args() []interface{}
+func (cmd*XAutoClaimCmd) Args() []interface{}
 func (*XAutoClaimCmd)
 Err
 ¶
-func (cmd *XAutoClaimCmd) Err()
+func (cmd*XAutoClaimCmd) Err()
 error
 func (*XAutoClaimCmd)
 FullName
 ¶
-func (cmd *XAutoClaimCmd) FullName()
+func (cmd*XAutoClaimCmd) FullName()
 string
 func (*XAutoClaimCmd)
 Name
 ¶
-func (cmd *XAutoClaimCmd) Name()
+func (cmd*XAutoClaimCmd) Name()
 string
 func (*XAutoClaimCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 XAutoClaimCmd
 ) Result() (messages []
 XMessage
@@ -76466,19 +76466,19 @@ error
 func (*XAutoClaimCmd)
 SetErr
 ¶
-func (cmd *XAutoClaimCmd) SetErr(e
+func (cmd*XAutoClaimCmd) SetErr(e
 error
 )
 func (*XAutoClaimCmd)
 SetFirstKeyPos
 ¶
-func (cmd *XAutoClaimCmd) SetFirstKeyPos(keyPos
+func (cmd*XAutoClaimCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*XAutoClaimCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 XAutoClaimCmd
 ) SetVal(val []
 XMessage
@@ -76488,14 +76488,14 @@ string
 func (*XAutoClaimCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 XAutoClaimCmd
 ) String()
 string
 func (*XAutoClaimCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 XAutoClaimCmd
 ) Val() (messages []
 XMessage
@@ -76638,31 +76638,31 @@ Context
 string
 , group
 string
-) *
+)*
 XInfoConsumersCmd
 func (*XInfoConsumersCmd)
 Args
 ¶
-func (cmd *XInfoConsumersCmd) Args() []interface{}
+func (cmd*XInfoConsumersCmd) Args() []interface{}
 func (*XInfoConsumersCmd)
 Err
 ¶
-func (cmd *XInfoConsumersCmd) Err()
+func (cmd*XInfoConsumersCmd) Err()
 error
 func (*XInfoConsumersCmd)
 FullName
 ¶
-func (cmd *XInfoConsumersCmd) FullName()
+func (cmd*XInfoConsumersCmd) FullName()
 string
 func (*XInfoConsumersCmd)
 Name
 ¶
-func (cmd *XInfoConsumersCmd) Name()
+func (cmd*XInfoConsumersCmd) Name()
 string
 func (*XInfoConsumersCmd)
 Result
 ¶
-func (cmd *
+func (cmd*
 XInfoConsumersCmd
 ) Result() ([]
 XInfoConsumer
@@ -76672,19 +76672,19 @@ error
 func (*XInfoConsumersCmd)
 SetErr
 ¶
-func (cmd *XInfoConsumersCmd) SetErr(e
+func (cmd*XInfoConsumersCmd) SetErr(e
 error
 )
 func (*XInfoConsumersCmd)
 SetFirstKeyPos
 ¶
-func (cmd *XInfoConsumersCmd) SetFirstKeyPos(keyPos
+func (cmd*XInfoConsumersCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*XInfoConsumersCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 XInfoConsumersCmd
 ) SetVal(val []
 XInfoConsumer
@@ -76692,14 +76692,14 @@ XInfoConsumer
 func (*XInfoConsumersCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 XInfoConsumersCmd
 ) String()
 string
 func (*XInfoConsumersCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 XInfoConsumersCmd
 ) Val() []
 XInfoConsumer
@@ -76842,26 +76842,26 @@ context
 Context
 , stream
 string
-) *
+)*
 XInfoStreamCmd
 func (*XInfoStreamCmd)
 Args
 ¶
-func (cmd *XInfoStreamCmd) Args() []interface{}
+func (cmd*XInfoStreamCmd) Args() []interface{}
 func (*XInfoStreamCmd)
 Err
 ¶
-func (cmd *XInfoStreamCmd) Err()
+func (cmd*XInfoStreamCmd) Err()
 error
 func (*XInfoStreamCmd)
 FullName
 ¶
-func (cmd *XInfoStreamCmd) FullName()
+func (cmd*XInfoStreamCmd) FullName()
 string
 func (*XInfoStreamCmd)
 Name
 ¶
-func (cmd *XInfoStreamCmd) Name()
+func (cmd*XInfoStreamCmd) Name()
 string
 func (*XInfoStreamCmd)
 Result
@@ -76876,19 +76876,19 @@ error
 func (*XInfoStreamCmd)
 SetErr
 ¶
-func (cmd *XInfoStreamCmd) SetErr(e
+func (cmd*XInfoStreamCmd) SetErr(e
 error
 )
 func (*XInfoStreamCmd)
 SetFirstKeyPos
 ¶
-func (cmd *XInfoStreamCmd) SetFirstKeyPos(keyPos
+func (cmd*XInfoStreamCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*XInfoStreamCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 XInfoStreamCmd
 ) SetVal(val *
 XInfoStream
@@ -76905,7 +76905,7 @@ Val
 ¶
 func (cmd *
 XInfoStreamCmd
-) Val() *
+) Val()*
 XInfoStream
 type
 XInfoStreamConsumer
@@ -77023,20 +77023,20 @@ SetVal
 ¶
 func (cmd *
 XInfoStreamFullCmd
-) SetVal(val *
+) SetVal(val*
 XInfoStreamFull
 )
 func (*XInfoStreamFullCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 XInfoStreamFullCmd
 ) String()
 string
 func (*XInfoStreamFullCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 XInfoStreamFullCmd
 ) Val() *
 XInfoStreamFull
@@ -77105,7 +77105,7 @@ func NewXMessageSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 XMessageSliceCmd
 func
 NewXMessageSliceCmdResult
@@ -77208,7 +77208,7 @@ func NewXPendingCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 XPendingCmd
 func
 NewXPendingResult
@@ -77217,27 +77217,27 @@ func NewXPendingResult(val *
 XPending
 , err
 error
-) *
+)*
 XPendingCmd
 NewXPendingResult returns a XPendingCmd initialised with val and err for testing.
 func (*XPendingCmd)
 Args
 ¶
-func (cmd *XPendingCmd) Args() []interface{}
+func (cmd*XPendingCmd) Args() []interface{}
 func (*XPendingCmd)
 Err
 ¶
-func (cmd *XPendingCmd) Err()
+func (cmd*XPendingCmd) Err()
 error
 func (*XPendingCmd)
 FullName
 ¶
-func (cmd *XPendingCmd) FullName()
+func (cmd*XPendingCmd) FullName()
 string
 func (*XPendingCmd)
 Name
 ¶
-func (cmd *XPendingCmd) Name()
+func (cmd*XPendingCmd) Name()
 string
 func (*XPendingCmd)
 Result
@@ -77252,19 +77252,19 @@ error
 func (*XPendingCmd)
 SetErr
 ¶
-func (cmd *XPendingCmd) SetErr(e
+func (cmd*XPendingCmd) SetErr(e
 error
 )
 func (*XPendingCmd)
 SetFirstKeyPos
 ¶
-func (cmd *XPendingCmd) SetFirstKeyPos(keyPos
+func (cmd*XPendingCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*XPendingCmd)
 SetVal
 ¶
-func (cmd *
+func (cmd*
 XPendingCmd
 ) SetVal(val *
 XPending
@@ -77281,7 +77281,7 @@ Val
 ¶
 func (cmd *
 XPendingCmd
-) Val() *
+) Val()*
 XPending
 type
 XPendingExt
@@ -77460,7 +77460,7 @@ func NewXStreamSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 XStreamSliceCmd
 func
 NewXStreamSliceCmdResult
@@ -77572,23 +77572,23 @@ string
 // By default, the score intervals specified by <Start> and <Stop> are closed (inclusive).
 // It is similar to the deprecated(6.2.0+) ZRangeByScore command.
 // For example:
-//		ZRangeArgs{
-//			Key: 				"example-key",
-//	 		Start: 				"(3",
-//	 		Stop: 				8,
-//			ByScore:			true,
-//	 	}
-// 	 	cmd: "ZRange example-key (3 8 ByScore"  (3 < score <= 8).
+//  ZRangeArgs{
+//   Key:     "example-key",
+//    Start:     "(3",
+//    Stop:     8,
+//   ByScore:   true,
+//   }
+//    cmd: "ZRange example-key (3 8 ByScore"  (3 < score <= 8).
 //
 // For the ByLex option, it is similar to the deprecated(6.2.0+) ZRangeByLex command.
 // You can set the <Start> and <Stop> options as follows:
-//		ZRangeArgs{
-//			Key: 				"example-key",
-//	 		Start: 				"[abc",
-//	 		Stop: 				"(def",
-//			ByLex:				true,
-//	 	}
-//		cmd: "ZRange example-key [abc (def ByLex"
+//  ZRangeArgs{
+//   Key:     "example-key",
+//    Start:     "[abc",
+//    Stop:     "(def",
+//   ByLex:    true,
+//   }
+//  cmd: "ZRange example-key [abc (def ByLex"
 //
 // For normal cases (ByScore==false && ByLex==false), <Start> and <Stop> should be set to the index range (int).
 // You can read the documentation for more information:
@@ -77639,7 +77639,7 @@ func NewZSliceCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 ZSliceCmd
 func
 NewZSliceCmdResult
@@ -77731,41 +77731,41 @@ func NewZSliceWithKeyCmd(ctx
 context
 .
 Context
-, args ...interface{}) *
+, args ...interface{})*
 ZSliceWithKeyCmd
 func (*ZSliceWithKeyCmd)
 Args
 ¶
 added in
 v9.0.3
-func (cmd *ZSliceWithKeyCmd) Args() []interface{}
+func (cmd*ZSliceWithKeyCmd) Args() []interface{}
 func (*ZSliceWithKeyCmd)
 Err
 ¶
 added in
 v9.0.3
-func (cmd *ZSliceWithKeyCmd) Err()
+func (cmd*ZSliceWithKeyCmd) Err()
 error
 func (*ZSliceWithKeyCmd)
 FullName
 ¶
 added in
 v9.0.3
-func (cmd *ZSliceWithKeyCmd) FullName()
+func (cmd*ZSliceWithKeyCmd) FullName()
 string
 func (*ZSliceWithKeyCmd)
 Name
 ¶
 added in
 v9.0.3
-func (cmd *ZSliceWithKeyCmd) Name()
+func (cmd*ZSliceWithKeyCmd) Name()
 string
 func (*ZSliceWithKeyCmd)
 Result
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ZSliceWithKeyCmd
 ) Result() (
 string
@@ -77779,7 +77779,7 @@ SetErr
 ¶
 added in
 v9.0.3
-func (cmd *ZSliceWithKeyCmd) SetErr(e
+func (cmd*ZSliceWithKeyCmd) SetErr(e
 error
 )
 func (*ZSliceWithKeyCmd)
@@ -77787,7 +77787,7 @@ SetFirstKeyPos
 ¶
 added in
 v9.0.3
-func (cmd *ZSliceWithKeyCmd) SetFirstKeyPos(keyPos
+func (cmd*ZSliceWithKeyCmd) SetFirstKeyPos(keyPos
 int8
 )
 func (*ZSliceWithKeyCmd)
@@ -77795,7 +77795,7 @@ SetVal
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ZSliceWithKeyCmd
 ) SetVal(key
 string
@@ -77807,7 +77807,7 @@ String
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ZSliceWithKeyCmd
 ) String()
 string
@@ -77816,7 +77816,7 @@ Val
 ¶
 added in
 v9.0.3
-func (cmd *
+func (cmd*
 ZSliceWithKeyCmd
 ) Val() (
 string
@@ -77863,7 +77863,7 @@ ZWithKeyCmd
 func
 NewZWithKeyCmdResult
 ¶
-func NewZWithKeyCmdResult(val *
+func NewZWithKeyCmdResult(val*
 ZWithKey
 , err
 error
@@ -77916,20 +77916,20 @@ SetVal
 ¶
 func (cmd *
 ZWithKeyCmd
-) SetVal(val *
+) SetVal(val*
 ZWithKey
 )
 func (*ZWithKeyCmd)
 String
 ¶
-func (cmd *
+func (cmd*
 ZWithKeyCmd
 ) String()
 string
 func (*ZWithKeyCmd)
 Val
 ¶
-func (cmd *
+func (cmd*
 ZWithKeyCmd
 ) Val() *
 ZWithKey

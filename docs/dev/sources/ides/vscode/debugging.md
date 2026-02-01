@@ -1,7 +1,7 @@
 # VS Code Debugging
 
 > Source: https://code.visualstudio.com/docs/editor/debugging
-> Fetched: 2026-01-31T16:04:13.940734+00:00
+> Fetched: 2026-02-01T11:51:38.911724+00:00
 > Content-Hash: 606e9b12599cd730
 > Type: html
 
@@ -25,30 +25,25 @@ The following diagram shows the main components of the debugger user interface:
   4. **Debug sidebar** : during a debug session, lets you interact with the call stack, breakpoints, variables, and watch variables.
   5. **Run** menu: has the most common run and debug commands.
 
-
-
 ## Before you start debugging
 
   1. Install a debugging extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/vscode/Debuggers) for your language or runtime.
 
 VS Code has built-in support for JavaScript, TypeScript, and Node.js debugging.
 
-  2. Define a debugging configuration for your project.
+  1. Define a debugging configuration for your project.
 
 For simple applications, VS Code tries to run and debug the currently active file. For more complex applications or debugging scenarios, you need to create a `launch.json` file to specify the debugger configuration. Get more information about creating a [debug configuration](/docs/debugtest/debugging-configuration).
 
-Tip 
+Tip
 
 Copilot in VS Code can help generate the `launch.json` file for you. For more information, see [Use Copilot to generate debugging configurations](/docs/debugtest/debugging-configuration#_generate-a-launch-configuration-with-ai).
 
-  3. Set breakpoints in your code.
+  1. Set breakpoints in your code.
 
 A breakpoint is a marker that you can set on a line of code to tell the debugger to pause execution when it reaches that line. You can set breakpoints by clicking in the gutter next to the line number in the editor.
 
 For more information about breakpoints, see [Working with Breakpoints](/docs/debugtest/debugging#_breakpoints).
-
-
-
 
 ## Start a debugging session
 
@@ -60,16 +55,13 @@ To start a debugging session in VS Code, perform the following steps:
 
 For more complex debugging scenarios like attaching to a running process, you need to create a `launch.json` file to specify the debugger configuration. Get more information about [debug configurations](/docs/debugtest/debugging-configuration).
 
-  3. Choose the debugger you want to use from the list of available debuggers.
+  1. Choose the debugger you want to use from the list of available debuggers.
 
 VS Code tries to run and debug the currently active file. For Node.js, VS Code checks for a `start` script in the `package.json` file to determine the entry point of the application.
 
-  4. When a debugging session starts, the **DEBUG CONSOLE** panel is displayed and shows debugging output, and the Status Bar changes color (orange for default color themes).
+  1. When a debugging session starts, the **DEBUG CONSOLE** panel is displayed and shows debugging output, and the Status Bar changes color (orange for default color themes).
 
-  5. The debug status in the Status Bar shows the active debug configuration. Select the debug status to change the active launch configuration and start debugging without needing to open the **Run and Debug** view.
-
-
-
+  2. The debug status in the Status Bar shows the active debug configuration. Select the debug status to change the active launch configuration and start debugging without needing to open the **Run and Debug** view.
 
 ## Debug actions
 
@@ -79,32 +71,30 @@ The following table describes the actions available in the debug toolbar:
 
 Action | Description  
 ---|---  
-Continue / Pause   
-F5 | **Continue** : Resume normal program/script execution (up to the next breakpoint).   
+Continue / Pause
+F5 | **Continue** : Resume normal program/script execution (up to the next breakpoint).
 **Pause** : Inspect code executing at the current line and debug line-by-line.  
-Step Over   
+Step Over
 F10 | Execute the next method as a single command without inspecting or following its component steps.  
-Step Into   
+Step Into
 F11 | Enter the next method to follow its execution line-by-line.  
-Step Out   
+Step Out
 ⇧F11 (Windows, Linux Shift+F11) | When inside a method or subroutine, return to the earlier execution context by completing remaining lines of the current method as though it were a single command.  
-Restart   
+Restart
 ⇧⌘F5 (Windows, Linux Ctrl+Shift+F5) | Terminate the current program execution and start debugging again using the current run configuration.  
-Stop   
+Stop
 ⇧F5 (Windows, Linux Shift+F5) | Terminate the current program execution.  
   
 If your debugging sessions involve multiple targets (for example, a client and a server), the debug toolbar shows the list of sessions and lets you switch between them.
 
-Tip 
+Tip
 
-Use the 
+Use the
 
 debug.toolBarLocation
 
-  * Open in VS Code
-  * Open in VS Code Insiders
-
-
+- Open in VS Code
+- Open in VS Code Insiders
 
 setting to control the location of the Debug toolbar. It can be the default `floating`, `docked` to the **Run and Debug** view, or `hidden`. A floating debug toolbar can be dragged horizontally and also down to the editor area (up to a certain distance from the top edge).
 
@@ -116,35 +106,29 @@ A breakpoint is a special marker that pauses the execution of your code at a spe
 
 To set or unset a breakpoint, click on the **editor margin** or use F9 on the current line.
 
-  * Breakpoints in the editor margin are normally shown as red filled circles.
-  * Disabled breakpoints have a filled gray circle.
-  * When a debugging session starts, breakpoints that can't be registered with the debugger change to a gray hollow circle. The same might happen if the source is edited while a debug session without live-edit support is running.
+- Breakpoints in the editor margin are normally shown as red filled circles.
+- Disabled breakpoints have a filled gray circle.
+- When a debugging session starts, breakpoints that can't be registered with the debugger change to a gray hollow circle. The same might happen if the source is edited while a debug session without live-edit support is running.
 
-
-
-Optionally, breakpoints can be shown in the editor's overview ruler by enabling the setting 
+Optionally, breakpoints can be shown in the editor's overview ruler by enabling the setting
 
 debug.showBreakpointsInOverviewRuler
 
-  * Open in VS Code
-  * Open in VS Code Insiders
-
-
+- Open in VS Code
+- Open in VS Code Insiders
 
 :
 
 For more control of your breakpoints, use the **Run and Debug** view's **BREAKPOINTS** section. This section lists all breakpoints in your code and provides extra actions to manage them.
 
-Tip 
+Tip
 
-If you prefer to see the breakpoints in a tree view, grouped by file, configure the 
+If you prefer to see the breakpoints in a tree view, grouped by file, configure the
 
 debug.breakpointsView.presentation
 
-  * Open in VS Code
-  * Open in VS Code Insiders
-
-
+- Open in VS Code
+- Open in VS Code Insiders
 
 setting to `tree`.
 
@@ -154,33 +138,25 @@ setting to `tree`.
 
 A powerful VS Code debugging feature is the ability to set conditions based on expressions, hit counts, or a combination of both.
 
-  * **Expression condition** : The breakpoint is hit whenever the expression evaluates to `true`.
-  * **Hit count** : The _hit count_ controls how many times a breakpoint needs to be hit before it interrupts execution. Whether a hit count is respected, and the exact syntax of the expression, can vary among debugger extensions.
-  * **Wait for breakpoint** : The breakpoint is activated when another breakpoint is hit (triggered breakpoint).
-
-
+- **Expression condition** : The breakpoint is hit whenever the expression evaluates to `true`.
+- **Hit count** : The _hit count_ controls how many times a breakpoint needs to be hit before it interrupts execution. Whether a hit count is respected, and the exact syntax of the expression, can vary among debugger extensions.
+- **Wait for breakpoint** : The breakpoint is activated when another breakpoint is hit (triggered breakpoint).
 
 To add a conditional breakpoint:
 
   1. Create a conditional breakpoint
 
-     * Right-click in the editor margin and select **Add Conditional Breakpoint**.
-     * Use the **Add Conditional Breakpoint** command in the Command Palette (⇧⌘P (Windows, Linux Ctrl+Shift+P)).
+     - Right-click in the editor margin and select **Add Conditional Breakpoint**.
+     - Use the **Add Conditional Breakpoint** command in the Command Palette (⇧⌘P (Windows, Linux Ctrl+Shift+P)).
   2. Choose the type of condition you want to set (expression, hit count, or wait for breakpoint).
-
-
-
 
 To add a condition to an existing breakpoint:
 
   1. Edit an existing breakpoint
 
-     * Right-click on the breakpoint in the editor margin and select **Edit Breakpoint**.
-     * Select the pencil icon next for an existing breakpoint in the **BREAKPOINTS** section of the **Run and Debug** view.
+     - Right-click on the breakpoint in the editor margin and select **Edit Breakpoint**.
+     - Select the pencil icon next for an existing breakpoint in the **BREAKPOINTS** section of the **Run and Debug** view.
   2. Edit the condition (expression, hit count, or wait for breakpoint).
-
-
-
 
 If a debugger does not support conditional breakpoints, the **Add Conditional Breakpoint** and **Edit Condition** actions are not available.
 
@@ -214,20 +190,18 @@ A logpoint is a variant of a breakpoint that does not interrupt into the debugge
 
 A logpoint is represented by a diamond-shaped icon. Log messages are plain text but can also include expressions to be evaluated within curly braces ('{}').
 
-To add a logpoint, right-click in the editor left margin and select **Add Logpoint** , or use the **Debug: Add Logpoint...** command in the Command Palette (⇧⌘P (Windows, Linux Ctrl+Shift+P)). You can also configure the setting 
+To add a logpoint, right-click in the editor left margin and select **Add Logpoint** , or use the **Debug: Add Logpoint...** command in the Command Palette (⇧⌘P (Windows, Linux Ctrl+Shift+P)). You can also configure the setting
 
 debug.gutterMiddleClickAction
 
-  * Open in VS Code
-  * Open in VS Code Insiders
-
-
+- Open in VS Code
+- Open in VS Code Insiders
 
 to toggle a logpoint when pressing the middle mouse button in the editor gutter.
 
 Just like regular breakpoints, logpoints can be enabled or disabled and can also be controlled by a condition and/or hit count.
 
-Note 
+Note
 
 Debugger extensions can choose to implement logpoints or not.
 
@@ -253,7 +227,7 @@ Expressions are evaluated after you press Enter and the Debug Console REPL shows
 
 Debug Console input uses the mode of the active editor, which means that the Debug Console input supports syntax coloring, indentation, auto closing of quotes, and other language features.
 
-Note 
+Note
 
 You must be in an active debugging session to use the Debug Console REPL.
 
@@ -261,14 +235,11 @@ You must be in an active debugging session to use the Debug Console REPL.
 
 For complex scenarios that involve more than one process (for example, a client and a server), VS Code supports multi-target debugging. After you've started a first debug session, you can launch another debug session. As soon as a second session is up and running, the VS Code UI switches to _multi-target mode_ :
 
-  * The individual sessions now show up as top-level elements in the **CALL STACK** view.
+- The individual sessions now show up as top-level elements in the **CALL STACK** view.
 
-  * The debug toolbar shows the currently **active session** (and all other sessions are available in a dropdown menu).
+- The debug toolbar shows the currently **active session** (and all other sessions are available in a dropdown menu).
 
-  * Debug actions (for example, all actions in the debug toolbar) are performed on the active session. The active session can be changed either by using the dropdown menu in the debug toolbar or by selecting a different element in the **CALL STACK** view.
-
-
-
+- Debug actions (for example, all actions in the debug toolbar) are performed on the active session. The active session can be changed either by using the dropdown menu in the debug toolbar or by selecting a different element in the **CALL STACK** view.
 
 ## Remote debugging
 
@@ -288,43 +259,31 @@ These are several popular extensions that include debugging support:
 
 To learn about VS Code's Node.js debugging support, take a look at:
 
-  * [Node.js](/docs/nodejs/nodejs-debugging) - Describes the Node.js debugger, which is included in VS Code.
-  * [TypeScript](/docs/typescript/typescript-debugging) - The Node.js debugger also supports TypeScript debugging.
-
-
+- [Node.js](/docs/nodejs/nodejs-debugging) - Describes the Node.js debugger, which is included in VS Code.
+- [TypeScript](/docs/typescript/typescript-debugging) - The Node.js debugger also supports TypeScript debugging.
 
 To see a tutorial on the basics of debugging, check out this video:
 
-  * [Getting started with debugging in VS Code](https://www.youtube.com/watch?v=3HiLLByBWkg) - Learn about debugging in VS Code.
-
-
+- [Getting started with debugging in VS Code](https://www.youtube.com/watch?v=3HiLLByBWkg) - Learn about debugging in VS Code.
 
 To learn more about Copilot and AI-assisted debugging in VS Code:
 
-  * [Debugging and fixing issues with Copilot](/docs/copilot/overview#_fix-issues)
-  * [Copilot cheat sheet for debugging and fixing issues](/docs/copilot/reference/copilot-vscode-features#_debug-and-fix-problems)
-
-
+- [Debugging and fixing issues with Copilot](/docs/copilot/overview#_fix-issues)
+- [Copilot cheat sheet for debugging and fixing issues](/docs/copilot/reference/copilot-vscode-features#_debug-and-fix-problems)
 
 To learn about debugging support for other programming languages via VS Code extensions:
 
-  * [C++](/docs/cpp/cpp-debug)
-  * [Python](/docs/python/debugging)
-  * [Java](/docs/java/java-debugging)
-
-
+- [C++](/docs/cpp/cpp-debug)
+- [Python](/docs/python/debugging)
+- [Java](/docs/java/java-debugging)
 
 To learn about VS Code's task running support, go to:
 
-  * [Tasks](/docs/debugtest/tasks) - Describes how to run tasks with Gulp, Grunt, and Jake and how to show errors and warnings.
-
-
+- [Tasks](/docs/debugtest/tasks) - Describes how to run tasks with Gulp, Grunt, and Jake and how to show errors and warnings.
 
 To write your own debugger extension, visit:
 
-  * [Debugger Extension](/api/extension-guides/debugger-extension) - Uses a mock sample to illustrate the steps required to create a VS Code debug extension.
-
-
+- [Debugger Extension](/api/extension-guides/debugger-extension) - Uses a mock sample to illustrate the steps required to create a VS Code debug extension.
 
 ## Common questions
 

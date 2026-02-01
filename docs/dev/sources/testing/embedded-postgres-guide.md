@@ -128,4 +128,3 @@ in [examples](https://github.com/fergusstrange/embedded-postgres/tree/master/exa
 ## Contributing
 
 View the [contributing guide](CONTRIBUTING.md).
-

@@ -1,7 +1,7 @@
 # Docker Compose File Reference
 
 > Source: https://docs.docker.com/compose/compose-file/
-> Fetched: 2026-01-31T16:05:37.639056+00:00
+> Fetched: 2026-02-01T11:53:07.807586+00:00
 > Content-Hash: 03fb902e4b930ad5
 > Type: html
 
@@ -11,11 +11,9 @@ Back
 
 [Reference](https://docs.docker.com/reference/)
 
-  * [Get started](/get-started/)
-  * [Guides](/guides/)
-  * [Manuals](/manuals/)
-
-
+- [Get started](/get-started/)
+- [Guides](/guides/)
+- [Manuals](/manuals/)
 
 # Compose file reference
 
@@ -26,7 +24,7 @@ Open Markdown Ask Docs AI Claude Open in Claude
 * * *
 
 > **New to Docker Compose?**
-> 
+>
 > Find more information about the [key features and use cases of Docker Compose](https://docs.docker.com/compose/intro/features-uses/) or [try the quickstart guide](https://docs.docker.com/compose/gettingstarted/).
 
 The Compose Specification is the latest and recommended version of the Compose file format. It helps you define a [Compose file](https://docs.docker.com/compose/intro/compose-application-model/) which is used to configure your Docker applicationâs services, networks, volumes, and more.
@@ -38,7 +36,7 @@ The Compose Specification on Docker Docs is the Docker Compose implementation. I
 Use the following links to navigate key sections of the Compose Specification.
 
 > Tip
-> 
+>
 > Want a better editing experience for Compose files in VS Code? Check out the [Docker VS Code Extension (Beta)](https://marketplace.visualstudio.com/items?itemName=docker.docker) for linting, code navigation, and vulnerability scanning.
 
 ### [Version and name top-level elementUnderstand version and name attributes for Compose.](/reference/compose-file/version-and-name/)

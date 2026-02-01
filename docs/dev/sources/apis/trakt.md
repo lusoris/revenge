@@ -7,9 +7,9 @@
 
 ---
 
-[ ](https://apiary.io/ "Apiary Home")
+[](https://apiary.io/ "Apiary Home")
 
-JavaScript is disabled 
+JavaScript is disabled
 
-Please continue [here](http://enable-javascript.com/) to find out how to   
-enable it in your browser. 
+Please continue [here](http://enable-javascript.com/) to find out how to
+enable it in your browser.

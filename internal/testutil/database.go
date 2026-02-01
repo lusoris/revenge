@@ -77,7 +77,7 @@ func NewTestDatabase(t *testing.T) *TestDatabase {
 
 	// Run migrations
 	if err := runMigrations(dbURL); err != nil {
-		postgres.Stop()
+		_ = postgres.Stop() // Best-effort cleanup
 		t.Fatalf("failed to run migrations: %v", err)
 	}
 
@@ -101,7 +101,7 @@ func NewTestDatabase(t *testing.T) *TestDatabase {
 	// Create database pool (NewPool creates its own context internally)
 	pool, err := database.NewPool(cfg, logger)
 	if err != nil {
-		postgres.Stop()
+		_ = postgres.Stop() // Best-effort cleanup
 		t.Fatalf("failed to create database pool: %v", err)
 	}
 
@@ -121,7 +121,7 @@ func (db *TestDatabase) Close() {
 		db.Pool.Close()
 	}
 	if db.postgres != nil {
-		db.postgres.Stop()
+		_ = db.postgres.Stop() // Best-effort cleanup
 	}
 }
 
@@ -154,7 +154,7 @@ func runMigrations(dbURL string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create migrate instance: %w", err)
 	}
-	defer m.Close()
+	defer m.Close() //nolint:errcheck // Deferred cleanup, error not actionable
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return fmt.Errorf("failed to run migrations: %w", err)

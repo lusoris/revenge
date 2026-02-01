@@ -1,7 +1,7 @@
 # Delve Debugger
 
 > Source: https://github.com/go-delve/delve
-> Fetched: 2026-01-31T11:06:11.378730+00:00
+> Fetched: 2026-02-01T11:54:27.050433+00:00
 > Content-Hash: 5a14b7edc06664dc
 > Type: github_readme
 

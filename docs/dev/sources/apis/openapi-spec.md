@@ -7,9 +7,9 @@
 
 ---
 
-[ ](https://openapis.org/)
+[](https://openapis.org/)
 
-# OpenAPI Specification v3.1.0 
+# OpenAPI Specification v3.1.0
 
 ## Version 3.1.0
 
@@ -24,15 +24,15 @@ Latest published version:
 Latest editor's draft:
     <https://github.com/OAI/OpenAPI-Specification/>
 Editors:
-     Darrel Miller 
-     Jeremy Whitlock 
-     Marsh Gardiner 
-     Mike Ralphson 
-     Ron Ratovsky 
-     Uri Sarid 
-Former editors: 
-     Jason Harmon 
-     Tony Tam 
+     Darrel Miller
+     Jeremy Whitlock
+     Marsh Gardiner
+     Mike Ralphson
+     Ron Ratovsky
+     Uri Sarid
+Former editors:
+     Jason Harmon
+     Tony Tam
 Other versions:
      <https://spec.openapis.org/oas/v3.2.0.html>
      <https://spec.openapis.org/oas/v3.1.2.html>
@@ -94,8 +94,7 @@ The value for these path parameters _MUST NOT_ contain any unescaped “generic 
 Media type definitions are spread across several resources. The media type definitions _SHOULD_ be in compliance with [RFC6838].
 
 Some examples of possible media type definitions:
-    
-    
+
       text/plain; charset=utf-8
       application/json
       application/vnd.github+json
@@ -120,15 +119,14 @@ The OpenAPI Specification is versioned using a `major`.`minor`.`patch` versionin
 
 Occasionally, non-backwards compatible changes may be made in `minor` versions of the OAS where impact is believed to be low relative to the benefit provided.
 
-An OpenAPI document compatible with OAS 3.*.* contains a required `openapi` field which designates the version of the OAS that it uses.
+An OpenAPI document compatible with OAS 3._._ contains a required `openapi` field which designates the version of the OAS that it uses.
 
 ### 4.2 Format
 
 An OpenAPI document that conforms to the OpenAPI Specification is itself a JSON object, which may be represented either in JSON or YAML format.
 
 For example, if a field has an array value, the JSON array representation will be used:
-    
-    
+
     {
        "field": [ 1, 2, 3 ]
     }
@@ -142,10 +140,8 @@ Patterned fields _MUST_ have unique names within the containing object.
 
 In order to preserve the ability to round-trip between YAML and JSON formats, YAML version 1.2 is _RECOMMENDED_ along with some additional constraints:
 
-  * Tags _MUST_ be limited to those allowed by the [JSON Schema ruleset](https://yaml.org/spec/1.2/spec.html#id2803231).
-  * Keys used in YAML maps _MUST_ be limited to a scalar string, as defined by the [YAML Failsafe schema ruleset](https://yaml.org/spec/1.2/spec.html#id2802346).
-
-
+- Tags _MUST_ be limited to those allowed by the [JSON Schema ruleset](https://yaml.org/spec/1.2/spec.html#id2803231).
+- Keys used in YAML maps _MUST_ be limited to a scalar string, as defined by the [YAML Failsafe schema ruleset](https://yaml.org/spec/1.2/spec.html#id2802346).
 
 **Note:** While APIs may be defined by OpenAPI documents in either YAML or JSON format, the API request and response bodies and other content are not required to be JSON or YAML.
 
@@ -167,8 +163,8 @@ The formats defined by the OAS are:
 ---|---|---  
 `integer` | `int32` | signed 32 bits  
 `integer` | `int64` | signed 64 bits (a.k.a long)  
-`number` | `float` |   
-`number` | `double` |   
+`number` | `float` |
+`number` | `double` |
 `string` | `password` | A hint to UIs to obscure input.  
   
 ### 4.5 Rich Text Formatting
@@ -233,8 +229,7 @@ version | `string` | **_REQUIRED_**. The version of the OpenAPI document (which 
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.2.2 Info Object Example
-    
-    
+
     {
       "title": "Sample Pet Store App",
       "summary": "A pet store manager.",
@@ -283,8 +278,7 @@ email | `string` | The email address of the contact person/organization. This _M
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.3.2 Contact Object Example
-    
-    
+
     {
       "name": "API Support",
       "url": "https://www.example.com/support",
@@ -313,8 +307,7 @@ url | `string` | A URL to the license used for the API. This _MUST_ be in the fo
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.4.2 License Object Example
-    
-    
+
     {
       "name": "Apache 2.0",
       "identifier": "Apache-2.0"
@@ -343,8 +336,7 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.5.2 Server Object Example
 
 A single server would be described as:
-    
-    
+
     {
       "url": "https://development.gigantic-server.com/v1",
       "description": "Development server"
@@ -357,8 +349,7 @@ A single server would be described as:
     
 
 The following shows how multiple servers can be described, for example, at the OpenAPI Object’s `servers`:
-    
-    
+
     {
       "servers": [
         {
@@ -388,8 +379,7 @@ The following shows how multiple servers can be described, for example, at the O
     
 
 The following shows how variables can be used for a server configuration:
-    
-    
+
     {
       "servers": [
         {
@@ -473,8 +463,7 @@ This object _MAY_ be extended with Specification Extensions.
 All the fixed fields declared above are objects that _MUST_ use keys that match the regular expression: `^[a-zA-Z0-9\.\-_]+$`.
 
 Field Name Examples:
-    
-    
+
     User
     User_1
     User_Name
@@ -483,8 +472,7 @@ Field Name Examples:
     
 
 ##### 4.8.7.2 Components Object Example
-    
-    
+
     "components": {
       "schemas": {
         "GeneralError": {
@@ -671,29 +659,25 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.8.2 Path Templating Matching
 
 Assuming the following paths, the concrete definition, `/pets/mine`, will be matched first if used:
-    
-    
+
       /pets/{petId}
       /pets/mine
     
 
 The following paths are considered identical and invalid:
-    
-    
+
       /pets/{petId}
       /pets/{name}
     
 
 The following may lead to ambiguous resolution:
-    
-    
+
       /{entity}/me
       /books/{id}
     
 
 ##### 4.8.8.3 Paths Object Example
-    
-    
+
     {
       "/pets": {
         "get": {
@@ -758,8 +742,7 @@ parameters | [Parameter Object | Reference Object] | A list of parameters that a
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.9.2 Path Item Object Example
-    
-    
+
     {
       "get": {
         "description": "Returns pets based on ID",
@@ -865,8 +848,7 @@ servers | [Server Object] | An alternative `server` array to service this operat
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.10.2 Operation Object Example
-    
-    
+
     {
       "tags": [
         "pet"
@@ -988,8 +970,7 @@ url | `string` | **_REQUIRED_**. The URL for the target documentation. This _MUS
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.11.2 External Documentation Object Example
-    
-    
+
     {
       "description": "Find more info here",
       "url": "https://example.com"
@@ -1011,24 +992,21 @@ A unique parameter is defined by a combination of a name and location.
 
 There are four possible parameter locations specified by the `in` field:
 
-  * path - Used together with Path Templating, where the parameter value is actually part of the operation’s URL. This does not include the host or base path of the API. For example, in `/items/{itemId}`, the path parameter is `itemId`.
-  * query - Parameters that are appended to the URL. For example, in `/items?id=###`, the query parameter is `id`.
-  * header - Custom headers that are expected as part of the request. Note that [RFC7230] [Page 22](https://datatracker.ietf.org/doc/html/rfc7230#page-22) states header names are case insensitive.
-  * cookie - Used to pass a specific cookie value to the API.
-
-
+- path - Used together with Path Templating, where the parameter value is actually part of the operation’s URL. This does not include the host or base path of the API. For example, in `/items/{itemId}`, the path parameter is `itemId`.
+- query - Parameters that are appended to the URL. For example, in `/items?id=###`, the query parameter is `id`.
+- header - Custom headers that are expected as part of the request. Note that [RFC7230] [Page 22](https://datatracker.ietf.org/doc/html/rfc7230#page-22) states header names are case insensitive.
+- cookie - Used to pass a specific cookie value to the API.
 
 ##### 4.8.12.2 Fixed Fields
 
 Field Name | Type | Description  
 ---|---|---  
-name | `string` | **_REQUIRED_**. The name of the parameter. Parameter names are _case sensitive_. 
+name | `string` | **_REQUIRED_**. The name of the parameter. Parameter names are _case sensitive_.
 
-  * If `in` is `"path"`, the `name` field _MUST_ correspond to a template expression occurring within the path field in the Paths Object. See Path Templating for further information.
-  * If `in` is `"header"` and the `name` field is `"Accept"`, `"Content-Type"` or `"Authorization"`, the parameter definition _SHALL_ be ignored.
-  * For all other cases, the `name` corresponds to the parameter name used by the `in` property.
+- If `in` is `"path"`, the `name` field _MUST_ correspond to a template expression occurring within the path field in the Paths Object. See Path Templating for further information.
+- If `in` is `"header"` and the `name` field is `"Accept"`, `"Content-Type"` or `"Authorization"`, the parameter definition _SHALL_ be ignored.
+- For all other cases, the `name` corresponds to the parameter name used by the `in` property.
 
-  
 in | `string` | **_REQUIRED_**. The location of the parameter. Possible values are `"query"`, `"header"`, `"path"` or `"cookie"`.  
 description | `string` | A brief description of the parameter. This could contain examples of use. [CommonMark] syntax _MAY_ be used for rich text representation.  
 required | `boolean` | Determines whether this parameter is mandatory. If the parameter location is `"path"`, this property is **_REQUIRED_** and its value _MUST_ be `true`. Otherwise, the property _MAY_ be included and its default value is `false`.  
@@ -1069,8 +1047,7 @@ deepObject | `object` | `query` | Provides a simple way of rendering nested obje
 ##### 4.8.12.4 Style Examples
 
 Assume a parameter named `color` has one of the following values:
-    
-    
+
        string -> "blue"
        array -> ["blue","black","brown"]
        object -> { "R": 100, "G": 200, "B": 150 }
@@ -1097,8 +1074,7 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.12.5 Parameter Object Examples
 
 A header parameter with an array of 64 bit integer numbers:
-    
-    
+
     {
       "name": "token",
       "in": "header",
@@ -1129,8 +1105,7 @@ A header parameter with an array of 64 bit integer numbers:
     
 
 A path parameter of a string value:
-    
-    
+
     {
       "name": "username",
       "in": "path",
@@ -1152,8 +1127,7 @@ A path parameter of a string value:
     
 
 An optional query parameter of a string value, allowing multiple values by repeating the query parameter:
-    
-    
+
     {
       "name": "id",
       "in": "query",
@@ -1184,8 +1158,7 @@ An optional query parameter of a string value, allowing multiple values by repea
     
 
 A free-form query parameter, allowing undefined parameters of a specific type:
-    
-    
+
     {
       "in": "query",
       "name": "freeForm",
@@ -1210,8 +1183,7 @@ A free-form query parameter, allowing undefined parameters of a specific type:
     
 
 A complex parameter using `content` to define serialization:
-    
-    
+
     {
       "in": "query",
       "name": "coordinates",
@@ -1271,8 +1243,7 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.13.2 Request Body Examples
 
 A request body with a referenced model definition.
-    
-    
+
     {
       "description": "user to add to the system",
       "content": {
@@ -1348,8 +1319,7 @@ A request body with a referenced model definition.
     
 
 A body parameter that is an array of string values:
-    
-    
+
     {
       "description": "user to add to the system",
       "required": true,
@@ -1393,8 +1363,7 @@ encoding | Map[`string`, Encoding Object] | A map between a property name and it
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.14.2 Media Type Examples
-    
-    
+
     {
       "application/json": {
         "schema": {
@@ -1466,8 +1435,7 @@ JSON Schema also offers a `contentMediaType` keyword. However, when the media ty
 Examples:
 
 Content transferred in binary (octet-stream) _MAY_ omit `schema`:
-    
-    
+
     # a PNG image as a binary file:
     content:
         image/png: {}
@@ -1480,8 +1448,7 @@ Content transferred in binary (octet-stream) _MAY_ omit `schema`:
     
 
 Binary content transferred with base64 encoding:
-    
-    
+
     content:
         image/png:
             schema:
@@ -1495,16 +1462,14 @@ Note that the `Content-Type` remains `image/png`, describing the semantics of th
 These examples apply to either input payloads of file uploads or response payloads.
 
 A `requestBody` for submitting a file in a `POST` operation may look like the following example:
-    
-    
+
     requestBody:
       content:
         application/octet-stream: {}
     
 
 In addition, specific media types _MAY_ be specified:
-    
-    
+
     # multiple, specific media types may be specified:
     requestBody:
       content:
@@ -1514,8 +1479,7 @@ In addition, specific media types _MAY_ be specified:
     
 
 To upload multiple files, a `multipart` media type _MUST_ be used:
-    
-    
+
     requestBody:
       content:
         multipart/form-data:
@@ -1532,8 +1496,7 @@ As seen in the section on `multipart/form-data` below, the empty schema for `ite
 ##### 4.8.14.4 Support for x-www-form-urlencoded Request Bodies
 
 To submit content using form url encoding via [RFC1866], the following definition may be used:
-    
-    
+
     requestBody:
       content:
         application/x-www-form-urlencoded:
@@ -1561,17 +1524,14 @@ In a `multipart/form-data` request body, each schema property, or each element o
 
 When passing in `multipart` types, boundaries _MAY_ be used to separate sections of the content being transferred – thus, the following default `Content-Type`s are defined for `multipart`:
 
-  * If the property is a primitive, or an array of primitive values, the default Content-Type is `text/plain`
-  * If the property is complex, or an array of complex values, the default Content-Type is `application/json`
-  * If the property is a `type: string` with a `contentEncoding`, the default Content-Type is `application/octet-stream`
-
-
+- If the property is a primitive, or an array of primitive values, the default Content-Type is `text/plain`
+- If the property is complex, or an array of complex values, the default Content-Type is `application/json`
+- If the property is a `type: string` with a `contentEncoding`, the default Content-Type is `application/octet-stream`
 
 Per the JSON Schema specification, `contentMediaType` without `contentEncoding` present is treated as if `contentEncoding: identity` were present. While useful for embedding text documents such as `text/html` into JSON strings, it is not useful for a `multipart/form-data` part, as it just causes the document to be treated as `text/plain` instead of its actual media type. Use the Encoding Object without `contentMediaType` if no `contentEncoding` is required.
 
 Examples:
-    
-    
+
     requestBody:
       content:
         multipart/form-data:
@@ -1622,8 +1582,7 @@ allowReserved | `boolean` | Determines whether the parameter value _SHOULD_ allo
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.15.2 Encoding Object Example
-    
-    
+
     requestBody:
       content:
         multipart/form-data:
@@ -1685,8 +1644,7 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.16.3 Responses Object Example
 
 A 200 response for a successful operation and a default response for others (implying an error):
-    
-    
+
     {
       "200": {
         "description": "a pet to be returned",
@@ -1744,8 +1702,7 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.17.2 Response Object Examples
 
 Response of an array of a complex type:
-    
-    
+
     {
       "description": "A complex object array response",
       "content": {
@@ -1772,8 +1729,7 @@ Response of an array of a complex type:
     
 
 Response with a string type:
-    
-    
+
     {
       "description": "A simple string response",
       "content": {
@@ -1796,8 +1752,7 @@ Response with a string type:
     
 
 Plain text response with headers:
-    
-    
+
     {
       "description": "A simple string response",
       "content": {
@@ -1854,8 +1809,7 @@ Plain text response with headers:
     
 
 Response with no return value:
-    
-    
+
     {
       "description": "object created"
     }
@@ -1884,8 +1838,7 @@ This object _MAY_ be extended with Specification Extensions.
 The key that identifies the Path Item Object is a runtime expression that can be evaluated in the context of a runtime HTTP request/response to identify the URL to be used for the callback request. A simple example might be `$request.body#/url`. However, using a runtime expression the complete HTTP message can be accessed. This includes accessing any part of a body that a JSON Pointer [RFC6901] can reference.
 
 For example, given the following HTTP request:
-    
-    
+
     POST /subscribe/myevent?queryUrl=https://clientdomain.com/stillrunning HTTP/1.1
     Host: example.org
     Content-Type: application/json
@@ -1920,8 +1873,7 @@ $response.header.Location | <https://example.org/subscription/1>
 ##### 4.8.18.3 Callback Object Examples
 
 The following example uses the user provided `queryUrl` query string parameter to define the callback URL. This is an example of how to use a callback object to describe a WebHook callback that goes with the subscription operation to enable registering for the WebHook.
-    
-    
+
     myCallback:
       '{$request.query.queryUrl}':
         post:
@@ -1937,8 +1889,7 @@ The following example uses the user provided `queryUrl` query string parameter t
     
 
 The following example shows a callback where the server is hard-coded, but the query string parameters are populated from the `id` and `email` property in the request body.
-    
-    
+
     transactionCallback:
       'http://notificationServer.com?transactionId={$request.body#/id}&email={$request.body#/email}':
         post:
@@ -1971,8 +1922,7 @@ In all cases, the example value is expected to be compatible with the type schem
 ##### 4.8.19.2 Example Object Examples
 
 In a request body:
-    
-    
+
     requestBody:
       content:
         'application/json':
@@ -1998,8 +1948,7 @@ In a request body:
     
 
 In a parameter:
-    
-    
+
     parameters:
       - name: 'zipCode'
         in: 'query'
@@ -2012,8 +1961,7 @@ In a parameter:
     
 
 In a response:
-    
-    
+
     responses:
       '200':
         description: your car appointment has been booked
@@ -2052,8 +2000,7 @@ A linked operation _MUST_ be identified using either an `operationRef` or `opera
 ##### 4.8.20.2 Examples
 
 Computing a link from a request operation where the `$request.path.id` is used to pass a request parameter to the linked operation.
-    
-    
+
     paths:
       /users/{id}:
         parameters:
@@ -2102,8 +2049,7 @@ Computing a link from a request operation where the `$request.path.id` is used t
 When a runtime expression fails to evaluate, no parameter value is passed to the target operation.
 
 Values from the response body can be used to drive a linked operation.
-    
-    
+
     links:
       address:
         operationId: getUserAddressByUUID
@@ -2117,8 +2063,7 @@ Clients follow all links at their discretion. Neither permissions, nor the capab
 ##### 4.8.20.3 OperationRef Examples
 
 As references to `operationId` _MAY_ NOT be possible (the `operationId` is an optional field in an Operation Object), references _MAY_ also be made through a relative `operationRef`:
-    
-    
+
     links:
       UserRepositories:
         # returns array of '#/components/schemas/repository'
@@ -2128,8 +2073,7 @@ As references to `operationId` _MAY_ NOT be possible (the `operationId` is an op
     
 
 or an absolute `operationRef`:
-    
-    
+
     links:
       UserRepositories:
         # returns array of '#/components/schemas/repository'
@@ -2145,8 +2089,7 @@ Note that in the use of `operationRef`, the _escaped forward-slash_ is necessary
 Runtime expressions allow defining values based on information that will only be available within the HTTP message in an actual API call. This mechanism is used by Link Objects and Callback Objects.
 
 The runtime expression is defined by the following [ABNF] syntax
-    
-    
+
           expression = ( "$url" / "$method" / "$statusCode" / "$request." source / "$response." source )
           source = ( header-reference / query-reference / path-reference / body-reference )
           header-reference = "header." token
@@ -2176,10 +2119,10 @@ The table below provides examples of runtime expressions and examples of their u
 Source Location | example expression | notes  
 ---|---|---  
 HTTP Method | `$method` | The allowable values for the `$method` will be those for the HTTP operation.  
-Requested media type | `$request.header.accept` |   
+Requested media type | `$request.header.accept` |
 Request parameter | `$request.path.id` | Request parameters _MUST_ be declared in the `parameters` section of the parent operation or they cannot be evaluated. This includes request headers.  
 Request body property | `$request.body#/user/uuid` | In operations which accept payloads, references may be made to portions of the `requestBody` or the entire body.  
-Request URL | `$url` |   
+Request URL | `$url` |
 Response value | `$response.body#/status` | In operations which return payloads, references may be made to portions of the response body or the entire body.  
 Response header | `$response.header.Server` | Single header values only are available  
   
@@ -2193,13 +2136,10 @@ The Header Object follows the structure of the Parameter Object with the followi
   2. `in` _MUST NOT_ be specified, it is implicitly in `header`.
   3. All traits that are affected by the location _MUST_ be applicable to a location of `header` (for example, `style`).
 
-
-
 ##### 4.8.21.1 Header Object Example
 
 A simple header of type `integer`:
-    
-    
+
     {
       "description": "The number of allowed requests in the current period",
       "schema": {
@@ -2229,11 +2169,10 @@ externalDocs | External Documentation Object | Additional external documentation
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.22.2 Tag Object Example
-    
-    
+
     {
-    	"name": "pet",
-    	"description": "Pets operations"
+     "name": "pet",
+     "description": "Pets operations"
     }
     
     
@@ -2263,10 +2202,9 @@ This object cannot be extended with additional properties and any properties add
 Note that this restriction on additional properties is a difference between Reference Objects and `Schema Objects` that contain a `$ref` keyword.
 
 ##### 4.8.23.2 Reference Object Example
-    
-    
+
     {
-    	"$ref": "#/components/schemas/Pet"
+     "$ref": "#/components/schemas/Pet"
     }
     
     
@@ -2275,8 +2213,7 @@ Note that this restriction on additional properties is a difference between Refe
     
 
 ##### 4.8.23.3 Relative Schema Document Example
-    
-    
+
     {
       "$ref": "Pet.json"
     }
@@ -2287,8 +2224,7 @@ Note that this restriction on additional properties is a difference between Refe
     
 
 ##### 4.8.23.4 Relative Documents With Embedded Schema Example
-    
-    
+
     {
       "$ref": "definitions.json#/Pet"
     }
@@ -2314,10 +2250,8 @@ The OpenAPI Schema Object dialect for this version of the specification is ident
 
 The following properties are taken from the JSON Schema specification but their definitions have been extended by the OAS:
 
-  * description - [CommonMark] syntax _MAY_ be used for rich text representation.
-  * format - See Data Type Formats for further details. While relying on JSON Schema’s defined formats, the OAS offers a few additional predefined formats.
-
-
+- description - [CommonMark] syntax _MAY_ be used for rich text representation.
+- format - See Data Type Formats for further details. While relying on JSON Schema’s defined formats, the OAS offers a few additional predefined formats.
 
 In addition to the JSON Schema properties comprising the OAS dialect, the Schema Object supports keywords from any other vocabularies, or entirely arbitrary properties.
 
@@ -2342,10 +2276,8 @@ The OpenAPI Specification allows combining and extending model definitions using
 
 While composition offers model extensibility, it does not imply a hierarchy between the models. To support polymorphism, the OpenAPI Specification adds the `discriminator` field. When used, the `discriminator` will be the name of the property that decides which schema definition validates the structure of the model. As such, the `discriminator` field _MUST_ be a required field. There are two ways to define the value of a discriminator for an inheriting instance.
 
-  * Use the schema name.
-  * Override the schema name by overriding the property with a new value. If a new value exists, this takes precedence over the schema name. As such, inline schema definitions, which do not have a given id, _cannot_ be used in polymorphism.
-
-
+- Use the schema name.
+- Override the schema name by overriding the property with a new value. If a new value exists, this takes precedence over the schema name. As such, inline schema definitions, which do not have a given id, _cannot_ be used in polymorphism.
 
 ###### 4.8.24.2.2 XML Modeling
 
@@ -2364,8 +2296,7 @@ When a Schema Object is referenced from an external resource which is not an OAS
 ##### 4.8.24.3 Schema Object Examples
 
 ###### 4.8.24.3.1 Primitive Sample
-    
-    
+
     {
       "type": "string",
       "format": "email"
@@ -2378,8 +2309,7 @@ When a Schema Object is referenced from an external resource which is not an OAS
     
 
 ###### 4.8.24.3.2 Simple Model
-    
-    
+
     {
       "type": "object",
       "required": [
@@ -2419,8 +2349,7 @@ When a Schema Object is referenced from an external resource which is not an OAS
 ###### 4.8.24.3.3 Model with Map/Dictionary Properties
 
 For a simple string to string mapping:
-    
-    
+
     {
       "type": "object",
       "additionalProperties": {
@@ -2436,8 +2365,7 @@ For a simple string to string mapping:
     
 
 For a string to model mapping:
-    
-    
+
     {
       "type": "object",
       "additionalProperties": {
@@ -2453,8 +2381,7 @@ For a string to model mapping:
     
 
 ###### 4.8.24.3.4 Model with Example
-    
-    
+
     {
       "type": "object",
       "properties": {
@@ -2492,8 +2419,7 @@ For a string to model mapping:
     
 
 ###### 4.8.24.3.5 Models with Composition
-    
-    
+
     {
       "components": {
         "schemas": {
@@ -2564,8 +2490,7 @@ For a string to model mapping:
     
 
 ###### 4.8.24.3.6 Models with Polymorphism Support
-    
-    
+
     {
       "components": {
         "schemas": {
@@ -2707,8 +2632,7 @@ This object _MAY_ be extended with Specification Extensions.
 The discriminator object is legal only when using one of the composite keywords `oneOf`, `anyOf`, `allOf`.
 
 In OAS 3.0, a response payload _MAY_ be described to be exactly one of any number of types:
-    
-    
+
     MyResponseType:
       oneOf:
       - $ref: '#/components/schemas/Cat'
@@ -2716,9 +2640,8 @@ In OAS 3.0, a response payload _MAY_ be described to be exactly one of any numbe
       - $ref: '#/components/schemas/Lizard'
     
 
-which means the payload __MUST__ , by validation, match exactly one of the schemas described by `Cat`, `Dog`, or `Lizard`. In this case, a discriminator _MAY_ act as a “hint” to shortcut validation and selection of the matching schema which may be a costly operation, depending on the complexity of the schema. We can then describe exactly which field tells us which schema to use:
-    
-    
+which means the payload **MUST** , by validation, match exactly one of the schemas described by `Cat`, `Dog`, or `Lizard`. In this case, a discriminator _MAY_ act as a “hint” to shortcut validation and selection of the matching schema which may be a costly operation, depending on the complexity of the schema. We can then describe exactly which field tells us which schema to use:
+
     MyResponseType:
       oneOf:
       - $ref: '#/components/schemas/Cat'
@@ -2728,9 +2651,8 @@ which means the payload __MUST__ , by validation, match exactly one of the schem
         propertyName: petType
     
 
-The expectation now is that a property with name `petType` __MUST__ be present in the response payload, and the value will correspond to the name of a schema defined in the OAS document. Thus the response payload:
-    
-    
+The expectation now is that a property with name `petType` **MUST** be present in the response payload, and the value will correspond to the name of a schema defined in the OAS document. Thus the response payload:
+
     {
       "id": 12345,
       "petType": "Cat"
@@ -2740,8 +2662,7 @@ The expectation now is that a property with name `petType` __MUST__ be present i
 Will indicate that the `Cat` schema be used in conjunction with this payload.
 
 In scenarios where the value of the discriminator field does not match the schema name or implicit mapping is not possible, an optional `mapping` definition _MAY_ be used:
-    
-    
+
     MyResponseType:
       oneOf:
       - $ref: '#/components/schemas/Cat'
@@ -2762,8 +2683,7 @@ When used in conjunction with the `anyOf` construct, the use of the discriminato
 In both the `oneOf` and `anyOf` use cases, all possible schemas _MUST_ be listed explicitly. To avoid redundancy, the discriminator _MAY_ be added to a parent schema definition, and all schemas comprising the parent schema in an `allOf` construct may be used as an alternate schema.
 
 For example:
-    
-    
+
     components:
       schemas:
         Pet:
@@ -2804,8 +2724,7 @@ For example:
     
 
 a payload like this:
-    
-    
+
     {
       "petType": "Cat",
       "name": "misty"
@@ -2813,8 +2732,7 @@ a payload like this:
     
 
 will indicate that the `Cat` schema be used. Likewise this schema:
-    
-    
+
     {
       "petType": "dog",
       "bark": "soft"
@@ -2848,8 +2766,7 @@ The examples of the XML object definitions are included inside a property defini
 ###### 4.8.26.2.1 No XML Element
 
 Basic string property:
-    
-    
+
     {
         "animals": {
             "type": "string"
@@ -2867,8 +2784,7 @@ Basic string property:
     
 
 Basic string array property (`wrapped` is `false` by default):
-    
-    
+
     {
         "animals": {
             "type": "array",
@@ -2893,8 +2809,7 @@ Basic string array property (`wrapped` is `false` by default):
     
 
 ###### 4.8.26.2.2 XML Name Replacement
-    
-    
+
     {
       "animals": {
         "type": "string",
@@ -2919,8 +2834,7 @@ Basic string array property (`wrapped` is `false` by default):
 ###### 4.8.26.2.3 XML Attribute, Prefix and Namespace
 
 In this example, a full model definition is shown.
-    
-    
+
     {
       "Person": {
         "type": "object",
@@ -2969,8 +2883,7 @@ In this example, a full model definition is shown.
 ###### 4.8.26.2.4 XML Arrays
 
 Changing the element names:
-    
-    
+
     {
       "animals": {
         "type": "array",
@@ -2999,8 +2912,7 @@ Changing the element names:
     
 
 The external `name` property has no effect on the XML:
-    
-    
+
     {
       "animals": {
         "type": "array",
@@ -3034,8 +2946,7 @@ The external `name` property has no effect on the XML:
     
 
 Even when the array is wrapped, if a name is not explicitly defined, the same name will be used both internally and externally:
-    
-    
+
     {
       "animals": {
         "type": "array",
@@ -3066,8 +2977,7 @@ Even when the array is wrapped, if a name is not explicitly defined, the same na
     
 
 To overcome the naming problem in the example above, the following definition can be used:
-    
-    
+
     {
       "animals": {
         "type": "array",
@@ -3103,8 +3013,7 @@ To overcome the naming problem in the example above, the following definition ca
     
 
 Affecting both internal and external names:
-    
-    
+
     {
       "animals": {
         "type": "array",
@@ -3142,8 +3051,7 @@ Affecting both internal and external names:
     
 
 If we change the external element but not the internal ones:
-    
-    
+
     {
       "animals": {
         "type": "array",
@@ -3199,8 +3107,7 @@ This object _MAY_ be extended with Specification Extensions.
 ##### 4.8.27.2 Security Scheme Object Example
 
 ###### 4.8.27.2.1 Basic Authentication Sample
-    
-    
+
     {
       "type": "http",
       "scheme": "basic"
@@ -3213,8 +3120,7 @@ This object _MAY_ be extended with Specification Extensions.
     
 
 ###### 4.8.27.2.2 API Key Sample
-    
-    
+
     {
       "type": "apiKey",
       "name": "api_key",
@@ -3229,8 +3135,7 @@ This object _MAY_ be extended with Specification Extensions.
     
 
 ###### 4.8.27.2.3 JWT Bearer Sample
-    
-    
+
     {
       "type": "http",
       "scheme": "bearer",
@@ -3245,8 +3150,7 @@ This object _MAY_ be extended with Specification Extensions.
     
 
 ###### 4.8.27.2.4 Implicit OAuth2 Sample
-    
-    
+
     {
       "type": "oauth2",
       "flows": {
@@ -3302,8 +3206,7 @@ scopes | Map[`string`, `string`] | `oauth2` | **_REQUIRED_**. The available scop
 This object _MAY_ be extended with Specification Extensions.
 
 ##### 4.8.29.2 OAuth Flow Object Examples
-    
-    
+
     {
       "type": "oauth2",
       "flows": {
@@ -3359,8 +3262,7 @@ Field Pattern | Type | Description
 ##### 4.8.30.2 Security Requirement Object Examples
 
 ###### 4.8.30.2.1 Non-OAuth2 Security Requirement
-    
-    
+
     {
       "api_key": []
     }
@@ -3371,8 +3273,7 @@ Field Pattern | Type | Description
     
 
 ###### 4.8.30.2.2 OAuth2 Security Requirement
-    
-    
+
     {
       "petstore_auth": [
         "write:pets",
@@ -3390,8 +3291,7 @@ Field Pattern | Type | Description
 ###### 4.8.30.2.3 Optional OAuth2 Security
 
 Optional OAuth2 security as would be defined in an OpenAPI Object or an Operation Object:
-    
-    
+
     {
       "security": [
         {},
@@ -3435,8 +3335,6 @@ Two examples of this:
 
   1. The Paths Object _MAY_ be present but empty. It may be counterintuitive, but this may tell the viewer that they got to the right place, but can’t access any documentation. They would still have access to at least the Info Object which may contain additional information regarding authentication.
   2. The Path Item Object _MAY_ be empty. In this case, the viewer will be aware that the path exists, but will not be able to see any of its operations or parameters. This is different from hiding the path itself from the Paths Object, because the user will be aware of its existence. This allows the documentation provider to finely control what the viewer can see.
-
-
 
 ## A. Appendix A: Revision History
 
@@ -3517,39 +3415,30 @@ Permalink
 
 **Referenced in:**
 
-  * Not referenced in this document.
-
-
+- Not referenced in this document.
 
 Permalink
 
 **Referenced in:**
 
-  * Not referenced in this document.
-
-
+- Not referenced in this document.
 
 Permalink
 
 **Referenced in:**
 
-  * Not referenced in this document.
-
-
+- Not referenced in this document.
 
 Permalink
 
 **Referenced in:**
 
-  * Not referenced in this document.
-
-
+- Not referenced in this document.
 
 Permalink
 
 **Referenced in:**
 
-  * Not referenced in this document.
-
+- Not referenced in this document.
 
   *[↑]: Back to Top

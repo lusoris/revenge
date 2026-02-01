@@ -19,26 +19,25 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Conventional Commits
+- name: Conventional Commits
     url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
-  - name: Git Flow
+- name: Git Flow
     url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
-  - name: Go io
+- name: Go io
     url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
 design_refs:
-  - title: operations
+- title: operations
     path: operations/INDEX.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -46,23 +45,20 @@ design_refs:
 
 <!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: operations
 
-
->   > Gitflow branching strategy and release process
+> > Gitflow branching strategy and release process
 
   Branch strategy:
-  - **main**: Production-ready code, protected
-  - **develop**: Integration branch for next release
-  - **feature/**: New features, merged to develop
-  - **fix/**: Bug fixes, merged to develop or main (hotfix)
-  - **release/**: Release preparation branches
+- **main**: Production-ready code, protected
+- **develop**: Integration branch for next release
+- **feature/**: New features, merged to develop
+- **fix/**: Bug fixes, merged to develop or main (hotfix)
+- **release/**: Release preparation branches
 
 ---
-
 
 ## Status
 
@@ -77,9 +73,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -88,7 +82,6 @@ design_refs:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -104,7 +97,6 @@ design_refs:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -113,7 +105,6 @@ design_refs:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -129,7 +120,6 @@ design_refs:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [operations](operations/INDEX.md)
@@ -141,4 +131,3 @@ Target: **80% minimum**
 - [Conventional Commits](../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
 - [Git Flow](../sources/standards/gitflow.md) - Auto-resolved from gitflow
 - [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-

@@ -1,7 +1,7 @@
 # Dockerfile Best Practices
 
 > Source: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-> Fetched: 2026-01-31T16:05:41.856990+00:00
+> Fetched: 2026-02-01T11:53:12.169795+00:00
 > Content-Hash: f116892c54ce617a
 > Type: html
 
@@ -11,11 +11,9 @@ Back
 
 [Manuals](https://docs.docker.com/manuals/)
 
-  * [Get started](/get-started/)
-  * [Guides](/guides/)
-  * [Reference](/reference/)
-
-
+- [Get started](/get-started/)
+- [Guides](/guides/)
+- [Reference](/reference/)
 
 # Building best practices
 
@@ -45,14 +43,11 @@ It's also easier to maintain a common base stage ("Don't repeat yourself"), than
 
 The first step towards achieving a secure image is to choose the right base image. When choosing an image, ensure it's built from a trusted source and keep it small.
 
-  * [Docker Official Images](https://hub.docker.com/search?badges=official) are a curated collection that have clear documentation, promote best practices, and are regularly updated. They provide a trusted starting point for many applications.
+- [Docker Official Images](https://hub.docker.com/search?badges=official) are a curated collection that have clear documentation, promote best practices, and are regularly updated. They provide a trusted starting point for many applications.
 
-  * [Verified Publisher](https://hub.docker.com/search?badges=verified_publisher) images are high-quality images published and maintained by the organizations partnering with Docker, with Docker verifying the authenticity of the content in their repositories.
+- [Verified Publisher](https://hub.docker.com/search?badges=verified_publisher) images are high-quality images published and maintained by the organizations partnering with Docker, with Docker verifying the authenticity of the content in their repositories.
 
-  * [Docker-Sponsored Open Source](https://hub.docker.com/search?badges=open_source) are published and maintained by open source projects sponsored by Docker through an [open source program](https://docs.docker.com/docker-hub/image-library/trusted-content/#docker-sponsored-open-source-software-images).
-
-
-
+- [Docker-Sponsored Open Source](https://hub.docker.com/search?badges=open_source) are published and maintained by open source projects sponsored by Docker through an [open source program](https://docs.docker.com/docker-hub/image-library/trusted-content/#docker-sponsored-open-source-software-images).
 
 When you pick your base image, look out for the badges indicating that the image is part of these programs.
 
@@ -67,16 +62,14 @@ Docker images are immutable. Building an image is taking a snapshot of that imag
 ### Use --pull to get fresh base images
 
 The following Dockerfile uses the `24.04` tag of the `ubuntu` image. Over time, that tag may resolve to a different underlying version of the `ubuntu` image, as the publisher rebuilds the image with new security patches and updated libraries.
-    
-    
+
     # syntax=docker/dockerfile:1
     FROM ubuntu:24.04
     RUN apt-get -y update && apt-get install -y --no-install-recommends python3
 
 To get the latest version of the base image, use the `\--pull` flag:
-    
-    
-    $ docker build --pull -t my-image:my-tag .
+
+    docker build --pull -t my-image:my-tag .
     
 
 The `\--pull` flag forces Docker to check for and download a newer version of the base image, even if you have a version cached locally.
@@ -84,15 +77,13 @@ The `\--pull` flag forces Docker to check for and download a newer version of th
 ### Use --no-cache for clean builds
 
 The `\--no-cache` flag disables the build cache, forcing Docker to rebuild all layers from scratch:
-    
-    
-    $ docker build --no-cache -t my-image:my-tag .
+
+    docker build --no-cache -t my-image:my-tag .
     
 
 This gets the latest available versions of dependencies from package managers like `apt-get` or `npm`. However, `\--no-cache` doesn't pull a fresh base image - it only prevents reusing cached layers. For a completely fresh build with the latest base image, combine both flags:
-    
-    
-    $ docker build --pull --no-cache -t my-image:my-tag .
+
+    docker build --pull --no-cache -t my-image:my-tag .
     
 
 Also consider pinning base image versions.
@@ -102,8 +93,7 @@ Also consider pinning base image versions.
 To exclude files not relevant to the build, without restructuring your source repository, use a `.dockerignore` file. This file supports exclusion patterns similar to `.gitignore` files.
 
 For example, to exclude all files with the `.md` extension:
-    
-    
+
     *.md
 
 For information on creating one, see [Dockerignore file](https://docs.docker.com/build/concepts/context/#dockerignore-files).
@@ -133,8 +123,7 @@ Use your best judgment to keep containers as clean and modular as possible. If c
 Whenever possible, sort multi-line arguments alphanumerically to make maintenance easier. This helps to avoid duplication of packages and make the list much easier to update. This also makes PRs a lot easier to read and review. Adding a space before a backslash (`\`) helps as well.
 
 Hereâs an example from the [buildpack-deps image](https://github.com/docker-library/buildpack-deps):
-    
-    
+
     RUN apt-get update && apt-get install -y --no-install-recommends \
       bzr \
       cvs \
@@ -154,8 +143,7 @@ Understanding how the build cache works, and how cache invalidation occurs, is c
 Image tags are mutable, meaning a publisher can update a tag to point to a new image. This is useful because it lets publishers update tags to point to newer versions of an image. And as an image consumer, it means you automatically get the new version when you re-build your image.
 
 For example, if you specify `FROM alpine:3.21` in your Dockerfile, `3.21` resolves to the latest patch version for `3.21`.
-    
-    
+
     # syntax=docker/dockerfile:1
     FROM alpine:3.21
 
@@ -164,8 +152,7 @@ At one point in time, the `3.21` tag might point to version 3.21.1 of the image.
 The downside with this is that you're not guaranteed to get the same for every build. This could result in breaking changes, and it means you also don't have an audit trail of the exact image versions that you're using.
 
 To fully secure your supply chain integrity, you can pin the image version to a specific digest. By pinning your images to a digest, you're guaranteed to always use the same image version, even if a publisher replaces the tag with a new image. For example, the following Dockerfile pins the Alpine image to the same tag as earlier, `3.21`, but this time with a digest reference as well.
-    
-    
+
     # syntax=docker/dockerfile:1
     FROM alpine:3.21@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
 
@@ -188,7 +175,7 @@ When you check in a change to source control or create a pull request, use [GitH
 Follow these recommendations on how to properly use the [Dockerfile instructions](https://docs.docker.com/reference/dockerfile/) to create an efficient and maintainable Dockerfile.
 
 > Tip
-> 
+>
 > To improve linting, code navigation, and vulnerability scanning of your Dockerfiles in Visual Studio Code see [Docker VS Code Extension](https://marketplace.visualstudio.com/items?itemName=docker.docker).
 
 ### FROM
@@ -202,8 +189,7 @@ For more information about the `FROM` instruction, see [Dockerfile reference for
 You can add labels to your image to help organize images by project, record licensing information, to aid in automation, or for other reasons. For each label, add a line beginning with `LABEL` with one or more key-value pairs. The following examples show the different acceptable formats. Explanatory comments are included inline.
 
 Strings with spaces must be quoted or the spaces must be escaped. Inner quote characters (`"`), must also be escaped. For example:
-    
-    
+
     # Set one or more individual labels
     LABEL com.example.version="0.0.1-beta"
     LABEL vendor1="ACME Incorporated"
@@ -212,14 +198,12 @@ Strings with spaces must be quoted or the spaces must be escaped. Inner quote ch
     LABEL com.example.version.is-production=""
 
 An image can have more than one label. Prior to Docker 1.10, it was recommended to combine all labels into a single `LABEL` instruction, to prevent extra layers from being created. This is no longer necessary, but combining labels is still supported. For example:
-    
-    
+
     # Set multiple labels on one line
     LABEL com.example.version="0.0.1-beta" com.example.release-date="2015-02-12"
 
 The above example can also be written as:
-    
-    
+
     # Set multiple labels at once, using line-continuation characters to break long lines
     LABEL vendor=ACME\ Incorporated \
           com.example.is-beta= \
@@ -234,8 +218,7 @@ See [Understanding object labels](https://docs.docker.com/engine/manage-resource
 Split long or complex `RUN` statements on multiple lines separated with backslashes to make your Dockerfile more readable, understandable, and maintainable.
 
 For example, you can chain commands with the `&&` operator, and use escape characters to break long commands into multiple lines.
-    
-    
+
     RUN apt-get update && apt-get install -y --no-install-recommends \
         package-bar \
         package-baz \
@@ -244,8 +227,7 @@ For example, you can chain commands with the `&&` operator, and use escape chara
 By default, backslash escapes a newline character, but you can change it with the [`escape` directive](https://docs.docker.com/reference/dockerfile/#escape).
 
 You can also use here documents to run multiple commands without chaining them with a pipeline operator:
-    
-    
+
     RUN <<EOF
     apt-get update
     apt-get install -y --no-install-recommends \
@@ -261,16 +243,14 @@ For more information about `RUN`, see [Dockerfile reference for the RUN instruct
 One common use case for `RUN` instructions in Debian-based images is to install software using `apt-get`. Because `apt-get` installs packages, the `RUN apt-get` command has several counter-intuitive behaviors to look out for.
 
 Always combine `RUN apt-get update` with `apt-get install` in the same `RUN` statement. For example:
-    
-    
+
     RUN apt-get update && apt-get install -y --no-install-recommends \
         package-bar \
         package-baz \
         package-foo
 
 Using `apt-get update` alone in a `RUN` statement causes caching issues and subsequent `apt-get install` instructions to fail. For example, this issue will occur in the following Dockerfile:
-    
-    
+
     # syntax=docker/dockerfile:1
     
     FROM ubuntu:22.04
@@ -278,8 +258,7 @@ Using `apt-get update` alone in a `RUN` statement causes caching issues and subs
     RUN apt-get install -y --no-install-recommends curl
 
 After building the image, all layers are in the Docker cache. Suppose you later modify `apt-get install` by adding an extra package as shown in the following Dockerfile:
-    
-    
+
     # syntax=docker/dockerfile:1
     
     FROM ubuntu:22.04
@@ -289,8 +268,7 @@ After building the image, all layers are in the Docker cache. Suppose you later 
 Docker sees the initial and modified instructions as identical and reuses the cache from previous steps. As a result the `apt-get update` isn't executed because the build uses the cached version. Because the `apt-get update` isn't run, your build can potentially get an outdated version of the `curl` and `nginx` packages.
 
 Using `RUN apt-get update && apt-get install -y --no-install-recommends` ensures your Dockerfile installs the latest package versions with no further coding or manual intervention. This technique is known as cache busting. You can also achieve cache busting by specifying a package version. This is known as version pinning. For example:
-    
-    
+
     RUN apt-get update && apt-get install -y --no-install-recommends \
         package-bar \
         package-baz \
@@ -299,8 +277,7 @@ Using `RUN apt-get update && apt-get install -y --no-install-recommends` ensures
 Version pinning forces the build to retrieve a particular version regardless of whatâs in the cache. This technique can also reduce failures due to unanticipated changes in required packages.
 
 Below is a well-formed `RUN` instruction that demonstrates all the `apt-get` recommendations.
-    
-    
+
     RUN apt-get update && apt-get install -y --no-install-recommends \
         aufs-tools \
         automake \
@@ -325,24 +302,22 @@ Official Debian and Ubuntu images [automatically run `apt-get clean`](https://gi
 #### Using pipes
 
 Some `RUN` commands depend on the ability to pipe the output of one command into another, using the pipe character (`|`), as in the following example:
-    
-    
+
     RUN wget -O - https://some.site | wc -l > /number
 
 Docker executes these commands using the `/bin/sh -c` interpreter, which only evaluates the exit code of the last operation in the pipe to determine success. In the example above, this build step succeeds and produces a new image so long as the `wc -l` command succeeds, even if the `wget` command fails.
 
 If you want the command to fail due to an error at any stage in the pipe, prepend `set -o pipefail &&` to ensure that an unexpected error prevents the build from inadvertently succeeding. For example:
-    
-    
+
     RUN set -o pipefail && wget -O - https://some.site | wc -l > /number
 
 > Note
-> 
+>
 > Not all shells support the `-o pipefail` option.
-> 
+>
 > In cases such as the `dash` shell on Debian-based images, consider using the _exec_ form of `RUN` to explicitly choose a shell that does support the `pipefail` option. For example:
->     
->     
+> 
+> 
 >     RUN ["/bin/bash", "-c", "set -o pipefail && wget -O - https://some.site | wc -l > /number"]
 
 ### CMD
@@ -368,8 +343,7 @@ To make new software easier to run, you can use `ENV` to update the `PATH` envir
 The `ENV` instruction is also useful for providing the required environment variables specific to services you want to containerize, such as Postgresâs `PGDATA`.
 
 Lastly, `ENV` can also be used to set commonly used version numbers so that version bumps are easier to maintain, as seen in the following example:
-    
-    
+
     ENV PG_MAJOR=9.3
     ENV PG_VERSION=9.3.4
     RUN curl -SL https://example.com/postgres-$PG_VERSION.tar.xz | tar -xJC /usr/src/postgres && â¦
@@ -378,8 +352,7 @@ Lastly, `ENV` can also be used to set commonly used version numbers so that vers
 Similar to having constant variables in a program, as opposed to hard-coding values, this approach lets you change a single `ENV` instruction to automatically bump the version of the software in your container.
 
 Each `ENV` line creates a new intermediate layer, just like `RUN` commands. This means that even if you unset the environment variable in a future layer, it still persists in this layer and its value can be dumped. You can test this by creating a Dockerfile like the following, and then building it.
-    
-    
+
     # syntax=docker/dockerfile:1
     FROM alpine
     ENV ADMIN_USER="mark"
@@ -393,8 +366,7 @@ Each `ENV` line creates a new intermediate layer, just like `RUN` commands. This
     
 
 To prevent this and unset the environment variable, use a `RUN` command with shell commands, to set, use, and unset the variable all in a single layer. You can separate your commands with `;` or `&&`. If you use the second method, and one of the commands fails, the `docker build` also fails. This is usually a good idea. Using `\` as a line continuation character for Linux Dockerfiles improves readability. You could also put all of the commands into a shell script and have the `RUN` command just run that shell script.
-    
-    
+
     # syntax=docker/dockerfile:1
     FROM alpine
     RUN export ADMIN_USER="mark" \
@@ -413,8 +385,7 @@ For more information about `ENV`, see [Dockerfile reference for the ENV instruct
 `ADD` and `COPY` are functionally similar. `COPY` supports basic copying of files into the container, from the [build context](https://docs.docker.com/build/concepts/context/) or from a stage in a [multi-stage build](https://docs.docker.com/build/building/multi-stage/). `ADD` supports features for fetching files from remote HTTPS and Git URLs, and extracting tar files automatically when adding files from the build context.
 
 You'll mostly want to use `COPY` for copying files from one stage to another in a multi-stage build. If you need to add files from the build context to the container temporarily to execute a `RUN` instruction, you can often substitute the `COPY` instruction with a bind mount instead. For example, to temporarily add a `requirements.txt` file for a `RUN pip install` instruction:
-    
-    
+
     RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
         pip install --requirement /tmp/requirements.txt
 
@@ -423,8 +394,7 @@ Bind mounts are more efficient than `COPY` for including files from the build co
 The `ADD` instruction is best for when you need to download a remote artifact as part of your build. `ADD` is better than manually adding files using something like `wget` and `tar`, because it ensures a more precise build cache. `ADD` also has built-in support for checksum validation of the remote resources, and a protocol for parsing branches, tags, and subdirectories from [Git URLs](https://docs.docker.com/reference/cli/docker/buildx/build/#git-repositories).
 
 The following example uses `ADD` to download a .NET installer. Combined with multi-stage builds, only the .NET runtime remains in the final stage, no intermediate files.
-    
-    
+
     # syntax=docker/dockerfile:1
     
     FROM scratch AS src
@@ -447,31 +417,26 @@ The following example uses `ADD` to download a .NET installer. Combined with mul
 
 For more information about `ADD` or `COPY`, see the following:
 
-  * [Dockerfile reference for the ADD instruction](https://docs.docker.com/reference/dockerfile/#add)
-  * [Dockerfile reference for the COPY instruction](https://docs.docker.com/reference/dockerfile/#copy)
-
-
+- [Dockerfile reference for the ADD instruction](https://docs.docker.com/reference/dockerfile/#add)
+- [Dockerfile reference for the COPY instruction](https://docs.docker.com/reference/dockerfile/#copy)
 
 ### ENTRYPOINT
 
 The best use for `ENTRYPOINT` is to set the image's main command, allowing that image to be run as though it was that command, and then use `CMD` as the default flags.
 
 The following is an example of an image for the command line tool `s3cmd`:
-    
-    
+
     ENTRYPOINT ["s3cmd"]
     CMD ["--help"]
 
 You can use the following command to run the image and show the command's help:
-    
-    
-    $ docker run s3cmd
+
+    docker run s3cmd
     
 
 Or, you can use the right parameters to execute a command, like in the following example:
-    
-    
-    $ docker run s3cmd ls s3://mybucket
+
+    docker run s3cmd ls s3://mybucket
     
 
 This is useful because the image name can double as a reference to the binary as shown in the command above.
@@ -479,8 +444,7 @@ This is useful because the image name can double as a reference to the binary as
 The `ENTRYPOINT` instruction can also be used in combination with a helper script, allowing it to function in a similar way to the command above, even when starting the tool may require more than one step.
 
 For example, the [Postgres Official Image](https://hub.docker.com/_/postgres/) uses the following script as its `ENTRYPOINT`:
-    
-    
+
     #!/bin/bash
     set -e
     
@@ -499,8 +463,7 @@ For example, the [Postgres Official Image](https://hub.docker.com/_/postgres/) u
 This script uses [the `exec` Bash command](https://wiki.bash-hackers.org/commands/builtin/exec) so that the final running application becomes the container's PID 1. This allows the application to receive any Unix signals sent to the container. For more information, see the [`ENTRYPOINT` reference](https://docs.docker.com/reference/dockerfile/#entrypoint).
 
 In the following example, a helper script is copied into the container and run via `ENTRYPOINT` on container start:
-    
-    
+
     COPY ./docker-entrypoint.sh /
     ENTRYPOINT ["/docker-entrypoint.sh"]
     CMD ["postgres"]
@@ -508,21 +471,18 @@ In the following example, a helper script is copied into the container and run v
 This script lets you interact with Postgres in several ways.
 
 It can simply start Postgres:
-    
-    
-    $ docker run postgres
+
+    docker run postgres
     
 
 Or, you can use it to run Postgres and pass parameters to the server:
-    
-    
-    $ docker run postgres postgres --help
+
+    docker run postgres postgres --help
     
 
 Lastly, you can use it to start a totally different tool, such as Bash:
-    
-    
-    $ docker run --rm -it postgres bash
+
+    docker run --rm -it postgres bash
     
 
 For more information about `ENTRYPOINT`, see [Dockerfile reference for the ENTRYPOINT instruction](https://docs.docker.com/reference/dockerfile/#entrypoint).
@@ -536,18 +496,17 @@ For more information about `VOLUME`, see [Dockerfile reference for the VOLUME in
 ### USER
 
 If a service can run without privileges, use `USER` to change to a non-root user. Start by creating the user and group in the Dockerfile with something like the following example:
-    
-    
+
     RUN groupadd -r postgres && useradd --no-log-init -r -g postgres postgres
 
 > Note
-> 
+>
 > Consider an explicit UID/GID.
-> 
+>
 > Users and groups in an image are assigned a non-deterministic UID/GID in that the "next" UID/GID is assigned regardless of image rebuilds. So, if itâs critical, you should assign an explicit UID/GID.
 
 > Note
-> 
+>
 > Due to an [unresolved bug](https://github.com/golang/go/issues/13548) in the Go archive/tar package's handling of sparse files, attempting to create a user with a significantly large UID inside a Docker container can lead to disk exhaustion because `/var/log/faillog` in the container layer is filled with NULL (\0) characters. A workaround is to pass the `\--no-log-init` flag to `useradd`. The Debian/Ubuntu `adduser` wrapper does not support this flag.
 
 Avoid installing or using `sudo` as it has unpredictable TTY and signal-forwarding behavior that can cause problems. If you absolutely need functionality similar to `sudo`, such as initializing the daemon as `root` but running it as non-`root`, consider using [âgosuâ](https://github.com/tianon/gosu).
@@ -582,7 +541,7 @@ For more information about `ONBUILD`, see [Dockerfile reference for the ONBUILD 
 
 Table of contents
 
-[ Best practices](https://docs.docker.com/tags/best-practices/)
+[Best practices](https://docs.docker.com/tags/best-practices/)
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

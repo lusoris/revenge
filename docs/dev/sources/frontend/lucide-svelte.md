@@ -13,36 +13,30 @@ Svelte components for Lucide icons that work seamlessly with both Svelte 4 and S
 
 **What you can accomplish:**
 
-  * Use icons as Svelte components with full reactivity and TypeScript support
-  * Bind icon properties to reactive variables and stores
-  * Create dynamic icon systems that respond to application state
-  * Build type-safe interfaces with comprehensive TypeScript definitions
-  * Optimize bundle sizes with direct icon imports and tree-shaking
-
-
+- Use icons as Svelte components with full reactivity and TypeScript support
+- Bind icon properties to reactive variables and stores
+- Create dynamic icon systems that respond to application state
+- Build type-safe interfaces with comprehensive TypeScript definitions
+- Optimize bundle sizes with direct icon imports and tree-shaking
 
 ## Installation ​
 
 pnpmyarnnpmbun
 
 sh
-    
-    
+
     pnpm add @lucide/svelte
 
 sh
-    
-    
+
     yarn add @lucide/svelte
 
 sh
-    
-    
+
     npm install @lucide/svelte
 
 sh
-    
-    
+
     bun add @lucide/svelte
 
 > `@lucide/svelte` is only for Svelte 5, for Svelte 4 use the `lucide-svelte` package.
@@ -58,8 +52,7 @@ Each icon can be imported as a Svelte component, which renders an inline SVG ele
 Default usage:
 
 svelte
-    
-    
+
     <script>
       import { Skull } from '@lucide/svelte';
     </script>
@@ -69,8 +62,7 @@ svelte
 Additional props can be passed to adjust the icon:
 
 svelte
-    
-    
+
     <script>
       import { Camera } from '@lucide/svelte';
     </script>
@@ -80,8 +72,7 @@ svelte
 For faster builds and load times, you can import icons directly from the `@lucide/svelte/icons` directory:
 
 svelte
-    
-    
+
     <script>
       import CircleAlert from '@lucide/svelte/icons/circle-alert';
     </script>
@@ -102,8 +93,7 @@ name| type| default
 To customize the appearance of an icon, you can pass custom properties as props directly to the component. The component accepts all SVG attributes as props, which allows flexible styling of the SVG elements. See the list of SVG Presentation Attributes on [MDN](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/Presentation).
 
 svelte
-    
-    
+
     <script>
       import { Phone } from '@lucide/svelte';
     </script>
@@ -121,8 +111,7 @@ The package includes type definitions for all icons. This is useful if you want 
 Svelte 5Svelte 4
 
 svelte
-    
-    
+
     <script lang="ts">
       import { Home, Library, Cog, type Icon as IconType } from '@lucide/svelte';
     
@@ -160,8 +149,7 @@ svelte
     {/each}
 
 svelte
-    
-    
+
     <script lang="ts">
       import { Home, Library, Cog, type Icon } from '@lucide/svelte';
       import type { ComponentType } from 'svelte';
@@ -204,8 +192,7 @@ svelte
 Svelte 5Svelte 4
 
 svelte
-    
-    
+
     <script>
       import { Home, Library, Cog } from '@lucide/svelte';
     
@@ -245,8 +232,7 @@ svelte
     {/each}
 
 svelte
-    
-    
+
     <script>
       import { Home, Library, Cog } from '@lucide/svelte';
     
@@ -298,8 +284,7 @@ They can be used by using the `Icon` component. All props like the regular Lucid
 This creates a single icon based on the iconNode passed and renders a Lucide icon component.
 
 svelte
-    
-    
+
     <script>
     import { Icon } from '@lucide/svelte';
     import { pear, sausage } from '@lucide/lab';
@@ -321,8 +306,7 @@ The example below imports all ES Modules, so exercise caution when using it. Imp
 Svelte 5Svelte 4
 
 svelte
-    
-    
+
     <script>
       import * as icons from '@lucide/svelte';
       let { name, ...props } = $props();
@@ -333,8 +317,7 @@ svelte
     <Icon {...props} />
 
 svelte
-    
-    
+
     <script>
       import * as icons from '@lucide/svelte';
       export let name;
@@ -345,8 +328,7 @@ svelte
 #### Using the Icon Component ​
 
 svelte
-    
-    
+
     <script>
       import LucideIcon from './LucideIcon';
     </script>
@@ -360,8 +342,7 @@ By default, we hide icons from screen readers using `aria-hidden="true"`.
 You can add accessibility attributes using aria-labels.
 
 svelte
-    
-    
+
     <script>
       import { Check } from '@lucide/svelte';
     </script>

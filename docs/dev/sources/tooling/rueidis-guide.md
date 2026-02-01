@@ -705,7 +705,7 @@ for _, user := range users {
 */
 ```
 
-### !!!!!! DO NOT DO THIS !!!!!!
+### !!!!!! DO NOT DO THIS
 
 Please make sure that all values in the result have the same JSON structures.
 

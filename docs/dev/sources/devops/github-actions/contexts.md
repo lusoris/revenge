@@ -1,7 +1,7 @@
 # GitHub Actions Contexts
 
 > Source: https://docs.github.com/en/actions/learn-github-actions/contexts
-> Fetched: 2026-01-31T16:04:57.175559+00:00
+> Fetched: 2026-02-01T11:52:22.583990+00:00
 > Content-Hash: 4b049330aeae4487
 > Type: html
 
@@ -34,10 +34,8 @@ Context name| Type| Description
   
 As part of an expression, you can access context information using one of two syntaxes.
 
-  * Index syntax: `github['sha']`
-  * Property dereference syntax: `github.sha`
-
-
+- Index syntax: `github['sha']`
+- Property dereference syntax: `github.sha`
 
 In order to use property dereference syntax, the property name must start with a letter or `_` and contain only alphanumeric characters, `-`, or `_`.
 
@@ -47,14 +45,11 @@ If you attempt to dereference a nonexistent property, it will evaluate to an emp
 
 GitHub Actions includes a collection of variables called _contexts_ and a similar collection of variables called _default variables_. These variables are intended for use at different points in the workflow:
 
-  * **Default environment variables:** These environment variables exist only on the runner that is executing your job. For more information, see [Variables reference](/en/actions/reference/variables-reference#default-environment-variables).
-  * **Contexts:** You can use most contexts at any point in your workflow, including when _default variables_ would be unavailable. For example, you can use contexts with expressions to perform initial processing before the job is routed to a runner for execution; this allows you to use a context with the conditional `if` keyword to determine whether a step should run. Once the job is running, you can also retrieve context variables from the runner that is executing the job, such as `runner.os`. For details of where you can use various contexts within a workflow, see Context availability.
-
-
+- **Default environment variables:** These environment variables exist only on the runner that is executing your job. For more information, see [Variables reference](/en/actions/reference/variables-reference#default-environment-variables).
+- **Contexts:** You can use most contexts at any point in your workflow, including when _default variables_ would be unavailable. For example, you can use contexts with expressions to perform initial processing before the job is routed to a runner for execution; this allows you to use a context with the conditional `if` keyword to determine whether a step should run. Once the job is running, you can also retrieve context variables from the runner that is executing the job, such as `runner.os`. For details of where you can use various contexts within a workflow, see Context availability.
 
 The following example demonstrates how these different types of variables can be used together in a job:
-    
-    
+
     name: CI
     on: push
     jobs:
@@ -119,8 +114,7 @@ You can print the contents of contexts to the log for debugging. The [`toJSON` f
 Warning
 
 When using the whole `github` context, be mindful that it includes sensitive information such as `github.token`. GitHub masks secrets when they are printed to the console, but you should be cautious when exporting or printing the context.
-    
-    
+
     name: Context testing
     on: push
     
@@ -184,7 +178,7 @@ Do not use in the `run` keyword. To make this context work with composite action
 `github.event_path`| `string`| The path to the file on the runner that contains the full event webhook payload.  
 `github.graphql_url`| `string`| The URL of the GitHub GraphQL API.  
 `github.head_ref`| `string`| The `head_ref` or source branch of the pull request in a workflow run. This property is only available when the event that triggers a workflow run is either `pull_request` or `pull_request_target`.  
-`github.job`| `string`| The [`job_id`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id) of the current job.   
+`github.job`| `string`| The [`job_id`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_id) of the current job.
 Note: This context property is set by the Actions runner, and is only available within the execution `steps` of a job. Otherwise, the value of this property will be `null`.  
 `github.path`| `string`| Path on the runner to the file that sets system `PATH` variables from workflow commands. This file is unique to the current step and is a different file for each step in a job. For more information, see [Workflow commands for GitHub Actions](/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-system-path).  
 `github.ref`| `string`| The fully-formed ref of the branch or tag that triggered the workflow run. For workflows triggered by `push`, this is the branch or tag ref that was pushed. For workflows triggered by `pull_request` that were not merged, this is the pull request merge branch. If the pull request was merged, this is the head branch. For workflows triggered by `release`, this is the release tag created. For other triggers, this is the branch or tag ref that triggered the workflow run. This is only set if a branch or tag is available for the event type. The ref given is fully-formed, meaning that for branches the format is `refs/heads/<branch_name>`. For pull requests events except `pull_request_target` that were not merged, it is `refs/pull/<pr_number>/merge`. `pull_request_target` events have the `ref` from the base branch. For tags it is `refs/tags/<tag_name>`. For example, `refs/heads/feature-branch-1`.  
@@ -205,7 +199,7 @@ For pull requests that were not merged, the format is `<pr_number>/merge`.
 `github.secret_source`| `string`| The source of a secret used in a workflow. Possible values are `None`, `Actions`, `Codespaces`, or `Dependabot`.  
 `github.server_url`| `string`| The URL of the GitHub server. For example: `https://github.com`.  
 `github.sha`| `string`| The commit SHA that triggered the workflow. The value of this commit SHA depends on the event that triggered the workflow. For more information, see [Events that trigger workflows](/en/actions/using-workflows/events-that-trigger-workflows). For example, `ffac537e6cbbf934b08745a378932722df287a53`.  
-`github.token`| `string`| A token to authenticate on behalf of the GitHub App installed on your repository. This is functionally equivalent to the `GITHUB_TOKEN` secret. For more information, see [Use GITHUB_TOKEN for authentication in workflows](/en/actions/security-guides/automatic-token-authentication).   
+`github.token`| `string`| A token to authenticate on behalf of the GitHub App installed on your repository. This is functionally equivalent to the `GITHUB_TOKEN` secret. For more information, see [Use GITHUB_TOKEN for authentication in workflows](/en/actions/security-guides/automatic-token-authentication).
 Note: This context property is set by the Actions runner, and is only available within the execution `steps` of a job. Otherwise, the value of this property will be `null`.  
 `github.triggering_actor`| `string`| The username of the user that initiated the workflow run. If the workflow run is a re-run, this value may differ from `github.actor`. Any workflow re-runs will use the privileges of `github.actor`, even if the actor initiating the re-run (`github.triggering_actor`) has different privileges.  
 `github.workflow`| `string`| The name of the workflow. If the workflow file doesn't specify a `name`, the value of this property is the full path of the workflow file in the repository.  
@@ -220,8 +214,7 @@ The following example context is from a workflow run triggered by the `push` eve
 Note
 
 This context is an example only. The contents of a context depends on the workflow that you are running. Contexts, objects, and properties will vary significantly under different workflow run conditions.
-    
-    
+
     {
       "token": "***",
       "job": "dump_contexts_to_log",
@@ -262,8 +255,7 @@ This context is an example only. The contents of a context depends on the workfl
 ### Example usage of the `github` context
 
 This example workflow uses the `github.event_name` context to run a job only if the workflow run was triggered by the `pull_request` event.
-    
-    
+
     name: Run CI
     on: [push, pull_request]
     
@@ -298,8 +290,7 @@ Property name| Type| Description
 ### Example contents of the `env` context
 
 The contents of the `env` context is a mapping of variable names to their values. The context's contents can change depending on where it is used in the workflow run. In this example, the `env` context contains two variables.
-    
-    
+
     {
       "first_name": "Mona",
       "super_duper_var": "totally_awesome"
@@ -311,8 +302,7 @@ The contents of the `env` context is a mapping of variable names to their values
 This example workflow shows variables being set in the `env` context at the workflow, job, and step levels. The `${{ env.VARIABLE-NAME }}` syntax is then used to retrieve variable values within individual steps in the workflow.
 
 When more than one environment variable is defined with the same name, GitHub uses the most specific variable. For example, an environment variable defined in a step will override job and workflow environment variables with the same name, while the step executes. An environment variable defined for a job will override a workflow variable with the same name, while the job executes.
-    
-    
+
     name: Hi Mascot
     on: push
     env:
@@ -342,8 +332,7 @@ The `vars` context contains custom configuration variables set at the organizati
 ### Example contents of the `vars` context
 
 The contents of the `vars` context is a mapping of configuration variable names to their values.
-    
-    
+
     {
       "mascot": "Mona"
     }
@@ -360,8 +349,7 @@ Configuration variables at the environment level are automatically available aft
 If a configuration variable has not been set, the return value of a context referencing the variable will be an empty string.
 
 The following example shows using configuration variables with the `vars` context across a workflow. Each of the following configuration variables have been defined at the repository, organization, or environment levels.
-    
-    
+
     on:
       workflow_dispatch:
     env:
@@ -414,8 +402,7 @@ Property name| Type| Description
 ### Example contents of the `job` context
 
 This example `job` context uses a PostgreSQL service container with mapped ports. If there are no containers or service containers used in a job, the `job` context only contains the `status` and `check_run_id` properties.
-    
-    
+
     {
       "status": "success",
       "check_run_id": 51725241954,
@@ -437,8 +424,7 @@ This example `job` context uses a PostgreSQL service container with mapped ports
 ### Example usage of the `job` context
 
 This example workflow configures a PostgreSQL service container, and automatically maps port 5432 in the service container to a randomly chosen available port on the host. The `job` context is used to access the number of the port that was assigned on the host.
-    
-    
+
     name: PostgreSQL Service Example
     on: push
     jobs:
@@ -473,8 +459,7 @@ Property name| Type| Description
 ### Example contents of the `jobs` context
 
 This example `jobs` context contains the result and outputs of a job from a reusable workflow run.
-    
-    
+
     {
       "example_job": {
         "result": "success",
@@ -489,8 +474,7 @@ This example `jobs` context contains the result and outputs of a job from a reus
 ### Example usage of the `jobs` context
 
 This example reusable workflow uses the `jobs` context to set outputs for the reusable workflow. Note how the outputs flow up from the steps, to the job, then to the `workflow_call` trigger. For more information, see [Reuse workflows](/en/actions/using-workflows/reusing-workflows#using-outputs-from-a-reusable-workflow).
-    
-    
+
     name: Reusable workflow
     
     on:
@@ -534,8 +518,7 @@ Property name| Type| Description
 ### Example contents of the `steps` context
 
 This example `steps` context shows two previous steps that had an [`id`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsid) specified. The first step had the `id` named `checkout`, the second `generate_number`. The `generate_number` step had an output named `random_number`.
-    
-    
+
     {
       "checkout": {
         "outputs": {},
@@ -555,8 +538,7 @@ This example `steps` context shows two previous steps that had an [`id`](/en/act
 ### Example usage of the `steps` context
 
 This example workflow generates a random number as an output in one step, and a later step uses the `steps` context to read the value of that output.
-    
-    
+
     name: Generate random failure
     on: push
     jobs:
@@ -589,8 +571,7 @@ Property name| Type| Description
 ### Example contents of the `runner` context
 
 The following example context is from a Linux GitHub-hosted runner.
-    
-    
+
     {
       "os": "Linux",
       "arch": "X64",
@@ -603,8 +584,7 @@ The following example context is from a Linux GitHub-hosted runner.
 ### Example usage of the `runner` context
 
 This example workflow uses the `runner` context to set the path to the temporary directory to write logs, and if the workflow fails, it uploads those logs as artifact.
-    
-    
+
     name: Build
     on: push
     
@@ -645,8 +625,7 @@ Property name| Type| Description
 ### Example contents of the `secrets` context
 
 The following example contents of the `secrets` context shows the automatic `GITHUB_TOKEN`, as well as two other secrets available to the workflow run.
-    
-    
+
     {
       "github_token": "***",
       "NPM_TOKEN": "***",
@@ -657,8 +636,7 @@ The following example contents of the `secrets` context shows the automatic `GIT
 ### Example usage of the `secrets` context
 
 This example workflow uses the [GitHub CLI](/en/actions/using-workflows/using-github-cli-in-workflows), which requires the `GITHUB_TOKEN` as the value for the `GH_TOKEN` input parameter:
-    
-    
+
     name: Open new issue
     on: workflow_dispatch
     
@@ -691,8 +669,7 @@ Property name| Type| Description
 ### Example contents of the `strategy` context
 
 The following example contents of the `strategy` context is from a matrix with four jobs, and is taken from the final job. Note the difference between the zero-based `job-index` number, and `job-total` which is not zero-based.
-    
-    
+
     {
       "fail-fast": true,
       "job-index": 3,
@@ -704,8 +681,7 @@ The following example contents of the `strategy` context is from a matrix with f
 ### Example usage of the `strategy` context
 
 This example workflow uses the `strategy.job-index` property to set a unique name for a log file for each job in a matrix.
-    
-    
+
     name: Test strategy
     on: push
     
@@ -739,8 +715,7 @@ Property name| Type| Description
 ### Example contents of the `matrix` context
 
 The following example contents of the `matrix` context is from a job in a matrix that has the `os` and `node` matrix properties defined in the workflow. The job is executing the matrix combination of an `ubuntu-latest` OS and Node.js version `16`.
-    
-    
+
     {
       "os": "ubuntu-latest",
       "node": 16
@@ -750,8 +725,7 @@ The following example contents of the `matrix` context is from a job in a matrix
 ### Example usage of the `matrix` context
 
 This example workflow creates a matrix with `os` and `node` keys. It uses the `matrix.os` property to set the runner type for each job, and uses the `matrix.node` property to set the Node.js version for each job.
-    
-    
+
     name: Test matrix
     on: push
     
@@ -785,8 +759,7 @@ Property name| Type| Description
 ### Example contents of the `needs` context
 
 The following example contents of the `needs` context shows information for two jobs that the current job depends on.
-    
-    
+
     {
       "build": {
         "result": "success",
@@ -804,8 +777,7 @@ The following example contents of the `needs` context shows information for two 
 ### Example usage of the `needs` context
 
 This example workflow has three jobs: a `build` job that does a build, a `deploy` job that requires the `build` job, and a `debug` job that requires both the `build` and `deploy` jobs and runs only if there is a failure in the workflow. The `deploy` job also uses the `needs` context to access an output from the `build` job.
-    
-    
+
     name: Build and deploy
     on: push
     
@@ -845,8 +817,7 @@ Property name| Type| Description
 ### Example contents of the `inputs` context
 
 The following example contents of the `inputs` context is from a workflow that has defined the `build_id`, `deploy_target`, and `perform_deploy` inputs.
-    
-    
+
     {
       "build_id": 123456768,
       "deploy_target": "deployment_sys_1a",
@@ -857,8 +828,7 @@ The following example contents of the `inputs` context is from a workflow that h
 ### Example usage of the `inputs` context in a reusable workflow
 
 This example reusable workflow uses the `inputs` context to get the values of the `build_id`, `deploy_target`, and `perform_deploy` inputs that were passed to the reusable workflow from the caller workflow.
-    
-    
+
     name: Reusable deploy workflow
     on:
       workflow_call:
@@ -885,8 +855,7 @@ This example reusable workflow uses the `inputs` context to get the values of th
 ### Example usage of the `inputs` context in a manually triggered workflow
 
 This example workflow triggered by a `workflow_dispatch` event uses the `inputs` context to get the values of the `build_id`, `deploy_target`, and `perform_deploy` inputs that were passed to the workflow.
-    
-    
+
     on:
       workflow_dispatch:
         inputs:
@@ -911,8 +880,7 @@ This example workflow triggered by a `workflow_dispatch` event uses the `inputs`
 
 ## Further reading
 
-  * [Contexts](/en/actions/concepts/workflows-and-actions/contexts)
-
+- [Contexts](/en/actions/concepts/workflows-and-actions/contexts)
 
   *[↑]: Back to Top
   *[v]: View this template

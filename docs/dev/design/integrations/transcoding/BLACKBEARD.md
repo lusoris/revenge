@@ -21,44 +21,43 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: FFmpeg Documentation
+- name: FFmpeg Documentation
     url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
+- name: FFmpeg Codecs
     url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
+- name: FFmpeg Formats
     url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
+- name: go-astiav (FFmpeg bindings)
     url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
+- name: go-astiav GitHub README
     url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-  - name: gohlslib (HLS)
+- name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
+- name: M3U8 Extended Format
     url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
-  - name: Prometheus Go Client
+- name: Prometheus Go Client
     url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
+- name: Prometheus Metric Types
     url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
 design_refs:
-  - title: integrations/transcoding
+- title: integrations/transcoding
     path: integrations/transcoding.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -66,18 +65,15 @@ design_refs:
 
 <!-- DESIGN: integrations/transcoding, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
-
 
 > Integration with Blackbeard
 
 > External transcoding service for Revenge
 
 ---
-
 
 ## Status
 
@@ -92,9 +88,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -118,7 +112,6 @@ internal/integration/blackbeard/
 This integration provides:
 <!-- Data provided by integration -->
 
-
 ## Implementation
 
 ### File Structure
@@ -133,7 +126,6 @@ This integration provides:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -142,7 +134,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -157,7 +148,6 @@ This integration provides:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -176,4 +166,3 @@ Target: **80% minimum**
 - [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
 - [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
 - [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
-

@@ -19,41 +19,40 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Prometheus Go Client
+- name: Prometheus Go Client
     url: ../sources/observability/prometheus.md
     note: Metrics instrumentation
-  - name: Prometheus Metric Types
+- name: Prometheus Metric Types
     url: ../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
-  - name: Jaeger Go Client
+- name: Jaeger Go Client
     url: ../sources/observability/jaeger-go.md
     note: Distributed tracing client
-  - name: OpenTelemetry Go
+- name: OpenTelemetry Go
     url: https://pkg.go.dev/go.opentelemetry.io/otel
     note: Tracing and metrics SDK
-  - name: Loki
+- name: Loki
     url: ../sources/observability/loki.md
     note: Log aggregation system
-  - name: Grafana
+- name: Grafana
     url: ../sources/observability/grafana.md
     note: Visualization and dashboards
-  - name: slog-multi
+- name: slog-multi
     url: ../sources/observability/slog-multi.md
     note: Multi-handler slog setup
-  - name: Go slog
+- name: Go slog
     url: ../sources/go/stdlib/slog.md
     note: Structured logging
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: OFFLOADING
+- title: OFFLOADING
     path: technical/OFFLOADING.md
 ---
 
@@ -61,11 +60,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Complete observability stack with metrics, distributed tracing, and structured logging
 
@@ -77,7 +74,6 @@ Three pillars of observability:
 - **Instrumentation**: Automatic + manual instrumentation patterns
 
 ---
-
 
 ## Status
 
@@ -92,9 +88,7 @@ Three pillars of observability:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -103,7 +97,6 @@ Three pillars of observability:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -119,7 +112,6 @@ Three pillars of observability:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -128,7 +120,6 @@ Three pillars of observability:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -143,7 +134,6 @@ Three pillars of observability:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -161,4 +151,3 @@ Target: **80% minimum**
 - [Grafana](../sources/observability/grafana.md) - Visualization and dashboards
 - [slog-multi](../sources/observability/slog-multi.md) - Multi-handler slog setup
 - [Go slog](../sources/go/stdlib/slog.md) - Structured logging
-

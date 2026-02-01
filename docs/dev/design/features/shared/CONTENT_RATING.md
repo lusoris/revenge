@@ -23,38 +23,37 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Casbin
+- name: Casbin
     url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
+- name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
-  - name: sqlc
+- name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-  - name: sqlc Configuration
+- name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-  - title: features/shared
+- title: features/shared
     path: features/shared.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -62,18 +61,15 @@ design_refs:
 
 <!-- DESIGN: features/shared, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
 
-
-> Content module for 
+> Content module for
 
 > Universal age restriction and content rating system for revenge.
 
 ---
-
 
 ## Status
 
@@ -88,9 +84,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -116,7 +110,6 @@ internal/content/content_rating_system/
 
 <!-- Component interaction diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -131,7 +124,6 @@ internal/content/content_rating_system/
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -141,12 +133,10 @@ internal/content/content_rating_system/
 
 <!-- Configuration keys -->
 
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
 
 ## Testing Strategy
 
@@ -161,7 +151,6 @@ internal/content/content_rating_system/
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -178,4 +167,3 @@ Target: **80% minimum**
 - [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
 - [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
 - [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-

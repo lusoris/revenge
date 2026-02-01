@@ -7,7 +7,7 @@
 
 ---
 
-Getting Started 
+Getting Started
 
 # Installation
 
@@ -17,13 +17,12 @@ Instructions to get your player installed and on-screen.
 
 Section titled 1. Select Framework
 
-[ ](/docs/player/getting-started/installation/javascript)
+[](/docs/player/getting-started/installation/javascript)
 
 JavaScript  More information
 
 The JavaScript option works with any framework and allows constructing the player and layouts imperatively like so:
-    
-    
+
     VidstackPlayer.create({
       target: '#player',
       src: '...',
@@ -33,19 +32,19 @@ The JavaScript option works with any framework and allows constructing the playe
 
 You can target an existing audio, video, or iframe element to progressively enhance it.
 
-[ ](/docs/player/getting-started/installation/angular)
+[](/docs/player/getting-started/installation/angular)
 
 Angular  More information
 
 We don’t have a specific integration for [Angular](https://angularjs.org/) at the moment. However, you can enjoy all Vidstack Player features through our [Web Component](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) library as [Angular has perfect support](https://custom-elements-everywhere.com/#angular).
 
-[ ](/docs/player/getting-started/installation/react)
+[](/docs/player/getting-started/installation/react)
 
 React  More information
 
 The React integration will provide a seamless experience when working with [React](https://reactjs.org) and frameworks like [Next.js](https://nextjs.org). Our library is React Sever Component and Next.js `app/` directory ready.
 
-[ ](/docs/player/getting-started/installation/svelte)
+[](/docs/player/getting-started/installation/svelte)
 
 Svelte  More information
 
@@ -53,7 +52,7 @@ We don’t have a specific integration for [Svelte](https://svelte.dev) at the m
 
 We also ship JSX types to make sure you have complete TypeScript support for props and events! In addition, we don’t use Shadow DOM so it will work with SSR-frameworks like SvelteKit.
 
-[ ](/docs/player/getting-started/installation/vue)
+[](/docs/player/getting-started/installation/vue)
 
 Vue  More information
 
@@ -61,7 +60,7 @@ We don’t have a specific integration for [Vue](https://vuejs.org) at the momen
 
 We also ship JSX types to make sure you have complete TypeScript support for props and events! In addition, we don’t use Shadow DOM so it will work with SSR-frameworks like Nuxt.
 
-[ ](/docs/player/getting-started/installation/solid)
+[](/docs/player/getting-started/installation/solid)
 
 Solid  More information
 
@@ -69,7 +68,7 @@ We don’t have a specific integration for [Solid](https://www.solidjs.com) at t
 
 We also ship JSX types to make sure you have complete TypeScript support for props and events! In addition, we don’t use Shadow DOM so it will work with SSR-frameworks like SolidStart.
 
-[ ](/docs/player/getting-started/installation/web-components)
+[](/docs/player/getting-started/installation/web-components)
 
 Web Components  More information
 
@@ -77,7 +76,7 @@ Our [Web Component](https://developer.mozilla.org/en-US/docs/Web/API/Web_compone
 
 This option is best when writing plain HTML or using a JS library that supports them. Custom Elements have [perfect support in most libraries](https://custom-elements-everywhere.com).
 
-[ ](/docs/player/getting-started/installation/cdn)
+[](/docs/player/getting-started/installation/cdn)
 
 CDN  More information
 
@@ -129,10 +128,8 @@ Remotion  More information
 
 Section titled 3. Select Styling
 
-A layout refers to the arrangement and presentation of various player components. The CSS and Tailwind CSS options below are if you want to style components from scratch and build your own layout. The Default Theme option is if you want to build your own layout on top of our component styles. Finally, the Default and Plyr layouts are our production-ready templates to get you up and running quickly.   
+A layout refers to the arrangement and presentation of various player components. The CSS and Tailwind CSS options below are if you want to style components from scratch and build your own layout. The Default Theme option is if you want to build your own layout on top of our component styles. Finally, the Default and Plyr layouts are our production-ready templates to get you up and running quickly.
   
-
-
 CSS  More information
 
 The CSS option provides you with a minimal starting point and completely unstyled components. All components including the player itself provide styling hooks via data attributes and support animations.
@@ -161,11 +158,11 @@ Our [optional plugin](/docs/player/styling/tailwind) can help speed you up even 
 
 Previous
 
-[ Introduction ](/docs/player)
+[Introduction](/docs/player)
 
 Next
 
-[ Architecture ](/docs/player/getting-started/architecture)
+[Architecture](/docs/player/getting-started/architecture)
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

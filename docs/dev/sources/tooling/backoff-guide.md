@@ -26,9 +26,9 @@ If you have specific needs, copy `Retry` function (from [retry.go][retry-src]) i
 
 ## Contributing
 
-* I would like to keep this library as small as possible.
-* Please don't send a PR without opening an issue and discussing it first.
-* If proposed change is not a common use case, I will probably not accept it.
+- I would like to keep this library as small as possible.
+- Please don't send a PR without opening an issue and discussing it first.
+- If proposed change is not a common use case, I will probably not accept it.
 
 [godoc]: https://pkg.go.dev/github.com/cenkalti/backoff/v5
 [godoc image]: https://godoc.org/github.com/cenkalti/backoff?status.png

@@ -9,12 +9,10 @@
 
 [API](/developers/#)
 
-  * [Changelog](https://www.discogs.com/forum/thread/521520689469733cfcfd2089)
-  * [API Forum](https://www.discogs.com/forum/topic/1082)
-  * [Create an App](https://www.discogs.com/settings/developers)
-  * [API Terms of Use](https://support.discogs.com/hc/articles/360009334593-API-Terms-of-Use)
-
-
+- [Changelog](https://www.discogs.com/forum/thread/521520689469733cfcfd2089)
+- [API Forum](https://www.discogs.com/forum/topic/1082)
+- [Create an App](https://www.discogs.com/settings/developers)
+- [API Terms of Use](https://support.discogs.com/hc/articles/360009334593-API-Terms-of-Use)
 
  __Back to top
 
@@ -24,19 +22,18 @@ Hereâs your place to code all things Discogs! The Discogs API lets develope
 
 The Discogs API v2.0 is a RESTful interface to Discogs data. You can access JSON-formatted information about Database objects such as Artists, Releases, and Labels. Your application can also manage User Collections and Wantlists, create Marketplace Listings, and more.
 
-Some Discogs data is made available under the [CC0 No Rights Reserved](http://creativecommons.org/about/cc0) license, and some is restricted data, as defined in our [API Terms of Use. ](https://support.discogs.com/hc/articles/360009334593-API-Terms-of-Use)
+Some Discogs data is made available under the [CC0 No Rights Reserved](http://creativecommons.org/about/cc0) license, and some is restricted data, as defined in our [API Terms of Use.](https://support.discogs.com/hc/articles/360009334593-API-Terms-of-Use)
 
 Our [monthly data dumps](https://www.discogs.com/data/) are available under the the CC0 No Rights Reserved license.
 
-If you utilize the Discogs API, you are subject to the [API Terms of Use. ](https://support.discogs.com/hc/articles/360009334593-API-Terms-of-Use) Please also ensure that any application you develop follows the Discogs [Application Name and Description Policy. ](https://www.discogs.com/help/doc/naming-your-application)
+If you utilize the Discogs API, you are subject to the [API Terms of Use.](https://support.discogs.com/hc/articles/360009334593-API-Terms-of-Use) Please also ensure that any application you develop follows the Discogs [Application Name and Description Policy.](https://www.discogs.com/help/doc/naming-your-application)
 
 * * *
 
 ## Quickstart  __
 
 If you just want to see some results right now, issue this curl command:
-    
-    
+
     curl https://api.discogs.com/releases/249504 --user-agent "FooBarApp/3.0"
 
 For community-maintained client libraries and example code, see the links below:
@@ -54,8 +51,7 @@ Ruby | Client | buntine | <https://github.com/buntine/discogs>
 ## General Information  __
 
 **Your application must provide a User-Agent string that identifies itself** â preferably something that follows [RFC 1945](http://tools.ietf.org/html/rfc1945#section-3.7). Some good examples include:
-    
-    
+
     AwesomeDiscogsBrowser/0.1 +http://adb.example.com
     LibraryMetadataEnhancer/0.3 +http://example.com/lime
     MyDiscogsClient/1.0 +http://mydiscogsclient.org
@@ -63,8 +59,7 @@ Ruby | Client | buntine | <https://github.com/buntine/discogs>
 Please donât just copy one of those! Make it unique so we can let you know if your application starts to misbehave â the alternative is that we just silently block it, which will confuse and infuriate your users.
 
 Here are some bad examples that are unclear or obscure the nature of the application:
-    
-    
+
     curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b)
     Mozilla/5.0 (X11; Linux i686; rv:6.0.2) Gecko/20100101 Firefox/6.0.2
     my app
@@ -74,8 +69,7 @@ Here are some bad examples that are unclear or obscure the nature of the applica
 When a callback query string parameter is supplied, the API can return responses in JSONP format.
 
 JSONP, by its nature, cannot access HTTP information like headers or the status code, so the API supplies that information in the response, like so:
-    
-    
+
     GET https://api.discogs.com/artists/1?callback=callbackname
     
     
@@ -123,21 +117,18 @@ In the future, we may update these rate limits at any time in order to provide s
 Some resources represent collections of objects and may be paginated. By default, 50 items per page are shown.
 
 To browse different pages, or change the number of items per page (up to 100), use the page and per_page query string parameters:
-    
-    
+
     GET https://api.discogs.com/artists/1/releases?page=2&per_page=75
 
 Responses include a Link header:
-    
-    
+
     Link: <https://api.discogs.com/artists/1/releases?page=3&per_page=75>; rel=next,
     <https://api.discogs.com/artists/1/releases?page=1&per_page=75>; rel=first,
     <https://api.discogs.com/artists/1/releases?page=30&per_page=75>; rel=last,
     <https://api.discogs.com/artists/1/releases?page=1&per_page=75>; rel=prev
 
 And a pagination object in the response body:
-    
-    
+
     { 
         "pagination": { 
             "page": 2, 
@@ -180,29 +171,29 @@ If no Accept header is supplied, or if the Accept header differs from one of the
 
 This generally happens when you forget to add a User-Agent header to your requests.
 
-  2. **How do I get updates about the API?**
+  1. **How do I get updates about the API?**
 
 Subscribe to our [API Announcements forum thread](https://www.discogs.com/forum/thread/521520689469733cfcfd2089). For larger, breaking changes, we will send out an email notice to all developers with a registered Discogs application.
 
-  3. **Where can I register a Discogs application?**
+  1. **Where can I register a Discogs application?**
 
 You can register a Discogs application on the [Developer Settings](https://www.discogs.com/settings/developers).
 
-  4. **If I have a question/issue with the API, should I file a Support Request?**
+  1. **If I have a question/issue with the API, should I file a Support Request?**
 
 It's generally best to start out with a forum post on the [API topic](https://www.discogs.com/forum/topic/1082) since other developers may have had similar issues and can point you in the right direction. If the issue requires privacy, then a support request is the best way to go.
 
-  5. **I'm getting a 404 response when trying to fetch images; what gives?**
+  1. **I'm getting a 404 response when trying to fetch images; what gives?**
 
 This may seem obvious, but make sure you aren't doing anything to change the URL. The URLs returned are signed URLs, so trying to change one part of the URL (e.g., Release ID number) will generally not work.
 
-  6. **What are the authentication requirements for requesting images?**
+  1. **What are the authentication requirements for requesting images?**
 
 Please see the Images documentation page.
 
-  7. **Why am I getting a particular HTTP response?**
+  1. **Why am I getting a particular HTTP response?**
 
-     * **200 OK**
+     - **200 OK**
 
 The request was successful, and the requested data is provided in the response body.
 
@@ -238,9 +229,6 @@ Your request was well-formed, but thereâs something semantically wrong with
 
 Something went wrong on our end while attempting to process your request. The response bodyâs message field will contain an error code that you can send to Discogs Support (which will help us track down your specific issue).
 
-
-
-
 Next  ____Previous
 
 * * *
@@ -255,12 +243,9 @@ This section describes the various methods of authenticating with the Discogs AP
 
 In order to access protected endpoints, youâll need to register for either a consumer key and secret or user token, depending on your situation:
 
-  * To easily access your own user account information, use a **User token**.
+- To easily access your own user account information, use a **User token**.
 
-  * To get access to an endpoint that requires authentication and build 3rd party apps, use a **Consumer Key and Secret**.
-
-
-
+- To get access to an endpoint that requires authentication and build 3rd party apps, use a **Consumer Key and Secret**.
 
 To get one of these, sign up for a Discogs account if you donât have one already, and go to your [Developer Settings](https://www.discogs.com/settings/developers). From there, you can create a new application/token or edit the metadata for an existing app.
 
@@ -288,23 +273,19 @@ Once authenticated, you can test that everythingâs working correctly by req
 
 If you do not plan on building an app which others can log into on their behalf, you should use this authentication method as it is much simpler and is still secure. Discogs Auth requires that requests be made over HTTPS, as you are sending your appâs key/secret or token in the request.  
 To send requests with Discogs Auth, you have two options: sending your credentials in the query string with `key` and `secret` parameters or a `token` parameter, for example:
-    
-    
+
     curl "https://api.discogs.com/database/search?q=Nirvana&key=foo123&secret=bar456"
 
 or
-    
-    
+
     curl "https://api.discogs.com/database/search?q=Nirvana&token=abcxyz123456"
 
 Your other option is to send your credentials in the request as an `Authorization` header, as follows:
-    
-    
+
     curl "https://api.discogs.com/database/search?q=Nirvana" -H "Authorization: Discogs key=foo123, secret=bar456"
 
 or
-    
-    
+
     curl "https://api.discogs.com/database/search?q=Nirvana" -H "Authorization: Discogs token=abcxyz123456"
 
 What differentiates the `key`/`secret` pair option from the `token` option? Letâs look at this table:
@@ -318,14 +299,11 @@ Personal access token | ð° High tier | âï¸ Yes | âï¸ Yes
   
 In other words:
 
-  * Using the `key` and `secret` will get you image URLs. These are unavailable to unauthenticated requests.
+- Using the `key` and `secret` will get you image URLs. These are unavailable to unauthenticated requests.
 
-  * Using the `key` and `secret` will up your rate limit, unlike unauthenticated requests.
+- Using the `key` and `secret` will up your rate limit, unlike unauthenticated requests.
 
-  * **BUT** using the `key` and `secret` does **not** identify the requester as any particular user, and as such will **not** grant access to any resources users should be able to see on their own account (e.g. marketplace orders, private inventory fields, private collections). You will need to use either of the `token` options for these resources.
-
-
-
+- **BUT** using the `key` and `secret` does **not** identify the requester as any particular user, and as such will **not** grant access to any resources users should be able to see on their own account (e.g. marketplace orders, private inventory fields, private collections). You will need to use either of the `token` options for these resources.
 
 Thatâs it! Continue sending the key/secret pair or user token with the rest of your requests.
 
@@ -344,13 +322,11 @@ Application registration can be found here: <https://www.discogs.com/settings/de
 You only need to register once per application you make. You should not share your consumer secret, as it acts as a sort of password for your requests.
 
 2\. Send a GET request to the Discogs request token URL Â¶
-    
-    
+
     GET https://api.discogs.com/oauth/request_token
 
 Include the following headers with your request:
-    
-    
+
     Content-Type: application/x-www-form-urlencoded
     Authorization:
             OAuth oauth_consumer_key="your_consumer_key",
@@ -374,8 +350,7 @@ A successful request will return a response that contains the following content:
 3\. Redirect your user to the Discogs Authorize page Â¶
 
 Authorization page:
-    
-    
+
     https://discogs.com/oauth/authorize?oauth_token=<your_oauth_request_token>
 
 This page will ask the user to authorize your app on behalf of their Discogs account. If they accept and authorize, they will receive a verifier key to use as verification. This key is used in the next phase of OAuth authentication.
@@ -383,13 +358,11 @@ This page will ask the user to authorize your app on behalf of their Discogs acc
 If you added a callback URL to your Discogs application registration, the user will be redirected to that URL, and you can capture their verifier from the response. The verifier will be used to generate the access token in the next step. You can always edit your application settings to include a callback URL (i.e., you donât need to re-create a new application).
 
 4\. Send a POST request to the Discogs access token URL Â¶
-    
-    
+
     POST https://api.discogs.com/oauth/access_token
 
 Include the following headers in your request:
-    
-    
+
     Content-Type: application/x-www-form-urlencoded
     Authorization:
             OAuth oauth_consumer_key="your_consumer_key",
@@ -414,8 +387,7 @@ A successful request will return a response that contains an OAuth access token 
 You are now ready to send authenticated requests with Discogs through OAuth. Be sure to attach the userâs OAuth access token and OAuth access token secret to each request.
 
 To test that you are ready to send authenticated requests, send a GET request to the identity URL. A successful request will yield a response that contains information about the authenticated user.
-    
-    
+
     GET https://api.discogs.com/oauth/identity
 
 * * *
@@ -432,24 +404,21 @@ GET
 
 `/oauth/request_token`
 
-  * **Request** Toggle
-  * ##### Headers
-        
+- **Request** Toggle
+- ##### Headers
+
         Content-Type: application/x-www-form-urlencoded  
         Authorization: OAuth oauth_consumer_key="your_consumer_key", oauth_nonce="random_string_or_timestamp", oauth_signature="your_consumer_secret&", oauth_signature_method="PLAINTEXT", oauth_timestamp="current_timestamp", oauth_callback="your_callback"  
         User-Agent: some_user_agent  
         
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         oauth_token: abc123  
         oauth_token_secret: xyz789  
         oauth_callback_confirmed: 'true'  
         
-
-
-
 
 ### Access Token URL  __
 
@@ -461,23 +430,20 @@ POST
 
 `/oauth/access_token`
 
-  * **Request** Toggle
-  * ##### Headers
-        
+- **Request** Toggle
+- ##### Headers
+
         Content-Type: application/x-www-form-urlencoded  
         Authorization: OAuth oauth_consumer_key="your_consumer_key", oauth_nonce="random_string_or_timestamp", oauth_token="oauth_token_received_from_step_2" oauth_signature="your_consumer_secret&", oauth_signature_method="PLAINTEXT", oauth_timestamp="current_timestamp", oauth_verifier="users_verifier"  
         User-Agent: some_user_agent  
         
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         oauth_token: abc123  
         oauth_token_secret: xyz789  
         
-
-
-
 
 Next  ____Previous
 
@@ -497,8 +463,8 @@ GET
 
 Get a release
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 249504
 
 The Release ID
@@ -506,14 +472,12 @@ The Release ID
 curr_abbr
     `string` (optional) **Example:** USD
 
-Currency for marketplace data. Defaults to the authenticated users currency. Must be one of the following:   
+Currency for marketplace data. Defaults to the authenticated users currency. Must be one of the following:
 `USD` `GBP` `EUR` `CAD` `AUD` `JPY` `CHF` `MXN` `BRL` `NZD` `SEK` `ZAR`
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -528,7 +492,7 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
         
 
 ##### Body
-        
+
         {
             "title": "Never Gonna Give You Up",
             "id": 249504,
@@ -700,9 +664,9 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
             "year": 1987
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -717,13 +681,10 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
         
 
 ##### Body
-        
+
         {
           "message": "Release not found."
         }
-
-
-
 
 ## Release Rating By User  __
 
@@ -737,8 +698,8 @@ GET
 
 Retrieves the releaseâs rating for a given user.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 249504
 
 The Release ID
@@ -748,11 +709,9 @@ username
 
 The username of the rating you are trying to request.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -767,15 +726,12 @@ The username of the rating you are trying to request.
         
 
 ##### Body
-        
+
         {
           "username": "memory",
           "release_id": 249504,
           "rating": 5
         }
-
-
-
 
 Update Release Rating By User
 
@@ -785,8 +741,8 @@ PUT
 
 Updates the releaseâs rating for a given user. Authentication as the user is required.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 249504
 
 The Release ID
@@ -801,11 +757,9 @@ rating
 
 The new rating for a release between 1 and 5.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -820,15 +774,12 @@ The new rating for a release between 1 and 5.
         
 
 ##### Body
-        
+
         {
           "username": "memory",
           "release_id": 249504,
           "rating": 5
         }
-
-
-
 
 Delete Release Rating By User
 
@@ -838,8 +789,8 @@ DELETE
 
 Deletes the releaseâs rating for a given user. Authentication as the user is required.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 249504
 
 The Release ID
@@ -848,10 +799,6 @@ username
     `string` (required) **Example:** memory
 
 The username of the rating you are trying to request.
-
-
-
-
 
 ## Community Release Rating  __
 
@@ -865,17 +812,15 @@ GET
 
 Retrieves the community release rating average and count.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 249504
 
 The Release ID
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -890,7 +835,7 @@ The Release ID
         
 
 ##### Body
-        
+
         {
             "rating": {
                 "count": 47
@@ -898,9 +843,6 @@ The Release ID
             },
             "release_id": 249504
         }
-
-
-
 
 ## Release Stats  __
 
@@ -914,17 +856,15 @@ GET
 
 Retrieves the releaseâs âhaveâ and âwantâ counts.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 249504
 
 The Release ID
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -939,14 +879,11 @@ The Release ID
         
 
 ##### Body
-        
+
         {
           "num_have": 2315,
           "num_want": 467
         }
-
-
-
 
 ## Master Release  __
 
@@ -960,17 +897,15 @@ GET
 
 Get a master release
 
-  * **Parameters**
-  * master_id
+- **Parameters**
+- master_id
     `number` (required) **Example:** 1000
 
 The Master ID
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -985,7 +920,7 @@ The Master ID
         
 
 ##### Body
-        
+
         {
           "styles": [
             "Goa Trance"
@@ -1075,9 +1010,9 @@ The Master ID
           "data_quality": "Correct"
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1092,13 +1027,10 @@ The Master ID
         
 
 ##### Body
-        
+
         {
           "message": "Master Release not found."
         }
-
-
-
 
 ## Master Release Versions  __
 
@@ -1110,8 +1042,8 @@ GET
 
 Retrieves a list of all Releases that are versions of this master. Accepts Pagination parameters.
 
-  * **Parameters**
-  * master_id
+- **Parameters**
+- master_id
     `number` (required) **Example:** 1000
 
 The Master ID
@@ -1149,7 +1081,7 @@ The country to filter
 sort
     `string` (optional) **Example:** released
 
-Sort items by this field:   
+Sort items by this field:
 `released` (i.e. year of the release)  
 `title` (i.e. title of the release)  
 `format`  
@@ -1162,11 +1094,9 @@ sort_order
 
 Sort items in a particular order (one of `asc`, `desc`)
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1181,7 +1111,7 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 50,
@@ -1269,9 +1199,9 @@ Sort items in a particular order (one of `asc`, `desc`)
           ]
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1286,13 +1216,10 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "message": "Master Release not found."
         }
-
-
-
 
 ## Artist  __
 
@@ -1306,17 +1233,15 @@ GET
 
 Get an artist
 
-  * **Parameters**
-  * artist_id
+- **Parameters**
+- artist_id
     `number` (required) **Example:** 108713
 
 The Artist ID
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1331,7 +1256,7 @@ The Artist ID
         
 
 ##### Body
-        
+
         {
           "namevariations": [
             "Nickleback"
@@ -1398,9 +1323,9 @@ The Artist ID
           ],
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1415,13 +1340,10 @@ The Artist ID
         
 
 ##### Body
-        
+
         {
           "message": "Artist not found."
         }
-
-
-
 
 ## Artist Releases  __
 
@@ -1436,8 +1358,8 @@ GET
 
 Get an artistâs releases
 
-  * **Parameters**
-  * artist_id
+- **Parameters**
+- artist_id
     `number` (required) **Example:** 108713
 
 The Artist ID
@@ -1445,7 +1367,7 @@ The Artist ID
 sort
     `string` (optional) **Example:** year
 
-Sort items by this field:   
+Sort items by this field:
 `year` (i.e. year of the release)  
 `title` (i.e. title of the release)  
 `format`
@@ -1455,11 +1377,9 @@ sort_order
 
 Sort items in a particular order (one of `asc`, `desc`)
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1474,7 +1394,7 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 50,
@@ -1522,9 +1442,9 @@ Sort items in a particular order (one of `asc`, `desc`)
           ]
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1539,13 +1459,10 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "message": "Artist not found."
         }
-
-
-
 
 ## Label  __
 
@@ -1559,17 +1476,15 @@ GET
 
 Get a label
 
-  * **Parameters**
-  * label_id
+- **Parameters**
+- label_id
     `number` (required) **Example:** 1
 
 The Label ID
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1584,7 +1499,7 @@ The Label ID
         
 
 ##### Body
-        
+
         {
           "profile": "Classic Techno label from Detroit, USA.\r\n[b]Label owner:[/b] [a=Carl Craig].\r\n",
           "releases_url": "https://api.discogs.com/labels/1/releases",
@@ -1623,9 +1538,9 @@ The Label ID
           "data_quality": "Needs Vote"
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1640,13 +1555,10 @@ The Label ID
         
 
 ##### Body
-        
+
         {
           "message": "Label not found."
         }
-
-
-
 
 ## All Label Releases  __
 
@@ -1658,8 +1570,8 @@ GET
 
 Returns a list of Releases associated with the label. Accepts Pagination parameters.
 
-  * **Parameters**
-  * label_id
+- **Parameters**
+- label_id
     `number` (required) **Example:** 1
 
 The Label ID
@@ -1674,11 +1586,9 @@ per_page
 
 The number of items per page
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1693,7 +1603,7 @@ The number of items per page
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 5,
@@ -1742,9 +1652,9 @@ The number of items per page
           ]
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1759,13 +1669,10 @@ The number of items per page
         
 
 ##### Body
-        
+
         {
           "message": "Label not found."
         }
-
-
-
 
 ## Search  __
 
@@ -1781,8 +1688,8 @@ GET
 
 Issue a search query
 
-  * **Parameters**
-  * query
+- **Parameters**
+- query
     `string` (optional) **Example:** nirvana
 
 Your search query
@@ -1872,16 +1779,14 @@ contributor
 
 Search contributor usernames.
 
+- **Request** Toggle
+- ##### Body
 
-
-  * **Request** Toggle
-  * ##### Body
-        
         GET https://api.discogs.com/database/search?release_title=nevermind&artist=nirvana&per_page=3&page=1
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -1898,7 +1803,7 @@ Search contributor usernames.
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 3,
@@ -2007,9 +1912,9 @@ Search contributor usernames.
           ]
         }
 
-  * **Response`500`**Toggle
-  * ##### Headers
-        
+- **Response`500`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 500 Server Error  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2024,14 +1929,14 @@ Search contributor usernames.
         
 
 ##### Body
-        
+
         {
           "message": "Query time exceeded. Please try a simpler query."
         }
 
-  * **Response`500`**Toggle
-  * ##### Headers
-        
+- **Response`500`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 500 Server Error  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2046,13 +1951,10 @@ Search contributor usernames.
         
 
 ##### Body
-        
+
         {
           "message": "An internal server error occurred. (Malformed query?)"
         }
-
-
-
 
 ## Videos  __
 
@@ -2090,8 +1992,8 @@ GET
 
 Get a sellerâs inventory
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** 360vinyl
 
 The username for whose inventory you are fetching
@@ -2104,7 +2006,7 @@ Only show items with this status.
 sort
     `string` (optional) **Example:** price
 
-Sort items by this field:   
+Sort items by this field:
 `listed`  
 `price`  
 `item` (i.e. the title of the release)  
@@ -2120,11 +2022,9 @@ sort_order
 
 Sort items in a particular order (one of `asc`, `desc`)
 
+- **Response`200`**Toggle
+- Headers
 
-
-  * **Response`200`**Toggle
-  * Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2141,7 +2041,7 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 50,
@@ -2277,9 +2177,9 @@ Sort items in a particular order (one of `asc`, `desc`)
           ]
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2294,14 +2194,14 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "message": "The request resource was not found."
         }
 
-  * **Response`422`**Toggle
-  * ##### Headers
-        
+- **Response`422`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 422 Unprocessable Entity  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2317,13 +2217,10 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "message": "Invalid status: expected one of All, Deleted, Draft, Expired, For Sale, Sold, Suspended, Violation."
         }
-
-
-
 
 ## Listing  __
 
@@ -2338,8 +2235,8 @@ GET
 
 The Listing resource allows you to view Marketplace listings.
 
-  * **Parameters**
-  * listing_id
+- **Parameters**
+- listing_id
     `number` (required) **Example:** 172723812
 
 The ID of the listing you are fetching
@@ -2347,14 +2244,12 @@ The ID of the listing you are fetching
 curr_abbr
     `string` (optional) **Example:** USD
 
-Currency for marketplace data. Defaults to the authenticated users currency. Must be one of the following:   
+Currency for marketplace data. Defaults to the authenticated users currency. Must be one of the following:
 `USD` `GBP` `EUR` `CAD` `AUD` `JPY` `CHF` `MXN` `BRL` `NZD` `SEK` `ZAR`
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2370,7 +2265,7 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
         
 
 ##### Body
-        
+
         {
           "status": "For Sale",
           "price": {
@@ -2427,9 +2322,9 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
           "audio": false
         }
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 404 Not Found  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2444,13 +2339,10 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
         
 
 ##### Body
-        
+
         {
           "message": "The request resource was not found."
         }
-
-
-
 
 Edit A Listing
 
@@ -2464,8 +2356,8 @@ If the listingâs status is not `For Sale`, `Draft`, or `Expired`, it cannot
 
 Authentication as the listing owner is required.
 
-  * **Parameters**
-  * listing_id
+- **Parameters**
+- listing_id
     `number` (required) **Example:** 172723812
 
 The ID of the listing you are fetching
@@ -2478,7 +2370,7 @@ The ID of the release you are posting
 condition
     `string` (required) **Example:** Mint
 
-The condition of the release you are posting. Must be one of the following:   
+The condition of the release you are posting. Must be one of the following:
 `Mint (M)`  
 `Near Mint (NM or M-)`  
 `Very Good Plus (VG+)`  
@@ -2491,7 +2383,7 @@ The condition of the release you are posting. Must be one of the following:
 sleeve_condition
     `string` (optional) **Example:** Fair
 
-The condition of the sleeve of the item you are posting. Must be one of the following:   
+The condition of the sleeve of the item you are posting. Must be one of the following:
 `Mint (M)`  
 `Near Mint (NM or M-)`  
 `Very Good Plus (VG+)`  
@@ -2542,17 +2434,13 @@ format_quantity
 
 The number of items this listing counts as, for the purpose of calculating shipping. This field is called âCounts Asâ on the Discogs website. Set this field to `auto` to have the quantity automatically estimated for you.
 
+- **Request** Toggle
+- ##### Headers
 
-
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         
 
-  * **Response`204`**
-
-
+- **Response`204`**
 
 Delete A Listing
 
@@ -2563,23 +2451,19 @@ DELETE
 Permanently remove a listing from the Marketplace.  
 Authentication as the listing owner is required.
 
-  * **Parameters**
-  * listing_id
+- **Parameters**
+- listing_id
     `number` (required) **Example:** 172723812
 
 The ID of the listing you are fetching
 
+- **Request** Toggle
+- ##### Headers
 
-
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         
 
-  * **Response`204`**
-
-
+- **Response`204`**
 
 ## New Listing  __
 
@@ -2592,8 +2476,8 @@ POST
 Create a Marketplace listing.  
 Authentication is required; the listing will be added to the authenticated userâs Inventory.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 1
 
 The ID of the release you are posting
@@ -2601,7 +2485,7 @@ The ID of the release you are posting
 condition
     `string` (required) **Example:** Mint
 
-The condition of the release you are posting. Must be one of the following:   
+The condition of the release you are posting. Must be one of the following:
 `Mint (M)`  
 `Near Mint (NM or M-)`  
 `Very Good Plus (VG+)`  
@@ -2614,7 +2498,7 @@ The condition of the release you are posting. Must be one of the following:
 sleeve_condition
     `string` (optional) **Example:** Fair
 
-The condition of the sleeve of the item you are posting. Must be one of the following:   
+The condition of the sleeve of the item you are posting. Must be one of the following:
 `Mint (M)`  
 `Near Mint (NM or M-)`  
 `Very Good Plus (VG+)`  
@@ -2665,31 +2549,26 @@ format_quantity
 
 The number of items this listing counts as, for the purpose of calculating shipping. This field is called âCounts Asâ on the Discogs website. Set this field to `auto` to have the quantity automatically estimated for you.
 
+- **Request** Toggle
+- ##### Headers
 
-
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         
 
-  * **Response`201`**Toggle
-  * ##### Body
-        
+- **Response`201`**Toggle
+- ##### Body
+
         {
           "listing_id": 41578241,
           "resource_url": "https://api.discogs.com/marketplace/listings/41578241"
         }
 
-  * **Response`403`**Toggle
-  * ##### Body
-        
+- **Response`403`**Toggle
+- ##### Body
+
         {
           "message": "You don't have permission to access this resource."
         }
-
-
-
 
 ## Order  __
 
@@ -2704,17 +2583,15 @@ GET
 View the data associated with an order.  
 Authentication as the seller is required.
 
-  * **Parameters**
-  * order_id
+- **Parameters**
+- order_id
     `number` (required) **Example:** 1-1
 
 The ID of the order you are fetching
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2730,7 +2607,7 @@ The ID of the order you are fetching
         
 
 ##### Body
-        
+
         {
           "id": "1-1",
           "resource_url": "https://api.discogs.com/marketplace/orders/1-1",
@@ -2795,9 +2672,9 @@ The ID of the order you are fetching
           }
         }
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 401 Unauthorized  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -2814,13 +2691,10 @@ The ID of the order you are fetching
         
 
 ##### Body
-        
+
         {
           "message": "You must authenticate to access this resource."
         }
-
-
-
 
 Edit An Order
 
@@ -2838,8 +2712,8 @@ Changing the order status using this resource will always message the buyer with
 and does not provide a facility for including a custom message along with the change. For more fine-grained control, use the Add a new message resource, which allows you to simultaneously add a message and change the order status.  
 If the order status is neither cancelled, Payment Received, nor Shipped, you can change the shipping. Doing so will send an invoice to the buyer and set the order status to Invoice Sent. (For that reason, you cannot set the shipping and the order status in the same request.)
 
-  * **Parameters**
-  * order_id
+- **Parameters**
+- order_id
     `number` (required) **Example:** 1-1
 
 The ID of the order you are fetching
@@ -2847,7 +2721,7 @@ The ID of the order you are fetching
 status
     `string` (optional) **Example:** New Order
 
-The status of the Order you are updating. Must be one of the following:   
+The status of the Order you are updating. Must be one of the following:
 `New Order`  
 `Buyer Contacted`  
 `Invoice Sent`  
@@ -2866,17 +2740,15 @@ shipping
 
 The order shipping amount. As a side-effect of setting this value, the buyer is invoiced and the order status is set to `Invoice Sent`.
 
+- **Request** Toggle
+- ##### Headers
 
-
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         
 
-  * **Response`200`**Toggle
-  * ##### Body
-        
+- **Response`200`**Toggle
+- ##### Body
+
         {
           "id": "1-1",
           "resource_url": "https://api.discogs.com/marketplace/orders/1-1",
@@ -2939,9 +2811,6 @@ The order shipping amount. As a side-effect of setting this value, the buyer is 
           }
         }
 
-
-
-
 ## List Orders  __
 
 Returns a list of the authenticated userâs orders. AcceptsPagination parameters.
@@ -2954,11 +2823,11 @@ GET
 
 Returns a list of the authenticated userâs orders. Accepts Pagination parameters.
 
-  * **Parameters**
-  * status
+- **Parameters**
+- status
     `string` (optional) **Example:** 1-1
 
-Only show orders with this status. Valid `status` keys are:   
+Only show orders with this status. Valid `status` keys are:
 `All`  
 `New Order`  
 `Buyer Contacted`  
@@ -2986,14 +2855,14 @@ Only show orders created before this ISO 8601 timestamp.
 archived
     `boolean` (optional) **Example:** true
 
-Only show orders with a specific archived status. If no key is provided, both statuses are returned. Valid `archived` keys are:   
+Only show orders with a specific archived status. If no key is provided, both statuses are returned. Valid `archived` keys are:
 `true`  
 `false`
 
 sort
     `string` (optional) **Example:** 1-1
 
-Sort items by this field (see below). Valid `sort` keys are:   
+Sort items by this field (see below). Valid `sort` keys are:
 `id`  
 `buyer`  
 `created`  
@@ -3005,11 +2874,9 @@ sort_order
 
 Sort items in a particular order (one of `asc`, `desc`)
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -3025,7 +2892,7 @@ Sort items in a particular order (one of `asc`, `desc`)
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 50,
@@ -3101,9 +2968,6 @@ Sort items in a particular order (one of `asc`, `desc`)
           ]
         }
 
-
-
-
 ## List Order Messages  __
 
 List Order Messages
@@ -3115,17 +2979,15 @@ GET
 Returns a list of the orderâs messages with the most recent first. Accepts Pagination parameters.  
 Authentication as the seller is required.
 
-  * **Parameters**
-  * order_id
+- **Parameters**
+- order_id
     `string` (required) **Example:** 1-1
 
 The ID of the order you are fetching
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -3141,7 +3003,7 @@ The ID of the order you are fetching
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 50,
@@ -3276,9 +3138,6 @@ The ID of the order you are fetching
           ]
         }
 
-
-
-
 Add New Message
 
 POST
@@ -3290,8 +3149,8 @@ When posting a new message, you can simultaneously change the order status. If y
 `Seller changed status from Old Status to New Status`  
 While `message` and `status` are each optional, one or both must be present.
 
-  * **Parameters**
-  * order_id
+- **Parameters**
+- order_id
     `string` (required) **Example:** 1-1
 
 The ID of the order you are fetching
@@ -3301,16 +3160,15 @@ message
 status
     `string` (optional) **Example:** New Order
 
+- **Request** Toggle
+- ##### Headers
 
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         
 
-  * **Response`201`**Toggle
-  * ##### Body
-        
+- **Response`201`**Toggle
+- ##### Body
+
         {
           "from": {
             "username": "example_seller",
@@ -3325,15 +3183,12 @@ status
           "subject": "Discogs Order #1-1, Stockholm"
         }
 
-  * **Response`403`**Toggle
-  * ##### Body
-        
+- **Response`403`**Toggle
+- ##### Body
+
         {
           "message": "You don't have permission to access this resource."
         }
-
-
-
 
 ## Fee  __
 
@@ -3345,17 +3200,15 @@ GET
 
 The Fee resource allows you to quickly calculate the fee for selling an item on the Marketplace.
 
-  * **Parameters**
-  * price
+- **Parameters**
+- price
     `number` (optional) **Example:** 10.00
 
 The price to calculate a fee from
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -3371,14 +3224,11 @@ The price to calculate a fee from
         
 
 ##### Body
-        
+
         {
             "value": 0.42,
             "currency": "USD",
         }
-
-
-
 
 ## Fee with currency  __
 
@@ -3390,8 +3240,8 @@ GET
 
 The Fee resource allows you to quickly calculate the fee for selling an item on the Marketplace given a particular currency.
 
-  * **Parameters**
-  * price
+- **Parameters**
+- price
     `number` (optional) **Example:** 10.00
 
 The price to calculate a fee from
@@ -3399,14 +3249,12 @@ The price to calculate a fee from
 currency
     `string` (optional) **Example:** USD
 
-Defaults to `USD`. Must be one of the following:   
+Defaults to `USD`. Must be one of the following:
 `USD` `GBP` `EUR` `CAD` `AUD` `JPY` `CHF` `MXN` `BRL` `NZD` `SEK` `ZAR`
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -3422,14 +3270,11 @@ Defaults to `USD`. Must be one of the following:
         
 
 ##### Body
-        
+
         {
             "value": 0.42,
             "currency": "USD",
         }
-
-
-
 
 ## Price Suggestions  __
 
@@ -3442,17 +3287,15 @@ GET
 Retrieve price suggestions for the provided Release ID. If no suggestions are available, an empty object will be returned.  
 Authentication is required, and the user needs to have filled out their seller settings. Suggested prices will be denominated in the userâs selling currency.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 1
 
 The release ID to calculate a price from.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -3468,7 +3311,7 @@ The release ID to calculate a price from.
         
 
 ##### Body
-        
+
         {
           "Very Good (VG)": {
             "currency": "USD",
@@ -3504,9 +3347,6 @@ The release ID to calculate a price from.
           }
         }
 
-
-
-
 ## Release Statistics  __
 
 Get Marketplace Stats
@@ -3521,8 +3361,8 @@ Authentication is optional. Authenticated users will by default have the lowest 
 
 Releases that have no items for sale in the marketplace will return a body with null data in the `lowest_price` and `num_for_sale` keys. Releases that are blocked for sale will also have null data for these keys.
 
-  * **Parameters**
-  * release_id
+- **Parameters**
+- release_id
     `number` (required) **Example:** 1
 
 The release ID whose stats are desired
@@ -3530,14 +3370,12 @@ The release ID whose stats are desired
 curr_abbr
     `string` (optional) **Example:** USD
 
-Currency for marketplace data. Defaults to the authenticated users currency. Must be one of the following:   
+Currency for marketplace data. Defaults to the authenticated users currency. Must be one of the following:
 `USD` `GBP` `EUR` `CAD` `AUD` `JPY` `CHF` `MXN` `BRL` `NZD` `SEK` `ZAR`
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -3553,7 +3391,7 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
         
 
 ##### Body
-        
+
         {
           "lowest_price": {
             "currency": "USD",
@@ -3562,9 +3400,6 @@ Currency for marketplace data. Defaults to the authenticated users currency. Mus
           "num_for_sale": 26,
           "blocked_from_sale": false
         }
-
-
-
 
 Next  ____Previous
 
@@ -3582,27 +3417,24 @@ POST
 
 Request an export of your inventory as a CSV.
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         Location: https://api.discogs.com/inventory/export/599632  
         
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`409`**Toggle
-  * ##### Headers
-        
+- **Response`409`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Get recent exports  __
 
@@ -3614,14 +3446,14 @@ GET
 
 Get a list of all recent exports of your inventory. Accepts Pagination parameters.
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
 ##### Body
-        
+
         {
           "items": [
             {
@@ -3643,14 +3475,11 @@ Get a list of all recent exports of your inventory. Accepts Pagination parameter
           }
         }
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Get an export  __
 
@@ -3662,30 +3491,28 @@ GET
 
 Get details about the status of an inventory export.
 
-  * **Parameters**
-  * id
+- **Parameters**
+- id
     `number` (required)
 
 Id of the export.
 
+- **Request** Toggle
+- ##### Headers
 
-
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: multipart/form-data  
         If-Modified-Since: Thu, 27 Sep 2018 12:50:39 GMT  
         
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         Last-Modified: Thu, 27 Sep 2018 12:59:02 GMT  
         
 
 ##### Body
-        
+
         {
           "status": "success",
           "created_ts": "2018-09-27T12:50:39",
@@ -3696,21 +3523,18 @@ Id of the export.
           "id": 599632
         }
 
-  * **Response`304`**
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`304`**
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Download an export  __
 
@@ -3722,35 +3546,30 @@ GET
 
 Download the results of an inventory export.
 
-  * **Parameters**
-  * id
+- **Parameters**
+- id
     `number` (required)
 
 Id of the export.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Content-Type: text/csv; charset=utf-8  
         Content-Disposition: attachment; filename=cburmeister-inventory-20180927-1259.csv  
         
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 Next  ____Previous
 
@@ -3773,8 +3592,7 @@ Upload a CSV of listings to add to your inventory.
 The file you upload must be a comma-separated CSV. The first row must be a header with lower case field names.
 
 Hereâs an example:
-    
-    
+
     release_id,price,media_condition,comments
     123,1.50,Mint (M),Comments about this release for sale
     456,2.50,Near Mint (NM or M-),More comments
@@ -3786,107 +3604,90 @@ These listings will be marked âFor Saleâ immediately. Currency informa
 
 ### Required fields Â¶
 
-  * `release_id` \- Must be a number. This value corresponds with the Discogs database Release ID.
+- `release_id` \- Must be a number. This value corresponds with the Discogs database Release ID.
 
-  * `price` \- Must be a number.
+- `price` \- Must be a number.
 
-  * `media_condition` \- Must be a valid condition (see below).
-
-
-
+- `media_condition` \- Must be a valid condition (see below).
 
 ### Optional fields Â¶
 
-  * `sleeve_condition` \- Must be a valid condition (see below).
+- `sleeve_condition` \- Must be a valid condition (see below).
 
-  * `comments` `accept_offer` \- Must be Y or N.
+- `comments` `accept_offer` \- Must be Y or N.
 
-  * `location` \- Private free-text field to help identify an itemâs physical location.
+- `location` \- Private free-text field to help identify an itemâs physical location.
 
-  * `external_id` \- Private notes or IDs for your own reference.
+- `external_id` \- Private notes or IDs for your own reference.
 
-  * `weight` \- In grams. Must be a non-negative integer.
+- `weight` \- In grams. Must be a non-negative integer.
 
-  * `format_quantity` \- Number of items that this item counts as (for shipping).
-
-
-
+- `format_quantity` \- Number of items that this item counts as (for shipping).
 
 ### Conditions Â¶
 
 When you specify a media condition, it must exactly match one of these:
 
-  * `Mint (M)`
+- `Mint (M)`
 
-  * `Near Mint (NM or M-)`
+- `Near Mint (NM or M-)`
 
-  * `Very Good Plus (VG+)`
+- `Very Good Plus (VG+)`
 
-  * `Very Good (VG)`
+- `Very Good (VG)`
 
-  * `Good Plus (G+)`
+- `Good Plus (G+)`
 
-  * `Good (G)`
+- `Good (G)`
 
-  * `Fair (F)`
+- `Fair (F)`
 
-  * `Poor (P)`
-
-
-
+- `Poor (P)`
 
 Sleeve condition may be any of the above, or:
 
-  * `Not Graded`
+- `Not Graded`
 
-  * `Generic`
+- `Generic`
 
-  * `No Cover`
+- `No Cover`
 
-
-
-
-  * **Parameters**
-  * upload
+- **Parameters**
+- upload
     `file` (required)
 
 The CSV file of items to add to your inventory.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         Location: https://api.discogs.com/inventory/upload/599632  
         
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`409`**Toggle
-  * ##### Headers
-        
+- **Response`409`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`415`**Toggle
-  * ##### Headers
-        
+- **Response`415`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`422`**Toggle
-  * ##### Headers
-        
+- **Response`422`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Change inventory  __
 
@@ -3903,8 +3704,7 @@ Upload a CSV of listings to change in your inventory.
 The file you upload must be a comma-separated CSV. The first row must be a header with lower case field names.
 
 Hereâs an example:
-    
-    
+
     release_id,price,media_condition,comments
     123,1.50,Mint (M),Comments about this release for sale
     456,2.50,Near Mint (NM or M-),More comments
@@ -3916,108 +3716,92 @@ These listings will be marked âFor Saleâ immediately. Currency informa
 
 ### Required fields Â¶
 
-  * `release_id` \- Must be a number. This value corresponds with the Discogs database Release ID.
-
-
+- `release_id` \- Must be a number. This value corresponds with the Discogs database Release ID.
 
 ## Optional fields (at least one required) Â¶
 
-  * `price` -
+- `price` -
 
-  * `media_condition` \- Must be a valid condition (see below).
+- `media_condition` \- Must be a valid condition (see below).
 
-  * `sleeve_condition` \- Must be a valid condition (see below).
+- `sleeve_condition` \- Must be a valid condition (see below).
 
-  * `comments`
+- `comments`
 
-  * `accept_offer` \- Must be Y or N.
+- `accept_offer` \- Must be Y or N.
 
-  * `external_id` \- Private notes or IDs for your own reference.
+- `external_id` \- Private notes or IDs for your own reference.
 
-  * `location` \- Private free-text field to help identify an itemâs physical location.
+- `location` \- Private free-text field to help identify an itemâs physical location.
 
-  * `weight` \- In grams. Must be a non-negative integer.
+- `weight` \- In grams. Must be a non-negative integer.
 
-  * `format_quantity` \- Number of items that this item counts as (for shipping).
-
-
-
+- `format_quantity` \- Number of items that this item counts as (for shipping).
 
 ### Conditions Â¶
 
 When you specify a media condition, it must exactly match one of these:
 
-  * `Mint (M)`
+- `Mint (M)`
 
-  * `Near Mint (NM or M-)`
+- `Near Mint (NM or M-)`
 
-  * `Very Good Plus (VG+)`
+- `Very Good Plus (VG+)`
 
-  * `Very Good (VG)`
+- `Very Good (VG)`
 
-  * `Good Plus (G+)`
+- `Good Plus (G+)`
 
-  * `Good (G)`
+- `Good (G)`
 
-  * `Fair (F)`
+- `Fair (F)`
 
-  * `Poor (P)`
-
-
-
+- `Poor (P)`
 
 Sleeve condition may be any of the above, or:
 
-  * `Not Graded`
+- `Not Graded`
 
-  * `Generic`
+- `Generic`
 
-  * `No Cover`
+- `No Cover`
 
-
-
-
-  * **Parameters**
-  * upload
+- **Parameters**
+- upload
     `file` (required)
 
 The CSV file of items to alter in your inventory.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         Location: https://api.discogs.com/inventory/upload/599632  
         
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`409`**Toggle
-  * ##### Headers
-        
+- **Response`409`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`415`**Toggle
-  * ##### Headers
-        
+- **Response`415`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`422`**Toggle
-  * ##### Headers
-        
+- **Response`422`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Delete inventory  __
 
@@ -4034,8 +3818,7 @@ Upload a CSV of listings to delete from your inventory.
 The file you upload must be a comma-separated CSV. The first row must be a header with lower case field names.
 
 Hereâs an example:
-    
-    
+
     listing_id
     12345678
     98765432
@@ -4043,51 +3826,44 @@ Hereâs an example:
 
 ### Required fields Â¶
 
-  * `listing_id` \- Must be a number. This is the ID of the listing you wish to delete.
+- `listing_id` \- Must be a number. This is the ID of the listing you wish to delete.
 
-
-
-  * **Parameters**
-  * upload
+- **Parameters**
+- upload
     `file` (required)
 
 The CSV file listing items to remove from your inventory.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Content-Type: application/json  
         Location: https://api.discogs.com/inventory/upload/599632  
         
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`409`**Toggle
-  * ##### Headers
-        
+- **Response`409`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`415`**Toggle
-  * ##### Headers
-        
+- **Response`415`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`422`**Toggle
-  * ##### Headers
-        
+- **Response`422`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Get recent uploads  __
 
@@ -4099,14 +3875,14 @@ GET
 
 Get a list of all recent inventory uploads. Accepts Pagination parameters.
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
 ##### Body
-        
+
         {
           "items": [
             {
@@ -4128,14 +3904,11 @@ Get a list of all recent inventory uploads. Accepts Pagination parameters.
           }
         }
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 ## Get an upload  __
 
@@ -4147,29 +3920,27 @@ GET
 
 Get details about the status of an inventory upload.
 
-  * **Parameters**
-  * id
+- **Parameters**
+- id
     `number` (required)
 
 Id of the export.
 
+- **Request** Toggle
+- ##### Headers
 
-
-  * **Request** Toggle
-  * ##### Headers
-        
         Content-Type: multipart/form-data  
         If-Modified-Since: Thu, 27 Sep 2018 09:20:28 GMT  
         
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
 ##### Body
-        
+
         {
           "status": "success",
           "results": "CSV file contains 1 records.<p>Processed 1 records.",
@@ -4180,21 +3951,18 @@ Id of the export.
           "id": 119615
         }
 
-  * **Response`304`**
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`304`**
+- **Response`401`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
 
-  * **Response`404`**Toggle
-  * ##### Headers
-        
+- **Response`404`**Toggle
+- ##### Headers
+
         Content-Type: application/json  
         
-
-
-
 
 Next  ____Previous
 
@@ -4214,14 +3982,14 @@ Retrieve basic information about the authenticated user.
 You can use this resource to find out who youâre authenticated as, and it also doubles as a good sanity check to ensure that youâre using OAuth correctly.  
 For more detailed information, make another request for the userâs Profile.
 
-  * **Request** Toggle
-  * ##### Body
-        
+- **Request** Toggle
+- ##### Body
+
         GET https://api.discogs.com/oauth/identity
 
-  * **Response`200`**Toggle
-  * ##### Headers
-        
+- **Response`200`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -4239,7 +4007,7 @@ For more detailed information, make another request for the userâs Profile.
         
 
 ##### Body
-        
+
         {
           "id": 1,
           "username": "example",
@@ -4247,9 +4015,9 @@ For more detailed information, make another request for the userâs Profile.
           "consumer_name": "Your Application Name"
         }
 
-  * **Response`401`**Toggle
-  * ##### Headers
-        
+- **Response`401`**Toggle
+- ##### Headers
+
         Status: HTTP/1.1 401 Unauthorized  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -4266,13 +4034,10 @@ For more detailed information, make another request for the userâs Profile.
         
 
 ##### Body
-        
+
         {
           "message": "You must authenticate to access this resource."
         }
-
-
-
 
 ## Profile  __
 
@@ -4286,17 +4051,15 @@ Retrieve a user by username.
 If authenticated as the requested user, the `email` key will be visible, and the `num_list` count will include the userâs private lists.  
 If authenticated as the requested user or the userâs collection/wantlist is public, the `num_collection` / `num_wantlist` keys will be visible.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of whose profile you are requesting.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Status: HTTP/1.1 200 OK  
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
@@ -4312,7 +4075,7 @@ The username of whose profile you are requesting.
         
 
 ##### Body
-        
+
         {
           "profile": "I am a software developer for Discogs.\r\n\r\n[img=http://i.imgur.com/IAk3Ukk.gif]",
           "wantlist_url": "https://api.discogs.com/users/rodneyfool/wants",
@@ -4347,9 +4110,6 @@ The username of whose profile you are requesting.
           "curr_abbr": "USD",
         }
 
-
-
-
 Edit Profile
 
 POST
@@ -4360,8 +4120,8 @@ Edit a userâs profile data.
 
 Authentication as the user is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** vreon
 
 The username of the user.
@@ -4389,14 +4149,12 @@ Biographical information about the user.
 curr_abbr
     `string` (optional) **Example:** USD
 
-Currency for marketplace data. Must be one of the following:   
+Currency for marketplace data. Must be one of the following:
 `USD` `GBP` `EUR` `CAD` `AUD` `JPY` `CHF` `MXN` `BRL` `NZD` `SEK` `ZAR`
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "id": 1,
           "username": "example",
@@ -4423,15 +4181,12 @@ Currency for marketplace data. Must be one of the following:
           "rating_avg": 2.5
         }
 
-  * **Response`403`**Toggle
-  * ##### Body
-        
+- **Response`403`**Toggle
+- ##### Body
+
         {
           "message": "You don't have permission to access this resource."
         }
-
-
-
 
 ## User Submissions  __
 
@@ -4445,17 +4200,15 @@ GET
 
 Retrieve a userâs submissions by username. Accepts Pagination parameters.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** shooezgirl
 
 The username of the submissions you are trying to fetch.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "pagination": {
             "items": 3,
@@ -4608,9 +4361,6 @@ The username of the submissions you are trying to fetch.
           }
         }
 
-
-
-
 ## User Contributions  __
 
 The Contributions resource represents releases, labels, and artists submitted by a user.
@@ -4637,8 +4387,8 @@ Valid `sort_order` keys are:
 `asc`  
 `desc`
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** shooezgirl
 
 The username of the submissions you are trying to fetch.
@@ -4653,11 +4403,9 @@ sort_order
 
 Sort items in a particular order (`asc` or `desc`)
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "contributions": [
             {
@@ -4774,9 +4522,6 @@ Sort items in a particular order (`asc` or `desc`)
           }
         }
 
-
-
-
 Next  ____Previous
 
 * * *
@@ -4803,17 +4548,15 @@ GET
 
 Retrieve a list of folders in a userâs collection. If the collection has been made private by its owner, authentication as the collection owner is required. If you are not authenticated as the collection owner, only folder ID 0 (the âAllâ folder) will be visible (if the requested userâs collection is public).
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to retrieve.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
         Cache-Control: public, must-revalidate  
@@ -4828,7 +4571,7 @@ The username of the collection you are trying to retrieve.
         
 
 ##### Body
-        
+
         {
           "folders": [
             {
@@ -4846,9 +4589,6 @@ The username of the collection you are trying to retrieve.
           ]
         }
 
-
-
-
 Create Folder
 
 POST
@@ -4859,8 +4599,8 @@ Create a new folder in a userâs collection.
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to retrieve.
@@ -4870,20 +4610,15 @@ name
 
 The name of the newly-created folder.
 
+- **Response`201`**Toggle
+- ##### Body
 
-
-  * **Response`201`**Toggle
-  * ##### Body
-        
         {
           "id": 232842,
           "name": "My Music",
           "count": 0,
           "resource_url": "https://api.discogs.com/users/example/collection/folders/232842"
         }
-
-
-
 
 ## Collection Folder  __
 
@@ -4897,8 +4632,8 @@ Retrieve metadata about a folder in a userâs collection.
 
 If `folder_id` is not `0`, authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to request.
@@ -4908,11 +4643,9 @@ folder_id
 
 The ID of the folder to request.
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
         Cache-Control: public, must-revalidate  
@@ -4927,16 +4660,13 @@ The ID of the folder to request.
         
 
 ##### Body
-        
+
         {
           "id": 1,
           "count": 20,
           "name": "Uncategorized",
           "resource_url": "https://api.discogs.com/users/example/collection/folders/1"
         }
-
-
-
 
 Edit Folder
 
@@ -4948,8 +4678,8 @@ Edit a folderâs metadata. Folders `0` and `1` cannot be renamed.
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
@@ -4959,20 +4689,15 @@ folder_id
 
 The ID of the folder to modify.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "id": 392,
           "count": 3,
           "name": "An Example Folder",
           "resource_url": "https://api.discogs.com/users/example/collection/folders/392"
         }
-
-
-
 
 Delete Folder
 
@@ -4984,8 +4709,8 @@ Delete a folder from a userâs collection. A folder must be empty before it 
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
@@ -4995,11 +4720,7 @@ folder_id
 
 The ID of the folder to delete.
 
-
-
-  * **Response`204`**
-
-
+- **Response`204`**
 
 ## Collection Items By Release  __
 
@@ -5015,8 +4736,8 @@ The `release_id` must be non-zero.
 
 Authentication as the collection owner is required if the ownerâs collection is private.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** susan.salkeld
 
 The username of the collection you are trying to view.
@@ -5026,11 +4747,9 @@ release_id
 
 The ID of the release to request.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "pagination": {
             "per_page": 50,
@@ -5187,9 +4906,6 @@ The ID of the release to request.
           ]
         }
 
-
-
-
 ## Collection Items By Folder  __
 
 Get Items
@@ -5216,8 +4932,8 @@ Valid `sort` keys are:
 `added`  
 `year`
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to request.
@@ -5237,11 +4953,9 @@ sort_order
 
 Sort items in a particular order (`asc` or `desc`)
 
+- **Response`200`**Toggle
+- ##### Headers
 
-
-  * **Response`200`**Toggle
-  * ##### Headers
-        
         Reproxy-Status: yes  
         Access-Control-Allow-Origin: *  
         Cache-Control: public, must-revalidate  
@@ -5256,7 +4970,7 @@ Sort items in a particular order (`asc` or `desc`)
         
 
 ##### Body
-        
+
         {
           "pagination": {
             "per_page": 1,
@@ -5326,9 +5040,6 @@ Sort items in a particular order (`asc` or `desc`)
           ]
         }
 
-
-
-
 ## Add To Collection Folder  __
 
 Add Release
@@ -5343,8 +5054,8 @@ The `folder_id` must be non-zero â you can use `1` for âUncategorized�
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
@@ -5359,18 +5070,13 @@ release_id
 
 The ID of the release you are adding.
 
+- **Response`201`**Toggle
+- ##### Body
 
-
-  * **Response`201`**Toggle
-  * ##### Body
-        
         {
           "instance_id": 3,
           "resource_url": "https://api.discogs.com/users/example/collection/folders/1/release/1/instance/3"
         }
-
-
-
 
 ## Change Rating Of Release  __
 
@@ -5386,8 +5092,8 @@ This endpoint potentially takes 2 `folder_id` parameters: one in the URL (which 
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
@@ -5412,11 +5118,7 @@ rating
 
 The rating of the instance you are supplying.
 
-
-
-  * **Response`204`**
-
-
+- **Response`204`**
 
 ## Delete Instance From Folder  __
 
@@ -5432,8 +5134,8 @@ To move the release to the âUncategorizedâ folder instead, use the `PO
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
@@ -5453,18 +5155,13 @@ instance_id
 
 The ID of the instance.
 
+- **Response`204`**
+- **Response`403`**Toggle
+- ##### Body
 
-
-  * **Response`204`**
-  * **Response`403`**Toggle
-  * ##### Body
-        
         {
           "message": "You don't have permission to access this resource."
         }
-
-
-
 
 ## List Custom Fields  __
 
@@ -5480,17 +5177,15 @@ If the collection has been made private by its owner, authentication as the coll
 
 If you are not authenticated as the collection owner, only fields with public set to true will be visible.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "fields": [
             {
@@ -5540,9 +5235,6 @@ The username of the collection you are trying to modify.
           ]
         }
 
-
-
-
 ## Edit Fields Instance  __
 
 Edit Fields
@@ -5553,8 +5245,8 @@ POST
 
 Change the value of a notes field on a particular instance.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
@@ -5584,11 +5276,7 @@ field_id
 
 The ID of the field.
 
-
-
-  * **Response`204`**
-
-
+- **Response`204`**
 
 ## Collection Value  __
 
@@ -5602,25 +5290,20 @@ Returns the minimum, median, and maximum value of a userâs collection.
 
 Authentication as the collection owner is required.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the collection you are trying to modify.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "maximum": "$250.00",
           "median": "$100.25",
           "minimum": "$75.50"
         }
-
-
-
 
 Next  ____Previous
 
@@ -5646,17 +5329,15 @@ If the wantlist has been made private by its owner, you must be authenticated as
 
 The `notes` field will be visible if you are authenticated as the wantlist owner.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the wantlist you are trying to fetch.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "pagination": {
             "per_page": 50,
@@ -5755,9 +5436,6 @@ The username of the wantlist you are trying to fetch.
           ]
         }
 
-
-
-
 ## Add To Wantlist  __
 
 Add a release to a userâs wantlist.
@@ -5770,8 +5448,8 @@ PUT
 
 `/users/{username}/wants/{release_id}{?notes,rating}`
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the wantlist you are trying to fetch.
@@ -5791,11 +5469,9 @@ rating
 
 Userâs rating of this release, from `0` (unrated) to `5` (best). Defaults to `0`.
 
+- **Response`201`**Toggle
+- ##### Body
 
-
-  * **Response`201`**Toggle
-  * ##### Body
-        
         {
           "id": 1,
           "rating": 0,
@@ -5841,17 +5517,14 @@ Userâs rating of this release, from `0` (unrated) to `5` (best). Defaults t
           }
         }
 
-
-
-
 Edit Release In Wantlist
 
 POST
 
 `/users/{username}/wants/{release_id}{?notes,rating}`
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the wantlist you are trying to fetch.
@@ -5866,11 +5539,9 @@ rating
 
 Userâs rating of this release, from `0` (unrated) to `5` (best). Defaults to `0`.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "id": 1,
           "rating": 0,
@@ -5916,26 +5587,19 @@ Userâs rating of this release, from `0` (unrated) to `5` (best). Defaults t
           }
         }
 
-
-
-
 Delete Release From Wantlist
 
 DELETE
 
 `/users/{username}/wants/{release_id}{?notes,rating}`
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the wantlist you are trying to fetch.
 
-
-
-  * **Response`204`**
-
-
+- **Response`204`**
 
 Next  ____Previous
 
@@ -5955,17 +5619,15 @@ GET
 
 Returns a Userâs Lists. Private Lists will only display when authenticated as the owner. Accepts Pagination parameters.
 
-  * **Parameters**
-  * username
+- **Parameters**
+- username
     `string` (required) **Example:** rodneyfool
 
 The username of the Lists you are trying to fetch.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "pagination": {
             "per_page": 1,
@@ -5991,9 +5653,6 @@ The username of the Lists you are trying to fetch.
           ]
         }
 
-
-
-
 ## List  __
 
 Get List Items
@@ -6004,17 +5663,15 @@ GET
 
 Returns items from a specified List. Private Lists will only display when authenticated as the owner.
 
-  * **Parameters**
-  * list_id
+- **Parameters**
+- list_id
     `string` (required) **Example:** 123
 
 The ID of the List you are trying to fetch.
 
+- **Response`200`**Toggle
+- ##### Body
 
-
-  * **Response`200`**Toggle
-  * ##### Body
-        
         {
           "created_ts": "2016-05-31T10:36:30-07:00",
           "modified_ts": "2016-05-31T13:46:12-07:00",
@@ -6055,11 +5712,8 @@ The ID of the List you are trying to fetch.
           "description": "What a cool list!"
         }
 
-
-
-
 __Previous
 
 * * *
 
-This page may not display correctly when opened as a local file. Instead, view it from a web server. 
+This page may not display correctly when opened as a local file. Instead, view it from a web server.

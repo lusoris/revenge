@@ -20,11 +20,11 @@
 
 __Database migrations written in Go. Use as [CLI](#cli-usage) or import as [library](#use-in-your-go-project).__
 
-* Migrate reads migrations from [sources](#migration-sources)
+- Migrate reads migrations from [sources](#migration-sources)
    and applies them in correct order to a [database](#databases).
-* Drivers are "dumb", migrate glues everything together and makes sure the logic is bulletproof.
+- Drivers are "dumb", migrate glues everything together and makes sure the logic is bulletproof.
    (Keeps the drivers lightweight, too.)
-* Database drivers don't assume things or try to correct user input. When in doubt, fail.
+- Database drivers don't assume things or try to correct user input. When in doubt, fail.
 
 Forked from [mattes/migrate](https://github.com/mattes/migrate)
 
@@ -32,27 +32,27 @@ Forked from [mattes/migrate](https://github.com/mattes/migrate)
 
 Database drivers run migrations. [Add a new database?](database/driver.go)
 
-* [PostgreSQL](database/postgres)
-* [PGX v4](database/pgx)
-* [PGX v5](database/pgx/v5)
-* [Redshift](database/redshift)
-* [Ql](database/ql)
-* [Cassandra / ScyllaDB](database/cassandra)
-* [SQLite](database/sqlite)
-* [SQLite3](database/sqlite3) ([todo #165](https://github.com/mattes/migrate/issues/165))
-* [SQLCipher](database/sqlcipher)
-* [MySQL / MariaDB](database/mysql)
-* [Neo4j](database/neo4j)
-* [MongoDB](database/mongodb)
-* [CrateDB](database/crate) ([todo #170](https://github.com/mattes/migrate/issues/170))
-* [Shell](database/shell) ([todo #171](https://github.com/mattes/migrate/issues/171))
-* [Google Cloud Spanner](database/spanner)
-* [CockroachDB](database/cockroachdb)
-* [YugabyteDB](database/yugabytedb)
-* [ClickHouse](database/clickhouse)
-* [Firebird](database/firebird)
-* [MS SQL Server](database/sqlserver)
-* [rqlite](database/rqlite)
+- [PostgreSQL](database/postgres)
+- [PGX v4](database/pgx)
+- [PGX v5](database/pgx/v5)
+- [Redshift](database/redshift)
+- [Ql](database/ql)
+- [Cassandra / ScyllaDB](database/cassandra)
+- [SQLite](database/sqlite)
+- [SQLite3](database/sqlite3) ([todo #165](https://github.com/mattes/migrate/issues/165))
+- [SQLCipher](database/sqlcipher)
+- [MySQL / MariaDB](database/mysql)
+- [Neo4j](database/neo4j)
+- [MongoDB](database/mongodb)
+- [CrateDB](database/crate) ([todo #170](https://github.com/mattes/migrate/issues/170))
+- [Shell](database/shell) ([todo #171](https://github.com/mattes/migrate/issues/171))
+- [Google Cloud Spanner](database/spanner)
+- [CockroachDB](database/cockroachdb)
+- [YugabyteDB](database/yugabytedb)
+- [ClickHouse](database/clickhouse)
+- [Firebird](database/firebird)
+- [MS SQL Server](database/sqlserver)
+- [rqlite](database/rqlite)
 
 ### Database URLs
 
@@ -79,29 +79,29 @@ $
 
 Source drivers read migrations from local or remote sources. [Add a new source?](source/driver.go)
 
-* [Filesystem](source/file) - read from filesystem
-* [io/fs](source/iofs) - read from a Go [io/fs](https://pkg.go.dev/io/fs#FS)
-* [Go-Bindata](source/go_bindata) - read from embedded binary data ([jteeuwen/go-bindata](https://github.com/jteeuwen/go-bindata))
-* [pkger](source/pkger) - read from embedded binary data ([markbates/pkger](https://github.com/markbates/pkger))
-* [GitHub](source/github) - read from remote GitHub repositories
-* [GitHub Enterprise](source/github_ee) - read from remote GitHub Enterprise repositories
-* [Bitbucket](source/bitbucket) - read from remote Bitbucket repositories
-* [Gitlab](source/gitlab) - read from remote Gitlab repositories
-* [AWS S3](source/aws_s3) - read from Amazon Web Services S3
-* [Google Cloud Storage](source/google_cloud_storage) - read from Google Cloud Platform Storage
+- [Filesystem](source/file) - read from filesystem
+- [io/fs](source/iofs) - read from a Go [io/fs](https://pkg.go.dev/io/fs#FS)
+- [Go-Bindata](source/go_bindata) - read from embedded binary data ([jteeuwen/go-bindata](https://github.com/jteeuwen/go-bindata))
+- [pkger](source/pkger) - read from embedded binary data ([markbates/pkger](https://github.com/markbates/pkger))
+- [GitHub](source/github) - read from remote GitHub repositories
+- [GitHub Enterprise](source/github_ee) - read from remote GitHub Enterprise repositories
+- [Bitbucket](source/bitbucket) - read from remote Bitbucket repositories
+- [Gitlab](source/gitlab) - read from remote Gitlab repositories
+- [AWS S3](source/aws_s3) - read from Amazon Web Services S3
+- [Google Cloud Storage](source/google_cloud_storage) - read from Google Cloud Platform Storage
 
 ## CLI usage
 
-* Simple wrapper around this library.
-* Handles ctrl+c (SIGINT) gracefully.
-* No config search paths, no config files, no magic ENV var injections.
+- Simple wrapper around this library.
+- Handles ctrl+c (SIGINT) gracefully.
+- No config search paths, no config files, no magic ENV var injections.
 
 [CLI Documentation](cmd/migrate) (includes CLI install instructions)
 
 ### Basic usage
 
 ```bash
-$ migrate -source file://path/to/migrations -database postgres://localhost:5432/database up 2
+migrate -source file://path/to/migrations -database postgres://localhost:5432/database up 2
 ```
 
 ### Docker usage
@@ -113,12 +113,12 @@ $ docker run -v {{ migration dir }}:/migrations --network host migrate/migrate
 
 ## Use in your Go project
 
-* API is stable and frozen for this release (v3 & v4).
-* Uses [Go modules](https://golang.org/cmd/go/#hdr-Modules__module_versions__and_more) to manage dependencies.
-* To help prevent database corruptions, it supports graceful stops via `GracefulStop chan bool`.
-* Bring your own logger.
-* Uses `io.Reader` streams internally for low memory overhead.
-* Thread-safe and no goroutine leaks.
+- API is stable and frozen for this release (v3 & v4).
+- Uses [Go modules](https://golang.org/cmd/go/#hdr-Modules__module_versions__and_more) to manage dependencies.
+- To help prevent database corruptions, it supports graceful stops via `GracefulStop chan bool`.
+- Bring your own logger.
+- Uses `io.Reader` streams internally for low memory overhead.
+- Thread-safe and no goroutine leaks.
 
 __[Go Documentation](https://pkg.go.dev/github.com/golang-migrate/migrate/v4)__
 
@@ -164,8 +164,8 @@ Go to [getting started](GETTING_STARTED.md)
 
 ## Tutorials
 
-* [CockroachDB](database/cockroachdb/TUTORIAL.md)
-* [PostgreSQL](database/postgres/TUTORIAL.md)
+- [CockroachDB](database/cockroachdb/TUTORIAL.md)
+- [PostgreSQL](database/postgres/TUTORIAL.md)
 
 (more tutorials to come)
 
@@ -189,9 +189,9 @@ Check out [migradaptor](https://github.com/musinit/migradaptor/).
 
 Version | Supported? | Import | Notes
 --------|------------|--------|------
-**master** | :white_check_mark: | `import "github.com/golang-migrate/migrate/v4"` | New features and bug fixes arrive here first |
-**v4** | :white_check_mark: | `import "github.com/golang-migrate/migrate/v4"` | Used for stable releases |
-**v3** | :x: | `import "github.com/golang-migrate/migrate"` (with package manager) or `import "gopkg.in/golang-migrate/migrate.v3"` (not recommended) | **DO NOT USE** - No longer supported |
+__master__ | :white_check_mark: | `import "github.com/golang-migrate/migrate/v4"` | New features and bug fixes arrive here first |
+__v4__ | :white_check_mark: | `import "github.com/golang-migrate/migrate/v4"` | Used for stable releases |
+__v3__ | :x: | `import "github.com/golang-migrate/migrate"` (with package manager) or `import "gopkg.in/golang-migrate/migrate.v3"` (not recommended) | __DO NOT USE__ - No longer supported |
 
 ## Development and Contributing
 

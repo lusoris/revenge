@@ -1,7 +1,7 @@
 # Commitizen
 
 > Source: https://commitizen-tools.github.io/commitizen/
-> Fetched: 2026-01-31T16:08:30.685407+00:00
+> Fetched: 2026-02-01T11:55:53.684341+00:00
 > Content-Hash: 068747f020bc8aa7
 > Type: html
 
@@ -25,12 +25,10 @@ Commitizen is a powerful release management tool that helps teams maintain consi
 
 By enforcing standardized commit conventions (defaulting to [Conventional Commits](https://www.conventionalcommits.org)), Commitizen helps teams:
 
-  * Write clear, structured commit messages
-  * Automatically manage version numbers using semantic versioning
-  * Generate and maintain changelogs
-  * Streamline the release process
-
-
+- Write clear, structured commit messages
+- Automatically manage version numbers using semantic versioning
+- Generate and maintain changelogs
+- Streamline the release process
 
 ### Key Benefits¶
 
@@ -40,21 +38,17 @@ With just a simple `cz bump` command, Commitizen handles:
   2. **Changelog Generation** : Creates and updates changelogs following the [Keep a changelog](https://keepachangelog.com/) format
   3. **Commit Standardization** : Enforces consistent commit message formats across your team
 
-
-
 This standardization makes your commit history more readable and meaningful, while the automation reduces manual work and potential errors in the release process.
 
 ### Features¶
 
-  * Interactive CLI for standardized commits with default [Conventional Commits](https://www.conventionalcommits.org) support
-  * Intelligent [version bumping](https://commitizen-tools.github.io/commitizen/commands/bump/) using [Semantic Versioning](https://semver.org/)
-  * Automatic [keep a changelog](https://keepachangelog.com/) generation
-  * Built-in commit validation with pre-commit hooks
-  * [Customizable](https://commitizen-tools.github.io/commitizen/customization/config_file/) commit rules and templates
-  * Multi-format version file support
-  * Custom rules and plugins via pip
-
-
+- Interactive CLI for standardized commits with default [Conventional Commits](https://www.conventionalcommits.org) support
+- Intelligent [version bumping](https://commitizen-tools.github.io/commitizen/commands/bump/) using [Semantic Versioning](https://semver.org/)
+- Automatic [keep a changelog](https://keepachangelog.com/) generation
+- Built-in commit validation with pre-commit hooks
+- [Customizable](https://commitizen-tools.github.io/commitizen/customization/config_file/) commit rules and templates
+- Multi-format version file support
+- Custom rules and plugins via pip
 
 ## Getting Started¶
 
@@ -62,10 +56,8 @@ This standardization makes your commit history more readable and meaningful, whi
 
 Before installing Commitizen, ensure you have:
 
-  * [Python](https://www.python.org/downloads/) `3.10+`
-  * [Git](https://git-scm.com/downloads) `1.8.5.2+`
-
-
+- [Python](https://www.python.org/downloads/) `3.10+`
+- [Git](https://git-scm.com/downloads) `1.8.5.2+`
 
 ### Installation¶
 
@@ -74,8 +66,7 @@ Before installing Commitizen, ensure you have:
 The recommended way to install Commitizen is using [`pipx`](https://pipx.pypa.io/) or [`uv`](https://docs.astral.sh/uv/), which ensures a clean, isolated installation:
 
 **Using pipx:**
-    
-    
+
     # Install Commitizen
     pipx install commitizen
     
@@ -84,8 +75,7 @@ The recommended way to install Commitizen is using [`pipx`](https://pipx.pypa.io
     
 
 **Using uv:**
-    
-    
+
     # Install commitizen
     uv tool install commitizen
     
@@ -94,8 +84,7 @@ The recommended way to install Commitizen is using [`pipx`](https://pipx.pypa.io
     
 
 **(For macOS users) Using Homebrew:**
-    
-    
+
     brew install commitizen
     
 
@@ -104,20 +93,17 @@ The recommended way to install Commitizen is using [`pipx`](https://pipx.pypa.io
 You can add Commitizen to your Python project using any of these package managers:
 
 **Using pip:**
-    
-    
+
     pip install -U commitizen
     
 
 **Using conda:**
-    
-    
+
     conda install -c conda-forge commitizen
     
 
 **Using Poetry:**
-    
-    
+
     # For Poetry >= 1.2.0
     poetry add commitizen --group dev
     
@@ -126,14 +112,12 @@ You can add Commitizen to your Python project using any of these package manager
     
 
 **Using uv:**
-    
-    
+
     uv add --dev commitizen
     
 
 **Using pdm:**
-    
-    
+
     pdm add -d commitizen
     
 
@@ -145,17 +129,15 @@ To get started, run the `cz init` command. This will guide you through the proce
 
 #### Create Commits¶
 
-Create standardized commits using: 
-    
-    
+Create standardized commits using:
+
     cz commit
     # or use the shortcut
     cz c
     
 
-To sign off your commits: 
-    
-    
+To sign off your commits:
+
     cz commit -- --signoff
     # or use the shortcut
     cz commit -- -s
@@ -165,36 +147,30 @@ For more commit options, run `cz commit --help`.
 
 #### Version Management¶
 
-The most common command you'll use is: 
-    
-    
+The most common command you'll use is:
+
     cz bump
     
 
 This command:
 
-  * Bumps your project's version
-  * Creates a git tag
-  * Updates the changelog (if `update_changelog_on_bump` is enabled)
-  * Updates version files
-
-
+- Bumps your project's version
+- Creates a git tag
+- Updates the changelog (if `update_changelog_on_bump` is enabled)
+- Updates version files
 
 You can customize:
 
-  * [Version files](https://commitizen-tools.github.io/commitizen/commands/bump/#version_files)
-  * [Version scheme](https://commitizen-tools.github.io/commitizen/commands/bump/#version_scheme)
-  * [Version provider](https://commitizen-tools.github.io/commitizen/config/version_provider/)
-
-
+- [Version files](https://commitizen-tools.github.io/commitizen/commands/bump/#version_files)
+- [Version scheme](https://commitizen-tools.github.io/commitizen/commands/bump/#version_scheme)
+- [Version provider](https://commitizen-tools.github.io/commitizen/config/version_provider/)
 
 For all available options, see the [bump command documentation](https://commitizen-tools.github.io/commitizen/commands/bump/).
 
 ### Advanced Usage¶
 
 #### Get Project Version¶
-    
-    
+
     # Get your project's version (instead of Commitizen's version)
     cz version -p
     # Preview changelog changes
@@ -209,8 +185,8 @@ For example, you can use the output of the command `cz changelog --dry-run "$(cz
 
 Commitizen can automatically validate your commit messages using pre-commit hooks.
 
-  1. Add to your `.pre-commit-config.yaml`: 
-         
+  1. Add to your `.pre-commit-config.yaml`:
+
          ---
          repos:
            - repo: https://github.com/commitizen-tools/commitizen
@@ -221,20 +197,19 @@ Commitizen can automatically validate your commit messages using pre-commit hook
                  stages: [pre-push]
          
 
-  2. Install the hooks: 
-         
+  2. Install the hooks:
+
          prek install --hook-type commit-msg --hook-type pre-push
          
-
 
 Hook | Recommended Stage  
 ---|---  
 commitizen | commit-msg  
 commitizen-branch | pre-push  
   
-> **Note** : Replace `master` with the [latest tag](https://github.com/commitizen-tools/commitizen/tags) to avoid warnings. You can automatically update this with: 
->     
->     
+> **Note** : Replace `master` with the [latest tag](https://github.com/commitizen-tools/commitizen/tags) to avoid warnings. You can automatically update this with:
+> 
+> 
 >     prek autoupdate
 >     
 
@@ -259,18 +234,15 @@ Command | Description | Alias
   
 ### Additional Resources¶
 
-  * [Conventional Commits Specification](https://www.conventionalcommits.org)
-  * [Exit Codes Reference](https://commitizen-tools.github.io/commitizen/exit_codes/)
-  * [Configuration Guide](https://commitizen-tools.github.io/commitizen/config/configuration_file/)
-  * [Command Documentation](https://commitizen-tools.github.io/commitizen/commands/init/)
-
-
+- [Conventional Commits Specification](https://www.conventionalcommits.org)
+- [Exit Codes Reference](https://commitizen-tools.github.io/commitizen/exit_codes/)
+- [Configuration Guide](https://commitizen-tools.github.io/commitizen/config/configuration_file/)
+- [Command Documentation](https://commitizen-tools.github.io/commitizen/commands/init/)
 
 ### Getting Help¶
 
 For each command, you can get detailed help by adding `\--help`:
-    
-    
+
     cz commit --help
     cz bump --help
     cz changelog --help
@@ -284,20 +256,17 @@ Commitizen supports command-line completion through [argcomplete](https://kislyu
 
 ### Supported Shells¶
 
-  * **Bash** : Full support
-  * **Zsh** : Limited support
-  * **Fish** : Limited support
-  * **Tcsh** : Limited support
-
-
+- **Bash** : Full support
+- **Zsh** : Limited support
+- **Fish** : Limited support
+- **Tcsh** : Limited support
 
 ### Installation Methods¶
 
 #### Global Installation (Recommended)¶
 
 If you installed Commitizen globally (e.g., using `pipx` or `brew`), you can enable global completion:
-    
-    
+
     # Enable global completion for all Python applications
     sudo activate-global-python-argcomplete
     
@@ -305,8 +274,7 @@ If you installed Commitizen globally (e.g., using `pipx` or `brew`), you can ena
 #### User-Specific Installation¶
 
 For a user-specific installation that persists across sessions:
-    
-    
+
     # Add to your shell's startup file (e.g., ~/.bashrc, ~/.zshrc)
     register-python-argcomplete cz >> ~/.bashrc
     
@@ -314,8 +282,7 @@ For a user-specific installation that persists across sessions:
 #### Temporary Installation¶
 
 For one-time activation in your current shell session:
-    
-    
+
     # Activate completion for current session only
     eval "$(register-python-argcomplete cz)"
     
@@ -327,8 +294,6 @@ After installation, you can verify the completion is working by:
   1. Opening a new terminal session
   2. Typing `cz` followed by a space and pressing `TAB` twice
   3. You should see a list of available commands
-
-
 
 For more detailed information about argcomplete configuration and troubleshooting, visit the [argcomplete documentation](https://kislyuk.github.io/argcomplete/).
 

@@ -7,7 +7,7 @@
 
 ---
 
-November 13, 2025: [ PostgreSQL 18.1, 17.7, 16.11, 15.15, 14.20, and 13.23 Released! ](/about/news/postgresql-181-177-1611-1515-1420-and-1323-released-3171/)
+November 13, 2025: [PostgreSQL 18.1, 17.7, 16.11, 15.15, 14.20, and 13.23 Released!](/about/news/postgresql-181-177-1611-1515-1420-and-1323-released-3171/)
 
 [Documentation](/docs/ "Documentation") → [PostgreSQL 18](/docs/18/index.html)
 
@@ -34,27 +34,21 @@ __
 
 This section describes:
 
-  * functions and operators for processing and creating JSON data
+- functions and operators for processing and creating JSON data
 
-  * the SQL/JSON path language
+- the SQL/JSON path language
 
-  * the SQL/JSON query functions
-
-
-
+- the SQL/JSON query functions
 
 To provide native support for JSON data types within the SQL environment, PostgreSQL implements the _SQL/JSON data model_. This model comprises sequences of items. Each item can hold SQL scalar values, with an additional SQL/JSON null value, and composite data structures that use JSON arrays and objects. The model is a formalization of the implied data model in the JSON specification [RFC 7159](https://datatracker.ietf.org/doc/html/rfc7159).
 
 SQL/JSON allows you to handle JSON data alongside regular SQL data, with transaction support, including:
 
-  * Uploading JSON data into the database and storing it in regular SQL columns as character or binary strings.
+- Uploading JSON data into the database and storing it in regular SQL columns as character or binary strings.
 
-  * Generating JSON objects and arrays from relational data.
+- Generating JSON objects and arrays from relational data.
 
-  * Querying JSON data using SQL/JSON query functions and SQL/JSON path language expressions.
-
-
-
+- Querying JSON data using SQL/JSON query functions and SQL/JSON path language expressions.
 
 To learn more about the SQL/JSON standard, see [[sqltr-19075-6]](biblio.html#SQLTR-19075-6 "SQL Technical Report"). For details on JSON types supported in PostgreSQL, see [Section 8.14](datatype-json.html "8.14. JSON Types").
 
@@ -73,9 +67,6 @@ Operator Description Example(s)
 `json` `#>` `text[]` → `json` `jsonb` `#>` `text[]` → `jsonb` Extracts JSON sub-object at the specified path, where path elements can be either field keys or array indexes. `'{"a": {"b": ["foo","bar"]}}'::json #> '{a,b,1}'` → `"bar"`  
 `json` `#>>` `text[]` → `text` `jsonb` `#>>` `text[]` → `text` Extracts JSON sub-object at the specified path as `text`. `'{"a": {"b": ["foo","bar"]}}'::json #>> '{a,b,1}'` → `bar`  
   
-  
-
-
 ### Note
 
 The field/element/path extraction operators return NULL, rather than failing, if the JSON input does not have the right structure to match the request; for example if no such key or array element exists.
@@ -99,9 +90,6 @@ Operator Description Example(s)
 `jsonb` `@?` `jsonpath` → `boolean` Does JSON path return any item for the specified JSON value? (This is useful only with SQL-standard JSON path expressions, not [predicate check expressions](functions-json.html#FUNCTIONS-SQLJSON-CHECK-EXPRESSIONS "9.16.2.1.1. Boolean Predicate Check Expressions"), since those always return a value.) `'{"a":[1,2,3,4,5]}'::jsonb @? '$.a[*] ? (@ > 2)'` → `t`  
 `jsonb` `@@` `jsonpath` → `boolean` Returns the result of a JSON path predicate check for the specified JSON value. (This is useful only with [predicate check expressions](functions-json.html#FUNCTIONS-SQLJSON-CHECK-EXPRESSIONS "9.16.2.1.1. Boolean Predicate Check Expressions"), not SQL-standard JSON path expressions, since it will return `NULL` if the path result is not a single boolean value.) `'{"a":[1,2,3,4,5]}'::jsonb @@ '$.a[*] > 2'` → `t`  
   
-  
-
-
 ### Note
 
 The `jsonpath` operators `@?` and `@@` suppress the following errors: missing object field or array element, unexpected JSON item type, datetime and numeric errors. The `jsonpath`-related functions described below can also be told to suppress these types of errors. This behavior might be helpful when searching JSON document collections of varying structure.
@@ -126,9 +114,6 @@ Function Description Example(s)
 `json_serialize` ( _`expression`_ [ `FORMAT JSON` [ `ENCODING UTF8` ] ] [ `RETURNING` _`data_type`_ [ `FORMAT JSON` [ `ENCODING UTF8` ] ] ] ) Converts an SQL/JSON expression into a character or binary string. The _`expression`_ can be of any JSON type, any character string type, or `bytea` in UTF8 encoding. The returned type used in `RETURNING` can be any character string type or `bytea`. The default is `text`. `json_serialize('{ "a" : 1 } ' RETURNING bytea)` → `\x7b20226122203a2031207d20`  
 [a] For example, the [hstore](hstore.html "F.17. hstore — hstore key/value datatype") extension has a cast from `hstore` to `json`, so that `hstore` values converted via the JSON creation functions will be represented as JSON objects, not as primitive string values.  
   
-  
-
-
 [Table 9.50](functions-json.html#FUNCTIONS-SQLJSON-MISC "Table 9.50. SQL/JSON Testing Functions") details SQL/JSON facilities for testing JSON.
 
 **Table 9.50. SQL/JSON Testing Functions**
@@ -136,8 +121,7 @@ Function Description Example(s)
 Function signature Description Example(s)  
 ---  
 _`expression`_ `IS` [ `NOT` ] `JSON` [ { `VALUE` | `SCALAR` | `ARRAY` | `OBJECT` } ] [ { `WITH` | `WITHOUT` } `UNIQUE` [ `KEYS` ] ] This predicate tests whether _`expression`_ can be parsed as JSON, possibly of a specified type. If `SCALAR` or `ARRAY` or `OBJECT` is specified, the test is whether or not the JSON is of that particular type. If `WITH UNIQUE KEYS` is specified, then any object in the _`expression`_ is also tested to see if it has duplicate keys.
-    
-    
+
     SELECT js,
       js IS JSON "json?",
       js IS JSON SCALAR "scalar?",
@@ -171,9 +155,6 @@ _`expression`_ `IS` [ `NOT` ] `JSON` [ { `VALUE` | `SCALAR` | `ARRAY` | `OBJECT`
     array w/o UK? | t
       
   
-  
-
-
 [Table 9.51](functions-json.html#FUNCTIONS-JSON-PROCESSING-TABLE "Table 9.51. JSON Processing Functions") shows the functions that are available for processing `json` and `jsonb` values.
 
 **Table 9.51. JSON Processing Functions**
@@ -181,8 +162,7 @@ _`expression`_ `IS` [ `NOT` ] `JSON` [ { `VALUE` | `SCALAR` | `ARRAY` | `OBJECT`
 Function Description Example(s)  
 ---  
 `json_array_elements` ( `json` ) → `setof json` `jsonb_array_elements` ( `jsonb` ) → `setof jsonb` Expands the top-level JSON array into a set of JSON values. `select * from json_array_elements('[1,true, [2,false]]')` →
-    
-    
+
        value
     -----------
      1
@@ -191,8 +171,7 @@ Function Description Example(s)
       
   
 `json_array_elements_text` ( `json` ) → `setof text` `jsonb_array_elements_text` ( `jsonb` ) → `setof text` Expands the top-level JSON array into a set of `text` values. `select * from json_array_elements_text('["foo", "bar"]')` →
-    
-    
+
        value
     -----------
      foo
@@ -201,8 +180,7 @@ Function Description Example(s)
   
 `json_array_length` ( `json` ) → `integer` `jsonb_array_length` ( `jsonb` ) → `integer` Returns the number of elements in the top-level JSON array. `json_array_length('[1,2,3,{"f1":1,"f2":[5,6]},4]')` → `5` `jsonb_array_length('[]')` → `0`  
 `json_each` ( `json` ) → `setof record` ( _`key`_ `text`, _`value`_ `json` ) `jsonb_each` ( `jsonb` ) → `setof record` ( _`key`_ `text`, _`value`_ `jsonb` ) Expands the top-level JSON object into a set of key/value pairs. `select * from json_each('{"a":"foo", "b":"bar"}')` →
-    
-    
+
      key | value
     -----+-------
      a   | "foo"
@@ -210,8 +188,7 @@ Function Description Example(s)
       
   
 `json_each_text` ( `json` ) → `setof record` ( _`key`_ `text`, _`value`_ `text` ) `jsonb_each_text` ( `jsonb` ) → `setof record` ( _`key`_ `text`, _`value`_ `text` ) Expands the top-level JSON object into a set of key/value pairs. The returned _`value`_ s will be of type `text`. `select * from json_each_text('{"a":"foo", "b":"bar"}')` →
-    
-    
+
      key | value
     -----+-------
      a   | foo
@@ -221,8 +198,7 @@ Function Description Example(s)
 `json_extract_path` ( _`from_json`_ `json`, `VARIADIC` _`path_elems`_ `text[]` ) → `json` `jsonb_extract_path` ( _`from_json`_ `jsonb`, `VARIADIC` _`path_elems`_ `text[]` ) → `jsonb` Extracts JSON sub-object at the specified path. (This is functionally equivalent to the `#>` operator, but writing the path out as a variadic list can be more convenient in some cases.) `json_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}', 'f4', 'f6')` → `"foo"`  
 `json_extract_path_text` ( _`from_json`_ `json`, `VARIADIC` _`path_elems`_ `text[]` ) → `text` `jsonb_extract_path_text` ( _`from_json`_ `jsonb`, `VARIADIC` _`path_elems`_ `text[]` ) → `text` Extracts JSON sub-object at the specified path as `text`. (This is functionally equivalent to the `#>>` operator.) `json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}', 'f4', 'f6')` → `foo`  
 `json_object_keys` ( `json` ) → `setof text` `jsonb_object_keys` ( `jsonb` ) → `setof text` Returns the set of keys in the top-level JSON object. `select * from json_object_keys('{"f1":"abc","f2":{"f3":"a", "f4":"b"}}')` →
-    
-    
+
      json_object_keys
     ------------------
      f1
@@ -231,24 +207,22 @@ Function Description Example(s)
   
 `json_populate_record` ( _`base`_ `anyelement`, _`from_json`_ `json` ) → `anyelement` `jsonb_populate_record` ( _`base`_ `anyelement`, _`from_json`_ `jsonb` ) → `anyelement` Expands the top-level JSON object to a row having the composite type of the _`base`_ argument. The JSON object is scanned for fields whose names match column names of the output row type, and their values are inserted into those columns of the output. (Fields that do not correspond to any output column name are ignored.) In typical use, the value of _`base`_ is just `NULL`, which means that any output columns that do not match any object field will be filled with nulls. However, if _`base`_ isn't `NULL` then the values it contains will be used for unmatched columns. To convert a JSON value to the SQL type of an output column, the following rules are applied in sequence:
 
-  * A JSON null value is converted to an SQL null in all cases.
-  * If the output column is of type `json` or `jsonb`, the JSON value is just reproduced exactly.
-  * If the output column is a composite (row) type, and the JSON value is a JSON object, the fields of the object are converted to columns of the output row type by recursive application of these rules.
-  * Likewise, if the output column is an array type and the JSON value is a JSON array, the elements of the JSON array are converted to elements of the output array by recursive application of these rules.
-  * Otherwise, if the JSON value is a string, the contents of the string are fed to the input conversion function for the column's data type.
-  * Otherwise, the ordinary text representation of the JSON value is fed to the input conversion function for the column's data type.
+- A JSON null value is converted to an SQL null in all cases.
+- If the output column is of type `json` or `jsonb`, the JSON value is just reproduced exactly.
+- If the output column is a composite (row) type, and the JSON value is a JSON object, the fields of the object are converted to columns of the output row type by recursive application of these rules.
+- Likewise, if the output column is an array type and the JSON value is a JSON array, the elements of the JSON array are converted to elements of the output array by recursive application of these rules.
+- Otherwise, if the JSON value is a string, the contents of the string are fed to the input conversion function for the column's data type.
+- Otherwise, the ordinary text representation of the JSON value is fed to the input conversion function for the column's data type.
 
 While the example below uses a constant JSON value, typical use would be to reference a `json` or `jsonb` column laterally from another table in the query's `FROM` clause. Writing `json_populate_record` in the `FROM` clause is good practice, since all of the extracted columns are available for use without duplicate function calls. `create type subrowtype as (d int, e text);` `create type myrowtype as (a int, b text[], c subrowtype);` `select * from json_populate_record(null::myrowtype, '{"a": 1, "b": ["2", "a b"], "c": {"d": 4, "e": "a b c"}, "x": "foo"}')` →
-    
-    
+
      a |   b       |      c
     ---+-----------+-------------
      1 | {2,"a b"} | (4,"a b c")
       
   
 `jsonb_populate_record_valid` ( _`base`_ `anyelement`, _`from_json`_ `json` ) → `boolean` Function for testing `jsonb_populate_record`. Returns `true` if the input `jsonb_populate_record` would finish without an error for the given input JSON object; that is, it's valid input, `false` otherwise. `create type jsb_char2 as (a char(2));` `select jsonb_populate_record_valid(NULL::jsb_char2, '{"a": "aaa"}');` →
-    
-    
+
      jsonb_populate_record_valid
     -----------------------------
      f
@@ -256,14 +230,12 @@ While the example below uses a constant JSON value, typical use would be to refe
     
 
 `select * from jsonb_populate_record(NULL::jsb_char2, '{"a": "aaa"}') q;` →
-    
-    
+
     ERROR:  value too long for type character(2)
     
 
 `select jsonb_populate_record_valid(NULL::jsb_char2, '{"a": "aa"}');` →
-    
-    
+
      jsonb_populate_record_valid
     -----------------------------
      t
@@ -271,8 +243,7 @@ While the example below uses a constant JSON value, typical use would be to refe
     
 
 `select * from jsonb_populate_record(NULL::jsb_char2, '{"a": "aa"}') q;` →
-    
-    
+
      a
     ----
      aa
@@ -280,8 +251,7 @@ While the example below uses a constant JSON value, typical use would be to refe
       
   
 `json_populate_recordset` ( _`base`_ `anyelement`, _`from_json`_ `json` ) → `setof anyelement` `jsonb_populate_recordset` ( _`base`_ `anyelement`, _`from_json`_ `jsonb` ) → `setof anyelement` Expands the top-level JSON array of objects to a set of rows having the composite type of the _`base`_ argument. Each element of the JSON array is processed as described above for `json[b]_populate_record`. `create type twoints as (a int, b int);` `select * from json_populate_recordset(null::twoints, '[{"a":1,"b":2}, {"a":3,"b":4}]')` →
-    
-    
+
      a | b
     ---+---
      1 | 2
@@ -289,16 +259,14 @@ While the example below uses a constant JSON value, typical use would be to refe
       
   
 `json_to_record` ( `json` ) → `record` `jsonb_to_record` ( `jsonb` ) → `record` Expands the top-level JSON object to a row having the composite type defined by an `AS` clause. (As with all functions returning `record`, the calling query must explicitly define the structure of the record with an `AS` clause.) The output record is filled from fields of the JSON object, in the same way as described above for `json[b]_populate_record`. Since there is no input record value, unmatched columns are always filled with nulls. `create type myrowtype as (a int, b text);` `select * from json_to_record('{"a":1,"b":[1,2,3],"c":[1,2,3],"e":"bar","r": {"a": 123, "b": "a b c"}}') as x(a int, b text, c int[], d text, r myrowtype)` →
-    
-    
+
      a |    b    |    c    | d |       r
     ---+---------+---------+---+---------------
      1 | [1,2,3] | {1,2,3} |   | (123,"a b c")
       
   
 `json_to_recordset` ( `json` ) → `setof record` `jsonb_to_recordset` ( `jsonb` ) → `setof record` Expands the top-level JSON array of objects to a set of rows having the composite type defined by an `AS` clause. (As with all functions returning `record`, the calling query must explicitly define the structure of the record with an `AS` clause.) Each element of the JSON array is processed as described above for `json[b]_populate_record`. `select * from json_to_recordset('[{"a":1,"b":"foo"}, {"a":"2","c":"bar"}]') as x(a int, b text)` →
-    
-    
+
      a |  b
     ---+-----
      1 | foo
@@ -312,8 +280,7 @@ While the example below uses a constant JSON value, typical use would be to refe
 `jsonb_path_exists` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `boolean` Checks whether the JSON path returns any item for the specified JSON value. (This is useful only with SQL-standard JSON path expressions, not [predicate check expressions](functions-json.html#FUNCTIONS-SQLJSON-CHECK-EXPRESSIONS "9.16.2.1.1. Boolean Predicate Check Expressions"), since those always return a value.) If the _`vars`_ argument is specified, it must be a JSON object, and its fields provide named values to be substituted into the `jsonpath` expression. If the _`silent`_ argument is specified and is `true`, the function suppresses the same errors as the `@?` and `@@` operators do. `jsonb_path_exists('{"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min && @ <= $max)', '{"min":2, "max":4}')` → `t`  
 `jsonb_path_match` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `boolean` Returns the SQL boolean result of a JSON path predicate check for the specified JSON value. (This is useful only with [predicate check expressions](functions-json.html#FUNCTIONS-SQLJSON-CHECK-EXPRESSIONS "9.16.2.1.1. Boolean Predicate Check Expressions"), not SQL-standard JSON path expressions, since it will either fail or return `NULL` if the path result is not a single boolean value.) The optional _`vars`_ and _`silent`_ arguments act the same as for `jsonb_path_exists`. `jsonb_path_match('{"a":[1,2,3,4,5]}', 'exists($.a[*] ? (@ >= $min && @ <= $max))', '{"min":2, "max":4}')` → `t`  
 `jsonb_path_query` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `setof jsonb` Returns all JSON items returned by the JSON path for the specified JSON value. For SQL-standard JSON path expressions it returns the JSON values selected from _`target`_. For [predicate check expressions](functions-json.html#FUNCTIONS-SQLJSON-CHECK-EXPRESSIONS "9.16.2.1.1. Boolean Predicate Check Expressions") it returns the result of the predicate check: `true`, `false`, or `null`. The optional _`vars`_ and _`silent`_ arguments act the same as for `jsonb_path_exists`. `select * from jsonb_path_query('{"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min && @ <= $max)', '{"min":2, "max":4}')` →
-    
-    
+
      jsonb_path_query
     ------------------
      2
@@ -325,8 +292,7 @@ While the example below uses a constant JSON value, typical use would be to refe
 `jsonb_path_query_first` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `jsonb` Returns the first JSON item returned by the JSON path for the specified JSON value, or `NULL` if there are no results. The parameters are the same as for `jsonb_path_query`. `jsonb_path_query_first('{"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min && @ <= $max)', '{"min":2, "max":4}')` → `2`  
 `jsonb_path_exists_tz` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `boolean` `jsonb_path_match_tz` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `boolean` `jsonb_path_query_tz` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `setof jsonb` `jsonb_path_query_array_tz` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `jsonb` `jsonb_path_query_first_tz` ( _`target`_ `jsonb`, _`path`_ `jsonpath` [, _`vars`_ `jsonb` [, _`silent`_ `boolean` ]] ) → `jsonb` These functions act like their counterparts described above without the `_tz` suffix, except that these functions support comparisons of date/time values that require timezone-aware conversions. The example below requires interpretation of the date-only value `2015-08-02` as a timestamp with time zone, so the result depends on the current [TimeZone](runtime-config-client.html#GUC-TIMEZONE) setting. Due to this dependency, these functions are marked as stable, which means these functions cannot be used in indexes. Their counterparts are immutable, and so can be used in indexes; but they will throw errors if asked to make such comparisons. `jsonb_path_exists_tz('["2015-08-01 12:00:00-05"]', '$[*] ? (@.datetime() < "2015-08-02".datetime())')` → `t`  
 `jsonb_pretty` ( `jsonb` ) → `text` Converts the given JSON value to pretty-printed, indented text. `jsonb_pretty('[{"f1":1,"f2":null}, 2]')` →
-    
-    
+
     [
         {
             "f1": 1,
@@ -338,9 +304,6 @@ While the example below uses a constant JSON value, typical use would be to refe
   
 `json_typeof` ( `json` ) → `text` `jsonb_typeof` ( `jsonb` ) → `text` Returns the type of the top-level JSON value as a text string. Possible types are `object`, `array`, `string`, `number`, `boolean`, and `null`. (The `null` result should not be confused with an SQL NULL; see the examples.) `json_typeof('-123.4')` → `number` `json_typeof('null'::json)` → `null` `json_typeof(NULL::json) IS NULL` → `t`  
   
-  
-
-
 ### 9.16.2. The SQL/JSON Path Language #
 
 SQL/JSON path expressions specify item(s) to be retrieved from a JSON value, similarly to XPath expressions used for access to XML content. In PostgreSQL, path expressions are implemented as the `jsonpath` data type and can use any elements described in [Section 8.14.7](datatype-json.html#DATATYPE-JSONPATH "8.14.7. jsonpath Type").
@@ -352,8 +315,7 @@ A path expression consists of a sequence of elements allowed by the `jsonpath` d
 To refer to the JSON value being queried (the _context item_), use the `$` variable in the path expression. The first element of a path must always be `$`. It can be followed by one or more [accessor operators](datatype-json.html#TYPE-JSONPATH-ACCESSORS "Table 8.25. jsonpath Accessors"), which go down the JSON structure level by level to retrieve sub-items of the context item. Each accessor operator acts on the result(s) of the previous evaluation step, producing zero, one, or more output items from each input item.
 
 For example, suppose you have some JSON data from a GPS tracker that you would like to parse, such as:
-    
-    
+
     SELECT '{
       "track": {
         "segments": [
@@ -375,8 +337,7 @@ For example, suppose you have some JSON data from a GPS tracker that you would l
 (The above example can be copied-and-pasted into psql to set things up for the following examples. Then psql will expand `:'json'` into a suitably-quoted string constant containing the JSON value.)
 
 To retrieve the available track segments, you need to use the `._`key`_` accessor operator to descend through surrounding JSON objects, for example:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments');**
                                                                              jsonb_path_query
     -----------------------------------------------------------​-----------------------------------------------------------​---------------------------------------------
@@ -384,8 +345,7 @@ To retrieve the available track segments, you need to use the `._`key`_` accesso
     
 
 To retrieve the contents of an array, you typically use the `[*]` operator. The following example will return the location coordinates for all the available track segments:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[*].location');**
      jsonb_path_query
     -------------------
@@ -396,8 +356,7 @@ To retrieve the contents of an array, you typically use the `[*]` operator. The 
 Here we started with the whole JSON input value (`$`), then the `.track` accessor selected the JSON object associated with the `"track"` object key, then the `.segments` accessor selected the JSON array associated with the `"segments"` key within that object, then the `[*]` accessor selected each element of that array (producing a series of items), then the `.location` accessor selected the JSON array associated with the `"location"` key within each of those objects. In this example, each of those objects had a `"location"` key; but if any of them did not, the `.location` accessor would have simply produced no output for that input item.
 
 To return the coordinates of the first segment only, you can specify the corresponding subscript in the `[]` accessor operator. Recall that JSON array indexes are 0-relative:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[0].location');**
      jsonb_path_query
     -------------------
@@ -405,8 +364,7 @@ To return the coordinates of the first segment only, you can specify the corresp
     
 
 The result of each path evaluation step can be processed by one or more of the `jsonpath` operators and methods listed in [Section 9.16.2.3](functions-json.html#FUNCTIONS-SQLJSON-PATH-OPERATORS "9.16.2.3. SQL/JSON Path Operators and Methods"). Each method name must be preceded by a dot. For example, you can get the size of an array:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments.size()');**
      jsonb_path_query
     ------------------
@@ -416,8 +374,7 @@ The result of each path evaluation step can be processed by one or more of the `
 More examples of using `jsonpath` operators and methods within path expressions appear below in [Section 9.16.2.3](functions-json.html#FUNCTIONS-SQLJSON-PATH-OPERATORS "9.16.2.3. SQL/JSON Path Operators and Methods").
 
 A path can also contain _filter expressions_ that work similarly to the `WHERE` clause in SQL. A filter expression begins with a question mark and provides a condition in parentheses:
-    
-    
+
     ? (_condition_)
     
 
@@ -426,8 +383,7 @@ Filter expressions must be written just after the path evaluation step to which 
 The functions and operators that can be used in filter expressions are listed in [Table 9.53](functions-json.html#FUNCTIONS-SQLJSON-FILTER-EX-TABLE "Table 9.53. jsonpath Filter Expression Elements"). Within a filter expression, the `@` variable denotes the value being considered (i.e., one result of the preceding path step). You can write accessor operators after `@` to retrieve component items.
 
 For example, suppose you would like to retrieve all heart rate values higher than 130. You can achieve this as follows:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[*].HR ? (@> 130)');**
      jsonb_path_query
     ------------------
@@ -435,8 +391,7 @@ For example, suppose you would like to retrieve all heart rate values higher tha
     
 
 To get the start times of segments with such values, you have to filter out irrelevant segments before selecting the start times, so the filter expression is applied to the previous step, and the path used in the condition is different:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[*] ? (@.HR> 130)."start time"');**
        jsonb_path_query
     -----------------------
@@ -444,8 +399,7 @@ To get the start times of segments with such values, you have to filter out irre
     
 
 You can use several filter expressions in sequence, if required. The following example selects start times of all segments that contain locations with relevant coordinates and high heart rate values:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[*] ? (@.location[1]< 13.4) ? (@.HR > 130)."start time"');**
        jsonb_path_query
     -----------------------
@@ -453,8 +407,7 @@ You can use several filter expressions in sequence, if required. The following e
     
 
 Using filter expressions at different nesting levels is also allowed. The following example first filters all segments by location, and then returns high heart rate values for these segments, if available:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[*] ? (@.location[1]< 13.4).HR ? (@ > 130)');**
      jsonb_path_query
     ------------------
@@ -462,8 +415,7 @@ Using filter expressions at different nesting levels is also allowed. The follow
     
 
 You can also nest filter expressions within each other. This example returns the size of the track if it contains any segments with high heart rate values, or an empty sequence otherwise:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track ? (exists(@.segments[*] ? (@.HR> 130))).segments.size()');**
      jsonb_path_query
     ------------------
@@ -477,8 +429,7 @@ PostgreSQL's implementation of the SQL/JSON path language has the following devi
 ##### 9.16.2.1.1. Boolean Predicate Check Expressions #
 
 As an extension to the SQL standard, a PostgreSQL path expression can be a Boolean predicate, whereas the SQL standard allows predicates only within filters. While SQL-standard path expressions return the relevant element(s) of the queried JSON value, predicate check expressions return the single three-valued `jsonb` result of the predicate: `true`, `false`, or `null`. For example, we could write this SQL-standard filter expression:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments ?(@[*].HR> 130)');**
                                     jsonb_path_query
     -----------------------------------------------------------​----------------------
@@ -486,8 +437,7 @@ As an extension to the SQL standard, a PostgreSQL path expression can be a Boole
     
 
 The similar predicate check expression simply returns `true`, indicating that a match exists:
-    
-    
+
     => **select jsonb_path_query(:'json', '$.track.segments[*].HR> 130');**
      jsonb_path_query
     ------------------
@@ -506,25 +456,18 @@ There are minor differences in the interpretation of regular expression patterns
 
 When you query JSON data, the path expression may not match the actual JSON data structure. An attempt to access a non-existent member of an object or element of an array is defined as a structural error. SQL/JSON path expressions have two modes of handling structural errors:
 
-  * lax (default) — the path engine implicitly adapts the queried data to the specified path. Any structural errors that cannot be fixed as described below are suppressed, producing no match.
+- lax (default) — the path engine implicitly adapts the queried data to the specified path. Any structural errors that cannot be fixed as described below are suppressed, producing no match.
 
-  * strict — if a structural error occurs, an error is raised.
-
-
-
+- strict — if a structural error occurs, an error is raised.
 
 Lax mode facilitates matching of a JSON document and path expression when the JSON data does not conform to the expected schema. If an operand does not match the requirements of a particular operation, it can be automatically wrapped as an SQL/JSON array, or unwrapped by converting its elements into an SQL/JSON sequence before performing the operation. Also, comparison operators automatically unwrap their operands in lax mode, so you can compare SQL/JSON arrays out-of-the-box. An array of size 1 is considered equal to its sole element. Automatic unwrapping is not performed when:
 
-  * The path expression contains `type()` or `size()` methods that return the type and the number of elements in the array, respectively.
+- The path expression contains `type()` or `size()` methods that return the type and the number of elements in the array, respectively.
 
-  * The queried JSON data contain nested arrays. In this case, only the outermost array is unwrapped, while all the inner arrays remain unchanged. Thus, implicit unwrapping can only go one level down within each path evaluation step.
-
-
-
+- The queried JSON data contain nested arrays. In this case, only the outermost array is unwrapped, while all the inner arrays remain unchanged. Thus, implicit unwrapping can only go one level down within each path evaluation step.
 
 For example, when querying the GPS data listed above, you can abstract from the fact that it stores an array of segments when using lax mode:
-    
-    
+
     => **select jsonb_path_query(:'json', 'lax $.track.segments.location');**
      jsonb_path_query
     -------------------
@@ -533,15 +476,13 @@ For example, when querying the GPS data listed above, you can abstract from the 
     
 
 In strict mode, the specified path must exactly match the structure of the queried JSON document, so using this path expression will cause an error:
-    
-    
+
     => **select jsonb_path_query(:'json', 'strict $.track.segments.location');**
     ERROR:  jsonpath member accessor can only be applied to an object
     
 
 To get the same result as in lax mode, you have to explicitly unwrap the `segments` array:
-    
-    
+
     => **select jsonb_path_query(:'json', 'strict $.track.segments[*].location');**
      jsonb_path_query
     -------------------
@@ -550,8 +491,7 @@ To get the same result as in lax mode, you have to explicitly unwrap the `segmen
     
 
 The unwrapping behavior of lax mode can lead to surprising results. For instance, the following query using the `.**` accessor selects every `HR` value twice:
-    
-    
+
     => **select jsonb_path_query(:'json', 'lax $.**.HR');**
      jsonb_path_query
     ------------------
@@ -562,8 +502,7 @@ The unwrapping behavior of lax mode can lead to surprising results. For instance
     
 
 This happens because the `.**` accessor selects both the `segments` array and each of its elements, while the `.HR` accessor automatically unwraps arrays when using lax mode. To avoid surprising results, we recommend using the `.**` accessor only in strict mode. The following query selects each `HR` value just once:
-    
-    
+
     => **select jsonb_path_query(:'json', 'strict $.**.HR');**
      jsonb_path_query
     ------------------
@@ -572,8 +511,7 @@ This happens because the `.**` accessor selects both the `segments` array and ea
     
 
 The unwrapping of arrays can also lead to unexpected results. Consider this example, which selects all the `location` arrays:
-    
-    
+
     => **select jsonb_path_query(:'json', 'lax $.track.segments[*].location');**
      jsonb_path_query
     -------------------
@@ -583,8 +521,7 @@ The unwrapping of arrays can also lead to unexpected results. Consider this exam
     
 
 As expected it returns the full arrays. But applying a filter expression causes the arrays to be unwrapped to evaluate each item, returning only the items that match the expression:
-    
-    
+
     => **select jsonb_path_query(:'json', 'lax $.track.segments[*].location ?(@[*]> 15)');**
      jsonb_path_query
     ------------------
@@ -594,8 +531,7 @@ As expected it returns the full arrays. But applying a filter expression causes 
     
 
 This despite the fact that the full arrays are selected by the path expression. Use strict mode to restore selecting the arrays:
-    
-    
+
     => **select jsonb_path_query(:'json', 'strict $.track.segments[*].location ?(@[*]> 15)');**
      jsonb_path_query
     -------------------
@@ -644,9 +580,6 @@ _`string`_ `.` `timestamp_tz()` → `_`timestamp with time zone`_` Timestamp wit
 _`string`_ `.` `timestamp_tz(_`precision`_)` → `_`timestamp with time zone`_` Timestamp with time zone value converted from a string, with fractional seconds adjusted to the given precision `jsonb_path_query('"2023-08-15 12:34:56.789 +05:30"', '$.timestamp_tz(2)')` → `"2023-08-15T12:34:56.79+05:30"`  
 _`object`_ `.` `keyvalue()` → `_`array`_` The object's key-value pairs, represented as an array of objects containing three fields: `"key"`, `"value"`, and `"id"`; `"id"` is a unique identifier of the object the key-value pair belongs to `jsonb_path_query_array('{"x": "20", "y": 32}', '$.keyvalue()')` → `[{"id": 0, "key": "x", "value": "20"}, {"id": 0, "key": "y", "value": 32}]`  
   
-  
-
-
 ### Note
 
 The result type of the `datetime()` and `datetime(_`template`_)` methods can be `date`, `timetz`, `time`, `timestamptz`, or `timestamp`. Both methods determine their result type dynamically.
@@ -682,14 +615,10 @@ _`string`_ `like_regex` _`string`_ [ `flag` _`string`_ ] → `boolean` Tests whe
 _`string`_ `starts with` _`string`_ → `boolean` Tests whether the second operand is an initial substring of the first operand. `jsonb_path_query('["John Smith", "Mary Stone", "Bob Johnson"]', '$[*] ? (@ starts with "John")')` → `"John Smith"`  
 `exists` `(` _`path_expression`_ `)` → `boolean` Tests whether a path expression matches at least one SQL/JSON item. Returns `unknown` if the path expression would result in an error; the second example uses this to avoid a no-such-key error in strict mode. `jsonb_path_query('{"x": [1, 2], "y": [2, 4]}', 'strict $.* ? (exists (@ ? (@[*] > 2)))')` → `[2, 4]` `jsonb_path_query_array('{"value": 41}', 'strict $ ? (exists (@.name)) .name')` → `[]`  
   
-  
-
-
 #### 9.16.2.4. SQL/JSON Regular Expressions #
 
 SQL/JSON path expressions allow matching text to a regular expression with the `like_regex` filter. For example, the following SQL/JSON path query would case-insensitively match all strings in an array that start with an English vowel:
-    
-    
+
     $[*] ? (@ like_regex "^[aeiou]" flag "i")
     
 
@@ -698,8 +627,7 @@ The optional `flag` string may include one or more of the characters `i` for cas
 The SQL/JSON standard borrows its definition for regular expressions from the `LIKE_REGEX` operator, which in turn uses the XQuery standard. PostgreSQL does not currently support the `LIKE_REGEX` operator. Therefore, the `like_regex` filter is implemented using the POSIX regular expression engine described in [Section 9.7.3](functions-matching.html#FUNCTIONS-POSIX-REGEXP "9.7.3. POSIX Regular Expressions"). This leads to various minor discrepancies from standard SQL/JSON behavior, which are cataloged in [Section 9.7.3.8](functions-matching.html#POSIX-VS-XQUERY "9.7.3.8. Differences from SQL Standard and XQuery"). Note, however, that the flag-letter incompatibilities described there do not apply to SQL/JSON, as it translates the XQuery flag letters to match what the POSIX engine expects.
 
 Keep in mind that the pattern argument of `like_regex` is a JSON path string literal, written according to the rules given in [Section 8.14.7](datatype-json.html#DATATYPE-JSONPATH "8.14.7. jsonpath Type"). This means in particular that any backslashes you want to use in the regular expression must be doubled. For example, to match string values of the root document that contain only digits:
-    
-    
+
     $.* ? (@ like_regex "^\\d+$")
     
 
@@ -711,20 +639,18 @@ SQL/JSON functions `JSON_EXISTS()`, `JSON_QUERY()`, and `JSON_VALUE()` described
 
 Function signature Description Example(s)  
 ---  
-      
-    
+
     JSON_EXISTS (
     _context_item_ , _path_expression_
     [ PASSING { _value_ AS _varname_ } [, ...]]
     [{ TRUE | FALSE | UNKNOWN | ERROR } ON ERROR ]) → boolean
     
 
-  * Returns true if the SQL/JSON _`path_expression`_ applied to the _`context_item`_ yields any items, false otherwise.
-  * The `ON ERROR` clause specifies the behavior if an error occurs during _`path_expression`_ evaluation. Specifying `ERROR` will cause an error to be thrown with the appropriate message. Other options include returning `boolean` values `FALSE` or `TRUE` or the value `UNKNOWN` which is actually an SQL NULL. The default when no `ON ERROR` clause is specified is to return the `boolean` value `FALSE`.
+- Returns true if the SQL/JSON _`path_expression`_ applied to the _`context_item`_ yields any items, false otherwise.
+- The `ON ERROR` clause specifies the behavior if an error occurs during _`path_expression`_ evaluation. Specifying `ERROR` will cause an error to be thrown with the appropriate message. Other options include returning `boolean` values `FALSE` or `TRUE` or the value `UNKNOWN` which is actually an SQL NULL. The default when no `ON ERROR` clause is specified is to return the `boolean` value `FALSE`.
 
 Examples: `JSON_EXISTS(jsonb '{"key1": [1,2,3]}', 'strict $.key1[*] ? (@ > $x)' PASSING 2 AS x)` → `t` `JSON_EXISTS(jsonb '{"a": [1,2,3]}', 'lax $.a[5]' ERROR ON ERROR)` → `f` `JSON_EXISTS(jsonb '{"a": [1,2,3]}', 'strict $.a[5]' ERROR ON ERROR)` →
-    
-    
+
     ERROR:  jsonpath array subscript is out of bounds
       
       
@@ -739,16 +665,15 @@ Examples: `JSON_EXISTS(jsonb '{"key1": [1,2,3]}', 'strict $.key1[*] ? (@ > $x)' 
     [ { ERROR | NULL | EMPTY { [ ARRAY ] | OBJECT } | DEFAULT _expression_ } ON ERROR ]) → jsonb
     
 
-  * Returns the result of applying the SQL/JSON _`path_expression`_ to the _`context_item`_.
-  * By default, the result is returned as a value of type `jsonb`, though the `RETURNING` clause can be used to return as some other type to which it can be successfully coerced.
-  * If the path expression may return multiple values, it might be necessary to wrap those values using the `WITH WRAPPER` clause to make it a valid JSON string, because the default behavior is to not wrap them, as if `WITHOUT WRAPPER` were specified. The `WITH WRAPPER` clause is by default taken to mean `WITH UNCONDITIONAL WRAPPER`, which means that even a single result value will be wrapped. To apply the wrapper only when multiple values are present, specify `WITH CONDITIONAL WRAPPER`. Getting multiple values in result will be treated as an error if `WITHOUT WRAPPER` is specified.
-  * If the result is a scalar string, by default, the returned value will be surrounded by quotes, making it a valid JSON value. It can be made explicit by specifying `KEEP QUOTES`. Conversely, quotes can be omitted by specifying `OMIT QUOTES`. To ensure that the result is a valid JSON value, `OMIT QUOTES` cannot be specified when `WITH WRAPPER` is also specified.
-  * The `ON EMPTY` clause specifies the behavior if evaluating _`path_expression`_ yields an empty set. The `ON ERROR` clause specifies the behavior if an error occurs when evaluating _`path_expression`_ , when coercing the result value to the `RETURNING` type, or when evaluating the `ON EMPTY` expression if the _`path_expression`_ evaluation returns an empty set.
-  * For both `ON EMPTY` and `ON ERROR`, specifying `ERROR` will cause an error to be thrown with the appropriate message. Other options include returning an SQL NULL, an empty array (`EMPTY [ARRAY]`), an empty object (`EMPTY OBJECT`), or a user-specified expression (`DEFAULT` _`expression`_) that can be coerced to jsonb or the type specified in `RETURNING`. The default when `ON EMPTY` or `ON ERROR` is not specified is to return an SQL NULL value.
+- Returns the result of applying the SQL/JSON _`path_expression`_ to the _`context_item`_.
+- By default, the result is returned as a value of type `jsonb`, though the `RETURNING` clause can be used to return as some other type to which it can be successfully coerced.
+- If the path expression may return multiple values, it might be necessary to wrap those values using the `WITH WRAPPER` clause to make it a valid JSON string, because the default behavior is to not wrap them, as if `WITHOUT WRAPPER` were specified. The `WITH WRAPPER` clause is by default taken to mean `WITH UNCONDITIONAL WRAPPER`, which means that even a single result value will be wrapped. To apply the wrapper only when multiple values are present, specify `WITH CONDITIONAL WRAPPER`. Getting multiple values in result will be treated as an error if `WITHOUT WRAPPER` is specified.
+- If the result is a scalar string, by default, the returned value will be surrounded by quotes, making it a valid JSON value. It can be made explicit by specifying `KEEP QUOTES`. Conversely, quotes can be omitted by specifying `OMIT QUOTES`. To ensure that the result is a valid JSON value, `OMIT QUOTES` cannot be specified when `WITH WRAPPER` is also specified.
+- The `ON EMPTY` clause specifies the behavior if evaluating _`path_expression`_ yields an empty set. The `ON ERROR` clause specifies the behavior if an error occurs when evaluating _`path_expression`_ , when coercing the result value to the `RETURNING` type, or when evaluating the `ON EMPTY` expression if the _`path_expression`_ evaluation returns an empty set.
+- For both `ON EMPTY` and `ON ERROR`, specifying `ERROR` will cause an error to be thrown with the appropriate message. Other options include returning an SQL NULL, an empty array (`EMPTY [ARRAY]`), an empty object (`EMPTY OBJECT`), or a user-specified expression (`DEFAULT` _`expression`_) that can be coerced to jsonb or the type specified in `RETURNING`. The default when `ON EMPTY` or `ON ERROR` is not specified is to return an SQL NULL value.
 
 Examples: `JSON_QUERY(jsonb '[1,[2,3],null]', 'lax $[*][$off]' PASSING 1 AS off WITH CONDITIONAL WRAPPER)` → `3` `JSON_QUERY(jsonb '{"a": "[1, 2]"}', 'lax $.a' OMIT QUOTES)` → `[1, 2]` `JSON_QUERY(jsonb '{"a": "[1, 2]"}', 'lax $.a' RETURNING int[] OMIT QUOTES ERROR ON ERROR)` →
-    
-    
+
     ERROR:  malformed array literal: "[1, 2]"
     DETAIL:  Missing "]" after array dimensions.
       
@@ -762,17 +687,14 @@ Examples: `JSON_QUERY(jsonb '[1,[2,3],null]', 'lax $[*][$off]' PASSING 1 AS off 
     [ { ERROR | NULL | DEFAULT _expression_ } ON ERROR ]) → text
     
 
-  * Returns the result of applying the SQL/JSON _`path_expression`_ to the _`context_item`_.
-  * Only use `JSON_VALUE()` if the extracted value is expected to be a single SQL/JSON scalar item; getting multiple values will be treated as an error. If you expect that extracted value might be an object or an array, use the `JSON_QUERY` function instead.
-  * By default, the result, which must be a single scalar value, is returned as a value of type `text`, though the `RETURNING` clause can be used to return as some other type to which it can be successfully coerced.
-  * The `ON ERROR` and `ON EMPTY` clauses have similar semantics as mentioned in the description of `JSON_QUERY`, except the set of values returned in lieu of throwing an error is different.
-  * Note that scalar strings returned by `JSON_VALUE` always have their quotes removed, equivalent to specifying `OMIT QUOTES` in `JSON_QUERY`.
+- Returns the result of applying the SQL/JSON _`path_expression`_ to the _`context_item`_.
+- Only use `JSON_VALUE()` if the extracted value is expected to be a single SQL/JSON scalar item; getting multiple values will be treated as an error. If you expect that extracted value might be an object or an array, use the `JSON_QUERY` function instead.
+- By default, the result, which must be a single scalar value, is returned as a value of type `text`, though the `RETURNING` clause can be used to return as some other type to which it can be successfully coerced.
+- The `ON ERROR` and `ON EMPTY` clauses have similar semantics as mentioned in the description of `JSON_QUERY`, except the set of values returned in lieu of throwing an error is different.
+- Note that scalar strings returned by `JSON_VALUE` always have their quotes removed, equivalent to specifying `OMIT QUOTES` in `JSON_QUERY`.
 
 Examples: `JSON_VALUE(jsonb '"123.45"', '$' RETURNING float)` → `123.45` `JSON_VALUE(jsonb '"03:04 2015-02-01"', '$.datetime("HH24:MI YYYY-MM-DD")' RETURNING date)` → `2015-02-01` `JSON_VALUE(jsonb '[1,2]', 'strict $[$off]' PASSING 1 as off)` → `2` `JSON_VALUE(jsonb '[1,2]', 'strict $[*]' DEFAULT 9 ON ERROR)` → `9`  
   
-  
-
-
 ### Note
 
 The _`context_item`_ expression is converted to `jsonb` by an implicit cast if the expression is not already of type `jsonb`. Note, however, that any parsing errors that occur during that conversion are thrown unconditionally, that is, are not handled according to the (specified or implicit) `ON ERROR` clause.
@@ -794,8 +716,7 @@ JSON data stored at a nested level of the row pattern can be extracted using the
 The rows produced by `JSON_TABLE` are laterally joined to the row that generated them, so you do not have to explicitly join the constructed view with the original table holding JSON data.
 
 The syntax is:
-    
-    
+
     JSON_TABLE (
         _context_item_ , _path_expression_ [ AS _json_path_name_ ] [ PASSING { _value_ AS _varname_ } [, ...] ]
         COLUMNS ( _json_table_column_ [, ...] )
@@ -820,23 +741,19 @@ The syntax is:
 
 Each syntax element is described below in more detail.
 
-`_`context_item`_ , _`path_expression`_ [ `AS` _`json_path_name`_ ] [ `PASSING` { _`value`_ `AS` _`varname`_ } [, ...]]`
-    
+`_`context_item`_ , _`path_expression`_ [`AS`_`json_path_name`_ ] [`PASSING`{ _`value`_`AS`_`varname`_ } [, ...]]`
 
 The _`context_item`_ specifies the input document to query, the _`path_expression`_ is an SQL/JSON path expression defining the query, and _`json_path_name`_ is an optional name for the _`path_expression`_. The optional `PASSING` clause provides data values for the variables mentioned in the _`path_expression`_. The result of the input data evaluation using the aforementioned elements is called the _row pattern_ , which is used as the source for row values in the constructed view.
 
 `COLUMNS` ( _`json_table_column`_ [, ...] )
-    
 
 The `COLUMNS` clause defining the schema of the constructed view. In this clause, you can specify each column to be filled with an SQL/JSON value obtained by applying a JSON path expression against the row pattern. _`json_table_column`_ has the following variants:
 
 _`name`_ `FOR ORDINALITY`
-    
 
 Adds an ordinality column that provides sequential row numbering starting from 1. Each `NESTED PATH` (see below) gets its own counter for any nested ordinality columns.
 
-`_`name`_ _`type`_ [`FORMAT JSON` [ENCODING `UTF8`]] [ `PATH` _`path_expression`_ ]`
-    
+`_`name`_ _`type`_ [`FORMAT JSON` [ENCODING `UTF8`]] [`PATH`_`path_expression`_ ]`
 
 Inserts an SQL/JSON value obtained by applying _`path_expression`_ against the row pattern into the view's output row after coercing it to specified _`type`_.
 
@@ -851,7 +768,6 @@ Optionally, you can use `ON EMPTY` and `ON ERROR` clauses to specify whether to 
 This clause is internally turned into and has the same semantics as `JSON_VALUE` or `JSON_QUERY`. The latter if the specified type is not a scalar type or if either of `FORMAT JSON`, `WRAPPER`, or `QUOTES` clause is present.
 
 _`name`_ _`type`_ `EXISTS` [ `PATH` _`path_expression`_ ]
-    
 
 Inserts a boolean value obtained by applying _`path_expression`_ against the row pattern into the view's output row after coercing it to specified _`type`_.
 
@@ -866,7 +782,6 @@ Optionally, you can use `ON ERROR` to specify whether to throw the error or retu
 This clause is internally turned into and has the same semantics as `JSON_EXISTS`.
 
 `NESTED [ PATH ]` _`path_expression`_ [ `AS` _`json_path_name`_ ] `COLUMNS` ( _`json_table_column`_ [, ...] )
-    
 
 Extracts SQL/JSON values from nested levels of the row pattern, generates one or more columns as defined by the `COLUMNS` subclause, and inserts the extracted SQL/JSON values into those columns. The _`json_table_column`_ expression in the `COLUMNS` subclause uses the same syntax as in the parent `COLUMNS` clause.
 
@@ -877,20 +792,17 @@ The `NESTED PATH` syntax is recursive, so you can go down multiple nested levels
 In each variant of _`json_table_column`_ described above, if the `PATH` clause is omitted, path expression `$._`name`_` is used, where _`name`_ is the provided column name.
 
 `AS` _`json_path_name`_
-    
 
 The optional _`json_path_name`_ serves as an identifier of the provided _`path_expression`_. The name must be unique and distinct from the column names.
 
 { `ERROR` | `EMPTY` } `ON ERROR`
-    
 
 The optional `ON ERROR` can be used to specify how to handle errors when evaluating the top-level _`path_expression`_. Use `ERROR` if you want the errors to be thrown and `EMPTY` to return an empty table, that is, a table containing 0 rows. Note that this clause does not affect the errors that occur when evaluating columns, for which the behavior depends on whether the `ON ERROR` clause is specified against a given column.
 
 Examples
 
 In the examples that follow, the following table containing JSON data will be used:
-    
-    
+
     CREATE TABLE my_films ( js jsonb );
     
     INSERT INTO my_films VALUES (
@@ -913,8 +825,7 @@ In the examples that follow, the following table containing JSON data will be us
     
 
 The following query shows how to use `JSON_TABLE` to turn the JSON objects in the `my_films` table to a view containing columns for the keys `kind`, `title`, and `director` contained in the original JSON along with an ordinality column:
-    
-    
+
     SELECT jt.* FROM
      my_films,
      JSON_TABLE (js, '$.favorites[*]' COLUMNS (
@@ -935,8 +846,7 @@ The following query shows how to use `JSON_TABLE` to turn the JSON objects in th
     
 
 The following is a modified version of the above query to show the usage of `PASSING` arguments in the filter specified in the top-level JSON path expression and the various options for the individual columns:
-    
-    
+
     SELECT jt.* FROM
      my_films,
      JSON_TABLE (js, '$.favorites[*] ? (@.films[*].director == $filter)'
@@ -957,8 +867,7 @@ The following is a modified version of the above query to show the usage of `PAS
     
 
 The following is a modified version of the above query to show the usage of `NESTED PATH` for populating title and director columns, illustrating how they are joined to the parent columns id and kind:
-    
-    
+
     SELECT jt.* FROM
      my_films,
      JSON_TABLE ( js, '$.favorites[*] ? (@.films[*].director == $filter)'
@@ -980,8 +889,7 @@ The following is a modified version of the above query to show the usage of `NES
     
 
 The following is the same query but without the filter in the root path:
-    
-    
+
     SELECT jt.* FROM
      my_films,
      JSON_TABLE ( js, '$.favorites[*]'
@@ -1005,8 +913,7 @@ The following is the same query but without the filter in the root path:
     
 
 The following shows another query using a different `JSON` object as input. It shows the UNION "sibling join" between `NESTED` paths `$.movies[*]` and `$.books[*]` and also the usage of `FOR ORDINALITY` column at `NESTED` levels (columns `movie_id`, `book_id`, and `author_id`):
-    
-    
+
     SELECT * FROM JSON_TABLE (
     '{"favorites":
         [{"movies":
@@ -1052,4 +959,4 @@ The following shows another query using a different `JSON` object as input. It s
   
 ## Submit correction
 
-If you see anything in the documentation that is not correct, does not match your experience with the particular feature or requires further clarification, please use [this form](/account/comments/new/18/functions-json.html/) to report a documentation issue. 
+If you see anything in the documentation that is not correct, does not match your experience with the particular feature or requires further clarification, please use [this form](/account/comments/new/18/functions-json.html/) to report a documentation issue.

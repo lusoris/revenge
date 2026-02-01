@@ -1,58 +1,55 @@
 # Semantic Versioning
 
 > Source: https://semver.org/
-> Fetched: 2026-01-31T16:03:55.082494+00:00
+> Fetched: 2026-02-01T11:51:20.451990+00:00
 > Content-Hash: 51f6a809a27542ec
 > Type: html
 
 ---
 
-  * [العربية (ar)](/lang/ar/)
-  * [Български (bg)](/lang/bg/)
-  * [বাংলা (bn)](/lang/bn/)
-  * [català (ca)](/lang/ca/)
-  * [čeština (cs)](/lang/cs/)
-  * [Dansk (da)](/lang/da/)
-  * [Deutsch (de)](/lang/de/)
-  * [Ελληνικά (el)](/lang/el/)
-  * [English (en)](/)
-  * [español (es)](/lang/es/)
-  * [فارسی (fa)](/lang/fa/)
-  * [français (fr)](/lang/fr/)
-  * [עברית (he)](/lang/he/)
-  * [हिन्दी (hin)](/lang/hin/)
-  * [hrvatski (hr)](/lang/hr/)
-  * [magyar (hu)](/lang/hu/)
-  * [Հայերեն (hy)](/lang/hy/)
-  * [Bahasa Indonesia (id)](/lang/id/)
-  * [italiano (it)](/lang/it/)
-  * [日本語 (ja)](/lang/ja/)
-  * [ქართული (ka)](/lang/ka/)
-  * [taqbaylit (kab)](/lang/kab/)
-  * [한국어 (ko)](/lang/ko/)
-  * [Nederlands (nl)](/lang/nl/)
-  * [polski (pl)](/lang/pl/)
-  * [português brasileiro (pt-BR)](/lang/pt-BR/)
-  * [pyccкий (ru)](/lang/ru/)
-  * [slovensky (sk)](/lang/sk/)
-  * [slovenščina (sl)](/lang/sl/)
-  * [srpski (sr)](/lang/sr/)
-  * [svenska (sv)](/lang/sv/)
-  * [தமிழ் (ta)](/lang/ta/)
-  * [Türkçe (tr)](/lang/tr/)
-  * [українська (uk)](/lang/uk/)
-  * [Tiếng Việt (vi)](/lang/vi/)
-  * [简体中文 (zh-CN)](/lang/zh-CN/)
-  * [繁體中文 (zh-TW)](/lang/zh-TW/)
+- [العربية (ar)](/lang/ar/)
+- [Български (bg)](/lang/bg/)
+- [বাংলা (bn)](/lang/bn/)
+- [català (ca)](/lang/ca/)
+- [čeština (cs)](/lang/cs/)
+- [Dansk (da)](/lang/da/)
+- [Deutsch (de)](/lang/de/)
+- [Ελληνικά (el)](/lang/el/)
+- [English (en)](/)
+- [español (es)](/lang/es/)
+- [فارسی (fa)](/lang/fa/)
+- [français (fr)](/lang/fr/)
+- [עברית (he)](/lang/he/)
+- [हिन्दी (hin)](/lang/hin/)
+- [hrvatski (hr)](/lang/hr/)
+- [magyar (hu)](/lang/hu/)
+- [Հայերեն (hy)](/lang/hy/)
+- [Bahasa Indonesia (id)](/lang/id/)
+- [italiano (it)](/lang/it/)
+- [日本語 (ja)](/lang/ja/)
+- [ქართული (ka)](/lang/ka/)
+- [taqbaylit (kab)](/lang/kab/)
+- [한국어 (ko)](/lang/ko/)
+- [Nederlands (nl)](/lang/nl/)
+- [polski (pl)](/lang/pl/)
+- [português brasileiro (pt-BR)](/lang/pt-BR/)
+- [pyccкий (ru)](/lang/ru/)
+- [slovensky (sk)](/lang/sk/)
+- [slovenščina (sl)](/lang/sl/)
+- [srpski (sr)](/lang/sr/)
+- [svenska (sv)](/lang/sv/)
+- [தமிழ் (ta)](/lang/ta/)
+- [Türkçe (tr)](/lang/tr/)
+- [українська (uk)](/lang/uk/)
+- [Tiếng Việt (vi)](/lang/vi/)
+- [简体中文 (zh-CN)](/lang/zh-CN/)
+- [繁體中文 (zh-TW)](/lang/zh-TW/)
 
-
-  * [2.0.0](/spec/v2.0.0.html)
-  * [2.0.0-rc.2](/spec/v2.0.0-rc.2.html)
-  * [2.0.0-rc.1](/spec/v2.0.0-rc.1.html)
-  * [1.0.0](/spec/v1.0.0.html)
-  * [1.0.0-beta](/spec/v1.0.0-beta.html)
-
-
+- [2.0.0](/spec/v2.0.0.html)
+- [2.0.0-rc.2](/spec/v2.0.0-rc.2.html)
+- [2.0.0-rc.1](/spec/v2.0.0-rc.1.html)
+- [1.0.0](/spec/v1.0.0.html)
+- [1.0.0-beta](/spec/v1.0.0-beta.html)
 
 # Semantic Versioning 2.0.0
 
@@ -63,8 +60,6 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
   1. MAJOR version when you make incompatible API changes
   2. MINOR version when you add functionality in a backward compatible manner
   3. PATCH version when you make backward compatible bug fixes
-
-
 
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
 
@@ -126,12 +121,8 @@ Example: 1.0.0-alpha < 1.0.0.
 
 Example: 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
 
-
-
-
 ## Backus–Naur Form Grammar for Valid SemVer Versions
-    
-    
+
     <valid semver> ::= <version core>
                      | <version core> "-" <pre-release>
                      | <version core> "+" <build>
@@ -223,7 +214,7 @@ Major version zero is all about rapid development. If you’re changing the API 
 
 This is a question of responsible development and foresight. Incompatible changes should not be introduced lightly to software that has a lot of dependent code. The cost that must be incurred to upgrade can be significant. Having to bump major versions to release incompatible changes means you’ll think through the impact of your changes, and evaluate the cost/benefit ratio involved.
 
-### Documenting the entire public API is too much work!
+### Documenting the entire public API is too much work
 
 It is your responsibility as a professional developer to properly document software that is intended for use by others. Managing software complexity is a hugely important part of keeping a project efficient, and that’s hard to do if nobody knows how to use your software, or what methods are safe to call. In the long run, Semantic Versioning, and the insistence on a well defined public API can keep everyone and everything running smoothly.
 
@@ -256,16 +247,14 @@ No, “v1.2.3” is not a semantic version. However, prefixing a semantic versio
 There are two. One with named groups for those systems that support them (PCRE [Perl Compatible Regular Expressions, i.e. Perl, PHP and R], Python and Go).
 
 See: <https://regex101.com/r/Ly7O1x/3/>
-    
-    
+
     ^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
     
 
 And one with numbered capture groups instead (so cg1 = major, cg2 = minor, cg3 = patch, cg4 = prerelease and cg5 = buildmetadata) that is compatible with ECMA Script (JavaScript), PCRE (Perl Compatible Regular Expressions, i.e. Perl, PHP and R), Python and Go.
 
 See: <https://regex101.com/r/vkijKf/1/>
-    
-    
+
     ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
     
 

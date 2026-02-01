@@ -1,7 +1,7 @@
 # Ruff Formatter
 
 > Source: https://docs.astral.sh/ruff/formatter/
-> Fetched: 2026-01-31T16:07:34.525208+00:00
+> Fetched: 2026-02-01T11:55:00.558872+00:00
 > Content-Hash: 919b1d13c6954ce8
 > Type: html
 
@@ -14,8 +14,7 @@ The Ruff formatter is an extremely fast Python code formatter designed as a drop
 ## `ruff format`
 
 `ruff format` is the primary entrypoint to the formatter. It accepts a list of files or directories, and formats all discovered Python files:
-    
-    
+
     ruff format                   # Format all files in the current directory.
     ruff format path/to/code/     # Format all files in `path/to/code` (and any subdirectories).
     ruff format path/to/file.py   # Format a single file.
@@ -34,8 +33,7 @@ As such, the formatter is designed as a drop-in replacement for [Black](https://
 Specifically, the formatter is intended to emit near-identical output when run over existing Black-formatted code. When run over extensive Black-formatted projects like Django and Zulip, > 99.9% of lines are formatted identically. (See: _Style Guide_.)
 
 Given this focus on Black compatibility, the formatter thus adheres to [Black's (stable) code style](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html), which aims for "consistency, generality, readability and reducing git diffs". To give you a sense for the enforced code style, here's an example:
-    
-    
+
     # Input
     def _make_ssl_transport(
         rawsock, protocol, sslcontext, waiter=None,
@@ -89,8 +87,7 @@ The Ruff Formatter exposes a small set of configuration options, some of which a
 For example, to configure the formatter to use single quotes, format code examples in docstrings, a line width of 100, and tab indentation, add the following to your configuration file:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff]
     line-length = 100
     
@@ -117,12 +114,10 @@ Given the focus on Black compatibility (and unlike formatters like [YAPF](https:
 
 The Ruff formatter provides an opt-in feature for automatically formatting Python code examples in docstrings. The Ruff formatter currently recognizes code examples in the following formats:
 
-  * The Python [doctest](https://docs.python.org/3/library/doctest.html) format.
-  * CommonMark [fenced code blocks](https://spec.commonmark.org/0.30/#fenced-code-blocks) with the following info strings: `python`, `py`, `python3`, or `py3`. Fenced code blocks without an info string are assumed to be Python code examples and also formatted.
-  * reStructuredText [literal blocks](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks). While literal blocks may contain things other than Python, this is meant to reflect a long-standing convention in the Python ecosystem where literal blocks often contain Python code.
-  * reStructuredText [`code-block` and `sourcecode` directives]. As with Markdown, the language names recognized for Python are `python`, `py`, `python3`, or `py3`.
-
-
+- The Python [doctest](https://docs.python.org/3/library/doctest.html) format.
+- CommonMark [fenced code blocks](https://spec.commonmark.org/0.30/#fenced-code-blocks) with the following info strings: `python`, `py`, `python3`, or `py3`. Fenced code blocks without an info string are assumed to be Python code examples and also formatted.
+- reStructuredText [literal blocks](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks). While literal blocks may contain things other than Python, this is meant to reflect a long-standing convention in the Python ecosystem where literal blocks often contain Python code.
+- reStructuredText [`code-block` and `sourcecode` directives]. As with Markdown, the language names recognized for Python are `python`, `py`, `python3`, or `py3`.
 
 If a code example is recognized and treated as Python, the Ruff formatter will automatically skip it if the code does not parse as valid Python or if the reformatted code would produce an invalid Python program.
 
@@ -131,8 +126,7 @@ Users may also configure the line length limit used for reformatting Python code
 For example, this configuration shows how to enable docstring code formatting with a fixed line length limit:
 
 pyproject.tomlruff.toml
-    
-    
+
     [tool.ruff.format]
     docstring-code-format = true
     docstring-code-line-length = 20
@@ -145,8 +139,7 @@ pyproject.tomlruff.toml
     
 
 With the above configuration, this code:
-    
-    
+
     def f(x):
         '''
         Something about `f`. And an example:
@@ -159,8 +152,7 @@ With the above configuration, this code:
     
 
 ... will be reformatted (assuming the rest of the options are set to their defaults) as:
-    
-    
+
     def f(x):
         """
         Something about `f`. And an example:
@@ -186,8 +178,7 @@ With the above configuration, this code:
 Like Black, Ruff supports `# fmt: on`, `# fmt: off`, and `# fmt: skip` pragma comments, which can be used to temporarily disable formatting for a given code block.
 
 `# fmt: on` and `# fmt: off` comments are enforced at the statement level:
-    
-    
+
     # fmt: off
     not_formatted=3
     also_not_formatted=4
@@ -195,8 +186,7 @@ Like Black, Ruff supports `# fmt: on`, `# fmt: off`, and `# fmt: skip` pragma co
     
 
 As such, adding `# fmt: on` and `# fmt: off` comments within expressions will have no effect. In the following example, both list entries will be formatted, despite the `# fmt: off`:
-    
-    
+
     [
         # fmt: off
         '1',
@@ -206,8 +196,7 @@ As such, adding `# fmt: on` and `# fmt: off` comments within expressions will ha
     
 
 Instead, apply the `# fmt: off` comment to the entire statement:
-    
-    
+
     # fmt: off
     [
         '1',
@@ -219,8 +208,7 @@ Instead, apply the `# fmt: off` comment to the entire statement:
 Like Black, Ruff will _also_ recognize [YAPF](https://github.com/google/yapf)'s `# yapf: disable` and `# yapf: enable` pragma comments, which are treated equivalently to `# fmt: off` and `# fmt: on`, respectively.
 
 `# fmt: skip` comments suppress formatting for a case header, decorator, function definition, class definition, or the preceding statements on the same logical line. The formatter leaves the following unchanged:
-    
-    
+
     if True:
         pass
     elif     False: # fmt: skip
@@ -239,8 +227,7 @@ Like Black, Ruff will _also_ recognize [YAPF](https://github.com/google/yapf)'s 
     
 
 Adding a `# fmt: skip` comment at the end of an expression will have no effect. In the following example, the list entry `'1'` will be formatted, despite the `# fmt: skip`:
-    
-    
+
     a = call(
         [
             '1',  # fmt: skip
@@ -251,8 +238,7 @@ Adding a `# fmt: skip` comment at the end of an expression will have no effect. 
     
 
 Instead, apply the `# fmt: skip` comment to the entire statement:
-    
-    
+
     a = call(
       [
         '1',
@@ -268,21 +254,19 @@ Ruff's formatter is designed to be used alongside the linter. However, the linte
 
 When using Ruff as a formatter, we recommend avoiding the following lint rules:
 
-  * [`tab-indentation`](../rules/tab-indentation/) (`W191`)
-  * [`indentation-with-invalid-multiple`](../rules/indentation-with-invalid-multiple/) (`E111`)
-  * [`indentation-with-invalid-multiple-comment`](../rules/indentation-with-invalid-multiple-comment/) (`E114`)
-  * [`over-indented`](../rules/over-indented/) (`E117`)
-  * [`docstring-tab-indentation`](../rules/docstring-tab-indentation/) (`D206`)
-  * [`triple-single-quotes`](../rules/triple-single-quotes/) (`D300`)
-  * [`bad-quotes-inline-string`](../rules/bad-quotes-inline-string/) (`Q000`)
-  * [`bad-quotes-multiline-string`](../rules/bad-quotes-multiline-string/) (`Q001`)
-  * [`bad-quotes-docstring`](../rules/bad-quotes-docstring/) (`Q002`)
-  * [`avoidable-escaped-quote`](../rules/avoidable-escaped-quote/) (`Q003`)
-  * [`missing-trailing-comma`](../rules/missing-trailing-comma/) (`COM812`)
-  * [`prohibited-trailing-comma`](../rules/prohibited-trailing-comma/) (`COM819`)
-  * [`multi-line-implicit-string-concatenation`](../rules/multi-line-implicit-string-concatenation/) (`ISC002`) if used without `ISC001` and `flake8-implicit-str-concat.allow-multiline = false`
-
-
+- [`tab-indentation`](../rules/tab-indentation/) (`W191`)
+- [`indentation-with-invalid-multiple`](../rules/indentation-with-invalid-multiple/) (`E111`)
+- [`indentation-with-invalid-multiple-comment`](../rules/indentation-with-invalid-multiple-comment/) (`E114`)
+- [`over-indented`](../rules/over-indented/) (`E117`)
+- [`docstring-tab-indentation`](../rules/docstring-tab-indentation/) (`D206`)
+- [`triple-single-quotes`](../rules/triple-single-quotes/) (`D300`)
+- [`bad-quotes-inline-string`](../rules/bad-quotes-inline-string/) (`Q000`)
+- [`bad-quotes-multiline-string`](../rules/bad-quotes-multiline-string/) (`Q001`)
+- [`bad-quotes-docstring`](../rules/bad-quotes-docstring/) (`Q002`)
+- [`avoidable-escaped-quote`](../rules/avoidable-escaped-quote/) (`Q003`)
+- [`missing-trailing-comma`](../rules/missing-trailing-comma/) (`COM812`)
+- [`prohibited-trailing-comma`](../rules/prohibited-trailing-comma/) (`COM819`)
+- [`multi-line-implicit-string-concatenation`](../rules/multi-line-implicit-string-concatenation/) (`ISC002`) if used without `ISC001` and `flake8-implicit-str-concat.allow-multiline = false`
 
 While the [`line-too-long`](../rules/line-too-long/) (`E501`) rule _can_ be used alongside the formatter, the formatter only makes a best-effort attempt to wrap lines at the configured [`line-length`](../settings/#line-length). As such, formatted code _may_ exceed the line length, leading to [`line-too-long`](../rules/line-too-long/) (`E501`) errors.
 
@@ -290,13 +274,11 @@ None of the above are included in Ruff's default configuration. However, if you'
 
 Similarly, we recommend avoiding the following isort settings, which are incompatible with the formatter's treatment of import statements when set to non-default values:
 
-  * [`force-single-line`](../settings/#lint_isort_force-single-line)
-  * [`force-wrap-aliases`](../settings/#lint_isort_force-wrap-aliases)
-  * [`lines-after-imports`](../settings/#lint_isort_lines-after-imports)
-  * [`lines-between-types`](../settings/#lint_isort_lines-between-types)
-  * [`split-on-trailing-comma`](../settings/#lint_isort_split-on-trailing-comma)
-
-
+- [`force-single-line`](../settings/#lint_isort_force-single-line)
+- [`force-wrap-aliases`](../settings/#lint_isort_force-wrap-aliases)
+- [`lines-after-imports`](../settings/#lint_isort_lines-after-imports)
+- [`lines-between-types`](../settings/#lint_isort_lines-between-types)
+- [`split-on-trailing-comma`](../settings/#lint_isort_split-on-trailing-comma)
 
 If you've configured any of these settings to take on non-default values, we recommend removing them from your Ruff configuration.
 
@@ -306,21 +288,17 @@ When an incompatible lint rule or setting is enabled, `ruff format` will emit a 
 
 `ruff format` exits with the following status codes:
 
-  * `0` if Ruff terminates successfully, regardless of whether any files were formatted.
-  * `1` if Ruff terminates successfully, one or more files were formatted, and `\--exit-non-zero-on-format` was specified.
-  * `2` if Ruff terminates abnormally due to invalid configuration, invalid CLI options, or an internal error.
-
-
+- `0` if Ruff terminates successfully, regardless of whether any files were formatted.
+- `1` if Ruff terminates successfully, one or more files were formatted, and `\--exit-non-zero-on-format` was specified.
+- `2` if Ruff terminates abnormally due to invalid configuration, invalid CLI options, or an internal error.
 
 Meanwhile, `ruff format --check` exits with the following status codes:
 
-  * `0` if Ruff terminates successfully, and no files would be formatted if `\--check` were not specified.
-  * `1` if Ruff terminates successfully, and one or more files would be formatted if `\--check` were not specified.
-  * `2` if Ruff terminates abnormally due to invalid configuration, invalid CLI options, or an internal error.
+- `0` if Ruff terminates successfully, and no files would be formatted if `\--check` were not specified.
+- `1` if Ruff terminates successfully, and one or more files would be formatted if `\--check` were not specified.
+- `2` if Ruff terminates abnormally due to invalid configuration, invalid CLI options, or an internal error.
 
-
-
-## Style Guide 
+## Style Guide
 
 The formatter is designed to be a drop-in replacement for [Black](https://github.com/psf/black). This section documents the areas where the Ruff formatter goes beyond Black in terms of code style.
 
@@ -349,8 +327,7 @@ Ruff employs several heuristics to determine how an f-string should be formatted
 Ruff will use the [configured quote style](../settings/#format_quote-style) for the f-string expression unless doing so would result in invalid syntax for the target Python version or requires more backslash escapes than the original expression. Specifically, Ruff will preserve the original quote style for the following cases:
 
 When the target Python version is < 3.12 and a [self-documenting f-string](https://realpython.com/python-f-strings/#self-documenting-expressions-for-debugging) contains a string literal with the [configured quote style](../settings/#format_quote-style):
-    
-    
+
     # format.quote-style = "double"
     
     f'{10 + len("hello")=}'
@@ -359,8 +336,7 @@ When the target Python version is < 3.12 and a [self-documenting f-string](https
     
 
 When the target Python version is < 3.12 and an f-string contains any triple-quoted string, byte or f-string literal that contains the [configured quote style](../settings/#format_quote-style):
-    
-    
+
     # format.quote-style = "double"
     
     f'{"""nested " """}'
@@ -369,8 +345,7 @@ When the target Python version is < 3.12 and an f-string contains any triple-quo
     
 
 For all target Python versions, when a [self-documenting f-string](https://realpython.com/python-f-strings/#self-documenting-expressions-for-debugging) contains an expression between the curly braces (`{...}`) with a format specifier containing the [configured quote style](../settings/#format_quote-style):
-    
-    
+
     # format.quote-style = "double"
     
     f'{1=:"foo}'
@@ -379,16 +354,14 @@ For all target Python versions, when a [self-documenting f-string](https://realp
     
 
 For nested f-strings, Ruff alternates quote styles, starting with the [configured quote style](../settings/#format_quote-style) for the outermost f-string. For example, consider the following f-string:
-    
-    
+
     # format.quote-style = "double"
     
     f"outer f-string {f"nested f-string {f"another nested f-string"} end"} end"
     
 
 Ruff formats it as:
-    
-    
+
     f"outer f-string {f'nested f-string {f"another nested f-string"} end'} end"
     
 
@@ -397,15 +370,13 @@ Ruff formats it as:
 Starting with Python 3.12 ([PEP 701](https://peps.python.org/pep-0701/)), the expression parts of an f-string can span multiple lines. Ruff needs to decide when to introduce a line break in an f-string expression. This depends on the semantic content of the expression parts of an f-string - for example, introducing a line break in the middle of a natural-language sentence is undesirable. Since Ruff doesn't have enough information to make that decision, it adopts a heuristic similar to [Prettier](https://prettier.io/docs/en/next/rationale.html#template-literals): it will only split the expression parts of an f-string across multiple lines if there was already a line break within any of the expression parts.
 
 For example, the following code:
-    
-    
+
     f"this f-string has a multiline expression {
       ['red', 'green', 'blue', 'yellow',]} and does not fit within the line length"
     
 
 ... is formatted as:
-    
-    
+
     # The list expression is split across multiple lines because of the trailing comma
     f"this f-string has a multiline expression {
         [
@@ -418,8 +389,7 @@ For example, the following code:
     
 
 But, the following will not be split across multiple lines even though it exceeds the line length:
-    
-    
+
     f"this f-string has a multiline expression {['red', 'green', 'blue', 'yellow']} and does not fit within the line length"
     
 
@@ -428,14 +398,12 @@ If you want Ruff to split an f-string across multiple lines, ensure there's a li
 ### Fluent layout for method chains
 
 At times, when developers write long chains of methods on an object, such as
-    
-    
+
     x = df.filter(cond).agg(func).merge(other)
     
 
 the intent is to perform a sequence of transformations or operations on a fixed object of interest - in this example, the object `df`. Assuming the assigned expression exceeds the `line-length`, this preview style will format the above as:
-    
-    
+
     x = (
         df
         .filter(cond)
@@ -445,8 +413,7 @@ the intent is to perform a sequence of transformations or operations on a fixed 
     
 
 This deviates from the stable formatting, and also from Black, both of which would produce:
-    
-    
+
     x = (
         df.filter(cond)
         .agg(func)
@@ -461,15 +428,14 @@ In general, this preview style differs from the stable style only at the first a
 ## Sorting imports
 
 Currently, the Ruff formatter does not sort imports. In order to both sort imports and format, call the Ruff linter and then the formatter:
-    
-    
+
     ruff check --select I --fix
     ruff format
     
 
 A unified command for both linting and formatting is [planned](https://github.com/astral-sh/ruff/issues/8232).
 
-Back to top 
+Back to top
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

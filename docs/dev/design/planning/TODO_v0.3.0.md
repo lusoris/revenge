@@ -378,12 +378,14 @@ The MVP is complete when a user can:
 ## Dependencies from SOURCE_OF_TRUTH
 
 ### Backend
+
 | Package | Version | Purpose |
 |---------|---------|---------|
 | github.com/typesense/typesense-go/v4 | v4.x | Typesense client |
 | github.com/go-resty/resty/v2 | v2.17.1 | HTTP client (Radarr) |
 
 ### Frontend
+
 | Package | Version | Purpose |
 |---------|---------|---------|
 | SvelteKit | 2.x | Framework |

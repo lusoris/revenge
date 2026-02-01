@@ -1,7 +1,7 @@
 # Yamale YAML Schema Validator
 
 > Source: https://github.com/23andMe/Yamale
-> Fetched: 2026-01-31T16:06:17.949473+00:00
+> Fetched: 2026-02-01T11:53:51.454176+00:00
 > Content-Hash: bc03281210a18cbf
 > Type: github_readme
 
@@ -25,12 +25,11 @@ A schema and validator for YAML.
 What's YAML? See the current spec [here](http://www.yaml.org/spec/1.2/spec.html) and an introduction
 to the syntax [here](https://github.com/Animosity/CraftIRC/wiki/Complete-idiot's-introduction-to-yaml).
 
-
 Requirements
 ------------
-* Python 3.8+
-* PyYAML
-* ruamel.yaml (optional)
+- Python 3.8+
+- PyYAML
+- ruamel.yaml (optional)
 
 Install
 -------
@@ -284,21 +283,21 @@ validator takes one or more constants as arguments and the `required` keyword:
 ### String - `str(min=int, max=int, equals=string, starts_with=string, ends_with=string, matches=regex, exclude=string, ignore_case=False, multiline=False, dotall=False)`
 Validates strings.
 - keywords
-    - `min`: len(string) >= min
-    - `max`: len(string) <= max
-    - `equals`: string == value (add `ignore_case=True` for case-insensitive checking)
-    - `starts_with`: Accepts only strings starting with given value (add `ignore_case=True` for
+  - `min`: len(string) >= min
+  - `max`: len(string) <= max
+  - `equals`: string == value (add `ignore_case=True` for case-insensitive checking)
+  - `starts_with`: Accepts only strings starting with given value (add `ignore_case=True` for
       case-insensitive checking)
-    - `matches`: Validates the string against a given regex. Similar to the `regex()` validator,
+  - `matches`: Validates the string against a given regex. Similar to the `regex()` validator,
       you can use `ignore_case`, `multiline` and `dotall`)
-    - `ends_with`: Accepts only strings ending with given value (add `ignore_case=True` for case-insensitive checking)
-    - `exclude`: Rejects strings that contains any character in the excluded value
-    - `ignore_case`: Validates strings in a case-insensitive manner.
-    - `multiline`: `^` and `$` in a pattern match at the beginning and end of each line in a string
+  - `ends_with`: Accepts only strings ending with given value (add `ignore_case=True` for case-insensitive checking)
+  - `exclude`: Rejects strings that contains any character in the excluded value
+  - `ignore_case`: Validates strings in a case-insensitive manner.
+  - `multiline`: `^` and `$` in a pattern match at the beginning and end of each line in a string
        in addition to matching at the beginning and end of the entire string. (A pattern matches
        at [the beginning of a string](https://docs.python.org/3/library/re.html#re.match) even in
        multiline mode; see below for a workaround.); only allowed in conjunction with a `matches` keyword.
-    - `dotall`: `.` in a pattern matches newline characters in a validated string in addition to
+  - `dotall`: `.` in a pattern matches newline characters in a validated string in addition to
       matching every character that *isn't* a newline.; only allowed in conjunction with a `matches` keyword.
 
 Examples:
@@ -308,13 +307,13 @@ Examples:
 Validates strings against one or more regular expressions.
 - arguments: one or more Python regular expression patterns
 - keywords:
-    - `name`: A friendly description for the patterns.
-    - `ignore_case`: Validates strings in a case-insensitive manner.
-    - `multiline`: `^` and `$` in a pattern match at the beginning and end of each line in a string
+  - `name`: A friendly description for the patterns.
+  - `ignore_case`: Validates strings in a case-insensitive manner.
+  - `multiline`: `^` and `$` in a pattern match at the beginning and end of each line in a string
        in addition to matching at the beginning and end of the entire string. (A pattern matches
        at [the beginning of a string](https://docs.python.org/3/library/re.html#re.match) even in
        multiline mode; see below for a workaround.)
-    - `dotall`: `.` in a pattern matches newline characters in a validated string in addition to
+  - `dotall`: `.` in a pattern matches newline characters in a validated string in addition to
       matching every character that *isn't* a newline.
 
 Examples:
@@ -328,14 +327,14 @@ Examples:
 ### Integer - `int(min=int, max=int)`
 Validates integers.
 - keywords
-    - `min`: int >= min
-    - `max`: int <= max
+  - `min`: int >= min
+  - `max`: int <= max
 
 ### Number - `num(min=float, max=float)`
 Validates integers and floats.
 - keywords
-    - `min`: num >= min
-    - `max`: num <= max
+  - `min`: num >= min
+  - `max`: num <= max
 
 ### Boolean - `bool()`
 Validates booleans.
@@ -353,8 +352,8 @@ Examples:
 ### Day - `day(min=date, max=date)`
 Validates a date in the form of YYYY-MM-DD.
 - keywords
-    - `min`: date >= min
-    - `max`: date <= max
+  - `min`: date >= min
+  - `max`: date <= max
 
 Examples:
 - `day(min='2001-01-01', max='2100-01-01')`: Only allows dates between 2001-01-01 and 2100-01-01.
@@ -362,8 +361,8 @@ Examples:
 ### Timestamp - `timestamp(min=time, max=time)`
 Validates a timestamp in the form of YYYY-MM-DD HH:MM:SS.
 - keywords
-    - `min`: time >= min
-    - `max`: time <= max
+  - `min`: time >= min
+  - `max`: time <= max
 
 Examples:
 - `timestamp(min='2001-01-01 01:00:00', max='2100-01-01 23:00:00')`: Only allows times between
@@ -375,8 +374,8 @@ least one of those validators will be accepted.
 
 - arguments: one or more validators to test values with
 - keywords
-    - `min`: len(list) >= min
-    - `max`: len(list) <= max
+  - `min`: len(list) >= min
+  - `max`: len(list) <= max
 
 Examples:
 - `list()`: Validates any list
@@ -390,9 +389,9 @@ one of those validators will be accepted. By default, only the values of nodes a
 the keys aren't checked.
 - arguments: one or more validators to test values with
 - keywords
-    - `key`: A validator for the keys of the map.
-    - `min`: len(map) >= min
-    - `max`: len(map) <= max
+  - `key`: A validator for the keys of the map.
+  - `min`: len(map) >= min
+  - `max`: len(map) <= max
 
 Examples:
 - `map()`: Validates any map
@@ -404,7 +403,7 @@ Examples:
 Validates IPv4 and IPv6 addresses.
 
 - keywords
-    - `version`: 4 or 6; explicitly force IPv4 or IPv6 validation
+  - `version`: 4 or 6; explicitly force IPv4 or IPv6 validation
 
 Examples:
 - `ip()`: Allows any valid IPv4 or IPv6 address
@@ -441,7 +440,7 @@ As such, it *automatically validates against a list*. It is valid if all values 
 validator.
 - arguments: validators to test with (at least one; if none is given, a `ValueError` exception will be raised)
 - keywords:
-    - `allow_empty`: Allow the subset to be empty (and is, therefore, also optional). This overrides the `required`
+  - `allow_empty`: Allow the subset to be empty (and is, therefore, also optional). This overrides the `required`
 flag.
 
 Examples:
@@ -484,14 +483,14 @@ Examples
 |:------------|
 
 ### Using keywords
-#### Schema:
+#### Schema
 ```yaml
 optional: str(required=False)
 optional_min: int(min=1, required=False)
 min: num(min=1.5)
 max: int(max=100)
 ```
-#### Valid Data:
+#### Valid Data
 ```yaml
 optional_min: 10
 min: 1.6
@@ -499,7 +498,7 @@ max: 100
 ```
 
 ### Includes and recursion
-#### Schema:
+#### Schema
 ```yaml
 customerA: include('customer')
 customerB: include('customer')
@@ -517,7 +516,7 @@ recurse:
     level: int()
     again: include('recurse', required=False)
 ```
-#### Valid Data:
+#### Valid Data
 ```yaml
 customerA:
     name: bob
@@ -540,7 +539,7 @@ recursion:
 ```
 
 ### Lists
-#### Schema:
+#### Schema
 ```yaml
 list_with_two_types: list(str(), include('variant'))
 questions: list(include('question'))
@@ -556,7 +555,7 @@ question:
 choices:
   id: str()
 ```
-#### Valid Data:
+#### Valid Data
 ```yaml
 list_with_two_types:
   - 'some'
@@ -576,7 +575,7 @@ questions:
 ```
 
 ### The data is a list of items without a keyword at the top level
-#### Schema:
+#### Schema
 ```yaml
 list(include('human'), min=2, max=2)
 
@@ -587,7 +586,7 @@ human:
   height: num()
   awesome: bool()
 ```
-#### Valid Data:
+#### Valid Data
 ```yaml
 - name: Bill
   age: 26

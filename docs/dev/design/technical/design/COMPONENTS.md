@@ -19,27 +19,26 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: shadcn-svelte
+- name: shadcn-svelte
     url: ../sources/frontend/shadcn-svelte.md
     note: Component library
-  - name: Bits UI
+- name: Bits UI
     url: ../sources/frontend/bits-ui.md
     note: Headless UI primitives
-  - name: Vidstack Player
+- name: Vidstack Player
     url: https://www.vidstack.io/docs/player
     note: Video player components
-  - name: Lucide Icons
+- name: Lucide Icons
     url: https://lucide.dev/icons/
     note: Icon library
 design_refs:
-  - title: DESIGN_SYSTEM
+- title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-  - title: FRONTEND
+- title: FRONTEND
     path: technical/FRONTEND.md
-  - title: 04_PLAYER_ARCHITECTURE
+- title: 04_PLAYER_ARCHITECTURE
     path: architecture/04_PLAYER_ARCHITECTURE.md
 ---
 
@@ -47,11 +46,9 @@ design_refs:
 
 <!-- DESIGN: technical/design, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-02-01
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > shadcn-svelte based component library
 
@@ -62,9 +59,7 @@ Component system features:
 - **Layout**: Collapsible sidebar, floating filter panels
 - **Responsive**: Auto-sizing cards, mobile bottom sheets
 
-
 ---
-
 
 ## Status
 
@@ -79,9 +74,7 @@ Component system features:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -90,7 +83,6 @@ Component system features:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -106,7 +98,6 @@ Component system features:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -115,7 +106,6 @@ Component system features:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -131,7 +121,6 @@ Component system features:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
@@ -143,4 +132,3 @@ Target: **80% minimum**
 - [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
 - [Vidstack Player](https://www.vidstack.io/docs/player) - Video player components
 - [Lucide Icons](https://lucide.dev/icons/) - Icon library
-

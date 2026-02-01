@@ -23,41 +23,40 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: ogen OpenAPI Generator
+- name: ogen OpenAPI Generator
     url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: sqlc
+- name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-  - name: sqlc Configuration
+- name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-  - title: features/shared
+- title: features/shared
     path: features/shared.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -65,18 +64,15 @@ design_refs:
 
 <!-- DESIGN: features/shared, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
 
-
-> Content module for 
+> Content module for
 
 > Voice assistant integration (Alexa, Google Assistant)
 
 ---
-
 
 ## Status
 
@@ -91,9 +87,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -119,7 +113,6 @@ internal/content/voice_control/
 
 <!-- Component interaction diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -134,7 +127,6 @@ internal/content/voice_control/
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -144,12 +136,10 @@ internal/content/voice_control/
 
 <!-- Configuration keys -->
 
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
 
 ## Testing Strategy
 
@@ -164,7 +154,6 @@ internal/content/voice_control/
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -182,4 +171,3 @@ Target: **80% minimum**
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 - [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
 - [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-

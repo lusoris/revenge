@@ -21,26 +21,25 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: go-blurhash
+- name: go-blurhash
     url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
-  - name: Last.fm API
+- name: Last.fm API
     url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-  - name: Spotify Web API
+- name: Spotify Web API
     url: ../sources/apis/spotify.md
     note: Auto-resolved from spotify
 design_refs:
-  - title: integrations/metadata/music
+- title: integrations/metadata/music
     path: integrations/metadata/music.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -48,11 +47,9 @@ design_refs:
 
 <!-- DESIGN: integrations/metadata/music, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: integration
-
 
 > Integration with Spotify
 
@@ -61,7 +58,6 @@ design_refs:
 **Authentication**: oauth
 
 ---
-
 
 ## Status
 
@@ -76,9 +72,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -102,7 +96,6 @@ internal/integration/spotify/
 This integration provides:
 <!-- Data provided by integration -->
 
-
 ## Implementation
 
 ### File Structure
@@ -117,7 +110,6 @@ This integration provides:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -126,7 +118,6 @@ This integration provides:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -142,7 +133,6 @@ This integration provides:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [integrations/metadata/music](integrations/metadata/music.md)
@@ -154,4 +144,3 @@ Target: **80% minimum**
 - [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
 - [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 - [Spotify Web API](../sources/apis/spotify.md) - Auto-resolved from spotify
-

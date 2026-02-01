@@ -1,7 +1,7 @@
 # Git Hooks Documentation
 
 > Source: https://git-scm.com/docs/githooks
-> Fetched: 2026-01-31T16:08:14.401850+00:00
+> Fetched: 2026-02-01T11:55:40.324727+00:00
 > Content-Hash: b791228f5c2a1dfb
 > Type: html
 
@@ -9,234 +9,203 @@
 
 English ▾
 
-  1. [English ](/docs/githooks)
-
-
+  1. [English](/docs/githooks)
 
 Topics ▾
 
 ### Setup and Config
 
-  * [ git ](/docs/git)
-  * [ config ](/docs/git-config)
-  * [ help ](/docs/git-help)
-  * [ bugreport ](/docs/git-bugreport)
-  * [ Credential helpers ](/doc/credential-helpers)
-
-
+- [git](/docs/git)
+- [config](/docs/git-config)
+- [help](/docs/git-help)
+- [bugreport](/docs/git-bugreport)
+- [Credential helpers](/doc/credential-helpers)
 
 ### Getting and Creating Projects
 
-  * [ init ](/docs/git-init)
-  * [ clone ](/docs/git-clone)
-
-
+- [init](/docs/git-init)
+- [clone](/docs/git-clone)
 
 ### Basic Snapshotting
 
-  * [ add ](/docs/git-add)
-  * [ status ](/docs/git-status)
-  * [ diff ](/docs/git-diff)
-  * [ commit ](/docs/git-commit)
-  * [ notes ](/docs/git-notes)
-  * [ restore ](/docs/git-restore)
-  * [ reset ](/docs/git-reset)
-  * [ rm ](/docs/git-rm)
-  * [ mv ](/docs/git-mv)
-
-
+- [add](/docs/git-add)
+- [status](/docs/git-status)
+- [diff](/docs/git-diff)
+- [commit](/docs/git-commit)
+- [notes](/docs/git-notes)
+- [restore](/docs/git-restore)
+- [reset](/docs/git-reset)
+- [rm](/docs/git-rm)
+- [mv](/docs/git-mv)
 
 ### Branching and Merging
 
-  * [ branch ](/docs/git-branch)
-  * [ checkout ](/docs/git-checkout)
-  * [ switch ](/docs/git-switch)
-  * [ merge ](/docs/git-merge)
-  * [ mergetool ](/docs/git-mergetool)
-  * [ log ](/docs/git-log)
-  * [ stash ](/docs/git-stash)
-  * [ tag ](/docs/git-tag)
-  * [ worktree ](/docs/git-worktree)
-
-
+- [branch](/docs/git-branch)
+- [checkout](/docs/git-checkout)
+- [switch](/docs/git-switch)
+- [merge](/docs/git-merge)
+- [mergetool](/docs/git-mergetool)
+- [log](/docs/git-log)
+- [stash](/docs/git-stash)
+- [tag](/docs/git-tag)
+- [worktree](/docs/git-worktree)
 
 ### Sharing and Updating Projects
 
-  * [ fetch ](/docs/git-fetch)
-  * [ pull ](/docs/git-pull)
-  * [ push ](/docs/git-push)
-  * [ remote ](/docs/git-remote)
-  * [ submodule ](/docs/git-submodule)
-
-
+- [fetch](/docs/git-fetch)
+- [pull](/docs/git-pull)
+- [push](/docs/git-push)
+- [remote](/docs/git-remote)
+- [submodule](/docs/git-submodule)
 
 ### Inspection and Comparison
 
-  * [ show ](/docs/git-show)
-  * [ log ](/docs/git-log)
-  * [ diff ](/docs/git-diff)
-  * [ difftool ](/docs/git-difftool)
-  * [ range-diff ](/docs/git-range-diff)
-  * [ shortlog ](/docs/git-shortlog)
-  * [ describe ](/docs/git-describe)
-
-
+- [show](/docs/git-show)
+- [log](/docs/git-log)
+- [diff](/docs/git-diff)
+- [difftool](/docs/git-difftool)
+- [range-diff](/docs/git-range-diff)
+- [shortlog](/docs/git-shortlog)
+- [describe](/docs/git-describe)
 
 ### Patching
 
-  * [ apply ](/docs/git-apply)
-  * [ cherry-pick ](/docs/git-cherry-pick)
-  * [ diff ](/docs/git-diff)
-  * [ rebase ](/docs/git-rebase)
-  * [ revert ](/docs/git-revert)
-
-
+- [apply](/docs/git-apply)
+- [cherry-pick](/docs/git-cherry-pick)
+- [diff](/docs/git-diff)
+- [rebase](/docs/git-rebase)
+- [revert](/docs/git-revert)
 
 ### Debugging
 
-  * [ bisect ](/docs/git-bisect)
-  * [ blame ](/docs/git-blame)
-  * [ grep ](/docs/git-grep)
-
-
+- [bisect](/docs/git-bisect)
+- [blame](/docs/git-blame)
+- [grep](/docs/git-grep)
 
 ### Email
 
-  * [ am ](/docs/git-am)
-  * [ apply ](/docs/git-apply)
-  * [ imap-send ](/docs/git-imap-send)
-  * [ format-patch ](/docs/git-format-patch)
-  * [ send-email ](/docs/git-send-email)
-  * [ request-pull ](/docs/git-request-pull)
-
-
+- [am](/docs/git-am)
+- [apply](/docs/git-apply)
+- [imap-send](/docs/git-imap-send)
+- [format-patch](/docs/git-format-patch)
+- [send-email](/docs/git-send-email)
+- [request-pull](/docs/git-request-pull)
 
 ### External Systems
 
-  * [ svn ](/docs/git-svn)
-  * [ fast-import ](/docs/git-fast-import)
-
-
+- [svn](/docs/git-svn)
+- [fast-import](/docs/git-fast-import)
 
 ### Server Admin
 
-  * [ daemon ](/docs/git-daemon)
-  * [ update-server-info ](/docs/git-update-server-info)
-
-
+- [daemon](/docs/git-daemon)
+- [update-server-info](/docs/git-update-server-info)
 
 ### Guides
 
-  * [ gitattributes ](/docs/gitattributes)
-  * [ Command-line interface conventions ](/docs/gitcli)
-  * [ Everyday Git ](/docs/giteveryday)
-  * [ Frequently Asked Questions (FAQ) ](/docs/gitfaq)
-  * [ Glossary ](/docs/gitglossary)
-  * [ Hooks ](/docs/githooks)
-  * [ gitignore ](/docs/gitignore)
-  * [ gitmodules ](/docs/gitmodules)
-  * [ Revisions ](/docs/gitrevisions)
-  * [ Submodules ](/docs/gitsubmodules)
-  * [ Tutorial ](/docs/gittutorial)
-  * [ Workflows ](/docs/gitworkflows)
-  * [ All guides... ](/docs/git#_guides)
-
-
+- [gitattributes](/docs/gitattributes)
+- [Command-line interface conventions](/docs/gitcli)
+- [Everyday Git](/docs/giteveryday)
+- [Frequently Asked Questions (FAQ)](/docs/gitfaq)
+- [Glossary](/docs/gitglossary)
+- [Hooks](/docs/githooks)
+- [gitignore](/docs/gitignore)
+- [gitmodules](/docs/gitmodules)
+- [Revisions](/docs/gitrevisions)
+- [Submodules](/docs/gitsubmodules)
+- [Tutorial](/docs/gittutorial)
+- [Workflows](/docs/gitworkflows)
+- [All guides...](/docs/git#_guides)
 
 ### Administration
 
-  * [ clean ](/docs/git-clean)
-  * [ gc ](/docs/git-gc)
-  * [ fsck ](/docs/git-fsck)
-  * [ reflog ](/docs/git-reflog)
-  * [ filter-branch ](/docs/git-filter-branch)
-  * [ instaweb ](/docs/git-instaweb)
-  * [ archive ](/docs/git-archive)
-  * [ bundle ](/docs/git-bundle)
-
-
+- [clean](/docs/git-clean)
+- [gc](/docs/git-gc)
+- [fsck](/docs/git-fsck)
+- [reflog](/docs/git-reflog)
+- [filter-branch](/docs/git-filter-branch)
+- [instaweb](/docs/git-instaweb)
+- [archive](/docs/git-archive)
+- [bundle](/docs/git-bundle)
 
 ### Plumbing Commands
 
-  * [ cat-file ](/docs/git-cat-file)
-  * [ check-ignore ](/docs/git-check-ignore)
-  * [ checkout-index ](/docs/git-checkout-index)
-  * [ commit-tree ](/docs/git-commit-tree)
-  * [ count-objects ](/docs/git-count-objects)
-  * [ diff-index ](/docs/git-diff-index)
-  * [ for-each-ref ](/docs/git-for-each-ref)
-  * [ hash-object ](/docs/git-hash-object)
-  * [ ls-files ](/docs/git-ls-files)
-  * [ ls-tree ](/docs/git-ls-tree)
-  * [ merge-base ](/docs/git-merge-base)
-  * [ read-tree ](/docs/git-read-tree)
-  * [ rev-list ](/docs/git-rev-list)
-  * [ rev-parse ](/docs/git-rev-parse)
-  * [ show-ref ](/docs/git-show-ref)
-  * [ symbolic-ref ](/docs/git-symbolic-ref)
-  * [ update-index ](/docs/git-update-index)
-  * [ update-ref ](/docs/git-update-ref)
-  * [ verify-pack ](/docs/git-verify-pack)
-  * [ write-tree ](/docs/git-write-tree)
-
-
+- [cat-file](/docs/git-cat-file)
+- [check-ignore](/docs/git-check-ignore)
+- [checkout-index](/docs/git-checkout-index)
+- [commit-tree](/docs/git-commit-tree)
+- [count-objects](/docs/git-count-objects)
+- [diff-index](/docs/git-diff-index)
+- [for-each-ref](/docs/git-for-each-ref)
+- [hash-object](/docs/git-hash-object)
+- [ls-files](/docs/git-ls-files)
+- [ls-tree](/docs/git-ls-tree)
+- [merge-base](/docs/git-merge-base)
+- [read-tree](/docs/git-read-tree)
+- [rev-list](/docs/git-rev-list)
+- [rev-parse](/docs/git-rev-parse)
+- [show-ref](/docs/git-show-ref)
+- [symbolic-ref](/docs/git-symbolic-ref)
+- [update-index](/docs/git-update-index)
+- [update-ref](/docs/git-update-ref)
+- [verify-pack](/docs/git-verify-pack)
+- [write-tree](/docs/git-write-tree)
 
 Latest version ▾  githooks last updated in 2.46.1
 
   1. 2.46.2 → 2.52.0 no changes
-  2. [2.46.1 _2024-09-13_ ](/docs/githooks/2.46.1)
-  3. [2.46.0 _2024-07-29_ ](/docs/githooks/2.46.0)
+  2. [2.46.1 _2024-09-13_](/docs/githooks/2.46.1)
+  3. [2.46.0 _2024-07-29_](/docs/githooks/2.46.0)
   4. 2.45.1 → 2.45.4 no changes
-  5. [2.45.0 _2024-04-29_ ](/docs/githooks/2.45.0)
+  5. [2.45.0 _2024-04-29_](/docs/githooks/2.45.0)
   6. 2.44.1 → 2.44.4 no changes
-  7. [2.44.0 _2024-02-23_ ](/docs/githooks/2.44.0)
+  7. [2.44.0 _2024-02-23_](/docs/githooks/2.44.0)
   8. 2.43.1 → 2.43.7 no changes
-  9. [2.43.0 _2023-11-20_ ](/docs/githooks/2.43.0)
+  9. [2.43.0 _2023-11-20_](/docs/githooks/2.43.0)
   10. 2.41.1 → 2.42.4 no changes
-  11. [2.41.0 _2023-06-01_ ](/docs/githooks/2.41.0)
+  11. [2.41.0 _2023-06-01_](/docs/githooks/2.41.0)
   12. 2.39.4 → 2.40.4 no changes
-  13. [2.39.3 _2023-04-17_ ](/docs/githooks/2.39.3)
+  13. [2.39.3 _2023-04-17_](/docs/githooks/2.39.3)
   14. 2.36.1 → 2.39.2 no changes
-  15. [2.36.0 _2022-04-18_ ](/docs/githooks/2.36.0)
+  15. [2.36.0 _2022-04-18_](/docs/githooks/2.36.0)
   16. 2.32.1 → 2.35.8 no changes
-  17. [2.32.0 _2021-06-06_ ](/docs/githooks/2.32.0)
+  17. [2.32.0 _2021-06-06_](/docs/githooks/2.32.0)
   18. 2.30.2 → 2.31.8 no changes
-  19. [2.30.1 _2021-02-08_ ](/docs/githooks/2.30.1)
-  20. [2.30.0 _2020-12-27_ ](/docs/githooks/2.30.0)
+  19. [2.30.1 _2021-02-08_](/docs/githooks/2.30.1)
+  20. [2.30.0 _2020-12-27_](/docs/githooks/2.30.0)
   21. 2.29.1 → 2.29.3 no changes
-  22. [2.29.0 _2020-10-19_ ](/docs/githooks/2.29.0)
+  22. [2.29.0 _2020-10-19_](/docs/githooks/2.29.0)
   23. 2.28.1 no changes
-  24. [2.28.0 _2020-07-27_ ](/docs/githooks/2.28.0)
+  24. [2.28.0 _2020-07-27_](/docs/githooks/2.28.0)
   25. 2.27.1 no changes
-  26. [2.27.0 _2020-06-01_ ](/docs/githooks/2.27.0)
+  26. [2.27.0 _2020-06-01_](/docs/githooks/2.27.0)
   27. 2.26.1 → 2.26.3 no changes
-  28. [2.26.0 _2020-03-22_ ](/docs/githooks/2.26.0)
+  28. [2.26.0 _2020-03-22_](/docs/githooks/2.26.0)
   29. 2.24.1 → 2.25.5 no changes
-  30. [2.24.0 _2019-11-04_ ](/docs/githooks/2.24.0)
+  30. [2.24.0 _2019-11-04_](/docs/githooks/2.24.0)
   31. 2.23.1 → 2.23.4 no changes
-  32. [2.23.0 _2019-08-16_ ](/docs/githooks/2.23.0)
+  32. [2.23.0 _2019-08-16_](/docs/githooks/2.23.0)
   33. 2.22.1 → 2.22.5 no changes
-  34. [2.22.0 _2019-06-07_ ](/docs/githooks/2.22.0)
+  34. [2.22.0 _2019-06-07_](/docs/githooks/2.22.0)
   35. 2.19.1 → 2.21.4 no changes
-  36. [2.19.0 _2018-09-10_ ](/docs/githooks/2.19.0)
+  36. [2.19.0 _2018-09-10_](/docs/githooks/2.19.0)
   37. 2.18.1 → 2.18.5 no changes
-  38. [2.18.0 _2018-06-21_ ](/docs/githooks/2.18.0)
+  38. [2.18.0 _2018-06-21_](/docs/githooks/2.18.0)
   39. 2.17.0 → 2.17.6 no changes
-  40. [2.16.6 _2019-12-06_ ](/docs/githooks/2.16.6)
-  41. [2.15.4 _2019-12-06_ ](/docs/githooks/2.15.4)
-  42. [2.14.6 _2019-12-06_ ](/docs/githooks/2.14.6)
-  43. [2.13.7 _2018-05-22_ ](/docs/githooks/2.13.7)
+  40. [2.16.6 _2019-12-06_](/docs/githooks/2.16.6)
+  41. [2.15.4 _2019-12-06_](/docs/githooks/2.15.4)
+  42. [2.14.6 _2019-12-06_](/docs/githooks/2.14.6)
+  43. [2.13.7 _2018-05-22_](/docs/githooks/2.13.7)
   44. 2.11.4 → 2.12.5 no changes
-  45. [2.10.5 _2017-09-22_ ](/docs/githooks/2.10.5)
-  46. [2.9.5 _2017-07-30_ ](/docs/githooks/2.9.5)
+  45. [2.10.5 _2017-09-22_](/docs/githooks/2.10.5)
+  46. [2.9.5 _2017-07-30_](/docs/githooks/2.9.5)
   47. 2.5.6 → 2.8.6 no changes
-  48. [2.4.12 _2017-05-05_ ](/docs/githooks/2.4.12)
+  48. [2.4.12 _2017-05-05_](/docs/githooks/2.4.12)
   49. 2.3.10 no changes
-  50. [2.2.3 _2015-09-04_ ](/docs/githooks/2.2.3)
+  50. [2.2.3 _2015-09-04_](/docs/githooks/2.2.3)
   51. 2.1.4 no changes
-  52. [2.0.5 _2014-12-17_ ](/docs/githooks/2.0.5)
-  53. 
-
+  52. [2.0.5 _2014-12-17_](/docs/githooks/2.0.5)
+  53.
 
 ## NAME
 
@@ -244,7 +213,7 @@ githooks - Hooks used by Git
 
 ## SYNOPSIS
 
-$GIT_DIR/hooks/* (or `git config core.hooksPath`/*)
+$GIT_DIR/hooks/*(or `git config core.hooksPath`/*)
 
 ## DESCRIPTION
 
@@ -255,8 +224,7 @@ By default the hooks directory is `$GIT_DIR/hooks`, but that can be changed via 
 Before Git invokes a hook, it changes its working directory to either $GIT_DIR in a bare repository or the root of the working tree in a non-bare repository. An exception are hooks triggered during a push (_pre-receive_ , _update_ , _post-receive_ , _post-update_ , _push-to-checkout_) which are always executed in $GIT_DIR.
 
 Environment variables, such as `GIT_DIR`, `GIT_WORK_TREE`, etc., are exported so that Git commands run by the hook can correctly locate the repository. If your hook needs to invoke Git commands in a foreign repository or in a different working tree of the same repository, then it should clear these environment variables so they do not interfere with Git operations at the foreign location. For example:
-    
-    
+
     local_desc=$(git describe)
     foreign_desc=$(unset $(git rev-parse --local-env-vars); git -C ../foreign-repo describe)
 
@@ -361,13 +329,11 @@ This hook can be used in conjunction with a corresponding pre-commit hook to sav
 This hook is called by [git-push[1]](/docs/git-push) and can be used to prevent a push from taking place. The hook is called with two parameters which provide the name and location of the destination remote, if a named remote is not being used both values will be the same.
 
 Information about what is to be pushed is provided on the hook’s standard input with lines of the form:
-    
-    
+
     <local-ref> SP <local-object-name> SP <remote-ref> SP <remote-object-name> LF
 
 For instance, if the command `git` `push` `origin` `master:foreign` were run the hook would receive a line like the following:
-    
-    
+
     refs/heads/master 67890 refs/heads/foreign 12345
 
 although the full object name would be supplied. If the foreign ref does not yet exist the _< remote-object-name>_ will be the all-zeroes object name. If a ref is to be deleted, the _< local-ref>_ will be supplied as (`delete`) and the _< local-object-name>_ will be the all-zeroes object name. If the local commit was specified by something other than a name which could be expanded (such as `HEAD~`, or an object name) it will be supplied as it was originally given.
@@ -379,8 +345,7 @@ If this hook exits with a non-zero status, `git` `push` will abort without pushi
 This hook is invoked by [git-receive-pack[1]](/docs/git-receive-pack) when it reacts to `git` `push` and updates reference(s) in its repository. Just before starting to update refs on the remote repository, the pre-receive hook is invoked. Its exit status determines the success or failure of the update.
 
 This hook executes once for the receive operation. It takes no arguments, but for each ref to be updated it receives on standard input a line of the format:
-    
-    
+
     <old-oid> SP <new-oid> SP <ref-name> LF
 
 where _< old-oid>_ is the old object name stored in the ref, _< new-oid>_ is the new object name to be stored in the ref and _< ref-name>_ is the full name of the ref. When creating a new ref, _< old-oid>_ is the all-zeroes object name.
@@ -399,14 +364,11 @@ This hook is invoked by [git-receive-pack[1]](/docs/git-receive-pack) when it re
 
 The hook executes once for each ref to be updated, and takes three parameters:
 
-  * the name of the ref being updated,
+- the name of the ref being updated,
 
-  * the old object name stored in the ref,
+- the old object name stored in the ref,
 
-  * and the new object name to be stored in the ref.
-
-
-
+- and the new object name to be stored in the ref.
 
 A zero exit from the update hook allows the ref to be updated. Exiting with a non-zero status prevents `git` `receive-pack` from updating that ref.
 
@@ -425,8 +387,7 @@ The default _update_ hook, when enabled—​and with `hooks.allowunannotated` c
 This hook is invoked by [git-receive-pack[1]](/docs/git-receive-pack). If the server has set the multi-valued config variable `receive.procReceiveRefs`, and the commands sent to _receive-pack_ have matching reference names, these commands will be executed by this hook, instead of by the internal `execute_commands`() function. This hook is responsible for updating the relevant references and reporting the results back to _receive-pack_.
 
 This hook executes once for the receive operation. It takes no arguments, but uses a pkt-line format protocol to communicate with _receive-pack_ to read commands, push-options and send results. In the following example for the protocol, the letter _S_ stands for _receive-pack_ and the letter _H_ stands for this hook.
-    
-    
+
     # Version and features negotiation.
     S: PKT-LINE(version=1\0push-options atomic...)
     S: flush-pkt
@@ -504,18 +465,14 @@ This hook is invoked by any Git command that performs reference updates. It exec
 
 The hook takes exactly one argument, which is the current state the given reference transaction is in:
 
-  * "prepared": All reference updates have been queued to the transaction and references were locked on disk.
+- "prepared": All reference updates have been queued to the transaction and references were locked on disk.
 
-  * "committed": The reference transaction was committed and all references now have their respective new value.
+- "committed": The reference transaction was committed and all references now have their respective new value.
 
-  * "aborted": The reference transaction was aborted, no changes were performed and the locks have been released.
-
-
-
+- "aborted": The reference transaction was aborted, no changes were performed and the locks have been released.
 
 For each reference update that was added to the transaction, the hook receives on standard input a line of the format:
-    
-    
+
     <old-value> SP <new-value> SP <ref-name> LF
 
 where _< old-value>_ is the old object name passed into the reference transaction, _< new-value>_ is the new object name to be stored in the ref and _< ref-name>_ is the full name of the ref. When force updating the reference regardless of its current value or when the reference is to be created anew, _< old-value>_ is the all-zeroes object name. To distinguish these cases, you can inspect the current value of _< ref-name>_ via `git` `rev-parse`.
@@ -541,8 +498,7 @@ This hook is invoked by `git` `gc` `\--auto` (see [git-gc[1]](/docs/git-gc)). It
 This hook is invoked by commands that rewrite commits ([git-commit[1]](/docs/git-commit) when called with `\--amend` and [git-rebase[1]](/docs/git-rebase); however, full-history (re)writing tools like [git-fast-import[1]](/docs/git-fast-import) or [git-filter-repo](https://github.com/newren/git-filter-repo) typically do not call it!). Its first argument denotes the command it was invoked by: currently one of `amend` or `rebase`. Further command-dependent arguments may be passed in the future.
 
 The hook receives a list of the rewritten commits on stdin, in the format
-    
-    
+
     <old-object-name> SP <new-object-name> [ SP <extra-info> ] LF
 
 The _extra-info_ is again command-dependent. If it is empty, the preceding SP is also omitted. Currently, no commands pass any _extra-info_.
@@ -551,8 +507,7 @@ The hook always runs after the automatic note copying (see "notes.rewrite.<comma
 
 The following command-specific comments apply:
 
-rebase 
-    
+rebase
 
 For the _squash_ and _fixup_ operation, all commits that were squashed are listed as being rewritten to the squashed commit. This means that there will be several lines sharing the same _new-object-name_.
 
@@ -567,8 +522,7 @@ It takes these command line arguments. They are, 1. the name of the file which h
 The SMTP headers are passed in the exact same way as they are passed to the user’s Mail Transport Agent (MTA). In effect, the email given to the user’s MTA, is the contents of $2 followed by the contents of $1.
 
 An example of a few common headers is shown below. Take notice of the capitalization and multi-line tab structure.
-    
-    
+
     From: Example <from@example.com>
     To: to@example.com
     Cc: cc@example.com,
@@ -582,12 +536,10 @@ Exiting with a non-zero status causes `git` `send-email` to abort before sending
 The following environment variables are set when executing the hook.
 
 `GIT_SENDEMAIL_FILE_COUNTER`
-    
 
 A 1-based counter incremented by one for every file holding an e-mail to be sent (excluding any FIFOs). This counter does not follow the patch series counter scheme. It will always start at 1 and will end at GIT_SENDEMAIL_FILE_TOTAL.
 
 `GIT_SENDEMAIL_FILE_TOTAL`
-    
 
 The total number of files that will be sent (excluding any FIFOs). This counter does not follow the patch series counter scheme. It will always be equal to the number of files being sent, whether there is a cover letter or not.
 

@@ -112,20 +112,18 @@ In addiion:
 4. Install dependencies (`yarn`)
 
 5. Make the appropriate changes in the source files
-  - Check the changes locally with `yarn start`
+- Check the changes locally with `yarn start`
 
-6. Commit your changes (`git commit -am 'feat: improve docs'`)
+1. Commit your changes (`git commit -am 'feat: improve docs'`)
 
-7. Push to your branch (`git push origin improve-docs`)
+2. Push to your branch (`git push origin improve-docs`)
 
-8. [Create a Pull Request][6]
+3. [Create a Pull Request][6]
 
 ## Contributors
 
 [![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/0)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/0)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/1)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/1)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/2)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/2)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/3)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/3)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/4)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/4)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/5)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/5)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/6)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/6)[![](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/images/7)](https://sourcerer.io/fame/wopian/hummingbird-me/api-docs/links/7)
 
-[0]:https://github.com/hummingbird-me/hummingbird-server
-[1]:https://github.com/hummingbird-me/hummingbird-client
 [3]:http://spec.openapis.org/oas/v3.0.3
 [4]:https://yaml.org/spec/1.2/spec.html
 [5]:https://help.github.com/articles/fork-a-repo/#fork-an-example-repository

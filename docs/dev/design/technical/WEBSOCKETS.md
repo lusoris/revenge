@@ -19,26 +19,25 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: coder/websocket GitHub README
+- name: coder/websocket GitHub README
     url: ../sources/tooling/websocket-guide.md
     note: Auto-resolved from coder-websocket-docs
-  - name: nhooyr.io/websocket
+- name: nhooyr.io/websocket
     url: https://pkg.go.dev/nhooyr.io/websocket
     note: WebSocket library (coder/websocket)
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: WEBSOCKETS (Syncplay)
+- title: WEBSOCKETS (Syncplay)
     path: features/playback/SYNCPLAY.md
 ---
 
@@ -46,11 +45,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Real-time bidirectional communication via WebSockets
 
@@ -62,7 +59,6 @@ Complete WebSocket infrastructure:
 - **Features**: Automatic reconnection, heartbeat/ping, message acknowledgment
 
 ---
-
 
 ## Status
 
@@ -77,9 +73,7 @@ Complete WebSocket infrastructure:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -88,7 +82,6 @@ Complete WebSocket infrastructure:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -104,7 +97,6 @@ Complete WebSocket infrastructure:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -113,7 +105,6 @@ Complete WebSocket infrastructure:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -129,7 +120,6 @@ Complete WebSocket infrastructure:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
@@ -141,4 +131,3 @@ Target: **80% minimum**
 - [coder/websocket GitHub README](../sources/tooling/websocket-guide.md) - Auto-resolved from coder-websocket-docs
 - [nhooyr.io/websocket](https://pkg.go.dev/nhooyr.io/websocket) - WebSocket library (coder/websocket)
 - [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-

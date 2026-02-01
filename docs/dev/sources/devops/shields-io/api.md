@@ -1,7 +1,7 @@
 # Shields.io Badge API
 
 > Source: https://shields.io/
-> Fetched: 2026-01-31T16:06:22.359845+00:00
+> Fetched: 2026-02-01T11:53:56.018241+00:00
 > Content-Hash: f0c362786f0abc23
 > Type: html
 
@@ -9,13 +9,11 @@
 
 ### Dynamic badges
 
-  
 Show metrics for your project. We've got badges for hundreds of services.
 
 ### Static Badges
 
 Create a badge with  
-
 
 ### Badge-Maker NPM library
 

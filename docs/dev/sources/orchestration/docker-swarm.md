@@ -11,11 +11,9 @@ Back
 
 [Manuals](https://docs.docker.com/manuals/)
 
-  * [Get started](/get-started/)
-  * [Guides](/guides/)
-  * [Reference](/reference/)
-
-
+- [Get started](/get-started/)
+- [Guides](/guides/)
+- [Reference](/reference/)
 
 # Swarm mode
 
@@ -28,11 +26,11 @@ Table of contents
 * * *
 
 > Note
-> 
+>
 > Swarm mode is an advanced feature for managing a cluster of Docker daemons.
-> 
+>
 > Use Swarm mode if you intend to use Swarm as a production runtime environment.
-> 
+>
 > If you're not planning on deploying with Swarm, use [Docker Compose](/compose/) instead. If you're developing for a Kubernetes deployment, consider using the [integrated Kubernetes feature](https://docs.docker.com/desktop/use-desktop/kubernetes/) in Docker Desktop.
 
 Current versions of Docker include Swarm mode for natively managing a cluster of Docker Engines called a swarm. Use the Docker CLI to create a swarm, deploy application services to a swarm, and manage swarm behavior.
@@ -83,20 +81,18 @@ At rollout time you can apply service updates to nodes incrementally. The swarm 
 
 ## What's next?
 
-  * Learn Swarm mode [key concepts](https://docs.docker.com/engine/swarm/key-concepts/).
-  * Get started with the [Swarm mode tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/).
-  * Explore Swarm mode CLI commands
-    * [swarm init](https://docs.docker.com/reference/cli/docker/swarm/init/)
-    * [swarm join](https://docs.docker.com/reference/cli/docker/swarm/join/)
-    * [service create](https://docs.docker.com/reference/cli/docker/service/create/)
-    * [service inspect](https://docs.docker.com/reference/cli/docker/service/inspect/)
-    * [service ls](https://docs.docker.com/reference/cli/docker/service/ls/)
-    * [service rm](https://docs.docker.com/reference/cli/docker/service/rm/)
-    * [service scale](https://docs.docker.com/reference/cli/docker/service/scale/)
-    * [service ps](https://docs.docker.com/reference/cli/docker/service/ps/)
-    * [service update](https://docs.docker.com/reference/cli/docker/service/update/)
-
-
+- Learn Swarm mode [key concepts](https://docs.docker.com/engine/swarm/key-concepts/).
+- Get started with the [Swarm mode tutorial](https://docs.docker.com/engine/swarm/swarm-tutorial/).
+- Explore Swarm mode CLI commands
+  - [swarm init](https://docs.docker.com/reference/cli/docker/swarm/init/)
+  - [swarm join](https://docs.docker.com/reference/cli/docker/swarm/join/)
+  - [service create](https://docs.docker.com/reference/cli/docker/service/create/)
+  - [service inspect](https://docs.docker.com/reference/cli/docker/service/inspect/)
+  - [service ls](https://docs.docker.com/reference/cli/docker/service/ls/)
+  - [service rm](https://docs.docker.com/reference/cli/docker/service/rm/)
+  - [service scale](https://docs.docker.com/reference/cli/docker/service/scale/)
+  - [service ps](https://docs.docker.com/reference/cli/docker/service/ps/)
+  - [service update](https://docs.docker.com/reference/cli/docker/service/update/)
 
 [Edit this page](https://github.com/docker/docs/edit/main/content/manuals/engine/swarm/_index.md)
 

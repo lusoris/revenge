@@ -25,9 +25,7 @@ For releases, including the [latest release](https://github.com/open-telemetry/o
 
 ## More
 
-  * [Contrib repository](https://github.com/open-telemetry/opentelemetry-go-contrib)
-
-
+- [Contrib repository](https://github.com/open-telemetry/opentelemetry-go-contrib)
 
 * * *
 
@@ -62,9 +60,6 @@ Yes No
 Thank you. Your feedback is appreciated!
 
 Please let us know [how we can improve this page](https://github.com/open-telemetry/opentelemetry.io/issues/new?template=PAGE_FEEDBACK.yml&title=\[Page+feedback\]%3A+ADD+A+SUMMARY+OF+YOUR+FEEDBACK+HERE). Your feedback is appreciated!
-
-  
-
 
 Last modified January 27, 2026: [Update language docs weights while preserving order (#9027) (d8f5ed28)](https://github.com/open-telemetry/opentelemetry.io/commit/d8f5ed285d009cc6baac6d7141bfde8d0956a756)
   *[↑]: Back to Top

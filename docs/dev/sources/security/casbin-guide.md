@@ -91,16 +91,12 @@ Feedback
   4. Recognizes built-in superusers such as `root` or `administrator` who have unrestricted access without requiring explicit permission rules.
   5. Supplies various built-in operators for pattern matching in rules—for instance, `keyMatch` matches resource key `/foo/bar` to pattern `/foo*`.
 
-
-
 ### What Casbin Does **NOT** Do
 
 Feedback
 
   1. User authentication (validating `username` and `password` credentials during login)
   2. User or role list management
-
-
 
 Feedback
 

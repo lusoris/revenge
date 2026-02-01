@@ -19,30 +19,29 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Go Testing Package
+- name: Go Testing Package
     url: ../sources/go/stdlib/testing.md
     note: Standard library testing
-  - name: testify
+- name: testify
     url: ../sources/testing/testify.md
     note: Assertion and mocking toolkit
-  - name: mockery
+- name: mockery
     url: ../sources/testing/mockery-guide.md
     note: Mock generation from interfaces
-  - name: testcontainers-go
+- name: testcontainers-go
     url: https://pkg.go.dev/github.com/testcontainers/testcontainers-go
     note: Docker containers for integration tests
-  - name: embedded-postgres
+- name: embedded-postgres
     url: ../sources/testing/embedded-postgres.md
     note: Embedded PostgreSQL for testing
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: BEST_PRACTICES
+- title: BEST_PRACTICES
     path: operations/BEST_PRACTICES.md
 ---
 
@@ -50,11 +49,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Comprehensive testing strategy with unit, integration, and end-to-end tests
 
@@ -67,7 +64,6 @@ Testing approach:
 - **Best Practices**: Test-driven development, clear test names, arrange-act-assert
 
 ---
-
 
 ## Status
 
@@ -82,9 +78,7 @@ Testing approach:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -93,7 +87,6 @@ Testing approach:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -109,7 +102,6 @@ Testing approach:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -118,7 +110,6 @@ Testing approach:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -134,7 +125,6 @@ Testing approach:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
@@ -147,4 +137,3 @@ Target: **80% minimum**
 - [mockery](../sources/testing/mockery-guide.md) - Mock generation from interfaces
 - [testcontainers-go](https://pkg.go.dev/github.com/testcontainers/testcontainers-go) - Docker containers for integration tests
 - [embedded-postgres](../sources/testing/embedded-postgres.md) - Embedded PostgreSQL for testing
-

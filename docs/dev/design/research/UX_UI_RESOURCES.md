@@ -19,29 +19,28 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: shadcn-svelte
+- name: shadcn-svelte
     url: ../sources/frontend/shadcn-svelte.md
     note: Auto-resolved from shadcn-svelte
-  - name: Svelte 5 Runes
+- name: Svelte 5 Runes
     url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
+- name: Svelte 5 Documentation
     url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
+- name: SvelteKit Documentation
     url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
-  - title: research
+- title: research
     path: research.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -49,11 +48,9 @@ design_refs:
 
 <!-- DESIGN: research, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: 🔴 Not Started
 **Category**: research
-
 
 > > Frontend design resources and UI component references
 
@@ -64,9 +61,7 @@ Resources covered:
 - **Accessibility**: WCAG 2.1 compliance, keyboard navigation
 - **Inspiration**: Netflix, Disney+, Plex UI patterns
 
-
 ---
-
 
 ## Status
 
@@ -81,9 +76,7 @@ Resources covered:
 | Integration Testing | 🔴 | - |
 **Overall**: 🔴 Not Started
 
-
 ---
-
 
 ## Architecture
 
@@ -92,7 +85,6 @@ Resources covered:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -108,7 +100,6 @@ Resources covered:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -117,7 +108,6 @@ Resources covered:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -133,7 +123,6 @@ Resources covered:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [research](research.md)
@@ -146,4 +135,3 @@ Target: **80% minimum**
 - [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
 - [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
 - [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
-

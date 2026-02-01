@@ -151,7 +151,7 @@ Marvel’s Deadpool VR Announce Trailer
 MARVEL Tōkon: Fighting Souls | From Japan to the World
 MARVEL Tōkon: Fighting Souls | Announce Trailer
 MARVEL Cosmic Invasion – She-Hulk and Rocket Raccoon Character Reveal
-Thunderbolts* | Unboxing with Florence Pugh, David Harbour, and Wyatt Russell
+Thunderbolts*| Unboxing with Florence Pugh, David Harbour, and Wyatt Russell
 Marvel Future Fight | 10th Anniversary Trailer
 Geraldine Vishwanathan Brings Mel to Life in Marvel Studios' Thunderbolts*
 Hannah John-Kamen Reappears as Ghost in the MCU!

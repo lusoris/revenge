@@ -1,20 +1,17 @@
 # VS Code Go Extension
 
 > Source: https://github.com/golang/vscode-go/wiki
-> Fetched: 2026-01-31T16:04:20.716025+00:00
-> Content-Hash: 6888d86d48a84f27
+> Fetched: 2026-02-01T11:51:45.534405+00:00
+> Content-Hash: dff09ca3d875c7fa
 > Type: html
 
 ---
 
-[ golang ](/golang) / **[vscode-go](/golang/vscode-go) ** Public
+[golang](/golang) / **[vscode-go](/golang/vscode-go)** Public
 
-  * [ Notifications ](/login?return_to=%2Fgolang%2Fvscode-go) You must be signed in to change notification settings
-  * [ Fork 876 ](/login?return_to=%2Fgolang%2Fvscode-go)
-  * [ Star  4.2k ](/login?return_to=%2Fgolang%2Fvscode-go)
-
-
-
+- [Notifications](/login?return_to=%2Fgolang%2Fvscode-go) You must be signed in to change notification settings
+- [Fork 877](/login?return_to=%2Fgolang%2Fvscode-go)
+- [Star  4.2k](/login?return_to=%2Fgolang%2Fvscode-go)
 
 # Home
 
@@ -26,34 +23,31 @@ Welcome to the VSCode Go Wiki!
 
 ### User Documentation
 
-  * [Overview of Extension Features](wiki/features)
+- [Overview of Extension Features](wiki/features)
 
-  * [Debugging Feature](wiki/debugging)
+- [Debugging Feature](wiki/debugging)
 
-  * [Diagnostics](https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md)
+- [Diagnostics](https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md)
 
-  * [Setting Up Your Workspace](https://github.com/golang/tools/blob/master/gopls/doc/workspace.md)
+- [Setting Up Your Workspace](https://github.com/golang/tools/blob/master/gopls/doc/workspace.md)
 
-  * [Available Settings](wiki/settings)
+- [Available Settings](wiki/settings)
 
-  * [List of Extension Commands](wiki/commands)
+- [List of Extension Commands](wiki/commands)
 
-  * [Commonly Used `tasks.json` Setup](wiki/tasks)
+- [Commonly Used `tasks.json` Setup](wiki/tasks)
 
-  * [3rd-party Tools Used By Extension](wiki/tools)
+- [3rd-party Tools Used By Extension](wiki/tools)
 
-  * [User Interface](wiki/ui)
+- [User Interface](wiki/ui)
 
-  * [FAQs](wiki/faq)
+- [FAQs](wiki/faq)
 
-  * [Troubleshooting](wiki/troubleshooting)
+- [Troubleshooting](wiki/troubleshooting)
 
-  * [Advanced Topics](wiki/advanced)
+- [Advanced Topics](wiki/advanced)
 
-  * [How to Contribute](wiki/contributing)
-
-
-
+- [How to Contribute](wiki/contributing)
 
 * * *
 

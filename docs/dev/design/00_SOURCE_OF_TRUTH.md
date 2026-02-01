@@ -247,7 +247,7 @@ This applies to ALL data types across all modules.
 |---------|---------|---------|-------|
 | `github.com/stretchr/testify` | v1.11.1 | Assertions | Assertions, require, suite |
 | `github.com/vektra/mockery/v3` | v3.3.0 | Mock generation | Interface mocking |
-| `github.com/testcontainers/testcontainers-go` | v0.37.0 | Integration tests | Real containers |
+| `github.com/testcontainers/testcontainers-go` | v0.40.0 | Integration tests | Real containers |
 | `github.com/fergusstrange/embedded-postgres` | v1.30.0 | Unit tests | Fast embedded PostgreSQL |
 
 ## Development Tools
@@ -263,7 +263,7 @@ Tools used for development, with exact versions synced to configs.
 | **Docker** | 27+ | `.github/workflows/*.yml` | Docker Engine |
 | **Dragonfly** | v1.36.0 | `docker-compose.yml`, `.coder/template.tf` | Redis-compatible cache |
 | **Typesense** | v30.1 | `docker-compose.yml`, `.coder/template.tf` | Search engine |
-| **golangci-lint** | ⏸️ disabled | `.github/workflows/ci.yml`, `.golangci.yml` | Disabled: golangci-lint v1.64.8 lacks Go 1.25 support (re-enable when updated) |
+| **golangci-lint** | v2.8.0 | `.github/workflows/ci.yml`, `.golangci.yml` | Go 1.25 support added in v2.8.0 |
 | **ruff** | 0.4+ | `scripts/requirements.txt`, `.github/workflows/*.yml`, `ruff.toml` | Python linter/formatter |
 | **Coder** | v2.17.2+ | `.coder/template.tf` | Dev environments |
 | **markdownlint** | 0.39+ | `.markdownlint.json`, `.github/workflows/*.yml` | Markdown linter |
@@ -1360,7 +1360,6 @@ See [00_SOURCE_OF_TRUTH.md](00_SOURCE_OF_TRUTH.md) for current package versions.
 ```
 
 Instead of duplicating version tables.
-
 
 ---
 

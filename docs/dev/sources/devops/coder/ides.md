@@ -1,7 +1,7 @@
 # Coder IDEs
 
 > Source: https://coder.com/docs/ides
-> Fetched: 2026-01-31T16:05:27.043019+00:00
+> Fetched: 2026-02-01T11:52:57.077986+00:00
 > Content-Hash: f47620e87ffcc5ef
 > Type: html
 
@@ -27,7 +27,7 @@ Read the complete [Web Terminal documentation](/docs/user-guides/workspace-acces
 
 Coder will use the optimal path for an SSH connection (determined by your deployment's [networking configuration](/docs/admin/infrastructure)) when using the CLI:
 
-``coder ssh my-workspace ``
+``coder ssh my-workspace``
 
 Or, you can configure plain SSH on your client below.
 
@@ -41,24 +41,21 @@ Coder generates [SSH key pairs](/docs/admin/security/secrets#ssh-keys) for each 
 
   1. Use your terminal to authenticate the CLI with Coder web UI and your workspaces:
 
-``coder login <accessURL> ``
+``coder login <accessURL>``
 
-  2. Access Coder via SSH:
+  1. Access Coder via SSH:
 
-``coder config-ssh ``
+``coder config-ssh``
 
-  3. Run `coder config-ssh --dry-run` if you'd like to see the changes that will be before you proceed:
+  1. Run `coder config-ssh --dry-run` if you'd like to see the changes that will be before you proceed:
 
-``coder config-ssh --dry-run ``
+``coder config-ssh --dry-run``
 
-  4. Confirm that you want to continue by typing **yes** and pressing enter. If
-
-
-
+  1. Confirm that you want to continue by typing **yes** and pressing enter. If
 
 successful, you'll see the following message:
 
-``You should now be able to ssh into your workspace. For example, try running: $ ssh coder.<workspaceName> ``
+``You should now be able to ssh into your workspace. For example, try running: $ ssh coder.<workspaceName>``
 
 Your workspace is now accessible via `ssh coder.<workspace_name>` (for example, `ssh coder.myEnv` if your workspace is named `myEnv`).
 
@@ -82,16 +79,14 @@ Read more about [using Cursor with your workspace](/docs/user-guides/workspace-a
 
 We support JetBrains IDEs using [Gateway](https://www.jetbrains.com/remote-development/gateway/). The following IDEs are supported for remote development:
 
-  * IntelliJ IDEA
-  * CLion
-  * GoLand
-  * PyCharm
-  * Rider
-  * RubyMine
-  * WebStorm
-  * [JetBrains Fleet](/docs/user-guides/workspace-access/jetbrains/fleet)
-
-
+- IntelliJ IDEA
+- CLion
+- GoLand
+- PyCharm
+- Rider
+- RubyMine
+- WebStorm
+- [JetBrains Fleet](/docs/user-guides/workspace-access/jetbrains/fleet)
 
 Read our [docs on JetBrains](/docs/user-guides/workspace-access/jetbrains) for more information on connecting your JetBrains IDEs.
 
@@ -105,13 +100,11 @@ We support a variety of other browser IDEs and tools to interact with your works
 
 Supported IDEs:
 
-  * VS Code Web
-  * JupyterLab
-  * RStudio
-  * Airflow
-  * File Browser
-
-
+- VS Code Web
+- JupyterLab
+- RStudio
+- Airflow
+- File Browser
 
 Our [Module Registry](https://registry.coder.com/modules) also hosts a variety of tools for extending the capability of your workspace. If you have a request for a new IDE or tool, please file an issue in our [Modules repo](https://github.com/coder/registry/issues).
 

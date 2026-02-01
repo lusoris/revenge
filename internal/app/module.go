@@ -49,7 +49,7 @@ func NewHTTPServer(
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		// Simple JSON response (will be replaced by ogen later)
-		fmt.Fprintf(w, `{"name":"%s","status":"%s","message":"%s"}`,
+		_, _ = fmt.Fprintf(w, `{"name":"%s","status":"%s","message":"%s"}`,
 			result.Name, result.Status, result.Message)
 	})
 
@@ -61,7 +61,7 @@ func NewHTTPServer(
 		} else {
 			w.WriteHeader(http.StatusOK)
 		}
-		fmt.Fprintf(w, `{"name":"%s","status":"%s","message":"%s"}`,
+		_, _ = fmt.Fprintf(w, `{"name":"%s","status":"%s","message":"%s"}`,
 			result.Name, result.Status, result.Message)
 	})
 
@@ -73,7 +73,7 @@ func NewHTTPServer(
 		} else {
 			w.WriteHeader(http.StatusOK)
 		}
-		fmt.Fprintf(w, `{"name":"%s","status":"%s","message":"%s"}`,
+		_, _ = fmt.Fprintf(w, `{"name":"%s","status":"%s","message":"%s"}`,
 			result.Name, result.Status, result.Message)
 	})
 

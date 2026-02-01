@@ -8,31 +8,26 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Conventional Commits
+- name: Conventional Commits
     url: ../sources/standards/conventional-commits.md
     note: Auto-resolved from conventional-commits
-  - name: Git Flow
+- name: Git Flow
     url: ../sources/standards/gitflow.md
     note: Auto-resolved from gitflow
 design_refs:
-  - title: operations
+- title: operations
     path: operations/INDEX.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Branch Protection Rules
-
-
-
 
 > Rules that protect main and develop branches from accidental changes
 
@@ -40,44 +35,25 @@ Branch protection rules prevent direct pushes to main and develop branches. All 
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

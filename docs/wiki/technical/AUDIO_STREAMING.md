@@ -8,34 +8,29 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: gohlslib (HLS)
+- name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: HLS server implementation
-  - name: go-astiav (FFmpeg)
+- name: go-astiav (FFmpeg)
     url: ../sources/media/go-astiav.md
     note: Audio transcoding
-  - name: Dragonfly
+- name: Dragonfly
     url: ../sources/infrastructure/dragonfly.md
     note: Progress tracking cache
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Audio Streaming & Progress Tracking
-
-
-
 
 > Stream your music with adaptive quality and seamless progress sync
 
@@ -43,44 +38,25 @@ The Audio Streaming system delivers high-quality music playback using HLS (HTTP 
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

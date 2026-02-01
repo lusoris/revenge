@@ -1,28 +1,28 @@
 # Git Flow
 
 > Source: https://nvie.com/posts/a-successful-git-branching-model/
-> Fetched: 2026-01-31T16:03:59.680678+00:00
+> Fetched: 2026-02-01T11:51:24.809007+00:00
 > Content-Hash: 05d8b406deb498f0
 > Type: html
 
 ---
 
 > 👉 Latest post:  
->  "[**Why .every() on an empty list is true**](/posts/why-every-on-an-empty-list-is-true/)" 
+> "[**Why .every() on an empty list is true**](/posts/why-every-on-an-empty-list-is-true/)"
 
 By [Vincent Driessen](/about/)  
-on Tuesday, January 05, 2010 
+on Tuesday, January 05, 2010
 
 > ### Note of reflection (March 5, 2020)
-> 
+>
 > This model was conceived in 2010, now more than 10 years ago, and not very long after Git itself came into being. In those 10 years, git-flow (the branching model laid out in this article) has become hugely popular in many a software team to the point where people have started treating it like a standard of sorts — but unfortunately also as a dogma or panacea.
-> 
+>
 > During those 10 years, Git itself has taken the world by a storm, and the most popular type of software that is being developed with Git is shifting more towards web apps — at least in my filter bubble. Web apps are typically continuously delivered, not rolled back, and you don't have to support multiple versions of the software running in the wild.
-> 
+>
 > This is not the class of software that I had in mind when I wrote the blog post 10 years ago. If your team is doing continuous delivery of software, I would suggest to adopt a much simpler workflow (like [GitHub flow](https://guides.github.com/introduction/flow/)) instead of trying to shoehorn git-flow into your team.
-> 
+>
 > If, however, you are building software that is explicitly versioned, or if you need to support multiple versions of your software in the wild, then git-flow may still be as good of a fit to your team as it has been to people in the last 10 years. In that case, please read on.
-> 
+>
 > To conclude, always remember that panaceas don't exist. Consider your own context. Don't be hating. Decide for yourself.
 
 In this post I present the development model that I’ve introduced for some of my projects (both at work and private) about a year ago, and which has turned out to be very successful. I’ve been meaning to write about it for a while now, but I’ve never really found the time to do so thoroughly, until now. I won’t talk about any of the projects’ details, merely about the branching strategy and release management.
@@ -49,10 +49,8 @@ Technically, this means nothing more than that Alice has defined a Git remote, n
 
 At the core, the development model is greatly inspired by existing models out there. The central repo holds two main branches with an infinite lifetime:
 
-  * `master`
-  * `develop`
-
-
+- `master`
+- `develop`
 
 The `master` branch at `origin` should be familiar to every Git user. Parallel to the `master` branch, another branch exists called `develop`.
 
@@ -70,11 +68,9 @@ Next to the main branches `master` and `develop`, our development model uses a v
 
 The different types of branches we may use are:
 
-  * Feature branches
-  * Release branches
-  * Hotfix branches
-
-
+- Feature branches
+- Release branches
+- Hotfix branches
 
 Each of these branches have a specific purpose and are bound to strict rules as to which branches may be their originating branch and which branches must be their merge targets. We will walk through them in a minute.
 
@@ -96,8 +92,7 @@ Feature branches typically exist in developer repos only, not in `origin`.
 #### Creating a feature branch ¶
 
 When starting work on a new feature, branch off from the `develop` branch.
-    
-    
+
     $ git checkout -b myfeature develop
     Switched to a new branch "myfeature"
     
@@ -105,8 +100,7 @@ When starting work on a new feature, branch off from the `develop` branch.
 #### Incorporating a finished feature on develop ¶
 
 Finished features may be merged into the `develop` branch to definitely add them to the upcoming release:
-    
-    
+
     $ git checkout develop
     Switched to branch 'develop'
     $ git merge --no-ff myfeature
@@ -141,8 +135,7 @@ It is exactly at the start of a release branch that the upcoming release gets as
 #### Creating a release branch ¶
 
 Release branches are created from the `develop` branch. For example, say version 1.1.5 is the current production release and we have a big release coming up. The state of `develop` is ready for the “next release” and we have decided that this will become version 1.2 (rather than 1.1.6 or 2.0). So we branch off and give the release branch a name reflecting the new version number:
-    
-    
+
     $ git checkout -b release-1.2 develop
     Switched to a new branch "release-1.2"
     $ ./bump-version.sh 1.2
@@ -161,8 +154,7 @@ This new branch may exist there for a while, until the release may be rolled out
 When the state of the release branch is ready to become a real release, some actions need to be carried out. First, the release branch is merged into `master` (since every commit on `master` is a new release _by definition_ , remember). Next, that commit on `master` must be tagged for easy future reference to this historical version. Finally, the changes made on the release branch need to be merged back into `develop`, so that future releases also contain these bug fixes.
 
 The first two steps in Git:
-    
-    
+
     $ git checkout master
     Switched to branch 'master'
     $ git merge --no-ff release-1.2
@@ -171,13 +163,12 @@ The first two steps in Git:
     $ git tag -a 1.2
     
 
-The release is now done, and tagged for future reference. 
+The release is now done, and tagged for future reference.
 
 > **Edit:** You might as well want to use the `-s` or `-u <key>` flags to sign your tag cryptographically.
 
 To keep the changes made in the release branch, we need to merge those back into `develop`, though. In Git:
-    
-    
+
     $ git checkout develop
     Switched to branch 'develop'
     $ git merge --no-ff release-1.2
@@ -188,8 +179,7 @@ To keep the changes made in the release branch, we need to merge those back into
 This step may well lead to a merge conflict (probably even, since we have changed the version number). If so, fix it and commit.
 
 Now we are really done and the release branch may be removed, since we don’t need it anymore:
-    
-    
+
     $ git branch -d release-1.2
     Deleted branch release-1.2 (was ff452fe).
     
@@ -210,8 +200,7 @@ The essence is that work of team members (on the `develop` branch) can continue,
 #### Creating the hotfix branch ¶
 
 Hotfix branches are created from the `master` branch. For example, say version 1.2 is the current production release running live and causing troubles due to a severe bug. But changes on `develop` are yet unstable. We may then branch off a hotfix branch and start fixing the problem:
-    
-    
+
     $ git checkout -b hotfix-1.2.1 master
     Switched to a new branch "hotfix-1.2.1"
     $ ./bump-version.sh 1.2.1
@@ -224,8 +213,7 @@ Hotfix branches are created from the `master` branch. For example, say version 1
 Don’t forget to bump the version number after branching off!
 
 Then, fix the bug and commit the fix in one or more separate commits.
-    
-    
+
     $ git commit -m "Fixed severe production problem"
     [hotfix-1.2.1 abbe5d6] Fixed severe production problem
     5 files changed, 32 insertions(+), 17 deletions(-)
@@ -236,8 +224,7 @@ Then, fix the bug and commit the fix in one or more separate commits.
 When finished, the bugfix needs to be merged back into `master`, but also needs to be merged back into `develop`, in order to safeguard that the bugfix is included in the next release as well. This is completely similar to how release branches are finished.
 
 First, update `master` and tag the release.
-    
-    
+
     $ git checkout master
     Switched to branch 'master'
     $ git merge --no-ff hotfix-1.2.1
@@ -249,8 +236,7 @@ First, update `master` and tag the release.
 > **Edit:** You might as well want to use the `-s` or `-u <key>` flags to sign your tag cryptographically.
 
 Next, include the bugfix in `develop`, too:
-    
-    
+
     $ git checkout develop
     Switched to branch 'develop'
     $ git merge --no-ff hotfix-1.2.1
@@ -261,8 +247,7 @@ Next, include the bugfix in `develop`, too:
 The one exception to the rule here is that, **when a release branch currently exists, the hotfix changes need to be merged into that release branch, instead of`develop`**. Back-merging the bugfix into the release branch will eventually result in the bugfix being merged into `develop` too, when the release branch is finished. (If work in `develop` immediately requires this bugfix and cannot wait for the release branch to be finished, you may safely merge the bugfix into `develop` now already as well.)
 
 Finally, remove the temporary branch:
-    
-    
+
     $ git branch -d hotfix-1.2.1
     Deleted branch hotfix-1.2.1 (was abbe5d6).
     
@@ -280,13 +265,11 @@ A high-quality PDF version of the figure is provided here. Go ahead and hang it 
 
 ## Other posts on this blog
 
-  * [**Why .every() on an empty list is true**](/posts/why-every-on-an-empty-list-is-true/)
-  * [**Git power tools for daily use**](/posts/git-power-tools/)
-  * [**An intro to decoders**](/posts/introducing-decoders/)
-  * [**Beautiful code**](/posts/beautiful-code/)
-  * [**Beautiful map**](/posts/beautiful-map/)
-
-
+- [**Why .every() on an empty list is true**](/posts/why-every-on-an-empty-list-is-true/)
+- [**Git power tools for daily use**](/posts/git-power-tools/)
+- [**An intro to decoders**](/posts/introducing-decoders/)
+- [**Beautiful code**](/posts/beautiful-code/)
+- [**Beautiful map**](/posts/beautiful-map/)
 
 If you want to get in touch, I'm [@nvie](http://twitter.com/nvie) on Twitter.
   *[↑]: Back to Top

@@ -24,8 +24,7 @@ In this section we provide some example WebVTT files as an introduction.
 _This section is non-normative._
 
 The main use for WebVTT files is captioning or subtitling video content. Here is a sample file that captions an interview:
-    
-    
+
     WEBVTT
     
     00:11.000 --> 00:13.000
@@ -81,8 +80,7 @@ _This section is non-normative._
 Line breaks in cues are honored. User agents will also insert extra line breaks if necessary to fit the cue in the cue’s width. In general, therefore, authors are encouraged to write cues all on one line except when a line break is definitely necessary.
 
 These captions on a public service announcement video demonstrate line breaking:
-    
-    
+
     WEBVTT
     
     00:01.000 --> 00:04.000
@@ -97,8 +95,7 @@ These captions on a public service announcement video demonstrate line breaking:
     
 
 The first cue is simple, it will probably just display on one line. The second will take two lines, one for each speaker. The third will wrap to fit the width of the video, possibly taking multiple lines. For example, the three cues could look like this:
-    
-    
+
                Never drink liquid nitrogen.
     
             — It will perforate your stomach.
@@ -112,8 +109,7 @@ The first cue is simple, it will probably just display on one line. The second w
     
 
 If the width of the cues is smaller, the first two cues could wrap as well, as in the following example. Note how the second cue’s explicit line break is still honored, however:
-    
-    
+
           Never drink
         liquid nitrogen.
     
@@ -142,8 +138,7 @@ _This section is non-normative._
 CSS style sheets that apply to an HTML page that contains a [video](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-video-element) element can target WebVTT cues and regions in the video using the ::cue, ::cue(), ::cue-region and ::cue-region() pseudo-elements.
 
 In this example, an HTML page has a CSS style sheet in a [style](https://www.w3.org/TR/html51/document-metadata.html#the-style-element) element that styles all cues in the video with a gradient background and a text color, as well as changing the text color for all WebVTT Bold Objects in cues in the video.
-    
-    
+
     <!doctype html>
     <html>
      <head>
@@ -175,8 +170,7 @@ Blank lines cannot appear in the style sheet. They can be removed or be filled w
 The string "`-->`" cannot be used in the style sheet. If the style sheet is wrapped in "`<!--`" and "`-->`", then those strings can just be removed. If "`-->`" appears inside a CSS string, then it can use CSS escaping e.g. "`--\>`".
 
 This example shows how cues can be styled with style blocks in WebVTT.
-    
-    
+
     WEBVTT
     
     STYLE
@@ -207,8 +201,7 @@ _This section is non-normative._
 WebVTT also supports some less-often used features.
 
 In this example, the cues have an identifier:
-    
-    
+
     WEBVTT
     
     test
@@ -225,15 +218,13 @@ In this example, the cues have an identifier:
     
 
 This allows a style sheet to specifically target the cues.
-    
-    
+
     /* style for cue: test */
     ::cue(#test) { color: lime; }
     
 
 Due to the syntax rules of CSS, some characters need to be escaped with CSS character escape sequences. For example, an ID that starts with a number 0-9 needs to be escaped. The ID `123` can be represented as "\31 23" (31 refers to the Unicode code point for "1"). See [Using character escapes in markup and CSS](https://www.w3.org/International/questions/qa-escapes) for more information on CSS escapes.
-    
-    
+
     /* style for cue: 123 */
     ::cue(#\31 23) { color: lime; }
     /* style for cue: crédit de transcription */
@@ -241,8 +232,7 @@ Due to the syntax rules of CSS, some characters need to be escaped with CSS char
     
 
 This example shows how classes can be used on elements, which can be helpful for localization or maintainability of styling, and also how to indicate a language change in the cue text.
-    
-    
+
     WEBVTT
     
     04:02.500 --> 04:05.000
@@ -253,8 +243,7 @@ This example shows how classes can be used on elements, which can be helpful for
     
 
 In this example, each cue says who is talking using voice spans. In the first cue, the span specifying the speaker is also annotated with two classes, "first" and "loud". In the third cue, there is also some italics text (not associated with a specific speaker). The last cue is annotated with just the class "loud".
-    
-    
+
     WEBVTT
     
     00:00.000 --> 00:02.000
@@ -273,8 +262,7 @@ In this example, each cue says who is talking using voice spans. In the first cu
 Notice that as a special exception, the voice spans don’t have to be closed if they cover the entire cue text.
 
 Style sheets can style these spans:
-    
-    
+
     ::cue(v[voice="Esme"]) { color: cyan }
     ::cue(v[voice="Mary"]) { color: lime }
     ::cue(i) { font-style: italic }
@@ -282,8 +270,7 @@ Style sheets can style these spans:
     
 
 This example shows how to position cues at explicit positions in the video viewport.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:04.000 position:10%,line-left align:left size:35%
@@ -309,8 +296,7 @@ The text within the first cue’s cue box is aligned using the "align" cue setti
 The second cue has its cue box right aligned at the 90% mark of the video viewport width ("right" aligned text right aligns the box). The same effect can be achieved with "position:55%,line-left", which explicitly positions the cue box. The third cue has center aligned text within the same positioned cue box as the first cue.
 
 This example shows two regions containing rollup captions for two different speakers. Fred’s cues scroll up in a region in the left half of the video, Bill’s cues scroll up in a region on the right half of the video. Fred’s first cue disappears at 12.5sec even though it is defined until 20sec because its region is limited to 3 lines and at 12.5sec a fourth cue appears:
-    
-    
+
     WEBVTT
     
     REGION
@@ -359,8 +345,7 @@ Comments can be included in WebVTT files.
 Comments are just blocks that are preceded by a blank line, start with the word "`NOTE`" (followed by a space or newline), and end at the first blank line.
 
 Here, a one-line comment is used to note a possible problem with a cue.
-    
-    
+
     WEBVTT
     
     00:01.000 --> 00:04.000
@@ -374,8 +359,7 @@ Here, a one-line comment is used to note a possible problem with a cue.
     
 
 In this example, the author has written many comments.
-    
-    
+
     WEBVTT
     
     NOTE
@@ -408,8 +392,7 @@ A WebVTT file can consist of chapters, which are navigation markers for the vide
 Chapters are plain text, typically just a single line.
 
 In this example, a talk is split into each slide being a chapter.
-    
-    
+
     WEBVTT
     
     NOTE
@@ -443,8 +426,7 @@ Metadata can be any string and is often provided as a JSON construct.
 Note that you cannot provide blank lines inside a metadata block, because the blank line signifies the end of the WebVTT cue.
 
 In this example, a talk is split into each slide being a chapter.
-    
-    
+
     WEBVTT
     
     NOTE
@@ -493,38 +475,31 @@ For example, the parser will create two cues even if the blank line between them
 
 User agents fall into several (possibly overlapping) categories with different conformance requirements.
 
-User agents that support scripting 
-    
+User agents that support scripting
 
 All processing requirements in this specification apply. The user agent must also be conforming implementations of the IDL fragments in this specification, as described in the Web IDL specification. [WEBIDL-1]
 
-User agents with no scripting support 
-    
+User agents with no scripting support
 
 All processing requirements in this specification apply, except those in §6.5 WebVTT cue text DOM construction rules and §9 API.
 
 User agents that do not support CSS
-    
 
 All processing requirements in this specification apply, except parts of §6 Parsing that relate to stylesheets and CSS, and all of §7 Rendering and §8 CSS extensions. The user agent must instead only render the text inside WebVTT caption or subtitle cue text in an appropriate manner and specifically support the color classes defined in §5 Default classes for WebVTT Caption or Subtitle Cue Components. Any other styling instructions are optional.
 
 User agents that do not support a full HTML CSS engine
-    
 
 All processing requirements in this specification apply, including the color classes defined in §5 Default classes for WebVTT Caption or Subtitle Cue Components. However, the user agent will need to apply the CSS related features in §6 Parsing, §7 Rendering and §8 CSS extensions in such a way that the rendered results are equivalent to what a full CSS supporting renderer produces.
 
 User agents that support a full HTML CSS engine
-    
 
 All processing requirements in this specification apply. However, only a limited set of CSS styles is allowed because user agents that do not support a full HTML CSS engine will need to implement CSS functionality equivalents. User agents that support a full CSS engine must therefore limit the CSS styles they apply for WebVTT so as to enable identical rendering without bleeding in extra CSS styles that are beyond the WebVTT specification.
 
-Conformance checkers 
-    
+Conformance checkers
 
 Conformance checkers must verify that a WebVTT file conforms to the applicable conformance criteria described in this specification. The term "validator" is equivalent to conformance checker for the purpose of this specification.
 
-Authoring tools 
-    
+Authoring tools
 
 Authoring tools must generate conforming WebVTT files. Tools that convert other formats to WebVTT are also considered to be authoring tools.
 
@@ -540,7 +515,7 @@ For example, a cue with an identifier consisting of the characters U+0041 LATIN 
 
 The box model of WebVTT consists of three key elements: the video viewport, cues, and regions. The video viewport is the rendering area into which cues and regions are rendered. Cues are boxes consisting of a set of cue lines. Regions are subareas of the video viewport that are used to group cues together. Cues are positioned either inside the video viewport directly or inside a region, which is positioned inside the video viewport.
 
-The position of a cue inside the video viewport is defined by a set of cue settings. The position of a region inside the video viewport is defined by a set of region settings. Cues that are inside regions can only use a limited set of their cue settings. Specifically, if the cue has a "vertical", "line" or "size" setting, the cue drops out of the region. Otherwise, the cue’s width is calculated to be relative to the region width rather than the viewport. 
+The position of a cue inside the video viewport is defined by a set of cue settings. The position of a region inside the video viewport is defined by a set of region settings. Cues that are inside regions can only use a limited set of their cue settings. Specifically, if the cue has a "vertical", "line" or "size" setting, the cue drops out of the region. Otherwise, the cue’s width is calculated to be relative to the region width rather than the viewport.
 
 ### 3.1. Overview
 
@@ -558,10 +533,9 @@ WebVTT caption or subtitle cues are rendered as overlays on top of a video viewp
 
 ### 3.2. WebVTT cues
 
-A WebVTT cue is a [text track cue](https://www.w3.org/TR/html51/semantics-embedded-content.html#cue) [HTML51] that additionally consist of the following: 
+A WebVTT cue is a [text track cue](https://www.w3.org/TR/html51/semantics-embedded-content.html#cue) [HTML51] that additionally consist of the following:
 
 A cue text
-    
 
 The raw text of the cue, and rules for its interpretation.
 
@@ -570,7 +544,6 @@ The raw text of the cue, and rules for its interpretation.
 A WebVTT caption or subtitle cue is a WebVTT cue that has the following additional properties allowing the cue text to be rendered and converted to a DOM fragment:
 
 A cue box
-    
 
 The cue box of a WebVTT cue is a box within which the text of all lines of the cue is to be rendered. It is either rendered into the video’s viewport or a region inside the viewport if the cue is part of a region.
 
@@ -579,15 +552,12 @@ The position of the cue box within the video viewport’s or region’s dimensio
 Lines are wrapped within the cue box’s size if lines' lengths make this necessary.
 
 A writing direction
-    
 
 A writing direction, either
 
-  * horizontal (a line extends horizontally and is offset vertically from the video viewport’s top edge, with consecutive lines displayed below each other), 
-  * vertical growing left (a line extends vertically and is offset horizontally from the video viewport’s right edge, with consecutive lines displayed to the left of each other), or 
-  * vertical growing right (a line extends vertically and is offset horizontally from the video viewport’s left edge, with consecutive lines displayed to the right of each other). 
-
-
+- horizontal (a line extends horizontally and is offset vertically from the video viewport’s top edge, with consecutive lines displayed below each other),
+- vertical growing left (a line extends vertically and is offset horizontally from the video viewport’s right edge, with consecutive lines displayed to the left of each other), or
+- vertical growing right (a line extends vertically and is offset horizontally from the video viewport’s left edge, with consecutive lines displayed to the right of each other).
 
 The writing direction affects the interpretation of the line, position, and size cue settings to be interpreted with respect to either the width or height of the video.
 
@@ -596,7 +566,6 @@ By default, the writing direction is set to to horizontal.
 The vertical growing left writing direction could be used for vertical Chinese, Japanese, and Korean, and the vertical growing right writing direction could be used for vertical Mongolian.
 
 A snap-to-lines flag
-    
 
 A boolean indicating whether the line is an integer number of lines (using the line dimensions of the first line of the cue), or whether it is a percentage of the dimension of the video. The flag is set to true when lines are counted, and false otherwise.
 
@@ -605,7 +574,6 @@ Cues where the flag is false will be offset as requested modulo overlap avoidanc
 By default, the snap-to-lines flag is set to true.
 
 A line
-    
 
 The line defines positioning of the cue box.
 
@@ -623,47 +591,42 @@ A WebVTT cue has a computed line whose value is that returned by the following a
 
 Although the WebVTT parser will not set the line to a number outside the range 0..100 and also set the WebVTT cue snap-to-lines flag to false, this can happen when using the DOM API’s `snapToLines` and `line` attributes.
 
-  2. If the line is numeric, return the value of the WebVTT cue line and abort these steps. (Either the WebVTT cue snap-to-lines flag is true, so any value, not just those in the range 0..100, is valid, or the value is in the range 0..100 and is thus valid regardless of the value of that flag.)
+  1. If the line is numeric, return the value of the WebVTT cue line and abort these steps. (Either the WebVTT cue snap-to-lines flag is true, so any value, not just those in the range 0..100, is valid, or the value is in the range 0..100 and is thus valid regardless of the value of that flag.)
 
-  3. If the WebVTT cue snap-to-lines flag of the WebVTT cue is false, return the value 100 and abort these steps. (The line is the special value auto.)
+  2. If the WebVTT cue snap-to-lines flag of the WebVTT cue is false, return the value 100 and abort these steps. (The line is the special value auto.)
 
-  4. Let cue be the WebVTT cue.
+  3. Let cue be the WebVTT cue.
 
-  5. If cue is not in a [list of cues](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-cues) of a [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks), or if that [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) is not in the [list of text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-text-tracks) of a [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element), return −1 and abort these steps.
+  4. If cue is not in a [list of cues](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-cues) of a [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks), or if that [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) is not in the [list of text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-text-tracks) of a [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element), return −1 and abort these steps.
 
-  6. Let track be the [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) whose [list of cues](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-cues) the cue is in.
+  5. Let track be the [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) whose [list of cues](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-cues) the cue is in.
 
-  7. Let n be the number of [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) whose [text track mode](https://www.w3.org/TR/html51/semantics-embedded-content.html#a-mode) is [showing](https://www.w3.org/TR/html51/semantics-embedded-content.html#modedef-track-showing) and that are in the [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element)’s [list of text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-text-tracks) before track.
+  6. Let n be the number of [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) whose [text track mode](https://www.w3.org/TR/html51/semantics-embedded-content.html#a-mode) is [showing](https://www.w3.org/TR/html51/semantics-embedded-content.html#modedef-track-showing) and that are in the [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element)’s [list of text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#list-of-text-tracks) before track.
 
-  8. Increment n by one.
+  7. Increment n by one.
 
-  9. Negate n.
+  8. Negate n.
 
-  10. Return n.
-
-
-
+  9. Return n.
 
 For example, if two [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) are [showing](https://www.w3.org/TR/html51/semantics-embedded-content.html#modedef-track-showing) at the same time in one [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element), and each [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) currently has an active WebVTT cue whose line are both auto, then the first [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks)’s cue’s computed line will be −1 and the second will be −2.
 
 A line alignment
-    
 
 An alignment for the cue box’s line, one of:
 
 Start alignment
-    The cue box’s top side (for horizontal cues), left side (for vertical growing right), or right side (for vertical growing left) is aligned at the line. 
+    The cue box’s top side (for horizontal cues), left side (for vertical growing right), or right side (for vertical growing left) is aligned at the line.
 Center alignment
-    The cue box is centered at the line. 
+    The cue box is centered at the line.
 End alignment
-    The cue box’s bottom side (for horizontal cues), right side (for vertical growing right), or left side (for vertical growing left) is aligned at the line. 
+    The cue box’s bottom side (for horizontal cues), right side (for vertical growing right), or left side (for vertical growing left) is aligned at the line.
 
 By default, the line alignment is set to start.
 
 The line alignment is separate from the text alignment — right-to-left vs. left-to-right cue text does not affect the line alignment.
 
 A position
-    
 
 The position defines the indent of the cue box in the direction defined by the writing direction.
 
@@ -685,9 +648,6 @@ A WebVTT cue has a computed position whose value is that returned by the followi
 
   4. Otherwise, return 50 and abort these steps.
 
-
-
-
 Since the default value of the WebVTT cue position alignment is center, if there is no WebVTT cue text alignment setting for a cue, the WebVTT cue position defaults to 50%.
 
 Even for horizontal cues with right-to-left cue text, the cue box is positioned from the left edge of the video viewport. This allows defining a rendering space template which can be filled with either left-to-right or right-to-left cue text, or both.
@@ -697,18 +657,17 @@ For WebVTT cues that have a size other than 100%, and a text alignment of start 
 When the text alignment is start or end, the auto position is 50%. This is different from left and right aligned text, where the auto position is 0% and 100%, respectively. The above requirement is present because it can be surprising that automatic positioning doesn’t work for start or end aligned text. Since cue text can consist of text with left-to-right base direction, or right-to-left base direction, or both (on different lines), such automatic positioning would have unexpected results.
 
 A position alignment
-    
 
 An alignment for the cue box in the dimension of the writing direction, describing what the position is anchored to, one of:
 
 Line-left alignment
-    The cue box’s left side (for horizontal cues) or top side (otherwise) is aligned at the position. 
+    The cue box’s left side (for horizontal cues) or top side (otherwise) is aligned at the position.
 Center alignment
-    The cue box is centered at the position. 
+    The cue box is centered at the position.
 Line-right alignment
-    The cue box’s right side (for horizontal cues) or bottom side (otherwise) is aligned at the position. 
+    The cue box’s right side (for horizontal cues) or bottom side (otherwise) is aligned at the position.
 Auto alignment
-    The cue box’s alignment depends on the value of the text alignment of the cue. 
+    The cue box’s alignment depends on the value of the text alignment of the cue.
 
 By default, the position alignment is set to auto.
 
@@ -726,13 +685,9 @@ A WebVTT cue has a computed position alignment whose value is that returned by t
 
   6. Otherwise, return center.
 
-
-
-
 Since the position always measures from the left of the video (for horizontal cues) or the top (otherwise), the WebVTT cue position alignment line-left value varies between left and top for horizontal and vertical cues.
 
 A size
-    
 
 A number giving the size of the cue box, to be interpreted as a percentage of the video, as defined by the writing direction.
 
@@ -741,28 +696,26 @@ By default, the WebVTT cue size is set to 100%.
 If the writing direction is horizontal, then the size percentages are relative to the width of the video, otherwise to the height of the video.
 
 A text alignment
-    
 
 An alignment for all lines of text within the cue box, in the dimension of the writing direction, one of:
 
 Start alignment
     The text of each line is individually aligned towards the start side of the box, where the start side for that line is determined by using the CSS rules for [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext) value of the [unicode-bidi](https://www.w3.org/TR/css-writing-modes-3/#propdef-unicode-bidi) property. [CSS-WRITING-MODES-3]
 Center alignment
-    The text is aligned centered between the box’s start and end sides. 
+    The text is aligned centered between the box’s start and end sides.
 End alignment
     The text of each line is individually aligned towards the end side of the box, where the end side for that line is determined by using the CSS rules for [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext) value of the [unicode-bidi](https://www.w3.org/TR/css-writing-modes-3/#propdef-unicode-bidi) property. [CSS-WRITING-MODES-3]
 Left alignment
-    The text is aligned to the box’s left side (for horizontal cues) or top side (otherwise). 
+    The text is aligned to the box’s left side (for horizontal cues) or top side (otherwise).
 Right alignment
-    The text is aligned to the box’s right side (for horizontal cues) or bottom side (otherwise). 
+    The text is aligned to the box’s right side (for horizontal cues) or bottom side (otherwise).
 
 By default, the text alignment is set to center.
 
 The base direction of each line in a cue (which is used by the Unicode Bidirectional Algorithm to determine the order in which to display the characters in the line) is determined by looking up the first strong directional character in each line, using the CSS [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext) algorithm. In the occasional cases where the first strong character on a line would produce the wrong base direction for that line, the author can use an U+200E LEFT-TO-RIGHT MARK or U+200F RIGHT-TO-LEFT MARK character at the start of the line to correct it. [BIDI]
 
 In this example, the second cue will have a right-to-left base direction, rendering as ".I think ,يلاع". (Note that the text below shows all characters left-to-right; a text editor would not necessarily have the same rendering.)
-    
-    
+
     WEBVTT
     
     00:00:07.000 --> 00:00:09.000
@@ -777,8 +730,7 @@ To change that line to left-to-right base direction, start the line with an U+20
 Where the base direction of some embedded text within a line needs to be different from the surrounding text on that line, this can be achieved by using the paired Unicode bidi formatting code characters.
 
 In this example, assuming no bidi formatting code characters are used, the cue text is rendered as "I’ve read the book 3 דנליונ times!" (i.e. the "3" is on the wrong side of the book title) because of the effect of the Unicode Bidirection Algorithm. (Again, the text below shows all characters left-to-right.)
-    
-    
+
     WEBVTT
     
     00:00:04.000 --> 00:00:08.000
@@ -790,8 +742,7 @@ If a U+2068 FIRST STRONG ISOLATE (FSI) character was placed before the book titl
 The default text alignment is center alignment regardless of the base direction of the cue text. To make the text alignment of each line match the base direction of the line (e.g. left for English, right for Hebrew), use start alignment, or end alignment for the opposite alignment.
 
 In this example, start alignment is used. The first line is left-aligned because the base direction is left-to-right, and the second line is right-aligned because the base direction is right-to-left.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:05.000 align:start
@@ -800,8 +751,7 @@ In this example, start alignment is used. The first line is left-aligned because
     
 
 This would render as follows:
-    
-    
+
     Hello!
                                                 !םולש
     
@@ -809,7 +759,6 @@ This would render as follows:
 The left alignment and right alignment can be used to left-align or right-align the cue text regardless of its lines' base direction.
 
 A region
-    
 
 An optional WebVTT region to which a cue belongs.
 
@@ -828,41 +777,35 @@ Regions provide a means to group caption or subtitle cues so the cues can be ren
 Each WebVTT region consists of:
 
 An identifier
-    
 
 An arbitrary string of zero or more characters other than U+0020 SPACE or U+0009 CHARACTER TABULATION character. The string must not contain the substring "-->" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN). Defaults to the empty string.
 
 A width
-    
 
 A number giving the width of the box within which the text of each line of the containing cues is to be rendered, to be interpreted as a percentage of the video width. Defaults to 100.
 
 A lines value
-    
 
 A number giving the number of lines of the box within which the text of each line of the containing cues is to be rendered. Defaults to 3.
 
 Since a WebVTT region defines a fixed rendering area, a cue that has more lines than the region allows will be clipped. For scrolling regions, the clipping happens at the top, for non-scrolling regions it happens at the bottom.
 
 A region anchor point
-    
 
 Two numbers giving the x and y coordinates within the region which is anchored to the video viewport and does not change location even when the region does, e.g. because of font size changes. Defaults to (0,100), i.e. the bottom left corner of the region.
 
 A region viewport anchor point
-    
 
 Two numbers giving the x and y coordinates within the video viewport to which the region anchor point is anchored. Defaults to (0,100), i.e. the bottom left corner of the video viewport.
 
 A scroll value
-    
 
 One of the following:
 
 None
-    Indicates that the cues in the region are not to scroll and instead stay fixed at the location they were first painted in. 
+    Indicates that the cues in the region are not to scroll and instead stay fixed at the location they were first painted in.
 Up
-    Indicates that the cues in the region will be added at the bottom of the region and push any already displayed cues in the region up until all lines of the new cue are visible in the region. 
+    Indicates that the cues in the region will be added at the bottom of the region and push any already displayed cues in the region up until all lines of the new cue are visible in the region.
 
 The following diagram illustrates how anchoring of a region to a video viewport works. The black cross is the anchor, orange explains the anchor’s offset within the region and green the anchor’s offset within the video viewport. Think of it as sticking a pin through a note onto a board:
 
@@ -871,7 +814,6 @@ Image description: Within the video viewport, there is a WebVTT region. Inside t
 For parsing, we also need the following:
 
 A text track list of regions
-    
 
 A list of zero or more WebVTT regions.
 
@@ -893,55 +835,45 @@ A WebVTT file must consist of a WebVTT file body encoded as UTF-8 and labeled wi
 
 A WebVTT file body consists of the following components, in the following order:
 
-  1. An optional U+FEFF BYTE ORDER MARK (BOM) character. 
-  2. The string "`WEBVTT`". 
-  3. Optionally, either a U+0020 SPACE character or a U+0009 CHARACTER TABULATION (tab) character followed by any number of characters that are not U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters. 
-  4. Two or more WebVTT line terminators to terminate the line with the file magic and separate it from the rest of the body. 
-  5. Zero or more WebVTT region definition blocks, WebVTT style blocks and WebVTT comment blocks separated from each other by one or more WebVTT line terminators. 
-  6. Zero or more WebVTT line terminators. 
-  7. Zero or more WebVTT cue blocks and WebVTT comment blocks separated from each other by one or more WebVTT line terminators. 
-  8. Zero or more WebVTT line terminators. 
-
-
+  1. An optional U+FEFF BYTE ORDER MARK (BOM) character.
+  2. The string "`WEBVTT`".
+  3. Optionally, either a U+0020 SPACE character or a U+0009 CHARACTER TABULATION (tab) character followed by any number of characters that are not U+000A LINE FEED (LF) or U+000D CARRIAGE RETURN (CR) characters.
+  4. Two or more WebVTT line terminators to terminate the line with the file magic and separate it from the rest of the body.
+  5. Zero or more WebVTT region definition blocks, WebVTT style blocks and WebVTT comment blocks separated from each other by one or more WebVTT line terminators.
+  6. Zero or more WebVTT line terminators.
+  7. Zero or more WebVTT cue blocks and WebVTT comment blocks separated from each other by one or more WebVTT line terminators.
+  8. Zero or more WebVTT line terminators.
 
 A WebVTT line terminator consists of one of the following:
 
-  * A U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair. 
-  * A single U+000A LINE FEED (LF) character. 
-  * A single U+000D CARRIAGE RETURN (CR) character. 
-
-
+- A U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair.
+- A single U+000A LINE FEED (LF) character.
+- A single U+000D CARRIAGE RETURN (CR) character.
 
 A WebVTT region definition block consists of the following components, in the given order:
 
-  1. The string "`REGION`" (U+0052 LATIN CAPITAL LETTER R, U+0045 LATIN CAPITAL LETTER E, U+0047 LATIN CAPITAL LETTER G, U+0049 LATIN CAPITAL LETTER I, U+004F LATIN CAPITAL LETTER O, U+004E LATIN CAPITAL LETTER N). 
-  2. Zero or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters. 
-  3. A WebVTT line terminator. 
-  4. A WebVTT region settings list. 
-  5. A WebVTT line terminator. 
-
-
+  1. The string "`REGION`" (U+0052 LATIN CAPITAL LETTER R, U+0045 LATIN CAPITAL LETTER E, U+0047 LATIN CAPITAL LETTER G, U+0049 LATIN CAPITAL LETTER I, U+004F LATIN CAPITAL LETTER O, U+004E LATIN CAPITAL LETTER N).
+  2. Zero or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters.
+  3. A WebVTT line terminator.
+  4. A WebVTT region settings list.
+  5. A WebVTT line terminator.
 
 A WebVTT style block consists of the following components, in the given order:
 
-  1. The string "`STYLE`" (U+0053 LATIN CAPITAL LETTER S, U+0054 LATIN CAPITAL LETTER T, U+0059 LATIN CAPITAL LETTER Y, U+004C LATIN CAPITAL LETTER L, U+0045 LATIN CAPITAL LETTER E). 
-  2. Zero or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters. 
-  3. A WebVTT line terminator. 
+  1. The string "`STYLE`" (U+0053 LATIN CAPITAL LETTER S, U+0054 LATIN CAPITAL LETTER T, U+0059 LATIN CAPITAL LETTER Y, U+004C LATIN CAPITAL LETTER L, U+0045 LATIN CAPITAL LETTER E).
+  2. Zero or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters.
+  3. A WebVTT line terminator.
   4. Any sequence of zero or more characters other than U+000A LINE FEED (LF) characters and U+000D CARRIAGE RETURN (CR) characters, each optionally separated from the next by a WebVTT line terminator, except that the entire resulting string must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN). The string represents a CSS style sheet; the requirements given in the relevant CSS specifications apply. [CSS22]
-  5. A WebVTT line terminator. 
-
-
+  5. A WebVTT line terminator.
 
 A WebVTT cue block consists of the following components, in the given order:
 
-  1. Optionally, a WebVTT cue identifier followed by a WebVTT line terminator. 
-  2. WebVTT cue timings. 
-  3. Optionally, one or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters followed by a WebVTT cue settings list. 
-  4. A WebVTT line terminator. 
-  5. The cue payload: either WebVTT caption or subtitle cue text, WebVTT chapter title text, or WebVTT metadata text, but it must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN). 
-  6. A WebVTT line terminator. 
-
-
+  1. Optionally, a WebVTT cue identifier followed by a WebVTT line terminator.
+  2. WebVTT cue timings.
+  3. Optionally, one or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters followed by a WebVTT cue settings list.
+  4. A WebVTT line terminator.
+  5. The cue payload: either WebVTT caption or subtitle cue text, WebVTT chapter title text, or WebVTT metadata text, but it must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN).
+  6. A WebVTT line terminator.
 
 A WebVTT cue block corresponds to one piece of time-aligned text or data in the WebVTT file, for example one subtitle. The cue payload is the text or data associated with the cue.
 
@@ -953,64 +885,54 @@ A WebVTT cue identifier can be used to reference a specific cue, for example fro
 
 The WebVTT cue timings part of a WebVTT cue block consists of the following components, in the given order:
 
-  1. A WebVTT timestamp representing the start time offset of the cue. The time represented by this WebVTT timestamp must be greater than or equal to the start time offsets of all previous cues in the file. 
-  2. One or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters. 
-  3. The string "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN). 
-  4. One or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters. 
-  5. A WebVTT timestamp representing the end time offset of the cue. The time represented by this WebVTT timestamp must be greater than the start time offset of the cue. 
-
-
+  1. A WebVTT timestamp representing the start time offset of the cue. The time represented by this WebVTT timestamp must be greater than or equal to the start time offsets of all previous cues in the file.
+  2. One or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters.
+  3. The string "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN).
+  4. One or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters.
+  5. A WebVTT timestamp representing the end time offset of the cue. The time represented by this WebVTT timestamp must be greater than the start time offset of the cue.
 
 The WebVTT cue timings give the start and end offsets of the WebVTT cue block. Different cues can overlap. Cues are always listed ordered by their start time.
 
 A WebVTT timestamp consists of the following components, in the given order:
 
-  1. Optionally (required if hours is non-zero): 
-     1. Two or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the hours as a base ten integer. 
-     2. A U+003A COLON character (:) 
-  2. Two [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the minutes as a base ten integer in the range 0 ≤ minutes ≤ 59. 
-  3. A U+003A COLON character (:) 
-  4. Two [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the seconds as a base ten integer in the range 0 ≤ seconds ≤ 59. 
-  5. A U+002E FULL STOP character (.). 
-  6. Three [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the thousandths of a second seconds-frac as a base ten integer. 
-
-
+  1. Optionally (required if hours is non-zero):
+     1. Two or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the hours as a base ten integer.
+     2. A U+003A COLON character (:)
+  2. Two [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the minutes as a base ten integer in the range 0 ≤ minutes ≤ 59.
+  3. A U+003A COLON character (:)
+  4. Two [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the seconds as a base ten integer in the range 0 ≤ seconds ≤ 59.
+  5. A U+002E FULL STOP character (.).
+  6. Three [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), representing the thousandths of a second seconds-frac as a base ten integer.
 
 A WebVTT timestamp is always interpreted relative to the [current playback position](https://www.w3.org/TR/html51/semantics-embedded-content.html#current-position) of the media data that the WebVTT file is to be synchronized with.
 
 A WebVTT cue settings list consist of a sequence of zero or more WebVTT cue settings in any order, separated from each other by one or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters. Each setting consists of the following components, in the order given:
 
-  1. A WebVTT cue setting name. 
-  2. An optional U+003A COLON (colon) character. 
-  3. An optional WebVTT cue setting value. 
-
-
+  1. A WebVTT cue setting name.
+  2. An optional U+003A COLON (colon) character.
+  3. An optional WebVTT cue setting value.
 
 A WebVTT cue setting name and a WebVTT cue setting value each consist of any sequence of one or more characters other than U+000A LINE FEED (LF) characters and - U+000D CARRIAGE RETURN (CR) characters except that the entire resulting string must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN).
 
 A WebVTT percentage consists of the following components:
 
-  1. One or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits). 
-  2. Optionally: 
-     1. A U+002E DOT character (.). 
-     2. One or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits). 
-  3. A U+0025 PERCENT SIGN character (%). 
-
-
+  1. One or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits).
+  2. Optionally:
+     1. A U+002E DOT character (.).
+     2. One or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits).
+  3. A U+0025 PERCENT SIGN character (%).
 
 When interpreted as a number, a WebVTT percentage must be in the range 0..100.
 
 A WebVTT comment block consists of the following components, in the given order:
 
-  1. The string "`NOTE`". 
-  2. Optionally, the following components, in the given order: 
-     1. Either: 
-        * A U+0020 SPACE character or U+0009 CHARACTER TABULATION (tab) character. 
-        * A WebVTT line terminator. 
-     2. Any sequence of zero or more characters other than U+000A LINE FEED (LF) characters and U+000D CARRIAGE RETURN (CR) characters, each optionally separated from the next by a WebVTT line terminator, except that the entire resulting string must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN). 
-  3. A WebVTT line terminator. 
-
-
+  1. The string "`NOTE`".
+  2. Optionally, the following components, in the given order:
+     1. Either:
+        - A U+0020 SPACE character or U+0009 CHARACTER TABULATION (tab) character.
+        - A WebVTT line terminator.
+     2. Any sequence of zero or more characters other than U+000A LINE FEED (LF) characters and U+000D CARRIAGE RETURN (CR) characters, each optionally separated from the next by a WebVTT line terminator, except that the entire resulting string must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN).
+  3. A WebVTT line terminator.
 
 A WebVTT comment block is ignored by the parser.
 
@@ -1028,18 +950,16 @@ WebVTT caption or subtitle cue text is cue payload that consists of zero or more
 
 The WebVTT caption or subtitle cue components are:
 
-  * A WebVTT cue class span. 
-  * A WebVTT cue italics span. 
-  * A WebVTT cue bold span. 
-  * A WebVTT cue underline span. 
-  * A WebVTT cue ruby span. 
-  * A WebVTT cue voice span. 
-  * A WebVTT cue language span. 
-  * A WebVTT cue timestamp. 
-  * A WebVTT cue text span, representing the text of the cue. 
-  * An [HTML character reference](https://www.w3.org/TR/html51/syntax.html#character-references), representing one or two Unicode code points, as defined in HTML, in the text of the cue. [HTML51]
-
-
+- A WebVTT cue class span.
+- A WebVTT cue italics span.
+- A WebVTT cue bold span.
+- A WebVTT cue underline span.
+- A WebVTT cue ruby span.
+- A WebVTT cue voice span.
+- A WebVTT cue language span.
+- A WebVTT cue timestamp.
+- A WebVTT cue text span, representing the text of the cue.
+- An [HTML character reference](https://www.w3.org/TR/html51/syntax.html#character-references), representing one or two Unicode code points, as defined in HTML, in the text of the cue. [HTML51]
 
 All WebVTT caption or subtitle cue components bar the HTML character reference may have one or more cue component class names attached to it by separating the cue component class name from the cue component start tag using the period ('.') notation. The class name must immediately follow the "period" (.).
 
@@ -1055,17 +975,15 @@ A WebVTT cue underline span consists of a WebVTT cue span start tag "`u`" that d
 
 A WebVTT cue ruby span consists of the following components, in the order given:
 
-  1. A WebVTT cue span start tag "`ruby`" that disallows an annotation. 
-  2. One or more occurrences of the following group of components, in the order given: 
-     1. WebVTT cue internal text, representing the ruby base. 
-     2. A WebVTT cue span start tag "`rt`" that disallows an annotation. 
-     3. A WebVTT cue ruby text span: WebVTT cue internal text, representing the ruby text component of the ruby annotation. 
-     4. A WebVTT cue span end tag "`rt`". If this is the last occurrence of this group of components in the WebVTT cue ruby span, then this last end tag string may be omitted. 
-  3. If the last end tag string was not omitted: Optionally, a WebVTT line terminator. 
-  4. If the last end tag string was not omitted: Zero or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters, each optionally followed by a WebVTT line terminator. 
-  5. A WebVTT cue span end tag "`ruby`". 
-
-
+  1. A WebVTT cue span start tag "`ruby`" that disallows an annotation.
+  2. One or more occurrences of the following group of components, in the order given:
+     1. WebVTT cue internal text, representing the ruby base.
+     2. A WebVTT cue span start tag "`rt`" that disallows an annotation.
+     3. A WebVTT cue ruby text span: WebVTT cue internal text, representing the ruby text component of the ruby annotation.
+     4. A WebVTT cue span end tag "`rt`". If this is the last occurrence of this group of components in the WebVTT cue ruby span, then this last end tag string may be omitted.
+  3. If the last end tag string was not omitted: Optionally, a WebVTT line terminator.
+  4. If the last end tag string was not omitted: Zero or more U+0020 SPACE characters or U+0009 CHARACTER TABULATION (tab) characters, each optionally followed by a WebVTT line terminator.
+  5. A WebVTT cue span end tag "`ruby`".
 
 Cue positioning controls the positioning of the baseline text, not the ruby text.
 
@@ -1073,45 +991,37 @@ Ruby in WebVTT is a subset of the ruby features in HTML. This might be extended 
 
 A WebVTT cue voice span consists of the following components, in the order given:
 
-  1. A WebVTT cue span start tag "`v`" that requires an annotation; the annotation represents the name of the voice. 
-  2. WebVTT cue internal text. 
-  3. A WebVTT cue span end tag "`v`". If this WebVTT cue voice span is the only component of its WebVTT caption or subtitle cue text sequence, then the end tag may be omitted for brevity. 
-
-
+  1. A WebVTT cue span start tag "`v`" that requires an annotation; the annotation represents the name of the voice.
+  2. WebVTT cue internal text.
+  3. A WebVTT cue span end tag "`v`". If this WebVTT cue voice span is the only component of its WebVTT caption or subtitle cue text sequence, then the end tag may be omitted for brevity.
 
 A WebVTT cue language span consists of the following components, in the order given:
 
   1. A WebVTT cue span start tag "`lang`" that requires an annotation; the annotation represents the language of the following component, and must be a valid BCP 47 language tag. [BCP47]
-  2. WebVTT cue internal text. 
-  3. A WebVTT cue span end tag "`lang`". 
-
-
+  2. WebVTT cue internal text.
+  3. A WebVTT cue span end tag "`lang`".
 
 The requirement above regarding valid BCP 47 language tag is an authoring requirement, so a conformance checker will do validity checking of the language tag, but other user agents will not.
 
 A WebVTT cue span start tag has a tag name and either requires or disallows an annotation, and consists of the following components, in the order given:
 
-  1. A U+003C LESS-THAN SIGN character (<). 
-  2. The tag name. 
-  3. Zero or more occurrences of the following sequence: 
-     1. U+002E FULL STOP character (.) 
-     2. One or more characters other than U+0009 CHARACTER TABULATION (tab) characters, U+000A LINE FEED (LF) characters, U+000D CARRIAGE RETURN (CR) characters, U+0020 SPACE characters, U+0026 AMPERSAND characters (&), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), and U+002E FULL STOP characters (.), representing a class that describes the cue span’s significance. 
+  1. A U+003C LESS-THAN SIGN character (<).
+  2. The tag name.
+  3. Zero or more occurrences of the following sequence:
+     1. U+002E FULL STOP character (.)
+     2. One or more characters other than U+0009 CHARACTER TABULATION (tab) characters, U+000A LINE FEED (LF) characters, U+000D CARRIAGE RETURN (CR) characters, U+0020 SPACE characters, U+0026 AMPERSAND characters (&), U+003C LESS-THAN SIGN characters (<), U+003E GREATER-THAN SIGN characters (>), and U+002E FULL STOP characters (.), representing a class that describes the cue span’s significance.
   4. If the start tag requires an annotation: a U+0020 SPACE character or a U+0009 CHARACTER TABULATION (tab) character, followed by one or more of the following components, the concatenation of their representations having a value that contains at least one character other than U+0020 SPACE and U+0009 CHARACTER TABULATION (tab) characters:
 
-     * WebVTT cue span start tag annotation text, representing the text of the annotation. 
-     * An [HTML character reference](https://www.w3.org/TR/html51/syntax.html#character-references), representing one or two Unicode code points, as defined in HTML, in the text of the annotation. [HTML51]
-  5. A U+003E GREATER-THAN SIGN character (>). 
-
-
+     - WebVTT cue span start tag annotation text, representing the text of the annotation.
+     - An [HTML character reference](https://www.w3.org/TR/html51/syntax.html#character-references), representing one or two Unicode code points, as defined in HTML, in the text of the annotation. [HTML51]
+  5. A U+003E GREATER-THAN SIGN character (>).
 
 A WebVTT cue span end tag has a tag name and consists of the following components, in the order given:
 
-  1. A U+003C LESS-THAN SIGN character (<). 
-  2. U+002F SOLIDUS character (/). 
-  3. The tag name. 
-  4. A U+003E GREATER-THAN SIGN character (>). 
-
-
+  1. A U+003C LESS-THAN SIGN character (<).
+  2. U+002F SOLIDUS character (/).
+  3. The tag name.
+  4. A U+003E GREATER-THAN SIGN character (>).
 
 A WebVTT cue timestamp consists of a U+003C LESS-THAN SIGN character (<), followed by a WebVTT timestamp representing the time that the given point in the cue becomes active, followed by a U+003E GREATER-THAN SIGN character (>). The time represented by the WebVTT timestamp must be greater than the times represented by any previous WebVTT cue timestamps in the cue, as well as greater than the cue’s start time offset, and less than the cue’s end time offset.
 
@@ -1123,10 +1033,8 @@ WebVTT cue span start tag annotation text consists of one or more characters oth
 
 WebVTT chapter title text is cue text that makes use of zero or more of the following components, each optionally separated from the next by a WebVTT line terminator:
 
-  * WebVTT cue text span
-  * [HTML character reference](https://www.w3.org/TR/html51/syntax.html#character-references) [HTML51]
-
-
+- WebVTT cue text span
+- [HTML character reference](https://www.w3.org/TR/html51/syntax.html#character-references) [HTML51]
 
 ### 4.3. WebVTT region settings
 
@@ -1134,14 +1042,12 @@ A WebVTT cue settings list can contain a reference to a WebVTT region. To define
 
 The WebVTT region settings list consists of zero or more of the following components, in any order, separated from each other by one or more U+0020 SPACE characters, U+0009 CHARACTER TABULATION (tab) characters, or WebVTT line terminators, except that the string must not contain two consecutive WebVTT line terminators. Each component must not be included more than once per WebVTT region settings list string.
 
-  * A WebVTT region identifier setting. 
-  * A WebVTT region width setting. 
-  * A WebVTT region lines setting. 
-  * A WebVTT region anchor setting. 
-  * A WebVTT region viewport anchor setting. 
-  * A WebVTT region scroll setting. 
-
-
+- A WebVTT region identifier setting.
+- A WebVTT region width setting.
+- A WebVTT region lines setting.
+- A WebVTT region anchor setting.
+- A WebVTT region viewport anchor setting.
+- A WebVTT region scroll setting.
 
 The WebVTT region settings list gives configuration options regarding the dimensions, positioning and anchoring of the region. For example, it allows a group of cues within a region to be anchored in the center of the region and the center of the video viewport. In this example, when the font size grows, the region grows uniformly in all directions from the center.
 
@@ -1152,9 +1058,6 @@ A WebVTT region identifier setting consists of the following components, in the 
   2. A U+003A COLON character (:).
 
   3. An arbitrary string of one or more characters other than [ASCII whitespace](https://www.w3.org/TR/html51/infrastructure.html#space-characters). The string must not contain the substring "`-->`" (U+002D HYPHEN-MINUS, U+002D HYPHEN-MINUS, U+003E GREATER-THAN SIGN).
-
-
-
 
 A WebVTT region identifier setting must be unique amongst all the WebVTT region identifier settings of all WebVTT regions of a WebVTT file.
 
@@ -1170,9 +1073,6 @@ A WebVTT region width setting consists of the following components, in the order
 
   3. A WebVTT percentage.
 
-
-
-
 The WebVTT region width setting provides a fixed width as a percentage of the video width for the region into which cues are rendered and based on which alignment is calculated.
 
 A WebVTT region lines setting consists of the following components, in the order given:
@@ -1182,9 +1082,6 @@ A WebVTT region lines setting consists of the following components, in the order
   2. A U+003A COLON character (:).
 
   3. One or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits).
-
-
-
 
 The WebVTT region lines setting provides a fixed height as a number of lines for the region into which cues are rendered. As such, it defines the height of the roll-up region if it is a scroll region.
 
@@ -1200,9 +1097,6 @@ A WebVTT region anchor setting consists of the following components, in the orde
 
   5. A WebVTT percentage.
 
-
-
-
 The WebVTT region anchor setting provides a tuple of two percentages that specify the point within the region box that is fixed in location. The first percentage measures the x-dimension and the second percentage y-dimension from the top left corner of the region box. If no WebVTT region anchor setting is given, the anchor defaults to 0%, 100% (i.e. the bottom left corner).
 
 A WebVTT region viewport anchor setting consists of the following components, in the order given:
@@ -1217,9 +1111,6 @@ A WebVTT region viewport anchor setting consists of the following components, in
 
   5. A WebVTT percentage.
 
-
-
-
 The WebVTT region viewport anchor setting provides a tuple of two percentages that specify the point within the video viewport that the region anchor point is anchored to. The first percentage measures the x-dimension and the second percentage measures the y-dimension from the top left corner of the video viewport box. If no region viewport anchor is given, it defaults to 0%, 100% (i.e. the bottom left corner).
 
 For browsers, the region maps to an absolute positioned CSS box relative to the video viewport, i.e. there is a relative positioned box that represents the video viewport relative to which the regions are absolutely positioned. Overflow is hidden.
@@ -1231,9 +1122,6 @@ A WebVTT region scroll setting consists of the following components, in the orde
   2. A U+003A COLON character (:).
 
   3. The string "`up`".
-
-
-
 
 The WebVTT region scroll setting specifies whether cues rendered into the region are allowed to move out of their initial rendering place and roll up, i.e. move towards the top of the video viewport. If the scroll setting is omitted, cues do not move from their rendered position.
 
@@ -1249,25 +1137,21 @@ For example, a set of WebVTT cue settings may allow a cue box to be aligned to t
 
 The current available WebVTT cue settings that may appear in a WebVTT cue settings list are:
 
-  * A WebVTT vertical text cue setting. 
-  * A WebVTT line cue setting. 
-  * A WebVTT position cue setting. 
-  * A WebVTT size cue setting. 
-  * A WebVTT alignment cue setting. 
-  * A WebVTT region cue setting. 
-
-
+- A WebVTT vertical text cue setting.
+- A WebVTT line cue setting.
+- A WebVTT position cue setting.
+- A WebVTT size cue setting.
+- A WebVTT alignment cue setting.
+- A WebVTT region cue setting.
 
 Each of these setting must not be included more than once per WebVTT cue settings list.
 
 A WebVTT vertical text cue setting is a WebVTT cue setting that consists of the following components, in the order given:
 
-  1. The string "`vertical`" as the WebVTT cue setting name. 
+  1. The string "`vertical`" as the WebVTT cue setting name.
   2. A U+003A COLON character (:).
 
-  3. One of the following strings as the WebVTT cue setting value: "`rl`", "`lr`". 
-
-
+  3. One of the following strings as the WebVTT cue setting value: "`rl`", "`lr`".
 
 A WebVTT vertical text cue setting configures the cue to use vertical text layout rather than horizontal text layout. Vertical text layout is sometimes used in Japanese, for example. The default is horizontal layout.
 
@@ -1277,23 +1161,20 @@ A WebVTT line cue setting consists of the following components, in the order giv
 
   2. A U+003A COLON character (:).
 
-  3. As the WebVTT cue setting value: 
-     1. an offset value, either: 
+  3. As the WebVTT cue setting value:
+     1. an offset value, either:
 
-To represent a specific offset relative to the video viewport 
-    
+To represent a specific offset relative to the video viewport
 
 A WebVTT percentage.
 
-Or to represent a line number 
-    
+Or to represent a line number
+
         1. Optionally a U+002D HYPHEN-MINUS character (-). 
         2. One or more [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits). 
      2. An optional alignment value consisting of the following components: 
         1. A U+002C COMMA character (,). 
         2. One of the following strings: "`start`", "`center`", "`end`" 
-
-
 
 A WebVTT line cue setting configures the offset of the cue box from the video viewport’s edge in the direction orthogonal to the writing direction. For horizontal cues, this is the vertical offset from the top of the video viewport, for vertical cues, it’s the horizontal offset. The offset is for the start, center, or end of the cue box, depending on the WebVTT cue line alignment value - start by default. The offset can be given either as a percentage of the relevant writing-mode dependent video viewport dimension or as a line number. Line numbers are based on the size of the first line of the cue. Positive line numbers count from the start of the video viewport (the first line is numbered 0), negative line numbers from the end of the video viewport (the last line is numbered −1).
 
@@ -1303,13 +1184,11 @@ A WebVTT position cue setting consists of the following components, in the order
 
   2. A U+003A COLON character (:).
 
-  3. As the WebVTT cue setting value: 
-     1. a position value consisting of: a WebVTT percentage. 
-     2. an optional alignment value consisting of: 
-        1. A U+002C COMMA character (,). 
-        2. One of the following strings: "`line-left`", "`center`", "`line-right`" 
-
-
+  3. As the WebVTT cue setting value:
+     1. a position value consisting of: a WebVTT percentage.
+     2. an optional alignment value consisting of:
+        1. A U+002C COMMA character (,).
+        2. One of the following strings: "`line-left`", "`center`", "`line-right`"
 
 A WebVTT position cue setting configures the indent position of the cue box in the direction orthogonal to the WebVTT line cue setting. For horizontal cues, this is the horizontal position. The cue position is given as a percentage of the video viewport. The positioning is for the line-left, center, or line-right of the cue box, depending on the cue’s computed position alignment, which is overridden by the WebVTT position cue setting.
 
@@ -1321,9 +1200,6 @@ A WebVTT size cue setting consists of the following components, in the order giv
 
   3. As the WebVTT cue setting value: a WebVTT percentage.
 
-
-
-
 A WebVTT size cue setting configures the size of the cue box in the same direction as the WebVTT position cue setting. For horizontal cues, this is the width of the cue box. It is given as a percentage of the width of the video viewport.
 
 A WebVTT alignment cue setting consists of the following components, in the order given:
@@ -1332,9 +1208,7 @@ A WebVTT alignment cue setting consists of the following components, in the orde
 
   2. A U+003A COLON character (:).
 
-  3. One of the following strings as the WebVTT cue setting value: "`start`", "`center`", "`end`", "`left`", "`right`" 
-
-
+  3. One of the following strings as the WebVTT cue setting value: "`start`", "`center`", "`end`", "`left`", "`right`"
 
 A WebVTT alignment cue setting configures the alignment of the text within the cue. The "`start`" and "`end`" keywords are relative to the cue text’s lines' base direction; for left-to-right English text, "`start`" means left-aligned.
 
@@ -1346,9 +1220,6 @@ A WebVTT region cue setting consists of the following components, in the order g
 
   3. As the WebVTT cue setting value: a WebVTT region identifier.
 
-
-
-
 A WebVTT region cue setting configures a cue to become part of a region by referencing the region’s identifier unless the cue has a "vertical", "line" or "size" cue setting. If a cue is part of a region, its cue settings for "position" and "align" are applied to the line boxes in the cue relative to the region box and the cue box width and height are calculated relative to the region dimensions rather than the viewport dimensions.
 
 ### 4.5. Properties of cue sequences
@@ -1359,14 +1230,11 @@ A WebVTT file whose cues all follow the following rules is said to be a WebVTT f
 
 given any two cues cue1 and cue2 with start and end time offsets (x1, y1) and (x2, y2) respectively,
 
-  * either cue1 lies fully within cue2, i.e. x1 >= x2 and y1 <= y2
-  * or cue1 fully contains cue2, i.e. x1 <= x2 and y1 >= y2. 
-
-
+- either cue1 lies fully within cue2, i.e. x1 >= x2 and y1 <= y2
+- or cue1 fully contains cue2, i.e. x1 <= x2 and y1 >= y2.
 
 The following example matches this definition:
-    
-    
+
     WEBVTT
     
     00:00.000 --> 01:24.000
@@ -1390,19 +1258,16 @@ The following example matches this definition:
 
 Notice how you can express the cues in this WebVTT file as a tree structure:
 
-  * WebVTT file 
-    * Introduction 
-      * Topics 
-      * Presenters 
-    * Scrolling Effects 
-      * Achim’s Demo 
-      * Timeline Panel 
-
-
+- WebVTT file
+  - Introduction
+    - Topics
+    - Presenters
+  - Scrolling Effects
+    - Achim’s Demo
+    - Timeline Panel
 
 If the file has cues that can’t be expressed in this fashion, then they don’t match the definition of a WebVTT file using only nested cues. For example:
-    
-    
+
     WEBVTT
     
     00:00.000 --> 01:00.000
@@ -1442,7 +1307,7 @@ User agents that support CSS style sheets may implement this section through add
 
 WebVTT caption or subtitle cue components that have one or more class names matching those in the first cell of a row in the table below must set their [color](https://www.w3.org/TR/css-color-4/#propdef-color) property as [presentational hints](https://html.spec.whatwg.org/multipage/rendering.html#presentational-hints) to the value in the second cell of the row:
 
-class names | [color](https://www.w3.org/TR/css-color-4/#propdef-color) value   
+class names | [color](https://www.w3.org/TR/css-color-4/#propdef-color) value
 ---|---  
 `white` | rgba(255,255,255,1)  
 `lime` | rgba(0,255,0,1)  
@@ -1461,7 +1326,7 @@ Do not use the classes `blue` and `black` on the default dark background, since 
 
 WebVTT caption or subtitle cue components that have one or more class names matching those in the first cell of a row in the table below must set their [background-color](https://www.w3.org/TR/css3-background/#propdef-background-color) property as [presentational hints](https://html.spec.whatwg.org/multipage/rendering.html#presentational-hints) to the value in the second cell of the row:
 
-class names | [background](https://www.w3.org/TR/css3-background/#propdef-background) value   
+class names | [background](https://www.w3.org/TR/css3-background/#propdef-background) value
 ---|---  
 `bg_white` | rgba(255,255,255,1)  
 `bg_lime` | rgba(0,255,0,1)  
@@ -1477,8 +1342,7 @@ The color for the class `bg_lime` is what has traditionally been used in caption
 For the purpose of determining the [cascade](https://www.w3.org/TR/css-cascade-4/#cascade) of the color and background classes, the order of appearance determines the cascade of the classes.
 
 This example shows how to use the classes.
-    
-    
+
     WEBVTT
     
     02:00.000 --> 02:05.000
@@ -1506,15 +1370,15 @@ The WebVTT parser algorithm is as follows:
 
   1. Let input be the string being parsed, after conversion to Unicode, and with the following transformations applied:
 
-     * Replace all U+0000 NULL characters by U+FFFD REPLACEMENT CHARACTERs.
+     - Replace all U+0000 NULL characters by U+FFFD REPLACEMENT CHARACTERs.
 
-     * Replace each U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair by a single U+000A LINE FEED (LF) character.
+     - Replace each U+000D CARRIAGE RETURN U+000A LINE FEED (CRLF) character pair by a single U+000A LINE FEED (LF) character.
 
-     * Replace all remaining U+000D CARRIAGE RETURN characters by U+000A LINE FEED (LF) characters.
+     - Replace all remaining U+000D CARRIAGE RETURN characters by U+000A LINE FEED (LF) characters.
 
   2. Let position be a pointer into input, initially pointing at the start of the string. In an incremental WebVTT parser, when this algorithm (or further algorithms that it uses) moves the position pointer, the user agent must wait until appropriate further characters from the byte stream have been added to input before moving the pointer, so that the algorithm never reads past the end of the input string. Once the byte stream has ended, and all characters have been added to input, then the position pointer may, when so instructed by the algorithms, be moved past the end of input.
 
-  3. Let seen cue be false. 
+  3. Let seen cue be false.
   4. If input is less than six characters long, then abort these steps. The file does not start with the correct WebVTT file signature and was therefore not successfully processed.
 
   5. If input is exactly six characters long but does not exactly equal "`WEBVTT`", then abort these steps. The file does not start with the correct WebVTT file signature and was therefore not successfully processed.
@@ -1548,9 +1412,6 @@ The WebVTT parser algorithm is as follows:
      5. [collect a sequence of code points](https://www.w3.org/TR/html51/infrastructure.html#collect-a-sequence-of-characters) that are U+000A LINE FEED (LF) characters.
 
   15. _End_ : The file has ended. Abort these steps. The WebVTT parser has finished. The file was successfully processed.
-
-
-
 
 When the algorithm above says to collect a WebVTT block, optionally with a flag _in header_ set, the user agent must run the following steps:
 
@@ -1637,21 +1498,21 @@ Otherwise, let position be previous position and break out of _loop_.
               1. Let stylesheet be the result of [creating a CSS style sheet](https://www.w3.org/TR/cssom-1/#create-a-css-style-sheet), with the following properties: [CSSOM]
 
 [location](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-location)
-    null 
+    null
 [parent CSS style sheet](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-parent-css-style-sheet)
-    null 
+    null
 [owner node](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-owner-node)
-    null 
+    null
 [owner CSS rule](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-owner-css-rule)
-    null 
+    null
 [media](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-media)
-    The empty string. 
+    The empty string.
 [title](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-title)
-    The empty string. 
+    The empty string.
 [alternate flag](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-alternate-flag)
-    Unset. 
+    Unset.
 [origin-clean flag](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-origin-clean-flag)
-    Set. 
+    Set.
               2. Let buffer be the empty string.
 
            2. Otherwise, if seen cue is false and buffer starts with the substring "`REGION`" (U+0052 LATIN CAPITAL LETTER R, U+0045 LATIN CAPITAL LETTER E, U+0047 LATIN CAPITAL LETTER G, U+0049 LATIN CAPITAL LETTER I, U+004F LATIN CAPITAL LETTER O, U+004E LATIN CAPITAL LETTER N), and the remaining characters in buffer (if any) are all [ASCII whitespace](https://www.w3.org/TR/html51/infrastructure.html#space-characters), then run these substeps:
@@ -1682,14 +1543,11 @@ Otherwise, let position be previous position and break out of _loop_.
 
   12. If cue is not null, let the cue text of cue be buffer, and return cue.
 
-  13. Otherwise, if stylesheet is not null, then [Parse a stylesheet](https://www.w3.org/TR/css-syntax-3/#parse-a-stylesheet0) from buffer. If it returned a list of rules, assign the list as stylesheet’s [CSS rules](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-css-rules); otherwise, set stylesheet’s [CSS rules](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-css-rules) to an empty list. [CSSOM] [CSS-SYNTAX-3] Finally, return stylesheet.
+  1. Otherwise, if stylesheet is not null, then [Parse a stylesheet](https://www.w3.org/TR/css-syntax-3/#parse-a-stylesheet0) from buffer. If it returned a list of rules, assign the list as stylesheet’s [CSS rules](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-css-rules); otherwise, set stylesheet’s [CSS rules](https://www.w3.org/TR/cssom-1/#concept-css-style-sheet-css-rules) to an empty list. [CSSOM] [CSS-SYNTAX-3] Finally, return stylesheet.
 
-  14. Otherwise, if region is not null, then collect WebVTT region settings from buffer using region for the results. Construct a WebVTT Region Object from region, and return it.
+  2. Otherwise, if region is not null, then collect WebVTT region settings from buffer using region for the results. Construct a WebVTT Region Object from region, and return it.
 
-  15. Otherwise, return null.
-
-
-
+  3. Otherwise, return null.
 
 ### 6.2. WebVTT region settings parsing
 
@@ -1699,7 +1557,7 @@ A WebVTT region object is a conceptual construct to represent a WebVTT region th
 
   1. Let settings be the result of [splitting input on spaces](https://www.w3.org/TR/html51/infrastructure.html#split-a-string-on-spaces).
 
-  2. For each token setting in the list settings, run the following substeps: 
+  2. For each token setting in the list settings, run the following substeps:
      1. If setting does not contain a U+003A COLON character (:), or if the first U+003A COLON character (:) in setting is either the first or last character of setting, then jump to the step labeled _next setting_.
 
      2. Let name be the leading substring of setting up to and excluding the first U+003A COLON character (:) in that string.
@@ -1710,26 +1568,22 @@ A WebVTT region object is a conceptual construct to represent a WebVTT region th
 
 If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`id`"
 
-    
-
 Let region’s identifier be value.
 
 Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`width`"
 
-    
-
 If parse a percentage string from value returns a percentage, let region’s WebVTT region width be percentage.
 
-Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`lines`" 
-    
+Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`lines`"
+
         1. If value contains any characters other than [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), then jump to the step labeled _next setting_.
 
         2. Interpret value as an integer, and let number be that number.
 
         3. Let region’s WebVTT region lines be number.
 
-Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`regionanchor`" 
-    
+Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`regionanchor`"
+
         1. If value does not contain a U+002C COMMA character (,), then jump to the step labeled _next setting_.
 
         2. Let anchorX be the leading substring of value up to and excluding the first U+002C COMMA character (,) in that string.
@@ -1740,8 +1594,8 @@ Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastruct
 
         5. Let region’s WebVTT region anchor point be the tuple of the percentage values calculated from anchorX and anchorY.
 
-Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`viewportanchor`" 
-    
+Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`viewportanchor`"
+
         1. If value does not contain a U+002C COMMA character (,), then jump to the step labeled _next setting_.
 
         2. Let viewportanchorX be the leading substring of value up to and excluding the first U+002C COMMA character (,) in that string.
@@ -1752,13 +1606,11 @@ Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastruct
 
         5. Let region’s WebVTT region viewport anchor point be the tuple of the percentage values calculated from viewportanchorX and viewportanchorY.
 
-Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`scroll`" 
-    
+Otherwise if name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`scroll`"
+
         1. If value is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the string "`up`", then let region’s scroll value be up.
 
      5. _Next setting_ : Continue to the next setting, if any. 
-
-
 
 The rules to parse a percentage string are as follows. This will return either a number in the range 0..100, or nothing. If at any point the algorithm says that it "fails", this means that it is aborted at that point and returns nothing.
 
@@ -1773,9 +1625,6 @@ The rules to parse a percentage string are as follows. This will return either a
   5. If percentage is an error, is less than 0, or is greater than 100, then fail.
 
   6. Return percentage.
-
-
-
 
 ### 6.3. WebVTT cue timings and settings parsing
 
@@ -1805,9 +1654,6 @@ When the algorithm above says to collect WebVTT cue timings and settings from a 
 
   12. Parse the WebVTT cue settings from remainder using regions for cue.
 
-
-
-
 When the user agent is to parse the WebVTT cue settings from a string input using a text track list of regions regions for a [text track cue](https://www.w3.org/TR/html51/semantics-embedded-content.html#cue) cue, the user agent must run the following steps:
 
   1. Let settings be the result of [splitting input on spaces](https://www.w3.org/TR/html51/infrastructure.html#split-a-string-on-spaces).
@@ -1822,20 +1668,20 @@ When the user agent is to parse the WebVTT cue settings from a string input usin
 
      4. Run the appropriate substeps that apply for the value of name, as follows:
 
-If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`region`" 
-    
+If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`region`"
+
         1. Let cue’s WebVTT cue region be the last WebVTT region in regions whose WebVTT region identifier is value, if any, or null otherwise.
 
-If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`vertical`" 
-    
+If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`vertical`"
+
         1. If value is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the string "`rl`", then let cue’s WebVTT cue writing direction be vertical growing left.
 
         2. Otherwise, if value is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the string "`lr`", then let cue’s WebVTT cue writing direction be vertical growing right.
 
         3. If cue’s WebVTT cue writing direction is not horizontal, let cue’s WebVTT cue region be null (there are no vertical regions).
 
-If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`line`" 
-    
+If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`line`"
+
         1. If value contains a U+002C COMMA character (,), then let linepos be the leading substring of value up to and excluding the first U+002C COMMA character (,) in that string and let linealign be the trailing substring of value starting from the character immediately after the first U+002C COMMA character (,) in that string.
 
         2. Otherwise let linepos be the full value string and linealign be null.
@@ -1850,7 +1696,6 @@ If parse a percentage string from linepos doesn’t fail, let number be the retu
 
 Otherwise
 
-    
            1. If linepos contains any characters other than U+002D HYPHEN-MINUS characters (-), [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), and U+002E DOT character (.), then jump to the step labeled _next setting_.
 
            2. If any character in linepos other than the first character is a U+002D HYPHEN-MINUS character (-), then jump to the step labeled _next setting_.
@@ -1877,8 +1722,8 @@ Otherwise
 
         11. If cue’s WebVTT cue line is not auto, let cue’s WebVTT cue region be null (the cue has been explicitly positioned with a line offset and thus drops out of the region).
 
-If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`position`" 
-    
+If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`position`"
+
         1. If value contains a U+002C COMMA character (,), then let colpos be the leading substring of value up to and excluding the first U+002C COMMA character (,) in that string and let colalign be the trailing substring of value starting from the character immediately after the first U+002C COMMA character (,) in that string.
 
         2. Otherwise let colpos be the full value string and colalign be null.
@@ -1895,16 +1740,16 @@ If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#c
 
         8. Let cue’s position be number.
 
-If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`size`" 
-    
+If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`size`"
+
         1. If parse a percentage string from value doesn’t fail, let number be the returned percentage, otherwise jump to the step labeled _next setting_.
 
         2. Let cue’s WebVTT cue size be number.
 
         3. If cue’s WebVTT cue size is not 100, let cue’s WebVTT cue region be null (the cue has been explicitly sized and thus drops out of the region).
 
-If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`align`" 
-    
+If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for "`align`"
+
         1. If value is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the string "`start`", then let cue’s WebVTT cue text alignment be start alignment.
 
         2. If value is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the string "`center`", then let cue’s WebVTT cue text alignment be center alignment.
@@ -1916,9 +1761,6 @@ If name is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#c
         5. If value is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the string "`right`", then let cue’s WebVTT cue text alignment be right alignment.
 
      5. _Next setting_ : Continue to the next token, if any.
-
-
-
 
 When this specification says that a user agent is to collect a WebVTT timestamp, the user agent must run the following steps:
 
@@ -1956,22 +1798,19 @@ When this specification says that a user agent is to collect a WebVTT timestamp,
 
 Otherwise (if most significant units is not _hours_ , and either position is beyond the end of input, or the character at position is not a U+003A COLON character (:)), let value3 have the value of value2, then value2 have the value of value1, then let value1 equal zero.
 
-  13. If position is beyond the end of input or if the character at position is not a U+002E FULL STOP character (.), then return an error and abort these steps. Otherwise, move position forwards one character.
+  1. If position is beyond the end of input or if the character at position is not a U+002E FULL STOP character (.), then return an error and abort these steps. Otherwise, move position forwards one character.
 
-  14. [collect a sequence of code points](https://www.w3.org/TR/html51/infrastructure.html#collect-a-sequence-of-characters) that are [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), and let string be the collected substring.
+  2. [collect a sequence of code points](https://www.w3.org/TR/html51/infrastructure.html#collect-a-sequence-of-characters) that are [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits), and let string be the collected substring.
 
-  15. If string is not exactly three characters in length, return an error and abort these steps.
+  3. If string is not exactly three characters in length, return an error and abort these steps.
 
-  16. Interpret string as a base-ten integer. Let value4 be that integer.
+  4. Interpret string as a base-ten integer. Let value4 be that integer.
 
-  17. If value2 is greater than 59 or if value3 is greater than 59, return an error and abort these steps.
+  5. If value2 is greater than 59 or if value3 is greater than 59, return an error and abort these steps.
 
-  18. Let result be value1×60×60 + value2×60 + value3 \+ value4∕1000. 
+  6. Let result be value1×60×60 + value2×60 + value3 \+ value4∕1000.
 
-  19. Return result.
-
-
-
+  7. Return result.
 
 ### 6.4. WebVTT cue text parsing rules
 
@@ -1986,47 +1825,38 @@ User agents will add a language tag as the applicable language even if it is not
 There are several concrete classes of WebVTT Internal Node Objects:
 
 Lists of WebVTT Node Objects
-    
 
 These are used as root nodes for trees of WebVTT Node Objects.
 
 WebVTT Class Objects
-    
 
 These represent spans of text (a WebVTT cue class span) in cue text, and are used to annotate parts of the cue with applicable classes without implying further meaning (such as italics or bold).
 
 WebVTT Italic Objects
-    
 
 These represent spans of italic text (a WebVTT cue italics span) in WebVTT caption or subtitle cue text.
 
 WebVTT Bold Objects
-    
 
 These represent spans of bold text (a WebVTT cue bold span) in WebVTT caption or subtitle cue text.
 
 WebVTT Underline Objects
-    
 
 These represent spans of underline text (a WebVTT cue underline span) in WebVTT caption or subtitle cue text.
 
 WebVTT Ruby Objects
-    
 
 These represent spans of ruby (a WebVTT cue ruby span) in WebVTT caption or subtitle cue text.
 
 WebVTT Ruby Text Objects
-    
 
 These represent spans of ruby text (a WebVTT cue ruby text span) in WebVTT caption or subtitle cue text.
 
 WebVTT Voice Objects
-    
 
 These represent spans of text associated with a specific voice (a WebVTT cue voice span) in WebVTT caption or subtitle cue text. A WebVTT Voice Object has a value, which is the name of the voice.
 
 WebVTT Language Objects
-    
 
 These represent spans of text (a WebVTT cue language span) in WebVTT caption or subtitle cue text, and are used to annotate parts of the cue where the applicable language might be different than the surrounding text’s, without implying further meaning (such as italics or bold).
 
@@ -2035,12 +1865,10 @@ WebVTT Leaf Node Objects are those that contain data, such as text, and cannot c
 There are two concrete classes of WebVTT Leaf Node Objects:
 
 WebVTT Text Objects
-    
 
 A fragment of text. A WebVTT Text Object has a value, which is the text it represents.
 
 WebVTT Timestamp Objects
-    
 
 A timestamp. A WebVTT Timestamp Object has a value, in seconds and fractions of a second, which is the time represented by the timestamp.
 
@@ -2064,59 +1892,49 @@ The WebVTT cue text parsing rules consist of the following algorithm. The input 
 
   9. Run the appropriate steps given the type of token:
 
-If token is a string 
-    
+If token is a string
+
      1. Create a WebVTT Text Object whose value is the value of the string token token.
 
      2. Append the newly created WebVTT Text Object to current.
 
-If token is a start tag 
-    
+If token is a start tag
 
 How the start tag token token is processed depends on its tag name, as follows:
 
-If the tag name is "`c`" 
-    
+If the tag name is "`c`"
 
 Attach a WebVTT Class Object.
 
-If the tag name is "`i`" 
-    
+If the tag name is "`i`"
 
 Attach a WebVTT Italic Object.
 
-If the tag name is "`b`" 
-    
+If the tag name is "`b`"
 
 Attach a WebVTT Bold Object.
 
-If the tag name is "`u`" 
-    
+If the tag name is "`u`"
 
 Attach a WebVTT Underline Object.
 
-If the tag name is "`ruby`" 
-    
+If the tag name is "`ruby`"
 
 Attach a WebVTT Ruby Object.
 
-If the tag name is "`rt`" 
-    
+If the tag name is "`rt`"
 
 If current is a WebVTT Ruby Object, then attach a WebVTT Ruby Text Object.
 
-If the tag name is "`v`" 
-    
+If the tag name is "`v`"
 
 Attach a WebVTT Voice Object, and set its value to the token’s annotation string, or the empty string if there is no annotation string.
 
-If the tag name is "`lang`" 
-    
+If the tag name is "`lang`"
 
 Push the value of the token’s annotation string, or the empty string if there is no annotation string, onto the language stack; then attach a WebVTT Language Object.
 
-Otherwise 
-    
+Otherwise
 
 Ignore the token.
 
@@ -2132,8 +1950,7 @@ When the steps above say to attach a WebVTT Internal Node Object of a particular
 
      5. Let current be the newly created node object.
 
-If token is an end tag 
-    
+If token is an end tag
 
 If any of the following conditions is true, then let current be the parent node of current.
 
@@ -2151,8 +1968,8 @@ Otherwise, if the tag name of the end tag token token is "`ruby`" and current is
 
 Otherwise, ignore the token.
 
-If token is a timestamp tag 
-    
+If token is a timestamp tag
+
      1. Let input be the tag value.
 
      2. Let position be a pointer into input, initially pointing at the start of the string.
@@ -2163,10 +1980,7 @@ If token is a timestamp tag
 
 Otherwise, ignore the token.
 
-  10. Jump to the step labeled _loop_.
-
-
-
+  1. Jump to the step labeled _loop_.
 
 The WebVTT cue text tokenizer is as follows. It emits a token, which is either a string (whose value is a sequence of characters), a start tag (with a tag name, a list of classes, and optionally an annotation), an end tag (with a tag name), or a timestamp tag (with a tag value).
 
@@ -2182,37 +1996,31 @@ The WebVTT cue text tokenizer is as follows. It emits a token, which is either a
 
 An end-of-file marker is not a Unicode character, it is used to end the tokenizer.
 
-  6. Jump to the state given by tokenizer state:
+  1. Jump to the state given by tokenizer state:
 
 WebVTT data state
-    
 
 Jump to the entry that matches the value of c:
 
-U+0026 AMPERSAND (&) 
-    
+U+0026 AMPERSAND (&)
 
 Set tokenizer state to the HTML character reference in data state, and jump to the step labeled _next_.
 
-U+003C LESS-THAN SIGN (<) 
-    
+U+003C LESS-THAN SIGN (<)
 
 If result is the empty string, then set tokenizer state to the WebVTT tag state and jump to the step labeled _next_.
 
 Otherwise, return a string token whose value is result and abort these steps.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Return a string token whose value is result and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Append c to result and jump to the step labeled _next_.
 
 HTML character reference in data state
-    
 
 Attempt to consume an HTML character reference, with no [additional allowed character](https://www.w3.org/TR/html51/syntax.html#additional-allowed-character).
 
@@ -2223,142 +2031,114 @@ Otherwise, append the data of the character tokens that were returned to result.
 Then, in any case, set tokenizer state to the WebVTT data state, and jump to the step labeled _next_.
 
 WebVTT tag state
-    
 
 Jump to the entry that matches the value of c:
 
-U+0009 CHARACTER TABULATION (tab) character U+000A LINE FEED (LF) character U+000C FORM FEED (FF) character U+0020 SPACE character 
-    
+U+0009 CHARACTER TABULATION (tab) character U+000A LINE FEED (LF) character U+000C FORM FEED (FF) character U+0020 SPACE character
 
 Set tokenizer state to the WebVTT start tag annotation state, and jump to the step labeled _next_.
 
-U+002E FULL STOP character (.) 
-    
+U+002E FULL STOP character (.)
 
 Set tokenizer state to the WebVTT start tag class state, and jump to the step labeled _next_.
 
-U+002F SOLIDUS character (/) 
-    
+U+002F SOLIDUS character (/)
 
 Set tokenizer state to the WebVTT end tag state, and jump to the step labeled _next_.
 
 [ASCII digits](https://www.w3.org/TR/html51/infrastructure.html#ascii-digits)
-    
 
 Set result to c, set tokenizer state to the WebVTT timestamp tag state, and jump to the step labeled _next_.
 
-U+003E GREATER-THAN SIGN character (>) 
-    
+U+003E GREATER-THAN SIGN character (>)
 
 Advance position to the next character in input, then jump to the next "end-of-file marker" entry below.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Return a start tag whose tag name is the empty string, with no classes and no annotation, and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Set result to c, set tokenizer state to the WebVTT start tag state, and jump to the step labeled _next_.
 
 WebVTT start tag state
-    
 
 Jump to the entry that matches the value of c:
 
-U+0009 CHARACTER TABULATION (tab) character U+000C FORM FEED (FF) character U+0020 SPACE character 
-    
+U+0009 CHARACTER TABULATION (tab) character U+000C FORM FEED (FF) character U+0020 SPACE character
 
 Set tokenizer state to the WebVTT start tag annotation state, and jump to the step labeled _next_.
 
-U+000A LINE FEED (LF) character 
-    
+U+000A LINE FEED (LF) character
 
 Set buffer to c, set tokenizer state to the WebVTT start tag annotation state, and jump to the step labeled _next_.
 
-U+002E FULL STOP character (.) 
-    
+U+002E FULL STOP character (.)
 
 Set tokenizer state to the WebVTT start tag class state, and jump to the step labeled _next_.
 
-U+003E GREATER-THAN SIGN character (>) 
-    
+U+003E GREATER-THAN SIGN character (>)
 
 Advance position to the next character in input, then jump to the next "end-of-file marker" entry below.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Return a start tag whose tag name is result, with no classes and no annotation, and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Append c to result and jump to the step labeled _next_.
 
 WebVTT start tag class state
-    
 
 Jump to the entry that matches the value of c:
 
-U+0009 CHARACTER TABULATION (tab) character U+000C FORM FEED (FF) character U+0020 SPACE character 
-    
+U+0009 CHARACTER TABULATION (tab) character U+000C FORM FEED (FF) character U+0020 SPACE character
 
 Append to classes an entry whose value is buffer, set buffer to the empty string, set tokenizer state to the WebVTT start tag annotation state, and jump to the step labeled _next_.
 
-U+000A LINE FEED (LF) character 
-    
+U+000A LINE FEED (LF) character
 
 Append to classes an entry whose value is buffer, set buffer to c, set tokenizer state to the WebVTT start tag annotation state, and jump to the step labeled _next_.
 
-U+002E FULL STOP character (.) 
-    
+U+002E FULL STOP character (.)
 
 Append to classes an entry whose value is buffer, set buffer to the empty string, and jump to the step labeled _next_.
 
-U+003E GREATER-THAN SIGN character (>) 
-    
+U+003E GREATER-THAN SIGN character (>)
 
 Advance position to the next character in input, then jump to the next "end-of-file marker" entry below.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Append to classes an entry whose value is buffer, then return a start tag whose tag name is result, with the classes given in classes but no annotation, and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Append c to buffer and jump to the step labeled _next_.
 
 WebVTT start tag annotation state
-    
 
 Jump to the entry that matches the value of c:
 
-U+0026 AMPERSAND (&) 
-    
+U+0026 AMPERSAND (&)
 
 Set tokenizer state to the HTML character reference in annotation state, and jump to the step labeled _next_.
 
-U+003E GREATER-THAN SIGN character (>) 
-    
+U+003E GREATER-THAN SIGN character (>)
 
 Advance position to the next character in input, then jump to the next "end-of-file marker" entry below.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Remove any leading or trailing [ASCII whitespace](https://www.w3.org/TR/html51/infrastructure.html#space-characters) characters from buffer, and replace any sequence of one or more consecutive [ASCII whitespace](https://www.w3.org/TR/html51/infrastructure.html#space-characters) characters in buffer with a single U+0020 SPACE character; then, return a start tag whose tag name is result, with the classes given in classes, and with buffer as the annotation, and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Append c to buffer and jump to the step labeled _next_.
 
 HTML character reference in annotation state
-    
 
 Attempt to consume an HTML character reference, with the [additional allowed character](https://www.w3.org/TR/html51/syntax.html#additional-allowed-character) being U+003E GREATER-THAN SIGN (>).
 
@@ -2369,51 +2149,40 @@ Otherwise, append the data of the character tokens that were returned to buffer.
 Then, in any case, set tokenizer state to the WebVTT start tag annotation state, and jump to the step labeled _next_.
 
 WebVTT end tag state
-    
 
 Jump to the entry that matches the value of c:
 
-U+003E GREATER-THAN SIGN character (>) 
-    
+U+003E GREATER-THAN SIGN character (>)
 
 Advance position to the next character in input, then jump to the next "end-of-file marker" entry below.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Return an end tag whose tag name is result and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Append c to result and jump to the step labeled _next_.
 
 WebVTT timestamp tag state
-    
 
 Jump to the entry that matches the value of c:
 
-U+003E GREATER-THAN SIGN character (>) 
-    
+U+003E GREATER-THAN SIGN character (>)
 
 Advance position to the next character in input, then jump to the next "end-of-file marker" entry below.
 
-End-of-file marker 
-    
+End-of-file marker
 
 Return a timestamp tag whose tag name is result and abort these steps.
 
-Anything else 
-    
+Anything else
 
 Append c to result and jump to the step labeled _next_.
 
-  7. _Next_ : Advance position to the next character in input.
+  1. _Next_ : Advance position to the next character in input.
 
-  8. Jump to the step labeled _loop_.
-
-
-
+  2. Jump to the step labeled _loop_.
 
 When the algorithm above says to attempt to consume an HTML character reference, it means to attempt to [consume a character reference](https://www.w3.org/TR/html51/syntax.html#consume-a-character-reference) as defined in HTML. [HTML51]
 
@@ -2425,20 +2194,20 @@ For the purpose of retrieving a WebVTT cue’s content via the `getCueAsHTML()` 
 
 To convert a list of WebVTT Node Objects to a DOM tree for `[Document](https://www.w3.org/TR/dom/#document)` owner, user agents must create a tree of DOM nodes that is isomorphous to the tree of WebVTT Node Objects, with the following mapping of WebVTT Node Objects to DOM nodes:
 
-WebVTT Node Object | DOM node   
+WebVTT Node Object | DOM node
 ---|---  
-List of WebVTT Node Objects | `[DocumentFragment](https://www.w3.org/TR/dom/#documentfragment)` node.   
-WebVTT Region Object | `[DocumentFragment](https://www.w3.org/TR/dom/#documentfragment)` node.   
-WebVTT Class Object | HTML [span](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-span) element.   
-WebVTT Italic Object | HTML [i](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-i) element.   
-WebVTT Bold Object | HTML [b](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-b) element.   
-WebVTT Underline Object | HTML [u](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-u) element.   
-WebVTT Ruby Object | HTML [ruby](https://www.w3.org/TR/html51/textlevel-semantics.html#the-ruby-element) element.   
-WebVTT Ruby Text Object | HTML [rt](https://www.w3.org/TR/html51/textlevel-semantics.html#the-rt-element) element.   
-WebVTT Voice Object | HTML [span](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-span) element with a [title](https://www.w3.org/TR/html51/dom.html#the-title-attribute) attribute set to the WebVTT Voice Object’s value.   
-WebVTT Language Object | HTML [span](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-span) element with a [lang](https://www.w3.org/TR/html51/dom.html#element-attrdef-global-lang) attribute set to the WebVTT Language Object’s applicable language.   
-WebVTT Text Object | `[Text](https://www.w3.org/TR/dom/#text)` node whose `[data](https://www.w3.org/TR/dom/#concept-cd-data)` is the value of the WebVTT Text Object.   
-WebVTT Timestamp Object | `[ProcessingInstruction](https://www.w3.org/TR/dom/#processinginstruction)` node whose `[target](https://www.w3.org/TR/dom/#dom-event-target)` is "`timestamp`" and whose `[data](https://www.w3.org/TR/dom/#concept-cd-data)` is a WebVTT timestamp representing the value of the WebVTT Timestamp Object, with all optional components included, with one leading zero if the hours component is less than ten, and with no leading zeros otherwise.   
+List of WebVTT Node Objects | `[DocumentFragment](https://www.w3.org/TR/dom/#documentfragment)` node.
+WebVTT Region Object | `[DocumentFragment](https://www.w3.org/TR/dom/#documentfragment)` node.
+WebVTT Class Object | HTML [span](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-span) element.
+WebVTT Italic Object | HTML [i](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-i) element.
+WebVTT Bold Object | HTML [b](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-b) element.
+WebVTT Underline Object | HTML [u](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-u) element.
+WebVTT Ruby Object | HTML [ruby](https://www.w3.org/TR/html51/textlevel-semantics.html#the-ruby-element) element.
+WebVTT Ruby Text Object | HTML [rt](https://www.w3.org/TR/html51/textlevel-semantics.html#the-rt-element) element.
+WebVTT Voice Object | HTML [span](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-span) element with a [title](https://www.w3.org/TR/html51/dom.html#the-title-attribute) attribute set to the WebVTT Voice Object’s value.
+WebVTT Language Object | HTML [span](https://www.w3.org/TR/html51/textlevel-semantics.html#elementdef-span) element with a [lang](https://www.w3.org/TR/html51/dom.html#element-attrdef-global-lang) attribute set to the WebVTT Language Object’s applicable language.
+WebVTT Text Object | `[Text](https://www.w3.org/TR/dom/#text)` node whose `[data](https://www.w3.org/TR/dom/#concept-cd-data)` is the value of the WebVTT Text Object.
+WebVTT Timestamp Object | `[ProcessingInstruction](https://www.w3.org/TR/dom/#processinginstruction)` node whose `[target](https://www.w3.org/TR/dom/#dom-event-target)` is "`timestamp`" and whose `[data](https://www.w3.org/TR/dom/#concept-cd-data)` is a WebVTT timestamp representing the value of the WebVTT Timestamp Object, with all optional components included, with one leading zero if the hours component is less than ten, and with no leading zeros otherwise.
   
 HTML elements created as part of the mapping described above must have their `[namespaceURI](https://www.w3.org/TR/dom/#dom-element-namespaceuri)` set to the [HTML namespace](https://www.w3.org/TR/html51/infrastructure.html#html-namespace), use the appropriate IDL interface as defined in the HTML specification, and, if the corresponding WebVTT Internal Node Object has any applicable classes, must have a [class](https://www.w3.org/TR/html51/dom.html#classes) attribute set to the string obtained by concatenating all those classes, each separated from the next by a single U+0020 SPACE character.
 
@@ -2453,9 +2222,6 @@ The WebVTT rules for extracting the chapter title for a WebVTT cue cue are as fo
   1. Let nodes be the list of WebVTT Node Objects obtained by applying the WebVTT cue text parsing rules to the cue’s cue text.
 
   2. Return the concatenation of the values of each WebVTT Text Object in nodes, in a pre-order, depth-first traversal, excluding WebVTT Ruby Text Objects and their descendants.
-
-
-
 
 ## 7\. Rendering
 
@@ -2543,12 +2309,10 @@ The rules are as follows:
         4. Adjust offset using cue’s computed position alignment as follows:
 
 If the computed position alignment is center alignment
-    
 
 Subtract half of region’s WebVTT region width from offset.
 
 If the computed position alignment is line-right alignment
-    
 
 Subtract region’s WebVTT region width from offset.
 
@@ -2566,9 +2330,6 @@ Subtract region’s WebVTT region width from offset.
 
   15. Return output.
 
-
-
-
 User agents may allow the user to override the above algorithm’s positioning of cues, e.g. by dragging them to another location on the [video](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-video-element), or even off the [video](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-video-element) entirely.
 
 ### 7.2. Processing cue settings
@@ -2580,107 +2341,88 @@ When the processing algorithm above requires that the user agent apply WebVTT cu
   2. Determine the value of maximum size for cue as per the appropriate rules from the following list:
 
 If the computed position alignment is line-left
-    
 
 Let maximum size be the computed position subtracted from 100.
 
 If the computed position alignment is line-right
-    
 
 Let maximum size be the computed position.
 
-If the computed position alignment is center, and the computed position is less than or equal to 50 
-    
+If the computed position alignment is center, and the computed position is less than or equal to 50
 
 Let maximum size be the computed position multiplied by two.
 
-If the computed position alignment is center, and the computed position is greater than 50 
-    
+If the computed position alignment is center, and the computed position is greater than 50
 
 Let maximum size be the result of subtracting computed position from 100 and then multiplying the result by two.
 
-  3. If the WebVTT cue size is less than maximum size, then let size be WebVTT cue size. Otherwise, let size be maximum size.
+  1. If the WebVTT cue size is less than maximum size, then let size be WebVTT cue size. Otherwise, let size be maximum size.
 
-  4. If the WebVTT cue writing direction is horizontal, then let width be size vw and height be [auto](https://drafts.csswg.org/css-sizing-3/#valdef-width-auto). Otherwise, let width be [auto](https://drafts.csswg.org/css-sizing-3/#valdef-width-auto) and height be size vh. (These are CSS values used by the next section to set CSS properties for the rendering; [vw](https://drafts.csswg.org/css-values-4/#vw) and [vh](https://drafts.csswg.org/css-values-4/#vh) are CSS units.) [CSS-VALUES]
+  2. If the WebVTT cue writing direction is horizontal, then let width be size vw and height be [auto](https://drafts.csswg.org/css-sizing-3/#valdef-width-auto). Otherwise, let width be [auto](https://drafts.csswg.org/css-sizing-3/#valdef-width-auto) and height be size vh. (These are CSS values used by the next section to set CSS properties for the rendering; [vw](https://drafts.csswg.org/css-values-4/#vw) and [vh](https://drafts.csswg.org/css-values-4/#vh) are CSS units.) [CSS-VALUES]
 
-  5. Determine the value of x-position or y-position for cue as per the appropriate rules from the following list:
+  3. Determine the value of x-position or y-position for cue as per the appropriate rules from the following list:
 
 If the WebVTT cue writing direction is horizontal
-    
 
 If the computed position alignment is line-left alignment
-    
 
 Let x-position be the computed position.
 
 If the computed position alignment is center alignment
-    
 
 Let x-position be the computed position minus half of size.
 
 If the computed position alignment is line-right alignment
-    
 
 Let x-position be the computed position minus size.
 
 If the WebVTT cue writing direction is vertical growing left or vertical growing right
-    
 
 If the computed position alignment is line-left alignment
-    
 
 Let y-position be the computed position.
 
 If the computed position alignment is center alignment
-    
 
 Let y-position be the computed position minus half of size.
 
 If the computed position alignment is line-right alignment
-    
 
 Let y-position be the computed position minus size.
 
-  6. Determine the value of whichever of x-position or y-position is not yet calculated for cue as per the appropriate rules from the following list:
+  1. Determine the value of whichever of x-position or y-position is not yet calculated for cue as per the appropriate rules from the following list:
 
-If the WebVTT cue snap-to-lines flag is false 
-    
+If the WebVTT cue snap-to-lines flag is false
 
 If the WebVTT cue writing direction is horizontal
-    
 
 Let y-position be the computed line.
 
 If the WebVTT cue writing direction is vertical growing left or vertical growing right
-    
 
 Let x-position be the computed line.
 
-If the WebVTT cue snap-to-lines flag is true 
-    
+If the WebVTT cue snap-to-lines flag is true
 
 If the WebVTT cue writing direction is horizontal
-    
 
 Let y-position be 0.
 
 If the WebVTT cue writing direction is vertical growing left or vertical growing right
-    
 
 Let x-position be 0.
 
 These are not final positions, they are merely temporary positions used to calculate box dimensions below.
 
-  7. Let left be x-position vw and top be y-position vh. (These are CSS values used by the next section to set CSS properties for the rendering; [vw](https://drafts.csswg.org/css-values-4/#vw) and [vh](https://drafts.csswg.org/css-values-4/#vh) are CSS units.) [CSS-VALUES]
+  1. Let left be x-position vw and top be y-position vh. (These are CSS values used by the next section to set CSS properties for the rendering; [vw](https://drafts.csswg.org/css-values-4/#vw) and [vh](https://drafts.csswg.org/css-values-4/#vh) are CSS units.) [CSS-VALUES]
 
-  8. Obtain a set of CSS boxes boxes positioned relative to an initial containing block.
+  2. Obtain a set of CSS boxes boxes positioned relative to an initial containing block.
 
-  9. If there are no line boxes in boxes, skip the remainder of these substeps for cue. The cue is ignored.
+  3. If there are no line boxes in boxes, skip the remainder of these substeps for cue. The cue is ignored.
 
-  10. Adjust the positions of boxes according to the appropriate steps from the following list:
+  4. Adjust the positions of boxes according to the appropriate steps from the following list:
 
-If cue’s WebVTT cue snap-to-lines flag is true 
-    
+If cue’s WebVTT cue snap-to-lines flag is true
 
 Many of the steps in this algorithm vary according to the WebVTT cue writing direction. Steps labeled "**Horizontal** " must be followed only when the WebVTT cue writing direction is horizontal, steps labeled "**Vertical** " must be followed when the WebVTT cue writing direction is either vertical growing left or vertical growing right, steps labeled "**Vertical Growing Left** " must be followed only when the WebVTT cue writing direction is vertical growing left, and steps labeled "**Vertical Growing Right** " must be followed only when the WebVTT cue writing direction is vertical growing right.
 
@@ -2736,35 +2478,29 @@ Many of the steps in this algorithm vary according to the WebVTT cue writing dir
 
      21. Jump back to the step labeled _step loop_.
 
-If cue’s WebVTT cue snap-to-lines flag is false 
-    
+If cue’s WebVTT cue snap-to-lines flag is false
+
      1. Let bounding box be the bounding box of the boxes in boxes.
 
      2. Run the appropriate steps from the following list:
 
 If the WebVTT cue writing direction is horizontal
-    
 
 If the WebVTT cue line alignment is center alignment
-    
 
 Move all the boxes in boxes up by half of the height of bounding box.
 
 If the WebVTT cue line alignment is end alignment
-    
 
 Move all the boxes in boxes up by the height of bounding box.
 
 If the WebVTT cue writing direction is vertical growing left or vertical growing right
-    
 
 If the WebVTT cue line alignment is center alignment
-    
 
 Move all the boxes in boxes left by half of the width of bounding box.
 
 If the WebVTT cue line alignment is end alignment
-    
 
 Move all the boxes in boxes left by the width of bounding box.
 
@@ -2776,23 +2512,20 @@ Move all the boxes in boxes left by the width of bounding box.
 
   11. _Done positioning_ : Return boxes.
 
-
-
-
 ### 7.3. Obtaining CSS boxes
 
 When the processing algorithm above requires that the user agent obtain a set of CSS boxes boxes, then apply the terms of the CSS specifications to nodes within the following constraints: [CSS22]
 
-  * The _document tree_ is the tree of WebVTT Node Objects rooted at nodes.
+- The _document tree_ is the tree of WebVTT Node Objects rooted at nodes.
 
-  * For the purpose of selectors in STYLE blocks of a WebVTT file, the style sheet must apply to a hypothetical document that contains a single empty element with no explicit name, no namespace, no attributes, no classes, no IDs, and unknown primary language, that acts like the [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element) for the [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) that were sourced from the given WebVTT file. The selectors must not match other [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) for the same [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element). In this hypothetical document, the element must not match any selector that would match the element itself.
+- For the purpose of selectors in STYLE blocks of a WebVTT file, the style sheet must apply to a hypothetical document that contains a single empty element with no explicit name, no namespace, no attributes, no classes, no IDs, and unknown primary language, that acts like the [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element) for the [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) that were sourced from the given WebVTT file. The selectors must not match other [text tracks](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) for the same [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element). In this hypothetical document, the element must not match any selector that would match the element itself.
 
 This element exists only to be the [originating element](https://www.w3.org/TR/selectors4/#originating-element) for the ::cue, ::cue(), ::cue-region and ::cue-region() pseudo-elements.
 
-  * For the purpose of determining the [cascade](https://www.w3.org/TR/css-cascade-4/#cascade) of the declarations in STYLE blocks of a WebVTT file, the relative order of appearance of the style sheets must be the same order as they were added to the collection, and the order of appearance of the collection must be after any style sheets that apply to the associated [video](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-video-element) element’s document.
+- For the purpose of determining the [cascade](https://www.w3.org/TR/css-cascade-4/#cascade) of the declarations in STYLE blocks of a WebVTT file, the relative order of appearance of the style sheets must be the same order as they were added to the collection, and the order of appearance of the collection must be after any style sheets that apply to the associated [video](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-video-element) element’s document.
 
 For example, given the following (invalid) HTML document:
-        
+
         <!doctype html>
         <title>Invalid cascade example</title>
         <video controls autoplay src="video.webm">
@@ -2804,7 +2537,7 @@ For example, given the following (invalid) HTML document:
         
 
 ...and the "track.vtt" file contains:
-        
+
         WEBVTT
         
         STYLE
@@ -2816,21 +2549,19 @@ For example, given the following (invalid) HTML document:
 
 The color:lime declaration would win, because it is last in the [cascade](https://www.w3.org/TR/css-cascade-4/#cascade), even though the [style](https://www.w3.org/TR/html51/document-metadata.html#the-style-element) element is after the [video](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-video-element) element in the document order.
 
-  * For the purpose of resolving URLs in STYLE blocks of a WebVTT file, or any URLs in resources referenced from STYLE blocks of a WebVTT file, if the URL’s scheme is not "`data`", then the user agent must act as if the URL failed to resolve.
+- For the purpose of resolving URLs in STYLE blocks of a WebVTT file, or any URLs in resources referenced from STYLE blocks of a WebVTT file, if the URL’s scheme is not "`data`", then the user agent must act as if the URL failed to resolve.
 
 **Supporting external resources with[@import](https://www.w3.org/TR/css-cascade-4/#at-ruledef-import) or [background-image](https://www.w3.org/TR/css3-background/#propdef-background-image) would be a new ability for [media elements](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element) and [track](https://www.w3.org/TR/html51/semantics-embedded-content.html#the-track-element) elements to issue network requests as the user watches the video, which could be a privacy issue.**
 
-  * For the purposes of processing by the CSS specification, WebVTT Internal Node Objects are equivalent to elements with the same contents.
+- For the purposes of processing by the CSS specification, WebVTT Internal Node Objects are equivalent to elements with the same contents.
 
-  * For the purposes of processing by the CSS specification, WebVTT Text Objects are equivalent to `[Text](https://www.w3.org/TR/dom/#text)` nodes. 
-  * No style sheets are associated with nodes. (The nodes are subsequently restyled using style sheets after their boxes are generated, as described below.) 
-  * The children of the nodes must be wrapped in an anonymous box whose [display](https://www.w3.org/TR/css-display-3/#propdef-display) property has the value [inline](https://www.w3.org/TR/css-display-3/#valdef-display-inline). This is the WebVTT cue background box. 
-  * Runs of children of WebVTT Ruby Objects that are not WebVTT Ruby Text Objects must be wrapped in anonymous boxes whose [display](https://www.w3.org/TR/css-display-3/#propdef-display) property has the value [ruby-base](https://drafts.csswg.org/css-ruby-1/#valdef-display-ruby-base). [CSS3-RUBY]
-  * Properties on WebVTT Node Objects have their values set as defined in the next section. (That section uses some of the variables whose values were calculated earlier in this algorithm.) 
-  * Text runs must be wrapped according to the CSS line-wrapping rules. 
-  * The video viewport (and initial containing block) is video’s rendering area. 
-
-
+- For the purposes of processing by the CSS specification, WebVTT Text Objects are equivalent to `[Text](https://www.w3.org/TR/dom/#text)` nodes.
+- No style sheets are associated with nodes. (The nodes are subsequently restyled using style sheets after their boxes are generated, as described below.)
+- The children of the nodes must be wrapped in an anonymous box whose [display](https://www.w3.org/TR/css-display-3/#propdef-display) property has the value [inline](https://www.w3.org/TR/css-display-3/#valdef-display-inline). This is the WebVTT cue background box.
+- Runs of children of WebVTT Ruby Objects that are not WebVTT Ruby Text Objects must be wrapped in anonymous boxes whose [display](https://www.w3.org/TR/css-display-3/#propdef-display) property has the value [ruby-base](https://drafts.csswg.org/css-ruby-1/#valdef-display-ruby-base). [CSS3-RUBY]
+- Properties on WebVTT Node Objects have their values set as defined in the next section. (That section uses some of the variables whose values were calculated earlier in this algorithm.)
+- Text runs must be wrapped according to the CSS line-wrapping rules.
+- The video viewport (and initial containing block) is video’s rendering area.
 
 Let boxes be the boxes generated as descendants of the initial containing block, along with their positions.
 
@@ -2840,23 +2571,21 @@ When following the rules for updating the display of WebVTT text tracks, user ag
 
 Initialize the (root) list of WebVTT Node Objects with the following CSS settings:
 
-  * the [position](https://www.w3.org/TR/css3-positioning/#propdef-position) property must be set to [absolute](https://www.w3.org/TR/css3-positioning/#valdef-position-absolute)
-  * the [unicode-bidi](https://www.w3.org/TR/css-writing-modes-3/#propdef-unicode-bidi) property must be set to [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext)
-  * the [writing-mode](https://drafts.csswg.org/css-writing-modes-4/#propdef-writing-mode) property must be set to writing-mode
-  * the [top](https://www.w3.org/TR/css3-positioning/#propdef-top) property must be set to top
-  * the [left](https://www.w3.org/TR/css3-positioning/#propdef-left) property must be set to left
-  * the [width](https://www.w3.org/TR/CSS22/visudet.html#propdef-width) property must be set to width
-  * the [height](https://www.w3.org/TR/CSS22/visudet.html#propdef-height) property must be set to height
-  * the [overflow-wrap](https://www.w3.org/TR/css-text-3/#propdef-overflow-wrap) property must be set to [break-word](https://www.w3.org/TR/css-text-3/#valdef-overflow-wrap-break-word)
-  * the text-wrap property must be set to balance [CSS-TEXT-4]
-
-
+- the [position](https://www.w3.org/TR/css3-positioning/#propdef-position) property must be set to [absolute](https://www.w3.org/TR/css3-positioning/#valdef-position-absolute)
+- the [unicode-bidi](https://www.w3.org/TR/css-writing-modes-3/#propdef-unicode-bidi) property must be set to [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext)
+- the [writing-mode](https://drafts.csswg.org/css-writing-modes-4/#propdef-writing-mode) property must be set to writing-mode
+- the [top](https://www.w3.org/TR/css3-positioning/#propdef-top) property must be set to top
+- the [left](https://www.w3.org/TR/css3-positioning/#propdef-left) property must be set to left
+- the [width](https://www.w3.org/TR/CSS22/visudet.html#propdef-width) property must be set to width
+- the [height](https://www.w3.org/TR/CSS22/visudet.html#propdef-height) property must be set to height
+- the [overflow-wrap](https://www.w3.org/TR/css-text-3/#propdef-overflow-wrap) property must be set to [break-word](https://www.w3.org/TR/css-text-3/#valdef-overflow-wrap-break-word)
+- the text-wrap property must be set to balance [CSS-TEXT-4]
 
 The variables writing-mode, top, left, width, and height are the values with those names determined by the rules for updating the display of WebVTT text tracks for the WebVTT cue from whose text the list of WebVTT Node Objects was constructed.
 
 The [text-align](https://www.w3.org/TR/css-text-3/#propdef-text-align) property on the (root) list of WebVTT Node Objects must be set to the value in the second cell of the row of the table below whose first cell is the value of the corresponding [cue](https://www.w3.org/TR/html51/semantics-embedded-content.html#cue)’s WebVTT cue text alignment:
 
-WebVTT cue text alignment | [text-align](https://www.w3.org/TR/css-text-3/#propdef-text-align) value   
+WebVTT cue text alignment | [text-align](https://www.w3.org/TR/css-text-3/#propdef-text-align) value
 ---|---  
 Start alignment | [start](https://www.w3.org/TR/css-text-3/#valdef-text-align-start)  
 Center alignment | [center](https://www.w3.org/TR/css-text-3/#valdef-text-align-center)  
@@ -2884,36 +2613,32 @@ The [display](https://www.w3.org/TR/css-display-3/#propdef-display) property on 
 
 Every WebVTT region object is initialized with the following CSS settings:
 
-  * the [position](https://www.w3.org/TR/css3-positioning/#propdef-position) property must be set to [absolute](https://www.w3.org/TR/css3-positioning/#valdef-position-absolute)
-  * the [writing-mode](https://drafts.csswg.org/css-writing-modes-4/#propdef-writing-mode) property must be set to [horizontal-tb](https://drafts.csswg.org/css-writing-modes-4/#valdef-writing-mode-horizontal-tb)
-  * the [background](https://www.w3.org/TR/css3-background/#propdef-background) shorthand property must be set to rgba(0,0,0,0.8)
-  * the [overflow-wrap](https://www.w3.org/TR/css-text-3/#propdef-overflow-wrap) property must be set to [break-word](https://www.w3.org/TR/css-text-3/#valdef-overflow-wrap-break-word)
-  * the [font](https://www.w3.org/TR/css-fonts-3/#propdef-font) shorthand property must be set to 5vh sans-serif
-  * the [color](https://www.w3.org/TR/css-color-4/#propdef-color) property must be set to rgba(255,255,255,1)
-  * the [overflow](https://www.w3.org/TR/css-overflow-3/#propdef-overflow) property must be set to [hidden](https://www.w3.org/TR/css-overflow-3/#valdef-overflow-hidden)
-  * the [width](https://www.w3.org/TR/CSS22/visudet.html#propdef-width) property must be set to width
-  * the [min-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-min-height) property must be set to 0px
-  * the [max-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-max-height) property must be set to height
-  * the [left](https://www.w3.org/TR/css3-positioning/#propdef-left) property must be set to left
-  * the [top](https://www.w3.org/TR/css3-positioning/#propdef-top) property must be set to top
-  * the [display](https://www.w3.org/TR/css-display-3/#propdef-display) property must be set to [inline-flex](https://www.w3.org/TR/css-flexbox-1/#valdef-display-inline-flex)
-  * the [flex-flow](https://www.w3.org/TR/css-flexbox-1/#propdef-flex-flow) property must be set to column
-  * the [justify-content](https://www.w3.org/TR/css3-align/#propdef-justify-content) property must be set to [flex-end](https://www.w3.org/TR/css-flexbox-1/#valdef-justify-content-flex-end)
-
-
+- the [position](https://www.w3.org/TR/css3-positioning/#propdef-position) property must be set to [absolute](https://www.w3.org/TR/css3-positioning/#valdef-position-absolute)
+- the [writing-mode](https://drafts.csswg.org/css-writing-modes-4/#propdef-writing-mode) property must be set to [horizontal-tb](https://drafts.csswg.org/css-writing-modes-4/#valdef-writing-mode-horizontal-tb)
+- the [background](https://www.w3.org/TR/css3-background/#propdef-background) shorthand property must be set to rgba(0,0,0,0.8)
+- the [overflow-wrap](https://www.w3.org/TR/css-text-3/#propdef-overflow-wrap) property must be set to [break-word](https://www.w3.org/TR/css-text-3/#valdef-overflow-wrap-break-word)
+- the [font](https://www.w3.org/TR/css-fonts-3/#propdef-font) shorthand property must be set to 5vh sans-serif
+- the [color](https://www.w3.org/TR/css-color-4/#propdef-color) property must be set to rgba(255,255,255,1)
+- the [overflow](https://www.w3.org/TR/css-overflow-3/#propdef-overflow) property must be set to [hidden](https://www.w3.org/TR/css-overflow-3/#valdef-overflow-hidden)
+- the [width](https://www.w3.org/TR/CSS22/visudet.html#propdef-width) property must be set to width
+- the [min-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-min-height) property must be set to 0px
+- the [max-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-max-height) property must be set to height
+- the [left](https://www.w3.org/TR/css3-positioning/#propdef-left) property must be set to left
+- the [top](https://www.w3.org/TR/css3-positioning/#propdef-top) property must be set to top
+- the [display](https://www.w3.org/TR/css-display-3/#propdef-display) property must be set to [inline-flex](https://www.w3.org/TR/css-flexbox-1/#valdef-display-inline-flex)
+- the [flex-flow](https://www.w3.org/TR/css-flexbox-1/#propdef-flex-flow) property must be set to column
+- the [justify-content](https://www.w3.org/TR/css3-align/#propdef-justify-content) property must be set to [flex-end](https://www.w3.org/TR/css-flexbox-1/#valdef-justify-content-flex-end)
 
 The variables width, height, top, and left are the values with those names determined by the rules for updating the display of WebVTT text tracks for the WebVTT region from which the WebVTT region object was constructed.
 
 The children of every WebVTT region object are further initialized with these CSS settings:
 
-  * the [position](https://www.w3.org/TR/css3-positioning/#propdef-position) property must be set to [relative](https://www.w3.org/TR/css3-positioning/#valdef-position-relative)
-  * the [unicode-bidi](https://www.w3.org/TR/css-writing-modes-3/#propdef-unicode-bidi) property must be set to [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext)
-  * the [width](https://www.w3.org/TR/CSS22/visudet.html#propdef-width) property must be set to [auto](https://drafts.csswg.org/css-sizing-3/#valdef-width-auto)
-  * the [height](https://www.w3.org/TR/CSS22/visudet.html#propdef-height) property must be set to height
-  * the [left](https://www.w3.org/TR/css3-positioning/#propdef-left) property must be set to left
-  * the [text-align](https://www.w3.org/TR/css-text-3/#propdef-text-align) property must be set as described for the root List of WebVTT Node Objects not part of a region 
-
-
+- the [position](https://www.w3.org/TR/css3-positioning/#propdef-position) property must be set to [relative](https://www.w3.org/TR/css3-positioning/#valdef-position-relative)
+- the [unicode-bidi](https://www.w3.org/TR/css-writing-modes-3/#propdef-unicode-bidi) property must be set to [plaintext](https://drafts.csswg.org/css-writing-modes-4/#valdef-unicode-bidi-plaintext)
+- the [width](https://www.w3.org/TR/CSS22/visudet.html#propdef-width) property must be set to [auto](https://drafts.csswg.org/css-sizing-3/#valdef-width-auto)
+- the [height](https://www.w3.org/TR/CSS22/visudet.html#propdef-height) property must be set to height
+- the [left](https://www.w3.org/TR/css3-positioning/#propdef-left) property must be set to left
+- the [text-align](https://www.w3.org/TR/css-text-3/#propdef-text-align) property must be set as described for the root List of WebVTT Node Objects not part of a region
 
 All other non-inherited properties must be set to their initial values; inherited properties on the root list of WebVTT Node Objects must inherit their values from the [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element) for which the WebVTT cue is being rendered, if any. If there is no [media element](https://www.w3.org/TR/html51/semantics-embedded-content.html#media-element) (i.e. if the [text track](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-tracks) is being rendered for another media playback mechanism), then inherited properties on the root list of WebVTT Node Objects and the WebVTT region objects must take their initial values.
 
@@ -2941,18 +2666,17 @@ The [:past](https://www.w3.org/TR/selectors4/#past-pseudo) and [:future](https:/
 
 The following table shows examples of what can be selected with a given selector, together with WebVTT syntax to produce the relevant objects.
 
-Selector (CSS syntax example) | Matches (WebVTT syntax example)   
+Selector (CSS syntax example) | Matches (WebVTT syntax example)
 ---|---  
+
 ::cue
-    
-    
+
     video::cue {
       color: yellow;
     }
 
 |  Any list of WebVTT Node Objects.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:08.000
@@ -2963,15 +2687,13 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
       
   
 [ID selector](https://www.w3.org/TR/selectors4/#id-selector) in ::cue()
-    
-    
+
     video::cue(#cue1) {
       color: yellow;
     }
 
 |  Any list of WebVTT Node Objects with the cue’s [text track cue identifier](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-track-cue-identifier) matching the given ID.
-    
-    
+
     WEBVTT
     
     cue1
@@ -2980,8 +2702,7 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
       
   
 [Type selector](https://www.w3.org/TR/selectors4/#type-selector) in ::cue()
-    
-    
+
     video::cue(c),
     video::cue(i),
     video::cue(b),
@@ -2995,8 +2716,7 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
     
 
 |  WebVTT Internal Node Objects (except the root list of WebVTT Node Objects) with the given name.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:08.000
@@ -3011,15 +2731,13 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
       
   
 [Class selector](https://www.w3.org/TR/selectors4/#class-selector) in ::cue()
-    
-    
+
     video::cue(.loud) {
       color: yellow;
     }
 
 |  WebVTT Internal Node Objects (except the root list of WebVTT Node Objects) with the given applicable classes.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:08.000
@@ -3034,8 +2752,7 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
       
   
 [Attribute selector](https://www.w3.org/TR/selectors4/#attribute-selector) in ::cue()
-    
-    
+
     video::cue([lang="en-US"]) {
       color: yellow;
     }
@@ -3048,8 +2765,7 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
     
 
 |  For "lang", the root list of WebVTT Node Objects or WebVTT Language Object with the given applicable language; for "voice", the WebVTT Voice Object with the given voice.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:08.000
@@ -3063,8 +2779,7 @@ Selector (CSS syntax example) | Matches (WebVTT syntax example)
     
 
 The applicable language for the list of WebVTT Node Objects can be set by the `[srclang](https://www.w3.org/TR/html51/semantics-embedded-content.html#dom-htmltrackelement-srclang)` attribute in HTML.
-    
-    
+
     <video ...>
      <track src="example-attr.vtt"
             srclang="en-US" default>
@@ -3072,8 +2787,7 @@ The applicable language for the list of WebVTT Node Objects can be set by the `[
       
   
 [:lang()](https://www.w3.org/TR/selectors4/#lang-pseudo) pseudo-class in ::cue()
-    
-    
+
     video::cue(:lang(en)) {
       color: yellow;
     }
@@ -3083,8 +2797,7 @@ The applicable language for the list of WebVTT Node Objects can be set by the `[
     
 
 |  WebVTT Internal Node Objects with an applicable language matching the given language range.
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:08.000
@@ -3096,8 +2809,7 @@ The applicable language for the list of WebVTT Node Objects can be set by the `[
 
 As above, the applicable language for the list of WebVTT Node Objects can be set by the `[srclang](https://www.w3.org/TR/html51/semantics-embedded-content.html#dom-htmltrackelement-srclang)` attribute in HTML.  
 [:past](https://www.w3.org/TR/selectors4/#past-pseudo) and [:future](https://www.w3.org/TR/selectors4/#future-pseudo) pseudo-classes in ::cue()
-    
-    
+
     video::cue(:past) {
       color: yellow;
     }
@@ -3107,8 +2819,7 @@ As above, the applicable language for the list of WebVTT Node Objects can be set
     
 
 |  In cues that have WebVTT Timestamp Objects, WebVTT Internal Node Objects, depending on the [current playback position](https://www.w3.org/TR/html51/semantics-embedded-content.html#current-position).
-    
-    
+
     WEBVTT
     
     00:00:00.000 --> 00:00:08.000
@@ -3126,15 +2837,13 @@ As above, the applicable language for the list of WebVTT Node Objects can be set
       
   
 ::cue-region
-    
-    
+
     video::cue-region {
       color: yellow;
     }
 
 |  Any region (list of WebVTT region objects).
-    
-    
+
     WEBVTT
     
     REGION
@@ -3150,15 +2859,13 @@ As above, the applicable language for the list of WebVTT Node Objects can be set
       
   
 [ID selector](https://www.w3.org/TR/selectors4/#id-selector) in ::cue-region()
-    
-    
+
     video::cue-region(#scroll) {
       color: cyan;
     }
 
 |  Any region (list of WebVTT region objects) with a WebVTT region identifier matching the given ID.
-    
-    
+
     WEBVTT
     
     REGION
@@ -3200,30 +2907,28 @@ The ::cue pseudo-element (with no argument) matches any list of WebVTT Node Obje
 
 The following properties apply to the ::cue pseudo-element with no argument; other properties set on the pseudo-element must be ignored:
 
-  * [color](https://www.w3.org/TR/css-color-4/#propdef-color)
-  * [opacity](https://www.w3.org/TR/css-color-4/#propdef-opacity)
-  * [visibility](https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility)
-  * the properties corresponding to the [text-decoration](https://www.w3.org/TR/css-text-decor-3/#text-decoration-property) shorthand 
-  * [text-shadow](https://www.w3.org/TR/css-text-decor-3/#text-shadow-property)
-  * the properties corresponding to the [background](https://www.w3.org/TR/css3-background/#propdef-background) shorthand 
-  * the properties corresponding to the [outline](https://drafts.csswg.org/css-ui-4/#propdef-outline) shorthand 
-  * the properties corresponding to the [font](https://www.w3.org/TR/css-fonts-3/#propdef-font) shorthand, including [line-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-line-height)
-  * [white-space](https://www.w3.org/TR/css-text-3/#propdef-white-space)
-  * [text-combine-upright](https://drafts.csswg.org/css-writing-modes-4/#propdef-text-combine-upright)
-  * [ruby-position](https://www.w3.org/TR/css-ruby-1/#propdef-ruby-position)
-
-
+- [color](https://www.w3.org/TR/css-color-4/#propdef-color)
+- [opacity](https://www.w3.org/TR/css-color-4/#propdef-opacity)
+- [visibility](https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility)
+- the properties corresponding to the [text-decoration](https://www.w3.org/TR/css-text-decor-3/#text-decoration-property) shorthand
+- [text-shadow](https://www.w3.org/TR/css-text-decor-3/#text-shadow-property)
+- the properties corresponding to the [background](https://www.w3.org/TR/css3-background/#propdef-background) shorthand
+- the properties corresponding to the [outline](https://drafts.csswg.org/css-ui-4/#propdef-outline) shorthand
+- the properties corresponding to the [font](https://www.w3.org/TR/css-fonts-3/#propdef-font) shorthand, including [line-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-line-height)
+- [white-space](https://www.w3.org/TR/css-text-3/#propdef-white-space)
+- [text-combine-upright](https://drafts.csswg.org/css-writing-modes-4/#propdef-text-combine-upright)
+- [ruby-position](https://www.w3.org/TR/css-ruby-1/#propdef-ruby-position)
 
 The ::cue(selector) pseudo-element with an argument must have an argument that consists of a CSS selector [SELECTORS4]. It matches any WebVTT Internal Node Object constructed for the _matched element_ that also matches the given CSS selector, with the nodes being treated as follows:
 
-  * The _document tree_ against which the selectors are matched is the tree of WebVTT Node Objects rooted at the list of WebVTT Node Objects for the cue.
+- The _document tree_ against which the selectors are matched is the tree of WebVTT Node Objects rooted at the list of WebVTT Node Objects for the cue.
 
-  * WebVTT Internal Node Objects are elements in the tree.
+- WebVTT Internal Node Objects are elements in the tree.
 
-  * WebVTT Leaf Node Objects cannot be matched. 
-  * For the purposes of element type selectors, the names of WebVTT Internal Node Objects are as given by the following table, where objects having the concrete class given in a cell in the first column have the name given by the second column of the same row:
+- WebVTT Leaf Node Objects cannot be matched.
+- For the purposes of element type selectors, the names of WebVTT Internal Node Objects are as given by the following table, where objects having the concrete class given in a cell in the first column have the name given by the second column of the same row:
 
-Concrete class | Name   
+Concrete class | Name
 ---|---  
 WebVTT Class Objects | `c`  
 WebVTT Italic Objects | `i`  
@@ -3233,41 +2938,35 @@ WebVTT Ruby Objects | `ruby`
 WebVTT Ruby Text Objects | `rt`  
 WebVTT Voice Objects | `v`  
 WebVTT Language Objects | `lang`  
-Other elements (specifically, lists of WebVTT Node Objects) | No explicit name.   
-  * For the purposes of element type and universal selectors, WebVTT Internal Node Objects are considered as being in the namespace expressed as the empty string.
+Other elements (specifically, lists of WebVTT Node Objects) | No explicit name.
 
-  * For the purposes of attribute selector matching, WebVTT Internal Node Objects have no attributes, except for WebVTT Voice Objects, which have a single attribute named "`voice`" whose value is the value of the WebVTT Voice Object, WebVTT Language Objects, which have a single attribute named "`lang`" whose value is the object’s applicable language, and lists of WebVTT Node Objects that have a non-empty applicable language, which have a single attribute named "`lang`" whose value is the object’s applicable language.
+- For the purposes of element type and universal selectors, WebVTT Internal Node Objects are considered as being in the namespace expressed as the empty string.
 
-  * For the purposes of class selector matching, WebVTT Internal Node Objects have the classes described as the WebVTT Node Object’s applicable classes.
+- For the purposes of attribute selector matching, WebVTT Internal Node Objects have no attributes, except for WebVTT Voice Objects, which have a single attribute named "`voice`" whose value is the value of the WebVTT Voice Object, WebVTT Language Objects, which have a single attribute named "`lang`" whose value is the object’s applicable language, and lists of WebVTT Node Objects that have a non-empty applicable language, which have a single attribute named "`lang`" whose value is the object’s applicable language.
 
-  * For the purposes of the [:lang()](https://www.w3.org/TR/selectors4/#lang-pseudo) pseudo-class, WebVTT Internal Node Objects have the language described as the WebVTT Node Object’s applicable language.
+- For the purposes of class selector matching, WebVTT Internal Node Objects have the classes described as the WebVTT Node Object’s applicable classes.
 
-  * For the purposes of ID selector matching, lists of WebVTT Node Objects have the ID given by the cue’s [text track cue identifier](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-track-cue-identifier), if any.
+- For the purposes of the [:lang()](https://www.w3.org/TR/selectors4/#lang-pseudo) pseudo-class, WebVTT Internal Node Objects have the language described as the WebVTT Node Object’s applicable language.
 
-
-
+- For the purposes of ID selector matching, lists of WebVTT Node Objects have the ID given by the cue’s [text track cue identifier](https://www.w3.org/TR/html51/semantics-embedded-content.html#text-track-cue-identifier), if any.
 
 The following properties apply to the ::cue() pseudo-element with an argument:
 
-  * [color](https://www.w3.org/TR/css-color-4/#propdef-color)
-  * [opacity](https://www.w3.org/TR/css-color-4/#propdef-opacity)
-  * [visibility](https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility)
-  * the properties corresponding to the [text-decoration](https://www.w3.org/TR/css-text-decor-3/#text-decoration-property) shorthand 
-  * [text-shadow](https://www.w3.org/TR/css-text-decor-3/#text-shadow-property)
-  * the properties corresponding to the [background](https://www.w3.org/TR/css3-background/#propdef-background) shorthand 
-  * the properties corresponding to the [outline](https://drafts.csswg.org/css-ui-4/#propdef-outline) shorthand 
-  * properties relating to the transition and animation features 
-
-
+- [color](https://www.w3.org/TR/css-color-4/#propdef-color)
+- [opacity](https://www.w3.org/TR/css-color-4/#propdef-opacity)
+- [visibility](https://www.w3.org/TR/CSS22/visufx.html#propdef-visibility)
+- the properties corresponding to the [text-decoration](https://www.w3.org/TR/css-text-decor-3/#text-decoration-property) shorthand
+- [text-shadow](https://www.w3.org/TR/css-text-decor-3/#text-shadow-property)
+- the properties corresponding to the [background](https://www.w3.org/TR/css3-background/#propdef-background) shorthand
+- the properties corresponding to the [outline](https://drafts.csswg.org/css-ui-4/#propdef-outline) shorthand
+- properties relating to the transition and animation features
 
 In addition, the following properties apply to the ::cue() pseudo-element with an argument when the selector does not contain the [:past](https://www.w3.org/TR/selectors4/#past-pseudo) and [:future](https://www.w3.org/TR/selectors4/#future-pseudo) pseudo-classes:
 
-  * the properties corresponding to the [font](https://www.w3.org/TR/css-fonts-3/#propdef-font) shorthand, including [line-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-line-height)
-  * [white-space](https://www.w3.org/TR/css-text-3/#propdef-white-space)
-  * [text-combine-upright](https://drafts.csswg.org/css-writing-modes-4/#propdef-text-combine-upright)
-  * [ruby-position](https://www.w3.org/TR/css-ruby-1/#propdef-ruby-position)
-
-
+- the properties corresponding to the [font](https://www.w3.org/TR/css-fonts-3/#propdef-font) shorthand, including [line-height](https://www.w3.org/TR/CSS22/visudet.html#propdef-line-height)
+- [white-space](https://www.w3.org/TR/css-text-3/#propdef-white-space)
+- [text-combine-upright](https://drafts.csswg.org/css-writing-modes-4/#propdef-text-combine-upright)
+- [ruby-position](https://www.w3.org/TR/css-ruby-1/#propdef-ruby-position)
 
 Properties that do not apply must be ignored.
 
@@ -3295,10 +2994,7 @@ The ::cue-region pseudo-element (with no argument) matches any list of WebVTT re
 
 The ::cue-region(selector) pseudo-element with an argument must have an argument that consists of a CSS selector [SELECTORS4]. It matches any list of WebVTT region objects constructed for the _matched element_ that also matches the given CSS selector as follows:
 
-  * Any region (list of WebVTT region objects) with a WebVTT region identifier matching the given ID.
-
-
-
+- Any region (list of WebVTT region objects) with a WebVTT region identifier matching the given ID.
 
 No other selector matching is defined for ::cue-region(selector).
 
@@ -3311,8 +3007,7 @@ When a user agent is rendering one or more text track regions according to the r
 ### 9.1. The `VTTCue` interface
 
 The following interface is used to expose WebVTT cues in the DOM API:
-    
-    
+
     enum AutoKeyword { "auto" };
     typedef ([double](https://www.w3.org/TR/WebIDL-1/#idl-double) or AutoKeyword) LineAndPositionSetting;
     enum DirectionSetting { "" /* horizontal */, "rl", "lr" };
@@ -3336,8 +3031,7 @@ The following interface is used to expose WebVTT cues in the DOM API:
     };
     
 
-cue = new VTTCue( startTime, endTime, text ) 
-    
+cue = new VTTCue( startTime, endTime, text )
 
 Returns a new `VTTCue` object, for use with the `[addCue()](https://www.w3.org/TR/html51/semantics-embedded-content.html#dom-texttrack-addcue)` method.
 
@@ -3348,152 +3042,126 @@ The endTime argument sets the [text track cue end time](https://www.w3.org/TR/ht
 The text argument sets the cue text.
 
 cue . `region`
-    
 
 Returns the `VTTRegion` object to which this cue belongs, if any, or null otherwise.
 
 Can be set.
 
-cue . `vertical` [ = value ] 
-    
+cue . `vertical` [ = value ]
 
 Returns a string representing the WebVTT cue writing direction, as follows:
 
 If it is horizontal
-    
 
 The empty string.
 
 If it is vertical growing left
-    
 
 The string "`rl`".
 
 If it is vertical growing right
-    
 
 The string "`lr`".
 
 Can be set.
 
-cue . `snapToLines` [ = value ] 
-    
+cue . `snapToLines` [ = value ]
 
 Returns true if the WebVTT cue snap-to-lines flag is true, false otherwise.
 
 Can be set.
 
-cue . `line` [ = value ] 
-    
+cue . `line` [ = value ]
 
 Returns the WebVTT cue line. In the case of the value being auto, the string "`auto`" is returned.
 
 Can be set.
 
-cue . `lineAlign` [ = value ] 
-    
+cue . `lineAlign` [ = value ]
 
 Returns a string representing the WebVTT cue line alignment, as follows:
 
 If it is start alignment
-    
 
 The string "`start`".
 
 If it is center alignment
-    
 
 The string "`center`".
 
 If it is end alignment
-    
 
 The string "`end`".
 
 Can be set.
 
-cue . `position` [ = value ] 
-    
+cue . `position` [ = value ]
 
 Returns the WebVTT cue position. In the case of the value being auto, the string "`auto`" is returned.
 
 Can be set.
 
-cue . `positionAlign` [ = value ] 
-    
+cue . `positionAlign` [ = value ]
 
 Returns a string representing the WebVTT cue position alignment, as follows:
 
 If it is line-left alignment
-    
 
 The string "`line-left`".
 
 If it is center alignment
-    
 
 The string "`center`".
 
 If it is line-right alignment
-    
 
 The string "`line-right`".
 
 If it is automatic alignment
-    
 
 The string "`auto`".
 
 Can be set.
 
-cue . `size` [ = value ] 
-    
+cue . `size` [ = value ]
 
 Returns the WebVTT cue size.
 
 Can be set.
 
-cue . `align` [ = value ] 
-    
+cue . `align` [ = value ]
 
 Returns a string representing the WebVTT cue text alignment, as follows:
 
 If it is start alignment
-    
 
 The string "`start`".
 
 If it is center alignment
-    
 
 The string "`center`".
 
 If it is end alignment
-    
 
 The string "`end`".
 
 If it is left alignment
-    
 
 The string "`left`".
 
 If it is right alignment
-    
 
 The string "`right`".
 
 Can be set.
 
-cue . `text` [ = value ] 
-    
+cue . `text` [ = value ]
 
 Returns the cue text in raw unparsed form.
 
 Can be set.
 
-fragment = cue . getCueAsHTML() 
-    
+fragment = cue . getCueAsHTML()
 
 Returns the cue text as a `[DocumentFragment](https://www.w3.org/TR/dom/#documentfragment)` of [HTML elements](https://www.w3.org/TR/html51/infrastructure.html#html-element) and other DOM nodes.
 
@@ -3531,18 +3199,15 @@ The `VTTCue(startTime, endTime, text)` constructor, when invoked, must run the f
 
   16. Return the `VTTCue` object representing cue.
 
-
-
-
 The `region` attribute, on getting, must return the `VTTRegion` object representing the WebVTT cue region of the WebVTT cue that the `VTTCue` object represents, if any; or null otherwise. On setting, the WebVTT cue region must be set to the new value.
 
 The `vertical` attribute, on getting, must return the string from the second cell of the row in the table below whose first cell is the WebVTT cue writing direction of the WebVTT cue that the `VTTCue` object represents:
 
-WebVTT cue writing direction | `vertical` value   
+WebVTT cue writing direction | `vertical` value
 ---|---  
-Horizontal | "``" (the empty string)   
-Vertical growing left | "`rl`"   
-Vertical growing right | "`lr`"   
+Horizontal | "``" (the empty string)
+Vertical growing left | "`rl`"
+Vertical growing right | "`lr`"
   
 On setting, the WebVTT cue writing direction must be set to the value given in the first cell of the row in the table above whose second cell is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the new value.
 
@@ -3554,11 +3219,11 @@ In order to be able to set the `snapToLines` and `line` attributes in any order,
 
 The `lineAlign` attribute, on getting, must return the string from the second cell of the row in the table below whose first cell is the WebVTT cue line alignment of the WebVTT cue that the `VTTCue` object represents:
 
-WebVTT cue line alignment | `lineAlign` value   
+WebVTT cue line alignment | `lineAlign` value
 ---|---  
-Start alignment | "`start`"   
-Center alignment | "`center`"   
-End alignment | "`end`"   
+Start alignment | "`start`"
+Center alignment | "`center`"
+End alignment | "`end`"
   
 On setting, the WebVTT cue line alignment must be set to the value given in the first cell of the row in the table above whose second cell is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the new value.
 
@@ -3566,12 +3231,12 @@ The `position` attribute, on getting, must return the WebVTT cue position of the
 
 The `positionAlign` attribute, on getting, must return the string from the second cell of the row in the table below whose first cell is the WebVTT cue position alignment of the WebVTT cue that the `VTTCue` object represents:
 
-WebVTT cue position alignment | `positionAlign` value   
+WebVTT cue position alignment | `positionAlign` value
 ---|---  
-Line-left alignment | "`line-left`"   
-Center alignment | "`center`"   
-Line-right alignment | "`line-right`"   
-Automatic alignment | "`auto`"   
+Line-left alignment | "`line-left`"
+Center alignment | "`center`"
+Line-right alignment | "`line-right`"
+Automatic alignment | "`auto`"
   
 On setting, the WebVTT cue position alignment must be set to the value given in the first cell of the row in the table above whose second cell is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the new value.
 
@@ -3579,13 +3244,13 @@ The `size` attribute, on getting, must return the WebVTT cue size of the WebVTT 
 
 The `align` attribute, on getting, must return the string from the second cell of the row in the table below whose first cell is the WebVTT cue text alignment of the WebVTT cue that the `VTTCue` object represents:
 
-WebVTT cue text alignment | `align` value   
+WebVTT cue text alignment | `align` value
 ---|---  
-Start alignment | "`start`"   
-Center alignment | "`center`"   
-End alignment | "`end`"   
-Left alignment | "`left`"   
-Right alignment | "`right`"   
+Start alignment | "`start`"
+Center alignment | "`center`"
+End alignment | "`end`"
+Left alignment | "`left`"
+Right alignment | "`right`"
   
 On setting, the WebVTT cue text alignment must be set to the value given in the first cell of the row in the table above whose second cell is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the new value.
 
@@ -3598,8 +3263,7 @@ A fallback language is not provided for `getCueAsHTML()` since a `[DocumentFragm
 ### 9.2. The `VTTRegion` interface
 
 The following interface is used to expose WebVTT regions in the DOM API:
-    
-    
+
     enum ScrollSetting { "" /* none */, "up" };
     [[Exposed](https://heycam.github.io/webidl/#Exposed)=Window,
      Constructor]
@@ -3615,58 +3279,47 @@ The following interface is used to expose WebVTT regions in the DOM API:
     };
     
 
-region = new VTTRegion() 
-    
+region = new VTTRegion()
 
 Returns a new `VTTRegion` object.
 
 region . `id`
-    
 
 Returns the text track region identifier. Can be set.
 
 region . `width`
-    
 
 Returns the WebVTT region width as a percentage of the video width. Can be set. Throws an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` if the new value is not in the range 0..100.
 
 region . `lines`
-    
 
 Returns the text track region height as a number of lines. Can be set. Throws an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` if the new value is negative.
 
 region . `regionAnchorX`
-    
 
 Returns the WebVTT region anchor X offset as a percentage of the region width. Can be set. Throws an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` if the new value is not in the range 0..100.
 
 region . `regionAnchorY`
-    
 
 Returns the WebVTT region anchor Y offset as a percentage of the region height. Can be set. Throws an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` if the new value is not in the range 0..100.
 
 region . `viewportAnchorX`
-    
 
 Returns the WebVTT region viewport anchor X offset as a percentage of the video width. Can be set. Throws an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` if the new value is not in the range 0..100.
 
 region . `viewportAnchorY`
-    
 
 Returns the WebVTT region viewport anchor Y offset as a percentage of the video height. Can be set. Throws an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` if the new value is not in the range 0..100.
 
 region . `scroll`
-    
 
 Returns a string representing the WebVTT region scroll as follows:
 
-If it is unset 
-    
+If it is unset
 
 The empty string.
 
-If it is up 
-    
+If it is up
 
 The string "`up`".
 
@@ -3694,9 +3347,6 @@ The `VTTRegion()` constructor, when invoked, must run the following steps:
 
   10. Return the `VTTRegion` object representing region.
 
-
-
-
 The `id` attribute, on getting, must return the WebVTT region identifier of the WebVTT region that the `VTTRegion` object represents. On setting, the WebVTT region identifier must be set to the new value.
 
 The `width` attribute, on getting, must return the WebVTT region width of the WebVTT region that the `VTTRegion` object represents. On setting, if the new value is negative or greater than 100, then an `[IndexSizeError](https://www.w3.org/TR/WebIDL-1/#indexsizeerror)` exception must be thrown. Otherwise, the WebVTT region width must be set to the new value.
@@ -3713,10 +3363,10 @@ The `viewportAnchorY` attribute, on getting, must return the WebVTT region viewp
 
 The `scroll` attribute, on getting, must return the string from the second cell of the row in the table below whose first cell is the WebVTT region scroll setting of the WebVTT region that the `VTTRegion` object represents:
 
-WebVTT region scroll | `scroll` value   
+WebVTT region scroll | `scroll` value
 ---|---  
-None | "``" (the empty string)   
-Up | "`up`"   
+None | "``" (the empty string)
+Up | "`up`"
   
 On setting, the WebVTT region scroll must be set to the value given on the first cell of the row in the table above whose second cell is a [case-sensitive](https://www.w3.org/TR/html51/infrastructure.html#case-sensitive) match for the new value.
 
@@ -3726,67 +3376,61 @@ On setting, the WebVTT region scroll must be set to the value given on the first
 
 This registration is for community review and will be submitted to the IESG for review, approval, and registration with IANA.
 
-Type name: 
-    text 
-Subtype name: 
-    vtt 
-Required parameters: 
-    No parameters 
-Optional parameters: 
-    No parameters 
-Encoding considerations: 
-    8bit (always UTF-8) 
-Security considerations: 
-    
+Type name:
+    text
+Subtype name:
+    vtt
+Required parameters:
+    No parameters
+Optional parameters:
+    No parameters
+Encoding considerations:
+    8bit (always UTF-8)
+Security considerations:
 
 Text track files themselves pose no immediate risk unless sensitive information is included within the data. Implementations, however, are required to follow specific rules when processing text tracks, to ensure that certain origin-based restrictions are honored. Failure to correctly implement these rules can result in information leakage, cross-site scripting attacks, and the like.
 
-Interoperability considerations: 
-    
+Interoperability considerations:
 
 Rules for processing both conforming and non-conforming content are defined in this specification.
 
-Published specification: 
-     This document is the relevant specification. 
-Applications that use this media type: 
-     Web browsers and other video players. 
-Additional information: 
-    
+Published specification:
+     This document is the relevant specification.
+Applications that use this media type:
+     Web browsers and other video players.
+Additional information:
 
-Magic number(s): 
-    
+Magic number(s):
 
 WebVTT files all begin with one of the following byte sequences (where "EOF" means the end of the file):
 
-  * EF BB BF 57 45 42 56 54 54 0A 
-  * EF BB BF 57 45 42 56 54 54 0D 
-  * EF BB BF 57 45 42 56 54 54 20 
-  * EF BB BF 57 45 42 56 54 54 09 
-  * EF BB BF 57 45 42 56 54 54 EOF 
-  * 57 45 42 56 54 54 0A 
-  * 57 45 42 56 54 54 0D 
-  * 57 45 42 56 54 54 20 
-  * 57 45 42 56 54 54 09 
-  * 57 45 42 56 54 54 EOF 
-
-
+- EF BB BF 57 45 42 56 54 54 0A
+- EF BB BF 57 45 42 56 54 54 0D
+- EF BB BF 57 45 42 56 54 54 20
+- EF BB BF 57 45 42 56 54 54 09
+- EF BB BF 57 45 42 56 54 54 EOF
+- 57 45 42 56 54 54 0A
+- 57 45 42 56 54 54 0D
+- 57 45 42 56 54 54 20
+- 57 45 42 56 54 54 09
+- 57 45 42 56 54 54 EOF
 
 (An optional UTF-8 BOM, the ASCII string "`WEBVTT`", and finally a space, tab, line break, or the end of the file.)
 
-File extension(s): 
-    "`vtt`" 
-Macintosh file type code(s): 
-    No specific Macintosh file type codes are recommended for this type. 
-Person & email address to contact for further information: 
+File extension(s):
+    "`vtt`"
+Macintosh file type code(s):
+    No specific Macintosh file type codes are recommended for this type.
+Person & email address to contact for further information:
     Silvia Pfeiffer <silviapfeiffer1@gmail.com>
-Intended usage: 
-    Common 
-Restrictions on usage: 
-    No restrictions apply. 
-Authors: 
+Intended usage:
+    Common
+Restrictions on usage:
+    No restrictions apply.
+Authors:
     Silvia Pfeiffer <silviapfeiffer1@gmail.com>, Simon Pieters <simonp@opera.com>, Philip Jägenstedt <philipj@opera.com>, Ian Hickson <ian@hixie.ch>
-Change controller: 
-    W3C 
+Change controller:
+    W3C
 
 Fragment identifiers have no meaning with `text/vtt` resources.
 
@@ -3820,5 +3464,5 @@ Thanks to the SubRip community, including in particular Zuggy and ai4spam, for t
 
 Thanks to Ian Hickson and many others for their work on the HTML standard, where WebVTT was originally specified. [HTML51]
 
-Thanks to Addison Phillips, Alastor Wu, Andreas Tai, Anna Cavender, Anne van Kesteren, Benjamin Schaaf, Brian Quass, Caitlin Potter, Courtney Kennedy, Cyril Concolato, Dae Kim, David Singer, Eric Carlson, fantasai, Frank Olivier, Fredrik Söderquist, Giuseppe Pascale, Glenn Adams, Glenn Maynard, John Foliot, Kyle Huey, Lawrence Forooghian, Loretta Guarino Reid, Ms2ger, Nigel Megitt, Ralph Giles, Richard Ishida, Rick Eyre, Ronny Mennerich, Theresa O’Connor, and Victor Cărbune for their useful comments. 
+Thanks to Addison Phillips, Alastor Wu, Andreas Tai, Anna Cavender, Anne van Kesteren, Benjamin Schaaf, Brian Quass, Caitlin Potter, Courtney Kennedy, Cyril Concolato, Dae Kim, David Singer, Eric Carlson, fantasai, Frank Olivier, Fredrik Söderquist, Giuseppe Pascale, Glenn Adams, Glenn Maynard, John Foliot, Kyle Huey, Lawrence Forooghian, Loretta Guarino Reid, Ms2ger, Nigel Megitt, Ralph Giles, Richard Ishida, Rick Eyre, Ronny Mennerich, Theresa O’Connor, and Victor Cărbune for their useful comments.
   *[↑]: Back to Top

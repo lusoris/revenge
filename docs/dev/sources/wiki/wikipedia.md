@@ -9,7 +9,7 @@
 
 # MediaWiki API help
 
-This is an auto-generated MediaWiki API documentation page. 
+This is an auto-generated MediaWiki API documentation page.
 
 Documentation and examples: <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Main_page>
 
@@ -17,31 +17,26 @@ Documentation and examples: <https://www.mediawiki.org/wiki/Special:MyLanguage/A
 
 ([main](/wiki/Special:ApiHelp/main) | **query**)
 
-  * This module requires read rights.
-  * Source: MediaWiki
-  * License: [GPL-2.0-or-later](/wiki/Special:Version/License/MediaWiki "Special:Version/License/MediaWiki")
+- This module requires read rights.
+- Source: MediaWiki
+- License: [GPL-2.0-or-later](/wiki/Special:Version/License/MediaWiki "Special:Version/License/MediaWiki")
 
+Fetch data from and about MediaWiki.
 
+All data modifications will first have to use query to acquire a token to prevent abuse from malicious sites.
 
-Fetch data from and about MediaWiki. 
-
-All data modifications will first have to use query to acquire a token to prevent abuse from malicious sites. 
-
-  * <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Query>
-  * <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Meta>
-  * <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Properties>
-  * <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Lists>
-
-
+- <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Query>
+- <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Meta>
+- <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Properties>
+- <https://www.mediawiki.org/wiki/Special:MyLanguage/API:Lists>
 
 Specific parameters:
 
 Other general parameters are available.
 
 prop
-    
 
-Which properties to get for the queried pages. 
+Which properties to get for the queried pages.
 
 [categories](/w/api.php?action=help&modules=query%2Bcategories)
     List all categories the pages belong to.
@@ -125,9 +120,8 @@ Which properties to get for the queried pages.
     Internal. Request all Kartographer map data for the given pages
     Values (separate with `|` or [alternative](/w/api.php?action=help&modules=main#main/datatypes)): [categories](/w/api.php?action=help&modules=query%2Bcategories), [categoryinfo](/w/api.php?action=help&modules=query%2Bcategoryinfo), [contributors](/w/api.php?action=help&modules=query%2Bcontributors), [coordinates](/w/api.php?action=help&modules=query%2Bcoordinates), [deletedrevisions](/w/api.php?action=help&modules=query%2Bdeletedrevisions), [duplicatefiles](/w/api.php?action=help&modules=query%2Bduplicatefiles), [extlinks](/w/api.php?action=help&modules=query%2Bextlinks), [extracts](/w/api.php?action=help&modules=query%2Bextracts), [fileusage](/w/api.php?action=help&modules=query%2Bfileusage), [flagged](/w/api.php?action=help&modules=query%2Bflagged), [globalusage](/w/api.php?action=help&modules=query%2Bglobalusage), [growthimagesuggestiondata](/w/api.php?action=help&modules=query%2Bgrowthimagesuggestiondata), [imageinfo](/w/api.php?action=help&modules=query%2Bimageinfo), [images](/w/api.php?action=help&modules=query%2Bimages), [info](/w/api.php?action=help&modules=query%2Binfo), [isreviewed](/w/api.php?action=help&modules=query%2Bisreviewed), [iwlinks](/w/api.php?action=help&modules=query%2Biwlinks), [langlinks](/w/api.php?action=help&modules=query%2Blanglinks), [langlinkscount](/w/api.php?action=help&modules=query%2Blanglinkscount), [links](/w/api.php?action=help&modules=query%2Blinks), [linkshere](/w/api.php?action=help&modules=query%2Blinkshere), [mmcontent](/w/api.php?action=help&modules=query%2Bmmcontent), [pageassessments](/w/api.php?action=help&modules=query%2Bpageassessments), [pageimages](/w/api.php?action=help&modules=query%2Bpageimages), [pageprops](/w/api.php?action=help&modules=query%2Bpageprops), [pageterms](/w/api.php?action=help&modules=query%2Bpageterms), [pageviews](/w/api.php?action=help&modules=query%2Bpageviews), [redirects](/w/api.php?action=help&modules=query%2Bredirects), [revisions](/w/api.php?action=help&modules=query%2Brevisions), [stashimageinfo](/w/api.php?action=help&modules=query%2Bstashimageinfo), [templates](/w/api.php?action=help&modules=query%2Btemplates), [transcludedin](/w/api.php?action=help&modules=query%2Btranscludedin), [transcodestatus](/w/api.php?action=help&modules=query%2Btranscodestatus), [videoinfo](/w/api.php?action=help&modules=query%2Bvideoinfo), [wbentityusage](/w/api.php?action=help&modules=query%2Bwbentityusage), [cirrusbuilddoc](/w/api.php?action=help&modules=query%2Bcirrusbuilddoc), [cirruscompsuggestbuilddoc](/w/api.php?action=help&modules=query%2Bcirruscompsuggestbuilddoc), [cirrusdoc](/w/api.php?action=help&modules=query%2Bcirrusdoc), [description](/w/api.php?action=help&modules=query%2Bdescription), [mapdata](/w/api.php?action=help&modules=query%2Bmapdata)
 list
-    
 
-Which lists to get. 
+Which lists to get.
 
 [abusefilters](/w/api.php?action=help&modules=query%2Babusefilters)
     Show details of the edit filters.
@@ -270,9 +264,8 @@ Which lists to get.
     Values (separate with `|` or [alternative](/w/api.php?action=help&modules=main#main/datatypes)): [abusefilters](/w/api.php?action=help&modules=query%2Babusefilters), [abuselog](/w/api.php?action=help&modules=query%2Babuselog), [allcategories](/w/api.php?action=help&modules=query%2Ballcategories), [alldeletedrevisions](/w/api.php?action=help&modules=query%2Balldeletedrevisions), [allfileusages](/w/api.php?action=help&modules=query%2Ballfileusages), [allimages](/w/api.php?action=help&modules=query%2Ballimages), [alllinks](/w/api.php?action=help&modules=query%2Balllinks), [allpages](/w/api.php?action=help&modules=query%2Ballpages), [allredirects](/w/api.php?action=help&modules=query%2Ballredirects), [allrevisions](/w/api.php?action=help&modules=query%2Ballrevisions), [alltransclusions](/w/api.php?action=help&modules=query%2Balltransclusions), [allusers](/w/api.php?action=help&modules=query%2Ballusers), [automatictranslationdenselanguages](/w/api.php?action=help&modules=query%2Bautomatictranslationdenselanguages), [backlinks](/w/api.php?action=help&modules=query%2Bbacklinks), [betafeatures](/w/api.php?action=help&modules=query%2Bbetafeatures), [blocks](/w/api.php?action=help&modules=query%2Bblocks), [categorymembers](/w/api.php?action=help&modules=query%2Bcategorymembers), [centralnoticeactivecampaigns](/w/api.php?action=help&modules=query%2Bcentralnoticeactivecampaigns), [centralnoticelogs](/w/api.php?action=help&modules=query%2Bcentralnoticelogs), [checkuserlog](/w/api.php?action=help&modules=query%2Bcheckuserlog), [codexicons](/w/api.php?action=help&modules=query%2Bcodexicons), [contenttranslation](/w/api.php?action=help&modules=query%2Bcontenttranslation), [contenttranslationcorpora](/w/api.php?action=help&modules=query%2Bcontenttranslationcorpora), [contenttranslationfavoritesuggestions](/w/api.php?action=help&modules=query%2Bcontenttranslationfavoritesuggestions), [cxpublishedtranslations](/w/api.php?action=help&modules=query%2Bcxpublishedtranslations), [cxtranslatorstats](/w/api.php?action=help&modules=query%2Bcxtranslatorstats), [embeddedin](/w/api.php?action=help&modules=query%2Bembeddedin), [exturlusage](/w/api.php?action=help&modules=query%2Bexturlusage), [filearchive](/w/api.php?action=help&modules=query%2Bfilearchive), [gadgetcategories](/w/api.php?action=help&modules=query%2Bgadgetcategories), [gadgets](/w/api.php?action=help&modules=query%2Bgadgets), [geosearch](/w/api.php?action=help&modules=query%2Bgeosearch), [globalallusers](/w/api.php?action=help&modules=query%2Bglobalallusers), [globalblocks](/w/api.php?action=help&modules=query%2Bglobalblocks), [globalgroups](/w/api.php?action=help&modules=query%2Bglobalgroups), [growthmentorlist](/w/api.php?action=help&modules=query%2Bgrowthmentorlist), [growthmentormentee](/w/api.php?action=help&modules=query%2Bgrowthmentormentee), [growthstarredmentees](/w/api.php?action=help&modules=query%2Bgrowthstarredmentees), [imageusage](/w/api.php?action=help&modules=query%2Bimageusage), [iwbacklinks](/w/api.php?action=help&modules=query%2Biwbacklinks), [langbacklinks](/w/api.php?action=help&modules=query%2Blangbacklinks), [linterrors](/w/api.php?action=help&modules=query%2Blinterrors), [logevents](/w/api.php?action=help&modules=query%2Blogevents), [mostviewed](/w/api.php?action=help&modules=query%2Bmostviewed), [mystashedfiles](/w/api.php?action=help&modules=query%2Bmystashedfiles), [oldreviewedpages](/w/api.php?action=help&modules=query%2Boldreviewedpages), [pagecollectionsmetadata](/w/api.php?action=help&modules=query%2Bpagecollectionsmetadata), [pagepropnames](/w/api.php?action=help&modules=query%2Bpagepropnames), [pageswithprop](/w/api.php?action=help&modules=query%2Bpageswithprop), [prefixsearch](/w/api.php?action=help&modules=query%2Bprefixsearch), [projectpages](/w/api.php?action=help&modules=query%2Bprojectpages), [projects](/w/api.php?action=help&modules=query%2Bprojects), [protectedtitles](/w/api.php?action=help&modules=query%2Bprotectedtitles), [querypage](/w/api.php?action=help&modules=query%2Bquerypage), [random](/w/api.php?action=help&modules=query%2Brandom), [recentchanges](/w/api.php?action=help&modules=query%2Brecentchanges), [search](/w/api.php?action=help&modules=query%2Bsearch), [tags](/w/api.php?action=help&modules=query%2Btags), [trackingcategories](/w/api.php?action=help&modules=query%2Btrackingcategories), [usercontribs](/w/api.php?action=help&modules=query%2Busercontribs), [users](/w/api.php?action=help&modules=query%2Busers), [watchlist](/w/api.php?action=help&modules=query%2Bwatchlist), [watchlistraw](/w/api.php?action=help&modules=query%2Bwatchlistraw), [wblistentityusage](/w/api.php?action=help&modules=query%2Bwblistentityusage), [wikisets](/w/api.php?action=help&modules=query%2Bwikisets), [checkuser](/w/api.php?action=help&modules=query%2Bcheckuser), [deletedrevs](/w/api.php?action=help&modules=query%2Bdeletedrevs), [growthtasks](/w/api.php?action=help&modules=query%2Bgrowthtasks), [readinglistentries](/w/api.php?action=help&modules=query%2Breadinglistentries)
     Maximum number of values is 50 (500 for clients that are allowed higher limits).
 meta
-    
 
-Which metadata to get. 
+Which metadata to get.
 
 [allmessages](/w/api.php?action=help&modules=query%2Ballmessages)
     Return messages from this site.
@@ -330,76 +323,65 @@ Which metadata to get.
     Internal. List or filter the user's reading lists and show metadata about them.
     Values (separate with `|` or [alternative](/w/api.php?action=help&modules=main#main/datatypes)): [allmessages](/w/api.php?action=help&modules=query%2Ballmessages), [authmanagerinfo](/w/api.php?action=help&modules=query%2Bauthmanagerinfo), [babel](/w/api.php?action=help&modules=query%2Bbabel), [communityconfiguration](/w/api.php?action=help&modules=query%2Bcommunityconfiguration), [cxconfig](/w/api.php?action=help&modules=query%2Bcxconfig), [featureusage](/w/api.php?action=help&modules=query%2Bfeatureusage), [filerepoinfo](/w/api.php?action=help&modules=query%2Bfilerepoinfo), [globalpreferences](/w/api.php?action=help&modules=query%2Bglobalpreferences), [globalrenamestatus](/w/api.php?action=help&modules=query%2Bglobalrenamestatus), [globaluserinfo](/w/api.php?action=help&modules=query%2Bglobaluserinfo), [growthmenteestatus](/w/api.php?action=help&modules=query%2Bgrowthmenteestatus), [growthmentorstatus](/w/api.php?action=help&modules=query%2Bgrowthmentorstatus), [languageinfo](/w/api.php?action=help&modules=query%2Blanguageinfo), [linterstats](/w/api.php?action=help&modules=query%2Blinterstats), [notifications](/w/api.php?action=help&modules=query%2Bnotifications), [ores](/w/api.php?action=help&modules=query%2Bores), [siteinfo](/w/api.php?action=help&modules=query%2Bsiteinfo), [siteviews](/w/api.php?action=help&modules=query%2Bsiteviews), [tokens](/w/api.php?action=help&modules=query%2Btokens), [unreadnotificationpages](/w/api.php?action=help&modules=query%2Bunreadnotificationpages), [userinfo](/w/api.php?action=help&modules=query%2Buserinfo), [wikibase](/w/api.php?action=help&modules=query%2Bwikibase), [checkuserformattedblockinfo](/w/api.php?action=help&modules=query%2Bcheckuserformattedblockinfo), [cxdeletedtranslations](/w/api.php?action=help&modules=query%2Bcxdeletedtranslations), [growthnextsuggestedtasktype](/w/api.php?action=help&modules=query%2Bgrowthnextsuggestedtasktype), [oath](/w/api.php?action=help&modules=query%2Boath), [readinglists](/w/api.php?action=help&modules=query%2Breadinglists)
 indexpageids
-    
 
-Include an additional pageids section listing all returned page IDs. 
+Include an additional pageids section listing all returned page IDs.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 export
-    
 
-Export the current revisions of all given or generated pages. 
+Export the current revisions of all given or generated pages.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 exportnowrap
-    
 
-Return the export XML without wrapping it in an XML result (same format as [Special:Export](/wiki/Special:Export "Special:Export")). Can only be used with query+export. 
+Return the export XML without wrapping it in an XML result (same format as [Special:Export](/wiki/Special:Export "Special:Export")). Can only be used with query+export.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 exportschema
-    
 
-Target the given version of the XML dump format when exporting. Can only be used with query+export. 
+Target the given version of the XML dump format when exporting. Can only be used with query+export.
 
     One of the following values: 0.10, 0.11
     Default: 0.11
 iwurl
-    
 
-Whether to get the full URL if the title is an interwiki link. 
+Whether to get the full URL if the title is an interwiki link.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 continue
-    
 
-When more results are available, use this to continue. More detailed information on how to continue queries [can be found on mediawiki.org](https://www.mediawiki.org/wiki/Special:MyLanguage/API:Continue "mw:Special:MyLanguage/API:Continue"). 
+When more results are available, use this to continue. More detailed information on how to continue queries [can be found on mediawiki.org](https://www.mediawiki.org/wiki/Special:MyLanguage/API:Continue "mw:Special:MyLanguage/API:Continue").
 
 rawcontinue
-    
 
-Return raw query-continue data for continuation. 
+Return raw query-continue data for continuation.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 titles
-    
 
-A list of titles to work on. 
+A list of titles to work on.
 
     Separate values with `|` or [alternative](/w/api.php?action=help&modules=main#main/datatypes).
     Maximum number of values is 50 (500 for clients that are allowed higher limits).
 pageids
-    
 
-A list of page IDs to work on. 
+A list of page IDs to work on.
 
     Type: list of integers
     Separate values with `|` or [alternative](/w/api.php?action=help&modules=main#main/datatypes).
     Maximum number of values is 50 (500 for clients that are allowed higher limits).
 revids
-    
 
-A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only `prop=revisions` uses exact revisions for its response. 
+A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only `prop=revisions` uses exact revisions for its response.
 
     Type: list of integers
     Separate values with `|` or [alternative](/w/api.php?action=help&modules=main#main/datatypes).
     Maximum number of values is 50 (500 for clients that are allowed higher limits).
 generator
-    
 
-Get the list of pages to work on by executing the specified query module. 
+Get the list of pages to work on by executing the specified query module.
 
-**Note:** Generator parameter names must be prefixed with a "g", see examples. 
+**Note:** Generator parameter names must be prefixed with a "g", see examples.
 
 [allcategories](/w/api.php?action=help&modules=query%2Ballcategories)
     Enumerate all categories.
@@ -491,15 +473,13 @@ Get the list of pages to work on by executing the specified query module.
     Internal. List the pages of a certain list.
     One of the following values: [allcategories](/w/api.php?action=help&modules=query%2Ballcategories), [alldeletedrevisions](/w/api.php?action=help&modules=query%2Balldeletedrevisions), [allfileusages](/w/api.php?action=help&modules=query%2Ballfileusages), [allimages](/w/api.php?action=help&modules=query%2Ballimages), [alllinks](/w/api.php?action=help&modules=query%2Balllinks), [allpages](/w/api.php?action=help&modules=query%2Ballpages), [allredirects](/w/api.php?action=help&modules=query%2Ballredirects), [allrevisions](/w/api.php?action=help&modules=query%2Ballrevisions), [alltransclusions](/w/api.php?action=help&modules=query%2Balltransclusions), [backlinks](/w/api.php?action=help&modules=query%2Bbacklinks), [categories](/w/api.php?action=help&modules=query%2Bcategories), [categorymembers](/w/api.php?action=help&modules=query%2Bcategorymembers), [deletedrevisions](/w/api.php?action=help&modules=query%2Bdeletedrevisions), [duplicatefiles](/w/api.php?action=help&modules=query%2Bduplicatefiles), [embeddedin](/w/api.php?action=help&modules=query%2Bembeddedin), [exturlusage](/w/api.php?action=help&modules=query%2Bexturlusage), [fileusage](/w/api.php?action=help&modules=query%2Bfileusage), [geosearch](/w/api.php?action=help&modules=query%2Bgeosearch), [images](/w/api.php?action=help&modules=query%2Bimages), [imageusage](/w/api.php?action=help&modules=query%2Bimageusage), [iwbacklinks](/w/api.php?action=help&modules=query%2Biwbacklinks), [langbacklinks](/w/api.php?action=help&modules=query%2Blangbacklinks), [links](/w/api.php?action=help&modules=query%2Blinks), [linkshere](/w/api.php?action=help&modules=query%2Blinkshere), [mostviewed](/w/api.php?action=help&modules=query%2Bmostviewed), [oldreviewedpages](/w/api.php?action=help&modules=query%2Boldreviewedpages), [pageswithprop](/w/api.php?action=help&modules=query%2Bpageswithprop), [prefixsearch](/w/api.php?action=help&modules=query%2Bprefixsearch), [projectpages](/w/api.php?action=help&modules=query%2Bprojectpages), [protectedtitles](/w/api.php?action=help&modules=query%2Bprotectedtitles), [querypage](/w/api.php?action=help&modules=query%2Bquerypage), [random](/w/api.php?action=help&modules=query%2Brandom), [recentchanges](/w/api.php?action=help&modules=query%2Brecentchanges), [redirects](/w/api.php?action=help&modules=query%2Bredirects), [revisions](/w/api.php?action=help&modules=query%2Brevisions), [search](/w/api.php?action=help&modules=query%2Bsearch), [templates](/w/api.php?action=help&modules=query%2Btemplates), [trackingcategories](/w/api.php?action=help&modules=query%2Btrackingcategories), [transcludedin](/w/api.php?action=help&modules=query%2Btranscludedin), [watchlist](/w/api.php?action=help&modules=query%2Bwatchlist), [watchlistraw](/w/api.php?action=help&modules=query%2Bwatchlistraw), [wblistentityusage](/w/api.php?action=help&modules=query%2Bwblistentityusage), [growthtasks](/w/api.php?action=help&modules=query%2Bgrowthtasks), [readinglistentries](/w/api.php?action=help&modules=query%2Breadinglistentries)
 redirects
-    
 
-Automatically resolve redirects in query+titles, query+pageids, and query+revids, and in pages returned by query+generator. 
+Automatically resolve redirects in query+titles, query+pageids, and query+revids, and in pages returned by query+generator.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 converttitles
-    
 
-Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, crh, en, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh. 
+Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, crh, en, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh.
 
     Type: boolean ([details](/w/api.php?action=help&modules=main#main/datatype/boolean))
 

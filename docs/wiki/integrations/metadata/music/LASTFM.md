@@ -9,31 +9,26 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Go context
+- name: Go context
     url: ../sources/go/stdlib/context.md
     note: Auto-resolved from go-context
-  - name: Last.fm API
+- name: Last.fm API
     url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
 design_refs:
-  - title: integrations/metadata/music
+- title: integrations/metadata/music
     path: integrations/metadata/music.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # Last.fm
-
-
-
 
 # Last.fm
 
@@ -43,44 +38,25 @@ Last.fm provides artist biographies, tags, and similar artist recommendations. S
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- How it works -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

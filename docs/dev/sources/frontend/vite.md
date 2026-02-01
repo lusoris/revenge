@@ -15,12 +15,9 @@ Are you an LLM? You can read better optimized documentation at /guide.md for thi
 
 Vite (French word for "quick", pronounced `/vit/`, like "veet") is a build tool that aims to provide a faster and leaner development experience for modern web projects. It consists of two major parts:
 
-  * A dev server that provides [rich feature enhancements](./features) over [native ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), for example extremely fast [Hot Module Replacement (HMR)](./features#hot-module-replacement).
+- A dev server that provides [rich feature enhancements](./features) over [native ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules), for example extremely fast [Hot Module Replacement (HMR)](./features#hot-module-replacement).
 
-  * A build command that bundles your code with [Rollup](https://rollupjs.org), pre-configured to output highly optimized static assets for production.
-
-
-
+- A build command that bundles your code with [Rollup](https://rollupjs.org), pre-configured to output highly optimized static assets for production.
 
 Vite is opinionated and comes with sensible defaults out of the box. Read about what's possible in the [Features Guide](./features). Support for frameworks or integration with other tools is possible through [Plugins](./using-plugins). The [Config Section](./../config/) explains how to adapt Vite to your project if needed.
 
@@ -56,29 +53,24 @@ JavaScript| TypeScript
 npmYarnpnpmBunDeno
 
 bash
-    
-    
-    $ npm create vite@latest
+
+    npm create vite@latest
 
 bash
-    
-    
-    $ yarn create vite
+
+    yarn create vite
 
 bash
-    
-    
-    $ pnpm create vite
+
+    pnpm create vite
 
 bash
-    
-    
-    $ bun create vite
+
+    bun create vite
 
 bash
-    
-    
-    $ deno init --npm vite
+
+    deno init --npm vite
 
 Then follow the prompts!
 
@@ -93,30 +85,25 @@ You can also directly specify the project name and the template you want to use 
 npmYarnpnpmBunDeno
 
 bash
-    
-    
+
     # npm 7+, extra double-dash is needed:
     $ npm create vite@latest my-vue-app -- --template vue
 
 bash
-    
-    
-    $ yarn create vite my-vue-app --template vue
+
+    yarn create vite my-vue-app --template vue
 
 bash
-    
-    
-    $ pnpm create vite my-vue-app --template vue
+
+    pnpm create vite my-vue-app --template vue
 
 bash
-    
-    
-    $ bun create vite my-vue-app --template vue
+
+    bun create vite my-vue-app --template vue
 
 bash
-    
-    
-    $ deno init --npm vite my-vue-app --template vue
+
+    deno init --npm vite my-vue-app --template vue
 
 See [create-vite](https://github.com/vitejs/vite/tree/main/packages/create-vite) for more details on each supported template: `vanilla`, `vanilla-ts`, `vue`, `vue-ts`, `react`, `react-ts`, `react-swc`, `react-swc-ts`, `preact`, `preact-ts`, `lit`, `lit-ts`, `svelte`, `svelte-ts`, `solid`, `solid-ts`, `qwik`, `qwik-ts`.
 
@@ -133,8 +120,7 @@ For a template at `https://github.com/user/project`, you can try it out online u
 You can also use a tool like [degit](https://github.com/Rich-Harris/degit) to scaffold your project with one of the templates. Assuming the project is on GitHub and uses `main` as the default branch, you can create a local copy using:
 
 bash
-    
-    
+
     npx degit user/project#main my-project
     cd my-project
     
@@ -148,35 +134,29 @@ In your project, you can install the `vite` CLI using:
 npmYarnpnpmBunDeno
 
 bash
-    
-    
-    $ npm install -D vite
+
+    npm install -D vite
 
 bash
-    
-    
-    $ yarn add -D vite
+
+    yarn add -D vite
 
 bash
-    
-    
-    $ pnpm add -D vite
+
+    pnpm add -D vite
 
 bash
-    
-    
-    $ bun add -D vite
+
+    bun add -D vite
 
 bash
-    
-    
-    $ deno add -D npm:vite
+
+    deno add -D npm:vite
 
 And create an `index.html` file like this:
 
 html
-    
-    
+
     <p>Hello Vite!</p>
 
 Then run the appropriate CLI command in your terminal:
@@ -184,29 +164,24 @@ Then run the appropriate CLI command in your terminal:
 npmYarnpnpmBunDeno
 
 bash
-    
-    
-    $ npx vite
+
+    npx vite
 
 bash
-    
-    
-    $ yarn vite
+
+    yarn vite
 
 bash
-    
-    
-    $ pnpm vite
+
+    pnpm vite
 
 bash
-    
-    
-    $ bunx vite
+
+    bunx vite
 
 bash
-    
-    
-    $ deno run -A npm:vite
+
+    deno run -A npm:vite
 
 The `index.html` will be served on `http://localhost:5173`.
 
@@ -231,8 +206,7 @@ In a project where Vite is installed, you can use the `vite` binary in your npm 
 package.json
 
 json
-    
-    
+
     {
       "scripts": {
         "dev": "vite", // start dev server, aliases: `vite dev`, `vite serve`
@@ -252,32 +226,27 @@ If you can't wait for a new release to test the latest features, you can install
 npmYarnpnpmBun
 
 bash
-    
-    
-    $ npm install -D https://pkg.pr.new/vite@SHA
+
+    npm install -D https://pkg.pr.new/vite@SHA
 
 bash
-    
-    
-    $ yarn add -D https://pkg.pr.new/vite@SHA
+
+    yarn add -D https://pkg.pr.new/vite@SHA
 
 bash
-    
-    
-    $ pnpm add -D https://pkg.pr.new/vite@SHA
+
+    pnpm add -D https://pkg.pr.new/vite@SHA
 
 bash
-    
-    
-    $ bun add -D https://pkg.pr.new/vite@SHA
+
+    bun add -D https://pkg.pr.new/vite@SHA
 
 Replace `SHA` with any of [Vite's commit SHAs](https://github.com/vitejs/vite/commits/main/). Note that only commits within the last month will work, as older commit releases are purged.
 
 Alternatively, you can also clone the [vite repo](https://github.com/vitejs/vite) to your local machine and then build and link it yourself ([pnpm](https://pnpm.io/) is required):
 
 bash
-    
-    
+
     git clone https://github.com/vitejs/vite.git
     cd vite
     pnpm install

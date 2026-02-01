@@ -1,7 +1,7 @@
 # GitHub Actions Variables
 
 > Source: https://docs.github.com/en/actions/learn-github-actions/variables
-> Fetched: 2026-01-31T16:04:59.244406+00:00
+> Fetched: 2026-02-01T11:52:25.587341+00:00
 > Content-Hash: 2a480cee1c5601a3
 > Type: html
 
@@ -19,21 +19,18 @@ View page as Markdown
 
 To set a custom environment variable for a single workflow, you can define it using the `env` key in the workflow file. The scope of a custom variable set by this method is limited to the element in which it is defined. You can define variables that are scoped for:
 
-  * The entire workflow, by using [`env`](/en/actions/using-workflows/workflow-syntax-for-github-actions#env) at the top level of the workflow file.
-  * The contents of a job within a workflow, by using [`jobs.<job_id>.env`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenv).
-  * A specific step within a job, by using [`jobs.<job_id>.steps[*].env`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsenv).
+- The entire workflow, by using [`env`](/en/actions/using-workflows/workflow-syntax-for-github-actions#env) at the top level of the workflow file.
+- The contents of a job within a workflow, by using [`jobs.<job_id>.env`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idenv).
+- A specific step within a job, by using [`jobs.<job_id>.steps[*].env`](/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsenv).
 
-
-    
-    
     name: Greeting on variable day
-    
+
     on:
       workflow_dispatch
-    
+
     env:
       DAY_OF_WEEK: Monday
-    
+
     jobs:
       greeting_job:
         runs-on: ubuntu-latest
@@ -44,7 +41,6 @@ To set a custom environment variable for a single workflow, you can define it us
             run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
             env:
               First_Name: Mona
-    
 
 You can access `env` variable values using runner environment variables or using contexts. The example above shows three custom variables being used as runner environment variables in an `echo` command: `$DAY_OF_WEEK`, `$Greeting`, and `$First_Name`. The values for these variables are set, and scoped, at the workflow, job, and step level respectively. The interpolation of these variables happens on the runner.
 
@@ -70,7 +66,7 @@ To create secrets or variables on GitHub for an organization repository, you mus
 
   3. In the "Security" section of the sidebar, select **Secrets and variables** , then click **Actions**.
 
-  4. Click the **Variables** tab. 
+  4. Click the **Variables** tab.
 
   5. Click **New repository variable**.
 
@@ -79,9 +75,6 @@ To create secrets or variables on GitHub for an organization repository, you mus
   7. In the **Value** field, enter the value for your variable.
 
   8. Click **Add variable**.
-
-
-
 
 ### Creating configuration variables for an environment
 
@@ -102,9 +95,6 @@ To create secrets or variables for an environment in a personal account reposito
   7. In the **Value** field, enter the value for your variable.
 
   8. Click **Add variable**.
-
-
-
 
 ### Creating configuration variables for an organization
 
@@ -134,9 +124,6 @@ Organization owners can create secrets or variables at the organization level.
 
   9. Click **Add variable**.
 
-
-
-
 ## Using contexts to access variable values
 
 Contexts are a way to access information about workflow runs, variables, runner environments, jobs, and steps. For more information, see [Contexts reference](/en/actions/learn-github-actions/contexts). There are many other contexts that you can use for a variety of purposes in your workflows. For details of where you can use specific contexts within a workflow, see [Contexts reference](/en/actions/learn-github-actions/contexts#context-availability).
@@ -150,8 +137,7 @@ In addition to runner environment variables, GitHub Actions allows you to set an
 The `run` steps in a workflow, or in a referenced action, are processed by a runner. As a result, you can use runner environment variables here, using the appropriate syntax for the shell you are using on the runner - for example, `$NAME` for the bash shell on a Linux runner, or `$env:NAME` for PowerShell on a Windows runner. In most cases you can also use contexts, with the syntax `${{ CONTEXT.PROPERTY }}`, to access the same value. The difference is that the context will be interpolated and replaced by a string before the job is sent to a runner.
 
 However, you cannot use runner environment variables in parts of a workflow that are processed by GitHub Actions and are not sent to the runner. Instead, you must use contexts. For example, an `if` conditional, which determines whether a job or step is sent to the runner, is always processed by GitHub Actions. You must therefore use a context in an `if` conditional statement to access the value of an variable.
-    
-    
+
     name: Conditional env variable
     
     on: workflow_dispatch
@@ -173,8 +159,7 @@ However, you cannot use runner environment variables in parts of a workflow that
     
 
 In this modification of the earlier example, we've introduced an `if` conditional. The workflow step is now only run if `DAY_OF_WEEK` is set to "Monday". We access this value from the `if` conditional statement by using the [`env` context](/en/actions/learn-github-actions/contexts#env-context). The `env` context is not required for the variables referenced within the `run` command. They are referenced as runner environment variables and are interpolated after the job is received by the runner. We could, however, have chosen to interpolate those variables before sending the job to the runner, by using contexts. The resulting output would be the same.
-    
-    
+
     run: echo "${{ env.Greeting }} ${{ env.First_Name }}. Today is ${{ env.DAY_OF_WEEK }}!"
     
 
@@ -193,8 +178,7 @@ Configuration variables can be accessed across the workflow using `vars` context
 If a configuration variable has not been set, the return value of a context referencing the variable will be an empty string.
 
 The following example shows using configuration variables with the `vars` context across a workflow. Each of the following configuration variables have been defined at the repository, organization, or environment levels.
-    
-    
+
     on:
       workflow_dispatch:
     env:
@@ -230,8 +214,7 @@ The following example shows using configuration variables with the `vars` contex
 ## Detecting the operating system
 
 You can write a single workflow file that can be used for different operating systems by using the `RUNNER_OS` default environment variable and the corresponding context property `${{ runner.os }}`. For example, the following workflow could be run successfully if you changed the operating system from `macos-latest` to `windows-latest` without having to alter the syntax of the environment variables, which differs depending on the shell being used by the runner.
-    
-    
+
     on: workflow_dispatch
     
     jobs:

@@ -1,7 +1,7 @@
 # Ruff Documentation
 
 > Source: https://docs.astral.sh/ruff/
-> Fetched: 2026-01-31T16:07:27.962742+00:00
+> Fetched: 2026-02-01T11:54:53.915824+00:00
 > Content-Hash: 2c150a3712495081
 > Type: html
 
@@ -17,18 +17,16 @@ An extremely fast Python linter and code formatter, written in Rust.
 
 _Linting the CPython codebase from scratch._
 
-  * ⚡️ 10-100x faster than existing linters (like Flake8) and formatters (like Black)
-  * 🐍 Installable via `pip`
-  * 🛠️ `pyproject.toml` support
-  * 🤝 Python 3.14 compatibility
-  * ⚖️ Drop-in parity with [Flake8](faq/#how-does-ruffs-linter-compare-to-flake8), isort, and [Black](faq/#how-does-ruffs-formatter-compare-to-black)
-  * 📦 Built-in caching, to avoid re-analyzing unchanged files
-  * 🔧 Fix support, for automatic error correction (e.g., automatically remove unused imports)
-  * 📏 Over [800 built-in rules](rules/), with native re-implementations of popular Flake8 plugins, like flake8-bugbear
-  * ⌨️ First-party [editor integrations](editors/) for [VS Code](https://github.com/astral-sh/ruff-vscode) and [more](editors/setup/)
-  * 🌎 Monorepo-friendly, with [hierarchical and cascading configuration](configuration/#config-file-discovery)
-
-
+- ⚡️ 10-100x faster than existing linters (like Flake8) and formatters (like Black)
+- 🐍 Installable via `pip`
+- 🛠️ `pyproject.toml` support
+- 🤝 Python 3.14 compatibility
+- ⚖️ Drop-in parity with [Flake8](faq/#how-does-ruffs-linter-compare-to-flake8), isort, and [Black](faq/#how-does-ruffs-formatter-compare-to-black)
+- 📦 Built-in caching, to avoid re-analyzing unchanged files
+- 🔧 Fix support, for automatic error correction (e.g., automatically remove unused imports)
+- 📏 Over [800 built-in rules](rules/), with native re-implementations of popular Flake8 plugins, like flake8-bugbear
+- ⌨️ First-party [editor integrations](editors/) for [VS Code](https://github.com/astral-sh/ruff-vscode) and [more](editors/setup/)
+- 🌎 Monorepo-friendly, with [hierarchical and cascading configuration](configuration/#config-file-discovery)
 
 Ruff aims to be orders of magnitude faster than alternative tools while integrating more functionality behind a single, common interface.
 
@@ -36,14 +34,12 @@ Ruff can be used to replace [Flake8](https://pypi.org/project/flake8/) (plus doz
 
 Ruff is extremely actively developed and used in major open-source projects like:
 
-  * [Apache Airflow](https://github.com/apache/airflow)
-  * [Apache Superset](https://github.com/apache/superset)
-  * [FastAPI](https://github.com/tiangolo/fastapi)
-  * [Hugging Face](https://github.com/huggingface/transformers)
-  * [Pandas](https://github.com/pandas-dev/pandas)
-  * [SciPy](https://github.com/scipy/scipy)
-
-
+- [Apache Airflow](https://github.com/apache/airflow)
+- [Apache Superset](https://github.com/apache/superset)
+- [FastAPI](https://github.com/tiangolo/fastapi)
+- [Hugging Face](https://github.com/huggingface/transformers)
+- [Pandas](https://github.com/pandas-dev/pandas)
+- [SciPy](https://github.com/scipy/scipy)
 
 ...and [many more](https://github.com/astral-sh/ruff#whos-using-ruff).
 
@@ -73,7 +69,7 @@ Read the [launch post](https://astral.sh/blog/announcing-astral-the-company-behi
 
 > This is just ridiculously fast... `ruff` is amazing.
 
-Back to top 
+Back to top
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

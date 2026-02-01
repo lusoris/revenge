@@ -23,50 +23,49 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: go-blurhash
+- name: go-blurhash
     url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
-  - name: ogen OpenAPI Generator
+- name: ogen OpenAPI Generator
     url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: Sonarr API Docs
+- name: Sonarr API Docs
     url: ../sources/apis/sonarr-docs.md
     note: Auto-resolved from sonarr-docs
-  - name: sqlc
+- name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-  - name: sqlc Configuration
+- name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
-  - name: TheTVDB API
+- name: TheTVDB API
     url: ../sources/apis/thetvdb.md
     note: Auto-resolved from thetvdb
 design_refs:
-  - title: features/video
+- title: features/video
     path: features/video.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -74,18 +73,15 @@ design_refs:
 
 <!-- DESIGN: features/video, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
-
 
 > Content module for TV Shows, Seasons, Episodes
 
 > TV series, seasons, and episodes management
 
 ---
-
 
 ## Status
 
@@ -100,9 +96,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -128,7 +122,6 @@ internal/content/tv_show/
 
 <!-- Component interaction diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -143,7 +136,6 @@ internal/content/tv_show/
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -153,12 +145,10 @@ internal/content/tv_show/
 
 <!-- Configuration keys -->
 
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
 
 ## Testing Strategy
 
@@ -173,7 +163,6 @@ internal/content/tv_show/
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -194,4 +183,3 @@ Target: **80% minimum**
 - [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
 - [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
 - [TheTVDB API](../sources/apis/thetvdb.md) - Auto-resolved from thetvdb
-

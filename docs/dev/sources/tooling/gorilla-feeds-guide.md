@@ -20,9 +20,9 @@ applications.
 
 ### Goals
 
- * Provide a simple interface to create both Atom & RSS 2.0 feeds
- * Full support for [Atom][atom], [RSS 2.0][rss], and [JSON Feed Version 1][jsonfeed] spec elements
- * Ability to modify particulars for each spec
+- Provide a simple interface to create both Atom & RSS 2.0 feeds
+- Full support for [Atom][atom], [RSS 2.0][rss], and [JSON Feed Version 1][jsonfeed] spec elements
+- Ability to modify particulars for each spec
 
 [atom]: https://tools.ietf.org/html/rfc4287
 [rss]: http://www.rssboard.org/rss-specification

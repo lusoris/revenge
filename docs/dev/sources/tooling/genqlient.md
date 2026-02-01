@@ -9,12 +9,11 @@
 
 ### Overview ¶
 
-genqlient is a GraphQL client generator for Go. 
+genqlient is a GraphQL client generator for Go.
 
-To run genqlient: 
-    
-    
+To run genqlient:
+
     go run github.com/Khan/genqlient
     
 
-For programmatic access, see the "generate" package, below. For user documentation, see the project [GitHub](https://github.com/Khan/genqlient). 
+For programmatic access, see the "generate" package, below. For user documentation, see the project [GitHub](https://github.com/Khan/genqlient).

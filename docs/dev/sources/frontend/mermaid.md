@@ -53,82 +53,73 @@ In our release process we rely heavily on visual regression tests using [applito
 
 ### [Flowchart](./../syntax/flowchart.html?id=flowcharts-basic-syntax) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [Sequence diagram](./../syntax/sequenceDiagram.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [Gantt diagram](./../syntax/gantt.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [Class diagram](./../syntax/classDiagram.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [Git graph](./../syntax/gitgraph.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [Entity Relationship Diagram - ❗ experimental](./../syntax/entityRelationshipDiagram.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [User Journey Diagram](./../syntax/userJourney.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [Quadrant Chart](./../syntax/quadrantChart.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
 ### [XY Chart](./../syntax/xyChart.html) ​
 
-##### Code:
+##### Code
 
 mermaid
-
 
 Ctrl + Enter|Run ▶
 
@@ -139,8 +130,7 @@ Ctrl + Enter|Run ▶
 **It would also be helpful to learn more about mermaid's[Syntax](./syntax-reference.html).**
 
 ### CDN ​
-    
-    
+
     https://cdn.jsdelivr.net/npm/mermaid@<version>/dist/
 
 To select a version:
@@ -154,20 +144,17 @@ Latest Version: <https://cdn.jsdelivr.net/npm/mermaid@11>
 To Deploy Mermaid:
 
   1. You will need to install node v16, which would have npm
-  2. Install mermaid 
-     * NPM: `npm i mermaid`
-     * Yarn: `yarn add mermaid`
-     * Pnpm: `pnpm add mermaid`
-
-
+  2. Install mermaid
+     - NPM: `npm i mermaid`
+     - Yarn: `yarn add mermaid`
+     - Pnpm: `pnpm add mermaid`
 
 ### [Mermaid API](./../config/setup/README.html): ​
 
 **To deploy mermaid without a bundler, insert a`script` tag with an absolute address and a `mermaid.initialize` call into the HTML using the following example:**
 
 html
-    
-    
+
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
       mermaid.initialize({ startOnLoad: true });
@@ -179,13 +166,11 @@ html
 
 ## Sibling projects ​
 
-  * [Mermaid Live Editor](https://github.com/mermaid-js/mermaid-live-editor)
-  * [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli)
-  * [Mermaid Tiny](https://github.com/mermaid-js/mermaid/tree/develop/packages/tiny)
-  * [Mermaid Webpack Demo](https://github.com/mermaidjs/mermaid-webpack-demo)
-  * [Mermaid Parcel Demo](https://github.com/mermaidjs/mermaid-parcel-demo)
-
-
+- [Mermaid Live Editor](https://github.com/mermaid-js/mermaid-live-editor)
+- [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli)
+- [Mermaid Tiny](https://github.com/mermaid-js/mermaid/tree/develop/packages/tiny)
+- [Mermaid Webpack Demo](https://github.com/mermaidjs/mermaid-webpack-demo)
+- [Mermaid Parcel Demo](https://github.com/mermaidjs/mermaid-parcel-demo)
 
 ## Request for Assistance ​
 
@@ -195,10 +180,8 @@ As part of this team you would get write access to the repository and would repr
 
 Together we could continue the work with things like:
 
-  * Adding more types of diagrams like mindmaps, ert diagrams, etc.
-  * Improving existing diagrams
-
-
+- Adding more types of diagrams like mindmaps, ert diagrams, etc.
+- Improving existing diagrams
 
 Don't hesitate to contact me if you want to get involved!
 
@@ -212,17 +195,14 @@ Detailed information about how to contribute can be found in the [contribution g
 
 ### Requirements ​
 
-  * [volta](https://volta.sh/) to manage node versions.
-  * [Node.js](https://nodejs.org/en/). `volta install node`
-  * [pnpm](https://pnpm.io/) package manager. `volta install pnpm`
-
-
+- [volta](https://volta.sh/) to manage node versions.
+- [Node.js](https://nodejs.org/en/). `volta install node`
+- [pnpm](https://pnpm.io/) package manager. `volta install pnpm`
 
 ### Development Installation ​
 
 bash
-    
-    
+
     git clone git@github.com:mermaid-js/mermaid.git
     cd mermaid
     # npx is required for first install as volta support for pnpm is not added yet.
@@ -232,8 +212,7 @@ bash
 ### Lint ​
 
 sh
-    
-    
+
     pnpm lint
 
 We use [eslint](https://eslint.org/). We recommend you to install [editor plugins](https://eslint.org/docs/user-guide/integrations) to get real time lint result.
@@ -241,8 +220,7 @@ We use [eslint](https://eslint.org/). We recommend you to install [editor plugin
 ### Test ​
 
 sh
-    
-    
+
     pnpm test
 
 Manual test in browser: open `dist/index.html`
@@ -254,8 +232,7 @@ For those who have the permission to do so:
 Update version number in `package.json`.
 
 sh
-    
-    
+
     npm publish
 
 The above command generates files into the `dist` folder and publishes them to [npmjs.com](https://www.npmjs.com/).
@@ -277,11 +254,11 @@ To report a vulnerability, please e-mail [security@mermaid.live](mailto:security
 A quick note from Knut Sveidqvist:
 
 > _Many thanks to the[d3](https://d3js.org/) and [dagre-d3](https://github.com/cpettitt/dagre-d3) projects for providing the graphical layout and drawing libraries!_
-> 
+>
 > _Thanks also to the[js-sequence-diagram](https://bramp.github.io/js-sequence-diagrams) project for usage of the grammar for the sequence diagrams. Thanks to Jessica Peter for inspiration and starting point for gantt rendering._
-> 
+>
 > _Thank you to[Tyler Long](https://github.com/tylerlong) who has been a collaborator since April 2017._
-> 
+>
 > _Thank you to the ever-growing list of[contributors](https://github.com/mermaid-js/mermaid/graphs/contributors) that brought the project this far!_
 
 * * *

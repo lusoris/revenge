@@ -14,8 +14,6 @@
   1. Getting Started
   2. Using Vite
 
-
-
 Installation
 
 # Get started with Tailwind CSS
@@ -26,18 +24,15 @@ It's fast, flexible, and reliable — with zero-runtime.
 
 ## Installation
 
-  * ## [Using Vite](/docs/installation/using-vite)
+- ## [Using Vite](/docs/installation/using-vite)
 
-  * ## [Using PostCSS](/docs/installation/using-postcss)
+- ## [Using PostCSS](/docs/installation/using-postcss)
 
-  * ## [Tailwind CLI](/docs/installation/tailwind-cli)
+- ## [Tailwind CLI](/docs/installation/tailwind-cli)
 
-  * ## [Framework Guides](/docs/installation/framework-guides)
+- ## [Framework Guides](/docs/installation/framework-guides)
 
-  * ## [Play CDN](/docs/installation/play-cdn)
-
-
-
+- ## [Play CDN](/docs/installation/play-cdn)
 
 ### Installing Tailwind CSS as a Vite plugin
 
@@ -50,8 +45,7 @@ Installing Tailwind CSS as a Vite plugin is the most seamless way to integrate i
 Start by creating a new Vite project if you don’t have one set up already. The most common approach is to use [Create Vite](https://vite.dev/guide/#scaffolding-your-first-vite-project).
 
 Terminal
-    
-    
+
     npm create vite@latest my-projectcd my-project
 
 02
@@ -61,8 +55,7 @@ Terminal
 Install `tailwindcss` and `@tailwindcss/vite` via npm.
 
 Terminal
-    
-    
+
     npm install tailwindcss @tailwindcss/vite
 
 03
@@ -72,8 +65,7 @@ Terminal
 Add the `@tailwindcss/vite` plugin to your Vite configuration.
 
 vite.config.ts
-    
-    
+
     import { defineConfig } from 'vite'import tailwindcss from '@tailwindcss/vite'export default defineConfig({  plugins: [    tailwindcss(),  ],})
 
 04
@@ -83,8 +75,7 @@ vite.config.ts
 Add an `@import` to your CSS file that imports Tailwind CSS.
 
 CSS
-    
-    
+
     @import "tailwindcss";
 
 05
@@ -94,8 +85,7 @@ CSS
 Run your build process with `npm run dev` or whatever command is configured in your `package.json` file.
 
 Terminal
-    
-    
+
     npm run dev
 
 06
@@ -105,8 +95,7 @@ Terminal
 Make sure your compiled CSS is included in the `<head>` _(your framework might handle this for you)_ , then start using Tailwind’s utility classes to style your content.
 
 HTML
-    
-    
+
     <!doctype html><html><head>  <meta charset="UTF-8">  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <link href="/src/style.css" rel="stylesheet"></head><body>  <h1 class="text-3xl font-bold underline">    Hello world!  </h1></body></html>
 
 **Are you stuck?** Setting up Tailwind with Vite can be a bit different across different build tools. Check our framework guides to see if we have more specific instructions for your particular setup.

@@ -19,29 +19,28 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Background job processing
-  - name: crypto/hmac
+- name: crypto/hmac
     url: https://pkg.go.dev/crypto/hmac
     note: HMAC signature validation
-  - name: resty
+- name: resty
     url: ../sources/tooling/resty.md
     note: HTTP client for webhook delivery
-  - name: gobreaker
+- name: gobreaker
     url: ../sources/tooling/gobreaker.md
     note: Circuit breaker pattern
 design_refs:
-  - title: patterns
+- title: patterns
     path: patterns.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -49,11 +48,9 @@ design_refs:
 
 <!-- DESIGN: patterns, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: pattern
-
 
 > > Secure, reliable webhook handling with HMAC validation, async processing, and retry logic
 
@@ -65,7 +62,6 @@ Standard webhook handling pattern:
 - **Logging**: Comprehensive webhook event and error logging
 
 ---
-
 
 ## Status
 
@@ -80,9 +76,7 @@ Standard webhook handling pattern:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -91,7 +85,6 @@ Standard webhook handling pattern:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -107,7 +100,6 @@ Standard webhook handling pattern:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -116,7 +108,6 @@ Standard webhook handling pattern:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -132,7 +123,6 @@ Standard webhook handling pattern:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns.md)
@@ -145,4 +135,3 @@ Target: **80% minimum**
 - [crypto/hmac](https://pkg.go.dev/crypto/hmac) - HMAC signature validation
 - [resty](../sources/tooling/resty.md) - HTTP client for webhook delivery
 - [gobreaker](../sources/tooling/gobreaker.md) - Circuit breaker pattern
-

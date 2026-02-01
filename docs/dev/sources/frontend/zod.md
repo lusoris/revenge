@@ -36,23 +36,11 @@ Packages
 TypeScript-first schema validation with static type inference  
 by [@colinhacks](https://x.com/colinhacks)
 
-  
-
-
 [](https://github.com/colinhacks/zod/actions?query=branch%3Amain)[](https://twitter.com/colinhacks)[](https://opensource.org/licenses/MIT)[](https://www.npmjs.com/package/zod)[](https://github.com/colinhacks/zod)
 
 [Website](https://zod.dev) • [Discord](https://discord.gg/RcG33DQJdf) • [𝕏](https://twitter.com/colinhacks) • [Bluesky](https://bsky.app/profile/zod.dev)  
 
-
-  
-
-
 Zod 4 is now stable! Read the [release notes here](/v4).
-
-  
-  
-  
-
 
 ## Featured sponsor: Jazz
 
@@ -63,8 +51,7 @@ Interested in featuring? [Get in touch.](/cdn-cgi/l/email-protection#2a595a45445
 ## [Introduction](?id=introduction)
 
 Zod is a TypeScript-first validation library. Using Zod, you can define _schemas_ you can use to validate data, from a simple `string` to a complex nested object.
-    
-    
+
     import * as z from "zod";
      
     const User = z.object({
@@ -82,20 +69,17 @@ Zod is a TypeScript-first validation library. Using Zod, you can define _schemas
 
 ## [Features](?id=features)
 
-  * Zero external dependencies
-  * Works in Node.js and all modern browsers
-  * Tiny: 2kb core bundle (gzipped)
-  * Immutable API: methods return a new instance
-  * Concise interface
-  * Works with TypeScript and plain JS
-  * Built-in JSON Schema conversion
-  * Extensive ecosystem
-
-
+- Zero external dependencies
+- Works in Node.js and all modern browsers
+- Tiny: 2kb core bundle (gzipped)
+- Immutable API: methods return a new instance
+- Concise interface
+- Works with TypeScript and plain JS
+- Built-in JSON Schema conversion
+- Extensive ecosystem
 
 ## [Installation](?id=installation)
-    
-    
+
     npm install zod
 
 Zod is also available as `@zod/zod` on [jsr.io](https://jsr.io/@zod/zod).
@@ -109,8 +93,7 @@ Zod is tested against _TypeScript v5.5_ and later. Older versions may work but a
 ### [`"strict"`](?id=strict)
 
 You must enable `strict` mode in your `tsconfig.json`. This is a best practice for all TypeScript projects.
-    
-    
+
     // tsconfig.json
     {
       // ...
@@ -124,23 +107,19 @@ You must enable `strict` mode in your `tsconfig.json`. This is a best practice f
 
 Zod has a thriving ecosystem of libraries, tools, and integrations. Refer to the [Ecosystem page](/ecosystem) for a complete list of libraries that support Zod or are built on top of it.
 
-  * [Resources](/ecosystem?id=resources)
-  * [API Libraries](/ecosystem?id=api-libraries)
-  * [Form Integrations](/ecosystem?id=form-integrations)
-  * [Zod to X](/ecosystem?id=zod-to-x)
-  * [X to Zod](/ecosystem?id=x-to-zod)
-  * [Mocking Libraries](/ecosystem?id=mocking-libraries)
-  * [Powered by Zod](/ecosystem?id=powered-by-zod)
-
-
+- [Resources](/ecosystem?id=resources)
+- [API Libraries](/ecosystem?id=api-libraries)
+- [Form Integrations](/ecosystem?id=form-integrations)
+- [Zod to X](/ecosystem?id=zod-to-x)
+- [X to Zod](/ecosystem?id=x-to-zod)
+- [Mocking Libraries](/ecosystem?id=mocking-libraries)
+- [Powered by Zod](/ecosystem?id=powered-by-zod)
 
 I also contribute to the following projects, which I'd like to highlight:
 
-  * [tRPC](https://trpc.io) - End-to-end typesafe APIs, with support for Zod schemas
-  * [React Hook Form](https://react-hook-form.com) - Hook-based form validation with a [Zod resolver](https://react-hook-form.com/docs/useform#resolver)
-  * [zshy](https://github.com/colinhacks/zshy) - Originally created as Zod's internal build tool. Bundler-free, batteries-included build tool for TypeScript libraries. Powered by `tsc`.
-
-
+- [tRPC](https://trpc.io) - End-to-end typesafe APIs, with support for Zod schemas
+- [React Hook Form](https://react-hook-form.com) - Hook-based form validation with a [Zod resolver](https://react-hook-form.com/docs/useform#resolver)
+- [zshy](https://github.com/colinhacks/zshy) - Originally created as Zod's internal build tool. Bundler-free, batteries-included build tool for TypeScript libraries. Powered by `tsc`.
 
 ## [Sponsors](?id=sponsors)
 
@@ -153,9 +132,6 @@ Sponsorship at any level is appreciated and encouraged. If you built a paid prod
 Cut code review time & bugs in half
 
 [coderabbit.ai](https://www.coderabbit.ai/)
-
-  
-
 
 ### [Gold](?id=gold)
 
@@ -201,9 +177,6 @@ SDKs & Terraform providers for your API
 
 [speakeasy.com](https://speakeasy.com/?utm_source=zod+docs)
 
-  
-
-
 ### [Silver](?id=silver)
 
 [subtotal.com](https://www.subtotal.com/?utm_source=zod)
@@ -234,9 +207,6 @@ SDKs & Terraform providers for your API
 
 [mux.link/zod](https://mux.link/zod)
 
-  
-
-
 ### [Bronze](?id=bronze)
 
 [](https://www.val.town/)[val.town](https://www.val.town/)
@@ -260,9 +230,6 @@ SDKs & Terraform providers for your API
 [](https://github.com/jasonLaster)[github.com/jasonLaster](https://github.com/jasonLaster)
 
 [](https://www.clipboardhealth.com/engineering)[clipboardhealth.com/engineering](https://www.clipboardhealth.com/engineering)
-
-  
-
 
 ### On this page
 

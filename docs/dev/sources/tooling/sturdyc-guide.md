@@ -19,7 +19,6 @@
 [![Test](https://github.com/viccon/sturdyc/actions/workflows/main.yml/badge.svg)](https://github.com/viccon/sturdyc/actions/workflows/main.yml)
 [![codecov](https://codecov.io/gh/viccon/sturdyc/graph/badge.svg?token=CYSKW3Z7E6)](https://codecov.io/gh/viccon/sturdyc)
 
-
 `sturdyc` eliminates cache stampedes and can minimize data source load in
 high-throughput systems through features such as request coalescing and
 asynchronous refreshes. It combines the speed of in-memory caching with
@@ -109,7 +108,6 @@ log.Println(cacheClient.Size())
 log.Println(cacheClient.Get("key1"))
 ```
 
-
 The `New` function is variadic, and as the final argument we're also able to
 provide a wide range of configuration options, which we will explore in detail
 in the sections to follow.
@@ -159,16 +157,16 @@ from an API:
 
 ```go
 func (c *Client) Order(ctx context.Context, id string) (Order, error) {
-	timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
-	defer cancel()
+ timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
+ defer cancel()
 
-	var response Order
-	err := requests.URL(c.orderURL).
-		Pathf("/order/%s", id).
-		ToJSON(&response).
-		Fetch(timeoutCtx)
+ var response Order
+ err := requests.URL(c.orderURL).
+  Pathf("/order/%s", id).
+  ToJSON(&response).
+  Fetch(timeoutCtx)
 
-	return response, err
+ return response, err
 }
 ```
 
@@ -177,20 +175,20 @@ function, and then hand that over to our cache client:
 
 ```go
 func (c *Client) Order(ctx context.Context, id string) (Order, error) {
-	fetchFunc := func(ctx context.Context) (Order, error) {
-		timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
-		defer cancel()
+ fetchFunc := func(ctx context.Context) (Order, error) {
+  timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
+  defer cancel()
 
-		var response Order
-		err := requests.URL(c.orderURL).
-			Pathf("/order/%s", id).
-			ToJSON(&response).
-			Fetch(timeoutCtx)
+  var response Order
+  err := requests.URL(c.orderURL).
+   Pathf("/order/%s", id).
+   ToJSON(&response).
+   Fetch(timeoutCtx)
 
-		return response, err
-	}
+  return response, err
+ }
 
-	return c.cache.GetOrFetch(ctx, id, fetchFunc)
+ return c.cache.GetOrFetch(ctx, id, fetchFunc)
 }
 ```
 
@@ -218,7 +216,7 @@ type KeyFn func(id string) string
 type BatchFetchFn[T any] func(ctx context.Context, ids []string) (map[string]T, error)
 
 func (c *Client[T]) GetOrFetchBatch(ctx context.Context, ids []string, keyFn KeyFn, fetchFn BatchFetchFn[T]) (map[string]T, error) {
-	// ...
+ // ...
 }
 ```
 
@@ -257,20 +255,20 @@ would probably look something like this:
 
 ```go
 func (client *GithubClient) Gists(ctx context.Context, usernames []string) (map[string]Gist, error) {
-	cacheKeyFn := client.cache.BatchKeyFn("gists")
-	fetchFunc := func(ctx context.Context, cacheMisses []string) (map[string]Gist, error) {
-		timeoutCtx, cancel := context.WithTimeout(ctx, client.timeout)
-		defer cancel()
+ cacheKeyFn := client.cache.BatchKeyFn("gists")
+ fetchFunc := func(ctx context.Context, cacheMisses []string) (map[string]Gist, error) {
+  timeoutCtx, cancel := context.WithTimeout(ctx, client.timeout)
+  defer cancel()
 
-		var response map[string]Gist
-		err := requests.URL(c.baseURL).
-			Path("/gists").
-			Param("usernames", strings.Join(cacheMisses, ",")).
-			ToJSON(&response).
-			Fetch(timeoutCtx)
-		return response, err
-	}
-	return sturdyc.GetOrFetchBatch(ctx, client.cache, usernames, cacheKeyFn, fetchFunc)
+  var response map[string]Gist
+  err := requests.URL(c.baseURL).
+   Path("/gists").
+   Param("usernames", strings.Join(cacheMisses, ",")).
+   ToJSON(&response).
+   Fetch(timeoutCtx)
+  return response, err
+ }
+ return sturdyc.GetOrFetchBatch(ctx, client.cache, usernames, cacheKeyFn, fetchFunc)
 }
 ```
 
@@ -303,29 +301,29 @@ cache. The cache is going to ensure that we never have more than a single
 in-flight request per key:
 
 ```go
-	var count atomic.Int32
-	fetchFn := func(_ context.Context) (int, error) {
-		// Increment the count so that we can assert how many times this function was called.
-		count.Add(1)
-		time.Sleep(time.Second)
-		return 1337, nil
-	}
+ var count atomic.Int32
+ fetchFn := func(_ context.Context) (int, error) {
+  // Increment the count so that we can assert how many times this function was called.
+  count.Add(1)
+  time.Sleep(time.Second)
+  return 1337, nil
+ }
 
-	// Fetch the same key from 5 goroutines.
-	var wg sync.WaitGroup
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go func() {
-			// We'll ignore the error here for brevity.
-			val, _ := cacheClient.GetOrFetch(context.Background(), "key2", fetchFn)
-			log.Printf("got value: %d\n", val)
-			wg.Done()
-		}()
-	}
-	wg.Wait()
+ // Fetch the same key from 5 goroutines.
+ var wg sync.WaitGroup
+ for i := 0; i < 5; i++ {
+  wg.Add(1)
+  go func() {
+   // We'll ignore the error here for brevity.
+   val, _ := cacheClient.GetOrFetch(context.Background(), "key2", fetchFn)
+   log.Printf("got value: %d\n", val)
+   wg.Done()
+  }()
+ }
+ wg.Wait()
 
-	log.Printf("fetchFn was called %d time\n", count.Load())
-	log.Println(cacheClient.Get("key2"))
+ log.Printf("fetchFn was called %d time\n", count.Load())
+ log.Println(cacheClient.Get("key2"))
 
 ```
 
@@ -357,17 +355,17 @@ returns a map with a numerical value for every ID:
 ```go
 var count atomic.Int32
 fetchFn := func(_ context.Context, ids []string) (map[string]int, error) {
-	// Increment the counter so that we can assert how many times this function was called.
-	count.Add(1)
-	time.Sleep(time.Second * 5)
+ // Increment the counter so that we can assert how many times this function was called.
+ count.Add(1)
+ time.Sleep(time.Second * 5)
 
-	response := make(map[string]int, len(ids))
-	for _, id := range ids {
-		num, _ := strconv.Atoi(id)
-		response[id] = num
-	}
+ response := make(map[string]int, len(ids))
+ for _, id := range ids {
+  num, _ := strconv.Atoi(id)
+  response[id] = num
+ }
 
-	return response, nil
+ return response, nil
 }
 ```
 
@@ -376,9 +374,9 @@ with five IDs each:
 
 ```go
 batches := [][]string{
-	{"1", "2", "3", "4", "5"},
-	{"6", "7", "8", "9", "10"},
-	{"11", "12", "13", "14", "15"},
+ {"1", "2", "3", "4", "5"},
+ {"6", "7", "8", "9", "10"},
+ {"11", "12", "13", "14", "15"},
 }
 ```
 
@@ -386,10 +384,10 @@ and we can now request each batch in a separate goroutine:
 
 ```go
 for _, batch := range batches {
-	go func() {
-		res, _ := cacheClient.GetOrFetchBatch(context.Background(), batch, keyPrefixFn, fetchFn)
-		log.Printf("got batch: %v\n", res)
-	}()
+ go func() {
+  res, _ := cacheClient.GetOrFetchBatch(context.Background(), batch, keyPrefixFn, fetchFn)
+  log.Printf("got batch: %v\n", res)
+ }()
 }
 
 // Just to ensure that these batches are in fact in-flight, we'll sleep to give the goroutines a chance to run.
@@ -418,19 +416,19 @@ request, and another from the second or third.
 // [6,15]
 
 func pickRandomValue(batches [][]string) string {
-	batch := batches[rand.IntN(len(batches))]
-	return batch[rand.IntN(len(batch))]
+ batch := batches[rand.IntN(len(batches))]
+ return batch[rand.IntN(len(batch))]
 }
 
 var wg sync.WaitGroup
 for i := 0; i < 5; i++ {
-	wg.Add(1)
-	go func() {
-		ids := []string{pickRandomValue(batches), pickRandomValue(batches)}
-		res, _ := cacheClient.GetOrFetchBatch(context.Background(), ids, keyPrefixFn, fetchFn)
-		log.Printf("got batch: %v\n", res)
-		wg.Done()
-	}()
+ wg.Add(1)
+ go func() {
+  ids := []string{pickRandomValue(batches), pickRandomValue(batches)}
+  res, _ := cacheClient.GetOrFetchBatch(context.Background(), ids, keyPrefixFn, fetchFn)
+  log.Printf("got batch: %v\n", res)
+  wg.Done()
+ }()
 }
 
 wg.Wait()
@@ -512,28 +510,28 @@ functionality:
 
 ```go
 func main() {
-	// Set a minimum and maximum refresh delay for the records. This is used to
-	// spread out the refreshes of our records evenly over time. If we're running
-	// our application across 100 containers, we don't want to send a spike of
-	// refreshes from every container every 30 ms. Instead, we'll use some
-	// randomization to spread them out evenly between 10 and 30 ms.
-	minRefreshDelay := time.Millisecond * 10
-	maxRefreshDelay := time.Millisecond * 30
-	// Set a synchronous refresh delay for when we want a refresh to happen synchronously.
-	synchronousRefreshDelay := time.Second * 30
-	// The base used for exponential backoff when retrying a background refresh.
-	// Most of the time, we perform refreshes well in advance of the records
-	// expiry time. Hence, we can use this to make it easier for a system that
-	// is having trouble to get back on it's feet by making fewer refreshes when
-	// we're seeing a lot of errors. Once we receive a successful response, the
-	// refreshes return to their original frequency. You can set this to 0
-	// if you don't want this behavior.
-	retryBaseDelay := time.Millisecond * 10
+ // Set a minimum and maximum refresh delay for the records. This is used to
+ // spread out the refreshes of our records evenly over time. If we're running
+ // our application across 100 containers, we don't want to send a spike of
+ // refreshes from every container every 30 ms. Instead, we'll use some
+ // randomization to spread them out evenly between 10 and 30 ms.
+ minRefreshDelay := time.Millisecond * 10
+ maxRefreshDelay := time.Millisecond * 30
+ // Set a synchronous refresh delay for when we want a refresh to happen synchronously.
+ synchronousRefreshDelay := time.Second * 30
+ // The base used for exponential backoff when retrying a background refresh.
+ // Most of the time, we perform refreshes well in advance of the records
+ // expiry time. Hence, we can use this to make it easier for a system that
+ // is having trouble to get back on it's feet by making fewer refreshes when
+ // we're seeing a lot of errors. Once we receive a successful response, the
+ // refreshes return to their original frequency. You can set this to 0
+ // if you don't want this behavior.
+ retryBaseDelay := time.Millisecond * 10
 
-	// Create a cache client with the specified configuration.
-	cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-		sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
-	)
+ // Create a cache client with the specified configuration.
+ cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
+  sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
+ )
 }
 ```
 
@@ -541,20 +539,20 @@ Let's build a simple API client that embeds the cache using our configuration:
 
 ```go
 type API struct {
-	*sturdyc.Client[string]
+ *sturdyc.Client[string]
 }
 
 func NewAPI(c *sturdyc.Client[string]) *API {
-	return &API{c}
+ return &API{c}
 }
 
 func (a *API) Get(ctx context.Context, key string) (string, error) {
-	// This could be an API call, a database query, etc.
-	fetchFn := func(_ context.Context) (string, error) {
-		log.Printf("Fetching value for key: %s\n", key)
-		return "value", nil
-	}
-	return a.GetOrFetch(ctx, key, fetchFn)
+ // This could be an API call, a database query, etc.
+ fetchFn := func(_ context.Context) (string, error) {
+  log.Printf("Fetching value for key: %s\n", key)
+  return "value", nil
+ }
+ return a.GetOrFetch(ctx, key, fetchFn)
 }
 ```
 
@@ -563,25 +561,25 @@ call the `Get` method in a loop:
 
 ```go
 func main() {
-	// ...
+ // ...
 
-	cacheClient := sturdyc.New[string](...)
+ cacheClient := sturdyc.New[string](...)
 
-	// Create a new API instance with the cache client.
-	api := NewAPI(cacheClient)
+ // Create a new API instance with the cache client.
+ api := NewAPI(cacheClient)
 
-	// We are going to retrieve the values every 10 milliseconds, however the
-	// logs will reveal that actual refreshes fluctuate randomly within a 10-30
-	// millisecond range.
-	for i := 0; i < 100; i++ {
-		val, err := api.Get(context.Background(), "key")
-		if err != nil {
-			log.Println("Failed to  retrieve the record from the cache.")
-			continue
-		}
-		log.Printf("Value: %s\n", val)
-		time.Sleep(minRefreshDelay)
-	}
+ // We are going to retrieve the values every 10 milliseconds, however the
+ // logs will reveal that actual refreshes fluctuate randomly within a 10-30
+ // millisecond range.
+ for i := 0; i < 100; i++ {
+  val, err := api.Get(context.Background(), "key")
+  if err != nil {
+   log.Println("Failed to  retrieve the record from the cache.")
+   continue
+  }
+  log.Printf("Value: %s\n", val)
+  time.Sleep(minRefreshDelay)
+ }
 }
 ```
 
@@ -611,7 +609,7 @@ We don't have to be afraid that the data for infrequently used keys gets stale
 either, given that we set the synchronous refresh delay like this:
 
 ```go
-	synchronousRefreshDelay := time.Second * 30
+ synchronousRefreshDelay := time.Second * 30
 ```
 
 Which means that if a key isn't requested again within 30 seconds, the cache
@@ -654,24 +652,24 @@ returns an error after the first request:
 
 ```go
 type API struct {
-	count int
-	*sturdyc.Client[string]
+ count int
+ *sturdyc.Client[string]
 }
 
 func NewAPI(c *sturdyc.Client[string]) *API {
-	return &API{0, c}
+ return &API{0, c}
 }
 
 func (a *API) Get(ctx context.Context, key string) (string, error) {
-	fetchFn := func(_ context.Context) (string, error) {
-		a.count++
-		log.Printf("Fetching value for key: %s\n", key)
-		if a.count == 1 {
-			return "value", nil
-		}
-		return "", errors.New("error this key does not exist")
-	}
-	return a.GetOrFetch(ctx, key, fetchFn)
+ fetchFn := func(_ context.Context) (string, error) {
+  a.count++
+  log.Printf("Fetching value for key: %s\n", key)
+  if a.count == 1 {
+   return "value", nil
+  }
+  return "", errors.New("error this key does not exist")
+ }
+ return a.GetOrFetch(ctx, key, fetchFn)
 }
 ```
 
@@ -736,13 +734,13 @@ about it by returning a custom error:
 
 ```go
 fetchFn := func(_ context.Context) (string, error) {
-		a.count++
-		log.Printf("Fetching value for key: %s\n", key)
-		if a.count == 1 {
-			return "value", nil
-		}
-		return "", sturdyc.ErrNotFound
-	}
+  a.count++
+  log.Printf("Fetching value for key: %s\n", key)
+  if a.count == 1 {
+   return "value", nil
+  }
+  return "", sturdyc.ErrNotFound
+ }
 ```
 
 This tells the cache that the record is no longer available at the underlying data source.
@@ -773,16 +771,16 @@ was the best API I could come up with. Having to return an error like this if
 just a single ID wasn't found:
 
 ```go
-	batchFetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
-		response, err := myDataSource(cacheMisses)
-		for _, id := range cacheMisses {
-			// NOTE: Don't do this, it's just an example.
-			if response[id]; !id {
-				return response, sturdyc.ErrNotFound
-			}
-		}
-		return response, nil
-	}
+ batchFetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
+  response, err := myDataSource(cacheMisses)
+  for _, id := range cacheMisses {
+   // NOTE: Don't do this, it's just an example.
+   if response[id]; !id {
+    return response, sturdyc.ErrNotFound
+   }
+  }
+  return response, nil
+ }
 ```
 
 and then have the cache either swallow that error and return nil, or return the
@@ -818,25 +816,25 @@ first three requests:
 
 ```go
 type API struct {
-	*sturdyc.Client[string]
-	count int
+ *sturdyc.Client[string]
+ count int
 }
 
 func NewAPI(c *sturdyc.Client[string]) *API {
-	return &API{c, 0}
+ return &API{c, 0}
 }
 
 func (a *API) Get(ctx context.Context, key string) (string, error) {
-	fetchFn := func(_ context.Context) (string, error) {
-		a.count++
-		log.Printf("Fetching value for key: %s\n", key)
-		if a.count > 3 {
-			return "value", nil
-		}
-		// This error tells the cache that the data does not exist at the source.
-		return "", sturdyc.ErrNotFound
-	}
-	return a.GetOrFetch(ctx, key, fetchFn)
+ fetchFn := func(_ context.Context) (string, error) {
+  a.count++
+  log.Printf("Fetching value for key: %s\n", key)
+  if a.count > 3 {
+   return "value", nil
+  }
+  // This error tells the cache that the data does not exist at the source.
+  return "", sturdyc.ErrNotFound
+ }
+ return a.GetOrFetch(ctx, key, fetchFn)
 }
 ```
 
@@ -845,28 +843,28 @@ that anytime it gets a `ErrNotFound` error it should mark the key as missing:
 
 ```go
 func main() {
-	// ...
+ // ...
 
-	cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-		sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
-		sturdyc.WithMissingRecordStorage(),
-	)
+ cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
+  sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
+  sturdyc.WithMissingRecordStorage(),
+ )
 
-	api := NewAPI(cacheClient)
+ api := NewAPI(cacheClient)
 
-	// ...
-	for i := 0; i < 100; i++ {
-		val, err := api.Get(context.Background(), "key")
-		// The cache returns ErrMissingRecord for any key that has been marked as missing.
-		// You can use this to exit-early, or return some type of default state.
-		if errors.Is(err, sturdyc.ErrMissingRecord) {
-			log.Println("Record does not exist.")
-		}
-		if err == nil {
-			log.Printf("Value: %s\n", val)
-		}
-		time.Sleep(minRefreshDelay)
-	}
+ // ...
+ for i := 0; i < 100; i++ {
+  val, err := api.Get(context.Background(), "key")
+  // The cache returns ErrMissingRecord for any key that has been marked as missing.
+  // You can use this to exit-early, or return some type of default state.
+  if errors.Is(err, sturdyc.ErrMissingRecord) {
+   log.Println("Record does not exist.")
+  }
+  if err == nil {
+   log.Printf("Value: %s\n", val)
+  }
+  time.Sleep(minRefreshDelay)
+ }
 }
 ```
 
@@ -897,13 +895,13 @@ refreshes, and then transitions into having a value:
 You simply just have to omit the key from the map:
 
 ```go
-	batchFetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
-		// The cache will check if every ID in cacheMisses is present in the response.
-		// If it finds any IDs that are missing it will proceed to mark them as missing
-		// if missing record storage is enabled.
-		response, err := myDataSource(cacheMisses)
-		return response, nil
-	}
+ batchFetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
+  // The cache will check if every ID in cacheMisses is present in the response.
+  // If it finds any IDs that are missing it will proceed to mark them as missing
+  // if missing record storage is enabled.
+  response, err := myDataSource(cacheMisses)
+  return response, nil
+ }
 ```
 
 The entire example is available [here.](https://github.com/viccon/sturdyc/tree/main/examples/missing)
@@ -969,33 +967,33 @@ example application. This time, we'll start with the API client:
 
 ```go
 type API struct {
-	*sturdyc.Client[string]
+ *sturdyc.Client[string]
 }
 
 func NewAPI(c *sturdyc.Client[string]) *API {
-	return &API{c}
+ return &API{c}
 }
 
 func (a *API) GetBatch(ctx context.Context, ids []string) (map[string]string, error) {
-	// We are going to pass a cache a key function that prefixes each id with
-	// the string "some-prefix", and adds an -ID- separator before the actual
-	// id. This makes it possible to save the same id for different data
-	// sources as the keys would look something like this: some-prefix-ID-1234
-	cacheKeyFn := a.BatchKeyFn("some-prefix")
+ // We are going to pass a cache a key function that prefixes each id with
+ // the string "some-prefix", and adds an -ID- separator before the actual
+ // id. This makes it possible to save the same id for different data
+ // sources as the keys would look something like this: some-prefix-ID-1234
+ cacheKeyFn := a.BatchKeyFn("some-prefix")
 
-	// The fetchFn is only going to retrieve the IDs that are not in the cache. Please
-	// note that the cacheMisses is going to contain the actual IDs, not the cache keys.
-	fetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
-		log.Printf("Cache miss. Fetching ids: %s\n", strings.Join(cacheMisses, ", "))
-		// Batch functions should return a map where the key is the id of the record.
-		response := make(map[string]string, len(cacheMisses))
-		for _, id := range cacheMisses {
-			response[id] = "value"
-		}
-		return response, nil
-	}
+ // The fetchFn is only going to retrieve the IDs that are not in the cache. Please
+ // note that the cacheMisses is going to contain the actual IDs, not the cache keys.
+ fetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
+  log.Printf("Cache miss. Fetching ids: %s\n", strings.Join(cacheMisses, ", "))
+  // Batch functions should return a map where the key is the id of the record.
+  response := make(map[string]string, len(cacheMisses))
+  for _, id := range cacheMisses {
+   response[id] = "value"
+  }
+  return response, nil
+ }
 
-	return a.GetOrFetchBatch(ctx, ids, cacheKeyFn, fetchFn)
+ return a.GetOrFetchBatch(ctx, ids, cacheKeyFn, fetchFn)
 }
 ```
 
@@ -1004,33 +1002,33 @@ I've omitted it for brevity:
 
 ```go
 func main() {
-	// ...
+ // ...
 
-	// Create a new API instance with the cache client.
-	api := NewAPI(cacheClient)
+ // Create a new API instance with the cache client.
+ api := NewAPI(cacheClient)
 
-	// Make an initial call to make sure that IDs 1-10 are retrieved and cached.
-	log.Println("Seeding ids 1-10")
-	ids := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
-	api.GetBatch(context.Background(), ids)
-	log.Println("Seed completed")
+ // Make an initial call to make sure that IDs 1-10 are retrieved and cached.
+ log.Println("Seeding ids 1-10")
+ ids := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}
+ api.GetBatch(context.Background(), ids)
+ log.Println("Seed completed")
 
-	// To demonstrate that the records have been cached individually, we can continue
-	// fetching a random subset of records from the original batch, plus a new
-	// ID. By examining the logs, we should be able to see that the cache only
-	// fetches the ID that wasn't present in the original batch, indicating that
-	// the batch itself isn't part of the key.
-	for i := 1; i <= 100; i++ {
-		// Get N ids from the original batch.
-		recordsToFetch := rand.IntN(10) + 1
-		batch := make([]string, recordsToFetch)
-		copy(batch, ids[:recordsToFetch])
-		// Add a random ID between 1 and 100 to the batch.
-		batch = append(batch, strconv.Itoa(rand.IntN(1000)+10))
-		values, _ := api.GetBatch(context.Background(), batch)
-		// Print the records we retrieved from the cache.
-		log.Println(values)
-	}
+ // To demonstrate that the records have been cached individually, we can continue
+ // fetching a random subset of records from the original batch, plus a new
+ // ID. By examining the logs, we should be able to see that the cache only
+ // fetches the ID that wasn't present in the original batch, indicating that
+ // the batch itself isn't part of the key.
+ for i := 1; i <= 100; i++ {
+  // Get N ids from the original batch.
+  recordsToFetch := rand.IntN(10) + 1
+  batch := make([]string, recordsToFetch)
+  copy(batch, ids[:recordsToFetch])
+  // Add a random ID between 1 and 100 to the batch.
+  batch = append(batch, strconv.Itoa(rand.IntN(1000)+10))
+  values, _ := api.GetBatch(context.Background(), batch)
+  // Print the records we retrieved from the cache.
+  log.Println(values)
+ }
 }
 ```
 
@@ -1073,27 +1071,27 @@ by looking at an actual API client I've written:
 const moviesByIDsCacheKeyPrefix = "movies-by-ids"
 
 type MoviesByIDsOpts struct {
-	IncludeUpcoming bool
-	IncludeUpsell   bool
+ IncludeUpcoming bool
+ IncludeUpsell   bool
 }
 
 func (c *Client) MoviesByIDs(ctx context.Context, ids []string, opts MoviesByIDsOpts) (map[string]Movie, error) {
-	cacheKeyFunc := c.cache.PermutatedBatchKeyFn(moviesByIDsCacheKeyPrefix, opts)
-	fetchFunc := func(ctx context.Context, cacheMisses []string) (map[string]Movie, error) {
-		timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
-		defer cancel()
+ cacheKeyFunc := c.cache.PermutatedBatchKeyFn(moviesByIDsCacheKeyPrefix, opts)
+ fetchFunc := func(ctx context.Context, cacheMisses []string) (map[string]Movie, error) {
+  timeoutCtx, cancel := context.WithTimeout(ctx, c.timeout)
+  defer cancel()
 
-		var response map[string]Movie
-		err := requests.URL(c.baseURL).
-			Path("/movies").
-			Param("ids", strings.Join(cacheMisses, ",")).
-			Param("include_upcoming", strconv.FormatBool(opts.IncludeUpcoming)).
-			Param("include_upsell", strconv.FormatBool(opts.IncludeUpsell)).
-			ToJSON(&response).
-			Fetch(timeoutCtx)
-		return response, err
-	}
-	return sturdyc.GetOrFetchBatch(ctx, c.cache, ids, cacheKeyFunc, fetchFunc)
+  var response map[string]Movie
+  err := requests.URL(c.baseURL).
+   Path("/movies").
+   Param("ids", strings.Join(cacheMisses, ",")).
+   Param("include_upcoming", strconv.FormatBool(opts.IncludeUpcoming)).
+   Param("include_upsell", strconv.FormatBool(opts.IncludeUpsell)).
+   ToJSON(&response).
+   Fetch(timeoutCtx)
+  return response, err
+ }
+ return sturdyc.GetOrFetchBatch(ctx, c.cache, ids, cacheKeyFunc, fetchFunc)
 }
 ```
 
@@ -1149,35 +1147,35 @@ the `PermutatedBatchKeyFn` rather than the `BatchKeyFn`:
 
 ```go
 type OrderOptions struct {
-	CarrierName        string
-	LatestDeliveryTime string
+ CarrierName        string
+ LatestDeliveryTime string
 }
 
 type OrderAPI struct {
-	*sturdyc.Client[string]
+ *sturdyc.Client[string]
 }
 
 func NewOrderAPI(c *sturdyc.Client[string]) *OrderAPI {
-	return &OrderAPI{c}
+ return &OrderAPI{c}
 }
 
 func (a *OrderAPI) OrderStatus(ctx context.Context, ids []string, opts OrderOptions) (map[string]string, error) {
-	// We use the PermutedBatchKeyFn when an ID isn't enough to uniquely identify a
-	// record. The cache is going to store each id once per set of options.
-	cacheKeyFn := a.PermutatedBatchKeyFn("key", opts)
+ // We use the PermutedBatchKeyFn when an ID isn't enough to uniquely identify a
+ // record. The cache is going to store each id once per set of options.
+ cacheKeyFn := a.PermutatedBatchKeyFn("key", opts)
 
-	// We'll create a fetchFn with a closure that captures the options. For this
-	// simple example, it logs and returns the status for each order, but you could
-	// just as easily have called an external API.
-	fetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
-		log.Printf("Fetching: %v, carrier: %s, delivery time: %s\n", cacheMisses, opts.CarrierName, opts.LatestDeliveryTime)
-		response := map[string]string{}
-		for _, id := range cacheMisses {
-			response[id] = fmt.Sprintf("Available for %s", opts.CarrierName)
-		}
-		return response, nil
-	}
-	return a.GetOrFetchBatch(ctx, ids, cacheKeyFn, fetchFn)
+ // We'll create a fetchFn with a closure that captures the options. For this
+ // simple example, it logs and returns the status for each order, but you could
+ // just as easily have called an external API.
+ fetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
+  log.Printf("Fetching: %v, carrier: %s, delivery time: %s\n", cacheMisses, opts.CarrierName, opts.LatestDeliveryTime)
+  response := map[string]string{}
+  for _, id := range cacheMisses {
+   response[id] = fmt.Sprintf("Available for %s", opts.CarrierName)
+  }
+  return response, nil
+ }
+ return a.GetOrFetchBatch(ctx, ids, cacheKeyFn, fetchFn)
 }
 ```
 
@@ -1185,29 +1183,29 @@ Now, let's try to use this client:
 
 ```go
 func main() {
-	// ...
+ // ...
 
-	// Create a new cache client with the specified configuration.
-	cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-		sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
-	)
+ // Create a new cache client with the specified configuration.
+ cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
+  sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
+ )
 
-	// We will fetch these IDs using three different option sets.
-	ids := []string{"id1", "id2", "id3"}
-	optionSetOne := OrderOptions{CarrierName: "FEDEX", LatestDeliveryTime: "2024-04-06"}
-	optionSetTwo := OrderOptions{CarrierName: "DHL", LatestDeliveryTime: "2024-04-07"}
-	optionSetThree := OrderOptions{CarrierName: "UPS", LatestDeliveryTime: "2024-04-08"}
+ // We will fetch these IDs using three different option sets.
+ ids := []string{"id1", "id2", "id3"}
+ optionSetOne := OrderOptions{CarrierName: "FEDEX", LatestDeliveryTime: "2024-04-06"}
+ optionSetTwo := OrderOptions{CarrierName: "DHL", LatestDeliveryTime: "2024-04-07"}
+ optionSetThree := OrderOptions{CarrierName: "UPS", LatestDeliveryTime: "2024-04-08"}
 
-	orderClient := NewOrderAPI(cacheClient)
-	ctx := context.Background()
+ orderClient := NewOrderAPI(cacheClient)
+ ctx := context.Background()
 
-	// Next, we'll call the orderClient to make sure that we've retrieved and cached
-	// these IDs for all of our option sets.
-	log.Println("Filling the cache with all IDs for all option sets")
-	orderClient.OrderStatus(ctx, ids, optionSetOne)
-	orderClient.OrderStatus(ctx, ids, optionSetTwo)
-	orderClient.OrderStatus(ctx, ids, optionSetThree)
-	log.Println("Cache filled")
+ // Next, we'll call the orderClient to make sure that we've retrieved and cached
+ // these IDs for all of our option sets.
+ log.Println("Filling the cache with all IDs for all option sets")
+ orderClient.OrderStatus(ctx, ids, optionSetOne)
+ orderClient.OrderStatus(ctx, ids, optionSetTwo)
+ orderClient.OrderStatus(ctx, ids, optionSetThree)
+ log.Println("Cache filled")
 }
 ```
 
@@ -1226,21 +1224,21 @@ refresh, and then request the ids individually for each set of options:
 
 ```go
 func main() {
-	// ...
+ // ...
 
-	// Sleep to make sure that all records are due for a refresh.
-	time.Sleep(maxRefreshDelay + 1)
+ // Sleep to make sure that all records are due for a refresh.
+ time.Sleep(maxRefreshDelay + 1)
 
-	// Fetch each id for each option set.
-	for i := 0; i < len(ids); i++ {
-		// NOTE: We're using the same ID for these requests.
-		orderClient.OrderStatus(ctx, []string{ids[i]}, optionSetOne)
-		orderClient.OrderStatus(ctx, []string{ids[i]}, optionSetTwo)
-		orderClient.OrderStatus(ctx, []string{ids[i]}, optionSetThree)
-	}
+ // Fetch each id for each option set.
+ for i := 0; i < len(ids); i++ {
+  // NOTE: We're using the same ID for these requests.
+  orderClient.OrderStatus(ctx, []string{ids[i]}, optionSetOne)
+  orderClient.OrderStatus(ctx, []string{ids[i]}, optionSetTwo)
+  orderClient.OrderStatus(ctx, []string{ids[i]}, optionSetThree)
+ }
 
-	// Sleep for a second to allow the refresh logs to print.
-	time.Sleep(time.Second)
+ // Sleep for a second to allow the refresh logs to print.
+ time.Sleep(time.Second)
 }
 ```
 
@@ -1281,7 +1279,7 @@ functionality, but before we'll update our example to use it let's just take a
 moment to understand how it works.
 
 To start, we need to understand what determines whether two IDs can be
-coalesced for a refresh: *the options*. E.g, do we want to perform the same
+coalesced for a refresh: _the options_. E.g, do we want to perform the same
 data transformations for both IDs? If so, they can be sent in the same batch.
 This applies when we use the cache in front of a database too. Do we want to
 use the same filters, sorting, etc?
@@ -1293,17 +1291,17 @@ these options into a struct:
 const moviesByIDsCacheKeyPrefix = "movies-by-ids"
 
 type MoviesByIDsOpts struct {
-	IncludeUpcoming bool
-	IncludeUpsell   bool
+ IncludeUpcoming bool
+ IncludeUpsell   bool
 }
 
 func (c *Client) MoviesByIDs(ctx context.Context, ids []string, opts MoviesByIDsOpts) (map[string]Movie, error) {
-	cacheKeyFunc := c.cache.PermutatedBatchKeyFn(moviesByIDsCacheKeyPrefix, opts)
-	fetchFunc := func(ctx context.Context, cacheMisses []string) (map[string]Movie, error) {
-		// ...
-		defer cancel()
-	}
-	return sturdyc.GetOrFetchBatch(ctx, c.cache, ids, cacheKeyFunc, fetchFunc)
+ cacheKeyFunc := c.cache.PermutatedBatchKeyFn(moviesByIDsCacheKeyPrefix, opts)
+ fetchFunc := func(ctx context.Context, cacheMisses []string) (map[string]Movie, error) {
+  // ...
+  defer cancel()
+ }
+ return sturdyc.GetOrFetchBatch(ctx, c.cache, ids, cacheKeyFunc, fetchFunc)
 }
 ```
 
@@ -1334,20 +1332,20 @@ feature:
 
 ```go
 func main() {
-	// ...
+ // ...
 
-	// With refresh coalescing enabled, the cache will buffer refreshes
-	// until the batch size is reached or the buffer timeout is hit.
-	batchSize := 3
-	batchBufferTimeout := time.Second * 30
+ // With refresh coalescing enabled, the cache will buffer refreshes
+ // until the batch size is reached or the buffer timeout is hit.
+ batchSize := 3
+ batchBufferTimeout := time.Second * 30
 
-	// Create a new cache client with the specified configuration.
-	cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-		sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
-		sturdyc.WithRefreshCoalescing(batchSize, batchBufferTimeout),
-	)
+ // Create a new cache client with the specified configuration.
+ cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
+  sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
+  sturdyc.WithRefreshCoalescing(batchSize, batchBufferTimeout),
+ )
 
-	// ...
+ // ...
 }
 ```
 
@@ -1421,8 +1419,8 @@ batchSize := 10
 batchBufferTimeout := time.Second * 15
 
 cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-	sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, synchronousRefreshDelay, retryBaseDelay),
-	sturdyc.WithRefreshCoalescing(batchSize, batchBufferTimeout),
+ sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, synchronousRefreshDelay, retryBaseDelay),
+ sturdyc.WithRefreshCoalescing(batchSize, batchBufferTimeout),
 )
 ```
 
@@ -1500,30 +1498,30 @@ distributed storage like this:
 ```go
 // NOTE: This is an example. The cache has similar functionality internally.
 func (o *OrderAPI) OrderStatus(ctx context.Context, id string) (string, error) {
-	cacheKey := "order-status-" + id
-	fetchFn := func(ctx context.Context) (string, error) {
-		// Check Redis cache first.
-		if orderStatus, ok := o.redisClient.Get(cacheKey); ok {
-			return orderStatus, nil
-		}
+ cacheKey := "order-status-" + id
+ fetchFn := func(ctx context.Context) (string, error) {
+  // Check Redis cache first.
+  if orderStatus, ok := o.redisClient.Get(cacheKey); ok {
+   return orderStatus, nil
+  }
 
-		// Fetch the order status from the underlying data source.
-		var response OrderStatusResponse
-		err := requests.URL(o.baseURL).
-			Param("id", id).
-			ToJSON(&response).
-			Fetch(ctx)
-		if err != nil {
-			return "", err
-		}
+  // Fetch the order status from the underlying data source.
+  var response OrderStatusResponse
+  err := requests.URL(o.baseURL).
+   Param("id", id).
+   ToJSON(&response).
+   Fetch(ctx)
+  if err != nil {
+   return "", err
+  }
 
-		// Add the order status to the Redis cache so that it becomes available for the other containers.
-		go func() { o.RedisClient.Set(cacheKey, response.OrderStatus, time.Hour) }()
+  // Add the order status to the Redis cache so that it becomes available for the other containers.
+  go func() { o.RedisClient.Set(cacheKey, response.OrderStatus, time.Hour) }()
 
-		return response.OrderStatus, nil
-	}
+  return response.OrderStatus, nil
+ }
 
-	return o.GetOrFetch(ctx, id, fetchFn)
+ return o.GetOrFetch(ctx, id, fetchFn)
 }
 ```
 
@@ -1533,10 +1531,10 @@ would have to do is implement this interface:
 
 ```go
 type DistributedStorage interface {
-	Get(ctx context.Context, key string) ([]byte, bool)
-	Set(ctx context.Context, key string, value []byte)
-	GetBatch(ctx context.Context, keys []string) map[string][]byte
-	SetBatch(ctx context.Context, records map[string][]byte)
+ Get(ctx context.Context, key string) ([]byte, bool)
+ Set(ctx context.Context, key string, value []byte)
+ GetBatch(ctx context.Context, keys []string) map[string][]byte
+ SetBatch(ctx context.Context, records map[string][]byte)
 }
 ```
 
@@ -1545,8 +1543,8 @@ cache client:
 
 ```go
 cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-	// Other options...
-	sturdyc.WithDistributedStorage(storage),
+ // Other options...
+ sturdyc.WithDistributedStorage(storage),
 )
 ```
 
@@ -1605,7 +1603,7 @@ configuration instead:
 
 ```go
 cacheClient := sturdyc.New[string](capacity, numShards, ttl, evictionPercentage,
-	sturdyc.WithDistributedStorageEarlyRefreshes(storage, time.Minute),
+ sturdyc.WithDistributedStorageEarlyRefreshes(storage, time.Minute),
 )
 ```
 
@@ -1629,9 +1627,9 @@ additional methods to be implemented:
 
 ```go
 type DistributedStorageEarlyRefreshes interface {
-	DistributedStorage
-	Delete(ctx context.Context, key string)
-	DeleteBatch(ctx context.Context, keys []string)
+ DistributedStorage
+ Delete(ctx context.Context, key string)
+ DeleteBatch(ctx context.Context, keys []string)
 }
 ```
 
@@ -1680,25 +1678,25 @@ All you have to do is implement one of these interfaces:
 
 ```go
 type MetricsRecorder interface {
-	CacheHit()
-	CacheMiss()
-	AsynchronousRefresh()
-	SynchronousRefresh()
-	MissingRecord()
-	ForcedEviction()
-	EntriesEvicted(int)
-	ShardIndex(int)
-	CacheBatchRefreshSize(size int)
-	ObserveCacheSize(callback func() int)
+ CacheHit()
+ CacheMiss()
+ AsynchronousRefresh()
+ SynchronousRefresh()
+ MissingRecord()
+ ForcedEviction()
+ EntriesEvicted(int)
+ ShardIndex(int)
+ CacheBatchRefreshSize(size int)
+ ObserveCacheSize(callback func() int)
 }
 
 type DistributedMetricsRecorder interface {
-	MetricsRecorder
-	DistributedCacheHit()
-	DistributedCacheMiss()
-	DistributedRefresh()
-	DistributedMissingRecord()
-	DistributedFallback()
+ MetricsRecorder
+ DistributedCacheHit()
+ DistributedCacheMiss()
+ DistributedRefresh()
+ DistributedMissingRecord()
+ DistributedFallback()
 }
 ```
 
@@ -1706,20 +1704,20 @@ and pass it as an option when you create the client:
 
 ```go
 cacheBasicMetrics := sturdyc.New[any](
-	cacheSize,
-	shardSize,
-	cacheTTL,
-	evictWhenFullPercentage,
-	sturdyc.WithMetrics(metricsRecorder),
+ cacheSize,
+ shardSize,
+ cacheTTL,
+ evictWhenFullPercentage,
+ sturdyc.WithMetrics(metricsRecorder),
 )
 
 cacheDistributedMetrics := sturdyc.New[any](
-	cacheSize,
-	shardSize,
-	cacheTTL,
-	evictWhenFullPercentage,
-	sturdyc.WithDistributedStorage(metricsRecorder),
-	sturdyc.WithDistributedMetrics(metricsRecorder),
+ cacheSize,
+ shardSize,
+ cacheTTL,
+ evictWhenFullPercentage,
+ sturdyc.WithDistributedStorage(metricsRecorder),
+ sturdyc.WithDistributedMetrics(metricsRecorder),
 )
 ```
 
@@ -1748,10 +1746,10 @@ Hence, I don't want to tie the cache to any specific type so I'll often just
 use `any`:
 
 ```go
-	cacheClient := sturdyc.New[any](capacity, numShards, ttl, evictionPercentage,
-		sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
-		sturdyc.WithRefreshCoalescing(10, time.Second*15),
-	)
+ cacheClient := sturdyc.New[any](capacity, numShards, ttl, evictionPercentage,
+  sturdyc.WithEarlyRefreshes(minRefreshDelay, maxRefreshDelay, retryBaseDelay),
+  sturdyc.WithRefreshCoalescing(10, time.Second*15),
+ )
 ```
 
 However, having all client methods return `any` can quickly add a lot of
@@ -1774,35 +1772,35 @@ like:
 
 ```go
 type OrderAPI struct {
-	cacheClient *sturdyc.Client[any]
+ cacheClient *sturdyc.Client[any]
 }
 
 func NewOrderAPI(c *sturdyc.Client[any]) *OrderAPI {
-	return &OrderAPI{cacheClient: c}
+ return &OrderAPI{cacheClient: c}
 }
 
 func (a *OrderAPI) OrderStatus(ctx context.Context, ids []string) (map[string]string, error) {
-	cacheKeyFn := a.cacheClient.BatchKeyFn("order-status")
-	fetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
-		response := make(map[string]string, len(ids))
-		for _, id := range cacheMisses {
-			response[id] = "Order status: pending"
-		}
-		return response, nil
-	}
-	return sturdyc.GetOrFetchBatch(ctx, a.cacheClient, ids, cacheKeyFn, fetchFn)
+ cacheKeyFn := a.cacheClient.BatchKeyFn("order-status")
+ fetchFn := func(_ context.Context, cacheMisses []string) (map[string]string, error) {
+  response := make(map[string]string, len(ids))
+  for _, id := range cacheMisses {
+   response[id] = "Order status: pending"
+  }
+  return response, nil
+ }
+ return sturdyc.GetOrFetchBatch(ctx, a.cacheClient, ids, cacheKeyFn, fetchFn)
 }
 
 func (a *OrderAPI) DeliveryTime(ctx context.Context, ids []string) (map[string]time.Time, error) {
-	cacheKeyFn := a.cacheClient.BatchKeyFn("delivery-time")
-	fetchFn := func(_ context.Context, cacheMisses []string) (map[string]time.Time, error) {
-		response := make(map[string]time.Time, len(ids))
-		for _, id := range cacheMisses {
-			response[id] = time.Now()
-		}
-		return response, nil
-	}
-	return sturdyc.GetOrFetchBatch(ctx, a.cacheClient, ids, cacheKeyFn, fetchFn)
+ cacheKeyFn := a.cacheClient.BatchKeyFn("delivery-time")
+ fetchFn := func(_ context.Context, cacheMisses []string) (map[string]time.Time, error) {
+  response := make(map[string]time.Time, len(ids))
+  for _, id := range cacheMisses {
+   response[id] = time.Now()
+  }
+  return response, nil
+ }
+ return sturdyc.GetOrFetchBatch(ctx, a.cacheClient, ids, cacheKeyFn, fetchFn)
 }
 ```
 

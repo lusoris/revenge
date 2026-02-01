@@ -1,7 +1,7 @@
 # External Sources Index
 
 > Auto-generated cross-reference of all external documentation sources
-> 
+>
 > Run `python scripts/generate-crossref.py` to regenerate
 
 ---

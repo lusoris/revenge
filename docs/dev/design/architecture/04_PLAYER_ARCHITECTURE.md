@@ -19,47 +19,46 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: FFmpeg Documentation
+- name: FFmpeg Documentation
     url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
+- name: FFmpeg Codecs
     url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
+- name: FFmpeg Formats
     url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
+- name: go-astiav (FFmpeg bindings)
     url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
+- name: go-astiav GitHub README
     url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-  - name: gohlslib (HLS)
+- name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: Auto-resolved from gohlslib
-  - name: M3U8 Extended Format
+- name: M3U8 Extended Format
     url: ../sources/protocols/m3u8.md
     note: Auto-resolved from m3u8
-  - name: Svelte 5 Runes
+- name: Svelte 5 Runes
     url: ../sources/frontend/svelte-runes.md
     note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
+- name: Svelte 5 Documentation
     url: ../sources/frontend/svelte5.md
     note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
+- name: SvelteKit Documentation
     url: ../sources/frontend/sveltekit.md
     note: Auto-resolved from sveltekit
 design_refs:
-  - title: architecture
+- title: architecture
     path: architecture/INDEX.md
-  - title: ADULT_CONTENT_SYSTEM
+- title: ADULT_CONTENT_SYSTEM
     path: ADULT_CONTENT_SYSTEM.md
-  - title: ADULT_METADATA
+- title: ADULT_METADATA
     path: ADULT_METADATA.md
-  - title: DATA_RECONCILIATION
+- title: DATA_RECONCILIATION
     path: DATA_RECONCILIATION.md
 ---
 
@@ -67,11 +66,9 @@ design_refs:
 
 <!-- DESIGN: architecture, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: architecture
-
 
 > > Media playback system with HLS streaming and Vidstack player
 
@@ -82,9 +79,7 @@ Player components:
 - **Casting**: Chromecast and DLNA support
 - **Sync**: SyncPlay for watching together remotely
 
-
 ---
-
 
 ## Status
 
@@ -99,9 +94,7 @@ Player components:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -110,7 +103,6 @@ Player components:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -126,7 +118,6 @@ Player components:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -135,7 +126,6 @@ Player components:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -150,7 +140,6 @@ Player components:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -170,4 +159,3 @@ Target: **80% minimum**
 - [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
 - [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
 - [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
-

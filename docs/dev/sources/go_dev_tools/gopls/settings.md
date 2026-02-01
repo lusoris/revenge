@@ -1,19 +1,17 @@
 # gopls Settings
 
 > Source: https://github.com/golang/tools/blob/master/gopls/doc/settings.md
-> Fetched: 2026-01-31T16:06:27.285461+00:00
+> Fetched: 2026-02-01T11:54:05.518661+00:00
 > Content-Hash: fac95fbfec515edc
 > Type: html
 
 ---
 
-[ golang ](/golang) / **[tools](/golang/tools) ** Public
+[golang](/golang) / **[tools](/golang/tools)** Public
 
-  * [ Notifications ](/login?return_to=%2Fgolang%2Ftools) You must be signed in to change notification settings
-  * [ Fork 2.4k ](/login?return_to=%2Fgolang%2Ftools)
-  * [ Star  7.9k ](/login?return_to=%2Fgolang%2Ftools)
-
-
+- [Notifications](/login?return_to=%2Fgolang%2Ftools) You must be signed in to change notification settings
+- [Fork 2.4k](/login?return_to=%2Fgolang%2Ftools)
+- [Star  7.9k](/login?return_to=%2Fgolang%2Ftools)
 
   *[↑]: Back to Top
   *[v]: View this template

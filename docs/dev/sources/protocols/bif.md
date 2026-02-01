@@ -7,6 +7,6 @@
 
 ---
 
-[ Please enable JavaScript in your browser to use this website. ](/)   
+[Please enable JavaScript in your browser to use this website.](/)
 [Reload Page](/ "Reload Page")
   *[↑]: Back to Top

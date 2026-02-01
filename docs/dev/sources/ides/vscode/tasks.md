@@ -1,7 +1,7 @@
 # VS Code Tasks
 
 > Source: https://code.visualstudio.com/docs/editor/tasks
-> Fetched: 2026-01-31T16:04:11.571806+00:00
+> Fetched: 2026-02-01T11:51:36.615115+00:00
 > Content-Hash: be24bf4d5ff9a795
 > Type: html
 
@@ -22,8 +22,7 @@ Extensions can also contribute tasks using a [Task Provider](/api/extension-guid
 Let's start with a simple "Hello World" TypeScript program that we want to compile to JavaScript.
 
 Create an empty folder "mytask", generate a `tsconfig.json` file and start VS Code from that folder.
-    
-    
+
     mkdir mytask
     cd mytask
     tsc --init
@@ -31,8 +30,7 @@ Create an empty folder "mytask", generate a `tsconfig.json` file and start VS Co
     
 
 Now create a `HelloWorld.ts` file with the following content
-    
-    
+
     function sayHello(name: string): void {
       console.log(`Hello ${name}!`);
     }
@@ -45,8 +43,7 @@ Pressing ⇧⌘B (Windows, Linux Ctrl+Shift+B) or running **Run Build Task** fro
 The first entry executes the TypeScript compiler and translates the TypeScript file to a JavaScript file. When the compiler has finished, there should be a `HelloWorld.js` file. The second entry starts the TypeScript compiler in watch mode. Every save to the `HelloWorld.ts` file will regenerate the `HelloWorld.js` file.
 
 You can also define the TypeScript build or watch task as the default build task so that it is executed directly when triggering **Run Build Task** (⇧⌘B (Windows, Linux Ctrl+Shift+B)). To do so, select **Configure Default Build Task** from the global **Terminal** menu. This shows you a picker with the available build tasks. Select **tsc: build** or **tsc: watch** and VS Code will generate a `tasks.json` file. The one shown below makes the **tsc: build** task the default build task:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -76,8 +73,7 @@ If you have not already done so, install the necessary npm modules by running `n
 Executing the task produces one error, shown in the **Problems** view:
 
 In addition, VS Code created a `tasks.json` file with the following content:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -99,8 +95,7 @@ For Gulp, Grunt, and Jake, the task auto-detection works the same. Below is an e
 > **Tip:** You can run your task through **Quick Open** (⌘P (Windows, Linux Ctrl+P)) by typing 'task', Space and the command name. In this case, 'task lint'.
 
 Task auto detection can be disabled using the following settings:
-    
-    
+
     {
       "typescript.tsc.autoDetect": "off",
       "grunt.autoDetect": "off",
@@ -117,8 +112,7 @@ Not all tasks or scripts can be auto-detected in your workspace. Sometimes it is
 > **Note:** If you don't see the list of task runner templates, you may already have a `tasks.json` file in your folder and its contents will be open in the editor. Close the file and either delete or rename it for this example.
 
 We are working on more auto-detection support, so this list will get smaller and smaller in the future. Since we want to write our own custom task, select **Others** from the list. This opens the `tasks.json` file with a task skeleton. Replace the contents with the following:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -143,17 +137,15 @@ We are working on more auto-detection support, so this list will get smaller and
 
 The task's properties have the following semantic:
 
-  * **label** : The task's label used in the user interface.
-  * **type** : The task's type. For a custom task, this can either be `shell` or `process`. If `shell` is specified, the command is interpreted as a shell command (for example: bash, cmd, or PowerShell). If `process` is specified, the command is interpreted as a process to execute.
-  * **command** : The actual command to execute.
-  * **windows** : Any Windows specific properties. Will be used instead of the default properties when the command is executed on the Windows operating system.
-  * **group** : Defines to which group the task belongs. In the example, it belongs to the `test` group. Tasks that belong to the test group can be executed by running **Run Test Task** from the **Command Palette**.
-  * **presentation** : Defines how the task output is handled in the user interface. In this example, the Integrated Terminal showing the output is `always` revealed and a `new` terminal is created on every task run.
-  * **options** : Override the defaults for `cwd` (current working directory), `env` (environment variables), or `shell` (default shell). Options can be set per task but also globally or per platform. Environment variables configured here can only be referenced from within your task script or process and will not be resolved if they are part of your args, command, or other task attributes.
-  * **runOptions** : Defines when and how a task is run.
-  * **hide** : Hides the task from the Run Task Quick Pick, which can be useful for elements of a compound task that are not independently runnable.
-
-
+- **label** : The task's label used in the user interface.
+- **type** : The task's type. For a custom task, this can either be `shell` or `process`. If `shell` is specified, the command is interpreted as a shell command (for example: bash, cmd, or PowerShell). If `process` is specified, the command is interpreted as a process to execute.
+- **command** : The actual command to execute.
+- **windows** : Any Windows specific properties. Will be used instead of the default properties when the command is executed on the Windows operating system.
+- **group** : Defines to which group the task belongs. In the example, it belongs to the `test` group. Tasks that belong to the test group can be executed by running **Run Test Task** from the **Command Palette**.
+- **presentation** : Defines how the task output is handled in the user interface. In this example, the Integrated Terminal showing the output is `always` revealed and a `new` terminal is created on every task run.
+- **options** : Override the defaults for `cwd` (current working directory), `env` (environment variables), or `shell` (default shell). Options can be set per task but also globally or per platform. Environment variables configured here can only be referenced from within your task script or process and will not be resolved if they are part of your args, command, or other task attributes.
+- **runOptions** : Defines when and how a task is run.
+- **hide** : Hides the task from the Run Task Quick Pick, which can be useful for elements of a compound task that are not independently runnable.
 
 You can see the full set of task properties and values with IntelliSense in your `tasks.json` file. Bring up suggestions with **Trigger Suggest** (⌃Space (Windows, Linux Ctrl+Space)) and read the descriptions on hover or with the **Read More...** ('i') flyout.
 
@@ -161,36 +153,25 @@ You can also review the [tasks.json schema](/docs/reference/tasks-appendix).
 
 Shell commands need special treatment when it comes to commands and arguments that contain spaces or other special characters like `$`. By default, the task system supports the following behavior:
 
-  * If a single command is provided, the task system passes the command as is to the underlying shell. If the command needs quoting or escaping to function properly, the command needs to contain the proper quotes or escape characters. For example, to list the directory of a folder containing spaces in its name, the command executed in bash should look like this: `ls 'folder with spaces'`.
+- If a single command is provided, the task system passes the command as is to the underlying shell. If the command needs quoting or escaping to function properly, the command needs to contain the proper quotes or escape characters. For example, to list the directory of a folder containing spaces in its name, the command executed in bash should look like this: `ls 'folder with spaces'`.
 
-
-    
-    
     {
       "label": "dir",
       "type": "shell",
       "command": "dir 'folder with spaces'"
     }
-    
 
-  * If a command and arguments are provided, the task system will use single quotes if the command or arguments contain spaces. For `cmd.exe`, double quotes are used. A shell command like below will be executed in PowerShell as `dir 'folder with spaces'`.
+- If a command and arguments are provided, the task system will use single quotes if the command or arguments contain spaces. For `cmd.exe`, double quotes are used. A shell command like below will be executed in PowerShell as `dir 'folder with spaces'`.
 
-
-    
-    
     {
       "label": "dir",
       "type": "shell",
       "command": "dir",
       "args": ["folder with spaces"]
     }
-    
 
-  * If you want to control how the argument is quoted, the argument can be a literal specifying the value and a quoting style. The example below uses escaping instead of quoting for an argument with spaces.
+- If you want to control how the argument is quoted, the argument can be a literal specifying the value and a quoting style. The example below uses escaping instead of quoting for an argument with spaces.
 
-
-    
-    
     {
       "label": "dir",
       "type": "shell",
@@ -202,14 +183,11 @@ Shell commands need special treatment when it comes to commands and arguments th
         }
       ]
     }
-    
 
 Besides escaping, the following values are supported:
 
-  * **strong** : Uses the shell's strong quoting mechanism, which suppresses all evaluations inside the string. Under PowerShell and for shells under Linux and macOS, single quotes are used (`'`). For cmd.exe, `"` is used.
-  * **weak** : Uses the shell's weak quoting mechanism, which still evaluates expression inside the string (for example, environment variables). Under PowerShell and for shells under Linux and macOS, double quotes are used (`"`). cmd.exe doesn't support weak quoting so VS Code uses `"` as well.
-
-
+- **strong** : Uses the shell's strong quoting mechanism, which suppresses all evaluations inside the string. Under PowerShell and for shells under Linux and macOS, single quotes are used (`'`). For cmd.exe, `"` is used.
+- **weak** : Uses the shell's weak quoting mechanism, which still evaluates expression inside the string (for example, environment variables). Under PowerShell and for shells under Linux and macOS, double quotes are used (`"`). cmd.exe doesn't support weak quoting so VS Code uses `"` as well.
 
 If the command itself contains spaces, VS Code will by default strong quote the command as well. As with arguments, the user can control the quoting of the command using the same literal style.
 
@@ -222,8 +200,7 @@ In addition to the global menu bar, task commands can be accessed using the **Co
 You can also compose tasks out of simpler tasks with the `dependsOn` property. For example, if you have a workspace with a client and server folder and both contain a build script, you can create a task that starts both build scripts in separate terminals. If you list more than one task in the `dependsOn` property, they are executed in parallel by default.
 
 The `tasks.json` file looks like this:
-    
-    
+
     {
       "version": "2.0.0",
       "tasks": [
@@ -252,8 +229,7 @@ The `tasks.json` file looks like this:
     
 
 If you specify `"dependsOrder": "sequence"`, then your task dependencies are executed in the order they are listed in `dependsOn`. Any background/watch tasks used in `dependsOn` with `"dependsOrder": "sequence"` must have a problem matcher that tracks when they are "done". The following task runs task Two, task Three, and then task One.
-    
-    
+
     {
       "label": "One",
       "type": "shell",
@@ -271,30 +247,27 @@ You can create user level tasks that are not tied to a specific workspace or fol
 
 Sometimes you want to control how the Integrated Terminal panel behaves when running tasks. For instance, you may want to maximize editor space and only look at task output if you think there is a problem. The behavior of the terminal can be controlled using the `presentation` property of a task. It offers the following properties:
 
-  * **reveal** : Controls whether the Integrated Terminal panel is brought to front. Valid values are: 
-    * `always` - The panel is always brought to front. This is the default.
-    * `never` - The user must explicitly bring the terminal panel to the front using the **View** > **Terminal** command (⌃` (Windows, Linux Ctrl+`)).
-    * `silent` - The terminal panel is brought to front only if the output is not scanned for errors and warnings.
-  * **revealProblems** : Controls whether the Problems panel is revealed when running this task or not. Takes precedence over option `reveal`. Default is `never`. 
-    * `always` - Always reveals the Problems panel when this task is executed.
-    * `onProblem` - Only reveals the Problems panel if a problem is found.
-    * `never` - Never reveals the Problems panel when this task is executed.
-  * **focus** : Controls whether the terminal is taking input focus or not. Default is `false`.
-  * **echo** : Controls whether the executed command is echoed in the terminal. Default is `true`.
-  * **showReuseMessage** : Controls whether to show the "Terminal will be reused by tasks, press any key to close it" message.
-  * **panel** : Controls whether the terminal instance is shared between task runs. Possible values are: 
-    * `shared` - The terminal is shared and the output of other task runs are added to the same terminal.
-    * `dedicated` - The terminal is dedicated to a specific task. If that task is executed again, the terminal is reused. However, the output of a different task is presented in a different terminal.
-    * `new` - Every execution of that task is using a new clean terminal.
-  * **clear** : Controls whether the terminal is cleared before this task is run. Default is `false`.
-  * **close** : Controls whether the terminal the task runs in is closed when the task exits. Default is `false`.
-  * **group** : Controls whether the task is executed in a specific terminal group using split panes. Tasks in the same group (specified by a string value) will use split terminals to present instead of a new terminal panel.
-
-
+- **reveal** : Controls whether the Integrated Terminal panel is brought to front. Valid values are:
+  - `always` - The panel is always brought to front. This is the default.
+  - `never` - The user must explicitly bring the terminal panel to the front using the **View** > **Terminal** command (⌃`(Windows, Linux Ctrl+`)).
+  - `silent` - The terminal panel is brought to front only if the output is not scanned for errors and warnings.
+- **revealProblems** : Controls whether the Problems panel is revealed when running this task or not. Takes precedence over option `reveal`. Default is `never`.
+  - `always` - Always reveals the Problems panel when this task is executed.
+  - `onProblem` - Only reveals the Problems panel if a problem is found.
+  - `never` - Never reveals the Problems panel when this task is executed.
+- **focus** : Controls whether the terminal is taking input focus or not. Default is `false`.
+- **echo** : Controls whether the executed command is echoed in the terminal. Default is `true`.
+- **showReuseMessage** : Controls whether to show the "Terminal will be reused by tasks, press any key to close it" message.
+- **panel** : Controls whether the terminal instance is shared between task runs. Possible values are:
+  - `shared` - The terminal is shared and the output of other task runs are added to the same terminal.
+  - `dedicated` - The terminal is dedicated to a specific task. If that task is executed again, the terminal is reused. However, the output of a different task is presented in a different terminal.
+  - `new` - Every execution of that task is using a new clean terminal.
+- **clear** : Controls whether the terminal is cleared before this task is run. Default is `false`.
+- **close** : Controls whether the terminal the task runs in is closed when the task exits. Default is `false`.
+- **group** : Controls whether the task is executed in a specific terminal group using split panes. Tasks in the same group (specified by a string value) will use split terminals to present instead of a new terminal panel.
 
 You can modify the terminal panel behavior for auto-detected tasks as well. For example, if you want to change the output behavior for the **npm: run lint** from the ESLint example from above, add the `presentation` property to it:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -313,8 +286,7 @@ You can modify the terminal panel behavior for auto-detected tasks as well. For 
     
 
 You can also mix custom tasks with configurations for detected tasks. A `tasks.json` that configures the **npm: run lint** task and adds a custom **Run Test** tasks looks like this:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -349,19 +321,16 @@ You can also mix custom tasks with configurations for detected tasks. A `tasks.j
 
 You can specify a task's run behaviors using the `runOptions` property:
 
-  * **reevaluateOnRerun** : Controls how variables are evaluated when a task is executed through the **Rerun Last Task** command. The default is `true`, meaning that variables will be reevaluated when a task is rerun. When set to `false` the resolved variable values from the previous run of the task will be used.
-  * **runOn** : Specifies when a task is run. 
-    * `default` - The task will only be run when executed through the **Run Task** command.
-    * `folderOpen` - The task will be run when the containing folder is opened. The first time you open a folder that contains a task with `folderOpen`, you will be asked if you want to allow tasks to run automatically in that folder. You can change your decision later using the **Manage Automatic Tasks** command and selecting between **Allow Automatic Tasks** and **Disallow Automatic Tasks**.
-  * **instanceLimit** - The number of instances of the task that are allowed to run simultaneously. The default value is `1`.
-
-
+- **reevaluateOnRerun** : Controls how variables are evaluated when a task is executed through the **Rerun Last Task** command. The default is `true`, meaning that variables will be reevaluated when a task is rerun. When set to `false` the resolved variable values from the previous run of the task will be used.
+- **runOn** : Specifies when a task is run.
+  - `default` - The task will only be run when executed through the **Run Task** command.
+  - `folderOpen` - The task will be run when the containing folder is opened. The first time you open a folder that contains a task with `folderOpen`, you will be asked if you want to allow tasks to run automatically in that folder. You can change your decision later using the **Manage Automatic Tasks** command and selecting between **Allow Automatic Tasks** and **Disallow Automatic Tasks**.
+- **instanceLimit** - The number of instances of the task that are allowed to run simultaneously. The default value is `1`.
 
 ## Customizing auto-detected tasks
 
 As mentioned above, you can customize auto-detected tasks in the `tasks.json` file. You usually do so to modify presentation properties or to attach a problem matcher to scan the task's output for errors and warnings. You can customize a task directly from the **Run Task** list by pressing the gear icon to the right to insert the corresponding task reference into the `tasks.json` file. Assume you have the following Gulp file to lint JavaScript files using ESLint (the file is taken from <https://github.com/adametry/gulp-eslint>):
-    
-    
+
     const gulp = require('gulp');
     const eslint = require('gulp-eslint');
     
@@ -393,8 +362,7 @@ As mentioned above, you can customize auto-detected tasks in the `tasks.json` fi
 Executing **Run Task** from the global **Terminal** menu will show the following picker:
 
 Press the gear icon. This will create the following `tasks.json` file:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -415,18 +383,16 @@ Usually you would now add a problem matcher (in this case `$eslint-stylish`) or 
 
 VS Code can process the output from a task with a problem matcher. Problem matchers scan the task output text for known warning or error strings, and report these inline in the editor and in the Problems panel. VS Code ships with several problem matchers 'in-the-box':
 
-  * **TypeScript** : `$tsc` assumes that file names in the output are relative to the opened folder.
-  * **TypeScript Watch** : `$tsc-watch` matches problems reported from the `tsc` compiler when executed in watch mode.
-  * **JSHint** : `$jshint` assumes that file names are reported as an absolute path.
-  * **JSHint Stylish** : `$jshint-stylish` assumes that file names are reported as an absolute path.
-  * **ESLint Compact** : `$eslint-compact` assumes that file names in the output are relative to the opened folder.
-  * **ESLint Stylish** : `$eslint-stylish` assumes that file names in the output are relative to the opened folder.
-  * **Go** : `$go` matches problems reported from the `go` compiler. Assumes that file names are relative to the opened folder.
-  * **CSharp and VB Compiler** : `$mscompile` assumes that file names are reported as an absolute path.
-  * **Lessc compiler** : `$lessc` assumes that file names are reported as absolute path.
-  * **Node Sass compiler** : `$node-sass` assumes that file names are reported as an absolute path.
-
-
+- **TypeScript** : `$tsc` assumes that file names in the output are relative to the opened folder.
+- **TypeScript Watch** : `$tsc-watch` matches problems reported from the `tsc` compiler when executed in watch mode.
+- **JSHint** : `$jshint` assumes that file names are reported as an absolute path.
+- **JSHint Stylish** : `$jshint-stylish` assumes that file names are reported as an absolute path.
+- **ESLint Compact** : `$eslint-compact` assumes that file names in the output are relative to the opened folder.
+- **ESLint Stylish** : `$eslint-stylish` assumes that file names in the output are relative to the opened folder.
+- **Go** : `$go` matches problems reported from the `go` compiler. Assumes that file names are relative to the opened folder.
+- **CSharp and VB Compiler** : `$mscompile` assumes that file names are reported as an absolute path.
+- **Lessc compiler** : `$lessc` assumes that file names are reported as absolute path.
+- **Node Sass compiler** : `$node-sass` assumes that file names are reported as an absolute path.
 
 You can also create your own problem matcher, which we'll discuss [in a later section](/docs/debugtest/tasks#_defining-a-problem-matcher).
 
@@ -435,8 +401,7 @@ You can also create your own problem matcher, which we'll discuss [in a later se
 If you need to run a task frequently, you can define a keyboard shortcut for the task.
 
 For example, to bind `Ctrl+H` to the **Run tests** task from above, add the following to your `keybindings.json` file:
-    
-    
+
     {
       "key": "ctrl+h",
       "command": "workbench.action.tasks.runTask",
@@ -451,8 +416,7 @@ When authoring tasks configurations, it is useful to have a set of predefined co
 > **Note:** Not all properties will accept variable substitution. Specifically, only `command`, `args`, and `options` support variable substitution.
 
 Below is an example of a custom task configuration that passes the current opened file to the TypeScript compiler.
-    
-    
+
     {
       "label": "TypeScript compile",
       "type": "shell",
@@ -464,8 +428,7 @@ Below is an example of a custom task configuration that passes the current opene
 Similarly, you can reference your project's configuration settings by prefixing the name with **${config:**. For example, `${config:python.formatting.autopep8Path}` returns the Python extension setting `formatting.autopep8Path`.
 
 Below is an example of a custom task configuration, which executes autopep8 on the current file using the autopep8 executable defined by the `python.formatting.autopep8Path` setting:
-    
-    
+
     {
       "label": "autopep8 current file",
       "type": "process",
@@ -485,8 +448,7 @@ For more information about `inputs`, see the [Variables Reference](/docs/referen
 The task system supports defining values (for example, the command to be executed) specific to an operating system. To do so, put an operating system specific literal into the `tasks.json` file and specify the corresponding properties inside that literal.
 
 Below is an example that uses the Node.js executable as a command and is treated differently on Windows and Linux:
-    
-    
+
     {
       "label": "Run Node",
       "type": "process",
@@ -504,8 +466,7 @@ Valid operating properties are `windows` for Windows, `linux` for Linux, and `os
 ## Global tasks
 
 Task properties can also be defined in the global scope. If present, they will be used for specific tasks unless they define the same property with a different value. In the example below, there is a global `presentation` property, which defines that all tasks should be executed in a new panel:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -529,8 +490,7 @@ Task properties can also be defined in the global scope. If present, they will b
 ### Character escaping in PowerShell
 
 When the default shell is PowerShell, or when a task is configured to use PowerShell, you might see unexpected space and quote escaping. The unexpected escaping only occurs with cmdlets because VS Code doesn't know if your command contains cmdlets. Example 1 below shows a case where you'll get escaping that doesn't work with PowerShell. Example 2 shows the best, cross-platform, way to get good escaping. In some cases, you might not be able to follow example 2 and you'll need to do the manual escaping shown in example 3.
-    
-    
+
     "tasks": [
         {
             "label": "PowerShell example 1 (unexpected escaping)",
@@ -558,8 +518,7 @@ Tasks frequently act with files on disk. If these files are stored on disk with 
 If you need to tweak the encoding, you should check whether it makes sense to change the default encoding used by your operating system or at least change it for the shell you use by tweaking the shell's profile file.
 
 If you only need to tweak it for a specific task, then add the OS-specific command necessary to change the encoding to the tasks command line. The following example is for Windows using code page of 437 as its default. The task shows the output of a file containing Cyrillic characters and therefore needs code page 866. The task to list the file looks like this assuming that the default shell is set to `cmd.exe`:
-    
-    
+
     {
       // See https://go.microsoft.com/fwlink/?LinkId=733558
       // for the documentation about the tasks.json format
@@ -592,15 +551,12 @@ The CSS topic provides examples of how to use Tasks to generate CSS files.
   1. [Manually transpiling with a Build task](/docs/languages/css#_transpiling-sass-and-less-into-css)
   2. [Automation of the compile step with a file watcher](/docs/languages/css#_automating-sassless-compilation)
 
-
-
 ## Defining a problem matcher
 
 VS Code ships some of the most common problem matchers 'in-the-box'. However, there are lots of compilers and linting tools out there, all of which produce their own style of errors and warnings so you may want to create your own problem matcher.
 
 We have a `helloWorld.c` program in which the developer mistyped **printf** as **prinft**. Compiling it with [gcc](https://gcc.gnu.org/) will produce the following warning:
-    
-    
+
     helloWorld.c:5:3: warning: implicit declaration of function ‘prinft’
     
 
@@ -609,8 +565,7 @@ We want to produce a problem matcher that can capture the message in the output 
 > **Tip:** We have found the [RegEx101 playground](https://regex101.com/), which has an ECMAScript (JavaScript) flavor, to be a great way to develop and test regular expressions.
 
 A matcher that captures the above warning (and errors) looks like this:
-    
-    
+
     {
       // The problem is owned by the cpp language service.
       "owner": "cpp",
@@ -641,8 +596,7 @@ Note that the file, line, and message properties are mandatory. The `fileLocatio
 The `severity` specifies which problem severity to use if the pattern doesn't include one. The possible values for `severity` are `error`, `warning`, or `info`.
 
 Here is a finished `tasks.json` file with the code above (comments removed) wrapped with the actual task details:
-    
-    
+
     {
       "version": "2.0.0",
       "tasks": [
@@ -674,12 +628,10 @@ Running it inside VS Code and pressing ⇧⌘M (Windows, Linux Ctrl+Shift+M) to 
 
 There are a couple more properties that can be used inside a pattern. These are:
 
-  * **location** - If the problem location is line or line,column or startLine,startColumn,endLine,endColumn, then our generic location match group can be used.
-  * **endLine** - The match group index for the problem's end line. Can be omitted if no end line value is provided by the compiler.
-  * **endColumn** - The match group index for the problem's end column. Can be omitted if no end column value is provided by the compiler.
-  * **code** - The match group index for the problem's code. Can be omitted if no code value is provided by the compiler.
-
-
+- **location** - If the problem location is line or line,column or startLine,startColumn,endLine,endColumn, then our generic location match group can be used.
+- **endLine** - The match group index for the problem's end line. Can be omitted if no end line value is provided by the compiler.
+- **endColumn** - The match group index for the problem's end column. Can be omitted if no end column value is provided by the compiler.
+- **code** - The match group index for the problem's code. Can be omitted if no code value is provided by the compiler.
 
 You can also define a problem matcher that captures only a file. To do so, define a `pattern` with the optional `kind` attribute set to `file`. In this case, there is no need to provide a `line` or `location` property.
 
@@ -690,8 +642,7 @@ You can also define a problem matcher that captures only a file. To do so, defin
 ## Defining a multiline problem matcher
 
 Some tools spread problems found in a source file over several lines, especially if stylish reporters are used. An example is [ESLint](https://eslint.org/); in stylish mode it produces output like this:
-    
-    
+
     test.js
       1:0   error  Missing "use strict" statement                 strict
     ✖ 1 problems (1 errors, 0 warnings)
@@ -702,8 +653,7 @@ Our problem matcher is line-based so we need to capture the file name (test.js) 
 To do this, use an array of problem patterns for the `pattern` property. This way you define a pattern per each line you want to match.
 
 The following problem pattern matches the output from ESLint in stylish mode - but still has one small issue that we need to resolve next. The code below has a first regular expression to capture the file name and the second to capture the line, column, severity, message, and error code:
-    
-    
+
     {
       "owner": "javascript",
       "fileLocation": ["relative", "${workspaceFolder}"],
@@ -725,8 +675,7 @@ The following problem pattern matches the output from ESLint in stylish mode - b
     
 
 However, this pattern will not work if there is more than one problem on a resource. For instance, imagine the following output from ESLint:
-    
-    
+
     test.js
       1:0   error  Missing "use strict" statement                 strict
       1:9   error  foo is defined but never used                  no-unused-vars
@@ -744,8 +693,7 @@ To make this work, the last regular expression of a multiline pattern can specif
 The information captured by the first pattern, which in this case matches `test.js`, will be combined with each of the subsequent lines that match the `loop` pattern to create multiple problems. In this example, six problems would be created.
 
 Here is a problem matcher to fully capture ESLint stylish problems:
-    
-    
+
     {
       "owner": "javascript",
       "fileLocation": ["relative", "${workspaceFolder}"],
@@ -772,8 +720,7 @@ Here is a problem matcher to fully capture ESLint stylish problems:
 ## Modifying an existing problem matcher
 
 If an existing problem matcher is close to what you need, you can modify it in your `tasks.json` task. For example, the `$tsc-watch` problem matcher only applies to closed documents. If you want to have it apply to all documents you can modify it:
-    
-    
+
     {
       "type": "npm",
       "script": "watch",
@@ -792,15 +739,13 @@ Other modifiable problem matcher properties include `background`, `fileLocation`
 Some tools support running in the background while watching the file system for changes and then triggering an action when a file changes on disk. With `Gulp` such functionality is provided through the npm module [gulp-watch](https://www.npmjs.com/package/gulp-watch). The TypeScript compiler `tsc` has built in support for this via the `\--watch` command line option.
 
 To provide feedback that a background task is active in VS Code and producing problem results, a problem matcher has to use additional information to detect these `state` changes in the output. Let's take the `tsc` compiler as an example. When the compiler is started in watch mode, it prints the following additional information to the console:
-    
-    
+
     > tsc --watch
     12:30:36 PM - Compilation complete. Watching for file changes.
     
 
 When a file changes on disk that contains a problem, the following output appears:
-    
-    
+
     12:32:35 PM - File change detected. Starting incremental compilation...
     src/messages.ts(276,9): error TS2304: Cannot find name 'candidate'.
     12:32:35 PM - Compilation complete. Watching for file changes.
@@ -808,18 +753,15 @@ When a file changes on disk that contains a problem, the following output appear
 
 Looking at the output shows the following pattern:
 
-  * The compiler runs when `File change detected. Starting incremental compilation...` is printed to the console.
-  * The compiler stops when `Compilation complete. Watching for file changes.` is printed to the console.
-  * Between those two strings problems are reported.
-  * The compiler also runs once the initial start (without printing `File change detected. Starting incremental compilation...` to the console).
-
-
+- The compiler runs when `File change detected. Starting incremental compilation...` is printed to the console.
+- The compiler stops when `Compilation complete. Watching for file changes.` is printed to the console.
+- Between those two strings problems are reported.
+- The compiler also runs once the initial start (without printing `File change detected. Starting incremental compilation...` to the console).
 
 To capture this information, a problem matcher can provide a `background` property.
 
 For the `tsc` compiler, an appropriate `background` property looks like this:
-    
-    
+
     "background": {
         "activeOnStart": true,
         "beginsPattern": "^\\s*\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM)? - File change detected\\. Starting incremental compilation\\.\\.\\.",
@@ -830,8 +772,7 @@ For the `tsc` compiler, an appropriate `background` property looks like this:
 In addition to the `background` property on the problem matcher, the task itself has to be marked as `isBackground` so that the task keeps running in the background.
 
 A full handcrafted `tasks.json` for a `tsc` task running in watch mode looks like this:
-    
-    
+
     {
       "version": "2.0.0",
       "tasks": [
@@ -866,29 +807,25 @@ A full handcrafted `tasks.json` for a `tsc` task running in watch mode looks lik
 
 That was tasks - let's keep going...
 
-  * [tasks.json Schema](/docs/reference/tasks-appendix) - You can review the full `tasks.json` schema and descriptions.
-  * [Basic Editing](/docs/editing/codebasics) - Learn about the powerful VS Code editor.
-  * [Code Navigation](/docs/editing/editingevolved) - Move quickly through your source code.
-  * [Language Support](/docs/languages/overview) - Learn about our supported programming languages, both shipped with VS Code and through community extensions.
-  * [Debugging](/docs/debugtest/debugging) - Debug your source code directly in the VS Code editor.
-
-
+- [tasks.json Schema](/docs/reference/tasks-appendix) - You can review the full `tasks.json` schema and descriptions.
+- [Basic Editing](/docs/editing/codebasics) - Learn about the powerful VS Code editor.
+- [Code Navigation](/docs/editing/editingevolved) - Move quickly through your source code.
+- [Language Support](/docs/languages/overview) - Learn about our supported programming languages, both shipped with VS Code and through community extensions.
+- [Debugging](/docs/debugtest/debugging) - Debug your source code directly in the VS Code editor.
 
 ## Common questions
 
 ### Can a task use a different shell than the one specified for the Integrated Terminal?
 
 Yes. You can use the `"terminal.integrated.automationProfile.*"` setting to set the shell that will be used for all automation in VS Code, which includes Tasks.
-    
-    
+
         "terminal.integrated.automationProfile.windows": {
             "path": "cmd.exe"
         }
     
 
 Alternatively, you can override a task's shell with the `options.shell` property. You can set this per task, globally, or per platform. For example, to use cmd.exe on Windows, your `tasks.json` would include:
-    
-    
+
     {
         "version": "2.0.0",
         "windows": {
@@ -909,8 +846,7 @@ Alternatively, you can override a task's shell with the `options.shell` property
 Yes. Since a background task will run until killed, a background task on its own has no signal that it has "completed". To use a background task as a `prelaunchTask`, you must add an appropriate background `problemMatcher` to the background task so that there is a way for the task system and debug system to know that the task "finished".
 
 Your task could be:
-    
-    
+
     {
       "type": "npm",
       "script": "watch",
@@ -922,8 +858,7 @@ Your task could be:
 > **Note:** The `$tsc-watch` is a **background** problem matcher, as is required for a background task.
 
 You can then use the task as a `prelaunchTask` in your `launch.json` file:
-    
-    
+
     {
       "name": "Launch Extension",
       "type": "extensionHost",
@@ -948,9 +883,6 @@ There are several ways to resolve this issue:
   1. Make sure your command is on your path and doesn't require startup scripts to get added to your path. This is the most thorough way to solve the problem, and is the recommended solution.
   2. You can make a one-off fix for your task to run as login or interactive. This is not recommended, as it can have other consequences. However, it can also be a quick and easy fix for a single task. Below is an example of a task that does this with `bash` as the shell:
 
-
-    
-    
     {
       "type": "npm",
       "script": "watch",

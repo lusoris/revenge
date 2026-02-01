@@ -1,7 +1,7 @@
 # Docker Compose
 
 > Source: https://docs.docker.com/compose/
-> Fetched: 2026-01-31T16:05:35.533490+00:00
+> Fetched: 2026-02-01T11:53:05.673284+00:00
 > Content-Hash: 9493e0c1a3c0f1c2
 > Type: html
 
@@ -11,11 +11,9 @@ Back
 
 [Manuals](https://docs.docker.com/manuals/)
 
-  * [Get started](/get-started/)
-  * [Guides](/guides/)
-  * [Reference](/reference/)
-
-
+- [Get started](/get-started/)
+- [Guides](/guides/)
+- [Reference](/reference/)
 
 # Docker Compose
 
@@ -31,12 +29,10 @@ Compose simplifies the control of your entire application stack, making it easy 
 
 Compose works in all environments - production, staging, development, testing, as well as CI workflows. It also has commands for managing the whole lifecycle of your application:
 
-  * Start, stop, and rebuild services
-  * View the status of running services
-  * Stream the log output of running services
-  * Run a one-off command on a service
-
-
+- Start, stop, and rebuild services
+- View the status of running services
+- Stream the log output of running services
+- Run a one-off command on a service
 
 ### [Why use Compose?Understand Docker Compose's key benefits](/compose/intro/features-uses/)
 

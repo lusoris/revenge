@@ -25,11 +25,6 @@ Nested data Multiple forms on the same page Tainted fields Client-side validatio
 
 Click [here to get started](/get-started) right away, or watch this video for an introduction to whatâs possible with Superforms:
 
-  
-  
-  
-
-
 Browser testing by
 
 [](https://bugbug.io/)

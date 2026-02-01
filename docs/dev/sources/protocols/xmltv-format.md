@@ -15,28 +15,25 @@ Jump to: navigation, search
 
 # XMLTV File format
 
-The format used differs from most other XML-based TV listings formats in that it is written from the user's point of view, rather that the broadcaster's. It doesn't divide listings into channels, instead all the channels are mixed together into a single unified listing. Each programme has details such as name, description, and credits stored as supplements, but metadata like broadcast details are stored as attributes. There is support for listings in multiple languages and each programme can have 'language' and 'original language' details. 
+The format used differs from most other XML-based TV listings formats in that it is written from the user's point of view, rather that the broadcaster's. It doesn't divide listings into channels, instead all the channels are mixed together into a single unified listing. Each programme has details such as name, description, and credits stored as supplements, but metadata like broadcast details are stored as attributes. There is support for listings in multiple languages and each programme can have 'language' and 'original language' details.
 
-The XMLTV File Format was originally created by Ed Avis, and is currently maintained by the [XMLTVProject](/index.php/XMLTVProject "XMLTVProject"). The current Git version of the DTD is available [here](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd). 
+The XMLTV File Format was originally created by Ed Avis, and is currently maintained by the [XMLTVProject](/index.php/XMLTVProject "XMLTVProject"). The current Git version of the DTD is available [here](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd).
 
 There are additional requirements on grabbers if they want to be "baseline compliant". See [XmltvCapabilities](/index.php/XmltvCapabilities "XmltvCapabilities")
 
-Since the [DTD](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) is available, you can also use [XmltvValidation](/index.php/XmltvValidation "XmltvValidation"). 
+Since the [DTD](https://github.com/XMLTV/xmltv/blob/master/xmltv.dtd) is available, you can also use [XmltvValidation](/index.php/XmltvValidation "XmltvValidation").
 
 # Details
 
-An XMLTV file has 2 types of records 
+An XMLTV file has 2 types of records
 
-  * 'channel' records, store information about channels
-  * 'program' records, store information about individual episodes
+- 'channel' records, store information about channels
+- 'program' records, store information about individual episodes
 
+Most of the information is optional and may not be available from all sources
 
+This is what a sample xmltv file looks like
 
-Most of the information is optional and may not be available from all sources 
-
-This is what a sample xmltv file looks like 
-    
-    
     <?xml version="1.0" encoding="ISO-8859-1"?>
     <!DOCTYPE tv SYSTEM "xmltv.dtd">
     
@@ -221,76 +218,57 @@ This is what a sample xmltv file looks like
     </tv>
     
 
-Retrieved from "[https://wiki.xmltv.org/index.php?title=XMLTVFormat&oldid=2184](https://wiki.xmltv.org/index.php?title=XMLTVFormat&oldid=2184)" 
+Retrieved from "[https://wiki.xmltv.org/index.php?title=XMLTVFormat&oldid=2184](https://wiki.xmltv.org/index.php?title=XMLTVFormat&oldid=2184)"
 
 ## Navigation menu
 
 ### Personal tools
 
-  * [Log in](/index.php?title=Special:UserLogin&returnto=XMLTVFormat "You are encouraged to log in; however, it is not mandatory \[o\]")
-
-
+- [Log in](/index.php?title=Special:UserLogin&returnto=XMLTVFormat "You are encouraged to log in; however, it is not mandatory \[o\]")
 
 ### Namespaces
 
-  * [Page](/index.php/XMLTVFormat "View the content page \[c\]")
-  * [Discussion](/index.php?title=Talk:XMLTVFormat&action=edit&redlink=1 "Discussion about the content page \[t\]")
+- [Page](/index.php/XMLTVFormat "View the content page \[c\]")
+- [Discussion](/index.php?title=Talk:XMLTVFormat&action=edit&redlink=1 "Discussion about the content page \[t\]")
 
-
-
-###  Variants
-
-
-
+### Variants
 
 ### Views
 
-  * [Read](/index.php/XMLTVFormat)
-  * [View source](/index.php?title=XMLTVFormat&action=edit "This page is protected.
+- [Read](/index.php/XMLTVFormat)
+- [View source](/index.php?title=XMLTVFormat&action=edit "This page is protected.
 You can view its source \[e\]")
-  * [View history](/index.php?title=XMLTVFormat&action=history "Past revisions of this page \[h\]")
-
-
+- [View history](/index.php?title=XMLTVFormat&action=history "Past revisions of this page \[h\]")
 
 ### More
 
-
-
-
-###  Search
+### Search
 
 [](/index.php/Main_Page "Visit the main page")
 
 ### Helpful Links
 
-  * [Main Page](/index.php/Main_Page)
-  * [GitHub Project](https://github.com/XMLTV/)
-  * [(previous) SF Project](http://sourceforge.net/projects/xmltv/)
-  * [Download Info](/index.php/XMLTVProjectDownload)
-  * [Wiki Changes](/index.php/Special:RecentChanges)
-
-
+- [Main Page](/index.php/Main_Page)
+- [GitHub Project](https://github.com/XMLTV/)
+- [(previous) SF Project](http://sourceforge.net/projects/xmltv/)
+- [Download Info](/index.php/XMLTVProjectDownload)
+- [Wiki Changes](/index.php/Special:RecentChanges)
 
 ### Tools
 
-  * [What links here](/index.php/Special:WhatLinksHere/XMLTVFormat "A list of all wiki pages that link here \[j\]")
-  * [Related changes](/index.php/Special:RecentChangesLinked/XMLTVFormat "Recent changes in pages linked from this page \[k\]")
-  * [Special pages](/index.php/Special:SpecialPages "A list of all special pages \[q\]")
-  * [Printable version](/index.php?title=XMLTVFormat&printable=yes "Printable version of this page \[p\]")
-  * [Permanent link](/index.php?title=XMLTVFormat&oldid=2184 "Permanent link to this revision of the page")
-  * [Page information](/index.php?title=XMLTVFormat&action=info "More information about this page")
+- [What links here](/index.php/Special:WhatLinksHere/XMLTVFormat "A list of all wiki pages that link here \[j\]")
+- [Related changes](/index.php/Special:RecentChangesLinked/XMLTVFormat "Recent changes in pages linked from this page \[k\]")
+- [Special pages](/index.php/Special:SpecialPages "A list of all special pages \[q\]")
+- [Printable version](/index.php?title=XMLTVFormat&printable=yes "Printable version of this page \[p\]")
+- [Permanent link](/index.php?title=XMLTVFormat&oldid=2184 "Permanent link to this revision of the page")
+- [Page information](/index.php?title=XMLTVFormat&action=info "More information about this page")
 
+- This page was last modified on 28 January 2019, at 03:54.
 
+- [Privacy policy](/index.php/XMLTV:Privacy_policy "XMLTV:Privacy policy")
+- [About XMLTV](/index.php/XMLTV:About "XMLTV:About")
+- [Disclaimers](/index.php/XMLTV:General_disclaimer "XMLTV:General disclaimer")
 
-  * This page was last modified on 28 January 2019, at 03:54.
-
-
-  * [Privacy policy](/index.php/XMLTV:Privacy_policy "XMLTV:Privacy policy")
-  * [About XMLTV](/index.php/XMLTV:About "XMLTV:About")
-  * [Disclaimers](/index.php/XMLTV:General_disclaimer "XMLTV:General disclaimer")
-
-
-  * [](//www.mediawiki.org/)
-
+- [](//www.mediawiki.org/)
 
   *[↑]: Back to Top

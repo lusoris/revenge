@@ -23,38 +23,37 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Chromaprint/AcoustID
+- name: Chromaprint/AcoustID
     url: ../sources/standards/chromaprint.md
     note: Auto-resolved from chromaprint-acoustid
-  - name: FFmpeg Documentation
+- name: FFmpeg Documentation
     url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
+- name: FFmpeg Codecs
     url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
+- name: FFmpeg Formats
     url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
+- name: go-astiav (FFmpeg bindings)
     url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
+- name: go-astiav GitHub README
     url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: features/playback
+- title: features/playback
     path: features/playback.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -62,18 +61,15 @@ design_refs:
 
 <!-- DESIGN: features/playback, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: feature
 
-
-> Content module for 
+> Content module for
 
 > Automatic intro and credits detection with one-click skip
 
 ---
-
 
 ## Status
 
@@ -88,9 +84,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -116,7 +110,6 @@ internal/content/skip_intro_/_credits_detection/
 
 <!-- Component interaction diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -131,7 +124,6 @@ internal/content/skip_intro_/_credits_detection/
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -141,12 +133,10 @@ internal/content/skip_intro_/_credits_detection/
 
 <!-- Configuration keys -->
 
-
 ## API Endpoints
 
 ### Content Management
 <!-- API endpoints placeholder -->
-
 
 ## Testing Strategy
 
@@ -161,7 +151,6 @@ internal/content/skip_intro_/_credits_detection/
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -178,4 +167,3 @@ Target: **80% minimum**
 - [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
 - [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-

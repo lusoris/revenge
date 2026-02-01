@@ -19,62 +19,61 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Dragonfly Documentation
+- name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-  - name: FFmpeg Documentation
+- name: FFmpeg Documentation
     url: ../sources/media/ffmpeg.md
     note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
+- name: FFmpeg Codecs
     url: ../sources/media/ffmpeg-codecs.md
     note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
+- name: FFmpeg Formats
     url: ../sources/media/ffmpeg-formats.md
     note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
+- name: go-astiav (FFmpeg bindings)
     url: ../sources/media/go-astiav.md
     note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
+- name: go-astiav GitHub README
     url: ../sources/media/go-astiav-guide.md
     note: Auto-resolved from go-astiav-docs
-  - name: Go io
+- name: Go io
     url: ../sources/go/stdlib/io.md
     note: Auto-resolved from go-io
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
+- name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
-  - name: Typesense API
+- name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: operations
+- title: operations
     path: operations/INDEX.md
-  - title: TECH_STACK
+- title: TECH_STACK
     path: technical/TECH_STACK.md
-  - title: REVERSE_PROXY
+- title: REVERSE_PROXY
     path: operations/REVERSE_PROXY.md
-  - title: 00_SOURCE_OF_TRUTH
+- title: 00_SOURCE_OF_TRUTH
     path: 00_SOURCE_OF_TRUTH.md
 ---
 
@@ -82,11 +81,9 @@ design_refs:
 
 <!-- DESIGN: operations, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: operations
-
 
 > > Production deployment guide for self-hosting Revenge
 
@@ -96,9 +93,7 @@ Multiple deployment options:
 - **Bare Metal**: Direct installation on Linux servers (Advanced)
 - **Reverse Proxy**: Traefik, Caddy, nginx for HTTPS and routing
 
-
 ---
-
 
 ## Status
 
@@ -113,9 +108,7 @@ Multiple deployment options:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -124,7 +117,6 @@ Multiple deployment options:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -140,7 +132,6 @@ Multiple deployment options:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -149,7 +140,6 @@ Multiple deployment options:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -164,7 +154,6 @@ Multiple deployment options:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -189,4 +178,3 @@ Target: **80% minimum**
 - [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
 - [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
 - [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-

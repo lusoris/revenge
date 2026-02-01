@@ -9,18 +9,12 @@
 
 __
 
-  * __Light __
-  * __Dark __
-  * __Auto __
-
-
+- __Light__
+- __Dark__
+- __Auto__
 
 ____
 
-  
-
-    
-    
     Internet Engineering Task Force (IETF)                  N. Sakimura, Ed.
     Request for Comments: 7636                     Nomura Research Institute
     Category: Standards Track                                     J. Bradley
@@ -75,8 +69,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 1]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -134,8 +127,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 2]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -193,8 +185,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 3]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -252,8 +243,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 4]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -311,8 +301,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 5]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -370,8 +359,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 6]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -429,8 +417,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 7]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -488,8 +475,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 8]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -547,8 +533,7 @@ ____
     Sakimura, et al.             Standards Track                    [Page 9]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -606,8 +591,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 10]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -665,8 +649,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 11]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -724,8 +707,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 12]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -783,8 +765,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 13]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -842,8 +823,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 14]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -901,8 +881,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 15]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -960,8 +939,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 16]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -1019,8 +997,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 17]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -1078,8 +1055,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 18]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -1137,8 +1113,7 @@ ____
     Sakimura, et al.             Standards Track                   [Page 19]
 
 * * *
-    
-    
+
     [RFC 7636](/doc/html/rfc7636)                       OAUTH PKCE                 September 2015
     
     
@@ -1198,47 +1173,44 @@ ____
 
 [Datatracker](/doc/rfc7636/)
 
-RFC 7636   
-RFC - Proposed Standard 
+RFC 7636
+RFC - Proposed Standard
 
-  * __Info
-  * __Contents
-  * __Prefs
+- __Info
+- __Contents
+- __Prefs
 
-
-
-Document | Document type |  |  RFC - Proposed Standard    
-September 2015   
-[ View errata ](https://www.rfc-editor.org/errata_search.php?rfc=7636 "Click to view errata.") [ Report errata ](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") Was [draft-ietf-oauth-spop](/doc/draft-ietf-oauth-spop/15/) ([oauth WG](/wg/oauth/about/))   
+Document | Document type |  |  RFC - Proposed Standard
+September 2015
+[View errata](https://www.rfc-editor.org/errata_search.php?rfc=7636 "Click to view errata.") [Report errata](https://www.rfc-editor.org/errata.php#reportnew "Click to report an error in the document.") Was [draft-ietf-oauth-spop](/doc/draft-ietf-oauth-spop/15/) ([oauth WG](/wg/oauth/about/))
 ---|---|---|---  
-| Select version |  | 
+| Select version |  |
 
-  * [ 00 ](/doc/html/draft-ietf-oauth-spop-00)
-  * [ 01 ](/doc/html/draft-ietf-oauth-spop-01)
-  * [ 02 ](/doc/html/draft-ietf-oauth-spop-02)
-  * [ 03 ](/doc/html/draft-ietf-oauth-spop-03)
-  * [ 04 ](/doc/html/draft-ietf-oauth-spop-04)
-  * [ 05 ](/doc/html/draft-ietf-oauth-spop-05)
-  * [ 06 ](/doc/html/draft-ietf-oauth-spop-06)
-  * [ 07 ](/doc/html/draft-ietf-oauth-spop-07)
-  * [ 08 ](/doc/html/draft-ietf-oauth-spop-08)
-  * [ 09 ](/doc/html/draft-ietf-oauth-spop-09)
-  * [ 10 ](/doc/html/draft-ietf-oauth-spop-10)
-  * [ 11 ](/doc/html/draft-ietf-oauth-spop-11)
-  * [ 12 ](/doc/html/draft-ietf-oauth-spop-12)
-  * [ 13 ](/doc/html/draft-ietf-oauth-spop-13)
-  * [ 14 ](/doc/html/draft-ietf-oauth-spop-14)
-  * [ 15 ](/doc/html/draft-ietf-oauth-spop-15)
-  * [ RFC 7636 ](/doc/html/rfc7636)
+- [00](/doc/html/draft-ietf-oauth-spop-00)
+- [01](/doc/html/draft-ietf-oauth-spop-01)
+- [02](/doc/html/draft-ietf-oauth-spop-02)
+- [03](/doc/html/draft-ietf-oauth-spop-03)
+- [04](/doc/html/draft-ietf-oauth-spop-04)
+- [05](/doc/html/draft-ietf-oauth-spop-05)
+- [06](/doc/html/draft-ietf-oauth-spop-06)
+- [07](/doc/html/draft-ietf-oauth-spop-07)
+- [08](/doc/html/draft-ietf-oauth-spop-08)
+- [09](/doc/html/draft-ietf-oauth-spop-09)
+- [10](/doc/html/draft-ietf-oauth-spop-10)
+- [11](/doc/html/draft-ietf-oauth-spop-11)
+- [12](/doc/html/draft-ietf-oauth-spop-12)
+- [13](/doc/html/draft-ietf-oauth-spop-13)
+- [14](/doc/html/draft-ietf-oauth-spop-14)
+- [15](/doc/html/draft-ietf-oauth-spop-15)
+- [RFC 7636](/doc/html/rfc7636)
 
-  
-| Compare versions |  |  RFC 7636  draft-ietf-oauth-spop-15  draft-ietf-oauth-spop-14  draft-ietf-oauth-spop-13  draft-ietf-oauth-spop-12  draft-ietf-oauth-spop-11  draft-ietf-oauth-spop-10  draft-ietf-oauth-spop-09  draft-ietf-oauth-spop-08  draft-ietf-oauth-spop-07  draft-ietf-oauth-spop-06  draft-ietf-oauth-spop-05  draft-ietf-oauth-spop-04  draft-ietf-oauth-spop-03  draft-ietf-oauth-spop-02  draft-ietf-oauth-spop-01  draft-ietf-oauth-spop-00  RFC 7636  draft-ietf-oauth-spop-15  draft-ietf-oauth-spop-14  draft-ietf-oauth-spop-13  draft-ietf-oauth-spop-12  draft-ietf-oauth-spop-11  draft-ietf-oauth-spop-10  draft-ietf-oauth-spop-09  draft-ietf-oauth-spop-08  draft-ietf-oauth-spop-07  draft-ietf-oauth-spop-06  draft-ietf-oauth-spop-05  draft-ietf-oauth-spop-04  draft-ietf-oauth-spop-03  draft-ietf-oauth-spop-02  draft-ietf-oauth-spop-01  draft-ietf-oauth-spop-00  Side-by-side  Inline   
-| Authors |  |  [Nat Sakimura](/person/nat@nat.consulting "Datatracker profile of Nat Sakimura") [ __](mailto:nat%40nat.consulting "Compose email to nat@nat.consulting"),[John Bradley](/person/ve7jtb@ve7jtb.com "Datatracker profile of John Bradley") [ __](mailto:ve7jtb%40ve7jtb.com "Compose email to ve7jtb@ve7jtb.com"),[Naveen Agarwal](/person/naa@google.com "Datatracker profile of Naveen Agarwal") [ __](mailto:naa%40google.com "Compose email to naa@google.com")  
+| Compare versions |  |  RFC 7636  draft-ietf-oauth-spop-15  draft-ietf-oauth-spop-14  draft-ietf-oauth-spop-13  draft-ietf-oauth-spop-12  draft-ietf-oauth-spop-11  draft-ietf-oauth-spop-10  draft-ietf-oauth-spop-09  draft-ietf-oauth-spop-08  draft-ietf-oauth-spop-07  draft-ietf-oauth-spop-06  draft-ietf-oauth-spop-05  draft-ietf-oauth-spop-04  draft-ietf-oauth-spop-03  draft-ietf-oauth-spop-02  draft-ietf-oauth-spop-01  draft-ietf-oauth-spop-00  RFC 7636  draft-ietf-oauth-spop-15  draft-ietf-oauth-spop-14  draft-ietf-oauth-spop-13  draft-ietf-oauth-spop-12  draft-ietf-oauth-spop-11  draft-ietf-oauth-spop-10  draft-ietf-oauth-spop-09  draft-ietf-oauth-spop-08  draft-ietf-oauth-spop-07  draft-ietf-oauth-spop-06  draft-ietf-oauth-spop-05  draft-ietf-oauth-spop-04  draft-ietf-oauth-spop-03  draft-ietf-oauth-spop-02  draft-ietf-oauth-spop-01  draft-ietf-oauth-spop-00  Side-by-side  Inline
+| Authors |  |  [Nat Sakimura](/person/nat@nat.consulting "Datatracker profile of Nat Sakimura") [__](mailto:nat%40nat.consulting "Compose email to nat@nat.consulting"),[John Bradley](/person/ve7jtb@ve7jtb.com "Datatracker profile of John Bradley") [__](mailto:ve7jtb%40ve7jtb.com "Compose email to ve7jtb@ve7jtb.com"),[Naveen Agarwal](/person/naa@google.com "Datatracker profile of Naveen Agarwal") [__](mailto:naa%40google.com "Compose email to naa@google.com")  
 [Email authors](mailto:rfc7636@ietf.org?subject=rfc7636 "Send email to the document authors")  
-|  RFC stream  |  |   
-|  Other formats  |  |  [ __txt](https://www.rfc-editor.org/rfc/rfc7636.txt) [ __html](https://www.rfc-editor.org/rfc/rfc7636.html) [ __pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc7636.txt.pdf) [ __w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc7636.html) [ __bibtex](/doc/rfc7636/bibtex/)  
+|  RFC stream  |  |
+|  Other formats  |  |  [__txt](https://www.rfc-editor.org/rfc/rfc7636.txt) [__html](https://www.rfc-editor.org/rfc/rfc7636.html) [__pdf](https://www.rfc-editor.org/rfc/pdfrfc/rfc7636.txt.pdf) [__w/errata](https://www.rfc-editor.org/rfc/inline-errata/rfc7636.html) [__bibtex](/doc/rfc7636/bibtex/)  
 |  Additional resources  |  |  [ Mailing list discussion ](https://mailarchive.ietf.org/arch/browse/oauth/?q=rfc7636 OR %22draft-ietf-oauth-spop%22)  
-[ Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
+[Report a datatracker bug __](https://github.com/ietf-tools/datatracker/issues/new/choose)
 
 Show sidebar by default
 
@@ -1246,19 +1218,19 @@ Yes No
 
 Tab to show by default
 
-__Info __Contents
+__Info__Contents
 
 HTMLization configuration
 
-__HTMLize the plaintext __Plaintextify the HTML
+__HTMLize the plaintext__Plaintextify the HTML
 
 Maximum font size Page dependencies
 
-__Inline __Reference
+__Inline__Reference
 
 Citation links
 
-__Go to reference section __Go to linked document
+__Go to reference section__Go to linked document
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

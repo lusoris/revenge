@@ -9,9 +9,9 @@
 
 ### 1Pick a language
 
- __Shell __Node __Ruby __PHP __Python __Java __C#
+ __Shell__Node __Ruby__PHP __Python__Java __C#
 
-###  2Credentials
+### 2Credentials
 
 [Get API Key __](/login?redirect_uri=/reference/intro/getting-started)
 
@@ -19,14 +19,14 @@
 
 [Log in to use your API keys](/login?redirect_uri=/reference/intro/getting-started)
 
-###  3Try It!
+### 3Try It
 
 Click `Try It!` to start a request and see the response here!
 
 LoadingLoading…  
 ---  
-| |   
-| |   
-| |   
+| |
+| |
+| |
   
 * * *

@@ -1,7 +1,7 @@
 # GitHub README Best Practices
 
 > Source: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
-> Fetched: 2026-01-31T16:05:47.997726+00:00
+> Fetched: 2026-02-01T11:53:19.855709+00:00
 > Content-Hash: 40060cf0bd5e3761
 > Type: html
 
@@ -23,13 +23,11 @@ For more information about providing guidelines for your project, see [Adding a 
 
 A README is often the first item a visitor will see when visiting your repository. README files typically include information on:
 
-  * What the project does
-  * Why the project is useful
-  * How users can get started with the project
-  * Where users can get help with your project
-  * Who maintains and contributes to the project
-
-
+- What the project does
+- Why the project is useful
+- How users can get started with the project
+- Where users can get help with your project
+- Who maintains and contributes to the project
 
 If you put your README file in your repository's hidden `.github`, root, or `docs` directory, GitHub will recognize and automatically surface your README to repository visitors.
 
@@ -54,16 +52,14 @@ For more detailed information about section links, see [Section links](/en/get-s
 You can define relative links and image paths in your rendered files to help readers navigate to other files in your repository.
 
 A relative link is a link that is relative to the current file. For example, if you have a README file in root of your repository, and you have another file in _docs/CONTRIBUTING.md_ , the relative link to _CONTRIBUTING.md_ in your README might look like this:
-    
-    
+
     [Contribution guidelines for this project](docs/CONTRIBUTING.md)
     
 
 GitHub will automatically transform your relative link or image path based on whatever branch you're currently on, so that the link or path always works. The path of the link will be relative to the current file. Links starting with `/` will be relative to the repository root. You can use all relative link operands, such as `./` and `../`.
 
 Your link text should be on a single line. The example below will not work.
-    
-    
+
     [Contribution
     guidelines for this project](docs/CONTRIBUTING.md)
     
@@ -76,10 +72,9 @@ A README should only contain information necessary for developers to get started
 
 ## Further reading
 
-  * [Adding a file to a repository](/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository)
-  * [5 tips for making your GitHub profile page accessible](https://github.blog/2023-10-26-5-tips-for-making-your-github-profile-page-accessible/) in the GitHub blog
-  * [Facilitating quick creation and resumption of codespaces](/en/codespaces/setting-up-your-project-for-codespaces/setting-up-your-repository/adding-a-codespaces-badge)
-
+- [Adding a file to a repository](/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository)
+- [5 tips for making your GitHub profile page accessible](https://github.blog/2023-10-26-5-tips-for-making-your-github-profile-page-accessible/) in the GitHub blog
+- [Facilitating quick creation and resumption of codespaces](/en/codespaces/setting-up-your-project-for-codespaces/setting-up-your-repository/adding-a-codespaces-badge)
 
   *[↑]: Back to Top
   *[v]: View this template

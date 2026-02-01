@@ -19,30 +19,29 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Go Testing
+- name: Go Testing
     url: ../sources/go/stdlib/testing.md
     note: Standard library testing
-  - name: Testify
+- name: Testify
     url: https://github.com/stretchr/testify
     note: Assertions and test suites
-  - name: Mockery
+- name: Mockery
     url: ../sources/testing/mockery-guide.md
     note: Mock generation
-  - name: Testcontainers Go
+- name: Testcontainers Go
     url: ../sources/testing/testcontainers.md
     note: Integration testing with containers
-  - name: Embedded Postgres
+- name: Embedded Postgres
     url: ../sources/testing/embedded-postgres-guide.md
     note: Fast PostgreSQL for unit tests
 design_refs:
-  - title: patterns
+- title: patterns
     path: patterns/INDEX.md
-  - title: BEST_PRACTICES
+- title: BEST_PRACTICES
     path: operations/BEST_PRACTICES.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
 ---
 
@@ -50,11 +49,9 @@ design_refs:
 
 <!-- DESIGN: patterns, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: pattern
-
 
 > > Table-driven tests, mocking patterns, and integration testing with testcontainers
 
@@ -65,9 +62,7 @@ Standard testing approach for Revenge project:
 - **Embedded Postgres**: Fast unit tests without containers
 - **Testcontainers**: Integration tests with real PostgreSQL, Dragonfly
 
-
 ---
-
 
 ## Status
 
@@ -82,9 +77,7 @@ Standard testing approach for Revenge project:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -93,7 +86,6 @@ Standard testing approach for Revenge project:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -109,7 +101,6 @@ Standard testing approach for Revenge project:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -118,7 +109,6 @@ Standard testing approach for Revenge project:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -134,7 +124,6 @@ Standard testing approach for Revenge project:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns/INDEX.md)
@@ -147,4 +136,3 @@ Target: **80% minimum**
 - [Mockery](../sources/testing/mockery-guide.md) - Mock generation
 - [Testcontainers Go](../sources/testing/testcontainers.md) - Integration testing with containers
 - [Embedded Postgres](../sources/testing/embedded-postgres-guide.md) - Fast PostgreSQL for unit tests
-

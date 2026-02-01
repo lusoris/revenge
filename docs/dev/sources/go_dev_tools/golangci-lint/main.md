@@ -1,7 +1,7 @@
 # golangci-lint Documentation
 
 > Source: https://golangci-lint.run/
-> Fetched: 2026-01-31T16:06:35.998018+00:00
+> Fetched: 2026-02-01T11:54:14.118793+00:00
 > Content-Hash: 170d411c92c2bd4e
 > Type: html
 
@@ -11,83 +11,75 @@ If golangci-lint is useful for you, please consider [supporting us](/docs/donate
 
 `CTRL K`
 
+- [Golangci-lint Documentation](/docs/)
 
+  - [Welcome](/docs/welcome/)
 
+    - [Install](/docs/welcome/install/)
 
-  * [Golangci-lint Documentation ](/docs/)
+      - [Local Installation](/docs/welcome/install/local/)
+      - [CI Installation](/docs/welcome/install/ci/)
 
-    * [Welcome ](/docs/welcome/)
+    - [Quick Start](/docs/welcome/quick-start/)
+    - [Integrations](/docs/welcome/integrations/)
+    - [FAQ](/docs/welcome/faq/)
 
-      * [Install ](/docs/welcome/install/)
+  - [Configuration](/docs/configuration/)
 
-        * [Local Installation](/docs/welcome/install/local/)
-        * [CI Installation](/docs/welcome/install/ci/)
+    - [Command-Line](/docs/configuration/cli/)
+    - [Configuration File](/docs/configuration/file/)
 
-      * [Quick Start](/docs/welcome/quick-start/)
-      * [Integrations](/docs/welcome/integrations/)
-      * [FAQ](/docs/welcome/faq/)
+  - [Linters](/docs/linters/)
 
-    * [Configuration ](/docs/configuration/)
+    - [Settings](/docs/linters/configuration/)
+    - [False Positives](/docs/linters/false-positives/)
 
-      * [Command-Line](/docs/configuration/cli/)
-      * [Configuration File](/docs/configuration/file/)
+  - [Formatters](/docs/formatters/)
 
-    * [Linters ](/docs/linters/)
+    - [Settings](/docs/formatters/configuration/)
 
-      * [Settings](/docs/linters/configuration/)
-      * [False Positives](/docs/linters/false-positives/)
+  - [Product](/docs/product/)
 
-    * [Formatters ](/docs/formatters/)
+    - [Thanks](/docs/product/thanks/)
+    - [Changelog](/docs/product/changelog/)
+    - [Migration guide](/docs/product/migration-guide/)
+    - [Roadmap](/docs/product/roadmap/)
 
-      * [Settings](/docs/formatters/configuration/)
+  - [Contributing](/docs/contributing/)
 
-    * [Product ](/docs/product/)
+    - [Workflow](/docs/contributing/workflow/)
+    - [Architecture](/docs/contributing/architecture/)
+    - [New linters](/docs/contributing/new-linters/)
+    - [Debugging](/docs/contributing/debug/)
+    - [FAQ](/docs/contributing/faq/)
+    - [This Website](/docs/contributing/website/)
 
-      * [Thanks](/docs/product/thanks/)
-      * [Changelog](/docs/product/changelog/)
-      * [Migration guide](/docs/product/migration-guide/)
-      * [Roadmap](/docs/product/roadmap/)
+  - [Plugins](/docs/plugins/)
 
-    * [Contributing ](/docs/contributing/)
+    - [Module Plugin System](/docs/plugins/module-plugins/)
+    - [Go Plugin System](/docs/plugins/go-plugins/)
 
-      * [Workflow](/docs/contributing/workflow/)
-      * [Architecture](/docs/contributing/architecture/)
-      * [New linters](/docs/contributing/new-linters/)
-      * [Debugging](/docs/contributing/debug/)
-      * [FAQ](/docs/contributing/faq/)
-      * [This Website](/docs/contributing/website/)
+  - [Support Us](/docs/donate/)
 
-    * [Plugins ](/docs/plugins/)
-
-      * [Module Plugin System](/docs/plugins/module-plugins/)
-      * [Go Plugin System](/docs/plugins/go-plugins/)
-
-    * [Support Us](/docs/donate/)
-
-  * More
-  * [Documentation v1 ↗](https://golangci.github.io/legacy-v1-doc/)
-
-
+- More
+- [Documentation v1 ↗](https://golangci.github.io/legacy-v1-doc/)
 
 LightDark System
 
-  * Light 
+- Light
 
-  * Dark 
+- Dark
 
-  * System 
-
-
-
+- System
 
 # Golangci-lint is a fast linters runner for Go
 
-It runs linters in parallel, uses caching, supports YAML configuration,   
+It runs linters in parallel, uses caching, supports YAML configuration,
 integrates with all major IDEs, and includes over a hundred linters.
 
 [Get Started](docs)
 
-### [ FastRuns linters in parallel, reuses Go build cache and caches analysis results.](/docs/)### [ IntegrationsIntegrations with VS Code, Sublime Text, GoLand, GNU Emacs, Vim, GitHub Actions.](/docs/welcome/integrations)### [ Nice outputsText with colors and source code lines, JSON, tab, HTML, Checkstyle, Code-Climate, JUnit-XML, TeamCity, SARIF.](/docs/configuration/file/#output-configuration)### [ Minimum number of false positivesTuned default settings.](/docs/linters/false-positives)### [ A lot of lintersNo need to install them.](/docs/linters)### [ YAML-based configurationEasy to read and maintain.](/docs/configuration/file)
+### [FastRuns linters in parallel, reuses Go build cache and caches analysis results.](/docs/)### [IntegrationsIntegrations with VS Code, Sublime Text, GoLand, GNU Emacs, Vim, GitHub Actions.](/docs/welcome/integrations)### [Nice outputsText with colors and source code lines, JSON, tab, HTML, Checkstyle, Code-Climate, JUnit-XML, TeamCity, SARIF.](/docs/configuration/file/#output-configuration)### [Minimum number of false positivesTuned default settings.](/docs/linters/false-positives)### [A lot of lintersNo need to install them.](/docs/linters)### [YAML-based configurationEasy to read and maintain.](/docs/configuration/file)
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

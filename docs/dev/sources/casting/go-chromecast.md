@@ -47,18 +47,18 @@ https://github.com/vishen/go-chromecast/releases
 
 - If using Linux: Download the latest release, unzip using `tar -xzf go-chromecast.tar.gz`, and install using `sudo install ./go-chromecast /usr/bin/`
 
-### Install the usual Go way:
+### Install the usual Go way
 
 #### Go 1.18 and above
 
 ```
-$ go install github.com/vishen/go-chromecast@latest
+go install github.com/vishen/go-chromecast@latest
 ```
 
 #### Go 1.17 and below
 
 ```
-$ go get -u github.com/vishen/go-chromecast
+go get -u github.com/vishen/go-chromecast
 ```
 
 ## Commands
@@ -244,7 +244,7 @@ It can be run in the following ways:
 If you just want to remote-control a chromecast that is already playing something:
 
 ```
-$ go-chromecast ui
+go-chromecast ui
 ```
 
 ### Playlist
@@ -252,7 +252,7 @@ $ go-chromecast ui
 Use the UI in combination with the `playlist` command (detailed above):
 
 ```
-$ go-chromecast --with-ui playlist /path/to/directory
+go-chromecast --with-ui playlist /path/to/directory
 ```
 
 ### Load
@@ -260,7 +260,7 @@ $ go-chromecast --with-ui playlist /path/to/directory
 Use the UI in combination with the `load` command (detailed above):
 
 ```
-$ go-chromecast --with-ui load /path/to/file.flac
+go-chromecast --with-ui load /path/to/file.flac
 ```
 
 ## HTTP API Server
@@ -322,7 +322,7 @@ through and this will start the playlist from the start.
 If you would like to see what a device is sending, you are able to `watch` the protobuf messages being sent from your device:
 
 ```
-$ go-chromecast watch
+go-chromecast watch
 ```
 
 ### Text To Speech
@@ -334,7 +334,7 @@ turn text into an mp3 audio file, this is then streamed to the device.
 Text-to-speech api needs to be enabled https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com and a google service account is required https://console.cloud.google.com/apis/credentials/serviceaccountkey
 
 ```
-$ go-chromecast tts <message_to_say> --google-service-account=/path/to/service/account.json
+go-chromecast tts <message_to_say> --google-service-account=/path/to/service/account.json
 ```
 
 For non en-US languages

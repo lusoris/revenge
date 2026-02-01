@@ -10,49 +10,44 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Casbin
+- name: Casbin
     url: ../sources/security/casbin.md
     note: Auto-resolved from casbin
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: mmcdole/gofeed
+- name: mmcdole/gofeed
     url: ../sources/tooling/gofeed.md
     note: Auto-resolved from gofeed
-  - name: gofeed GitHub README
+- name: gofeed GitHub README
     url: ../sources/tooling/gofeed-guide.md
     note: Auto-resolved from gofeed-docs
-  - name: ogen OpenAPI Generator
+- name: ogen OpenAPI Generator
     url: ../sources/tooling/ogen.md
     note: Auto-resolved from ogen
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: sqlc
+- name: sqlc
     url: ../sources/database/sqlc.md
     note: Auto-resolved from sqlc
-  - name: sqlc Configuration
+- name: sqlc Configuration
     url: ../sources/database/sqlc-config.md
     note: Auto-resolved from sqlc-config
 design_refs:
-  - title: features/shared
+- title: features/shared
     path: features/shared.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
 # News System
-
-
-
 
 # News System
 
@@ -62,15 +57,11 @@ Stay informed with server announcements and entertainment news. Admins can post 
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
-
 
 ## How It Works
 
@@ -83,30 +74,15 @@ Stay informed with server announcements and entertainment news. Admins can post 
 3. **Library**: Organized by folder structure
 4. **Playback**: Stream directly or use external player
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

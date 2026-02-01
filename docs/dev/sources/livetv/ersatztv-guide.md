@@ -22,7 +22,6 @@ Want to say thanks? Consider [sponsorship on GitHub](https://github.com/sponsors
   5. [Create Schedules](/docs/scheduling/classic)
   6. [Configure Clients](/docs/clients)
 
-
   *[↑]: Back to Top
   *[v]: View this template
   *[t]: Discuss this template

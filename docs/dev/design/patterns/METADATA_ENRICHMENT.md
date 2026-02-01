@@ -19,29 +19,28 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Background job processing
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Distributed cache (L2)
-  - name: Otter
+- name: Otter
     url: https://pkg.go.dev/github.com/maypok86/otter
     note: In-memory cache (L1)
-  - name: Sturdyc
+- name: Sturdyc
     url: ../sources/tooling/sturdyc-guide.md
     note: Request coalescing cache
 design_refs:
-  - title: patterns
+- title: patterns
     path: patterns.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -49,11 +48,9 @@ design_refs:
 
 <!-- DESIGN: patterns, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: pattern
-
 
 > > Multi-tier metadata enrichment with caching and background jobs
 
@@ -65,7 +62,6 @@ Standardized metadata enrichment pattern:
 - **TTL Strategy**: Different TTLs per data type and source
 
 ---
-
 
 ## Status
 
@@ -80,9 +76,7 @@ Standardized metadata enrichment pattern:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -91,7 +85,6 @@ Standardized metadata enrichment pattern:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -107,7 +100,6 @@ Standardized metadata enrichment pattern:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -116,7 +108,6 @@ Standardized metadata enrichment pattern:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -132,7 +123,6 @@ Standardized metadata enrichment pattern:
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [patterns](patterns.md)
@@ -145,4 +135,3 @@ Target: **80% minimum**
 - [rueidis](../sources/tooling/rueidis.md) - Distributed cache (L2)
 - [Otter](https://pkg.go.dev/github.com/maypok86/otter) - In-memory cache (L1)
 - [Sturdyc](../sources/tooling/sturdyc-guide.md) - Request coalescing cache
-

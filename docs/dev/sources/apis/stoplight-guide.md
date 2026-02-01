@@ -151,11 +151,9 @@ Armed with an understanding of your use cases, youâre ready to begin your A
 
 **These are the high level tenets of good API design:**
 
-  * Approach design collaboratively
-  * Maintain internal consistency
-  * When possible, use an established convention
-
-
+- Approach design collaboratively
+- Maintain internal consistency
+- When possible, use an established convention
 
 Youâll want to keep your entire team updated as you make design decisions together. Your OpenAPI spec is your single source of truth, so make sure it is available in a place where everyone can see revisions and discuss changes. A GitHub repository or Stoplightâs Visual OpenAPI Designer can help keep everyone on the same page.
 
@@ -173,42 +171,34 @@ Design quality APIs with Stoplight.
 
 Products
 
-  * [Stoplight Solutions](/solutions)
-  * [Enterprise Sales](/enterprise)
-  * [OpenÂ Source](/open-source)
-  * [Pricing](/pricing)
-
-
+- [Stoplight Solutions](/solutions)
+- [Enterprise Sales](/enterprise)
+- [OpenÂ Source](/open-source)
+- [Pricing](/pricing)
 
 Resources
 
-  * [Stoplight Docs](https://docs.stoplight.io/)
-  * [Blog](https://blog.stoplight.io/)
-  * [Podcast](/podcast)
-  * [Guides](/guides)
-  * [Webinars](/webinars)
-
-
+- [Stoplight Docs](https://docs.stoplight.io/)
+- [Blog](https://blog.stoplight.io/)
+- [Podcast](/podcast)
+- [Guides](/guides)
+- [Webinars](/webinars)
 
 Help
 
-  * [See a Demo](/demo)
-  * [Get Support](https://support.stoplight.io/)
-  * [Contact Us](/contact)
-  * [Stoplight Community](https://community.stoplight.io/)
-  * [Status Page](https://status.stoplight.io/)
-
-
+- [See a Demo](/demo)
+- [Get Support](https://support.stoplight.io/)
+- [Contact Us](/contact)
+- [Stoplight Community](https://community.stoplight.io/)
+- [Status Page](https://status.stoplight.io/)
 
 About
 
-  * [About Us](/about)
-  * [Press](/press)
-  * [Case Studies](/case-studies)
-  * [Roadmap](https://roadmap.stoplight.io/)
-  * [Careers](/careers-old)
-
-
+- [About Us](/about)
+- [Press](/press)
+- [Case Studies](/case-studies)
+- [Roadmap](https://roadmap.stoplight.io/)
+- [Careers](/careers-old)
 
 Â© 2024 SmartBear Software. All Rights Reserved.
 

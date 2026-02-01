@@ -8,11 +8,11 @@
 ---
 
 > Tip
-> 
+>
 > Impatient readers may head straight to [Quick Start](/quick-start).
 
 > Important
-> 
+>
 > Using previous version of Kubebuilder? Check the legacy documentation for [v1](https://book-v1.book.kubebuilder.io), [v2](https://book-v2.book.kubebuilder.io) or [v3](https://book-v3.book.kubebuilder.io).
 
 ## Who is this for
@@ -23,15 +23,13 @@ Users of Kubernetes will develop a deeper understanding of Kubernetes through le
 
 Including:
 
-  * The structure of Kubernetes APIs and Resources
-  * API versioning semantics
-  * Self-healing
-  * Garbage Collection and Finalizers
-  * Declarative vs Imperative APIs
-  * Level-Based vs Edge-Base APIs
-  * Resources vs Subresources
-
-
+- The structure of Kubernetes APIs and Resources
+- API versioning semantics
+- Self-healing
+- Garbage Collection and Finalizers
+- Declarative vs Imperative APIs
+- Level-Based vs Edge-Base APIs
+- Resources vs Subresources
 
 #### Kubernetes API extension developers
 
@@ -39,15 +37,13 @@ API extension developers will learn the principles and concepts behind implement
 
 Including:
 
-  * How to batch multiple events into a single reconciliation call
-  * How to configure periodic reconciliation
-  * _Forthcoming_
-    * When to use the lister cache vs live lookups
-    * Garbage Collection vs Finalizers
-    * How to use Declarative vs Webhook Validation
-    * How to implement API versioning
-
-
+- How to batch multiple events into a single reconciliation call
+- How to configure periodic reconciliation
+- _Forthcoming_
+  - When to use the lister cache vs live lookups
+  - Garbage Collection vs Finalizers
+  - How to use Declarative vs Webhook Validation
+  - How to implement API versioning
 
 ## Why Kubernetes APIs
 
@@ -59,14 +55,12 @@ Users work with the APIs through declaring objects as _yaml_ or _json_ config, a
 
 Building services as Kubernetes APIs provides many advantages to plain old REST, including:
 
-  * Hosted API endpoints, storage, and validation.
-  * Rich tooling and CLIs such as `kubectl` and `kustomize`.
-  * Support for AuthN and granular AuthZ.
-  * Support for API evolution through API versioning and conversion.
-  * Facilitation of adaptive / self-healing APIs that continuously respond to changes in the system state without user intervention.
-  * Kubernetes as a hosting environment
-
-
+- Hosted API endpoints, storage, and validation.
+- Rich tooling and CLIs such as `kubectl` and `kustomize`.
+- Support for AuthN and granular AuthZ.
+- Support for API evolution through API versioning and conversion.
+- Facilitation of adaptive / self-healing APIs that continuously respond to changes in the system state without user intervention.
+- Kubernetes as a hosting environment
 
 Developers may build and publish their own Kubernetes APIs for installation into running Kubernetes clusters.
 
@@ -76,13 +70,11 @@ If you like to contribute to either this book or the code, please be so kind to 
 
 ## Resources
 
-  * Repository: [sigs.k8s.io/kubebuilder](https://sigs.k8s.io/kubebuilder)
+- Repository: [sigs.k8s.io/kubebuilder](https://sigs.k8s.io/kubebuilder)
 
-  * Slack channel: [#kubebuilder](http://slack.k8s.io/#kubebuilder)
+- Slack channel: [#kubebuilder](http://slack.k8s.io/#kubebuilder)
 
-  * Google Group: [kubebuilder@googlegroups.com](https://groups.google.com/forum/#!forum/kubebuilder)
-
-
+- Google Group: [kubebuilder@googlegroups.com](https://groups.google.com/forum/#!forum/kubebuilder)
 
   *[↑]: Back to Top
   *[v]: View this template

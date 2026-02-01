@@ -1,7 +1,7 @@
 # staticcheck
 
 > Source: https://staticcheck.io/docs/
-> Fetched: 2026-01-31T16:07:03.573010+00:00
+> Fetched: 2026-02-01T11:54:41.618803+00:00
 > Content-Hash: f21574486c0186ff
 > Type: html
 

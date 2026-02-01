@@ -1,7 +1,7 @@
 # pytest Documentation
 
 > Source: https://docs.pytest.org/en/stable/
-> Fetched: 2026-01-31T16:07:38.922451+00:00
+> Fetched: 2026-02-01T11:55:05.030626+00:00
 > Content-Hash: 5aadf1333fbda9a1
 > Type: html
 
@@ -9,10 +9,7 @@
 
 **Next Open Trainings and Events**
 
-  * [Professional Testing with Python](https://python-academy.com/courses/python_course_testing.html), via [Python Academy](https://www.python-academy.com/) (3 day in-depth training), **March 3th – 5th 2026** , Leipzig (DE) / Remote
-
-
-
+- [Professional Testing with Python](https://python-academy.com/courses/python_course_testing.html), via [Python Academy](https://www.python-academy.com/) (3 day in-depth training), **March 3th – 5th 2026** , Leipzig (DE) / Remote
 
 Also see [previous talks and blogposts](talks.html)
 
@@ -23,8 +20,7 @@ The `pytest` framework makes it easy to write small, readable tests, and can sca
 **PyPI package name** : [pytest](https://pypi.org/project/pytest)
 
 ## A quick example¶
-    
-    
+
     # content of test_sample.py
     def inc(x):
         return x + 1
@@ -35,8 +31,7 @@ The `pytest` framework makes it easy to write small, readable tests, and can sca
     
 
 To execute it:
-    
-    
+
     $ pytest
     =========================== test session starts ============================
     platform linux -- Python 3.x.y, pytest-9.x.y, pluggy-1.x.y
@@ -63,33 +58,27 @@ Due to `pytest`’s detailed assertion introspection, only plain `assert` statem
 
 ## Features¶
 
-  * Detailed info on failing [assert statements](how-to/assert.html#assert) (no need to remember `self.assert*` names)
+- Detailed info on failing [assert statements](how-to/assert.html#assert) (no need to remember `self.assert*` names)
 
-  * [Auto-discovery](explanation/goodpractices.html#test-discovery) of test modules and functions
+- [Auto-discovery](explanation/goodpractices.html#test-discovery) of test modules and functions
 
-  * [Modular fixtures](reference/fixtures.html#fixture) for managing small or parametrized long-lived test resources
+- [Modular fixtures](reference/fixtures.html#fixture) for managing small or parametrized long-lived test resources
 
-  * Can run [unittest](how-to/unittest.html#unittest) (including trial) test suites out of the box
+- Can run [unittest](how-to/unittest.html#unittest) (including trial) test suites out of the box
 
-  * Python 3.10+ or PyPy 3
+- Python 3.10+ or PyPy 3
 
-  * Rich plugin architecture, with over 1300+ [external plugins](reference/plugin_list.html#plugin-list) and thriving community
-
-
-
+- Rich plugin architecture, with over 1300+ [external plugins](reference/plugin_list.html#plugin-list) and thriving community
 
 ## Documentation¶
 
-  * [Get started](getting-started.html#get-started) - install pytest and grasp its basics in just twenty minutes
+- [Get started](getting-started.html#get-started) - install pytest and grasp its basics in just twenty minutes
 
-  * [How-to guides](how-to/index.html#how-to) - step-by-step guides, covering a vast range of use-cases and needs
+- [How-to guides](how-to/index.html#how-to) - step-by-step guides, covering a vast range of use-cases and needs
 
-  * [Reference guides](reference/index.html#reference) - includes the complete pytest API reference, lists of plugins and more
+- [Reference guides](reference/index.html#reference) - includes the complete pytest API reference, lists of plugins and more
 
-  * [Explanation](explanation/index.html#explanation) - background, discussion of key topics, answers to higher-level questions
-
-
-
+- [Explanation](explanation/index.html#explanation) - background, discussion of key topics, answers to higher-level questions
 
 ## Bugs/Requests¶
 

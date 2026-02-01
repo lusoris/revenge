@@ -19,44 +19,43 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Dragonfly Documentation
+- name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-  - name: go-blurhash
+- name: go-blurhash
     url: ../sources/media/go-blurhash.md
     note: Auto-resolved from go-blurhash
-  - name: Last.fm API
+- name: Last.fm API
     url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-  - name: pgx PostgreSQL Driver
+- name: pgx PostgreSQL Driver
     url: ../sources/database/pgx.md
     note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
+- name: PostgreSQL Arrays
     url: ../sources/database/postgresql-arrays.md
     note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
+- name: PostgreSQL JSON Functions
     url: ../sources/database/postgresql-json.md
     note: Auto-resolved from postgresql-json
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
+- name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
 design_refs:
-  - title: architecture
+- title: architecture
     path: architecture/INDEX.md
-  - title: ADULT_CONTENT_SYSTEM
+- title: ADULT_CONTENT_SYSTEM
     path: ADULT_CONTENT_SYSTEM.md
-  - title: ADULT_METADATA
+- title: ADULT_METADATA
     path: ADULT_METADATA.md
-  - title: DATA_RECONCILIATION
+- title: DATA_RECONCILIATION
     path: DATA_RECONCILIATION.md
 ---
 
@@ -64,11 +63,9 @@ design_refs:
 
 <!-- DESIGN: architecture, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: architecture
-
 
 > > Multi-source metadata system with caching and priority chain
 
@@ -79,9 +76,7 @@ Metadata handling:
 - **Enrichment**: Background jobs for additional metadata, thumbnails, blurhash
 - **Matching**: Fingerprinting for audio, hash matching for media
 
-
 ---
-
 
 ## Status
 
@@ -96,9 +91,7 @@ Metadata handling:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -107,7 +100,6 @@ Metadata handling:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -123,7 +115,6 @@ Metadata handling:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -132,7 +123,6 @@ Metadata handling:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -147,7 +137,6 @@ Metadata handling:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -166,4 +155,3 @@ Target: **80% minimum**
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
 - [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
 - [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-

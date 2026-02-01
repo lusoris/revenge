@@ -22,26 +22,25 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: Last.fm API
+- name: Last.fm API
     url: ../sources/apis/lastfm.md
     note: Auto-resolved from lastfm-api
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
 design_refs:
-  - title: services
+- title: services
     path: services/INDEX.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -49,11 +48,9 @@ design_refs:
 
 <!-- DESIGN: services, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: service
-
 
 > > External metadata providers for media enrichment
 
@@ -61,7 +58,6 @@ design_refs:
 **fx Module**: `.Module`
 
 ---
-
 
 ## Status
 
@@ -76,9 +72,7 @@ design_refs:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -105,7 +99,6 @@ No external service dependencies.
 
 <!-- Component diagram -->
 
-
 ## Implementation
 
 ### File Structure
@@ -120,7 +113,6 @@ No external service dependencies.
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -129,7 +121,6 @@ No external service dependencies.
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -145,7 +136,6 @@ No external service dependencies.
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [services](services/INDEX.md)
@@ -157,4 +147,3 @@ Target: **80% minimum**
 - [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
 - [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
 - [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-

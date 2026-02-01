@@ -41,7 +41,6 @@ We would love your feedback! Please create GitHub issues or Join the [Discord](h
 ### Usage
 [Go Modules](https://blog.golang.org/using-go-modules) are mandatory for using Pion WebRTC. So make sure you set `export GO111MODULE=on`, and explicitly specify `/v4` (or an earlier version) when importing.
 
-
 **[example applications](examples/README.md)** contains code samples of common things people build with Pion WebRTC.
 
 **[example-webrtc-applications](https://github.com/pion/example-webrtc-applications)** contains more full featured examples that use 3rd party libraries.
@@ -53,12 +52,12 @@ We would love your feedback! Please create GitHub issues or Join the [Discord](h
 **[FAQ](https://github.com/pion/webrtc/wiki/FAQ)** has answers to common questions. If you have a question not covered please ask in [Discord](https://discord.gg/PngbdqpFbt) we are always looking to expand it.
 
 Now go build something awesome! Here are some **ideas** to get your creative juices flowing:
-* Send a video file to multiple browser in real time for perfectly synchronized movie watching.
-* Send a webcam on an embedded device to your browser with no additional server required!
-* Securely send data between two servers, without using pub/sub.
-* Record your webcam and do special effects server side.
-* Build a conferencing application that processes audio/video and make decisions off of it.
-* Remotely control a robots and stream its cameras in realtime.
+- Send a video file to multiple browser in real time for perfectly synchronized movie watching.
+- Send a webcam on an embedded device to your browser with no additional server required!
+- Securely send data between two servers, without using pub/sub.
+- Record your webcam and do special effects server side.
+- Build a conferencing application that processes audio/video and make decisions off of it.
+- Remotely control a robots and stream its cameras in realtime.
 
 ### Need Help?
 Check out [WebRTC for the Curious](https://webrtcforthecurious.com). A book about WebRTC in depth, not just about the APIs.
@@ -74,56 +73,55 @@ He is available to talk about Pion or general WebRTC questions, feel free to rea
 
 ### Features
 #### PeerConnection API
-* Go implementation of [webrtc-pc](https://w3c.github.io/webrtc-pc/) and [webrtc-stats](https://www.w3.org/TR/webrtc-stats/)
-* DataChannels
-* Send/Receive audio and video
-* Renegotiation
-* Plan-B and Unified Plan
-* [SettingEngine](https://pkg.go.dev/github.com/pion/webrtc/v4#SettingEngine) for Pion specific extensions
-
+- Go implementation of [webrtc-pc](https://w3c.github.io/webrtc-pc/) and [webrtc-stats](https://www.w3.org/TR/webrtc-stats/)
+- DataChannels
+- Send/Receive audio and video
+- Renegotiation
+- Plan-B and Unified Plan
+- [SettingEngine](https://pkg.go.dev/github.com/pion/webrtc/v4#SettingEngine) for Pion specific extensions
 
 #### Connectivity
-* Full ICE Agent
-* ICE Restart
-* Trickle ICE
-* STUN
-* TURN (UDP, TCP, DTLS and TLS)
-* mDNS candidates
+- Full ICE Agent
+- ICE Restart
+- Trickle ICE
+- STUN
+- TURN (UDP, TCP, DTLS and TLS)
+- mDNS candidates
 
 #### DataChannels
-* Ordered/Unordered
-* Lossy/Lossless
+- Ordered/Unordered
+- Lossy/Lossless
 
 #### Media
-* API with direct RTP/RTCP access
-* Opus, PCM, H264, VP8 and VP9 packetizer
-* API also allows developer to pass their own packetizer
-* IVF, Ogg, H264 and Matroska provided for easy sending and saving
-* [getUserMedia](https://github.com/pion/mediadevices) implementation (Requires Cgo)
-* Easy integration with x264, libvpx, GStreamer and ffmpeg.
-* [Simulcast](https://github.com/pion/webrtc/tree/master/examples/simulcast)
-* [SVC](https://github.com/pion/rtp/blob/master/codecs/vp9_packet.go#L138)
-* [NACK](https://github.com/pion/interceptor/pull/4)
-* [Sender/Receiver Reports](https://github.com/pion/interceptor/tree/master/pkg/report)
-* [Transport Wide Congestion Control Feedback](https://github.com/pion/interceptor/tree/master/pkg/twcc)
-* [Bandwidth Estimation](https://github.com/pion/webrtc/tree/master/examples/bandwidth-estimation-from-disk)
+- API with direct RTP/RTCP access
+- Opus, PCM, H264, VP8 and VP9 packetizer
+- API also allows developer to pass their own packetizer
+- IVF, Ogg, H264 and Matroska provided for easy sending and saving
+- [getUserMedia](https://github.com/pion/mediadevices) implementation (Requires Cgo)
+- Easy integration with x264, libvpx, GStreamer and ffmpeg.
+- [Simulcast](https://github.com/pion/webrtc/tree/master/examples/simulcast)
+- [SVC](https://github.com/pion/rtp/blob/master/codecs/vp9_packet.go#L138)
+- [NACK](https://github.com/pion/interceptor/pull/4)
+- [Sender/Receiver Reports](https://github.com/pion/interceptor/tree/master/pkg/report)
+- [Transport Wide Congestion Control Feedback](https://github.com/pion/interceptor/tree/master/pkg/twcc)
+- [Bandwidth Estimation](https://github.com/pion/webrtc/tree/master/examples/bandwidth-estimation-from-disk)
 
 #### Security
-* TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA for DTLS v1.2
-* SRTP_AEAD_AES_256_GCM and SRTP_AES128_CM_HMAC_SHA1_80 for SRTP
-* Hardware acceleration available for GCM suites
+- TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA for DTLS v1.2
+- SRTP_AEAD_AES_256_GCM and SRTP_AES128_CM_HMAC_SHA1_80 for SRTP
+- Hardware acceleration available for GCM suites
 
 #### Pure Go
-* No Cgo usage
-* Wide platform support
-  * Windows, macOS, Linux, FreeBSD
-  * iOS, Android
-  * [WASM](https://github.com/pion/webrtc/wiki/WebAssembly-Development-and-Testing) see [examples](examples/README.md#webassembly)
-  *  386, amd64, arm, mips, ppc64
-* Easy to build *Numbers generated on Intel(R) Core(TM) i5-2520M CPU @ 2.50GHz*
-  * **Time to build examples/play-from-disk** - 0.66s user 0.20s system 306% cpu 0.279 total
-  * **Time to run entire test suite** - 25.60s user 9.40s system 45% cpu 1:16.69 total
-* Tools to measure performance [provided](https://github.com/pion/rtsp-bench)
+- No Cgo usage
+- Wide platform support
+  - Windows, macOS, Linux, FreeBSD
+  - iOS, Android
+  - [WASM](https://github.com/pion/webrtc/wiki/WebAssembly-Development-and-Testing) see [examples](examples/README.md#webassembly)
+  - 386, amd64, arm, mips, ppc64
+- Easy to build *Numbers generated on Intel(R) Core(TM) i5-2520M CPU @ 2.50GHz*
+  - **Time to build examples/play-from-disk** - 0.66s user 0.20s system 306% cpu 0.279 total
+  - **Time to run entire test suite** - 25.60s user 9.40s system 45% cpu 1:16.69 total
+- Tools to measure performance [provided](https://github.com/pion/rtsp-bench)
 
 ### Roadmap
 The library is in active development, please refer to the [roadmap](https://github.com/pion/webrtc/issues/9) to track our major milestones.

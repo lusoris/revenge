@@ -8,49 +8,44 @@
   - [Related Documentation](#related-documentation)
     - [See Also](#see-also)
 
-
-
 ---
 sources:
-  - name: Prometheus Go Client
+- name: Prometheus Go Client
     url: ../sources/observability/prometheus.md
     note: Metrics instrumentation
-  - name: Prometheus Metric Types
+- name: Prometheus Metric Types
     url: ../sources/observability/prometheus-metrics.md
     note: Counter, Gauge, Histogram, Summary
-  - name: Jaeger Go Client
+- name: Jaeger Go Client
     url: ../sources/observability/jaeger-go.md
     note: Distributed tracing client
-  - name: OpenTelemetry Go
+- name: OpenTelemetry Go
     url: https://pkg.go.dev/go.opentelemetry.io/otel
     note: Tracing and metrics SDK
-  - name: Loki
+- name: Loki
     url: ../sources/observability/loki.md
     note: Log aggregation system
-  - name: Grafana
+- name: Grafana
     url: ../sources/observability/grafana.md
     note: Visualization and dashboards
-  - name: slog-multi
+- name: slog-multi
     url: ../sources/observability/slog-multi.md
     note: Multi-handler slog setup
-  - name: Go slog
+- name: Go slog
     url: ../sources/go/stdlib/slog.md
     note: Structured logging
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: OFFLOADING
+- title: OFFLOADING
     path: technical/OFFLOADING.md
 ---
 
 # Observability - Metrics, Tracing, and Logging
-
-
-
 
 > Monitor, trace, and debug your Revenge instance with comprehensive observability
 
@@ -58,44 +53,25 @@ The Observability Stack provides complete visibility into your Revenge server. P
 
 ---
 
-
-
-
 ## Contents
 
 <!-- TOC will be auto-generated here by markdown-toc -->
 
 ---
 
-
 ## How It Works
 
 <!-- User-friendly explanation -->
 
-
-
-
 ## Features
 <!-- Feature list placeholder -->
-
-
 
 ## Configuration
 <!-- User-friendly configuration guide -->
 
-
-
-
-
-
-
-
-
 ## Related Documentation
 ### See Also
 <!-- Related wiki pages -->
-
-
 
 ---
 

@@ -19,27 +19,23 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
-
 ---
 sources:
-  - name: Lucide Icons
+- name: Lucide Icons
     url: https://lucide.dev/icons/
     note: Navigation icons
 design_refs:
-  - title: DESIGN_SYSTEM
+- title: DESIGN_SYSTEM
     path: technical/DESIGN_SYSTEM.md
-  - title: CLIENT_SUPPORT
+- title: CLIENT_SUPPORT
     path: features/shared/CLIENT_SUPPORT.md
 ---
 
 # Navigation System
 
-
 **Created**: 2026-02-01
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Multi-platform navigation with keyboard-first design
 
@@ -50,9 +46,7 @@ Navigation system features:
 - **TV**: Spatial navigation for 10-foot UI
 - **Keyboard**: YouTube-style shortcuts, command palette
 
-
 ---
-
 
 ## Status
 
@@ -68,10 +62,7 @@ Navigation system features:
 
 **Overall**: ✅ Complete
 
-
-
 ---
-
 
 ## Architecture
 
@@ -80,7 +71,6 @@ Navigation system features:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -96,10 +86,6 @@ Navigation system features:
 
 <!-- Dependency list -->
 
-
-
-
-
 ## Configuration
 ### Environment Variables
 
@@ -108,9 +94,6 @@ Navigation system features:
 ### Config Keys
 
 <!-- Configuration keys -->
-
-
-
 
 ## Testing Strategy
 
@@ -126,12 +109,6 @@ Navigation system features:
 
 Target: **80% minimum**
 
-
-
-
-
-
-
 ## Related Documentation
 ### Design Documents
 - [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md)
@@ -139,4 +116,3 @@ Target: **80% minimum**
 
 ### External Sources
 - [Lucide Icons](https://lucide.dev/icons/) - Navigation icons
-

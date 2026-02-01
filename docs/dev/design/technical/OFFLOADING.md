@@ -19,47 +19,46 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: Dragonfly Documentation
+- name: Dragonfly Documentation
     url: ../sources/infrastructure/dragonfly.md
     note: Auto-resolved from dragonfly
-  - name: Uber fx
+- name: Uber fx
     url: ../sources/tooling/fx.md
     note: Auto-resolved from fx
-  - name: koanf
+- name: koanf
     url: ../sources/tooling/koanf.md
     note: Auto-resolved from koanf
-  - name: Prometheus Go Client
+- name: Prometheus Go Client
     url: ../sources/observability/prometheus.md
     note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
+- name: Prometheus Metric Types
     url: ../sources/observability/prometheus-metrics.md
     note: Auto-resolved from prometheus-metrics
-  - name: River Job Queue
+- name: River Job Queue
     url: ../sources/tooling/river.md
     note: Auto-resolved from river
-  - name: rueidis
+- name: rueidis
     url: ../sources/tooling/rueidis.md
     note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
+- name: rueidis GitHub README
     url: ../sources/tooling/rueidis-guide.md
     note: Auto-resolved from rueidis-docs
-  - name: Typesense API
+- name: Typesense API
     url: ../sources/infrastructure/typesense.md
     note: Auto-resolved from typesense
-  - name: Typesense Go Client
+- name: Typesense Go Client
     url: ../sources/infrastructure/typesense-go.md
     note: Auto-resolved from typesense-go
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: METADATA_ENRICHMENT
+- title: METADATA_ENRICHMENT
     path: patterns/METADATA_ENRICHMENT.md
 ---
 
@@ -67,11 +66,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > Offload heavy operations to background workers and external services
 
@@ -83,7 +80,6 @@ Complete offloading strategy:
 - **Pattern**: Fast HTTP response, queue heavy work, notify on completion
 
 ---
-
 
 ## Status
 
@@ -98,9 +94,7 @@ Complete offloading strategy:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -109,7 +103,6 @@ Complete offloading strategy:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -125,7 +118,6 @@ Complete offloading strategy:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -134,7 +126,6 @@ Complete offloading strategy:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## Testing Strategy
 
@@ -149,7 +140,6 @@ Complete offloading strategy:
 ### Test Coverage
 
 Target: **80% minimum**
-
 
 ## Related Documentation
 ### Design Documents
@@ -169,4 +159,3 @@ Target: **80% minimum**
 - [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
 - [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
 - [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
-

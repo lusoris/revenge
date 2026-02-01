@@ -25,26 +25,25 @@
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
 
-
 ---
 sources:
-  - name: gohlslib (HLS)
+- name: gohlslib (HLS)
     url: ../sources/media/gohlslib.md
     note: HLS server implementation
-  - name: go-astiav (FFmpeg)
+- name: go-astiav (FFmpeg)
     url: ../sources/media/go-astiav.md
     note: Audio transcoding
-  - name: Dragonfly
+- name: Dragonfly
     url: ../sources/infrastructure/dragonfly.md
     note: Progress tracking cache
 design_refs:
-  - title: technical
+- title: technical
     path: technical.md
-  - title: 01_ARCHITECTURE
+- title: 01_ARCHITECTURE
     path: architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
+- title: 02_DESIGN_PRINCIPLES
     path: architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
+- title: 03_METADATA_SYSTEM
     path: architecture/03_METADATA_SYSTEM.md
 ---
 
@@ -52,11 +51,9 @@ design_refs:
 
 <!-- DESIGN: technical, README, SCAFFOLD_TEMPLATE, test_output_claude -->
 
-
 **Created**: 2026-01-31
 **Status**: ✅ Complete
 **Category**: technical
-
 
 > > HLS audio streaming with adaptive bitrate and progress tracking
 
@@ -68,7 +65,6 @@ Audio streaming architecture:
 - **Session Management**: Resume playback across devices
 
 ---
-
 
 ## Status
 
@@ -83,9 +79,7 @@ Audio streaming architecture:
 | Integration Testing | 🔴 | - |
 **Overall**: ✅ Complete
 
-
 ---
-
 
 ## Architecture
 
@@ -94,7 +88,6 @@ Audio streaming architecture:
 ### Components
 
 <!-- Component description -->
-
 
 ## Implementation
 
@@ -110,7 +103,6 @@ Audio streaming architecture:
 
 <!-- Dependency list -->
 
-
 ## Configuration
 ### Environment Variables
 
@@ -119,7 +111,6 @@ Audio streaming architecture:
 ### Config Keys
 
 <!-- Configuration keys -->
-
 
 ## API Endpoints
 ### GET /api/v1/stream/:track_id/playlist.m3u8
@@ -188,7 +179,6 @@ Submit scrobble
 {}
 ```
 
-
 ## Testing Strategy
 
 ### Unit Tests
@@ -203,7 +193,6 @@ Submit scrobble
 
 Target: **80% minimum**
 
-
 ## Related Documentation
 ### Design Documents
 - [technical](technical.md)
@@ -215,4 +204,3 @@ Target: **80% minimum**
 - [gohlslib (HLS)](../sources/media/gohlslib.md) - HLS server implementation
 - [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - Audio transcoding
 - [Dragonfly](../sources/infrastructure/dragonfly.md) - Progress tracking cache
-
