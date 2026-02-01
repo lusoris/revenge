@@ -131,7 +131,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Radarr API Docs](../sources/apis/radarr-docs.md) - Radarr webhook events
-- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Sonarr webhook events
-- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Lidarr webhook events
-- [Servarr Wiki](../sources/apis/servarr-wiki.md) - Shared Arr stack documentation
+- [Radarr API Docs](../../sources/apis/radarr-docs.md) - Radarr webhook events
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Sonarr webhook events
+- [Lidarr API Docs](../../sources/apis/lidarr-docs.md) - Lidarr webhook events
+- [Servarr Wiki](../../sources/apis/servarr-wiki.md) - Shared Arr stack documentation

@@ -137,5 +137,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river

@@ -28,6 +28,7 @@ SOURCES_DIR = PROJECT_ROOT / "docs" / "dev" / "sources"
 DOCS_DIR = PROJECT_ROOT / "docs" / "dev"
 
 LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+YAML_SOURCE_PATTERN = re.compile(r"^\s+url:\s+(.+)$", re.MULTILINE)
 
 KNOWN_LOCATIONS = {
     "TECH_STACK.md": "technical/TECH_STACK.md",
@@ -144,6 +145,7 @@ def analyze_file(filepath: Path) -> dict:
     links = []
     placeholders = []
 
+    # Check markdown links
     for match in LINK_PATTERN.finditer(content):
         text = match.group(1)
         link = match.group(2)
@@ -164,6 +166,7 @@ def analyze_file(filepath: Path) -> dict:
             "resolved": str(resolved),
             "suggestion": None,
             "confidence": None,
+            "type": "markdown",
         }
 
         if not exists:
@@ -175,6 +178,36 @@ def analyze_file(filepath: Path) -> dict:
                     link_info["confidence"] = (
                         "high" if filename in KNOWN_LOCATIONS else "medium"
                     )
+
+        links.append(link_info)
+
+    # Check YAML source url: fields
+    for match in YAML_SOURCE_PATTERN.finditer(content):
+        link = match.group(1).strip()
+        start = match.start()
+        line_num = content[:start].count("\n") + 1
+
+        if not is_internal_link(link):
+            continue
+
+        resolved = resolve_link(filepath, link)
+        exists = resolved.exists()
+
+        link_info = {
+            "text": f"YAML source: {link}",
+            "link": link,
+            "line": line_num,
+            "exists": exists,
+            "resolved": str(resolved),
+            "suggestion": None,
+            "confidence": None,
+            "type": "yaml",
+        }
+
+        # For YAML sources, we don't auto-suggest fixes since the structure is more rigid
+        if not exists:
+            link_info["suggestion"] = "-"
+            link_info["confidence"] = "manual"
 
         links.append(link_info)
 

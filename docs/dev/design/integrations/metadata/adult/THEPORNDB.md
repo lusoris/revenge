@@ -144,7 +144,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [ThePornDB API](../sources/apis/theporndb.md) - Auto-resolved from theporndb
-- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [ThePornDB API](../../sources/apis/theporndb.md) - Auto-resolved from theporndb
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go

@@ -140,8 +140,8 @@ Target: **80% minimum**
 - [NOTIFICATIONS](technical/NOTIFICATIONS.md)
 
 ### External Sources
-- [Radarr API Docs](../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
-- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
-- [Lidarr API Docs](../sources/apis/lidarr-docs.md) - Auto-resolved from lidarr-docs
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Radarr API Docs](../../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
+- [Lidarr API Docs](../../sources/apis/lidarr-docs.md) - Auto-resolved from lidarr-docs
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx

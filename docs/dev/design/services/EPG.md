@@ -249,6 +249,6 @@ Target: **80% minimum**
 
 ### External Sources
 - [XMLTV Format](http://wiki.xmltv.org/index.php/XMLTVFormat) - EPG data format standard
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Full-text search for programs
-- [River Job Queue](../sources/tooling/river.md) - Scheduled EPG refresh jobs
-- [Uber fx](../sources/tooling/fx.md) - Dependency injection
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Full-text search for programs
+- [River Job Queue](../../sources/tooling/river.md) - Scheduled EPG refresh jobs
+- [Uber fx](../../sources/tooling/fx.md) - Dependency injection

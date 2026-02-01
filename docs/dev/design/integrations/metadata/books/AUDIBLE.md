@@ -138,5 +138,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Audnexus API](../sources/apis/audnexus.md) - Auto-resolved from audnexus
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Audnexus API](../../sources/apis/audnexus.md) - Auto-resolved from audnexus
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash

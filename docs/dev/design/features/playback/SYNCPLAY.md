@@ -145,5 +145,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go sync](../sources/go/stdlib/sync.md) - Auto-resolved from go-sync
-- [Jellyfin SyncPlay](../sources/apis/jellyfin-syncplay.md) - Auto-resolved from jellyfin-syncplay
+- [Go sync](../../sources/go/stdlib/sync.md) - Auto-resolved from go-sync
+- [Jellyfin SyncPlay](../../sources/apis/jellyfin-syncplay.md) - Auto-resolved from jellyfin-syncplay

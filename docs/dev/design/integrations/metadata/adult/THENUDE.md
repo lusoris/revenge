@@ -136,5 +136,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Go io](../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river

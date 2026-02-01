@@ -175,18 +175,18 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Dragonfly Documentation](../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [google/uuid](../sources/tooling/uuid.md) - Auto-resolved from google-uuid
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [pgxpool Connection Pool](../sources/database/pgxpool.md) - Auto-resolved from pgxpool
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [Prometheus Go Client](../sources/observability/prometheus.md) - Auto-resolved from prometheus
-- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [River Documentation](../sources/tooling/river-guide.md) - Auto-resolved from river-docs
-- [rueidis](../sources/tooling/rueidis.md) - Auto-resolved from rueidis
-- [rueidis GitHub README](../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
-- [Typesense API](../sources/infrastructure/typesense.md) - Auto-resolved from typesense
-- [Typesense Go Client](../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go
+- [Dragonfly Documentation](../../sources/infrastructure/dragonfly.md) - Auto-resolved from dragonfly
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [google/uuid](../../sources/tooling/uuid.md) - Auto-resolved from google-uuid
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [pgxpool Connection Pool](../../sources/database/pgxpool.md) - Auto-resolved from pgxpool
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [Prometheus Go Client](../../sources/observability/prometheus.md) - Auto-resolved from prometheus
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Auto-resolved from prometheus-metrics
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [River Documentation](../../sources/tooling/river-guide.md) - Auto-resolved from river-docs
+- [rueidis](../../sources/tooling/rueidis.md) - Auto-resolved from rueidis
+- [rueidis GitHub README](../../sources/tooling/rueidis-guide.md) - Auto-resolved from rueidis-docs
+- [Typesense API](../../sources/infrastructure/typesense.md) - Auto-resolved from typesense
+- [Typesense Go Client](../../sources/infrastructure/typesense-go.md) - Auto-resolved from typesense-go

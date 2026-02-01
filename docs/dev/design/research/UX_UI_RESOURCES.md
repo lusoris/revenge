@@ -131,7 +131,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Auto-resolved from shadcn-svelte
-- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
-- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md) - Auto-resolved from shadcn-svelte
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit

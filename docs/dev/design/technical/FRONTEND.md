@@ -150,14 +150,14 @@ Target: **80% minimum**
 - [04_PLAYER_ARCHITECTURE](../architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
-- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Component framework
-- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Reactivity system
-- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Full-stack framework
-- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library
-- [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
-- [TanStack Query](../sources/frontend/tanstack-query.md) - Server state management
-- [Vidstack Player](../sources/frontend/vidstack.md) - Video player
-- [Vite Documentation](../sources/frontend/vite.md) - Build tool
-- [TailwindCSS Documentation](../sources/frontend/tailwindcss.md) - Styling framework
-- [Zod Documentation](../sources/frontend/zod.md) - Schema validation
-- [SvelteKit Superforms](../sources/frontend/superforms.md) - Form handling
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Component framework
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md) - Reactivity system
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md) - Full-stack framework
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md) - Component library
+- [Bits UI](../../sources/frontend/bits-ui.md) - Headless UI primitives
+- [TanStack Query](../../sources/frontend/tanstack-query.md) - Server state management
+- [Vidstack Player](../../sources/frontend/vidstack.md) - Video player
+- [Vite Documentation](../../sources/frontend/vite.md) - Build tool
+- [TailwindCSS Documentation](../../sources/frontend/tailwindcss.md) - Styling framework
+- [Zod Documentation](../../sources/frontend/zod.md) - Schema validation
+- [SvelteKit Superforms](../../sources/frontend/superforms.md) - Form handling

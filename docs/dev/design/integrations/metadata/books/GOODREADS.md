@@ -137,5 +137,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Google Books API](../sources/apis/google-books.md) - Auto-resolved from google-books
-- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [Google Books API](../../sources/apis/google-books.md) - Auto-resolved from google-books
+- [Open Library API](../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary

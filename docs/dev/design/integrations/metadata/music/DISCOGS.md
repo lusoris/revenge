@@ -138,5 +138,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Discogs API](../sources/apis/discogs.md) - Auto-resolved from discogs
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Discogs API](../../sources/apis/discogs.md) - Auto-resolved from discogs
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api

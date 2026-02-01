@@ -143,11 +143,11 @@ Target: **80% minimum**
 - [OFFLOADING](OFFLOADING.md)
 
 ### External Sources
-- [Prometheus Go Client](../sources/observability/prometheus.md) - Metrics instrumentation
-- [Prometheus Metric Types](../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
-- [Jaeger Go Client](../sources/observability/jaeger-go.md) - Distributed tracing client
+- [Prometheus Go Client](../../sources/observability/prometheus.md) - Metrics instrumentation
+- [Prometheus Metric Types](../../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
+- [Jaeger Go Client](../../sources/observability/jaeger-go.md) - Distributed tracing client
 - [OpenTelemetry Go](https://pkg.go.dev/go.opentelemetry.io/otel) - Tracing and metrics SDK
-- [Loki](../sources/observability/loki.md) - Log aggregation system
-- [Grafana](../sources/observability/grafana.md) - Visualization and dashboards
-- [slog-multi](../sources/observability/slog-multi.md) - Multi-handler slog setup
-- [Go slog](../sources/go/stdlib/slog.md) - Structured logging
+- [Loki](../../sources/observability/loki.md) - Log aggregation system
+- [Grafana](../../sources/observability/grafana.md) - Visualization and dashboards
+- [slog-multi](../../sources/observability/slog-multi.md) - Multi-handler slog setup
+- [Go slog](../../sources/go/stdlib/slog.md) - Structured logging

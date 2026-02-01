@@ -141,6 +141,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Simkl API](../sources/apis/simkl.md) - Auto-resolved from simkl
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Simkl API](../../sources/apis/simkl.md) - Auto-resolved from simkl

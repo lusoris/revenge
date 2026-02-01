@@ -138,9 +138,9 @@ Target: **80% minimum**
 
 ### External Sources
 - [Prometheus](https://prometheus.io/docs/introduction/overview/) - Metrics collection
-- [Prometheus Metrics Types](../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
-- [OpenTelemetry Go](../sources/observability/opentelemetry.md) - Tracing SDK
-- [slog](../sources/go/stdlib/slog.md) - Structured logging
+- [Prometheus Metrics Types](../../sources/observability/prometheus-metrics.md) - Counter, Gauge, Histogram, Summary
+- [OpenTelemetry Go](../../sources/observability/opentelemetry.md) - Tracing SDK
+- [slog](../../sources/go/stdlib/slog.md) - Structured logging
 - [tint](https://github.com/lmittmann/tint) - Colorized slog handler (dev)
 - [zap](https://github.com/uber-go/zap) - High-performance JSON logs (prod)
-- [Jaeger](../sources/observability/jaeger.md) - Distributed tracing backend
+- [Jaeger](../../sources/observability/jaeger.md) - Distributed tracing backend

@@ -131,7 +131,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [River Job Queue](../sources/tooling/river.md) - Background job processing
+- [River Job Queue](../../sources/tooling/river.md) - Background job processing
 - [crypto/hmac](https://pkg.go.dev/crypto/hmac) - HMAC signature validation
-- [resty](../sources/tooling/resty.md) - HTTP client for webhook delivery
-- [gobreaker](../sources/tooling/gobreaker.md) - Circuit breaker pattern
+- [resty](../../sources/tooling/resty.md) - HTTP client for webhook delivery
+- [gobreaker](../../sources/tooling/gobreaker.md) - Circuit breaker pattern

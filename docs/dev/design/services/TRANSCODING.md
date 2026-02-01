@@ -213,7 +213,7 @@ Target: **80% minimum**
 - [AUDIO_STREAMING](../technical/AUDIO_STREAMING.md)
 
 ### External Sources
-- [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - FFmpeg Go bindings
-- [gohlslib](../sources/media/gohlslib.md) - HLS streaming library
-- [River Job Queue](../sources/tooling/river.md) - Background job processing
-- [Uber fx](../sources/tooling/fx.md) - Dependency injection
+- [go-astiav (FFmpeg)](../../sources/media/go-astiav.md) - FFmpeg Go bindings
+- [gohlslib](../../sources/media/gohlslib.md) - HLS streaming library
+- [River Job Queue](../../sources/tooling/river.md) - Background job processing
+- [Uber fx](../../sources/tooling/fx.md) - Dependency injection

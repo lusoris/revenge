@@ -125,6 +125,6 @@ Target: **80% minimum**
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [OpenAPI 3.1 Specification](../sources/apis/openapi-spec.md) - API spec standard
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [OpenAPI 3.1 Specification](../../sources/apis/openapi-spec.md) - API spec standard
 - [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807) - Standardized error format

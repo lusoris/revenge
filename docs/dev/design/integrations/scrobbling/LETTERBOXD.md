@@ -140,6 +140,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [Letterboxd API](../sources/apis/letterboxd.md) - Auto-resolved from letterboxd
+- [Go io](../../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Letterboxd API](../../sources/apis/letterboxd.md) - Auto-resolved from letterboxd

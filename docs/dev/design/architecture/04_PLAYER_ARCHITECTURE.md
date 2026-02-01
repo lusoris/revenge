@@ -149,13 +149,13 @@ Target: **80% minimum**
 - [DATA_RECONCILIATION](DATA_RECONCILIATION.md)
 
 ### External Sources
-- [FFmpeg Documentation](../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
-- [FFmpeg Codecs](../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
-- [FFmpeg Formats](../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
-- [go-astiav (FFmpeg bindings)](../sources/media/go-astiav.md) - Auto-resolved from go-astiav
-- [go-astiav GitHub README](../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
-- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+- [FFmpeg Documentation](../../sources/media/ffmpeg.md) - Auto-resolved from ffmpeg
+- [FFmpeg Codecs](../../sources/media/ffmpeg-codecs.md) - Auto-resolved from ffmpeg-codecs
+- [FFmpeg Formats](../../sources/media/ffmpeg-formats.md) - Auto-resolved from ffmpeg-formats
+- [go-astiav (FFmpeg bindings)](../../sources/media/go-astiav.md) - Auto-resolved from go-astiav
+- [go-astiav GitHub README](../../sources/media/go-astiav-guide.md) - Auto-resolved from go-astiav-docs
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit

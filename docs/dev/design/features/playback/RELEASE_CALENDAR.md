@@ -157,9 +157,9 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go context](../sources/go/stdlib/context.md) - Auto-resolved from go-context
-- [Radarr API Docs](../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Sonarr API Docs](../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Go context](../../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Radarr API Docs](../../sources/apis/radarr-docs.md) - Auto-resolved from radarr-docs
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Sonarr API Docs](../../sources/apis/sonarr-docs.md) - Auto-resolved from sonarr-docs
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config

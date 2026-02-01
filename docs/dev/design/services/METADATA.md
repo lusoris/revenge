@@ -144,6 +144,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river

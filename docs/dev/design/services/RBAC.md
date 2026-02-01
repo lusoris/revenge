@@ -153,9 +153,9 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Casbin](../sources/security/casbin.md) - Auto-resolved from casbin
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [pgx PostgreSQL Driver](../sources/database/pgx.md) - Auto-resolved from pgx
-- [PostgreSQL Arrays](../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
-- [PostgreSQL JSON Functions](../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [Casbin](../../sources/security/casbin.md) - Auto-resolved from casbin
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [pgx PostgreSQL Driver](../../sources/database/pgx.md) - Auto-resolved from pgx
+- [PostgreSQL Arrays](../../sources/database/postgresql-arrays.md) - Auto-resolved from postgresql-arrays
+- [PostgreSQL JSON Functions](../../sources/database/postgresql-json.md) - Auto-resolved from postgresql-json
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river

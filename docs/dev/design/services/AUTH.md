@@ -141,5 +141,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen

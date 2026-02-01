@@ -142,4 +142,4 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Jellyfin API](../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api
+- [Jellyfin API](../../sources/apis/jellyfin.md) - Auto-resolved from jellyfin-api

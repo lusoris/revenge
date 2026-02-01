@@ -138,5 +138,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [MyAnimeList API](../../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river

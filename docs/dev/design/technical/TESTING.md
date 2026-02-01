@@ -132,8 +132,8 @@ Target: **80% minimum**
 - [BEST_PRACTICES](../operations/BEST_PRACTICES.md)
 
 ### External Sources
-- [Go Testing Package](../sources/go/stdlib/testing.md) - Standard library testing
-- [testify](../sources/testing/testify.md) - Assertion and mocking toolkit
-- [mockery](../sources/testing/mockery-guide.md) - Mock generation from interfaces
+- [Go Testing Package](../../sources/go/stdlib/testing.md) - Standard library testing
+- [testify](../../sources/testing/testify.md) - Assertion and mocking toolkit
+- [mockery](../../sources/testing/mockery-guide.md) - Mock generation from interfaces
 - [testcontainers-go](https://pkg.go.dev/github.com/testcontainers/testcontainers-go) - Docker containers for integration tests
-- [embedded-postgres](../sources/testing/embedded-postgres.md) - Embedded PostgreSQL for testing
+- [embedded-postgres](../../sources/testing/embedded-postgres.md) - Embedded PostgreSQL for testing

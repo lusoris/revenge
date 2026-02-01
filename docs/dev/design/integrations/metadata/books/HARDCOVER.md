@@ -135,4 +135,4 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Hardcover API](../sources/apis/hardcover.md) - Auto-resolved from hardcover
+- [Hardcover API](../../sources/apis/hardcover.md) - Auto-resolved from hardcover

@@ -137,5 +137,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Open Library API](../sources/apis/openlibrary.md) - Auto-resolved from openlibrary
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Open Library API](../../sources/apis/openlibrary.md) - Auto-resolved from openlibrary

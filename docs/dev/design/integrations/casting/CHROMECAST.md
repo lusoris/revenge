@@ -134,4 +134,4 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-chromecast](../sources/casting/go-chromecast.md) - Auto-resolved from go-chromecast
+- [go-chromecast](../../sources/casting/go-chromecast.md) - Auto-resolved from go-chromecast

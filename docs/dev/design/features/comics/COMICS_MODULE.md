@@ -250,14 +250,14 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](../sources/apis/anilist.md) - Auto-resolved from anilist
-- [ComicVine API](../sources/apis/comicvine.md) - Auto-resolved from comicvine
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [MyAnimeList API](../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
-- [Svelte 5 Runes](../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
-- [Svelte 5 Documentation](../sources/frontend/svelte5.md) - Auto-resolved from svelte5
-- [SvelteKit Documentation](../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit
+- [AniList GraphQL API](../../sources/apis/anilist.md) - Auto-resolved from anilist
+- [ComicVine API](../../sources/apis/comicvine.md) - Auto-resolved from comicvine
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [MyAnimeList API](../../sources/apis/myanimelist.md) - Auto-resolved from myanimelist
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Svelte 5 Runes](../../sources/frontend/svelte-runes.md) - Auto-resolved from svelte-runes
+- [Svelte 5 Documentation](../../sources/frontend/svelte5.md) - Auto-resolved from svelte5
+- [SvelteKit Documentation](../../sources/frontend/sveltekit.md) - Auto-resolved from sveltekit

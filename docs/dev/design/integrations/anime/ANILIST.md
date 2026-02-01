@@ -143,7 +143,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [AniList GraphQL API](../sources/apis/anilist.md) - Auto-resolved from anilist
-- [AniList GraphQL Schema](../sources/apis/anilist-schema.graphql) - Auto-resolved from anilist-graphql
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
+- [AniList GraphQL API](../../sources/apis/anilist.md) - Auto-resolved from anilist
+- [AniList GraphQL Schema](../../sources/apis/anilist-schema.graphql) - Auto-resolved from anilist-graphql
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river

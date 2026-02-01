@@ -128,7 +128,7 @@ Target: **80% minimum**
 - [04_PLAYER_ARCHITECTURE](../../architecture/04_PLAYER_ARCHITECTURE.md)
 
 ### External Sources
-- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library
-- [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md) - Component library
+- [Bits UI](../../sources/frontend/bits-ui.md) - Headless UI primitives
 - [Vidstack Player](https://www.vidstack.io/docs/player) - Video player components
 - [Lucide Icons](https://lucide.dev/icons/) - Icon library

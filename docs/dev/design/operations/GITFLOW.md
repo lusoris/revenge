@@ -128,6 +128,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Conventional Commits](../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
-- [Git Flow](../sources/standards/gitflow.md) - Auto-resolved from gitflow
-- [Go io](../sources/go/stdlib/io.md) - Auto-resolved from go-io
+- [Conventional Commits](../../sources/standards/conventional-commits.md) - Auto-resolved from conventional-commits
+- [Git Flow](../../sources/standards/gitflow.md) - Auto-resolved from gitflow
+- [Go io](../../sources/go/stdlib/io.md) - Auto-resolved from go-io

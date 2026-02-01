@@ -128,6 +128,6 @@ Target: **80% minimum**
 - [WEBSOCKETS (Syncplay)](features/playback/SYNCPLAY.md)
 
 ### External Sources
-- [coder/websocket GitHub README](../sources/tooling/websocket-guide.md) - Auto-resolved from coder-websocket-docs
+- [coder/websocket GitHub README](../../sources/tooling/websocket-guide.md) - Auto-resolved from coder-websocket-docs
 - [nhooyr.io/websocket](https://pkg.go.dev/nhooyr.io/websocket) - WebSocket library (coder/websocket)
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx

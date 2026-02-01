@@ -264,7 +264,7 @@ Target: **80% minimum**
 - [WEBHOOKS](technical/WEBHOOKS.md)
 
 ### External Sources
-- [go-mail GitHub README](../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail
-- [go-fcm](../sources/tooling/go-fcm.md) - FCM push notifications
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
+- [go-mail GitHub README](../../sources/tooling/go-mail-guide.md) - Auto-resolved from go-mail
+- [go-fcm](../../sources/tooling/go-fcm.md) - FCM push notifications
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx

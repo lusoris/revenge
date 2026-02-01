@@ -145,8 +145,8 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [ErsatzTV Documentation](../sources/livetv/ersatztv-guide.md) - Auto-resolved from ersatztv-docs
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - Auto-resolved from gohlslib
-- [M3U8 Extended Format](../sources/protocols/m3u8.md) - Auto-resolved from m3u8
-- [River Job Queue](../sources/tooling/river.md) - Auto-resolved from river
-- [XMLTV Format](../sources/protocols/xmltv.md) - Auto-resolved from xmltv
+- [ErsatzTV Documentation](../../sources/livetv/ersatztv-guide.md) - Auto-resolved from ersatztv-docs
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - Auto-resolved from gohlslib
+- [M3U8 Extended Format](../../sources/protocols/m3u8.md) - Auto-resolved from m3u8
+- [River Job Queue](../../sources/tooling/river.md) - Auto-resolved from river
+- [XMLTV Format](../../sources/protocols/xmltv.md) - Auto-resolved from xmltv

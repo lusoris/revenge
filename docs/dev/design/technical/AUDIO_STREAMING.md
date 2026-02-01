@@ -201,6 +201,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [gohlslib (HLS)](../sources/media/gohlslib.md) - HLS server implementation
-- [go-astiav (FFmpeg)](../sources/media/go-astiav.md) - Audio transcoding
-- [Dragonfly](../sources/infrastructure/dragonfly.md) - Progress tracking cache
+- [gohlslib (HLS)](../../sources/media/gohlslib.md) - HLS server implementation
+- [go-astiav (FFmpeg)](../../sources/media/go-astiav.md) - Audio transcoding
+- [Dragonfly](../../sources/infrastructure/dragonfly.md) - Progress tracking cache

@@ -131,8 +131,8 @@ Target: **80% minimum**
 - [02_DESIGN_PRINCIPLES](../architecture/02_DESIGN_PRINCIPLES.md)
 
 ### External Sources
-- [Go Testing](../sources/go/stdlib/testing.md) - Standard library testing
+- [Go Testing](../../sources/go/stdlib/testing.md) - Standard library testing
 - [Testify](https://github.com/stretchr/testify) - Assertions and test suites
-- [Mockery](../sources/testing/mockery-guide.md) - Mock generation
-- [Testcontainers Go](../sources/testing/testcontainers.md) - Integration testing with containers
-- [Embedded Postgres](../sources/testing/embedded-postgres-guide.md) - Fast PostgreSQL for unit tests
+- [Mockery](../../sources/testing/mockery-guide.md) - Mock generation
+- [Testcontainers Go](../../sources/testing/testcontainers.md) - Integration testing with containers
+- [Embedded Postgres](../../sources/testing/embedded-postgres-guide.md) - Fast PostgreSQL for unit tests

@@ -140,6 +140,6 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [go-blurhash](../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
-- [MusicBrainz API](../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz
+- [go-blurhash](../../sources/media/go-blurhash.md) - Auto-resolved from go-blurhash
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [MusicBrainz API](../../sources/apis/musicbrainz.md) - Auto-resolved from musicbrainz

@@ -131,7 +131,7 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [River Job Queue](../sources/tooling/river.md) - Background job processing
-- [rueidis](../sources/tooling/rueidis.md) - Distributed cache (L2)
+- [River Job Queue](../../sources/tooling/river.md) - Background job processing
+- [rueidis](../../sources/tooling/rueidis.md) - Distributed cache (L2)
 - [Otter](https://pkg.go.dev/github.com/maypok86/otter) - In-memory cache (L1)
-- [Sturdyc](../sources/tooling/sturdyc-guide.md) - Request coalescing cache
+- [Sturdyc](../../sources/tooling/sturdyc-guide.md) - Request coalescing cache

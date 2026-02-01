@@ -138,5 +138,5 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../../../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Go context](../sources/go/stdlib/context.md) - Auto-resolved from go-context
-- [Last.fm API](../sources/apis/lastfm.md) - Auto-resolved from lastfm-api
+- [Go context](../../sources/go/stdlib/context.md) - Auto-resolved from go-context
+- [Last.fm API](../../sources/apis/lastfm.md) - Auto-resolved from lastfm-api

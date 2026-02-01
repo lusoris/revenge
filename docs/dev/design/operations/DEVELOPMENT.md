@@ -140,9 +140,9 @@ Target: **80% minimum**
 
 ### External Sources
 - [Go Installation](https://go.dev/doc/install) - Official Go installation guide
-- [air Hot Reload](../sources/go_dev_tools/air/main.md) - Go hot reload tool
+- [air Hot Reload](../../sources/go_dev_tools/air/main.md) - Go hot reload tool
 - [Vite](https://vitejs.dev/guide/) - Frontend build tool
 - [PostgreSQL Downloads](https://www.postgresql.org/download/) - PostgreSQL installation
 - [Node.js Downloads](https://nodejs.org/) - Node.js LTS releases
-- [sqlc](../sources/database/sqlc.md) - SQL code generation
-- [Conventional Commits](../sources/standards/conventional-commits.md) - Commit message format
+- [sqlc](../../sources/database/sqlc.md) - SQL code generation
+- [Conventional Commits](../../sources/standards/conventional-commits.md) - Commit message format

@@ -184,9 +184,9 @@ Target: **80% minimum**
 - [USER_EXPERIENCE_FEATURES](features/shared/USER_EXPERIENCE_FEATURES.md)
 
 ### External Sources
-- [shadcn-svelte](../sources/frontend/shadcn-svelte.md) - Component library
-- [Bits UI](../sources/frontend/bits-ui.md) - Headless UI primitives
-- [Tailwind CSS 4](../sources/frontend/tailwindcss.md) - Utility-first CSS
+- [shadcn-svelte](../../sources/frontend/shadcn-svelte.md) - Component library
+- [Bits UI](../../sources/frontend/bits-ui.md) - Headless UI primitives
+- [Tailwind CSS 4](../../sources/frontend/tailwindcss.md) - Utility-first CSS
 - [Lucide Icons](https://lucide.dev/icons/) - Icon library (standard mode)
 - [Vidstack Player](https://www.vidstack.io/docs/player) - Video player components
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/) - Accessibility standards (targeting AAA)

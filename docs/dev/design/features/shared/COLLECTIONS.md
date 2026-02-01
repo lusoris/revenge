@@ -290,5 +290,5 @@ Target: **80% minimum**
 - [LIBRARY_TYPES](features/shared/LIBRARY_TYPES.md)
 
 ### External Sources
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen

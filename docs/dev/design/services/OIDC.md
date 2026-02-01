@@ -156,10 +156,10 @@ Target: **80% minimum**
 - [03_METADATA_SYSTEM](../architecture/03_METADATA_SYSTEM.md)
 
 ### External Sources
-- [Authelia Documentation](../sources/security/authelia.md) - Auto-resolved from authelia
-- [Authentik Documentation](../sources/security/authentik.md) - Auto-resolved from authentik
-- [Uber fx](../sources/tooling/fx.md) - Auto-resolved from fx
-- [Keycloak Documentation](../sources/security/keycloak.md) - Auto-resolved from keycloak
-- [ogen OpenAPI Generator](../sources/tooling/ogen.md) - Auto-resolved from ogen
-- [sqlc](../sources/database/sqlc.md) - Auto-resolved from sqlc
-- [sqlc Configuration](../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config
+- [Authelia Documentation](../../sources/security/authelia.md) - Auto-resolved from authelia
+- [Authentik Documentation](../../sources/security/authentik.md) - Auto-resolved from authentik
+- [Uber fx](../../sources/tooling/fx.md) - Auto-resolved from fx
+- [Keycloak Documentation](../../sources/security/keycloak.md) - Auto-resolved from keycloak
+- [ogen OpenAPI Generator](../../sources/tooling/ogen.md) - Auto-resolved from ogen
+- [sqlc](../../sources/database/sqlc.md) - Auto-resolved from sqlc
+- [sqlc Configuration](../../sources/database/sqlc-config.md) - Auto-resolved from sqlc-config

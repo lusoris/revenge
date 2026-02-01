@@ -122,5 +122,5 @@ Target: **80% minimum**
 - [00_SOURCE_OF_TRUTH](../00_SOURCE_OF_TRUTH.md)
 
 ### External Sources
-- [koanf](../sources/tooling/koanf.md) - Configuration management
-- [go-playground/validator](../sources/tooling/validator.md) - Config validation
+- [koanf](../../sources/tooling/koanf.md) - Configuration management
+- [go-playground/validator](../../sources/tooling/validator.md) - Config validation
