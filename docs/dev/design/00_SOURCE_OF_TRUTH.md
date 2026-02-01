@@ -153,8 +153,8 @@ This applies to ALL data types across all modules.
 
 | Package | Version | Purpose | Notes |
 |---------|---------|---------|-------|
-| `go.uber.org/fx` | v1.23.0 | Dependency injection | Lifecycle hooks, graceful shutdown |
-| `github.com/jackc/pgx/v5` | v5.7.5 | PostgreSQL driver | Self-healing pool via pgxpool |
+| `go.uber.org/fx` | v1.24.0 | Dependency injection | Lifecycle hooks, graceful shutdown |
+| `github.com/jackc/pgx/v5` | v5.8.0 | PostgreSQL driver | Self-healing pool via pgxpool |
 | `github.com/riverqueue/river` | v0.26.0 | Job queue | PostgreSQL-backed, transactional |
 | `github.com/redis/rueidis` | v1.0.49 | Redis/Dragonfly client | Pipelining, client-side cache |
 | `github.com/maypok86/otter` | v1.2.4 | In-memory cache | W-TinyLFU, faster than Ristretto |
