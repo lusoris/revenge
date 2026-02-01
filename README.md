@@ -1,8 +1,8 @@
 # Revenge
 
-[![CI](https://github.com/lusoris/revenge/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/lusoris/revenge)](https://goreportcard.com/report/github.com/lusoris/revenge)
-[![Go Version](https://img.shields.io/github/go-mod-go-version/lusoris/revenge)](go.mod)
+[![Dev Build](https://github.com/lusoris/revenge/actions/workflows/dev.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/dev.yml)
+[![CodeQL](https://github.com/lusoris/revenge/actions/workflows/codeql.yml/badge.svg?branch=develop)](https://github.com/lusoris/revenge/actions/workflows/codeql.yml)
+[![Go Version](https://img.shields.io/github/go-mod-go-version/lusoris/revenge?branch=develop)](go.mod)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 > Modular media server with complete content isolation
