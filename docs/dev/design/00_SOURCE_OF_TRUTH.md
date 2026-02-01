@@ -33,7 +33,7 @@
 | Topic | Document |
 |-------|----------|
 | Full Design Index | [DESIGN_INDEX.md](DESIGN_INDEX.md) |
-| Navigation Map | [NAVIGATION.md](NAVIGATION.md) |
+| Navigation Map | [NAVIGATION.md](technical/design/NAVIGATION.md) |
 | External Sources | [SOURCES_INDEX.md](../sources/SOURCES_INDEX.md) |
 | Design ↔ Sources | [DESIGN_CROSSREF.md](../sources/DESIGN_CROSSREF.md) |
 
@@ -405,15 +405,15 @@ Examples:
 | Document | Path | Description |
 |----------|------|-------------|
 | **Index** | [DESIGN_SYSTEM.md](technical/DESIGN_SYSTEM.md) | Master index, overview |
-| **Brand Identity** | [BRAND_IDENTITY.yaml](../../data/technical/design/BRAND_IDENTITY.yaml) | Logo, theming, voice |
-| **Color System** | [COLOR_SYSTEM.yaml](../../data/technical/design/COLOR_SYSTEM.yaml) | Module colors, themes |
-| **Typography** | [TYPOGRAPHY.yaml](../../data/technical/design/TYPOGRAPHY.yaml) | Fonts, text styles |
-| **Layout** | [LAYOUT.yaml](../../data/technical/design/LAYOUT.yaml) | Spacing, breakpoints |
-| **Components** | [COMPONENTS.yaml](../../data/technical/design/COMPONENTS.yaml) | UI component specs |
-| **Navigation** | [NAVIGATION.yaml](../../data/technical/design/NAVIGATION.yaml) | Nav patterns, shortcuts |
-| **Motion** | [MOTION.yaml](../../data/technical/design/MOTION.yaml) | Animations, transitions |
-| **Accessibility** | [ACCESSIBILITY.yaml](../../data/technical/design/ACCESSIBILITY.yaml) | WCAG compliance |
-| **Pirate Mode** | [PIRATE_MODE.yaml](../../data/technical/design/PIRATE_MODE.yaml) | Easter eggs, themes |
+| **Brand Identity** | [BRAND_IDENTITY.yaml](../../../data/technical/design/BRAND_IDENTITY.yaml) | Logo, theming, voice |
+| **Color System** | [COLOR_SYSTEM.yaml](../../../data/technical/design/COLOR_SYSTEM.yaml) | Module colors, themes |
+| **Typography** | [TYPOGRAPHY.yaml](../../../data/technical/design/TYPOGRAPHY.yaml) | Fonts, text styles |
+| **Layout** | [LAYOUT.yaml](../../../data/technical/design/LAYOUT.yaml) | Spacing, breakpoints |
+| **Components** | [COMPONENTS.yaml](../../../data/technical/design/COMPONENTS.yaml) | UI component specs |
+| **Navigation** | [NAVIGATION.yaml](../../../data/technical/design/NAVIGATION.yaml) | Nav patterns, shortcuts |
+| **Motion** | [MOTION.yaml](../../../data/technical/design/MOTION.yaml) | Animations, transitions |
+| **Accessibility** | [ACCESSIBILITY.yaml](../../../data/technical/design/ACCESSIBILITY.yaml) | WCAG compliance |
+| **Pirate Mode** | [PIRATE_MODE.yaml](../../../data/technical/design/PIRATE_MODE.yaml) | Easter eggs, themes |
 
 ### Core Design Decisions
 
