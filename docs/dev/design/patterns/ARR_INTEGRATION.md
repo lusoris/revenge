@@ -104,7 +104,6 @@ Standard pattern for Arr stack integration:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -117,7 +116,6 @@ Standard pattern for Arr stack integration:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

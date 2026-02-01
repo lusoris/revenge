@@ -164,7 +164,6 @@ type SearchResults struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/typesense/typesense-go` - Official Typesense client
 - `github.com/google/uuid` - UUID support
@@ -196,7 +195,6 @@ TYPESENSE_BATCH_SIZE=100
 
 
 ### Config Keys
-
 ```yaml
 search:
   typesense:

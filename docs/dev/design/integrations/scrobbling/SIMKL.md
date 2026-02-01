@@ -148,7 +148,6 @@ type ScrobbleItem struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/google/uuid` - UUID support
@@ -178,7 +177,6 @@ SIMKL_AUTO_SCROBBLE=true
 
 
 ### Config Keys
-
 ```yaml
 integrations:
   simkl:

@@ -166,7 +166,6 @@ type Setting struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -188,7 +187,6 @@ SETTINGS_CACHE_TTL=5m
 
 
 ### Config Keys
-
 ```yaml
 settings:
   cache_ttl: 5m

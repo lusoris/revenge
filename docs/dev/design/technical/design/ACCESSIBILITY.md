@@ -95,7 +95,6 @@ Accessibility features:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -108,7 +107,6 @@ Accessibility features:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

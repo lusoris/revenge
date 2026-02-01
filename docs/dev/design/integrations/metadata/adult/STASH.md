@@ -127,7 +127,6 @@ internal/integration/stash/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -140,7 +139,6 @@ internal/integration/stash/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

@@ -225,7 +225,6 @@ type JSONRPCError struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/bluenviron/gohlslib/v2` - HLS handling
 - `github.com/riverqueue/river` - Background sync jobs
@@ -252,7 +251,6 @@ REVENGE_NEXTPVR_SYNC_INTERVAL=15m
 
 
 ### Config Keys
-
 ```yaml
 livetv:
   nextpvr:

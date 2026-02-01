@@ -120,7 +120,6 @@ Decision rationale:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -133,7 +132,6 @@ Decision rationale:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

@@ -179,7 +179,6 @@ func parseInfobox(wikitext string) (*PerformerInfo, error) {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Rate limiting
@@ -206,7 +205,6 @@ BOOBPEDIA_CACHE_TTL=336h          # 14 days
 
 
 ### Config Keys
-
 ```yaml
 qar:
   metadata:

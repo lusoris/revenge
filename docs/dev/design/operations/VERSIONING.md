@@ -107,7 +107,6 @@ design_refs:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -120,7 +119,6 @@ design_refs:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

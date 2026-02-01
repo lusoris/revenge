@@ -178,7 +178,6 @@ type Fingerprint struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -208,7 +207,6 @@ FINGERPRINT_DUPLICATE_THRESHOLD=0.95
 
 
 ### Config Keys
-
 ```yaml
 fingerprint:
   enabled: true

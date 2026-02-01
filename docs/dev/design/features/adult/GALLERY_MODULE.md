@@ -300,7 +300,6 @@ type Download struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid` - UUID handling
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
@@ -341,7 +340,6 @@ PROWLARR_CATEGORIES=2030,2040                     # Adult image categories
 
 
 ### Config Keys
-
 ```yaml
 gallery:
   library_path: /path/to/galleries

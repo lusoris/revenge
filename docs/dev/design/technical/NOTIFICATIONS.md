@@ -117,7 +117,6 @@ Unified notification delivery:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -130,7 +129,6 @@ Unified notification delivery:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

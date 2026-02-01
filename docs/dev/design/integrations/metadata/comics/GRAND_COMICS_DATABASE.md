@@ -158,7 +158,6 @@ type Issue struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Polite rate limiting
@@ -185,7 +184,6 @@ GCD_CACHE_TTL=168h    # 7 days
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

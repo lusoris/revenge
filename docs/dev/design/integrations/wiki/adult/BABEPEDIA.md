@@ -168,7 +168,6 @@ func (p *BabepediaProvider) parseProfile(doc *goquery.Document) (*PerformerProfi
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/PuerkitoBio/goquery` - HTML parsing
 - `golang.org/x/time/rate` - Rate limiting
@@ -199,7 +198,6 @@ BABEPEDIA_USE_PROXY=true          # Use proxy pool from HTTP_CLIENT
 
 
 ### Config Keys
-
 ```yaml
 qar:
   metadata:

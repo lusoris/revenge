@@ -173,7 +173,6 @@ func (w *LibraryScanWorker) Work(ctx context.Context, job *river.Job[LibraryScan
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/riverqueue/river` - Job queue
 - `github.com/riverqueue/river/riverdriver/riverpgxv5` - PostgreSQL driver
@@ -203,7 +202,6 @@ RIVER_QUEUE_HIGH_PRIORITY=10
 
 
 ### Config Keys
-
 ```yaml
 jobs:
   river:

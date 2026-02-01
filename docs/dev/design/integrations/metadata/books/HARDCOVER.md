@@ -137,7 +137,6 @@ type TokenStore interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/Khan/genqlient` - Type-safe GraphQL client
 - `golang.org/x/oauth2` - OAuth 2.0
@@ -164,7 +163,6 @@ HARDCOVER_REDIRECT_URI=https://your-revenge-server/api/v1/integrations/hardcover
 
 
 ### Config Keys
-
 ```yaml
 scrobbling:
   hardcover:

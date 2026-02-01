@@ -163,7 +163,6 @@ type L1Config struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/redis/rueidis` - High-performance Redis client
 - `github.com/maypok86/otter` - L1 in-memory cache
@@ -199,7 +198,6 @@ CACHE_L2_TTL=1h
 
 
 ### Config Keys
-
 ```yaml
 cache:
   dragonfly:

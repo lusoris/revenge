@@ -145,7 +145,6 @@ type Library struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -167,7 +166,6 @@ LIBRARIES_AUTO_SCAN_INTERVAL=6h
 
 
 ### Config Keys
-
 ```yaml
 libraries:
   auto_scan_interval: 6h

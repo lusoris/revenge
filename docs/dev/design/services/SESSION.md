@@ -181,7 +181,6 @@ type DeviceInfo struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -211,7 +210,6 @@ SESSION_CLEANUP_INTERVAL=1h
 
 
 ### Config Keys
-
 ```yaml
 session:
   token_length: 32

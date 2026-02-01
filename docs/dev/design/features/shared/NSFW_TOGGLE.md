@@ -159,7 +159,6 @@ type NSFWService interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -180,7 +179,6 @@ NSFW_DEFAULT_SESSION_TIMEOUT=60
 
 
 ### Config Keys
-
 ```yaml
 nsfw:
   default_session_timeout_minutes: 60

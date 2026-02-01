@@ -208,7 +208,6 @@ type TokenIntrospection struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
 - `golang.org/x/oauth2` - OAuth2 flow
@@ -238,7 +237,6 @@ REVENGE_OIDC_KEYCLOAK_AUDIENCE=revenge-api
 
 
 ### Config Keys
-
 ```yaml
 auth:
   oidc:

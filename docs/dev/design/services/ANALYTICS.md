@@ -158,7 +158,6 @@ type ServerStats struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -181,7 +180,6 @@ ANALYTICS_RETENTION_DAYS=365
 
 
 ### Config Keys
-
 ```yaml
 analytics:
   aggregation_interval: 1h

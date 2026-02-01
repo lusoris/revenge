@@ -91,7 +91,6 @@ Pirate mode features:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -104,7 +103,6 @@ Pirate mode features:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

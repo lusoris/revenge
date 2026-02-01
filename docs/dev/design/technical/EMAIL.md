@@ -106,7 +106,6 @@ Complete email infrastructure:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -119,7 +118,6 @@ Complete email infrastructure:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

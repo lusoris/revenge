@@ -142,7 +142,6 @@ type TrackMetadata struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/google/uuid` - UUID support (for MBIDs)
@@ -169,7 +168,6 @@ LISTENBRAINZ_IMPORT_ON_CONNECT=true
 
 
 ### Config Keys
-
 ```yaml
 integrations:
   listenbrainz:

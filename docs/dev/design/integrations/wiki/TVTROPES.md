@@ -159,7 +159,6 @@ func FormatTropesTitle(title string) string {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/PuerkitoBio/goquery` - HTML parsing for verification
@@ -187,7 +186,6 @@ TVTROPES_CACHE_TTL=168h
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

@@ -242,7 +242,6 @@ type WebSocketManager interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 ```go
 require (
@@ -314,7 +313,6 @@ SYNCPLAY_WS_PONG_TIMEOUT_SECONDS=60
 
 
 ### Config Keys
-
 ```yaml
 syncplay:
   # Feature toggle

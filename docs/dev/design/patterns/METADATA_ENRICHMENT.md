@@ -104,7 +104,6 @@ Standardized metadata enrichment pattern:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -117,7 +116,6 @@ Standardized metadata enrichment pattern:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

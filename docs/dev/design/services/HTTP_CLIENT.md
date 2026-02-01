@@ -282,7 +282,6 @@ func RetryMiddleware(maxRetries int, backoff time.Duration) Middleware
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `net/http.Transport` - Transport configuration
@@ -318,7 +317,6 @@ DEFAULT_PROXY=tor  # "tor", "http", "vpn", "none"
 
 
 ### Config Keys
-
 ```yaml
 httpclient:
   # Global settings

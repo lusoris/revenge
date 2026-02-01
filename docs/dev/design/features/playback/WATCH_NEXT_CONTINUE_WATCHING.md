@@ -229,7 +229,6 @@ type SuggestionEngine interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 ```go
 require (
@@ -291,7 +290,6 @@ PLAYBACK_CLEANUP_OLD_PROGRESS_DAYS=365      # Delete progress older than X days
 
 
 ### Config Keys
-
 ```yaml
 playback:
   # Continue Watching settings

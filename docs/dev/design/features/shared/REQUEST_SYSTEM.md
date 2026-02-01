@@ -213,7 +213,6 @@ type MetadataFetcher interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -255,7 +254,6 @@ LIDARR_API_KEY=your_api_key
 
 
 ### Config Keys
-
 ```yaml
 requests:
   enabled: true

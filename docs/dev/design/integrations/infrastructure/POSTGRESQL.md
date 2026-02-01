@@ -160,7 +160,6 @@ type PostgresConfig struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
 - `github.com/jackc/pgx/v5/pgxpool` - Connection pooling
@@ -197,7 +196,6 @@ POSTGRES_MAX_CONN_IDLE_TIME=30m
 
 
 ### Config Keys
-
 ```yaml
 database:
   postgres:

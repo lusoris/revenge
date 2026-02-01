@@ -268,7 +268,6 @@ type FFmpegClient interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 ```go
 require (
@@ -348,7 +347,6 @@ SKIP_INTRO_BUTTON_DURATION_SEC=10        # Show button for X seconds
 
 
 ### Config Keys
-
 ```yaml
 skip_intro:
   # Feature toggle

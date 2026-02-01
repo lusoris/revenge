@@ -164,7 +164,6 @@ type EpisodeIdentifiers struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/oauth2` - OAuth 2.0 client
@@ -199,7 +198,6 @@ TRAKT_SCROBBLE_THRESHOLD=90  # Scrobble at 90% progress
 
 
 ### Config Keys
-
 ```yaml
 integrations:
   trakt:

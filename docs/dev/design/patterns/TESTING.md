@@ -106,7 +106,6 @@ Standard testing approach for Revenge project:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -119,7 +118,6 @@ Standard testing approach for Revenge project:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

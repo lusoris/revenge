@@ -193,7 +193,6 @@ type EpisodeMetadata struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/google/uuid` - UUID support
@@ -226,7 +225,6 @@ TVDB_CACHE_TTL=24h
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

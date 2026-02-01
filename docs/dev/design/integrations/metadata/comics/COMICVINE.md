@@ -164,7 +164,6 @@ type Issue struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Rate limiting (200/hour = ~3.3/min)
@@ -191,7 +190,6 @@ COMICVINE_CACHE_TTL=168h    # 7 days
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

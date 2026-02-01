@@ -317,7 +317,6 @@ type GraphQLError struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/riverqueue/river` - Background job queue for async scrobbling
 - `golang.org/x/oauth2` - OAuth 2.0 client
@@ -349,7 +348,6 @@ REVENGE_ANILIST_AUTO_SYNC=true
 
 
 ### Config Keys
-
 ```yaml
 scrobbling:
   anilist:

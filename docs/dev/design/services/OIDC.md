@@ -154,7 +154,6 @@ type OIDCService interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -176,7 +175,6 @@ OIDC_CALLBACK_URL=https://revenge.example.com/api/v1/oidc/callback
 
 
 ### Config Keys
-
 ```yaml
 oidc:
   callback_url: https://revenge.example.com/api/v1/oidc/callback

@@ -348,7 +348,6 @@ type ClientFactory interface {
 
 
 ### Dependencies
-
 **Core**:
 - `go.uber.org/fx` - Dependency injection
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
@@ -418,7 +417,6 @@ type ClientFactory interface {
 
 
 ### Config Keys
-
 **config.yaml structure**:
 ```yaml
 database:

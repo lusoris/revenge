@@ -125,7 +125,6 @@ Modern reactive frontend for Revenge:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -138,7 +137,6 @@ Modern reactive frontend for Revenge:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

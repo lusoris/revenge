@@ -97,7 +97,6 @@ Revenge configuration management:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -110,7 +109,6 @@ Revenge configuration management:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

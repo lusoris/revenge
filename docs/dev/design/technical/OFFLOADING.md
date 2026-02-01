@@ -122,7 +122,6 @@ Complete offloading strategy:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -135,7 +134,6 @@ Complete offloading strategy:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

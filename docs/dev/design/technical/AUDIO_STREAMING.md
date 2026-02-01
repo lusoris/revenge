@@ -107,7 +107,6 @@ Audio streaming architecture:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -120,7 +119,6 @@ Audio streaming architecture:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

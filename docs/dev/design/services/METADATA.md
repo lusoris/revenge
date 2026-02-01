@@ -190,7 +190,6 @@ type Metadata struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -234,7 +233,6 @@ METADATA_CACHE_TTL=24h
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   # Priority chain configuration

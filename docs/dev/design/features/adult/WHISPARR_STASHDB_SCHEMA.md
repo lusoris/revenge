@@ -311,7 +311,6 @@ type WebhookEvent struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid` - UUID handling
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
@@ -358,7 +357,6 @@ WHISPARR_WEBHOOK_SECRET=random-secret             # Webhook authentication
 
 
 ### Config Keys
-
 ```yaml
 whisparr:
   enabled: true

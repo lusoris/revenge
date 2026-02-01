@@ -112,7 +112,6 @@ All integrated via OpenTelemetry SDK for unified observability.
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -125,7 +124,6 @@ All integrated via OpenTelemetry SDK for unified observability.
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

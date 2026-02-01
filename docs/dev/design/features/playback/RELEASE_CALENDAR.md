@@ -147,7 +147,6 @@ type CalendarEvent struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -170,7 +169,6 @@ CALENDAR_SONARR_URL=http://localhost:8989
 
 
 ### Config Keys
-
 ```yaml
 calendar:
   sync_interval: 1h

@@ -120,7 +120,6 @@ Tracks completion across:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -133,7 +132,6 @@ Tracks completion across:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

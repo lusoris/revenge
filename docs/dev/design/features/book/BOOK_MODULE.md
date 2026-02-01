@@ -291,7 +291,6 @@ type ProgressTracker interface {
 
 
 ### Dependencies
-
 **Go Dependencies**:
 - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
 - `github.com/google/uuid` - UUID generation
@@ -338,7 +337,6 @@ type ProgressTracker interface {
 
 
 ### Config Keys
-
 **config.yaml keys**:
 ```yaml
 book:

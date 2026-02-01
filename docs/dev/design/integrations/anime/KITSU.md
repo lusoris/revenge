@@ -325,7 +325,6 @@ type OAuthTokenResponse struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/riverqueue/river` - Background job queue
 - `golang.org/x/oauth2` - OAuth 2.0 client
@@ -358,7 +357,6 @@ REVENGE_KITSU_SYNC_INTERVAL=24h
 
 
 ### Config Keys
-
 ```yaml
 scrobbling:
   kitsu:

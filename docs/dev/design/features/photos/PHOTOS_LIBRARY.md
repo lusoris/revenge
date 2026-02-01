@@ -320,7 +320,6 @@ type GeocodingProvider interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 ```go
 require (
@@ -413,7 +412,6 @@ PHOTOS_WORKER_CONCURRENCY=4               # Concurrent processing jobs
 
 
 ### Config Keys
-
 ```yaml
 photos:
   # Storage configuration

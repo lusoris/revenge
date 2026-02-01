@@ -166,7 +166,6 @@ func (p *OnlyFansProvider) GetProfileInfo(
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Rate limiting
@@ -200,7 +199,6 @@ ONLYFANS_PROXY_URL=socks5://127.0.0.1:9050
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

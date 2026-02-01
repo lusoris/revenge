@@ -182,7 +182,6 @@ type UserProfile struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -208,7 +207,6 @@ USER_DELETION_GRACE_PERIOD=720h  # 30 days
 
 
 ### Config Keys
-
 ```yaml
 user:
   storage:

@@ -210,7 +210,6 @@ type SocialLink struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/PuerkitoBio/goquery` - HTML parsing (jQuery-like)
@@ -252,7 +251,6 @@ FREEONES_PROXY_URL=socks5://127.0.0.1:9050
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

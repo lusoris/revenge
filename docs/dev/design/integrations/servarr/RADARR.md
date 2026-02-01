@@ -164,7 +164,6 @@ type RadarrMovie struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/google/uuid` - UUID support
@@ -195,7 +194,6 @@ RADARR_SYNC_INTERVAL=300  # 5 minutes
 
 
 ### Config Keys
-
 ```yaml
 integrations:
   radarr:

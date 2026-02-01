@@ -106,7 +106,6 @@ internal/integration/goodreads/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -119,7 +118,6 @@ internal/integration/goodreads/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

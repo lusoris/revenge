@@ -154,7 +154,6 @@ type PersonBio struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Polite rate limiting
@@ -182,7 +181,6 @@ WIKIPEDIA_RATE_LIMIT=1      # req/sec
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

@@ -240,7 +240,6 @@ type FFmpegExtractor interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 ```go
 require (
@@ -317,7 +316,6 @@ TRICKPLAY_CLEANUP_ON_DELETE=true         # Delete tiles when content deleted
 
 
 ### Config Keys
-
 ```yaml
 trickplay:
   # Feature toggle

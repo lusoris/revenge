@@ -167,7 +167,6 @@ type SimilarArtist struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `encoding/xml` - XML parsing (Last.fm uses XML by default)
@@ -197,7 +196,6 @@ LASTFM_CACHE_TTL=168h  # 7 days
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

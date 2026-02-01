@@ -162,7 +162,6 @@ type WikiLink struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Polite rate limiting
@@ -189,7 +188,6 @@ FANDOM_CACHE_TTL=168h
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

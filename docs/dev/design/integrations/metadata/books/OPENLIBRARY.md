@@ -110,7 +110,6 @@ internal/integration/openlibrary/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -123,7 +122,6 @@ internal/integration/openlibrary/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

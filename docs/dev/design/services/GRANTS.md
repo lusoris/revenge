@@ -156,7 +156,6 @@ type GrantRequest struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -179,7 +178,6 @@ GRANTS_DEFAULT_EXPIRY=168h  # 7 days
 
 
 ### Config Keys
-
 ```yaml
 grants:
   cleanup_interval: 1h

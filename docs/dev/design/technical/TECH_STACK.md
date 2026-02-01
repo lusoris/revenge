@@ -220,7 +220,6 @@ Stack overview:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -233,7 +232,6 @@ Stack overview:
 [{'name': 'REVENGE_SERVER_HOST', 'type': 'string', 'default': '0.0.0.0', 'description': 'Server bind address'}, {'name': 'REVENGE_SERVER_PORT', 'type': 'int', 'default': 8080, 'description': 'Server listen port'}, {'name': 'REVENGE_DATABASE_URL', 'type': 'string', 'required': True, 'description': 'PostgreSQL connection string (postgres://user:pass@host:5432/db)'}, {'name': 'REVENGE_CACHE_REDIS_ADDR', 'type': 'string', 'default': 'localhost:6379', 'description': 'Dragonfly/Redis address for L2 cache'}, {'name': 'REVENGE_SEARCH_HOST', 'type': 'string', 'default': 'localhost:8108', 'description': 'Typesense server host'}, {'name': 'REVENGE_JOBS_ENABLED', 'type': 'bool', 'default': True, 'description': 'Enable River job queue'}]
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

@@ -199,7 +199,6 @@ const (
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/vishen/go-chromecast` - Cast protocol client
 - `github.com/grandcat/zeroconf` - mDNS discovery
@@ -228,7 +227,6 @@ REVENGE_CAST_AUTO_RECONNECT=true
 
 
 ### Config Keys
-
 ```yaml
 casting:
   chromecast:

@@ -96,7 +96,6 @@ Brand personality and visual identity:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -109,7 +108,6 @@ Brand personality and visual identity:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

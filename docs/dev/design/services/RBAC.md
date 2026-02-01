@@ -152,7 +152,6 @@ type RBACService interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -175,7 +174,6 @@ RBAC_POLICY_RELOAD_INTERVAL=5m
 
 
 ### Config Keys
-
 ```yaml
 rbac:
   model_path: /config/casbin_model.conf

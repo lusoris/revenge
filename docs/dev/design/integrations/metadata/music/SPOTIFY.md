@@ -169,7 +169,6 @@ type Image struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `encoding/base64` - Base64 encoding for Client Credentials auth
@@ -200,7 +199,6 @@ SPOTIFY_CACHE_TTL=168h  # 7 days
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

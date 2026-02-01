@@ -149,7 +149,6 @@ type WikiService interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -170,7 +169,6 @@ WIKI_ENABLED=true
 
 
 ### Config Keys
-
 ```yaml
 wiki:
   enabled: true

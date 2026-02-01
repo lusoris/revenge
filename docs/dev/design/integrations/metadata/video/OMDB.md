@@ -174,7 +174,6 @@ type Rating struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/google/uuid` - UUID support
@@ -205,7 +204,6 @@ OMDB_CACHE_TTL=168h  # 7 days
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

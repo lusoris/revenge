@@ -215,7 +215,6 @@ type DLNAProfile struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/anacrolix/dms` - DLNA MediaServer implementation
 - `github.com/koron/go-ssdp` - SSDP discovery
@@ -244,7 +243,6 @@ REVENGE_DLNA_ANNOUNCE_INTERVAL=30s
 
 
 ### Config Keys
-
 ```yaml
 casting:
   dlna:

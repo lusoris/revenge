@@ -100,7 +100,6 @@ internal/integration/whisparr_v3_eros__adult_content_structure_analysis/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -113,7 +112,6 @@ internal/integration/whisparr_v3_eros__adult_content_structure_analysis/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

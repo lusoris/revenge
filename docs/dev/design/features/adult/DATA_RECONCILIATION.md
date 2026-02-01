@@ -240,7 +240,6 @@ type ManualOverride struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid` - UUID handling
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
@@ -275,7 +274,6 @@ RECONCILIATION_CACHE_TTL=24h                  # Cache expiration
 
 
 ### Config Keys
-
 ```yaml
 reconciliation:
   default_fuzzy_threshold: 0.85        # Default similarity threshold (0.0-1.0)

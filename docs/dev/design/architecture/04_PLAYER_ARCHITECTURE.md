@@ -504,8 +504,16 @@ const (
 
 
 ### Dependencies
-
-{'backend': [{'name': 'github.com/bluenviron/gohlslib/v2', 'version': 'v2.0.0', 'purpose': 'HLS manifest generation and serving'}, {'name': 'github.com/asticode/go-astiav', 'version': 'v0.20.0', 'purpose': 'FFmpeg bindings for transcoding'}, {'name': 'github.com/riverqueue/river', 'version': 'v0.14.2', 'purpose': 'Transcode job queue'}, {'name': 'github.com/gorilla/websocket', 'version': 'v1.5.3', 'purpose': 'WebSocket for SyncPlay'}, {'name': 'github.com/pion/webrtc/v4', 'version': 'v4.0.5', 'purpose': 'WebRTC for future P2P streaming'}], 'frontend': [{'name': 'vidstack', 'version': '^1.12.0', 'purpose': 'Web video player framework'}, {'name': 'hls.js', 'version': '^1.5.0', 'purpose': 'HLS adaptive streaming'}, {'name': '@vidstack/react', 'version': '^1.12.0', 'purpose': 'React bindings for Vidstack (mobile)'}]}
+**Backend**:
+- `github.com/bluenviron/gohlslib/v2` (v2.0.0): HLS manifest generation and serving
+- `github.com/asticode/go-astiav` (v0.20.0): FFmpeg bindings for transcoding
+- `github.com/riverqueue/river` (v0.14.2): Transcode job queue
+- `github.com/gorilla/websocket` (v1.5.3): WebSocket for SyncPlay
+- `github.com/pion/webrtc/v4` (v4.0.5): WebRTC for future P2P streaming
+**Frontend**:
+- `vidstack` (^1.12.0): Web video player framework
+- `hls.js` (^1.5.0): HLS adaptive streaming
+- `@vidstack/react` (^1.12.0): React bindings for Vidstack (mobile)
 
 
 
@@ -517,8 +525,23 @@ const (
 <!-- Environment variables -->
 
 ### Config Keys
+**Playback**:
 
-{'playback': [{'key': 'playback.hls.segment_duration', 'type': 'int', 'default': 6, 'description': 'HLS segment duration in seconds'}, {'key': 'playback.hls.playlist_size', 'type': 'int', 'default': 5, 'description': 'Number of segments in media playlist'}, {'key': 'playback.transcode.enabled', 'type': 'bool', 'default': True, 'description': 'Enable transcoding for unsupported formats'}, {'key': 'playback.transcode.hw_accel', 'type': 'string', 'default': 'auto', 'description': 'Hardware acceleration (auto, vaapi, nvenc, qsv, videotoolbox, none)'}, {'key': 'playback.transcode.max_concurrent', 'type': 'int', 'default': 3, 'description': 'Maximum concurrent transcode sessions'}, {'key': 'playback.transcode.profiles', 'type': 'string[]', 'default': ['1080p', '720p', '480p'], 'description': 'Quality profiles for transcoding'}, {'key': 'playback.skip_intro.enabled', 'type': 'bool', 'default': True, 'description': 'Enable skip intro detection'}, {'key': 'playback.skip_intro.auto_skip', 'type': 'bool', 'default': False, 'description': 'Automatically skip intros (user preference)'}, {'key': 'playback.trickplay.enabled', 'type': 'bool', 'default': True, 'description': 'Enable trickplay thumbnail generation'}, {'key': 'playback.trickplay.interval', 'type': 'int', 'default': 10, 'description': 'Thumbnail interval in seconds'}, {'key': 'playback.syncplay.enabled', 'type': 'bool', 'default': True, 'description': 'Enable SyncPlay feature'}, {'key': 'playback.casting.chromecast_enabled', 'type': 'bool', 'default': True, 'description': 'Enable Chromecast support'}, {'key': 'playback.casting.dlna_enabled', 'type': 'bool', 'default': True, 'description': 'Enable DLNA support'}]}
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `playback.hls.segment_duration` | int | 6 | HLS segment duration in seconds |
+| `playback.hls.playlist_size` | int | 5 | Number of segments in media playlist |
+| `playback.transcode.enabled` | bool | True | Enable transcoding for unsupported formats |
+| `playback.transcode.hw_accel` | string | auto | Hardware acceleration (auto, vaapi, nvenc, qsv, videotoolbox, none) |
+| `playback.transcode.max_concurrent` | int | 3 | Maximum concurrent transcode sessions |
+| `playback.transcode.profiles` | string[] | ['1080p', '720p', '480p'] | Quality profiles for transcoding |
+| `playback.skip_intro.enabled` | bool | True | Enable skip intro detection |
+| `playback.skip_intro.auto_skip` | bool | False | Automatically skip intros (user preference) |
+| `playback.trickplay.enabled` | bool | True | Enable trickplay thumbnail generation |
+| `playback.trickplay.interval` | int | 10 | Thumbnail interval in seconds |
+| `playback.syncplay.enabled` | bool | True | Enable SyncPlay feature |
+| `playback.casting.chromecast_enabled` | bool | True | Enable Chromecast support |
+| `playback.casting.dlna_enabled` | bool | True | Enable DLNA support |
 
 
 

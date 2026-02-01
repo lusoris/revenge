@@ -122,7 +122,6 @@ internal/integration/whisparr_v3/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -135,7 +134,6 @@ internal/integration/whisparr_v3/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

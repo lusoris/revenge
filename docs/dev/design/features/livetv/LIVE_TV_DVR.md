@@ -334,7 +334,6 @@ type EPGParser interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 ```go
 require (
@@ -432,7 +431,6 @@ LIVETV_WORKER_CONCURRENCY=3               # Concurrent recording jobs
 
 
 ### Config Keys
-
 ```yaml
 livetv:
   # Sync settings

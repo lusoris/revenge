@@ -101,7 +101,6 @@ Complete WebSocket infrastructure:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -114,7 +113,6 @@ Complete WebSocket infrastructure:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

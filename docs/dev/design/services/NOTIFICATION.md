@@ -179,7 +179,6 @@ type NotificationChannel interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -213,7 +212,6 @@ NOTIFICATION_DELIVERY_WORKERS=5
 
 
 ### Config Keys
-
 ```yaml
 notification:
   email:

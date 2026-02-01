@@ -100,7 +100,6 @@ Complete API documentation for Revenge:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -113,7 +112,6 @@ Complete API documentation for Revenge:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

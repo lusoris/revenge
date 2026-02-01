@@ -148,7 +148,6 @@ type ClientService interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -169,7 +168,6 @@ CLIENTS_AUTO_DETECT_CAPABILITIES=true
 
 
 ### Config Keys
-
 ```yaml
 clients:
   auto_detect_capabilities: true

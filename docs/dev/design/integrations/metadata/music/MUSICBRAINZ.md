@@ -173,7 +173,6 @@ type AlbumMetadata struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Rate limiting (1 request/second)
@@ -215,7 +214,6 @@ MUSICBRAINZ_CACHE_TTL=168h  # 7 days
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

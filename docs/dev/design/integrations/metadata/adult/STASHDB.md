@@ -146,7 +146,6 @@ internal/integration/stashdb/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -159,7 +158,6 @@ internal/integration/stashdb/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

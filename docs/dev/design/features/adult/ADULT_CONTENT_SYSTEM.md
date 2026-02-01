@@ -237,7 +237,6 @@ type Obfuscator interface {
 
 
 ### Dependencies
-
 **Go Dependencies**:
 - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
 - `github.com/google/uuid` - UUID generation
@@ -278,7 +277,6 @@ type Obfuscator interface {
 
 
 ### Config Keys
-
 **config.yaml keys**:
 ```yaml
 qar:

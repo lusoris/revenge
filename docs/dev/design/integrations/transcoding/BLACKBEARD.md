@@ -180,7 +180,6 @@ func (r *TranscodingRouter) Transcode(ctx context.Context, job *TranscodeJob) er
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client for Blackbeard API
 - `encoding/json` - JSON encoding/decoding
@@ -216,7 +215,6 @@ TRANSCODING_EXTERNAL_TIMEOUT=60s     # Timeout for external API calls
 
 
 ### Config Keys
-
 ```yaml
 transcoding:
   # Internal transcoding (always available)

@@ -116,7 +116,25 @@ design_refs:
 
 ### Dependencies
 
-{{ dependencies | default('<!-- Dependency list -->') }}
+{%- if dependencies is defined and dependencies %}
+{%- if dependencies is string %}
+{{ dependencies }}
+{%- elif dependencies is mapping %}
+{%- for category, deps in dependencies.items() %}
+**{{ category | title }}**:
+{%- for dep in deps %}
+- `{{ dep.name }}` ({{ dep.version }}): {{ dep.purpose }}
+{%- endfor %}
+
+{%- endfor %}
+{%- else %}
+{%- for dep in dependencies %}
+- `{{ dep.name }}`: {{ dep.purpose }}
+{%- endfor %}
+{%- endif %}
+{%- else %}
+<!-- Dependency list -->
+{%- endif %}
 {%- endif %}
 {%- endblock %}
 
@@ -159,7 +177,30 @@ design_refs:
 
 ### Config Keys
 
-{{ config_keys | default('<!-- Configuration keys -->') }}
+{%- if config_keys is defined and config_keys %}
+{%- if config_keys is string %}
+{{ config_keys }}
+{%- elif config_keys is mapping %}
+{%- for category, keys in config_keys.items() %}
+**{{ category | title }}**:
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+{%- for key in keys %}
+| `{{ key.key }}` | {{ key.type }} | {{ key.default }} | {{ key.description }} |
+{%- endfor %}
+
+{%- endfor %}
+{%- else %}
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+{%- for key in config_keys %}
+| `{{ key.key }}` | {{ key.type }} | {{ key.default }} | {{ key.description }} |
+{%- endfor %}
+{%- endif %}
+{%- else %}
+<!-- Configuration keys -->
+{%- endif %}
 {%- elif wiki %}
 {{ wiki_configuration | default('<!-- User-friendly configuration guide -->') }}
 {%- endif %}

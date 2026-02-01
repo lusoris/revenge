@@ -181,7 +181,6 @@ type UserInfo struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/coreos/go-oidc/v3/oidc` - OIDC client
 - `golang.org/x/oauth2` - OAuth2 flow
@@ -212,7 +211,6 @@ REVENGE_OIDC_AUTHELIA_REDIRECT_URL=https://revenge.local/api/v1/auth/oidc/callba
 
 
 ### Config Keys
-
 ```yaml
 auth:
   oidc:

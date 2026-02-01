@@ -207,7 +207,6 @@ type SharingDetector interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -235,7 +234,6 @@ ANALYTICS_SHARING_DETECTION_ENABLED=true
 
 
 ### Config Keys
-
 ```yaml
 analytics:
   enabled: true

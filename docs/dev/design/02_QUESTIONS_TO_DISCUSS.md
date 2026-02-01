@@ -82,7 +82,6 @@ Tracks unresolved decisions:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -95,7 +94,6 @@ Tracks unresolved decisions:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

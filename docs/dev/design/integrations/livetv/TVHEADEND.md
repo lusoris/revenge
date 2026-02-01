@@ -204,7 +204,6 @@ type GridResponse struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/bluenviron/gohlslib/v2` - HLS handling
 - `github.com/riverqueue/river` - Background sync
@@ -233,7 +232,6 @@ REVENGE_TVHEADEND_STREAM_PROFILE=pass
 
 
 ### Config Keys
-
 ```yaml
 livetv:
   tvheadend:

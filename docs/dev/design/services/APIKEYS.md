@@ -176,7 +176,6 @@ type CreateKeyRequest struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -201,7 +200,6 @@ APIKEYS_MAX_PER_USER=10
 
 
 ### Config Keys
-
 ```yaml
 apikeys:
   length: 32

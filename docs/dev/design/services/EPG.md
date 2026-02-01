@@ -139,7 +139,6 @@ No external service dependencies.
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -152,7 +151,6 @@ No external service dependencies.
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

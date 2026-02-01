@@ -104,7 +104,6 @@ Standard webhook handling pattern:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -117,7 +116,6 @@ Standard webhook handling pattern:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

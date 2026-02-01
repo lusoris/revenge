@@ -111,7 +111,6 @@ Complete webhook infrastructure:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -124,7 +123,6 @@ Complete webhook infrastructure:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

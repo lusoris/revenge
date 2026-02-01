@@ -107,7 +107,6 @@ internal/integration/lastfm_scrobbling/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -120,7 +119,6 @@ internal/integration/lastfm_scrobbling/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

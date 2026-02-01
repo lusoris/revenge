@@ -154,7 +154,6 @@ type ActivityEntry struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -176,7 +175,6 @@ ACTIVITY_CLEANUP_INTERVAL=24h
 
 
 ### Config Keys
-
 ```yaml
 activity:
   retention_days: 90

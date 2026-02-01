@@ -168,7 +168,6 @@ type SonarrEpisode struct {
 
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -181,7 +180,6 @@ type SonarrEpisode struct {
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

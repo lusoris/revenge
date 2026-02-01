@@ -156,7 +156,6 @@ type LibraryService interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -177,7 +176,6 @@ LIBRARY_DEFAULT_SCAN_INTERVAL=6h
 
 
 ### Config Keys
-
 ```yaml
 library:
   default_scan_interval: 6h

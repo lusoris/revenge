@@ -174,7 +174,6 @@ type TranscodeJob struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -205,7 +204,6 @@ TRANSCODING_WORKERS=2
 
 
 ### Config Keys
-
 ```yaml
 transcoding:
   blackbeard:

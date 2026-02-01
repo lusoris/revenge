@@ -181,7 +181,6 @@ type RSSFetcher interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -204,7 +203,6 @@ NEWS_RSS_FETCH_INTERVAL=1h
 
 
 ### Config Keys
-
 ```yaml
 news:
   enabled: true

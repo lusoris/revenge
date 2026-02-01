@@ -310,7 +310,6 @@ type CinemaPlaylist struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid` - UUID handling
 - `github.com/jackc/pgx/v5` - PostgreSQL driver
@@ -364,7 +363,6 @@ CHAPTERS_SILENCE_THRESHOLD=-30dB             # Silence detection threshold
 
 
 ### Config Keys
-
 ```yaml
 enhancements:
   cinema_mode:

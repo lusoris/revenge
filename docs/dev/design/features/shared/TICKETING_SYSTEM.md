@@ -193,7 +193,6 @@ type GitHubIntegration interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -220,7 +219,6 @@ TICKETS_MAX_ATTACHMENT_SIZE_MB=10
 
 
 ### Config Keys
-
 ```yaml
 tickets:
   enabled: true

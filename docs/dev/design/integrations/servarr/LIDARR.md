@@ -131,7 +131,6 @@ internal/integration/lidarr/
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -144,7 +143,6 @@ internal/integration/lidarr/
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

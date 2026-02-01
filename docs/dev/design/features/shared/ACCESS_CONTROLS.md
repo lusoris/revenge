@@ -133,7 +133,6 @@ type AccessService interface {
 
 
 ### Dependencies
-
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
 - `github.com/casbin/casbin/v2` - Policy enforcement
@@ -152,7 +151,6 @@ ACCESS_CONTROLS_ENABLED=true
 
 
 ### Config Keys
-
 ```yaml
 access:
   enabled: true

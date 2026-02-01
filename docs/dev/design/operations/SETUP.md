@@ -137,7 +137,6 @@ Multiple deployment options:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -150,7 +149,6 @@ Multiple deployment options:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

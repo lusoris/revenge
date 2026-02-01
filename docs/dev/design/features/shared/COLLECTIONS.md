@@ -173,7 +173,6 @@ type SmartCollectionEvaluator interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -194,7 +193,6 @@ type SmartCollectionEvaluator interface {
 
 
 ### Config Keys
-
 ```yaml
 collections:
   max_items_per_collection: 5000

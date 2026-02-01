@@ -123,7 +123,6 @@ Design system index with pirate-themed elegance:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -136,7 +135,6 @@ Design system index with pirate-themed elegance:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

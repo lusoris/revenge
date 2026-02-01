@@ -168,7 +168,6 @@ type Character struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `crypto/md5` - Hash generation for auth
@@ -197,7 +196,6 @@ MARVEL_CACHE_TTL=168h
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

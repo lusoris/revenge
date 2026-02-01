@@ -169,7 +169,6 @@ type RatingSystem struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -190,7 +189,6 @@ RATINGS_ENFORCE=true
 
 
 ### Config Keys
-
 ```yaml
 ratings:
   enforce_restrictions: true

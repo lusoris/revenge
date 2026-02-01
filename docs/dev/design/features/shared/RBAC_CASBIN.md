@@ -194,7 +194,6 @@ type CasbinEnforcer interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -217,7 +216,6 @@ RBAC_POLICY_PATH=config/rbac/policy.csv
 
 
 ### Config Keys
-
 ```yaml
 rbac:
   model_path: config/rbac/model.conf

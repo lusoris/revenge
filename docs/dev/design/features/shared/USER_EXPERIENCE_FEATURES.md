@@ -157,7 +157,6 @@ type UXPreferences struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -179,7 +178,6 @@ UX_TOP10_UPDATE_INTERVAL=6h
 
 
 ### Config Keys
-
 ```yaml
 ux:
   trending_update_interval: 1h

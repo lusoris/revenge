@@ -176,7 +176,6 @@ type MovieMetadata struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `golang.org/x/time/rate` - Rate limiting
@@ -213,7 +212,6 @@ TMDB_CACHE_TTL=24h
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

@@ -113,7 +113,6 @@ Complete guide for setting up Revenge development environment:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -126,7 +125,6 @@ Complete guide for setting up Revenge development environment:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

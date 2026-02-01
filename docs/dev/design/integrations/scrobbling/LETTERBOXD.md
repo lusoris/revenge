@@ -152,7 +152,6 @@ type ImportResult struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `encoding/csv` - CSV parsing
 - `io` - Reader/Writer interfaces
@@ -178,7 +177,6 @@ LETTERBOXD_AUTO_MATCH=true
 
 
 ### Config Keys
-
 ```yaml
 integrations:
   letterboxd:

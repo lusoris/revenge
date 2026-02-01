@@ -171,7 +171,6 @@ type TraktClient interface {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -213,7 +212,6 @@ ANILIST_CLIENT_SECRET=your_client_secret
 
 
 ### Config Keys
-
 ```yaml
 scrobble:
   enabled: true

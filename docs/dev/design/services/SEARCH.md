@@ -178,7 +178,6 @@ type SearchHit struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -207,7 +206,6 @@ SEARCH_SYNC_INTERVAL=5m
 
 
 ### Config Keys
-
 ```yaml
 search:
   typesense:

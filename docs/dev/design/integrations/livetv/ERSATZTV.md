@@ -210,7 +210,6 @@ type PageMap struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/bluenviron/gohlslib/v2` - HLS parsing/handling
 - `github.com/riverqueue/river` - Background EPG sync jobs
@@ -238,7 +237,6 @@ REVENGE_ERSATZTV_EPG_DAYS=7
 
 
 ### Config Keys
-
 ```yaml
 livetv:
   ersatztv:

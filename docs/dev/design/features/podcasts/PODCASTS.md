@@ -271,7 +271,6 @@ type DownloadManager interface {
 
 
 ### Dependencies
-
 **Go Dependencies**:
 - `github.com/jackc/pgx/v5/pgxpool` - PostgreSQL connection pool
 - `github.com/google/uuid` - UUID generation
@@ -309,7 +308,6 @@ type DownloadManager interface {
 
 
 ### Config Keys
-
 **config.yaml keys**:
 ```yaml
 podcast:

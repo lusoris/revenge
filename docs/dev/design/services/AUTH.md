@@ -165,7 +165,6 @@ type User struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/google/uuid`
 - `github.com/jackc/pgx/v5`
@@ -199,7 +198,6 @@ AUTH_LOCKOUT_DURATION=15m
 
 
 ### Config Keys
-
 ```yaml
 auth:
   password:

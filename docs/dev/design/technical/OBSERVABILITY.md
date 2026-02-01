@@ -116,7 +116,6 @@ Three pillars of observability:
 <!-- Interface definitions -->
 
 ### Dependencies
-
 <!-- Dependency list -->
 
 
@@ -129,7 +128,6 @@ Three pillars of observability:
 <!-- Environment variables -->
 
 ### Config Keys
-
 <!-- Configuration keys -->
 
 

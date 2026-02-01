@@ -181,7 +181,6 @@ type LinkStatus struct {
 
 
 ### Dependencies
-
 **Go Packages**:
 - `net/http` - HTTP client
 - `github.com/PuerkitoBio/goquery` - HTML parsing
@@ -227,7 +226,6 @@ PORNHUB_BROWSER_TIMEOUT=30s
 
 
 ### Config Keys
-
 ```yaml
 metadata:
   providers:

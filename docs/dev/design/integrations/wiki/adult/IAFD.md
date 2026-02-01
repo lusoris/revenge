@@ -196,7 +196,6 @@ func (p *IAFDProvider) parsePerformer(doc *goquery.Document) (*Performer, error)
 
 
 ### Dependencies
-
 **Go Packages**:
 - `github.com/PuerkitoBio/goquery` - HTML parsing
 - `golang.org/x/time/rate` - Rate limiting
@@ -227,7 +226,6 @@ IAFD_USE_PROXY=true              # Use proxy pool from HTTP_CLIENT
 
 
 ### Config Keys
-
 ```yaml
 qar:
   metadata:
