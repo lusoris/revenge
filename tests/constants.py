@@ -11,8 +11,9 @@ Update these values as documentation improves.
 # new PLACEHOLDERs from being added. Decrease as docs are completed.
 # Set to 0 for strict mode when all docs should be complete.
 
-MAX_WIKI_OVERVIEW_PLACEHOLDERS = 120  # Currently ~113
-MAX_WIKI_TAGLINE_PLACEHOLDERS = 15    # Currently ~11
+# Current counts - decrease as docs complete
+MAX_WIKI_OVERVIEW_PLACEHOLDERS = 113
+MAX_WIKI_TAGLINE_PLACEHOLDERS = 11
 
 # =============================================================================
 # Required Fields
