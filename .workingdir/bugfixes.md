@@ -97,3 +97,40 @@
 **Workflow Run**: [21563257717](https://github.com/lusoris/revenge/actions/runs/21563257717)
 
 ---
+
+### [ISSUE-008] YAML validation failure - invalid emoji in overall_status
+**Problem**: Documentation Validation workflow failed with "overall_status: '🟢 Complete' does not match '^[🔴🟡✅🔵].+'"
+**Cause**: Used 🟢 (green circle emoji) instead of allowed emojis in YAML schema
+**Schema Allows**: 🔴 (red), 🟡 (yellow), ✅ (checkmark), 🔵 (blue) only
+**Fix**: Changed `overall_status: 🟢 Complete` to `overall_status: ✅ Complete` in data/technical/TECH_STACK.yaml
+**Test Hint**: Run `python scripts/automation/validator.py data/technical/TECH_STACK.yaml` to validate
+**Files Changed**:
+- [data/technical/TECH_STACK.yaml:4](data/technical/TECH_STACK.yaml#L4)
+**Workflow Run**: [21563805561](https://github.com/lusoris/revenge/actions/runs/21563805561)
+**Status**: FIXED - All 158 YAML files now pass validation
+
+---
+
+### [ISSUE-009] Doc generator source link depth calculation bug
+**Problem**: Generated design docs used `../sources/` for all source file links regardless of file depth
+**Cause**: `_url_to_local_source()` method in doc_generator.py didn't account for output file directory depth
+**Root Cause**: Method returned static `../sources/{path}` which only works for root-level design docs
+**Impact**: 1,838 broken source links across all subdirectory design docs (75% of all broken links)
+**Example**:
+  - From `docs/dev/design/technical/TECH_STACK.md`
+  - Link: `../sources/infrastructure/dragonfly.md` (WRONG)
+  - Should be: `../../sources/infrastructure/dragonfly.md` (CORRECT)
+**Fix**: Made filter depth-aware
+1. Calculate depth from `output_subpath` (count `/` separators)
+2. Added depth parameter to `_url_to_local_source(url, depth)`
+3. Dynamic prefix: `"../" * (depth + 1) + "sources/"`
+4. Created per-render depth-aware filter in `generate_doc()`
+**Test Hint**: Test that generated docs at different depths have correct relative source paths
+**Files Changed**:
+- [scripts/automation/doc_generator.py](../scripts/automation/doc_generator.py)
+**Regeneration**: Ran `batch_regenerate.py` to regenerate all 158 YAML-based design docs
+**Workflow Run**: [fc7ad3bdb3](https://github.com/lusoris/revenge/commit/fc7ad3bdb3)
+**Status**: FIXED - 2,240 broken links resolved (94% reduction: 2,446 → 206)
+
+---
+
