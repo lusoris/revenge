@@ -1,46 +1,3 @@
----
-sources:
-  - name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: koanf
-    url: ../../sources/tooling/koanf.md
-    note: Auto-resolved from koanf
-  - name: Prometheus Go Client
-    url: ../../sources/observability/prometheus.md
-    note: Auto-resolved from prometheus
-  - name: Prometheus Metric Types
-    url: ../../sources/observability/prometheus-metrics.md
-    note: Auto-resolved from prometheus-metrics
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-  - name: Typesense API
-    url: ../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: METADATA_ENRICHMENT
-    path: ../patterns/METADATA_ENRICHMENT.md
----
-
 ## Table of Contents
 
 - [Advanced Offloading Architecture](#advanced-offloading-architecture)
@@ -61,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Advanced Offloading Architecture
 

@@ -1,28 +1,3 @@
----
-sources:
-  - name: Radarr API Docs
-    url: ../../sources/apis/radarr-docs.md
-    note: Radarr webhook events
-  - name: Sonarr API Docs
-    url: ../../sources/apis/sonarr-docs.md
-    note: Sonarr webhook events
-  - name: Lidarr API Docs
-    url: ../../sources/apis/lidarr-docs.md
-    note: Lidarr webhook events
-  - name: Servarr Wiki
-    url: ../../sources/apis/servarr-wiki.md
-    note: Shared Arr stack documentation
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Arr Integration Pattern](#arr-integration-pattern)
@@ -43,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Arr Integration Pattern
 

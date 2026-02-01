@@ -1,20 +1,3 @@
----
-sources:
-  - name: Google Books API
-    url: ../../../../sources/apis/google-books.md
-    note: Auto-resolved from google-books
-  - name: Open Library API
-    url: ../../../../sources/apis/openlibrary.md
-    note: Auto-resolved from openlibrary
-design_refs:
-  - title: BOOK_MODULE
-    path: ../../../features/book/BOOK_MODULE.md
-  - title: CHAPTARR (metadata matching)
-    path: ../../servarr/CHAPTARR.md
-  - title: OPENLIBRARY (metadata fallback)
-    path: ./OPENLIBRARY.md
----
-
 ## Table of Contents
 
 - [Goodreads](#goodreads)
@@ -37,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Goodreads
 

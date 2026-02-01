@@ -1,28 +1,3 @@
----
-sources:
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Background job processing
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Distributed cache (L2)
-  - name: Otter
-    url: https://pkg.go.dev/github.com/maypok86/otter
-    note: In-memory cache (L1)
-  - name: Sturdyc
-    url: ../../sources/tooling/sturdyc-guide.md
-    note: Request coalescing cache
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Metadata Enrichment Pattern](#metadata-enrichment-pattern)
@@ -43,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Metadata Enrichment Pattern
 

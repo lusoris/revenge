@@ -13,29 +13,8 @@
   - sources: list - External documentation sources
   - design_refs: list - Cross-references to other design docs
 -#}
-{%- block frontmatter -%}
-{%- if claude %}
----
-{%- if sources is defined and sources %}
-sources:
-{%- for source in sources %}
-  - name: {{ source.name }}
-    url: {{ source.url|to_local_source }}
-{%- if source.note %}
-    note: {{ source.note }}
-{%- endif %}
-{%- endfor %}
-{%- endif %}
-{%- if design_refs is defined and design_refs %}
-design_refs:
-{%- for ref in design_refs %}
-  - title: {{ ref.title }}
-    path: {{ ref.path }}
-{%- endfor %}
-{%- endif %}
----
-{%- endif %}
-{%- endblock %}
+{#- No YAML frontmatter - GitHub has issues with long frontmatter.
+    Sources and design_refs are shown in Related Documentation section instead. -#}
 
 {% block title -%}
 # {{ doc_title }}

@@ -1,35 +1,3 @@
----
-sources:
-  - name: Radarr API Docs
-    url: ../../sources/apis/radarr-docs.md
-    note: Auto-resolved from radarr-docs
-  - name: Sonarr API Docs
-    url: ../../sources/apis/sonarr-docs.md
-    note: Auto-resolved from sonarr-docs
-  - name: Lidarr API Docs
-    url: ../../sources/apis/lidarr-docs.md
-    note: Auto-resolved from lidarr-docs
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: WEBHOOK_PATTERNS
-    path: ../patterns/WEBHOOK_PATTERNS.md
-  - title: ARR_INTEGRATION
-    path: ../patterns/ARR_INTEGRATION.md
-  - title: NOTIFICATIONS
-    path: ../technical/NOTIFICATIONS.md
----
-
 ## Table of Contents
 
 - [Webhooks](#webhooks)
@@ -50,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Webhooks
 

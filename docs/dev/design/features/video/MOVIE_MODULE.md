@@ -1,21 +1,3 @@
----
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
-  - title: RADARR (PRIMARY metadata + downloads)
-    path: ../../integrations/servarr/RADARR.md
-  - title: TMDB (supplementary metadata)
-    path: ../../integrations/metadata/TMDB.md
-  - title: OMDB (ratings enrichment)
-    path: ../../integrations/metadata/OMDB.md
-  - title: TRAKT (scrobbling + metadata enrichment)
-    path: ../../integrations/scrobbling/TRAKT.md
----
-
 ## Table of Contents
 
 - [Movie Module](#movie-module)
@@ -40,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Movie Module
 

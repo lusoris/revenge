@@ -1,22 +1,3 @@
----
-sources:
-  - name: Discogs API
-    url: ../../../../sources/apis/discogs.md
-    note: Auto-resolved from discogs
-  - name: Last.fm API
-    url: ../../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: LIDARR (PRIMARY for music)
-    path: ../../servarr/LIDARR.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: MUSIC_MODULE
-    path: ../../../features/music/MUSIC_MODULE.md
----
-
 ## Table of Contents
 
 - [Discogs](#discogs)
@@ -42,7 +23,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Discogs
 

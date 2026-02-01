@@ -1,31 +1,3 @@
----
-sources:
-  - name: Uber fx
-    url: ../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: sqlc
-    url: ../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: testcontainers-go
-    url: ../sources/testing/testcontainers.md
-    note: Auto-resolved from testcontainers
----
-
 ## Table of Contents
 
 - [Design Document Template](#design-document-template)
@@ -46,7 +18,6 @@ sources:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Design Document Template
 

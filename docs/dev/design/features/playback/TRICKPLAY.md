@@ -1,41 +1,3 @@
----
-sources:
-  - name: Roku BIF Format
-    url: ../../../sources/protocols/bif.md
-    note: Auto-resolved from bif-spec
-  - name: FFmpeg Documentation
-    url: ../../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: Jellyfin Trickplay
-    url: ../../../sources/apis/jellyfin-trickplay.md
-    note: Auto-resolved from jellyfin-trickplay
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: WebVTT Specification
-    url: ../../../sources/protocols/webvtt.md
-    note: Auto-resolved from webvtt
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Trickplay (Timeline Thumbnails)](#trickplay-timeline-thumbnails)
@@ -73,7 +35,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Trickplay (Timeline Thumbnails)
 

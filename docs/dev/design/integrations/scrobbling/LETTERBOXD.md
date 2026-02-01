@@ -1,23 +1,3 @@
----
-sources:
-  - name: Go io
-    url: ../../../sources/go/stdlib/io.md
-    note: Auto-resolved from go-io
-  - name: Last.fm API
-    url: ../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: Letterboxd API
-    url: ../../../sources/apis/letterboxd.md
-    note: Auto-resolved from letterboxd
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Letterboxd](#letterboxd)
@@ -41,7 +21,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Letterboxd
 

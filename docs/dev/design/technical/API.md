@@ -1,23 +1,3 @@
----
-sources:
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: OpenAPI 3.1 Specification
-    url: ../../sources/apis/openapi-spec.md
-    note: API spec standard
-  - name: RFC 7807 Problem Details
-    url: https://datatracker.ietf.org/doc/html/rfc7807
-    note: Standardized error format
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
----
-
 ## Table of Contents
 
 - [API Reference](#api-reference)
@@ -38,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # API Reference
 

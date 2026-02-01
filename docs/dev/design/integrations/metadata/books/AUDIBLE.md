@@ -1,28 +1,3 @@
----
-sources:
-  - name: Audnexus API
-    url: ../../../../sources/apis/audnexus.md
-    note: Auto-resolved from audnexus
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: golang.org/x/time
-    url: ../../../../sources/go/x/time.md
-    note: Rate limiting
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Background jobs
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: CHAPTARR (PRIMARY for books/audiobooks)
-    path: ../../servarr/CHAPTARR.md
-  - title: AUDIOBOOK_MODULE
-    path: ../../../features/audiobook/AUDIOBOOK_MODULE.md
-  - title: HTTP_CLIENT
-    path: ../../../services/HTTP_CLIENT.md
----
-
 ## Table of Contents
 
 - [Audible](#audible)
@@ -45,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Audible
 

@@ -1,32 +1,3 @@
----
-sources:
-  - name: ComicVine API
-    url: ../../../../sources/apis/comicvine.md
-    note: Auto-resolved from comicvine
-  - name: pgx PostgreSQL Driver
-    url: ../../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: golang.org/x/time
-    url: ../../../../sources/go/x/time.md
-    note: Rate limiting
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: COMICS_MODULE
-    path: ../../../features/comics/COMICS_MODULE.md
-  - title: HTTP_CLIENT
-    path: ../../../services/HTTP_CLIENT.md
----
-
 ## Table of Contents
 
 - [ComicVine API](#comicvine-api)
@@ -49,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # ComicVine API
 

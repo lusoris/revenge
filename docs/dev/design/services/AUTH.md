@@ -1,22 +1,3 @@
----
-sources:
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Auth Service](#auth-service)
@@ -41,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Auth Service
 

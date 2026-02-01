@@ -1,28 +1,3 @@
----
-sources:
-  - name: Marvel Developer Portal
-    url: https://developer.marvel.com/docs
-    note: Official Marvel API documentation
-  - name: pgx PostgreSQL Driver
-    url: ../../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: golang.org/x/time
-    url: ../../../../sources/go/x/time.md
-    note: Rate limiting
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: COMICS_MODULE
-    path: ../../../features/comics/COMICS_MODULE.md
-  - title: COMICVINE (PRIMARY for comics)
-    path: ./COMICVINE.md
-  - title: HTTP_CLIENT
-    path: ../../../services/HTTP_CLIENT.md
----
-
 ## Table of Contents
 
 - [Marvel API](#marvel-api)
@@ -45,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Marvel API
 

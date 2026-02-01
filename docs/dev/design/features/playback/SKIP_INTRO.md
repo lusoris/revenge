@@ -1,35 +1,3 @@
----
-sources:
-  - name: Chromaprint/AcoustID
-    url: ../../../sources/standards/chromaprint.md
-    note: Auto-resolved from chromaprint-acoustid
-  - name: FFmpeg Documentation
-    url: ../../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Skip Intro / Credits Detection](#skip-intro-credits-detection)
@@ -71,7 +39,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Skip Intro / Credits Detection
 

@@ -1,28 +1,3 @@
----
-sources:
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Typesense API
-    url: ../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Search Service](#search-service)
@@ -49,7 +24,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Search Service
 

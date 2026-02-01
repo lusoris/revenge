@@ -1,13 +1,3 @@
----
-sources:
-  - name: To be added during design phase
-    url: PLACEHOLDER_URL
-    note: ⚠️ Source 'To be added during design phase' not found - needs manual resolution
-design_refs:
-  - title: Complete design documentation pending
-    path: Complete design documentation pending.md
----
-
 ## Table of Contents
 
 - [{{ FEATURE_NAME }}](#feature_name)
@@ -28,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # {{ FEATURE_NAME }}
 

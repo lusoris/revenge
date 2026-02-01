@@ -1,25 +1,3 @@
----
-sources:
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: Last.fm API
-    url: ../../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: Spotify Web API
-    url: ../../../../sources/apis/spotify.md
-    note: Auto-resolved from spotify
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: LIDARR (PRIMARY for music)
-    path: ../../servarr/LIDARR.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: MUSIC_MODULE
-    path: ../../../features/music/MUSIC_MODULE.md
----
-
 ## Table of Contents
 
 - [Spotify](#spotify)
@@ -44,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Spotify
 

@@ -1,24 +1,3 @@
----
-sources:
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: Open Library API
-    url: ../../../../sources/apis/openlibrary.md
-    note: Auto-resolved from openlibrary
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: CHAPTARR (PRIMARY for books/audiobooks)
-    path: ../../servarr/CHAPTARR.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: BOOK_MODULE
-    path: ../../../features/book/BOOK_MODULE.md
-  - title: AUDIOBOOK_MODULE
-    path: ../../../features/audiobook/AUDIOBOOK_MODULE.md
----
-
 ## Table of Contents
 
 - [OpenLibrary](#openlibrary)
@@ -41,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # OpenLibrary
 

@@ -1,33 +1,3 @@
----
-sources:
-  - name: OMDb API
-    url: ../../../../sources/apis/omdb.md
-    note: Auto-resolved from omdb
-  - name: pgx PostgreSQL Driver
-    url: ../../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: MOVIE_MODULE
-    path: ../../../features/video/MOVIE_MODULE.md
-  - title: TVSHOW_MODULE
-    path: ../../../features/video/TVSHOW_MODULE.md
-  - title: TRAKT (alternative ratings source)
-    path: ../../scrobbling/TRAKT.md
----
-
 ## Table of Contents
 
 - [OMDb (Open Movie Database)](#omdb-open-movie-database)
@@ -53,7 +23,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # OMDb (Open Movie Database)
 

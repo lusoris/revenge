@@ -1,25 +1,3 @@
----
-sources:
-  - name: go-mail GitHub README
-    url: ../../sources/tooling/go-mail-guide.md
-    note: Auto-resolved from go-mail-docs
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: NOTIFICATIONS
-    path: ../technical/NOTIFICATIONS.md
----
-
 ## Table of Contents
 
 - [Email System](#email-system)
@@ -45,7 +23,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Email System
 

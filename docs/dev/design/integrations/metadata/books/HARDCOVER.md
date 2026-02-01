@@ -1,25 +1,3 @@
----
-sources:
-  - name: Hardcover API
-    url: ../../../../sources/apis/hardcover.md
-    note: Auto-resolved from hardcover
-  - name: Khan/genqlient
-    url: ../../../../sources/tooling/genqlient.md
-    note: GraphQL client
-  - name: golang.org/x/oauth2
-    url: https://pkg.go.dev/golang.org/x/oauth2
-    note: OAuth 2.0
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: BOOK_MODULE
-    path: ../../../features/book/BOOK_MODULE.md
-  - title: SCROBBLING
-    path: ../../../features/shared/SCROBBLING.md
-  - title: CHAPTARR
-    path: ../../servarr/CHAPTARR.md
----
-
 ## Table of Contents
 
 - [Hardcover](#hardcover)
@@ -42,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Hardcover
 

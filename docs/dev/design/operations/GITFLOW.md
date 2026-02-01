@@ -1,25 +1,3 @@
----
-sources:
-  - name: Conventional Commits
-    url: ../../sources/standards/conventional-commits.md
-    note: Auto-resolved from conventional-commits
-  - name: Git Flow
-    url: ../../sources/standards/gitflow.md
-    note: Auto-resolved from gitflow
-  - name: Go io
-    url: ../../sources/go/stdlib/io.md
-    note: Auto-resolved from go-io
-design_refs:
-  - title: operations
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Git Workflow & Branching Strategy](#git-workflow-branching-strategy)
@@ -40,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Git Workflow & Branching Strategy
 

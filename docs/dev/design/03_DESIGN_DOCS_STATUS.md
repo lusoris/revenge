@@ -1,43 +1,3 @@
----
-sources:
-  - name: Authelia Documentation
-    url: ../sources/security/authelia.md
-    note: Auto-resolved from authelia
-  - name: Authentik Documentation
-    url: ../sources/security/authentik.md
-    note: Auto-resolved from authentik
-  - name: Casbin
-    url: ../sources/security/casbin.md
-    note: Auto-resolved from casbin
-  - name: Dragonfly Documentation
-    url: ../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: Keycloak Documentation
-    url: ../sources/security/keycloak.md
-    note: Auto-resolved from keycloak
-  - name: Last.fm API
-    url: ../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: pgx PostgreSQL Driver
-    url: ../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Typesense API
-    url: ../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
----
-
 ## Table of Contents
 
 - [Design Documentation Status](#design-documentation-status)
@@ -58,7 +18,6 @@ sources:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Design Documentation Status
 

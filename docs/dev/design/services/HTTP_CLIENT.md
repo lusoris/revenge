@@ -1,32 +1,3 @@
----
-sources:
-  - name: Go context
-    url: ../../sources/go/stdlib/context.md
-    note: Auto-resolved from go-context
-  - name: Go net/http
-    url: ../../sources/go/stdlib/nethttp.md
-    note: Auto-resolved from go-http
-  - name: Go net/http.Transport
-    url: https://pkg.go.dev/net/http#Transport
-    note: Auto-resolved from go-http-transport
-  - name: golang.org/x/net/proxy
-    url: https://pkg.go.dev/golang.org/x/net/proxy
-    note: Auto-resolved from go-proxy
-  - name: koanf
-    url: ../../sources/tooling/koanf.md
-    note: Auto-resolved from koanf
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [HTTP Client & Proxy](#http-client-proxy)
@@ -54,7 +25,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # HTTP Client & Proxy
 

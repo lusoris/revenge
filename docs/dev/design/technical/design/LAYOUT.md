@@ -1,20 +1,3 @@
----
-sources:
-  - name: Tailwind CSS Spacing
-    url: https://tailwindcss.com/docs/customizing-spacing
-    note: Spacing scale reference
-  - name: Tailwind CSS Breakpoints
-    url: https://tailwindcss.com/docs/responsive-design
-    note: Breakpoint system
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: NAVIGATION
-    path: ../../technical/design/NAVIGATION.md
-  - title: COMPONENTS
-    path: ../../technical/design/COMPONENTS.md
----
-
 ## Table of Contents
 
 - [Layout System](#layout-system)
@@ -35,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Layout System
 

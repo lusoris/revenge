@@ -1,41 +1,3 @@
----
-sources:
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Servarr Wiki
-    url: ../../../sources/apis/servarr-wiki.md
-    note: Auto-resolved from servarr-wiki
-  - name: Sonarr API Docs
-    url: ../../../sources/apis/sonarr-docs.md
-    note: Auto-resolved from sonarr-docs
-  - name: Typesense API
-    url: ../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Sonarr](#sonarr)
@@ -58,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Sonarr
 

@@ -1,26 +1,3 @@
----
-sources:
-  - name: Authelia Documentation
-    url: ../../../sources/security/authelia.md
-    note: Auto-resolved from authelia
-  - name: Authentik Documentation
-    url: ../../../sources/security/authentik.md
-    note: Auto-resolved from authentik
-  - name: Keycloak Documentation
-    url: ../../../sources/security/keycloak.md
-    note: Auto-resolved from keycloak
-  - name: OpenID Connect Core
-    url: ../../../sources/security/oidc-core.md
-    note: Auto-resolved from oidc
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Generic OIDC](#generic-oidc)
@@ -45,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Generic OIDC
 

@@ -1,25 +1,3 @@
----
-sources:
-  - name: gohlslib (HLS)
-    url: ../../sources/media/gohlslib.md
-    note: HLS server implementation
-  - name: go-astiav (FFmpeg)
-    url: ../../sources/media/go-astiav.md
-    note: Audio transcoding
-  - name: Dragonfly
-    url: ../../sources/infrastructure/dragonfly.md
-    note: Progress tracking cache
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Audio Streaming & Progress Tracking](#audio-streaming-progress-tracking)
@@ -46,7 +24,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Audio Streaming & Progress Tracking
 

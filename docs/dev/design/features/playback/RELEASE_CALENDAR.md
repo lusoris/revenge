@@ -1,32 +1,3 @@
----
-sources:
-  - name: Go context
-    url: ../../../sources/go/stdlib/context.md
-    note: Auto-resolved from go-context
-  - name: Radarr API Docs
-    url: ../../../sources/apis/radarr-docs.md
-    note: Auto-resolved from radarr-docs
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Sonarr API Docs
-    url: ../../../sources/apis/sonarr-docs.md
-    note: Auto-resolved from sonarr-docs
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Release Calendar System](#release-calendar-system)
@@ -51,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Release Calendar System
 

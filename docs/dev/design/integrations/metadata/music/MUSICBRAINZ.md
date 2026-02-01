@@ -1,29 +1,3 @@
----
-sources:
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: Last.fm API
-    url: ../../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: MusicBrainz API
-    url: ../../../../sources/apis/musicbrainz.md
-    note: Auto-resolved from musicbrainz
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: LIDARR (PRIMARY for music)
-    path: ../../servarr/LIDARR.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: MUSIC_MODULE
-    path: ../../../features/music/MUSIC_MODULE.md
-  - title: LASTFM (enrichment metadata)
-    path: ./LASTFM.md
-  - title: LISTENBRAINZ (scrobbling)
-    path: ../../scrobbling/LISTENBRAINZ.md
----
-
 ## Table of Contents
 
 - [MusicBrainz](#musicbrainz)
@@ -51,7 +25,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # MusicBrainz
 

@@ -1,37 +1,3 @@
----
-sources:
-  - name: Go Installation
-    url: https://go.dev/doc/install
-    note: Official Go installation guide
-  - name: air Hot Reload
-    url: ../../sources/go_dev_tools/air/main.md
-    note: Go hot reload tool
-  - name: Vite
-    url: https://vitejs.dev/guide/
-    note: Frontend build tool
-  - name: PostgreSQL Downloads
-    url: https://www.postgresql.org/download/
-    note: PostgreSQL installation
-  - name: Node.js Downloads
-    url: https://nodejs.org/
-    note: Node.js LTS releases
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: SQL code generation
-  - name: Conventional Commits
-    url: ../../sources/standards/conventional-commits.md
-    note: Commit message format
-design_refs:
-  - title: operations
-    path: INDEX.md
-  - title: TECH_STACK
-    path: ../technical/TECH_STACK.md
-  - title: BEST_PRACTICES
-    path: ../operations/BEST_PRACTICES.md
-  - title: 00_SOURCE_OF_TRUTH
-    path: ../00_SOURCE_OF_TRUTH.md
----
-
 ## Table of Contents
 
 - [Development Environment Setup](#development-environment-setup)
@@ -52,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Development Environment Setup
 

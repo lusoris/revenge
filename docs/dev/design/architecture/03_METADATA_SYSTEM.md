@@ -1,43 +1,3 @@
----
-sources:
-  - name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: go-blurhash
-    url: ../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: Last.fm API
-    url: ../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-design_refs:
-  - title: architecture
-    path: INDEX.md
-  - title: ADULT_CONTENT_SYSTEM
-    path: ../features/adult/ADULT_CONTENT_SYSTEM.md
-  - title: ADULT_METADATA
-    path: ../features/adult/ADULT_METADATA.md
-  - title: DATA_RECONCILIATION
-    path: ../features/adult/DATA_RECONCILIATION.md
----
-
 ## Table of Contents
 
 - [Revenge - Metadata System](#revenge-metadata-system)
@@ -58,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Revenge - Metadata System
 

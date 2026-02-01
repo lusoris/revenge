@@ -1,30 +1,3 @@
----
-sources:
-  - name: TVTropes
-    url: https://tvtropes.org
-    note: Main site
-  - name: PuerkitoBio/goquery
-    url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
-    note: HTML parsing for verification
-  - name: golang.org/x/time
-    url: ../../../sources/go/x/time.md
-    note: Rate limiting
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
-  - title: WIKI_SYSTEM
-    path: ../../features/shared/WIKI_SYSTEM.md
-  - title: MOVIE_MODULE
-    path: ../../features/video/MOVIE_MODULE.md
-  - title: TVSHOW_MODULE
-    path: ../../features/video/TVSHOW_MODULE.md
-  - title: HTTP_CLIENT
-    path: ../../services/HTTP_CLIENT.md
----
-
 ## Table of Contents
 
 - [TVTropes](#tvtropes)
@@ -47,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # TVTropes
 

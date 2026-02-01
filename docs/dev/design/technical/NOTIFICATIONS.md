@@ -1,30 +1,3 @@
----
-sources:
-  - name: go-mail GitHub README
-    url: ../../sources/tooling/go-mail-guide.md
-    note: Auto-resolved from go-mail
-  - name: go-fcm
-    url: ../../sources/tooling/go-fcm.md
-    note: FCM push notifications
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: EMAIL
-    path: ../technical/EMAIL.md
-  - title: WEBHOOKS
-    path: ../technical/WEBHOOKS.md
----
-
 ## Table of Contents
 
 - [Notifications System](#notifications-system)
@@ -55,7 +28,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Notifications System
 

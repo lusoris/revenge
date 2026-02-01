@@ -1,29 +1,3 @@
----
-sources:
-  - name: Go Testing
-    url: ../../sources/go/stdlib/testing.md
-    note: Standard library testing
-  - name: Testify
-    url: https://github.com/stretchr/testify
-    note: Assertions and test suites
-  - name: Mockery
-    url: ../../sources/testing/mockery-guide.md
-    note: Mock generation
-  - name: Testcontainers Go
-    url: ../../sources/testing/testcontainers.md
-    note: Integration testing with containers
-  - name: Embedded Postgres
-    url: ../../sources/testing/embedded-postgres-guide.md
-    note: Fast PostgreSQL for unit tests
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: BEST_PRACTICES
-    path: ../operations/BEST_PRACTICES.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
----
-
 ## Table of Contents
 
 - [Testing Patterns](#testing-patterns)
@@ -44,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Testing Patterns
 

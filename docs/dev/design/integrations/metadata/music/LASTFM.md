@@ -1,24 +1,3 @@
----
-sources:
-  - name: Go context
-    url: ../../../../sources/go/stdlib/context.md
-    note: Auto-resolved from go-context
-  - name: Last.fm API
-    url: ../../../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: LIDARR (PRIMARY for music)
-    path: ../../servarr/LIDARR.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: MUSIC_MODULE
-    path: ../../../features/music/MUSIC_MODULE.md
-  - title: SCROBBLING (Last.fm scrobbling)
-    path: ../../../features/shared/SCROBBLING.md
----
-
 ## Table of Contents
 
 - [Last.fm](#lastfm)
@@ -43,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Last.fm
 

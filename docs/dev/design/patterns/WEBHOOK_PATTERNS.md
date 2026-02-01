@@ -1,28 +1,3 @@
----
-sources:
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Background job processing
-  - name: crypto/hmac
-    url: https://pkg.go.dev/crypto/hmac
-    note: HMAC signature validation
-  - name: resty
-    url: ../../sources/tooling/resty.md
-    note: HTTP client for webhook delivery
-  - name: gobreaker
-    url: ../../sources/tooling/gobreaker.md
-    note: Circuit breaker pattern
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Webhook Patterns](#webhook-patterns)
@@ -43,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Webhook Patterns
 

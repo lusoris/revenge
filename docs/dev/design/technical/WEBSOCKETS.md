@@ -1,25 +1,3 @@
----
-sources:
-  - name: coder/websocket GitHub README
-    url: ../../sources/tooling/websocket-guide.md
-    note: Auto-resolved from coder-websocket-docs
-  - name: nhooyr.io/websocket
-    url: https://pkg.go.dev/nhooyr.io/websocket
-    note: WebSocket library (coder/websocket)
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: WEBSOCKETS (Syncplay)
-    path: ../features/playback/SYNCPLAY.md
----
-
 ## Table of Contents
 
 - [WebSockets](#websockets)
@@ -40,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # WebSockets
 

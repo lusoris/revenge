@@ -1,18 +1,3 @@
----
-sources:
-  - name: WCAG 2.1 Guidelines
-    url: https://www.w3.org/WAI/WCAG21/quickref/
-    note: Accessibility standards
-  - name: ARIA Authoring Practices
-    url: https://www.w3.org/WAI/ARIA/apg/
-    note: ARIA patterns
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: MOTION
-    path: ../../technical/design/MOTION.md
----
-
 ## Table of Contents
 
 - [Accessibility](#accessibility)
@@ -33,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Accessibility
 

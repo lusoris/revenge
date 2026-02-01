@@ -1,20 +1,3 @@
----
-sources:
-  - name: Netflix Brand Guidelines
-    url: https://brand.netflix.com/
-    note: Design inspiration
-  - name: Apple Human Interface Guidelines
-    url: https://developer.apple.com/design/human-interface-guidelines/
-    note: Design inspiration
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: COLOR_SYSTEM
-    path: ../../technical/design/COLOR_SYSTEM.md
-  - title: PIRATE_MODE
-    path: ../../technical/design/PIRATE_MODE.md
----
-
 ## Table of Contents
 
 - [Brand Identity](#brand-identity)
@@ -35,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Brand Identity
 

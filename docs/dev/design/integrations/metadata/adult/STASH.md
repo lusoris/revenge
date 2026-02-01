@@ -1,41 +1,3 @@
----
-sources:
-  - name: Khan/genqlient
-    url: ../../../../sources/tooling/genqlient.md
-    note: Auto-resolved from genqlient
-  - name: genqlient GitHub README
-    url: ../../../../sources/tooling/genqlient-guide.md
-    note: Auto-resolved from genqlient-docs
-  - name: gohlslib (HLS)
-    url: ../../../../sources/media/gohlslib.md
-    note: Auto-resolved from gohlslib
-  - name: pgx PostgreSQL Driver
-    url: ../../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: Typesense API
-    url: ../../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: ADULT_CONTENT_SYSTEM (QAR module)
-    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
-  - title: STASHDB (community metadata)
-    path: ./STASHDB.md
-  - title: WHISPARR (PRIMARY for QAR)
-    path: ../../servarr/WHISPARR.md
----
-
 ## Table of Contents
 
 - [Stash](#stash)
@@ -58,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Stash
 

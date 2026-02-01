@@ -1,25 +1,3 @@
----
-sources:
-  - name: PuerkitoBio/goquery
-    url: https://pkg.go.dev/github.com/PuerkitoBio/goquery
-    note: HTML parsing
-  - name: golang.org/x/time
-    url: ../../../../sources/go/x/time.md
-    note: Rate limiting
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Background verification jobs
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: FREEONES
-    path: ./FREEONES.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: ADULT_CONTENT_SYSTEM (QAR module)
-    path: ../../../features/adult/ADULT_CONTENT_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Instagram](#instagram)
@@ -44,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Instagram
 

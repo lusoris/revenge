@@ -1,40 +1,3 @@
----
-sources:
-  - name: go-blurhash
-    url: ../../../../sources/media/go-blurhash.md
-    note: Auto-resolved from go-blurhash
-  - name: pgx PostgreSQL Driver
-    url: ../../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: TheTVDB API
-    url: ../../../../sources/apis/thetvdb.md
-    note: Auto-resolved from thetvdb
-  - name: Typesense API
-    url: ../../../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../../architecture/03_METADATA_SYSTEM.md
-  - title: SONARR (PRIMARY for TV shows)
-    path: ../../servarr/SONARR.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ../../../services/HTTP_CLIENT.md
-  - title: TVSHOW_MODULE
-    path: ../../../features/video/TVSHOW_MODULE.md
----
-
 ## Table of Contents
 
 - [TheTVDB](#thetvdb)
@@ -60,7 +23,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # TheTVDB
 

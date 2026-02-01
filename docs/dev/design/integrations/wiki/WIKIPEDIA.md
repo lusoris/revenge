@@ -1,28 +1,3 @@
----
-sources:
-  - name: Dragonfly Documentation
-    url: ../../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: MediaWiki API
-    url: ../../../sources/wiki/mediawiki.md
-    note: Auto-resolved from mediawiki-api
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: golang.org/x/time
-    url: ../../../sources/go/x/time.md
-    note: Rate limiting
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
-  - title: MOVIE_MODULE
-    path: ../../features/video/MOVIE_MODULE.md
-  - title: TVSHOW_MODULE
-    path: ../../features/video/TVSHOW_MODULE.md
-  - title: WIKI_SYSTEM
-    path: ../../features/shared/WIKI_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Wikipedia](#wikipedia)
@@ -45,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Wikipedia
 

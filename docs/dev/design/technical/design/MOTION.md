@@ -1,18 +1,3 @@
----
-sources:
-  - name: Svelte Transitions
-    url: https://svelte.dev/docs/svelte-transition
-    note: Built-in transitions
-  - name: Motion One
-    url: https://motion.dev/
-    note: Animation library option
-design_refs:
-  - title: DESIGN_SYSTEM
-    path: ../../technical/DESIGN_SYSTEM.md
-  - title: ACCESSIBILITY
-    path: ../../technical/design/ACCESSIBILITY.md
----
-
 ## Table of Contents
 
 - [Motion & Animation](#motion-animation)
@@ -33,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Motion & Animation
 

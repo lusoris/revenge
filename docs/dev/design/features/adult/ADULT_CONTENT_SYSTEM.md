@@ -1,45 +1,3 @@
----
-sources:
-  - name: pgx PostgreSQL Driver
-    url: ../../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: StashDB GraphQL API
-    url: ../../../sources/apis/stashdb-schema.graphql
-    note: Auto-resolved from stashdb
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
-  - title: WHISPARR (PRIMARY metadata + downloads)
-    path: ../../integrations/servarr/WHISPARR.md
-  - title: STASHDB (supplementary metadata)
-    path: ../../integrations/metadata/STASHDB.md
-  - title: STASH (local instance integration)
-    path: ../../integrations/metadata/STASH.md
-  - title: DATA_RECONCILIATION (metadata fuzzy matching)
-    path: ../adult/DATA_RECONCILIATION.md
-  - title: GALLERY_MODULE (image galleries)
-    path: ../adult/GALLERY_MODULE.md
----
-
 ## Table of Contents
 
 - [Revenge - Adult Content System](#revenge-adult-content-system)
@@ -64,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Revenge - Adult Content System
 

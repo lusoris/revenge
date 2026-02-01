@@ -1,29 +1,3 @@
----
-sources:
-  - name: Go Testing Package
-    url: ../../sources/go/stdlib/testing.md
-    note: Standard library testing
-  - name: testify
-    url: ../../sources/testing/testify.md
-    note: Assertion and mocking toolkit
-  - name: mockery
-    url: ../../sources/testing/mockery-guide.md
-    note: Mock generation from interfaces
-  - name: testcontainers-go
-    url: https://pkg.go.dev/github.com/testcontainers/testcontainers-go
-    note: Docker containers for integration tests
-  - name: embedded-postgres
-    url: ../../sources/testing/embedded-postgres.md
-    note: Embedded PostgreSQL for testing
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: BEST_PRACTICES
-    path: ../operations/BEST_PRACTICES.md
----
-
 ## Table of Contents
 
 - [Testing Patterns and Practices](#testing-patterns-and-practices)
@@ -44,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Testing Patterns and Practices
 

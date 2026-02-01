@@ -1,30 +1,3 @@
----
-sources:
-  - name: FANDOM API
-    url: https://community.fandom.com/wiki/Community_Central:API
-    note: MediaWiki-based API
-  - name: MediaWiki API
-    url: ../../../sources/wiki/mediawiki.md
-    note: Underlying API
-  - name: golang.org/x/time
-    url: ../../../sources/go/x/time.md
-    note: Rate limiting
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
-  - title: WIKI_SYSTEM
-    path: ../../features/shared/WIKI_SYSTEM.md
-  - title: WIKIPEDIA (similar MediaWiki integration)
-    path: ./WIKIPEDIA.md
-  - title: MOVIE_MODULE
-    path: ../../features/video/MOVIE_MODULE.md
-  - title: TVSHOW_MODULE
-    path: ../../features/video/TVSHOW_MODULE.md
----
-
 ## Table of Contents
 
 - [FANDOM](#fandom)
@@ -47,7 +20,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # FANDOM
 

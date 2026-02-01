@@ -1,20 +1,3 @@
----
-sources:
-  - name: MyAnimeList API
-    url: ../../../sources/apis/myanimelist.md
-    note: Auto-resolved from myanimelist
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [MyAnimeList (MAL)](#myanimelist-mal)
@@ -43,7 +26,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # MyAnimeList (MAL)
 

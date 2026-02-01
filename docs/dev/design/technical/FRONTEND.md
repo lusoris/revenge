@@ -1,47 +1,3 @@
----
-sources:
-  - name: Svelte 5 Documentation
-    url: ../../sources/frontend/svelte5.md
-    note: Component framework
-  - name: Svelte 5 Runes
-    url: ../../sources/frontend/svelte-runes.md
-    note: Reactivity system
-  - name: SvelteKit Documentation
-    url: ../../sources/frontend/sveltekit.md
-    note: Full-stack framework
-  - name: shadcn-svelte
-    url: ../../sources/frontend/shadcn-svelte.md
-    note: Component library
-  - name: Bits UI
-    url: ../../sources/frontend/bits-ui.md
-    note: Headless UI primitives
-  - name: TanStack Query
-    url: ../../sources/frontend/tanstack-query.md
-    note: Server state management
-  - name: Vidstack Player
-    url: ../../sources/frontend/vidstack.md
-    note: Video player
-  - name: Vite Documentation
-    url: ../../sources/frontend/vite.md
-    note: Build tool
-  - name: TailwindCSS Documentation
-    url: ../../sources/frontend/tailwindcss.md
-    note: Styling framework
-  - name: Zod Documentation
-    url: ../../sources/frontend/zod.md
-    note: Schema validation
-  - name: SvelteKit Superforms
-    url: ../../sources/frontend/superforms.md
-    note: Form handling
-design_refs:
-  - title: technical
-    path: INDEX.md
-  - title: TECH_STACK
-    path: ../technical/TECH_STACK.md
-  - title: 04_PLAYER_ARCHITECTURE
-    path: ../architecture/04_PLAYER_ARCHITECTURE.md
----
-
 ## Table of Contents
 
 - [Frontend Architecture](#frontend-architecture)
@@ -62,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Frontend Architecture
 

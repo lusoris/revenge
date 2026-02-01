@@ -1,47 +1,3 @@
----
-sources:
-  - name: AniList GraphQL API
-    url: ../../../sources/apis/anilist.md
-    note: Auto-resolved from anilist
-  - name: ComicVine API
-    url: ../../../sources/apis/comicvine.md
-    note: Auto-resolved from comicvine
-  - name: Uber fx
-    url: ../../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: MyAnimeList API
-    url: ../../../sources/apis/myanimelist.md
-    note: Auto-resolved from myanimelist
-  - name: ogen OpenAPI Generator
-    url: ../../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: sqlc
-    url: ../../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-  - name: Svelte 5 Runes
-    url: ../../../sources/frontend/svelte-runes.md
-    note: Auto-resolved from svelte-runes
-  - name: Svelte 5 Documentation
-    url: ../../../sources/frontend/svelte5.md
-    note: Auto-resolved from svelte5
-  - name: SvelteKit Documentation
-    url: ../../../sources/frontend/sveltekit.md
-    note: Auto-resolved from sveltekit
-design_refs:
-  - title: 01_ARCHITECTURE
-    path: ../../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [Comics Module](#comics-module)
@@ -78,7 +34,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Comics Module
 

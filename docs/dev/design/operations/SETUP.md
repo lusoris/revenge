@@ -1,61 +1,3 @@
----
-sources:
-  - name: Dragonfly Documentation
-    url: ../../sources/infrastructure/dragonfly.md
-    note: Auto-resolved from dragonfly
-  - name: FFmpeg Documentation
-    url: ../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: FFmpeg Codecs
-    url: ../../sources/media/ffmpeg-codecs.md
-    note: Auto-resolved from ffmpeg-codecs
-  - name: FFmpeg Formats
-    url: ../../sources/media/ffmpeg-formats.md
-    note: Auto-resolved from ffmpeg-formats
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../sources/media/go-astiav.md
-    note: Auto-resolved from go-astiav
-  - name: go-astiav GitHub README
-    url: ../../sources/media/go-astiav-guide.md
-    note: Auto-resolved from go-astiav-docs
-  - name: Go io
-    url: ../../sources/go/stdlib/io.md
-    note: Auto-resolved from go-io
-  - name: pgx PostgreSQL Driver
-    url: ../../sources/database/pgx.md
-    note: Auto-resolved from pgx
-  - name: PostgreSQL Arrays
-    url: ../../sources/database/postgresql-arrays.md
-    note: Auto-resolved from postgresql-arrays
-  - name: PostgreSQL JSON Functions
-    url: ../../sources/database/postgresql-json.md
-    note: Auto-resolved from postgresql-json
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-  - name: rueidis
-    url: ../../sources/tooling/rueidis.md
-    note: Auto-resolved from rueidis
-  - name: rueidis GitHub README
-    url: ../../sources/tooling/rueidis-guide.md
-    note: Auto-resolved from rueidis-docs
-  - name: Typesense API
-    url: ../../sources/infrastructure/typesense.md
-    note: Auto-resolved from typesense
-  - name: Typesense Go Client
-    url: ../../sources/infrastructure/typesense-go.md
-    note: Auto-resolved from typesense-go
-design_refs:
-  - title: operations
-    path: INDEX.md
-  - title: TECH_STACK
-    path: ../technical/TECH_STACK.md
-  - title: REVERSE_PROXY
-    path: ../operations/REVERSE_PROXY.md
-  - title: 00_SOURCE_OF_TRUTH
-    path: ../00_SOURCE_OF_TRUTH.md
----
-
 ## Table of Contents
 
 - [Production Deployment Setup](#production-deployment-setup)
@@ -76,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Production Deployment Setup
 

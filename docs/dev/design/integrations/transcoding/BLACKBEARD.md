@@ -1,28 +1,3 @@
----
-sources:
-  - name: FFmpeg Documentation
-    url: ../../../sources/media/ffmpeg.md
-    note: Auto-resolved from ffmpeg
-  - name: go-astiav (FFmpeg bindings)
-    url: ../../../sources/media/go-astiav.md
-    note: Internal transcoding (go-astiav)
-  - name: gohlslib (HLS)
-    url: ../../../sources/media/gohlslib.md
-    note: Auto-resolved from gohlslib
-  - name: River Job Queue
-    url: ../../../sources/tooling/river.md
-    note: Job queue for transcoding tasks
-design_refs:
-  - title: TRANSCODING service (INTERNAL transcoding)
-    path: ../../services/TRANSCODING.md
-  - title: 04_PLAYER_ARCHITECTURE
-    path: ../../architecture/04_PLAYER_ARCHITECTURE.md
-  - title: TRICKPLAY feature
-    path: ../../features/playback/TRICKPLAY.md
-  - title: HTTP_CLIENT (for Blackbeard API)
-    path: ../../services/HTTP_CLIENT.md
----
-
 ## Table of Contents
 
 - [Blackbeard](#blackbeard)
@@ -47,7 +22,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Blackbeard
 

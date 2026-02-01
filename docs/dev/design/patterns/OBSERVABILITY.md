@@ -1,35 +1,3 @@
----
-sources:
-  - name: Prometheus
-    url: https://prometheus.io/docs/introduction/overview/
-    note: Metrics collection
-  - name: Prometheus Metrics Types
-    url: ../../sources/observability/prometheus-metrics.md
-    note: Counter, Gauge, Histogram, Summary
-  - name: OpenTelemetry Go
-    url: ../../sources/observability/opentelemetry.md
-    note: Tracing SDK
-  - name: slog
-    url: ../../sources/go/stdlib/slog.md
-    note: Structured logging
-  - name: tint
-    url: https://github.com/lmittmann/tint
-    note: Colorized slog handler (dev)
-  - name: zap
-    url: https://github.com/uber-go/zap
-    note: High-performance JSON logs (prod)
-  - name: Jaeger
-    url: ../../sources/observability/jaeger.md
-    note: Distributed tracing backend
-design_refs:
-  - title: patterns
-    path: INDEX.md
-  - title: TECH_STACK
-    path: ../technical/TECH_STACK.md
-  - title: BEST_PRACTICES
-    path: ../operations/BEST_PRACTICES.md
----
-
 ## Table of Contents
 
 - [Observability Pattern](#observability-pattern)
@@ -50,7 +18,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Observability Pattern
 

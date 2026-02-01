@@ -1,37 +1,3 @@
----
-sources:
-  - name: Authelia Documentation
-    url: ../../sources/security/authelia.md
-    note: Auto-resolved from authelia
-  - name: Authentik Documentation
-    url: ../../sources/security/authentik.md
-    note: Auto-resolved from authentik
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: Keycloak Documentation
-    url: ../../sources/security/keycloak.md
-    note: Auto-resolved from keycloak
-  - name: ogen OpenAPI Generator
-    url: ../../sources/tooling/ogen.md
-    note: Auto-resolved from ogen
-  - name: sqlc
-    url: ../../sources/database/sqlc.md
-    note: Auto-resolved from sqlc
-  - name: sqlc Configuration
-    url: ../../sources/database/sqlc-config.md
-    note: Auto-resolved from sqlc-config
-design_refs:
-  - title: services
-    path: INDEX.md
-  - title: 01_ARCHITECTURE
-    path: ../architecture/01_ARCHITECTURE.md
-  - title: 02_DESIGN_PRINCIPLES
-    path: ../architecture/02_DESIGN_PRINCIPLES.md
-  - title: 03_METADATA_SYSTEM
-    path: ../architecture/03_METADATA_SYSTEM.md
----
-
 ## Table of Contents
 
 - [OIDC Service](#oidc-service)
@@ -58,7 +24,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # OIDC Service
 

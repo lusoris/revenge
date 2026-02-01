@@ -1,31 +1,3 @@
----
-sources:
-  - name: Uber fx
-    url: ../../sources/tooling/fx.md
-    note: Auto-resolved from fx
-  - name: Last.fm API
-    url: ../../sources/apis/lastfm.md
-    note: Auto-resolved from lastfm-api
-  - name: River Job Queue
-    url: ../../sources/tooling/river.md
-    note: Auto-resolved from river
-design_refs:
-  - title: 03_METADATA_SYSTEM (PRIMARY architecture doc)
-    path: ../architecture/03_METADATA_SYSTEM.md
-  - title: HTTP_CLIENT (proxy/VPN support)
-    path: ./HTTP_CLIENT.md
-  - title: RADARR (PRIMARY for movies)
-    path: ../integrations/servarr/RADARR.md
-  - title: SONARR (PRIMARY for TV shows)
-    path: ../integrations/servarr/SONARR.md
-  - title: LIDARR (PRIMARY for music)
-    path: ../integrations/servarr/LIDARR.md
-  - title: CHAPTARR (PRIMARY for books/audiobooks)
-    path: ../integrations/servarr/CHAPTARR.md
-  - title: WHISPARR (PRIMARY for QAR/adult)
-    path: ../integrations/servarr/WHISPARR.md
----
-
 ## Table of Contents
 
 - [Metadata Service](#metadata-service)
@@ -54,7 +26,6 @@ design_refs:
   - [Related Documentation](#related-documentation)
     - [Design Documents](#design-documents)
     - [External Sources](#external-sources)
-
 
 # Metadata Service
 
