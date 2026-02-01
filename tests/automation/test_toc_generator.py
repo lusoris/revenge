@@ -12,13 +12,14 @@ from scripts.automation.toc_generator import TOCGenerator
 
 
 def test_split_frontmatter_with_leading_blanks():
-    """Test splitting frontmatter with leading blank lines."""
+    """Test splitting frontmatter with leading blank lines - should strip them."""
     generator = TOCGenerator()
-    
+
     content = "\n\n---\nkey: value\n---\n\n# Title\n\nContent"
     frontmatter, body = generator.split_frontmatter(content)
-    
-    assert frontmatter == "\n\n---\nkey: value\n---\n"
+
+    # Leading blanks should be stripped (frontmatter must start at line 1)
+    assert frontmatter == "---\nkey: value\n---\n"
     assert body == "\n# Title\n\nContent"
 
 
@@ -34,13 +35,14 @@ def test_split_frontmatter_no_blanks():
 
 
 def test_split_frontmatter_empty():
-    """Test splitting empty frontmatter."""
+    """Test splitting empty frontmatter - should strip leading blanks."""
     generator = TOCGenerator()
-    
+
     content = "\n\n---\n---\n\n# Title"
     frontmatter, body = generator.split_frontmatter(content)
-    
-    assert frontmatter == "\n\n---\n---\n"
+
+    # Leading blanks should be stripped
+    assert frontmatter == "---\n---\n"
     assert body == "\n# Title"
 
 
@@ -56,14 +58,14 @@ def test_split_frontmatter_no_frontmatter():
 
 
 def test_add_toc_preserves_frontmatter():
-    """Test that TOC is added after frontmatter."""
+    """Test that TOC is added after frontmatter (leading blanks stripped)."""
     generator = TOCGenerator()
-    
+
     content = "\n\n---\nsources:\n  - test\n---\n\n# Title\n\n## Section 1\n\n## Section 2"
     result = generator.add_toc(content)
-    
-    # Should start with frontmatter
-    assert result.startswith("\n\n---\nsources:\n  - test\n---\n")
+
+    # Should start with frontmatter (leading blanks stripped)
+    assert result.startswith("---\nsources:\n  - test\n---\n")
     # Should have TOC after frontmatter
     assert "## Table of Contents" in result
     # Should have title after TOC
