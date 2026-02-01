@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Trope analysis and storytelling patterns'
-wiki_tagline: '> Trope analysis and storytelling patterns'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Discover tropes and storytelling patterns'
+wiki_overview: 'TVTropes integration links to trope analysis for your media. Discover recurring storytelling patterns, character archetypes, and narrative devices. See which tropes appear in movies and shows. Great for understanding what makes stories tick. Links to TVTropes pages from item details.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

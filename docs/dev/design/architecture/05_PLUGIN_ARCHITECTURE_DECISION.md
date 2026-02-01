@@ -69,7 +69,15 @@ design_refs:
 **Category**: architecture
 
 
-> PLACEHOLDER: Brief technical summary
+> > ADR: Decision to use integrations over plugins
+
+Decision rationale:
+- **No Plugin System**: Revenge uses direct integrations instead of plugins
+- **Why**: Simpler maintenance, better security, faster development
+- **Integrations**: First-class support for common services (Arr stack, metadata providers)
+- **Webhooks**: External systems can integrate via webhooks
+- **Future**: May add scripting for power users (Lua or Starlark)
+
 
 ---
 

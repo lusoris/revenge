@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> External transcoding service for Revenge'
-wiki_tagline: '> External transcoding service for Revenge'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Offload transcoding to dedicated workers'
+wiki_overview: 'Blackbeard handles video transcoding on dedicated hardware. Offload CPU-intensive transcoding from your main server. Supports hardware acceleration (NVENC, QSV, VAAPI). Multiple workers can process jobs in parallel. Reduces load on the Revenge server for better playback performance.'
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html

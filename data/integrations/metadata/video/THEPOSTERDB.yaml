@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Curated high-quality posters for movies and TV shows'
-wiki_tagline: '> Curated high-quality posters for movies and TV shows'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Premium curated poster artwork'
+wiki_overview: 'ThePosterDB offers designer-quality posters and artwork for your library. Community-curated collection with consistent styling options. Browse by collection sets for matching artwork across related titles. Higher quality than standard metadata sources. Connect your ThePosterDB account to access the full library.'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash

@@ -64,9 +64,9 @@ design_refs:
 
 # Dragonfly
 
-> High-performance Redis-compatible cache
+> Fast distributed caching with Dragonfly
 
-PLACEHOLDER: User-friendly overview
+Dragonfly provides high-speed caching for Revenge. Stores session data, API responses, and frequently accessed metadata in memory. Redis-compatible so existing tools work. Dramatically faster than Redis with lower memory usage. Required for multi-server deployments, optional but recommended for single-server.
 
 ---
 

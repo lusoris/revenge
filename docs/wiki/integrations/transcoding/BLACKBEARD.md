@@ -58,9 +58,9 @@ design_refs:
 
 # Blackbeard
 
-> External transcoding service for Revenge
+> Offload transcoding to dedicated workers
 
-PLACEHOLDER: User-friendly overview
+Blackbeard handles video transcoding on dedicated hardware. Offload CPU-intensive transcoding from your main server. Supports hardware acceleration (NVENC, QSV, VAAPI). Multiple workers can process jobs in parallel. Reduces load on the Revenge server for better playback performance.
 
 ---
 

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User portal for bug reports, feature requests, and support tickets'
-wiki_tagline: '> User portal for bug reports, feature requests, and support tickets'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Report issues and request features through a built-in portal'
+wiki_overview: 'Built-in support system for your media server. Users can submit bug reports, request features, or ask for help without leaving the app. Admins see a dashboard of all tickets with priority, status, and assignment. Email notifications keep everyone updated. Integrates with GitHub Issues for developers who want external tracking.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

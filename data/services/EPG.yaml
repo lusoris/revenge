@@ -411,47 +411,48 @@ search_integration:
     }
     ```
 
-caching_strategy:
-  cache_keys:
-    - key: "epg:channel:{channel_id}:schedule:{date}"
-      description: Daily schedule for a specific channel
-      ttl: 1 hour
-    - key: "epg:program:{program_id}"
-      description: Individual program details
-      ttl: 6 hours
-    - key: "epg:channels:all"
-      description: List of all channels
-      ttl: 24 hours
+caching_strategy: |-
+  Dragonfly cache with tiered TTLs:
+  - epg:channel:{channel_id}:schedule:{date} - Daily schedule (1 hour TTL)
+  - epg:program:{program_id} - Program details (6 hours TTL)
+  - epg:channels:all - Channel listings (24 hours TTL)
 
-  cache_implementation: |-
-    ```go
-    func (s *EPGService) GetChannelSchedule(ctx context.Context, channelID uuid.UUID, date time.Time) ([]Program, error) {
-        cacheKey := fmt.Sprintf("epg:channel:%s:schedule:%s", channelID, date.Format("2006-01-02"))
-        
-        // Try cache first
-        cached, err := s.cache.Do(ctx, s.cache.B().Get().Key(cacheKey).Build()).ToString()
-        if err == nil {
-            var programs []Program
-            json.Unmarshal([]byte(cached), &programs)
-            return programs, nil
-        }
-        
-        // Cache miss, query database
-        startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
-        endOfDay := startOfDay.Add(24 * time.Hour)
-        
-        programs, err := s.repo.GetProgramsByChannelAndTimeRange(ctx, channelID, startOfDay, endOfDay)
-        if err != nil {
-            return nil, err
-        }
-        
-        // Store in cache
-        data, _ := json.Marshal(programs)
-        s.cache.Do(ctx, s.cache.B().Set().Key(cacheKey).Value(string(data)).Ex(1*time.Hour).Build())
-        
-        return programs, nil
-    }
-    ```
+cache_keys: |-
+  ```
+  epg:channel:{channel_id}:schedule:{date}  # Daily schedule for channel
+  epg:program:{program_id}                  # Individual program details
+  epg:channels:all                          # List of all channels
+  ```
+
+cache_implementation: |-
+  ```go
+  func (s *EPGService) GetChannelSchedule(ctx context.Context, channelID uuid.UUID, date time.Time) ([]Program, error) {
+      cacheKey := fmt.Sprintf("epg:channel:%s:schedule:%s", channelID, date.Format("2006-01-02"))
+
+      // Try cache first
+      cached, err := s.cache.Do(ctx, s.cache.B().Get().Key(cacheKey).Build()).ToString()
+      if err == nil {
+          var programs []Program
+          json.Unmarshal([]byte(cached), &programs)
+          return programs, nil
+      }
+
+      // Cache miss, query database
+      startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+      endOfDay := startOfDay.Add(24 * time.Hour)
+
+      programs, err := s.repo.GetProgramsByChannelAndTimeRange(ctx, channelID, startOfDay, endOfDay)
+      if err != nil {
+          return nil, err
+      }
+
+      // Store in cache
+      data, _ := json.Marshal(programs)
+      s.cache.Do(ctx, s.cache.B().Set().Key(cacheKey).Value(string(data)).Ex(1*time.Hour).Build())
+
+      return programs, nil
+  }
+  ```
 
 api_endpoints:
   - method: GET

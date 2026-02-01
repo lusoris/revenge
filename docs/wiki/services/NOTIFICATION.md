@@ -51,7 +51,7 @@ design_refs:
 
 > Multi-channel notifications for users and admins
 
-PLACEHOLDER: User-friendly overview
+Get notified about important events through multiple channels. Receive alerts when new media is added, downloads complete, or errors occur. Supports email, push notifications (via FCM), webhooks, and in-app notifications. Configure which events trigger notifications and choose delivery channels per user or globally.
 
 ---
 

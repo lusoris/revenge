@@ -58,9 +58,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How Revenge plays your media across all devices
 
-PLACEHOLDER: User-friendly overview
+The player architecture handles media playback across web, mobile, and TV clients. Videos stream via HLS for adaptive quality based on your connection. The backend generates HLS manifests and handles transcoding when needed (using FFmpeg). The web player (Vidstack) supports chapters, subtitles, skip intro, and trickplay thumbnails. Chromecast lets you cast to TV, and SyncPlay lets multiple users watch together in sync.
 
 ---
 

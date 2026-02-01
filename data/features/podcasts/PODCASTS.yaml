@@ -221,29 +221,40 @@ background_jobs:
 api_endpoints:
   - method: GET
     path: /api/v1/podcasts
+    description: List all subscribed podcasts
   - method: POST
     path: /api/v1/podcasts
-    description: Subscribe by RSS URL
+    description: Subscribe to a podcast by RSS URL
   - method: GET
     path: /api/v1/podcasts/:id
+    description: Get podcast details by ID
   - method: DELETE
     path: /api/v1/podcasts/:id
-    description: Unsubscribe
+    description: Unsubscribe from a podcast
   - method: GET
     path: /api/v1/podcasts/:id/episodes
+    description: List all episodes for a podcast
   - method: GET
     path: /api/v1/podcasts/episodes/:id
+    description: Get episode details by ID
   - method: GET
     path: /api/v1/podcasts/episodes/:id/stream
+    description: Get streaming URL for an episode
   - method: POST
     path: /api/v1/podcasts/episodes/:id/download
+    description: Download an episode for offline listening
   - method: GET
     path: /api/v1/podcasts/episodes/:id/progress
+    description: Get user playback progress for an episode
   - method: PUT
     path: /api/v1/podcasts/episodes/:id/progress
+    description: Update user playback progress for an episode
   - method: GET
     path: /api/v1/podcasts/search
+    description: Search podcasts via Podcast Index API
   - method: POST
     path: /api/v1/podcasts/import-opml
+    description: Import podcast subscriptions from OPML file
   - method: GET
     path: /api/v1/podcasts/export-opml
+    description: Export podcast subscriptions as OPML file

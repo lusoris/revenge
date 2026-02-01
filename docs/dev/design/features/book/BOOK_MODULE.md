@@ -180,41 +180,67 @@ internal/content/book/
 ### Content Management
 #### GET /api/v1/books
 
+List all books with pagination and filters
+
 ---
 #### GET /api/v1/books/:id
+
+Get book details by ID
 
 ---
 #### GET /api/v1/books/:id/read
 
+Get book content for web reader
+
 ---
 #### GET /api/v1/books/:id/download
+
+Download book file in original format
 
 ---
 #### GET /api/v1/books/:id/progress
 
+Get user reading progress for a book
+
 ---
 #### PUT /api/v1/books/:id/progress
+
+Update user reading progress
 
 ---
 #### POST /api/v1/books/:id/bookmarks
 
+Create a bookmark at current position
+
 ---
 #### GET /api/v1/books/:id/bookmarks
+
+Get all user bookmarks for a book
 
 ---
 #### POST /api/v1/books/:id/highlights
 
+Create a text highlight with optional note
+
 ---
 #### GET /api/v1/books/:id/highlights
+
+Get all user highlights for a book
 
 ---
 #### GET /api/v1/books/authors
 
+List all book authors
+
 ---
 #### GET /api/v1/books/series
 
+List all book series
+
 ---
 #### GET /api/v1/books/collections
+
+List all book collections
 
 ---
 

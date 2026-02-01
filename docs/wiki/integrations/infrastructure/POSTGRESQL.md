@@ -67,9 +67,9 @@ design_refs:
 
 # PostgreSQL
 
-> Primary database for all Revenge data
+> PostgreSQL stores all your media data
 
-PLACEHOLDER: User-friendly overview
+PostgreSQL is the only supported database for Revenge (no SQLite). Stores all metadata, user data, watch history, and configuration. Version 18+ required for modern features. Supports automatic schema migrations on upgrade. Backup your database regularly using standard PostgreSQL tools.
 
 ---
 

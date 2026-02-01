@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Performer social media presence'
-wiki_tagline: '> Performer social media presence'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Performer Twitter/X links'
+wiki_overview: 'Links to performer Twitter/X profiles in the adult content system. Tracks verified social media handles. Provides another way to discover performer content. Links stored as part of performer metadata records. No direct API integration - handles only.'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river

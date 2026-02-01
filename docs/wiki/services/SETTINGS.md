@@ -60,7 +60,7 @@ design_refs:
 
 > Server settings persistence and retrieval
 
-PLACEHOLDER: User-friendly overview
+The Settings service stores and manages server configuration that can be changed at runtime. Unlike config file settings, these can be modified through the UI without restarting. Includes transcoding preferences, default languages, metadata sources, and feature flags. Changes take effect immediately and persist across restarts.
 
 ---
 

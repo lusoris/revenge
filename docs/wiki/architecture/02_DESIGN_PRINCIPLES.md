@@ -76,9 +76,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> The philosophy behind how Revenge is built
 
-PLACEHOLDER: User-friendly overview
+Revenge follows strict design principles for maintainability and performance. PostgreSQL is the only supported database - no SQLite complexity. All code requires 80% minimum test coverage with table-driven tests. Metadata always comes from local cache first, then Arr services, then external APIs. Error handling uses sentinel errors for type safety. Logging is text in development (tint) and JSON in production (zap). These principles ensure consistent, testable, performant code.
 
 ---
 

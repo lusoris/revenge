@@ -43,9 +43,9 @@ design_refs:
 
 # ThePornDB
 
-> Alternative adult metadata provider with scene/performer/studio data
+> Alternative metadata from ThePornDB
 
-PLACEHOLDER: User-friendly overview
+ThePornDB provides adult metadata as an alternative to StashDB. Scene matching by title and fingerprint. Performer and studio information. REST API with straightforward access. Used as a fallback or supplement when StashDB lacks data.
 
 ---
 

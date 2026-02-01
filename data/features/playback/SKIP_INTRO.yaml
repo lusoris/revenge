@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Automatic intro and credits detection with one-click skip'
 wiki_tagline: '> Automatic intro and credits detection with one-click skip'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'Skip repetitive intros and credits with one click. Revenge automatically detects intro sequences using audio fingerprinting (Chromaprint) and visual analysis. When an intro is detected, a Skip button appears. Enable auto-skip to jump automatically. Credits detection suggests the next episode before the current one ends.'
 sources:
 - name: Chromaprint/AcoustID
   url: https://acoustid.org/chromaprint

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV tracker and movie scrobbler (alternative to Trakt)'
-wiki_tagline: '> TV tracker and movie scrobbler (alternative to Trakt)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Track TV and movies with Simkl'
+wiki_overview: 'Simkl provides TV and movie tracking as an alternative to Trakt. Automatic scrobbling records what you watch. Strong anime support with AniList integration. Sync your watchlist and watched history. View detailed statistics about your viewing habits. Free account with no limits.'
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro

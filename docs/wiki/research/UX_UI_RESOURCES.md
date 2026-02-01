@@ -40,9 +40,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Design resources for building the Revenge UI
 
-PLACEHOLDER: User-friendly overview
+This document collects UI/UX resources used in designing Revenge. The component library builds on shadcn-svelte with Bits UI primitives for accessibility. Styling uses Tailwind CSS 4 with CSS variables for theme customization. Motion design follows modern streaming apps with smooth transitions. All components support keyboard navigation and screen readers. Design inspiration comes from Netflix, Disney+, and Plex interfaces.
 
 ---
 

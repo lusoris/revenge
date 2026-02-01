@@ -56,9 +56,9 @@ design_refs:
 
 # News System
 
-> External news aggregation and internal announcements
+> Server announcements and entertainment news in one place
 
-PLACEHOLDER: User-friendly overview
+Stay informed with server announcements and entertainment news. Admins can post messages about maintenance, new content, or server updates. RSS feeds bring in news from entertainment sources. Filter news by category (movies, TV, music). Dismiss read items or pin important announcements. Appears on the home dashboard for all users.
 
 ---
 

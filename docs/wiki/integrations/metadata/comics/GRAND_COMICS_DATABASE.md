@@ -43,9 +43,9 @@ design_refs:
 
 # Grand Comics Database (GCD)
 
-> Open-source historical comics database (Golden/Silver Age focus)
+> Historical comic data from Grand Comics Database
 
-PLACEHOLDER: User-friendly overview
+Grand Comics Database (GCD) specializes in historical comics from the Golden and Silver Ages. Detailed bibliographic records for vintage comics. Covers publishers that no longer exist. Useful for identifying older comics in your collection. Supplements ComicVine with historical data.
 
 ---
 

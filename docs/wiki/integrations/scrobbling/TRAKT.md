@@ -40,9 +40,9 @@ design_refs:
 
 # Trakt
 
-> Social platform for tracking movies and TV shows
+> Track movies and TV shows with Trakt
 
-PLACEHOLDER: User-friendly overview
+Trakt integration syncs your watch history for movies and TV shows. Scrobble plays automatically as you watch. Import your existing Trakt history to mark content as watched. Sync watchlists both directions. See play counts and last watched dates. OAuth login keeps your credentials secure.
 
 ---
 

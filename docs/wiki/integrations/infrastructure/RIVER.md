@@ -76,9 +76,9 @@ design_refs:
 
 # River
 
-> PostgreSQL-native job queue
+> Background job processing with River
 
-PLACEHOLDER: User-friendly overview
+River handles background tasks like library scanning, metadata fetching, and transcoding. Jobs are stored in PostgreSQL for reliability - nothing is lost if the server restarts. View job status in the admin dashboard. Configure worker concurrency based on your server capacity.
 
 ---
 

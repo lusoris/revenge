@@ -46,9 +46,9 @@ design_refs:
 
 # ErsatzTV
 
-> Custom IPTV channel creation from your media library
+> Create custom TV channels from your library
 
-PLACEHOLDER: User-friendly overview
+ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 movie channel, a sitcom channel, or themed marathons. Channels play through Revenge like traditional live TV. Schedule content or let it shuffle randomly. Perfect for a lean-back viewing experience.
 
 ---
 

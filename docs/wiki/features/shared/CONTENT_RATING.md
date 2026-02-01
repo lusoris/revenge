@@ -53,9 +53,9 @@ design_refs:
 
 # Content Rating System
 
-> Universal age restriction and content rating system for revenge
+> Age ratings and content restrictions across all media
 
-PLACEHOLDER: User-friendly overview
+Unified content rating system covering movies, TV shows, music, and games. Supports multiple rating systems (MPAA, PEGI, TV Parental Guidelines, ESRB). Set maximum allowed ratings per user profile - perfect for kid accounts. Content warnings for mature themes are displayed before playback. Ratings are pulled automatically from metadata providers.
 
 ---
 

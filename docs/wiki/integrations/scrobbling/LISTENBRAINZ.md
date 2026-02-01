@@ -37,9 +37,9 @@ design_refs:
 
 # ListenBrainz
 
-> Open-source music listening history tracking (MusicBrainz project)
+> Open-source music scrobbling with ListenBrainz
 
-PLACEHOLDER: User-friendly overview
+ListenBrainz is an open-source alternative to Last.fm for tracking music listening. Part of the MusicBrainz project. Scrobble your plays and build a listening history. Import your Last.fm history to start. Discover music through community playlists. Your data is open and exportable.
 
 ---
 

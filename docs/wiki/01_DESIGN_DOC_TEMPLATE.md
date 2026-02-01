@@ -43,9 +43,9 @@ sources:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How to create new design documents
 
-PLACEHOLDER: User-friendly overview
+This template provides the standard structure for all Revenge design documents. Each doc includes a status table tracking design, implementation, and testing progress. Technical summaries target developers while wiki content explains features to users. Sources link to external documentation. Use this template when adding new features or services to ensure consistent documentation.
 
 ---
 

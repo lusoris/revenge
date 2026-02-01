@@ -46,9 +46,9 @@ design_refs:
 
 # OMDb (Open Movie Database)
 
-> Fallback metadata provider + IMDb ratings
+> IMDb ratings and additional movie data
 
-PLACEHOLDER: User-friendly overview
+OMDb provides supplementary metadata including IMDb ratings, Rotten Tomatoes scores, and Metacritic scores. Used as a fallback when TMDB lacks data. Requires free API key (limited requests per day). Particularly useful for displaying multiple rating sources on movie detail pages.
 
 ---
 

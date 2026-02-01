@@ -72,7 +72,15 @@ design_refs:
 **Category**: architecture
 
 
-> PLACEHOLDER: Brief technical summary
+> > Media playback system with HLS streaming and Vidstack player
+
+Player components:
+- **Backend**: gohlslib for HLS manifest generation, FFmpeg for transcoding
+- **Frontend**: Vidstack player with HLS.js for adaptive streaming
+- **Features**: Skip intro, trickplay thumbnails, chapter markers, subtitles
+- **Casting**: Chromecast and DLNA support
+- **Sync**: SyncPlay for watching together remotely
+
 
 ---
 

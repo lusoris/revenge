@@ -18,8 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Sync playback data to external services like Trakt, Last.fm,
   ListenBrainz, etc.'
-wiki_tagline: '> Sync playback data to external services like Trakt, Last'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Track what you watch and listen to across services'
+wiki_overview: 'Scrobble your viewing and listening history to external services. Connect Trakt to track movies and TV shows. Link Last.fm or ListenBrainz for music listening history. Sync watch status to Simkl, Letterboxd, or AniList. Two-way sync imports existing history and exports new plays automatically. Per-user configuration for each connected service.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

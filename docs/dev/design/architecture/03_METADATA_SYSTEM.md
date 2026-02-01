@@ -69,7 +69,15 @@ design_refs:
 **Category**: architecture
 
 
-> PLACEHOLDER: Brief technical summary
+> > Multi-source metadata system with caching and priority chain
+
+Metadata handling:
+- **Priority Chain**: Local cache → Arr services → Internal (Stash) → External APIs
+- **Providers**: TMDb, TheTVDB, MusicBrainz, StashDB, and many more
+- **Caching**: Two-tier with otter (L1 memory) and rueidis (L2 distributed)
+- **Enrichment**: Background jobs for additional metadata, thumbnails, blurhash
+- **Matching**: Fingerprinting for audio, hash matching for media
+
 
 ---
 

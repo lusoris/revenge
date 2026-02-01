@@ -25,6 +25,7 @@
 | **Services** | [INDEX](services/INDEX.md) | Backend services (auth, user, session, etc.) |
 | **Operations** | [INDEX](operations/INDEX.md) | Setup, deployment, best practices |
 | **Technical** | [INDEX](technical/INDEX.md) | API, frontend, configuration |
+| **Design System** | [DESIGN_SYSTEM](technical/DESIGN_SYSTEM.md) | Brand, colors, typography, components |
 | **Research** | [INDEX](research/INDEX.md) | User pain points, UX/UI resources |
 
 ### Quick Links
@@ -392,6 +393,61 @@ Examples:
 | Internal Schema | `qar.*` | `qar.crew WHERE id = '123'` |
 | Config Key | `legacy.*` | `legacy.enabled = true` |
 | Storage Path | `/data/qar/` | `/data/qar/crew/123/` |
+
+---
+
+## Design System
+
+> Queen Anne's Revenge themed design — Sleek & Professional with subtle pirate elegance
+
+### Design Documentation
+
+| Document | Path | Description |
+|----------|------|-------------|
+| **Index** | [DESIGN_SYSTEM.md](technical/DESIGN_SYSTEM.md) | Master index, overview |
+| **Brand Identity** | [BRAND_IDENTITY.yaml](../../data/technical/design/BRAND_IDENTITY.yaml) | Logo, theming, voice |
+| **Color System** | [COLOR_SYSTEM.yaml](../../data/technical/design/COLOR_SYSTEM.yaml) | Module colors, themes |
+| **Typography** | [TYPOGRAPHY.yaml](../../data/technical/design/TYPOGRAPHY.yaml) | Fonts, text styles |
+| **Layout** | [LAYOUT.yaml](../../data/technical/design/LAYOUT.yaml) | Spacing, breakpoints |
+| **Components** | [COMPONENTS.yaml](../../data/technical/design/COMPONENTS.yaml) | UI component specs |
+| **Navigation** | [NAVIGATION.yaml](../../data/technical/design/NAVIGATION.yaml) | Nav patterns, shortcuts |
+| **Motion** | [MOTION.yaml](../../data/technical/design/MOTION.yaml) | Animations, transitions |
+| **Accessibility** | [ACCESSIBILITY.yaml](../../data/technical/design/ACCESSIBILITY.yaml) | WCAG compliance |
+| **Pirate Mode** | [PIRATE_MODE.yaml](../../data/technical/design/PIRATE_MODE.yaml) | Easter eggs, themes |
+
+### Core Design Decisions
+
+| Decision | Choice | Notes |
+|----------|--------|-------|
+| Theme | Dark-first | Light mode supported |
+| Module Colors | Arr-aligned | Radarr gold, Sonarr blue, Lidarr green, Whisparr pink |
+| Typography | Inter + Playfair Display | Modern sans + serif accents |
+| Monospace | JetBrains Mono | Code, timestamps |
+| Accessibility | WCAG 2.1 AAA | Color contrast, keyboard nav |
+| Pirate Theming | Contextual | Subtle default, bold via easter eggs |
+| Logo | Ship silhouette | Queen Anne's Revenge profile |
+
+### Module Color Reference
+
+| Module | Arr Service | Primary Color | HSL |
+|--------|-------------|---------------|-----|
+| Movies | Radarr | Gold | `hsl(43, 96%, 56%)` |
+| TV | Sonarr | Blue | `hsl(214, 80%, 65%)` |
+| Music | Lidarr | Green | `hsl(163, 72%, 45%)` |
+| Adult (QAR) | Whisparr | Pink | `hsl(330, 81%, 60%)` |
+| Books | Readarr | Amber | `hsl(32, 95%, 44%)` |
+| Photos | - | Cyan | `hsl(187, 92%, 42%)` |
+| Podcasts | - | Orange | `hsl(25, 95%, 53%)` |
+| LiveTV | - | Red | `hsl(0, 84%, 60%)` |
+| Comics | Kapowarr | Yellow | `hsl(48, 96%, 53%)` |
+
+### Font Stack
+
+| Family | Font | Use |
+|--------|------|-----|
+| `--font-sans` | Inter | Body, UI, navigation |
+| `--font-serif` | Playfair Display | Titles, hero text |
+| `--font-mono` | JetBrains Mono | Code, timestamps |
 
 ---
 

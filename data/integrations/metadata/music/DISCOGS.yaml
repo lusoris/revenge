@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Music marketplace and database - vinyl releases, marketplace
   data, detailed credits'
-wiki_tagline: '> Music marketplace and database - vinyl releases, marketplace data,
-  detailed cr'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Vinyl and CD release data from Discogs'
+wiki_overview: 'Discogs provides detailed release information for physical media collectors. Track vinyl pressings, CD editions, and regional variations. Detailed credits list every contributor. Marketplace data shows record values. Excellent for identifying specific pressings and editions of albums.'
 sources:
 - name: Discogs API
   url: https://www.discogs.com/developers

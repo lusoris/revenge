@@ -1,0 +1,296 @@
+doc_title: Design System
+doc_category: technical
+created_date: '2026-01-31'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Complete design system from discovery session
+status_sources: ✅
+status_sources_notes: All design resources documented
+status_instructions: ✅
+status_instructions_notes: Implementation guidelines in sub-documents
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+
+technical_summary: |
+  > Queen Anne's Revenge themed design system for Revenge frontend
+
+  Design system index with pirate-themed elegance:
+  - **Theme**: Sleek & Professional with Queen Anne's Revenge styling
+  - **Colors**: Arr-aligned module colors with full theme shift
+  - **Typography**: Inter body + serif accent titles (Playfair)
+  - **Motion**: Expressive micro-interactions, delightful details
+  - **Accessibility**: WCAG 2.1 AAA compliant
+  - **Easter Eggs**: Achievement-unlocked pirate mode
+
+wiki_tagline: '> Elegant pirate-themed design system for Revenge'
+
+wiki_overview: "Complete design system themed around Queen Anne's Revenge - Blackbeard's legendary ship. Sleek and professional with playful contextual theming per module. Colors align with the Arr ecosystem (Radarr gold, Sonarr blue, Lidarr green, Whisparr pink). Modern Inter typography with elegant serif accents. Expressive animations and micro-interactions. Full WCAG 2.1 AAA accessibility. Unlockable pirate easter eggs through achievements."
+
+sources:
+  - name: shadcn-svelte
+    url: https://www.shadcn-svelte.com/docs
+    note: Component library
+  - name: Bits UI
+    url: https://www.bits-ui.com/docs/introduction
+    note: Headless UI primitives
+  - name: Tailwind CSS 4
+    url: https://tailwindcss.com/docs
+    note: Utility-first CSS
+  - name: Lucide Icons
+    url: https://lucide.dev/icons/
+    note: Icon library (standard mode)
+  - name: Vidstack Player
+    url: https://www.vidstack.io/docs/player
+    note: Video player components
+  - name: WCAG 2.1 Guidelines
+    url: https://www.w3.org/WAI/WCAG21/quickref/
+    note: Accessibility standards (targeting AAA)
+  - name: Playfair Display
+    url: https://fonts.google.com/specimen/Playfair+Display
+    note: Serif accent font
+  - name: Inter
+    url: https://fonts.google.com/specimen/Inter
+    note: UI body font
+
+design_refs:
+  - title: FRONTEND
+    path: technical/FRONTEND.md
+  - title: 04_PLAYER_ARCHITECTURE
+    path: architecture/04_PLAYER_ARCHITECTURE.md
+  - title: USER_EXPERIENCE_FEATURES
+    path: features/shared/USER_EXPERIENCE_FEATURES.md
+
+# =============================================================================
+# DESIGN SYSTEM INDEX
+# =============================================================================
+
+index:
+  description: |
+    This document serves as the master index for the Revenge design system.
+    Detailed specifications are split into focused documents below.
+
+  documents:
+    brand_identity:
+      title: Brand Identity
+      path: data/technical/design/BRAND_IDENTITY.yaml
+      description: "Logo, personality, pirate theming prominence, voice & tone"
+
+    color_system:
+      title: Color System
+      path: data/technical/design/COLOR_SYSTEM.yaml
+      description: "Arr-aligned module colors, semantic tokens, theme shift CSS"
+
+    typography:
+      title: Typography
+      path: data/technical/design/TYPOGRAPHY.yaml
+      description: "Font families, text styles, CSS implementation"
+
+    layout:
+      title: Layout & Spacing
+      path: data/technical/design/LAYOUT.yaml
+      description: "Spacing scale, breakpoints, grid system, z-index"
+
+    components:
+      title: UI Components
+      path: data/technical/design/COMPONENTS.yaml
+      description: "Media cards, player, forms, modals, buttons"
+
+    navigation:
+      title: Navigation System
+      path: data/technical/design/NAVIGATION.yaml
+      description: "Sidebar, header, mobile nav, keyboard shortcuts, TV UI"
+
+    motion:
+      title: Motion & Animation
+      path: data/technical/design/MOTION.yaml
+      description: "Durations, easings, loading states, micro-interactions"
+
+    accessibility:
+      title: Accessibility
+      path: data/technical/design/ACCESSIBILITY.yaml
+      description: "WCAG AAA compliance, keyboard nav, screen readers, subtitles"
+
+    pirate_mode:
+      title: Pirate Mode Easter Eggs
+      path: data/technical/design/PIRATE_MODE.yaml
+      description: "Achievements, unlockable icons, language, sounds, textures"
+
+# =============================================================================
+# QUICK REFERENCE
+# =============================================================================
+
+quick_reference:
+
+  theme:
+    name: "Queen Anne's Revenge"
+    personality: "Sleek & Professional with subtle pirate elegance"
+    default_mode: "Dark theme"
+    light_mode: "Supported"
+
+  colors:
+    movies: "hsl(43, 96%, 56%) - Radarr Gold"
+    tv: "hsl(214, 80%, 65%) - Sonarr Blue"
+    music: "hsl(163, 72%, 45%) - Lidarr Green"
+    adult: "hsl(330, 81%, 60%) - Whisparr Pink"
+    books: "hsl(32, 95%, 44%) - Readarr Amber"
+    photos: "hsl(187, 92%, 42%) - Cyan"
+    podcasts: "hsl(25, 95%, 53%) - Orange"
+    livetv: "hsl(0, 84%, 60%) - Red"
+    comics: "hsl(48, 96%, 53%) - Yellow"
+    brand: "hsl(239, 84%, 67%) - Indigo"
+
+  fonts:
+    sans: "Inter"
+    serif: "Playfair Display"
+    mono: "JetBrains Mono"
+
+  accessibility:
+    target: "WCAG 2.1 AAA"
+    contrast_normal: "7:1"
+    contrast_large: "4.5:1"
+
+  motion:
+    level: "Expressive"
+    duration_fast: "100ms"
+    duration_normal: "200ms"
+    duration_slow: "300ms"
+
+# =============================================================================
+# IMPLEMENTATION PHASES
+# =============================================================================
+
+implementation_phases:
+  - name: "Phase 1: Foundation"
+    tasks:
+      - "Set up SvelteKit project with TypeScript"
+      - "Configure Tailwind CSS 4 with custom theme"
+      - "Install Inter + Playfair Display fonts"
+      - "Set up CSS variables for module theming"
+      - "Implement dark/light mode toggle"
+
+  - name: "Phase 2: Components"
+    tasks:
+      - "Install and configure shadcn-svelte"
+      - "Build MediaCard with hover overlay"
+      - "Create HeroBanner with personalization"
+      - "Configure Vidstack player"
+      - "Build collapsible rail sidebar"
+
+  - name: "Phase 3: Navigation"
+    tasks:
+      - "Implement command palette (Ctrl+K)"
+      - "Build floating filter panel"
+      - "Mobile bottom navigation"
+      - "TV spatial navigation"
+      - "Keyboard shortcuts"
+
+  - name: "Phase 4: Motion"
+    tasks:
+      - "Implement loading states (skeleton, shimmer, blurhash)"
+      - "Add micro-interactions"
+      - "Page transitions"
+      - "Success/error feedback"
+
+  - name: "Phase 5: Accessibility"
+    tasks:
+      - "Implement skip links"
+      - "Add ARIA labels"
+      - "Subtitle customization"
+      - "Screen reader testing"
+      - "Contrast verification"
+
+  - name: "Phase 6: Polish"
+    tasks:
+      - "Achievement system"
+      - "Pirate icons"
+      - "Pirate-speak translation"
+      - "Celebration animations"
+
+# =============================================================================
+# TECH STACK
+# =============================================================================
+
+tech_stack:
+  framework: "SvelteKit 2 with Svelte 5"
+  styling: "Tailwind CSS 4"
+  components: "shadcn-svelte + Bits UI"
+  icons: "Lucide Icons"
+  player: "Vidstack"
+  fonts: "Google Fonts (Inter, Playfair Display, JetBrains Mono)"
+
+  css_approach:
+    methodology: "Utility-first with CSS custom properties"
+    theming: "CSS variables for all colors, spacing, typography"
+    module_theming: "data-module attribute on root for color shifts"
+
+# =============================================================================
+# DESIGN TOKENS EXPORT
+# =============================================================================
+
+design_tokens:
+  description: "Key tokens for implementation"
+
+  css_variables: |
+    :root {
+      /* Fonts */
+      --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+      --font-serif: "Playfair Display", Georgia, serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+      /* Base Colors (Dark Mode) */
+      --background: 0 0% 4%;
+      --foreground: 0 0% 98%;
+      --card: 0 0% 9%;
+      --muted: 0 0% 15%;
+      --muted-foreground: 0 0% 64%;
+      --border: 0 0% 15%;
+
+      /* Brand */
+      --primary: 239 84% 67%;
+      --primary-foreground: 0 0% 98%;
+
+      /* Module (dynamic, set via data-module) */
+      --module-primary: 239 84% 67%;
+      --module-primary-hover: 239 84% 74%;
+      --module-muted: 239 40% 30%;
+
+      /* States */
+      --destructive: 0 84% 60%;
+      --success: 142 76% 36%;
+      --warning: 38 92% 50%;
+      --info: 199 89% 48%;
+
+      /* Spacing */
+      --radius: 0.5rem;
+
+      /* Motion */
+      --duration-fast: 100ms;
+      --duration-normal: 200ms;
+      --duration-slow: 300ms;
+      --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+  tailwind_config: |
+    // tailwind.config.js excerpt
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          serif: ['Playfair Display', 'Georgia', 'serif'],
+          mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          module: {
+            primary: 'hsl(var(--module-primary))',
+            'primary-hover': 'hsl(var(--module-primary-hover))',
+            muted: 'hsl(var(--module-muted))',
+          },
+        },
+      },
+    }

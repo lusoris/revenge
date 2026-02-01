@@ -77,9 +77,9 @@ design_refs:
 
 # Whisparr v3 & StashDB Schema Integration
 
-> Custom UI/UX approach for adult content scenes using Whisparr cache
+> Scene browsing powered by Whisparr and StashDB data
 
-PLACEHOLDER: User-friendly overview
+Browse adult scenes with rich metadata from StashDB via Whisparr integration. Scene details include performer info, studio, release date, and tags. Whisparr caches data locally for fast browsing. Custom UI designed specifically for scene-based content. Filter by performer, studio, or any combination of tags. Integrates with the broader QAR adult content system.
 
 ---
 

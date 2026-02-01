@@ -18,8 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User preference component for adult content visibility. > Referenced
   by [WHISPARR_STASHDB_SCHEMA.md](WHISPARR_STASHDB_SCHEMA.md) and [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md).'
-wiki_tagline: '> User preference component for adult content visibility'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Show or hide adult libraries with a simple toggle'
+wiki_overview: 'Control adult content visibility per user. When disabled, adult libraries are completely hidden from the UI. Toggle requires PIN confirmation for security. Quick toggle in the header for users with permission. Server admins control who can enable the toggle. Works with the RBAC system to enforce content access policies.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

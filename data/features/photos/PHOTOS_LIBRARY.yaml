@@ -286,34 +286,49 @@ image_processing:
 api_endpoints:
   - method: GET
     path: /api/v1/photos
+    description: List all photos with pagination and filters
   - method: GET
     path: /api/v1/photos/:id
+    description: Get photo details by ID
   - method: POST
     path: /api/v1/photos
-    description: Upload photo
+    description: Upload a new photo
   - method: DELETE
     path: /api/v1/photos/:id
+    description: Delete a photo
   - method: GET
     path: /api/v1/photos/:id/download
+    description: Download original photo file
   - method: GET
     path: /api/v1/photos/:id/thumbnail/:size
+    description: Get photo thumbnail at specified size
   - method: PUT
     path: /api/v1/photos/:id/tags
+    description: Update tags for a photo
   - method: PUT
     path: /api/v1/photos/:id/favorite
+    description: Toggle favorite status for a photo
   - method: GET
     path: /api/v1/photos/albums
+    description: List all photo albums
   - method: POST
     path: /api/v1/photos/albums
+    description: Create a new photo album
   - method: GET
     path: /api/v1/photos/albums/:id
+    description: Get album details by ID
   - method: POST
     path: /api/v1/photos/albums/:id/photos
+    description: Add photos to an album
   - method: GET
     path: /api/v1/photos/people
+    description: List all tagged people
   - method: POST
     path: /api/v1/photos/people
+    description: Create a new person tag
   - method: GET
     path: /api/v1/photos/timeline
+    description: Get photos organized by timeline
   - method: GET
     path: /api/v1/photos/map
+    description: Get photos with location data for map view

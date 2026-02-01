@@ -40,9 +40,9 @@ design_refs:
 
 # NextPVR
 
-> Windows/Linux DVR software with IPTV support
+> Record live TV with NextPVR
 
-PLACEHOLDER: User-friendly overview
+Connect NextPVR for live TV and DVR functionality. Supports cable card, HDHomeRun, and IPTV sources. Browse the guide in Revenge and schedule recordings. Recorded shows automatically appear in your library. Available for Windows and Linux servers.
 
 ---
 

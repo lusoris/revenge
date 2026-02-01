@@ -37,9 +37,9 @@ design_refs:
 
 # Instagram
 
-> Performer social media presence
+> Performer Instagram links
 
-PLACEHOLDER: User-friendly overview
+Links to performer Instagram profiles for the adult content system. Provides verified social media handles. Profile photos supplement metadata imagery. Links stored as part of performer records. No direct API access - handles only.
 
 ---
 

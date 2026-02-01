@@ -40,9 +40,9 @@ design_refs:
 
 # TVTropes
 
-> Trope analysis and storytelling patterns
+> Discover tropes and storytelling patterns
 
-PLACEHOLDER: User-friendly overview
+TVTropes integration links to trope analysis for your media. Discover recurring storytelling patterns, character archetypes, and narrative devices. See which tropes appear in movies and shows. Great for understanding what makes stories tick. Links to TVTropes pages from item details.
 
 ---
 

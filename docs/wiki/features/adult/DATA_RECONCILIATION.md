@@ -44,9 +44,9 @@ design_refs:
 
 # Adult Data Reconciliation
 
-> Fuzzy logic and confidence scoring for conflicting metadata
+> Smart matching when metadata sources disagree
 
-PLACEHOLDER: User-friendly overview
+When multiple metadata sources provide conflicting information, the reconciliation system resolves differences. Uses fuzzy string matching and confidence scoring to pick the best data. Manually override any field when automatic matching is wrong. Track which source provided each piece of metadata. Particularly useful for adult content where naming is inconsistent.
 
 ---
 

@@ -37,9 +37,9 @@ design_refs:
 
 # Discogs
 
-> Music marketplace and database - vinyl releases, marketplace data, detailed cr
+> Vinyl and CD release data from Discogs
 
-PLACEHOLDER: User-friendly overview
+Discogs provides detailed release information for physical media collectors. Track vinyl pressings, CD editions, and regional variations. Detailed credits list every contributor. Marketplace data shows record values. Excellent for identifying specific pressings and editions of albums.
 
 ---
 

@@ -43,9 +43,9 @@ design_refs:
 
 # AniList
 
-> Primary metadata and tracking provider for anime and manga
+> Sync anime watch status with AniList
 
-PLACEHOLDER: User-friendly overview
+Connect your AniList account to sync anime watching progress. Metadata for anime series pulls from AniList including cover art, descriptions, and airing schedules. Mark episodes as watched in Revenge and your AniList profile updates automatically. Import your existing AniList watchlist to track completion.
 
 ---
 

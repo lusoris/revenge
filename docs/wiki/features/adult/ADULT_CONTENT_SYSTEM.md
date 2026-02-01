@@ -53,9 +53,9 @@ design_refs:
 
 # Revenge - Adult Content System
 
-> Complete adult content management with Stash ecosystem integration
+> Isolated adult library with Stash and StashDB integration
 
-PLACEHOLDER: User-friendly overview
+Manage adult content in a completely isolated library (codenamed QAR - Queen Anne Revenge). Integrates with Stash and StashDB for metadata and performer information. Content is separated in its own database schema for privacy. Requires explicit permission and NSFW toggle to access. Whisparr integration handles scene downloads automatically.
 
 ---
 

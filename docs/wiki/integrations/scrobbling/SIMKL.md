@@ -40,9 +40,9 @@ design_refs:
 
 # Simkl
 
-> TV tracker and movie scrobbler (alternative to Trakt)
+> Track TV and movies with Simkl
 
-PLACEHOLDER: User-friendly overview
+Simkl provides TV and movie tracking as an alternative to Trakt. Automatic scrobbling records what you watch. Strong anime support with AniList integration. Sync your watchlist and watched history. View detailed statistics about your viewing habits. Free account with no limits.
 
 ---
 

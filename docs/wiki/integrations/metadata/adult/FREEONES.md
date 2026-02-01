@@ -40,9 +40,9 @@ design_refs:
 
 # FreeOnes
 
-> Adult performer database with comprehensive profiles and links
+> Performer profiles from FreeOnes
 
-PLACEHOLDER: User-friendly overview
+FreeOnes aggregates performer information and social media links. Comprehensive profiles with photos and statistics. Cross-references to other databases. Used to enrich performer metadata in the QAR system. Provides additional profile images and biographical data.
 
 ---
 

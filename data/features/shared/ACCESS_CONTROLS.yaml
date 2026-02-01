@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> User access restrictions based on time, limits, and schedules'
-wiki_tagline: '> User access restrictions based on time, limits, and schedules'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Control when and how users can access your media'
+wiki_overview: 'Set rules for when users can access content. Limit viewing to certain hours (kids only watch TV after homework). Set daily or weekly limits on screen time. Block access during bedtimes or school hours. Create schedules per user or user group. Perfect for family media servers where parents want to control viewing habits.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Open-source historical comics database (Golden/Silver Age focus)'
-wiki_tagline: '> Open-source historical comics database (Golden/Silver Age focus)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Historical comic data from Grand Comics Database'
+wiki_overview: 'Grand Comics Database (GCD) specializes in historical comics from the Golden and Silver Ages. Detailed bibliographic records for vintage comics. Covers publishers that no longer exist. Useful for identifying older comics in your collection. Supplements ComicVine with historical data.'
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5

@@ -32,7 +32,14 @@
 **Category**: other
 
 
-> PLACEHOLDER: Brief technical summary
+> > Open questions and design gaps requiring discussion
+
+Tracks unresolved decisions:
+- Architecture questions needing team input
+- Feature scope clarifications
+- Integration prioritization
+- Technical debt items
+
 
 ---
 

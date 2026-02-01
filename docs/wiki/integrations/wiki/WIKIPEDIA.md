@@ -40,9 +40,9 @@ design_refs:
 
 # Wikipedia
 
-> General encyclopedia information via Wikipedia API
+> Background information from Wikipedia
 
-PLACEHOLDER: User-friendly overview
+Wikipedia integration provides encyclopedic context for your media. Plot summaries, production history, and critical reception. Links to actor and director biographies. Available in multiple languages. Cached locally for fast access. No API key required.
 
 ---
 

@@ -19,8 +19,8 @@ status_integration_testing_notes: '-'
 technical_summary: '> ⚠️ **DEPRECATED**: This document has been merged into [ADULT_CONTENT_SYSTEM.md](ADULT_CONTENT_SYSTEM.md).
   > See that document for the complete adult content architecture including metadata,
   privacy,'
-wiki_tagline: '> ⚠️ **DEPRECATED**: This document has been merged into [ADULT_CONTENT_SYSTEM'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Deprecated - see ADULT_CONTENT_SYSTEM'
+wiki_overview: 'This document has been merged into ADULT_CONTENT_SYSTEM.md. See that document for complete adult content architecture including metadata, privacy features, and integration details.'
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html

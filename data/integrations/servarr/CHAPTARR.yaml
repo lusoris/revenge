@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Book & audiobook management automation (uses Readarr API)'
-wiki_tagline: '> Book & audiobook management automation (uses Readarr API)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Automatic book and audiobook downloads with Chaptarr'
+wiki_overview: 'Chaptarr manages book and audiobook downloads using the Readarr API. Add authors and their works download automatically. Monitors for new releases. Supports both ebook and audiobook formats. Webhooks notify Revenge when books are imported. Connect with your Chaptarr/Readarr URL and API key.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

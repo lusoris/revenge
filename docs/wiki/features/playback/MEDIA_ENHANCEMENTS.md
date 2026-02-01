@@ -64,7 +64,7 @@ design_refs:
 
 > Advanced playback features: trailers, themes, intros, trickplay, cinema mode, 
 
-PLACEHOLDER: User-friendly overview
+Enhanced playback features that make watching more enjoyable. Includes trailer playback before movies (Cinema Mode), theme songs for TV shows, chapter markers for easy navigation, and picture-in-picture support. All features are optional and configurable per-user or per-library.
 
 ---
 

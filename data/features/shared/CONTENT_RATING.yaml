@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Universal age restriction and content rating system for revenge.'
-wiki_tagline: '> Universal age restriction and content rating system for revenge'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Age ratings and content restrictions across all media'
+wiki_overview: 'Unified content rating system covering movies, TV shows, music, and games. Supports multiple rating systems (MPAA, PEGI, TV Parental Guidelines, ESRB). Set maximum allowed ratings per user profile - perfect for kid accounts. Content warnings for mature themes are displayed before playback. Ratings are pulled automatically from metadata providers.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

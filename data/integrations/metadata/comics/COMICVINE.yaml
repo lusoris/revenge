@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary comics metadata provider (GameSpot''s comprehensive
   comics database)'
-wiki_tagline: '> Primary comics metadata provider (GameSpot''s comprehensive comics
-  database)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Comic book metadata from ComicVine'
+wiki_overview: 'ComicVine provides comprehensive comic book metadata including issue details, story arcs, characters, and creators. Covers Marvel, DC, indie publishers, and manga. Primary metadata source for comics libraries. Community wiki with detailed character and team information. Free API key required.'
 sources:
 - name: ComicVine API
   url: https://comicvine.gamespot.com/api/documentation

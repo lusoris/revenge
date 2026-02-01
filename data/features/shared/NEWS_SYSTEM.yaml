@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> External news aggregation and internal announcements'
-wiki_tagline: '> External news aggregation and internal announcements'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Server announcements and entertainment news in one place'
+wiki_overview: 'Stay informed with server announcements and entertainment news. Admins can post messages about maintenance, new content, or server updates. RSS feeds bring in news from entertainment sources. Filter news by category (movies, TV, music). Dismiss read items or pin important announcements. Appears on the home dashboard for all users.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

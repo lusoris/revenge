@@ -37,9 +37,9 @@ design_refs:
 
 # Last.fm
 
-> Music scrobbling and metadata provider - artist bio, tags, similar artists
+> Artist bios and similar artist recommendations
 
-PLACEHOLDER: User-friendly overview
+Last.fm provides artist biographies, tags, and similar artist recommendations. Supplements MusicBrainz with community-curated data. Scrobble your listening history to track what you play. See your listening stats and discover new music based on your taste. Free API key required.
 
 ---
 

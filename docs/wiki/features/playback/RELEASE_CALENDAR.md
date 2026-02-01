@@ -52,7 +52,7 @@ design_refs:
 
 > Upcoming releases and recent additions calendar via Servarr integration
 
-PLACEHOLDER: User-friendly overview
+See upcoming releases and recent additions at a glance. The calendar pulls data from Radarr, Sonarr, and other Arr services to show what is releasing soon. View by day, week, or month. Filter by media type, genre, or library. Get notified when anticipated titles become available in your library.
 
 ---
 

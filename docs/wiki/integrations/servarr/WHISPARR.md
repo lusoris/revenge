@@ -52,9 +52,9 @@ design_refs:
 
 # Whisparr v3
 
-> Adult content management automation (eros branch)
+> Automatic adult content downloads with Whisparr
 
-PLACEHOLDER: User-friendly overview
+Whisparr (eros branch) automates adult content downloads. Request scenes and Whisparr handles acquisition. Integrates with StashDB for metadata. Webhooks notify Revenge when content is imported. Part of the QAR adult content system. Configure with Whisparr URL and API key in settings.
 
 ---
 

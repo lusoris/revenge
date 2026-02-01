@@ -53,9 +53,9 @@ design_refs:
 
 # Time-Based Access Controls
 
-> User access restrictions based on time, limits, and schedules
+> Control when and how users can access your media
 
-PLACEHOLDER: User-friendly overview
+Set rules for when users can access content. Limit viewing to certain hours (kids only watch TV after homework). Set daily or weekly limits on screen time. Block access during bedtimes or school hours. Create schedules per user or user group. Perfect for family media servers where parents want to control viewing habits.
 
 ---
 

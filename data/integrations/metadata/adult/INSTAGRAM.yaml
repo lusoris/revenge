@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Performer social media presence'
-wiki_tagline: '> Performer social media presence'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Performer Instagram links'
+wiki_overview: 'Links to performer Instagram profiles for the adult content system. Provides verified social media handles. Profile photos supplement metadata imagery. Links stored as part of performer records. No direct API access - handles only.'
 sources:
 - name: sqlc
   url: https://docs.sqlc.dev/en/stable/

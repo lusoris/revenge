@@ -34,9 +34,9 @@ design_refs:
 
 # Kitsu
 
-> Modern anime tracking platform with social features
+> Sync anime progress with Kitsu
 
-PLACEHOLDER: User-friendly overview
+Link your Kitsu account to track anime watching. Kitsu provides metadata, community ratings, and social features. Episodes watched in Revenge sync to your Kitsu library. Import your existing Kitsu list to see what you have already watched. Compare ratings and discover new anime through Kitsu social features.
 
 ---
 

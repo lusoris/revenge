@@ -74,9 +74,9 @@ design_refs:
 
 # Ticketing System
 
-> User portal for bug reports, feature requests, and support tickets
+> Report issues and request features through a built-in portal
 
-PLACEHOLDER: User-friendly overview
+Built-in support system for your media server. Users can submit bug reports, request features, or ask for help without leaving the app. Admins see a dashboard of all tickets with priority, status, and assignment. Email notifications keep everyone updated. Integrates with GitHub Issues for developers who want external tracking.
 
 ---
 

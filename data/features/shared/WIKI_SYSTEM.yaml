@@ -18,8 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Modern, integrated knowledge base for users, mods, admins, and
   devs'
-wiki_tagline: '> Modern, integrated knowledge base for users, mods, admins, and devs'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Built-in documentation and help system'
+wiki_overview: 'Self-hosted wiki for server documentation and guides. Create articles for users explaining how to use features, for moderators on content policies, and for admins on server management. Markdown editor with live preview. Search across all articles. Permission-controlled sections keep sensitive docs private. Versioned content tracks changes over time.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

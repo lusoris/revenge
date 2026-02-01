@@ -45,7 +45,7 @@ design_refs:
 
 > Full-text search via Typesense with per-module collections
 
-PLACEHOLDER: User-friendly overview
+Search instantly across your entire library using Typesense. Find movies, shows, music, and people with typo-tolerant full-text search. Results are filtered by user permissions - you only see content you have access to. Search supports filters (year, genre, rating), facets, and sorting. Separate collections per media type ensure fast, relevant results.
 
 ---
 

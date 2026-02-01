@@ -58,9 +58,9 @@ design_refs:
 
 # Stash
 
-> Self-hosted adult media organizer with GraphQL API
+> Import from your Stash library
 
-PLACEHOLDER: User-friendly overview
+Stash is a self-hosted adult media organizer. Import your existing Stash library into Revenge QAR. Syncs scene metadata, performer tags, and organization. GraphQL API enables bidirectional updates. Keep both systems in sync as you add content.
 
 ---
 

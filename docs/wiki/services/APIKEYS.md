@@ -57,7 +57,7 @@ design_refs:
 
 > API key generation, validation, and management
 
-PLACEHOLDER: User-friendly overview
+API keys allow external applications to access Revenge programmatically. Create keys with specific scopes (read-only, write, admin) and optional expiration dates. Each key is associated with a user and inherits their permissions. Keys can be revoked instantly. Use API keys for automation, mobile apps, or third-party integrations.
 
 ---
 

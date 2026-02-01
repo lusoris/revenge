@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Audiobook metadata provider - primary source for audiobooks'
-wiki_tagline: '> Audiobook metadata provider - primary source for audiobooks'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Audiobook metadata from Audible'
+wiki_overview: 'Audible metadata powers your audiobook library. Narrator information, chapter details, and series data are fetched via the Audnexus API. Cover artwork and descriptions match your Audible purchases. Automatically identifies audiobooks by ASIN or title matching.'
 sources:
 - name: Audnexus API
   url: https://api.audnex.us/

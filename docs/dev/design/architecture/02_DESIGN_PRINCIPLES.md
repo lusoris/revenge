@@ -90,7 +90,15 @@ design_refs:
 **Category**: architecture
 
 
-> PLACEHOLDER: Brief technical summary
+> > Core design principles and patterns guiding Revenge development
+
+Key principles:
+- **PostgreSQL Only**: No SQLite - simplifies codebase, pgx is best driver
+- **80% Test Coverage**: Required minimum for all packages
+- **Local-First Metadata**: Always prefer cached/local data over external APIs
+- **Table-Driven Tests**: testify + mockery for consistent testing
+- **Sentinel Errors**: Type-safe error handling with wrapped contexts
+
 
 ---
 

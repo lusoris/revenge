@@ -1,0 +1,271 @@
+doc_title: Typography
+doc_category: technical
+created_date: '2026-02-01'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Typography system from discovery session
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: '-'
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+
+technical_summary: |
+  > Modern + Serif Accents typography system
+
+  Typography approach:
+  - **Body**: Inter - clean, modern, highly readable
+  - **Display**: Playfair Display - elegant serif for titles
+  - **Code**: JetBrains Mono - developer-friendly monospace
+  - **Scale**: Modular scale based on 16px with 1.25 ratio
+
+wiki_tagline: '> Inter for clarity, Playfair for elegance'
+
+wiki_overview: "Typography in Revenge uses a modern + serif accent approach. Inter handles all body text, UI elements, and navigation for maximum readability. Playfair Display adds elegant serif styling to movie titles, hero text, and section headers - fitting the Queen Anne's Revenge theme. The type scale uses a 1.25 modular ratio from a 16px base."
+
+sources:
+  - name: Inter
+    url: https://fonts.google.com/specimen/Inter
+    note: UI body font
+  - name: Playfair Display
+    url: https://fonts.google.com/specimen/Playfair+Display
+    note: Serif accent font
+  - name: JetBrains Mono
+    url: https://fonts.google.com/specimen/JetBrains+Mono
+    note: Monospace font
+
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: technical/DESIGN_SYSTEM.md
+  - title: BRAND_IDENTITY
+    path: technical/design/BRAND_IDENTITY.md
+
+# =============================================================================
+# FONT FAMILIES
+# =============================================================================
+
+font_families:
+  sans:
+    name: "Inter"
+    stack: '"Inter", ui-sans-serif, system-ui, -apple-system, sans-serif'
+    weights: [400, 500, 600, 700]
+    use: "Body text, UI elements, navigation, forms"
+
+  serif:
+    name: "Playfair Display"
+    stack: '"Playfair Display", Georgia, "Times New Roman", serif'
+    weights: [400, 600, 700]
+    use: "Display titles, hero text, movie/show titles, section headers"
+
+  mono:
+    name: "JetBrains Mono"
+    stack: '"JetBrains Mono", ui-monospace, "Cascadia Code", monospace'
+    weights: [400, 500]
+    use: "Code blocks, technical data, timestamps"
+
+# =============================================================================
+# FONT USAGE
+# =============================================================================
+
+usage:
+  body: "sans"
+  ui_elements: "sans"
+  navigation: "sans"
+  forms: "sans"
+  buttons: "sans"
+  display_titles: "serif"
+  hero_text: "serif"
+  movie_titles: "serif"
+  show_titles: "serif"
+  album_titles: "serif"
+  section_headers: "serif (optional, can use sans)"
+  code: "mono"
+  timestamps: "mono"
+
+# =============================================================================
+# FONT SIZES
+# =============================================================================
+
+font_sizes:
+  xs:
+    size: "0.75rem"
+    px: "12px"
+    use: "Captions, badges, timestamps"
+  sm:
+    size: "0.875rem"
+    px: "14px"
+    use: "Secondary text, metadata"
+  base:
+    size: "1rem"
+    px: "16px"
+    use: "Body text, paragraphs"
+  lg:
+    size: "1.125rem"
+    px: "18px"
+    use: "Emphasized body text"
+  xl:
+    size: "1.25rem"
+    px: "20px"
+    use: "Small headings"
+  2xl:
+    size: "1.5rem"
+    px: "24px"
+    use: "Section headers"
+  3xl:
+    size: "1.875rem"
+    px: "30px"
+    use: "Page headers"
+  4xl:
+    size: "2.25rem"
+    px: "36px"
+    use: "Large titles"
+  5xl:
+    size: "3rem"
+    px: "48px"
+    use: "Hero text"
+  6xl:
+    size: "3.75rem"
+    px: "60px"
+    use: "Display text"
+
+# =============================================================================
+# FONT WEIGHTS
+# =============================================================================
+
+font_weights:
+  normal: 400
+  medium: 500
+  semibold: 600
+  bold: 700
+
+# =============================================================================
+# LINE HEIGHTS
+# =============================================================================
+
+line_heights:
+  none: 1
+  tight: 1.25
+  snug: 1.375
+  normal: 1.5
+  relaxed: 1.625
+  loose: 2
+
+# =============================================================================
+# TEXT STYLES
+# =============================================================================
+
+text_styles:
+  display:
+    font: "serif"
+    size: "5xl"
+    weight: 700
+    tracking: "-0.02em"
+    line_height: 1.1
+    use: "Hero banners, major headings"
+    css: "font-family: var(--font-serif); font-size: 3rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;"
+
+  h1:
+    font: "serif"
+    size: "4xl"
+    weight: 700
+    tracking: "-0.01em"
+    line_height: 1.2
+    use: "Page titles, movie/show titles"
+    css: "font-family: var(--font-serif); font-size: 2.25rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2;"
+
+  h2:
+    font: "serif"
+    size: "2xl"
+    weight: 600
+    tracking: "0"
+    line_height: 1.3
+    use: "Section headers"
+    css: "font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; line-height: 1.3;"
+
+  h3:
+    font: "sans"
+    size: "xl"
+    weight: 600
+    tracking: "0"
+    line_height: 1.4
+    use: "Subsection headers"
+    css: "font-family: var(--font-sans); font-size: 1.25rem; font-weight: 600; line-height: 1.4;"
+
+  h4:
+    font: "sans"
+    size: "lg"
+    weight: 500
+    tracking: "0"
+    line_height: 1.4
+    use: "Card titles, list headers"
+    css: "font-family: var(--font-sans); font-size: 1.125rem; font-weight: 500; line-height: 1.4;"
+
+  body:
+    font: "sans"
+    size: "base"
+    weight: 400
+    tracking: "0"
+    line_height: 1.5
+    use: "Paragraphs, descriptions"
+    css: "font-family: var(--font-sans); font-size: 1rem; font-weight: 400; line-height: 1.5;"
+
+  body_small:
+    font: "sans"
+    size: "sm"
+    weight: 400
+    tracking: "0"
+    line_height: 1.5
+    use: "Secondary text, metadata"
+    css: "font-family: var(--font-sans); font-size: 0.875rem; font-weight: 400; line-height: 1.5;"
+
+  caption:
+    font: "sans"
+    size: "xs"
+    weight: 400
+    tracking: "0"
+    line_height: 1.4
+    color: "foreground-muted"
+    use: "Timestamps, badges, hints"
+    css: "font-family: var(--font-sans); font-size: 0.75rem; font-weight: 400; line-height: 1.4; color: hsl(var(--muted-foreground));"
+
+  label:
+    font: "sans"
+    size: "sm"
+    weight: 500
+    tracking: "0"
+    line_height: 1
+    use: "Form labels, button text"
+    css: "font-family: var(--font-sans); font-size: 0.875rem; font-weight: 500; line-height: 1;"
+
+  code:
+    font: "mono"
+    size: "sm"
+    weight: 400
+    tracking: "0"
+    line_height: 1.5
+    use: "Code blocks, technical data"
+    css: "font-family: var(--font-mono); font-size: 0.875rem; font-weight: 400; line-height: 1.5;"
+
+# =============================================================================
+# CSS IMPLEMENTATION
+# =============================================================================
+
+css_variables: |
+  :root {
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-serif: "Playfair Display", Georgia, serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+font_loading: |
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">

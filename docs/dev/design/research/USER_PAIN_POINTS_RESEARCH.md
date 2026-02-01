@@ -81,7 +81,15 @@ design_refs:
 **Category**: research
 
 
-> PLACEHOLDER: Brief technical summary
+> > Research into problems users face with existing media servers
+
+Pain points identified:
+- **Slow Libraries**: Scanning takes hours on large collections
+- **Metadata Mismatch**: Wrong matches, missing posters
+- **Complex Setup**: Difficult initial configuration
+- **Poor Mobile**: Mobile apps are afterthoughts
+- **Transcoding Issues**: Buffering, quality problems
+
 
 ---
 

@@ -46,9 +46,9 @@ design_refs:
 
 # ComicVine API
 
-> Primary comics metadata provider (GameSpot's comprehensive comics database)
+> Comic book metadata from ComicVine
 
-PLACEHOLDER: User-friendly overview
+ComicVine provides comprehensive comic book metadata including issue details, story arcs, characters, and creators. Covers Marvel, DC, indie publishers, and manga. Primary metadata source for comics libraries. Community wiki with detailed character and team information. Free API key required.
 
 ---
 

@@ -54,7 +54,7 @@ design_refs:
 
 > OpenID Connect / SSO provider management
 
-PLACEHOLDER: User-friendly overview
+The OIDC service enables Single Sign-On with external identity providers. Connect Authentik, Keycloak, Authelia, or any OIDC-compliant provider. Users can link multiple providers to one account. Auto-create users on first login or require admin approval. Supports standard claims for profile info and group mapping for automatic role assignment.
 
 ---
 

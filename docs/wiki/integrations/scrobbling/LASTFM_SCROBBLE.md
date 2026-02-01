@@ -37,9 +37,9 @@ design_refs:
 
 # Last.fm Scrobbling
 
-> Music scrobbling and listening history tracking
+> Scrobble music plays to Last.fm
 
-PLACEHOLDER: User-friendly overview
+Send your music listening history to Last.fm automatically. Tracks scrobble after playing for 30 seconds. View your listening stats, top artists, and weekly charts. Discover new music through recommendations based on your taste. Authenticate with your Last.fm account in settings.
 
 ---
 

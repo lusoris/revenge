@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Social platform for tracking movies and TV shows'
-wiki_tagline: '> Social platform for tracking movies and TV shows'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Track movies and TV shows with Trakt'
+wiki_overview: 'Trakt integration syncs your watch history for movies and TV shows. Scrobble plays automatically as you watch. Import your existing Trakt history to mark content as watched. Sync watchlists both directions. See play counts and last watched dates. OAuth login keeps your credentials secure.'
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro

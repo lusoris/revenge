@@ -19,8 +19,8 @@ status_integration_testing_notes: '-'
 technical_summary: '> Complete adult content management with Stash ecosystem integration.
   > All adult content isolated in PostgreSQL schema `qar` with "Queen Anne''s Revenge"
   themed obfuscation.'
-wiki_tagline: '> Complete adult content management with Stash ecosystem integration'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Isolated adult library with Stash and StashDB integration'
+wiki_overview: 'Manage adult content in a completely isolated library (codenamed QAR - Queen Anne Revenge). Integrates with Stash and StashDB for metadata and performer information. Content is separated in its own database schema for privacy. Requires explicit permission and NSFW toggle to access. Whisparr integration handles scene downloads automatically.'
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5

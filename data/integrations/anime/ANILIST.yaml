@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary metadata and tracking provider for anime and manga'
-wiki_tagline: '> Primary metadata and tracking provider for anime and manga'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Sync anime watch status with AniList'
+wiki_overview: 'Connect your AniList account to sync anime watching progress. Metadata for anime series pulls from AniList including cover art, descriptions, and airing schedules. Mark episodes as watched in Revenge and your AniList profile updates automatically. Import your existing AniList watchlist to track completion.'
 sources:
 - name: AniList GraphQL API
   url: https://anilist.gitbook.io/anilist-apiv2-docs

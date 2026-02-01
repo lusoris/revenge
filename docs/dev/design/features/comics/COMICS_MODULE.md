@@ -182,38 +182,62 @@ internal/content/comics/
 ### Content Management
 #### GET /api/v1/comics/series
 
+List all comic series with pagination and filters
+
 ---
 #### GET /api/v1/comics/series/:id
+
+Get comic series details by ID
 
 ---
 #### GET /api/v1/comics/series/:id/issues
 
+List all issues in a series
+
 ---
 #### GET /api/v1/comics/issues
+
+List all comic issues with pagination and filters
 
 ---
 #### GET /api/v1/comics/issues/:id
 
+Get comic issue details by ID
+
 ---
 #### GET /api/v1/comics/issues/:id/read
+
+Get issue content for comic reader
 
 ---
 #### GET /api/v1/comics/issues/:id/pages/:page
 
+Get a specific page image from an issue
+
 ---
 #### GET /api/v1/comics/issues/:id/progress
+
+Get user reading progress for an issue
 
 ---
 #### PUT /api/v1/comics/issues/:id/progress
 
+Update user reading progress for an issue
+
 ---
 #### GET /api/v1/comics/publishers
+
+List all comic publishers
 
 ---
 #### POST /api/v1/comics/pull-list
 
+Add a series to user pull list
+
 ---
 #### GET /api/v1/comics/pull-list
+
+Get user pull list of series
 
 ---
 

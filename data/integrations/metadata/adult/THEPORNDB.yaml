@@ -18,8 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Alternative adult metadata provider with scene/performer/studio
   data'
-wiki_tagline: '> Alternative adult metadata provider with scene/performer/studio data'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Alternative metadata from ThePornDB'
+wiki_overview: 'ThePornDB provides adult metadata as an alternative to StashDB. Scene matching by title and fingerprint. Performer and studio information. REST API with straightforward access. Used as a fallback or supplement when StashDB lacks data.'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river

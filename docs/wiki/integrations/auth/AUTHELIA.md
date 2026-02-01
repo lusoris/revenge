@@ -40,9 +40,9 @@ design_refs:
 
 # Authelia
 
-> Self-hosted authentication and authorization server
+> Single sign-on with Authelia
 
-PLACEHOLDER: User-friendly overview
+Use Authelia as your identity provider for Revenge. Log in once and access all your self-hosted services. Supports two-factor authentication, WebAuthn security keys, and single sign-on. Configure in Revenge settings by entering your Authelia server URL and client credentials.
 
 ---
 

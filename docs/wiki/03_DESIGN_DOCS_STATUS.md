@@ -55,9 +55,9 @@ sources:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Progress dashboard for all design documents
 
-PLACEHOLDER: User-friendly overview
+This dashboard shows the completion status of all design documentation. Each document is tracked across multiple dimensions: design completeness, external sources, implementation status, and test coverage. Use this to identify gaps in documentation and prioritize work. Status indicators show complete, in-progress, and not-started states.
 
 ---
 

@@ -1,0 +1,444 @@
+doc_title: Pirate Mode Easter Eggs
+doc_category: technical
+created_date: '2026-02-01'
+overall_status: ✅ Complete
+status_design: ✅
+status_design_notes: Achievement-based easter egg system
+status_sources: ✅
+status_sources_notes: '-'
+status_instructions: ✅
+status_instructions_notes: '-'
+status_code: 🔴
+status_code_notes: '-'
+status_linting: 🔴
+status_linting_notes: '-'
+status_unit_testing: 🔴
+status_unit_testing_notes: '-'
+status_integration_testing: 🔴
+status_integration_testing_notes: '-'
+
+technical_summary: |
+  > Achievement-unlocked pirate theming easter eggs
+
+  Pirate mode features:
+  - **Trigger**: Unlock through achievements, not hidden menu
+  - **Elements**: Icons, language, sounds, textures, animations
+  - **Customizable**: Users pick which elements to enable
+  - **Theme**: Queen Anne's Revenge - Blackbeard's legendary ship
+
+wiki_tagline: '> Unlock the spirit of the Queen Anne''s Revenge'
+
+wiki_overview: "Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's legendary Queen Anne's Revenge. Unlock elements by using features - watch movies to get the ship wheel spinner, add favorites to unlock treasure chest icons, complete all achievements for full pirate mode. Each element is customizable - enable just the icons you like or go full pirate with language, sounds, and textures."
+
+sources:
+  - name: Lucide Icons
+    url: https://lucide.dev/icons/
+    note: Base icons to customize
+
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: technical/DESIGN_SYSTEM.md
+  - title: BRAND_IDENTITY
+    path: technical/design/BRAND_IDENTITY.md
+
+# =============================================================================
+# PIRATE MODE OVERVIEW
+# =============================================================================
+
+overview:
+  name: "Pirate Mode"
+  theme: "Queen Anne's Revenge"
+  inspiration: "Blackbeard's legendary pirate ship"
+
+  philosophy: |
+    Pirate elements should be delightful discoveries, not overwhelming.
+    Users earn them through natural usage of the application.
+    All elements are optional and customizable.
+
+  trigger: "Achievement Based"
+  description: "Unlock pirate elements by using features"
+
+# =============================================================================
+# ACHIEVEMENTS
+# =============================================================================
+
+achievements:
+
+  first_voyage:
+    name: "First Voyage"
+    requirement: "Watch your first item"
+    unlock: "Ship wheel loading spinner"
+    icon: "Compass"
+    notification: "Ahoy! Your first voyage begins..."
+
+  treasure_hunter:
+    name: "Treasure Hunter"
+    requirement: "Add 10 items to watchlist"
+    unlock: "Treasure chest icon for favorites"
+    icon: "Gem"
+    notification: "You've found your first treasure!"
+
+  cartographer:
+    name: "Cartographer"
+    requirement: "Create 3 collections"
+    unlock: "Map-styled collection covers"
+    icon: "Map"
+    notification: "Charting your course through the seas..."
+
+  old_salt:
+    name: "Old Salt"
+    requirement: "Watch 100 items"
+    unlock: "Full pirate navigation icons"
+    icon: "Anchor"
+    notification: "An experienced sailor of the digital seas!"
+
+  scallywag:
+    name: "Scallywag"
+    requirement: "Create 5 collections"
+    unlock: "Pirate-speak UI option"
+    icon: "Skull"
+    notification: "A true scallywag ye be!"
+
+  fleet_commander:
+    name: "Fleet Commander"
+    requirement: "Watch content from all modules"
+    unlock: "Ship fleet sidebar icons"
+    icon: "Ship"
+    notification: "Commander of the entire fleet!"
+
+  night_watch:
+    name: "Night Watch"
+    requirement: "Watch 10 items after midnight"
+    unlock: "Moonlit ocean theme variant"
+    icon: "Moon"
+    notification: "Sailing through the night..."
+
+  storm_chaser:
+    name: "Storm Chaser"
+    requirement: "Binge watch 5+ hours in one session"
+    unlock: "Storm visual effects"
+    icon: "CloudLightning"
+    notification: "Weathering the perfect storm!"
+
+  quartermaster:
+    name: "Quartermaster"
+    requirement: "Organize 50 items into collections"
+    unlock: "Treasure sorting animations"
+    icon: "Boxes"
+    notification: "Every doubloon in its place!"
+
+  blackbeards_crew:
+    name: "Blackbeard's Crew"
+    requirement: "Complete all achievements"
+    unlock: "Full pirate theme mode"
+    icon: "Crown"
+    notification: "Welcome to Blackbeard's crew, Captain!"
+    special: true
+
+# =============================================================================
+# UNLOCKABLE ELEMENTS
+# =============================================================================
+
+unlockable_elements:
+
+  navigation_icons:
+    description: "Replace standard icons with pirate-themed alternatives"
+    default: "Lucide standard icons"
+    pirate_mode: "Custom pirate icon set"
+
+    icon_mapping:
+      home: "Anchor"
+      search: "Spyglass"
+      movies: "Treasure Map"
+      tv: "Ship's Log"
+      music: "Accordion (Sea Shanty)"
+      books: "Scroll"
+      photos: "Painting Frame"
+      podcasts: "Conch Shell"
+      comics: "Jolly Roger Flag"
+      library: "Treasure Chest"
+      settings: "Ship Wheel"
+      profile: "Skull & Crossbones"
+      favorites: "Doubloon"
+      play: "Cannon"
+      pause: "Anchor Drop"
+      back: "Compass West"
+      forward: "Compass East"
+      add: "Hook"
+      remove: "Cutlass"
+      notifications: "Crow's Nest Bell"
+
+  language:
+    name: "Pirate Speak"
+    description: "Translate UI text to pirate vernacular"
+
+    examples:
+      play: "Set Sail"
+      pause: "Drop Anchor"
+      settings: "Ship's Quarters"
+      search: "Seek Treasure"
+      favorites: "Plunder"
+      watchlist: "Voyage List"
+      continue_watching: "Resume Voyage"
+      recently_added: "Fresh Plunder"
+      movies: "Grand Voyages"
+      tv_shows: "Expedition Logs"
+      error: "Blimey!"
+      success: "Arrr!"
+      loading: "Hoisting the sails..."
+      sign_out: "Abandon Ship"
+
+  sounds:
+    description: "Optional audio feedback"
+    default: "Disabled (opt-in)"
+
+    available_sounds:
+      startup: "Ship horn"
+      navigation: "Wooden creak"
+      favorite: "Coins clink"
+      error: "Thunder rumble"
+      success: "Bell ding"
+      achievement: "Cannon fire"
+      ambient: "Gentle waves (very subtle)"
+
+    settings:
+      master_volume: "0-100%"
+      individual_toggles: "Per sound type"
+      ambient_enabled: "Separate toggle"
+
+  textures:
+    description: "Subtle texture overlays"
+
+    elements:
+      sidebar: "Weathered wood grain (very subtle)"
+      cards: "Slight parchment texture"
+      modals: "Aged paper edges"
+      backgrounds: "Canvas texture"
+
+    intensity:
+      subtle: "5% opacity"
+      moderate: "15% opacity"
+      bold: "25% opacity"
+
+    default: "subtle"
+    user_configurable: true
+
+  animations:
+    description: "Special animation effects"
+
+    celebrations:
+      achievement_unlock: "Cannon fire + doubloons burst"
+      favorite_added: "Doubloon spin animation"
+      watch_complete: "Anchor drop animation"
+      collection_created: "Map unfurl animation"
+
+    micro_interactions:
+      hover: "Gentle ship rock"
+      loading: "Ship wheel spin"
+      success: "Gold sparkle"
+      transition: "Wave wipe"
+
+# =============================================================================
+# THEME VARIANTS
+# =============================================================================
+
+theme_variants:
+
+  captain_quarters:
+    name: "Captain's Quarters"
+    description: "Warm, cabin-like atmosphere"
+    background: "Deep wood tones"
+    accents: "Brass and gold"
+    unlock: "Default pirate mode theme"
+
+  moonlit_deck:
+    name: "Moonlit Deck"
+    description: "Night sailing aesthetic"
+    background: "Deep navy with silver highlights"
+    accents: "Moonlight silver"
+    unlock: "Night Watch achievement"
+
+  storm_seas:
+    name: "Storm Seas"
+    description: "Dramatic stormy atmosphere"
+    background: "Dark grays with lightning flashes"
+    accents: "Electric blue"
+    unlock: "Storm Chaser achievement"
+
+  treasure_hold:
+    name: "Treasure Hold"
+    description: "Golden treasure-filled ambiance"
+    background: "Rich gold and amber"
+    accents: "Ruby red, emerald green"
+    unlock: "Quartermaster achievement"
+
+# =============================================================================
+# CUSTOMIZATION
+# =============================================================================
+
+customization:
+  enabled: true
+  location: "Settings > Appearance > Pirate Mode"
+
+  options:
+    master_toggle:
+      name: "Enable Pirate Mode"
+      description: "Turn all unlocked elements on/off"
+      type: "toggle"
+
+    icons:
+      name: "Pirate Icons"
+      description: "Use pirate-themed navigation icons"
+      type: "toggle"
+      requires: "old_salt achievement"
+
+    language:
+      name: "Pirate Speak"
+      description: "Translate UI to pirate vernacular"
+      type: "toggle"
+      requires: "scallywag achievement"
+
+    sounds:
+      name: "Sound Effects"
+      description: "Play pirate sound effects"
+      type: "toggle + volume"
+      requires: "any achievement"
+
+    textures:
+      name: "Textures"
+      description: "Show wood and parchment textures"
+      type: "toggle + intensity slider"
+      requires: "treasure_hunter achievement"
+
+    animations:
+      name: "Animations"
+      description: "Show celebration animations"
+      type: "toggle"
+      requires: "any achievement"
+
+    theme:
+      name: "Theme Variant"
+      description: "Choose pirate theme style"
+      type: "select"
+      options: "Available based on achievements"
+
+  presets:
+    subtle: "Icons only"
+    moderate: "Icons + textures"
+    full: "Everything enabled"
+    custom: "User picks individual elements"
+
+# =============================================================================
+# ACHIEVEMENT TRACKING
+# =============================================================================
+
+achievement_tracking:
+
+  storage:
+    location: "User profile (server-side)"
+    sync: "Across all devices"
+
+  display:
+    location: "Profile page > Achievements tab"
+    style: "Badge grid with locked/unlocked states"
+    progress: "Show progress for incomplete achievements"
+
+  notifications:
+    style: "Toast notification + optional sound"
+    animation: "Slide in + celebration particles"
+    duration: "5 seconds"
+
+  sharing:
+    enabled: false
+    reason: "Achievements are personal, not social"
+
+# =============================================================================
+# SPECIAL FEATURES
+# =============================================================================
+
+special_features:
+
+  konami_code:
+    description: "Hidden instant unlock (development/demo)"
+    code: "↑ ↑ ↓ ↓ ← → ← → B A"
+    action: "Temporarily enables all pirate elements"
+    duration: "Current session only"
+    note: "Not a permanent unlock"
+
+  anniversary:
+    description: "Queen Anne's Revenge capture anniversary"
+    date: "November 28"
+    action: "Special celebration animation on startup"
+    element: "Gold-tinted UI for the day"
+
+  april_fools:
+    description: "Optional full pirate mode for everyone"
+    date: "April 1"
+    action: "Opt-in prompt to enable pirate mode"
+    note: "Respectful, not forced"
+
+# =============================================================================
+# IMPLEMENTATION NOTES
+# =============================================================================
+
+implementation:
+
+  icon_system:
+    approach: "Dynamic icon component"
+    logic: |
+      if (pirateMode.enabled && pirateMode.icons && hasAchievement('old_salt')) {
+        return pirateIcons[iconName]
+      }
+      return lucideIcons[iconName]
+
+  language_system:
+    approach: "i18n locale variant"
+    locale: "en-pirate"
+    fallback: "en"
+    note: "Only UI text, not user content"
+
+  texture_system:
+    approach: "CSS pseudo-elements with background images"
+    performance: "Use will-change, optimize images"
+    mobile: "Reduce intensity for battery"
+
+  sound_system:
+    approach: "Web Audio API"
+    loading: "Lazy load sounds"
+    format: "WebM/MP3 fallback"
+    size: "Keep sounds under 50KB each"
+
+  animation_system:
+    approach: "CSS animations + Svelte transitions"
+    particles: "Canvas-based for celebrations"
+    performance: "RequestAnimationFrame, pause when hidden"
+
+  storage:
+    achievements: "PostgreSQL user_achievements table"
+    preferences: "PostgreSQL user_settings JSON column"
+    caching: "Cache in localStorage for fast access"
+
+# =============================================================================
+# ACCESSIBILITY
+# =============================================================================
+
+accessibility:
+
+  icons:
+    approach: "Pirate icons have same aria-labels as standard"
+    note: "Visual change only, not semantic"
+
+  language:
+    approach: "Screen reader uses standard language"
+    implementation: "aria-label with standard text"
+
+  sounds:
+    approach: "Always optional, off by default"
+    mute: "Respects system mute"
+
+  animations:
+    approach: "Disabled with prefers-reduced-motion"
+
+  textures:
+    approach: "Decorative only, doesn't affect contrast"
+    testing: "Verify contrast with textures enabled"

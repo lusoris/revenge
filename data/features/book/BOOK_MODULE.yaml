@@ -305,27 +305,40 @@ recommendations:
 api_endpoints:
   - method: GET
     path: /api/v1/books
+    description: List all books with pagination and filters
   - method: GET
     path: /api/v1/books/:id
+    description: Get book details by ID
   - method: GET
     path: /api/v1/books/:id/read
+    description: Get book content for web reader
   - method: GET
     path: /api/v1/books/:id/download
+    description: Download book file in original format
   - method: GET
     path: /api/v1/books/:id/progress
+    description: Get user reading progress for a book
   - method: PUT
     path: /api/v1/books/:id/progress
+    description: Update user reading progress
   - method: POST
     path: /api/v1/books/:id/bookmarks
+    description: Create a bookmark at current position
   - method: GET
     path: /api/v1/books/:id/bookmarks
+    description: Get all user bookmarks for a book
   - method: POST
     path: /api/v1/books/:id/highlights
+    description: Create a text highlight with optional note
   - method: GET
     path: /api/v1/books/:id/highlights
+    description: Get all user highlights for a book
   - method: GET
     path: /api/v1/books/authors
+    description: List all book authors
   - method: GET
     path: /api/v1/books/series
+    description: List all book series
   - method: GET
     path: /api/v1/books/collections
+    description: List all book collections

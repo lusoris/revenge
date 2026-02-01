@@ -61,9 +61,9 @@ design_refs:
 
 # Lidarr
 
-> Music management automation
+> Automatic music downloads with Lidarr
 
-PLACEHOLDER: User-friendly overview
+Lidarr integration automates music library management. Add artists and Lidarr downloads their discography. Monitors for new album releases. Quality profiles control format preferences (FLAC, MP3). Webhooks notify Revenge when albums are imported. Configure with your Lidarr URL and API key.
 
 ---
 

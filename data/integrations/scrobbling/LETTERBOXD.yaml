@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Social network for movie lovers and film tracking'
-wiki_tagline: '> Social network for movie lovers and film tracking'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Log films to your Letterboxd diary'
+wiki_overview: 'Letterboxd integration logs movies to your film diary. Rate films as you watch and add reviews. Import your existing Letterboxd watchlist. See friends activity and discover films through the community. Note: Uses CSV import/export as Letterboxd API is limited.'
 sources:
 - name: Go io
   url: https://pkg.go.dev/io

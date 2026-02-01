@@ -55,9 +55,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Why Revenge uses integrations instead of plugins
 
-PLACEHOLDER: User-friendly overview
+Revenge deliberately chose not to implement a plugin system. Instead, common integrations (Radarr, Sonarr, TMDb, etc.) are built directly into the codebase with first-class support. This means faster development, better security (no arbitrary code execution), and simpler maintenance. External systems can still integrate via webhooks and the REST API. For power users who need custom automation, scripting support (Lua or Starlark) may be added in the future.
 
 ---
 

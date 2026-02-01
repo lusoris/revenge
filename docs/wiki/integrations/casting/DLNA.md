@@ -30,9 +30,9 @@ design_refs:
 
 # DLNA/UPnP
 
-> Universal Plug and Play streaming to compatible devices
+> Stream to smart TVs and devices via DLNA
 
-PLACEHOLDER: User-friendly overview
+Stream media to DLNA/UPnP compatible devices like smart TVs, game consoles, and media players. Revenge appears as a media server on your network. Browse and play content directly from your TV remote or device app. No app installation required on the receiving device.
 
 ---
 

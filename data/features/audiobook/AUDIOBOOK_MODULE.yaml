@@ -249,19 +249,28 @@ progress_tracking:
 api_endpoints:
   - method: GET
     path: /api/v1/audiobooks
+    description: List all audiobooks with pagination and filters
   - method: GET
     path: /api/v1/audiobooks/:id
+    description: Get audiobook details by ID
   - method: GET
     path: /api/v1/audiobooks/:id/chapters
+    description: Get chapter list for an audiobook
   - method: GET
     path: /api/v1/audiobooks/:id/stream
+    description: Get HLS streaming URL for audiobook playback
   - method: GET
     path: /api/v1/audiobooks/:id/progress
+    description: Get user playback progress for an audiobook
   - method: PUT
     path: /api/v1/audiobooks/:id/progress
+    description: Update user playback progress
   - method: POST
     path: /api/v1/audiobooks/:id/bookmarks
+    description: Create a bookmark at current position
   - method: GET
     path: /api/v1/audiobooks/authors
+    description: List all audiobook authors
   - method: GET
     path: /api/v1/audiobooks/series
+    description: List all audiobook series

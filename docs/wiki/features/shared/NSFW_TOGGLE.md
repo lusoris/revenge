@@ -77,9 +77,9 @@ design_refs:
 
 # Revenge - NSFW Toggle
 
-> User preference component for adult content visibility
+> Show or hide adult libraries with a simple toggle
 
-PLACEHOLDER: User-friendly overview
+Control adult content visibility per user. When disabled, adult libraries are completely hidden from the UI. Toggle requires PIN confirmation for security. Quick toggle in the header for users with permission. Server admins control who can enable the toggle. Works with the RBAC system to enforce content access policies.
 
 ---
 

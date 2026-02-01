@@ -55,9 +55,9 @@ design_refs:
 
 # TMDb (The Movie Database)
 
-> Primary metadata provider for movies and TV shows
+> Movie and TV metadata from TMDB
 
-PLACEHOLDER: User-friendly overview
+The Movie Database (TMDB) provides rich metadata for movies and TV shows. Posters, backdrops, cast information, trailers, and descriptions are fetched automatically. Free API with generous rate limits. Community-curated data in multiple languages. Primary metadata source used by Revenge.
 
 ---
 

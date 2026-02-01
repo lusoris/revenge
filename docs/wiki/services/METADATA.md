@@ -42,7 +42,7 @@ design_refs:
 
 > External metadata providers for media enrichment
 
-PLACEHOLDER: User-friendly overview
+The Metadata service fetches information about your media from external sources like TMDb, TheTVDB, and MusicBrainz. Configure which providers to use per library. Automatic matching uses filenames and folder structure. Manual matching lets you fix incorrect matches. Metadata includes titles, descriptions, posters, cast, crew, and ratings. Background jobs keep metadata fresh.
 
 ---
 

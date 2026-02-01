@@ -74,9 +74,9 @@ design_refs:
 
 # Live TV & DVR
 
-> Live television streaming and digital video recording
+> Watch and record live TV through your media server
 
-PLACEHOLDER: User-friendly overview
+Stream live TV channels through Revenge with support for multiple backends (TVHeadend, NextPVR, ErsatzTV). Browse the electronic program guide (EPG) to see what is on. Schedule recordings manually or by series. Recorded shows appear in your library with full metadata. Time-shifting lets you pause and rewind live broadcasts.
 
 ---
 

@@ -40,9 +40,9 @@ design_refs:
 
 # Keycloak
 
-> Enterprise identity and access management solution
+> Single sign-on with Keycloak
 
-PLACEHOLDER: User-friendly overview
+Integrate with Keycloak for enterprise-grade identity management. Supports LDAP/Active Directory backends, social login federation, and fine-grained access control. Create a Revenge client in Keycloak and configure the connection in Revenge settings. Role mappings sync Keycloak roles to Revenge permissions.
 
 ---
 

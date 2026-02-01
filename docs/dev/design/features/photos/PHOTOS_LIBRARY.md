@@ -180,52 +180,82 @@ internal/content/photos_library/
 ### Content Management
 #### GET /api/v1/photos
 
+List all photos with pagination and filters
+
 ---
 #### GET /api/v1/photos/:id
+
+Get photo details by ID
 
 ---
 #### POST /api/v1/photos
 
-Upload photo
+Upload a new photo
 
 ---
 #### DELETE /api/v1/photos/:id
 
+Delete a photo
+
 ---
 #### GET /api/v1/photos/:id/download
+
+Download original photo file
 
 ---
 #### GET /api/v1/photos/:id/thumbnail/:size
 
+Get photo thumbnail at specified size
+
 ---
 #### PUT /api/v1/photos/:id/tags
+
+Update tags for a photo
 
 ---
 #### PUT /api/v1/photos/:id/favorite
 
+Toggle favorite status for a photo
+
 ---
 #### GET /api/v1/photos/albums
+
+List all photo albums
 
 ---
 #### POST /api/v1/photos/albums
 
+Create a new photo album
+
 ---
 #### GET /api/v1/photos/albums/:id
+
+Get album details by ID
 
 ---
 #### POST /api/v1/photos/albums/:id/photos
 
+Add photos to an album
+
 ---
 #### GET /api/v1/photos/people
+
+List all tagged people
 
 ---
 #### POST /api/v1/photos/people
 
+Create a new person tag
+
 ---
 #### GET /api/v1/photos/timeline
 
+Get photos organized by timeline
+
 ---
 #### GET /api/v1/photos/map
+
+Get photos with location data for map view
 
 ---
 

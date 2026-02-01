@@ -165,45 +165,67 @@ internal/content/podcasts/
 ### Content Management
 #### GET /api/v1/podcasts
 
+List all subscribed podcasts
+
 ---
 #### POST /api/v1/podcasts
 
-Subscribe by RSS URL
+Subscribe to a podcast by RSS URL
 
 ---
 #### GET /api/v1/podcasts/:id
 
+Get podcast details by ID
+
 ---
 #### DELETE /api/v1/podcasts/:id
 
-Unsubscribe
+Unsubscribe from a podcast
 
 ---
 #### GET /api/v1/podcasts/:id/episodes
 
+List all episodes for a podcast
+
 ---
 #### GET /api/v1/podcasts/episodes/:id
+
+Get episode details by ID
 
 ---
 #### GET /api/v1/podcasts/episodes/:id/stream
 
+Get streaming URL for an episode
+
 ---
 #### POST /api/v1/podcasts/episodes/:id/download
+
+Download an episode for offline listening
 
 ---
 #### GET /api/v1/podcasts/episodes/:id/progress
 
+Get user playback progress for an episode
+
 ---
 #### PUT /api/v1/podcasts/episodes/:id/progress
+
+Update user playback progress for an episode
 
 ---
 #### GET /api/v1/podcasts/search
 
+Search podcasts via Podcast Index API
+
 ---
 #### POST /api/v1/podcasts/import-opml
 
+Import podcast subscriptions from OPML file
+
 ---
 #### GET /api/v1/podcasts/export-opml
+
+Export podcast subscriptions as OPML file
 
 ---
 

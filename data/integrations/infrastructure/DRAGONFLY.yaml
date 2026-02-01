@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> High-performance Redis-compatible cache'
-wiki_tagline: '> High-performance Redis-compatible cache'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Fast distributed caching with Dragonfly'
+wiki_overview: 'Dragonfly provides high-speed caching for Revenge. Stores session data, API responses, and frequently accessed metadata in memory. Redis-compatible so existing tools work. Dramatically faster than Redis with lower memory usage. Required for multi-server deployments, optional but recommended for single-server.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

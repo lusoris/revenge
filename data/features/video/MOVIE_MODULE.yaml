@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴 Not Started
 status_integration_testing_notes: '-'
 technical_summary: '> Movie content management with metadata enrichment'
-wiki_tagline: '> Movie content management with metadata enrichment'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Your movie library with rich metadata and artwork'
+wiki_overview: 'Manage your movie collection with automatic metadata from TMDB, TheTVDB, and other providers. Movies are organized with posters, backdrops, cast info, and trailers. Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track watched status per user. Integration with Radarr keeps your library growing automatically.'
 feature_name: Movie Module
 module_name: movie
 schema_name: public

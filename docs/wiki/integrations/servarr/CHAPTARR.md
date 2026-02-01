@@ -55,9 +55,9 @@ design_refs:
 
 # Chaptarr
 
-> Book & audiobook management automation (uses Readarr API)
+> Automatic book and audiobook downloads with Chaptarr
 
-PLACEHOLDER: User-friendly overview
+Chaptarr manages book and audiobook downloads using the Readarr API. Add authors and their works download automatically. Monitors for new releases. Supports both ebook and audiobook formats. Webhooks notify Revenge when books are imported. Connect with your Chaptarr/Readarr URL and API key.
 
 ---
 

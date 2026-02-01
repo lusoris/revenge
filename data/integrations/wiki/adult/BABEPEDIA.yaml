@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer wiki with biographies and filmographies'
-wiki_tagline: '> Adult performer wiki with biographies and filmographies'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Performer biographies from Babepedia'
+wiki_overview: 'Babepedia provides biographical information for adult performers. Physical attributes, career history, and social media links. Supplements StashDB performer data. Used within the QAR adult content system. Links to performer profiles from content detail pages.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

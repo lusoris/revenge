@@ -74,9 +74,9 @@ design_refs:
 
 # Tracearr Analytics Service
 
-> Real-time monitoring, analytics, and account sharing detection for Revenge
+> See what is being watched and detect account sharing
 
-PLACEHOLDER: User-friendly overview
+The Tracearr analytics dashboard shows real-time server activity. See what is being watched right now, popular content this week, and overall library statistics. Track bandwidth usage and transcoding load. Account sharing detection spots when the same user watches from multiple locations simultaneously. Export reports for server administrators.
 
 ---
 

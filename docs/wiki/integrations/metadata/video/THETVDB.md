@@ -55,9 +55,9 @@ design_refs:
 
 # TheTVDB
 
-> Primary metadata provider for TV shows
+> TV show metadata from TheTVDB
 
-PLACEHOLDER: User-friendly overview
+TheTVDB provides detailed TV show metadata including episode names, air dates, and season artwork. Especially strong for anime and international shows. Episode ordering options (DVD, absolute, aired) handle different numbering schemes. Requires free API key to access.
 
 ---
 

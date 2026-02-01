@@ -40,9 +40,9 @@ design_refs:
 
 # IAFD
 
-> Internet Adult Film Database - Adult performer and scene database
+> Industry database from IAFD
 
-PLACEHOLDER: User-friendly overview
+Internet Adult Film Database (IAFD) provides comprehensive industry data. Performer filmographies, studio information, and scene credits. Authoritative source used to verify and supplement other metadata. Links to IAFD profiles from performer pages. Part of the QAR adult metadata system.
 
 ---
 

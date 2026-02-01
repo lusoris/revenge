@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Self-hosted adult media organizer with GraphQL API'
-wiki_tagline: '> Self-hosted adult media organizer with GraphQL API'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Import from your Stash library'
+wiki_overview: 'Stash is a self-hosted adult media organizer. Import your existing Stash library into Revenge QAR. Syncs scene metadata, performer tags, and organization. GraphQL API enables bidirectional updates. Keep both systems in sync as you add content.'
 sources:
 - name: Khan/genqlient
   url: https://pkg.go.dev/github.com/Khan/genqlient

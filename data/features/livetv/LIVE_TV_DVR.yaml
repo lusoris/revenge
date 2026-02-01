@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Live television streaming and digital video recording'
-wiki_tagline: '> Live television streaming and digital video recording'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Watch and record live TV through your media server'
+wiki_overview: 'Stream live TV channels through Revenge with support for multiple backends (TVHeadend, NextPVR, ErsatzTV). Browse the electronic program guide (EPG) to see what is on. Schedule recordings manually or by series. Recorded shows appear in your library with full metadata. Time-shifting lets you pause and rewind live broadcasts.'
 sources:
 - name: FFmpeg Documentation
   url: https://ffmpeg.org/ffmpeg.html

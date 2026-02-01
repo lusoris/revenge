@@ -34,9 +34,9 @@ design_refs:
 
 # Chromecast
 
-> Google Cast protocol for streaming to Chromecast devices
+> Cast media to Chromecast and Google TV
 
-PLACEHOLDER: User-friendly overview
+Cast videos from Revenge to any Chromecast, Google TV, or Cast-enabled device. Click the cast icon in the player to see available devices on your network. Control playback from your phone or computer while watching on the big screen. Supports subtitles and multiple audio tracks.
 
 ---
 

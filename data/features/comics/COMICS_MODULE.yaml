@@ -264,25 +264,37 @@ progress_tracking:
 api_endpoints:
   - method: GET
     path: /api/v1/comics/series
+    description: List all comic series with pagination and filters
   - method: GET
     path: /api/v1/comics/series/:id
+    description: Get comic series details by ID
   - method: GET
     path: /api/v1/comics/series/:id/issues
+    description: List all issues in a series
   - method: GET
     path: /api/v1/comics/issues
+    description: List all comic issues with pagination and filters
   - method: GET
     path: /api/v1/comics/issues/:id
+    description: Get comic issue details by ID
   - method: GET
     path: /api/v1/comics/issues/:id/read
+    description: Get issue content for comic reader
   - method: GET
     path: /api/v1/comics/issues/:id/pages/:page
+    description: Get a specific page image from an issue
   - method: GET
     path: /api/v1/comics/issues/:id/progress
+    description: Get user reading progress for an issue
   - method: PUT
     path: /api/v1/comics/issues/:id/progress
+    description: Update user reading progress for an issue
   - method: GET
     path: /api/v1/comics/publishers
+    description: List all comic publishers
   - method: POST
     path: /api/v1/comics/pull-list
+    description: Add a series to user pull list
   - method: GET
     path: /api/v1/comics/pull-list
+    description: Get user pull list of series

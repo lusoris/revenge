@@ -60,7 +60,7 @@ design_refs:
 
 > User account management and authentication
 
-PLACEHOLDER: User-friendly overview
+The User service manages user accounts, profiles, and preferences. Admins can create users, assign roles, and manage permissions. Users can update their profile, change email/password, and configure notification settings. Profile images are stored with configurable storage backends. User data can be exported or deleted for GDPR compliance.
 
 ---
 

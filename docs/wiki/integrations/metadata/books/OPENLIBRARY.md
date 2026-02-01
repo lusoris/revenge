@@ -37,9 +37,9 @@ design_refs:
 
 # OpenLibrary
 
-> Open book metadata database - primary metadata provider for books (Goodreads a
+> Free book metadata from Open Library
 
-PLACEHOLDER: User-friendly overview
+Open Library provides free book metadata as part of the Internet Archive. Covers millions of books with basic information, covers, and edition details. No API key required. Primary book metadata source since Goodreads closed their API. Links to Internet Archive for borrowable digital copies.
 
 ---
 

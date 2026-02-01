@@ -51,7 +51,7 @@ design_refs:
 
 > Role-based access control with Casbin
 
-PLACEHOLDER: User-friendly overview
+The RBAC service controls who can do what in Revenge. Built on Casbin, it supports roles (Admin, User, Guest) and fine-grained permissions. Admins define policies like "Users can view movies" or "Guests cannot access adult content". Policies are stored in PostgreSQL and cached for fast authorization checks on every request.
 
 ---
 

@@ -61,9 +61,9 @@ design_refs:
 
 # Radarr
 
-> Movie management automation and metadata synchronization
+> Automatic movie downloads with Radarr
 
-PLACEHOLDER: User-friendly overview
+Radarr integration enables automatic movie downloads and library management. Request movies in Revenge and Radarr handles finding and downloading them. Webhooks notify Revenge when new movies arrive. Library status shows which movies are monitored and their quality. Connect by entering your Radarr URL and API key.
 
 ---
 

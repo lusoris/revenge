@@ -22,9 +22,9 @@
 
 # Movie Module
 
-> Movie content management with metadata enrichment
+> Your movie library with rich metadata and artwork
 
-PLACEHOLDER: User-friendly overview
+Manage your movie collection with automatic metadata from TMDB, TheTVDB, and other providers. Movies are organized with posters, backdrops, cast info, and trailers. Group movies into collections (like Marvel, Star Wars, or custom sets). Filter by genre, year, rating, or resolution. Track watched status per user. Integration with Radarr keeps your library growing automatically.
 
 ---
 

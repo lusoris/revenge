@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Music scrobbling and listening history tracking'
-wiki_tagline: '> Music scrobbling and listening history tracking'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Scrobble music plays to Last.fm'
+wiki_overview: 'Send your music listening history to Last.fm automatically. Tracks scrobble after playing for 30 seconds. View your listening stats, top artists, and weekly charts. Discover new music through recommendations based on your taste. Authenticate with your Last.fm account in settings.'
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro

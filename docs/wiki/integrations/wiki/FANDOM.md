@@ -34,9 +34,9 @@ design_refs:
 
 # FANDOM
 
-> Fan-curated wikis for movies, TV shows, games, and more
+> Link to fan wikis on FANDOM
 
-PLACEHOLDER: User-friendly overview
+Connect your library to FANDOM fan wikis. Deep links to character pages, episode guides, and universe lore. Covers most major franchises (Star Wars, Marvel, Game of Thrones, etc.). Supplements official metadata with fan-curated details. Links appear on item detail pages.
 
 ---
 

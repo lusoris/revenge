@@ -58,9 +58,9 @@ design_refs:
 
 # Sonarr
 
-> TV show management automation
+> Automatic TV show downloads with Sonarr
 
-PLACEHOLDER: User-friendly overview
+Sonarr integration automates TV show downloads. Add series to Sonarr and new episodes download automatically. Webhooks notify Revenge when episodes are ready. See which shows are monitored and upcoming episodes. Calendar integration shows air dates. Connect with your Sonarr URL and API key.
 
 ---
 

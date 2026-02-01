@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Voice assistant integration (Alexa, Google Assistant)'
-wiki_tagline: '> Voice assistant integration (Alexa, Google Assistant)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Control playback with Alexa and Google Assistant'
+wiki_overview: 'Use your voice to control Revenge through smart assistants. Ask Alexa or Google to play a specific movie, pause, skip forward, or turn on subtitles. Browse by genre or actor with natural language. Works with Echo devices, Google Home, and compatible smart speakers. Requires linking your account in the assistant app.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

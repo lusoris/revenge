@@ -1,0 +1,77 @@
+## Table of Contents
+
+- [Pirate Mode Easter Eggs](#pirate-mode-easter-eggs)
+  - [Contents](#contents)
+  - [How It Works](#how-it-works)
+  - [Features](#features)
+  - [Configuration](#configuration)
+  - [Related Documentation](#related-documentation)
+    - [See Also](#see-also)
+
+
+
+---
+sources:
+  - name: Lucide Icons
+    url: https://lucide.dev/icons/
+    note: Base icons to customize
+design_refs:
+  - title: DESIGN_SYSTEM
+    path: technical/DESIGN_SYSTEM.md
+  - title: BRAND_IDENTITY
+    path: technical/design/BRAND_IDENTITY.md
+---
+
+# Pirate Mode Easter Eggs
+
+
+
+
+> Unlock the spirit of the Queen Anne's Revenge
+
+Pirate Mode transforms Revenge with nautical theming inspired by Blackbeard's legendary Queen Anne's Revenge. Unlock elements by using features - watch movies to get the ship wheel spinner, add favorites to unlock treasure chest icons, complete all achievements for full pirate mode. Each element is customizable - enable just the icons you like or go full pirate with language, sounds, and textures.
+
+---
+
+
+
+
+## Contents
+
+<!-- TOC will be auto-generated here by markdown-toc -->
+
+---
+
+
+## How It Works
+
+<!-- User-friendly explanation -->
+
+
+
+
+## Features
+<!-- Feature list placeholder -->
+
+
+
+## Configuration
+<!-- User-friendly configuration guide -->
+
+
+
+
+
+
+
+
+
+## Related Documentation
+### See Also
+<!-- Related wiki pages -->
+
+
+
+---
+
+**Need Help?** [Open an issue](https://github.com/revenge-project/revenge/issues) or [Join the discussion](https://github.com/revenge-project/revenge/discussions)

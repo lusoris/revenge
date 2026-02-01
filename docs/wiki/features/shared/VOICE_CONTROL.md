@@ -56,9 +56,9 @@ design_refs:
 
 # Voice Control
 
-> Voice assistant integration (Alexa, Google Assistant)
+> Control playback with Alexa and Google Assistant
 
-PLACEHOLDER: User-friendly overview
+Use your voice to control Revenge through smart assistants. Ask Alexa or Google to play a specific movie, pause, skip forward, or turn on subtitles. Browse by genre or actor with natural language. Works with Echo devices, Google Home, and compatible smart speakers. Requires linking your account in the assistant app.
 
 ---
 

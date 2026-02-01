@@ -37,9 +37,9 @@ design_refs:
 
 # TheNude
 
-> Adult performer database with aliases and measurements
+> Performer aliases from TheNude
 
-PLACEHOLDER: User-friendly overview
+TheNude tracks performer aliases and stage names. Helps identify performers who work under multiple names. Physical attributes and measurements data. Cross-references with other adult databases. Supplements StashDB performer matching.
 
 ---
 

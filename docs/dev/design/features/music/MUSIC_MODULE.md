@@ -175,35 +175,57 @@ internal/content/music/
 ### Content Management
 #### GET /api/v1/music/artists
 
+List all artists with pagination and filters
+
 ---
 #### GET /api/v1/music/artists/:id
+
+Get artist details by ID
 
 ---
 #### GET /api/v1/music/artists/:id/albums
 
+List all albums by an artist
+
 ---
 #### GET /api/v1/music/albums
+
+List all albums with pagination and filters
 
 ---
 #### GET /api/v1/music/albums/:id
 
+Get album details by ID
+
 ---
 #### GET /api/v1/music/albums/:id/tracks
+
+List all tracks on an album
 
 ---
 #### GET /api/v1/music/tracks
 
+List all tracks with pagination and filters
+
 ---
 #### GET /api/v1/music/tracks/:id
+
+Get track details by ID
 
 ---
 #### GET /api/v1/music/tracks/:id/stream
 
+Get audio streaming URL for a track
+
 ---
 #### POST /api/v1/music/playlists
 
+Create a new playlist
+
 ---
 #### GET /api/v1/music/genres
+
+List all music genres
 
 ---
 

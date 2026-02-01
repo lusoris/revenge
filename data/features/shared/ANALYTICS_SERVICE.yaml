@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Real-time monitoring, analytics, and account sharing detection
   for Revenge'
-wiki_tagline: '> Real-time monitoring, analytics, and account sharing detection for
-  Revenge'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> See what is being watched and detect account sharing'
+wiki_overview: 'The Tracearr analytics dashboard shows real-time server activity. See what is being watched right now, popular content this week, and overall library statistics. Track bandwidth usage and transcoding load. Account sharing detection spots when the same user watches from multiple locations simultaneously. Export reports for server administrators.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

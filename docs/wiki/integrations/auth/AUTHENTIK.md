@@ -40,9 +40,9 @@ design_refs:
 
 # Authentik
 
-> Enterprise-grade identity provider for self-hosted environments
+> Single sign-on with Authentik
 
-PLACEHOLDER: User-friendly overview
+Connect Revenge to your Authentik identity provider for centralized user management. Create users in Authentik and they automatically get access to Revenge. Supports OIDC protocol with configurable scopes. Group mappings let you assign Revenge roles based on Authentik groups.
 
 ---
 

@@ -34,9 +34,9 @@ design_refs:
 
 # Twitter/X
 
-> Performer social media presence
+> Performer Twitter/X links
 
-PLACEHOLDER: User-friendly overview
+Links to performer Twitter/X profiles in the adult content system. Tracks verified social media handles. Provides another way to discover performer content. Links stored as part of performer metadata records. No direct API integration - handles only.
 
 ---
 

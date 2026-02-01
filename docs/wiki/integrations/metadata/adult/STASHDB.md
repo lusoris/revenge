@@ -73,9 +73,9 @@ design_refs:
 
 # StashDB
 
-> Adult metadata database for performers, studios, and scenes
+> Primary adult metadata from StashDB
 
-PLACEHOLDER: User-friendly overview
+StashDB is the primary metadata source for adult content. Community-maintained database of performers, studios, and scenes. Fingerprinting matches your files to database entries. High-quality metadata with multiple verification levels. GraphQL API provides comprehensive data access.
 
 ---
 

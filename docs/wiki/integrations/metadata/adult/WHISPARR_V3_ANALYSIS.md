@@ -30,9 +30,9 @@ design_refs:
 
 # Whisparr v3 (eros) - Adult Content Structure Analysis
 
-> Analysis of Whisparr v3 (eros) codebase for adult movie/scene schema structure
+> How Whisparr models adult content
 
-PLACEHOLDER: User-friendly overview
+Technical analysis of Whisparr v3 (eros branch) structure. Documents how Whisparr models scenes as episodes within series. Informs the QAR schema design for compatibility. Reference document for developers integrating Whisparr data. Not a user-facing feature.
 
 ---
 

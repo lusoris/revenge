@@ -37,7 +37,7 @@ design_refs:
 
 > Intelligent playback continuation and recommendation system
 
-PLACEHOLDER: User-friendly overview
+Never lose your place. Continue Watching shows partially-watched content with progress bars. Watch Next suggests the next episode or related content based on your viewing history. Syncs across all your devices so you can start on your phone and finish on TV. Configurable per-user with options to hide content or reset progress.
 
 ---
 

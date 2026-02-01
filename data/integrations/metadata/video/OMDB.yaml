@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Fallback metadata provider + IMDb ratings'
-wiki_tagline: '> Fallback metadata provider + IMDb ratings'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> IMDb ratings and additional movie data'
+wiki_overview: 'OMDb provides supplementary metadata including IMDb ratings, Rotten Tomatoes scores, and Metacritic scores. Used as a fallback when TMDB lacks data. Requires free API key (limited requests per day). Particularly useful for displaying multiple rating sources on movie detail pages.'
 sources:
 - name: OMDb API
   url: https://www.omdbapi.com/

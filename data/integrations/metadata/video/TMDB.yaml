@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Primary metadata provider for movies and TV shows'
-wiki_tagline: '> Primary metadata provider for movies and TV shows'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Movie and TV metadata from TMDB'
+wiki_overview: 'The Movie Database (TMDB) provides rich metadata for movies and TV shows. Posters, backdrops, cast information, trailers, and descriptions are fetched automatically. Free API with generous rate limits. Community-curated data in multiple languages. Primary metadata source used by Revenge.'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash

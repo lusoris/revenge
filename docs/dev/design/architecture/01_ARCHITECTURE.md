@@ -126,7 +126,16 @@ design_refs:
 **Category**: architecture
 
 
-> PLACEHOLDER: Brief technical summary
+> > Modern media server architecture with Go backend, SvelteKit frontend, PostgreSQL database
+
+Core components:
+- **Backend**: Go with fx dependency injection, ogen OpenAPI generation
+- **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
+- **Database**: PostgreSQL 18 with pgx driver (no SQLite)
+- **Cache**: Dragonfly (Redis-compatible) via rueidis + otter L1 cache
+- **Search**: Typesense for full-text search
+- **Jobs**: River queue for background processing
+
 
 ---
 

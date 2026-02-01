@@ -67,9 +67,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> What users hate about existing media servers
 
-PLACEHOLDER: User-friendly overview
+This research documents common complaints about Jellyfin, Plex, and Emby from Reddit, forums, and GitHub issues. Key pain points include slow library scans, incorrect metadata matching, complicated setup processes, poor mobile experiences, and transcoding problems. Revenge addresses each issue with local-first metadata caching, smart matching algorithms, streamlined setup wizards, mobile-first design, and hardware-accelerated transcoding.
 
 ---
 

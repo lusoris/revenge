@@ -37,6 +37,9 @@ def template_env(tmp_path):
         lstrip_blocks=False,
     )
 
+    # Add custom filter (in production this maps to local sources, in tests just return URL)
+    env.filters['to_local_source'] = lambda url: url
+
     return env
 
 
@@ -453,6 +456,107 @@ class TestAllTemplatesValid:
             # Should load without raising TemplateError
             template = template_env.get_template(template_name)
             assert template is not None
+
+
+class TestAllYAMLFilesRenderThroughTemplates:
+    """Integration test: Render all real YAML files through templates.
+
+    This comprehensive test ensures every YAML data file can successfully
+    render through its corresponding Jinja2 template without errors.
+    """
+
+    @pytest.fixture
+    def yaml_files(self) -> list[Path]:
+        """Get all YAML data files (excluding templates and shared)."""
+        repo_root = Path(__file__).parent.parent.parent
+        data_dir = repo_root / "data"
+        yaml_files = list(data_dir.rglob("*.yaml"))
+        # Exclude template files and shared-sot.yaml
+        return [
+            f for f in yaml_files
+            if ".templates" not in str(f) and "shared-sot" not in f.name
+        ]
+
+    def _get_template_for_category(self, category: str) -> str:
+        """Map doc_category to template filename."""
+        mapping = {
+            "feature": "feature.md.jinja2",
+            "service": "service.md.jinja2",
+            "integration": "integration.md.jinja2",
+            "architecture": "generic.md.jinja2",
+            "operations": "generic.md.jinja2",
+            "technical": "generic.md.jinja2",
+            "pattern": "generic.md.jinja2",
+            "research": "generic.md.jinja2",
+            "other": "generic.md.jinja2",
+        }
+        return mapping.get(category, "generic.md.jinja2")
+
+    def test_all_yaml_files_render_claude_output(self, template_env, yaml_files):
+        """All YAML files must render successfully for Claude output."""
+        import yaml as pyyaml
+
+        errors = []
+
+        for yaml_file in yaml_files:
+            try:
+                with open(yaml_file) as f:
+                    data = pyyaml.safe_load(f)
+
+                if not data or "doc_category" not in data:
+                    continue
+
+                template_name = self._get_template_for_category(data["doc_category"])
+                template = template_env.get_template(template_name)
+
+                # Add claude/wiki flags
+                render_data = {**data, "claude": True, "wiki": False}
+
+                # Should render without error
+                template.render(**render_data)
+
+            except Exception as e:
+                rel_path = yaml_file.relative_to(Path(__file__).parent.parent.parent)
+                errors.append(f"{rel_path}: {type(e).__name__}: {e}")
+
+        if errors:
+            pytest.fail(
+                f"Template rendering failed for {len(errors)} files:\n"
+                + "\n".join(errors[:10])
+            )
+
+    def test_all_yaml_files_render_wiki_output(self, template_env, yaml_files):
+        """All YAML files must render successfully for Wiki output."""
+        import yaml as pyyaml
+
+        errors = []
+
+        for yaml_file in yaml_files:
+            try:
+                with open(yaml_file) as f:
+                    data = pyyaml.safe_load(f)
+
+                if not data or "doc_category" not in data:
+                    continue
+
+                template_name = self._get_template_for_category(data["doc_category"])
+                template = template_env.get_template(template_name)
+
+                # Add claude/wiki flags
+                render_data = {**data, "claude": False, "wiki": True}
+
+                # Should render without error
+                template.render(**render_data)
+
+            except Exception as e:
+                rel_path = yaml_file.relative_to(Path(__file__).parent.parent.parent)
+                errors.append(f"{rel_path}: {type(e).__name__}: {e}")
+
+        if errors:
+            pytest.fail(
+                f"Wiki template rendering failed for {len(errors)} files:\n"
+                + "\n".join(errors[:10])
+            )
 
 
 if __name__ == "__main__":

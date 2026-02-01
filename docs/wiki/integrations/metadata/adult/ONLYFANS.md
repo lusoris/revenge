@@ -30,9 +30,9 @@ design_refs:
 
 # OnlyFans
 
-> Adult content platform subscription service - profile link tracking
+> Performer OnlyFans links
 
-PLACEHOLDER: User-friendly overview
+Tracks OnlyFans profile links for adult performers. Links stored in performer metadata for reference. No content access or subscription management - profile links only. Helps identify performer presence on the platform.
 
 ---
 

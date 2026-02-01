@@ -56,9 +56,9 @@ design_refs:
 
 # Revenge - User Experience Features
 
-> User-facing features inspired by modern streaming services
+> A streaming experience that feels like Netflix
 
-PLACEHOLDER: User-friendly overview
+Modern UI inspired by popular streaming services. Auto-playing previews on hover, personalized recommendations, and trending sections. Top 10 lists show what is popular on your server. Quick actions let you add to watchlist or mark as watched. Keyboard shortcuts for power users. Dark and light themes with customizable accent colors.
 
 ---
 

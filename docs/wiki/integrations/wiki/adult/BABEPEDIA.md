@@ -40,9 +40,9 @@ design_refs:
 
 # Babepedia
 
-> Adult performer wiki with biographies and filmographies
+> Performer biographies from Babepedia
 
-PLACEHOLDER: User-friendly overview
+Babepedia provides biographical information for adult performers. Physical attributes, career history, and social media links. Supplements StashDB performer data. Used within the QAR adult content system. Links to performer profiles from content detail pages.
 
 ---
 

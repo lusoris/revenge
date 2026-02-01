@@ -55,9 +55,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How Revenge finds and stores information about your media
 
-PLACEHOLDER: User-friendly overview
+The metadata system gathers information about your media from multiple sources. It always checks local cache first for instant display, then queries Arr services (Radarr, Sonarr) which already have metadata, then external APIs like TMDb or MusicBrainz. Background jobs enrich media with additional data like cast info, thumbnails, and blurhash previews. Two-tier caching (memory + distributed) ensures fast lookups even for large libraries.
 
 ---
 

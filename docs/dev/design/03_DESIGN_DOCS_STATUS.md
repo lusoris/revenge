@@ -69,7 +69,15 @@ sources:
 **Category**: other
 
 
-> PLACEHOLDER: Brief technical summary
+> > Overview of all design documentation status
+
+Tracks completion across:
+- Architecture documents
+- Feature specifications
+- Service designs
+- Integration guides
+- Operations documentation
+
 
 ---
 

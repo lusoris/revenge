@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer database with comprehensive profiles and links'
-wiki_tagline: '> Adult performer database with comprehensive profiles and links'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Performer profiles from FreeOnes'
+wiki_overview: 'FreeOnes aggregates performer information and social media links. Comprehensive profiles with photos and statistics. Cross-references to other databases. Used to enrich performer metadata in the QAR system. Provides additional profile images and biographical data.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

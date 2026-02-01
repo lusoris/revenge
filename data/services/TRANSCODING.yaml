@@ -305,35 +305,40 @@ transcoding_pipeline:
     }
     ```
 
-caching_strategy:
-  cache_location: /var/cache/revenge/transcoded/
-  cache_ttl: 7 days
-  cache_key: ${video_id}_${profile}_${checksum}
-  eviction_policy: LRU (Least Recently Used)
-  max_cache_size: 100 GB
+caching_strategy: |-
+  File-based cache with LRU eviction:
+  - Location: /var/cache/revenge/transcoded/
+  - TTL: 7 days
+  - Key format: ${video_id}_${profile}_${checksum}
+  - Max size: 100 GB
 
-  cache_check: |
-    ```go
-    func (s *TranscodingService) GetTranscodedVideo(ctx context.Context, videoID uuid.UUID, profile string) (string, error) {
-        cacheKey := s.getCacheKey(videoID, profile)
-        cachedPath := s.cachePath(cacheKey)
+cache_keys: |-
+  ```
+  ${video_id}_${profile}_${checksum}  # Transcoded video files
+  ```
 
-        // Check if cached version exists
-        if _, err := os.Stat(cachedPath); err == nil {
-            slog.Info("serving from cache", "video_id", videoID, "profile", profile)
-            return cachedPath, nil
-        }
+cache_check: |
+  ```go
+  func (s *TranscodingService) GetTranscodedVideo(ctx context.Context, videoID uuid.UUID, profile string) (string, error) {
+      cacheKey := s.getCacheKey(videoID, profile)
+      cachedPath := s.cachePath(cacheKey)
 
-        // Not cached, queue transcoding job
-        err := s.QueueTranscode(ctx, videoID, profile)
-        if err != nil {
-            return "", err
-        }
+      // Check if cached version exists
+      if _, err := os.Stat(cachedPath); err == nil {
+          slog.Info("serving from cache", "video_id", videoID, "profile", profile)
+          return cachedPath, nil
+      }
 
-        // Wait for transcode to complete (with timeout)
-        return s.waitForTranscode(ctx, cacheKey, 5*time.Minute)
-    }
-    ```
+      // Not cached, queue transcoding job
+      err := s.QueueTranscode(ctx, videoID, profile)
+      if err != nil {
+          return "", err
+      }
+
+      // Wait for transcode to complete (with timeout)
+      return s.waitForTranscode(ctx, cacheKey, 5*time.Minute)
+  }
+  ```
 
 progress_tracking:
   method: WebSocket updates via /api/v1/ws/transcode/:job_id

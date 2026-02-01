@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Music metadata and cover art provider - popularity scores, high-quality
   images'
-wiki_tagline: '> Music metadata and cover art provider - popularity scores, high-quality
-  images'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Album artwork and artist images from Spotify'
+wiki_overview: 'Spotify provides high-quality album artwork and artist images. Popularity scores help surface trending music. Used to supplement MusicBrainz metadata with better images. Does not provide playback or streaming - only metadata. Requires Spotify developer credentials.'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash

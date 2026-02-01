@@ -37,9 +37,9 @@ design_refs:
 
 # Boobpedia
 
-> Adult performer encyclopedia with detailed profiles
+> Performer encyclopedia from Boobpedia
 
-PLACEHOLDER: User-friendly overview
+Boobpedia provides detailed performer profiles for the adult content system. Career timelines, studio affiliations, and filmography data. Community-maintained wiki format. Complements other adult metadata sources. Part of the QAR performer metadata pipeline.
 
 ---
 

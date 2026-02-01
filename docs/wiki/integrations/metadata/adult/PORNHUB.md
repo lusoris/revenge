@@ -37,9 +37,9 @@ design_refs:
 
 # Pornhub
 
-> Adult content platform with performer pages and scene metadata
+> Performer pages from Pornhub
 
-PLACEHOLDER: User-friendly overview
+Pornhub integration provides links to official performer channels. View counts and popularity metrics available. Cross-references performer identities across platforms. Part of the QAR adult metadata enrichment pipeline. Links stored for reference, no content streaming.
 
 ---
 

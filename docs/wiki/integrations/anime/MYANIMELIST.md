@@ -37,9 +37,9 @@ design_refs:
 
 # MyAnimeList (MAL)
 
-> Legacy anime tracking platform with extensive database
+> Sync anime progress with MyAnimeList
 
-PLACEHOLDER: User-friendly overview
+Connect MyAnimeList (MAL) to sync your anime watching history. MAL has the largest anime database with user reviews, rankings, and recommendations. Watch status syncs both directions - import your MAL list and export new watches. Uses official MAL API for reliable synchronization.
 
 ---
 

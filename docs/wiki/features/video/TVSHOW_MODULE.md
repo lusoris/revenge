@@ -65,9 +65,9 @@ design_refs:
 
 # TV Show Module
 
-> TV series, seasons, and episodes management
+> Organize TV series with seasons, episodes, and watch progress
 
-PLACEHOLDER: User-friendly overview
+Manage TV shows organized by series, season, and episode. Automatic metadata from TheTVDB and TMDB adds artwork, episode descriptions, and air dates. Track watch progress per user - see where you left off and what episodes are unwatched. Special episode handling for pilots, finales, and specials. Sonarr integration monitors for new episodes and downloads them automatically.
 
 ---
 

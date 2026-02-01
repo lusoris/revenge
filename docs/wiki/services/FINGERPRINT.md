@@ -63,7 +63,7 @@ design_refs:
 
 > Media file identification via perceptual hashing and acoustic fingerprinting
 
-PLACEHOLDER: User-friendly overview
+Fingerprinting identifies media files by their content, not just filenames. Perceptual hashes match images and video frames even after re-encoding. Acoustic fingerprints identify music tracks. This enables duplicate detection, automatic metadata matching, and skip intro detection. Fingerprints are computed on library scan and stored for fast lookups.
 
 ---
 

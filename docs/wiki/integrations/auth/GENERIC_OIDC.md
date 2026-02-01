@@ -43,9 +43,9 @@ design_refs:
 
 # Generic OIDC
 
-> Support for any OpenID Connect compatible provider
+> Connect any OIDC provider for authentication
 
-PLACEHOLDER: User-friendly overview
+Use any OpenID Connect compatible identity provider with Revenge. Works with corporate identity systems, cloud providers (Google, Microsoft, Okta), or other self-hosted solutions. Configure the discovery URL, client ID, and secret. Map claims to Revenge user attributes and roles.
 
 ---
 

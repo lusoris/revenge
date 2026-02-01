@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Image gallery management for adult content with performer links
   and Prowlarr integration'
-wiki_tagline: '> Image gallery management for adult content with performer links and
-  Prowlarr i'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Browse and organize adult image galleries'
+wiki_overview: 'Organize adult image sets and galleries with full metadata support. Link galleries to performers and studios. Browse by performer, date, or custom tags. Slideshow mode for viewing. Prowlarr integration finds and downloads new galleries. Respects all QAR privacy and access controls. Thumbnails generated automatically during library scan.'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash

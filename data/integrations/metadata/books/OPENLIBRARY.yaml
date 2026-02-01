@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Open book metadata database - primary metadata provider for
   books (Goodreads alternative)'
-wiki_tagline: '> Open book metadata database - primary metadata provider for books
-  (Goodreads a'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Free book metadata from Open Library'
+wiki_overview: 'Open Library provides free book metadata as part of the Internet Archive. Covers millions of books with basic information, covers, and edition details. No API key required. Primary book metadata source since Goodreads closed their API. Links to Internet Archive for borrowable digital copies.'
 sources:
 - name: go-blurhash
   url: https://pkg.go.dev/github.com/bbrks/go-blurhash

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Support for any OpenID Connect compatible provider'
-wiki_tagline: '> Support for any OpenID Connect compatible provider'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Connect any OIDC provider for authentication'
+wiki_overview: 'Use any OpenID Connect compatible identity provider with Revenge. Works with corporate identity systems, cloud providers (Google, Microsoft, Okta), or other self-hosted solutions. Configure the discovery URL, client ID, and secret. Map claims to Revenge user attributes and roles.'
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/

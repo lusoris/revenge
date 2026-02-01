@@ -58,9 +58,9 @@ design_refs:
 
 # Typesense
 
-> Fast, typo-tolerant search engine
+> Instant search with typo tolerance
 
-PLACEHOLDER: User-friendly overview
+Typesense powers the search functionality in Revenge. Search results appear instantly as you type. Typo-tolerant so misspellings still find the right content. Faceted search lets you filter by genre, year, rating, and more. Automatically indexes new content as it is added to your library.
 
 ---
 

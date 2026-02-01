@@ -18,9 +18,9 @@
 
 
 
-PLACEHOLDER: User-friendly tagline
+> Open questions requiring team discussion
 
-PLACEHOLDER: User-friendly overview
+This document tracks unresolved design questions and gaps that need team discussion before implementation. Items include architectural decisions, feature scope questions, integration priorities, and technical debt. Questions are resolved in design meetings and moved to the appropriate design docs once decided.
 
 ---
 

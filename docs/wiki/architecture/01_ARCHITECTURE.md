@@ -112,9 +112,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> How Revenge is built - the technical foundation
 
-PLACEHOLDER: User-friendly overview
+Revenge is built with a Go backend and SvelteKit frontend. PostgreSQL stores all data (no SQLite), with Dragonfly providing fast caching and Typesense powering search. Background jobs run through River queue. The backend uses fx for dependency injection and ogen for type-safe API generation. The frontend uses Svelte 5 with shadcn-svelte components. All components are designed for self-hosting with Docker or bare metal deployment.
 
 ---
 

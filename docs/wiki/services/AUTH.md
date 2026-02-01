@@ -39,7 +39,7 @@ design_refs:
 
 > Authentication, registration, and password management
 
-PLACEHOLDER: User-friendly overview
+The Auth service handles user login, registration, and password management. It supports local accounts with email/password, plus external providers via OIDC (Google, GitHub, etc.). Passwords are hashed with Argon2. Failed login attempts trigger rate limiting and temporary lockouts. Password reset uses secure time-limited tokens sent via email.
 
 ---
 

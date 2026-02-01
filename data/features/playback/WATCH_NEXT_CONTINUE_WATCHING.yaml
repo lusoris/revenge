@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Intelligent playback continuation and recommendation system'
 wiki_tagline: '> Intelligent playback continuation and recommendation system'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'Never lose your place. Continue Watching shows partially-watched content with progress bars. Watch Next suggests the next episode or related content based on your viewing history. Syncs across all your devices so you can start on your phone and finish on TV. Configurable per-user with options to hide content or reset progress.'
 sources:
 - name: Jellyfin API
   url: https://api.jellyfin.org/

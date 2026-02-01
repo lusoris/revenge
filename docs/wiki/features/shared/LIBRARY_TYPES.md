@@ -53,9 +53,9 @@ design_refs:
 
 # Library Types
 
-> Per-module library architecture and supported content types
+> Organize content into movies, TV, music, and more
 
-PLACEHOLDER: User-friendly overview
+Create separate libraries for different content types. Movies, TV Shows, Music, Audiobooks, Photos, Comics, and Adult content each have their own library type with tailored features. Point multiple folders at one library or separate by quality (4K vs 1080p). Each library type has specialized metadata handling, artwork display, and playback behavior.
 
 ---
 

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Internet Adult Film Database - Adult performer and scene database'
-wiki_tagline: '> Internet Adult Film Database - Adult performer and scene database'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Industry database from IAFD'
+wiki_overview: 'Internet Adult Film Database (IAFD) provides comprehensive industry data. Performer filmographies, studio information, and scene credits. Authoritative source used to verify and supplement other metadata. Links to IAFD profiles from performer pages. Part of the QAR adult metadata system.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

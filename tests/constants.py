@@ -12,7 +12,8 @@ Update these values as documentation improves.
 # Set to 0 for strict mode when all docs should be complete.
 
 # Current counts - decrease as docs complete
-MAX_WIKI_OVERVIEW_PLACEHOLDERS = 87
+# All PLACEHOLDERs filled as of 2026-02-01
+MAX_WIKI_OVERVIEW_PLACEHOLDERS = 0
 MAX_WIKI_TAGLINE_PLACEHOLDERS = 0
 
 # =============================================================================
@@ -30,6 +31,7 @@ BASE_REQUIRED_FIELDS = [
 
 FEATURE_REQUIRED_FIELDS = [
     "feature_name",
+    "module_name",  # Required for file paths in templates
     "schema_name",
 ]
 

@@ -40,9 +40,9 @@ design_refs:
 
 # Spotify
 
-> Music metadata and cover art provider - popularity scores, high-quality images
+> Album artwork and artist images from Spotify
 
-PLACEHOLDER: User-friendly overview
+Spotify provides high-quality album artwork and artist images. Popularity scores help surface trending music. Used to supplement MusicBrainz metadata with better images. Does not provide playback or streaming - only metadata. Requires Spotify developer credentials.
 
 ---
 

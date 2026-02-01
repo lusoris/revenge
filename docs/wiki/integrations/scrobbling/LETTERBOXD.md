@@ -40,9 +40,9 @@ design_refs:
 
 # Letterboxd
 
-> Social network for movie lovers and film tracking
+> Log films to your Letterboxd diary
 
-PLACEHOLDER: User-friendly overview
+Letterboxd integration logs movies to your film diary. Rate films as you watch and add reviews. Import your existing Letterboxd watchlist. See friends activity and discover films through the community. Note: Uses CSV import/export as Letterboxd API is limited.
 
 ---
 

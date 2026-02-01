@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Modern anime tracking platform with social features'
-wiki_tagline: '> Modern anime tracking platform with social features'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Sync anime progress with Kitsu'
+wiki_overview: 'Link your Kitsu account to track anime watching. Kitsu provides metadata, community ratings, and social features. Episodes watched in Revenge sync to your Kitsu library. Import your existing Kitsu list to see what you have already watched. Compare ratings and discover new anime through Kitsu social features.'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river

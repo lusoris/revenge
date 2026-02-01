@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Fan-curated wikis for movies, TV shows, games, and more'
-wiki_tagline: '> Fan-curated wikis for movies, TV shows, games, and more'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Link to fan wikis on FANDOM'
+wiki_overview: 'Connect your library to FANDOM fan wikis. Deep links to character pages, episode guides, and universe lore. Covers most major franchises (Star Wars, Marvel, Game of Thrones, etc.). Supplements official metadata with fan-curated details. Links appear on item detail pages.'
 sources:
 - name: River Job Queue
   url: https://pkg.go.dev/github.com/riverqueue/river

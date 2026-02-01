@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Complete multi-language support for UI, metadata, and content.'
-wiki_tagline: '> Complete multi-language support for UI, metadata, and content'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Use Revenge in your language with localized metadata'
+wiki_overview: 'Full internationalization support for the entire application. The UI translates to your preferred language. Metadata (titles, descriptions, cast names) fetches in your locale when available. Subtitle language preferences remembered per user. Date, time, and number formats adapt to regional standards. Community-contributed translations keep adding new languages.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

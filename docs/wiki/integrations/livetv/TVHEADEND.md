@@ -37,9 +37,9 @@ design_refs:
 
 # TVHeadend
 
-> Open-source TV streaming server and DVR
+> Live TV and DVR with TVHeadend
 
-PLACEHOLDER: User-friendly overview
+TVHeadend integration brings live TV and DVR to Revenge. Supports DVB, IPTV, and other broadcast sources. Watch live channels through the Revenge interface. Schedule recordings and manage the DVR queue. EPG data displays what is currently airing and coming up next.
 
 ---
 

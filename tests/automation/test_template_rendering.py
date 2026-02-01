@@ -10,15 +10,33 @@ import pytest
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 
+def _create_jinja_env(templates_dir: str | Path = "templates", **kwargs) -> Environment:
+    """Create Jinja2 environment with required custom filters.
+
+    Args:
+        templates_dir: Path to templates directory
+        **kwargs: Additional Environment options
+
+    Returns:
+        Configured Jinja2 Environment
+    """
+    env = Environment(
+        loader=FileSystemLoader(templates_dir),
+        **kwargs
+    )
+    # Add custom filter (in production maps URLs to local sources, in tests just return URL)
+    env.filters['to_local_source'] = lambda url: url
+    return env
+
+
 class TestTemplateLoading:
     """Test template files exist and load correctly."""
 
     @pytest.fixture
     def jinja_env(self):
         """Create Jinja2 environment with templates/ directory."""
-        templates_dir = Path("templates")
-        return Environment(
-            loader=FileSystemLoader(templates_dir),
+        return _create_jinja_env(
+            Path("templates"),
             undefined=StrictUndefined,  # Catch undefined variables
             trim_blocks=True,
             lstrip_blocks=True,
@@ -60,10 +78,8 @@ class TestServiceTemplate:
     @pytest.fixture
     def jinja_env(self):
         """Create Jinja2 environment."""
-        from jinja2 import Environment, FileSystemLoader
-
-        return Environment(
-            loader=FileSystemLoader("templates"),
+        return _create_jinja_env(
+            "templates",
             trim_blocks=True,
             lstrip_blocks=True,
         )
@@ -145,10 +161,8 @@ class TestIntegrationTemplate:
     @pytest.fixture
     def jinja_env(self):
         """Create Jinja2 environment."""
-        from jinja2 import Environment, FileSystemLoader
-
-        return Environment(
-            loader=FileSystemLoader("templates"),
+        return _create_jinja_env(
+            "templates",
             trim_blocks=True,
             lstrip_blocks=True,
         )
@@ -255,10 +269,8 @@ class TestFeatureTemplate:
     @pytest.fixture
     def jinja_env(self):
         """Create Jinja2 environment."""
-        from jinja2 import Environment, FileSystemLoader
-
-        return Environment(
-            loader=FileSystemLoader("templates"),
+        return _create_jinja_env(
+            "templates",
             trim_blocks=True,
             lstrip_blocks=True,
         )
@@ -302,10 +314,8 @@ class TestTemplateDefaults:
     @pytest.fixture
     def jinja_env(self):
         """Create Jinja2 environment."""
-        from jinja2 import Environment, FileSystemLoader
-
-        return Environment(
-            loader=FileSystemLoader("templates"),
+        return _create_jinja_env(
+            "templates",
             trim_blocks=True,
             lstrip_blocks=True,
         )

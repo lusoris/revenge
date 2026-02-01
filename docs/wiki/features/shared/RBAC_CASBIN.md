@@ -65,9 +65,9 @@ design_refs:
 
 # Dynamic RBAC with Casbin
 
-> Role-Based Access Control using Casbin for dynamic permission management
+> Fine-grained permissions for users, roles, and content
 
-PLACEHOLDER: User-friendly overview
+Define exactly what each user can do with role-based access control. Create custom roles (Admin, Moderator, Family, Guest) with specific permissions. Control access to libraries, features, and administrative functions. Permissions update instantly without requiring logout. Built on Casbin for enterprise-grade policy enforcement with PostgreSQL persistence.
 
 ---
 

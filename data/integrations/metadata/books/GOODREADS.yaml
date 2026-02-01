@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Book metadata and social reading platform - ratings, reviews,
   book lists'
-wiki_tagline: '> Book metadata and social reading platform - ratings, reviews, book
-  lists'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Import reading data from Goodreads'
+wiki_overview: 'Import your Goodreads library and reading history into Revenge. Export your data from Goodreads and import it to track your book collection. Ratings and shelf assignments are preserved. Note: Goodreads API is closed, so only CSV import is supported, not live sync.'
 sources:
 - name: Google Books API
   url: https://developers.google.com/books/docs/v1/using

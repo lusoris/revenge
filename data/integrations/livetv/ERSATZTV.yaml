@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Custom IPTV channel creation from your media library'
-wiki_tagline: '> Custom IPTV channel creation from your media library'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Create custom TV channels from your library'
+wiki_overview: 'ErsatzTV creates custom IPTV channels from your existing media. Build a 24/7 movie channel, a sitcom channel, or themed marathons. Channels play through Revenge like traditional live TV. Schedule content or let it shuffle randomly. Perfect for a lean-back viewing experience.'
 sources:
 - name: ErsatzTV Documentation
   url: https://ersatztv.org/docs/

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Official Marvel Comics metadata (Marvel Universe content only)'
-wiki_tagline: '> Official Marvel Comics metadata (Marvel Universe content only)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Official Marvel Comics data for Marvel titles'
+wiki_overview: 'The official Marvel API provides authoritative metadata for Marvel comics. Character appearances, creator credits, and event tie-ins are tracked. High-quality cover images directly from Marvel. Only covers Marvel-published content. Free developer account required for API access.'
 sources:
 - name: pgx PostgreSQL Driver
   url: https://pkg.go.dev/github.com/jackc/pgx/v5

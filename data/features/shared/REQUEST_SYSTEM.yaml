@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Content request management for all modules - replaces Overseerr/Jellyseerr'
-wiki_tagline: '> Content request management for all modules - replaces Overseerr/Jellyseerr'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Let users request movies, shows, and music directly'
+wiki_overview: 'Built-in request system replaces Overseerr/Jellyseerr. Users browse TMDB, TheTVDB, or MusicBrainz and request content they want. Requests route to the appropriate Arr service (Radarr, Sonarr, Lidarr) for automatic download. Admins can approve/deny requests or set auto-approval rules. Track request status and get notified when content arrives.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

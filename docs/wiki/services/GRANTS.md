@@ -51,7 +51,7 @@ design_refs:
 
 > Polymorphic resource access grants for fine-grained sharing
 
-PLACEHOLDER: User-friendly overview
+The Grants service enables sharing specific items with other users. Share a movie, playlist, or library with friends without giving them full access. Grants can be time-limited (expires in 7 days) or permanent. Revoke access anytime. Works with all resource types through polymorphic references.
 
 ---
 

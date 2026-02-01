@@ -40,9 +40,9 @@ design_refs:
 
 # MusicBrainz
 
-> Open music metadata database - primary metadata provider for music
+> Open music database for artist and album data
 
-PLACEHOLDER: User-friendly overview
+MusicBrainz is the primary source for music metadata. Open database with artist, album, and track information. Cover art from Cover Art Archive. Links to other services via MBIDs. No API key required but rate limits apply. Identifies music by acoustic fingerprinting.
 
 ---
 

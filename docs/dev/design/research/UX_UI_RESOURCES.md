@@ -54,7 +54,15 @@ design_refs:
 **Category**: research
 
 
-> PLACEHOLDER: Brief technical summary
+> > Frontend design resources and UI component references
+
+Resources covered:
+- **Components**: shadcn-svelte, Bits UI, Radix primitives
+- **Styling**: Tailwind CSS 4, CSS variables for theming
+- **Motion**: Svelte transitions, reduced motion support
+- **Accessibility**: WCAG 2.1 compliance, keyboard navigation
+- **Inspiration**: Netflix, Disney+, Plex UI patterns
+
 
 ---
 

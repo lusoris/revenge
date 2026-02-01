@@ -49,9 +49,9 @@ design_refs:
 
 # ThePosterDB
 
-> Curated high-quality posters for movies and TV shows
+> Premium curated poster artwork
 
-PLACEHOLDER: User-friendly overview
+ThePosterDB offers designer-quality posters and artwork for your library. Community-curated collection with consistent styling options. Browse by collection sets for matching artwork across related titles. Higher quality than standard metadata sources. Connect your ThePosterDB account to access the full library.
 
 ---
 

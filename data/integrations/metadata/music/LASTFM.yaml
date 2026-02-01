@@ -18,9 +18,8 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Music scrobbling and metadata provider - artist bio, tags, similar
   artists'
-wiki_tagline: '> Music scrobbling and metadata provider - artist bio, tags, similar
-  artists'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Artist bios and similar artist recommendations'
+wiki_overview: 'Last.fm provides artist biographies, tags, and similar artist recommendations. Supplements MusicBrainz with community-curated data. Scrobble your listening history to track what you play. See your listening stats and discover new music based on your taste. Free API key required.'
 sources:
 - name: Go context
   url: https://pkg.go.dev/context

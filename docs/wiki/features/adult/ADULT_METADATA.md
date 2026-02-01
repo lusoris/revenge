@@ -65,9 +65,9 @@ design_refs:
 
 # Revenge - Adult Content Metadata System
 
-> ⚠️ **DEPRECATED**: This document has been merged into [ADULT_CONTENT_SYSTEM
+> Deprecated - see ADULT_CONTENT_SYSTEM
 
-PLACEHOLDER: User-friendly overview
+This document has been merged into ADULT_CONTENT_SYSTEM.md. See that document for complete adult content architecture including metadata, privacy features, and integration details.
 
 ---
 

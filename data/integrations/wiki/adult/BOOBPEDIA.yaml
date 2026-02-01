@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer encyclopedia with detailed profiles'
-wiki_tagline: '> Adult performer encyclopedia with detailed profiles'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Performer encyclopedia from Boobpedia'
+wiki_overview: 'Boobpedia provides detailed performer profiles for the adult content system. Career timelines, studio affiliations, and filmography data. Community-maintained wiki format. Complements other adult metadata sources. Part of the QAR performer metadata pipeline.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

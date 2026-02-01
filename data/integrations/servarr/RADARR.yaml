@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Movie management automation and metadata synchronization'
-wiki_tagline: '> Movie management automation and metadata synchronization'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Automatic movie downloads with Radarr'
+wiki_overview: 'Radarr integration enables automatic movie downloads and library management. Request movies in Revenge and Radarr handles finding and downloading them. Webhooks notify Revenge when new movies arrive. Library status shows which movies are monitored and their quality. Connect by entering your Radarr URL and API key.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Adult performer database with aliases and measurements'
-wiki_tagline: '> Adult performer database with aliases and measurements'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Performer aliases from TheNude'
+wiki_overview: 'TheNude tracks performer aliases and stage names. Helps identify performers who work under multiple names. Physical attributes and measurements data. Cross-references with other adult databases. Supplements StashDB performer matching.'
 sources:
 - name: Go io
   url: https://pkg.go.dev/io

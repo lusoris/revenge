@@ -43,9 +43,9 @@ design_refs:
 
 # Marvel API
 
-> Official Marvel Comics metadata (Marvel Universe content only)
+> Official Marvel Comics data for Marvel titles
 
-PLACEHOLDER: User-friendly overview
+The official Marvel API provides authoritative metadata for Marvel comics. Character appearances, creator credits, and event tie-ins are tracked. High-quality cover images directly from Marvel. Only covers Marvel-published content. Free developer account required for API access.
 
 ---
 

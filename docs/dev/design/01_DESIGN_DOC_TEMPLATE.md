@@ -57,7 +57,15 @@ sources:
 **Category**: other
 
 
-> PLACEHOLDER: Brief technical summary
+> > Template for creating new design documents
+
+Template sections:
+- **Status Table**: Track progress across dimensions
+- **Technical Summary**: Developer-focused overview
+- **Wiki Content**: User-friendly explanations
+- **Sources**: External documentation references
+- **Design Refs**: Cross-references to related docs
+
 
 ---
 

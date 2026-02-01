@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Multi-platform client support with intelligent capability detection.'
-wiki_tagline: '> Multi-platform client support with intelligent capability detection'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Watch on any device with automatic quality adjustment'
+wiki_overview: 'Revenge works on phones, tablets, smart TVs, web browsers, and streaming devices. The server detects each client type and capabilities automatically. Direct play when the device supports the format, transcode when needed. Per-device quality settings let you optimize for mobile data or big screen viewing. Sync downloads for offline playback on mobile devices.'
 sources:
 - name: Casbin
   url: https://pkg.go.dev/github.com/casbin/casbin/v2

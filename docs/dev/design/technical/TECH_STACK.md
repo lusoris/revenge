@@ -111,7 +111,17 @@ design_refs:
 **Category**: technical
 
 
-> PLACEHOLDER: Brief technical summary
+> > Complete technology stack powering Revenge
+
+Stack overview:
+- **Backend**: Go 1.25+ with fx, ogen, pgx, rueidis
+- **Frontend**: SvelteKit 2, Svelte 5, Tailwind CSS 4, shadcn-svelte
+- **Database**: PostgreSQL 18 (only supported database)
+- **Cache**: Dragonfly via rueidis, otter for L1 memory cache
+- **Search**: Typesense for full-text search
+- **Queue**: River for PostgreSQL-backed job processing
+- **Observability**: slog/tint (dev), zap (prod), OpenTelemetry
+
 
 ---
 

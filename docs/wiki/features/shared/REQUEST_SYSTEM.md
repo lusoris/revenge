@@ -65,9 +65,9 @@ design_refs:
 
 # Native Request System
 
-> Content request management for all modules - replaces Overseerr/Jellyseerr
+> Let users request movies, shows, and music directly
 
-PLACEHOLDER: User-friendly overview
+Built-in request system replaces Overseerr/Jellyseerr. Users browse TMDB, TheTVDB, or MusicBrainz and request content they want. Requests route to the appropriate Arr service (Radarr, Sonarr, Lidarr) for automatic download. Admins can approve/deny requests or set auto-approval rules. Track request status and get notified when content arrives.
 
 ---
 

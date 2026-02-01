@@ -65,9 +65,9 @@ design_refs:
 
 # Adult Gallery Module (QAR: Treasures)
 
-> Image gallery management for adult content with performer links and Prowlarr i
+> Browse and organize adult image galleries
 
-PLACEHOLDER: User-friendly overview
+Organize adult image sets and galleries with full metadata support. Link galleries to performers and studios. Browse by performer, date, or custom tags. Slideshow mode for viewing. Prowlarr integration finds and downloads new galleries. Respects all QAR privacy and access controls. Thumbnails generated automatically during library scan.
 
 ---
 

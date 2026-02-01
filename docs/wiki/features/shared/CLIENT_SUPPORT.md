@@ -65,9 +65,9 @@ design_refs:
 
 # Revenge - Client Support & Device Capabilities
 
-> Multi-platform client support with intelligent capability detection
+> Watch on any device with automatic quality adjustment
 
-PLACEHOLDER: User-friendly overview
+Revenge works on phones, tablets, smart TVs, web browsers, and streaming devices. The server detects each client type and capabilities automatically. Direct play when the device supports the format, transcode when needed. Per-device quality settings let you optimize for mobile data or big screen viewing. Sync downloads for offline playback on mobile devices.
 
 ---
 

@@ -18,7 +18,7 @@ status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Synchronized playback for multiple users watching together'
 wiki_tagline: '> Synchronized playback for multiple users watching together'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_overview: 'Watch movies and shows together with friends, even when apart. SyncPlay keeps everyone at the same playback position in real-time via WebSocket. Create a room, share the link, and playback syncs automatically. Pause/play/seek actions sync to all participants. Built-in chat for commentary during viewing.'
 sources:
 - name: Go sync
   url: https://pkg.go.dev/sync

@@ -60,7 +60,7 @@ design_refs:
 
 > Library management and access control
 
-PLACEHOLDER: User-friendly overview
+Libraries organize your media by type and location. Create separate libraries for Movies, TV Shows, Music, or Adult content. Each library points to one or more folders on disk. Control which users can see which libraries. Libraries scan automatically on a schedule or manually on demand. Configure refresh intervals, naming conventions, and metadata sources per library.
 
 ---
 

@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> General encyclopedia information via Wikipedia API'
-wiki_tagline: '> General encyclopedia information via Wikipedia API'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Background information from Wikipedia'
+wiki_overview: 'Wikipedia integration provides encyclopedic context for your media. Plot summaries, production history, and critical reception. Links to actor and director biographies. Available in multiple languages. Cached locally for fast access. No API key required.'
 sources:
 - name: Dragonfly Documentation
   url: https://www.dragonflydb.io/docs

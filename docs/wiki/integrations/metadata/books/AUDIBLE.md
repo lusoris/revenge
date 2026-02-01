@@ -37,9 +37,9 @@ design_refs:
 
 # Audible
 
-> Audiobook metadata provider - primary source for audiobooks
+> Audiobook metadata from Audible
 
-PLACEHOLDER: User-friendly overview
+Audible metadata powers your audiobook library. Narrator information, chapter details, and series data are fetched via the Audnexus API. Cover artwork and descriptions match your Audible purchases. Automatically identifies audiobooks by ASIN or title matching.
 
 ---
 

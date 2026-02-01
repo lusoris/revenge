@@ -50,9 +50,9 @@ design_refs:
 
 # Revenge - External Scrobbling & Sync
 
-> Sync playback data to external services like Trakt, Last
+> Track what you watch and listen to across services
 
-PLACEHOLDER: User-friendly overview
+Scrobble your viewing and listening history to external services. Connect Trakt to track movies and TV shows. Link Last.fm or ListenBrainz for music listening history. Sync watch status to Simkl, Letterboxd, or AniList. Two-way sync imports existing history and exports new plays automatically. Per-user configuration for each connected service.
 
 ---
 

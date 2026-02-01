@@ -222,23 +222,34 @@ scrobbling_integration:
 api_endpoints:
   - method: GET
     path: /api/v1/music/artists
+    description: List all artists with pagination and filters
   - method: GET
     path: /api/v1/music/artists/:id
+    description: Get artist details by ID
   - method: GET
     path: /api/v1/music/artists/:id/albums
+    description: List all albums by an artist
   - method: GET
     path: /api/v1/music/albums
+    description: List all albums with pagination and filters
   - method: GET
     path: /api/v1/music/albums/:id
+    description: Get album details by ID
   - method: GET
     path: /api/v1/music/albums/:id/tracks
+    description: List all tracks on an album
   - method: GET
     path: /api/v1/music/tracks
+    description: List all tracks with pagination and filters
   - method: GET
     path: /api/v1/music/tracks/:id
+    description: Get track details by ID
   - method: GET
     path: /api/v1/music/tracks/:id/stream
+    description: Get audio streaming URL for a track
   - method: POST
     path: /api/v1/music/playlists
+    description: Create a new playlist
   - method: GET
     path: /api/v1/music/genres
+    description: List all music genres

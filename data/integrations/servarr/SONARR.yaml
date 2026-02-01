@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> TV show management automation'
-wiki_tagline: '> TV show management automation'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Automatic TV show downloads with Sonarr'
+wiki_overview: 'Sonarr integration automates TV show downloads. Add series to Sonarr and new episodes download automatically. Webhooks notify Revenge when episodes are ready. See which shows are monitored and upcoming episodes. Calendar integration shows air dates. Connect with your Sonarr URL and API key.'
 sources:
 - name: Uber fx
   url: https://pkg.go.dev/go.uber.org/fx

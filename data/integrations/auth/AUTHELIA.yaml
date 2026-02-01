@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Self-hosted authentication and authorization server'
-wiki_tagline: '> Self-hosted authentication and authorization server'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Single sign-on with Authelia'
+wiki_overview: 'Use Authelia as your identity provider for Revenge. Log in once and access all your self-hosted services. Supports two-factor authentication, WebAuthn security keys, and single sign-on. Configure in Revenge settings by entering your Authelia server URL and client credentials.'
 sources:
 - name: Authelia Documentation
   url: https://www.authelia.com/overview/

@@ -176,29 +176,47 @@ internal/content/audiobook/
 ### Content Management
 #### GET /api/v1/audiobooks
 
+List all audiobooks with pagination and filters
+
 ---
 #### GET /api/v1/audiobooks/:id
+
+Get audiobook details by ID
 
 ---
 #### GET /api/v1/audiobooks/:id/chapters
 
+Get chapter list for an audiobook
+
 ---
 #### GET /api/v1/audiobooks/:id/stream
+
+Get HLS streaming URL for audiobook playback
 
 ---
 #### GET /api/v1/audiobooks/:id/progress
 
+Get user playback progress for an audiobook
+
 ---
 #### PUT /api/v1/audiobooks/:id/progress
+
+Update user playback progress
 
 ---
 #### POST /api/v1/audiobooks/:id/bookmarks
 
+Create a bookmark at current position
+
 ---
 #### GET /api/v1/audiobooks/authors
 
+List all audiobook authors
+
 ---
 #### GET /api/v1/audiobooks/series
+
+List all audiobook series
 
 ---
 

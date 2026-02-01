@@ -61,7 +61,7 @@ design_refs:
 
 > Thumbnail previews on video seek bar
 
-PLACEHOLDER: User-friendly overview
+See where you are going when scrubbing through videos. Trickplay generates thumbnail previews that appear when hovering over the seek bar. Thumbnails are created during library scan using FFmpeg. Supports BIF format for Roku compatibility. Configurable interval (default 10 seconds) and quality settings per library.
 
 ---
 

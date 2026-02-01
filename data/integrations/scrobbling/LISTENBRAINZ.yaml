@@ -17,8 +17,8 @@ status_unit_testing_notes: '-'
 status_integration_testing: 🔴
 status_integration_testing_notes: '-'
 technical_summary: '> Open-source music listening history tracking (MusicBrainz project)'
-wiki_tagline: '> Open-source music listening history tracking (MusicBrainz project)'
-wiki_overview: 'PLACEHOLDER: User-friendly overview'
+wiki_tagline: '> Open-source music scrobbling with ListenBrainz'
+wiki_overview: 'ListenBrainz is an open-source alternative to Last.fm for tracking music listening. Part of the MusicBrainz project. Scrobble your plays and build a listening history. Import your Last.fm history to start. Discover music through community playlists. Your data is open and exportable.'
 sources:
 - name: Last.fm API
   url: https://www.last.fm/api/intro

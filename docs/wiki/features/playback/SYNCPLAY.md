@@ -40,7 +40,7 @@ design_refs:
 
 > Synchronized playback for multiple users watching together
 
-PLACEHOLDER: User-friendly overview
+Watch movies and shows together with friends, even when apart. SyncPlay keeps everyone at the same playback position in real-time via WebSocket. Create a room, share the link, and playback syncs automatically. Pause/play/seek actions sync to all participants. Built-in chat for commentary during viewing.
 
 ---
 

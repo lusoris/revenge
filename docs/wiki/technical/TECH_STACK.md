@@ -97,9 +97,9 @@ design_refs:
 
 
 
-PLACEHOLDER: User-friendly tagline
+> The technologies that power Revenge
 
-PLACEHOLDER: User-friendly overview
+Revenge is built with modern, proven technologies. The Go backend uses fx for dependency injection, ogen for type-safe API generation, and pgx for PostgreSQL access. The SvelteKit frontend delivers fast, reactive UIs with shadcn-svelte components. Dragonfly provides Redis-compatible caching, Typesense powers instant search, and River handles background jobs. All tools are chosen for performance, reliability, and active maintenance.
 
 ---
 

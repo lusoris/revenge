@@ -57,7 +57,7 @@ design_refs:
 
 > Session token management and device tracking
 
-PLACEHOLDER: User-friendly overview
+The Session service tracks active login sessions across devices. Each login creates a session with device info (browser, OS, IP). Users can view all active sessions and revoke access to specific devices. Sessions expire automatically after inactivity. Admins can forcibly terminate sessions for security incidents.
 
 ---
 

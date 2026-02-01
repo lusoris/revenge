@@ -62,9 +62,9 @@ design_refs:
 
 # Internal Wiki System
 
-> Modern, integrated knowledge base for users, mods, admins, and devs
+> Built-in documentation and help system
 
-PLACEHOLDER: User-friendly overview
+Self-hosted wiki for server documentation and guides. Create articles for users explaining how to use features, for moderators on content policies, and for admins on server management. Markdown editor with live preview. Search across all articles. Permission-controlled sections keep sensitive docs private. Versioned content tracks changes over time.
 
 ---
 

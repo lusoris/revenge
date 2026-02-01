@@ -55,7 +55,7 @@ design_refs:
 
 > Automatic intro and credits detection with one-click skip
 
-PLACEHOLDER: User-friendly overview
+Skip repetitive intros and credits with one click. Revenge automatically detects intro sequences using audio fingerprinting (Chromaprint) and visual analysis. When an intro is detected, a Skip button appears. Enable auto-skip to jump automatically. Credits detection suggests the next episode before the current one ends.
 
 ---
 

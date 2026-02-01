@@ -45,7 +45,7 @@ design_refs:
 
 > Audit logging and event tracking
 
-PLACEHOLDER: User-friendly overview
+The Activity service logs important events for security and debugging. Track logins, failed auth attempts, permission changes, and admin actions. Activity logs include timestamps, user info, IP addresses, and action details. Admins can search and filter logs. Configurable retention period automatically cleans old entries.
 
 ---
 

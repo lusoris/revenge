@@ -48,7 +48,7 @@ design_refs:
 
 > Usage analytics, playback statistics, and library insights
 
-PLACEHOLDER: User-friendly overview
+Analytics provides insights into how your server is used. See most-watched movies, popular genres, peak usage times, and user activity. Track playback statistics like total watch time and completion rates. Library dashboards show storage usage, file counts, and metadata coverage. All data stays on your server - no external tracking.
 
 ---
 
